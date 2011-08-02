@@ -19,18 +19,25 @@
 
 package org.openjena.fuseki.migrate;
 
-import java.io.InputStream;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.shared.NotFoundException;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.fuseki.Fuseki ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.shared.NotFoundException ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** A packaging of code to do a controlled read of a graph or model */
 
@@ -40,52 +47,50 @@ public class GraphLoadUtils
     
     public static Model readModel(String uri, int limit)
     {
-        return readModel(uri, limit, FileUtils.guessLang(uri)) ;
-    }
-
-    public static Model readModel(String uri, int limit, String syntax) 
-    {
         Graph g = Factory.createGraphMem() ;
-        return readUtil(g, uri, limit, syntax) ;
+        readUtil(g, uri, limit) ;
+        return ModelFactory.createModelForGraph(g) ;
     }
     
     public static void loadModel(Model model, String uri, int limit) 
     {
-        loadModel(model, uri, limit, null) ;
-    }
-
-    public static void loadModel(Model model, String uri, int limit, String syntax) 
-    {
         Graph g = model.getGraph() ;
-        readUtil(g, uri, limit, syntax) ;
+        readUtil(g, uri, limit) ;
     }
 
     // ---- Graph level
     
     public static Graph readGraph(String uri, int limit)
     {
-        return readGraph(uri, limit, FileUtils.guessLang(uri)) ;
-    }
-    
-    public static Graph readGraph(String uri, int limit, String syntax) 
-    {
         Graph g = Factory.createGraphMem() ;
-        Model m = readUtil(g, uri, limit, syntax) ;
-        return m.getGraph() ;
+        readUtil(g, uri, limit) ;
+        return g ;
     }
     
     public static void loadGraph(Graph g, String uri, int limit) 
     {
-        loadGraph(g, uri, limit, FileUtils.guessLang(uri)) ;
+        readUtil(g, uri, limit) ;
     }
-
-    public static void loadGraph(Graph g, String uri, int limit, String syntax) 
+    
+    // ** Worker.
+    private static void readUtil(Graph graph, String uri, int limit)
     {
-        Model m = readUtil(g, uri, limit, syntax) ;
+        Lang lang = Lang.guess(uri) ;
+        
+        Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
+        sink = new SinkLimited<Triple>(sink, limit) ;
+        
+        // TODO Conneg
+        // WebReader.
+        InputStream input = Fuseki.webFileManager.open(uri) ;
+        
+        LangRIOT parser = RiotReader.createParserTriples(input, lang, uri, sink) ;
+        try {
+            parser.parse() ;
+        } catch (RiotException ex) { throw ex ; }
     }
     
-    
-    private static Model readUtil(Graph graph, String uri, int limit, String syntax) 
+    private static Model readUtil1(Graph graph, String uri, int limit, String syntax) 
     {
         // Use the mapped uri as the syntax hint.
         {

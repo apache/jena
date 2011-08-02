@@ -18,6 +18,7 @@
 
 package org.openjena.fuseki.servlets;
 
+import static org.openjena.fuseki.Fuseki.webFileManager ;
 import static org.openjena.fuseki.HttpNames.paramAccept ;
 import static org.openjena.fuseki.HttpNames.paramCallback ;
 import static org.openjena.fuseki.HttpNames.paramDefaultGraphURI ;
@@ -29,9 +30,8 @@ import static org.openjena.fuseki.HttpNames.paramQuery ;
 import static org.openjena.fuseki.HttpNames.paramQueryRef ;
 import static org.openjena.fuseki.HttpNames.paramStyleSheet ;
 
-import java.util.ArrayList ;
 import java.util.Arrays ;
-import java.util.Enumeration ;
+import java.util.Collections ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
@@ -48,21 +48,14 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.util.FileManager ;
-
-// UNFINISHED
 
 public class SPARQL_QueryGeneral extends SPARQL_Query
 {
-    final FileManager fileManager ;
     final int MaxTriples = 100*1000 ; 
     
     public SPARQL_QueryGeneral(boolean verbose)
     { 
         super(verbose) ;
-        fileManager = new FileManager() ;
-        // Only know how to handle http URLs 
-        fileManager.addLocatorURL() ;
     }
 
     public SPARQL_QueryGeneral()
@@ -100,23 +93,27 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     }
     
     @Override
+    protected String mapRequestToDataset(String uri)
+    { return null ; }
+    
+    @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     {
-        // Dataset comes from:
-        // default-graph-uri/named-graph-uri
-        // FROM/FROM NAMED.
-        
-        errorNotImplemented("General SPARQL query with dataset description") ;
-        return null ;
+        Dataset ds = datasetFromProtocol(action.request) ;
+        if ( ds == null )
+            ds = datasetFromQuery(query) ;
+        if ( ds == null )
+            errorBadRequest("No dataset description in protocol request or in the query string") ;
+        return ds ;
     }
     
     private boolean datasetInProtocol(HttpServletRequest request)
     {
-        String d = request.getHeader(paramDefaultGraphURI) ;
+        String d = request.getParameter(paramDefaultGraphURI) ;
         if ( d != null && !d.equals("") )
             return true ;
         
-        List<String> n = toStrList(request.getHeaders(paramNamedGraphURI)) ;
+        List<String> n = toStrList(request.getParameterValues(paramNamedGraphURI)) ;
         if ( n != null && n.size() > 0 )
             return true ;
         return false ;
@@ -124,11 +121,21 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     
     protected Dataset datasetFromProtocol(HttpServletRequest request)
     {
+        List<String> graphURLs = toStrList(request.getParameterValues(paramDefaultGraphURI)) ;
+        List<String> namedGraphs = toStrList(request.getParameterValues(paramNamedGraphURI)) ;
+        return datasetFromDescription(graphURLs, namedGraphs) ;
+    }
+    
+    protected Dataset datasetFromQuery(Query query)
+    {
+        List<String> graphURLs = query.getGraphURIs() ;
+        List<String> namedGraphs = query.getNamedGraphURIs() ;
+        return datasetFromDescription(graphURLs, namedGraphs) ;
+    }
+    
+    protected Dataset datasetFromDescription(List<String> graphURLs, List<String> namedGraphs)
+    {
         try {
-            
-            List<String> graphURLs = toStrList(request.getHeaders(paramDefaultGraphURI)) ;
-            List<String> namedGraphs = toStrList(request.getHeaders(paramNamedGraphURI)) ;
-            
             graphURLs = removeEmptyValues(graphURLs) ;
             namedGraphs = removeEmptyValues(namedGraphs) ;
             
@@ -185,7 +192,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                         continue ;
                     }
                     try {
-                        Model model2 = fileManager.loadModel(uri) ;
+                        Model model2 = webFileManager.loadModel(uri) ;
                         log.info("Load (named) "+uri) ;
                         dataset.addNamedModel(uri, model2) ;
                     } catch (Exception ex)
@@ -210,15 +217,11 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         
     }
 
-    private List<String> toStrList(Enumeration<?> enumeration)
+    private List<String> toStrList(String[] array)
     {
-        List<String> x = new ArrayList<String>() ;
-        for ( ; enumeration.hasMoreElements() ; )
-        {
-            String str = (String)enumeration.nextElement() ;
-            x.add(str) ;
-        }
-        return x ;
+        if ( array == null )
+            return Collections.emptyList() ;
+        return Arrays.asList(array) ;
     }
 
     private  <T>  List<T> removeEmptyValues(List<T> list)

@@ -114,22 +114,6 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
     }
 
-    // (1) Param to constructor.
-    // (2) DRY : to super class.
-    static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
-    
-    @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        for ( String tail : tails )
-        {
-            String x = mapRequestToDataset(uri, tail) ;
-            if ( x != null )
-                return x ;
-        }
-        return uri ; 
-    }
-    
 //    // All the params we support
 //    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
 //                                        paramQueryRef,
@@ -220,9 +204,6 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         }
         
         validateQuery(action, query) ;
-
-        if ( query.hasDatasetDescription() )
-            errorBadRequest("Query has FROM/FROM NAMED") ;
         
         // Assumes finished whole thing by end of sendResult. 
         action.beginRead() ;

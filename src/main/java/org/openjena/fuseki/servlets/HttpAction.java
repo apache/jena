@@ -58,7 +58,7 @@ class HttpAction
     {
         this.id = id ;
         this.dsg = dsg ;
-        this.lock = dsg.getLock() ;
+        this.lock = ( dsg != null ) ? dsg.getLock() : null ;
         this.request = request ;
         this.response = response ;
         this.verbose = verbose ;
@@ -91,6 +91,8 @@ class HttpAction
 
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {
+        if ( lock == null && dsg == null )
+            return ;
         if ( lock == null )
             lock = dsg.getLock() ;
         if ( lock == null )
@@ -100,6 +102,9 @@ class HttpAction
     
     private void leave(DatasetGraph dsg, Lock lock, boolean readLock)
     {
+        if ( lock == null && dsg == null )
+            return ;
+
         if ( lock == null )
             lock = dsg.getLock() ;
         if ( lock == null )
@@ -110,6 +115,5 @@ class HttpAction
     public void sync()
     {
         SystemARQ.sync(dsg) ;
-        //TDB.sync(dsg) ;
     }
 }

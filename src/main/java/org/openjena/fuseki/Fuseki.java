@@ -27,6 +27,7 @@ import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class Fuseki
 {
@@ -48,17 +49,24 @@ public class Fuseki
         return m ;
     }
     
-    static public String NAME = "Fuseki" ;
-    static public String VERSION = metadata.get(PATH+".version", "development") ;
-    static public String BUILD_DATE = metadata.get(PATH+".build.datetime", "unknown") ; // call Date if unavailable.
-    public static String serverHttpName     = NAME+" ("+VERSION+")" ;    
+    static public final String NAME = "Fuseki" ;
+    static public final String VERSION = metadata.get(PATH+".version", "development") ;
+    static public final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unknown") ; // call Date if unavailable.
+    static public final String serverHttpName     = NAME+" ("+VERSION+")" ;    
     
     // Log for operations
-    public static String requestLogName = PATH+".Fuseki" ;
-    public static Logger requestLog = LoggerFactory.getLogger(PATH+".Fuseki") ;
-    public static String serverLogName = PATH+".Server" ;
-    public static Logger serverLog = LoggerFactory.getLogger(PATH+".Server") ;
+    public static final String requestLogName = PATH+".Fuseki" ;
+    public static final Logger requestLog = LoggerFactory.getLogger(PATH+".Fuseki") ;
+    public static final String serverLogName = PATH+".Server" ;
+    public static final Logger serverLog = LoggerFactory.getLogger(PATH+".Server") ;
     // Log for general server messages.
+    
+    public static final FileManager webFileManager ;
+    static {
+        webFileManager = new FileManager() ;
+        // Only know how to handle http URLs 
+        webFileManager.addLocatorURL() ;
+    }
     
     private static boolean initialized = false ;
     public static void init()

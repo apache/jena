@@ -78,14 +78,16 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             }
 
             uri = mapRequestToDataset(uri) ;
-            // Read only action.
-            DatasetGraph dsg = DatasetRegistry.get().get(uri) ;
-            if ( dsg == null )
+            DatasetGraph dsg = null ;
+            if ( uri != null )
             {
-                errorNotFound("No dataset for URI: "+uri) ;
-                return ;
+                dsg = DatasetRegistry.get().get(uri) ;
+                if ( dsg == null )
+                {
+                    errorNotFound("No dataset for URI: "+uri) ;
+                    return ;
+                }
             }
-
             perform(id, dsg, request, response) ;
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (ActionErrorException ex)
@@ -179,6 +181,9 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         catch (IOException ex) { errorOccurred(ex) ; }
     }
 
+    /** Map request to uri in the registry.
+     *  null means no mapping done (passthrough). 
+     */
     protected abstract String mapRequestToDataset(String uri) ;
     
     /** A possible implementation for mapRequestToDataset(String) */

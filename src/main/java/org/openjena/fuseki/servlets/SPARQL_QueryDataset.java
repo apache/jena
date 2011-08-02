@@ -46,22 +46,20 @@ public class SPARQL_QueryDataset extends SPARQL_Query
 
     public SPARQL_QueryDataset()
     { this(false) ; }
-
-//    // (1) Param to constructor.
-//    // (2) DRY : to super class.
-//    static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
-//    
-//    @Override
-//    protected String mapRequestToDataset(String uri)
-//    {
-//        for ( String tail : tails )
-//        {
-//            String x = mapRequestToDataset(uri, tail) ;
-//            if ( x != null )
-//                return x ;
-//        }
-//        return uri ; 
-//    }
+    
+    static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
+    
+    @Override
+    protected String mapRequestToDataset(String uri)
+    {
+        for ( String tail : tails )
+        {
+            String x = mapRequestToDataset(uri, tail) ;
+            if ( x != null )
+                return x ;
+        }
+        return uri ; 
+    }
     
     // All the params we support
     private static String[] params_ = { paramQuery, 

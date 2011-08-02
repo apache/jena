@@ -206,7 +206,7 @@ public class SPARQLServer
             addServlet(context, validateIRI, validationRoot+"/iri") ;
             addServlet(context, dumpService, "/dump") ;
             // general query processor.
-            //addServlet(context, generalQueryService, sparqlProcessor) ;
+            addServlet(context, generalQueryService, sparqlProcessor) ;
         }
 
         if ( installManager )
