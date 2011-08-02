@@ -31,6 +31,9 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import javax.servlet.http.HttpServletRequest ;
+import javax.servlet.http.HttpServletResponse ;
+
+import org.openjena.fuseki.HttpNames ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -83,13 +86,26 @@ public class SPARQL_QueryDataset extends SPARQL_Query
         if ( query.hasDatasetDescription() )
             errorBadRequest("Query may not include a dataset description (FROM/FROM NAMED)") ;
     }
-
-    
+   
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
         return DatasetFactory.create(action.dsg) ;
     }
-    
-    
+
+    @Override
+    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
+    {
+        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+            return true ;
+        
+        if ( ! HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) )
+        {
+            errorNotImplemented("Not a GET or POST request") ;
+            return false ;
+        }
+        warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
+        errorNotFound("Service Description: "+request.getRequestURI()) ;
+        return false ;
+    }
 }

@@ -2,6 +2,13 @@
 
 == Version 1.0
 
+== 0.2.2
+
++ --jetty-config= Use a file to configure the jetty server (connector type, parms of connector like "host").  
+  Replaces --host.  See jetty configuration documentation.
+
++ General purpose SPARQL processor servlet writtne (not enabled)  
+
 == 0.2.1
 
 + JENA-74 (from Brian McBride): --host= to select the interface to listen on.  Use with --host=localhost if using Apache as a front-end. 

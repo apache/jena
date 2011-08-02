@@ -87,7 +87,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     }
     
     @Override
-    protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
+    protected final void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
         HttpActionQuery action = new HttpActionQuery(id, dsg, request, response, verbose_debug) ;
@@ -112,22 +112,6 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         }
 
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
-    }
-
-    @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
-            return true ;
-        
-        if ( ! HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) )
-        {
-            errorNotImplemented("Not a GET or POST request") ;
-            return false ;
-        }
-        warning("Service Description / SPARQL Query") ;
-        errorNotFound("Service Description") ;
-        return false ;
     }
 
     // (1) Param to constructor.

@@ -68,7 +68,7 @@ public class ServerTest extends BaseTest
         Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        server = new SPARQLServer(DatasetGraphFactory.createMem(), datasetPath, null, port, true) ;
+        server = new SPARQLServer(null, DatasetGraphFactory.createMem(), datasetPath, port, true) ;
         server.start() ;
         
     }

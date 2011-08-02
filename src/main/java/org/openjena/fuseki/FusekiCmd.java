@@ -72,6 +72,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
     private static ArgDecl argHost          = new ArgDecl(ArgDecl.HasValue, "host") ;
     private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
+    private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
     private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
@@ -91,6 +92,7 @@ public class FusekiCmd extends CmdARQ
     private DatasetGraph dsg ;
     private String datasetPath ;
     private boolean allowUpdate = false ;
+    private String jettyConfigFile = null ;
     
     public FusekiCmd(String...argv)
     {
@@ -102,9 +104,11 @@ public class FusekiCmd extends CmdARQ
         add(argTDB,     "--loc=DIR",            "Use an existing TDB database (or create if does not exist)") ;
         add(argMemTDB,  "--memTDB",             "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort,    "--port",               "Listen on this port number") ;
-        add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
+        // Set via jetty config file.
+        //add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
         add(argTimeout, "--timeout",            "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
+        add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
@@ -233,12 +237,19 @@ public class FusekiCmd extends CmdARQ
             ARQ.getContext().set(ARQ.queryTimeout, str) ;
         }
         
+        if ( contains(argJettyConfig) )
+        {
+            jettyConfigFile = getValue(argJettyConfig) ;
+            if ( !FileOps.exists(jettyConfigFile) )
+                throw new CmdException("No such file: : "+jettyConfigFile) ;
+        }
+        
     }
 
     @Override
     protected void exec()
     {
-        SPARQLServer server = new SPARQLServer(dsg, datasetPath, clientHost, port, allowUpdate, super.isVerbose()) ;
+        SPARQLServer server = new SPARQLServer(jettyConfigFile, dsg, datasetPath, port, allowUpdate, super.isVerbose()) ;
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
     }

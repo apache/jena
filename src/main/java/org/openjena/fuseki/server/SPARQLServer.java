@@ -21,6 +21,8 @@ package org.openjena.fuseki.server;
 import static java.lang.String.format ;
 import static org.openjena.fuseki.Fuseki.serverLog ;
 
+import java.io.FileInputStream ;
+
 import javax.servlet.http.HttpServlet ;
 
 import org.eclipse.jetty.http.MimeTypes ;
@@ -30,11 +32,15 @@ import org.eclipse.jetty.server.nio.BlockingChannelConnector ;
 import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
+import org.eclipse.jetty.xml.XmlConfiguration ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
+import org.openjena.fuseki.FusekiException ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.mgt.ActionDataset ;
+import org.openjena.fuseki.servlets.DumpServlet ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;
+import org.openjena.fuseki.servlets.SPARQL_QueryGeneral ;
 import org.openjena.fuseki.servlets.SPARQL_REST_R ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
@@ -62,18 +68,18 @@ public class SPARQLServer
     
     //private static int ThreadPoolSize = 100 ;
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, String host, int port, boolean allowUpdate, boolean verbose)
+    public SPARQLServer(String jettyConfig, DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
     {
         this.port = port ;
         this.datasetPath = datasetPath ;
         this.enableUpdate = allowUpdate ;
         this.verbose = verbose ;
-        init(dsg, datasetPath, host, port) ;
+        init(jettyConfig, dsg, datasetPath, port) ;
     }
     
-    public SPARQLServer(DatasetGraph dsg, String datasetPath, String host, int port, boolean allowUpdate)
+    public SPARQLServer(String jettyConfig, DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
     {
-        this(dsg, datasetPath, host, port, allowUpdate, false) ;
+        this(jettyConfig, dsg, datasetPath, port, allowUpdate, false) ;
     }
     
     public void start()
@@ -82,7 +88,6 @@ public class SPARQLServer
         serverLog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
         String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         serverLog.info(format("Jetty %s",jettyVersion)) ;
-        serverLog.info(format("Dataset = %s", datasetPath)) ;
         String host = server.getConnectors()[0].getHost();
         if (host != null)
             serverLog.info("Incoming connections limited to " + host);
@@ -92,7 +97,7 @@ public class SPARQLServer
         catch (java.net.BindException ex)
         { log.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ; System.exit(1) ; }
         catch (Exception ex)
-        { log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; }
+        { log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; System.exit(1) ; }
         
         ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
     }
@@ -108,7 +113,7 @@ public class SPARQLServer
     
     public Server getServer() { return server ; }
     
-    private void init(DatasetGraph dsg, String datasetPath, String host, int port)
+    private void init(String jettyConfig, DatasetGraph dsg, String datasetPath, int port)
     {
         if ( datasetPath.equals("/") )
             datasetPath = "" ;
@@ -118,41 +123,15 @@ public class SPARQLServer
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
         
-        // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
-        server = new Server();
+        if ( jettyConfig != null )
+        {
+            // --jetty-config=jetty-fuseki.xml
+            // for detailed configuration of the server using Jetty features. 
+            server = configServer(jettyConfig) ;
+        }
+        else 
+            server = defaultServerConfig(port) ; 
         
-        // Keep the server to a maximum number of threads.
-        // Issue - the test suite seems to need a lot of threads (>50) - lack of close?
-        
-        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
-        
-        // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
-        // with initialization not seen (thread scheduling?) in Joseki.
-        
-        // BlockingChannelConnector is better for pumping large responses back
-        // but there have been observed problems with DiretcMemory allocation
-        // (-XX:MaxDirectMemorySize= does not help)
-        // Connector connector = new SelectChannelConnector() ;
-        
-        // Connector and specific settings.
-        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
-        //bcConnector(false) ;
-        
-        
-        Connector connector = bcConnector ;
-        // Ignore. If set, then if this goes off, it keeps going off.
-        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
-        connector.setPort(port);
-        // limit connections to those from a given interface
-        if (host != null)
-        	connector.setHost(host);
-        
-        // Some people do try very large operations ...
-        connector.setRequestHeaderSize(64*1024) ;
-        connector.setRequestBufferSize(5*1024*1024) ;
-        connector.setResponseBufferSize(5*1024*1024) ;
-        server.addConnector(connector) ;
-
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setErrorHandler(new FusekiErrorHandler()) ;
         server.setHandler(context);
@@ -169,7 +148,8 @@ public class SPARQLServer
         DatasetRegistry.get().put(datasetPath, dsg) ;
         
         String validationRoot = "/validate" ;
-        boolean installValidators = true ;
+        String sparqlProcessor = "/sparql" ;    // Combine with validators in /services/?
+        boolean installServices = true ;
         boolean installManager = false ;
 
         // Static pages to install.
@@ -186,18 +166,18 @@ public class SPARQLServer
         
         for ( String dsPath : datasets )
         {
+            serverLog.info(format("Dataset = %s", dsPath)) ;
             HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
             HttpServlet sparqlHttp = 
                 enableUpdate 
                 ? new SPARQL_REST_RW(verbose) 
                 : new SPARQL_REST_R(verbose) ;
             
-            // SPARQL services.
+            // SPARQL services per dataset
             addServlet(context, sparqlHttp, dsPath);                                // URI: /dataset
             addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;         // URI: /dataset/data
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;       // URI: /dataset/query
             addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;    // URI: /dataset/sparql -- Alternative name
-            //add(context, new DumpServlet(),"/dump");
 
             if ( enableUpdate )
             {
@@ -209,17 +189,24 @@ public class SPARQLServer
             }
         }
         
-        if ( installValidators )
+        if ( installServices )
         {
             // Validators
             HttpServlet validateQuery = new QueryValidator() ;
             HttpServlet validateUpdate = new UpdateValidator() ;
             HttpServlet validateData = new DataValidator() ;    
             HttpServlet validateIRI = new IRIValidator() ;
+            
+            HttpServlet dumpService = new DumpServlet() ;
+            HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
+            
             addServlet(context, validateQuery, validationRoot+"/query") ;
             addServlet(context, validateUpdate, validationRoot+"/update") ;
             addServlet(context, validateData, validationRoot+"/data") ;
             addServlet(context, validateIRI, validationRoot+"/iri") ;
+            addServlet(context, dumpService, "/dump") ;
+            // general query processor.
+            //addServlet(context, generalQueryService, sparqlProcessor) ;
         }
 
         if ( installManager )
@@ -237,7 +224,7 @@ public class SPARQLServer
             addServlet(context, datasetChooser, "/dataset") ;
         }
         
-        if ( installManager || installValidators )
+        if ( installManager || installServices )
         {
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
@@ -257,6 +244,55 @@ public class SPARQLServer
 //            context.setParentLoaderPriority(true);Exception ex)
     }
     
+    private static Server configServer(String jettyConfig)
+    {
+        try {
+            serverLog.info("Jetty server config file = "+jettyConfig) ;
+            Server server = new Server();
+            XmlConfiguration configuration = new XmlConfiguration(new FileInputStream(jettyConfig));
+            configuration.configure(server);
+            return server ;
+        } catch (Exception ex)
+        {
+            log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
+            throw new FusekiException("Failed to create a server using configuration file '"+jettyConfig+"'") ; 
+        }
+    }
+
+    private static Server defaultServerConfig(int port)
+    {
+        // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
+        Server server = new Server();
+        
+        // Keep the server to a maximum number of threads.
+        // Issue - the test suite seems to need a lot of threads (>50) - lack of close?
+        
+        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
+        
+        // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
+        // with initialization not seen (thread scheduling?) in Joseki.
+        
+        // BlockingChannelConnector is better for pumping large responses back
+        // but there have been observed problems with DiretcMemory allocation
+        // (-XX:MaxDirectMemorySize= does not help)
+        // Connector connector = new SelectChannelConnector() ;
+        
+        // Connector and specific settings.
+        BlockingChannelConnector bcConnector = new BlockingChannelConnector() ;
+        //bcConnector.setUseDirectBuffers(false) ;
+        
+        Connector connector = bcConnector ;
+        // Ignore. If set, then if this goes off, it keeps going off.
+        connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
+        connector.setPort(port);
+        // Some people do try very large operations ...
+        connector.setRequestHeaderSize(64*1024) ;
+        connector.setRequestBufferSize(5*1024*1024) ;
+        connector.setResponseBufferSize(5*1024*1024) ;
+        server.addConnector(connector) ;
+        return server ;
+    }
+
     private static void addContent(ServletContextHandler context, String pathSpec, String pages)
     {
         DefaultServlet staticServlet = new DefaultServlet() ;
@@ -273,6 +309,7 @@ public class SPARQLServer
     
     private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
     {
+        serverLog.debug("Add servlet @ "+pathSpec) ;
         context.addServlet(holder, pathSpec) ;
     }
 

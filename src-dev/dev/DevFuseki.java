@@ -20,6 +20,15 @@ package dev;
 
 public class DevFuseki
 {
+    // LimitingGraph, LImitingBulkUpdateHandler --> chnage to use a limiting Sink<>
+    // Finish: SPARQL_QueryGeneral -- attach at? /sparql/proc?
+    // --jetty-config
+    
+    // Rework arguments.
+    //   Explicit install pages.
+    //   Pages for read-only.
+    
+    
     // RDF/XML_ABBREV in ResponseModel
     // Config Jetty from a file?
     //   Alternatibe way to run Fuseki
