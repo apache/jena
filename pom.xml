@@ -84,6 +84,7 @@
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.8.2</junit.version>
     <jdk.version>1.6</jdk.version>
+    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
