@@ -131,6 +131,9 @@ public class SPARQLServer
         }
         else 
             server = defaultServerConfig(port) ; 
+        // Keep the server to a maximum number of threads.
+        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
+
         
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setErrorHandler(new FusekiErrorHandler()) ;
@@ -248,9 +251,9 @@ public class SPARQLServer
     {
         try {
             serverLog.info("Jetty server config file = "+jettyConfig) ;
-            Server server = new Server();
-            XmlConfiguration configuration = new XmlConfiguration(new FileInputStream(jettyConfig));
-            configuration.configure(server);
+            Server server = new Server() ;
+            XmlConfiguration configuration = new XmlConfiguration(new FileInputStream(jettyConfig)) ;
+            configuration.configure(server) ;
             return server ;
         } catch (Exception ex)
         {
@@ -264,17 +267,12 @@ public class SPARQLServer
         // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
         Server server = new Server();
         
-        // Keep the server to a maximum number of threads.
-        // Issue - the test suite seems to need a lot of threads (>50) - lack of close?
-        
-        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
-        
         // Using "= new SelectChannelConnector() ;" on Darwin (OS/X) causes problems 
         // with initialization not seen (thread scheduling?) in Joseki.
         
         // BlockingChannelConnector is better for pumping large responses back
-        // but there have been observed problems with DiretcMemory allocation
-        // (-XX:MaxDirectMemorySize= does not help)
+        // but there have been observed problems with DirectMemory allocation
+        // (-XX:MaxDirectMemorySize=1G does not help)
         // Connector connector = new SelectChannelConnector() ;
         
         // Connector and specific settings.
@@ -282,7 +280,8 @@ public class SPARQLServer
         //bcConnector.setUseDirectBuffers(false) ;
         
         Connector connector = bcConnector ;
-        // Ignore. If set, then if this goes off, it keeps going off.
+        // Ignore. If set, then if this goes off, it keeps going off 
+        // and you get a lot of log messages.
         connector.setMaxIdleTime(0) ; // Jetty outputs a lot of messages if this goes off.
         connector.setPort(port);
         // Some people do try very large operations ...
