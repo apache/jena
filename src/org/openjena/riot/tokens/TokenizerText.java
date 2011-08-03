@@ -15,6 +15,7 @@ import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.riot.RiotParseException ;
+import org.openjena.riot.system.RiotChars ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 
@@ -247,7 +248,10 @@ public final class TokenizerText implements Tokenizer
             ch = reader.readChar() ;
             if ( ch == EOF )
                 exception("EOF found after "+CTRL_CHAR) ;
-            token.cntrlCode = (char)ch ;
+            if ( RiotChars.isWhitespace(ch) )
+                token.cntrlCode = -1 ;
+            else
+                token.cntrlCode = (char)ch ;
             if ( Checking ) checkControl(token.cntrlCode) ;
             return token ;
         }
