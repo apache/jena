@@ -69,7 +69,7 @@ public class PrefixMap
         return prefixes.containsKey(prefix) ;
     }
     
-    /** Abbrevaite an IRI or return null */
+    /** Abbreviate an IRI or return null */
     public String abbreviate(String uriStr)
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
@@ -82,7 +82,7 @@ public class PrefixMap
         return null ;
     }
     
-    /** Abbrevaite an IRI or retrn null */
+    /** Abbreviate an IRI or retrn null */
     public Pair<String, String> abbrev(String uriStr)
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
