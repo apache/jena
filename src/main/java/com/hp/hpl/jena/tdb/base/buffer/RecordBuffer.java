@@ -44,14 +44,14 @@ public class RecordBuffer extends BufferBase
     public Record getLow()
     { 
         if ( numSlot == 0 )
-            throw new IllegalArgumentException("Empty RecordBuffer") ;
+            throw new IllegalArgumentException("getLow: Empty RecordBuffer") ;
         return _get(0) ;
     }
     
     public Record getHigh()
     { 
         if ( numSlot == 0 )
-            throw new IllegalArgumentException("Empty RecordBuffer") ;
+            throw new IllegalArgumentException("getHigh: Empty RecordBuffer") ;
         return _get(numSlot-1) ;
     }
     

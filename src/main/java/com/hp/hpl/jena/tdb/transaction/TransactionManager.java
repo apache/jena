@@ -26,6 +26,7 @@ import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -35,6 +36,8 @@ public class TransactionManager
 {
     // TODO Don't keep counters, keep lists.
     // TODO Useful logging.
+    
+    private static boolean checking = true ;
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
@@ -63,13 +66,13 @@ public class TransactionManager
     
     static AtomicLong transactionId = new AtomicLong(1) ;
     
-    int activeReaders = 0 ; 
-    int activeWriters = 0 ;  // 0 or 1
+    AtomicLong activeReaders = new AtomicLong(0) ; 
+    AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
     
     // Misc stats
-    int finishedReaders = 0 ;
-    int committedWriters = 0 ;
-    int abortedWriters = 0 ;
+    AtomicLong finishedReaders = new AtomicLong(0) ;
+    AtomicLong committedWriters = new AtomicLong(0) ;
+    AtomicLong abortedWriters = new AtomicLong(0) ;
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
@@ -138,12 +141,17 @@ public class TransactionManager
         @Override public void transactionStarts(Transaction txn)    { activeTransactions.add(txn) ; }
         @Override public void transactionFinishes(Transaction txn)  { activeTransactions.remove(txn) ; }
         @Override public void transactionCloses(Transaction txn)    { }
-        @Override public void readerStarts(Transaction txn)         { activeReaders++ ; }
-        @Override public void readerFinishes(Transaction txn)       { activeReaders-- ; finishedReaders++ ; }
-        @Override public void writerStarts(Transaction txn)         { activeWriters++ ; }
-        @Override public void writerCommits(Transaction txn)        { activeWriters-- ; committedWriters++ ; }
-        @Override public void writerAborts(Transaction txn)         { activeWriters-- ; abortedWriters++ ; }
+        @Override public void readerStarts(Transaction txn)         { inc(activeReaders) ; }
+        @Override public void readerFinishes(Transaction txn)       { dec(activeReaders) ; inc(finishedReaders); }
+        @Override public void writerStarts(Transaction txn)         { inc(activeWriters) ; }
+        @Override public void writerCommits(Transaction txn)        { dec(activeWriters) ; inc(committedWriters) ; }
+        @Override public void writerAborts(Transaction txn)         { dec(activeWriters) ; inc(abortedWriters) ; }
     }
+    
+    // Short name: x++
+    static long inc(AtomicLong x)   { return x.getAndIncrement() ; }
+    // Short name: --x
+    static long dec(AtomicLong x)   { return x.decrementAndGet() ; }
     
     // Transaction policy:
     // TSM + WriterEnters, WriterLeaves which may use the semaphore. (+ReaderEnters, ReaderLeaves ??)
@@ -153,15 +161,25 @@ public class TransactionManager
     // Queue cleared at en dof any transaction finding itself the only transaction.
     class TSM_WriteBackEndTxn extends TSM_Base
     {
+        // Safe mode.
+        // Take a READ lock over the base dataset.
+        // Write-back takes a WRITE lock.
+        @Override public void readerStarts(Transaction txn)    { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
+        @Override public void writerStarts(Transaction txn)    { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
         
         // Currently, the writer semaphore is managed explicitly in the main code.
         
         @Override public void readerFinishes(Transaction txn)       
-        { processDelayedReplayQueue(txn) ; }
+        { 
+            txn.getBaseDataset().getLock().leaveCriticalSection() ;
+            processDelayedReplayQueue(txn) ;
+        }
         
         @Override public void writerCommits(Transaction txn)
         {
-            if ( activeReaders == 0 )
+            txn.getBaseDataset().getLock().leaveCriticalSection() ;
+
+            if ( activeReaders.get() == 0 )
             {
                 // Can commit immediately.
                 // Ensure the queue is empty though.
@@ -179,7 +197,10 @@ public class TransactionManager
         }
         
         @Override public void writerAborts(Transaction txn)
-        { processDelayedReplayQueue(txn) ;}
+        { 
+            txn.getBaseDataset().getLock().leaveCriticalSection() ;
+            processDelayedReplayQueue(txn) ;
+        }
     }
     
     // Policy for writing back that always writes from the writer by using a
@@ -270,7 +291,7 @@ public class TransactionManager
 //            //   create new transaction 
 //        }
         
-        if ( mode == WRITE && activeWriters > 0 )    // Guard
+        if ( mode == WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
         // Even flush queue here.
@@ -345,7 +366,7 @@ public class TransactionManager
         // Sync'ed by notifyCommit.
         // If we knew which version of the DB each was looking at, we could reduce more often here.
         // [TxTDB:TODO]
-        if ( activeReaders != 0 || activeWriters != 0 )
+        if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
         {
             if ( queue.size() > 0 )
                 if ( log() ) log(format("Pending transactions: R=%d / W=%d", activeReaders, activeWriters), txn) ;
@@ -365,8 +386,8 @@ public class TransactionManager
                     continue ;
                 log("Flush delayed commit", txn2) ;
                 // This takes a Write lock on the  DSG - this is where it blocks.
-                // **** REPLAYS WHOLE JOURNAL
                 // **** Related NodeFileTrans: writes at "prepare" 
+                checkReplaySafe() ;
                 enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
                 
@@ -375,10 +396,21 @@ public class TransactionManager
             } catch (InterruptedException ex)
             { Log.fatal(this, "Interruped!", ex) ; }
         }
+        checkReplaySafe() ;
+
         // Whole journal to base database
         JournalControl.replay(journal, baseDataset) ;
+        
+        checkReplaySafe() ;
     }
 
+    private void checkReplaySafe()
+    {
+        if ( ! checking ) return ;
+        if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
+            log.error("There are now active transactions") ;
+    }
+    
     synchronized
     public void notifyClose(Transaction txn)
     {

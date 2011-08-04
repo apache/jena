@@ -20,20 +20,20 @@ package com.hp.hpl.jena.tdb.transaction;
 
 public class SysTxnState
 {
-    final public int activeReaders ; 
-    final public int activeWriters ;
-    final public int finishedReaders ;
-    final public int committedWriters ;
-    final public int abortedWriters ;
-    final public int queuedCommits ;
+    final public long activeReaders ; 
+    final public long activeWriters ;
+    final public long finishedReaders ;
+    final public long committedWriters ;
+    final public long abortedWriters ;
+    final public long queuedCommits ;
     
     SysTxnState(TransactionManager tm)
     {
-        activeReaders = tm.activeReaders ;
-        activeWriters = tm.activeWriters ;
-        finishedReaders = tm.finishedReaders ;
-        committedWriters = tm.committedWriters ;
-        abortedWriters = tm.abortedWriters ;
+        activeReaders = tm.activeReaders.get() ;
+        activeWriters = tm.activeWriters.get() ;
+        finishedReaders = tm.finishedReaders.get() ;
+        committedWriters = tm.committedWriters.get() ;
+        abortedWriters = tm.abortedWriters.get() ;
         queuedCommits = tm.commitedAwaitingFlush.size() ;
     }
     

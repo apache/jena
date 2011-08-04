@@ -32,7 +32,6 @@ import org.junit.BeforeClass ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.RandomLib ;
-import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -48,44 +47,46 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 /** System testing of the transactions. */
 public class TestTransSystem
 {
-    static { Log.setLog4j() ; }
+    static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final int Iterations       = 10000 ;
-    static boolean progress           = (! log.isDebugEnabled()) && Iterations > 20 ;
+    static final int Iterations       = 10 ;
+    // Output style.
+    static boolean inlineProgress           = false ; // (! log.isDebugEnabled()) && Iterations > 20 ;
+    static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     
     /*
      * 5/0/5 blocks. with 50/50 pause, 50R/ 20W
      * Others?
      */
     
+//    static final int numReaderTasks         = 5 ;   // Add some
+//    static final int numWriterTasksA        = 1 ;
+//    static final int numWriterTasksC        = 5 ;
+//    
+//    static final int readerSeqRepeats       = 5 ;    
+//    static final int readerMaxPause         = 50 ;
+//    
+//    static final int writerAbortSeqRepeats  = 0 ;
+//    static final int writerCommitSeqRepeats = 5 ;
+    //    static final int writerMaxPause         = 20 ;
+
     static final int numReaderTasks         = 5 ;   // Add some
-    static final int numWriterTasksA        = 1 ;
+    static final int numWriterTasksA        = 5 ;
     static final int numWriterTasksC        = 5 ;
-    
-    static final int readerSeqRepeats       = 5 ;    
-    static final int readerMaxPause         = 50 ;
-    
-    static final int writerAbortSeqRepeats  = 0 ;
-    static final int writerCommitSeqRepeats = 5 ;
-    static final int writerMaxPause         = 20 ;
-    
-//  static final int numReaderTasks         = 5 ;
-//  static final int numWriterTasksA        = 0 ;
-//  static final int numWriterTasksC        = 2 ;
-//  
-//  static final int readerSeqRepeats       = 2 ;    
-//  static final int readerMaxPause         = 100 ;
-//  
-//  static final int writerAbortSeqRepeats  = 0 ;
-//  static final int writerCommitSeqRepeats = 2 ;
-//  static final int writerMaxPause         = 20 ;
-  
+
+    static final int readerSeqRepeats       = 8 ;
+    static final int readerMaxPause         = 100 ;
+
+    static final int writerAbortSeqRepeats  = 4 ;
+    static final int writerCommitSeqRepeats = 4 ;
+    static final int writerMaxPause         = 50 ;
+
     
     public static void main(String...args)
     {
-        if ( ! progress )
-            System.out.println("START") ;
+        if ( logging )
+            log.info("START");
         
         int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         N = Math.min(N, 100) ;
@@ -93,22 +94,29 @@ public class TestTransSystem
         
         for ( i = 0 ; i < Iterations ; i++ )
         {
-            if (!progress)
-               System.out.printf("Iteration: %d\n", i) ;
-            
-            if ( i%N == 0 )
-                printf("%03d: ",i) ;
-            printf(".") ;
-            if ( i%N == (N-1) )
-                println() ;
+            if (!logging)
+                log.info("Iteration: %d\n", i) ;
+            if ( inlineProgress )
+            {
+                if ( i%N == 0 )
+                    printf("%03d: ",i) ;
+                printf(".") ;
+                if ( i%N == (N-1) )
+                    println() ;
+            }
             new TestTransSystem().manyReaderAndOneWriter() ;
         }
-        if ( i%N != 0 )
-            System.out.println() ;
-        println() ;
-        printf("DONE (%03d)\n",i) ;
-        if ( ! progress )
-            System.out.println("FINISH") ;
+        if ( inlineProgress )
+        {
+            if ( i%N != 0 )
+                System.out.println() ;
+            println() ;
+            printf("DONE (%03d)\n",i) ;
+        }
+        if (inlineProgress)
+            printf("DONE (%03d)\n",i) ;
+        if (logging)
+            log.info("FINISH ({})", i) ;
     }
     
     static class Reader implements Callable<Object>
@@ -127,26 +135,34 @@ public class TestTransSystem
         @Override
         public Object call()
         {
+            DatasetGraphTxn dsg = null ;
             try
             {
                 int id = gen.incrementAndGet() ;
                 for (int i = 0; i < repeats; i++)
                 {
-                    DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
+                    dsg = sConn.begin(ReadWrite.READ) ;
                     log.debug("reader start " + id + "/" + i) ;
 
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     pause(maxpause) ;
                     int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                    if (x1 != x2) log.warn(format("%s Change seen: %d/%d : id=%d: i=%d",
+                    if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
                                                   dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
                     log.debug("reader finish " + id + "/" + i) ;
                     dsg.close() ;
+                    dsg = null ;
                 }
                 return null ;
             } catch (RuntimeException ex)
             {
                 System.err.println(ex.getMessage()) ;
+                if ( dsg != null )
+                {
+                    dsg.abort() ;
+                    dsg.close() ;
+                    dsg = null ;
+                }
                 return null ;
             }
         }
@@ -170,12 +186,13 @@ public class TestTransSystem
         @Override
         public Object call()
         {
+            DatasetGraphTxn dsg = null ;
             try { 
                 int id = gen.incrementAndGet() ;
                 for ( int i = 0 ; i < repeats ; i++ )
                 {
                     log.debug("writer start "+id+"/"+i) ;                
-                    DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+                    dsg = sConn.begin(ReadWrite.WRITE) ;
 
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     int z = change(dsg, id, i) ;
@@ -186,9 +203,12 @@ public class TestTransSystem
                         TransactionManager txnMgr = dsg.getTransaction().getTxnMgr() ;
                         SysTxnState state = txnMgr.state() ;
                         String label = dsg.getTransaction().getLabel() ; 
-                        log.warn(format("%s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
+                        log.warn(format("WRITER: %s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
                         log.warn(state.toString()) ;
-                        System.exit(0) ;
+                        dsg.abort() ;
+                        dsg.close() ;
+                        dsg = null ;
+                        return null ;
                     }
                     if (commit) 
                         dsg.commit() ;
@@ -198,10 +218,21 @@ public class TestTransSystem
                     log.debug(state.toString()) ;
                     log.debug("writer finish "+id+"/"+i) ;                
                     dsg.close() ;
+                    dsg = null ;
                 }
                 return null ;
             }
-            catch (RuntimeException ex) { System.err.println(ex.getMessage()) ; return null ; }
+            catch (RuntimeException ex)
+            { 
+                System.err.println(ex.getMessage()) ;
+                if ( dsg != null )
+                {
+                    dsg.abort() ;
+                    dsg.close() ;
+                    dsg = null ;
+                }
+                return null ;
+            }
         }
     
         // return the delta.
@@ -339,7 +370,7 @@ public class TestTransSystem
 
     private static void printf(String string, Object...args)
     {
-        if ( progress )
+        if ( inlineProgress )
             System.out.printf(string, args) ;
     }
 
