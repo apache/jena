@@ -94,6 +94,14 @@ public final class TokenizerText implements Tokenizer
     }
     
     //@Override
+    public final Token peek()
+    {
+        if ( ! hasNext() ) 
+            throw new NoSuchElementException() ;
+        return token ; 
+    }
+    
+    //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 

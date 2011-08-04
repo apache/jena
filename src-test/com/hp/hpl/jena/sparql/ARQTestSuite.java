@@ -15,6 +15,7 @@ import org.openjena.riot.TC_Riot ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
+import com.hp.hpl.jena.sparql.core.bio.TestBindingStreams ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
@@ -72,6 +73,10 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
 
+        // Binding I/O
+        ts.addTest(TestBindingStreams.suite()) ;
+
+        
         // Algebra
         ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
 
