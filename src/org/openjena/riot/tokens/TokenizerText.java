@@ -83,6 +83,11 @@ public final class TokenizerText implements Tokenizer
     }    
     
     
+    public final boolean eof()
+    {
+        return hasNext() ;
+    }
+
     //@Override
     public final Token next()
     {
@@ -96,8 +101,7 @@ public final class TokenizerText implements Tokenizer
     //@Override
     public final Token peek()
     {
-        if ( ! hasNext() ) 
-            throw new NoSuchElementException() ;
+        if ( ! hasNext() ) return null ;
         return token ; 
     }
     

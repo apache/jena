@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -34,10 +35,20 @@ public class TokenizerWrapper implements Tokenizer
         return other.hasNext() ;
     }
 
+    public boolean eof()
+    {
+        return other.eof() ;
+    }
+
     //@Override
     public Token next()
     {
         return other.next();
+    }
+
+    public Token peek()
+    {
+        return other.peek() ;
     }
 
     // @Override
@@ -55,6 +66,7 @@ public class TokenizerWrapper implements Tokenizer
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

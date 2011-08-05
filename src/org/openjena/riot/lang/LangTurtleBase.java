@@ -114,7 +114,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     protected LangTurtleBase(String baseURI, Tokenizer tokens,
                              ParserProfile profile, Sink<X> sink)
     { 
-        super(tokens, sink, profile) ;
+        super(tokens, profile, sink) ;
     }
     
     @Override

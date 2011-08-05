@@ -46,7 +46,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
                          ParserProfile profile,
                          Sink<X> sink)
     { 
-        super(tokens, sink, profile) ;
+        super(tokens, profile, sink) ;
     }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 

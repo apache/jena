@@ -51,6 +51,11 @@ public class TokenizerJSON implements Tokenizer
         return token != null ;
     }
     
+    public final boolean eof()
+    {
+        return hasNext() ;
+    }
+
     /** Move to next token */
     public final Token next()
     {
@@ -59,6 +64,13 @@ public class TokenizerJSON implements Tokenizer
         Token t = token ;
         token = null ;
         return t ;
+    }
+
+    
+    public final Token peek()
+    {
+        if ( ! hasNext() ) return null ;
+        return token ; 
     }
     
     //@Override

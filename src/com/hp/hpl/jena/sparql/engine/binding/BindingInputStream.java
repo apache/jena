@@ -29,7 +29,7 @@ import java.util.List ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.riot.Lang ;
-import org.openjena.riot.lang.LangBase ;
+import org.openjena.riot.lang.LangEngine ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.tokens.Token ;
@@ -42,17 +42,27 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Language for reading in a steram of bindings.
- * https://cwiki.apache.org/confluence/display/JENA/BindingIO
+ * See <a href="https://cwiki.apache.org/confluence/display/JENA/BindingIO">BindingIO</a>
  * 
- * VARS
- * PREFIX
- * 
+ * <p>Summary:</p>
+ * <ul>
+ * <li>Directives:
+ *   <ul>
+ *     <li>VARS - list of variables.</li>
+ *     <li>PREFIX</li>
+ *   </ul>
+ *  </li> 
+ * <li>Lines of RDF terms (Turtle, no triple-quoted strings)</li>
+ * <li>Items on line align with last VARS declaration</li>
+ * <li>* for "same as last row"</li>
+ * <li>- for "undef"</li>
+ * </ul>
  */
-public class BindingInputStream extends LangBase<Binding>
-    implements Iterator<Binding>
+public class BindingInputStream extends LangEngine implements Iterator<Binding>
 {
-    // ?? Rework so it is not exposing all of LangBase
-
+    // In effect, multiple Inheritance.
+    // We implementation-inherit from LangEngine(no public methods) 
+    // and also IteratorTuples (redirecting calls to be object) 
     private final IteratorTuples iter ;
     
     public BindingInputStream(InputStream in)
@@ -72,7 +82,7 @@ public class BindingInputStream extends LangBase<Binding>
     
     private BindingInputStream(Tokenizer tokenizer, ParserProfile profile)
     {
-        super(tokenizer, null, profile) ;
+        super(tokenizer, profile) ;
         iter = new IteratorTuples() ;
         
         // Fixes to TokenizerText
@@ -84,12 +94,6 @@ public class BindingInputStream extends LangBase<Binding>
         
         //TokenizerText.CTRL_CHAR = Chars.B_SEMICOLON ;
         
-    }
-
-    //@Override
-    public Lang getLang()
-    {
-        return null ;
     }
 
     //@Override
@@ -108,11 +112,6 @@ public class BindingInputStream extends LangBase<Binding>
     public void remove()
     { iter.remove() ; }
 
-    @Override
-    protected void runParser()
-    {}
-    
-    // Multiple Inheritance.
     class IteratorTuples extends IteratorSlotted<Binding>
     {
         private Binding lastLine ;
@@ -139,7 +138,7 @@ public class BindingInputStream extends LangBase<Binding>
 
             int i = 0 ;
             
-            while( ! eof() && ! lookingAt(TokenType.DOT) )
+            while( ! lookingAt(TokenType.DOT) )
             {
                 if ( i >= vars.size() )
                     exception(peekToken(), "Too many items in a line.  Expected "+vars.size()) ;

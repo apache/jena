@@ -12,6 +12,7 @@ import java.io.PrintWriter ;
 import java.io.Writer ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
+import java.util.PriorityQueue ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
@@ -128,118 +129,7 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        JsonObject result = new JsonObject();
-        result.put("progress", 100);
-        result.put("state", "Running");
-        JSON.write(System.out, result);
-        System.out.println() ;
-        System.out.flush();
-        exit(0) ;
-        
-        //arq.sparql.main("--data=D.ttl", "--query=Q.rq") ;
-        //arq.qparse.main("--query=Q.rq", "--print=opt") ;
-        String DIR = "/home/afs/W3C/SPARQL-docs/tests/data-sparql11/subquery/" ;
-        //sparql --strict --namedGraph data-sq.ttl --query graph-subquery-1.rq 
-        arq.sparql.main("--namedGraph="+DIR+"sq01.rdf",
-                        "--strict", 
-                        "--query="+DIR+"sq03.rq") ;
-        
-        exit(0) ;
-        
-        
-        {
-            Query query = QueryFactory.create("SELECT (count(*) AS ?C) { { SELECT ?s { ?s ?p ?o } LIMIT 100000000} }") ;
-            QueryEngineHTTP qExec = QueryExecutionFactory.createServiceRequest("http://dbpedia.org/sparql", query) ;
-            qExec.addParam("timeout", "10000") ;
-            ResultSetFormatter.out(qExec.execSelect()) ;
-            exit(0) ;
-            
-            
-        }
-        
-        
-        
-        riotcmd.infer.main("--rdfs=D.ttl", "D.ttl") ;
-        exit(0) ;
-        
-        PropertyFunctionRegistry.get().remove(RDFS.getURI()) ;
-        ParserProfile p = RiotLib.profile(Lang.NTRIPLES, null) ;
-        {
-            Writer w = new PrintWriter(System.out) ; 
-            OutputLangUtils.output(w, Node.ANY, null, null) ;
-            w.write("\n") ;
-            w.flush();
-            
-            
-            Tokenizer tokenizer = TokenizerFactory.makeTokenizerString("ANY <123> KW.") ;
-            for ( ; tokenizer.hasNext() ; )
-            {
-                Token t = tokenizer.next() ;
-                System.out.println(t) ;
-                if ( t.isNode() )
-                    System.out.println("==> "+t.asNode()) ;
-                Node n = p.create(null, t) ;
-                System.out.println("--> "+n) ;
-            }
-            exit(0) ;
-        }
-
-        Node node1 = Node_Blank.createAnon();
-        String str = NodeFmtLib.serialize(node1);
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str);
-        Token token = tokenizer.next();
-        Node node2 = token.asNode();
-        System.out.println(node1) ;
-        System.out.println(node2) ;
-        exit(0) ;
-        
-        arq.qparse.main("--file=Q.arq") ; exit(0) ;
-        
-        String x = StrUtils.strjoinNL("(join",
-                                      //"  (conditional",
-                                      "  (leftjoin",
-                                      "    (bgp (triple ?s ?p1 ?o1))" ,
-                                      "    (bgp (triple ?s <foaf:knows> ?o2)))" ,
-                                      "  (table",
-                                      "    (row [?o2 :b])",
-                                      "  ))") ;
-        
-        Op op = SSE.parseOp(x) ;
-        System.out.print(op) ;
-        Op left = ((OpJoin)op).getLeft() ;
-        Op right = ((OpJoin)op).getRight() ;
-        
-        if ( false )
-        {
-            JoinClassifier.print = true ;
-            System.out.flush() ;
-            boolean b1 = JoinClassifier.isLinear(left, right) ;
-            System.out.println("Left/right: "+b1) ;
-           
-            
-            
-            System.out.println() ;
-            System.out.flush() ;
-            boolean b2 = JoinClassifier.isLinear(right, left) ;
-            System.out.println("Right/left: "+b2) ;
-            exit(0) ;
-            System.out.println() ;
-            System.out.flush() ;
-        }
-        Op op2 = Transformer.transform(new TransformJoinStrategy(ARQ.getContext()), op) ;
-        System.out.println(op2) ;
-        System.out.flush() ;
-        
-        exit(0) ;
-        
-        // -----
-        Query query = QueryFactory.read("Q.rq") ;
-        Model m = FileManager.get().loadModel("D.ttl") ;
-        //ARQ.setExecutionLogging(InfoLevel.ALL) ;
-        QueryExecution qExec = QueryExecutionFactory.create(query, m) ;
-        ResultSetFormatter.out(qExec.execSelect()) ;
-
-        exit(0) ;
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>() ;
     }
 
     public static void canoncialNodes()

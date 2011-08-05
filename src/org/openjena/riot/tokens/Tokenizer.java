@@ -19,6 +19,12 @@ public interface Tokenizer extends Iterator<Token>, Closeable
     /** Move to next token */
     public Token next() ;
     
+    /** Peek next token : null for no token. */
+    public Token peek() ;
+    
+    /** End of tokens? */
+    public boolean eof() ;
+
     public long getLine() ;
     public long getColumn() ;
 }

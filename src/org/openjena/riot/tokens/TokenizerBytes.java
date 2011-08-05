@@ -113,6 +113,18 @@ public final class TokenizerBytes implements Tokenizer
         return t ;
     }
     
+    
+    public final Token peek()
+    {
+        if ( ! hasNext() ) return null ;
+        return token ;
+    }
+    
+    public final boolean eof()
+    {
+        return hasNext() ;
+    }
+    
     //@Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
