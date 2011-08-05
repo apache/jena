@@ -8,8 +8,6 @@
 
 package dev;
 
-import java.io.PrintWriter ;
-import java.io.Writer ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.PriorityQueue ;
@@ -20,29 +18,19 @@ import java.util.concurrent.Executors ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonObject ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
-import org.openjena.riot.out.NodeFmtLib ;
-import org.openjena.riot.out.OutputLangUtils ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
-import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.RiotLib ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Node_Blank ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
@@ -62,15 +50,10 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TransformJoinStrategy ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
-import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
-import com.hp.hpl.jena.sparql.engine.main.JoinClassifier ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -79,7 +62,6 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
-import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -92,7 +74,6 @@ import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class RunARQ
 {
