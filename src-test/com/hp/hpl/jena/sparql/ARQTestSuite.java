@@ -15,7 +15,7 @@ import org.openjena.riot.TC_Riot ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
-import com.hp.hpl.jena.sparql.core.bio.TestBindingStreams ;
+import com.hp.hpl.jena.sparql.engine.binding.TestBindingStreams ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
