@@ -51,6 +51,12 @@ public class PrefixMap
         prefixes.put(prefix, iri) ;
     }
     
+    /** Add a prefix, overwites any existing association */
+    public void putAll(PrefixMap pmap)
+    {
+        prefixes.putAll(pmap.prefixes) ; 
+    }
+    
     /** Delete a prefix */
     public void delete(String prefix)
     { 

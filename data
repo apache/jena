@@ -1,0 +1,12 @@
+VARS ?a ?b .
+PREFIX : <http://example/ns#> .
+123 :b .
+
+* :c .
+VARS ?a ?b ?c .
+123 456 789 .
+- * * .
+
+
+
+

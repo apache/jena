@@ -41,6 +41,7 @@ public class BindingOutputStream
     private List<Var> vars = null ;
     private PrefixMap pmap ;
     private boolean needOutputPMap = true ;
+    private boolean needOutputVars = true ;
     
     public BindingOutputStream(OutputStream out)
     {
@@ -49,8 +50,20 @@ public class BindingOutputStream
     
     public BindingOutputStream(OutputStream out, PrefixMap prefixMapping)
     {
-        bw = BufferingWriter.create(out) ;
+        this(out, null, prefixMapping) ;
+    }
+    
+    public BindingOutputStream(OutputStream out, List<Var> vars, PrefixMap prefixMapping)
+    {
+        this( BufferingWriter.create(out) , vars, prefixMapping) ;
+    }
+    
+    private BindingOutputStream(BufferingWriter out, List<Var> variables, PrefixMap prefixMapping)
+    {
+        bw = out ;
+        vars = variables ;
         pmap = prefixMapping ;
+        needOutputVars = (vars != null ) && vars.size() > 0 ;
     }
     
     public void output(Binding binding)
@@ -58,21 +71,38 @@ public class BindingOutputStream
         try {
             if ( needOutputPMap )
             {
-                for ( Map.Entry<String, IRI> e : pmap.getMapping().entrySet() )
+                if ( pmap != null )
                 {
-                    bw.write("PREFIX ") ;
-                    bw.write(e.getKey()) ;
-                    bw.write(": <") ;
-                    bw.write(e.getValue().toASCIIString()) ;
-                    bw.write("> .\n") ;
+                    for ( Map.Entry<String, IRI> e : pmap.getMapping().entrySet() )
+                    {
+                        bw.write("PREFIX ") ;
+                        bw.write(e.getKey()) ;
+                        bw.write(": <") ;
+                        bw.write(e.getValue().toASCIIString()) ;
+                        bw.write("> .\n") ;
+                    }
                 }
                 needOutputPMap = false ;
             }
             
             // Is the current VARS applicable?
-            if ( vars == null || needVars(vars, binding) )
+            if ( needVars(vars, binding) )
             {
                 vars = Iter.toList(binding.vars()) ;
+                needOutputVars = true ;
+            }
+            
+            if ( needOutputVars )
+            {
+                // Odd special case.
+                // No vars, empty binding.
+                if ( binding.size() == 0 && vars.size() == 0 )
+                {
+                    bw.write(".\n") ;
+                    needOutputVars = false ;
+                    return ;
+                }
+                
                 bw.write("VARS") ;
                 for ( Var v2 : vars )
                 {
@@ -80,8 +110,10 @@ public class BindingOutputStream
                     bw.write(v2.getVarName()) ;
                 }
                 bw.write(" .\n") ;
+                needOutputVars = false ;
             }
             
+            // TODO Auto prefix determination.
             for ( Var v : vars )
             {
                 Node n = binding.get(v)  ;
@@ -90,7 +122,7 @@ public class BindingOutputStream
                     bw.write("- ") ;
                     continue ;
                 }
-                if ( n.isURI() )
+                if ( n.isURI() && pmap != null )
                 {
                     String x = pmap.abbreviate(n.getURI()) ;
                     if ( x != null )
@@ -112,6 +144,7 @@ public class BindingOutputStream
 
     private static boolean needVars(List<Var> vars, Binding binding)
     {
+        if ( vars == null ) return true ;
         for ( Var v : vars )
         {
             if ( ! binding.contains(v) )

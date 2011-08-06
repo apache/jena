@@ -18,6 +18,11 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayOutputStream ;
+import java.util.ArrayList ;
+import java.util.List ;
+
 import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -25,11 +30,10 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotException ;
+import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare.BNodeIso ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -60,24 +64,33 @@ public class TestBindingStreams extends BaseTest
     static Binding b10 = build("(?a 1)") ;
     static Binding b0  = build("") ;
     
+    static PrefixMap pmap = new PrefixMap() ;
+    static {
+        pmap.add(":", "http://example/") ;
+    }
+    
     static Binding x10 = build("(?x <http://example/abc>)") ;
     
-    @Test public void bindingStream_01()        { test("VARS ?a ?b . 1 2 .", b12) ; }
-    @Test public void bindingStream_02()        { test("VARS ?a ?b . - 2 .", b02) ; }
-    @Test public void bindingStream_03()        { test("VARS ?a ?b . - 2 . 1 - . ", b02, b10) ; }
-    @Test public void bindingStream_04()        { test("VARS ?a . 1 . VARS ?b . 2 . ", b10, b02) ; }
+    @Test public void bindingStream_01()        { testRead("VARS ?a ?b . 1 2 .", b12) ; }
+    @Test public void bindingStream_02()        { testRead("VARS ?a ?b . - 2 .", b02) ; }
+    @Test public void bindingStream_03()        { testRead("VARS ?a ?b . - 2 . 1 - . ", b02, b10) ; }
+    @Test public void bindingStream_04()        { testRead("VARS ?a . 1 . VARS ?b . 2 . ", b10, b02) ; }
 
     @Test(expected=RiotException.class)
-    public void bindingStream_05()              { test("VARS ?a ?b . 99 . ") ; }
+    public void bindingStream_05()              { testRead("VARS ?a ?b . 99 . ") ; }
     @Test(expected=RiotException.class)         
-    public void bindingStream_06()              { test("VARS ?a ?b . 99 11 22 . ") ; }
+    public void bindingStream_06()              { testRead("VARS ?a ?b . 99 11 22 . ") ; }
     
-    @Test public void bindingStream_10()        { test("VARS ?a ?b . 1 2 . * 9 .", b12, b19) ; }
-    @Test public void bindingStream_11()        { test("VARS ?a ?b ?c . 1 2 - . * 9 - .", b12, b19) ; }
+    @Test public void bindingStream_10()        { testRead("VARS ?a ?b . 1 2 . * 9 .", b12, b19) ; }
+    @Test public void bindingStream_11()        { testRead("VARS ?a ?b ?c . 1 2 - . * 9 - .", b12, b19) ; }
     
-    @Test public void bindingStream_20()        { test("PREFIX : <http://example/> . VARS ?x .\n:abc  .\n- .", x10, b0) ; }
+    @Test public void bindingStream_20()        { testRead("PREFIX : <http://example/> . VARS ?x .\n:abc  .\n- .", x10, b0) ; }
     
-    static void test(String x, Binding ... bindings)
+    @Test public void bindingStream_50()        { testWriteRead(b12) ; }
+    @Test public void bindingStream_51()        { testWriteRead(b0) ; }
+    @Test public void bindingStream_52()        { testWriteRead(pmap, b12,x10,b19) ; }
+    
+    static void testRead(String x, Binding ... bindings)
     {
         Tokenizer t = TokenizerFactory.makeTokenizerString(x) ;
         BindingInputStream inStream = new BindingInputStream(t) ;
@@ -98,6 +111,38 @@ public class TestBindingStreams extends BaseTest
         
         assertEquals("Wrong length: expect= "+bindings.length+" got="+i,bindings.length, i) ;
     }
+    
+    static void testWriteRead(Binding ... bindings) { testWriteRead(null, bindings) ; }
+    
+    static void testWriteRead(PrefixMap prefixMap, Binding ... bindings)
+    {
+        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
+        BindingOutputStream output = new BindingOutputStream(out, prefixMap) ;
+        
+        for ( Binding b : bindings )
+            output.output(b) ;
+        output.flush() ;
+     
+        // When the going gets tough, the touch put in trace statements:
+        //System.out.println("T: \n"+out.toString()) ;
+        
+        ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
+        BindingInputStream input = new BindingInputStream(in) ;
+        
+        List<Binding> results = new ArrayList<Binding>() ;
+        for ( ; input.hasNext() ; )
+        {
+            results.add(input.next()) ;
+        }
+        assertEquals(bindings.length, results.size()) ;
+        for ( int i = 0 ; i < bindings.length ; i++ )
+        {
+            Binding b1 = bindings[i] ;
+            Binding b2 = results.get(i) ;
+            assertTrue("Bindings do not match: expected="+b1+" got="+b2, equalBindings(b1, b2)) ;
+        }
+    }
+    
 
     private static boolean equalBindings(Binding binding1, Binding binding2)
     {
