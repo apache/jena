@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010,2011 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -452,8 +452,8 @@ public class FileUtils
     {
         StringWriter sw = new StringWriter(1024);
         char buff[] = new char[1024];
-        while (r.ready()) {
-            int l = r.read(buff);
+        int l ; 
+        while ((l = r.read(buff))!=-1) {         // .ready does not work with HttpClient streams.
             if (l <= 0)
                 break;
             sw.write(buff, 0, l);
@@ -467,7 +467,7 @@ public class FileUtils
 
 /*
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010,2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
