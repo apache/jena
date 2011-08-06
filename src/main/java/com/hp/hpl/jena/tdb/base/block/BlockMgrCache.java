@@ -158,6 +158,8 @@ public class BlockMgrCache extends BlockMgrSync
         // Did not find.
         cacheMisses++ ;
         log("Miss/w: %d", id) ;
+        // Pass operation to wrapper.
+        blk = super.getWrite(id);
         if ( writeCache != null )
             writeCache.put(id, blk) ;
         return blk ;
