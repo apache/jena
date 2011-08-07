@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # Find copyright statements in a file.
-# Run with: find src -name \*.java | xargs perl SCRIPT | sort | uniq 
+# Run with: find src -name \*.java | xargs perl ../ARQ/copyrights | sort | uniq 
 # to get all the copyright statements in the source tree.
 
 &setExclude ;
