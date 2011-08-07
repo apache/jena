@@ -16,9 +16,9 @@ import static org.openjena.riot.WebContent.contentTypeNTriplesAlt ;
 import static org.openjena.riot.WebContent.contentTypeRDFXML ;
 import static org.openjena.riot.WebContent.contentTypeTriG ;
 import static org.openjena.riot.WebContent.contentTypeTriGAlt ;
-import static org.openjena.riot.WebContent.contentTypeTurtle1 ;
-import static org.openjena.riot.WebContent.contentTypeTurtle2 ;
-import static org.openjena.riot.WebContent.contentTypeTurtle3 ;
+import static org.openjena.riot.WebContent.contentTypeTurtle ;
+import static org.openjena.riot.WebContent.contentTypeTurtleAlt1 ;
+import static org.openjena.riot.WebContent.contentTypeTurtleAlt2 ;
 
 import java.io.InputStream ;
 import java.util.HashMap ;
@@ -112,9 +112,9 @@ public class WebReader
         contentTypeToLang.put(contentTypeN3Alt1.toLowerCase(), Lang.N3) ;
         contentTypeToLang.put(contentTypeN3Alt2.toLowerCase(), Lang.N3) ;
 
-        contentTypeToLang.put(contentTypeTurtle1.toLowerCase(), Lang.TURTLE) ;
-        contentTypeToLang.put(contentTypeTurtle2.toLowerCase(), Lang.TURTLE) ;
-        contentTypeToLang.put(contentTypeTurtle3.toLowerCase(), Lang.TURTLE) ;
+        contentTypeToLang.put(contentTypeTurtle.toLowerCase(), Lang.TURTLE) ;
+        contentTypeToLang.put(contentTypeTurtleAlt1.toLowerCase(), Lang.TURTLE) ;
+        contentTypeToLang.put(contentTypeTurtleAlt2.toLowerCase(), Lang.TURTLE) ;
 
         contentTypeToLang.put(contentTypeNTriples.toLowerCase(), Lang.NTRIPLES) ;
         contentTypeToLang.put(contentTypeNTriplesAlt.toLowerCase(), Lang.NTRIPLES) ;

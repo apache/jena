@@ -100,7 +100,7 @@ public class ContentNeg
     private static void init()
     {
         extToMimeType.put("n3",     contentTypeN3) ;
-        extToMimeType.put("ttl",    contentTypeTurtle1) ;
+        extToMimeType.put("ttl",    contentTypeTurtle) ;
         extToMimeType.put("nt",     InternalNTriples) ;
         extToMimeType.put("rdf",    contentTypeRDFXML) ;
         extToMimeType.put("owl",    contentTypeRDFXML) ;
@@ -113,11 +113,9 @@ public class ContentNeg
         readers.put(contentTypeN3Alt1,  langN3) ;
         readers.put(contentTypeN3Alt2,  langN3) ;
         
-        readers.put(contentTypeTurtle1,   langTurtle) ;
-        readers.put(contentTypeTurtle2,   langTurtle) ;
-        readers.put(contentTypeTurtle3,   langTurtle) ;
-        
-        readers.put("text/turtle", langTurtle) ;    //??
+        readers.put(contentTypeTurtle,      langTurtle) ;
+        readers.put(contentTypeTurtleAlt1,  langTurtle) ;
+        readers.put(contentTypeTurtleAlt2,  langTurtle) ;
         
         readers.put("text/plain", "NT") ;           // ??
         readers.put(InternalNTriples, "NT") ;       // Internal name.
