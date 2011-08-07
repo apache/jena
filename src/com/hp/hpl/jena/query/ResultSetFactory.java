@@ -245,7 +245,7 @@ public class ResultSetFactory
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxXML) || format.equals(ResultSetFormat.syntaxJSON))
+        if ( format.equals(ResultSetFormat.syntaxXML) || format.equals(ResultSetFormat.syntaxJSON) || format.equals(ResultSetFormat.syntaxTSV) )
         {
             InputStream in = null ;
             try { 
@@ -259,8 +259,13 @@ public class ResultSetFactory
             
             if ( format.equals(ResultSetFormat.syntaxJSON) )
                 return JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
-            else
+            else if ( format.equals(ResultSetFormat.syntaxXML) )
                 return XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
+            else if ( format.equals(ResultSetFormat.syntaxTSV) )
+            {
+                ResultSet rs = TSVInput.fromTSV(in) ;
+                return new SPARQLResult(rs) ;
+            }
         }
         
         if ( format.isRDFGraphSyntax() )
