@@ -170,7 +170,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} Framework</windowtitle>
           <doctitle>${project.name} Framework</doctitle>
-          <bottom>Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
+          <bottom>Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP // Copyright &#169; 2010 Talis Systems Ltd. // Copyright &#169; 2010, 2011 Epimorphics Ltd.</bottom>
           <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
           <groups>
             <group>
