@@ -3,6 +3,10 @@ package tx;
 
 public class DevTx
 {
+    // ----
+    // 1 -- Root is not root! (overlapping reads?)
+    // 2 -- BulkUpdateHandlerTDB.removeAll
+    
     // --------
     // * Version per dataset
     //   Can flush changes quietly when all up to X are done.
