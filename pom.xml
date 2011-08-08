@@ -16,9 +16,10 @@
   <url>http://openjena.org/TDB</url>
 
   <organization>
-    <name>OpenJena</name>
-    <url>http://www.openjena.org/</url>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
   </organization>
+
   <developers>
     <developer>
       <name>Andy Seaborne</name>
@@ -27,14 +28,14 @@
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://openjena.org/license.html</url>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://jena.svn.sourceforge.net/svnroot/jena/TDB/</connection>
-    <url>http://jena.svn.sourceforge.net/viewvc/jena/TDB/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
   </scm>
 
   <properties>
