@@ -26,6 +26,7 @@ import java.util.List ;
 import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
+import org.junit.Ignore ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.ErrorHandlerFactory ;
@@ -35,7 +36,6 @@ import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetCompare.BNodeIso ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBinding ;
@@ -63,6 +63,7 @@ public class TestBindingStreams extends BaseTest
     static Binding b02 = build("(?b 2)") ;
     static Binding b10 = build("(?a 1)") ;
     static Binding b0  = build("") ;
+    static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     
     static PrefixMap pmap = new PrefixMap() ;
     static {
@@ -89,6 +90,9 @@ public class TestBindingStreams extends BaseTest
     @Test public void bindingStream_50()        { testWriteRead(b12) ; }
     @Test public void bindingStream_51()        { testWriteRead(b0) ; }
     @Test public void bindingStream_52()        { testWriteRead(pmap, b12,x10,b19) ; }
+    
+    @Test @Ignore("BNode labels not correctly handled yet")
+    public void bindingStream_60()        { testWriteRead(bb1) ; }
     
     static void testRead(String x, Binding ... bindings)
     {
@@ -120,10 +124,10 @@ public class TestBindingStreams extends BaseTest
         BindingOutputStream output = new BindingOutputStream(out, prefixMap) ;
         
         for ( Binding b : bindings )
-            output.output(b) ;
+            output.write(b) ;
         output.flush() ;
      
-        // When the going gets tough, the touch put in trace statements:
+        // When the going gets tough, the tough put in trace statements:
         //System.out.println("T: \n"+out.toString()) ;
         
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
@@ -146,7 +150,8 @@ public class TestBindingStreams extends BaseTest
 
     private static boolean equalBindings(Binding binding1, Binding binding2)
     {
-        return ResultSetCompare.equal(binding1, binding2, new BNodeIso(NodeUtils.sameTerm)) ;
+        // Need to have the exact same terms coming back (therefore we can't use BNodeIso to compare values)
+        return ResultSetCompare.equal(binding1, binding2, NodeUtils.sameTerm) ;
     }
 
 

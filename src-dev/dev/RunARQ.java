@@ -8,9 +8,10 @@
 
 package dev;
 
+import java.io.FileInputStream ;
+import java.io.InputStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
-import java.util.PriorityQueue ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
@@ -54,6 +55,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -110,7 +114,18 @@ public class RunARQ
     
     public static void main(String[] argv) throws Exception
     {
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>() ;
+        InputStream in = new FileInputStream("data") ;
+        BindingInputStream bin = new BindingInputStream(in) ;
+        
+        BindingOutputStream bout = new BindingOutputStream(System.out) ;
+        
+        for ( ; bin.hasNext() ; )
+        {
+            Binding b = bin.next() ;
+            bout.write(b) ;
+        }
+        bout.close() ;
+        exit(0) ;
     }
 
     public static void canoncialNodes()

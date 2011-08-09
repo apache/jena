@@ -36,7 +36,7 @@ public class bindings
         BindingOutputStream output = new BindingOutputStream(out) ;
         
         for ( ; input.hasNext() ; )
-            output.output(input.next()) ;
+            output.send(input.next()) ;
         output.flush() ;
     }
 }
