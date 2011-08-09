@@ -246,6 +246,14 @@ public class ObjectFileStorage implements ObjectFile
         if ( x != 4 )
             throw new FileException("ObjectFile.read("+loc+")["+filesize+"]["+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
+        // Sanity check. 
+        if ( len > filesize-(loc+SizeOfInt) )
+        {
+            String msg = "ObjectFile.read("+loc+")["+filesize+"]["+file.size()+"]: Impossibly large object : "+len+" bytes" ;
+            SystemTDB.errlog.error(msg) ;
+            throw new FileException(msg) ;
+        }
+        
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         x = file.read(bb, loc+SizeOfInt) ;
         bb.flip() ;
