@@ -27,6 +27,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** Interface to the TDB transaction mechanism. */ 
@@ -49,20 +50,29 @@ public class StoreConnection
     /** Return the associated transaction manager - do NOT use to manipulate transactions */  
     public TransactionManager getTransMgr() { return transactionManager ; }
     
+    /** Return a description of the transaction manager state */  
     public SysTxnState getTransMgrState() { return transactionManager.state() ; }
     
+    /** Begin a transaction.  
+     * Terminate a write transaction with {@link Transaction#commit()} or {@link Transaction#abort()}.
+     * Terminate a write transaction with {@link Transaction#close()}.
+     */    
     public DatasetGraphTxn begin(ReadWrite mode)
     {
         return transactionManager.begin(mode) ;
     }
     
+    /** Begin a transaction, giving it a label.  
+     * Terminate a write transaction with {@link Transaction#commit()} or {@link Transaction#abort()}.
+     * Terminate a write transaction with {@link Transaction#close()}.
+     */    
     public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
         return transactionManager.begin(mode, label) ;
     }
     
     // ---- statics managing the cache.
-    
+    /** Obtain a StoreConenction for a particular location */  
     public static StoreConnection make(String location)
     {
         return make(new Location(location)) ; 
@@ -73,14 +83,26 @@ public class StoreConnection
     
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
     
+    
+    /** Stop managing all locations. */  
     public static synchronized void reset() 
     {
-        for ( Map.Entry<Location, StoreConnection> e : cache.entrySet() )
-            e.getValue().baseDSG.close() ;
-        
+        for ( Location loc : cache.keySet() )
+            expel(loc) ;
         cache.clear() ;
     }
     
+    /** Stop managing a location. */  
+    public static synchronized void expel(Location location)
+    {
+        StoreConnection sConn = cache.get(location) ;
+        sConn.baseDSG.close() ;
+        cache.remove(location) ;
+    }
+    
+    /** Return a StoreConnection for a particular conenction.  
+     * This is used to create transactions for the database at the location.
+     */ 
     public static synchronized StoreConnection make(Location location)
     {
         TDBMaker.releaseLocation(location) ;
