@@ -114,7 +114,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
     private int rootIdx = BPlusTreeParams.RootId ;
-    /*package*/ BPTreeNode root ;
+    ///*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private BPlusTreeParams bpTreeParams ;
@@ -212,7 +212,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
                 root.release() ;
             }
             // Cache : not currently done - root is null
-            setRoot(root) ;
+            //setRoot(root) ;
             finishUpdateBlkMgr() ;
         }
     }
@@ -220,20 +220,23 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
     private BPTreeNode getRoot()
     {
         // No caching here.
-        root = nodeManager.getRoot(rootIdx) ;
+        BPTreeNode root = nodeManager.getRoot(rootIdx) ;
+        //this.root = root ;
         return root ;
     }
 
     private void releaseRoot(BPTreeNode rootNode)
     {
-        // [TxTDB:PATCH-UP]
-        if ( root != null ) 
-        {
-            root.release() ;
-            //nodeManager.release(rootNode) ;
-        }
-        if ( root != null && rootNode != root )
-            log.warn("Root is not root!") ;
+//        // [TxTDB:PATCH-UP]
+//        if ( root != null ) 
+//        {
+//            root.release() ;
+//            //nodeManager.release(rootNode) ;
+//        }
+//        if ( root != null && rootNode != root )
+//            log.warn("Root is not root!") ;
+        
+        rootNode.release() ;
     }
 
     private void setRoot(BPTreeNode node)

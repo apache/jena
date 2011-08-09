@@ -1137,7 +1137,8 @@ public final class BPTreeNode extends BPTreePage
     
     final boolean isRoot()
     {
-        if ( bpTree.root == this ) return true ;
+        // No BPT remembered root node currently 
+        //if ( bpTree.root == this ) return true ;
         return this.id == BPlusTreeParams.RootId ;
     }
 
@@ -1325,7 +1326,9 @@ public final class BPTreeNode extends BPTreePage
         if ( ! isLeaf && count+1 != ptrs.size() )
             error("Inconsistent: id=%d, count+1=%d, ptrs.size()=%d ; %s", id, count+1, ptrs.size(), this) ; 
     
-        if ( bpTree.root != null && !isRoot() && count < params.MinRec)
+        // No BPT remembered root node currently 
+        //if ( bpTree.root != null && !isRoot() && count < params.MinRec)
+        if ( !isRoot() && count < params.MinRec)
         {
             //warning("Runt node: %s", this) ;
             error("Runt node: %s", this) ;
