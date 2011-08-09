@@ -81,6 +81,15 @@ public class TestBufferingWriter extends BaseTest
         assertEquals("", x) ;
     }
     
+    @Test public void write_06()
+    {
+        // Test closing the stream without flushing (the flush should be done implicitly)
+        create(100, 50);
+        w.output("test");
+        w.close();
+        String x = string();
+        assertEquals("test", x);
+    }
 }
 
 /*

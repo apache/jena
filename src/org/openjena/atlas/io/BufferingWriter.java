@@ -186,6 +186,7 @@ public final class BufferingWriter extends Writer
     @Override
     public void close()
     {
+        flush() ;
         out.close() ;
     }
 
