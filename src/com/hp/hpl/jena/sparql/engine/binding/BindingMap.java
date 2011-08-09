@@ -26,7 +26,7 @@ public class BindingMap extends BindingBase
     
     /** Using BindingFactory.create is better */
     public BindingMap(Binding parent) { super(parent) ; }
-    /** Using BindingFcatory.create is better */
+    /** Using BindingFactory.create is better */
     public BindingMap() { super(BindingRoot.create()) ; } // null?
 
     /** Add a (name,value) */

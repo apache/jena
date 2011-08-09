@@ -134,6 +134,10 @@ public class BindingOutputStream implements Sink<Binding>
                         continue ;
                     }
                 }
+                
+                // Need fixing.
+                //NodeFmtLib.serialize(n, null, pmap) ;
+                
                 bw.write(FmtUtils.stringForNode(n)) ;
                 bw.write(" ") ;
             }

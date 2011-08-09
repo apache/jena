@@ -28,6 +28,9 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -45,6 +48,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -53,9 +57,11 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -117,11 +123,28 @@ public class RunARQ
         InputStream in = new FileInputStream("data") ;
         BindingInputStream bin = new BindingInputStream(in) ;
         
+        Node nn = Node.createAnon() ;
+        System.out.println(nn.getBlankNodeLabel()) ;
+        
         BindingOutputStream bout = new BindingOutputStream(System.out) ;
+        
+        // <_:>
+        Tokenizer tok = TokenizerFactory.makeTokenizerString("<_:123>") ;
+        Token t = tok.next() ;
+        System.out.println(t) ;
+        exit(0) ;
+        
+        // BNode I/O
+        Binding binding = BindingFactory.create() ;
+        binding.add(Var.alloc("x"), Node.createAnon(new AnonId("abc"))) ;
+        bout.write(binding) ;
+        bout.close() ;
+        exit(0) ;
         
         for ( ; bin.hasNext() ; )
         {
             Binding b = bin.next() ;
+            System.out.println(b) ;
             bout.write(b) ;
         }
         bout.close() ;

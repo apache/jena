@@ -28,10 +28,15 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
-import org.openjena.riot.Lang ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangEngine ;
+import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.RiotLib ;
+import org.openjena.riot.system.ParserProfileBase ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -72,7 +77,18 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
     
     public BindingInputStream(Tokenizer tokenizer)
     {
-        this(tokenizer,  RiotLib.profile(Lang.TURTLE, null)) ;
+        this(tokenizer,  profile()) ;
+    }
+    
+    static ParserProfile profile()
+    {
+        // TODO
+        // Don't do anything with IRIs.
+        Prologue prologue = new Prologue(new PrefixMap(), IRIResolver.createNoResolve()) ;
+        ErrorHandler handler = ErrorHandlerFactory.errorHandlerStd ;
+        ParserProfile profile = new ParserProfileBase(prologue, handler) ;
+        profile.setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+        return profile ;
     }
     
     /** Create an RDF Tuples parser.
@@ -134,7 +150,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
                     continue ;
                 }
             }
-            Binding binding = new BindingMap(null) ;
+            Binding binding = BindingFactory.create() ;
 
             int i = 0 ;
             

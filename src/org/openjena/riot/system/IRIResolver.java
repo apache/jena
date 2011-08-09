@@ -310,6 +310,13 @@ public abstract class IRIResolver
                 resolvedIRIs.put(uriStr, iri) ;
             return iri ;
         }
+
+        // ??
+//        @Override
+//        public String resolveToString(String uriStr)
+//        {
+//            return uriStr ;
+//        }
     }
 
     /** Resolving resolver **/   
