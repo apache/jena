@@ -25,6 +25,7 @@ import java.util.Map ;
 
 import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
 
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Parser for the RDF Tuples language */
-public class BindingOutputStream 
+public class BindingOutputStream implements Sink<Binding>
 {
     private final BufferingWriter bw ;
     private Binding lastBinding = null ;
@@ -66,7 +67,8 @@ public class BindingOutputStream
         needOutputVars = (vars != null ) && vars.size() > 0 ;
     }
     
-    public void output(Binding binding)
+    public final void write(Binding binding) { send(binding) ; }
+    public void send(Binding binding)
     {
         try {
             if ( needOutputPMap )
@@ -157,6 +159,11 @@ public class BindingOutputStream
     public void flush()
     {
         bw.flush() ;
+    }
+    
+    public void close()
+    {
+        bw.close() ;
     }
 
     public List<Var> getVars()
