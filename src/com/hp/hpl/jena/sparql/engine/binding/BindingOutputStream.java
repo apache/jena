@@ -27,6 +27,7 @@ import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotException ;
+import org.openjena.riot.out.NodeFmtLib ;
 import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -136,9 +137,13 @@ public class BindingOutputStream implements Sink<Binding>
                 }
                 
                 // Need fixing.
-                //NodeFmtLib.serialize(n, null, pmap) ;
-                
-                bw.write(FmtUtils.stringForNode(n)) ;
+                if ( n.isBlank() )
+                {
+                    bw.write("_:") ;
+                    bw.write(NodeFmtLib.encodeBNodeLabel(n.getBlankNodeLabel())) ;
+                }
+                else
+                    bw.write(FmtUtils.stringForNode(n)) ;
                 bw.write(" ") ;
             }
             bw.write(".\n") ;

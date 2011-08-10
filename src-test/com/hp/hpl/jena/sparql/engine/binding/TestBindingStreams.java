@@ -26,7 +26,6 @@ import java.util.List ;
 import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.ErrorHandlerFactory ;
@@ -35,6 +34,9 @@ import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -91,8 +93,17 @@ public class TestBindingStreams extends BaseTest
     @Test public void bindingStream_51()        { testWriteRead(b0) ; }
     @Test public void bindingStream_52()        { testWriteRead(pmap, b12,x10,b19) ; }
     
-    @Test @Ignore("BNode labels not correctly handled yet")
-    public void bindingStream_60()        { testWriteRead(bb1) ; }
+    @Test
+    public void bindingStream_60()              { testWriteRead(bb1) ; }
+    
+    @Test
+    public void bindingStream_61()
+    {
+        Binding b = BindingFactory.create() ;
+        Node bn = Node.createAnon(new AnonId("unusual")) ;
+        b.add(Var.alloc("v"), bn) ;
+        testWriteRead(b) ;
+    }
     
     static void testRead(String x, Binding ... bindings)
     {

@@ -32,6 +32,7 @@ import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangEngine ;
+import org.openjena.riot.out.NodeFmtLib ;
 import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.system.ParserProfileBase ;
@@ -44,6 +45,7 @@ import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Language for reading in a steram of bindings.
@@ -88,6 +90,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
         ErrorHandler handler = ErrorHandlerFactory.errorHandlerStd ;
         ParserProfile profile = new ParserProfileBase(prologue, handler) ;
         profile.setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
+        // Include safe bNode labels.
         return profile ;
     }
     
@@ -166,9 +169,10 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
                 {
                     Node n ;
                     // One case; VARS line then *
-                    // HACK
                     if ( token.hasType(TokenType.STAR ) || ( token.isCtlCode() && token.getCntrlCode() == -1 ) )
                         n = lastLine.get(v) ;
+                    else if ( token.hasType(TokenType.BNODE) )
+                        n = Node.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(token.getImage()))) ;
                     else
                         n = profile.create(null, token) ;
                     binding.add(v, n) ;
