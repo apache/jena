@@ -4,20 +4,38 @@
  * [See end of file]
  */
 
-package org.openjena.riot.system;
+package org.openjena.riot.out;
 
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.out.NodeToLabel ;
+import java.io.Writer ;
 
-/** Factory for default policies for syntax labels to and from nodes */  
-public class SyntaxLabels
+import com.hp.hpl.jena.graph.Node ;
+
+public interface NodeFormatter
 {
-    /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return  NodeToLabel.createScopeByDocument() ; }
-    static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocument() ; }
+    public void format(Writer w, Node n) ;
+
+    /** Node is guaranteed to be a URI node */
+    public void formatURI(Writer w, Node n) ;
+    public void formatURI(Writer w, String uriStr) ;
     
+    public void formatVar(Writer w, Node n) ;
+    public void formatVar(Writer w, String name) ;
     
+    /** Node is guaranteed to be a blank node */
+    public void formatBNode(Writer w, Node n) ;
+    public void formatBNode(Writer w, String label) ;
     
+    /** Node is guaranteed to be a literal */
+    public void formatLiteral(Writer w, Node n) ;
+    
+    /** Plain string / xsd:string (RDF 1.1) */
+    public void formatLitString(Writer w, String lex) ;
+    
+    /** String with language tag */
+    public void formatLitLang(Writer w, String lex, String langTag) ;
+
+    /** Literal with datatype, not a simple literal, not an xsd:string (RDF 1.1), no language tag. */
+    public void formatLitDT(Writer w, String lex, String datatypeURI) ;
     
 }
 

@@ -19,6 +19,8 @@ import org.openjena.riot.system.Prologue ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
+// Check the basisc of output 
+//  Nodes, escapes, prefix mapping.
 public class TestOutput extends BaseTest
 {
     static Prologue prologue = new Prologue() ;

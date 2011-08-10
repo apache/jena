@@ -14,7 +14,6 @@ import org.junit.runners.Suite ;
       TS_Riot.class
 })
 
-// Just a renaming to give a test collection for RIOT */
 public class TC_Riot
 {}
 

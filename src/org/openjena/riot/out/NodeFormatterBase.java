@@ -4,21 +4,57 @@
  * [See end of file]
  */
 
-package org.openjena.riot.system;
+package org.openjena.riot.out;
 
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.out.NodeToLabel ;
+import java.io.Writer ;
 
-/** Factory for default policies for syntax labels to and from nodes */  
-public class SyntaxLabels
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+
+public abstract class NodeFormatterBase implements NodeFormatter
 {
-    /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return  NodeToLabel.createScopeByDocument() ; }
-    static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocument() ; }
+
+    //@Override
+    public void format(Writer w, Node n)
+    {
+        if ( n.isBlank() )
+            formatBNode(w, n) ;
+        else if ( n.isURI() )
+            formatURI(w, n) ;
+        else if ( n.isLiteral() )
+            formatLiteral(w, n) ;
+        else if ( n.isVariable() )
+            formatVar(w, n) ;
+        else
+            throw new ARQInternalErrorException("Unknow node type: "+n) ;
+    }
     
-    
-    
-    
+    //@Override
+    public void formatURI(Writer w, Node n)         { formatURI(w, n.getURI()) ; }
+
+    //@Override
+    public void formatBNode(Writer w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
+
+    //@Override
+    public void formatLiteral(Writer w, Node n)
+    {
+        String dt = n.getLiteralDatatypeURI() ;
+        String lang = n.getLiteralLanguage() ;
+        String lex = n.getLiteralLexicalForm() ;
+        
+        if ( dt == null )
+        {
+            if ( lang == null || lang.equals("") )
+                formatLitString(w, lex) ;
+            else
+                formatLitLang(w, lex,lang) ;
+        }
+        else
+            formatLitDT(w, lex, dt) ;
+    }
+
+    //@Override
+    public void formatVar(Writer w, Node n)         { formatVar(w, n.getName()) ; }
 }
 
 /*

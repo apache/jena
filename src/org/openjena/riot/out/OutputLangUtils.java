@@ -26,11 +26,20 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 /** Utilites for formatter output */
 public class OutputLangUtils
 {
+    
+    /* This will become the way to output RDF terms and structures.
+     *   
+     */
+    
+    // "Prologue" is an input concept - whats the equivalent for output?
+    //   Prefix mapping + base URI abbreviation.
+    
+    // TODO Use NodeFmtLib (objectified) in output(Writer, node,*)
+    
     // Make an object so it can have per-instance flags
     // ASCII vs UTF-8
     // Abbreviate numbers or not.
     // Avoids creating intermediate strings.
-    
     // == Class with two subclasses. Turtle policy and N-triples policy.
     
     private static boolean asciiOnly = true ;

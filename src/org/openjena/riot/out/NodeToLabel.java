@@ -24,11 +24,11 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 {
     /** Allocation from a single scope; just the label matters. */
     static public NodeToLabel createScopeByDocument()
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNode()) ; }
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorIncLabel()) ; }
 
-    /** Allocation scoped by graph and label. */
-    public static NodeToLabel createScopeByGraph() 
-    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorBNode()) ; }
+//    /** Allocation scoped by graph and label. */
+//    public static NodeToLabel createScopeByGraph() 
+//    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncLabel()) ; }
 
     /** Allocation as per internal label, with an encoded safe label. */
     public static NodeToLabel createBNodeByLabel() 
@@ -107,7 +107,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 
         protected String labelForBlank(Node node)
         {
-            return "_:"+NodeFmtLib.safeBNodeLabel(node.getBlankNodeLabel()) ;
+            return "_:"+NodeFmtLib.encodeBNodeLabel(node.getBlankNodeLabel()) ;
         }
 
         protected String labelForLiteral(Node node)
@@ -139,11 +139,11 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
        
     }
     
-    private static class AllocatorBNode extends AllocatorBase
+    private static class AllocatorIncLabel extends AllocatorBase
     {
         private int X = 0 ;
         
-        AllocatorBNode() {}
+        AllocatorIncLabel() {}
 
         @Override
         protected String labelForBlank(Node node)

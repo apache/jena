@@ -11,13 +11,23 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.riot.lang.* ;
+import org.openjena.riot.lang.TestIRI ;
+import org.openjena.riot.lang.TestLang ;
+import org.openjena.riot.lang.TestLangNQuads ;
+import org.openjena.riot.lang.TestLangNTriples ;
+import org.openjena.riot.lang.TestLangTrig ;
+import org.openjena.riot.lang.TestLangTurtle ;
+import org.openjena.riot.lang.TestNodeAllocator ;
+import org.openjena.riot.lang.TestParserFactory ;
+import org.openjena.riot.lang.TestSuiteTrig ;
+import org.openjena.riot.lang.TestSuiteTurtle ;
+import org.openjena.riot.lang.TestTurtleTerms ;
+import org.openjena.riot.out.TestNodeFmtLib ;
+import org.openjena.riot.out.TestOutput ;
 import org.openjena.riot.out.TestOutputNTriples ;
 import org.openjena.riot.pipeline.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
 import org.openjena.riot.tokens.TestTokenizer ;
-
-
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
@@ -42,6 +52,8 @@ import org.openjena.riot.tokens.TestTokenizer ;
 
     , TestParserFactory.class
 
+    , TestNodeFmtLib.class
+    , TestOutput.class
     , TestOutputNTriples.class
     , TestLangTag.class
     , TestNormalization.class

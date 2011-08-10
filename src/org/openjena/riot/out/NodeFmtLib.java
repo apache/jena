@@ -7,6 +7,7 @@
 
 package org.openjena.riot.out;
 
+import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Chars ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
@@ -25,6 +26,7 @@ public class NodeFmtLib
 {
     // FmtUtils: This writes abbreviated bnodes (_:b0 etc)
     // These utilities are lower level and reflect the bNodes label.
+    
     
     public static String str(Triple t)
     {
@@ -68,7 +70,7 @@ public class NodeFmtLib
             String str = n.getBlankNodeLabel() ;
             // c.f. OutputLangUtils
             if ( onlySafeBNodeLabels )
-                str = safeBNodeLabel(str) ;
+                str = encodeBNodeLabel(str) ;
             return "_:"+str ;
         }
         
@@ -113,21 +115,31 @@ public class NodeFmtLib
     
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X' ;
-    // The characters 
-    static char[] invalidBNodeLabelChars = new char[]{encodeMarkerChar, ':', '-'} ;  
 
-    public static String safeBNodeLabel(String label)
+    // These two form a pair to convert bNode labels to a safe (i.e. legal N-triples form) and back agains. 
+    
+    // Encoding is:
+    // 1 - Add a Letter 
+    // 2 - Hexify, as Xnn, anything outside ASCII A-Za-z0-9
+    // 3 - X is encoded as XX
+    
+    private static char LabelLeadingLetter = 'B' ; 
+    
+    public static String encodeBNodeLabel(String label)
     {
         StringBuilder buff = new StringBuilder() ;
         // Must be at least one char and not a digit.
-        buff.append("B") ;
+        buff.append(LabelLeadingLetter) ;
         
         for ( int i = 0 ; i < label.length() ; i++ )
         {
             char ch = label.charAt(i) ;
-            
-            // We added a "b" as the first char 
-            if ( RiotChars.isA2ZN(ch) )
+            if ( ch == encodeMarkerChar )
+            {
+                buff.append(ch) ;
+                buff.append(ch) ;
+            }
+            else if ( RiotChars.isA2ZN(ch) )
                 buff.append(ch) ;
             else
                 Chars.encodeAsHex(buff, encodeMarkerChar, ch) ;
@@ -135,6 +147,53 @@ public class NodeFmtLib
         return buff.toString() ;
     }
 
+    // Assumes that blank nodes only have characters in the range of 0-255
+    public static String decodeBNodeLabel(String label)
+    {
+        StringBuilder buffer = new StringBuilder() ;
+
+        if ( label.charAt(0) != LabelLeadingLetter )
+            return label ;
+        
+        // Skip first.
+        for ( int i = 1; i < label.length(); i++ )
+        {
+            char ch = label.charAt(i) ;
+            
+            if ( ch != encodeMarkerChar )
+            {
+                buffer.append(ch) ;
+            }
+            else
+            {
+                // Maybe XX or Xnn.
+                char ch2 = label.charAt(i+1) ;
+                if ( ch2 == encodeMarkerChar )
+                {
+                    i++ ;
+                    buffer.append(ch) ;
+                    continue ;
+                }
+                
+                // Xnn
+                i++ ;
+                char hiC = label.charAt(i) ;
+                int hi = Bytes.hexCharToInt(hiC) ;
+                i++ ;
+                char loC = label.charAt(i) ;
+                int lo = Bytes.hexCharToInt(loC) ;
+
+                int combined = ((hi << 4) | lo) ;
+                buffer.append((char) combined) ;
+            }
+        }
+
+        return buffer.toString() ;
+    }
+
+    
+    //public static String safeBNodeLabel(String label)
+    
     public static String displayStr(Triple t, PrefixMapping prefixMapping)
     {
         return FmtUtils.stringForTriple(t, prefixMapping) ;

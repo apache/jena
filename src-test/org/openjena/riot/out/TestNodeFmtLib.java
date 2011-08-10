@@ -4,21 +4,42 @@
  * [See end of file]
  */
 
-package org.openjena.riot.system;
+package org.openjena.riot.out;
 
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.out.NodeToLabel ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
-/** Factory for default policies for syntax labels to and from nodes */  
-public class SyntaxLabels
+public class TestNodeFmtLib extends BaseTest
 {
-    /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return  NodeToLabel.createScopeByDocument() ; }
-    static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocument() ; }
+    // : is 3A 
+    // - is 2D
     
+    @Test public void encode_01() { testenc("abc", "Babc") ; }
+    @Test public void encode_02() { testenc("-", "BX2D") ; }
+    @Test public void encode_03() { testenc("abc:def-ghi", "BabcX3AdefX2Dghi") ; }
+    @Test public void encode_04() { testenc("01X", "B01XX") ; }
+    @Test public void encode_05() { testenc("-X", "BX2DXX") ; }
+
+    @Test public void rt_01() {  testencdec("a") ; }
+    @Test public void rt_02() {  testencdec("") ; }
+    @Test public void rt_03() {  testencdec("abc") ; }
+    @Test public void rt_04() {  testencdec("000") ; }
+    @Test public void rt_05() {  testencdec("-000") ; }
+    @Test public void rt_06() {  testencdec("X-") ; }
+    @Test public void rt_07() {  testencdec("-123:456:xyz") ; }
+
+    private void testenc(String input, String expected)
+    {
+        String x = NodeFmtLib.encodeBNodeLabel(input) ;
+        assertEquals(expected, x) ;
+    }
     
-    
-    
+    private void testencdec(String input)
+    {
+        String x = NodeFmtLib.encodeBNodeLabel(input) ;
+        String y = NodeFmtLib.decodeBNodeLabel(x) ;
+        assertEquals(input, y) ;
+    }
 }
 
 /*

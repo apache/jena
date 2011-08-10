@@ -4,21 +4,20 @@
  * [See end of file]
  */
 
-package org.openjena.riot.system;
+package org.openjena.riot.out;
 
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.out.NodeToLabel ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.system.Prologue ;
 
-/** Factory for default policies for syntax labels to and from nodes */  
-public class SyntaxLabels
+public class OutputProfile
 {
-    /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return  NodeToLabel.createScopeByDocument() ; }
-    static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocument() ; }
+    /** Way to get from BNode to printable labels. */ 
+    public NodeToLabel labelPolicy ;
     
+    public Prologue prologue ;
     
-    
-    
+    public PrefixMap prefixMap() { return prologue.getPrefixMap() ; }
+    // URI to relative URI.
 }
 
 /*
