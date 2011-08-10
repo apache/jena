@@ -83,10 +83,17 @@ public class PrefixMap
             String prefix = e.getValue().toString() ;
             
             if ( uriStr.startsWith(prefix) )
-                return e.getKey()+":"+uriStr.substring(prefix.length()) ;
+            {
+                String ln = uriStr.substring(prefix.length()) ;
+                if ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') )
+                    return e.getKey()+":"+ln ;
+            }
         }
         return null ;
     }
+    
+    private static boolean strSafeFor(String str, char ch) { return str.indexOf(ch) == -1 ; } 
+    
     
     /** Abbreviate an IRI or retrn null */
     public Pair<String, String> abbrev(String uriStr)

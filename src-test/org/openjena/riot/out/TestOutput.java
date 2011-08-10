@@ -30,7 +30,7 @@ public class TestOutput extends BaseTest
         prologue.getPrefixMap().add("rdfs", "http://www.w3.org/2000/01/rdf-schema#") ;
         prologue.getPrefixMap().add("owl", "http://www.w3.org/2002/07/owl#") ;
         prologue.getPrefixMap().add("xsd", "http://www.w3.org/2001/XMLSchema#") ;
-        prologue.getPrefixMap().add("x", "http://example/a") ;
+        prologue.getPrefixMap().add("x", "http://example/ns/a") ;
     }
     
     
@@ -40,7 +40,7 @@ public class TestOutput extends BaseTest
     
     @Test public void output_03()        { testStringForNode("'abc'@en") ; }
     
-    @Test public void output_04()        { testStringForNode("'abc'^^<http://exmaple/dt>") ; }
+    @Test public void output_04()        { testStringForNode("'abc'^^<http://example/dt>") ; }
     
     @Test public void output_05()        { testStringForNode("'é'", "\"\\u00E9\"") ; }
 
@@ -48,7 +48,7 @@ public class TestOutput extends BaseTest
     
     @Test public void output_10()        { testStringForNode("<http://example/>", ":", prologue) ; }
     
-    @Test public void output_11()        { testStringForNode("<http://example/abc>", "x:bc", prologue) ; }
+    @Test public void output_11()        { testStringForNode("<http://example/ns/abc>", "x:bc", prologue) ; }
 
     @Test public void output_12()        { testStringForNode("123", "\"123\"^^xsd:integer", prologue) ; }
     
