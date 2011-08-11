@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="src" path="src-dev"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
 	<classpathentry excluding="**/*.java" kind="src" path="resources"/>
 	<classpathentry excluding="**/*.java" kind="src" path="resources2"/>
 	<classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-sources.jar"/>

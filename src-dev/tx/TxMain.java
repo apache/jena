@@ -37,8 +37,6 @@ import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.TestTransSequentialDisk ;
-import com.hp.hpl.jena.tdb.transaction.TestTransSequentialMem ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -63,6 +61,7 @@ public class TxMain
     
     static public String DBdir = "DB" ;
     
+    @SuppressWarnings("null")
     public static void main(String... args)
     {
         initFS() ;
