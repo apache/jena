@@ -40,6 +40,8 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -122,6 +124,19 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        
+        Model model = ModelFactory.createDefaultModel ();
+        Dataset ds = DatasetFactory.create() ;
+        UpdateRequest request = UpdateFactory.create(
+                 //"CREATE GRAPH <g> ;\n"+
+                 "INSERT DATA { GRAPH <g> { <s> <p> <o> }}");
+        UpdateAction.execute (request, ds);
+        System.out.println(ds.asDatasetGraph()) ;
+
+        exit(0) ;
+        
+        
+        
         FunctionRegistry.get().put("http://example/ns#wait", wait.class) ;
 
         QueryExecutionBase.cancelAllowDrain = true ;
