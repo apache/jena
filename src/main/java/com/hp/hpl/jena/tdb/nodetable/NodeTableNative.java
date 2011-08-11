@@ -69,6 +69,8 @@ public class NodeTableNative implements NodeTable
 
     // ---- The worker functions
     // Synchronization:
+    // accesIndex and readNodeFromTable
+    
     // Cache around this class further out in NodeTableCache are synchronized
     // to maintain cache validatity which indirectly sync access to the NodeTable.
     // But to be sure, we provide MRSW guarantees on this class.
@@ -76,17 +78,14 @@ public class NodeTableNative implements NodeTable
     // synchonization happens in accessIndex() and readNodeByNodeId
     
     // NodeId to Node worker.
-    private synchronized Node _retrieveNodeByNodeId(NodeId id)
+    private Node _retrieveNodeByNodeId(NodeId id)
     {
-        if ( id.getId() >= getObjects().length() )
-            return null ;
-        
         if ( NodeId.doesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
         
-        Node n = readNodeByNodeId(id) ;
+        Node n = readNodeFromTable(id) ;
         return n ;
     }
 
@@ -99,6 +98,7 @@ public class NodeTableNative implements NodeTable
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
         
+        // synchronized in accessIndex
         NodeId nodeId = accessIndex(node, allocate) ;
         return nodeId ;
     }
@@ -111,7 +111,7 @@ public class NodeTableNative implements NodeTable
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
         
-        synchronized (this)  // Pair to readNodeByNodeId
+        synchronized (this)  // Pair to readNodeFromTable.
         {
             // Key and value, or null
             Record r2 = nodeHashToId.find(r) ;
@@ -155,10 +155,12 @@ public class NodeTableNative implements NodeTable
     }
     
 
-    private final Node readNodeByNodeId(NodeId id)
+    private final Node readNodeFromTable(NodeId id)
     {
         synchronized (this) // Pair to accessIndex
         {
+            if ( id.getId() >= getObjects().length() )
+                return null ;
             return NodeLib.fetchDecode(id.getId(), getObjects()) ;
         }
     }
