@@ -47,12 +47,13 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 /** System testing of the transactions. */
 public class TestTransSystem
 {
+    //static { SystemTDB.setFileMode(FileMode.direct) ; }
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final int Iterations       = 10 ;
+    static final int Iterations             = 1000 ;
     // Output style.
-    static boolean inlineProgress           = false ; // (! log.isDebugEnabled()) && Iterations > 20 ;
+    static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     
     /*
@@ -60,27 +61,27 @@ public class TestTransSystem
      * Others?
      */
     
-//    static final int numReaderTasks         = 5 ;   // Add some
+//    static final int numReaderTasks         = 5 ;
 //    static final int numWriterTasksA        = 1 ;
 //    static final int numWriterTasksC        = 5 ;
 //    
 //    static final int readerSeqRepeats       = 5 ;    
 //    static final int readerMaxPause         = 50 ;
 //    
-//    static final int writerAbortSeqRepeats  = 0 ;
+//    static final int writerAbortSeqRepeats  = 1 ;
 //    static final int writerCommitSeqRepeats = 5 ;
-    //    static final int writerMaxPause         = 20 ;
+//    static final int writerMaxPause         = 20 ;
 
-    static final int numReaderTasks         = 5 ;   // Add some
-    static final int numWriterTasksA        = 5 ;
+    static final int numReaderTasks         = 5 ;
+    static final int numWriterTasksA        = 2 ;   // PC had 5
     static final int numWriterTasksC        = 5 ;
 
-    static final int readerSeqRepeats       = 8 ;
-    static final int readerMaxPause         = 100 ;
+    static final int readerSeqRepeats       = 8 ;  //  PC had 8 
+    static final int readerMaxPause         = 25 ; // PC had 100
 
     static final int writerAbortSeqRepeats  = 4 ;
     static final int writerCommitSeqRepeats = 4 ;
-    static final int writerMaxPause         = 50 ;
+    static final int writerMaxPause         = 20 ;  // PC had 50
 
     
     public static void main(String...args)
@@ -94,8 +95,8 @@ public class TestTransSystem
         
         for ( i = 0 ; i < Iterations ; i++ )
         {
-            if (!logging)
-                log.info("Iteration: %d\n", i) ;
+            if (!inlineProgress && logging)
+                log.info(format("Iteration: %d\n", i)) ;
             if ( inlineProgress )
             {
                 if ( i%N == 0 )
@@ -113,8 +114,6 @@ public class TestTransSystem
             println() ;
             printf("DONE (%03d)\n",i) ;
         }
-        if (inlineProgress)
-            printf("DONE (%03d)\n",i) ;
         if (logging)
             log.info("FINISH ({})", i) ;
     }

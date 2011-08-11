@@ -69,6 +69,10 @@ public class DevTx
     // * B+Tree and caching root block.
     //   BPT created per transaction so safe (?).
    
+    // Design:
+    //   Writing journal during a transaction, not just in prepare (scale)
+    //   Write blobs via journal.
+    
     // Tidy up 
     //   See HACK (BPTreeNode)
     //   See [TxTDB:PATCH-UP]

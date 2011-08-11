@@ -112,8 +112,11 @@ public class Transaction
         
         for ( NodeTableTrans x : nodeTableTrans )
             x.abort(this) ;
-        // [TxTDB:TODO] : No - truncates a pending transaction.
-        journal.truncate(0) ;
+
+        // [TxTDB:TODO]
+        // journal.truncate to last commit 
+        // No need currently as the jounral is only written in prepare. 
+        
 
         state = TxnState.ABORTED ;
         txnMgr.notifyAbort(this) ;

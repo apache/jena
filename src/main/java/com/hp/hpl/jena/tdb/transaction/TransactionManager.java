@@ -62,6 +62,7 @@ public class TransactionManager
     // Transactions that have commited (and the journal is written) but haven't
     // writted back to the main database. 
     
+    int maxQueue = 0 ;
     List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
     
     static AtomicLong transactionId = new AtomicLong(1) ;
@@ -191,6 +192,7 @@ public class TransactionManager
             {
                 // Can't make permanent at the moment.
                 commitedAwaitingFlush.add(txn) ;
+                maxQueue = Math.max(commitedAwaitingFlush.size(), maxQueue) ;
                 log("Queue commit flush", txn) ; 
                 queue.add(txn) ;
             }

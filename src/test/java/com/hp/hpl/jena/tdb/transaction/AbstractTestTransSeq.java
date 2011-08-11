@@ -243,11 +243,6 @@ public abstract class AbstractTestTransSeq extends BaseTest
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         
-        // IF 
-        // dsgR1.close() ;
-        // THEN it works.
-        // ==> deplay replay
-        
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
@@ -262,6 +257,9 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
         DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
         dsgW3.add(q3) ;
+        // Can see W1
+        assertTrue(dsgW3.contains(q1)) ;
+        assertFalse(dsgW3.contains(q2)) ;
         dsgW3.commit() ;
         dsgW3.close() ;
         assertFalse(dsgR1.contains(q3)) ;
