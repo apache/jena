@@ -50,6 +50,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQException ;
@@ -118,8 +119,26 @@ public class RunARQ
 
     // count(filter)
     
+    @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        FunctionRegistry.get().put("http://example/ns#wait", wait.class) ;
+
+        QueryExecutionBase.cancelAllowDrain = true ;
+        Query q = QueryFactory.create("PREFIX ex: <http://example/ns#> SELECT * { FILTER ex:wait(100) }") ;
+        QueryExecution qExec = QueryExecutionFactory.create(q, ModelFactory.createDefaultModel()) ;
+        
+        try {
+            ResultSet rs = qExec.execSelect() ;
+            System.out.println(rs.hasNext()) ;
+            qExec.abort();
+            System.out.println(rs.hasNext()) ;
+            rs.nextSolution();
+            System.out.println(rs.hasNext()) ;
+        } finally { qExec.close() ; }
+        
+        exit(0) ;
+        
         InputStream in = new FileInputStream("data") ;
         BindingInputStream bin = new BindingInputStream(in) ;
         
