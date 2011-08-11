@@ -39,9 +39,7 @@ public class ObjectFileStorage implements ObjectFile
      * Writing is buffered.
      */
     
-    // One disk file size.
-    
-    // This adds to the length of the file  
+    // The object length slot.  
     private ByteBuffer lengthBuffer = ByteBuffer.allocate(SizeOfInt) ;
     
     // Delayed write buffer.
