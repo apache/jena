@@ -127,6 +127,25 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
+    @Test public void query_topn_01()
+    {
+        String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
+        String opExpectedString = 
+            "(top (42 ?p ?o)\n" + 
+            "  (bgp (triple ?s ?p ?o)))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void query_topn_02()
+    {
+        String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
+        String opExpectedString = 
+        	"(slice _ 4242\n" + 
+        	"  (order (?p ?o)\n" +
+            "    (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
     private static void check(String queryString, String opExpectedString)
     {
         queryString = "PREFIX : <http://example/>\n"+queryString ;

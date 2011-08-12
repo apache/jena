@@ -581,9 +581,9 @@ public class BuilderOp
     {
         public Op make(ItemList list)
         {
-            BuilderLib.checkLength(4, list,  Tags.tagTopN) ;
-            int N = BuilderNode.buildInt(list, 1, -1) ;
-            ItemList conditions = list.get(2).getList() ;
+            BuilderLib.checkLength(3, list,  Tags.tagTopN) ;
+            int N = BuilderNode.buildInt(list.get(1).getList(), 0, -1) ;
+            ItemList conditions = list.get(1).getList().cdr() ;
             
             // Maybe tagged (asc, desc or a raw expression)
             List<SortCondition> x = new ArrayList<SortCondition>() ;

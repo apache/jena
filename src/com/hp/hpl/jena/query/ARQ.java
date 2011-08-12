@@ -233,6 +233,12 @@ public class ARQ
      */  
     public static final Symbol optFilterPlacement = ARQConstants.allocSymbol("optFilterPlacement") ;
     
+    /** 
+     *  Context key controlling whether an ORDER BY-LIMIT query is done avoiding total sort using an heap.
+     *  Default is "true" - total sort if avoided by default when ORDER BY is used with LIMIT.
+     */  
+    public static final Symbol optTopNSorting = ARQConstants.allocSymbol("optTopNSorting") ;
+    
     @Deprecated
     /** @deprecated Use optFilterPlacement */
     public static final Symbol filterPlacement = optFilterPlacement ;

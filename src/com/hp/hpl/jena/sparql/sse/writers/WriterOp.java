@@ -428,7 +428,8 @@ public class WriterOp
             // Write conditions
             start() ;
             writeIntOrDefault(opTop.getLimit()) ;
-            
+            out.print(" ") ;
+
             boolean first = true ;
             for ( SortCondition sc : opTop.getConditions() )
             {

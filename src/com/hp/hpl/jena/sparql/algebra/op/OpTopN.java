@@ -36,7 +36,7 @@ public class OpTopN extends OpModifier
     
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
+    public Op copy(Op subOp)                { return new OpTopN(subOp, limit, conditions) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)
@@ -51,10 +51,10 @@ public class OpTopN extends OpModifier
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap labelMap)
     {
-        if ( ! (other instanceof OpOrder) ) return false ;
-        OpOrder opOrder = (OpOrder)other ;
+        if ( ! (other instanceof OpTopN) ) return false ;
+        OpTopN opTopN = (OpTopN)other ;
         //
-        return getSubOp().equalTo(opOrder.getSubOp(), labelMap) ;
+        return getSubOp().equalTo(opTopN.getSubOp(), labelMap) ;
     }
 
 

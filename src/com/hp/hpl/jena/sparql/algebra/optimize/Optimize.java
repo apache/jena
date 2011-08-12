@@ -173,6 +173,9 @@ public class Optimize implements Rewrite
             // This can be done too early (breaks up BGPs).
             op = apply("Filter Placement", new TransformFilterPlacement(), op) ;
         
+        if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
+        	op = apply("TopN Sorting", new TransformTopN(), op) ;
+
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark
         if ( false )
