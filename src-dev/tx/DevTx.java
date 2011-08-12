@@ -4,8 +4,8 @@ package tx;
 public class DevTx
 {
     // ----
-    // 1 -- Root is not root! (overlapping reads?)
-    // 2 -- BulkUpdateHandlerTDB.removeAll
+    // 1 -- Root is not root! (overlapping reads?) [done]
+    // 2 -- BulkUpdateHandlerTDB.removeAll [failed to reproduce]
     
     // --------
     // * Version per dataset
@@ -15,10 +15,14 @@ public class DevTx
     // Other transaction policies.
     //    MRSW-at-end, MRSW-for-transation, Mutex, 
     // Test - semiCommit, flush just nodes, etc etc
+    // BPT caching root node.
 
     // Internal consistency checks.
     // Sort out replay journal.
     //  Do all partials, replay whole journal.
+    
+    // Reorg:
+    //   Logged B+Trees (i.e. combine BlkMgr and B+Tree) 
     
     // Tasks:
     // * Check journal truncates to last commit.

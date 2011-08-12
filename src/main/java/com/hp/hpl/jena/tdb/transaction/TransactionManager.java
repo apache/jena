@@ -41,6 +41,7 @@ public class TransactionManager
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
     private Set<Transaction> activeTransactions = new HashSet<Transaction>() ;
+    synchronized public boolean activeTransactions() { return !activeTransactions.isEmpty() ; }
     
     // Setting this true cause the TransactionManager to keep lists of transactions
     // and what has happened.  Nothing is thrown away, but eventually it will

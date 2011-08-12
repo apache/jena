@@ -34,8 +34,8 @@ public class TestTransSequentialDisk extends AbstractTestTransSeq
     
     @Before public void before()
     {
-        FileOps.clearDirectory(DIR) ;
         StoreConnection.reset() ;
+        FileOps.clearDirectory(DIR) ;
     }
 
     @After public void after() {} 

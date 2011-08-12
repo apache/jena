@@ -19,8 +19,11 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -30,16 +33,19 @@ import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSeq extends BaseTest
 {
+    @BeforeClass public static void beforeClass() { Log.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClass()   { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    
     static Quad q  = SSE.parseQuad("(<g> <s> <p> <o>) ") ;
     static Quad q1 = SSE.parseQuad("(<g> <s> <p> <o1>)") ;
     static Quad q2 = SSE.parseQuad("(<g> <s> <p> <o2>)") ;
     static Quad q3 = SSE.parseQuad("(<g> <s> <p> <o3>)") ;
     static Quad q4 = SSE.parseQuad("(<g> <s> <p> <o4>)") ;
-    
    
     private StoreConnection sConn ;
 
@@ -417,6 +423,16 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsg.add(q) ;
     }
     
+    @Test //(expected=TDBException.class) 
+    public void trans_22()
+    {
+        // WRITE-close causes implicit abort
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+        dsg.add(q) ;
+        dsg.close() ;
+    }
+    
     //@Test 
     public void trans_30()
     {
@@ -431,5 +447,49 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsg.commit() ;
         dsg.close() ;
     }
+    
+    @Test public void trans_50()
+    {
+        // Expel.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+        StoreConnection.expel(sConn.getLocation()) ;
+        StoreConnection sConn2 = getStoreConnection() ;
+    }
+    
+    @Test
+    public void trans_51()
+    {
+        // Expel.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.close() ;
+        dsgR1.close();
+        
+        StoreConnection.expel(sConn.getLocation()) ;
+        sConn = null ;
+        
+        StoreConnection sConn2 = getStoreConnection() ;
+        DatasetGraphTxn dsgW2 = sConn2.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q1) ;
+        dsgW2.commit() ;
+        dsgW2.close() ;
+    }
+    
+    @Test(expected=TDBTransactionException.class)
+    public void trans_52()
+    {
+        // Expel.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        StoreConnection.expel(sConn.getLocation()) ;
+    }
+
+    
 }
 

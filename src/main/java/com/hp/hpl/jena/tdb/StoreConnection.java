@@ -28,6 +28,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
+import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.tdb.transaction.TransactionInfo ;
@@ -91,14 +92,21 @@ public class StoreConnection
     public static synchronized void reset() 
     {
         for ( Location loc : cache.keySet() )
-            expel(loc) ;
+            expel(loc, true) ;
         cache.clear() ;
     }
     
     /** Stop managing a location. */  
-    public static synchronized void expel(Location location)
+    public static synchronized void expel(Location location)    { expel(location, false) ; }
+        
+    /** Stop managing a location. */  
+    private static synchronized void expel(Location location, boolean force)
     {
         StoreConnection sConn = cache.get(location) ;
+        if ( sConn == null )
+            return ;
+        if ( ! force && sConn.transactionManager.activeTransactions() )
+            throw new TDBTransactionException("Can't expel: Active transactions for location: "+location) ;
         sConn.baseDSG.close() ;
         cache.remove(location) ;
     }

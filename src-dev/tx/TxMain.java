@@ -26,12 +26,10 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
@@ -61,128 +59,31 @@ public class TxMain
     
     static public String DBdir = "DB" ;
     
-    @SuppressWarnings("null")
     public static void main(String... args)
     {
-        initFS() ;
+        //initFS() ;
         
-        String DATA = "/home/afs/Datasets/MusicBrainz/tracks.nt.gz" ;
+        //String DATA = "/home/afs/Datasets/MusicBrainz/tracks.nt.gz" ;
+        String DATA = "/home/afs/Datasets/MusicBrainz/tracks-10k.nt" ;
         
-        if ( false )
-        {
-            DatasetGraph dsg = TDBFactory.createDatasetGraph() ; 
-            Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
-            RiotReader.parseTriples(DATA, sink) ;
-            System.out.println(dsg.getDefaultGraph().size()) ;
-            exit(0) ;
-        }
-        
-        // Named memory locations? OTT
-        //StoreConnection sConn = StoreConnection.make(Location.mem()) ; 
         StoreConnection sConn = StoreConnection.make(Location.mem()) ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;  
+        Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
+        RiotReader.parseTriples(DATA, sink) ;
+        System.out.println(dsg.getDefaultGraph().size()) ;
         
-        
-        // ---- Simple
         if ( true )
         {
-            DatasetGraphTxn dsgRead = null ;
-            //dsgRead = sConn.begin(ReadWrite.READ) ;
-            DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-            // Duplicates.
-            load(DATA, dsg) ;
-            
-            /*
-             * Exception during journal replay
-com.hp.hpl.jena.tdb.base.file.FileException: FileAccessMem: Wrong size block.  Expected=8192 : actual=8156
-    at com.hp.hpl.jena.tdb.base.file.BlockAccessMem.check(BlockAccessMem.java:130)
-    at com.hp.hpl.jena.tdb.base.file.BlockAccessMem.check(BlockAccessMem.java:114)
-             */
-            //load("S.nt", dsg) ;
-            
             dsg.commit() ;
             dsg.close() ;
-            if ( dsgRead != null ) 
-                dsgRead.close() ;
-            dsgRead = sConn.begin(ReadWrite.READ) ;
-            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
-            
-            dsgRead.close() ;
-            
-            exit(0) ;
+            dsg = sConn.begin(ReadWrite.WRITE) ;
         }
-        
-        if ( false )
-        {
-            // Blocking transaction
-            DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ;
-            
-            
-            DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ; // Optional label.
-            //load("D.ttl", dsg) ;    // Loads 3 triples
-            dsg.getDefaultGraph().add(SSE.parseTriple("(<s> <p> <o>)")) ;
-            dsg.add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
-            dsg.add(SSE.parseQuad("(_ <s> <p> 123)")) ;
-            dsg.commit() ;
-            dsg.close() ;
-            
-            dump(dsgRead) ;
-            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead) ;
-            dsgRead.close() ;
-            DatasetGraphTxn dsgRead2  = sConn.begin(ReadWrite.READ) ;
-            query("SELECT ?g (count(*) AS ?C) { { ?s ?p ?o } UNION { GRAPH ?g { ?s ?p ?o } } } GROUP BY ?g", dsgRead2) ;
-            dsgRead2.close() ;
-            exit(0) ;
-        }
-        
-        // BUG somewhere.
-        //   Check DevTx list of things to do.
-        // Take a blocking read connection.
-        DatasetGraphTxn dsgRead = sConn.begin(ReadWrite.READ) ; //dsgRead.close() ;
-
-        String qsCount = "SELECT (count(*) AS ?C) { ?s ?p ?o }" ;
-        String qsAll = "SELECT * { ?s ?p ?o }" ;
-        String qs = qsAll ;
-        
-        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
-        load("D.ttl", dsg) ;    // Loads 3 triples
-        query("C=0", qs, dsgRead) ;
-        query("C=3", qs, dsg) ;
+        dsg.getDefaultGraph().getBulkUpdateHandler().removeAll() ;
+        System.out.println(dsg.getDefaultGraph().size()) ;
         dsg.commit() ;
         dsg.close() ;
-        dsg = null ;
-        
-        // Reader after update.
-        // First reader still reading.
-        
-        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
-        //query(qs, dsgRead2) ;
-        query("C=0", qs, dsgRead) ;
-
-        // A writer.
-        DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.WRITE) ;
-        load("D1.ttl", dsg2) ; // Loads 1 triples
-        query("C=4", qs, dsg2) ;
-        query("C=3", qs, dsgRead2) ;
-        query("C=0", qs, dsgRead) ;
-        dsg2.commit() ;
-        dsg2.close() ;
-        dsg2 = null ;
-
-        dsgRead2.close() ;
-
-//        DatasetGraphTxn dsgRead2 = sConn.begin(ReadWrite.READ) ;
-//        query(qs, dsgRead2) ;
-//        dsgRead2.close() ;
-
-        dsgRead.close() ;   // Transaction can now write changes to the real DB.
-        
-        // ILLEGAL!!!!
-        // query(qs, dsgRead) ;
-        
-        DatasetGraphTxn dsgRead3 = sConn.begin(ReadWrite.READ) ;
-        query("C=4", qs, dsgRead3) ;
-        
         exit(0) ;
+        
     }
     
     private static void write(Graph graph, String lang)
