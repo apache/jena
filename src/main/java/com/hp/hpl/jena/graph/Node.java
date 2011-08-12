@@ -77,7 +77,7 @@ public abstract class Node {
         }    
         
     /**
-     * Build a typed literal node from its lexical form. The
+     * Build a literal node from its lexical form. The
      * lexical form will be parsed now and the value stored. If
      * the form is not legal this will throw an exception.
      * 
@@ -90,9 +90,26 @@ public abstract class Node {
         throws DatatypeFormatException 
         { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, lang, dtype ) ); }
     
+    /**
+     * Build a typed literal node from its lexical form. The
+     * lexical form will be parsed now and the value stored. If
+     * the form is not legal this will throw an exception.
+     * 
+     * @param lex the lexical form of the literal
+     * @param dtype the type of the literal, null for old style "plain" literals
+     * @throws DatatypeFormatException if lex is not a legal form of dtype
+     */
+    public static Node createLiteral( String lex, RDFDatatype dtype ) 
+        throws DatatypeFormatException 
+        { return createLiteral( LiteralLabelFactory.createLiteralLabel( lex, "", dtype ) ); }
+    
     public static Node createUncachedLiteral( Object value, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
         { return new Node_Literal( LiteralLabelFactory.create( value, lang, dtype ) ); }
+    
+    public static Node createUncachedLiteral( Object value, RDFDatatype dtype ) 
+        throws DatatypeFormatException 
+        { return new Node_Literal( LiteralLabelFactory.create( value, "", dtype ) ); }
                                                    
     /**
         Visit a Node and dispatch on it to the appropriate method from the 
