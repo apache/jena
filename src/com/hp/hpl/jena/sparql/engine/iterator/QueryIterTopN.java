@@ -1,22 +1,20 @@
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.Arrays ;
+import java.util.Comparator ;
+import java.util.Iterator ;
+import java.util.List ;
+import java.util.PriorityQueue ;
 
-import org.openjena.atlas.iterator.IteratorDelayedInitialization;
+import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecException;
-import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingComparator;
-
-import static com.hp.hpl.jena.sparql.algebra.optimize.TransformTopN.TOPN_LIMIT_THRESHOLD ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
 public class QueryIterTopN extends QueryIterPlainWrapper
 {
