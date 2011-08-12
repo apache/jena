@@ -21,6 +21,7 @@ package com.hp.hpl.jena.tdb;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -29,6 +30,8 @@ import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
+import com.hp.hpl.jena.tdb.transaction.TransactionInfo ;
+
 
 /** Interface to the TDB transaction mechanism. */ 
 public class StoreConnection
@@ -112,6 +115,10 @@ public class StoreConnection
             sConn = new StoreConnection(location) ;
             JournalControl.recovery(sConn.baseDSG) ;
             cache.put(location, sConn) ;
+
+            String NS = TDB.PATH ;
+            TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;
+            ARQMgt.register(NS+".system:type=Transactions", txInfo) ;
         }
         return sConn ; 
     }

@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 /** Interface to stats for a single Transaction Manager */ 
-public interface TransactionMBean
+public interface TransactionInfoMBean
 {
     /** Number of transactions executed */
     long getTransactionCount() ; 
