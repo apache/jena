@@ -1,8 +1,6 @@
-PREFIX ex:	<http://www.example.org/schema#>
-PREFIX in:	<http://www.example.org/instance#>
+PREFIX :	<http://www.example.org/>
 
-SELECT ?x WHERE {
-GRAPH ?g {
-  {SELECT ?x WHERE {?x ?p ?g}}
-  }
-}
+SELECT DISTINCT ?x 
+{
+   ?x :p 123 .
+} ORDER BY ?x
