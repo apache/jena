@@ -12,6 +12,7 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
@@ -122,8 +123,20 @@ public class SortCondition extends PrintSerializableBase
         return true ;
     }
 
+    @Override
+    public void output(IndentedWriter out)
+    { 
+        out.print(Plan.startMarker) ;
+        out.print("SortCondition ") ;
+        FmtExpr fmt = new FmtExpr(out, null) ;
+        format(fmt, out) ;
+        out.print(Plan.finishMarker) ;
+    }
+    
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
+        if ( sCxt == null )
+            sCxt = new SerializationContext() ;
         FmtExpr fmt = new FmtExpr(out, sCxt) ;
         format(fmt, out) ;
     }

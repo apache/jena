@@ -10,6 +10,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.io.PrintUtils ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
 
 public abstract class PrintSerializableBase implements PrintSerializable
 {
@@ -21,8 +22,13 @@ public abstract class PrintSerializableBase implements PrintSerializable
     public final String toString()
     { return PrintUtils.toString(this) ; }
     
+    /** Normally overridden for better information */ 
     public void output(IndentedWriter out)
-    { QueryOutputUtils.output(this, out) ; }
+    {
+        out.print(Plan.startMarker) ;
+        out.print(Utils.className(this)) ;
+        out.print(Plan.finishMarker) ;
+    }
 }
 
 /*
