@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.query;
 
 import java.io.InputStream ;
+import java.util.ArrayList ;
 import java.util.List ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -26,6 +27,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
@@ -35,9 +37,21 @@ public class BIOInput
     
     public static ResultSet fromBIO(InputStream input)
     {
+        // Scan the stream for VARS an accumulate the totol variables. 
         BindingInputStream bin = new BindingInputStream(input) ;
-        List<Var> vars = bin.vars() ;
-        QueryIterator qIter = new QueryIterPlainWrapper(bin) ;
+        List<Binding> bindings = new ArrayList<Binding>() ;
+        List<Var> vars = new ArrayList<Var>() ;
+        while(bin.hasNext())
+        {
+            Binding b = bin.next();
+            bindings.add(b) ;
+            for ( Var v : bin.vars() )
+            {
+                if ( ! vars.contains(v) )
+                    vars.add(v) ;
+            }
+        }
+        QueryIterator qIter = new QueryIterPlainWrapper(bindings.iterator()) ;
         return new ResultSetStream(Var.varNames(vars), m, qIter) ;
     }
 }
