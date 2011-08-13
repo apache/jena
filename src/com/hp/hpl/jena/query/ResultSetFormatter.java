@@ -15,6 +15,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -25,11 +27,15 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.resultset.* ;
+import com.hp.hpl.jena.sparql.resultset.CSVOutput ;
+import com.hp.hpl.jena.sparql.resultset.JSONOutput ;
+import com.hp.hpl.jena.sparql.resultset.RDFOutput ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
+import com.hp.hpl.jena.sparql.resultset.TSVOutput ;
+import com.hp.hpl.jena.sparql.resultset.TextOutput ;
+import com.hp.hpl.jena.sparql.resultset.XMLOutput ;
+import com.hp.hpl.jena.sparql.resultset.XMLOutputASK ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.VarUtils ;
-
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** ResultSetFormatter - Convenience ways to call the various output formatters.
