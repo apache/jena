@@ -50,6 +50,8 @@ public class WebContent
     
     public static final String contentTypeResultsXML        = "application/sparql-results+xml" ;
     public static final String contentTypeResultsJSON       = "application/sparql-results+json" ;
+    // Unofficial
+    public static final String contentTypeResultsBIO        = "application/sparql-results+bio" ;
     
     public static final String contentTypeSPARQLQuery       = "application/sparql-query" ;
     public static final String contentTypeSPARQLUpdate      = "application/sparql-update" ;

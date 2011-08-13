@@ -24,6 +24,7 @@ import static org.openjena.riot.tokens.TokenType.PREFIXED_NAME ;
 
 import java.io.InputStream ;
 import java.util.ArrayList ;
+import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -130,14 +131,22 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
     //@Override
     public void remove()
     { iter.remove() ; }
+    
+    public List<Var> vars()
+    { return Collections.unmodifiableList(iter.vars) ; }
 
     class IteratorTuples extends IteratorSlotted<Binding>
     {
         private Binding lastLine ;
-        private List<Var> vars = new ArrayList<Var>() ;
+        List<Var> vars = new ArrayList<Var>() ;
 
-        @Override
-        protected Binding moveToNext()
+        // Process any directive immediately.
+        public IteratorTuples()
+        {
+            directives() ;
+        }
+        
+        private void directives()
         {
             while ( lookingAt(TokenType.KEYWORD) )
             {
@@ -153,6 +162,15 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
                     continue ;
                 }
             }
+        }
+
+
+
+        @Override
+        protected Binding moveToNext()
+        {
+            directives() ;
+
             Binding binding = BindingFactory.create() ;
 
             int i = 0 ;

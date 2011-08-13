@@ -120,6 +120,11 @@ public class ResultSetFactory
             return TSVInput.fromTSV(input) ;
         }
         
+        if ( format.equals(ResultSetFormat.syntaxBIO) )
+        {
+            return BIOInput.fromBIO(input) ;
+        }
+        
         Log.warn(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
 
@@ -265,6 +270,12 @@ public class ResultSetFactory
             {
                 ResultSet rs = TSVInput.fromTSV(in) ;
                 return new SPARQLResult(rs) ;
+            }
+            else if ( format.equals(ResultSetFormat.syntaxBIO) )
+            {
+                ResultSet rs = BIOInput.fromBIO(in) ;
+                return new SPARQLResult(rs) ;
+                
             }
         }
         

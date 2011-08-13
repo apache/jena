@@ -152,6 +152,12 @@ public class QueryExecUtils
             done = true ;
         }
         
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO ) )
+        {
+            ResultSetFormatter.outputAsBIO(System.out, results) ;
+            done = true ;
+        }
+        
         if ( ! done )
             System.err.println("Unknown format request: "+outputFormat) ;
         results = null ;

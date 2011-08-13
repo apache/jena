@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * [See end of file]
  */
 
@@ -7,6 +8,7 @@ package com.hp.hpl.jena.query;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
+import java.io.PrintStream ;
 import java.io.PrintWriter ;
 import java.io.UnsupportedEncodingException ;
 import java.util.ArrayList ;
@@ -19,8 +21,14 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.resultset.* ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.VarUtils ;
+
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -705,12 +713,27 @@ public class ResultSetFormatter
         TSVOutput fmt = new TSVOutput() ;
         fmt.format(outStream, resultSet) ;
     }
+    
+    /** Output a result set in BIO format */
+    public static void outputAsBIO(PrintStream out, ResultSet results)
+    {
+        List<Var> vars = Var.varList(results.getResultVars()) ;
+        
+        BindingOutputStream bout = new BindingOutputStream(out, vars) ;
+        for ( ; results.hasNext() ; )
+        {
+            Binding b = BindingUtils.asBinding(results.next()) ;
+            bout.write(b) ;
+        }
+        bout.flush() ;
+    }
 
     
 }
 
 /*
  *  (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2011 Epimorphics Ltd.
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

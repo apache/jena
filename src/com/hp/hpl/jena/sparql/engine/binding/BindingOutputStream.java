@@ -47,7 +47,7 @@ public class BindingOutputStream implements Sink<Binding>
     
     public BindingOutputStream(OutputStream out)
     {
-        this(out, new PrefixMap()) ;
+        this(out, null, null) ;
     }
     
     public BindingOutputStream(OutputStream out, PrefixMap prefixMapping)
@@ -55,6 +55,11 @@ public class BindingOutputStream implements Sink<Binding>
         this(out, null, prefixMapping) ;
     }
     
+    public BindingOutputStream(OutputStream out, List<Var> vars)
+    {
+        this(out, vars, null) ;
+    }
+
     public BindingOutputStream(OutputStream out, List<Var> vars, PrefixMap prefixMapping)
     {
         this( BufferingWriter.create(out) , vars, prefixMapping) ;
@@ -65,6 +70,8 @@ public class BindingOutputStream implements Sink<Binding>
         bw = out ;
         vars = variables ;
         pmap = prefixMapping ;
+        if ( pmap == null )
+            pmap = new PrefixMap() ;
         needOutputVars = (vars != null ) && vars.size() > 0 ;
     }
     

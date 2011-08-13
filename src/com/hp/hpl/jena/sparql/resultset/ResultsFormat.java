@@ -11,7 +11,7 @@ import com.hp.hpl.jena.sparql.util.TranslationTable ;
 
 public class ResultsFormat extends Symbol
 {
-    // c.f ResultSetFormat.
+    // c.f ResultSetFormat.  Why aren't these the same?
     /* Select formats - full names */
     
     public final static ResultsFormat FMT_RS_RDF   = new ResultsFormat("rs/graph") ;  /** Format of result set is an RDF graph */
@@ -20,6 +20,7 @@ public class ResultsFormat extends Symbol
     public final static ResultsFormat FMT_RS_SSE   = new ResultsFormat("rs/sse") ;    /** Format of result set as SSE */ 
     public final static ResultsFormat FMT_RS_CSV   = new ResultsFormat("rs/csv") ;
     public final static ResultsFormat FMT_RS_TSV   = new ResultsFormat("rs/tsv") ;
+    public final static ResultsFormat FMT_RS_BIO   = new ResultsFormat("rs/bio") ;
 
     public final static ResultsFormat FMT_NONE     = new ResultsFormat("none") ;       /** No output */
     public final static ResultsFormat FMT_TEXT     = new ResultsFormat("rs/text") ;   /** Any kind of text */
@@ -34,8 +35,6 @@ public class ResultsFormat extends Symbol
     public final static ResultsFormat FMT_RDF_TTL  = new ResultsFormat("Turtle") ;
     public final static ResultsFormat FMT_RDF_NT   = new ResultsFormat("N-TRIPLES") ;
 
-
-    
     public final static ResultsFormat FMT_UNKNOWN   = new ResultsFormat("unknown") ;
     
     static TranslationTable<ResultsFormat> resultFormats =  new TranslationTable<ResultsFormat>(true) ;
@@ -61,6 +60,10 @@ public class ResultsFormat extends Symbol
         resultFormats.put("rs/json",   FMT_RS_JSON ) ;
         resultFormats.put("srj",       FMT_RS_JSON ) ;
         resultFormats.put("json",      FMT_RS_JSON ) ;
+
+
+        resultFormats.put("srb",       FMT_RS_BIO ) ;
+        resultFormats.put("bio",       FMT_RS_BIO ) ;
 
         // result set - SSE tables
         resultFormats.put("rs/sse",    FMT_RS_SSE ) ;
