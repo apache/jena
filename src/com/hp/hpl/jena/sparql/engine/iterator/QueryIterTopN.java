@@ -6,7 +6,10 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.PriorityQueue ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorArray ;
 import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
+import org.openjena.atlas.lib.ReverseComparator ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -19,6 +22,11 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 public class QueryIterTopN extends QueryIterPlainWrapper
 {
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
+	/* We want to keep the N least elements (overall return is an ascending sequnce so limit+ascending = least).   
+	 * To do that we keep a priority heap of upto N eleemnts, ordered descending.
+	 * To keep another element, it must be less than the max so far.
+	 * This leaves the least N in the heap.    
+	 */
     private PriorityQueue<Binding> heap ;
     long limit ;
 	
@@ -30,6 +38,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
     public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, ExecutionContext context)
     {
         super(null, context) ;
+        this.embeddedIterator = qIter;
         
         limit = numItems ;
         if ( limit == Query.NOLIMIT )
@@ -38,9 +47,16 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         if ( limit < 0 )
             throw new QueryExecException("Negative LIMIT: "+limit) ;
         
-        this.embeddedIterator = qIter;
-        this.heap = new PriorityQueue<Binding>((int)numItems, comparator) ;
+        if ( limit == 0 )
+        {
+            // Keep Java happy. 
+            Iterator<Binding> iter0 = Iter.nullIterator() ; 
+            setIterator(iter0) ;
+            return ;
+        }
         
+        // Keep heap with maximum accessible. 
+        this.heap = new PriorityQueue<Binding>((int)numItems, new ReverseComparator<Binding>(comparator)) ;
         this.setIterator(sortTopN(qIter, comparator));
     }
 
@@ -51,7 +67,6 @@ public class QueryIterTopN extends QueryIterPlainWrapper
         super.requestCancel() ;
     }
     
-
     private Iterator<Binding> sortTopN(final QueryIterator qIter, final Comparator<Binding> comparator)
     {
         return new IteratorDelayedInitialization<Binding>() {
@@ -60,13 +75,17 @@ public class QueryIterTopN extends QueryIterPlainWrapper
             {
                 for ( ; qIter.hasNext() ; )
                 {
-                    Binding b = qIter.next() ;
+                    Binding binding = qIter.next() ;
                     if ( heap.size() < limit )
-                    	heap.add(b) ;
+                    	heap.add(binding) ;
                     else {
-                    	if ( comparator.compare(b, heap.peek()) < 0 ) {
-                    		heap.poll() ;
-                        	heap.add(b) ;
+                        Binding currentMaxLeastN = heap.peek() ;
+                        
+                    	if ( comparator.compare(binding, currentMaxLeastN) < 0 ) 
+                    	{
+                    	    // If binding is less than current Nth least ...
+                    		heap.poll() ;     // Drop Nth least.
+                        	heap.add(binding) ;
                     	}
                     }
                 }
@@ -74,7 +93,8 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                 Binding[] y = heap.toArray(new Binding[]{}) ;
                 heap = null ;
                 Arrays.sort(y, comparator) ;
-                return Arrays.asList(y).iterator() ;
+                IteratorArray<Binding> iter = IteratorArray.create(y) ;
+                return iter ;
         	}
 		};
     }}

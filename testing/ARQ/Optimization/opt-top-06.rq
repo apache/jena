@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT DISTINCT * 
+{ ?x :p ?v } 
+ORDER BY DESC(?v)
+LIMIT 5

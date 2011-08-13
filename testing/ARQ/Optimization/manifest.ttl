@@ -150,4 +150,84 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <opt-sameTerm-10.srx>
       ]
+
+      [  mf:name    "opt-top-01" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-01.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-01.srj>
+      ]
+
+      [  mf:name    "opt-top-02" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-02.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-02.srj>
+      ]
+
+      [  mf:name    "opt-top-03" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-03.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-03.srj>
+      ]
+
+      [  mf:name    "opt-top-04" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-04.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-04.srj>
+      ]
+
+     [  mf:name    "opt-top-05" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-05.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-05.srj>
+      ]
+
+      [  mf:name    "opt-top-06" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-06.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-06.srj>
+      ]
+
+      [  mf:name    "opt-top-07" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-07.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-07.srj>
+      ]
+
+      [  mf:name    "opt-top-08" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-08.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-08.srj>
+      ]
+
+      [  mf:name    "opt-top-09" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-09.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-09.srj>
+      ]
+
+      [  mf:name    "opt-top-10" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-10.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-10.srj>
+      ]
     ).

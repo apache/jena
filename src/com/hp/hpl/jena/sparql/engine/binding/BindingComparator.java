@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -26,7 +27,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class BindingComparator implements java.util.Comparator<Binding>
 {
-    List<SortCondition> conditions ;
+    private List<SortCondition> conditions ;
     private FunctionEnv env ;
     
     public BindingComparator(List<SortCondition> conditions, ExecutionContext execCxt)
@@ -40,6 +41,8 @@ public class BindingComparator implements java.util.Comparator<Binding>
         conditions = _conditions ;
         this.env = new FunctionEnvBase();
     }
+    
+    public List<SortCondition> getConditions() { return Collections.unmodifiableList(conditions) ; } 
 
     // Compare bindings by iterating.
     // Node comparsion is:
