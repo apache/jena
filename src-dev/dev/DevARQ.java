@@ -3,6 +3,8 @@ package dev ;
 
 public class DevARQ
 {
+    // ResultSetFormat and ResultsFormat - need just one. 
+    
     // FILTER(?x=?y) optimization - at least FILTER(sameTerm(?x,?y))
     // FILTER(?x=<x> && ...) does not push down on the ?x=<x>
     // Do FILTER placement before filter equality -- but dnager of breaking up BGPs.

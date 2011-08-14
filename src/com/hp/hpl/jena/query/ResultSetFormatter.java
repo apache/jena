@@ -8,7 +8,6 @@ package com.hp.hpl.jena.query;
 
 import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
-import java.io.PrintStream ;
 import java.io.PrintWriter ;
 import java.io.UnsupportedEncodingException ;
 import java.util.ArrayList ;
@@ -30,7 +29,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.resultset.CSVOutput ;
 import com.hp.hpl.jena.sparql.resultset.JSONOutput ;
 import com.hp.hpl.jena.sparql.resultset.RDFOutput ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
 import com.hp.hpl.jena.sparql.resultset.TSVOutput ;
 import com.hp.hpl.jena.sparql.resultset.TextOutput ;
 import com.hp.hpl.jena.sparql.resultset.XMLOutput ;
@@ -280,7 +279,7 @@ public class ResultSetFormatter
      * @param rFmt      A format to encode the result set in
      */
     
-    static public void output(ResultSet resultSet, ResultSetFormat rFmt)
+    static public void output(ResultSet resultSet, ResultFormat rFmt)
     { output(System.out, resultSet, rFmt) ; }
 
     /** Output a ResultSet in some format.
@@ -291,32 +290,61 @@ public class ResultSetFormatter
      * @param rFmt      A format to encode the result set in
      */
     
-    static public void output(OutputStream outStream, ResultSet resultSet, ResultSetFormat rFmt)
+    static public void output(OutputStream outStream, ResultSet resultSet, ResultFormat rFmt)
     {
-        if ( rFmt.equals(ResultSetFormat.syntaxXML) )
+        if ( rFmt.equals(ResultFormat.FMT_RS_XML) )
         {
             outputAsXML(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultSetFormat.syntaxText) )
-        {
-            out(outStream, resultSet) ;
-            return ;
-        }
-
-        if ( rFmt.equals(ResultSetFormat.syntaxJSON) )
+        if ( rFmt.equals(ResultFormat.FMT_RS_JSON) )
         {
             outputAsJSON(outStream, resultSet) ;
             return ;
         }
-        
-        if ( rFmt.equals(ResultSetFormat.syntaxRDF_XML) )
+
+        if ( rFmt.equals(ResultFormat.FMT_RS_CSV) )
+        {
+            outputAsCSV(outStream, resultSet);
+            return ;
+        }
+
+        if ( rFmt.equals(ResultFormat.FMT_RS_TSV) )
+        {
+            outputAsTSV(outStream, resultSet);
+            return ;
+        }
+
+        if ( rFmt.equals(ResultFormat.FMT_RS_BIO) )
+        {
+            outputAsBIO(outStream, resultSet);
+            return ;
+        }
+
+        if ( rFmt.equals(ResultFormat.FMT_RS_JSON) )
+        {
+            outputAsJSON(outStream, resultSet) ;
+            return ;
+        }
+
+        if ( rFmt.equals(ResultFormat.FMT_RDF_XML) )
         {
             outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
             return ;
         }
         
+        if ( rFmt.equals(ResultFormat.FMT_RDF_TTL) )
+        {
+            outputAsRDF(outStream, "TTL", resultSet) ;
+            return ;
+        }
+
+        if ( rFmt.equals(ResultFormat.FMT_RDF_NT) )
+        {
+            outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
+            return ;
+        }
         Log.warn(ResultSetFormatter.class, "Unknown ResultSetFormat: "+rFmt);
     }
     
@@ -721,7 +749,7 @@ public class ResultSetFormatter
     }
     
     /** Output a result set in BIO format */
-    public static void outputAsBIO(PrintStream out, ResultSet results)
+    public static void outputAsBIO(OutputStream out, ResultSet results)
     {
         List<Var> vars = Var.varList(results.getResultVars()) ;
         

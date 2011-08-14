@@ -8,7 +8,7 @@ package com.hp.hpl.jena.sparql.sse.builders;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -39,7 +39,7 @@ public class BuilderExec
         
         DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
         Op op = BuilderOp.build(list.get(2)) ;
-        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
+        QueryExecUtils.executeAlgebra(op, dsg, ResultFormat.FMT_TEXT) ;
     }
 }
 

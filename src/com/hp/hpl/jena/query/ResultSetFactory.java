@@ -42,18 +42,18 @@ public class ResultSetFactory
      * @return ResultSet
      */
     
-    public static ResultSet load(String filenameOrURI, ResultSetFormat format)
+    public static ResultSet load(String filenameOrURI, ResultFormat format)
     {
         if ( format == null )
-            format = ResultSetFormat.guessSyntax(filenameOrURI) ;
+            format = ResultFormat.guessSyntax(filenameOrURI) ;
         
         if ( format == null )
         {
             Log.warn(ResultSet.class, "Null format - defaulting to XML") ;
-            format = ResultSetFormat.syntaxXML ;
+            format = ResultFormat.FMT_RS_XML ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxText) )
+        if ( format.equals(ResultFormat.FMT_TEXT) )
         {
             Log.fatal(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
@@ -71,60 +71,61 @@ public class ResultSetFactory
      * @return ResultSet
      */
     
-    public static ResultSet load(InputStream input, ResultSetFormat format)
+    public static ResultSet load(InputStream input, ResultFormat format)
     {
         if ( format == null )
         {
             Log.warn(ResultSet.class, "Null format - defaulting to XML") ;
-            format = ResultSetFormat.syntaxXML ;
+            format = ResultFormat.FMT_RS_XML ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxText) )
+        if ( format.equals(ResultFormat.FMT_RS_JSON) )
+            return JSONInput.fromJSON(input) ;
+        
+        if ( format.equals(ResultFormat.FMT_RS_TSV) )
+            return TSVInput.fromTSV(input) ;
+        
+        if ( format.equals(ResultFormat.FMT_RS_BIO) )
+            return BIOInput.fromBIO(input) ;
+        
+        if ( format.equals(ResultFormat.FMT_RS_XML) )
+            return ResultSetFactory.fromXML(input) ;
+
+        if ( format.equals(ResultFormat.FMT_TEXT) )
         {
             Log.warn(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxXML) )
-            return ResultSetFactory.fromXML(input) ;
         
-        if ( format.equals(ResultSetFormat.syntaxRDF_XML) )
+        if ( format.equals(ResultFormat.FMT_RDF_XML) )
         {
             Model m = ModelFactory.createDefaultModel() ;
             m.read(input, null) ;
             return ResultSetFactory.fromRDF(m) ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxRDF_TURTLE) )
+        if ( format.equals(ResultFormat.FMT_RDF_TTL) )
         {
             Model m = ModelFactory.createDefaultModel() ;
             m.read(input, null, "TURTLE") ;
             return ResultSetFactory.fromRDF(m) ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxRDF_N3) )
+        if ( format.equals(ResultFormat.FMT_RDF_N3) )
         {
             Model m = ModelFactory.createDefaultModel() ;
             m.read(input, null, "N3") ;
             return ResultSetFactory.fromRDF(m) ;
         }
 
-        if ( format.equals(ResultSetFormat.syntaxJSON) )
+        if ( format.equals(ResultFormat.FMT_RDF_NT) )
         {
-            // Only ResultSets
-            return JSONInput.fromJSON(input) ;
+            Model m = ModelFactory.createDefaultModel() ;
+            m.read(input, null, "N-TRIPLES") ;
+            return ResultSetFactory.fromRDF(m) ;
         }
-        
-        if ( format.equals(ResultSetFormat.syntaxTSV) )
-        {
-            return TSVInput.fromTSV(input) ;
-        }
-        
-        if ( format.equals(ResultSetFormat.syntaxBIO) )
-        {
-            return BIOInput.fromBIO(input) ;
-        }
-        
+
         Log.warn(ResultSet.class, "Unknown result set syntax: "+format) ;
         return null ;
 
@@ -156,7 +157,7 @@ public class ResultSetFactory
      * @return Model
      */
     
-    public static Model loadAsModel(String filenameOrURI, ResultSetFormat format)
+    public static Model loadAsModel(String filenameOrURI, ResultFormat format)
     { return loadAsModel(null, filenameOrURI, format) ; }
     
     /** Load a result set (or any other model) from file or URL.
@@ -168,27 +169,27 @@ public class ResultSetFactory
      * @return Model
      */
     
-    public static Model loadAsModel(Model model, String filenameOrURI, ResultSetFormat format)
+    public static Model loadAsModel(Model model, String filenameOrURI, ResultFormat format)
     {
         if ( model == null )
             model = GraphFactory.makeDefaultModel() ;
         
         if ( format == null )
-            format = ResultSetFormat.guessSyntax(filenameOrURI) ;
+            format = ResultFormat.guessSyntax(filenameOrURI) ;
         
         if ( format == null )
         {
             Log.warn(ResultSet.class, "Null format - defaulting to XML") ;
-            format = ResultSetFormat.syntaxXML ;
+            format = ResultFormat.FMT_RS_XML ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxText) )
+        if ( format.equals(ResultFormat.FMT_TEXT) )
         {
             Log.fatal(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxXML) || format.equals(ResultSetFormat.syntaxJSON))
+        if ( format.equals(ResultFormat.FMT_RS_XML) || format.equals(ResultFormat.FMT_RS_JSON))
         {
             InputStream in = null ;
             try { 
@@ -200,7 +201,7 @@ public class ResultSetFactory
             
             SPARQLResult x = null ;
             
-            if ( format.equals(ResultSetFormat.syntaxJSON) )
+            if ( format.equals(ResultFormat.FMT_RS_JSON) )
                 x = JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
             else
                 x = XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
@@ -213,7 +214,7 @@ public class ResultSetFactory
             return model ;
         }
         
-        if ( format.isRDFGraphSyntax() )
+        if ( ResultFormat.isRDFGraphSyntax(format) )
             return FileManager.get().readModel(model, filenameOrURI) ;
         
         Log.fatal(ResultSet.class, "Unknown result set syntax: "+format) ;
@@ -233,24 +234,24 @@ public class ResultSetFactory
      * Read in any kind of result kind (result set, boolean, graph)
      */
     
-    public static SPARQLResult result(String filenameOrURI, ResultSetFormat format)
+    public static SPARQLResult result(String filenameOrURI, ResultFormat format)
     {
         if ( format == null )
-            format = ResultSetFormat.guessSyntax(filenameOrURI) ;
+            format = ResultFormat.guessSyntax(filenameOrURI) ;
         
         if ( format == null )
         {
             Log.warn(ResultSet.class, "Null format - defaulting to XML") ;
-            format = ResultSetFormat.syntaxXML ;
+            format = ResultFormat.FMT_RS_XML ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxText) )
+        if ( format.equals(ResultFormat.FMT_TEXT) )
         {
             Log.fatal(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultSetFormat.syntaxXML) || format.equals(ResultSetFormat.syntaxJSON) || format.equals(ResultSetFormat.syntaxTSV) )
+        if ( format.equals(ResultFormat.FMT_RS_XML) || format.equals(ResultFormat.FMT_RS_JSON) || format.equals(ResultFormat.FMT_RS_TSV) )
         {
             InputStream in = null ;
             try { 
@@ -262,16 +263,16 @@ public class ResultSetFactory
             
             SPARQLResult x = null ;
             
-            if ( format.equals(ResultSetFormat.syntaxJSON) )
+            if ( format.equals(ResultFormat.FMT_RS_JSON) )
                 return JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
-            else if ( format.equals(ResultSetFormat.syntaxXML) )
+            else if ( format.equals(ResultFormat.FMT_RS_XML) )
                 return XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
-            else if ( format.equals(ResultSetFormat.syntaxTSV) )
+            else if ( format.equals(ResultFormat.FMT_RS_TSV) )
             {
                 ResultSet rs = TSVInput.fromTSV(in) ;
                 return new SPARQLResult(rs) ;
             }
-            else if ( format.equals(ResultSetFormat.syntaxBIO) )
+            else if ( format.equals(ResultFormat.FMT_RS_BIO) )
             {
                 ResultSet rs = BIOInput.fromBIO(in) ;
                 return new SPARQLResult(rs) ;
@@ -279,7 +280,7 @@ public class ResultSetFactory
             }
         }
         
-        if ( format.isRDFGraphSyntax() )
+        if (  ResultFormat.isRDFGraphSyntax(format) )
         {
             Model model = FileManager.get().loadModel(filenameOrURI) ;
             return new SPARQLResult(model) ;

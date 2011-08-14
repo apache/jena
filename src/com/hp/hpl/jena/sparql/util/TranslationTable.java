@@ -14,7 +14,7 @@ import java.util.Map ;
 /** Maps string to string for use with convenience names.
  */
 
-public class TranslationTable<X extends Symbol>
+public class TranslationTable<X>
 {
     Map<String, X> map = new HashMap<String, X>() ;
     boolean ignoreCase = false ;

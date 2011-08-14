@@ -37,7 +37,9 @@ public class BIOInput
     
     public static ResultSet fromBIO(InputStream input)
     {
-        // Scan the stream for VARS an accumulate the totol variables. 
+        // Scan the stream for VARS and accumulate the total variables. 
+        // Trade off of guessing first line is all the VARS and coping with
+        // anything possible.  -> Cope with anything possible.
         BindingInputStream bin = new BindingInputStream(input) ;
         List<Binding> bindings = new ArrayList<Binding>() ;
         List<Var> vars = new ArrayList<Var>() ;
