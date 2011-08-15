@@ -9,7 +9,7 @@ package com.hp.hpl.jena.sparql.modify.request;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.update.Update ;
 
-abstract class UpdateBinaryOp extends Update
+public abstract class UpdateBinaryOp extends Update
 {
     private Target src ;
     private Target dest ;

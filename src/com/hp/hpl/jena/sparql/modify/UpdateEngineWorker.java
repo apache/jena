@@ -36,6 +36,7 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateBinaryOp ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
@@ -152,24 +153,49 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     public void visit(UpdateAdd update)
     { 
+        if ( ! validBinaryGraphOp(update) ) return ;
+        //  ADD (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
         gsCopyTriples(graphStore, update.getSrc(), update.getDest()) ;
     }
 
     public void visit(UpdateCopy update)
     { 
-        gsCopy(graphStore, update.getSrc(), update.getDest()) ;
+        if ( ! validBinaryGraphOp(update) ) return ;
+        // COPY (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
+        gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
     }
 
     public void visit(UpdateMove update)
     { 
-        gsCopy(graphStore, update.getSrc(), update.getDest()) ;
+        if ( ! validBinaryGraphOp(update) ) return ;
+        // MOVE (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
+        gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
         gsDrop(graphStore, update.getSrc(), true) ;
+    }
+
+    private boolean validBinaryGraphOp(UpdateBinaryOp update)
+    {
+        if ( update.getSrc().isDefault() )
+            return true ;
+        
+        if ( update.getSrc().isOneNamedGraph() )
+        {
+            Node gn =  update.getSrc().getGraph() ;
+            if ( ! graphStore.containsGraph(gn) )
+            {
+                if ( ! update.getSilent() )
+                    error("No such graph: "+gn) ;
+                return false ;
+            }
+        }
+        error("Invalid source target for oepration; "+update.getSrc()) ;
+        return false ;
     }
 
     // ----
     // Core operations
     
-    protected static void gsCopy(GraphStore gStore, Target src, Target dest)
+    protected static void gsCopy(GraphStore gStore, Target src, Target dest, boolean isSilent)
     {
         gsClear(gStore, dest, true) ;
         gsCopyTriples(gStore, src, dest) ;
@@ -187,18 +213,8 @@ public class UpdateEngineWorker implements UpdateVisitor
 
     protected static void gsClear(GraphStore gStore, Target target, boolean isSilent)
     {
-        // No create.
+        // No create - we tested earlier.
         Graph g = graph(gStore, target) ;
-        if ( target.isOneNamedGraph() )
-        {
-            if ( !gStore.containsGraph(target.getGraph()) )
-            {
-                if ( ! isSilent )
-                    error("No such graph: "+g) ;
-                return ;
-            }
-        }
-        
         g.getBulkUpdateHandler().removeAll() ;
     }
 
