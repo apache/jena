@@ -216,6 +216,7 @@ public class JournalControl
             NodeTableTrans ntt = new NodeTableTrans(objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
             ntt.append() ;
             ntt.close() ;
+            dataJrnl.close() ;
             baseNodeTable.sync() ;
         }
         if ( jrnlFile.exists() )
