@@ -103,7 +103,10 @@ public class UpdateEngineWorker implements UpdateVisitor
         }
         
         if ( isClear )
-            graph(graphStore, g).getBulkUpdateHandler().removeAll() ;
+        {
+            if ( graphStore.containsGraph(g) )
+                graph(graphStore, g).getBulkUpdateHandler().removeAll() ;
+        }
         else
             graphStore.removeGraph(g) ;
     }
