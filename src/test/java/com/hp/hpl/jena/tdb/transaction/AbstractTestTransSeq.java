@@ -455,7 +455,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.commit() ;
         dsgW1.close() ;
-        StoreConnection.expel(sConn.getLocation()) ;
+        StoreConnection.release(sConn.getLocation()) ;
         StoreConnection sConn2 = getStoreConnection() ;
     }
     
@@ -471,7 +471,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgW1.close() ;
         dsgR1.close();
         
-        StoreConnection.expel(sConn.getLocation()) ;
+        StoreConnection.release(sConn.getLocation()) ;
         sConn = null ;
         
         StoreConnection sConn2 = getStoreConnection() ;
@@ -487,7 +487,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
-        StoreConnection.expel(sConn.getLocation()) ;
+        StoreConnection.release(sConn.getLocation()) ;
     }
 
     

@@ -197,6 +197,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     {
         passthrough = true ;
         nodeTableJournal = null ;
+        close() ;
    }
 
     @Override
@@ -212,7 +213,9 @@ public class NodeTableTrans implements NodeTable, Transactional
 
     @Override
     public void close()
-    {}
+    {
+        journal.close() ;
+    }
 
     @Override
     public String toString() { return "NodeTableTrans:"+label ; }

@@ -97,7 +97,7 @@ public class StoreConnection
     }
     
     /** Stop managing a location. */  
-    public static synchronized void expel(Location location)    { expel(location, false) ; }
+    public static synchronized void release(Location location)    { expel(location, false) ; }
         
     /** Stop managing a location. */  
     private static synchronized void expel(Location location, boolean force)

@@ -39,6 +39,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
@@ -51,7 +52,10 @@ public class TestTransSystem
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final int Iterations             = 1000 ;
+    static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
+    //static final Location LOC = Location.mem() ;    
+
+    static final int Iterations             = 100 ;
     // Output style.
     static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
@@ -95,6 +99,8 @@ public class TestTransSystem
         
         for ( i = 0 ; i < Iterations ; i++ )
         {
+            clean() ;
+            
             if (!inlineProgress && logging)
                 log.info(format("Iteration: %d\n", i)) ;
             if ( inlineProgress )
@@ -118,6 +124,12 @@ public class TestTransSystem
             log.info("FINISH ({})", i) ;
     }
     
+    private static void clean()
+    {
+        if ( ! LOC.isMem() )
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
+    }
+
     static class Reader implements Callable<Object>
     {
         private final int repeats ;
@@ -384,8 +396,6 @@ public class TestTransSystem
     static Quad q3 = SSE.parseQuad("(_ <s> <p> <o3>)") ;
 
     static Quad q4 = SSE.parseQuad("(_ <s> <p> <o4>)") ;
-
-    static final Location LOC = Location.mem() ;
 
     private static int initCount = -1 ;
 

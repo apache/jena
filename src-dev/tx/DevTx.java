@@ -4,6 +4,7 @@ package tx;
 public class DevTx
 {
     // ----
+    // Make sure that transactional object can't be used after abort/commit/close.
     // 1 -- Root is not root! (overlapping reads?) [done]
     // 2 -- BulkUpdateHandlerTDB.removeAll [failed to reproduce]
     

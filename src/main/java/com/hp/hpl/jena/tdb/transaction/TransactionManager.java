@@ -185,13 +185,14 @@ public class TransactionManager
             {
                 // Can commit immediately.
                 // Ensure the queue is empty though.
+                // Could simply add txn to the commit queue and do it that way.  
                 processDelayedReplayQueue(txn) ;
                 enactTransaction(txn) ;
                 JournalControl.replay(txn) ;
             }
             else
             {
-                // Can't make permanent at the moment.
+                // Can't write back to the base database at the moment.
                 commitedAwaitingFlush.add(txn) ;
                 maxQueue = Math.max(commitedAwaitingFlush.size(), maxQueue) ;
                 log("Queue commit flush", txn) ; 
