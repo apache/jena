@@ -46,7 +46,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     private boolean passthrough = false ;
     
     private final Index nodeIndex ;
-    private final ObjectFile journal ;
+    private ObjectFile journal ;
     private final String label ;
     
     public NodeTableTrans(String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
@@ -214,7 +214,9 @@ public class NodeTableTrans implements NodeTable, Transactional
     @Override
     public void close()
     {
-        journal.close() ;
+        if ( journal != null )
+            journal.close() ;
+        journal = null ;
     }
 
     @Override

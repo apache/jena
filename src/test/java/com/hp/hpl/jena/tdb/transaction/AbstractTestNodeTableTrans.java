@@ -149,34 +149,35 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     // Tests 05 and 06 test reuse of a NodeTableTrans
     // Tests 07 and 08 test creations of a NodeTableTrans where the first has "prepared" 
     
-    @Test 
-    public void nodetrans_05()
-    {   
-        // 2 transactions - no blocking reader 
-        NodeTableTrans ntt = create(node1) ;
-        NodeId nodeId1 = ntt.getBaseNodeTable().getNodeIdForNode(node1) ;
-        
-        Transaction txn1 = createTxn(11) ; 
-        ntt.begin(txn1) ;
-        NodeId nodeId2 = ntt.getAllocateNodeId(node2) ;
-        ntt.commitPrepare(txn1) ;
-        ntt.commitEnact(txn1) ;
-        ntt.commitClearup(txn1) ;
-        
-        Transaction txn2 = createTxn(12) ; 
-        ntt.begin(txn2) ;
-        assertEquals(nodeId1, ntt.getNodeIdForNode(node1)) ;
-        assertEquals(nodeId2, ntt.getNodeIdForNode(node2)) ;
-        NodeId nodeId3 = ntt.getAllocateNodeId(node3) ;
-        assertEquals(nodeId3, ntt.getNodeIdForNode(node3)) ;
-        ntt.commitPrepare(txn2) ;
-        ntt.commitEnact(txn2) ;
-        ntt.commitClearup(txn2) ;
-
-        assertEquals(nodeId1, ntt.getBaseNodeTable().getNodeIdForNode(node1)) ;
-        assertEquals(nodeId2, ntt.getBaseNodeTable().getNodeIdForNode(node2)) ;
-        assertEquals(nodeId3, ntt.getBaseNodeTable().getNodeIdForNode(node3)) ;
-    }
+    // False test.  Not valid after ntt.commitClearup
+//    @Test 
+//    public void nodetrans_05()
+//    {   
+//        // 2 transactions - no blocking reader 
+//        NodeTableTrans ntt = create(node1) ;
+//        NodeId nodeId1 = ntt.getBaseNodeTable().getNodeIdForNode(node1) ;
+//        
+//        Transaction txn1 = createTxn(11) ; 
+//        ntt.begin(txn1) ;
+//        NodeId nodeId2 = ntt.getAllocateNodeId(node2) ;
+//        ntt.commitPrepare(txn1) ;
+//        ntt.commitEnact(txn1) ;
+//        ntt.commitClearup(txn1) ;
+//        
+//        Transaction txn2 = createTxn(12) ; 
+//        ntt.begin(txn2) ;
+//        assertEquals(nodeId1, ntt.getNodeIdForNode(node1)) ;
+//        assertEquals(nodeId2, ntt.getNodeIdForNode(node2)) ;
+//        NodeId nodeId3 = ntt.getAllocateNodeId(node3) ;
+//        assertEquals(nodeId3, ntt.getNodeIdForNode(node3)) ;
+//        ntt.commitPrepare(txn2) ;
+//        ntt.commitEnact(txn2) ;
+//        ntt.commitClearup(txn2) ;
+//
+//        assertEquals(nodeId1, ntt.getBaseNodeTable().getNodeIdForNode(node1)) ;
+//        assertEquals(nodeId2, ntt.getBaseNodeTable().getNodeIdForNode(node2)) ;
+//        assertEquals(nodeId3, ntt.getBaseNodeTable().getNodeIdForNode(node3)) ;
+//    }
 
     @Test 
     public void nodetrans_06()
