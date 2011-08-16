@@ -134,22 +134,22 @@ public class TestResultSet extends TestCase
     @Test public void test_RS_7()
     {
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
-        test_RS_fmt(rs, ResultFormat.FMT_RS_XML, true) ;
+        test_RS_fmt(rs, ResultsFormat.FMT_RS_XML, true) ;
     }
     
     @Test public void test_RS_8()
     {
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
-        test_RS_fmt(rs, ResultFormat.FMT_RS_JSON, true) ;
+        test_RS_fmt(rs, ResultsFormat.FMT_RS_JSON, true) ;
     }
     
     @Test public void test_RS_9()
     {
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
-        test_RS_fmt(rs, ResultFormat.FMT_RDF_XML, false) ;
+        test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
     }
 
-    private void test_RS_fmt(ResultSet rs, ResultFormat fmt, boolean ordered)
+    private void test_RS_fmt(ResultSet rs, ResultsFormat fmt, boolean ordered)
     {
         ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(rs) ;
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.resultset.CSVOutput ;
 import com.hp.hpl.jena.sparql.resultset.JSONOutput ;
 import com.hp.hpl.jena.sparql.resultset.RDFOutput ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.resultset.TSVOutput ;
 import com.hp.hpl.jena.sparql.resultset.TextOutput ;
 import com.hp.hpl.jena.sparql.resultset.XMLOutput ;
@@ -279,7 +279,7 @@ public class ResultSetFormatter
      * @param rFmt      A format to encode the result set in
      */
     
-    static public void output(ResultSet resultSet, ResultFormat rFmt)
+    static public void output(ResultSet resultSet, ResultsFormat rFmt)
     { output(System.out, resultSet, rFmt) ; }
 
     /** Output a ResultSet in some format.
@@ -290,57 +290,57 @@ public class ResultSetFormatter
      * @param rFmt      A format to encode the result set in
      */
     
-    static public void output(OutputStream outStream, ResultSet resultSet, ResultFormat rFmt)
+    static public void output(OutputStream outStream, ResultSet resultSet, ResultsFormat rFmt)
     {
-        if ( rFmt.equals(ResultFormat.FMT_RS_XML) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_XML) )
         {
             outputAsXML(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RS_JSON) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) )
         {
             outputAsJSON(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RS_CSV) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_CSV) )
         {
             outputAsCSV(outStream, resultSet);
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RS_TSV) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_TSV) )
         {
             outputAsTSV(outStream, resultSet);
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RS_BIO) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_BIO) )
         {
             outputAsBIO(outStream, resultSet);
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RS_JSON) )
+        if ( rFmt.equals(ResultsFormat.FMT_RS_JSON) )
         {
             outputAsJSON(outStream, resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RDF_XML) )
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_XML) )
         {
             outputAsRDF(outStream, "RDF/XML-ABBREV", resultSet) ;
             return ;
         }
         
-        if ( rFmt.equals(ResultFormat.FMT_RDF_TTL) )
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             outputAsRDF(outStream, "TTL", resultSet) ;
             return ;
         }
 
-        if ( rFmt.equals(ResultFormat.FMT_RDF_NT) )
+        if ( rFmt.equals(ResultsFormat.FMT_RDF_NT) )
         {
             outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
             return ;

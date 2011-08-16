@@ -12,14 +12,14 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.shared.NotFoundException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 
 public class ModResultsIn implements ArgModuleGeneral
 {
     protected final ArgDecl resultsInputFmtDecl = new ArgDecl(ArgDecl.HasValue, "in") ;
     protected final ArgDecl fileDecl = new ArgDecl(ArgDecl.HasValue, "file") ;
 
-    private ResultFormat inputFormat = ResultFormat.FMT_TEXT ;
+    private ResultsFormat inputFormat = ResultsFormat.FMT_TEXT ;
     private String resultsFilename = null ;
     private ResultSet resultSet = null ;
     
@@ -55,13 +55,13 @@ public class ModResultsIn implements ArgModuleGeneral
         
         // Guess format
         if ( resultsFilename != null )
-            inputFormat = ResultFormat.guessSyntax(resultsFilename) ;
+            inputFormat = ResultsFormat.guessSyntax(resultsFilename) ;
 
         // Set format
         if ( cmdline.contains(resultsInputFmtDecl) )
         {
             String rFmt = cmdline.getValue(resultsInputFmtDecl) ;
-            inputFormat = ResultFormat.lookup(rFmt) ;
+            inputFormat = ResultsFormat.lookup(rFmt) ;
             if ( inputFormat == null )
                 cmdline.cmdError("Unrecognized output format: "+rFmt) ;
         }
@@ -115,7 +115,7 @@ public class ModResultsIn implements ArgModuleGeneral
     }
 
     
-    public ResultFormat getInputFormat() { return inputFormat ; }
+    public ResultsFormat getInputFormat() { return inputFormat ; }
 
 }
 

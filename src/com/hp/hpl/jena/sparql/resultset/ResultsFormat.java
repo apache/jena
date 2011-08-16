@@ -7,25 +7,54 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import static org.openjena.riot.WebContent.* ;
+
+import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.TranslationTable ;
 
-public enum ResultFormat
+// Better ....
+//public enum ResultFormat
+//{ 
+//    // Merge with out system wide naming (WebContent?)
+//    FMT_RS_XML , FMT_RS_JSON , FMT_RS_CSV , FMT_RS_TSV , FMT_RS_SSE , FMT_RS_BIO ,
+//    FMT_NONE , FMT_TEXT , FMT_TUPLES , FMT_COUNT ,
+//    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
+//    FMT_UNKNOWN ;
+    
+public class ResultsFormat extends Symbol
 { 
-    // 1 - enum? (this code predates Java 1.5 and enums!)
-    // 2 - merge with out system wide naming (WebContent?)
-    FMT_RS_XML , FMT_RS_JSON , FMT_RS_CSV , FMT_RS_TSV , FMT_RS_SSE , FMT_RS_BIO ,
-    FMT_NONE , FMT_TEXT , FMT_TUPLES , FMT_COUNT ,
-    FMT_RS_RDF , FMT_RDF_XML , FMT_RDF_N3 , FMT_RDF_TTL , FMT_RDF_TURTLE , FMT_RDF_NT ,
-    FMT_UNKNOWN ;
+    // ---- Compatibility (this started pre java 1.5)
+    private ResultsFormat(String symbol)
+    {
+        super(symbol) ;
+    }
+
+    static public ResultsFormat FMT_RS_XML       = new ResultsFormat(contentTypeResultsXML) ;
+    static public ResultsFormat FMT_RS_JSON      = new ResultsFormat(contentTypeResultsJSON) ;
+    static public ResultsFormat FMT_RS_CSV       = new ResultsFormat(contentTypeTextCSV) ;
+    static public ResultsFormat FMT_RS_TSV       = new ResultsFormat(contentTypeTextTSV) ;
+    static public ResultsFormat FMT_RS_SSE       = new ResultsFormat(contentTypeSSE) ;
+    static public ResultsFormat FMT_RS_BIO       = new ResultsFormat(contentTypeResultsBIO) ;
+    static public ResultsFormat FMT_NONE         = new ResultsFormat("none") ;
+    static public ResultsFormat FMT_TEXT         = new ResultsFormat("text") ;
+    static public ResultsFormat FMT_TUPLES       = new ResultsFormat("tuples") ;
+    static public ResultsFormat FMT_COUNT        = new ResultsFormat("count") ;
+    static public ResultsFormat FMT_RS_RDF       = new ResultsFormat(contentTypeRDFXML) ;
+    static public ResultsFormat FMT_RDF_XML      = new ResultsFormat(contentTypeRDFXML) ;
+    static public ResultsFormat FMT_RDF_N3       = new ResultsFormat(contentTypeN3) ;
+    static public ResultsFormat FMT_RDF_TTL      = new ResultsFormat(contentTypeTurtle) ;
+    static public ResultsFormat FMT_RDF_TURTLE   = new ResultsFormat(contentTypeTurtle) ;
+    static public ResultsFormat FMT_RDF_NT       = new ResultsFormat(contentTypeNTriples) ;
+    static public ResultsFormat FMT_UNKNOWN      = new ResultsFormat("unknown") ;
+    // ---- Compatibility
     
     // Common names to symbol (used by arq.rset)
-    private static TranslationTable<ResultFormat> names = new TranslationTable<ResultFormat>(true) ;
+    private static TranslationTable<ResultsFormat> names = new TranslationTable<ResultsFormat>(true) ;
     static {
         names.put("srx",         FMT_RS_XML) ;
         names.put("xml",         FMT_RS_XML) ;
         
         names.put("json",        FMT_RS_JSON) ;
-        names.put("yaml",        FMT_RS_JSON) ;    // The JSON format is a subset of YAML
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
         names.put("tsv",         FMT_RS_TSV) ;
@@ -34,7 +63,6 @@ public enum ResultFormat
         names.put("count",       FMT_COUNT) ;
         names.put("tuples",      FMT_TUPLES) ;
         names.put("none",        FMT_NONE) ;
-
         
         names.put("rdf",         FMT_RDF_XML) ; 
         names.put("rdf/n3",      FMT_RDF_N3) ;
@@ -48,12 +76,12 @@ public enum ResultFormat
 
     }
 
-    public static ResultFormat guessSyntax(String url) 
+    public static ResultsFormat guessSyntax(String url) 
     {
         return guessSyntax(url, FMT_RS_XML) ;
     }
     
-    public static boolean isRDFGraphSyntax(ResultFormat fmt)
+    public static boolean isRDFGraphSyntax(ResultsFormat fmt)
     {
         if ( FMT_RDF_N3.equals(fmt) ) return true ;
         if ( FMT_RDF_TURTLE.equals(fmt) ) return true ;
@@ -62,7 +90,7 @@ public enum ResultFormat
         return false ;
     }
     
-    public static ResultFormat guessSyntax(String url, ResultFormat defaultFormat)
+    public static ResultsFormat guessSyntax(String url, ResultsFormat defaultFormat)
     {
         // -- XML
         if ( url.endsWith(".srx") )
@@ -109,7 +137,7 @@ public enum ResultFormat
      * @return  ResultSetFormat
      */
  
-    public static ResultFormat lookup(String s)
+    public static ResultsFormat lookup(String s)
     {
         return names.lookup(s) ;
     }

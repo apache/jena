@@ -16,7 +16,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.sparql.core.DataFormat ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
@@ -150,9 +150,9 @@ public class TestItem
     {
         if ( resultFile == null )
             return null ;
-        ResultFormat format = ResultFormat.guessSyntax(resultFile) ;
+        ResultsFormat format = ResultsFormat.guessSyntax(resultFile) ;
         
-        if (  ResultFormat.isRDFGraphSyntax(format) )
+        if (  ResultsFormat.isRDFGraphSyntax(format) )
         {
             Model m = FileManager.get().loadModel(resultFile) ;
             return new SPARQLResult(m) ;

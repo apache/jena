@@ -59,6 +59,8 @@ public class WebContent
     public static final String contentTypeTextCSV           = "text/csv" ;
     public static final String contentTypeTextTSV           = "text/tab-separated-values" ;
     
+    public static final String contentTypeSSE               = "text/sse" ;
+    
     public static final String charsetUTF8                  = "utf-8" ;
     public static final String charsetASCII                 = "ascii" ;
 

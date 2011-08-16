@@ -9,7 +9,7 @@ package arq.cmdline;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
 public class ModResultsOut implements ArgModuleGeneral
@@ -17,14 +17,14 @@ public class ModResultsOut implements ArgModuleGeneral
     protected final 
     ArgDecl resultsFmtDecl = new ArgDecl(ArgDecl.HasValue, "results", "out", "rfmt") ;
 
-    private ResultFormat resultsFormat = ResultFormat.FMT_UNKNOWN ;
+    private ResultsFormat resultsFormat = ResultsFormat.FMT_UNKNOWN ;
     
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(resultsFmtDecl) )
         {
             String rFmt = cmdline.getValue(resultsFmtDecl) ;
-            resultsFormat = ResultFormat.lookup(rFmt) ;
+            resultsFormat = ResultsFormat.lookup(rFmt) ;
             if ( resultsFormat == null )
                 cmdline.cmdError("Unrecognized output format: "+rFmt) ;
         }
@@ -46,7 +46,7 @@ public class ModResultsOut implements ArgModuleGeneral
         QueryExecUtils.outputResultSet(resultSet, prologue, resultsFormat) ;
     }
     
-    public ResultFormat getResultsFormat() { return resultsFormat ; }
+    public ResultsFormat getResultsFormat() { return resultsFormat ; }
 
 }
 

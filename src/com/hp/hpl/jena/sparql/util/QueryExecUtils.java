@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.resultset.PlainFormat ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetApply ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 
 /** Some utilities for query processing. */
@@ -54,10 +54,10 @@ public class QueryExecUtils
 
     public static void executeQuery(Query query, QueryExecution queryExecution)
     {
-        executeQuery(query,  queryExecution, ResultFormat.FMT_TEXT) ;
+        executeQuery(query,  queryExecution, ResultsFormat.FMT_TEXT) ;
     }
 
-    public static void executeQuery(Query query, QueryExecution queryExecution, ResultFormat outputFormat)
+    public static void executeQuery(Query query, QueryExecution queryExecution, ResultsFormat outputFormat)
     {
         if ( query.isSelectType() )
             doSelectQuery(query, queryExecution, outputFormat) ;
@@ -70,7 +70,7 @@ public class QueryExecUtils
         queryExecution.close() ;
     }
 
-    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultFormat outputFormat)
+    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
     {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
@@ -85,29 +85,29 @@ public class QueryExecUtils
         outputResultSet(results, null, outputFormat) ;
      }
     
-    public static void outputResultSet(ResultSet results, Prologue prologue, ResultFormat outputFormat)
+    public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat)
     {
         boolean done = false ;
         if ( prologue == null )
             prologue = new Prologue(globalPrefixMap) ;
 
-        if ( outputFormat.equals(ResultFormat.FMT_UNKNOWN) )
-            outputFormat = ResultFormat.FMT_TEXT ;
+        if ( outputFormat.equals(ResultsFormat.FMT_UNKNOWN) )
+            outputFormat = ResultsFormat.FMT_TEXT ;
         
-        if ( outputFormat.equals(ResultFormat.FMT_NONE) ||
-             outputFormat.equals(ResultFormat.FMT_COUNT) )
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) ||
+             outputFormat.equals(ResultsFormat.FMT_COUNT) )
         {
             int count = ResultSetFormatter.consume(results) ;
-            if ( outputFormat.equals(ResultFormat.FMT_COUNT) )
+            if ( outputFormat.equals(ResultsFormat.FMT_COUNT) )
             {
                 System.out.println("Count = "+count) ;
             }
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_RDF) ||
-             outputFormat.equals(ResultFormat.FMT_RDF_N3) ||
-             outputFormat.equals(ResultFormat.FMT_RDF_TTL) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_RDF) ||
+             outputFormat.equals(ResultsFormat.FMT_RDF_N3) ||
+             outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             Model m = ResultSetFormatter.toModel(results) ;
             m.setNsPrefixes(prologue.getPrefixMapping()) ;
@@ -117,31 +117,31 @@ public class QueryExecUtils
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_XML) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) )
         {
             ResultSetFormatter.outputAsXML(System.out, results) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_JSON) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) )
         {
             ResultSetFormatter.outputAsJSON(System.out, results) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_SSE) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_SSE) )
         {
             ResultSetFormatter.outputAsSSE(System.out, results, prologue) ;
             done = true ;
         }
         
-        if ( outputFormat.equals(ResultFormat.FMT_TEXT) )
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
             ResultSetFormatter.out(System.out, results, prologue) ;
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_TUPLES) )
+        if ( outputFormat.equals(ResultsFormat.FMT_TUPLES) )
         {
             PlainFormat pFmt = new PlainFormat(System.out, prologue) ;
             ResultSetApply a = new ResultSetApply(results, pFmt) ;
@@ -149,19 +149,19 @@ public class QueryExecUtils
             done = true ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_CSV ) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV ) )
         {
             ResultSetFormatter.outputAsCSV(System.out, results) ;
             done = true ;
         }
         
-        if ( outputFormat.equals(ResultFormat.FMT_RS_TSV ) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_TSV ) )
         {
             ResultSetFormatter.outputAsTSV(System.out, results) ;
             done = true ;
         }
         
-        if ( outputFormat.equals(ResultFormat.FMT_RS_BIO ) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_BIO ) )
         {
             ResultSetFormatter.outputAsBIO(System.out, results) ;
             done = true ;
@@ -174,43 +174,43 @@ public class QueryExecUtils
         System.out.flush() ;
     }
 
-    private static void doSelectQuery(Query query, QueryExecution qe, ResultFormat outputFormat)
+    private static void doSelectQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
-        if ( outputFormat == null || outputFormat == ResultFormat.FMT_UNKNOWN )
-            outputFormat = ResultFormat.FMT_TEXT ; 
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_TEXT ; 
         ResultSet results = qe.execSelect() ;
         outputResultSet(results, query, outputFormat) ;
     }
 
 
-    private static void doDescribeQuery(Query query, QueryExecution qe, ResultFormat outputFormat)
+    private static void doDescribeQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
-        if ( outputFormat == null || outputFormat == ResultFormat.FMT_UNKNOWN )
-            outputFormat = ResultFormat.FMT_RDF_TTL ;
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_RDF_TTL ;
 
         Model r = qe.execDescribe() ;
         writeModel(query, r, outputFormat) ;
     }
 
 
-    private static void doConstructQuery(Query query, QueryExecution qe, ResultFormat outputFormat)
+    private static void doConstructQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
-        if ( outputFormat == null || outputFormat == ResultFormat.FMT_UNKNOWN )
-            outputFormat = ResultFormat.FMT_RDF_TTL ;
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_RDF_TTL ;
 
         Model r = qe.execConstruct() ;
         writeModel(query, r, outputFormat) ;
     }
 
-    private static void writeModel(Query query, Model model, ResultFormat outputFormat)
+    private static void writeModel(Query query, Model model, ResultsFormat outputFormat)
     {
-        if ( outputFormat == null || outputFormat == ResultFormat.FMT_UNKNOWN )
-            outputFormat = ResultFormat.FMT_TEXT ;
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_TEXT ;
 
-        if ( outputFormat.equals(ResultFormat.FMT_NONE) )
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
             return ;
 
-        if ( outputFormat.equals(ResultFormat.FMT_TEXT))
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT))
         {
             String qType = "" ;
             if ( query.isDescribeType() ) qType = "DESCRIBE" ;
@@ -222,25 +222,25 @@ public class QueryExecUtils
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RDF_XML) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_XML) )
         {
             model.write(System.out, "RDF/XML-ABBREV", null) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RDF_TTL) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             model.write(System.out, "N3", null) ;
             return ;
         }
         
-        if ( outputFormat.equals(ResultFormat.FMT_RDF_N3) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) )
         {
             model.write(System.out, "N3", null) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RDF_NT) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) )
         {
             model.write(System.out, "N_TRIPLES", null) ;
             return ;
@@ -249,41 +249,41 @@ public class QueryExecUtils
         System.err.println("Unknown format: "+outputFormat) ;
     }
 
-    private static void doAskQuery(Query query, QueryExecution qe, ResultFormat outputFormat)
+    private static void doAskQuery(Query query, QueryExecution qe, ResultsFormat outputFormat)
     {
         boolean b = qe.execAsk() ;
 
-        if ( outputFormat == null || outputFormat == ResultFormat.FMT_UNKNOWN )
-            outputFormat = ResultFormat.FMT_TEXT ;
+        if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
+            outputFormat = ResultsFormat.FMT_TEXT ;
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_XML) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) )
         {
             ResultSetFormatter.outputAsXML(System.out, b) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RDF_N3) || 
-        outputFormat.equals(ResultFormat.FMT_RDF_TTL) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RDF_N3) || 
+        outputFormat.equals(ResultsFormat.FMT_RDF_TTL) )
         {
             ResultSetFormatter.outputAsRDF(System.out, "TURTLE", b) ;
             System.out.flush() ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_JSON) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_JSON) )
         {
             ResultSetFormatter.outputAsJSON(System.out, b) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_TEXT) )
+        if ( outputFormat.equals(ResultsFormat.FMT_TEXT) )
         {
             //ResultSetFormatter.out(System.out, b) ;
             System.out.println("Ask => "+(b?"Yes":"No")) ;
             return ;
         }
 
-        if ( outputFormat.equals(ResultFormat.FMT_RS_CSV) )
+        if ( outputFormat.equals(ResultsFormat.FMT_RS_CSV) )
         {
             ResultSetFormatter.outputAsCSV(System.out, b) ;
             return ;

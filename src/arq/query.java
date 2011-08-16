@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
-import com.hp.hpl.jena.sparql.resultset.ResultFormat ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -126,7 +126,7 @@ public class query extends CmdARQ
         // Warm up.
         for ( int i = 0 ; i < warmupCount ; i++ )
         {
-            queryExec(false, ResultFormat.FMT_NONE) ;
+            queryExec(false, ResultsFormat.FMT_NONE) ;
         }
         
         for ( int i = 0 ; i < repeatCount ; i++ )
@@ -149,7 +149,7 @@ public class query extends CmdARQ
     protected Dataset getDataset()  { return modDataset.getDataset() ; }
     
     protected long totalTime = 0 ;
-    protected void queryExec(boolean timed, ResultFormat fmt)
+    protected void queryExec(boolean timed, ResultsFormat fmt)
     {
         try{
             Query query = modQuery.getQuery() ;

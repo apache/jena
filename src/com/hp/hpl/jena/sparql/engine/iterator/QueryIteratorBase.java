@@ -25,7 +25,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  * <ul>
  * <li>autoclose when the iterator runs out</li>
  * <li>ensuring query iterators only contain Bindings</li>
- * </ul> */
+ * </ul> 
+ */
 
 public abstract class QueryIteratorBase 
     extends PrintSerializableBase
@@ -38,12 +39,17 @@ public abstract class QueryIteratorBase
     // .cancel() can be called asynchronously with iterator execution.
     // It causes notification to cancellation to be made, once, by calling .requestCancel()
     // which is called synchronously with .cancel() and asynchronously with iterator execution.
+    
+    // ONLY the requestingCancel variable needs to be volatile. The abortIterator is guaranteed to 
+    // be visible because it is written to before requestingCancel, and read from after.
 
     /** In the process of requesting a cancel, or one has been done */  
-    private boolean requestingCancel = false;
+    private volatile boolean requestingCancel = false;
 
     /* If set, any hasNext/next throws QueryAbortedException */
-    private volatile boolean abortIterator = false ;
+    private boolean abortIterator = false ;
+    private Object cancelLock = new Object();
+    
     private Throwable stackTrace = null ; 
 
     public QueryIteratorBase()
@@ -79,8 +85,13 @@ public abstract class QueryIteratorBase
             // Even if aborted. Finished is finished.
             return false ;
 
-        if ( abortIterator )
+        if ( requestingCancel && abortIterator )
+        {
+            // Try to close first to release resources (in case the user
+            // doesn't have a close() call in a finally block)
+            close() ;
             throw new QueryCancelledException() ;
+        }
 
         // Handles exceptions
         boolean r = hasNextBinding() ; 
@@ -94,7 +105,7 @@ public abstract class QueryIteratorBase
                 abort() ;       // Abort this iterator.
                 throw ex ;      // And pass on up the exception.
             }
-            return r ;
+        return r ;
     }
     
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
@@ -107,13 +118,18 @@ public abstract class QueryIteratorBase
     public final Binding nextBinding()
     {
         try {
-            if ( abortIterator )
+            // Need to make sure to only read this once per iteration
+            boolean shouldCancel = requestingCancel;
+            
+            if ( shouldCancel && abortIterator )
+            {
+                // Try to close first to release resources (in case the user
+                // doesn't have a close() call in a finally block)
+                close() ;
                 throw new QueryCancelledException() ;
+            }
             if ( finished )
             {
-                // If abortIterator set after finished.
-                if ( abortIterator )
-                    throw new QueryCancelledException() ;
                 throw new NoSuchElementException(Utils.className(this)) ;
             }
             
@@ -124,7 +140,7 @@ public abstract class QueryIteratorBase
             if ( obj == null )
                 throw new NoSuchElementException(Utils.className(this)) ;
             
-            if ( requestingCancel && ! finished ) 
+            if ( shouldCancel && ! finished ) 
             {
                 // But .cancel sets both requestingCancel and abortIterator
                 // This only happens with a continuing iterator.
@@ -159,39 +175,46 @@ public abstract class QueryIteratorBase
     @Deprecated
     public void abort()
     {
+        // Calling cancel() is the preferred style.
         if ( finished )
             return ;
         try { closeIterator() ; }
         catch (QueryException ex) { } 
-        
         finished = true ;
     }
     
     /** Cancel this iterator */
-    public final void cancel() {
+    public final void cancel()
+    {
         // Call requestCancel() once.
-    	if (!this.requestingCancel) {
-    	    synchronized (this)
-    	    {
-    	        this.requestCancel() ;
-    	        this.requestingCancel = true;
-    	        this.abortIterator = true ;
+        synchronized (cancelLock)
+        {
+            if (!this.requestingCancel)
+            {
+                // Need to set the flags before allowing subclasses to handle requestCancel() in order
+                // to prevent a race condition.  We want to be sure that calls to hasNext()/nextBinding()
+                // will definitely throw a QueryCancelledException in this class and not allow a
+                // situation in which a subclass component thinks it is canceled, while this class does not.
+                this.abortIterator = true ;
+                this.requestingCancel = true;
+                this.requestCancel() ;
             }
-    	}
+        }
     }
 
     /** Cancel this iterator but allow it to continue servicing hasNext/next.
-     *  Wrong answers are possible(e.g. partial ORDER BY and LIMIT).
-     *  May be useful for debugging. 
+     *  Wrong answers are possible (e.g. partial ORDER BY and LIMIT).
      */
-    public final void cancelAllowContinue() {
+    public final void cancelAllowContinue()
+    {
         // Call requestCancel() once.
-        if (!this.requestingCancel) {
-            synchronized (this)
+        synchronized (cancelLock)
+        {
+            if (!this.requestingCancel)
             {
-                this.requestCancel() ;
-                this.requestingCancel = true;
                 //this.abortIterator = true ;
+                this.requestingCancel = true;
+                this.requestCancel() ;
             }
         }
     }
