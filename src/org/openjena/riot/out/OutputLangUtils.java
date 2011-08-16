@@ -105,10 +105,9 @@ public class OutputLangUtils
         if ( node.isBlank() )
         {
             if ( labelPolicy == null )
+                // This is encoded to be safe.
                 labelPolicy = NodeToLabel.labelByInternal() ;
             
-            // N-triples is quite restrictive about the labels. [A-Za-z][A-Za-z0-9]*
-            // Our format is _:B<encoded>
 //            String label = node.getBlankNodeLabel() ;
 //            label = NodeFmtLib.safeBNodeLabel(label) ;
             

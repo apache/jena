@@ -8,6 +8,7 @@ package org.openjena.atlas;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.openjena.atlas.data.TS_Data ;
 import org.openjena.atlas.event.TS_Event ;
 import org.openjena.atlas.io.TS_IO ;
 import org.openjena.atlas.iterator.TS_Iterator ;
@@ -22,6 +23,7 @@ import org.openjena.atlas.lib.TS_Lib ;
     , TS_Event.class
     , TS_IO.class
     , TS_JSON.class
+    , TS_Data.class
 }) 
 
 public class TC_Atlas

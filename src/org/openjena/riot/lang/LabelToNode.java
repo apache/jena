@@ -11,6 +11,8 @@ import java.util.HashMap ;
 import java.util.Map ;
 
 import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.out.NodeFmtLib ;
+import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.system.MapWithScope ;
 import org.openjena.riot.system.SyntaxLabels ;
 
@@ -32,9 +34,18 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     public static LabelToNode createScopeByGraph()
     { return new LabelToNode(new GraphScopePolicy(), nodeMaker) ; }
 
-    /** Allocation using syntax label. */
+    /** Allocation using syntax label; output is unsafe for reading (use 
+     * {@link #createUseLabelEncoded()} for output-input).
+     * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelAsGiven()} */
     public static LabelToNode createUseLabelAsGiven()
     { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabel) ; }
+    
+    /** Allocation using an encoded syntax label 
+     * (i.e. _:B&lt;encoded&gt; format from {@link NodeFmtLib#encodeBNodeLabel}).
+     * The reverse operation is provided by {@link NodeToLabel#createBNodeByLabelEncoded()}
+     */
+    public static LabelToNode createUseLabelEncoded()
+    { return new LabelToNode(new SingleScopePolicy(), nodeMakerByLabelEncoded) ; }
 
     /** Allocation, globally scoped, that uses a incrementing field to create new nodes */  
     public static LabelToNode createIncremental()
@@ -108,6 +119,20 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             if ( label == null )
                 label = SysRIOT.BNodeGenIdPrefix+counter++ ;
             return Node.createAnon(new AnonId(label)) ;
+        }
+
+        public void reset()     {}
+    } ;
+    
+    private static Allocator<String, Node> nodeMakerByLabelEncoded = new Allocator<String, Node>()
+    {
+        private long counter = 0 ;
+        
+        public Node create(String label)
+        {
+            if ( label == null )
+                label = SysRIOT.BNodeGenIdPrefix+counter++ ;
+            return Node.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
         }
 
         public void reset()     {}

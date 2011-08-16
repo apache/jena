@@ -262,9 +262,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
         NodeToLabel labels = SyntaxLabels.createNodeToLabel() ;
         if ( labelsAsGiven )
-            labels = NodeToLabel.createBNodeByLabel() ;
-        //!!
-        //labels = NodeToLabel.createBNodeByIRI() ;
+            labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
         // That would change a lot (Triples came several years before Quads). 

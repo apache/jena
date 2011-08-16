@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Iterator ;
@@ -103,6 +104,13 @@ public class ResultSetCompare
         rs1a.reset() ;    
         rs2a.reset() ;
         return isomorphic(rs1, rs2) ;
+    }
+    
+    public static boolean equalsByTest(Collection<Binding> b1, Collection<Binding> b2, EqualityTest match)
+    {
+        List<Binding> rows1 = new ArrayList<Binding>(b1);
+        List<Binding> rows2 = new ArrayList<Binding>(b2);
+        return equivalent(rows1, rows2, match);
     }
 
 

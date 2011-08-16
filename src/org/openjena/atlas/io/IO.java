@@ -128,25 +128,10 @@ public class IO
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out)); 
     }
-
-    public static void close(InputStream in)
-    {
-        try { in.close(); } catch (IOException ex) { exception(ex) ; }
-    }
     
-    public static void close(OutputStream out)
+    public static void close(java.io.Closeable resource)
     {
-        try { out.close(); } catch (IOException ex) { exception(ex) ; }
-    }
-    
-    public static void close(Reader in)
-    {
-        try { in.close(); } catch (IOException ex) { exception(ex) ; }
-    }
-    
-    public static void close(Writer out)
-    {
-        try { out.close(); } catch (IOException ex) { exception(ex) ; }
+        try { resource.close(); } catch (IOException ex) { exception(ex) ; }
     }
     
     public static void exception(IOException ex)

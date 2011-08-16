@@ -31,18 +31,18 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 //    { return new NodeToLabel(new GraphScopePolicy(), new AllocatorIncLabel()) ; }
 
     /** Allocation as per internal label, with an encoded safe label. */
-    public static NodeToLabel createBNodeByLabel() 
-    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternal()) ; }
+    public static NodeToLabel createBNodeByLabelEncoded() 
+    { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalSafe()) ; }
 
     /** Allocation as per internal label */
-    public static NodeToLabel createBNodeByLabelRaw() 
+    public static NodeToLabel createBNodeByLabelAsGiven() 
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorInternalRaw()) ; }
 
     /** Allocation as per internal label */
     public static NodeToLabel createBNodeByIRI() 
     { return new NodeToLabel(new SingleScopePolicy(), new AllocatorBNodeAsIRI()) ; }
 
-    private static final NodeToLabel _internal = createBNodeByLabel() ;
+    private static final NodeToLabel _internal = createBNodeByLabelEncoded() ;
     public static NodeToLabel labelByInternal() { return _internal ; }  
     
 
@@ -105,10 +105,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
             return "<"+node.getURI()+">" ;
         }
 
-        protected String labelForBlank(Node node)
-        {
-            return "_:"+NodeFmtLib.encodeBNodeLabel(node.getBlankNodeLabel()) ;
-        }
+        protected abstract String labelForBlank(Node node) ;
 
         protected String labelForLiteral(Node node)
         {
@@ -128,15 +125,18 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         @Override
         protected String labelForBlank(Node node)
         {
-            // NodeFmtLib.safeBNodeLabel adds a "B"
-            // This may not be a legal label if it starts with a number, say.  
             return "_:"+node.getBlankNodeLabel() ;
         }
     }
     
-    private static class AllocatorInternal extends AllocatorBase
+    private static class AllocatorInternalSafe extends AllocatorBase
     {
-       
+        @Override
+        protected String labelForBlank(Node node)
+        {
+            // NodeFmtLib.safeBNodeLabel adds a "B"
+            return "_:"+NodeFmtLib.encodeBNodeLabel(node.getBlankNodeLabel()) ;
+        }
     }
     
     private static class AllocatorIncLabel extends AllocatorBase

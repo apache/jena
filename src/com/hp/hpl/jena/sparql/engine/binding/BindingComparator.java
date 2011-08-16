@@ -6,9 +6,14 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
+import java.util.ArrayList ;
+import java.util.Arrays ;
 import java.util.Collections ;
+import java.util.Comparator ;
 import java.util.Iterator ;
 import java.util.List ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
@@ -22,11 +27,18 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.VariableNotBoundException ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class BindingComparator implements java.util.Comparator<Binding>
 {
+    private static Comparator<Var> varComparator = new Comparator<Var>()
+        {
+            public int compare(Var o1, Var o2)
+            {
+                return o1.getName().compareTo(o2.getName());
+            }
+        };
+    
     private List<SortCondition> conditions ;
     private FunctionEnv env ;
     
@@ -105,9 +117,25 @@ public class BindingComparator implements java.util.Comparator<Binding>
     public static int compareBindingsSyntactic(Binding bind1, Binding bind2)
     {
         int x = 0 ;
-        for ( Iterator<Var> iter = bind1.vars() ; iter.hasNext() ; )
+        
+        // The variables in bindings are unordered.  If we want a good comparison, we need an order.
+        // We'll choose lexicographically by name.  Unfortunately this means a sort on every comparison.
+        List<Var> varList = new ArrayList<Var>();
+        for (Iterator<Var> iter = bind1.vars(); iter.hasNext(); )
         {
-            Var v = iter.next() ;
+            varList.add(iter.next());
+        }
+        for (Iterator<Var> iter = bind2.vars(); iter.hasNext(); )
+        {
+            varList.add(iter.next());
+        }
+        // Lets try to make it a tiny bit faster by using Arrays.sort() instead of Collections.sort().
+        Var[] vars = new Var[varList.size()];
+        vars = varList.toArray(vars);
+        Arrays.sort(vars, varComparator);
+        
+        for (Var v : vars)
+        {
             Node n1 = bind1.get(v) ;
             Node n2 = bind2.get(v) ;
             x = NodeUtils.compareRDFTerms(n1, n2) ; 
