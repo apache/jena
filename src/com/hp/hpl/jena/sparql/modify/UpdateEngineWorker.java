@@ -105,7 +105,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         
         if ( isClear )
         {
-            if ( graphStore.containsGraph(g) )
+            if ( g == null || graphStore.containsGraph(g) )
                 graph(graphStore, g).getBulkUpdateHandler().removeAll() ;
         }
         else

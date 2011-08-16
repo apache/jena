@@ -122,6 +122,9 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        arq.update.main("--file=U.ru", "--dump") ;
+        exit(0) ;
+        
         FunctionRegistry.get().put("http://example/ns#wait", wait.class) ;
 
         QueryExecutionBase.cancelAllowDrain = true ;

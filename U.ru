@@ -1,6 +1,2 @@
- WITH <g>
- INSERT { ?s ?p ?o }
- USING <g1>
- USING NAMED <g>
- WHERE { ?s ?p ?o } 
-
+INSERT DATA { <s> <p> <o> . } ;
+CLEAR ALL ;
