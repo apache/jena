@@ -226,7 +226,6 @@ public class RiotLoader
         return new SinkTriplesToGraph(graph) ;
     }
 
-
     public static Sink<Quad> datasetSink(DatasetGraph dataset)
     {
         return new SinkQuadsToDataset(dataset) ;
