@@ -21,7 +21,6 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
@@ -243,9 +242,37 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q2)) ;
     }
 
-
-    @Test @Ignore // Maybe a false test?
+    @Test
     public void trans_readBlock_04()
+    {
+        // READ(block)-WRITE(abort)-WRITE(commit)-READ(close)-check
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        
+        DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW2.add(q2) ;
+        dsgW2.abort() ; // ABORT
+        dsgW2.close() ;
+        assertFalse(dsgR1.contains(q2)) ;
+
+        DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW3.add(q3) ;
+        // Can see W1
+        assertFalse(dsgW3.contains(q2)) ;
+        dsgW3.commit() ;
+        dsgW3.close() ;
+        assertFalse(dsgR1.contains(q3)) ;
+        
+        dsgR1.close() ;
+        
+        DatasetGraph dsg = sConn.getBaseDataset() ;
+        assertFalse(dsg.contains(q2)) ;
+        assertTrue(dsg.contains(q3)) ;
+    }
+
+
+    @Test
+    public void trans_readBlock_05()
     {
         // READ(block)-WRITE(commit)-WRITE(abort)-WRITE(commit)-READ(close)-check
         StoreConnection sConn = getStoreConnection() ;
@@ -280,7 +307,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q3)) ;
     }
 
-    @Test public void trans_readBlock_05()
+    @Test public void trans_readBlock_06()
     {
         // WRITE(start)-READ(start)-WRITE(commit)-READ sees old DSG.
         // READ before WRITE remains seeing old view - READ after WRITE starts 
@@ -303,7 +330,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q)) ;
     }
 
-    @Test public void trans_readBlock_06()
+    @Test public void trans_readBlock_07()
     {
         // WRITE(start)-READ(start)-add-WRITE(commit)-READ sees old DSG.
         // READ before WRITE remains seeing old view - READ after WRITE starts 
@@ -327,7 +354,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q)) ;
     }
 
-    @Test public void trans_readBlock_07()
+    @Test public void trans_readBlock_08()
     {
         // WRITE(start)-add-READ(start)-WRITE(commit)-READ sees old DSG.
         StoreConnection sConn = getStoreConnection() ;
@@ -351,8 +378,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q)) ;
     }
 
-
-    @Test public void trans_readBlock_08()
+    @Test public void trans_readBlock_09()
     {
         // WRITE(commit)-READ(start)-WRITE(commit)
         StoreConnection sConn = getStoreConnection() ;
@@ -382,7 +408,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg.contains(q2)) ;
     }
     
-    @Test public void trans_readBlock_09()
+    @Test public void trans_readBlock_10()
     {
         // READ(start)-WRITE(start)-WRITE(finish)-WRITE(start)-READ(finish)-WRITE(finish)-check
         StoreConnection sConn = getStoreConnection() ;

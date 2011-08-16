@@ -52,10 +52,11 @@ public class TestTransSystem
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static final Location LOC = new Location(ConfigTest.getTestingDirDB()) ;
-    //static final Location LOC = Location.mem() ;    
+    static boolean MEM = false ;
+    
+    static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 
-    static final int Iterations             = 100 ;
+    static final int Iterations             = MEM ? 1000 : 100 ;
     // Output style.
     static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
@@ -91,7 +92,9 @@ public class TestTransSystem
     public static void main(String...args)
     {
         if ( logging )
-            log.info("START");
+            log.info("START ("+ (MEM?"memory":"disk") + ", {} iterations)", Iterations) ;
+        else
+            printf("START (%s, %d iterations)\n", (MEM?"memory":"disk"), Iterations) ;
         
         int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         N = Math.min(N, 100) ;
@@ -122,10 +125,13 @@ public class TestTransSystem
         }
         if (logging)
             log.info("FINISH ({})", i) ;
+        else
+            printf("FINISH") ;
     }
     
     private static void clean()
     {
+        StoreConnection.release(LOC) ;
         if ( ! LOC.isMem() )
             FileOps.clearDirectory(LOC.getDirectoryPath()) ;
     }
@@ -271,8 +277,6 @@ public class TestTransSystem
     private StoreConnection sConn ;
     protected synchronized StoreConnection getStoreConnection()
     {
-        if ( LOC.isMem() )
-            StoreConnection.reset() ;
         StoreConnection sConn = StoreConnection.make(LOC) ;
         //sConn.getTransMgr().recording(true) ;
         return sConn ;
@@ -381,8 +385,7 @@ public class TestTransSystem
 
     private static void printf(String string, Object...args)
     {
-        if ( inlineProgress )
-            System.out.printf(string, args) ;
+        System.out.printf(string, args) ;
     }
 
     private ExecutorService execService = Executors.newCachedThreadPool() ;

@@ -251,6 +251,12 @@ public class TransactionManager
 //        committerThread.start() ;
     }
 
+    public void closedown()
+    {
+        processDelayedReplayQueue(null) ;
+        journal.close() ;
+    }
+    
     private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
     {
         Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
@@ -372,8 +378,13 @@ public class TransactionManager
         // [TxTDB:TODO]
         if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
         {
-            if ( queue.size() > 0 )
-                if ( log() ) log(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters), txn) ;
+            if ( queue.size() > 0 && log() )
+            {
+                if ( txn != null )
+                    log(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters), txn) ;
+                else
+                    logger().debug(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters)) ;
+            }
             return ;
         }
 //        if ( queue.size() > 1 )
@@ -492,7 +503,7 @@ public class TransactionManager
 
     // ---- Recording
     
-    public Journal getJournal()
+    Journal getJournal()
     {
         return journal ;
     }
@@ -506,12 +517,17 @@ public class TransactionManager
     {
         if ( ! log() )
             return ;
-        if ( syslog.isDebugEnabled() )
-            syslog.debug(txn.getLabel()+": "+msg) ;
-        else
-            log.debug(txn.getLabel()+": "+msg) ;
+        logger().debug(txn.getLabel()+": "+msg) ;
     }
 
+    private Logger logger()
+    {
+        if ( syslog.isDebugEnabled() )
+            return syslog ;
+        else
+            return log ;
+    }
+    
     synchronized
     public SysTxnState state()
     { 

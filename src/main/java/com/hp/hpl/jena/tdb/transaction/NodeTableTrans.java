@@ -47,6 +47,9 @@ public class NodeTableTrans implements NodeTable, Transactional
     
     private final Index nodeIndex ;
     private ObjectFile journal ;
+    // Start of the journal file for this transaction.
+    // Always zero currently but allows for future  
+    private long journalStartOffset ; 
     private final String label ;
     
     public NodeTableTrans(String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
@@ -123,10 +126,9 @@ public class NodeTableTrans implements NodeTable, Transactional
         
         offset = base.allocOffset().getId() ;
         // Any outstanding transactions
-        int offset2 = (int)journal.length() ;
+        long journalOffset = journal.length() ;
         debug("begin: %s", label) ;
-        offset += offset2 ;
-        
+        offset += journalOffset ;
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
         // Do not add the inline NodeTable here - don't convert it's values by the offset!  
@@ -144,7 +146,7 @@ public class NodeTableTrans implements NodeTable, Transactional
             Node node = x.getRight() ;
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
-                throw new TDBException(String.format("Different ids allocated: expected %s, got %s\n", nodeId, nodeId2)) ; 
+                throw new TDBException(String.format("Different ids allocated: expected %s, got %s\n", mapFromJournal(nodeId), nodeId2)) ; 
         }
     }
     
@@ -162,16 +164,18 @@ public class NodeTableTrans implements NodeTable, Transactional
     @Override
     public void commitEnact(Transaction txn)
     {
+        // The work was done in commitPrepare, using the fact that node data file
+        // is append only.  Until pointers to the extra data aren't available
+        // until the index is written.
         debug("commitEnact: %s", label) ;
         //writeJournal() ;
-
     }
 
     private void writeNodeJournal()
     {
         append() ;
         nodeIndex.clear() ;
-        journal.truncate(0) ;
+        journal.truncate(journalStartOffset) ;
         journal.sync() ;
         base.sync() ;
         offset = base.allocOffset().getId() ;
@@ -190,6 +194,10 @@ public class NodeTableTrans implements NodeTable, Transactional
     {
         if ( nodeTableJournal == null )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
+        // Ensure the cache does not flush.
+        nodeTableJournal = null ;
+        // then make sure the journal file is empty.
+        journal.truncate(journalStartOffset) ;
         finish() ;
     }
     
@@ -214,6 +222,7 @@ public class NodeTableTrans implements NodeTable, Transactional
     @Override
     public void close()
     {
+        // Closing the journal flushes it; i.e. disk IO. 
         if ( journal != null )
             journal.close() ;
         journal = null ;
