@@ -25,9 +25,9 @@ import org.openjena.riot.WebContent ;
 public class DEF
 {
     public static MediaType acceptRDFXML        = new MediaType(WebContent.contentTypeRDFXML) ;
-    public static MediaType acceptTurtle1       = new MediaType(WebContent.contentTypeTurtle1) ;
-    public static MediaType acceptTurtle2       = new MediaType(WebContent.contentTypeTurtle2) ;
-    public static MediaType acceptTurtle3       = new MediaType(WebContent.contentTypeTurtle3) ;
+    public static MediaType acceptTurtle1       = new MediaType(WebContent.contentTypeTurtle) ;
+    public static MediaType acceptTurtle2       = new MediaType(WebContent.contentTypeTurtleAlt1) ;
+    public static MediaType acceptTurtle3       = new MediaType(WebContent.contentTypeTurtleAlt2) ;
     public static MediaType acceptNTriples      = new MediaType(WebContent.contentTypeNTriples) ;
     public static MediaType acceptNTriplesAlt   = new MediaType(WebContent.contentTypeNTriplesAlt) ;
     public static MediaType acceptTriG          = new MediaType(WebContent.contentTypeTriG) ;

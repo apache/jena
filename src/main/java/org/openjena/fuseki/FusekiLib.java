@@ -52,9 +52,9 @@ public class FusekiLib
     // Use riot.WebContent on next ARQ update.
     static {
         mapContentTypeToLang.put(WebContent.contentTypeRDFXML, Lang.RDFXML) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtle1, Lang.TURTLE) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtle2, Lang.TURTLE) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtle3, Lang.TURTLE) ;
+        mapContentTypeToLang.put(WebContent.contentTypeTurtle, Lang.TURTLE) ;
+        mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt1, Lang.TURTLE) ;
+        mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt2, Lang.TURTLE) ;
         mapContentTypeToLang.put(WebContent.contentTypeNTriples, Lang.NTRIPLES) ;   // text/plain
         mapContentTypeToLang.put(WebContent.contentTypeNTriplesAlt, Lang.NTRIPLES) ;
     }

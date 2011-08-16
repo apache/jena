@@ -141,7 +141,7 @@ public class SPARQLServer
         // Constants. Add RDF types.
         MimeTypes mt = new MimeTypes() ; 
         mt.addMimeMapping("rdf",    WebContent.contentTypeRDFXML+";charset=utf-8") ;
-        mt.addMimeMapping("ttl",    WebContent.contentTypeTurtle1+";charset=utf-8") ;
+        mt.addMimeMapping("ttl",    WebContent.contentTypeTurtle+";charset=utf-8") ;
         mt.addMimeMapping("nt",     WebContent.contentTypeNTriples+";charset=ascii") ;
         mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
