@@ -368,7 +368,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         parser.getProfile().setHandler(errorHandler) ;
         try {
             parser.parse() ;
-        } catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        } 
+        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        finally { sink.close() ; }
         DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
         
         return dsgTmp ;
