@@ -184,6 +184,9 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     { return QueryOutputUtils.toString(this, prefixMapping) ; }
 
     public void output(IndentedWriter out)
-    { QueryOutputUtils.output(this, out) ; }
+    { 
+        String x = QueryOutputUtils.toString(this) ;
+        out.print(x) ;
+    }
 
 }
