@@ -22,6 +22,7 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -38,6 +39,13 @@ public class DatasetGraphX implements TransactionLifecycle
     private final Location location ;
     private final StoreConnection sConn ;
     
+    static class JenaTransactionException extends JenaException
+    {
+        public JenaTransactionException()                                  { super(); }
+        public JenaTransactionException(String message)                    { super(message); }
+        public JenaTransactionException(Throwable cause)                   { super(cause) ; }
+        public JenaTransactionException(String message, Throwable cause)   { super(message, cause) ; }
+    }
     
     @Override
     public void begin(ReadWrite readWrite)
@@ -61,10 +69,16 @@ public class DatasetGraphX implements TransactionLifecycle
     }
     
     private void checkInTransaction()
-    {}
+    {
+        if ( dsg == null )
+            throw new JenaTransactionException("Not in a transaction ("+location+")") ;
+    }
     
     private void checkNotInTransaction()
-    {}
+    {
+        if ( dsg != null )
+            throw new JenaTransactionException("Currently in a transaction ("+location+")") ;
+    }
     
     // For each operation, checkInTransaction()
 
@@ -76,7 +90,10 @@ public class DatasetGraphX implements TransactionLifecycle
 
     //@Override
     public boolean containsGraph(Node graphNode)
-    { return dsg.containsGraph(graphNode) ; }
+    { 
+        checkInTransaction() ;
+        return dsg.containsGraph(graphNode) ;
+    }
 
     //@Override
     public Graph getDefaultGraph()
