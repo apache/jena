@@ -52,7 +52,7 @@ import org.openjena.atlas.lib.Sink;
  * Inspired by Apache Pig
  * @see <a href="http://svn.apache.org/repos/asf/pig/tags/release-0.9.0/src/org/apache/pig/data/DataBag.java">DataBag from Apache Pig</a>
  */
-public interface DataBag<Tuple> extends Sink<Tuple>, Iterable<Tuple>, Closeable
+public interface DataBag<T> extends Sink<T>, Iterable<T>, Closeable
 {
     /**
      * Get the number of elements in the bag, both in memory and on disk.
@@ -76,17 +76,17 @@ public interface DataBag<Tuple> extends Sink<Tuple>, Iterable<Tuple>, Closeable
      * Add a tuple to the bag.
      * @param t tuple to add.
      */
-    void add(Tuple t);
+    void add(T t);
 
     /**
      * Add contents of an Iterable to the bag.
      * @param it iterable to add contents of.
      */
-    void addAll(Iterable<? extends Tuple> it);
+    void addAll(Iterable<? extends T> it);
     
     /**
      * Add contents of an Iterator to the bag.
      * @param it iterator to add contents of.
      */
-    void addAll(Iterator<? extends Tuple> it);
+    void addAll(Iterator<? extends T> it);
 }
