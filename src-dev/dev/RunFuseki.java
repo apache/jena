@@ -26,9 +26,9 @@ public class RunFuseki
     {
         FusekiCmd.main(
                     //"-v", 
-                    "--debug",
+                    //"--debug",
                     "--update",
-                    "--timeout=1000,5000",
+                    //"--timeout=1000,5000",
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
                     //"--host=localhost",
