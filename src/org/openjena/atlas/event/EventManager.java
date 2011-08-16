@@ -36,6 +36,7 @@ public class EventManager
     // ---- The object EventManager itself
     
     // There are 2 event sets: one for specific objects and one for general event types (no object)  
+    // MultipMap.MultiMapToList
     private Map<Object, Map<EventType, List<EventListener>>> listenersByObject = new HashMap<Object, Map<EventType, List<EventListener>>>() ;
     private Map<EventType, List<EventListener>> listenersAllObjects = new HashMap<EventType, List<EventListener>>() ;
 
@@ -44,7 +45,6 @@ public class EventManager
     
     private void register$(Object object, EventType type, EventListener listener) 
     {
-        
         Map<EventType, List<EventListener>> x = get(object) ;
         if ( x == null )
         {

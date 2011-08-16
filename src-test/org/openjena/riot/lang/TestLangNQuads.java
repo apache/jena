@@ -76,7 +76,9 @@ public class TestLangNQuads extends TestLangNTuples
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
         Sink<Quad> sink = RiotLoader.datasetSink(dsg) ;
-        parse(sink, string) ;
+        try {
+            parse(sink, string) ;
+        } finally { sink.close() ; }
         return dsg ;
     }
     
@@ -100,7 +102,6 @@ public class TestLangNQuads extends TestLangNTuples
         parser.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         parser.parse() ;
     }
-
 }
 
 /*

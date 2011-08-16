@@ -13,13 +13,12 @@ import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** @see SinkTriplesToGraph */ 
+/** Send quads to a dataset.
+ * This Sink must be clsosed after use.
+ */
 public class SinkQuadsToDataset implements Sink<Quad>
 {
-    /* See also SinkToGraphTriples */ 
     private final DatasetGraph dataset ;
-//    private Node graphNode = null ;
-//    private Graph graph = null ;
 
     public SinkQuadsToDataset(DatasetGraph dataset)
     {

@@ -6,22 +6,71 @@
 
 package org.openjena.riot.lang;
 
+import org.openjena.atlas.event.Event ;
+import org.openjena.atlas.event.EventListener ;
+import org.openjena.atlas.event.EventManager ;
+import org.openjena.atlas.event.EventType ;
+import org.openjena.atlas.lib.Sink ;
+
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphEvents ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 
-
-public class SinkTriplesToGraph extends SinkToGraph
+/**
+ * Send triples to a graph.
+ * This Sink must be closed after use. 
+ */
+public class SinkTriplesToGraph implements Sink<Triple>
 {
+    static final EventType startRead = new EventType("SinkToGraph.StartRead") ;
+    static final EventType finishRead = new EventType("SinkToGraph.FinishRead") ;
+    
+    protected final Graph graph ;
+    private EventListener el1 ;
+    private EventListener el2 ;
+
     public SinkTriplesToGraph(Graph g)
-    {
-        super(g) ;
+    { 
+        this.graph = g ;
+        // Convert between the new global event system (EventManager)
+        // and old style Jena graph events.
+        el1 = new EventListener(){
+            //@Override
+            public void event(Object dest, Event event)
+            {
+                graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
+            }
+        } ;
+
+        el2 = new EventListener(){
+            //@Override
+            public void event(Object dest, Event event)
+            {
+                graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
+            }
+        } ;
+        EventManager.register(this, startRead, el1) ;
+        EventManager.register(this, finishRead, el2) ;
     }
 
-    //@Override
     public void send(Triple triple)
     {
         graph.add(triple) ;
     }
+
+    //@Override
+    public void flush() { SystemARQ.sync(graph) ; }
+    
+    //@Override
+    public void close()
+    {
+        EventManager.unregister(this, finishRead, el2) ;
+        EventManager.unregister(this, startRead, el1) ;
+    }
+
+
+
 }
 
 /*

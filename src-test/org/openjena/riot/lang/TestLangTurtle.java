@@ -99,7 +99,9 @@ public class TestLangTurtle extends BaseTest
         
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-        parser.parse() ;
+        try {
+            parser.parse() ; 
+        } finally { sink.close() ; }
         return graph ;
     }
     

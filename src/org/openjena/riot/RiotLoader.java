@@ -63,8 +63,9 @@ public class RiotLoader
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
 
         LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, baseURI, sink) ;
-        parser.parse() ;
-        sink.flush();
+        try {  
+            parser.parse() ;
+        } finally { sink.close() ; }
         return dsg;
     }
 
@@ -97,8 +98,9 @@ public class RiotLoader
         Sink<Triple> sink = graphSink(g) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangRIOT parser = RiotReader.createParserTriples(tokenizer, language, baseURI, sink) ;
-        parser.parse() ;
-        sink.flush();
+        try {
+            parser.parse() ;
+        } finally { sink.close() ; }
         return g ;
     }
     
@@ -135,12 +137,16 @@ public class RiotLoader
         if ( language.isQuads() )
         {
             Sink<Quad> sink = datasetSink(dataset) ;
-            readQuads(input, language, baseURI, sink) ;
+            try {
+                readQuads(input, language, baseURI, sink) ;
+            } finally { sink.close() ; }
         }
         else
         {
             Sink<Triple> sink = graphSink(dataset.getDefaultGraph()) ;
-            readTriples(input, language, baseURI, sink) ;
+            try {
+                readTriples(input, language, baseURI, sink) ;
+            } finally { sink.close() ; }
         }
     }
     
@@ -172,7 +178,9 @@ public class RiotLoader
     public static void read(InputStream input, Graph graph, Lang lang, String baseURI)
     {
         Sink<Triple> sink = graphSink(graph) ;
-        readTriples(input, lang, baseURI, sink) ;
+        try {
+            readTriples(input, lang, baseURI, sink) ;
+        } finally { sink.close() ; }
     }
 
     /** Parse an input stream and send the quads to the sink */ 

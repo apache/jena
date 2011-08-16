@@ -56,7 +56,9 @@ public class WebReader
             throw new RiotException("Can't determine the syntax of <"+uri+"> (media type="+typedInput.getMediaType()+")") ;
         
         Sink<Triple> sink = RiotLoader.graphSink(graph) ;
-        RiotLoader.readTriples(typedInput, lang, uri, sink) ;
+        try {
+            RiotLoader.readTriples(typedInput, lang, uri, sink) ;
+        } finally { sink.close() ; }
     }
 
     
@@ -82,7 +84,9 @@ public class WebReader
             throw new RiotException("Can't determine the syntax of <"+uri+"> (media type="+typedInput.getMediaType()+")") ;
         
         Sink<Quad> sink = RiotLoader.datasetSink(dataset) ;
-        RiotLoader.readQuads(typedInput, lang, uri, sink) ;
+        try {
+            RiotLoader.readQuads(typedInput, lang, uri, sink) ;
+        } finally { sink.close() ; }
     }
     
     private static TypedInputStream open(String uri, Lang lang)

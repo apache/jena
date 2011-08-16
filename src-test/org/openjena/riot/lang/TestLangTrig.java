@@ -80,7 +80,9 @@ public class TestLangTrig extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
-        parser.parse();
+        try {
+            parser.parse();
+        } finally { sink.close() ; }
         return dsg ;
     }
     
