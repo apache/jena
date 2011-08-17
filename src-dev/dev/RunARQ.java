@@ -9,28 +9,41 @@
 package dev;
 
 import java.io.FileInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.net.URLEncoder ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
 import java.util.Iterator ;
+import java.util.List ;
+import java.util.Map ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.ArrayBlockingQueue ;
 import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
+import org.apache.http.HttpResponse ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.WebContent ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
+import riot.web.HttpOp ;
+import riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
@@ -47,6 +60,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -73,6 +87,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -117,8 +132,84 @@ public class RunARQ
         System.exit(code) ;
     }
 
-    // count(filter)
-    
+    public static void main2(String ... args) throws Exception
+    {
+        final String queryString1 =  "SELECT * { ?s ?p ?o } LIMIT 1" ;
+        final String queryString2 =  "SELECT * { ?s ?p ?o } LIMIT 10" ;
+        
+        // GET graph
+        Map<String, HttpOp.HttpResponseHandler> handlers = new HashMap<String, HttpOp.HttpResponseHandler>() ;
+        // Chnage to one handler for all graph types.
+        handlers.put(WebContent.contentTypeTurtle, HttpResponseLib.graphReaderTurtle) ;
+        handlers.put(WebContent.contentTypeRDFXML, HttpResponseLib.graphReaderRDFXML) ;
+        handlers.put("*", HttpResponseLib.httpDumpResponse) ;
+
+        // RS support
+//        public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
+        final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<String, ResultsFormat>() ;
+        {
+            mapContentTypeToResultSet.put(WebContent.contentTypeResultsXML, ResultsFormat.FMT_RS_XML) ;
+            mapContentTypeToResultSet.put(WebContent.contentTypeResultsJSON, ResultsFormat.FMT_RS_JSON) ;
+            mapContentTypeToResultSet.put(WebContent.contentTypeTextTSV, ResultsFormat.FMT_RS_TSV) ;
+        }
+
+        HttpOp.HttpCaptureResponse<ResultSet> captureRS = new HttpOp.HttpCaptureResponse<ResultSet>(){
+            ResultSet rs = null ;
+            //@Override
+            public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
+            {
+                MediaType mt = new MediaType(contentType) ;
+                ResultsFormat fmt = mapContentTypeToResultSet.get(contentType) ; // contentTypeToResultSet(contentType) ;
+                InputStream in = response.getEntity().getContent() ;
+                rs = ResultSetFactory.load(in, fmt) ;
+                // Force reading
+                rs = ResultSetFactory.copyResults(rs) ;
+            }
+
+            //@Override
+            public ResultSet get()
+            {
+                return rs ;
+            }} ;
+        
+        handlers.put(WebContent.contentTypeResultsXML, captureRS) ;             
+        handlers.put(WebContent.contentTypeResultsJSON, captureRS) ;            
+        handlers.put(WebContent.contentTypeTextTSV, captureRS) ;     
+        
+        List<String> acceptables = new ArrayList<String>() ;
+        acceptables.add("text/turtle;q=0.8") ;
+        acceptables.add("application/rdf+xml;q=0.1") ;
+        String acceptHeader = Iter.asString(acceptables, " , ") ;
+        
+        HttpOp.execHttpGet("http://localhost:3030/ds/sparql?query="+URLEncoder.encode(queryString1,"UTF-8"),
+                           acceptHeader,
+                           handlers) ;
+        
+        ResultSetFormatter.out(captureRS.get()) ;
+
+        
+        HttpOp.ContentProducer cp = new HttpOp.ContentProducer() {
+            //@Override
+            public void writeTo(OutputStream outstream) throws IOException
+            {
+                outstream.write(StrUtils.asUTF8bytes(queryString2)) ;
+                //outstream.flush() ;
+            }} ;
+         
+        List<String> acceptResultSets = new ArrayList<String>() ;
+        acceptResultSets.add(WebContent.contentTypeResultsJSON+";q=0.9") ;
+        acceptResultSets.add(WebContent.contentTypeResultsXML+";q=0.5") ;
+        acceptResultSets.add(WebContent.contentTypeTextTSV+";q=0.8") ;
+        String acceptResultSet = Iter.asString(acceptResultSets, " , ") ;
+            
+        HttpOp.execHttpPost("http://localhost:3030/ds/sparql",
+                            WebContent.contentTypeSPARQLQuery, cp,
+                            acceptResultSet, handlers) ;
+        ResultSetFormatter.out(captureRS.get()) ;
+        exit(0) ;
+
+    }
+        
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
