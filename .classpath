@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.svn/" kind="src" path="src"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="src-test"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
-	<classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
-	<classpathentry kind="lib" path="lib/icu4j-3.4.4.jar"/>
-	<classpathentry kind="lib" path="lib/iri-0.8.jar" sourcepath="lib-src/iri-0.8-sources.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.8.2.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.4-tests.jar" sourcepath="lib-src/jena-2.6.4-test-sources.jar"/>
-	<classpathentry kind="lib" path="lib/jena-2.6.4.jar" sourcepath="lib-src/jena-2.6.4-sources.jar"/>
-	<classpathentry kind="lib" path="lib/xercesImpl-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-2.3.1.jar"/>
-	<classpathentry kind="lib" path="lib/stax-api-1.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/wstx-asl-3.2.9.jar"/>
-	<classpathentry kind="output" path="classes"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src-test"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+  <classpathentry kind="output" path="classes"/>
+
+  <classpathentry kind="var" 
+		  path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" 
+		  sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar"/>
+  <classpathentry kind="var" 
+		  path="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar"
+		  sourcepath="M2_REPO/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar"/>
+  <classpathentry kind="var" 
+		  path="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar"
+		  sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar"
+		  sourcepath="M2_REPO/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar"
+		  sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8.jar"
+		  sourcepath="M2_REPO/com/hp/hpl/jena/iri/0.8/iri-0.8-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-tests.jar"
+		  sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-test-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4.jar"
+		  sourcepath="M2_REPO/com/hp/hpl/jena/jena/2.6.4/jena-2.6.4-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/junit/junit/4.8.2/junit-4.8.2.jar"
+		  sourcepath="M2_REPO/junit/junit/4.8.2/junit-4.8.2-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar"
+		  sourcepath="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/org/apache/lucene/lucene-core/2.3.1/lucene-core-2.3.1.jar"
+		  sourcepath="M2_REPO/org/apache/lucene/lucene-core/2.3.1/lucene-core-2.3.1-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar"
+		  sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1.jar"
+		  sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.6.1/slf4j-log4j12-1.6.1-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/stax/stax-api/1.0.1/stax-api-1.0.1.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9.jar"
+		  sourcepath="M2_REPO/org/codehaus/woodstox/wstx-asl/3.2.9/wstx-asl-3.2.9-sources.jar"/>
+  <classpathentry kind="var"
+		  path="M2_REPO/xerces/xercesImpl/2.7.1/xercesImpl-2.7.1.jar"/>
 </classpath>

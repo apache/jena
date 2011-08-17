@@ -41,11 +41,12 @@
     <ver.junit>4.8.2</ver.junit>
     <ver.slf4j>1.6.1</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
+    <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
   </properties>
 
   <dependencies>
-
+    <!-- Including systems that would be dependencies anyway will pull in the source as well -->
     <dependency>
       <groupId>com.hp.hpl.jena</groupId>
       <artifactId>jena</artifactId>
@@ -91,6 +92,20 @@
       <version>${ver.commons-codec}</version>
     </dependency>
     -->
+
+     <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${ver.http-client}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpcore</artifactId>
+      <version>${ver.http-client}</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>junit</groupId>
