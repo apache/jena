@@ -7,15 +7,14 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong ;
 import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.Block ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
-import java.util.zip.Adler32;
+import java.util.zip.Adler32 ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
-import org.openjena.atlas.lib.Bytes;
+import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sync ;
@@ -58,6 +57,8 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
 //    byte[] _buffer = new byte[Overhead] ;
 //    ByteBuffer header = ByteBuffer.wrap(_buffer) ;
     private ByteBuffer header = ByteBuffer.allocate(Overhead) ;
+    private static int SizeofCRC = SizeOfInt ;
+    private ByteBuffer crcTrailer = ByteBuffer.allocate(SizeofCRC) ;    // Adler: 32 bit.
     
     public static boolean exists(Location location)
     {
@@ -83,7 +84,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         
     }
     
-    Journal(BufferChannel channel)
+    /*testing*/Journal(BufferChannel channel)
     {
         this.channel = channel ;
         position = 0 ;
@@ -173,12 +174,13 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
             buffer.position(bufferPosition) ;
             buffer.limit(bufferLimit) ;
         }
-        
-        // checksum
-        byte[] checksum = Bytes.packLong(adler.getValue()) ;
-        channel.write(ByteBuffer.wrap(checksum)) ;
 
-        position += Overhead + len + SizeOfLong ; // header + payload + checksum
+        // checksum
+        crcTrailer.clear() ;
+        Bytes.setInt((int)adler.getValue(), crcTrailer.array()) ;
+        channel.write(crcTrailer) ;
+
+        position += Overhead + len + SizeofCRC ; // header + payload + checksum
         return posn ;
     }
     
@@ -188,7 +190,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         return _readJournal(id) ;
     }
     
-    JournalEntry _readJournal(long id)
+    private JournalEntry _readJournal(long id)
     {
         long x = channel.position() ;
         if ( x != id ) 
@@ -207,8 +209,6 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     // Move position to end of read.
     private JournalEntry _read()
     {
-        // UGLY Maybe better to leave some space in the block's byte buffer.
-        // [TxTDB:TODO] Make robust against partial read.
         header.clear() ;
         int lenRead = channel.read(header) ;
         if ( lenRead == -1 )
@@ -242,11 +242,12 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
             blockId = NoId ;
 
         // checksum
-        ByteBuffer bc = ByteBuffer.allocate(SizeOfLong) ;
-        channel.read(bc) ;
-        long checksum = Bytes.getLong(bc.array()) ;
-        
-        if ( checksum != adler.getValue() )
+        crcTrailer.clear() ;
+        lenRead = channel.read(crcTrailer) ;
+        if ( lenRead != SizeofCRC )
+            throw new TDBTransactionException("Feaild to read block checksum.") ;
+        int checksum = Bytes.getInt(crcTrailer.array()) ;
+        if ( checksum != (int)adler.getValue() )
         	throw new TDBTransactionException("Checksum error reading from the Journal.") ;
 
         return new JournalEntry(type, fileRef, bb, block) ;
