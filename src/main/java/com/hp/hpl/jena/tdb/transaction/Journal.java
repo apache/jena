@@ -7,12 +7,15 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong ;
 import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.Block ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
+import java.util.zip.Adler32;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
+import org.openjena.atlas.lib.Bytes;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sync ;
@@ -127,7 +130,6 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         int bufferCapacity = 0 ; 
         int len = 0 ;
         
-        // [TxDEV:TODO] CRC
         // [TxDEV:TODO] compress
         // [TxDEV:TODO] Work in blocks - block asn remember, reset position/limit.
         
@@ -147,6 +149,9 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         header.flip() ;
         channel.write(header) ;
         
+        Adler32 adler = new Adler32() ;
+        adler.update(header.array()) ;
+
         if ( len > 0 )
         {
             // Make buffer include it's full length.
@@ -163,12 +168,17 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
             
             // Write all bytes
             channel.write(buffer) ;
+            adler.update(buffer.array()) ;
             
             buffer.position(bufferPosition) ;
             buffer.limit(bufferLimit) ;
         }
         
-        position += len+Overhead ;
+        // checksum
+        byte[] checksum = Bytes.packLong(adler.getValue()) ;
+        channel.write(ByteBuffer.wrap(checksum)) ;
+
+        position += Overhead + len + SizeOfLong ; // header + payload + checksum
         return posn ;
     }
     
@@ -213,11 +223,15 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         int ref     = header.getInt() ;
         int blockId = header.getInt() ;
         
+        Adler32 adler = new Adler32() ;
+        adler.update(header.array()) ;
+
         JournalEntryType type = JournalEntryType.type(typeId) ;
         FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
         Block block = null ;
         lenRead = channel.read(bb) ;
+        adler.update(bb.array()) ;
         bb.rewind() ;
         if ( type == Block )
         {
@@ -226,6 +240,15 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         }
         else
             blockId = NoId ;
+
+        // checksum
+        ByteBuffer bc = ByteBuffer.allocate(SizeOfLong) ;
+        channel.read(bc) ;
+        long checksum = Bytes.getLong(bc.array()) ;
+        
+        if ( checksum != adler.getValue() )
+        	throw new TDBTransactionException("Checksum error reading from the Journal.") ;
+
         return new JournalEntry(type, fileRef, bb, block) ;
     } 
 
