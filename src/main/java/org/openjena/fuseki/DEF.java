@@ -47,6 +47,5 @@ public class DEF
                                                                  WebContent.contentTypeTextCSV,
                                                                  WebContent.contentTypeTextTSV,
                                                                  WebContent.contentTypeTextPlain) ;
-
     // New to WebContent - remove when update happens.
 }
