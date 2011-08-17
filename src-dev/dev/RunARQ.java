@@ -42,7 +42,10 @@ import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
+import riot.web.ContentProducer ;
+import riot.web.HttpCaptureResponse ;
 import riot.web.HttpOp ;
+import riot.web.HttpResponseHandler ;
 import riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -138,7 +141,7 @@ public class RunARQ
         final String queryString2 =  "SELECT * { ?s ?p ?o } LIMIT 10" ;
         
         // GET graph
-        Map<String, HttpOp.HttpResponseHandler> handlers = new HashMap<String, HttpOp.HttpResponseHandler>() ;
+        Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
         // Chnage to one handler for all graph types.
         handlers.put(WebContent.contentTypeTurtle, HttpResponseLib.graphReaderTurtle) ;
         handlers.put(WebContent.contentTypeRDFXML, HttpResponseLib.graphReaderRDFXML) ;
@@ -153,7 +156,7 @@ public class RunARQ
             mapContentTypeToResultSet.put(WebContent.contentTypeTextTSV, ResultsFormat.FMT_RS_TSV) ;
         }
 
-        HttpOp.HttpCaptureResponse<ResultSet> captureRS = new HttpOp.HttpCaptureResponse<ResultSet>(){
+        HttpCaptureResponse<ResultSet> captureRS = new HttpCaptureResponse<ResultSet>(){
             ResultSet rs = null ;
             //@Override
             public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
@@ -188,7 +191,7 @@ public class RunARQ
         ResultSetFormatter.out(captureRS.get()) ;
 
         
-        HttpOp.ContentProducer cp = new HttpOp.ContentProducer() {
+        ContentProducer cp = new ContentProducer() {
             //@Override
             public void writeTo(OutputStream outstream) throws IOException
             {

@@ -19,7 +19,6 @@
 package riot.web;
 
 import java.io.IOException ;
-import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.net.URLEncoder ;
 import java.util.ArrayList ;
@@ -27,17 +26,12 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.apache.http.HttpResponse ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 
 public class RunHTTP
 {
@@ -65,40 +59,14 @@ public class RunHTTP
         final String queryString2 =  "SELECT * { ?s ?p ?o } LIMIT 10" ;
         
         // GET graph
-        Map<String, HttpOp.HttpResponseHandler> handlers = new HashMap<String, HttpOp.HttpResponseHandler>() ;
+        Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
         // Chnage to one handler for all graph types.
         handlers.put(WebContent.contentTypeTurtle, HttpResponseLib.graphReaderTurtle) ;
         handlers.put(WebContent.contentTypeRDFXML, HttpResponseLib.graphReaderRDFXML) ;
         handlers.put("*", HttpResponseLib.httpDumpResponse) ;
 
-        // RS support
-//        public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
-        final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<String, ResultsFormat>() ;
-        {
-            mapContentTypeToResultSet.put(WebContent.contentTypeResultsXML, ResultsFormat.FMT_RS_XML) ;
-            mapContentTypeToResultSet.put(WebContent.contentTypeResultsJSON, ResultsFormat.FMT_RS_JSON) ;
-            mapContentTypeToResultSet.put(WebContent.contentTypeTextTSV, ResultsFormat.FMT_RS_TSV) ;
-        }
-
-        HttpOp.HttpCaptureResponse<ResultSet> captureRS = new HttpOp.HttpCaptureResponse<ResultSet>(){
-            ResultSet rs = null ;
-            //@Override
-            public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
-            {
-                MediaType mt = new MediaType(contentType) ;
-                ResultsFormat fmt = mapContentTypeToResultSet.get(contentType) ; // contentTypeToResultSet(contentType) ;
-                InputStream in = response.getEntity().getContent() ;
-                rs = ResultSetFactory.load(in, fmt) ;
-                // Force reading
-                rs = ResultSetFactory.copyResults(rs) ;
-            }
-
-            //@Override
-            public ResultSet get()
-            {
-                return rs ;
-            }} ;
-        
+        // Better design.
+        HttpResponseLib.HttpCaptureResponseResultSet captureRS = new HttpResponseLib.HttpCaptureResponseResultSet() ;
         handlers.put(WebContent.contentTypeResultsXML, captureRS) ;             
         handlers.put(WebContent.contentTypeResultsJSON, captureRS) ;            
         handlers.put(WebContent.contentTypeTextTSV, captureRS) ;     
@@ -115,7 +83,7 @@ public class RunHTTP
         ResultSetFormatter.out(captureRS.get()) ;
 
         
-        HttpOp.ContentProducer cp = new HttpOp.ContentProducer() {
+        ContentProducer cp = new ContentProducer() {
             //@Override
             public void writeTo(OutputStream outstream) throws IOException
             {

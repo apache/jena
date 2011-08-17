@@ -39,38 +39,31 @@ import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.DefaultHttpClient ;
 import org.openjena.atlas.web.HttpException ;
 import org.openjena.atlas.web.MediaType ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
-/** Simplified HTTP operationls; simplification means only supporting certain needed uses of HTTP.    
+/** Simplified HTTP operations; simplification means only supporting certain needed uses of HTTP.
+ * The expectation is that the simpifed operations in this class can be used by other code to
+ * generate more application specific HTTP interactions (e.g. SPARQL queries).        
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a 
  * list of handlers to deal with different content type responses. 
- * 
- * @See HttpNames for HTTP related constants
- * @See WebContent for content type name constants
+ * <p>
+ * For HTTP POST, the application supplies a URL, content, 
+ * the accept header string, and a list of handlers to deal with different content type responses,
+ * or no response is expected.
+ * @see HttpNames HttpNames, for HTTP related constants
+ * @see WebContent WebContent, for content type name constants
  */
 public class HttpOp
 {
-    // ==>> Atlas.web
-    // From Fuseki: httpNames.
-    //  
-    
     static private Logger log = LoggerFactory.getLogger(HttpOp.class) ;
     
     static private AtomicLong counter = new AtomicLong(0) ;
 
-    /** General act-on-HTTP-response */
-    public static interface HttpResponseHandler { void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ; }
-    
-    /** Act-on-HTTP-response and produce some object */
-    public static interface HttpCaptureResponse<T> extends HttpOp.HttpResponseHandler { public T get() ; }
-    
-    /** Interface for sending content over HTTP POST */
-    public static interface ContentProducer extends org.apache.http.entity.ContentProducer {}
-    
     /** GET with unencoded query string.
      *  See {@link #execHttpGet(String, String, Map)} for additional details.
      *  <p>The query string wil be encoded as needed and appended to the URL, inserting a "?".

@@ -20,6 +20,8 @@ package riot.web;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
@@ -27,22 +29,24 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.WebContent ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
-import riot.web.HttpOp.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-/** A collection of handlers fpr response handling.
+/** A collection of handlers for response handling.
  * @See {@link HttpOp#execHttpGet(String, String, String, java.util.Map)}
  * @See {@link HttpOp#execHttpPost(String, String, ContentProducer, String, java.util.Map)}
  */
 public class HttpResponseLib
 {
-
-    private static abstract class AbstractGraphReader implements HttpCaptureResponse<Graph>
+    static abstract class AbstractGraphReader implements HttpCaptureResponse<Graph>
     {
         private Graph graph = null ;
         //@Override
@@ -115,6 +119,35 @@ public class HttpResponseLib
             return RiotReader.createParserRDFXML(in, baseIRI, sink) ;
         }
     } ;
+    
+    public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
+    private static final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<String, ResultsFormat>() ;
+    {
+        mapContentTypeToResultSet.put(WebContent.contentTypeResultsXML, ResultsFormat.FMT_RS_XML) ;
+        mapContentTypeToResultSet.put(WebContent.contentTypeResultsJSON, ResultsFormat.FMT_RS_JSON) ;
+        mapContentTypeToResultSet.put(WebContent.contentTypeTextTSV, ResultsFormat.FMT_RS_TSV) ;
+    }
 
+    /** Response handling for SPARQL result sets. */
+    public static class HttpCaptureResponseResultSet implements HttpCaptureResponse<ResultSet>
+    {    
+        ResultSet rs = null ;
+        //@Override
+        public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
+        {
+            MediaType mt = new MediaType(contentType) ;
+            ResultsFormat fmt = mapContentTypeToResultSet.get(contentType) ; // contentTypeToResultSet(contentType) ;
+            InputStream in = response.getEntity().getContent() ;
+            rs = ResultSetFactory.load(in, fmt) ;
+            // Force reading
+            rs = ResultSetFactory.copyResults(rs) ;
+        }
+
+        //@Override
+        public ResultSet get()
+        {
+            return rs ;
+        }
+    }
 }
 
