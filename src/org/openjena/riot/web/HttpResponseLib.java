@@ -41,8 +41,9 @@ import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** A collection of handlers for response handling.
- * @See {@link HttpOp#execHttpGet(String, String, String, java.util.Map)}
- * @See {@link HttpOp#execHttpPost(String, String, ContentProducer, String, java.util.Map)}
+ * @see HttpOp#execHttpGet(String, String, java.util.Map)
+ * @see HttpOp#execHttpPost(String, String, ContentProducer, String, java.util.Map)
+ * 
  */
 public class HttpResponseLib
 {
@@ -122,6 +123,7 @@ public class HttpResponseLib
     
     public static ResultsFormat contentTypeToResultSet(String contentType) { return mapContentTypeToResultSet.get(contentType) ; }
     private static final Map<String, ResultsFormat> mapContentTypeToResultSet = new HashMap<String, ResultsFormat>() ;
+    static
     {
         mapContentTypeToResultSet.put(WebContent.contentTypeResultsXML, ResultsFormat.FMT_RS_XML) ;
         mapContentTypeToResultSet.put(WebContent.contentTypeResultsJSON, ResultsFormat.FMT_RS_JSON) ;

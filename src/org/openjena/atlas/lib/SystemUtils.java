@@ -13,12 +13,14 @@ import org.slf4j.LoggerFactory ;
 public class SystemUtils
 {
     private static Logger log = LoggerFactory.getLogger(SystemUtils.class.getName());
+    // Unfortunately, this tends to cause confusing logging.
+    private static boolean logging = false ;
     
     static public ClassLoader chooseClassLoader()
     {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader(); ;
     
-        if ( classLoader != null )
+        if ( logging && classLoader != null )
             log.trace("Using thread classloader") ;
         
 //        if (classLoader == null)
@@ -31,7 +33,7 @@ public class SystemUtils
         if ( classLoader == null )
         {
             classLoader = ClassLoader.getSystemClassLoader() ;
-            if ( classLoader != null )
+            if ( logging && classLoader != null )
                 log.trace("Using system classloader") ;
         }
         

@@ -64,21 +64,22 @@ public class HttpOp
     
     static private AtomicLong counter = new AtomicLong(0) ;
 
-    /** GET with unencoded query string.
-     *  See {@link #execHttpGet(String, String, Map)} for additional details.
-     *  <p>The query string wil be encoded as needed and appended to the URL, inserting a "?".
-     */
-    public static void execHttpGet(String url, String queryString, String acceptHeader, Map<String, HttpResponseHandler> handlers)
-    {
-        try {
-            String requestURL = url+"?"+URLEncoder.encode(queryString, "UTF-8")  ;
-            execHttpGet(requestURL, acceptHeader, handlers) ;
-        } catch (UnsupportedEncodingException ex)
-        {
-            // UTF-8 required of all Java platforms.
-            throw new ARQInternalErrorException("No UTF-8 charset") ;
-        }
-    }
+//    /** GET with unencoded query string.
+//     *  See {@link #execHttpGet(String, String, Map)} for additional details.
+//     *  <p>The query string will be encoded as needed and appended to the URL, inserting a "?".
+//     */
+//    public static void execHttpGet(String url, String queryString, String acceptHeader, Map<String, HttpResponseHandler> handlers)
+//    {
+//        try {
+//            System.err.println("BROKEN - encodes the queyr string structure") ;
+//            String requestURL = url+"?"+URLEncoder.encode(queryString, "UTF-8")  ;
+//            execHttpGet(requestURL, acceptHeader, handlers) ;
+//        } catch (UnsupportedEncodingException ex)
+//        {
+//            // UTF-8 required of all Java platforms.
+//            throw new ARQInternalErrorException("No UTF-8 charset") ;
+//        }
+//    }
     
     /** GET
      *  <p>The acceptHeader string is any legal value for HTTP Accept: field.
