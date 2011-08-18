@@ -21,7 +21,7 @@ import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
-public class BlockMgrJournal implements BlockMgr, Transactional
+public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 {
     private static Logger log = LoggerFactory.getLogger(BlockMgrJournal.class) ;
     private BlockMgr blockMgr ; // read-only except during journal checkpoint.

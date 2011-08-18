@@ -16,13 +16,24 @@
  * limitations under the License.
  */
 
-package tx;
+package tx.api;
+
+import org.openjena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.tdb.ReadWrite ;
 
-interface TransactionLifecycle
+/** Interface that encapulsated begin/abort|commit/close.
+ * <p>The read lifcycle is:
+ * <pre>  begin(READ) ... close()</pre>
+ * <p>The write lifcycle is:
+ * <pre>  begin(WRITE) ... abort() or commit() ... close</pre>
+ * 
+ */
+public interface Transactional extends Closeable 
 {
     public void begin(ReadWrite readWrite) ;
     public void commit() ;
     public void abort() ;
+    @Override
+    public void close() ;
 }

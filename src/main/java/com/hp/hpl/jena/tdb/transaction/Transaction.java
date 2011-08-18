@@ -177,10 +177,10 @@ public class Transaction
     public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
     
-    public List<Transactional> components()
+    public List<TransactionLifecycle> components()
     {
         // FIX NEEDED
-        List<Transactional> x = new ArrayList<Transactional>() ;
+        List<TransactionLifecycle> x = new ArrayList<TransactionLifecycle>() ;
         x.addAll(nodeTableTrans) ;
         x.addAll(blkMgrs) ;
         return x ;

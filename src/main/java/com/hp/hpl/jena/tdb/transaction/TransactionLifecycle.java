@@ -9,7 +9,7 @@ package com.hp.hpl.jena.tdb.transaction;
 /** Interface that components of the transaction system implmement.  
  * This is not the public/application interface to transactions.
  */ 
-public interface Transactional
+public interface TransactionLifecycle
 {
     // begin - commitPrepare - commitEnact - clearup
     // begin - abort - clearup

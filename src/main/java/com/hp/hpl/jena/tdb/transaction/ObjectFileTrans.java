@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.FileException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
-public class ObjectFileTrans implements ObjectFile, Transactional
+public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
 {
     private final ObjectFile other ;
     private long otherAllocOffset ;           // record where we start allocating

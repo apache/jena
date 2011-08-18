@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-public class NodeTableTrans implements NodeTable, Transactional
+public class NodeTableTrans implements NodeTable, TransactionLifecycle
 {
     private static Logger log = LoggerFactory.getLogger(NodeTableTrans.class) ;
     // TODO flag to note is any work is needed on commit.

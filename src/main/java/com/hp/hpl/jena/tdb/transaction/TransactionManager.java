@@ -315,7 +315,7 @@ public class TransactionManager
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
 
-        for ( Transactional component : dsgTxn.getTransaction().components() )
+        for ( TransactionLifecycle component : dsgTxn.getTransaction().components() )
             component.begin(dsgTxn.getTransaction()) ;
 
         noteStartTxn(txn) ;
@@ -364,7 +364,7 @@ public class TransactionManager
     {
         // Flush the queue first.  Happens in Transaction.commit
         // Really, really do it!
-        for ( Transactional x : transaction.components() )
+        for ( TransactionLifecycle x : transaction.components() )
         {
             x.commitEnact(transaction) ;
             x.commitClearup(transaction) ;
