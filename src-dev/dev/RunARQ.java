@@ -42,11 +42,11 @@ import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
-import riot.web.ContentProducer ;
-import riot.web.HttpCaptureResponse ;
-import riot.web.HttpOp ;
-import riot.web.HttpResponseHandler ;
-import riot.web.HttpResponseLib ;
+import org.openjena.riot.web.ContentProducer ;
+import org.openjena.riot.web.HttpCaptureResponse ;
+import org.openjena.riot.web.HttpOp ;
+import org.openjena.riot.web.HttpResponseHandler ;
+import org.openjena.riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;

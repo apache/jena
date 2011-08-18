@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package riot.web;
+package dev;
 
 import java.io.IOException ;
 import java.io.OutputStream ;
@@ -30,6 +30,10 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.WebContent ;
+import org.openjena.riot.web.ContentProducer ;
+import org.openjena.riot.web.HttpOp ;
+import org.openjena.riot.web.HttpResponseHandler ;
+import org.openjena.riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 

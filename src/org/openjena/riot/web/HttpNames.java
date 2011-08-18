@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package riot.web;
+package org.openjena.riot.web;
 
 public class HttpNames
 {

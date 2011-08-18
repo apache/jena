@@ -16,14 +16,8 @@
  * limitations under the License.
  */
 
-package riot.web ;
+package org.openjena.riot.web;
 
-import java.io.IOException ;
-
-import org.apache.http.HttpResponse ;
-
-/** General act-on-HTTP-response interface.*/
-public interface HttpResponseHandler
-{
-    void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ;
-}
+/** Interface for sending content over HTTP POST.
+ *  Simply avoid client code needing to always pull in org.apache.http. packages. */
+public interface ContentProducer extends org.apache.http.entity.ContentProducer {}

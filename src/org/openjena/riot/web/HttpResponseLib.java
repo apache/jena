@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package riot.web;
+package org.openjena.riot.web;
 
 import java.io.IOException ;
 import java.io.InputStream ;

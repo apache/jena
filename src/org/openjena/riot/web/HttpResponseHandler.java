@@ -16,10 +16,14 @@
  * limitations under the License.
  */
 
-package riot.web;
+package org.openjena.riot.web ;
 
-/** Act-on-HTTP-response and produce some object */
-public interface HttpCaptureResponse<T> extends HttpResponseHandler
+import java.io.IOException ;
+
+import org.apache.http.HttpResponse ;
+
+/** General act-on-HTTP-response interface.*/
+public interface HttpResponseHandler
 {
-    public T get() ;
+    void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ;
 }
