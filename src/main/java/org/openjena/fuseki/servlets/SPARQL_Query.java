@@ -154,7 +154,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             String queryStr = request.getParameter(HttpNames.paramQuery) ;
             
             if ( queryStr == null )
-                errorBadRequest("SPARQL Query: No query specificied (no 'query=' found)") ;
+                errorBadRequest("SPARQL Query: No query specified (no 'query=' found)") ;
         }
 
         if ( params != null )
