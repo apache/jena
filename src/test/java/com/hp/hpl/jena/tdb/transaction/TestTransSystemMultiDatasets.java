@@ -80,7 +80,7 @@ public class TestTransSystemMultiDatasets
 
     static final int Iterations             = MEM ? 1000 : 100 ;
     // Output style.
-    static boolean inlineProgress           = false ; // (! log.isDebugEnabled()) && Iterations > 20 ;
+    static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     
     static final int numReaderTasks         = 10 ;
@@ -185,7 +185,7 @@ public class TestTransSystemMultiDatasets
                 return null ;
             } catch (RuntimeException ex)
             {
-                System.err.println(ex.getMessage()) ;
+                ex.printStackTrace(System.err) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -254,7 +254,7 @@ public class TestTransSystemMultiDatasets
             }
             catch (RuntimeException ex)
             { 
-                System.err.println(ex.getMessage()) ;
+                ex.printStackTrace(System.err) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -315,15 +315,8 @@ public class TestTransSystemMultiDatasets
                 return null ;
             } catch (RuntimeException ex)
             {
-                System.err.println(ex.getMessage()) ;
-                ex.printStackTrace() ;
+                ex.printStackTrace(System.err) ;
                 return null ;
-            } finally {
-                if ( dsg != null )
-                {
-                    dsg.close() ;
-                    dsg = null ;
-                }
             }
         }
     }
@@ -379,18 +372,9 @@ public class TestTransSystemMultiDatasets
             } 
             catch (RuntimeException ex) 
             { 
-                System.err.println(ex.getMessage()) ;
-                ex.printStackTrace() ;
+                ex.printStackTrace(System.err) ;
                 return null ;
             } 
-            finally 
-            {
-                if ( dsg != null )
-                {
-                    dsg.close() ;
-                    dsg = null ;
-                }
-            }
         }
     
         // return the delta.
