@@ -173,7 +173,7 @@ public class TestTransSystem
                     int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
                                                   dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
-                    pause(1000) ; modelRead(dsg) ; // Temporary, see JENA-91
+                    pause(1000) ; // modelRead(dsg) ; // Temporary, see JENA-91
                     log.debug("reader finish " + id + "/" + i) ;
                     dsg.close() ;
                     dsg = null ;
@@ -250,6 +250,7 @@ public class TestTransSystem
             catch (RuntimeException ex)
             { 
                 ex.printStackTrace(System.err) ;
+                System.exit(1) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -321,7 +322,7 @@ public class TestTransSystem
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
             {  
-                writeData(dsg, id, i) ; pause(1000) ; // Temporary, see JENA-91 
+                // writeData(dsg, id, i) ; pause(1000) ; // Temporary, see JENA-91 
                 return changeProc(dsg, id, i) ; 
             }
         } ;
@@ -331,7 +332,7 @@ public class TestTransSystem
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
             { 
-                writeData(dsg, id, i) ; pause(1000) ; // Temporary, see JENA-91
+                writeData(dsg, id, i) ; // pause(1000) ; // Temporary, see JENA-91
                 return changeProc(dsg, id, i) ; 
             }
         } ;
