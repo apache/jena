@@ -181,7 +181,7 @@ public class TestTransSystem
                 return null ;
             } catch (RuntimeException ex)
             {
-                System.err.println(ex.getMessage()) ;
+                ex.printStackTrace(System.err) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -249,7 +249,7 @@ public class TestTransSystem
             }
             catch (RuntimeException ex)
             { 
-                System.err.println(ex.getMessage()) ;
+                ex.printStackTrace(System.err) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -306,7 +306,7 @@ public class TestTransSystem
             execService.awaitTermination(100, TimeUnit.SECONDS) ;
         } catch (InterruptedException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err) ;
         }
     }
     
@@ -346,7 +346,7 @@ public class TestTransSystem
             execService.awaitTermination(100, TimeUnit.SECONDS) ;
         } catch (InterruptedException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err) ;
         } 
     }
 
