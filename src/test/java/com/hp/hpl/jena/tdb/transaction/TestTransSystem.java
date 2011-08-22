@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.transaction ;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
 import static java.lang.String.format ;
@@ -37,6 +37,13 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Literal ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
@@ -166,6 +173,7 @@ public class TestTransSystem
                     int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
                                                   dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
+                    pause(1000) ; modelRead(dsg) ; // Temporary, see JENA-91
                     log.debug("reader finish " + id + "/" + i) ;
                     dsg.close() ;
                     dsg = null ;
@@ -208,8 +216,8 @@ public class TestTransSystem
                 int id = gen.incrementAndGet() ;
                 for ( int i = 0 ; i < repeats ; i++ )
                 {
-                    log.debug("writer start "+id+"/"+i) ;                
                     dsg = sConn.begin(ReadWrite.WRITE) ;
+                    log.debug("writer start "+id+"/"+i) ;
 
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     int z = change(dsg, id, i) ;
@@ -312,14 +320,20 @@ public class TestTransSystem
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
-            { return changeProc(dsg, id, i) ; }
+            {  
+                writeData(dsg, id, i) ; pause(1000) ; // Temporary, see JENA-91 
+                return changeProc(dsg, id, i) ; 
+            }
         } ;
             
         Callable<?> procW_c = new Writer(sConn, writerCommitSeqRepeats, writerMaxPause, true)  // Number of repeats, max pause, commit. 
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
-            { return changeProc(dsg, id, i) ; }
+            { 
+                writeData(dsg, id, i) ; pause(1000) ; // Temporary, see JENA-91
+                return changeProc(dsg, id, i) ; 
+            }
         } ;
 
         submit(execService, procR,   numReaderTasks) ;
@@ -358,6 +372,48 @@ public class TestTransSystem
         }
         log.debug("Change = "+dsg.getDefaultGraph().size()) ;
         return count ;
+    }
+    
+    // Temporary, see JENA-91
+    static void writeData(DatasetGraphTxn dsg, int id, int i) 
+    {
+        Dataset ds = dsg.toDataset() ;
+        Model m = ds.getNamedModel("testUri") ;
+        m.removeAll() ;
+        Resource r = m.createResource("testUri") ;
+        Property p = m.createProperty("http://mydomain/xmlns/test/resourceId") ;
+        String object = id + "_" + i ;
+        Literal l = m.createLiteral(object) ;
+        m.add(r, p, l) ;
+        m.close() ;
+    }
+    
+    // Temporary, see JENA-91
+    static void modelRead(DatasetGraphTxn dsg) 
+    {
+        Dataset ds = dsg.toDataset() ;
+        Model m = ds.getNamedModel("testUri") ;
+        StmtIterator statements = m.listStatements() ;
+        try 
+        {
+            while (statements.hasNext()) 
+            {
+                Statement statement = statements.next() ;
+                if ("testUri".equals(statement.getSubject().getURI())) 
+                {
+                    String predicate = statement.getPredicate().getURI() ;
+                    if ("http://mydomain/xmlns/test/resourceId".equals(predicate)) 
+                    {
+                        String value = statement.getString() ;
+                    }
+                }
+            }
+        } 
+        finally 
+        {
+            statements.close() ;
+            m.close() ;
+        }
     }
     
     static void pause(int maxInternal)
