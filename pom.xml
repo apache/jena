@@ -108,6 +108,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
         <configuration>
           <debug>true</debug>
           <debuglevel>source,lines,vars</debuglevel>
@@ -121,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.4.2</version> <!-- Surefire v2.4.3 does not set system properties - http://jira.codehaus.org/browse/SUREFIRE-121 -->
+        <version>2.9</version>
         <configuration>
           <includes>
             <include>com/hp/hpl/jena/test/TestPackage.java</include>
@@ -154,6 +155,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -252,6 +254,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <encoding>UTF-8</encoding>
         </configuration>
@@ -335,6 +338,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.9</version>
         <!-- Put surfire report somewhere in the build area -->
         <configuration>
           <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
@@ -343,14 +347,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.7</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
