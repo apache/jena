@@ -95,6 +95,7 @@ public class TestNodeFmt extends BaseTest
     }
 
     // Turtle numbers
+    // Integers
     @Test public void nodefmt_ttl_30()  { test(nodeFormatterTTL, "'123'^^<http://www.w3.org/2001/XMLSchema#integer>", "123") ; }
     @Test public void nodefmt_ttl_31()  { test(nodeFormatterTTL, "'123.0'^^<http://www.w3.org/2001/XMLSchema#integer>", "\"123.0\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
     @Test public void nodefmt_ttl_32()  { test(nodeFormatterTTL, "''^^<http://www.w3.org/2001/XMLSchema#integer>", "\"\"^^<http://www.w3.org/2001/XMLSchema#integer>") ; }
@@ -102,7 +103,7 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_34()  { test(nodeFormatterTTL, "'+123'^^<http://www.w3.org/2001/XMLSchema#integer>", "+123") ; }
     @Test public void nodefmt_ttl_35()  { test(nodeFormatterTTL, "'-1'^^<http://www.w3.org/2001/XMLSchema#integer>", "-1") ; }
 
-    // Add .123  and 123. 
+    // Decimals
     @Test public void nodefmt_ttl_40()  { test(nodeFormatterTTL, "'123'^^<http://www.w3.org/2001/XMLSchema#decimal>", "\"123\"^^<http://www.w3.org/2001/XMLSchema#decimal>") ; }
     @Test public void nodefmt_ttl_41()  { test(nodeFormatterTTL, "'123.0'^^<http://www.w3.org/2001/XMLSchema#decimal>", "123.0") ; }
     @Test public void nodefmt_ttl_42()  { test(nodeFormatterTTL, "''^^<http://www.w3.org/2001/XMLSchema#decimal>", "\"\"^^<http://www.w3.org/2001/XMLSchema#decimal>") ; }
@@ -111,10 +112,11 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_45()  { test(nodeFormatterTTL, "'-1.0'^^<http://www.w3.org/2001/XMLSchema#decimal>", "-1.0") ; }
     @Test public void nodefmt_ttl_46()  { test(nodeFormatterTTL, "'.1'^^<http://www.w3.org/2001/XMLSchema#decimal>", ".1") ; }
     @Test public void nodefmt_ttl_47()  { test(nodeFormatterTTL, "'-.1'^^<http://www.w3.org/2001/XMLSchema#decimal>", "-.1") ; }
+    // No trailing digit.  RDF 1.1.
     @Test public void nodefmt_ttl_48()  { test(nodeFormatterTTL, "\"1.\"^^<http://www.w3.org/2001/XMLSchema#decimal>", "\"1.\"^^<http://www.w3.org/2001/XMLSchema#decimal>") ; }
+    @Test public void nodefmt_ttl_49()  { test(nodeFormatterTTL, "'.45'^^<http://www.w3.org/2001/XMLSchema#decimal>", ".45") ; }
     
     // Doubles.
-    // Add .123  and 123. 
     @Test public void nodefmt_ttl_50()  { test(nodeFormatterTTL, "'123'^^<http://www.w3.org/2001/XMLSchema#double>", "\"123\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
     @Test public void nodefmt_ttl_51()  { test(nodeFormatterTTL, "'123.0'^^<http://www.w3.org/2001/XMLSchema#double>", "\"123.0\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
     @Test public void nodefmt_ttl_52()  { test(nodeFormatterTTL, "'123.0e0'^^<http://www.w3.org/2001/XMLSchema#double>", "123.0e0") ; }
@@ -127,5 +129,9 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_57()  { test(nodeFormatterTTL, "''^^<http://www.w3.org/2001/XMLSchema#double>", "\"\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
     @Test public void nodefmt_ttl_58()  { test(nodeFormatterTTL, "'+123.0e-10'^^<http://www.w3.org/2001/XMLSchema#double>", "+123.0e-10") ; }
     @Test public void nodefmt_ttl_59()  { test(nodeFormatterTTL, "'-123.0e-10'^^<http://www.w3.org/2001/XMLSchema#double>", "-123.0e-10") ; }
+
+    @Test public void nodefmt_ttl_60()  { test(nodeFormatterTTL, "'-123.e-10'^^<http://www.w3.org/2001/XMLSchema#double>", "-123.e-10") ; }
+    @Test public void nodefmt_ttl_61()  { test(nodeFormatterTTL, "'.1e-10'^^<http://www.w3.org/2001/XMLSchema#double>", ".1e-10") ; }
+    @Test public void nodefmt_ttl_62()  { test(nodeFormatterTTL, "'.e9'^^<http://www.w3.org/2001/XMLSchema#double>", "\".e9\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
 }
 

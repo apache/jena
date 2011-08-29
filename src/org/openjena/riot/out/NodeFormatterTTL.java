@@ -257,8 +257,13 @@ public class NodeFormatterTTL extends NodeFormatterNT
         if ( N == 0 ) return false ;
         int idx = 0 ;
         
+        // Decimal part (except 12. is legal)
+        
         idx = skipSign(lex, idx) ;
-        idx = skipDigits(lex, idx) ;
+        
+        int idx2 = skipDigits(lex, idx) ;
+        boolean initialDigits = ( idx != idx2) ;
+        idx = idx2 ;
         // Exponent required.
         if ( idx >= N ) return false ;
         char ch = lex.charAt(idx) ;
@@ -266,8 +271,11 @@ public class NodeFormatterTTL extends NodeFormatterNT
         {
             idx++ ;
             if ( idx >= N ) return false ;
-            idx = skipDigits(lex, idx) ;
+            idx2 = skipDigits(lex, idx) ;
+            boolean trailingDigits = ( idx != idx2 ) ;
+            idx = idx2 ;
             if ( idx >= N ) return false ;
+            if ( !initialDigits && !trailingDigits ) return false ;
         }
         // "e" or "E"
         ch = lex.charAt(idx) ;
