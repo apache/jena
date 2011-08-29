@@ -366,7 +366,11 @@ public class ARQ
     /** The date and time at which this release was built */   
     public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
     
-    private static boolean initialized = false ;
+    // A correct way to manage without synchonized using the double checked locking pattern.
+    //   http://en.wikipedia.org/wiki/Double-checked_locking
+    //   http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html 
+    private static volatile boolean initialized = false ;
+    private static final Object initLock = new Object() ;
 
     private static Context globalContext = null ;
 
@@ -375,27 +379,32 @@ public class ARQ
      * Note the final static initializer call 
      */
     
-    public static synchronized void init()
+    public static void init()
     { 
         if ( initialized )
             return ;
-        initialized = true ;
-        globalContext = defaultSettings() ;
-        StageBuilder.init() ;
-        ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
-        
-        // This is the pattern for any subsystem to register. 
-        String NS = ARQ.PATH ;
-        
-        SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
-        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
-        SystemARQ.registerSubSystem(sysInfo) ;
-        
-        SystemInfo sysInfo2 = new SystemInfo("http://openjena.org/#jena", Jena.VERSION, Jena.BUILD_DATE) ;
-        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
-        SystemARQ.registerSubSystem(sysInfo2) ;
-        
-        RIOT.init() ;
+        synchronized(initLock)
+        {
+            if ( initialized )
+                return ;
+            initialized = true ;
+            globalContext = defaultSettings() ;
+            StageBuilder.init() ;
+            ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
+
+            // This is the pattern for any subsystem to register. 
+            String NS = ARQ.PATH ;
+
+            SystemInfo sysInfo = new SystemInfo(ARQ.arqIRI, ARQ.VERSION, ARQ.BUILD_DATE) ;
+            ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
+            SystemARQ.registerSubSystem(sysInfo) ;
+
+            SystemInfo sysInfo2 = new SystemInfo("http://openjena.org/#jena", Jena.VERSION, Jena.BUILD_DATE) ;
+            ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
+            SystemARQ.registerSubSystem(sysInfo2) ;
+
+            RIOT.init() ;
+        }
     }
     
     // Force a call
