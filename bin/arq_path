@@ -6,6 +6,12 @@ then
     exit 1
     fi
 
+if [ -e "$ARQROOT/.classpath" ]
+then
+    # Development area
+    exec "$ARQROOT/bin/make_classpath_mvn" "$ARQROOT"
+    fi
+
 # CP=$(make_classpath "$ARQROOT")
 # echo $CP
 exec "$ARQROOT/bin/make_classpath" "$ARQROOT"
