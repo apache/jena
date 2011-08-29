@@ -1,0 +1,903 @@
+/**
+ * RDQL for ARQ
+ *
+ * Author:  Andy Seaborne andy.seaborne@hp.com
+ * Date:    June 2004
+ *
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007
+       Hewlett-Packard Development Company, LP
+ * All rights reserved.
+ * See end of file for details.
+ *
+ * Constraint expression is derived from Java : 
+ * example java1.2-a.jj grammer in JavaCC distribution
+ */
+
+options
+{
+  // Unicode characters outside of 0-0x00FF must be entered as \u1234
+  // Javacc does not provide mixed width charactser streams.
+  JAVA_UNICODE_ESCAPE   = true;
+  UNICODE_INPUT         = false ;
+
+  STATIC                = false ;
+//  DEBUG_PARSER          = true ;
+//  DEBUG_TOKEN_MANAGER   = true ;
+
+  // JJTree options
+  MULTI                 = true ;
+//  NODE_DEFAULT_VOID    = false ;
+//  BUILD_NODE_FILES      = false ;
+  NODE_PREFIX           = "Q_" ;
+  NODE_PACKAGE          = "com.hp.hpl.jena.sparql.lang.rdql" ;
+  NODE_USES_PARSER      = false ;
+}
+
+PARSER_BEGIN(RDQLParser)
+/*
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005, 2006, 2007 Hewlett-Packard Development Company, LP
+ */
+
+package com.hp.hpl.jena.sparql.lang.rdql ; 
+
+public class RDQLParser
+{
+   public SimpleNode top()
+   {
+      return (SimpleNode)jjtree.rootNode() ;
+   }
+}
+PARSER_END(RDQLParser)
+
+
+/* WHITE SPACE */
+
+SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+// Need this because we may not be at the start of the identifier
+// when the mode is entered.  For URIs, we enter that mode because
+// a suitable < is seen, similarly we exit on > so no skip necessary
+<READ_IDENTIFIER> SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+/* COMMENTS */
+
+MORE :
+{
+  "//" : IN_SINGLE_LINE_COMMENT
+|
+  "#" : IN_SINGLE_LINE_COMMENT
+|
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_SINGLE_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <SINGLE_LINE_COMMENT: "\n" | "\r" | "\r\n" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_SINGLE_LINE_COMMENT,IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+
+
+/* LITERALS */
+
+TOKEN :
+{
+  < INTEGER_LITERAL:
+        <DECIMAL_LITERAL> (["l","L"])?
+      | <HEX_LITERAL> (["l","L"])?
+//      | <OCTAL_LITERAL> (["l","L"])?
+  >
+|
+  // If octal permitted, should be ["1"-"9"] (["0"-"9"])*
+  < #DECIMAL_LITERAL: <DIGITS> >
+|
+  < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
+|
+  < FLOATING_POINT_LITERAL:
+        (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
+      | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
+      | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
+      | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|
+/****
+ * No character literals
+ * And we allow single quoted strings
+ */
+
+  < STRING_LITERAL1:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\" ~["\n","\r"])
+      )*
+      "'"
+  >
+|
+  < STRING_LITERAL2:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"  ~["\n","\r"])
+      )*
+      "\""
+  >
+}
+
+// Modes to read things that might be keywords as well.
+
+<READ_URI> TOKEN :
+{
+      <URI:  ( ~[" ", "\n", "\r", ">", "\t"] )+ >
+}
+
+<READ_QNAME> TOKEN :
+{
+  <QNAME: <QNAME_PREFIX> ":" <QNAME_LNAME>>
+|
+  <QNAME_PREFIX: (["a"-"z"] | ["A"-"Z"] | ["0"-"9"] )+>
+|
+  <QNAME_LNAME:  (["a"-"z"] | ["A"-"Z"] | ["0"-"9"] )+>
+}
+
+/* To go ...
+<READ_IDENTIFIER> TOKEN :
+{
+  <IDENTIFIER: (<LETTER>|<DIGIT>|"_"|"$"|".")+ >
+|
+  < LETTER: (["a"-"z"] | ["A"-"Z"])>
+|
+  < DIGIT:  ["0"-"9"]>
+}
+*/
+
+/* Keywords : includes operators that are words and should be
+ * before general things like IDENTIFIER which swallow almost anything
+ */
+
+TOKEN [IGNORE_CASE] :
+{
+  < SELECT:      "select" >      
+|
+  < SOURCE:      "source" >
+|
+  < FROM:        "from" >
+|
+  < WHERE:       "where" >
+|
+  < SUCHTHAT:    "and" >
+|
+  < PREFIXES:    "using" >
+|
+  < FOR:         "for" >
+| < STR_EQ: "eq" >
+| < STR_NE: "ne" >
+| < STR_LANGEQ: "langeq" >
+}
+
+TOKEN :
+{
+  < BOOLEAN_LITERAL: "true" | "false" >
+|
+  < NULL_LITERAL: "null">
+|
+  < DIGITS: (["0"-"9"])+ >
+}
+
+// Notes:
+// XML 1.1              http://www.w3.org/TR/xml11/
+// XML Namespces 1.1    http://www.w3.org/TR/xml-names11/
+//     Prefix ':' LocalPart
+//     Prefix is an NCName
+//     LocalPart is an NCName
+// 
+//     // An XML Name, minus the ":"
+//     NCName    ::=    NCNameStartChar NCNameChar*
+//     NCNameChar         ::=    NameChar - ':' 
+//     NCNameStartChar    ::=    NameStartChar - ':' 
+
+//     NameChar and NameSartChar defined in XML 1.1
+//     NameStartChar := ":" | [A-Z] | "_" | [a-z] |
+//                      [#xC0-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] |
+//                      [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+//                      [#x3001-#xD7FF] | [#xF900-#xEFFFF]
+//     NameChar      := NameStartChar | "-" | "." | [0-9] | #xB7 |
+//                         [#x0300-#x036F] | [#x203F-#x2040]
+
+TOKEN:
+{
+<NCName: (["A"-"Z"] | "_" | ["a"-"z"]| 
+          ["\u00C0"-"\u02FF"] | ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
+	  ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFF"])
+
+ 	 (["A"-"Z"] | "_" | ["a"-"z"]| 
+          ["\u00C0"-"\u02FF"] | ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
+	  ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFF"] |
+          "-" | "." | ["0"-"9"] | "\u00B7" |
+ 	  ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+|
+<VAR:	"?" <NCName>>
+
+}
+
+/* SEPARATORS */
+
+TOKEN :
+{
+  < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < LBRACKET: "[" >
+| < RBRACKET: "]" >
+| < SEMICOLON: ";" >
+| < COMMA: "," >
+| < DOT: "." >
+}
+
+/* OPERATORS */
+
+TOKEN :
+{
+  // ASSIGN is here so that the tokenizer will process it and
+  // the parser will flag an error.  Otherwise, the tokenizer
+  // gives a less helpful message. 
+  < ASSIGN: "=" >
+| < GT: ">" >
+| < LT: "<" >
+| < BANG: "!" >
+| < TILDE: "~" >
+| < HOOK: "?" >
+| < COLON: ":" >
+| < EQ: "==" >
+| < NEQ: "!=" >
+| < LE: "<=" >    // Maybe: | "=>" >
+| < GE: ">=" >    // Maybe: | "=<" >
+| < SC_OR: "||" >
+| < SC_AND: "&&" >
+//| < SC_XOR: "^^" >
+| < INCR: "++" >
+| < DECR: "--" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+| < BIT_AND: "&" >
+| < BIT_OR: "|" >
+| < BIT_XOR: "^" >
+| < REM: "%" >
+| < LSHIFT: "<<" >
+| < RSIGNEDSHIFT: ">>" >
+| < RUNSIGNEDSHIFT: ">>>" >
+// The tokens for string EQ and string NE are done before IDENTIFIER
+// to ensure that they are recognized as reserved words.
+| < STR_MATCH: ("=~"|"~~") >
+| < STR_NMATCH: "!~">
+| < DATATYPE: "^^">
+| < AT: "@">
+}
+
+// **** Debug point
+
+void CompilationUnit() #void :
+{}
+{
+  // The <EOF> tests for trailing junk
+  // but does not work for "//...<EOF>"
+  Query() <EOF>
+}
+
+// Optional comma
+void CommaOpt() #void :
+{}
+{
+    (<COMMA>)?
+}
+
+// **** Debug point
+
+void Query() :
+{}
+{
+  SelectClause()
+  ( SourceClause() )? 
+  ( TriplePatternClause() ) ?
+  ( ConstraintClause() )?
+  ( PrefixesClause() ) ?
+}
+
+void SelectClause() :
+{}
+{
+  LOOKAHEAD(2)
+  <SELECT> Var() (CommaOpt() Var())*
+|
+  <SELECT> "*"
+}
+
+void SourceClause() :
+{}
+{
+  (<SOURCE> | <FROM>)
+  SourceSelector()
+  (CommaOpt() SourceSelector() )*
+}
+
+void SourceSelector() :
+{}
+{
+  // Must be quoted, must be a URL - no qnames at this point.
+  URL()
+}
+
+void TriplePatternClause() :
+{}
+{
+  <WHERE> TriplePattern() ( CommaOpt() TriplePattern() )*
+}
+
+void ConstraintClause() :
+{}
+{
+  // This comma is not optional - must have comma or "AND"
+  <SUCHTHAT> Expression() ( (<COMMA> | <SUCHTHAT> ) Expression() )*
+}
+
+void TriplePattern() :
+{}
+{
+  <LPAREN> VarOrURI() CommaOpt()  VarOrURI() CommaOpt()  VarOrLiteral() <RPAREN>
+}
+
+void VarOrURI() #void :
+{}
+{
+  Var() | URI()
+}
+
+void VarOrLiteral() #void :
+{}
+{
+  Var() | Literal()
+}
+
+
+void Var() :
+{ Token t ;}
+{
+    t = <VAR>
+    { jjtThis.setName(t.image) ; }
+// OLD
+//  "?" Identifier()
+}
+
+
+void PrefixesClause() : 
+{ }
+{
+    // Broken: comma should be optional here. But ... it isn't in practice.
+    // PrefixDecl starts with an IDENITIFER, read in READ_IDENTIFER 
+    // token context but CommaOpt may swallow a comma in DEFAULT tokenizing mode
+    // Generated parser seems not to work.
+
+    <PREFIXES> PrefixDecl() ( CommaOpt() PrefixDecl() )*
+}
+
+void PrefixDecl() :
+{}
+{
+  Identifier() <FOR> QuotedURI()
+}
+
+
+/******************************************************************/
+// Constraint syntax follows.
+
+// **** Debug point
+
+void Expression() #void :
+{}
+{
+  ConditionalOrExpression()
+}
+
+void ConditionalOrExpression() #void :
+{}
+{
+  ConditionalXorExpression() 
+  ( <SC_OR> ConditionalXorExpression() #LogicalOr(2) )*
+}
+
+void ConditionalXorExpression() #void :
+{}
+{
+  ConditionalAndExpression() 
+  // Skip this
+  //( <SC_XOR> ConditionalAndExpression() #LogicalXor(2) )*
+}
+
+void ConditionalAndExpression() #void :
+{}
+{
+   ValueLogical()
+   ( <SC_AND> ValueLogical() #LogicalAnd(2) )*
+}
+
+
+// End of boolean expressions
+
+/******************************************************************/
+
+// Things that are not operations on boolean terms.
+
+void ValueLogical() #void :
+{}
+{
+  StringEqualityExpression()
+}
+
+void StringEqualityExpression() #void :
+{}
+{
+  NumericalLogical()
+  ( <STR_EQ> NumericalLogical()     #StringEqual(2)
+  | <STR_NE> NumericalLogical()     #StringNotEqual(2)
+  | <STR_LANGEQ> TextLiteral2()     #StringLangEqual(2)
+  | <STR_MATCH>  PatternLiteral()   #StringMatch(2)
+  | <STR_NMATCH> PatternLiteral()   #StringNoMatch(2)
+  )*
+}
+
+// Expressions that involve comparing numbers.
+
+void NumericalLogical() #void :
+{}
+{
+  InclusiveOrExpression()
+}
+
+void InclusiveOrExpression() #void :
+{}
+{
+  ExclusiveOrExpression()
+  ( <BIT_OR> ExclusiveOrExpression() #BitOr(2) )*
+}
+
+void ExclusiveOrExpression() #void :
+{}
+{
+  AndExpression()
+  ( <BIT_XOR> AndExpression() #BitXor(2) )*
+}
+
+void AndExpression() #void :
+{}
+{
+  ArithmeticCondition()
+  ( <BIT_AND> ArithmeticCondition() #BitAnd(2) )*
+}
+
+void ArithmeticCondition() #void :
+{}
+{
+  EqualityExpression()
+}
+
+void EqualityExpression() #void :
+{}
+{
+  RelationalExpression() 
+  ( <EQ> RelationalExpression()    #Equal(2)
+  | <NEQ> RelationalExpression()   #NotEqual(2)
+  )?
+}
+
+void RelationalExpression() #void :
+{}
+{
+  NumericExpression()
+  ( <LT> NumericExpression() #LessThan(2)
+  | <GT> NumericExpression() #GreaterThan(2)
+  | <LE> NumericExpression() #LessThanOrEqual(2)
+  | <GE> NumericExpression() #GreaterThanOrEqual(2) 
+  )?
+}
+
+/******************************************************************/
+
+// **** Debug point
+
+void NumericExpression ()  #void :
+{}
+{
+  ShiftExpression()
+}
+
+
+void ShiftExpression() #void :
+{}
+{
+  AdditiveExpression()
+  ( <LSHIFT> AdditiveExpression()         #LeftShift(2)
+  | <RSIGNEDSHIFT> AdditiveExpression()   #RightSignedShift(2)
+  | <RUNSIGNEDSHIFT> AdditiveExpression() #RightUnsignedShift(2)
+  )*
+}
+
+void AdditiveExpression() #void :
+{}
+{
+  MultiplicativeExpression()
+  ( <PLUS> MultiplicativeExpression()   #Add(2)
+  | <MINUS> MultiplicativeExpression()  #Subtract(2)
+  )*
+}
+
+void MultiplicativeExpression()  #void :
+{}
+{
+  UnaryExpression()
+  ( <STAR>  UnaryExpression() #Multiply(2)
+  | <SLASH> UnaryExpression() #Divide(2)
+  | <REM>   UnaryExpression() #Modulus(2)
+  )*
+}
+
+void UnaryExpression() #void :
+{}
+{
+  UnaryExpressionNotPlusMinus()
+|
+  ( <PLUS>  UnaryExpression()  #UnaryPlus(1)
+  | <MINUS> UnaryExpression()  #UnaryMinus(1)
+  )
+}
+
+void UnaryExpressionNotPlusMinus() #void :
+{}
+{
+  ( <TILDE> | <BANG> ) UnaryExpression() #UnaryNot(1)
+|
+  PrimaryExpression()
+}
+
+void PrimaryExpression() #void :
+{}
+{
+  Var()
+|
+  Literal()
+|
+  FunctionCall()
+|
+  // And this is why expressions are not typed by the parser!
+  // Arbitrary lookahead of chars to see is the expression
+  // is numeric or boolean.
+  <LPAREN> Expression() <RPAREN>
+}
+
+void FunctionCall() :
+{}
+{
+  "&" Identifier() <LPAREN> ArgList() <RPAREN>
+}
+ 
+void ArgList() :
+{}
+{
+  VarOrLiteral() (<COMMA> VarOrLiteral() ) *
+}
+
+
+/******************************************************************/
+// Literals (as in query literls - any value in the query
+// Not "RDF literals".
+
+void Literal() #void :
+{}
+{
+  URI()
+|
+  NumericLiteral()
+|
+  TextLiteral()
+|
+  BooleanLiteral()
+|
+  NullLiteral()
+}
+
+void NumericLiteral() :
+{
+  Token t;
+}
+{
+  t = <INTEGER_LITERAL> { jjtThis.set(true, t.image) ; }
+|
+  t = <FLOATING_POINT_LITERAL> { jjtThis.set(false, t.image) ; }
+}
+
+void TextLiteral() :
+{
+  Token t ;
+}
+{
+  ( t = <STRING_LITERAL1> { jjtThis.set(t.image) ; }
+  | t = <STRING_LITERAL2> { jjtThis.set(t.image) ; } )
+
+  // Optional lang tag and datatype.
+
+  ( <AT> Identifier() ) ?
+  ( <DATATYPE> URI() )?
+} 
+
+void TextLiteral2() :
+{
+  Token t ;
+}
+{
+  ( t = <STRING_LITERAL1> { jjtThis.set(t.image) ; }
+  | t = <STRING_LITERAL2> { jjtThis.set(t.image) ; } )	
+}
+
+<READ_REGEX> TOKEN :
+{
+    // This just creates a token symbol to read a character- we fill it in Java below.
+    // Doing it like this means we use the parser token routines, not the tokenizer directly.
+    <PATTERN: ~[]>
+}
+//<READ_REGEX> SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+
+void PatternLiteral() :
+{
+  Token t ;
+  Token mtoken ;
+  char marker ;
+  int state = 0 ;
+}
+{
+  // Skip whitespace
+
+  {
+    state = token_source.curLexState ;
+    token_source.SwitchTo(READ_REGEX) ;
+  }
+   
+  // Pattern language is: [m]/pattern/[i][m][s][x]
+  // Note the leading "m" is optional because // is
+  // often in conflict with URIs so the convenience
+  // of, say "!", as a leading marker is good.
+  // We do check that the RE isn't "....", i.e. markers, with
+  // no "m", that might be a plain string.
+    
+  // Having a variable marker is tricky because we can't
+  // define the pattern in fixed tokens.  But the target is simple
+  // so we just do it in java.
+  // Skip to marker char (processing escapes)
+
+  {
+      while(true)
+      {
+	  t = getNextToken() ;
+	  if ( t.kind == EOF )
+	      throw new Error("End of file: expecting the start of a regular expression") ;
+	  marker = t.image.charAt(0) ;
+	  // Skip whitespace
+	  if ( marker != ' ' && marker != '\n' && 
+	       marker != '\t' && marker != '\r' &&
+	       marker != '\f' )
+	      break ;
+      }
+      if ( marker != '/' )
+      {
+	  if ( marker == 'm' )
+	  {
+	      //marker = jj_input_stream.readChar() ;
+	      t = getNextToken() ;
+	      marker = t.image.charAt(0) ;
+	  }
+	  else
+          {
+              if ( marker == '"' || marker == '\'' )
+                  // Does not start m, and does start with " or '
+                  throw new Error("Invalid regular expression (starts with ["+marker+"]) at line " +
+		      t.beginLine + " column " + t.beginColumn + ".");
+	  }
+          // Sanity check - delimiter isn't an alphanumeric
+	  if ( Character.isLetterOrDigit(marker) )
+	      throw new Error("Invalid start to regular expression at line " +
+			      t.beginLine + " column " + t.beginColumn + ".");
+      }
+      String patternString = "" ;
+      boolean inEscape = false ;
+      while(true)
+      {
+	  char ch ;
+	  t = getNextToken() ;
+	  if ( t.kind == EOF )
+	      throw new Error("End of file during regular expression") ;
+	  ch = t.image.charAt(0) ;
+	  
+	  if ( ch == '\n' || ch == '\r' || ch == '\f' )
+	      throw new Error("Invalid regular expression at line " +
+			      t.beginLine + " column " + t.beginColumn + ".");
+	  if ( inEscape )
+	  {
+	      if ( ch == 'n' ) ch = '\n' ;
+	      if ( ch == 't' ) ch = '\t' ;
+	      if ( ch == 'r' ) ch = '\r' ;
+	      if ( ch == 'b' ) ch = '\b' ;
+
+	      // But if we are escaping a character that is regex significant,
+	      // leave in the esacape.
+	      if ( ch != marker )
+		  patternString = patternString + '\\' ;
+
+	      inEscape = false ;
+	  }
+	  else
+	  {
+	      // Escape?
+	      if ( ch == '\\' )
+	      {
+		  inEscape = true ;
+		  continue ;
+	      }
+	      if ( ch == marker )
+		  break ;
+	      
+	  }
+	  patternString = patternString + ch ;
+      }
+      // Read modifiers
+      String modifiers = "" ;
+      while(true)
+      {
+	  char ch ;
+	  // End of file possible.
+	  t = getNextToken() ;
+	  if ( t.kind == EOF )
+	      break ;
+	  ch = t.image.charAt(0) ;
+	  
+	  if ( ch == 'i' || ch == 'm' || ch == 's' || ch == 'x' )
+	      modifiers = modifiers + ch ;
+	  else
+	  {
+	      jj_input_stream.backup(1) ;
+	      break ;
+	  }
+      }
+      
+      token_source.SwitchTo(state) ;
+      jjtThis.setPattern(patternString) ;
+      if ( modifiers.length() > 0 )
+	  jjtThis.setModifiers(modifiers) ; 
+  }
+}
+
+
+void BooleanLiteral() :
+{
+  Token t ;
+}
+{
+  t = <BOOLEAN_LITERAL>  { jjtThis.set(t.image) ; }
+}
+
+void NullLiteral() :
+{}
+{
+  <NULL_LITERAL>
+}
+
+void URL() :
+{}
+{
+  QuotedURI()
+}
+
+void URI() #void :
+{ }
+{
+  QuotedURI()
+|
+  QName()
+}
+
+void QName() :
+{ Token t1, t2 ; }
+{
+    //<Prefix> ":" (<LocalPart>) { jjtThis.set(token.image) ; }
+    Identifier() 
+    { t1 = token ; }
+    ":" (LOOKAHEAD(2) Identifier())?
+    { t2 = token ;
+      jjtThis.set(t1.image+":"+t2.image) ; }
+}
+
+// Should move this into tokens section
+// as part of getting the ordering right.
+
+void QuotedURI() :
+{ Token tt = null ;
+  int state = 0 ;
+}
+{
+  "<"
+  {
+    state = token_source.curLexState ;
+    token_source.SwitchTo(READ_URI) ; 
+  }
+  tt = <URI>
+  { 
+    jjtThis.set(tt.image) ;
+    token_source.SwitchTo(state) ;
+  }
+  ">"
+}
+
+
+
+// Need to generalise this to include leading digits
+// That is, the second part of an NCName expressions
+
+void Identifier() :
+{}
+{
+   ( //<IDENTIFIER> 
+    <NCName>
+    // And all keywords
+    | <SELECT> | <SOURCE> | <FROM> | <WHERE>
+    | <SUCHTHAT> | <PREFIXES> | <FOR>
+    | <STR_EQ> | <STR_NE> )
+  { jjtThis.set(token.image) ; }
+}
+
+
+/*
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/
