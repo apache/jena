@@ -6,14 +6,19 @@
 
 package org.openjena.riot.out;
 
+import java.io.IOException ;
 import java.io.Writer ;
+
+import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
+/** Provide implementations of the operations of NodeFormatter in terms
+ * of core operations for each node type.
+ */
 public abstract class NodeFormatterBase implements NodeFormatter
 {
-
     //@Override
     public void format(Writer w, Node n)
     {
@@ -25,6 +30,9 @@ public abstract class NodeFormatterBase implements NodeFormatter
             formatLiteral(w, n) ;
         else if ( n.isVariable() )
             formatVar(w, n) ;
+        else if ( Node.ANY.equals(n) )
+            try { w.write("ANY") ; }
+            catch (IOException ex) { IO.exception(ex) ; }
         else
             throw new ARQInternalErrorException("Unknow node type: "+n) ;
     }

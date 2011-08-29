@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 //  Nodes, escapes, prefix mapping.
 public class TestOutput extends BaseTest
 {
+    public TestOutput() {}
     static Prologue prologue = new Prologue() ;
     static {
         prologue.getPrefixMap().add("", "http://example/") ;

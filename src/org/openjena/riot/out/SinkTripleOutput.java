@@ -59,10 +59,6 @@ public class SinkTripleOutput implements Sink<Triple>
         out.flush() ;
     }
 
-    private Node lastS = null ;
-    private Node lastP = null ;
-    private Node lastO = null ;
-    
     public void send(Triple triple)
     {
         Node s = triple.getSubject() ;
