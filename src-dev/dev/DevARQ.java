@@ -7,6 +7,8 @@ public class DevARQ
     // FILTER(?x=<x> && ...) does not push down on the ?x=<x>
     // Do FILTER placement before filter equality -- but dnager of breaking up BGPs.
     
+    // riot.out.SinkTripleOutput and BufferingWriter : respect encoder 
+    
     // Automatically create graphs for in-memorry update.
     //   DatasetFactory.create() ; returns an auto-add dataset.
     //   and UpdateAction.execute (request, model) has a fixed datset of one graph.

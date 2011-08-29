@@ -9,7 +9,6 @@
 package org.openjena.riot.out;
 
 import java.io.OutputStream ;
-import java.nio.ByteBuffer ;
 import java.nio.charset.CharsetEncoder ;
 
 import org.openjena.atlas.io.BufferingWriter ;
@@ -28,6 +27,7 @@ public class SinkQuadOutput implements Sink<Quad>
     private Prologue prologue = null ;
     private BufferingWriter out ;
     private NodeToLabel labelPolicy = null ;
+    private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
     public SinkQuadOutput(OutputStream outs)
     {
@@ -37,8 +37,7 @@ public class SinkQuadOutput implements Sink<Quad>
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
         encoder = Chars.charsetUTF8.newEncoder() ;
-        Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
-        out = new BufferingWriter(dest) ;
+        out = BufferingWriter.create(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
@@ -60,11 +59,6 @@ public class SinkQuadOutput implements Sink<Quad>
         out.flush() ;
     }
 
-    private Node lastS = null ;
-    private Node lastP = null ;
-    private Node lastO = null ;
-    private Node lastG = null ;
-    
     public void send(Quad quad)
     {
         Node s = quad.getSubject() ;
@@ -72,70 +66,19 @@ public class SinkQuadOutput implements Sink<Quad>
         Node o = quad.getObject() ;
         Node g = quad.getGraph() ;
         
-//        if ( ! ( s.isURI() || s.isBlank() ) )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Subject is not a URI or blank node") ;
-//        if ( ! p.isURI() )
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Predicate is not a URI") ;
-//        if ( ! ( o.isURI() || o.isBlank() || o.isLiteral() ) ) 
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Object is not a URI, blank node or literal") ;
-//        if ( ! g.isURI() ) 
-//            throw new TurtleParseException("["+line+", "+col+"] : Error: Graph is not a URI") ;
-      
-        if ( false )
-        {
-            // The compression of temrs 
-            if ( s.equals(lastS) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, s, prologue, labelPolicy) ;
-            
-            out.output(" ") ;
-            
-            if ( p.equals(lastP) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, p, prologue, labelPolicy) ;
-    
-            out.output(" ") ;
-    
-            if ( o.equals(lastO) )
-                out.output("*") ;
-            else
-                OutputLangUtils.output(out, o, prologue, labelPolicy) ;
-            
-            if ( outputGraphSlot(g) )
-            {
-                if ( g.equals(lastG) )
-                    out.output("*") ;
-                else
-                    OutputLangUtils.output(out, g, prologue, labelPolicy) ;
-            }
-            
-            out.output(" .") ;
-            out.output("\n") ;
-            
-            lastS = s ;
-            lastP = p ;
-            lastO = o ;
-            lastG = g ;
-            return ;
-        }
-
-        // N-triples.
-        OutputLangUtils.output(out, s, prologue, labelPolicy) ;
+        nodeFmt.format(out, s) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, p, prologue, labelPolicy) ;
+        nodeFmt.format(out, p) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, o, prologue, labelPolicy) ;
-
+        nodeFmt.format(out, o) ;
+        
         if ( outputGraphSlot(g) ) 
         {
             out.output(" ") ;
-            OutputLangUtils.output(out, g, prologue, labelPolicy) ;
+            nodeFmt.format(out, g) ;
         }
             
-        out.output(" .") ;
-        out.output("\n") ;
+        out.output(" .\n") ;
     }
     
     private static boolean outputGraphSlot(Node g)
@@ -148,6 +91,7 @@ public class SinkQuadOutput implements Sink<Quad>
         flush();
     }
 }
+
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
  * (c) Copyright 2010 Talis Systems Ltd.

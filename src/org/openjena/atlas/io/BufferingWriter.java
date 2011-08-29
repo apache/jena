@@ -77,7 +77,7 @@ public final class BufferingWriter extends Writer
         return new BufferingWriter(new SinkChannel(out), size, size/2) ;
     }
     
-    /** Writer(chars) over OutputStream (bytes) -- heavily buffered -- fluishing may be needed */
+    /** Writer(chars) over OutputStream (bytes) -- heavily buffered -- flushing may be needed */
     public static BufferingWriter create(OutputStream out)
     {
         return new BufferingWriter(new SinkOutputStream(out), SIZE, BLOB_SIZE) ;

@@ -24,7 +24,7 @@ public class NTriplesWriter
     public static void write(OutputStream out, Graph graph)
     {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
-        // Write prologue.
+        //NodeToLabel.createBNodeByLabelEncoded() ;
         Sink<Triple> sink = new SinkTripleOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
         Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;

@@ -8,7 +8,6 @@
 package org.openjena.riot.out;
 
 import java.io.OutputStream ;
-import java.nio.ByteBuffer ;
 import java.nio.charset.CharsetEncoder ;
 
 import org.openjena.atlas.io.BufferingWriter ;
@@ -23,10 +22,13 @@ import com.hp.hpl.jena.graph.Triple ;
 /** A class that print triples, N-triples style */ 
 public class SinkTripleOutput implements Sink<Triple>
 {
+    // TODO ASCII version
     private CharsetEncoder encoder ;
     private Prologue prologue = null ;
     private BufferingWriter out ;
     private NodeToLabel labelPolicy = null ;
+    
+    private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
     public SinkTripleOutput(OutputStream outs)
     {
@@ -37,8 +39,7 @@ public class SinkTripleOutput implements Sink<Triple>
     {
         //encoder = Chars.charsetUTF8.newEncoder() ;
         encoder = Chars.charsetASCII.newEncoder() ;
-        Sink<ByteBuffer> dest = new BufferingWriter.SinkOutputStream(outs) ; 
-        out = new BufferingWriter(dest) ;
+        out = BufferingWriter.create(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
@@ -64,17 +65,13 @@ public class SinkTripleOutput implements Sink<Triple>
         Node s = triple.getSubject() ;
         Node p = triple.getPredicate() ;
         Node o = triple.getObject() ;
-
-        // See SinkQuadOutput for "*" (for same as row before).
-        // N-triples.
-        OutputLangUtils.output(out, s, prologue, labelPolicy) ;
+        
+        nodeFmt.format(out, s) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, p, prologue, labelPolicy) ;
+        nodeFmt.format(out, p) ;
         out.output(" ") ;
-        OutputLangUtils.output(out, o, prologue, labelPolicy) ;
-        out.output(" .") ;
-        out.output("\n") ;
-        out.flush();
+        nodeFmt.format(out, o) ;
+        out.output(" .\n") ;
     }
 
     public void close()

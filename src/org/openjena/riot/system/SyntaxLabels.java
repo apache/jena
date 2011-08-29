@@ -13,7 +13,7 @@ import org.openjena.riot.out.NodeToLabel ;
 public class SyntaxLabels
 {
     /** Default setup - scope by document, relabel BNodes ids to short forms */
-    static public NodeToLabel createNodeToLabel() { return  NodeToLabel.createScopeByDocument() ; }
+    static public NodeToLabel createNodeToLabel() { return NodeToLabel.createScopeByDocument() ; }
     static public LabelToNode createLabelToNode() { return LabelToNode.createScopeByDocument() ; }
     
     
