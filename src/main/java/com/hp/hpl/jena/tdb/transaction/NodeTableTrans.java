@@ -167,6 +167,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
                 throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2)) ; 
         }
+        // Reset!
+        offset = base.allocOffset().getId() ;
     }
     
     @Override
@@ -202,21 +204,12 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         NodeId x3 = nodeTableJournal.allocOffset() ;
         debug("writeNodeJournal: (base alloc before) %s -> (base alloc after) %s -> (nodeTableJournal) %s", x1, x2, x3) ;
         
+        // Reset (in case we use this again)
         nodeIndex.clear() ;
         journal.truncate(journalStartOffset) ;
         journal.sync() ;
         base.sync() ;
-        
-        offset = base.allocOffset().getId() ; 
-//        
-//        long offset2 = 
-//        //debug("writeNodeJournal: %d -> %d", offset, offset2) ;
-//        offset = offset2 ;
-//        
-//        // ??
-//        long offset3 = nodeTableJournal.allocOffset().getId() ;
-//        debug("writeNodeJournal: %d -> %d", offset2, offset3) ;
-        
+        offset = base.allocOffset().getId() ;
         passthrough = true ;
     }
 
