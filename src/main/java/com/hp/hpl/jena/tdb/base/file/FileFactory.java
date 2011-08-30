@@ -28,7 +28,7 @@ public class FileFactory
 
     public static ObjectFile createObjectFileMem()
     { 
-        if ( true )
+        if ( false )
             // Older code.
             return new ObjectFileMem() ;
         else

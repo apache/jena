@@ -18,7 +18,7 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTableWrapper implements NodeTable
 {
-    private final NodeTable nodeTable ;
+    protected final NodeTable nodeTable ;
     
     protected NodeTableWrapper(NodeTable nodeTable)
     {

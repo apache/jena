@@ -58,6 +58,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
         this.label = label ; 
+        // Show the way tables are wired up
+        // log.info(String.format("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub)) ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }
@@ -146,7 +148,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             Node node = x.getRight() ;
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
-                throw new TDBException(String.format("Different ids allocated: expected %s, got %s\n", mapFromJournal(nodeId), nodeId2)) ; 
+                throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s\n", node, mapFromJournal(nodeId), nodeId2)) ; 
         }
     }
     
@@ -229,7 +231,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     }
 
     @Override
-    public String toString() { return "NodeTableTrans:"+label ; }
+    public String toString() { return "NodeTableTrans:"+label+"(#"+Integer.toHexString(super.hashCode())+")" ; }
     
     private void debug(String fmt, Object... args)
     {

@@ -1,5 +1,6 @@
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -54,10 +55,14 @@ public class NodeTableInline extends NodeTableWrapper
             return n ;
         return super.getNodeForNodeId(id) ;
     }
+    
+    @Override
+    public String toString() { return "Inline("+nodeTable.toString()+")" ; }
 }
 
 /*
  * (c) Copyright 2009 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

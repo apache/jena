@@ -192,6 +192,9 @@ public class NodeTableCache implements NodeTable
     {
         return baseTable.all() ;
     }
+    
+    @Override
+    public String toString() { return "Cache("+baseTable.toString()+")" ; }
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

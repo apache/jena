@@ -20,6 +20,7 @@ package tx;
 
 import java.util.Iterator;
 
+import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair;
 
 import com.hp.hpl.jena.graph.Node;
@@ -32,7 +33,17 @@ import com.hp.hpl.jena.tdb.store.NodeId;
 
 public class Report_JENA91 {
     
-    private static StoreConnection sConn = StoreConnection.make(Location.mem()) ;
+    static Location LOC = Location.mem() ; // new Location("tmp/J91") ;
+    
+    static {
+        if ( ! LOC.isMem() )
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
+    }
+    
+    // Make sure you have "false" in FileFactory.createObjectFileMem
+    // Later: go back and flip to get old mem specific failure.
+    
+    private static StoreConnection sConn = StoreConnection.make(LOC) ;
     private static Node g = Node.createURI("g") ;
     private static Node s = Node.createURI("s") ;
     private static Node p = Node.createURI("p") ;
@@ -47,22 +58,23 @@ public class Report_JENA91 {
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(g, s, p, o1) ;
         dsgW1.commit() ;
-        // dumpNodeTable("W1", dsgW1) ;
-        // dumpNodeTable("R1", dsgR1) ;
+        dumpNodeTable("W1", dsgW1) ;
+        dumpNodeTable("R1", dsgR1) ;
 
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(g, s, p, o2) ;
         dsgW2.commit() ;
-        // dumpNodeTable("W2", dsgW2) ;
-        // dumpNodeTable("R1", dsgR1) ;
+        dumpNodeTable("W2", dsgW2) ;
+        dumpNodeTable("R1", dsgR1) ;
 
         DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
         dsgW3.add(g, s, p, o3) ;
-        // dumpNodeTable("W3", dsgW3) ;
-        // dumpNodeTable("R1", dsgR1) ;
+        dumpNodeTable("W3", dsgW3) ;
+        dumpNodeTable("R1", dsgR1) ;
         dsgW3.commit() ;
 
         dsgR1.close() ;
+        System.out.println("DONE") ;
     }
     
     private static void dumpNodeTable (String label, DatasetGraphTxn dsg) {
@@ -71,6 +83,7 @@ public class Report_JENA91 {
         System.out.println("---------------[ " + label + " ]---------------") ;
         while ( iter.hasNext() ) { System.out.println(iter.next()) ; }
         System.out.println("------------------------------------\n") ;
+        System.out.flush() ;
     }
 }
 

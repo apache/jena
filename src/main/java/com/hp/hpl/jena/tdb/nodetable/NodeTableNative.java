@@ -239,6 +239,9 @@ public class NodeTableNative implements NodeTable
     {
         return objects;
     }
+    
+    @Override
+    public String toString() { return objects.getLabel() ; }
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
