@@ -34,6 +34,7 @@ public class NodeTableCache implements NodeTable
     // Cache update needed on NodeTable changes because a node may become "known"
     private CacheSet<Node> notPresent ;
     private NodeTable baseTable ;
+    private Object lock = new Object() ;
 
     public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize)
     {
@@ -76,7 +77,7 @@ public class NodeTableCache implements NodeTable
         if ( NodeId.isAny(id) )
             return null ;
 
-        synchronized (this)
+        synchronized (lock)
         {
             Node n = cacheLookup(id) ;   // Includes known to not exist
             if ( n != null )
@@ -98,7 +99,7 @@ public class NodeTableCache implements NodeTable
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
         
-        synchronized (this)
+        synchronized (lock)
         {
             // Check caches.
             NodeId nodeId = cacheLookup(node) ;
@@ -170,6 +171,20 @@ public class NodeTableCache implements NodeTable
         return baseTable.allocOffset() ;
     }
     
+    @Override
+    public boolean isEmpty()
+    {
+        synchronized (lock)
+        {
+            if ( node2id_Cache != null )
+                return node2id_Cache.isEmpty() ;
+            if ( id2node_Cache != null )
+                id2node_Cache.isEmpty() ;
+            // Write through.
+            return baseTable.isEmpty() ;
+        }
+    }
+
     @Override
     public synchronized void close()
     {

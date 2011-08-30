@@ -213,7 +213,7 @@ public class JournalControl
         {
             syslog.info("Recovering node data: "+fileRef.getFilename()) ;
             ObjectFile dataJrnl = FileFactory.createObjectFileDisk(objFilename) ;
-            NodeTableTrans ntt = new NodeTableTrans(objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
+            NodeTableTrans ntt = new NodeTableTrans(null, objFilename, baseNodeTable, new IndexMap(recordFactory), dataJrnl) ;
             ntt.append() ;
             ntt.close() ;
             dataJrnl.close() ;

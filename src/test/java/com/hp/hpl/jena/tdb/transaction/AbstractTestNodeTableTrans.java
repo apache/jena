@@ -39,20 +39,20 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     abstract protected ObjectFile createObjectFile() ;
     abstract protected Location getLocation() ;
     
-    private NodeTableTrans create(Node...nodes)
+    private NodeTableTrans create(Transaction txn, Node...nodes)
     {
         NodeTable base = SetupTDB.makeNodeTable(getLocation()) ;
         for ( Node n : nodes )
             base.getAllocateNodeId(n) ;
-        return create(base) ;
+        return create(txn, base) ;
     }
     
-    private NodeTableTrans create(NodeTable base)
+    private NodeTableTrans create(Transaction txn, NodeTable base)
     {
         RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
         Index idx = new IndexMap(recordFactory) ;
         ObjectFile objectFile = createObjectFile() ;
-        NodeTableTrans ntt = new NodeTableTrans("test", base, idx, objectFile) ;
+        NodeTableTrans ntt = new NodeTableTrans(txn, "test", base, idx, objectFile) ;
         return ntt ;
     }
     
@@ -76,8 +76,8 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     @Test public void nodetrans_01()
     {
-        NodeTableTrans ntt = create() ;
         Transaction txn = createTxn(11) ; 
+        NodeTableTrans ntt = create(txn) ;
         ntt.begin(txn) ;
         ntt.abort(txn) ;
     }
@@ -85,10 +85,10 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     @Test public void nodetrans_02()
     {
-        NodeTableTrans ntt = create() ;
+        Transaction txn = createTxn(11) ; 
+        NodeTableTrans ntt = create(txn) ;
         NodeTable nt0 = ntt.getBaseNodeTable() ;
         
-        Transaction txn = createTxn(11) ; 
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -108,10 +108,10 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
 
     @Test public void nodetrans_03()
     {
-        NodeTableTrans ntt = create() ;
-        NodeTable nt0 = ntt.getBaseNodeTable() ;
-        
         Transaction txn = createTxn(11) ; 
+        NodeTableTrans ntt = create(txn) ;
+        NodeTable nt0 = ntt.getBaseNodeTable() ;
+         
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node1) ;
@@ -130,9 +130,9 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     @Test public void nodetrans_04()
     {
-        NodeTableTrans ntt = create(node1) ;
-        NodeTable nt0 = ntt.getBaseNodeTable() ;
         Transaction txn = createTxn(11) ; 
+        NodeTableTrans ntt = create(txn, node1) ;
+        NodeTable nt0 = ntt.getBaseNodeTable() ;
         ntt.begin(txn) ;
         // Add a node
         NodeId nodeId = ntt.getAllocateNodeId(node2) ;
@@ -151,7 +151,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     // False test.  Not valid after ntt.commitClearup
 //    @Test 
-//    public void nodetrans_05()
+//    public void nodetrans_XX_01()
 //    {   
 //        // 2 transactions - no blocking reader 
 //        NodeTableTrans ntt = create(node1) ;
@@ -179,65 +179,65 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
 //        assertEquals(nodeId3, ntt.getBaseNodeTable().getNodeIdForNode(node3)) ;
 //    }
 
-    @Test 
-    public void nodetrans_06()
-    {   
-        // 2 transactions - blocking reader 
-        NodeTableTrans ntt = create(node1) ;
-        NodeTable ntt0 = ntt.getBaseNodeTable() ; 
-        NodeId nodeId1 = ntt0.getNodeIdForNode(node1) ;
-        
-        Transaction txn1 = createTxn(11) ; 
-        ntt.begin(txn1) ;
-        NodeId nodeId2 = ntt.getAllocateNodeId(node2) ;
-        assertNotEquals(nodeId1, nodeId2) ;
-        ntt.commitPrepare(txn1) ;
-        
-        assertEquals(nodeId1, ntt0.getNodeIdForNode(node1)) ;
-        assertEquals(nodeId2, ntt0.getNodeIdForNode(node2)) ;
-        
-        // READ - don't enact
-        
-        Transaction txn2 = createTxn(12) ; 
-        ntt.begin(txn2) ;
-        assertEquals(nodeId1, ntt.getNodeIdForNode(node1)) ;
-        ntt.getNodeIdForNode(node2) ;
-        assertEquals(nodeId2, ntt.getNodeIdForNode(node2)) ;
-        
-        NodeId nodeId3 = ntt.getAllocateNodeId(node3) ;
-        assertEquals(nodeId3, ntt.getNodeIdForNode(node3)) ;
-        ntt.commitPrepare(txn2) ;
-
-        // READ ends.
-        
-        ntt.commitEnact(txn1) ;
-        ntt.commitClearup(txn1) ;
-        
-        ntt.commitEnact(txn2) ;
-        ntt.commitClearup(txn2) ;
-
-        assertEquals(nodeId1, ntt.getBaseNodeTable().getNodeIdForNode(node1)) ;
-        assertEquals(nodeId2, ntt.getBaseNodeTable().getNodeIdForNode(node2)) ;
-        assertEquals(nodeId3, ntt.getBaseNodeTable().getNodeIdForNode(node3)) ;
-    }
+//    // False test.  One transaction - one NTT
+//    @Test 
+//    public void nodetrans_XX_02()
+//    {   
+//        // 2 transactions - blocking reader 
+//        Transaction txn1 = createTxn(11) ; 
+//        NodeTableTrans ntt = create(txn1, node1) ;
+//        NodeTable ntt0 = ntt.getBaseNodeTable() ; 
+//        NodeId nodeId1 = ntt0.getNodeIdForNode(node1) ;
+//        
+//        ntt.begin(txn1) ;
+//        NodeId nodeId2 = ntt.getAllocateNodeId(node2) ;
+//        assertNotEquals(nodeId1, nodeId2) ;
+//        ntt.commitPrepare(txn1) ;
+//        
+//        assertEquals(nodeId1, ntt0.getNodeIdForNode(node1)) ;
+//        assertEquals(nodeId2, ntt0.getNodeIdForNode(node2)) ;
+//        
+//        // READ - don't enact
+//        
+//        Transaction txn2 = createTxn(12) ; 
+//        ntt.begin(txn2) ;
+//        assertEquals(nodeId1, ntt.getNodeIdForNode(node1)) ;
+//        ntt.getNodeIdForNode(node2) ;
+//        assertEquals(nodeId2, ntt.getNodeIdForNode(node2)) ;
+//        
+//        NodeId nodeId3 = ntt.getAllocateNodeId(node3) ;
+//        assertEquals(nodeId3, ntt.getNodeIdForNode(node3)) ;
+//        ntt.commitPrepare(txn2) ;
+//
+//        // READ ends.
+//        
+//        ntt.commitEnact(txn1) ;
+//        ntt.commitClearup(txn1) ;
+//        
+//        ntt.commitEnact(txn2) ;
+//        ntt.commitClearup(txn2) ;
+//
+//        assertEquals(nodeId1, ntt.getBaseNodeTable().getNodeIdForNode(node1)) ;
+//        assertEquals(nodeId2, ntt.getBaseNodeTable().getNodeIdForNode(node2)) ;
+//        assertEquals(nodeId3, ntt.getBaseNodeTable().getNodeIdForNode(node3)) ;
+//    }
     
     @Test 
-    public void nodetrans_07()
+    public void nodetrans_05()
     {   
         // 2 transactions - no blocking reader - create a second NodeTableTrans
-        NodeTableTrans ntt1 = create(node1) ;
+        Transaction txn1 = createTxn(11) ; 
+        NodeTableTrans ntt1 = create(txn1, node1) ;
         NodeId nodeId1 = ntt1.getBaseNodeTable().getNodeIdForNode(node1) ;
         
-        Transaction txn1 = createTxn(11) ; 
         ntt1.begin(txn1) ;
         NodeId nodeId2 = ntt1.getAllocateNodeId(node2) ;
         ntt1.commitPrepare(txn1) ;
         ntt1.commitEnact(txn1) ;
         ntt1.commitClearup(txn1) ;
         
-        NodeTableTrans ntt2 = create(ntt1.getBaseNodeTable()) ;
-        
-        Transaction txn2 = createTxn(12) ; 
+        Transaction txn2 = createTxn(12) ;
+        NodeTableTrans ntt2 = create(txn2, ntt1.getBaseNodeTable()) ;
         ntt2.begin(txn2) ;
         assertEquals(nodeId1, ntt2.getNodeIdForNode(node1)) ;
         assertEquals(nodeId2, ntt2.getNodeIdForNode(node2)) ;
@@ -253,22 +253,20 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     }
 
     @Test 
-    public void nodetrans_08()
+    public void nodetrans_06()
     {   
         // 2 transactions - blocking reader - create a second NodeTableTrans
-        NodeTableTrans ntt1 = create(node1) ;
+        Transaction txn1 = createTxn(11) ; 
+        NodeTableTrans ntt1 = create(txn1, node1) ;
         NodeId nodeId1 = ntt1.getBaseNodeTable().getNodeIdForNode(node1) ;
         
-        Transaction txn1 = createTxn(11) ; 
         ntt1.begin(txn1) ;
         NodeId nodeId2 = ntt1.getAllocateNodeId(node2) ;
         ntt1.commitPrepare(txn1) ;
         
         // READ - don't enact
-        
-        NodeTableTrans ntt2 = create(ntt1.getBaseNodeTable()) ;
-
         Transaction txn2 = createTxn(12) ; 
+        NodeTableTrans ntt2 = create(txn2, ntt1.getBaseNodeTable()) ;
         ntt2.begin(txn2) ;
         assertEquals(nodeId1, ntt2.getNodeIdForNode(node1)) ;
         assertEquals(nodeId2, ntt2.getNodeIdForNode(node2)) ;

@@ -58,10 +58,12 @@ public class NodeTableFactory
                                    FileSet fsIdToNode, FileSet fsNodeToId,
                                    int nodeToIdCacheSize, int idToNodeCacheSize)
     {
+        String filename = fsIdToNode.filename(Names.extNodeData) ;
+        
         if ( fsNodeToId.isMem() )
         {
             Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory) ;
-            ObjectFile objects = FileFactory.createObjectFileMem() ;
+            ObjectFile objects = FileFactory.createObjectFileMem(filename) ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
             nodeTable = NodeTableCache.create(nodeTable, 100, 100) ; 
@@ -74,7 +76,6 @@ public class NodeTableFactory
         
         Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory) ;
         // Node table.
-        String filename = fsIdToNode.filename(Names.extNodeData) ;
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
         nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 

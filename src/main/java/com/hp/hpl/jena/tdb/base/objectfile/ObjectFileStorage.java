@@ -16,6 +16,8 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorSlotted ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -28,6 +30,14 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class ObjectFileStorage implements ObjectFile 
 {
+    private static Logger log = LoggerFactory.getLogger(ObjectFileStorage.class) ;
+    public static boolean logging = false ;
+    private void log(String fmt, Object... args)
+    { 
+        if ( ! logging ) return ;
+        log.info(state()+" "+String.format(fmt, args)) ;
+    }
+    
     /* 
      * No synchronization - assumes that the caller has some appropriate lock
      * because the combination of file and cache operations needs to be thread safe.
@@ -62,18 +72,23 @@ public class ObjectFileStorage implements ObjectFile
     {
         this.file = file ;
         filesize = file.size() ;
+        log("File size: 0x%X, posn: 0x%X", filesize, file.position()) ;
+        //writeBuffer = null ; 
         writeBuffer = (bufferSize >= 0) ? ByteBuffer.allocate(bufferSize) : null ;
     }
     
     @Override
     public long write(ByteBuffer bb)
     {
+        log("W") ;
+        
         if ( inAllocWrite )
             Log.fatal(this, "In the middle of an alloc-write") ;
         inAllocWrite = false ;
         if ( writeBuffer == null )
         {
             long x = rawWrite(bb) ;
+            log("W -> 0x%X", x);
             return x ;
         }
         
@@ -86,17 +101,20 @@ public class ObjectFileStorage implements ObjectFile
         if ( writeBuffer.position()+spaceNeeded > writeBuffer.capacity() )
         {
             long x = rawWrite(bb) ;
+            log("W -> 0x%X", x);
             return x ;
         }
         
         long loc = writeBuffer.position()+filesize ;
         writeBuffer.putInt(len) ;
         writeBuffer.put(bb) ;
+        log("W -> 0x%X", loc);
         return loc ;
     }
     
     private long rawWrite(ByteBuffer bb)
     {
+        log("RW %s", bb) ;
         int len = bb.limit() - bb.position() ;
         lengthBuffer.rewind() ;
         lengthBuffer.putInt(len) ;
@@ -107,12 +125,17 @@ public class ObjectFileStorage implements ObjectFile
         if ( x != len )
             throw new FileException() ;
         filesize = filesize+x+SizeOfInt ;
+        
+        if ( logging )
+            log("Posn: %d", file.position());
+        log("RW ->0x%X",location) ;
         return location ;
     }
     
     @Override
     public Block allocWrite(int bytesSpace)
     {
+        //log.info("AW("+bytesSpace+"):"+state()) ;
         if ( inAllocWrite )
             Log.fatal(this, "In the middle of an alloc-write") ;
         
@@ -130,6 +153,7 @@ public class ObjectFileStorage implements ObjectFile
             ByteBuffer bb = ByteBuffer.allocate(bytesSpace) ;
             allocBlock = new Block(filesize, bb) ;  
             allocLocation = -1 ;
+            //log.info("AW:"+state()+"-> ----") ;
             return allocBlock ;
         }
         
@@ -146,12 +170,14 @@ public class ObjectFileStorage implements ObjectFile
         ByteBuffer bb = writeBuffer.slice() ;
 
         allocBlock = new Block(allocLocation, bb) ;
+        //log.info("AW:"+state()+"->0x"+Long.toHexString(allocLocation)) ;
         return allocBlock ;
     }
 
     @Override
     public void completeWrite(Block block)
     {
+        log("CW: %s @0x%X",block, allocLocation) ;
         if ( ! inAllocWrite )
             throw new FileException("Not in the process of an allocated write operation pair") ;
         if ( allocBlock != null && ( allocBlock.getByteBuffer() != block.getByteBuffer() ) )
@@ -181,6 +207,7 @@ public class ObjectFileStorage implements ObjectFile
 
     private void flushOutputBuffer()
     {
+        log("Flush") ;
         if ( writeBuffer == null ) return ;
         if ( writeBuffer.position() == 0 ) return ;
         long location = filesize ;
@@ -188,6 +215,7 @@ public class ObjectFileStorage implements ObjectFile
         int x = file.write(writeBuffer) ;
         filesize += x ;
         writeBuffer.clear() ;
+        log("Flush") ;
     }
 
     @Override
@@ -211,6 +239,8 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public ByteBuffer read(long loc)
     {
+        log("R(0x%X)", loc) ;
+        
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;
         if ( loc < 0 )
@@ -253,6 +283,9 @@ public class ObjectFileStorage implements ObjectFile
         }
         
         ByteBuffer bb = ByteBuffer.allocate(len) ;
+        if ( len == 0 )
+            // Zero bytes.
+            return bb ;
         x = file.read(bb, loc+SizeOfInt) ;
         bb.flip() ;
         if ( x != len )
@@ -283,7 +316,7 @@ public class ObjectFileStorage implements ObjectFile
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         flushOutputBuffer() ;
-        file.position(0) ; 
+        //file.position(0) ; 
         ObjectIterator iter = new ObjectIterator(0, filesize) ;
         //return iter ;
         
@@ -291,6 +324,15 @@ public class ObjectFileStorage implements ObjectFile
         return Iter.concat(iter, new BufferIterator(writeBuffer)) ;
     }
     
+    private String state()
+    {
+        if ( writeBuffer == null )
+            return String.format(getLabel()+": filesize=0x%X, file=(0x%X, 0x%X)", filesize, file.position(), file.size()) ;
+        else
+            return String.format(getLabel()+": filesize=0x%X, file=(0x%X, 0x%X), writeBuffer=(0x%X,0x%X)", filesize, file.position(), file.size(), writeBuffer.position(), writeBuffer.limit()) ;
+        
+    }
+
     private class BufferIterator extends IteratorSlotted<Pair<Long, ByteBuffer>> implements Iterator<Pair<Long, ByteBuffer>>
     {
         private ByteBuffer buffer ;
@@ -349,8 +391,11 @@ public class ObjectFileStorage implements ObjectFile
         @Override
         public Pair<Long, ByteBuffer> next()
         {
+            // read, but reserving the file position.
             long x = current ;
+            long filePosn = file.position() ;
             ByteBuffer bb = read(current) ;
+            file.position(filePosn) ;
             current = current + bb.limit() + 4 ; 
             return new Pair<Long, ByteBuffer>(x, bb) ;
         }

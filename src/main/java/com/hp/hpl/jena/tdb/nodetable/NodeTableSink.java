@@ -57,7 +57,13 @@ public class NodeTableSink implements NodeTable
     }
     
     @Override
-    public void sync() { } 
+    public void sync() { }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return false ;
+    } 
 }
 
 /*

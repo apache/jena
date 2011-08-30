@@ -112,10 +112,11 @@ public final class Builder
     
     public static ObjectFile createObjectFile(FileSet fileset)
     {
+        String x = fileset.filename(Names.extNodeData) ;
         if ( fileset.isMem() )
-            return FileFactory.createObjectFileMem() ;
+            return FileFactory.createObjectFileMem(x) ;
         else
-            return FileFactory.createObjectFileDisk(fileset.filename(Names.extNodeData)) ;
+            return FileFactory.createObjectFileDisk(x) ;
     }
     
     private static Params params = new Params() ;

@@ -17,8 +17,8 @@ public class FileFactory
     public static StringFile createStringFileDisk(String filename)
     { return new StringFile(createObjectFileDisk(filename)) ; }
 
-    public static StringFile createStringFileMem()
-    { return new StringFile(createObjectFileMem()) ; }
+    public static StringFile createStringFileMem(String filename)
+    { return new StringFile(createObjectFileMem(filename)) ; }
     
     public static ObjectFile createObjectFileDisk(String filename)
     {
@@ -26,15 +26,15 @@ public class FileFactory
         return new ObjectFileStorage(file) ;
     }
 
-    public static ObjectFile createObjectFileMem()
+    public static ObjectFile createObjectFileMem(String filename)
     { 
         if ( false )
             // Older code.
-            return new ObjectFileMem() ;
+            return new ObjectFileMem(filename) ;
         else
         {
             // Newer way.
-            BufferChannel file = BufferChannelMem.create("mem") ; 
+            BufferChannel file = BufferChannelMem.create(filename) ; 
             return new ObjectFileStorage(file) ;
         }
     }

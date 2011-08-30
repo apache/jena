@@ -58,12 +58,14 @@ public class NodeTableWrapper implements NodeTable
     }
 
     @Override
+    public boolean isEmpty()    { return nodeTable.isEmpty() ; }
+    
+    @Override
     public void sync() { nodeTable.sync() ; } 
 
     @Override
     public void close()
     { nodeTable.close() ; }
-
 }
 
 /*

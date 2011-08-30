@@ -51,20 +51,23 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     // Always zero currently but allows for future  
     private long journalStartOffset ; 
     private final String label ;
+    private final Transaction txn ;     // Can be null (during recovery).
     
-    public NodeTableTrans(String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
+    public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
     {
+        this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
         this.journal = journal ;
         this.label = label ; 
         // Show the way tables are wired up
-        // log.info(String.format("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub)) ;
+        debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }
     public NodeTable getBaseNodeTable()     { return base ; }
     public NodeTable getJournalTable()      { return nodeTableJournal ; }
+    public Transaction getTransaction()     { return txn ; }
     
     @Override
     public NodeId getAllocateNodeId(Node node)
@@ -117,19 +120,29 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public NodeId allocOffset()
     {
-        NodeId x = nodeTableJournal.allocOffset() ;
-        return mapFromJournal(x) ;
+        NodeId x1 = nodeTableJournal.allocOffset() ;
+        NodeId x2 = mapFromJournal(x1) ;
+        debug("allocOffset: %s/%s %s -> %s [%d]", txn.getLabel(), label, x1, x2, offset) ;
+        return x2 ;
     }
 
     @Override
     public void begin(Transaction txn)
     {
+        if ( this.txn.getTxnId() != txn.getTxnId() )
+            throw new TDBException(String.format("Different transactions: %s %s", this.txn.getLabel(), txn.getLabel())) ;
+        
         passthrough = false ;
         
         offset = base.allocOffset().getId() ;
         // Any outstanding transactions
         long journalOffset = journal.length() ;
-        debug("begin: %s", label) ;
+        debug("begin: %s %s", txn.getLabel(), label) ;
+        debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
+        
+//        base.allocOffset().getId() ; // DBG
+//        journal.length() ; // DBG
+        
         offset += journalOffset ;
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
@@ -139,6 +152,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     /** Copy from the journal file to the real file */
     public /*temporary*/ void append()
     {
+        debug("append: %s",label) ;
+        
         // Assumes all() is in order from low to high.
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )
@@ -146,9 +161,11 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             Pair<NodeId, Node> x = iter.next() ;
             NodeId nodeId = x.getLeft() ;
             Node node = x.getRight() ;
+            debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
+            // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
-                throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s\n", node, mapFromJournal(nodeId), nodeId2)) ; 
+                throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2)) ; 
         }
     }
     
@@ -175,12 +192,31 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
 
     private void writeNodeJournal()
     {
+        if ( nodeTableJournal.isEmpty() )
+            return ;
+        
+        NodeId x1 = base.allocOffset() ;
         append() ;
+        NodeId x2 = base.allocOffset() ;
+        
+        NodeId x3 = nodeTableJournal.allocOffset() ;
+        debug("writeNodeJournal: (base alloc before) %s -> (base alloc after) %s -> (nodeTableJournal) %s", x1, x2, x3) ;
+        
         nodeIndex.clear() ;
         journal.truncate(journalStartOffset) ;
         journal.sync() ;
         base.sync() ;
-        offset = base.allocOffset().getId() ;
+        
+        offset = base.allocOffset().getId() ; 
+//        
+//        long offset2 = 
+//        //debug("writeNodeJournal: %d -> %d", offset, offset2) ;
+//        offset = offset2 ;
+//        
+//        // ??
+//        long offset3 = nodeTableJournal.allocOffset().getId() ;
+//        debug("writeNodeJournal: %d -> %d", offset2, offset3) ;
+        
         passthrough = true ;
     }
 
@@ -215,6 +251,12 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         // Better would be to convert the spill file format.
         return Iter.concat(base.all(), nodeTableJournal.all()) ;
+    }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return nodeTableJournal.isEmpty() && base.isEmpty() ;
     }
 
     @Override

@@ -113,11 +113,11 @@ public class DatasetBuilderTxn
             String objFilename = fsObjectFile.filename(Names.extNodeData+"-"+Names.extJournal) ;
             ObjectFile objectFile ;
             if ( fsObjectFile.isMem() )
-                objectFile = FileFactory.createObjectFileMem() ;
+                objectFile = FileFactory.createObjectFileMem(objFilename) ;
             else
                 objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
-            NodeTableTrans ntt = new NodeTableTrans(fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
+            NodeTableTrans ntt = new NodeTableTrans(txn ,fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
             txn.add(ntt) ;
             
             // Add inline wrapper.

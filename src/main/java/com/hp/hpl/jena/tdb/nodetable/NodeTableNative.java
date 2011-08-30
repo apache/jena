@@ -242,6 +242,12 @@ public class NodeTableNative implements NodeTable
     
     @Override
     public String toString() { return objects.getLabel() ; }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return false ;
+    }
 }
 /*
  * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP

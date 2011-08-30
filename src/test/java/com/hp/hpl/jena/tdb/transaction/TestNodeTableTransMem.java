@@ -27,8 +27,7 @@ public class TestNodeTableTransMem extends AbstractTestNodeTableTrans
     @Override
     protected ObjectFile createObjectFile()
     {
-//        FileSet fs = new FileSet(getLocation(), "data") ;
-        return FileFactory.createObjectFileMem() ;
+        return FileFactory.createObjectFileMem("mem-trans") ;
     }
 
     @Override

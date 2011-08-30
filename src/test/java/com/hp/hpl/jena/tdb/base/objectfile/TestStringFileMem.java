@@ -15,7 +15,10 @@ public class TestStringFileMem extends AbstractTestStringFile
     @Override
     protected StringFile createStringFile()
     {
-        return FileFactory.createStringFileMem() ;
+        // OLD
+        //return new StringFile(new ObjectFileMem(("mem-test"))) ;
+        // NEW
+        return FileFactory.createStringFileMem("mem-test") ;
     }
 
     @Override

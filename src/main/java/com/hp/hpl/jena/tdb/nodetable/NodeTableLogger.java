@@ -74,6 +74,14 @@ public class NodeTableLogger implements NodeTable
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        boolean b = nodeTable.isEmpty() ; 
+        info("isEmpty() => "+b) ;
+        return b ;
+    }
+
+    @Override
     public void sync()
     {
         info("sync()") ;
