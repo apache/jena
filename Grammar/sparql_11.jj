@@ -145,8 +145,10 @@ void ConstructQuery() : { Template t ;
     WhereClause()
     SolutionModifier()
  |
+    // Abbreviated CONSTRUCT WHERE {}
     ( DatasetClause() )*
     <WHERE>
+    // Should have been "ConstructTemplate()"
     <LBRACE>
     (TriplesTemplate(acc))?
     <RBRACE>
@@ -519,7 +521,8 @@ void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
     { setAccGraph(acc, prev) ; }
 }
 void TriplesTemplate(TripleCollector acc) : { }
-{
+{ // same as ConstructTriples
+    // Version for the spec.
     TriplesSameSubject(acc)
     (<DOT> (TriplesTemplate(acc))?)?
 }
@@ -737,7 +740,7 @@ Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP
       return t ; }
 }
 void ConstructTriples(TripleCollector acc) : { }
-{
+{ // Same as TriplesTemplate, but retain for 1.0 legacy
 // SPARQL - recursion - does not scale for SPARQL/Update
     TriplesSameSubject(acc)
     (<DOT> (ConstructTriples(acc))? )?

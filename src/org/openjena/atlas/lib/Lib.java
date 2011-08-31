@@ -46,10 +46,11 @@ public class Lib
     
     static public final String classShortName(Class<?> cls)
     {
-        String tmp = cls.getName() ;
-        int i = tmp.lastIndexOf('.') ;
-        tmp = tmp.substring(i+1) ;
-        return tmp ;
+        return cls.getSimpleName() ;
+//        String tmp = cls.getName() ;
+//        int i = tmp.lastIndexOf('.') ;
+//        tmp = tmp.substring(i+1) ;
+//        return tmp ;
     }
     
     /** Do two lists have the same elements? */ 

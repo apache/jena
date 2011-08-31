@@ -7,5 +7,4 @@ then
     fi
 
 CP="$($ARQROOT/bin/arq_path)"
-
 java $SOCKS -cp "$CP" arq.qexpr "$@"

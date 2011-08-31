@@ -159,8 +159,10 @@ void ConstructQuery() : { Template t ;
     WhereClause()
     SolutionModifier()
  |
+    // Abbreviated CONSTRUCT WHERE {}
     ( DatasetClause() )*
     <WHERE>
+    // Should have been "ConstructTemplate()"
     <LBRACE>
     (TriplesTemplate(acc))?
     <RBRACE>
@@ -566,9 +568,11 @@ void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
     { setAccGraph(acc, prev) ; }
 }
 void TriplesTemplate(TripleCollector acc) : { }
-{
+{ // same as ConstructTriples
+    // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)
-    (<DOT> (TriplesTemplate(acc))?)?
+    (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
+    (<DOT>)?
 }
 // ---- General Graph Pattern 
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
@@ -820,7 +824,7 @@ Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP
       return t ; }
 }
 void ConstructTriples(TripleCollector acc) : { }
-{
+{ // Same as TriplesTemplate, but retain for 1.0 legacy
     // Rewrite for no recursion - grammar is not LL(1)
     TriplesSameSubject(acc)
     (LOOKAHEAD(2) (<DOT>) TriplesSameSubject(acc))*
