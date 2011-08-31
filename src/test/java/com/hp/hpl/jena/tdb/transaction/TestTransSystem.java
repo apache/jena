@@ -52,7 +52,7 @@ public class TestTransSystem
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
-    static boolean MEM = false ;
+    static boolean MEM = true ;
     
     static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 

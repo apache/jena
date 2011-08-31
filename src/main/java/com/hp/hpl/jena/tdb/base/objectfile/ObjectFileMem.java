@@ -25,8 +25,9 @@ import org.openjena.atlas.lib.ByteBufferLib ;
 
 /** In-memory ByteBufferFile (for testing) - copies bytes in and out
  * to ensure no implicit modification.  
+ * @deprecated Use new ObjectFileStorage(BufferChannelMem.create(filename)) (see FileFcatory)
  */
-
+@Deprecated
 public class ObjectFileMem implements ObjectFile 
 {
     private List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;

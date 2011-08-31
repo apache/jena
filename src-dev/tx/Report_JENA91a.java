@@ -116,7 +116,7 @@ public class Report_JENA91a {
         Iterator<Pair<NodeId, Node>> iter = nodeTable.all() ;
         System.out.println("---------------[ " + label + " ]---------------") ;
         while ( iter.hasNext() ) { System.out.println(iter.next()) ; }
-        System.out.println("------------------------------------\n") ;
+        System.out.println("------------------------------------") ;
         System.out.flush() ;
     }
 }

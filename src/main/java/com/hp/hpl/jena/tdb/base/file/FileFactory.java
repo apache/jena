@@ -8,7 +8,6 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileStorage ;
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 
@@ -28,15 +27,11 @@ public class FileFactory
 
     public static ObjectFile createObjectFileMem(String filename)
     { 
-        if ( false )
-            // Older code.
-            return new ObjectFileMem(filename) ;
-        else
-        {
-            // Newer way.
-            BufferChannel file = BufferChannelMem.create(filename) ; 
-            return new ObjectFileStorage(file) ;
-        }
+        // Old.
+        //return new com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem(filename) ;
+        // Newer way.
+        BufferChannel file = BufferChannelMem.create(filename) ; 
+        return new ObjectFileStorage(file) ;
     }
     
     public static PlainFile createPlainFileDisk(String filename)

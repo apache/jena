@@ -61,7 +61,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.journal = journal ;
         this.label = label ; 
         // Show the way tables are wired up
-        debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
+        //debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }
@@ -93,10 +93,20 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     }
 
     /** Convert from a id to the id in the "journal" file */ 
-    private NodeId mapToJournal(NodeId id) { return NodeId.create(id.getId()-offset) ; }
+    private NodeId mapToJournal(NodeId id)
+    { 
+        if ( passthrough )
+           throw new TDBTransactionException("Not in an active transaction") ;
+        return NodeId.create(id.getId()-offset) ;
+    }
     
     /** Convert from a id in other to an external id  */ 
-    private NodeId mapFromJournal(NodeId id) { return NodeId.create(id.getId()+offset) ; }
+    private NodeId mapFromJournal(NodeId id)
+    { 
+        if ( passthrough )
+            throw new TDBTransactionException("Not in an active transaction") ;
+        return NodeId.create(id.getId()+offset) ; 
+    }
     
     @Override
     public Node getNodeForNodeId(NodeId id)
@@ -120,9 +130,11 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public NodeId allocOffset()
     {
+        if ( passthrough ) return base.allocOffset() ;
+        // If we have done the append stage, this is invalid as the base may change under our feet
+        // Would need to track base operations.
         NodeId x1 = nodeTableJournal.allocOffset() ;
         NodeId x2 = mapFromJournal(x1) ;
-        debug("allocOffset: %s/%s %s -> %s [%d]", txn.getLabel(), label, x1, x2, offset) ;
         return x2 ;
     }
 
@@ -131,17 +143,15 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         if ( this.txn.getTxnId() != txn.getTxnId() )
             throw new TDBException(String.format("Different transactions: %s %s", this.txn.getLabel(), txn.getLabel())) ;
-        
+        if ( passthrough )
+            throw new TDBException("Already active") ;
         passthrough = false ;
         
         offset = base.allocOffset().getId() ;
         // Any outstanding transactions
         long journalOffset = journal.length() ;
-        debug("begin: %s %s", txn.getLabel(), label) ;
-        debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
-        
-//        base.allocOffset().getId() ; // DBG
-//        journal.length() ; // DBG
+        //debug("begin: %s %s", txn.getLabel(), label) ;
+        //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
         
         offset += journalOffset ;
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
@@ -152,7 +162,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     /** Copy from the journal file to the real file */
     public /*temporary*/ void append()
     {
-        debug("append: %s",label) ;
+        //debug("append: %s",label) ;
         
         // Assumes all() is in order from low to high.
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
@@ -161,20 +171,18 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             Pair<NodeId, Node> x = iter.next() ;
             NodeId nodeId = x.getLeft() ;
             Node node = x.getRight() ;
-            debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
+            //debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
             // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
                 throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2)) ; 
         }
-        // Reset!
-        offset = base.allocOffset().getId() ;
     }
     
     @Override
     public void commitPrepare(Transaction txn)
     {
-        debug("commitPrepare: %s", label) ;
+        //debug("commitPrepare: %s", label) ;
         // The node table is append-only so it can be written during prepare.
         // It does not need to wait for "enact".
         if ( nodeTableJournal == null )
@@ -188,7 +196,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // The work was done in commitPrepare, using the fact that node data file
         // is append only.  Until pointers to the extra data aren't available
         // until the index is written.
-        debug("commitEnact: %s", label) ;
+        
+        //debug("commitEnact: %s", label) ;
         //writeJournal() ;
     }
 
@@ -197,26 +206,25 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         if ( nodeTableJournal.isEmpty() )
             return ;
         
-        NodeId x1 = base.allocOffset() ;
+        //debug("writeNodeJournal: (base alloc before) %s", base.allocOffset()) ;
         append() ;
-        NodeId x2 = base.allocOffset() ;
-        
-        NodeId x3 = nodeTableJournal.allocOffset() ;
-        debug("writeNodeJournal: (base alloc before) %s -> (base alloc after) %s -> (nodeTableJournal) %s", x1, x2, x3) ;
+        //debug("writeNodeJournal: (base alloc after) %s",  base.allocOffset()) ;
+        //debug("writeNodeJournal: (nodeTableJournal) %s", nodeTableJournal.allocOffset()) ;
         
         // Reset (in case we use this again)
         nodeIndex.clear() ;
+        // Fixes nodeTableJournal
         journal.truncate(journalStartOffset) ;
         journal.sync() ;
         base.sync() ;
-        offset = base.allocOffset().getId() ;
+        offset = -99 ; // base.allocOffset().getId() ; // Wil be invalid as we may write through to the base table later.
         passthrough = true ;
     }
 
     @Override
     public void commitClearup(Transaction txn)
     {
-        debug("commitClearup") ;
+        //debug("commitClearup") ;
         finish() ;
     }
 

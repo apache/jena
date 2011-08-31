@@ -6,13 +6,15 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+
 public class TestObjectFileMem extends AbstractTestObjectFile
 {
 
     @Override
     protected ObjectFile make()
     {
-        return new ObjectFileMem() ;
+        return FileFactory.createObjectFileMem("test") ;
     }
 
 }

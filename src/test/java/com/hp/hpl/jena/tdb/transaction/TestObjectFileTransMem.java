@@ -6,15 +6,15 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFileMem ;
 
 public class TestObjectFileTransMem extends AbstractTestObjectFileTrans
 {
     @Override
     ObjectFile createFile(String basename)
     {
-        return new ObjectFileMem() ;
+        return FileFactory.createObjectFileMem("test") ;
     }
 
     @Override
