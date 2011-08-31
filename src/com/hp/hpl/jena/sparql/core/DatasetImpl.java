@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 public class DatasetImpl implements Dataset
 {
     protected DatasetGraph dsg = null ;
+    private Object lock = new Object() ;
     
     // A small cache so that calls getDefaultModel()/getNamedModel() are
     // cheap when used repeatedly in code.  This is not an excuse for
@@ -48,7 +49,7 @@ public class DatasetImpl implements Dataset
     /** Return the default model */
     public Model getDefaultModel() 
     { 
-        synchronized(this)
+        synchronized(lock)
         {
             if ( defaultModel == null )
                 defaultModel = graph2model(dsg.getDefaultGraph()) ;
@@ -66,7 +67,7 @@ public class DatasetImpl implements Dataset
         checkGraphName(uri) ;
         
         // synchronized because we need to read and possible update the cache atomically 
-        synchronized(this)
+        synchronized(lock)
         {
             Model m = cache.get(uri) ;
             if ( m == null )
