@@ -29,6 +29,8 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -63,11 +65,14 @@ import java.io.*;
  */
 public class rdfcopy extends java.lang.Object {
 
+    static {
+    	setLog4jConfiguration() ;
+    }
+
 	/**
 	* @param args the command line arguments
 	*/
 	public static void main(String args[]) {
-
 		if (args.length < 1) {
 			usage();
 			System.exit(-1);

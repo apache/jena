@@ -4,6 +4,7 @@
  */
 
 package jena;
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 import jena.cmdline.* ;
 import jena.util.DBcmd;
 
@@ -35,6 +36,10 @@ public class dbdump extends DBcmd
      } ;
 
     static ArgDecl argDeclFormat = new ArgDecl(true, "format","fmt") ;
+
+    static {
+    	setLog4jConfiguration() ;
+    }
 
     public static void main(String[] args)
     {

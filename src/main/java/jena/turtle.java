@@ -6,6 +6,8 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -21,6 +23,10 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class turtle
 {
+	static {
+    	setLog4jConfiguration() ;
+    }
+	
     /** Run the Turtle parser - produce N-triples */
     public static void main(String[] args)
     {

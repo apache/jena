@@ -29,6 +29,8 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.net.URL;
@@ -58,11 +60,14 @@ import java.io.FileInputStream;
  */
 public class rdfcompare extends java.lang.Object {
 
+    static {
+    	setLog4jConfiguration() ;
+    }
+
     /**
     * @param args the command line arguments
     */
     public static void main (String args[]) {
-        
         if (args.length < 2 || args.length > 4) {
             usage();
             System.exit(-1);

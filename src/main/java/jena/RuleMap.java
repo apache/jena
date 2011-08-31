@@ -10,6 +10,8 @@
 package jena;
 
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
@@ -116,6 +118,10 @@ public class RuleMap {
         }
     }
     
+    static {
+    	setLog4jConfiguration() ;
+    }
+
     /**
      * General command line utility to process one RDF file into another
      * by application of a set of forward chaining rules. 
@@ -124,8 +130,8 @@ public class RuleMap {
      * </pre>
      */
     public static void main(String[] args) {
-        try {
-            
+    	try {
+
             // Parse the command line
             CommandLine cl = new CommandLine();
             String usage = "Usage:  RuleMap [-il inlang] [-ol outlang] [-d] rulefile infile (- for stdin)"; 

@@ -15,6 +15,14 @@ public class CmdLineUtils
     {
         return FileManager.get().readWholeFileAsUTF8(filename) ;
     }
+
+    static public void setLog4jConfiguration() 
+    {
+    	if ( System.getProperty("log4j.configuration") == null ) 
+    	{
+        	System.setProperty("log4j.configuration", "jena-log4j.properties") ;    		
+    	}
+    }
 }
 
 /*

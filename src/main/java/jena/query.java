@@ -6,11 +6,18 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class query
 {
+
+    static {
+    	setLog4jConfiguration() ;
+    }
+
     // Call-through to arq command line application
     public static void main(String[] args)
     {

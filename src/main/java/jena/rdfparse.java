@@ -6,6 +6,8 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import java.lang.reflect.Constructor;
 
 import com.hp.hpl.jena.rdf.arp.NTriple;
@@ -64,7 +66,11 @@ import com.hp.hpl.jena.shared.Command;
 
 public class rdfparse {
 
-	/** Either start an RDF/XML to NTriple converter, or run test suite.
+    static {
+    	setLog4jConfiguration() ;
+    }
+
+    /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.
 	 */
 	public static void main( String[] args ) throws Exception {

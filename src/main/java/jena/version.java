@@ -5,6 +5,8 @@
 */
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import com.hp.hpl.jena.Jena;
 import java.lang.reflect.*;
 
@@ -15,7 +17,11 @@ import java.lang.reflect.*;
  */
 public class version implements Jena {
 
-	/**
+    static {
+    	setLog4jConfiguration() ;
+    }
+
+    /**
 	 * Print out jena version information and exit.
 	 * @param args
 	 * @throws IllegalAccessException 
@@ -26,8 +32,6 @@ public class version implements Jena {
 		for (int i=0; i<f.length; i++) {
 			System.out.println(f[i].getName()+": " + f[i].get(null));
 		}
-	
-	
 	}
 
 }

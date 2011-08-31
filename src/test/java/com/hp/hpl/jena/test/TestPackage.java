@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.test;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -20,6 +21,10 @@ import com.hp.hpl.jena.assembler.test.TestAssemblerPackage;
  */
 public class TestPackage extends TestCase{
 
+    static {
+    	setLog4jConfiguration() ;
+    }
+	
     static public TestSuite suite() {
         TestSuite ts = new TestSuite() ;
         ts.setName("Jena") ;

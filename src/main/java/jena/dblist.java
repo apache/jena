@@ -5,11 +5,10 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 import jena.util.DBcmd;
 
-import com.hp.hpl.jena.db.* ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.util.iterator.*; 
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
  
 /** List the models available in a database
@@ -37,7 +36,9 @@ public class dblist extends DBcmd
             "    --dbUser user --dbPassword password" 
     } ;
     
-    
+    static {
+    	setLog4jConfiguration() ;
+    }
     
     public static void main(String[] args)
     {
@@ -86,11 +87,11 @@ public class dblist extends DBcmd
     {
         if ( true )
             return ;        
-        ModelRDB m = ModelRDB.open(getConnection(), name) ;
-        Model props = m.getModelProperties() ;
-        props.setNsPrefix("db", "http://jena.hpl.hp.com/2003/04/DB#") ;
-        props.write(System.out, "N3") ;
-        props.close() ;
+//        ModelRDB m = ModelRDB.open(getConnection(), name) ;
+//        Model props = m.getModelProperties() ;
+//        props.setNsPrefix("db", "http://jena.hpl.hp.com/2003/04/DB#") ;
+//        props.write(System.out, "N3") ;
+//        props.close() ;
     }
 
 }

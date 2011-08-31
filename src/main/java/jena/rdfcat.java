@@ -25,6 +25,8 @@ package jena;
 // Imports
 ///////////////
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -245,6 +247,10 @@ public class rdfcat
 
     // External signature methods
     //////////////////////////////////
+
+    static {
+    	setLog4jConfiguration() ;
+    }
 
     public static void main( String[] args ) {
         new rdfcat().go( args );

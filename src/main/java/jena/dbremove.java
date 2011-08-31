@@ -5,6 +5,7 @@
 
 package jena;
 
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
 import jena.util.DBcmd;
 
 //import com.hp.hpl.jena.rdf.model.* ;
@@ -33,6 +34,10 @@ public class dbremove extends DBcmd
         "    --db JDBC URL --dbType type" ,
         "    --dbUser user --dbPassword password" 
      } ;
+
+    static {
+    	setLog4jConfiguration() ;
+    }
 
     public static void main(String[] args)
     {

@@ -24,6 +24,8 @@ package jena;
 
 // Imports
 ///////////////
+import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
+
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -145,6 +147,10 @@ public class schemagen {
 
     // External signature methods
     //////////////////////////////////
+
+    static {
+    	setLog4jConfiguration() ;
+    }
 
     /* Main entry point. See Javadoc for details of the many command line arguments */
     public static void main( String[] args ) {
