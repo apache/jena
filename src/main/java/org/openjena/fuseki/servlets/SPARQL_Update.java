@@ -40,6 +40,7 @@ import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -193,6 +194,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
         try {
             if ( action.verbose )
             {
+                // Verbose mode only .... capture request for logging (does not scale). 
                 // Content-Length.
                 //String requestStr = IO.readWholeFileAsUTF8(action.request.getInputStream()) ;
                 // (fixed)Bug in atlas.IO
@@ -200,16 +202,17 @@ public class SPARQL_Update extends SPARQL_ServletBase
                 String requestStr = Bytes.bytes2string(b) ;
                 String requestStrLog = formatForLog(requestStr) ;
                 requestLog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
-                req = UpdateFactory.create(requestStr) ;
+                req = UpdateFactory.create(requestStr, Syntax.syntaxARQ) ;
             }    
             else
-                req = UpdateFactory.read(input) ;
+                req = UpdateFactory.read(input, Syntax.syntaxARQ) ;
         } 
         catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
-        catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        catch (QueryParseException ex)  { errorBadRequest(messageForQPE(ex)) ; req = null ; } 
         execute(action, req) ;
         successNoContent(action) ;
     }
+
 
     private void executeForm(HttpActionUpdate action)
     {

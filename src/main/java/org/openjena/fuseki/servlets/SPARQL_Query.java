@@ -44,6 +44,7 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -198,11 +199,10 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             // NB syntax is ARQ (a superset of SPARQL)
             query = QueryFactory.create(queryString, Syntax.syntaxARQ) ;
             queryStringLog = formatForLog(query) ;
-        } catch (QueryException ex)
-        {
-            errorBadRequest("Parse error: \n"+queryString +"\n\r" + ex.getMessage()) ;
         }
-        
+        catch (QueryParseException ex) { errorBadRequest("Parse error: \n"+queryString +"\n\r" + messageForQPE(ex)) ; }
+        // Should not happen.
+        catch (QueryException ex) { errorBadRequest("Error: \n"+queryString +"\n\r" + ex.getMessage()) ; }
         validateQuery(action, query) ;
         
         // Assumes finished whole thing by end of sendResult. 

@@ -31,12 +31,14 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_ServletBase extends HttpServlet
@@ -94,17 +96,11 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         {
             if ( ex.exception != null )
                 ex.exception.printStackTrace(System.err) ;
-
+            // Log mesage done by printResponse in a moment.
             if ( ex.message != null )
-            {
                 responseSendError(response, ex.rc, ex.message) ;
-                //serverlog.info(format("[%d] RC = %d : %s",id, ex.rc, ex.message)) ;
-            }
             else
-            {
                 responseSendError(response, ex.rc) ;
-                //serverlog.info(format("[%d] RC = %d : %s",id, ex.rc)) ;
-            }
         }
         catch (Throwable ex)
         {   // This should not happen.
@@ -326,6 +322,15 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         string = string.replace('\n', ' ') ;
         string = string.replace('\r', ' ') ;
         return string ; 
+    }
+    
+    protected static String messageForQPE(QueryParseException ex)
+    {
+        if ( ex.getMessage() != null )
+            return ex.getMessage() ;
+        if ( ex.getCause() != null )
+            return Lib.classShortName(ex.getCause().getClass()) ;
+        return null ;
     }
 
     public static void setCommonHeaders(HttpServletResponse httpResponse)
