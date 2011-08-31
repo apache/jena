@@ -20,6 +20,7 @@ package org.openjena.riot.out;
 
 import java.io.IOException ;
 import java.io.Writer ;
+import java.net.MalformedURLException ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Pair ;
@@ -27,6 +28,9 @@ import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.IRIRelativize ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
 {
@@ -59,11 +63,39 @@ public class NodeFormatterTTL extends NodeFormatterNT
                     return ;
                 }
             }
-        } catch (IOException ex) { IO.exception(ex) ; } 
+        
+            // Attemp base abbreviation.
+            if ( baseIRI != null )
+            {
+                String x = abbrevByBase(uriStr, baseIRI) ;
+                if ( x != null )
+                {
+                    w.write('<') ;
+                    w.write(x) ;
+                    w.write('>') ;
+                    return ;
+                }
+            }
+        } catch (IOException ex) { IO.exception(ex) ; }
+        
         super.formatURI(w, uriStr) ;
     }
+    
+    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+    static private String abbrevByBase(String uri, String base)
+    {
+        if ( base == null )
+            return null ;
+        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI rel = baseIRI.relativize(uri, relFlags) ;
+        String r = null ;
+        try { r = rel.toASCIIString() ; }
+        catch (MalformedURLException  ex) { r = rel.toString() ; }
+        return r ;
+    }
 
-/*private-testing*/ static boolean safeForPrefix(String str)
+    /*private-testing*/ 
+    static boolean safeForPrefix(String str)
     {
         int N = str.length() ;
         if ( N == 0 ) return true ;

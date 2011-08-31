@@ -8,6 +8,14 @@ public class DevARQ
     // Do FILTER placement before filter equality -- but dnager of breaking up BGPs.
     
     // riot.out.SinkTripleOutput and BufferingWriter : respect encoder 
+    // Escaping characters by policy.
+    //   EscapePolicy(Writer, String)
+    //   See also OutputLangUtils -- extract code and deletes
+            // Make an object so it can have per-instance flags
+            // ASCII vs UTF-8
+            // Abbreviate numbers or not.
+            // Avoids creating intermediate strings.
+            // == Class with two subclasses. Turtle policy and N-triples policy.
     
     // Automatically create graphs for in-memorry update.
     //   DatasetFactory.create() ; returns an auto-add dataset.

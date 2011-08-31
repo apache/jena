@@ -243,6 +243,7 @@ public class OutputLangUtils
      * @param useSlashEscapes   Whether to use \t etc (\\ is awlays possible).
      *    
      */
+    @Deprecated
     static public void outputEsc(Writer out, String s, boolean useSlashEscapes)
     {
         int len = s.length() ;
