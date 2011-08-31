@@ -49,18 +49,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     
     static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
     
-    @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        for ( String tail : tails )
-        {
-            String x = mapRequestToDataset(uri, tail) ;
-            if ( x != null )
-                return x ;
-        }
-        return uri ; 
-    }
-    
     // All the params we support
     private static String[] params_ = { paramQuery, 
                                         //paramDefaultGraphURI, paramNamedGraphURI, -- only a fixed dataset 
@@ -89,6 +77,18 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
         return DatasetFactory.create(action.dsg) ;
+    }
+
+    @Override
+    protected String mapRequestToDataset(String uri)
+    {
+        for ( String tail : tails )
+        {
+            String x = mapRequestToDataset(uri, tail) ;
+            if ( x != null )
+                return x ;
+        }
+        return uri ; 
     }
 
     @Override

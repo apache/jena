@@ -86,13 +86,6 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     }
     
     @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        errorBadRequest("No query string given") ;
-        return false ;
-    }
-    
-    @Override
     protected String mapRequestToDataset(String uri)
     { return null ; }
     
@@ -107,6 +100,13 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         return ds ;
     }
     
+    @Override
+    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
+    {
+        errorBadRequest("No query string given") ;
+        return false ;
+    }
+
     private boolean datasetInProtocol(HttpServletRequest request)
     {
         String d = request.getParameter(paramDefaultGraphURI) ;
