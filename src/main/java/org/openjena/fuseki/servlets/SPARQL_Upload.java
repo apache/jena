@@ -139,10 +139,15 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                                 errorBadRequest("Bad IRI: "+graphName) ;
                             if ( iri.getScheme() == null )
                                 errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
-                            if ( iri.getRawHost() == null )
-                                errorBadRequest("Bad IRI: no host name: "+graphName) ;
-                            if ( iri.getRawPath() != null && iri.getRawPath().length() > 0 && iri.getRawPath().charAt(0) != '/' )
-                                errorBadRequest("Bad IRI: Pat does not start '/': "+graphName) ;
+                            if ( iri.getScheme().equalsIgnoreCase("http") ) 
+                            {
+                                if ( iri.getRawHost() == null )
+                                    errorBadRequest("Bad IRI: no host name: "+graphName) ;
+                                if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
+                                    errorBadRequest("Bad IRI: no path: "+graphName) ;
+                                if ( iri.getRawPath().charAt(0) != '/' )
+                                    errorBadRequest("Bad IRI: Path does not start '/': "+graphName) ;
+                            } 
                             gn = Node.createURI(graphName) ;
                         }
                     }
