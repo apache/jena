@@ -8,6 +8,7 @@ package com.hp.hpl.jena.sparql;
 
 import junit.framework.TestSuite ;
 
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.TS_ExprRDQL ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
@@ -26,6 +27,7 @@ public class TS_RDQL extends TestSuite
         
         addTest(TS_ExprRDQL.suite()) ;
         
+        NodeValue.VerboseWarnings = false ;
         addTest(ScriptTestSuiteFactory.make(controlFilenameRDQL)) ; 
     }
 }
