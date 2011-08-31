@@ -156,6 +156,14 @@
       <version>${ver.slf4j}</version>
     </dependency>
 
+    <!-- Intercept any uses of Jakarta Commons Logging e.g. Apache Common HTTP client. -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${ver.slf4j}</version>
+      <optional>true</optional>
+    </dependency>
+
     <!-- Needed because the Fuseki test suite resets logging levels -->
     <dependency>
       <groupId>log4j</groupId>
