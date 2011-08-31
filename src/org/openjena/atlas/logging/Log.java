@@ -23,6 +23,54 @@ public class Log
 {
     private Log() {}
     
+    // -- Delayed argument formatting.
+    static public void info(Logger log, String fmt, Object...args)
+    {
+        if ( log.isInfoEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.info(x) ;
+        }
+    }
+    
+    static public void debug(Logger log, String fmt, Object...args)
+    {
+        if ( log.isDebugEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.debug(x) ;
+        }
+    }
+
+    static public void trace(Logger log, String fmt, Object...args)
+    {
+        if ( log.isTraceEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.trace(x) ;
+        }
+    }
+    
+    static public void warn(Logger log, String fmt, Object...args)
+    {
+        if ( log.isWarnEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.warn(x) ;
+        }
+    }
+    
+    static public void error(Logger log, String fmt, Object...args)
+    {
+        if ( log.isErrorEnabled() )
+        {
+            String x = String.format(fmt, args) ;
+            log.error(x) ;
+        }
+    }
+    
+    // ----
+    
     static public void info(String caller, String msg)
     {
         log(caller).info(msg) ;
