@@ -55,6 +55,7 @@ import java.io.*;
  *       respectively and can be:
  *           RDF/XML
  *           N-TRIPLE
+ *           TURTLE
  *           N3
  *       The input language defaults to RDF/XML and the output language
  *       defaults to N-TRIPLE.
@@ -153,6 +154,7 @@ public class rdfcopy extends java.lang.Object {
 		System.err.println("      RDF/XML");
         System.err.println("      RDF/XML-ABBREV");
         System.err.println("      N-TRIPLE");
+        System.err.println("      TURTLE");
 		System.err.println("      N3");
 		System.err.println(
 			"    inlang defaults to RDF/XML, outlang to N-TRIPLE");
