@@ -133,6 +133,14 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- Intercept any uses of Jakarta Commons Logging e.g. Apache Common HTTP client. -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${ver.slf4j}</version>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
