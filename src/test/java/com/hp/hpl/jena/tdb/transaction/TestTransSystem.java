@@ -65,29 +65,17 @@ public class TestTransSystem
      * 5/0/5 blocks. with 50/50 pause, 50R/ 20W
      * Others?
      */
-    
-//    static final int numReaderTasks         = 5 ;
-//    static final int numWriterTasksA        = 1 ;
-//    static final int numWriterTasksC        = 5 ;
-//    
-//    static final int readerSeqRepeats       = 5 ;    
-//    static final int readerMaxPause         = 50 ;
-//    
-//    static final int writerAbortSeqRepeats  = 1 ;
-//    static final int writerCommitSeqRepeats = 5 ;
-//    static final int writerMaxPause         = 20 ;
 
     static final int numReaderTasks         = 5 ;
-    static final int numWriterTasksA        = 2 ;   // PC had 5
+    static final int numWriterTasksA        = 2 ; 
     static final int numWriterTasksC        = 5 ;
 
-    static final int readerSeqRepeats       = 8 ;  //  PC had 8 
-    static final int readerMaxPause         = 25 ; // PC had 100
+    static final int readerSeqRepeats       = 8 ;
+    static final int readerMaxPause         = 25 ;
 
     static final int writerAbortSeqRepeats  = 4 ;
     static final int writerCommitSeqRepeats = 4 ;
-    static final int writerMaxPause         = 20 ;  // PC had 50
-
+    static final int writerMaxPause         = 20 ;
     
     public static void main(String...args)
     {
@@ -166,7 +154,6 @@ public class TestTransSystem
                     int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
                                                   dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
-                    pause(1000) ; // Temporary, see JENA-91
                     log.debug("reader finish " + id + "/" + i) ;
                     dsg.close() ;
                     dsg = null ;
@@ -324,7 +311,6 @@ public class TestTransSystem
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
             { 
-                writeData(dsg, id, i) ; // Temporary, see JENA-91
                 return changeProc(dsg, id, i) ;
             }
         } ;
@@ -365,13 +351,6 @@ public class TestTransSystem
         }
         log.debug("Change = "+dsg.getDefaultGraph().size()) ;
         return count ;
-    }
-    
-    // Temporary, see JENA-91
-    static void writeData(DatasetGraphTxn dsg, int id, int i) 
-    {
-        // dsg.add( Quad.defaultGraphNodeGenerated, Node.createURI("S"), Node.createURI("P"), Node.createLiteral(id + "_" + i) ) ; // Temporary, JENA-91
-        dsg.add( Node.createURI("G"), Node.createURI("S"), Node.createURI("P"), Node.createLiteral(id + "_" + i) ) ;
     }
     
     static void pause(int maxInternal)
