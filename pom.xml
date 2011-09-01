@@ -37,8 +37,8 @@
     <!-- These two go together -->
     <ver.jetty>7.2.1.v20101111</ver.jetty>
     <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
-    <ver.httpclient>4.0.3</ver.httpclient>
-    <ver.httpfileupload>1.2.2</ver.httpfileupload>
+    <ver.http-client>4.1.2</ver.http-client>
+    <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
     <ver.junit>4.8.2</ver.junit>
     <ver.commonscodec>1.5</ver.commonscodec>
     <ver.slf4j>1.6.1</ver.slf4j>
@@ -99,13 +99,20 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>${ver.httpclient}</version>
+      <version>${ver.http-client}</version>
+      <exclusions>
+	<!-- Replace with slf4j adapter -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>${ver.httpfileupload}</version>
+      <version>${ver.commons-fileupload}</version>
     </dependency>
 
     <dependency>
