@@ -12,8 +12,8 @@ import java.io.ByteArrayOutputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import junit.framework.TestCase ;
 import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -32,8 +32,9 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.sparql.util.ResultSetUtils ;
 
-public class TestResultSet extends TestCase
+public class TestResultSet extends BaseTest
 {
     // Test reading, writing and comparison
     @Test public void test_RS_1()
@@ -147,6 +148,22 @@ public class TestResultSet extends TestCase
     {
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
+    }
+
+    @Test public void test_RS_union_1() 
+    {
+    	ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
+    	ResultSet rs2 = make("x", Node.createURI("tag:local")) ;
+    	ResultSet rs3 = make2("x", Node.createURI("tag:local")) ;
+    	assertTrue(ResultSetCompare.equalsByTerm(rs3, ResultSetUtils.union(rs1, rs2))) ;
+    }
+
+    @Test(expected = ResultSetException.class) 
+    public void test_RS_union_2() 
+    {
+    	ResultSet rs1 = make("x", Node.createURI("tag:local")) ;
+    	ResultSet rs2 = make("y", Node.createURI("tag:local")) ;
+    	ResultSetUtils.union(rs1, rs2) ;
     }
 
     private void test_RS_fmt(ResultSet rs, ResultsFormat fmt, boolean ordered)

@@ -87,6 +87,29 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
         }
         reset();
     }
+    
+    /** Create an in-memory result set from an array of 
+     * ResulSets. It is assumed that all the ResultSets 
+     * from the array have the same variables.
+     * 
+     * @param sets the ResultSet objects to concatenate.
+     */
+    
+    public ResultSetMem(ResultSet... sets) 
+    {
+        varNames = sets[0].getResultVars();
+        
+        for (ResultSet rs : sets) 
+        {
+        	if ( !varNames.equals(rs.getResultVars()) )
+        		throw new ResultSetException("ResultSet must have the same variables.") ;
+            if (rs instanceof ResultSetMem)
+                rows.addAll(((ResultSetMem) rs).rows);
+            else 
+                while (rs.hasNext()) rows.add(rs.nextBinding());
+        }
+        reset();
+    }
 
     public ResultSetMem()
     {

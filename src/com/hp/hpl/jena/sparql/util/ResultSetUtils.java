@@ -15,6 +15,7 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.resultset.ResultSetMem ;
 
 public class ResultSetUtils
 {
@@ -67,6 +68,18 @@ public class ResultSetUtils
         }
         return items ;
     }
+
+    /**
+     * Create an in-memory result set from an array of 
+     * ResulSets. It is assumed that all the ResultSets 
+     * from the array have the same variables.
+     * 
+     * @param sets the ResultSets to concatenate.
+     */
+    public static ResultSet union(ResultSet... sets) {
+        return new ResultSetMem(sets);
+    }
+    
 }
 
 /*
