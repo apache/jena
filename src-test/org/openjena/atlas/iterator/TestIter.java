@@ -23,6 +23,7 @@ public class TestIter
     List<String> data0 = new ArrayList<String>() ;
     List<String> data1 = Arrays.asList("a") ;
     List<String> data2 = Arrays.asList("x","y","z") ;
+    List<String> data3 = Arrays.asList(null, "x", null, null, null, "y", "z", null);
  
     @Test
     public void append_1()
@@ -212,6 +213,40 @@ public class TestIter
     {
         List<String> data = Arrays.asList( "11", "AA", "BB", "CC") ;
         assertEquals(-1, Iter.firstIndex(data, filter)) ;
+    }
+    
+    @Test
+    public void filter_01()
+    {
+        test(Iter.removeNulls(data3), "x", "y", "z");
+    }
+    
+    @Test
+    public void filter_02()
+    {
+        Iterator<String> it = Iter.filter(data3, new Filter<String>()
+        {
+            public boolean accept(String item)
+            {
+                return "x".equals(item) || "z".equals(item) ;
+            }
+        });
+        
+        test(it, "x", "z");
+    }
+    
+    @Test
+    public void filter_03()
+    {
+        Iterator<String> it = Iter.filter(data3, new Filter<String>()
+        {
+            public boolean accept(String item)
+            {
+                return (null == item) || "x".equals(item) ;
+            }
+        });
+        
+        test(it, null, "x", null, null, null, null);
     }
 }
 

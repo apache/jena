@@ -141,13 +141,14 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         final Iterator<T> iter = new Iterator<T>(){
             
             boolean finished = false ; 
+            boolean slotOccupied = false ;
             T slot ;
             
             public boolean hasNext()
             {
                 if ( finished )
                     return false ; 
-                while ( slot == null )
+                while ( ! slotOccupied )
                 {
                     if ( ! stream.hasNext() )
                     { 
@@ -158,19 +159,19 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                     if ( filter.accept(nextItem) )
                     { 
                         slot = nextItem ;
+                        slotOccupied = true;
                         break ;
                     }
                 }
-                return slot != null ;
+                return slotOccupied ;
             }
     
             public T next()
             {
                 if ( hasNext() )
                 {
-                    T returnValue = slot ;
-                    slot = null ;
-                    return returnValue ;
+                    slotOccupied = false ;
+                    return slot ;
                 }
                 throw new NoSuchElementException("filter.next") ;
             }
