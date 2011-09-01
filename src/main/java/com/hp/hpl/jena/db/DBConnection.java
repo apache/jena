@@ -7,12 +7,23 @@
 
 package com.hp.hpl.jena.db;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import com.hp.hpl.jena.db.impl.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.db.impl.DBPropDatabase;
+import com.hp.hpl.jena.db.impl.DBPropGraph;
+import com.hp.hpl.jena.db.impl.DBType;
+import com.hp.hpl.jena.db.impl.IRDBDriver;
+import com.hp.hpl.jena.db.impl.SpecializedGraph;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
+
 
 /**
 * Encapsulate the specification of a jdbc connection.
@@ -40,7 +51,7 @@ public class DBConnection implements IDBConnection {
 	 *  This is new in Jena2 - for compatability with older code we allow this to
 	 * be left unspecified at the loss of some jena2 functionality.
 	 */
-	protected String m_databaseType = null;
+	protected DBType m_databaseType = null;
 	
 	/** Driver to connect to this database */
 	protected IRDBDriver m_driver = null;
@@ -224,31 +235,31 @@ public class DBConnection implements IDBConnection {
 		it.close();
 	}
 		
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.db.IDBConnection#setDatabaseType(java.lang.String)
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @throws UnsupportedDatabaseException thrown if {@code databaseType} isn't a supported type 
 	 */
-	public void setDatabaseType( String databaseType )
+	public void setDatabaseType( String databaseType ) 
 	{
 	    if ( databaseType == null )
 	    {
-	        m_databaseType = databaseType;
+	        m_databaseType = null;
 	        return ;
 	    }
-	    
-	    if (databaseType.equalsIgnoreCase("mysql"))
-	        m_databaseType = "MySQL";
-	    else if ( databaseType.equalsIgnoreCase("hsql") )
-	        m_databaseType = "HSQLDB" ;
-	    else if ( databaseType.equalsIgnoreCase("hsqldb") )
-	        m_databaseType = "HSQLDB" ;
-	    else
-	        m_databaseType = databaseType;
+	    DBType type = DBType.fromName(databaseType);
+	    if (type == null){
+	    	throw UnsupportedDatabaseException.create(databaseType);
+	    }
+	    this.m_databaseType = type;
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDatabaseType()
 	 */
-	public String getDatabaseType() { return m_databaseType; }
+	public String getDatabaseType() {
+		return m_databaseType == null? null: m_databaseType.getDisplayName(); 
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDriver()
@@ -264,7 +275,7 @@ public class DBConnection implements IDBConnection {
 					// without knowing the database type there's not much we can do.
 					throw new RDFRDBException("Error - attempt to call DBConnection.getDriver before setting the database type");
 				}
-				m_driver = (IRDBDriver) (Class.forName("com.hp.hpl.jena.db.impl.Driver_" + m_databaseType).newInstance());
+				m_driver = (IRDBDriver) (Class.forName(m_databaseType.getDriverClassName()).newInstance());
 				m_driver.setConnection( this );
 			} 
 		} catch (Exception e) {

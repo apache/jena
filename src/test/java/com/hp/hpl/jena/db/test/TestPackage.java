@@ -95,6 +95,7 @@ public class TestPackage extends TestCase
             addTest(ts, "TestQueryRDB", TestQueryRDB.suite()) ;
             addTest(ts, "TestQuery1", TestQuery1.suite()) ;
             addTest(ts, "TestModelFactory", TestModelFactory.suite()) ;
+            addTest(ts, "TestDBType", TestDBType.suite()) ;
             ts.addTestSuite(TestRDBAssemblerContents.class) ;
             return ts ;
         }
