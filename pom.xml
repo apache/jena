@@ -98,6 +98,13 @@
       <artifactId>httpclient</artifactId>
       <version>${ver.http-client}</version>
       <scope>compile</scope>
+      <exclusions>
+	<!-- Replace with slf4j adapter -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>      
     </dependency>
 
     <dependency>
