@@ -656,14 +656,14 @@ abstract public class AbsIRIImpl extends  IRI implements
     @Override
     public boolean isRootless() {
         if (!has(SCHEME))
-            return false;
+            return true;
         if (has(AUTHORITY))
-            return false;
+            return true;
         if (path.equals(""))
-            return false;
+            return true;
         if (path.charAt(0) == '/')
-            return false;
-        return true;
+            return true;
+        return false;
     }
 
     abstract String pathRemoveDots();
