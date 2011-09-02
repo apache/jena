@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -127,8 +128,9 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
-    @Test public void query_topn_01()
+    @Test public void slice_order_to_topn_01()
     {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
         String opExpectedString = 
             "(top (42 ?p ?o)\n" + 
@@ -136,14 +138,58 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
-    @Test public void query_topn_02()
+    @Test public void slice_order_to_topn_02()
     {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
         String opExpectedString = 
         	"(slice _ 4242\n" + 
         	"  (order (?p ?o)\n" +
             "    (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_03()
+    {
+        try {
+            ARQ.setFalse(ARQ.optTopNSorting) ;
+            assertTrue(ARQ.isFalse(ARQ.optTopNSorting)) ;
+            String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
+            String opExpectedString = 
+                "(slice _ 42\n" + 
+                "  (order (?p ?o)\n" +
+                "    (bgp (triple ?s ?p ?o))))" ; 
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.unset(ARQ.optTopNSorting) ;
+        }
+    }
+
+    @Test public void distinct_to_reduced_01()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o"  ;  
+        String opExpectedString = 
+            "(reduced \n" + 
+            "  (order (?p ?o)\n" +
+            "    (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void distinct_to_reduced_02()
+    {
+        try {
+            ARQ.setFalse(ARQ.optDistinctToReduced) ;
+            assertTrue(ARQ.isFalse(ARQ.optDistinctToReduced)) ;
+            String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o"  ;  
+            String opExpectedString = 
+                "(distinct \n" + 
+                "  (order (?p ?o)\n" +
+                "    (bgp (triple ?s ?p ?o))))" ; 
+            check(queryString, opExpectedString) ;
+        } finally {
+            ARQ.unset(ARQ.optDistinctToReduced) ;
+        }
     }
     
     private static void check(String queryString, String opExpectedString)

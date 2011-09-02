@@ -108,7 +108,7 @@ public class Optimize implements Rewrite
     /** Alternative name for compatibility only */
     public static final Symbol filterPlacement2 = ARQConstants.allocSymbol("filterPlacement") ;
     
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("all")
     public Op rewrite(Op op)
     {
         if ( context.get(ARQConstants.sysOptimizer) == null )
@@ -175,6 +175,9 @@ public class Optimize implements Rewrite
         
         if ( context.isTrueOrUndef(ARQ.optTopNSorting) )
         	op = apply("TopN Sorting", new TransformTopN(), op) ;
+
+        if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
+            op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
 
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         // Mark

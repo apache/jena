@@ -230,4 +230,29 @@
               qt:data   <data-2.ttl> ] ;
         mf:result  <opt-top-10.srj>
       ]
+
+      [  mf:name    "opt-distinct-to-reduced-01" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-distinct-to-reduced-01.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-distinct-to-reduced-01.srj>
+      ]
+
+      [  mf:name    "opt-distinct-to-reduced-02" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-distinct-to-reduced-02.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-distinct-to-reduced-02.srj>
+      ]
+
+      [  mf:name    "opt-distinct-to-reduced-03" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-distinct-to-reduced-03.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-distinct-to-reduced-03.srj>
+      ]
+
     ).

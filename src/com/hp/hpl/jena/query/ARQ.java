@@ -239,6 +239,12 @@ public class ARQ
      */  
     public static final Symbol optTopNSorting = ARQConstants.allocSymbol("optTopNSorting") ;
     
+    /** 
+     *  Context key controlling whether a DISTINCT-ORDER BY query is done replacing the distinct with a reduced.
+     *  Default is "true" - the reduced operator does not need to keep a data structure with all previously seen bindings.
+     */  
+    public static final Symbol optDistinctToReduced = ARQConstants.allocSymbol("optDistinctToReduced") ;
+
     @Deprecated
     /** @deprecated Use optFilterPlacement */
     public static final Symbol filterPlacement = optFilterPlacement ;
