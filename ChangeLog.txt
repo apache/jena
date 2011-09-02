@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
++ ResultSetUtils.union(ResultSet ... sets)
 + Add optimization for DISTINCT/ORDER BY/LIMIT N (JENA-108)
 + Add optimization for DISTINCT/ORDER BY (JENA-90)
 + Add optimization for ORDER BY/LIMIT N (JENA-89)
