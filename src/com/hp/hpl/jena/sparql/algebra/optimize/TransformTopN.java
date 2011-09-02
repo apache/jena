@@ -37,14 +37,14 @@ public class TransformTopN extends TransformCopy {
 
         /* This looks for two cases:
          * (slice _  N
-         *   (order PATTERN) )
-         * ==> (top N PATTERN)
+         *   (order (cond) PATTERN) )
+         * ==> (top (N cond) PATTERN)
          * and
          * 
          * (slice _  N
          *   (distinct or reduced
-         *     (order PATTEN) ))
-         * ==>  (top N (distinct PATTERN))
+         *     (order (cond) PATTERN) ))
+         * ==>  (top (N cond) (distinct PATTERN))
          *
          * and evaluation of (top) looks for (top N (distinct PATTERN))
          * See OpExecutor.execute(OpTopN)
