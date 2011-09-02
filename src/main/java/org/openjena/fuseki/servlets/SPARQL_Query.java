@@ -221,7 +221,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         return QueryExecutionFactory.create(query, dataset) ;
     }
 
-    private SPARQLResult executeQuery(HttpActionQuery action, Query query, String queryStringLog)
+    protected SPARQLResult executeQuery(HttpActionQuery action, Query query, String queryStringLog)
     {
         Dataset dataset = decideDataset(action, query, queryStringLog) ; 
         QueryExecution qexec = createQueryExecution(query, dataset) ;
