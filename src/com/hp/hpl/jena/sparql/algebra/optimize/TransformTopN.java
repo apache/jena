@@ -18,16 +18,17 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.TransformCopy;
-import com.hp.hpl.jena.sparql.algebra.op.OpOrder;
-import com.hp.hpl.jena.sparql.algebra.op.OpSlice;
-import com.hp.hpl.jena.sparql.algebra.op.OpTopN;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
+import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
+import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
+import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
+import com.hp.hpl.jena.sparql.algebra.op.OpTopN ;
 
 public class TransformTopN extends TransformCopy {
 
-	public static final int TOPN_LIMIT_THRESHOLD = 100; 
+	public static final int TOPN_LIMIT_THRESHOLD = 100 ;
 	
     @Override
 	public Op transform(OpSlice opSlice, Op subOp) { 
@@ -35,7 +36,15 @@ public class TransformTopN extends TransformCopy {
     	if ( ( ( opSlice.getStart() == 0 ) || ( opSlice.getStart() == Query.NOLIMIT ) ) && 
     	     ( opSlice.getLength() < TOPN_LIMIT_THRESHOLD ) ) {
         	if ( subOp instanceof OpOrder ) {
-        		return new OpTopN(((OpOrder) subOp).getSubOp(), (int)opSlice.getLength(), ((OpOrder) subOp).getConditions()) ;
+        	    OpOrder opOrder = (OpOrder)subOp ;
+        		return new OpTopN( opOrder.getSubOp(), (int)opSlice.getLength(), opOrder.getConditions() ) ;
+        	} else if ( subOp instanceof OpDistinct ) {
+        	    OpDistinct opDistinct = (OpDistinct)subOp ;
+        	    if ( opDistinct.getSubOp() instanceof OpOrder ) {
+        	        OpOrder opOrder = (OpOrder)opDistinct.getSubOp() ;
+        	        Op opDistinct2 = OpDistinct.create(opOrder.getSubOp()) ;
+        	        return new OpTopN( opDistinct2, (int)opSlice.getLength(), opOrder.getConditions() ) ;
+        	    }
         	}
     	}
 

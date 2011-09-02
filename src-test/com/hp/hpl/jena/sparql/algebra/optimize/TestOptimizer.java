@@ -165,12 +165,35 @@ public class TestOptimizer extends BaseTest
         }
     }
 
+    @Test public void slice_order_to_topn_04()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
+        String opExpectedString = 
+            "(top (42 ?p ?o)\n" + 
+            "  (distinct\n" +
+            "  (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_05()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
+        String opExpectedString = 
+            "(slice _ 4242\n" + 
+            "  (reduced\n" +
+            "    (order (?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
     @Test public void distinct_to_reduced_01()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optDistinctToReduced)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o"  ;  
         String opExpectedString = 
-            "(reduced \n" + 
+            "(reduced\n" + 
             "  (order (?p ?o)\n" +
             "    (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
@@ -183,7 +206,7 @@ public class TestOptimizer extends BaseTest
             assertTrue(ARQ.isFalse(ARQ.optDistinctToReduced)) ;
             String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o"  ;  
             String opExpectedString = 
-                "(distinct \n" + 
+                "(distinct\n" + 
                 "  (order (?p ?o)\n" +
                 "    (bgp (triple ?s ?p ?o))))" ; 
             check(queryString, opExpectedString) ;

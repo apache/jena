@@ -383,8 +383,15 @@ public class OpExecutor
 
     protected QueryIterator execute(OpTopN opTop, QueryIterator input)
     { 
-        QueryIterator qIter = executeOp(opTop.getSubOp(), input) ;
-        qIter = new QueryIterTopN(qIter, opTop.getConditions(), opTop.getLimit(), execCxt) ;
+        QueryIterator qIter = null ;
+        if ( opTop.getSubOp() instanceof OpDistinct ) {
+            OpDistinct opDistinct = (OpDistinct)opTop.getSubOp() ;
+            qIter = executeOp(opDistinct.getSubOp(), input) ;
+            qIter = new QueryIterTopN(qIter, opTop.getConditions(), opTop.getLimit(), true, execCxt) ;
+        } else {
+            qIter = executeOp(opTop.getSubOp(), input) ;
+            qIter = new QueryIterTopN(qIter, opTop.getConditions(), opTop.getLimit(), false, execCxt) ;
+        }
         return qIter ;
     }
 

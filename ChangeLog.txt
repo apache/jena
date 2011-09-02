@@ -3,6 +3,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
++ Add optimization for DISTINCT/ORDER BY/LIMIT N (JENA-108)
++ Add optimization for DISTINCT/ORDER BY (JENA-90)
 + Add optimization for ORDER BY/LIMIT N (JENA-89)
 + General upgrade of dependent systems (not Lucene - see LARQ module for use with Lucene 3)
 + Make CONCAT follow the SPARQL 1.1 spec properly. 

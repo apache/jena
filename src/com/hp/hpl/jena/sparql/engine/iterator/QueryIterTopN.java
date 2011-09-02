@@ -1,3 +1,21 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.Arrays ;
@@ -28,18 +46,20 @@ public class QueryIterTopN extends QueryIterPlainWrapper
 	 * This leaves the least N in the heap.    
 	 */
     private PriorityQueue<Binding> heap ;
-    long limit ;
+    private long limit ;
+    private final boolean distinct ;
 	
-    public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, ExecutionContext context)
+    public QueryIterTopN(QueryIterator qIter, List<SortCondition> conditions, long numItems, boolean distinct, ExecutionContext context)
     {
-        this(qIter, new BindingComparator(conditions, context), numItems, context) ;
+        this(qIter, new BindingComparator(conditions, context), numItems, distinct, context) ;
     }
 
-    public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, ExecutionContext context)
+    public QueryIterTopN(QueryIterator qIter, Comparator<Binding> comparator, long numItems, boolean distinct, ExecutionContext context)
     {
         super(null, context) ;
-        this.embeddedIterator = qIter;
-        
+        this.embeddedIterator = qIter ;
+        this.distinct = distinct ;
+
         limit = numItems ;
         if ( limit == Query.NOLIMIT )
             limit = Long.MAX_VALUE ;
@@ -77,7 +97,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                 {
                     Binding binding = qIter.next() ;
                     if ( heap.size() < limit )
-                    	heap.add(binding) ;
+                    	add(binding) ;
                     else {
                         Binding currentMaxLeastN = heap.peek() ;
                         
@@ -85,7 +105,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                     	{
                     	    // If binding is less than current Nth least ...
                     		heap.poll() ;     // Drop Nth least.
-                        	heap.add(binding) ;
+                        	add(binding) ;
                     	}
                     }
                 }
@@ -97,4 +117,18 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                 return iter ;
         	}
 		};
-    }}
+    }
+
+    private void add (Binding binding) 
+    {
+        if ( distinct ) 
+        {
+            if ( !heap.contains(binding) ) heap.add(binding) ;
+        } 
+        else 
+        {
+            heap.add(binding) ;
+        }
+    }
+
+}
