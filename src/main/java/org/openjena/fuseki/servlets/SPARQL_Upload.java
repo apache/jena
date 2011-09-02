@@ -139,9 +139,10 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                                 errorBadRequest("Bad IRI: "+graphName) ;
                             if ( iri.getScheme() == null )
                                 errorBadRequest("Bad IRI: no IRI scheme name: "+graphName) ;
-                            if ( iri.getScheme().equalsIgnoreCase("http") ) 
+                            if ( iri.getScheme().equalsIgnoreCase("http") || iri.getScheme().equalsIgnoreCase("https")) 
                             {
-                                if ( iri.getRawHost() == null )
+                                // Redundant??
+                                if ( iri.getRawHost() == null ) 
                                     errorBadRequest("Bad IRI: no host name: "+graphName) ;
                                 if ( iri.getRawPath() == null || iri.getRawPath().length() == 0 )
                                     errorBadRequest("Bad IRI: no path: "+graphName) ;
