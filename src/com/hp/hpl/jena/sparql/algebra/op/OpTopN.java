@@ -28,7 +28,6 @@ public class OpTopN extends OpModifier
         this.limit = N ;
     }
     
-    
     public List<SortCondition> getConditions()  { return conditions ; }
     public int getLimit()                       { return limit ; }
     

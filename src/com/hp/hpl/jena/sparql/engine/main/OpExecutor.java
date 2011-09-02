@@ -384,6 +384,10 @@ public class OpExecutor
     protected QueryIterator execute(OpTopN opTop, QueryIterator input)
     { 
         QueryIterator qIter = null ;
+        // We could also do (reduced) here as well.
+        // but it's detected in TrabsformTopN and turned into (distinct)
+        // there so that code catches that already.
+        // We leave this to do the strict case of (top N (distinct ...)) 
         if ( opTop.getSubOp() instanceof OpDistinct ) {
             OpDistinct opDistinct = (OpDistinct)opTop.getSubOp() ;
             qIter = executeOp(opDistinct.getSubOp(), input) ;

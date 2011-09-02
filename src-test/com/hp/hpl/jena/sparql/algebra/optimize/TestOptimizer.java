@@ -172,11 +172,22 @@ public class TestOptimizer extends BaseTest
         String opExpectedString = 
             "(top (42 ?p ?o)\n" + 
             "  (distinct\n" +
-            "  (bgp (triple ?s ?p ?o))))" ; 
+            "     (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
     }
 
     @Test public void slice_order_to_topn_05()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT REDUCED * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
+        String opExpectedString = 
+            "(top (42 ?p ?o)\n" + 
+            "  (distinct\n" +
+            "     (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_06()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
@@ -185,6 +196,29 @@ public class TestOptimizer extends BaseTest
             "  (reduced\n" +
             "    (order (?p ?o)\n" +
             "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_07()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT REDUCED * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
+        String opExpectedString = 
+            "(slice _ 4242\n" + 
+            "  (reduced\n" +
+            "    (order (?p ?o)\n" +
+            "      (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+    
+    @Test public void slice_order_to_topn_08()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5"  ;  
+        String opExpectedString = 
+            "(slice 1 5\n" + 
+            "  (order (?p ?o)\n" +
+            "    (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
     }
 

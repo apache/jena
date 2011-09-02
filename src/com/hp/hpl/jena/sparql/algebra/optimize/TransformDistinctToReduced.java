@@ -26,6 +26,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
 
 public class TransformDistinctToReduced extends TransformCopy {
 
+    // Best is this is after TransformTopN but they are order independent
+    // TopN of "reduced or distinct of order" is handled. 
     @Override
     public Op transform(OpDistinct opDistinct, Op subOp) { 
         if ( subOp instanceof OpOrder ) {

@@ -20,9 +20,11 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
 import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
+import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTopN ;
 
@@ -33,21 +35,49 @@ public class TransformTopN extends TransformCopy {
     @Override
 	public Op transform(OpSlice opSlice, Op subOp) { 
 
-    	if ( ( ( opSlice.getStart() == 0 ) || ( opSlice.getStart() == Query.NOLIMIT ) ) && 
-    	     ( opSlice.getLength() < TOPN_LIMIT_THRESHOLD ) ) {
-        	if ( subOp instanceof OpOrder ) {
+        /* This looks for two cases:
+         * (slice _  N
+         *   (order PATTERN) )
+         * ==> (top N PATTERN)
+         * and
+         * 
+         * (slice _  N
+         *   (distinct or reduced
+         *     (order PATTEN) ))
+         * ==>  (top N (distinct PATTERN))
+         *
+         * and evaluation of (top) looks for (top N (distinct PATTERN))
+         * See OpExecutor.execute(OpTopN)
+         * 
+         * Note that in TransformDistinctToReduced (distinct (order X)) is turned into (reduced (order X))
+         * and that this optimization should be before that one but this is order independent
+         * as we process reducded or distinct in the same way. 
+         */
+        
+        boolean acceptableStart = ( ( opSlice.getStart() == 0 ) || ( opSlice.getStart() == Query.NOLIMIT ) ) ;
+        boolean acceptableFinish =  (opSlice.getLength() < TOPN_LIMIT_THRESHOLD ) ;  
+        
+    	if ( acceptableStart && acceptableFinish )
+    	{
+        	if ( subOp instanceof OpOrder ) 
+        	{
+        	    // First case.
         	    OpOrder opOrder = (OpOrder)subOp ;
-        		return new OpTopN( opOrder.getSubOp(), (int)opSlice.getLength(), opOrder.getConditions() ) ;
-        	} else if ( subOp instanceof OpDistinct ) {
-        	    OpDistinct opDistinct = (OpDistinct)subOp ;
-        	    if ( opDistinct.getSubOp() instanceof OpOrder ) {
-        	        OpOrder opOrder = (OpOrder)opDistinct.getSubOp() ;
+        	    return new OpTopN( opOrder.getSubOp(), (int)opSlice.getLength(), opOrder.getConditions() ) ;
+        	}
+            	
+        	if ( subOp instanceof OpDistinct || subOp instanceof OpReduced )
+        	{
+        	    Op subSubOp = ((Op1)subOp).getSubOp() ;
+        	    if ( subSubOp instanceof OpOrder ) {
+        	        OpOrder opOrder = (OpOrder)subSubOp ;
         	        Op opDistinct2 = OpDistinct.create(opOrder.getSubOp()) ;
         	        return new OpTopN( opDistinct2, (int)opSlice.getLength(), opOrder.getConditions() ) ;
         	    }
         	}
     	}
-
+    	
+    	// Pass through.
     	return super.transform(opSlice, subOp) ; 
    	}
 	
