@@ -56,9 +56,11 @@ public class Fuseki
     
     // Log for operations
     public static final String requestLogName = PATH+".Fuseki" ;
-    public static final Logger requestLog = LoggerFactory.getLogger(PATH+".Fuseki") ;
+    public static final Logger requestLog = LoggerFactory.getLogger(requestLogName) ;
     public static final String serverLogName = PATH+".Server" ;
-    public static final Logger serverLog = LoggerFactory.getLogger(PATH+".Server") ;
+    public static final Logger serverLog = LoggerFactory.getLogger(serverLogName) ;
+    public static final String configLogName = PATH+".Config" ;
+    public static final Logger configLog = LoggerFactory.getLogger(configLogName) ;    
     // Log for general server messages.
     
     public static final FileManager webFileManager ;

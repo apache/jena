@@ -2,10 +2,15 @@
 
 DS=ds
 
-curl -d 'BASE <http://example/> INSERT DATA { <s> <p> <o> }' \
- -H Content-type:application/sparql-update \
-  http://localhost:3030/$DS/update
+# wgest does %-encoding
+wget -O- --header 'Accept:application/json' \
+    "http://localhost:3030/$DS/query?query="'SELECT * { ?s ?p ?o }'
 
-# -T == --upload_file == PUT
-curl -T - http://localhost:3030/$DS -H "Content-type:text/turtle" D.ttl 
+
+## curl -d 'BASE <http://example/> INSERT DATA { <s> <p> <o> }' \
+##  -H "Content-type:application/sparql-update" \
+##   http://localhost:3030/$DS/update
+
+## # -T == --upload_file == PUT
+## curl -T - http://localhost:3030/$DS -H "Content-type:text/turtle" D.ttl 
 

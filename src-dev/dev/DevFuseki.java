@@ -20,8 +20,8 @@ package dev;
 
 public class DevFuseki
 {
-    // Very large updates
-    //  SPARQL_Update.executeBody
+    // application/json for application/sparql-results+json. 
+    // application/xml for application/sparql-results+xml. 
     
     // LimitingGraph, LimitingBulkUpdateHandler --> chnage to use a limiting Sink<>
     // Finish: SPARQL_QueryGeneral
