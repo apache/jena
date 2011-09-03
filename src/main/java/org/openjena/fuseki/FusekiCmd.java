@@ -21,10 +21,14 @@ package org.openjena.fuseki;
 import java.io.InputStream ;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays ;
+import java.util.List ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.fuseki.config.FusekiConfig ;
+import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
 import org.openjena.fuseki.server.SPARQLServer ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
@@ -72,6 +76,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argPort          = new ArgDecl(ArgDecl.HasValue, "port") ;
     private static ArgDecl argHost          = new ArgDecl(ArgDecl.HasValue, "host") ;
     private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
+    private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
@@ -89,9 +94,12 @@ public class FusekiCmd extends CmdARQ
     
     private int port = 3030 ;
     private String clientHost = null;
+
     private DatasetGraph dsg ;
     private String datasetPath ;
     private boolean allowUpdate = false ;
+    
+    private String fusekiConfigFile = null ;
     private String jettyConfigFile = null ;
     
     public FusekiCmd(String...argv)
@@ -108,12 +116,13 @@ public class FusekiCmd extends CmdARQ
         //add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
         add(argTimeout, "--timeout",            "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
+        add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
 
-    static String argUsage = "[--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] [--host HOST] /DatasetPathName" ; 
+    static String argUsage = "[--config=FILE] [--mem|--desc=AssemblerFile|--file=FILE] [--port PORT] [--host HOST] /DatasetPathName" ; 
     
     @Override
     protected String getSummary()
@@ -128,20 +137,29 @@ public class FusekiCmd extends CmdARQ
         
         Logger log = Fuseki.serverLog ;
         
+        if ( contains(argFusekiConfig) )
+            fusekiConfigFile = getValue(argFusekiConfig) ;
+        
         ArgDecl assemblerDescDecl = new ArgDecl(ArgDecl.HasValue, "desc", "dataset") ;
         if ( contains(argMem) ) x++ ; 
         if ( contains(argFile) ) x++ ;
         if ( contains(assemblerDescDecl) ) x++ ;
         if ( contains(argTDB) ) x++ ;
+
+        if ( fusekiConfigFile != null )
+        {
+            if ( x > 1 )
+                throw new CmdException("Dataset specificed on the command line and also a configuration file specificed.") ;
+        }
+        else
+        {
+            if ( x == 0 )
+                throw new CmdException("Required: either --config=FILE or one of --mem, --file, --loc or --desc") ;
+        }
+
         
         TDB.setOptimizerWarningFlag(false) ;
         
-        if ( x > 1 )
-            throw new CmdException("Only one of --mem, --file, --loc or --desc") ;
-        
-        if ( x == 0 )
-            throw new CmdException("Required: one of --mem, --file, --loc or --desc") ;
-
         if ( contains(argMem) )
         {
             log.info("Dataset: in-memory") ;
@@ -197,6 +215,13 @@ public class FusekiCmd extends CmdARQ
                 dsg = ds.asDatasetGraph() ;
         }
         
+        if ( contains(argFusekiConfig) )
+        {
+            if ( dsg != null )
+                throw new CmdException("Dataset specificed on the command line and also a configuration file specificed.") ;
+            fusekiConfigFile = getValue(argFusekiConfig) ;
+        }
+        
         if ( contains(argPort) )
         {
             String portStr = getValue(argPort) ;
@@ -218,18 +243,21 @@ public class FusekiCmd extends CmdARQ
         	}
         }
             
-        if ( dsg == null )
-            throw new CmdException("No dataset defined: "+argUsage) ;
+        if ( fusekiConfigFile == null && dsg == null )
+            throw new CmdException("No dataset defined and no configuration file: "+argUsage) ;
         
-        if ( getPositional().size() == 0 )
-            throw new CmdException("No dataset path name given") ;
-        if ( getPositional().size() > 1  )
-            throw new CmdException("Multiple dataset path names given") ;
-        datasetPath = getPositionalArg(0) ;
-        if ( datasetPath.length() > 0 && ! datasetPath.startsWith("/") )
-            throw new CmdException("Dataset path name must begin with a /: "+datasetPath) ;
-        
-        allowUpdate = contains(argAllowUpdate) ;
+        if ( dsg != null )
+        {
+            if ( getPositional().size() == 0 )
+                throw new CmdException("No dataset path name given") ;
+            if ( getPositional().size() > 1  )
+                throw new CmdException("Multiple dataset path names given") ;
+            datasetPath = getPositionalArg(0) ;
+            if ( datasetPath.length() > 0 && ! datasetPath.startsWith("/") )
+                throw new CmdException("Dataset path name must begin with a /: "+datasetPath) ;
+            
+            allowUpdate = contains(argAllowUpdate) ;
+        }
         
         if ( contains(argTimeout) )
         {
@@ -243,16 +271,26 @@ public class FusekiCmd extends CmdARQ
             if ( !FileOps.exists(jettyConfigFile) )
                 throw new CmdException("No such file: : "+jettyConfigFile) ;
         }
-        
     }
 
     @Override
     protected void exec()
     {
-        SPARQLServer server = new SPARQLServer(jettyConfigFile, dsg, datasetPath, port, allowUpdate, super.isVerbose()) ;
+        SPARQLServer server ;
+        if ( fusekiConfigFile != null )
+        {
+            List<ServiceDesc> services = FusekiConfig.configure(fusekiConfigFile) ;
+            server =  new SPARQLServer(jettyConfigFile, port, services) ;
+        }
+        else
+        {
+            ServiceDesc sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
+            server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc) ) ;
+        }
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
     }
+    
 
     @Override
     protected String getCommandName()

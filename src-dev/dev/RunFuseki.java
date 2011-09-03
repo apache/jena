@@ -24,6 +24,20 @@ public class RunFuseki
 {
     public static void main(String[] args) throws Exception
     {
+        //main1() ;
+        main2() ;
+    }
+    
+        
+    private static void main2()
+    {
+        FusekiCmd.main("--config=config.ttl") ;
+        System.exit(0) ;
+    }
+
+
+    private static void main1() throws Exception
+    {
         FusekiCmd.main(
                     //"-v", 
                     //"--debug",
@@ -38,6 +52,7 @@ public class RunFuseki
                     //"--desc=desc.ttl", 
                     "/ds"
                     ) ;
+        System.exit(0) ;
     }
 
 }

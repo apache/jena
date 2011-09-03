@@ -25,6 +25,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiConfigException ;
+import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.server.SPARQLServer ;
 import org.slf4j.Logger ;
 
@@ -43,12 +44,18 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class FusekiConfig
 {
+    // TODO
+    // 2: Testing.
+    // 3: Tidy code, put in right place; remove unused copied Joseki code.
+    
+    
     static { Log.setLog4j() ; }
 
     private static Logger log = Fuseki.configLog ;
@@ -56,7 +63,7 @@ public class FusekiConfig
     public static void main(String...argv)
     {
         List<ServiceDesc> services = FusekiConfig.configure("config.ttl") ;
-        SPARQLServer server = new SPARQLServer(3030, services) ;
+        SPARQLServer server = new SPARQLServer(null, 3030, services) ;
         server.start() ;
     }
     
@@ -68,11 +75,27 @@ public class FusekiConfig
         public List<String>  uploadEP = new ArrayList<String>() ;
         public List<String>  readGraphStoreEP = new ArrayList<String>() ;
         public List<String>  readWriteGraphStoreEP = new ArrayList<String>() ;
-        public Dataset dataset = null ;
+        public DatasetGraph dataset = null ;
         
     }
     
-    //static Map<String, ServiceDesc>>
+    public static ServiceDesc defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
+    {
+        ServiceDesc sDesc = new ServiceDesc() ;
+        sDesc.name = datasetPath ;
+        sDesc.dataset = dsg ;
+        sDesc.queryEP.add(HttpNames.ServiceQuery) ;
+        sDesc.queryEP.add(HttpNames.ServiceQueryAlt) ;
+
+        if ( allowUpdate )
+        {
+            sDesc.updateEP.add(HttpNames.ServiceUpdate) ;
+            sDesc.uploadEP.add(HttpNames.ServiceUpload) ;
+            sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData) ;
+        }
+        
+        return sDesc ;
+    }
     
     public static List<ServiceDesc> configure(String filename)
     {
@@ -121,7 +144,8 @@ public class FusekiConfig
         if ( ! datasetDesc.hasProperty(RDF.type) )
             throw new FusekiConfigException("No rdf:type for dataset "+nodeLabel(datasetDesc)) ;
         
-        sDesc.dataset = (Dataset)Assembler.general.open(datasetDesc)  ;
+        Dataset ds = (Dataset)Assembler.general.open(datasetDesc)  ;
+        sDesc.dataset = ds.asDatasetGraph() ; 
         return sDesc ;
         
     }

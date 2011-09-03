@@ -34,10 +34,8 @@ import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
-import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
 import org.openjena.fuseki.mgt.ActionDataset ;
 import org.openjena.fuseki.servlets.DumpServlet ;
@@ -52,46 +50,25 @@ import org.openjena.fuseki.validation.IRIValidator ;
 import org.openjena.fuseki.validation.QueryValidator ;
 import org.openjena.fuseki.validation.UpdateValidator ;
 import org.openjena.riot.WebContent ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class SPARQLServer
 {
-    static { Log.setLog4j() ; }
-    public static final Logger log = LoggerFactory.getLogger(SPARQLServer.class) ;
     private Server server = null ;
     private String datasetPath ;
     private int port ;
     private boolean verbose = false ;
-    private boolean enableUpdate = false ;
     
     //private static int ThreadPoolSize = 100 ;
     
-    // Temporary!!!!!!
-    public SPARQLServer(int port, List<ServiceDesc> services)
+    public SPARQLServer(String jettyConfig, int port, List<ServiceDesc> services)
     {
         this.port = port ; 
-        ServletContextHandler context = buildServer(null) ;
+        ServletContextHandler context = buildServer(jettyConfig) ;
         // Build them all.
         for ( ServiceDesc sDesc : services )
             configureOneDataset(context, sDesc) ;
-    }
-    
-    public SPARQLServer(String jettyConfig, DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate, boolean verbose)
-    {
-        this.port = port ;
-        this.datasetPath = datasetPath ;
-        this.enableUpdate = allowUpdate ;
-        this.verbose = verbose ;
-        init(jettyConfig, dsg, datasetPath, port) ;
-    }
-    
-    public SPARQLServer(String jettyConfig, DatasetGraph dsg, String datasetPath, int port, boolean allowUpdate)
-    {
-        this(jettyConfig, dsg, datasetPath, port, allowUpdate, false) ;
     }
     
     public void start()
@@ -107,9 +84,9 @@ public class SPARQLServer
 
         try { server.start() ; }
         catch (java.net.BindException ex)
-        { log.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ; System.exit(1) ; }
+        { serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage()) ; System.exit(1) ; }
         catch (Exception ex)
-        { log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; System.exit(1) ; }
+        { serverLog.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ; System.exit(1) ; }
         
         ServletContextHandler context = (ServletContextHandler)server.getHandler() ;
     }
@@ -214,7 +191,6 @@ public class SPARQLServer
         
     }
     
-    // ++++++++++++++++ NEW
     private void configureOneDataset(ServletContextHandler context, ServiceDesc sDesc)
     {
         String datasetPath = sDesc.name ;
@@ -226,11 +202,8 @@ public class SPARQLServer
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
 
-        DatasetGraph dsg = sDesc.dataset.asDatasetGraph() ; 
-        DatasetRegistry.get().put(datasetPath, dsg) ;
-        
-        serverLog.info(format("Dataset = %s", datasetPath)) ;
-        
+        DatasetRegistry.get().put(datasetPath, sDesc.dataset) ;
+        serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
         HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
         HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
@@ -245,153 +218,6 @@ public class SPARQLServer
         addServlet(context, datasetPath, sparqlHttpRW, sDesc.readWriteGraphStoreEP) ;
     }
     
-    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
-    {
-        for ( String pathSpec : pathSpecs )
-        {
-            if ( pathSpec.endsWith("/") )
-                pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
-            addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
-        }
-    }
-    // ++++++++++++++++ NEW
-
-    
-    // OLD CODE
-    private void init(String jettyConfig, DatasetGraph dsg, String datasetPath, int port)
-    {
-        if ( datasetPath.equals("/") )
-            datasetPath = "" ;
-        else if ( ! datasetPath.startsWith("/") )
-            datasetPath = "/"+datasetPath ;
-        
-        if ( datasetPath.endsWith("/") )
-            datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
-        
-        if ( jettyConfig != null )
-        {
-            // --jetty-config=jetty-fuseki.xml
-            // for detailed configuration of the server using Jetty features. 
-            server = configServer(jettyConfig) ;
-        }
-        else 
-            server = defaultServerConfig(port) ; 
-        // Keep the server to a maximum number of threads.
-        //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
-
-        // Server
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setErrorHandler(new FusekiErrorHandler()) ;
-        server.setHandler(context);
-        // Constants. Add RDF types.
-        MimeTypes mt = new MimeTypes() ; 
-        mt.addMimeMapping("rdf",    WebContent.contentTypeRDFXML+";charset=utf-8") ;
-        mt.addMimeMapping("ttl",    WebContent.contentTypeTurtle+";charset=utf-8") ;
-        mt.addMimeMapping("nt",     WebContent.contentTypeNTriples+";charset=ascii") ;
-        mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
-        mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
-        context.setMimeTypes(mt) ;
-        
-        String[] datasets = { datasetPath } ;
-        DatasetRegistry.get().put(datasetPath, dsg) ;
-        
-        String validationRoot = "/validate" ;
-        String sparqlProcessor = "/sparql" ;    // Combine with validators in /services/?
-        boolean installServices = true ;
-        boolean installManager = false ;
-
-        // Static pages to install.
-        // Make very sure non-update does not leave holes. 
-        String pages = enableUpdate ? Fuseki.PagesAll : Fuseki.PagesPublish ; 
-        
-        if ( enableUpdate )
-            installManager = true ;
-            
-        serverLog.info(enableUpdate ? "Update enabled" : "Read-only server") ;
-        
-        // Set the max form size much higher.
-        context.setMaxFormContentSize(1*1024*1024) ;
-        
-        for ( String dsPath : datasets )
-        {
-            serverLog.info(format("Dataset = %s", dsPath)) ;
-            HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
-            HttpServlet sparqlHttp = 
-                enableUpdate 
-                ? new SPARQL_REST_RW(verbose) 
-                : new SPARQL_REST_R(verbose) ;
-            
-            // SPARQL services per dataset
-            addServlet(context, sparqlHttp, dsPath);                                // URI: /dataset
-            addServlet(context, sparqlHttp, dsPath+HttpNames.ServiceData) ;         // URI: /dataset/data
-            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQuery) ;       // URI: /dataset/query
-            addServlet(context, sparqlQuery, dsPath+HttpNames.ServiceQueryAlt) ;    // URI: /dataset/sparql -- Alternative name
-
-            if ( enableUpdate )
-            {
-                HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
-                addServlet(context, sparqlUpdate, dsPath+HttpNames.ServiceUpdate) ; // URI: /dataset/update
-                
-                HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
-                addServlet(context, sparqlUpload, dsPath+HttpNames.ServiceUpload) ; // URI: /dataset/upload
-            }
-        }
-        
-        if ( installServices )
-        {
-            // Validators
-            HttpServlet validateQuery = new QueryValidator() ;
-            HttpServlet validateUpdate = new UpdateValidator() ;
-            HttpServlet validateData = new DataValidator() ;    
-            HttpServlet validateIRI = new IRIValidator() ;
-            
-            HttpServlet dumpService = new DumpServlet() ;
-            HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
-            
-            addServlet(context, validateQuery, validationRoot+"/query") ;
-            addServlet(context, validateUpdate, validationRoot+"/update") ;
-            addServlet(context, validateData, validationRoot+"/data") ;
-            addServlet(context, validateIRI, validationRoot+"/iri") ;
-            addServlet(context, dumpService, "/dump") ;
-            // general query processor.
-            addServlet(context, generalQueryService, sparqlProcessor) ;
-        }
-
-        if ( installManager )
-        {
-            server.setHandler(context);
-
-            HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
-            ServletHolder jspContent = new ServletHolder(jspServlet) ;
-            //?? Need separate context for admin stuff??
-            context.setResourceBase(pages) ;
-            addServlet(context, jspContent, "*.jsp") ;
-
-            // Action when control panel selects a dataset.
-            HttpServlet datasetChooser = new ActionDataset() ;
-            addServlet(context, datasetChooser, "/dataset") ;
-        }
-        
-        if ( installManager || installServices )
-        {
-            String [] files = { "fuseki.html" } ;
-            context.setWelcomeFiles(files) ;
-            //  if this is /* then don't see *.jsp. Why?
-            addContent(context, "/", pages) ;
-        }
-        
-        // TEST
-//            // Add the webapp.
-//            webAppContextJoseki = new WebAppContext(server, "webapps/joseki", "/") ;
-//            server.addHandler(webAppContextJoseki) ;
-            
-//            WebAppContext context = new WebAppContext();
-//            context.setDescriptor(webapp+"/WEB-INF/web.xml");
-//            context.setResourceBase("../test-jetty-webapp/src/main/webapp");
-//            context.setContextPath("/");
-//            context.setParentLoaderPriority(true);Exception ex)
-    }
-    
     private static Server configServer(String jettyConfig)
     {
         try {
@@ -402,8 +228,8 @@ public class SPARQLServer
             return server ;
         } catch (Exception ex)
         {
-            log.error("SPARQLServer: Failed to start server: " + ex.getMessage(), ex) ;
-            throw new FusekiException("Failed to create a server using configuration file '"+jettyConfig+"'") ; 
+            serverLog.error("SPARQLServer: Failed to configure server: " + ex.getMessage(), ex) ;
+            throw new FusekiException("Failed to configure a server using configuration file '"+jettyConfig+"'") ; 
         }
     }
 
@@ -444,7 +270,17 @@ public class SPARQLServer
         staticContent.setInitParameter("resourceBase", pages) ;
         addServlet(context, staticContent, pathSpec) ;
     }
-    
+
+    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
+    {
+        for ( String pathSpec : pathSpecs )
+        {
+            if ( pathSpec.endsWith("/") )
+                pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
+            addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
+        }
+    }
+
     private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
     {
         ServletHolder holder = new ServletHolder(servlet) ;

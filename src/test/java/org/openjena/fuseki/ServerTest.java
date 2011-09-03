@@ -18,13 +18,18 @@
 
 package org.openjena.fuseki;
 
+import java.util.Arrays ;
+
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.fuseki.config.FusekiConfig ;
+import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
 import org.openjena.fuseki.http.UpdateRemote ;
 import org.openjena.fuseki.server.SPARQLServer ;
 
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 
 /** Manage a server for testing.
@@ -65,19 +70,21 @@ public class ServerTest extends BaseTest
     
     protected static void serverStart()
     {
-        Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
+        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
-        server = new SPARQLServer(null, DatasetGraphFactory.createMem(), datasetPath, port, true) ;
-        server.start() ;
         
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        ServiceDesc sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
+        SPARQLServer server = new SPARQLServer(null, port, Arrays.asList(sDesc) ) ;
+        server.start() ;
     }
     
     protected static void serverStop()
     {
         server.stop() ;
-        Log.logLevel(SPARQLServer.log.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel(Fuseki.serverLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
+        Log.logLevel(Fuseki.requestLog.getName(), org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.INFO, java.util.logging.Level.INFO) ;
     }
     
