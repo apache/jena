@@ -36,7 +36,6 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.FusekiException ;
-import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
 import org.openjena.fuseki.mgt.ActionDataset ;
 import org.openjena.fuseki.servlets.DumpServlet ;
 import org.openjena.fuseki.servlets.SPARQL_QueryDataset ;

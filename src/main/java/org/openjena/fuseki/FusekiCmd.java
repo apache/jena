@@ -19,17 +19,17 @@
 package org.openjena.fuseki;
 
 import java.io.InputStream ;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.InetAddress ;
+import java.net.UnknownHostException ;
 import java.util.Arrays ;
 import java.util.List ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.fuseki.config.FusekiConfig ;
-import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
+import org.openjena.fuseki.server.FusekiConfig ;
 import org.openjena.fuseki.server.SPARQLServer ;
+import org.openjena.fuseki.server.ServiceDesc ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
