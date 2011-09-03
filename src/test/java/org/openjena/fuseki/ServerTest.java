@@ -23,10 +23,10 @@ import java.util.Arrays ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.fuseki.config.FusekiConfig ;
-import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
 import org.openjena.fuseki.http.UpdateRemote ;
+import org.openjena.fuseki.server.FusekiConfig ;
 import org.openjena.fuseki.server.SPARQLServer ;
+import org.openjena.fuseki.server.ServiceDesc ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
