@@ -22,7 +22,6 @@ import java.util.Arrays ;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.config.FusekiConfig ;
 import org.openjena.fuseki.config.FusekiConfig.ServiceDesc ;
@@ -38,16 +37,10 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
     \@AfterClass public static void afterClass() { ServerTest.freeServer() ; }
     </pre>
  */
-public class ServerTest extends BaseTest
+public class ServerTest extends BaseServerTest
 {
     // Abstraction that runs one server.
     // Inherit from this class to add starting/stopping a server.  
-    
-    public static final int port             = 3535 ;
-    public static final String datasetPath   = "/dataset" ;
-    public static final String serviceUpdate = "http://localhost:"+port+datasetPath+"/update" ; 
-    public static final String serviceQuery  = "http://localhost:"+port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+port+datasetPath+"/data" ;
     
     private static int referenceCount = 0 ;
     private static SPARQLServer server = null ; 
@@ -75,8 +68,13 @@ public class ServerTest extends BaseTest
         Log.logLevel("org.eclipse.jetty", org.apache.log4j.Level.WARN, java.util.logging.Level.WARNING) ;
         
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        // This must agree with BaseServerTest
         ServiceDesc sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
-        SPARQLServer server = new SPARQLServer(null, port, Arrays.asList(sDesc) ) ;
+//        public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
+//        public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
+//        public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
+        
+        server = new SPARQLServer(null, port, Arrays.asList(sDesc) ) ;
         server.start() ;
     }
     

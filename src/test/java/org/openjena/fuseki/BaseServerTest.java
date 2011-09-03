@@ -28,13 +28,13 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class BaseServerTest extends BaseTest
 {
-    // Abstraction that runs one server.
-    // Inherit from this class to add starting/stopping a server.  
-    
+    public static final int port             = 3535 ;
     public static final String datasetPath   = "/dataset" ;
     public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
     public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
-    public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ;
+    public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
+    
+    
     
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;

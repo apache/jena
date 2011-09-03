@@ -277,6 +277,8 @@ public class SPARQLServer
         {
             if ( pathSpec.endsWith("/") )
                 pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
+            if ( pathSpec.startsWith("/") )
+                pathSpec = pathSpec.substring(1, pathSpec.length()) ;
             addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
         }
     }

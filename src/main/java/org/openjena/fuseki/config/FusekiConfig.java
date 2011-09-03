@@ -93,6 +93,8 @@ public class FusekiConfig
             sDesc.uploadEP.add(HttpNames.ServiceUpload) ;
             sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData) ;
         }
+        else
+            sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
         
         return sDesc ;
     }

@@ -37,7 +37,6 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
     
     @Test public void get_01()
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
         Graph graph = updater.httpGet() ;
         assertNullOrEmpty(graph) ;
@@ -77,9 +76,7 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
 
     @Test public void post_01()
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
-        
         updater.httpPost(graph1) ;
         updater.httpPost(graph2) ;
         Graph graph = updater.httpGet() ;
@@ -94,7 +91,6 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
     
     @Test public void post_02()
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpPost(n1, graph1) ;
         updater.httpPost(n1, graph2) ;
@@ -113,7 +109,6 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
     // Default graph
     @Test public void delete_01()
     {
-
         DatasetGraphAccessor updater = getDatasetUpdater() ;
         updater.httpDelete() ;
         Graph graph = updater.httpGet() ;
