@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -97,10 +98,11 @@ public class SDB
         
         // Better not to break up BGPs too much.
         ARQ.getContext().set(ARQ.optFilterPlacement, false) ;
-        
+        MappingRegistry.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
+
         // Default is 1000 4Kpages.
         DerbyUtils.setDerbyPageCacheSize(10000) ;
-        
+
         // Wire in the SDB query engine
         QueryEngineSDB.register() ;
         // Wire in the SDB update engine

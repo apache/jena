@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 
 public abstract class CmdArgsDB extends CmdGeneral
 {
@@ -53,7 +54,6 @@ public abstract class CmdArgsDB extends CmdGeneral
         addModule(modStore) ;
         addModule(modLogSQL) ;
         addModule(modTime) ;
-        ModSymbol.addPrefixMapping(SDB.symbolPrefix, SDB.symbolSpace) ;
         ARQ.init() ;
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
