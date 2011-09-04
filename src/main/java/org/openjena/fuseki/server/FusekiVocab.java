@@ -21,17 +21,30 @@ package org.openjena.fuseki.server;
 import org.openjena.fuseki.FusekiException ;
 import org.openjena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.rdf.model.Property ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 
 public class FusekiVocab
 {
     public static String NS = "http://jena.apache.org/fuseki#" ;
+
+    public static final Resource tServer = resource("Server") ;
+
+    public static final Property pServices = property("services") ;
+    public static final Property pServiceName = property("name") ;
     
-    public static final Node pServiceName = property("serviceName") ; 
-    
-    
-    private static Node property(String localname)
+    public static final Property pServiceQueryEP = property("serviceQuery") ;
+    public static final Property pServiceUpdateEP = property("serviceUpdate") ;
+    public static final Property pServiceUploadEP = property("serviceUpload") ;
+    public static final Property pServiceReadWriteGraphStoreEP = property("serviceReadWriteGraphStore") ;
+    public static final Property pServiceReadgraphStoreEP = property("serviceReadGraphStore") ;
+
+    private static Resource resource(String localname) { return ResourceFactory.createResource(iri(localname)) ; }
+    private static Property property(String localname) { return ResourceFactory.createProperty(iri(localname)) ; }
+        
+    private static String iri(String localname)
     {
         String uri = NS+localname ;
         IRI iri = IRIResolver.parseIRI(uri) ;
@@ -40,7 +53,7 @@ public class FusekiVocab
         if ( ! iri.isAbsolute() )
             throw new FusekiException("Bad IRI: "+iri) ;
         
-        return Node.createURI(uri) ;
+        return uri ;
     }
 }
 

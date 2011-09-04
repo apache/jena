@@ -18,7 +18,7 @@
 
 package org.openjena.fuseki.servlets;
 
-import static org.openjena.fuseki.Fuseki.webFileManager ;
+import static java.lang.String.format ;
 import static org.openjena.fuseki.HttpNames.paramAccept ;
 import static org.openjena.fuseki.HttpNames.paramCallback ;
 import static org.openjena.fuseki.HttpNames.paramDefaultGraphURI ;
@@ -39,8 +39,11 @@ import java.util.Set ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.fuseki.migrate.GraphLoadUtils ;
+import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -80,10 +83,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
 
     @Override
     protected void validateQuery(HttpActionQuery action, Query query)
-    {
-        if ( query.hasDatasetDescription() )
-            errorBadRequest("Query may not include a dataset description (FROM/FROM NAMED)") ;
-    }
+    { }
     
     @Override
     protected String mapRequestToDataset(String uri)
@@ -92,9 +92,9 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     {
-        Dataset ds = datasetFromProtocol(action.request) ;
+        Dataset ds = datasetFromProtocol(action) ;
         if ( ds == null )
-            ds = datasetFromQuery(query) ;
+            ds = datasetFromQuery(action, query) ;
         if ( ds == null )
             errorBadRequest("No dataset description in protocol request or in the query string") ;
         return ds ;
@@ -119,21 +119,21 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         return false ;
     }
     
-    protected Dataset datasetFromProtocol(HttpServletRequest request)
+    protected Dataset datasetFromProtocol(HttpActionQuery action)
     {
-        List<String> graphURLs = toStrList(request.getParameterValues(paramDefaultGraphURI)) ;
-        List<String> namedGraphs = toStrList(request.getParameterValues(paramNamedGraphURI)) ;
-        return datasetFromDescription(graphURLs, namedGraphs) ;
+        List<String> graphURLs = toStrList(action.request.getParameterValues(paramDefaultGraphURI)) ;
+        List<String> namedGraphs = toStrList(action.request.getParameterValues(paramNamedGraphURI)) ;
+        return datasetFromDescription(action, graphURLs, namedGraphs) ;
     }
     
-    protected Dataset datasetFromQuery(Query query)
+    protected Dataset datasetFromQuery(HttpActionQuery action, Query query)
     {
         List<String> graphURLs = query.getGraphURIs() ;
         List<String> namedGraphs = query.getNamedGraphURIs() ;
-        return datasetFromDescription(graphURLs, namedGraphs) ;
+        return datasetFromDescription(action, graphURLs, namedGraphs) ;
     }
     
-    protected Dataset datasetFromDescription(List<String> graphURLs, List<String> namedGraphs)
+    protected Dataset datasetFromDescription(HttpActionQuery action, List<String> graphURLs, List<String> namedGraphs)
     {
         try {
             graphURLs = removeEmptyValues(graphURLs) ;
@@ -150,27 +150,19 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
                 Model model = ModelFactory.createDefaultModel() ;
                 for ( String uri : graphURLs )
                 {
-                    if ( uri == null )
-                    {
-                        // TODO LOG
-                        log.warn("Null "+paramDefaultGraphURI+ " (ignored)") ;
-                        continue ;
-                    }
-                    if ( uri.equals("") )
-                    {
-                        // TODO LOG
-                        log.warn("Empty "+paramDefaultGraphURI+ " (ignored)") ;
-                        continue ;
-                    }
+                    if ( uri == null || uri.equals("") )
+                        throw new InternalErrorException("Default graph URI is null or the empty string")  ;
 
                     try {
                         //TODO Clearup - RIOT integration.
                         GraphLoadUtils.loadModel(model, uri, MaxTriples) ;
-                        log.info("Load (default) "+uri) ;
+                        log.info(format("[%d] Load (default graph) %s", action.id, uri)) ;
+                    } catch (RiotException ex) {
+                        log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
+                        errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
-                        // TODO LOG
-                        log.info("Failed to load (default) "+uri+" : "+ex.getMessage()) ;
+                        log.info(format("[%d] Failed to load (default) %s: %s", action.id, uri, ex.getMessage())) ;
                         errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
@@ -181,25 +173,21 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
             {
                 for ( String uri : namedGraphs )
                 {
-                    if ( uri == null )
-                    {
-                        log.warn("Null "+paramNamedGraphURI+ " (ignored)") ;
-                        continue ;
-                    }
-                    if ( uri.equals("") )
-                    {
-                        log.warn("Empty "+paramNamedGraphURI+ " (ignored)") ;
-                        continue ;
-                    }
+                    if ( uri == null || uri.equals("") )
+                        throw new InternalErrorException("Named graph URI is null or the empty string")  ;
+
                     try {
-                        Model model2 = webFileManager.loadModel(uri) ;
-                        log.info("Load (named) "+uri) ;
-                        dataset.addNamedModel(uri, model2) ;
+                        Model model = ModelFactory.createDefaultModel() ;
+                        GraphLoadUtils.loadModel(model, uri, MaxTriples) ;
+                        log.info(format("[%d] Load (named graph) %s", action.id, uri)) ;
+                        dataset.addNamedModel(uri, model) ;
+                    } catch (RiotException ex) {
+                        log.info(format("[%d] Parsing error loading %s: %s", action.id, uri, ex.getMessage())) ;
+                        errorBadRequest("Failed to load URL (parse error) "+uri+" : "+ex.getMessage()) ;
                     } catch (Exception ex)
                     {
-                        // TODO LOG
-                        log.info("Failed to load (named) "+uri+" : "+ex.getMessage()) ;
-                        errorBadRequest("Failed to load (named) "+uri+" : "+ex.getMessage()) ;
+                        log.info(format("[%d] Failed to load (named graph) %s: %s", action.id, uri, ex.getMessage())) ;
+                        errorBadRequest("Failed to load URL "+uri) ;
                     }
                 }
             }
@@ -207,11 +195,11 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
             return dataset ;
             
         } 
+        catch (ActionErrorException ex) { throw ex ; }
         catch (Exception ex)
         {
-            // TODO LOG
-            log.info("SPARQL parameter error",ex) ;
-            errorBadRequest("Parameter error");
+            log.info(format("[%d] SPARQL parameter error: "+ex.getMessage(),action.id, ex)) ;
+            errorBadRequest("Parameter error: "+ex.getMessage());
             return null ;
         }
         
@@ -224,9 +212,16 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         return Arrays.asList(array) ;
     }
 
-    private  <T>  List<T> removeEmptyValues(List<T> list)
+    private  List<String> removeEmptyValues(List<String> list)
     {
-        return Iter.iter(list).removeNulls().toList() ;
+        return Iter.iter(list).filter(acceptNonEmpty).toList() ;
     }
     
+    private static Filter<String> acceptNonEmpty = new Filter<String>(){ 
+        @Override
+        public boolean accept(String item)
+        {
+            return item != null && item.length() != 0 ;
+        }
+    } ;
 }

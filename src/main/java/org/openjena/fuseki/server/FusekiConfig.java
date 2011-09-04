@@ -18,9 +18,11 @@
 
 package org.openjena.fuseki.server;
 
+import java.lang.reflect.Method ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.Fuseki ;
@@ -29,6 +31,8 @@ import org.openjena.fuseki.HttpNames ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -41,30 +45,35 @@ import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.rdf.model.ResIterator ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.util.FileManager ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class FusekiConfig
 {
-    // TODO
-    // 2: Testing.
-    // 3: Tidy code, put in right place; remove unused copied Joseki code.
-    
-    
     static { Log.setLog4j() ; }
 
     private static Logger log = Fuseki.configLog ;
     
-    public static void main(String...argv)
-    {
-        List<ServiceDesc> services = FusekiConfig.configure("config.ttl") ;
-        SPARQLServer server = new SPARQLServer(null, 3030, services) ;
-        server.start() ;
-    }
+    private static String prefixes = StrUtils.strjoinNL(
+    "PREFIX fu:     <http://jena.apache.org/fuseki#>" ,
+    "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
+    "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
+    "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
+    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
+    "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
+    "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
+    "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
+    "") ;
     
     public static ServiceDesc defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
     {
@@ -82,18 +91,30 @@ public class FusekiConfig
         }
         else
             sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
-        
         return sDesc ;
     }
     
     public static List<ServiceDesc> configure(String filename)
     {
-        // Basic checks
-        // Stage one : parse file and set temporay datastructures
-        // Stateg two : configure server, knowing the data is all valid.
-        
+        // Be absolutely sure everything has initaialized.
+        // Some initialization registers assemblers and sets abbreviation vocabulary. 
+        ARQ.init();
+        TDB.init() ;
+        Fuseki.init() ;
         Model m = FileManager.get().loadModel(filename) ;
+
+        // Find one server.
+        List<Resource> servers = getByType(FusekiVocab.tServer, m) ;
+        if ( servers.size() == 0 )
+            throw new FusekiConfigException("No server found (no resource with type "+strForResource(FusekiVocab.tServer)) ;
+        if ( servers.size() > 1 )
+            throw new FusekiConfigException(servers.size()+" servers found (must be exactly one in a configuration file)") ;
         
+        // ---- Server 
+        Resource server = servers.get(0) ;
+        processServer(server) ;
+
+        // ---- Services
         ResultSet rs = query("SELECT * { ?s fu:services [ list:member ?member ] }", m) ; 
         if ( ! rs.hasNext() )
             log.warn("No services found") ;
@@ -109,6 +130,54 @@ public class FusekiConfig
         }
         
         return services ;
+    }
+
+    private static void processServer(Resource server)
+    {
+        // Global, currently.
+        AssemblerUtils.setContext(server, Fuseki.getContext()) ;
+        
+        StmtIterator sIter = server.listProperties(JA.loadClass) ;
+        for( ; sIter.hasNext(); )
+        {
+            Statement s = sIter.nextStatement() ;
+            RDFNode rn = s.getObject() ;
+            String className = null ;
+            if ( rn instanceof Resource )
+            {
+                String uri = ((Resource)rn).getURI() ;
+                if ( uri == null )
+                {
+                    log.warn("Blank node for class to load") ;
+                    continue ;
+                }
+                String javaScheme = "java:" ;
+                if ( ! uri.startsWith(javaScheme) )
+                {
+                    log.warn("Class to load is not 'java:': "+uri) ;
+                    continue ;
+                }
+                className = uri.substring(javaScheme.length()) ;
+            }
+            if ( rn instanceof Literal )
+                className = ((Literal)rn).getLexicalForm() ; 
+            /*Loader.*/loadAndInit(className) ;
+        }
+        // ----
+    }
+
+    private static void loadAndInit(String className)
+    {
+        try {
+            Class<?> classObj = Class.forName(className);
+            log.info("Loaded "+className) ;
+            Method initMethod = classObj.getMethod("init");
+            initMethod.invoke(null);
+        } catch (ClassNotFoundException ex)
+        {
+            log.warn("Class not found: "+className);
+        } 
+        catch (Exception e)         { throw new FusekiConfigException(e) ; }
     }
 
     private static ServiceDesc processService(Resource svc)
@@ -149,6 +218,12 @@ public class FusekiConfig
         return x ;
     }
     
+    private static List<Resource> getByType(Resource type, Model m)
+    {
+        ResIterator rIter = m.listSubjectsWithProperty(RDF.type, type) ;
+        return Iter.toList(rIter) ;
+    }
+
     private static void addServiceEP(String label, String name, List<String> output, Resource svc, String property)
     {
         ResultSet rs = query("SELECT * { ?svc "+property+" ?ep}", svc.getModel(), "svc", svc) ;
@@ -161,28 +236,7 @@ public class FusekiConfig
         }
     }
 
-    // Dataset
-    String[] s = new String[] {
-        "SELECT ?x ?dft ?graphName ?graphData",
-        "{ { ?x a ja:RDFDataset } UNION { ?x a [ rdfs:subClassOf ja:RDFDataset ] }",  
-        "  OPTIONAL { ?x ja:defaultGraph ?dft }",
-        "  OPTIONAL { ?x ja:namedGraph  [ ja:graphName ?graphName ; ja:graph ?graphData ] }",  
-        "}", 
-        "ORDER BY ?x ?dft ?graphName"
-    } ;
 
-    private static String prefixes = StrUtils.strjoinNL(
-        "PREFIX fu:     <http://jena.apache.org/fuseki#>" ,
-        "PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>",
-        "PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>",
-        "PREFIX tdb:    <http://jena.hpl.hp.com/2008/tdb#>",
-        "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-        "PREFIX list:   <http://jena.hpl.hp.com/ARQ/list#>",
-        "PREFIX xsd:     <http://www.w3.org/2001/XMLSchema#>",
-        "PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>", 
-        "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
-        "") ;
-    
     private static ResultSet query(String string, Model m)
     {
         return query(string, m, null, null) ;

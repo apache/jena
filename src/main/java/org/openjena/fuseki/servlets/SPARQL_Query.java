@@ -192,7 +192,7 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     private void execute(String queryString, HttpActionQuery action)
     {
         String queryStringLog = formatForLog(queryString) ;
-        log.info(format("[%d] Query = %s", action.id, queryString));
+        log.info(format("[%d] Query = %s", action.id, queryStringLog));
         
         Query query = null ;
         try {

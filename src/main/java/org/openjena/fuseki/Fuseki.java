@@ -27,13 +27,16 @@ import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class Fuseki
 {
     // External log : operations, etc.
     static public String PATH = "org.openjena.fuseki" ;
-    static public String FusekiIRI = "http://openjena.org/Fuseki" ;
+    static public String FusekiIRI = "http://jena.apache.org/Fuseki" ;
+    static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
     
     static public String PagesPublish = "pages-publish" ;
     static public String PagesAll =     "pages-update" ;
@@ -81,8 +84,14 @@ public class Fuseki
         ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
         RIOT.init() ;
+        MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
     }
   
+    public static Context getContext()
+    {
+        return ARQ.getContext() ;
+    }
+
     // Force a call to init.
     static { init() ; }
 }

@@ -20,10 +20,14 @@ package dev;
 
 public class DevFuseki
 {
+    // Configuration:
+    // 1 - Custom code - server init by reflection.
+    // 2 - 
+    
     // application/json for application/sparql-results+json. 
     // application/xml for application/sparql-results+xml. 
     
-    // LimitingGraph, LimitingBulkUpdateHandler --> chnage to use a limiting Sink<>
+    // LimitingGraph, LimitingBulkUpdateHandler --> change to use a limiting Sink<>
     // Finish: SPARQL_QueryGeneral
     //    Parse errors and etc need to be passed out.
     // --jetty-config documentation

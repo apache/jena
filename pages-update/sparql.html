@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head><title>SPARQLer</title>
+    <link rel="stylesheet" type="text/css" href="/fuseki.css" />
+  </head>
+
+  <body>
+    <h1>SPARQLer - General purpose processor</h1>
+
+    <div class="moreindent">
+
+      <form action="sparql" method="get">
+	<p>General SPARQL query : input query, set any options and press "Get Results"</p>
+	<p>
+	  <textarea style="background-color: #F0F0F0;" name="query" cols="70" rows="20"></textarea>
+	  <br/>
+	  Target graph URI (or use <code>FROM</code> in the query)
+	  <input name="default-graph-uri" size="25" value="" />
+	  <br/>
+	  Output XML: <input type="radio" name="output" value="xml" checked/>
+	  with XSLT style sheet (leave blank for none): 
+	  <input name="stylesheet" size="25" value="/xml-to-html.xsl" /> <br/>
+	  or JSON output: <input type="radio" name="output" value="json"/> <br/>
+	  or text output: <input type="radio" name="output" value="text"/> <br/>
+	  or CSV output: <input type="radio" name="output" value="csv"/> <br/>
+	  or TSV output: <input type="radio" name="output" value="tsv"/> <br/>
+          Force the accept header to <tt>text/plain</tt> regardless 
+ 	  <input type="checkbox" name="force-accept" value="text/plain"/>	  <br/>
+	  <input type="submit" value="Get Results" />
+	</p>
+      </form>
+    </div>
+
+    <hr/>
+
+  </body>
+</html>

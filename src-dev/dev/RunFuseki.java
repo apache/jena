@@ -24,8 +24,8 @@ public class RunFuseki
 {
     public static void main(String[] args) throws Exception
     {
-        //main1() ;
-        main2() ;
+        main1() ;
+        //main2() ;
     }
     
         
