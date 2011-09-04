@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sdb.SDB;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.StoreDesc;
 import com.hp.hpl.jena.sdb.assembler.AssemblerVocab;
-import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 
 public abstract class CmdArgsDB extends CmdGeneral
 {
