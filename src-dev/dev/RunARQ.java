@@ -40,6 +40,7 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -59,6 +60,8 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -120,6 +123,12 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        ARQ.init();
+        
+        Dataset ds = (Dataset)AssemblerUtils.build("D.ttl", DatasetAssemblerVocab.tDataset) ;
+        System.out.println(ds.asDatasetGraph().getContext()) ;
+        exit(0) ;        
+        
         Node n = Node.createLiteral("9", null, XSDDatatype.XSDint) ;
         System.out.println(FmtUtils.stringForNode(n, (PrefixMapping)null)) ;
         exit(0) ;

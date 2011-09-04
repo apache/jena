@@ -21,7 +21,7 @@ public class GraphStoreAssembler extends DataSourceAssembler
     public Object open(Assembler a, Resource root, Mode mode)
     {
         // Same vocabulary as datasets.
-        // Have dispatched on type buy now so can just call the dataset code to build a DataSource.
+        // Have dispatched on type by now so can just call the dataset code to build a DataSource.
         
         GraphStore gs = null ;
         Object ds = super.open(a, root, mode) ;

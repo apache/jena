@@ -46,8 +46,11 @@ public class DataSourceAssembler extends AssemblerBase implements Assembler
         // Non-expanding version.
         //DataSource ds = DatasetFactory.create() ;
         
+        
         // Expanding version.
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        AssemblerUtils.setContext(root, dsg.getContext()) ;
+        
         DataSource ds = DatasetFactory.create(dsg) ;
 
         // -------- Default graph

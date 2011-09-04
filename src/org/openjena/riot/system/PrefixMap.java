@@ -108,6 +108,14 @@ public class PrefixMap
         return null ;
     }
 
+    /** Expand a prefix named, return null if it can't be expanded */
+    public String expand(String prefixedName) 
+    { 
+        int i = prefixedName.indexOf(':') ;
+        if ( i < 0 ) return null ;
+        return expand(prefixedName.substring(0,i),
+                      prefixedName.substring(i+1)) ;
+    }
     
     /** Expand a prefix, return null if it can't be expanded */
     public String expand(String prefix, String localName) 

@@ -6,21 +6,27 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.QuerySolutionMap ;
+import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
+import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.TypeNotUniqueException ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 import com.hp.hpl.jena.util.FileManager ;
-
 
 public class AssemblerUtils
 {
@@ -30,7 +36,6 @@ public class AssemblerUtils
         PrefixMapping pm = (PrefixMapping)AssemblerUtils.build(file, JA.PrefixMapping) ;
         return pm ;
     }
-    
     
     private static boolean initialized = false ; 
     
@@ -86,6 +91,24 @@ public class AssemblerUtils
         finally
         { ARQ.setExecutionLogging(level) ; }
         return Assembler.general.open(root) ;
+    }
+    
+    public static void setContext(Resource r, Context context)
+    {
+        String qs = "PREFIX ja: <"+JA.getURI()+">\nSELECT * { ?x ja:context [ ja:cxtName ?name ; ja:cxtValue ?value ] }" ;
+        QuerySolutionMap qsm = new QuerySolutionMap() ;
+        qsm.add("x", r) ;
+        QueryExecution qExec = QueryExecutionFactory.create(qs, r.getModel(), qsm) ;
+        ResultSet rs = qExec.execSelect() ;
+        while ( rs.hasNext() )
+        {
+            QuerySolution soln = rs.next() ;
+            String name = soln.getLiteral("name").getLexicalForm() ;
+            String value = soln.getLiteral("value").getLexicalForm() ;  // Works for numbers as well!
+            name = MappingRegistry.mapPrefixName(name) ;
+            Symbol symbol = Symbol.create(name) ;
+            context.set(symbol, value) ;
+        }
     }
 }
 

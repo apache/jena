@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.mgt.Explain.InfoLevel ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** ARQ - miscellaneous settings
@@ -397,7 +398,8 @@ public class ARQ
             globalContext = defaultSettings() ;
             StageBuilder.init() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
-
+            MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqNS) ;
+            
             // This is the pattern for any subsystem to register. 
             String NS = ARQ.PATH ;
 

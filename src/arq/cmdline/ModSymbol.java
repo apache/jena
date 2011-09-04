@@ -12,9 +12,8 @@ import java.util.Iterator ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class ModSymbol implements ArgModuleGeneral
@@ -36,13 +35,6 @@ public class ModSymbol implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
-    public static PrefixMapping symbolPrefixMapping = new PrefixMappingImpl() ;
-    
-    public static void addPrefixMapping(String prefix, String uri)
-    {
-        symbolPrefixMapping.setNsPrefix(prefix, uri) ;
-    }
-    
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
@@ -59,8 +51,7 @@ public class ModSymbol implements ArgModuleGeneral
             String value = frags[1] ;
 
             // Make it a long name.
-            symbolName = symbolPrefixMapping.expandPrefix(symbolName) ;
-
+            symbolName = MappingRegistry.mapPrefixName(symbolName) ;
             Symbol symbol = Symbol.create(symbolName) ;
             context.set(symbol, value) ;
         }
