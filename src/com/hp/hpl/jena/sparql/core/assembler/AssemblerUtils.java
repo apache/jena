@@ -107,7 +107,10 @@ public class AssemblerUtils
             String value = soln.getLiteral("value").getLexicalForm() ;  // Works for numbers as well!
             name = MappingRegistry.mapPrefixName(name) ;
             Symbol symbol = Symbol.create(name) ;
-            context.set(symbol, value) ;
+            if ( "undef".equalsIgnoreCase(value) )
+                context.remove(symbol) ;
+            else
+                context.set(symbol, value) ;
         }
     }
 }
