@@ -18,7 +18,9 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -27,24 +29,31 @@ import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
 import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSlice ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTopN ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class TransformTopN extends TransformCopy {
 
-	public static final int TOPN_LIMIT_THRESHOLD = 100 ;
-	
+	private static final int defaultTopNSortingThreshold = 1000;
+	public static final Symbol externalSortBufferSize = ARQConstants.allocSymbol("topNSortingThreshold") ;
+
     @Override
 	public Op transform(OpSlice opSlice, Op subOp) { 
 
         /* This looks for two cases:
-         * (slice _  N
+         * (slice X N
          *   (order (cond) PATTERN) )
-         * ==> (top (N cond) PATTERN)
+         * ==> 
+         * (slice X _
+         *   (top (X+N cond) PATTERN) )
+         * 
          * and
          * 
-         * (slice _  N
+         * (slice X N
          *   (distinct or reduced
          *     (order (cond) PATTERN) ))
-         * ==>  (top (N cond) (distinct PATTERN))
+         * ==>  
+         * (slice X _
+         *   (top (X+N cond) (distinct PATTERN))
          *
          * and evaluation of (top) looks for (top N (distinct PATTERN))
          * See OpExecutor.execute(OpTopN)
@@ -54,16 +63,20 @@ public class TransformTopN extends TransformCopy {
          * as we process reducded or distinct in the same way. 
          */
         
-        boolean acceptableStart = ( ( opSlice.getStart() == 0 ) || ( opSlice.getStart() == Query.NOLIMIT ) ) ;
-        boolean acceptableFinish =  (opSlice.getLength() < TOPN_LIMIT_THRESHOLD ) ;  
-        
-    	if ( acceptableStart && acceptableFinish )
+        int threshold = (Integer)ARQ.getContext().get(externalSortBufferSize, defaultTopNSortingThreshold) ;
+        long offset = ( opSlice.getStart() != Query.NOLIMIT ) ? opSlice.getStart() : 0L ;
+    	if ( offset + opSlice.getLength() < threshold )
     	{
         	if ( subOp instanceof OpOrder ) 
         	{
         	    // First case.
         	    OpOrder opOrder = (OpOrder)subOp ;
-        	    return new OpTopN( opOrder.getSubOp(), (int)opSlice.getLength(), opOrder.getConditions() ) ;
+                OpTopN opTopN = new OpTopN( opOrder.getSubOp(), (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ;
+        	    if ( offset == 0 ) {
+        	        return opTopN ;
+        	    } else {
+                    return new OpSlice( opTopN, offset, Query.NOLIMIT ) ;        	        
+        	    }
         	}
             	
         	if ( subOp instanceof OpDistinct || subOp instanceof OpReduced )
@@ -72,11 +85,16 @@ public class TransformTopN extends TransformCopy {
         	    if ( subSubOp instanceof OpOrder ) {
         	        OpOrder opOrder = (OpOrder)subSubOp ;
         	        Op opDistinct2 = OpDistinct.create(opOrder.getSubOp()) ;
-        	        return new OpTopN( opDistinct2, (int)opSlice.getLength(), opOrder.getConditions() ) ;
+        	        OpTopN opTopN = new OpTopN( opDistinct2, (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ; 
+        	        if ( offset == 0 ) {
+        	            return opTopN ;
+        	        } else {
+                        return new OpSlice( opTopN, offset, Query.NOLIMIT ) ;         	            
+        	        }
         	    }
         	}
     	}
-    	
+
     	// Pass through.
     	return super.transform(opSlice, subOp) ; 
    	}

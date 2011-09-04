@@ -1,6 +1,6 @@
 PREFIX : <http://example/>
 
-SELECT * 
+SELECT DISTINCT ?v
 { ?x :p ?v } 
 ORDER BY ASC(?v)
 OFFSET 2

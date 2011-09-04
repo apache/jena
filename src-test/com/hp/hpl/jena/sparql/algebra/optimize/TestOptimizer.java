@@ -151,6 +151,17 @@ public class TestOptimizer extends BaseTest
 
     @Test public void slice_order_to_topn_03()
     {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o OFFSET 4242 LIMIT 10"  ;  
+        String opExpectedString = 
+            "(slice 4242 10\n" + 
+            "  (order (?p ?o)\n" +
+            "    (bgp (triple ?s ?p ?o))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_04()
+    {
         try {
             ARQ.setFalse(ARQ.optTopNSorting) ;
             assertTrue(ARQ.isFalse(ARQ.optTopNSorting)) ;
@@ -165,7 +176,7 @@ public class TestOptimizer extends BaseTest
         }
     }
 
-    @Test public void slice_order_to_topn_04()
+    @Test public void slice_order_to_topn_05()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
@@ -176,7 +187,19 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Test public void slice_order_to_topn_05()
+    @Test public void slice_order_to_topn_06()
+    {
+        assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
+        String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o OFFSET 24 LIMIT 42"  ;  
+        String opExpectedString = 
+            "(slice 24 _\n" + 
+            "  (top (66 ?p ?o)\n" + 
+            "    (distinct\n" +
+            "       (bgp (triple ?s ?p ?o)))))" ; 
+        check(queryString, opExpectedString) ;
+    }
+
+    @Test public void slice_order_to_topn_07()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT REDUCED * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 42"  ;  
@@ -187,7 +210,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Test public void slice_order_to_topn_06()
+    @Test public void slice_order_to_topn_08()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT DISTINCT * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
@@ -199,7 +222,7 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-    @Test public void slice_order_to_topn_07()
+    @Test public void slice_order_to_topn_09()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT REDUCED * { ?s ?p ?o } ORDER BY ?p ?o LIMIT 4242"  ;  
@@ -211,13 +234,13 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
     
-    @Test public void slice_order_to_topn_08()
+    @Test public void slice_order_to_topn_10()
     {
         assertTrue(ARQ.isTrueOrUndef(ARQ.optTopNSorting)) ;
         String queryString = "SELECT * { ?s ?p ?o } ORDER BY ?p ?o OFFSET 1 LIMIT 5"  ;  
         String opExpectedString = 
-            "(slice 1 5\n" + 
-            "  (order (?p ?o)\n" +
+            "(slice 1 _\n" +
+            "  (top (6 ?p ?o)\n" +
             "    (bgp (triple ?s ?p ?o))))" ; 
         check(queryString, opExpectedString) ;
     }
