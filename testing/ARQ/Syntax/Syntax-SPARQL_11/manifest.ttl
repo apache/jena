@@ -62,9 +62,6 @@
 :test_49
 :test_50
 :test_51
-:test_52
-:test_53
-:test_54
 ) .
 
 :test_1 rdf:type   mf:PositiveSyntaxTest11 ;
@@ -234,105 +231,90 @@
 
 :test_34 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-service-01.rq" ;
-   mf:action  <syntax-service-01.rq> ;.
-
-:test_35 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-service-02.rq" ;
-   mf:action  <syntax-service-02.rq> ;.
-
-:test_36 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
-   mf:name    "syntax-service-03.rq" ;
-   mf:action  <syntax-service-03.rq> ;.
-
-:test_37 rdf:type   mf:PositiveSyntaxTest11 ;
-   dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-01.rq" ;
    mf:action  <syntax-bindings-01.rq> ;.
 
-:test_38 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_35 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-02.rq" ;
    mf:action  <syntax-bindings-02.rq> ;.
 
-:test_39 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_36 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-03.rq" ;
    mf:action  <syntax-bindings-03.rq> ;.
 
-:test_40 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_37 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-04.rq" ;
    mf:action  <syntax-bindings-04.rq> ;.
 
-:test_41 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_38 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-05.rq" ;
    mf:action  <syntax-bindings-05.rq> ;.
 
-:test_42 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_39 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-01.rq" ;
    mf:action  <syntax-bindings-01.rq> ;.
 
-:test_43 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_40 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bind-02.rq" ;
    mf:action  <syntax-bind-02.rq> ;.
 
-:test_44 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_41 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-construct-where-01.rq" ;
    mf:action  <syntax-construct-where-01.rq> ;.
 
-:test_45 rdf:type   mf:PositiveSyntaxTest11 ;
+:test_42 rdf:type   mf:PositiveSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-construct-where-02.rq" ;
    mf:action  <syntax-construct-where-02.rq> ;.
 
-:test_46 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_43 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-01.rq" ;
    mf:action  <syn-bad-01.rq> ;.
 
-:test_47 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_44 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-02.rq" ;
    mf:action  <syn-bad-02.rq> ;.
 
-:test_48 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_45 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-03.rq" ;
    mf:action  <syn-bad-03.rq> ;.
 
-:test_49 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_46 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-04.rq" ;
    mf:action  <syn-bad-04.rq> ;.
 
-:test_50 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_47 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-05.rq" ;
    mf:action  <syn-bad-05.rq> ;.
 
-:test_51 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_48 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-06.rq" ;
    mf:action  <syn-bad-06.rq> ;.
 
-:test_52 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_49 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-07.rq" ;
    mf:action  <syn-bad-07.rq> ;.
 
-:test_53 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_50 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syn-bad-08.rq" ;
    mf:action  <syn-bad-08.rq> ;.
 
-:test_54 rdf:type   mf:NegativeSyntaxTest11 ;
+:test_51 rdf:type   mf:NegativeSyntaxTest11 ;
    dawgt:approval dawgt:NotClassified ;
    mf:name    "syntax-bindings-09.rq" ;
    mf:action  <syntax-bindings-09.rq> ;.

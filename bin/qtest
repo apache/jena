@@ -7,8 +7,6 @@ then
     fi
 
 CP="$($ARQROOT/bin/arq_path)"
-echo $CP
-#JAVA_OPTS_N3=$($ARQROOT/bin/arq_n3)
 
 #SOCKS="${SOCKS:-}"
 # echo $CP

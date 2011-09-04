@@ -41,6 +41,15 @@ source syn-func.sh
 	'<http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-query/manifest#>'
  )
 
+# SPARQL 11 Federation
+(
+    cd Syntax-SPARQL-Fed
+    clean
+    source ../syn-sparql-fed.sh
+    createManifest "Syntax SPARQL 1.1 Federation" \
+	'<http://www.w3.org/2009/sparql/docs/tests/data-sparql11/syntax-service/manifest#>'
+)
+
 # ARQ
 (
     cd Syntax-ARQ

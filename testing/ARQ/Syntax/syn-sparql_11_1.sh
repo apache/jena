@@ -1,8 +1,5 @@
 #!/bin/bash
 
-## ==== Good
-N=0
-
 ## ---- Expressions in SELECT
 
 N=0
@@ -160,21 +157,6 @@ EOF
 
 N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-oneof-" $N) <<EOF
 SELECT * { ?s ?p ?o FILTER(?o IN(1,<x>)) }
-EOF
-
-## ---- SERVICE
-
-N=0
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-service-" $N) <<EOF
-SELECT * { SERVICE <g> { ?s ?p ?o } }
-EOF
-
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-service-" $N) <<EOF
-SELECT * { ?s ?p ?o SERVICE <g> { ?s ?p ?o } ?s ?p ?o }
-EOF
-
-N=$((N+1)) ; testGood $SPARQL11 $(fname "syntax-service-" $N) <<EOF
-SELECT * { ?s ?p ?o SERVICE SILENT <g> { ?s ?p ?o } ?s ?p ?o }
 EOF
 
 ## ---- BINDINGS

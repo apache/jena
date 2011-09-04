@@ -11,6 +11,7 @@
         <Syntax-SPARQL_10_2/manifest.ttl>
         <Syntax-SPARQL_10_3/manifest.ttl>
         <Syntax-SPARQL_11/manifest.ttl>   ## SPARQL 1.1
+        <Syntax-SPARQL-Fed/manifest.ttl> 
         <Syntax-ARQ/manifest.ttl>
 
         ## SPARQL 1.1 Update

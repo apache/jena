@@ -161,7 +161,7 @@ EOF
 N=$((N+1)) ; testGood $SPARQL10 $(fname "syntax-lit-" $N) <<EOF
 BASE   <http://example.org/>
 PREFIX :  <#> 
-SELECT * WHERE { :x :p 123. . }
+SELECT * WHERE { :x :p 123.0 . }
 EOF
 
 N=$((N+1)) ; testGood $SPARQL10 $(fname "syntax-lit-" $N) <<EOF
