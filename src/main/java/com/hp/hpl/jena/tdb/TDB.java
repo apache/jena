@@ -14,6 +14,8 @@ import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import arq.cmdline.ModSymbol ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -29,6 +31,7 @@ import com.hp.hpl.jena.sparql.lib.Metadata ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.tdb.modify.UpdateEngineTDB ;
@@ -165,6 +168,7 @@ public class TDB
         ARQ.init() ;
         EnvTDB.processGlobalSystemProperties() ;
         
+        MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
         AssemblerUtils.init() ;
         AssemblerTDB.init();
         QueryEngineTDB.register() ;

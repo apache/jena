@@ -15,7 +15,6 @@ import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.SysRIOT ;
 import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModSymbol ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -25,7 +24,6 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -81,7 +79,6 @@ public abstract class CmdTDB extends CmdARQ
         // This sets context based on system properties.
         // ModSymbol can then override. 
         TDB.init() ;
-        ModSymbol.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
     }
     
     /** Reset the logging to be good for command line tools */
