@@ -14,15 +14,23 @@ import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
+import org.junit.AfterClass ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPtrBuffer extends BaseTest
 {
-    @BeforeClass static public void before()
+    static boolean originalNullOut ; 
+    @BeforeClass static public void beforeClass()
     {
+        originalNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;    
+    }
+    
+    @AfterClass static public void afterClass()
+    {
+        SystemTDB.NullOut = originalNullOut ;    
     }
     
     // Testing the test framework!

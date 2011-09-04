@@ -16,20 +16,20 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestBPlusTree extends TestRangeIndex
 {
-    static boolean b ;
-    @BeforeClass public static void before()
-    { 
+    static boolean originalNullOut ; 
+    @BeforeClass static public void beforeClass()
+    {
         BPlusTreeParams.CheckingNode = true ;
         //BPlusTreeParams.CheckingTree = true ;   // Breaks with block tracking.
-        b = SystemTDB.NullOut ;
-        SystemTDB.NullOut = true ;
+        originalNullOut = SystemTDB.NullOut ;
+        SystemTDB.NullOut = true ;    
     }
     
-    @AfterClass public static void after()
-    { 
-        SystemTDB.NullOut = b ;
+    @AfterClass static public void afterClass()
+    {
+        SystemTDB.NullOut = originalNullOut ;    
     }
-    
+
     
     @Override
     protected RangeIndex makeRangeIndex(int order, int minRecords)

@@ -14,8 +14,6 @@ import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import arq.cmdline.ModSymbol ;
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;

@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.tdb.base.recordfile;
 
+import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
@@ -27,11 +28,18 @@ public class TestRecordBufferPage extends BaseTest
     static final int TestNumRecord  = 3 ;           // Size, in bytes.
     static RecordFactory factory = new RecordFactory(2, 0) ; 
     
-    @BeforeClass static public void before()
+    static boolean originalNullOut ; 
+    @BeforeClass static public void beforeClass()
     {
+        originalNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;    
     }
     
+    @AfterClass static public void afterClass()
+    {
+        SystemTDB.NullOut = originalNullOut ;    
+    }
+
     @Test public void recBufferPage01()
     {
         BlockMgr blkMgr = makeBlockMgr() ;
