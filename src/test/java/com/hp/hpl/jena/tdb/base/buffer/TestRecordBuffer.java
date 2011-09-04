@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
+import org.junit.AfterClass ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.junit.BaseTest ;
@@ -24,14 +25,20 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestRecordBuffer extends BaseTest
 {
-    static RecordFactory recordFactory  ;
+    static RecordFactory recordFactory  = new RecordFactory(RecordLib.TestRecordLength, 0) ;
     
-    @BeforeClass static public void before()
+    static boolean originalNullOut ; 
+    @BeforeClass static public void beforeClass()
     {
-        recordFactory = new RecordFactory(RecordLib.TestRecordLength, 0) ;
+        originalNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;    
     }
     
+    @AfterClass static public void afterClass()
+    {
+        SystemTDB.NullOut = originalNullOut ;    
+    }
+
     @Test public void recBuffer01()
     {
         RecordBuffer rb = make(4, 4) ;

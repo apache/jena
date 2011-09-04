@@ -21,8 +21,10 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestExtHash extends TestIndex
 {
+    static boolean oldNullOut ;
     @BeforeClass static public void setup()
     {
+        oldNullOut = SystemTDB.NullOut ;
         SystemTDB.NullOut = true ;
         ExtHash.Checking = true ;
         ExtHash.Logging = false ;
@@ -30,7 +32,7 @@ public class TestExtHash extends TestIndex
     
     @AfterClass static public void teardown()
     {
-        
+        SystemTDB.NullOut = oldNullOut ;
     }
 
     @Override

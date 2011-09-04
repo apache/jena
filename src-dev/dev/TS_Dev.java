@@ -14,11 +14,15 @@ import org.junit.runners.Suite ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
+import com.hp.hpl.jena.tdb.graph.TS_Graph ;
+import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
+    TS_Graph.class,
+    TS_Index.class,
     TS_Store.class
 })
 
