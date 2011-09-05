@@ -8,3 +8,13 @@ WHERE
 }
 
 attempts to parse WHERE in JSON more (it's a KeyString)
+==>
+
+Use SPAQL tokens 
+
+with a special test for ":" which is a PNAME_NS
+
+JKeyString: 
+
+PNAME_NS or special token
+<PNAME_JSON: (<PN_PREFIX>)? (" ")+ ":" >

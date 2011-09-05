@@ -201,7 +201,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
   { allowAggregatesInExpressions = false ; }
 }
 
-#ifdef 0
+#if 0
 #include  "json-extra.jj"
 #endif
 
