@@ -5132,26 +5132,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_3R_68() {
-    if (jj_3R_78()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_67() {
-    if (jj_3R_77()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_67()) {
-    jj_scanpos = xsp;
-    if (jj_3R_68()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3_4() {
     if (jj_scan_token(SEMICOLON)) return true;
     if (jj_scan_token(SEPARATOR)) return true;
@@ -5589,6 +5569,26 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_50() {
     if (jj_3R_54()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_68() {
+    if (jj_3R_78()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_3R_77()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
+    if (jj_3R_68()) return true;
+    }
     return false;
   }
 

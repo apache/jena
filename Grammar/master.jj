@@ -96,7 +96,11 @@ void QueryUnit(): { }
 void Query() : { }
 {    
   Prologue()
-  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() 
+// #ifdef ARQ
+//   | JsonTemplateQuery()
+// #endif
+  )
   BindingsClause()
 }
 
@@ -196,6 +200,10 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
   )
   { allowAggregatesInExpressions = false ; }
 }
+
+#ifdef 0
+#include  "json-extra.jj"
+#endif
 
 void ConstructQuery() : { Template t ; 
                           TripleCollectorBGP acc = new TripleCollectorBGP() ; }

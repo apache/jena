@@ -1,0 +1,10 @@
+Problems: the lexer has moved ahread too far and so:
+
+JSON 
+{ "abc" : "def" }
+WHERE
+{
+  ?s ?p ?o 
+}
+
+attempts to parse WHERE in JSON more (it's a KeyString)

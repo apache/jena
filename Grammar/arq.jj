@@ -56,7 +56,11 @@ void QueryUnit(): { }
 void Query() : { }
 {
   Prologue()
-  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery() )
+  ( SelectQuery() | ConstructQuery() | DescribeQuery() | AskQuery()
+// #ifdef ARQ
+//   | JsonTemplateQuery()
+// #endif
+  )
   BindingsClause()
 }
 void UpdateUnit() : {}

@@ -1,0 +1,196 @@
+/* Grammar extract - JSON tokens, parser state <JSON> */
+
+// Do \ u inside JavaCC??
+
+
+TOKEN [IGNORE_CASE] : { <JSON: "json" > }
+
+void JsonTemplateQuery() : {}
+{
+    <JSON>
+    { token_source.SwitchTo(JSONX) ; } 
+    json()
+    { token_source.SwitchTo(DEFAULT) ; } 
+}
+
+<JSONX> SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+<JSONX> TOKEN :
+{
+  < J_ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+
+| < J_STRING:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <J_ECHAR> )* "\"" >
+| < #J_AZ: ( ["A"-"Z"] | ["a"-"z"] ) >
+
+|  <J_TRUE: "true">
+|  <J_FALSE: "false">
+|  <J_NULL: "null">
+
+
+// WARNING : This accepts all keywords.
+| < J_KEY_STRING:  (<J_AZ> | "_") ( <J_AZ> | "_" | <J_DIGITS> )* >
+
+| < #J_DIGITS: (["0"-"9"])+>
+| < J_INTEGER: <J_DIGITS> >
+| < J_DECIMAL: ( <J_DIGITS> "." (<J_DIGITS>)* | "." <J_DIGITS> ) >
+| < J_DOUBLE:   // Required exponent.
+      (
+        (["0"-"9"])+ "." (["0"-"9"])* <J_EXPONENT>
+        | "." (["0"-"9"])+ (<J_EXPONENT>)
+        | (["0"-"9"])+ <J_EXPONENT>
+      )
+      >
+
+| < J_VAR: "?" <J_KEY_STRING> >
+
+| < J_POSITIVE_INTEGER: <J_PLUS> <J_INTEGER> >
+| < J_POSITIVE_DECIMAL: <J_PLUS> <J_DECIMAL> >
+| < J_POSITIVE_DOUBLE:  <J_PLUS> <J_DOUBLE> >
+
+| < J_NEGATIVE_INTEGER: <J_MINUS> <J_INTEGER> >
+| < J_NEGATIVE_DECIMAL: <J_MINUS> <J_DECIMAL> >
+| < J_NEGATIVE_DOUBLE:  <J_MINUS> <J_DOUBLE> >
+
+| < #J_EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+
+| < J_LBRACE:    "{" >
+| < J_RBRACE:    "}" >
+
+| < J_LBRACKET:  "[" >
+| < J_RBRACKET:  "]" >
+
+| < J_LPAREN:    "(" >
+| < J_RPAREN:    ")" >
+
+| < J_COMMA: 	"," >
+| < J_COLON: 	":" >
+
+| < J_PLUS:	"+" >
+| < J_MINUS:	"-" >
+}
+
+void json() : {}
+{
+    { jsonStartParse() ; }
+    JObject()
+    { jsonFinishParse() ; }
+}
+ 
+
+void json_any() : {}
+{
+    { jsonStartParse() ; }
+    (JValue())?
+    { jsonFinishParse() ; }
+}
+
+
+// ---- Structures
+
+void JValue() : {}
+{
+ JSimpleValue()
+| JObject()
+| JArray()
+}
+
+void JObject() : { }
+{
+  <J_LBRACE> 
+  { jsonStartObject() ; }
+  (JMembers())?
+  { jsonFinishObject(); }
+  <J_RBRACE>
+}
+
+void JMembers() : {}
+{
+  JPair() 
+  (<J_COMMA> JPair())* 
+}
+
+void JPair() : {}
+{
+  { jsonStartPair() ; }
+  ( JString() | JKeyString() )
+  { jsonKeyPair() ; }
+  <J_COLON>
+  JValue()
+  { jsonFinishPair() ; }
+}
+
+void JArray() : {}
+{
+   <J_LBRACKET> 
+    { jsonStartArray() ; }
+	(JElements())?
+    { jsonFinishArray() ; }
+   <J_RBRACKET>
+}
+
+void JElements() : { }
+{
+    JArrayValue()
+    (<J_COMMA> JArrayValue())*
+}
+
+void JArrayValue() : { }
+{
+    JValue() { jsonElement() ; }
+}
+
+// ---- 
+
+void JSimpleValue() : {}
+{
+  JString()
+| JNumber()
+| JTrue()
+| JFalse()
+| JNull()
+}
+
+void JNumber() : { Token t ; }
+{
+  t = <J_INTEGER> 		{ jsonValueInteger(t.image) ; }
+| t = <J_DECIMAL>		{ jsonValueDecimal(t.image) ; }
+| t = <J_DOUBLE>		{ jsonValueDouble(t.image) ; }
+| t = <J_POSITIVE_INTEGER>	{ jsonValueInteger(t.image) ; }
+| t = <J_POSITIVE_DECIMAL>	{ jsonValueDecimal(t.image) ; }
+| t = <J_POSITIVE_DOUBLE>	{ jsonValueDouble(t.image) ; }
+| t = <J_NEGATIVE_INTEGER>	{ jsonValueInteger(t.image) ; }
+| t = <J_NEGATIVE_DECIMAL>	{ jsonValueDecimal(t.image) ; }
+| t = <J_NEGATIVE_DOUBLE>	{ jsonValueDouble(t.image) ; }
+}
+
+void JString() : { Token t ; }
+{
+  t = <J_STRING> { jsonValueString(t.image); } 
+}
+
+void JKeyString() : { Token t ; }
+{
+  t = <J_KEY_STRING> { jsonValueKeyString(t.image); } 
+}
+
+void JVar() : { Token t ; }
+{
+   t = <J_VAR> { jsonValueVar(t.image) ; }
+}
+
+void JTrue() : { Token t ; }
+{
+  <J_TRUE> { jsonValueBoolean(true) ; }
+}
+
+void JFalse() : { Token t ; }
+{
+  <J_FALSE> { jsonValueBoolean(false) ; }
+}
+
+void JNull() : { Token t ; }
+{
+  <J_NULL> { jsonValueNull() ; }
+}

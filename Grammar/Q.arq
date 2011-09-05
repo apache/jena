@@ -1,0 +1,6 @@
+JSON 
+{ "abc" : "def" }
+WHERE
+{
+  ?s ?p ?o 
+}
