@@ -93,8 +93,7 @@ public class QueryTestSDBFactory extends TestFactoryManifest
             
             if ( querySyntax != null )
             {
-                if ( ! querySyntax.equals(Syntax.syntaxRDQL) &&
-                     ! querySyntax.equals(Syntax.syntaxARQ) &&
+                if ( ! querySyntax.equals(Syntax.syntaxARQ) &&
                      ! querySyntax.equals(Syntax.syntaxSPARQL) )
                     throw new QueryTestException("Unknown syntax: "+querySyntax) ;
             }
