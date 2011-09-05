@@ -49,11 +49,6 @@ public class ParserRegistry
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
             public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
 
-        reg.add(Syntax.syntaxRDQL, 
-                new ParserFactory() {
-            public boolean accept ( Syntax syntax ) { return Syntax.syntaxRDQL.equals(syntax) ; } 
-            public Parser create ( Syntax syntax ) { return new ParserRDQL() ; } }) ;
-        
         // Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
         registry = reg ;

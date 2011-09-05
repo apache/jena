@@ -99,10 +99,6 @@ public class ARQTestSuite extends TestSuite
         // but this should be the untouched versions)
         ts.addTest(TS_DAWG.suite()) ;
       
-        // The RDQL engine ported to ARQ
-        // Includes TS_ExprRDQL so TS_* runs twice. 166 tests
-        ts.addTest(TS_RDQL.suite()) ;
-      
         // API
         ts.addTest(new JUnit4TestAdapter(TS_API.class)) ;
         
@@ -110,7 +106,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_Update.suite()) ;
         
         ts.addTest(TS_SSE.suite()) ;
-        
 
         ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;

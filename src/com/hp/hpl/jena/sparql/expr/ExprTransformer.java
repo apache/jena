@@ -13,7 +13,6 @@ import java.util.Stack ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import com.hp.hpl.jena.sparql.lang.rdql.ExprRDQL ;
 import org.openjena.atlas.logging.Log ;
 
 public class ExprTransformer
@@ -51,9 +50,6 @@ public class ExprTransformer
     
     private Expr transformation(ApplyExprTransformVisitor applyVisitor, Expr expr)
     {
-        if ( expr instanceof ExprRDQL )
-            // Can't transform RDQL expressions.
-            return expr ;
         ExprWalker.walk(applyVisitor, expr) ;
         return applyVisitor.result() ;
     }
