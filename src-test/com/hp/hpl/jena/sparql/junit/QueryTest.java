@@ -27,7 +27,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
@@ -56,7 +55,6 @@ public class QueryTest extends EarlTestCase
     private int testNumber = testCounter++ ;
     private TestItem testItem ;
     private FileManager queryFileManager ;
-    private boolean isRDQLtest = false ;
     private boolean resetNeeded = false ;
     
     private SPARQLResult results = null ;    // Maybe null if no testing of results
@@ -69,7 +67,6 @@ public class QueryTest extends EarlTestCase
         super(TestUtils.safeName(testName), t.getURI(), earl) ;
         queryFileManager = fm ;
         testItem = t ;
-        isRDQLtest = (testItem.getFileSyntax().equals(Syntax.syntaxRDQL)) ;
     }
     private boolean oldWarningFlag  ;
     
@@ -78,11 +75,8 @@ public class QueryTest extends EarlTestCase
     {
         super.setUp() ;
         // SPARQL and ARQ tests are done with no value matching (for query execution and results testing)
-        if ( ! isRDQLtest )
-        {
-            resetNeeded = true ;
-            ARQ.setTrue(ARQ.strictGraph) ;
-        }
+        resetNeeded = true ;
+        ARQ.setTrue(ARQ.strictGraph) ;
         // Turn parser warnings off for the test data. 
         oldWarningFlag = CheckerLiterals.WarnOnBadLiterals ;
         CheckerLiterals.WarnOnBadLiterals = false ;

@@ -192,7 +192,7 @@ public class qparse extends CmdARQ
 
 //    static String usage = qparse.class.getName()+
 //            " [--in syntax] [--out syntax] [\"query\" | --query <file>\n"+
-//            "  where syntax is one of ARQ, SPARQL, RDQL\n" +
+//            "  where syntax is one of ARQ, SPARQL\n" +
 //            "Other options: \n"+
 //            "  --num on|off   Line number ('on' by default)\n"+
 //            "  -n             Same as --num=off\n"+

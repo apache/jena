@@ -35,9 +35,6 @@ public class Syntax extends Symbol
 //                = syntaxARQ ;
 //                //= new Syntax("http://jena.hpl.hp.com/2003/07/update/ARQ") ;
     
-    public static final Syntax syntaxRDQL
-                = new Syntax("http://jena.hpl.hp.com/2003/07/query/RDQL") ;
-
     public static final Syntax syntaxAlgebra
                 = new Syntax("http://jena.hpl.hp.com/2003/07/query/SPARQL_Algebra") ;
     
@@ -68,7 +65,6 @@ public class Syntax extends Symbol
         querySyntaxNames.put("sparql_10",   syntaxSPARQL_10) ;
         querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
         querySyntaxNames.put("arq",         syntaxARQ) ;
-        querySyntaxNames.put("rdql",        syntaxRDQL) ;
         querySyntaxNames.put("alg",         syntaxAlgebra) ;
         querySyntaxNames.put("op",          syntaxAlgebra) ;
     }
@@ -92,7 +88,6 @@ public class Syntax extends Symbol
         
         if ( sym.equals(syntaxARQ) )         return syntaxARQ ;
         
-        if ( sym.equals(syntaxRDQL) )        return syntaxRDQL ;
         if ( sym.equals(syntaxSPARQL) )      return syntaxSPARQL ;
         if ( sym.equals(syntaxSPARQL_10) )   return syntaxSPARQL_10 ;
         if ( sym.equals(syntaxSPARQL_11) )   return syntaxSPARQL_11 ;
@@ -115,7 +110,6 @@ public class Syntax extends Symbol
         if ( url.endsWith(".aru") )     return syntaxARQ ;
         if ( url.endsWith(".ru") )      return syntaxSPARQL_11 ;
         
-        if ( url.endsWith(".rdql") )    return syntaxRDQL ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         
         // Default
@@ -134,8 +128,6 @@ public class Syntax extends Symbol
     {
         if ( url.endsWith(".arq") )     return syntaxARQ ;
         if ( url.endsWith(".rq") )      return syntaxSPARQL ;
-
-        if ( url.endsWith(".rdql") )    return syntaxRDQL ;
         if ( url.endsWith(".sse") )     return syntaxAlgebra ;
         return defaultSyntax ;
     }

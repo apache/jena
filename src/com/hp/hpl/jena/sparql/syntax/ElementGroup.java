@@ -27,8 +27,8 @@ public class ElementGroup extends Element
         elements.add(el) ;
     }
 
-    // In SPARQL, triple patterns are in basic graph patterns.      
-    // This is only used by RDQL.
+    // In SPARQL, triple patterns are in basic graph patterns.
+    // This is a helper method.
     
     public void addTriplePattern(Triple t)
     { 
