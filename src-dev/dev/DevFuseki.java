@@ -20,9 +20,7 @@ package dev;
 
 public class DevFuseki
 {
-    // Configuration:
-    // 1 - Custom code - server init by reflection.
-    // 2 - 
+    // --accept for to soh for construct queries (check can get CONSTRUCT in TTL).
     
     // application/json for application/sparql-results+json. 
     // application/xml for application/sparql-results+xml. 
@@ -47,7 +45,7 @@ public class DevFuseki
 	// Multiple Accept headers
     // WebContent and ContentType clean up.
     
-	// SOH defualt to not needing 'default'
+	// SOH default to not needing 'default'
 	// More error handling.
 
     // Migrate ContentType to RIOT
