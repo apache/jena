@@ -3,4 +3,4 @@ PREFIX :	<http://www.example.org/>
 SELECT DISTINCT ?x 
 {
    ?x :p 123 .
-} ORDER BY ?x
+} ORDER BY ?x LIMIT 2

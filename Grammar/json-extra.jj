@@ -9,10 +9,23 @@ TOKEN [IGNORE_CASE] :
 |  <NULL: "null">
 }
 
+<JSONX> SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+<JSONX> TOKEN :
+{
+  < #J_AZ: ( ["A"-"Z"] | ["a"-"z"] ) >
+| < J_COLON: 	":" > : DEFAULT
+| < #J_DIGITS: (["0"-"9"])+>
+| < J_KEY_STRING:  (<J_AZ> | "_") ( <J_AZ> | "_" | <J_DIGITS> )*>
+}
+
+
 void JsonTemplateQuery() : {}
 {
     <JSON>
     json()
+    WhereClause()
+    SolutionModifier()
 }
 
 void json() : {}
@@ -56,12 +69,14 @@ void JMembers() : {}
 }
 
 void JPair() : {}
-{
+{ 
+  // Flip tokenizer state purely so we can have the COLON matched.
+  { token_source.SwitchTo(JSONX) ; }
   { jsonStartPair() ; }
   //( JString() | JKeyString() )
   JString()
   { jsonKeyPair() ; }
-  <COLON>
+  <J_COLON>
   JValue()
   { jsonFinishPair() ; }
 }
