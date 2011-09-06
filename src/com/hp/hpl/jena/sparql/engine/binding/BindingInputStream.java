@@ -29,6 +29,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.iterator.IteratorSlotted ;
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.lang.LabelToNode ;
@@ -66,7 +67,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
  * <li>- for "undef"</li>
  * </ul>
  */
-public class BindingInputStream extends LangEngine implements Iterator<Binding>
+public class BindingInputStream extends LangEngine implements Iterator<Binding>, Closeable
 {
     // In effect, multiple Inheritance.
     // We implementation-inherit from LangEngine(no public methods) 
@@ -248,5 +249,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>
             expect("PREFIX directive not terminated by a dot", DOT) ;
         }
     }
+
+    public void close()     { super.tokens.close() ; }
 }
 
