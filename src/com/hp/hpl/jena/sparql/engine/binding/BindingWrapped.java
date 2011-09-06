@@ -39,11 +39,6 @@ public class BindingWrapped implements Binding
         return binding.get(var) ;
     }
 
-    public Binding getParent()
-    {
-        return binding.getParent() ;
-    }
-
     public Iterator<Var> vars()
     {
         return binding.vars() ;

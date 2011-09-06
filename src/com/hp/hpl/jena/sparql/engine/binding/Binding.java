@@ -14,8 +14,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public interface Binding
 {
-    public Binding getParent() ;
-
     /** Add a (var, value) pair- the value must not be null */
     public void add(Var var, Node node) ;
 
