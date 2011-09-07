@@ -17,7 +17,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Base64 ;
+import org.apache.commons.codec.binary.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -263,7 +263,7 @@ public class HttpQuery extends Params
                 // Build string, get as UTF-8, bytes, translate to base 64. 
                 StringBuffer x = new StringBuffer() ;
                 byte b[] = x.append(user).append(":").append(password).toString().getBytes("UTF-8") ;
-                String y = Base64.encodeBytes(b) ;
+                String y = Base64.encodeBase64String(b) ;
                 httpConnection.setRequestProperty("Authorization", "Basic "+y) ;
                 // Overwrite any password details we copied.
                 // Still leaves the copy in the HTTP connection.  But this only basic auth. 
