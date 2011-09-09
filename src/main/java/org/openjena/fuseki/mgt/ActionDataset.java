@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 import javax.servlet.http.HttpSession ;
 
-import org.openjena.atlas.lib.Base64 ;
+import org.apache.commons.codec.binary.Base64 ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
@@ -99,7 +99,7 @@ public class ActionDataset extends HttpServlet
 
         if(authhead!=null)
         {
-            byte[] up = Base64.decode(authhead.substring(6)) ;
+            byte[] up = Base64.decodeBase64(authhead.substring(6)) ;
             // Decode the authorisation String
             String usernpass ;
             try
