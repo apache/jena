@@ -23,7 +23,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public class ServiceDesc
+public class DatasetRef
 {
     public String name                          = null ;
     public List<String> queryEP                 = new ArrayList<String>() ;

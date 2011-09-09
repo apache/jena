@@ -29,7 +29,7 @@ import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.fuseki.server.FusekiConfig ;
 import org.openjena.fuseki.server.SPARQLServer ;
-import org.openjena.fuseki.server.ServiceDesc ;
+import org.openjena.fuseki.server.DatasetRef ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
@@ -279,12 +279,12 @@ public class FusekiCmd extends CmdARQ
         SPARQLServer server ;
         if ( fusekiConfigFile != null )
         {
-            List<ServiceDesc> services = FusekiConfig.configure(fusekiConfigFile) ;
+            List<DatasetRef> services = FusekiConfig.configure(fusekiConfigFile) ;
             server =  new SPARQLServer(jettyConfigFile, port, services) ;
         }
         else
         {
-            ServiceDesc sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
+            DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
             server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc) ) ;
         }
         server.start() ;

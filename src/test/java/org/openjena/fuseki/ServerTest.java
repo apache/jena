@@ -26,7 +26,7 @@ import org.openjena.atlas.logging.Log ;
 import org.openjena.fuseki.http.UpdateRemote ;
 import org.openjena.fuseki.server.FusekiConfig ;
 import org.openjena.fuseki.server.SPARQLServer ;
-import org.openjena.fuseki.server.ServiceDesc ;
+import org.openjena.fuseki.server.DatasetRef ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -69,7 +69,7 @@ public class ServerTest extends BaseServerTest
         
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with BaseServerTest
-        ServiceDesc sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
+        DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
 //        public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
 //        public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
 //        public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????

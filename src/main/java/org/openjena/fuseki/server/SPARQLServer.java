@@ -61,12 +61,12 @@ public class SPARQLServer
     
     //private static int ThreadPoolSize = 100 ;
     
-    public SPARQLServer(String jettyConfig, int port, List<ServiceDesc> services)
+    public SPARQLServer(String jettyConfig, int port, List<DatasetRef> services)
     {
         this.port = port ; 
         ServletContextHandler context = buildServer(jettyConfig) ;
         // Build them all.
-        for ( ServiceDesc sDesc : services )
+        for ( DatasetRef sDesc : services )
             configureOneDataset(context, sDesc) ;
     }
     
@@ -190,7 +190,7 @@ public class SPARQLServer
         
     }
     
-    private void configureOneDataset(ServletContextHandler context, ServiceDesc sDesc)
+    private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc)
     {
         String datasetPath = sDesc.name ;
         if ( datasetPath.equals("/") )
@@ -201,7 +201,7 @@ public class SPARQLServer
         if ( datasetPath.endsWith("/") )
             datasetPath = datasetPath.substring(0, datasetPath.length()-1) ; 
 
-        DatasetRegistry.get().put(datasetPath, sDesc.dataset) ;
+        DatasetRegistry.get().put(datasetPath, sDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
         HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;

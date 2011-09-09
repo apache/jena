@@ -36,6 +36,7 @@ import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+import org.openjena.fuseki.server.DatasetRef ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -83,12 +84,13 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             DatasetGraph dsg = null ;
             if ( uri != null )
             {
-                dsg = DatasetRegistry.get().get(uri) ;
-                if ( dsg == null )
+                DatasetRef desc = DatasetRegistry.get().get(uri) ;
+                if ( desc == null )
                 {
                     errorNotFound("No dataset for URI: "+uri) ;
                     return ;
                 }
+                dsg = desc.dataset ;
             }
             perform(id, dsg, request, response) ;
             //serverlog.info(String.format("[%d] 200 Success", id)) ;

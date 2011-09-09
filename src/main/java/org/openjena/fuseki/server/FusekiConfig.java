@@ -75,9 +75,9 @@ public class FusekiConfig
     "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
     "") ;
     
-    public static ServiceDesc defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
+    public static DatasetRef defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
     {
-        ServiceDesc sDesc = new ServiceDesc() ;
+        DatasetRef sDesc = new DatasetRef() ;
         sDesc.name = datasetPath ;
         sDesc.dataset = dsg ;
         sDesc.queryEP.add(HttpNames.ServiceQuery) ;
@@ -94,7 +94,7 @@ public class FusekiConfig
         return sDesc ;
     }
     
-    public static List<ServiceDesc> configure(String filename)
+    public static List<DatasetRef> configure(String filename)
     {
         // Be absolutely sure everything has initaialized.
         // Some initialization registers assemblers and sets abbreviation vocabulary. 
@@ -119,13 +119,13 @@ public class FusekiConfig
         if ( ! rs.hasNext() )
             log.warn("No services found") ;
         
-        List<ServiceDesc> services =  new ArrayList<ServiceDesc>() ; 
+        List<DatasetRef> services =  new ArrayList<DatasetRef>() ; 
         
         for ( ; rs.hasNext() ; )
         {
             QuerySolution soln = rs.next() ;
             Resource svc = soln.getResource("member") ;
-            ServiceDesc sd = processService(svc) ;
+            DatasetRef sd = processService(svc) ;
             services.add(sd) ;
         }
         
@@ -180,9 +180,9 @@ public class FusekiConfig
         catch (Exception e)         { throw new FusekiConfigException(e) ; }
     }
 
-    private static ServiceDesc processService(Resource svc)
+    private static DatasetRef processService(Resource svc)
     {
-        ServiceDesc sDesc = new ServiceDesc() ;
+        DatasetRef sDesc = new DatasetRef() ;
         log.info("Service: "+nodeLabel(svc)) ;
         
         sDesc.name = ((Literal)getOne(svc, "fu:name")).getLexicalForm() ;

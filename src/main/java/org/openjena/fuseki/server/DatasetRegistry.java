@@ -20,9 +20,7 @@ package org.openjena.fuseki.server;
 
 import org.openjena.fuseki.migrate.Registry ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-
-public class DatasetRegistry extends Registry<DatasetGraph>
+public class DatasetRegistry extends Registry<DatasetRef>
 {
     private static DatasetRegistry singleton = new DatasetRegistry() ;
 

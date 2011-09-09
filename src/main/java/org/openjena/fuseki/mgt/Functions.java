@@ -25,6 +25,7 @@ import javax.servlet.http.HttpSession ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.fuseki.server.DatasetRegistry ;
+import org.openjena.fuseki.server.DatasetRef ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -52,6 +53,16 @@ public class Functions
             return "No session";
         String ds = (String)session.getAttribute("dataset") ;
         return ds ;
+    }
+
+    /** Return the dataset description reference for currnet dataset */  
+    public static DatasetRef datasetDesc(HttpServletRequest request)
+    {
+        HttpSession session = request.getSession(false) ;
+        if ( session == null )
+            return null ;
+        String ds = (String)session.getAttribute("dataset") ;
+        return DatasetRegistry.get().get(ds) ;
     }
     
     /** Return lists of datasets */ 
@@ -85,7 +96,11 @@ public class Functions
     public static String prefixes(HttpServletRequest request)
     {
         String dsName = dataset(request) ;
-        DatasetGraph dsg = DatasetRegistry.get().get(dsName) ;
+        DatasetRef desc = DatasetRegistry.get().get(dsName) ;
+        if ( desc == null )
+            return "<not found>" ;
+        DatasetGraph dsg = desc.dataset ; 
+        
         if ( dsg instanceof DatasetGraphTDB )
         {
             PrefixMapping pmap = ((DatasetGraphTDB)dsg).getPrefixes().getPrefixMapping() ;
