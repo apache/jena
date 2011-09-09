@@ -8,71 +8,101 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
 import java.util.Comparator ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.data.BagFactory ;
+import org.openjena.atlas.data.SortedDataBag ;
+import org.openjena.atlas.data.ThresholdPolicy ;
+import org.openjena.atlas.data.ThresholdPolicyCount ;
+import org.openjena.atlas.data.ThresholdPolicyNever ;
 import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
+import org.openjena.atlas.lib.Closeable ;
+import org.openjena.riot.SerializationFactoryFinder ;
 
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.SortCondition ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** 
- * Sort a query iterator.  Uses an in-memory sort, so limiting the size of
- * iterators that can be handled.
+ * Sort a query iterator.  The sort will happen in-memory unless the size of the
+ * iterator exceeds a configurable threshold. In that case, a disk sort is used.
+ * 
+ * @see SortedDataBag
  */
-// See JENA-44
 
 public class QueryIterSort extends QueryIterPlainWrapper
 {
+    public static final Symbol spillOnDiskSortingThreshold = ARQConstants.allocSymbol("spillOnDiskSortingThreshold") ;
+    private static final long defaultSpillOnDiskSortingThreshold = -1 ; // off by default
+    
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
+	final SortedDataBag<Binding> db;
 	
     public QueryIterSort(QueryIterator qIter, List<SortCondition> conditions, ExecutionContext context)
     {
         this(qIter, new BindingComparator(conditions, context), context) ;
     }
 
-    public QueryIterSort(QueryIterator qIter, Comparator<Binding> comparator, ExecutionContext context)
+    public QueryIterSort(final QueryIterator qIter, final Comparator<Binding> comparator, final ExecutionContext context)
     {
         super(null, context) ;
-        this.embeddedIterator = qIter;
-        this.setIterator(sort(qIter, comparator));
+        this.embeddedIterator = qIter ;
+        
+        long threshold = (Long)context.getContext().get(spillOnDiskSortingThreshold, defaultSpillOnDiskSortingThreshold) ;
+        ThresholdPolicy<Binding> policy = (threshold >= 0) ? new ThresholdPolicyCount<Binding>(threshold) : new ThresholdPolicyNever<Binding>() ;
+        this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
+        
+        this.setIterator(new SortedBindingIterator(qIter));
     }
 
     @Override
     public void requestCancel()
     {
-        this.embeddedIterator.cancel();
+        this.embeddedIterator.cancel() ;
         super.requestCancel() ;
     }
 
-    private Iterator<Binding> sort(final QueryIterator qIter, final Comparator<Binding> comparator)
+    private class SortedBindingIterator extends IteratorDelayedInitialization<Binding> implements Closeable
     {
-        return new IteratorDelayedInitialization<Binding>() {
-            @Override
-            protected Iterator<Binding> initializeIterator()
+        private final QueryIterator qIter;
+        
+        public SortedBindingIterator(final QueryIterator qIter)
+        {
+            this.qIter = qIter;
+        }
+        
+        @Override
+        protected Iterator<Binding> initializeIterator()
+        {
+            try
             {
-                // Be careful about duplicates.
-                // Used to use a TreeSet but, well, that's a set.
-                List<Binding> x = new ArrayList<Binding>() ;
-                for ( ; qIter.hasNext() ; )
-                {
-                    Binding b = qIter.next() ;
-                    x.add(b) ;
-                }
-                Binding[] y = x.toArray(new Binding[]{}) ;
-                x = null ;      // Drop the List now - might be big.  Unlikely to really make a real difference.  But we can try.
-                Arrays.sort(y, comparator) ;
-                x = Arrays.asList(y) ;
-                return x.iterator() ;
-        	}
-		};
+                db.addAll(qIter);
+            }
+            // Should we catch other exceptions too?  Theoretically the user should be using this
+            // iterator in a try/finally block, and thus will call close() themselves. 
+            catch (QueryCancelledException e)
+            {
+                close();
+                throw e;
+            }
+            
+            return db.iterator();
+        }
+
+        //@Override
+        public void close()
+        {
+            db.close();
+        }
     }
+    
 }
 
 /*

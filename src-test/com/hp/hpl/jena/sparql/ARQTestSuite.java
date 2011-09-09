@@ -16,6 +16,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
 import com.hp.hpl.jena.sparql.engine.binding.TestBindingStreams ;
+import com.hp.hpl.jena.sparql.engine.TS_Engine;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
@@ -110,6 +111,7 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Solver.class)) ;
+        ts.addTest(new JUnit4TestAdapter(TS_Engine.class)) ; 
         
         return ts ;
     }
