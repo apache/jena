@@ -278,6 +278,48 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return toList(map(list.iterator(), converter)) ;
     }
     
+    
+    /**
+     * Projects each element of a sequence to an Iterator&lt;R&gt; and flattens the resulting sequences into one sequence.
+     */
+    public static <T, R> Iterator<R> mapMany(final Iterator<? extends T> stream, final Transform<? super T, Iterator<R>> converter)
+    {
+        final Iterator<R> iter = new Iterator<R>(){
+            
+            private Iterator<? extends R> it = null;
+            
+            public boolean hasNext()
+            {
+                return stream.hasNext() || ((null != it) ? it.hasNext() : false) ;
+            }
+    
+            public R next()
+            {
+                if ((null == it) || !it.hasNext())
+                {
+                    it = converter.convert(stream.next());
+                }
+                
+                return it.next();
+            }
+    
+            public void remove() { throw new UnsupportedOperationException("mapMany.remove") ; }
+        } ;
+        
+        return iter;
+    }
+    
+    public static <T, R> Iterator<R> mapMany(Iterable<? extends T> stream, Transform<T, Iterator<R>> converter)
+    {
+        return mapMany(stream.iterator(), converter) ;
+    }
+    
+    public static <T, R> List<R> mapMany(List<? extends T> list, Transform<T, Iterator<R>> converter)
+    {
+        return toList(mapMany(list.iterator(), converter)) ;
+    }
+    
+    
     /** Apply an action to everything in stream, yielding a stream of the same items */ 
     public static <T> Iterator<T> operate(Iterable<? extends T> stream, Action<T> converter)
     { return operate(stream.iterator(), converter) ; }

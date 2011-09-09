@@ -6,7 +6,9 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import java.util.ArrayList ;
 import java.util.HashMap ;
+import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
@@ -36,6 +38,26 @@ public class TemplateLib
     public static MultiMap<Node, Triple> template(List<Quad> quads, final Node dftGraph, List<Binding> bindings)
     {
         if ( quads == null || quads.isEmpty() ) return null ; 
+        
+        quads = remapDefaultGraph(quads, dftGraph);
+        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
+        return acc ;
+    }
+    
+    /**
+     * Take a template, as a list of quad patterns, a default graph, and an iterator of bindings,
+     * and produce an iterator of quads that result from applying the template to the bindings.
+     */
+    public static Iterator<Quad> template(List<Quad> quads, final Node dftGraph, Iterator<Binding> bindings)
+    {
+        if ( quads == null || quads.isEmpty() ) return null ;
+        
+        quads = remapDefaultGraph(quads, dftGraph);
+        return calcQuads(quads, bindings);
+    }
+    
+    protected static List<Quad> remapDefaultGraph(List<Quad> quads, final Node dftGraph)
+    {
         // The default graph has been set to something else.
         if ( dftGraph != null )
         {
@@ -49,9 +71,7 @@ public class TemplateLib
             };
             quads = Iter.map(quads, nt) ;
         }
-        
-        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
-        return acc ;
+        return quads;
     }
     
 //    /** Take a template, as a list of quad patterns, but only on one graph,  
@@ -92,10 +112,52 @@ public class TemplateLib
         Quad q = subst(quad, b, bNodeMap) ;
         if ( ! q.isConcrete() )
         {
-            Log.warn(UpdateEngine.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
+            Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
             return ;
         }
         acc.put(q.getGraph(), q.asTriple()) ;
+    }
+    
+    /** Substitute into quad patterns */
+    public static Iterator<Quad> calcQuads(final List<Quad> quads, Iterator<Binding> bindings)
+    {
+        return Iter.mapMany(bindings, new Transform<Binding, Iterator<Quad>>()
+        {
+            public Iterator<Quad> convert(final Binding b)
+            {
+                final Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
+
+                List<Quad> quadList = new ArrayList<Quad>(quads.size());
+                for (Quad quad : quads)
+                {
+                    Quad q = subst(quad, b, bNodeMap) ;
+                    if ( ! q.isConcrete() )
+                    {
+                        Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
+                        continue ;
+                    }
+                    quadList.add(q);
+                }
+                return quadList.iterator();
+                
+                // Alternative implementation (doesn't need to create a new arraylist)
+//                Iterator<Quad> it = Iter.map(quads.iterator(), new Transform<Quad, Quad>()
+//                {
+//                    public Quad convert(Quad quad)
+//                    {
+//                        Quad q = subst(quad, b, bNodeMap) ;
+//                        if ( ! q.isConcrete() )
+//                        {
+//                            Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
+//                            return null;
+//                        }
+//                        return q;
+//                    }
+//                });
+//                // Filter out any of the nulls that were introduced above
+//                return Iter.removeNulls(it);
+            }
+        });
     }
 
     /** Substitute into a quad, with rewriting of bNodes */ 

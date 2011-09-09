@@ -18,8 +18,10 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
 import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
@@ -213,6 +215,57 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
     }
     
+    @Test public void testModify2()
+    {
+        // Use blank nodes (will expose any problems in serialization when spill occurs)
+        Triple t =  new Triple(Node.createAnon(),p,o2);
+        
+        GraphStore gStore = getEmptyGraphStore() ;
+        // Set the threshold to in order to force spill to disk
+        gStore.getContext().set(UpdateEngineWorker.spillOnDiskUpdateThreshold, 0L) ;
+        
+        defaultGraphData(gStore, data(t)) ;
+        namedGraphData(gStore, graphIRI, data(t));
+        
+        UpdateModify modify = new UpdateModify() ;
+        Element element = QueryFactory.createElement("{ ?s <http://example/p> ?o }" ) ;
+        modify.setElement(element) ;
+        modify.getInsertAcc().addQuad(new Quad(graphIRI, triple1)) ;
+        modify.getDeleteAcc().addTriple(SSE.parseTriple("(?s <http://example/p> ?o)")) ;
+        modify.getDeleteAcc().addQuad(SSE.parseQuad("(<http://example/graph> ?s <http://example/p> ?o)")) ; 
+        UpdateAction.execute(modify, gStore) ;
+        
+        assertFalse(graphEmpty(gStore.getGraph(graphIRI))) ;
+        assertTrue(graphEmpty(gStore.getDefaultGraph())) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
+        assertFalse(graphContains(gStore.getGraph(graphIRI), t));
+    }
+    
+    @Test public void testCopy()
+    {
+        // Use blank nodes (will expose any problems in serialization when spill occurs)
+        Triple t =  new Triple(Node.createAnon(),p,o2);
+        Triple t2 = new Triple(Node.createAnon(),p,o1);
+        
+        GraphStore gStore = getEmptyGraphStore() ;
+        // Set the threshold to in order to force spill to disk
+        gStore.getContext().set(UpdateEngineWorker.spillOnDiskUpdateThreshold, 0L) ;
+        
+        defaultGraphData(gStore, data(triple1, triple2, t)) ;
+        namedGraphData(gStore, graphIRI, data(t2));
+        
+        UpdateCopy copy = new UpdateCopy(Target.DEFAULT, Target.create(graphIRI));
+        UpdateAction.execute(copy, gStore);
+        
+        assertFalse(graphEmpty(gStore.getDefaultGraph())) ;
+        assertFalse(graphEmpty(gStore.getGraph(graphIRI))) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple1)) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), triple2)) ;
+        assertTrue(graphContains(gStore.getGraph(graphIRI), t)) ;
+        assertFalse(graphContains(gStore.getGraph(graphIRI), t2)) ;
+        assertTrue(gStore.getDefaultGraph().isIsomorphicWith(gStore.getGraph(graphIRI)));
+    }
+
     @Test public void testUpdateScript1()
     {
         GraphStore gStore = getEmptyGraphStore() ;
@@ -350,6 +403,13 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         Graph graph = Factory.createDefaultGraph() ;
         graph.add(triple2) ;
         return graph ; 
+    }
+    
+    private static Graph data(Triple... triples)
+    {
+        Graph graph = Factory.createDefaultGraph();
+        graph.getBulkUpdateHandler().add(triples);
+        return graph;
     }
 }
 

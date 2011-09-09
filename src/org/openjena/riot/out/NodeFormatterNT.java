@@ -55,7 +55,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         try {
             w.write("_:") ;
             String lab = NodeFmtLib.encodeBNodeLabel(label) ;
-            w.write(label) ;
+            w.write(lab) ;
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 

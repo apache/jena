@@ -26,74 +26,20 @@ import java.util.Comparator;
  */
 public class BagFactory
 {
-    // TODO Read these thresholds from a config file
-    private static long spillCountThreshold = 50000;
-    //public static final Symbol spillCountThresholdSymbol = ARQConstants.allocSymbol("spillCountThreshold") ;
-    
-    private static long spillMemoryThreshold = 20000000;
-    
-    
-    
-    public static long getSpillCountThreshold()
-    {
-        return spillCountThreshold;
-    }
-    
-    /**
-     * Used for testing.
-     */
-    public static void setSpillCountThreshold(long value)
-    {
-        if (value < 0)
-        {
-            throw new IllegalArgumentException("Threshold must be greater than or equal to zero");
-        }
-        spillCountThreshold = value;
-    }
-    
-    private static <T> ThresholdPolicy<T> newCountPolicy()
-    {
-        //long threshold = ((Long)context.getContext().get(spillCountThresholdSymbol, spillCountThreshold)).longValue();
-        long threshold = spillCountThreshold;
-        
-        return new ThresholdPolicyCount<T>(threshold);
-    }
-    
-    private static <T> ThresholdPolicy<T> newMemoryPolicy(SerializationFactory<T> serializerFactory)
-    {
-        long threshold = spillMemoryThreshold;
-        return new ThresholdPolicyMemory<T>(threshold, serializerFactory);
-    }
-    
-    private static <T> ThresholdPolicy<T> newDefaultPolicy()
-    {
-        return newCountPolicy();
-    }
-    
     /**
      * Get a default (unordered, not distinct) data bag.
      */
-    public static <T> DefaultDataBag<T> newDefaultBag(SerializationFactory<T> serializerFactory)
+    public static <T> DefaultDataBag<T> newDefaultBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory)
     {
-        ThresholdPolicy<T> policy = newDefaultPolicy();
         return new DefaultDataBag<T>(policy, serializerFactory);
     }
 
     /**
      * Get a sorted data bag.
      */
-    public static <T extends Comparable<? super T>> SortedDataBag<T> newSortedBag(SerializationFactory<T> serializerFactory)
+    public static <T extends Comparable<? super T>> SortedDataBag<T> newSortedBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory)
     {
-        return newSortedBag(serializerFactory, null);
-    }
-    
-    /**
-     * Get a sorted data bag.
-     */
-    public static <T> SortedDataBag<T> newSortedBag(SerializationFactory<T> serializerFactory, Comparator<T> comparator)
-    {
-        ThresholdPolicy<T> policy = newDefaultPolicy();
-        return newSortedBag(policy, serializerFactory, comparator);
+        return newSortedBag(policy, serializerFactory, null);
     }
     
     /**
@@ -107,18 +53,9 @@ public class BagFactory
     /**
      * Get a distinct data bag.
      */
-    public static <T extends Comparable<? super T>> DistinctDataBag<T> newDistinctBag(SerializationFactory<T> serializerFactory)
+    public static <T extends Comparable<? super T>> DistinctDataBag<T> newDistinctBag(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory)
     {
-        return newDistinctBag(serializerFactory, null);
-    }
-    
-    /**
-     * Get a distinct data bag.
-     */
-    public static <T> DistinctDataBag<T> newDistinctBag(SerializationFactory<T> serializerFactory, Comparator<T> comparator)
-    {
-        ThresholdPolicy<T> policy = newDefaultPolicy();
-        return newDistinctBag(policy, serializerFactory, comparator);
+        return newDistinctBag(policy, serializerFactory, null);
     }
 
     /**
@@ -128,5 +65,4 @@ public class BagFactory
     {
         return new DistinctDataBag<T>(policy, serializerFactory, comparator);
     }
-
 }

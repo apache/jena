@@ -124,7 +124,38 @@ public class TestIter
         String z = Iter.foldRight(Arrays.asList(x), f1, "X") ;
         assertEquals("X", z) ;
     }
+
     
+    @Test
+    public void map_01()
+    {
+        Iterator<String> it = Iter.map(data2.iterator(), new Transform<String,String>()
+        {
+            public String convert(String item)
+            {
+                return item + item;
+            }
+        });
+        test(it, "xx", "yy", "zz");
+    }
+    
+    @Test
+    public void mapMany_01()
+    {
+        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
+        {
+            public Iterator<String> convert(String item)
+            {
+                List<String> l = new ArrayList<String>(2);
+                l.add(item);
+                l.add(item + item);
+                return l.iterator();
+            }
+        });
+        
+        test(it, "x", "xx", "y", "yy", "z", "zz");
+    }
+	
     Filter<String> filter = new Filter<String>() {
         public boolean accept(String item)
         {

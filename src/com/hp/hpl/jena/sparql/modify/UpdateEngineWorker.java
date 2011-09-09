@@ -8,13 +8,17 @@ package com.hp.hpl.jena.sparql.modify;
 
 import static com.hp.hpl.jena.sparql.modify.TemplateLib.template ;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
+import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.data.BagFactory ;
+import org.openjena.atlas.data.DataBag ;
+import org.openjena.atlas.data.ThresholdPolicy;
+import org.openjena.atlas.data.ThresholdPolicyCount;
+import org.openjena.atlas.data.ThresholdPolicyNever ;
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.MultiMap ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -23,13 +27,13 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -53,6 +57,7 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -61,14 +66,19 @@ import com.hp.hpl.jena.util.FileManager ;
 /** Implementation of general purpose update request execution */ 
 public class UpdateEngineWorker implements UpdateVisitor
 {
+    static final long defaultSpillOnDiskUpdateThreshold = -1 ;
+    public static final Symbol spillOnDiskUpdateThreshold = ARQConstants.allocSymbol("spillOnDiskUpdateThreshold") ;
+
     protected final GraphStore graphStore ;
     protected final Binding initialBinding ;
     protected final boolean alwaysSilent = true ;
+    private final long spillThreshold ;
 
     public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
+        this.spillThreshold = (Long)graphStore.getContext().get(spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
     }
 
     public void visit(UpdateDrop update)
@@ -205,10 +215,25 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         Graph gSrc = graph(gStore, src) ;
         Graph gDest = graph(gStore, dest) ;
-        // Ugly! but avoids concurrency problems.
-        // TODO Revisit graph->graph triple copy.
-        List<Triple> list = Iter.toList(gSrc.find(null, null, null)) ;
-        gDest.getBulkUpdateHandler().add(list) ;
+        
+        // Avoids concurrency problems by reading fully before writing
+        long threshold = (Long)gStore.getContext().get(spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
+        ThresholdPolicy<Triple> policy = (threshold >= 0) ? new ThresholdPolicyCount<Triple>(threshold) : new ThresholdPolicyNever<Triple>();
+        DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory()) ;
+        try
+        {
+            Iterator<Triple> triples = gSrc.find(null, null, null) ;
+            db.addAll(triples) ;
+            Iter.close(triples) ;
+            
+            Iterator<Triple> it = db.iterator() ;
+            gDest.getBulkUpdateHandler().add(it) ;
+            Iter.close(it);
+        }
+        finally
+        {
+            db.close() ;
+        }
     }
 
     protected static void gsClear(GraphStore gStore, Target target, boolean isSilent)
@@ -249,8 +274,26 @@ public class UpdateEngineWorker implements UpdateVisitor
 //            quads = convertBNodesToVariables(quads) ;
         // Convert quads to a pattern.
         Element el = elementFromQuads(quads) ;
-        List<Binding> bindings = evalBindings(el, null) ;
-        execDelete(quads, null, bindings) ;
+        
+        // Decided to serialize the bindings, but could also have decided to
+        // serialize the quads after applying the template instead.
+        
+        ThresholdPolicy<Binding> policy = (spillThreshold >= 0) ? new ThresholdPolicyCount<Binding>(spillThreshold) : new ThresholdPolicyNever<Binding>();
+        DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
+        try
+        {
+            Iterator<Binding> bindings = evalBindings(el, null) ;
+            db.addAll(bindings) ;
+            Iter.close(bindings) ;
+            
+            Iterator<Binding> it = db.iterator() ;
+            execDelete(quads, null, it) ;
+            Iter.close(it) ;
+        }
+        finally
+        {
+            db.close() ;
+        }
     }
     
     public void visit(UpdateModify update)
@@ -271,10 +314,26 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( dsg == null )
             dsg = graphStore ;
         
-        final List<Binding> bindings = evalBindings(query, dsg, initialBinding) ;
-        
-        execDelete(update.getDeleteQuads(), withGraph, bindings) ;
-        execInsert(update.getInsertQuads(), withGraph, bindings) ;
+        ThresholdPolicy<Binding> policy = (spillThreshold >= 0) ? new ThresholdPolicyCount<Binding>(spillThreshold) : new ThresholdPolicyNever<Binding>();
+        DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
+        try
+        {
+            Iterator<Binding> bindings = evalBindings(query, dsg, initialBinding) ;
+            db.addAll(bindings) ;
+            Iter.close(bindings) ;
+            
+            Iterator<Binding> it = db.iterator() ;
+            execDelete(update.getDeleteQuads(), withGraph, it) ;
+            Iter.close(it) ;
+            
+            Iterator<Binding> it2 = db.iterator() ;
+            execInsert(update.getInsertQuads(), withGraph, it2) ;
+            Iter.close(it2) ;
+        }
+        finally
+        {
+            db.close() ;
+        }
     }
 
     // Indirection for subsystems to support USING/USING NAMED.
@@ -355,27 +414,44 @@ public class UpdateEngineWorker implements UpdateVisitor
         return el ;
     }
 
-    protected void execDelete(List<Quad> quads, Node dftGraph, List<Binding> bindings)
+    protected void execDelete(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings)
     {
-        MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
-        if ( acc == null ) return ; 
+        Iterator<Quad> it = template(quads, dftGraph, bindings) ;
+        if ( it == null ) return ;
         
-        for ( Node gn : acc.keys() )
+        while (it.hasNext())
         {
-            Collection<Triple> triples = acc.get(gn) ;
-            graph(graphStore, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
+            Quad q = it.next();
+            graphStore.delete(q);
         }
+        
+        
+        // Alternate implementation that can use the graph BulkUpdateHandler, but forces all quads into
+        // memory (we don't want that!).  The issue is that all of the quads can be mixed up based on the
+        // user supplied template.  If graph stores can benefit from bulk insert/delete operations, then we
+        // need to expose a bulk update interface on GraphStore, not just Graph.
+//        MultiMap<Node, Triple> acc = MultiMap.createMapList() ;
+//        while (it.hasNext())
+//        {
+//            Quad q = it.next();
+//            acc.put(q.getGraph(), q.asTriple()) ;
+//        }
+//        for ( Node gn : acc.keys() )
+//        {
+//            Collection<Triple> triples = acc.get(gn) ;
+//            graph(graphStore, gn).getBulkUpdateHandler().delete(triples.iterator()) ;
+//        }
     }
 
-    protected void execInsert(List<Quad> quads, Node dftGraph, List<Binding> bindings)
+    protected void execInsert(List<Quad> quads, Node dftGraph, Iterator<Binding> bindings)
     {
-        MultiMap<Node, Triple> acc = template(quads, dftGraph, bindings) ;
-        if ( acc == null ) return ; 
+        Iterator<Quad> it = template(quads, dftGraph, bindings) ;
+        if ( it == null ) return ;
         
-        for ( Node gn : acc.keys() )
+        while (it.hasNext())
         {
-            Collection<Triple> triples = acc.get(gn) ;
-            graph(graphStore, gn).getBulkUpdateHandler().add(triples.iterator()) ;
+            Quad q = it.next();
+            graphStore.add(q);
         }
     }
 
@@ -407,12 +483,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         { dftGraph = g ; }
     }
 
-    protected List<Binding> evalBindings(Element pattern, Node dftGraph)
+    protected Iterator<Binding> evalBindings(Element pattern, Node dftGraph)
     {
         return evalBindings(elementToQuery(pattern), dftGraph) ;
     }
     
-    protected List<Binding> evalBindings(Query query, Node dftGraph)
+    protected Iterator<Binding> evalBindings(Query query, Node dftGraph)
     {
         DatasetGraph dsg = graphStore ;
         if ( query != null )
@@ -428,30 +504,20 @@ public class UpdateEngineWorker implements UpdateVisitor
         
     }
     
-    protected static List<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding)
+    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding)
     {
-        List<Binding> bindings = new ArrayList<Binding>() ;
+        Iterator<Binding> toReturn ;
         
         if ( query != null )
         {
             Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding) ;
-            QueryIterator qIter = plan.iterator() ;
-
-            for( ; qIter.hasNext() ; )
-            {
-                Binding b = qIter.nextBinding() ;
-                bindings.add(b) ;
-            }
-            qIter.close() ;
+            toReturn = plan.iterator();
         }
         else
         {
-            if ( initialBinding != null )
-                bindings.add(initialBinding) ;
-            else
-                bindings.add(BindingRoot.create()) ;
+            toReturn = Iter.singleton((initialBinding != null) ? initialBinding : BindingRoot.create()) ;
         }
-        return bindings ;
+        return toReturn ;
     }
     
     protected static Graph graph(GraphStore graphStore, Node gn)
