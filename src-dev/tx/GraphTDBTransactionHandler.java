@@ -25,11 +25,11 @@ import com.hp.hpl.jena.tdb.store.GraphTDB ;
 public class GraphTDBTransactionHandler implements TransactionHandler 
 {
     // Replaces: TransactionHandlerTDB
-    // Don't know read or write :-(
+    // Work with a StoreConnection wrapping graph/dataset. 
+    // begin() don't know read or write :-(
     // So grab the real transaction when first update occurs.
     // Start read.
     // If update, start write, end read.
-    // 
     
     
     private final GraphTDB graph ;
@@ -44,16 +44,13 @@ public class GraphTDBTransactionHandler implements TransactionHandler
     }
 
     @Override
-    public void begin()
-    {}
+    public void begin()     {}
 
     @Override
-    public void abort()
-    {}
+    public void abort()     {}
 
     @Override
-    public void commit()
-    {}
+    public void commit()    {}
 
     @Override
     public Object executeInTransaction(Command c)
