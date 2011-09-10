@@ -20,6 +20,7 @@ package dev;
 
 public class DevFuseki
 {
+    // sparql.jsp needs to switc on presence and name of service endpoints.
     // --accept for to soh for construct queries (check can get CONSTRUCT in TTL).
     
     // application/json for application/sparql-results+json. 
@@ -33,7 +34,6 @@ public class DevFuseki
     // Rework arguments.
     //   Explicit install pages.
     //   Pages for read-only.
-    
     
     // RDF/XML_ABBREV in ResponseModel
     // Config Jetty from a file?
