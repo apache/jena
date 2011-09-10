@@ -50,7 +50,7 @@ import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** Language for reading in a steram of bindings.
+/** Language for reading in a stream of bindings.
  * See <a href="https://cwiki.apache.org/confluence/display/JENA/BindingIO">BindingIO</a>
  * 
  * <p>Summary:</p>

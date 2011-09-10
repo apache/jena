@@ -3,7 +3,6 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
-
 + Spill to disk update (enable with ARQ.spillOnDiskUpdateThreshold) (JENA-45)
 + External sort (enable with ARQ.spillOnDiskSortingThreshold) (JENA-44) 
 + Remove RDQL from ARQ (code in Archive/ in SVN -- will not be updated) 
@@ -12,14 +11,13 @@ ChangeLog for ARQ
 + Add optimization for DISTINCT/ORDER BY (JENA-90)
 + Add optimization for ORDER BY/LIMIT N (JENA-89)
 + General upgrade of dependent systems (not Lucene - see LARQ module for use with Lucene 3)
++ Introduce "bindigns IO", a subsystem for efficient reading and writing of result bindings. 
 + Make CONCAT follow the SPARQL 1.1 spec properly. 
 + Bug fix: ORDER BY and FILTERs in sub-selects didn't work if ordering by non-SELECT variables.
 + Bug fix: Equality of algebra operator (order) wasn't checkign all aspects of the op.
 + Bug fix: SUM and AVG over errors didn't generate an error as they should do.
-
 + Add TSVInput processor (JENA-69 / Laurent Pellegrino) 
-+ Added DatasetGraph.add(g,s,p,o) and .delete(g,s,p,o).
-  (JENA-65)
++ Added DatasetGraph.add(g,s,p,o) and .delete(g,s,p,o) (JENA-65)
 + Aggregates COUNT(?x) and COUNT(DISTINCT ?x) now skips errors in their expressions
   rather than evaluating to an error (SPARQL 1.1 Query Last Call compliance).   
 
