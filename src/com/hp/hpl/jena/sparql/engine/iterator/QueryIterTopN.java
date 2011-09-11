@@ -72,6 +72,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
             // Keep Java happy. 
             Iterator<Binding> iter0 = Iter.nullIterator() ; 
             setIterator(iter0) ;
+            qIter.close() ;
             return ;
         }
         
