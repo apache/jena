@@ -165,8 +165,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
             }
         }
 
-
-
         @Override
         protected Binding moveToNext()
         {
