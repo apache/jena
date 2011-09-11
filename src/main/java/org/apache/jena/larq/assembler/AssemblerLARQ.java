@@ -43,7 +43,9 @@ import com.hp.hpl.jena.assembler.Mode;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException;
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils;
 
 public class AssemblerLARQ extends AssemblerBase implements Assembler
@@ -79,7 +81,14 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
         Directory directory;
         if ( indexPath != null ) 
         {
-            directory = FSDirectory.open(new File(indexPath));
+            File path = new File(indexPath) ;
+            if ( !path.exists() ) 
+            {
+                log.debug("Directory {} does not exist, building Lucene index...") ;
+                path.mkdirs() ;
+                build ( dataset, path ) ;
+            }
+            directory = FSDirectory.open(path);
         } else {
             directory = new RAMDirectory();
         }
@@ -110,6 +119,36 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
 
         LARQ.setDefaultIndex(indexLARQ) ;
         return indexLARQ ;
+    }
+
+    private static void build (Dataset dataset, File path)
+    {
+        Directory directory = null ;
+        IndexWriter indexWriter = null ;
+        IndexBuilderModel larqBuilder = null ;
+        try {
+            directory = FSDirectory.open(path) ;
+            indexWriter = IndexWriterFactory.create(directory);
+            larqBuilder = new IndexBuilderString(indexWriter) ;
+            larqBuilder.setAvoidDuplicates(false) ;
+            index(larqBuilder, dataset.getDefaultModel()) ;
+            for ( Iterator<String> iter = dataset.listNames() ; iter.hasNext() ; )
+            {
+                String g = iter.next() ;
+                index(larqBuilder, dataset.getNamedModel(g)) ;
+            }
+        } catch (Exception e) {
+            log.warn("Exception building the index: {}", e.getMessage()) ;
+        } finally {
+            if ( larqBuilder != null) larqBuilder.closeWriter() ;
+            if ( directory != null ) try { directory.close() ; } catch (IOException e) { log.warn("Problems closing the Lucene directory.") ; }
+        }
+    }
+
+    private static void index(IndexBuilderModel larqBuilder, Model model)
+    {
+        StmtIterator sIter = model.listStatements() ;
+        larqBuilder.indexStatements(sIter) ;
     }
 
 }

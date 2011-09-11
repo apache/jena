@@ -18,11 +18,15 @@
 
 package org.apache.jena.larq;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 import org.apache.jena.larq.assembler.AssemblerLARQ;
 import org.apache.lucene.index.CorruptIndexException;
@@ -36,6 +40,7 @@ import org.junit.Test;
 import org.openjena.atlas.lib.FileOps;
 
 import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
@@ -105,17 +110,40 @@ public class TestAssemblerLARQ {
     }
     
     @Test public void testMake3() throws CorruptIndexException, IOException {
-        IndexLARQ indexLARQ = null;
+        IndexLARQ indexLARQ1 = null ;
+        IndexLARQ indexLARQ2 = null ;
         try {
             Dataset ds = TDBFactory.createDataset() ;
-            indexLARQ = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
-            indexLARQ.writer.commit();
-            indexLARQ = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
-            Directory directory = indexLARQ.getLuceneReader().directory() ;
+            indexLARQ1 = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
+            indexLARQ1.writer.commit() ;
+            indexLARQ2 = AssemblerLARQ.make(ds, tmpDir + "/lucene") ;
+            Directory directory = indexLARQ2.getLuceneReader().directory() ;
             assertTrue ( directory instanceof FSDirectory );
         } finally {
-            if ( indexLARQ != null ) indexLARQ.close();            
+            if ( indexLARQ1 != null ) indexLARQ1.close() ;
+            if ( indexLARQ2 != null ) indexLARQ2.close() ;
         }
+    }
+
+    // if an index directory does not exist, LARQ will create it and build the appropriate Lucene index
+    @Test public void testMake4() throws CorruptIndexException, IOException {
+        File path = new File(tmpDir + File.separator + "lucene") ;
+        IndexLARQ indexLARQ = null;
+        try {
+            FileOps.delete(path.getAbsolutePath()) ;
+            assertFalse(path.exists()) ;
+            Dataset ds = TDBFactory.createDataset() ;
+            ds.getDefaultModel().add(ResourceFactory.createResource(), ResourceFactory.createProperty("foo:p"), ResourceFactory.createPlainLiteral("bar")) ;
+            indexLARQ = AssemblerLARQ.make(ds, path.getAbsolutePath()) ;
+            Iterator<HitLARQ> iter = indexLARQ.search("bar") ;
+            assertTrue (iter.hasNext()) ;
+            assertEquals("bar", iter.next().getNode().getLiteral().getValue()) ;
+        } finally {
+            FileOps.ensureDir(path.getAbsolutePath()) ;
+            if ( indexLARQ != null ) indexLARQ.close() ;
+        }
+        
+        
 
     }
     
