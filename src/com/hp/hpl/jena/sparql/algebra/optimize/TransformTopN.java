@@ -139,16 +139,11 @@ public class TransformTopN extends TransformCopy {
             {
                 OpProject opProject = (OpProject)subOp ;
                 OpOrder opOrder = (OpOrder)subSubOp ;
-
-                Op underOp = new OpProject(opOrder.getSubOp(), opProject.getVars()) ;
-
                 // NB leave project over topN, unlike the distinct case where distinct goes under topN.
                 OpTopN opTopN = new OpTopN( opOrder.getSubOp(), (int)(offset+opSlice.getLength()), opOrder.getConditions() ) ;
                 Op proj = new OpProject(opTopN, opProject.getVars()) ;
-
                 if ( offset == 0 ) {
-                    // Causes open iterator warnings : why? See JENA-114
-                    //return proj ;
+                    return proj ;
                 } else {
                     return new OpSlice( proj, offset, Query.NOLIMIT ) ;                       
                 }
