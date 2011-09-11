@@ -19,7 +19,6 @@ import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 
 public class QueryIterProject2 extends QueryIterRepeatApply
 {
-    // Merge with QueryIterProject2
     List<Var> projectionVars ;
     private final OpProject opProject ;
     private final OpExecutor engine ;

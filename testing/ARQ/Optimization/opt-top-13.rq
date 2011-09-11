@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT ?x 
+{ ?x :p ?v } 
+ORDER BY ASC(?v)
+LIMIT 5

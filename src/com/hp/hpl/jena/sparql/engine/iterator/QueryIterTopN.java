@@ -109,7 +109,7 @@ public class QueryIterTopN extends QueryIterPlainWrapper
                     	}
                     }
                 }
-                
+                qIter.close() ;
                 Binding[] y = heap.toArray(new Binding[]{}) ;
                 heap = null ;
                 Arrays.sort(y, comparator) ;

@@ -123,6 +123,10 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        arq.sparql.main("--data=D.ttl", "--query=Q1.rq") ;
+        exit(0) ;
+        
+        
         ARQ.init();
         
         Dataset ds = (Dataset)AssemblerUtils.build("D.ttl", DatasetAssemblerVocab.tDataset) ;

@@ -247,6 +247,14 @@
         mf:result  <opt-top-12.srj>
       ]
 
+      [  mf:name    "opt-top-13" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <opt-top-13.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <opt-top-13.srj>
+      ]
+
       [  mf:name    "opt-distinct-to-reduced-01" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
