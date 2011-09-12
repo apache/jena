@@ -23,11 +23,11 @@ import org.openjena.riot.SerializationFactoryFinder ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.ARQConstants;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
@@ -57,7 +57,6 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -67,7 +66,6 @@ import com.hp.hpl.jena.util.FileManager ;
 public class UpdateEngineWorker implements UpdateVisitor
 {
     static final long defaultSpillOnDiskUpdateThreshold = -1 ;
-    public static final Symbol spillOnDiskUpdateThreshold = ARQConstants.allocSymbol("spillOnDiskUpdateThreshold") ;
 
     protected final GraphStore graphStore ;
     protected final Binding initialBinding ;
@@ -78,7 +76,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
-        this.spillThreshold = (Long)graphStore.getContext().get(spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
+        this.spillThreshold = (Long)graphStore.getContext().get(ARQ.spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
     }
 
     public void visit(UpdateDrop update)
@@ -217,7 +215,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         Graph gDest = graph(gStore, dest) ;
         
         // Avoids concurrency problems by reading fully before writing
-        long threshold = (Long)gStore.getContext().get(spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
+        long threshold = (Long)gStore.getContext().get(ARQ.spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
         ThresholdPolicy<Triple> policy = (threshold >= 0) ? new ThresholdPolicyCount<Triple>(threshold) : new ThresholdPolicyNever<Triple>();
         DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory()) ;
         try

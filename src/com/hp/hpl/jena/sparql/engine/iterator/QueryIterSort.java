@@ -21,14 +21,13 @@ import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.SortCondition ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** 
  * Sort a query iterator.  The sort will happen in-memory unless the size of the
@@ -39,7 +38,6 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 
 public class QueryIterSort extends QueryIterPlainWrapper
 {
-    public static final Symbol spillOnDiskSortingThreshold = ARQConstants.allocSymbol("spillOnDiskSortingThreshold") ;
     private static final long defaultSpillOnDiskSortingThreshold = -1 ; // off by default
     
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
@@ -55,7 +53,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
         super(null, context) ;
         this.embeddedIterator = qIter ;
         
-        long threshold = (Long)context.getContext().get(spillOnDiskSortingThreshold, defaultSpillOnDiskSortingThreshold) ;
+        long threshold = (Long)context.getContext().get(ARQ.spillOnDiskSortingThreshold, defaultSpillOnDiskSortingThreshold) ;
         ThresholdPolicy<Binding> policy = (threshold >= 0) ? new ThresholdPolicyCount<Binding>(threshold) : new ThresholdPolicyNever<Binding>() ;
         this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
         

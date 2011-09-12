@@ -198,6 +198,14 @@ public class ARQ
     public static final Symbol javaRegex =  ARQConstants.allocSymbol("javaRegex") ;
     /** Symbol to name the Xerces-J regular expression engine */ 
     public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
+
+    // Spilling controls.
+
+    /** Symbol to set the threshold representing the number of bindings when to use external sorting for queries using ORDER BY */ 
+    public static final Symbol spillOnDiskSortingThreshold = ARQConstants.allocSymbol("spillOnDiskSortingThreshold") ;
+
+    /** Symbol to set the threshold representing the number of bindings when to spill on disk when an update is received */ 
+    public static final Symbol spillOnDiskUpdateThreshold = ARQConstants.allocSymbol("spillOnDiskUpdateThreshold") ;
     
     // Optimizer controls.
     

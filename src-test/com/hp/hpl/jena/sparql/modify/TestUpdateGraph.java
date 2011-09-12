@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -222,7 +223,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         
         GraphStore gStore = getEmptyGraphStore() ;
         // Set the threshold to in order to force spill to disk
-        gStore.getContext().set(UpdateEngineWorker.spillOnDiskUpdateThreshold, 0L) ;
+        gStore.getContext().set(ARQ.spillOnDiskUpdateThreshold, 0L) ;
         
         defaultGraphData(gStore, data(t)) ;
         namedGraphData(gStore, graphIRI, data(t));
@@ -249,7 +250,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         
         GraphStore gStore = getEmptyGraphStore() ;
         // Set the threshold to in order to force spill to disk
-        gStore.getContext().set(UpdateEngineWorker.spillOnDiskUpdateThreshold, 0L) ;
+        gStore.getContext().set(ARQ.spillOnDiskUpdateThreshold, 0L) ;
         
         defaultGraphData(gStore, data(triple1, triple2, t)) ;
         namedGraphData(gStore, graphIRI, data(t2));

@@ -35,6 +35,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.SortCondition ;
@@ -113,7 +114,7 @@ public class TestQueryIterSort {
         iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(QueryIterSort.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try
@@ -138,7 +139,7 @@ public class TestQueryIterSort {
         iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(QueryIterSort.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         
@@ -162,7 +163,7 @@ public class TestQueryIterSort {
 
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(QueryIterSort.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try 
@@ -188,7 +189,7 @@ public class TestQueryIterSort {
     {
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(QueryIterSort.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try
@@ -221,7 +222,7 @@ public class TestQueryIterSort {
         iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(QueryIterSort.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try 
