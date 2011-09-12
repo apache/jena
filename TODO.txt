@@ -1,4 +1,0 @@
-TODO
-
- - Publish artifacts to the Apache Snapshot repository,
-   can we use maven-release-plugin there?
