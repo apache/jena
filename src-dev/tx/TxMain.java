@@ -6,10 +6,13 @@
 
 package tx;
 
+import java.nio.ByteBuffer ;
+
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkWrapper ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;
@@ -30,11 +33,20 @@ import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.FileRef ;
+import com.hp.hpl.jena.tdb.transaction.Journal ;
+import com.hp.hpl.jena.tdb.transaction.JournalControl ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
+import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
+import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -58,16 +70,60 @@ public class TxMain
     }
     
     static public String DBdir = "DB" ;
+    static public Location LOC = new Location(DBdir) ;
     
     public static void main(String... args)
     {
-        //initFS() ;
+        initFS() ;
         
         //String DATA = "/home/afs/Datasets/MusicBrainz/tracks.nt.gz" ;
         String DATA = "/home/afs/Datasets/MusicBrainz/tracks-10k.nt" ;
         
-        StoreConnection sConn = StoreConnection.make(Location.mem()) ;
-        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;  
+        StoreConnection sConn = StoreConnection.make(LOC) ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+        Transaction txn = dsg.getTransaction() ;
+        Journal journal = txn.getJournal() ;
+        
+        String blobFileBase = "BLOB" ;
+        String blobExt = "blob" ;
+        
+        FileSet fs = new FileSet(LOC, blobFileBase) ;
+        FileRef ref = FileRef.create(fs, blobExt) ;
+        String blobfilename = fs.filename(blobExt) ;
+        
+        BufferChannel data = new BufferChannelFile(blobfilename) ;
+        System.out.println(ref.getFilename()) ;
+        
+        dsg.getConfig().bufferChannels.put(ref, data) ;
+
+        TransBlob blob = new TransBlob(data, ref, null) ;
+        
+        blob.begin(txn) ;
+        blob.setValue(ByteBuffer.wrap(StrUtils.asUTF8bytes("Stringdata"))) ;
+        blob.commitPrepare(txn) ;
+        
+        // Journal commit.
+        JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
+        journal.writeJournal(entry) ;
+        journal.sync() ;        // Commit point.
+        
+        JournalControl.replay(journal, dsg) ;
+        
+        blob.commitEnact(txn) ;
+        blob.commitClearup(txn) ;
+        
+        ByteBuffer bb2 = ByteBuffer.allocate(1024) ; 
+        BufferChannel data2 = new BufferChannelFile(blobfilename) ;
+        
+        int x = data2.read(bb2) ;
+        byte b[] = new byte[x] ;
+        bb2.position(0) ;
+        bb2.get(b, 0, x) ;
+        String str = StrUtils.fromUTF8bytes(b) ;
+        System.out.println(str) ;
+        
+        exit(0) ;
+        
         Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
         RiotReader.parseTriples(DATA, sink) ;
         System.out.println(dsg.getDefaultGraph().size()) ;
@@ -94,8 +150,10 @@ public class TxMain
 
     private static void initFS()
     {
-        FileOps.ensureDir(DBdir) ;
-        FileOps.clearDirectory(DBdir) ;
+        if ( LOC.isMem() )
+            return ;
+        FileOps.ensureDir(LOC.getDirectoryPath()) ;
+        FileOps.clearDirectory(LOC.getDirectoryPath()) ;
     }
     
     private static DatasetGraphTDB build()

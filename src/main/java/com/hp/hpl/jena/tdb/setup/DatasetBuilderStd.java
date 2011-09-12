@@ -18,6 +18,7 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
@@ -56,6 +57,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     private Properties config ;
     
     private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
+    private Map<FileRef, BufferChannel> bufferChannels = new HashMap<FileRef, BufferChannel>() ;
     private Map<FileRef, NodeTable> nodeTables = new HashMap<FileRef, NodeTable>() ;
 
     public static DatasetGraphTDB build(Location location)
@@ -176,7 +178,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         DatasetPrefixesTDB prefixes = makePrefixTable(location, policy) ;
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
-        StoreConfig storeConfig = new StoreConfig(location, config, blockMgrs, nodeTables) ;
+        StoreConfig storeConfig = new StoreConfig(location, config, blockMgrs, bufferChannels, nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storeConfig) ;
         return dsg ;
     }

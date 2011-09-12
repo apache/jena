@@ -11,6 +11,7 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
 import static java.lang.String.format ;
 
 import java.io.File ;
+import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.Map ;
 
@@ -23,6 +24,7 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -256,6 +258,7 @@ public class JournalControl
         switch (e.getType())
         {
             case Block:
+            {
                 // All-purpose, works for direct and mapped mode, copy of a block.
                 // [TxTDB:PATCH-UP]
                 // Direct: blkMgr.write(e.getBlock()) would work.
@@ -272,10 +275,19 @@ public class JournalControl
 //                blk.getByteBuffer().put(e.getBlock().getByteBuffer()) ;
 //                blkMgr.write(e.getBlock()) ; 
                 return true ;
+            }   
+            case Buffer:
+            {
+                BufferChannel chan = dsg.getConfig().bufferChannels.get(e.getFileRef()) ;
+                ByteBuffer bb = e.getByteBuffer() ;
+                log.debug("Replay: {} {}",e.getFileRef(), bb) ;
+                chan.write(bb, 0) ; // YUK!
+                return true ;
+            }
+                
             case Commit:
                 return false ;
             case Abort:
-            case Buffer:
             case Object:
             case Checkpoint:
                 errlog.warn("Unexpected block type: "+e.getType()) ;

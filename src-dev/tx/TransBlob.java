@@ -20,7 +20,7 @@ package tx;
 
 import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.file.BlockAccess ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
@@ -32,21 +32,25 @@ public class TransBlob implements TransactionLifecycle
 {
     // And need a block mgr
     
+    private boolean changed ; 
     private ByteBuffer bytes ;
     private final FileRef file ;
-    private final BlockAccess access ;
+    private final BufferChannel data ;
 
-    public TransBlob(BlockAccess blockAccess, FileRef file)
+    public TransBlob(BufferChannel data, FileRef file, ByteBuffer initialBytes)
     {
-        this.access = blockAccess ;
+        this.data = data ;
         // BlockMgrFileAccess.
         this.file = file ;
+        this.bytes = initialBytes ;
+        this.changed = false ;
     }
     
     public void setValue(ByteBuffer bytes)
     {
         // Copy for safety?
-        this.bytes= bytes ;
+        this.bytes = bytes ;
+        this.changed = true ;
     }
 
     public ByteBuffer getValue()
@@ -56,8 +60,7 @@ public class TransBlob implements TransactionLifecycle
     
     @Override
     public void begin(Transaction txn)
-    {
-    }
+    { }
 
     @Override
     public void abort(Transaction txn)
@@ -69,20 +72,24 @@ public class TransBlob implements TransactionLifecycle
         Journal journal = txn.getJournal() ;
         //Block blk = new Block(0, bytes) ;
         //JournalEntry entry = new JournalEntry(file, blk) ;
-
-        // And reply?
         journal.writeJournal(JournalEntryType.Buffer, file, bytes) ;
-        
-       // replay : fileref -> remembered BlockMgr = BlockMgrFileAccess
-        
     }
 
     @Override
     public void commitEnact(Transaction txn)
-    {}
+    { 
+        data.sync() ;
+    }
 
     @Override
     public void commitClearup(Transaction txn)
-    {}
+    {
+        clearup() ;
+    }
+    
+    private void clearup()
+    {
+        bytes = null ;
+    }
 }
 

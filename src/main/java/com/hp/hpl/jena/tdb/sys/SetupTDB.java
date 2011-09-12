@@ -259,7 +259,7 @@ public class SetupTDB
         DatasetPrefixesTDB prefixes = makePrefixes(location, config, policy) ;
 
         // ---- Create the DatasetGraph object
-        StoreConfig storeConfig = new StoreConfig(location, config, null, null) ;
+        StoreConfig storeConfig = new StoreConfig(location, config, null, null, null) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), storeConfig) ;
 
         // Finalize
