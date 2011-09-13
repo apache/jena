@@ -20,6 +20,7 @@ package tx;
 
 import java.nio.ByteBuffer ;
 
+import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
@@ -30,7 +31,11 @@ import com.hp.hpl.jena.tdb.transaction.TransactionLifecycle ;
 /** Write a blob, transactional */
 public class TransBlob implements TransactionLifecycle
 {
-    // And need a block mgr
+    // BUG?: BufferChannel does not record length written
+    // What happnes if it chnages length (specifically, shortens)   
+    // Need a "variable block" abstraction over BufefrChannel.
+    //   or split BlockMgrBase intio fixed and not fixed sizes.
+    //   Consider putting length in a write.
     
     private boolean changed ; 
     private ByteBuffer bytes ;
@@ -72,7 +77,7 @@ public class TransBlob implements TransactionLifecycle
         Journal journal = txn.getJournal() ;
         //Block blk = new Block(0, bytes) ;
         //JournalEntry entry = new JournalEntry(file, blk) ;
-        journal.writeJournal(JournalEntryType.Buffer, file, bytes) ;
+        journal.write(JournalEntryType.Buffer, file, new Block(0,bytes)) ;
     }
 
     @Override

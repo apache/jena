@@ -3,7 +3,9 @@ package tx;
 
 public class DevTx
 {
-    // Don't require .close for write.
+    // 1-- Dataset-based API for transactions.
+    // 2-- Compatibility/migration?
+    // 3-- Events per txn
     
     // --------
     // * Version per dataset

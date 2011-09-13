@@ -44,7 +44,6 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.transaction.Journal ;
 import com.hp.hpl.jena.tdb.transaction.JournalControl ;
-import com.hp.hpl.jena.tdb.transaction.JournalEntry ;
 import com.hp.hpl.jena.tdb.transaction.JournalEntryType ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.update.UpdateAction ;
@@ -103,8 +102,7 @@ public class TxMain
         blob.commitPrepare(txn) ;
         
         // Journal commit.
-        JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
-        journal.writeJournal(entry) ;
+        journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
         journal.sync() ;        // Commit point.
         
         JournalControl.replay(journal, dsg) ;
