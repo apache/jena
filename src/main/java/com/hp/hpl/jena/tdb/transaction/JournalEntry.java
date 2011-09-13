@@ -20,32 +20,34 @@ public class JournalEntry
     
     private long  position = -1 ;           // Location in the Journal (if known).
     private long  endPosition = -1 ;        // End location in the Journal: offset of next entry start.
+
     private final JournalEntryType type ;
-    private final ByteBuffer byteBuffer ;   // One or other must be null - or both.
     private final Block block ;
     private final FileRef fileRef ;
     
     private JournalEntry(JournalEntryType type)
     {
-        this(type, null, null, null) ;
+        this(type, null, (Block)null) ;
     }
     
-    public JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes)
-    {
-        this(type, fileRef, bytes, null) ;
-    }
-    
-    public JournalEntry(FileRef fileRef, Block block)
-    {
-        this(JournalEntryType.Block, fileRef, null, block) ;
-    }
+//    public JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes)
+//    {
+//        this(type, fileRef, bytes, null) ;
+//    }
+//    
+//    public JournalEntry(FileRef fileRef, Block block)
+//    {
+//        this(JournalEntryType.Block, fileRef, null, block) ;
+//    }
 
-    JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes, Block block)
+    JournalEntry(JournalEntryType type, FileRef fileRef, ByteBuffer bytes)
     {
-        if ( bytes != null && block != null )
-            throw new TDBTransactionException("buffer != null and block != null") ;
+        this(type, fileRef, new Block(0, bytes)) ;
+    }
+    
+    JournalEntry(JournalEntryType type, FileRef fileRef, Block block)
+    {
         this.type = type ;
-        this.byteBuffer = bytes ;
         this.block = block ;
         this.fileRef = fileRef ;
     }
@@ -57,7 +59,7 @@ public class JournalEntry
     long getEndPosition()                   { return endPosition ; }
     
     public JournalEntryType getType()       { return type ; }
-    public ByteBuffer getByteBuffer()       { return byteBuffer ; }
+    public ByteBuffer getByteBuffer()       { return block.getByteBuffer() ; }
     public Block getBlock()                 { return block ; }
     public FileRef getFileRef()             { return fileRef ; }
     

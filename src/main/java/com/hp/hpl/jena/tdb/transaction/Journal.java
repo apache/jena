@@ -7,7 +7,6 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
-import static com.hp.hpl.jena.tdb.transaction.JournalEntryType.Block ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
@@ -93,7 +92,7 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     synchronized
     public long writeJournal(JournalEntry entry)
     {
-        long posn = _write(entry.getType(), entry.getFileRef(), entry.getByteBuffer(), entry.getBlock()) ;
+        long posn = write(entry.getType(), entry.getFileRef(), entry.getBlock()) ;
         if ( entry.getPosition() < 0 )
         {
             entry.setPosition(posn) ;
@@ -101,31 +100,25 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         }
         return posn ;
     }
-    
-    synchronized
-    public long writeJournal(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
-    {
-        return _write(type, fileRef, buffer, null) ;
-    }
-    
-    synchronized
-    public long writeJournal(FileRef fileRef, Block block)
-    {
-        return _write(Block, fileRef, null, block) ;
-    }
+//    
+////    synchronized
+////    public long writeJournal(JournalEntryType type, FileRef fileRef, ByteBuffer buffer)
+////    {
+////        return _write(type, fileRef, buffer, null) ;
+////    }
+////    
+//    synchronized
+//    public long writeJournal(FileRef fileRef, Block block)
+//    {
+//        return _write(Block, fileRef, null, block) ;
+//    }
      
     synchronized
-    private long _write(JournalEntryType type, FileRef fileRef, ByteBuffer buffer, Block block)
+    public long write(JournalEntryType type, FileRef fileRef, Block block)
     {
         //log.info("@"+position()+" -- "+type+","+fileRef+", "+buffer+", "+block) ;
-        
-        if ( buffer != null && block != null )
-            throw new TDBTransactionException("Buffer and block to write") ;
-        if ( block != null )
-            buffer = block.getByteBuffer() ;
 
-        if ( block != null && type != Block )
-            throw new TDBTransactionException("Block to write but not block type") ;
+        ByteBuffer buffer = (block == null) ? null : block.getByteBuffer() ;
         
         long posn = position ;
         int bufferCapacity = 0 ; 
@@ -229,18 +222,9 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         JournalEntryType type = JournalEntryType.type(typeId) ;
         FileRef fileRef = FileRef.get(ref) ;
         ByteBuffer bb = ByteBuffer.allocate(len) ;
-        Block block = null ;
         lenRead = channel.read(bb) ;
         adler.update(bb.array()) ;
         bb.rewind() ;
-        if ( type == Block )
-        {
-            block = new Block(blockId, bb) ;
-            bb = null ;
-        }
-        else
-            blockId = NoId ;
-
         // checksum
         crcTrailer.clear() ;
         lenRead = channel.read(crcTrailer) ;
@@ -250,7 +234,8 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
         if ( checksum != (int)adler.getValue() )
         	throw new TDBTransactionException("Checksum error reading from the Journal.") ;
 
-        return new JournalEntry(type, fileRef, bb, block) ;
+        Block block = new Block(blockId, bb) ;
+        return new JournalEntry(type, fileRef, block) ;
     } 
 
     /** Iterator of entries from current point in Journal, going forward. Must be JournalEntry aligned at start. */

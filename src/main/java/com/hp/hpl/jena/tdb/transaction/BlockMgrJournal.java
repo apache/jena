@@ -267,7 +267,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     private void writeJournalEntry(Block blk)
     {
         blk.getByteBuffer().rewind() ;
-        transaction.getJournal().writeJournal(fileRef, blk) ;
+        transaction.getJournal().write(JournalEntryType.Block, fileRef, blk) ;
     }
     
     private void logState()

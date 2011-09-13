@@ -130,8 +130,8 @@ public class TestJournal extends BaseTest
 
     @Test public void journal_06()
     {
-        JournalEntry entry1 = new JournalEntry(testRef, blk1) ;
-        JournalEntry entry2 = new JournalEntry(testRef, blk2) ;
+        JournalEntry entry1 = new JournalEntry(JournalEntryType.Block, testRef, blk1) ;
+        JournalEntry entry2 = new JournalEntry(JournalEntryType.Block, testRef, blk2) ;
         
         long x1 = journal.writeJournal(entry1) ;
         bb1.clear();

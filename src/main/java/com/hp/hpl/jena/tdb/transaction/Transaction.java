@@ -75,8 +75,7 @@ public class Transaction
             if ( state != TxnState.ACTIVE )
                 throw new TDBTransactionException("Transaction has already committed or aborted") ; 
             prepare() ;
-            JournalEntry entry = new JournalEntry(JournalEntryType.Commit, FileRef.Journal, null) ;
-            journal.writeJournal(entry) ;
+            journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
             journal.sync() ;        // Commit point.
         }
 
