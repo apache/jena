@@ -49,7 +49,7 @@ public class E_NotExists extends ExprFunctionOp
     public Expr applyNodeTransform(NodeTransform nodeTransform)
     {
         Op op2 = NodeTransformLib.transform(nodeTransform, getGraphPattern()) ;
-        return new E_Exists(getElement(), op2) ;
+        return new E_NotExists(getElement(), op2) ;
     }
     
     @Override
