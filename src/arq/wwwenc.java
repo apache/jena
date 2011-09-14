@@ -32,6 +32,7 @@ public class wwwenc
         // Reserved characters + space
         char reserved[] = 
             {' ',
+             '\n','\t',
              '!', '*', '"', '\'', '(', ')', ';', ':', '@', '&', 
              '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'} ;
         
