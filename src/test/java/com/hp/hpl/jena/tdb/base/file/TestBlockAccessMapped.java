@@ -23,11 +23,15 @@ public class TestBlockAccessMapped extends AbstractTestBlockAccessFixedSize
 
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
+    static int counter = 0 ;
+    
     @Override
     protected BlockAccess make()
     {
-        FileOps.deleteSilent(filename) ;
-        return new BlockAccessMapped(filename, BlockSize) ;
+    	String fn = filename + "-"+(counter++) ;
+    	FileOps.deleteSilent(fn) ;
+        return new BlockAccessMapped(fn, BlockSize) ;
+        
     }
 }
 
