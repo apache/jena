@@ -160,7 +160,7 @@ public class Transaction
     public TxnState getState()                      { return state ; }
     
     public long getTxnId()                          { return id ; }
-    TransactionManager getTxnMgr()                  { return txnMgr ; }
+    public TransactionManager getTxnMgr()                  { return txnMgr ; }
     
     public DatasetGraphTxn getActiveDataset()
     {

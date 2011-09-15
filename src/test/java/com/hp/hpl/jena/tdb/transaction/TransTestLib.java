@@ -36,7 +36,7 @@ import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 public class TransTestLib
 {
 
-    static int count(String queryStr, DatasetGraph dsg)
+    public static int count(String queryStr, DatasetGraph dsg)
     {
         int counter = 0 ;
         Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
