@@ -1,6 +1,0 @@
-PREFIX :	<http://example/>
-
-SELECT * 
-{
-  ?x :not-in-data{0} ?y   
-}

@@ -1,6 +1,0 @@
-PREFIX :	<http://example/>
-
-SELECT (count(*) AS ?count)
-{
-  :a  :p* :z
-}

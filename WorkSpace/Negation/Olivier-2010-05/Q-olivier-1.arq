@@ -1,6 +1,0 @@
-PREFIX n: <http://example/>
-
-select * where {
-?x n:memberOf ?org .
-{{?x n:related ?y} minus {?y n:memberOf ?org}}
-} 

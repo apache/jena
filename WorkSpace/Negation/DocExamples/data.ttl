@@ -1,9 +1,0 @@
-@prefix :           <http://example/> .
-@prefix foaf:       <http://xmlns.com/foaf/0.1/> .
-
-:alice  foaf:givenName "Alice" ;
-        foaf:familyName "Smith" .
-:bob    foaf:givenName "Bob" ;
-        foaf:familyName "Jones" .
-:carol  foaf:givenName "Carol" ;
-        foaf:familyName "Smith" .

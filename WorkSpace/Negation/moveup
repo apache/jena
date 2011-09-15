@@ -1,8 +1,0 @@
-#!/bin/bash
-
-for N in 5 4 3 
-do
-  N1=$((N+1))
-  mv Q-notexists-$N.arq Q-notexists-$N1.arq
-  mv Q-minus-$N.arq Q-minus-$N1.arq
-  done

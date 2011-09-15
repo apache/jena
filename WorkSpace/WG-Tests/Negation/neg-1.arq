@@ -1,5 +1,0 @@
-PREFIX ex: <negation/subset-exclusion#>
-SELECT ?animal { 
-  ?animal a ex:Animal
-  FILTER NOT EXISTS { ?animal a ex:Insect }
-}

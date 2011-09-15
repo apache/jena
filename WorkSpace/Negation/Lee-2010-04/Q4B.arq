@@ -1,7 +1,0 @@
-PREFIX foaf:       <http://xmlns.com/foaf/0.1/>
-PREFIX :           <http://example/>
-
-SELECT * {
-  MINUS { ?s :hairColor "brown" }
-  ?s a foaf:Person .
-} 

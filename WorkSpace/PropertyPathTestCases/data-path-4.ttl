@@ -1,9 +1,0 @@
-@prefix : <http://example/> .
-
-# For use with negated property sets
-
-:a :p :b .
-:a :q :b .
-
-:a :p :c .
-

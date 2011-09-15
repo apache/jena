@@ -1,4 +1,0 @@
-@prefix ex: <negation/subset-exclusion#> .
-ex:lifeForm1 a ex:Mammal, ex:Animal .
-ex:lifeForm2 a ex:Reptile, ex:Animal .
-ex:lifeForm3 a ex:Insect, ex:Animal .

@@ -1,7 +1,0 @@
-PREFIX foaf:       <http://xmlns.com/foaf/0.1/>
-PREFIX :           <http://example/>
-
-SELECT * {
-  ?s a foaf:Person .
-  FILTER (NOT EXISTS { ?s :hairColor "brown" })
-} 

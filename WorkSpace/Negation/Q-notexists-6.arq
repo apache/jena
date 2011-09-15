@@ -1,7 +1,0 @@
-PREFIX : <http://example/>
-
-SELECT *
-{
-  ?s ?p ?o 
-    NOT EXISTS { ?s :b :c . FILTER(?s = :a) }
-}

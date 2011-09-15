@@ -1,8 +1,0 @@
-PREFIX foaf:       <http://xmlns.com/foaf/0.1/>
-PREFIX :           <http://example/>
-
-SELECT * {
-  OPTIONAL { ?s :hairColor ?color . FILTER(?color = "brown") }
-  ?s a foaf:Person .
-  FILTER(!bound(?color))
-}
