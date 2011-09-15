@@ -67,7 +67,7 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 public class TestTransSystemJena91
 {
     static { 
-        if ( true )
+        if ( false )
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
