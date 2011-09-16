@@ -3,7 +3,8 @@ ARQ <http://jena.hpl.hp.com/ARQ>
 
 A query processor for Jena that implements SPARQL
 
-Website: http://jena.hpl.hp.com/ARQ
+Website: http://incubator.apache.org/jena/ARQ
+Old ARQ website: http://openjena.org/ARQ
 
 ARQ is a complete implementation of SPARQL that can query any Jena model
 or graph, including ones stored in databases.
@@ -11,16 +12,17 @@ or graph, including ones stored in databases.
 Download
 --------
 
-Releases : SourceForge, Project Jena : Package ARQ
+Old Releases : SourceForge, Project Jena : Package ARQ
 http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
 
-Also available via anonymous SVN:
-https://jena.svn.sourceforge.net/svnroot/jena/ARQ/
+Also available via SVN:
+https://svn.apache.org/repos/asf/incubator/jena/
 
 Maven:
 GroupId: com.hp.hpl.jena
 ArtifactId: arq
 
+(migrating to Aapche)
 Release repository: http://jena.hpl.hp.com/repo
   Mirrored to http://repo1.maven.org/
 Development repo: http://jena.hpl.hp.com/repo-dev
@@ -38,7 +40,7 @@ http://www.sparql.org/validator.html
 Documentation
 -------------
 
-Included in the download in doc/index.html and online at http://jena.sf.net/ARQ
+Included in the download in doc/index.html and online at http://openjena.org/ARQ
 
 Installation
 ------------
@@ -135,7 +137,7 @@ Support and Questions
 ---------------------
 
 Comments and questions about ARQ to the Jena mailing list 
-    jena-dev@groups.yahoo.com
+    jena-users@incubator.apache.org
 
 General questions and comments on SPARQL to jena-dev or
     public-sparql-dev@w3.org

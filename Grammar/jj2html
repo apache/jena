@@ -22,10 +22,6 @@ $TABLE = 1 ;
 $grammarFile = $ARGV[0] ;
 $tokensFile = $ARGV[1] ;
 
-## $grammarFile = 's.txt' ;
-## $tokensFile = 't.txt' ;
-
-
 $grammar = &readFile($grammarFile) ;
 $tokens = &readFile($tokensFile) ;
 

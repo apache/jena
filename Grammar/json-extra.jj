@@ -1,5 +1,5 @@
 /* Grammar extract - JSON tokens, parser state <JSON> */
-
+// For use in adding JSON { .. } WHERE { ... } to SPARQL
 // Do \ u inside JavaCC??
 
 

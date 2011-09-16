@@ -1,9 +1,0 @@
-JSON 
-{ "abc" : "def" ,
-  "abcd": 123 ,
-  "xyz" : null
-}
-WHERE
-{
-  ?s ?p ?o 
-}

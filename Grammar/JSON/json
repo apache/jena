@@ -94,7 +94,6 @@ for G in "$@"
   json)
     dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
     grammar parser.jj $PKG JSON_Parser
-    #grammar json.jj atlas/json/io/parserjavacc/javacc JSON_Parser
     [ "$RC" = 0 ] && rm -f parser.jj
     ;;
   *)    echo "**** Unknown grammar: $G" 1>&2

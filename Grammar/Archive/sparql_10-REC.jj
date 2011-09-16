@@ -8,6 +8,9 @@
 // example java1.2-a.jj grammer in JavaCC distribution
 // Much modifed over time.
 
+// This is the grammar used to produce the SPARQL 1.0 W3C Recommendation
+// Frozen at W3C Candidate Recommendation.   
+
 options
 {
    JAVA_UNICODE_ESCAPE = true ;

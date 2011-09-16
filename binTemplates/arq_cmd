@@ -1,4 +1,5 @@
 #!/bin/bash
+# Command template for an arq.* command.
 
 if [ "$ARQROOT" = "" ]
     then 

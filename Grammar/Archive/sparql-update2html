@@ -1,4 +1,0 @@
-#echo "Grammar to X.html, fragments file to Y.html"
-jj2html 'sparql-update.txt' 'tokens.txt' > X.html
-#grammarExtracts < X.html > Y.html
-

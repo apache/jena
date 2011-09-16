@@ -1,8 +1,8 @@
-// ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
+// Grammar for
+//   http://www.w3.org/Submission/SPARQL-Update/
 #if 0
 // (Run through cpp -P -C first)
 #endif
-
 
 #if !defined(ARQ) && !defined(SPARQL_11)
 #error Please define one of ARQ and SPARQL_11

@@ -1,5 +1,5 @@
-SPARQl/Update sumission - just the submission part.
-
+SPARQL/Update sumission - just the submission part.
+   http://www.w3.org/Submission/SPARQL-Update/
 
     // --------
     // [done] INSERT/DELETE DATA [INTO? or FROM? <uri>] {} => INSERT/DELETE DATA { GRAPH <uri> {}}

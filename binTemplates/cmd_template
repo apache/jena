@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# This is the template for putting in any command path directory.
+# It redirects to the comannd of the same name in $ARQROOT/bin
+ 
 CMD="$(basename $0)"
-export ARQROOT=${ARQROOT:-~/Projects/ARQ}
+[ "$ARQROOT" = "" ] && { echo "ARQROOT not set" 1>&2 ; exit 1 ; } 
+#export ARQROOT=${ARQROOT:-~/Projects/ARQ}
 exec "$ARQROOT/bin/$CMD" "$@"

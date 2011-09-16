@@ -1,4 +1,5 @@
 #!/bin/bash
+# Command template for an riotcmd.* command.
 
 if [ "$ARQROOT" = "" ]
     then 
