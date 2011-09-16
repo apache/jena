@@ -20,6 +20,10 @@ package dev;
 
 public class DevFuseki
 {
+    // Config:
+    //   fuseki:name ==> fuseki:serviceName of fuseki:endpointBase 
+    //   rdfs:label for log files.
+    
     // sparql.jsp needs to switc on presence and name of service endpoints.
     // --accept for to soh for construct queries (check can get CONSTRUCT in TTL).
     

@@ -40,7 +40,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceUpdate            "update" ;   # SPARQL query service
     fuseki:serviceUpload            "upload" ;   # Non-SPARQL upload service
     fuseki:serviceReadWriteGraphStore      "data" ;     # SPARQL Graph store protocol (read and write)
-    # A separate ead-only graph store endpoint:
+    # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;   # SPARQL Graph store protocol (read only)
     fuseki:dataset           <#books> ;
     .
