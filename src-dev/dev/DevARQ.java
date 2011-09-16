@@ -5,6 +5,7 @@ public class DevARQ
 {
     // BIO: RS = vars list and the bindings.
     
+    // Assembly configuration: <appendAssemblyId>false</appendAssemblyId>
     
     // FILTER(?x=?y) optimization - at least FILTER(sameTerm(?x,?y))
     // FILTER(?x=<x> && ...) does not push down on the ?x=<x>

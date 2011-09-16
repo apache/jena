@@ -368,22 +368,43 @@ build.time.txt=${build.time.txt}
         <!-- This must be the last plug-in attached to the package phase 
              because it replies on the packaging of the jar to happen first.
         -->
+        <!-- We want one with appendAssemblyId=false and one with it defaulting to true.
+        hence two executions configured -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <!--  But we want one with appendAssemblyId=false and one with it defaulting to true.
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
             <descriptor>assembly-testing.xml</descriptor>
           </descriptors>
         </configuration>
+        -->
         <executions>
           <execution>
             <id>create-assembly</id>
-            <!-- Must be last plugin attached to "package" -->
             <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+	        <configuration>
+	 		  <appendAssemblyId>false</appendAssemblyId>
+    	      <descriptors>
+        	    <descriptor>assembly.xml</descriptor>
+          	  </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>create-assembly-test</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+	        <configuration>
+    	      <descriptors>
+        	    <descriptor>assembly-testing.xml</descriptor>
+          	  </descriptors>
+            </configuration>
           </execution>
         </executions>
       </plugin>
