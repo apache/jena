@@ -25,6 +25,17 @@ public class ConfigTest
         }
     }
     
+    private static int count = 0 ;
+    
+    /** Get a empty directory name that has not been used before in this JVM */ 
+    public static final String getTestingDirUnique()
+    {
+    	String dn = testingDir+"/D-"+(++count) ;
+    	FileOps.ensureDir(dn) ;
+    	FileOps.clearDirectory(dn) ;
+    	return dn ; 
+    }
+    
     public static final String getTestingDir()
     {
         init() ;

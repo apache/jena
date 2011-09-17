@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import org.junit.Before;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
@@ -25,15 +26,24 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
 {
-    static Location loc = new Location(ConfigTest.getTestingDir()) ;
+    Location loc = null ;
+    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
+    static int count = 0 ;
+    
+    @Before public void before()
+    {
+    	String dir = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+    	loc = new Location(dir) ;
+    	FileOps.clearDirectory(loc.getDirectoryPath()) ;
+    }
     
     @Override
     protected ObjectFile createObjectFile()
     {
-        FileOps.clearDirectory(loc.getDirectoryPath()) ;
         FileSet fs = new FileSet(loc, "data") ;
         return SetupTDB.makeObjectFile(fs) ;
     }

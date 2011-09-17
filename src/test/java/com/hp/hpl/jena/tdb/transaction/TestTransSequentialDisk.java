@@ -18,24 +18,27 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.openjena.atlas.lib.FileOps ;
+import org.junit.After;
+import org.junit.Before;
+import org.openjena.atlas.lib.FileOps;
 
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.StoreConnection;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 /** Basic tests and tests of ordering (single thread) */
 public class TestTransSequentialDisk extends AbstractTestTransSeq
 {
-    static final String DIR = ConfigTest.getTestingDirDB() ;
-    static final Location LOC = new Location(DIR) ;
+    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
+    
+    String DIR = null ;
     
     @Before public void before()
     {
         StoreConnection.reset() ;
-        FileOps.clearDirectory(DIR) ;
+        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+		FileOps.ensureDir(DIR) ;
+		FileOps.clearDirectory(DIR) ;
     }
 
     @After public void after() {} 
@@ -43,7 +46,7 @@ public class TestTransSequentialDisk extends AbstractTestTransSeq
     @Override
     protected StoreConnection getStoreConnection()
     {
-        return StoreConnection.make(LOC) ;
+        return StoreConnection.make(DIR) ;
     }
 }
 

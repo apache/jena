@@ -7,30 +7,28 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import java.util.Arrays ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import org.junit.After ;
-import org.junit.AfterClass ;
-import org.junit.Before ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.BaseTest ;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openjena.atlas.iterator.Iter;
+import org.openjena.atlas.junit.BaseTest;
 import org.openjena.atlas.lib.FileOps;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.junit.GraphLocation ;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.query.Dataset;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
+import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.junit.GraphLocation;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
@@ -39,45 +37,20 @@ public class TestDatasetTDBPersist extends BaseTest
     static Node n1 = NodeFactory.parseNode("<http://example/n1>") ;
     static Node n2 = NodeFactory.parseNode("<http://example/n2>") ;
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
-    static String dirBaseName = ConfigTest.getTestingDirDB() ;
-    static GraphLocation graphLocation = null ;
     
-    @BeforeClass public static void beforeClass()
-    {
-    	if ( ! nonDeleteableMMapFiles )
-    		graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDirDB())) ;
-    }
-
-    @AfterClass public static void afterClass()
-    {
-    	if ( graphLocation != null )
-    	{
-    		graphLocation.release() ;
-    		graphLocation.clearDirectory() ;
-    	}
-    }
-    
-    // To avoid the problems on MS Windows whereby memeory mapped files
+    // To avoid the problems on MS Windows whereby memory mapped files
     // can't be deleted from a running JVM, we use a different, cleaned 
     // directory each time.
-    static int count = 0 ;
-    String dirName = null ;
+
+    GraphLocation graphLocation = null ;
     
     @Before public void before()
     {   
-    	if ( nonDeleteableMMapFiles )
-    	{
-    		dirName = dirBaseName+"-"+(++count) ;
-    		FileOps.ensureDir(dirName) ;
-    		FileOps.clearDirectory(dirName) ;
-    		graphLocation = new GraphLocation(new Location(dirName)) ;
-            graphLocation.createDataset() ;
-    	}
-    	else
-        {
-            graphLocation.clearDirectory() ; 
-            graphLocation.createDataset() ;
-        }
+    	String dirname = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+		FileOps.ensureDir(dirname) ;
+		FileOps.clearDirectory(dirname) ;
+		graphLocation = new GraphLocation(new Location(dirname)) ;
+        graphLocation.createDataset() ;
     }
     
     @After public void after()
@@ -85,9 +58,7 @@ public class TestDatasetTDBPersist extends BaseTest
     	TDBMaker.clearDatasetCache() ;
     	if ( graphLocation != null )
     		graphLocation.release() ;
-    	
-//    	if ( nonDeleteableMMapFiles )
-//    		FileOps.clearDirectory(dirName) ;
+    	graphLocation.clearDirectory() ;	// Does nto have the desired effect on Windows.
     }
     
     @Test public void dataset1()
