@@ -272,8 +272,20 @@ public class SystemTDB
 
     
     // --------
-    // Tie to location but that means one instance per graph
     
+    public static final boolean isWindows = determineIfWindows() ;	// Memory mapped files behave differently.
+
+    //Or look in File.listRoots.
+    //Alternative method:
+    //  http://stackoverflow.com/questions/1293533/name-of-the-operating-system-in-java-not-os-name
+    
+    private static boolean determineIfWindows() {
+    	String s = System.getProperty("os.name") ;
+    	if ( s == null )
+    		return false ;
+    	return s.startsWith("Windows ") ;
+	}
+
     public static final boolean is64bitSystem = determineIf64Bit() ;
 
     private static boolean determineIf64Bit()
@@ -298,7 +310,8 @@ public class SystemTDB
         return b ;
     }
     
-    // Not in use yet.
+
+	// Not in use yet.
     private static void determineJVMSize()
     {
         Runtime runtime = Runtime.getRuntime() ;
