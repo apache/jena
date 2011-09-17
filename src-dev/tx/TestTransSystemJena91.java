@@ -60,7 +60,7 @@ import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** System testing of the transactions.
- * Version from Simon Helsen should issues on windows
+ * Version from Simon Helsen shows issues on windows
  * JENA-91
  * JENA-115 
  */
