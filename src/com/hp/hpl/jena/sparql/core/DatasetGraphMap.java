@@ -57,14 +57,14 @@ public class DatasetGraphMap extends DatasetGraphCollection
     }
 
     @Override
-    public final Graph getGraph(Node graphNode)
+    public Graph getGraph(Node graphNode)
     {
         Graph g = graphs.get(graphNode) ;
         if ( g == null )
         {
             g = getGraphCreate() ;
             if ( g != null )
-                graphs.put(graphNode, g) ;
+                addGraph(graphNode, g) ;
         }
         return g ;
     }
