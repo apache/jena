@@ -22,6 +22,7 @@ import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
 import static java.lang.String.format ;
 
 import java.util.ArrayList ;
+import java.util.Date ;
 import java.util.List ;
 import java.util.Random ;
 import java.util.concurrent.Callable ;
@@ -108,13 +109,44 @@ public class TestTransSystemJena91
     static final int writerAbortSeqRepeats  = 4 ;
     static final int writerCommitSeqRepeats = 4 ;
     static final int writerMaxPause         = 20 ;
+
+    static String[] properties = { 
+        "java.version", 
+        "java.vendor",
+        "java.runtime.name",
+        "java.runtime.version" ,
+        "java.vm.version" ,
+        "java.vm.vendor" ,
+        "java.vm.name" ,
+        "java.vm.specification.name" ,
+        "java.vm.info", 
+        "java.class.version", 
+        "java.specification.version" ,
+        "java.specification.vendor", 
+        "os.name", 
+        "os.version", 
+        "java.class.path", 
+        "java.home" 
+    } ;
     
     public static void main(String...args)
     {
+        System.out.println(TestTransSystemJena91.class.getSimpleName()) ;
+        System.out.println() ;
+        System.out.println(new Date().toString()) ;
+        for ( String k : properties )
+        {
+            String v = System.getProperty(k) ;
+            System.out.printf("%-30s = %s\n", k, v) ;
+        }
+        System.out.println() ;
+
+        String x = (MEM?"memory":"disk["+SystemTDB.fileMode()+"]") ;
+        
         if ( logging )
-            log.info("START ("+ (MEM?"memory":"disk") + ", {} iterations)", Iterations) ;
+            log.info("START ({}, {} iterations)", x, Iterations) ;
         else
-            printf("START (%s, %d iterations)\n", (MEM?"memory":"disk"), Iterations) ;
+            printf("START (%s, %d iterations)\n", x, Iterations) ;
         
         int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         N = Math.min(N, 100) ;

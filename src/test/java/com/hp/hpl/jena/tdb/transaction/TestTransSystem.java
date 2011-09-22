@@ -34,6 +34,7 @@ import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.RandomLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import tx.TestTransSystemJena91 ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -43,16 +44,32 @@ import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** System testing of the transactions. */
 public class TestTransSystem
 {
-    //static { SystemTDB.setFileMode(FileMode.direct) ; }
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
-    private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
+    private static Logger log = LoggerFactory.getLogger(TestTransSystemJena91.class) ;
 
-    static boolean MEM = true ;
+    /* Notes:
+     * MS Windows does not allow memory mapped files to be deleted during the run of a JVM.
+     * This means we can't delete a database and reuse it's directory (see clean()).
+     * Therefore, this test program this does not run on MS Windows 64 bit mode.
+     */
+    
+    static { 
+        //SystemTDB.isWindows
+        if ( true )
+            SystemTDB.setFileMode(FileMode.direct) ;
+        
+        if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )
+            log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
+    }
+    
+    static boolean MEM = false ;
     
     static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 
@@ -79,10 +96,12 @@ public class TestTransSystem
     
     public static void main(String...args)
     {
+        String x = (MEM?"memory":"disk["+SystemTDB.fileMode()+"]") ;
+        
         if ( logging )
-            log.info("START ("+ (MEM?"memory":"disk") + ", {} iterations)", Iterations) ;
+            log.info("START ({}, {} iterations)", x, Iterations) ;
         else
-            printf("START (%s, %d iterations)\n", (MEM?"memory":"disk"), Iterations) ;
+            printf("START (%s, %d iterations)\n", x, Iterations) ;
         
         int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         N = Math.min(N, 100) ;
