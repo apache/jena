@@ -27,13 +27,13 @@ import org.openjena.atlas.io.BufferingWriter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotException ;
-import org.openjena.riot.out.NodeFmtLib ;
+import org.openjena.riot.out.NodeFormatter ;
+import org.openjena.riot.out.NodeFormatterTTL ;
 import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 /** Parser for the RDF Tuples language */
 public class BindingOutputStream implements Sink<Binding>
@@ -42,6 +42,7 @@ public class BindingOutputStream implements Sink<Binding>
     private Binding lastBinding = null ;
     private List<Var> vars = null ;
     private PrefixMap pmap ;
+    private NodeFormatter nodeFormatter ;
     private boolean needOutputPMap = true ;
     private boolean needOutputVars = true ;
     
@@ -70,8 +71,8 @@ public class BindingOutputStream implements Sink<Binding>
         bw = out ;
         vars = variables ;
         pmap = prefixMapping ;
-        if ( pmap == null )
-            pmap = new PrefixMap() ;
+        
+        nodeFormatter = new NodeFormatterTTL(null, pmap) ;
         needOutputVars = (vars != null ) && vars.size() > 0 ;
     }
     
@@ -132,25 +133,8 @@ public class BindingOutputStream implements Sink<Binding>
                     bw.write("- ") ;
                     continue ;
                 }
-                if ( n.isURI() && pmap != null )
-                {
-                    String x = pmap.abbreviate(n.getURI()) ;
-                    if ( x != null )
-                    {
-                        bw.write(x) ;
-                        bw.write(" ") ;
-                        continue ;
-                    }
-                }
-                
-                // Need fixing.
-                if ( n.isBlank() )
-                {
-                    bw.write("_:") ;
-                    bw.write(NodeFmtLib.encodeBNodeLabel(n.getBlankNodeLabel())) ;
-                }
-                else
-                    bw.write(FmtUtils.stringForNode(n)) ;
+                // NodeFormatters should write safe bNode labels.
+                nodeFormatter.format(bw, n) ;
                 bw.write(" ") ;
             }
             bw.write(".\n") ;

@@ -3,6 +3,7 @@ package dev ;
 
 public class DevARQ
 {
+    // NodeFmtLib to use a NodeFormatter.
     // BIO: RS = vars list and the bindings.
     
     // Assembly configuration: <appendAssemblyId>false</appendAssemblyId>

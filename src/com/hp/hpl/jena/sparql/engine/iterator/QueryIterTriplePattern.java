@@ -169,8 +169,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
         @Override
         protected void requestCancel()
         {
-            // The QuryIteratorBase machinary will do the real work.
-            // but we cleanly kill the ExtendedIterator.
+            // The QueryIteratorBase machinary will do the real work.
             cancelled = true ;
         }
     }

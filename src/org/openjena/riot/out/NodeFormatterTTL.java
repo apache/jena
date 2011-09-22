@@ -40,8 +40,11 @@ public class NodeFormatterTTL extends NodeFormatterNT
     
    public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap) //OutputPolicy outputPolicy)
     {
+       if ( prefixMap == null )
+           prefixMap = new PrefixMap() ;
        this.prefixMap = prefixMap ;
        this.baseIRI = baseIRI ;
+       
     }
     
     @Override

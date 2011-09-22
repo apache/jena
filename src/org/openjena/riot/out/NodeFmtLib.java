@@ -24,6 +24,9 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public class NodeFmtLib
 {
+    // TODO Switch to using NodeFormatter.
+    
+    
     // FmtUtils: This writes abbreviated bnodes (_:b0 etc)
     // These utilities are lower level and reflect the bNodes label.
     

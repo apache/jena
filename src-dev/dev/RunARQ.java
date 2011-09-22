@@ -8,6 +8,8 @@
 
 package dev;
 
+import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayOutputStream ;
 import java.io.FileInputStream ;
 import java.io.InputStream ;
 import java.util.Iterator ;
@@ -28,6 +30,7 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -49,7 +52,6 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QuerySolutionMap ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -123,6 +125,32 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        Binding b = BindingFactory.create();
+        b.add(Var.alloc("test"), Node.createLiteral("21", null, XSDDatatype.XSDint));
+
+        PrefixMap pmap = new PrefixMap() ;
+        pmap.add("xsd",  XSDDatatype.XSD+"#") ;
+        
+        BindingOutputStream bos = new BindingOutputStream(baos, pmap);
+        bos.write(b);
+        bos.flush() ;
+
+        String x = baos.toString() ;
+        System.out.print(x) ;
+
+        bos.close();
+
+        BindingInputStream bis =
+                new BindingInputStream(new ByteArrayInputStream(
+                        baos.toByteArray()));
+
+        System.out.println(bis.next());
+        exit(0) ;
+
+        
+        
         arq.sparql.main("--data=D.ttl", "--query=Q1.rq") ;
         exit(0) ;
         
@@ -146,7 +174,8 @@ public class RunARQ
         Query q = QueryFactory.create("PREFIX ex: <http://example/ns#> SELECT * { FILTER ex:wait(100) }") ;
         QueryExecution qExec = QueryExecutionFactory.create(q, ModelFactory.createDefaultModel()) ;
         
-        try {
+        try {        exit(0) ;
+
             ResultSet rs = qExec.execSelect() ;
             System.out.println(rs.hasNext()) ;
             qExec.abort();
@@ -169,22 +198,6 @@ public class RunARQ
         Tokenizer tok = TokenizerFactory.makeTokenizerString("<_:123>") ;
         Token t = tok.next() ;
         System.out.println(t) ;
-        exit(0) ;
-        
-        // BNode I/O
-        Binding binding = BindingFactory.create() ;
-        binding.add(Var.alloc("x"), Node.createAnon(new AnonId("abc"))) ;
-        bout.write(binding) ;
-        bout.close() ;
-        exit(0) ;
-        
-        for ( ; bin.hasNext() ; )
-        {
-            Binding b = bin.next() ;
-            System.out.println(b) ;
-            bout.write(b) ;
-        }
-        bout.close() ;
         exit(0) ;
     }
 
