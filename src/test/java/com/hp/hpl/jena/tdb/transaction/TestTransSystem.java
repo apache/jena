@@ -34,7 +34,6 @@ import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.RandomLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
-import tx.TestTransSystemJena91 ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
@@ -52,7 +51,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public class TestTransSystem
 {
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
-    private static Logger log = LoggerFactory.getLogger(TestTransSystemJena91.class) ;
+    private static Logger log = LoggerFactory.getLogger(TestTransSystem.class) ;
 
     /* Notes:
      * MS Windows does not allow memory mapped files to be deleted during the run of a JVM.
