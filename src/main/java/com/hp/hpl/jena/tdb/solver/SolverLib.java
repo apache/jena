@@ -169,7 +169,7 @@ public class SolverLib
         else
         {
             // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
-            Binding b = new BindingMap() ;
+            BindingMap b = BindingFactory.create() ;
             for ( Var v : bindingNodeIds )
             {
                 NodeId id = bindingNodeIds.get(v) ;
