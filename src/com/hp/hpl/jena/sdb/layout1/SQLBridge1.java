@@ -76,7 +76,7 @@ public class SQLBridge1 extends SQLBridgeBase
     @Override
     protected Binding assembleBinding(ResultSetJDBC rs, Binding parent)
     {
-        Binding b = new BindingMap(parent) ;
+        BindingMap b = new BindingMap(parent) ;
         for ( Var v : getProject() )
         {
             String sqlVarName = getSqlName(v) ;

@@ -182,7 +182,7 @@ public class SQLBridge2 extends SQLBridgeBase
     @Override
     protected Binding assembleBinding(ResultSetJDBC rsHolder, Binding parent)
     {
-        Binding b = new BindingMap(parent) ;
+        BindingMap b = new BindingMap(parent) ;
         ResultSet rs = rsHolder.get() ;
         for ( Var v : super.getProject() )
         {
