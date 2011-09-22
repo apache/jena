@@ -24,6 +24,8 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 /** Public factory for creating objects (graphs, datasest) associated with TDB */
 public class TDBFactory
 {
+    private TDBFactory() {} 
+    
     /** Read the file and assembler a model, of type TDB persistent graph */ 
     public static Model assembleModel(String assemblerFile)
     {
