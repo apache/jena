@@ -8,6 +8,7 @@ package com.hp.hpl.jena.query.larq;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.util.iterator.Map1 ;
@@ -30,7 +31,7 @@ class HitConverter implements Map1<HitLARQ,Binding>
     
     public Binding map1(HitLARQ hit)
     {
-        Binding b = new BindingMap(binding) ;
+        BindingMap b = BindingFactory.create(binding) ;
         b.add(Var.alloc(subject), hit.getNode()) ;
         if ( score != null )
             b.add(Var.alloc(score), NodeFactory.floatToNode(hit.getScore())) ;

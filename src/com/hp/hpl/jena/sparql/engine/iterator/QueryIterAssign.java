@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 
 /** Extend each solution by an expressions */ 
@@ -37,7 +38,7 @@ public class QueryIterAssign extends QueryIterProcessBinding
     @Override
     public Binding accept(Binding binding)
     {
-        Binding b = new BindingMap(binding) ;
+        BindingMap b = BindingFactory.create(binding) ;
         for ( Var v : exprs.getVars() )
         {
             // Not this, where expressions do not see the new bindings.

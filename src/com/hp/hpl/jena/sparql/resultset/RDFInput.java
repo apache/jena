@@ -18,6 +18,7 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.PropertyNotFoundException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
@@ -146,7 +147,7 @@ public class RDFInput extends ResultSetMem
     private Binding buildBinding(Resource soln)
     {
         // foreach row
-        Binding rb = new BindingMap() ;
+        BindingMap rb = BindingFactory.create() ;
         
         StmtIterator bindingIter = soln.listProperties(ResultSetGraphVocab.binding) ;
         for ( ; bindingIter.hasNext() ; )

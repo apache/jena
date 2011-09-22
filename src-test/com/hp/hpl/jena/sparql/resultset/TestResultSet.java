@@ -320,7 +320,7 @@ public class TestResultSet extends BaseTest
     
     private ResultSet make(String var, Node val)
     {
-        Binding b = new BindingMap() ;
+        BindingMap b = new BindingMap() ;
         b.add(Var.alloc(var), val) ;
         List<String> vars = new ArrayList<String>() ;
         vars.add(var) ;
@@ -331,9 +331,9 @@ public class TestResultSet extends BaseTest
 
     private ResultSet make2(String var, Node val)
     {
-        Binding b1 = new BindingMap() ;
+        BindingMap b1 = new BindingMap() ;
         b1.add(Var.alloc(var), val) ;
-        Binding b2 = new BindingMap() ;
+        BindingMap b2 = new BindingMap() ;
         b2.add(Var.alloc(var), val) ;
         
         List<String> vars = new ArrayList<String>() ;
@@ -365,7 +365,7 @@ public class TestResultSet extends BaseTest
     
     private ResultSet make(String var1, Node val1, String var2, Node val2 )
     {
-        Binding b = new BindingMap() ;
+        BindingMap b = new BindingMap() ;
         
         b.add(Var.alloc(var1), val1) ;
         b.add(Var.alloc(var2), val2) ;

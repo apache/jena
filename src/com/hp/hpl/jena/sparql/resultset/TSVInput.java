@@ -18,25 +18,26 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.io.BufferedReader ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.util.ArrayList ;
+import java.util.List ;
+import java.util.regex.Pattern ;
 
-import org.openjena.atlas.io.IO;
-import org.openjena.riot.tokens.Tokenizer;
-import org.openjena.riot.tokens.TokenizerFactory;
+import org.openjena.atlas.io.IO ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.ResultSetStream;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 /**
  * Input reader associated to {@link TSVOutput}.
@@ -74,7 +75,7 @@ public class TSVInput {
         	        if ( num_tokens != vars.size() ) {
         	        	 throw new ARQException(String.format("Line %d has %d values instead of %d.", line, num_tokens, vars.size()));
         	        }
-        	        Binding binding = BindingFactory.create();
+        	        BindingMap binding = BindingFactory.create();
         	        for ( int i = 0; i < tokens.length; i++ ) {
         	        	String token = tokens[i];
                 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(token);

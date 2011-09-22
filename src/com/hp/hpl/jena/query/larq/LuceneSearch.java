@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
@@ -224,13 +225,12 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         public Binding map1(HitLARQ hit)
         {
-            Binding b = new BindingMap(binding) ;
+            BindingMap b = BindingFactory.create(binding) ;
             b.add(match, hit.getNode()) ;
             if ( score != null )
                 b.add(score, NodeFactory.floatToNode(hit.getScore())) ;
             return b ;
         }
-        
     }
     
     public QueryIterator boundSubject(Binding binding, 

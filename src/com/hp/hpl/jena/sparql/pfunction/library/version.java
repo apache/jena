@@ -16,6 +16,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
@@ -48,7 +49,7 @@ public class version extends PropertyFunctionEval
             if ( ! isSameOrVar(obj, version) ) 
                 continue ;
             
-            Binding b = new BindingMap(binding) ;
+            BindingMap b = BindingFactory.create(binding) ;
             if ( subj.isVariable() )
                 b.add(Var.alloc(subj), info.getIRI()) ;
             if ( subj.isVariable() )

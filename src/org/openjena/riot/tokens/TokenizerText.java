@@ -76,8 +76,12 @@ public final class TokenizerText implements Tokenizer
             return true ;
         } catch (AtlasException ex)
         {
-            if ( ex.getCause().getClass() == java.nio.charset.MalformedInputException.class )
-                throw new RiotParseException("Bad character encoding", reader.getLineNum(), reader.getColNum()) ;
+            if ( ex.getCause() != null )
+            {
+                if ( ex.getCause().getClass() == java.nio.charset.MalformedInputException.class )
+                    throw new RiotParseException("Bad character encoding", reader.getLineNum(), reader.getColNum()) ;
+                throw new RiotParseException("Bad input stream ["+ex.getCause()+"]", reader.getLineNum(), reader.getColNum()) ;
+            }
             throw new RiotParseException("Bad input stream", reader.getLineNum(), reader.getColNum()) ;
         }
     }    

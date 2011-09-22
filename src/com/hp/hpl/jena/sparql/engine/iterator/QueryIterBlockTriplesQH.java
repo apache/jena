@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -172,7 +173,7 @@ public class QueryIterBlockTriplesQH extends QueryIterRepeatApply
     private static Binding graphResultsToBinding(Binding parent, Domain d, Var[] projectionVars)
     {
         // Copy out
-        Binding binding = new BindingMap(parent) ;
+        BindingMap binding = BindingFactory.create(parent) ;
         
         for ( int i = 0 ; i < projectionVars.length ; i++ )
         {

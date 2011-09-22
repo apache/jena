@@ -6,6 +6,7 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import java.util.ArrayList ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -19,6 +20,7 @@ import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
@@ -91,7 +93,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     		    {
     		        // The answer of an empty pattern. 
     		        boolean valueExists = false ;
-    		        Binding binding = new BindingMap() ;
+    		        BindingMap binding = BindingFactory.create() ;
 
     		        if ( aggregators != null )
     		        {
@@ -117,19 +119,18 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     		            return new QueryIterNullIterator(execCxt) ;
     		            
     		    }
-    		        
 
     		    // Phase 2 : There was input and so there are some groups.
-
     		    // For each bucket, get binding, add aggregator values to the binding.
     		    if ( aggregators != null )
     		    {
+                    List<Binding> results = new ArrayList<Binding>() ;
     		        for ( Iterator<BindingKey> bIter = buckets.keySet().iterator() ; bIter.hasNext(); )
     		        {
     		            BindingKey key = bIter.next();
 
     		            // Maybe null
-    		            Binding binding = buckets.get(key) ; // == key.getBinding() ;
+    		            BindingMap binding = BindingFactory.create(key.getBinding()) ;
 
     		            for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
     		            {
@@ -140,11 +141,13 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     		                    // Extend with the aggregations.
     		                    binding.add(v, value) ;
     		            }
+    		            results.add(binding) ;
+    		            // the values are in binding
     		        }
+    		        return results.iterator() ;
     		    }
-
-    		    // Results - the binding modified by the aggregations.
-    		    return buckets.values().iterator() ;
+    		    else
+    		        return buckets.values().iterator() ;
     		}
     	};
     	
@@ -159,7 +162,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     {
         // No group vars (implicit or explicit) => working on whole result set. 
         // Still need a BindingMap to assign to later.
-        Binding x = new BindingMap() ;
+        BindingMap x = BindingFactory.create() ;
         for ( Iterator<Var> iter = vars.getVars().iterator() ; iter.hasNext() ; )
         {
             Var var = iter.next() ;

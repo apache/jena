@@ -14,8 +14,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public interface Binding
 {
-    /** Add a (var, value) pair- the value must not be null */
-    public void add(Var var, Node node) ;
+//    /** Add a (var, value) pair- the value must not be null */
+//    public void add(Var var, Node node) ;
 
     /** Iterate over all variables of this binding. */
     public Iterator<Var> vars() ;
@@ -32,8 +32,7 @@ public interface Binding
     /** Is this an empty binding?  No variables. */
     public boolean isEmpty() ;
 
-    public void addAll(Binding key) ;
-
+//    public void addAll(Binding key) ;
 }
 
 /*

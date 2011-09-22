@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.sse.builders;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -34,7 +35,7 @@ public class BuilderBinding
         if ( ! head.isSymbolIgnoreCase(Tags.tagRow) && ! head.isSymbolIgnoreCase(Tags.tagBinding) )
             BuilderLib.broken(list, "Does not start ("+Tags.tagRow+" ...) or ("+Tags.tagBinding+" ...)", head) ;
         
-        Binding binding = new BindingMap(null) ;
+        BindingMap binding = BindingFactory.create() ;
         for ( int i = 1 ; i < list.size() ; i++ )
         {
             Item item = list.get(i) ;

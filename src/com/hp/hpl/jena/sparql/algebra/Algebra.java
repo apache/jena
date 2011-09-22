@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
@@ -167,7 +168,7 @@ public class Algebra
             return null ;
         
         // If compatible, merge. Iterate over variables in right but not in left.
-        Binding b = new BindingMap(bindingLeft) ;
+        BindingMap b = BindingFactory.create(bindingLeft) ;
         for ( Iterator<Var> vIter = bindingRight.vars() ; vIter.hasNext() ; )
         {
             Var v = vIter.next();

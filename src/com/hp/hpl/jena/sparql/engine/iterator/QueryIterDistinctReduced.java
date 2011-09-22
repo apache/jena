@@ -18,7 +18,7 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     Binding slot = null ;       // ready to go.
     
     public QueryIterDistinctReduced(QueryIterator iter, ExecutionContext context)
-    { super(QueryIterFixed.create(iter, context), context)  ; }
+    { super(iter, context)  ; }
 
     // Subclasses will want to implement this as well. 
     @Override

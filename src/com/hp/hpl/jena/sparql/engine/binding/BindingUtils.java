@@ -45,12 +45,12 @@ public class BindingUtils
         if ( qSolution instanceof ResultBinding )
             // Only named variables.
             return new BindingProjectNamed( ((ResultBinding)qSolution).getBinding() ) ;
-        Binding binding = new BindingMap(null) ;
+        BindingMap binding = new BindingMap(null) ;
         addToBinding(binding, qSolution) ;
         return binding ;
     }
         
-    public static void addToBinding(Binding binding, QuerySolution qSolution)
+    public static void addToBinding(BindingMap binding, QuerySolution qSolution)
     {
         if ( qSolution == null )
             return ;

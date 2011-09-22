@@ -99,7 +99,7 @@ public class TestBindingStreams extends BaseTest
     @Test
     public void bindingStream_61()
     {
-        Binding b = BindingFactory.create() ;
+        BindingMap b = BindingFactory.create() ;
         Node bn = Node.createAnon(new AnonId("unusual")) ;
         b.add(Var.alloc("v"), bn) ;
         testWriteRead(b) ;

@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 
 /**
  * The class "ResultSet" is reserved for the SELECT result format.
@@ -103,7 +103,7 @@ public class SPARQLResult
     protected void set(Boolean r)
     { booleanResult  = r ;  hasBeenSet = true ; }
     
-    static protected void addBinding(Binding binding, Var var, Node value)
+    static protected void addBinding(BindingMap binding, Var var, Node value)
     {
         Node n = binding.get(var) ;
         if ( n != null )

@@ -41,10 +41,6 @@ public class BindingFixed extends BindingWrapped
     }
         
     @Override
-    public void add(Var var, Node node)
-    { throw new UnsupportedOperationException("BindingFixed.add") ; }
-
-    @Override
     public boolean equals(Object obj)
     {
         if ( this == obj ) return true ;

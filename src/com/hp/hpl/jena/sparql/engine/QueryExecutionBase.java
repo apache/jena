@@ -42,7 +42,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandler ;
 import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
@@ -484,10 +483,7 @@ public class QueryExecutionBase implements QueryExecution
             DatasetGraph dsg = prepareDataset(dataset, query, fileManager) ;
             Binding inputBinding = null ;
             if ( initialBinding != null )
-            {
-                inputBinding = new BindingMap() ;
-                BindingUtils.addToBinding(inputBinding, initialBinding) ;
-            }
+                inputBinding = BindingUtils.asBinding(initialBinding) ;
             if ( inputBinding == null )
                 inputBinding = BindingRoot.create() ;
 

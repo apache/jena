@@ -281,7 +281,7 @@ public class JSONInput extends SPARQLResult
                 if (row < 0 || row >= jbindings.size())
                     return null;
                 
-                Binding binding = new BindingMap() ;
+                BindingMap binding = new BindingMap() ;
                 JsonObject jsolution = jbindings.get(row).getAsObject() ;
                 
                 for ( String varName : jsolution.keys() )  

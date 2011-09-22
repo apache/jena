@@ -1,6 +1,5 @@
 PREFIX :	<http://www.example.org/>
 
-SELECT DISTINCT ?x 
-{
-   ?x :p 123 .
-} ORDER BY ?x LIMIT 2
+SELECT (count(*) AS ?c)
+{ ?s ?p ?o
+} GROUP BY ?s

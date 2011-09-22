@@ -9,6 +9,7 @@ package com.hp.hpl.jena.sparql.modify;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateProcessorBase implements UpdateProcessor
 {
-    protected Binding initialBinding = new BindingMap() ;
+    protected BindingMap initialBinding = BindingFactory.create() ;
     protected final UpdateRequest request ;
     protected final GraphStore graphStore ;
     protected final UpdateEngineFactory factory ;

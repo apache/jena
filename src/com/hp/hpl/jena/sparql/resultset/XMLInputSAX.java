@@ -105,7 +105,7 @@ class XMLInputSAX extends SPARQLResult
         
         List<Binding> results = new ArrayList<Binding>() ; 
         // The current solution
-        Binding binding = null ;
+        BindingMap binding = null ;
         
         // Note on terminology:
         // A "Binding" in ARQ is a set of name/value pairs

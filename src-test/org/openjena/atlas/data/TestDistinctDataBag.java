@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -159,7 +160,7 @@ public class TestDistinctDataBag extends TestCase
     
     private Binding randomBinding(Var[] vars)
     {
-        Binding binding = BindingFactory.create();
+        BindingMap binding = BindingFactory.create();
         binding.add(vars[0], Node.createAnon());
         binding.add(vars[1], Node.createURI(randomURI()));
         binding.add(vars[2], Node.createURI(randomURI()));

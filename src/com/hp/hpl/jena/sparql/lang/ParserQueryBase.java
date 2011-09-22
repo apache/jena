@@ -150,7 +150,7 @@ public class ParserQueryBase extends ParserBase
         values = new ArrayList<Binding>() ;
     }
     
-    private Binding currentValueRow()                            { return values.get(values.size()-1) ; }
+    private BindingMap currentValueRow()                            { return (BindingMap)values.get(values.size()-1) ; }
     
     protected void emitBindingVariable(Var v, int line, int col)    { variables.add(v) ; }
     
@@ -184,7 +184,6 @@ public class ParserQueryBase extends ParserBase
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }
-        
     }
     
     protected void finishBinding(int line, int col)

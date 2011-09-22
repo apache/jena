@@ -29,8 +29,8 @@ public class BindingFactory
         return new Binding1(parent, var, node) ;
     }
     
-    public static Binding create() { return create(noParent) ; }
-    public static Binding create(Binding parent) { return new BindingMap(parent)  ; }
+    public static BindingMap create() { return create(noParent) ; }
+    public static BindingMap create(Binding parent) { return new BindingMap(parent)  ; }
 }
 
 /*

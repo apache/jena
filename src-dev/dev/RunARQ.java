@@ -8,9 +8,9 @@
 
 package dev;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
 import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
@@ -24,13 +24,14 @@ import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
+import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
-import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
@@ -61,13 +62,11 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingInputStream ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingOutputStream ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -125,32 +124,27 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-        Binding b = BindingFactory.create();
-        b.add(Var.alloc("test"), Node.createLiteral("21", null, XSDDatatype.XSDint));
+        Sink<Quad> sink = new SinkNull<Quad>() ;
 
-        PrefixMap pmap = new PrefixMap() ;
-        pmap.add("xsd",  XSDDatatype.XSD+"#") ;
-        
-        BindingOutputStream bos = new BindingOutputStream(baos, pmap);
-        bos.write(b);
-        bos.flush() ;
+        FileInputStream fis = null;
 
-        String x = baos.toString() ;
-        System.out.print(x) ;
+        LangRIOT parser = null;
+        try {
+            fis = new FileInputStream("/home/afs/Desktop/X") ; // ("/absolute/path/to/nquads-chunk");
+            parser = RiotReader.createParserNQuads(fis, sink);
+            parser.parse();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fis.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
-        bos.close();
-
-        BindingInputStream bis =
-                new BindingInputStream(new ByteArrayInputStream(
-                        baos.toByteArray()));
-
-        System.out.println(bis.next());
         exit(0) ;
-
-        
-        
         arq.sparql.main("--data=D.ttl", "--query=Q1.rq") ;
         exit(0) ;
         

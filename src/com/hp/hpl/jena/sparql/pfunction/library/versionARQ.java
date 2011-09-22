@@ -12,6 +12,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
@@ -33,16 +34,14 @@ public class versionARQ extends PropertyFunctionEval
     @Override
     public QueryIterator execEvaluated(Binding binding, PropFuncArg subject, Node predicate, PropFuncArg object, ExecutionContext execCxt)
     {
-        Binding b = new BindingMap(binding) ;
-        
+        BindingMap b = BindingFactory.create(binding) ;
+
         Node subj = subject.getArg() ;
-        
         if ( ! isSameOrVar(subj, arq) ) IterLib.noResults(execCxt) ;
         if ( subj.isVariable() )
             b.add(Var.alloc(subj), arq) ;
 
         Node obj = object.getArg() ;
-
         if ( ! isSameOrVar(obj, version) ) IterLib.noResults(execCxt) ;
         if ( obj.isVariable() )
             b.add(Var.alloc(obj), version) ;

@@ -125,7 +125,7 @@ public class localname extends PFuncSimple
         if ( nodeLocalname.isVariable() )
         {
             // Object is an unbound variable.
-            Binding b = new BindingMap(input) ;
+            BindingMap b = BindingFactory.create(input) ;
             // Bind a pair for subject and object variables
             b.add(Var.alloc(subjVar), node) ;
             b.add(Var.alloc(nodeLocalname), localname) ;

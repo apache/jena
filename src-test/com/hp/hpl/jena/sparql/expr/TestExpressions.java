@@ -378,11 +378,13 @@ public class TestExpressions
         query.setPrefix("select",  selNS) ;
     }
     static String xsd = XSDDatatype.XSD+"#" ;
-    static Binding env = new BindingMap() ;
+    static Binding env ; 
     static {
-        env.add(Var.alloc("a"), Node.createLiteral("A")) ;
-        env.add(Var.alloc("b"), Node.createAnon()) ;
-        env.add(Var.alloc("x"), Node.createURI("urn:x")) ;
+        BindingMap b = new BindingMap() ;
+        b.add(Var.alloc("a"), Node.createLiteral("A")) ;
+        b.add(Var.alloc("b"), Node.createAnon()) ;
+        b.add(Var.alloc("x"), Node.createURI("urn:x")) ;
+        env = b ;
     }
 
     private static Expr parse(String exprString)

@@ -12,7 +12,6 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 /** A binding that wraps another. */
 
-
 public class BindingWrapped implements Binding
 {
     protected Binding binding ;
@@ -20,14 +19,6 @@ public class BindingWrapped implements Binding
     public BindingWrapped(Binding other) { binding = other; } 
     
     public Binding getWrapped() { return binding ; }
-    
-    public void add(Var var, Node node)
-    { 
-        if ( ! Var.isAnonVar(var) )
-        binding.add(var, node) ; }
-
-    public void addAll(Binding other)
-    { binding.addAll(other) ; }
 
     public boolean contains(Var var)
     {

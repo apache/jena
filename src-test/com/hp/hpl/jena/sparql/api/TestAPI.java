@@ -6,8 +6,8 @@
 
 package com.hp.hpl.jena.sparql.api;
 
-import junit.framework.TestCase ;
 import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 
-public class TestAPI extends TestCase
+public class TestAPI extends BaseTest
 {
     private static final String ns = "http://example/ns#" ;
     
@@ -38,14 +38,6 @@ public class TestAPI extends TestCase
         m.add(r1, p2, "X2") ; // NB Capital
         m.add(r1, p3, "y1") ;
     }
-    
-    @Override
-    public void setUp()
-    {}
-
-    @Override
-    public void tearDown()
-    {}
     
     @Test public void testInitialBindingsConstruct()
     {
@@ -163,6 +155,40 @@ public class TestAPI extends TestCase
             //System.out.println("Result: " + qs);
         }
         qexec.close() ;
+    }
+    
+    @Test public void testReuseQueryObject1()
+    {
+        String queryString = "SELECT * {?s ?p ?o}";
+        Query q = QueryFactory.create(queryString) ;
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
+        int count = queryAndCount(qExec) ;
+        assertEquals(3, count) ;
+        
+        qExec = QueryExecutionFactory.create(q, m) ;
+        count = queryAndCount(qExec) ;
+        assertEquals(3, count) ;
+    }
+    
+    
+    @Test(expected=AssertionError.class) public void testReuseQueryObject2()
+    {
+        String queryString = "SELECT (count(?s) AS ?c) {?s ?p ?o} GROUP BY ?s";
+        Query q = QueryFactory.create(queryString) ;
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, m) ;
+        
+        ResultSet rs = qExec.execSelect() ;
+        QuerySolution qs = rs.nextSolution() ;
+        assertEquals(3, qs.getLiteral("c").getInt()) ;
+        qExec.close() ;
+        
+        qExec = QueryExecutionFactory.create(q, m) ;
+        rs = qExec.execSelect() ;
+        qs = rs.nextSolution() ;
+        assertEquals(3, qs.getLiteral("c").getInt()) ;
+        qExec.close() ;
     }
     
     

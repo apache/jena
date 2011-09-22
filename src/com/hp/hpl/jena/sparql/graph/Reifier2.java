@@ -114,15 +114,16 @@ public class Reifier2 implements Reifier
         
         if ( node != null || triple != null )
         {
-            b = new BindingMap(b) ;
+            BindingMap b2 = new BindingMap(b) ;
             if ( node != null )
-                bind(b, reifNodeVar, node) ; 
+                bind(b2, reifNodeVar, node) ; 
             if ( triple != null )
             {
-                bind(b, varS, triple.getMatchSubject()) ;
-                bind(b, varP, triple.getMatchPredicate()) ;
-                bind(b, varO, triple.getMatchObject()) ;
+                bind(b2, varS, triple.getMatchSubject()) ;
+                bind(b2, varP, triple.getMatchPredicate()) ;
+                bind(b2, varO, triple.getMatchObject()) ;
             }
+            b = b2 ;
         }
         
         Plan plan = factory.create(op, ds, b, null) ;
@@ -130,7 +131,7 @@ public class Reifier2 implements Reifier
         return qIter ;
     }
     
-    private static void bind(Binding b, Var var, Node node)
+    private static void bind(BindingMap b, Var var, Node node)
     {
         if ( node == null || node == Node.ANY )
             return ;

@@ -80,8 +80,8 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         Node localnameNode = argObject.getArg(1) ;
         
         // New binding to return.
-        Binding b = null ;
-        if ( namespaceNode.isVariable() || localnameNode.isVariable() )
+        BindingMap b = null ;
+        if ( Var.isVar(namespaceNode) || Var.isVar(localnameNode) )
             b = new BindingMap(binding) ;
         
         if ( Var.isVar(namespaceNode) ) // .isVariable() )
@@ -114,8 +114,8 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
             if ( lc == null || ! lc.equals(localname) )
                 return IterLib.noResults(execCxt) ;
         }
-        if ( b == null )
-            b = binding ;
+        
+        Binding b2 = ( b == null ) ? binding : b ;
         return IterLib.result(b, execCxt) ;
     }
 

@@ -402,7 +402,7 @@ class XMLInputStAX extends SPARQLResult
     private Binding getOneSolution() throws XMLStreamException
     {
         // At the start of <result>
-        Binding binding = new BindingMap() ;
+        BindingMap binding = new BindingMap() ;
         String varName = null ;
         
         while(parser.hasNext())

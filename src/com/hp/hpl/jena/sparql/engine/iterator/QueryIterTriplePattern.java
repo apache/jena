@@ -19,6 +19,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
@@ -101,7 +102,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
 
         private Binding mapper(Triple r)
         {
-            Binding results = new BindingMap(binding) ;
+            BindingMap results = BindingFactory.create(binding) ;
 
             if ( ! insert(s, r.getSubject(), results) )
                 return null ; 
@@ -112,7 +113,7 @@ public class QueryIterTriplePattern extends QueryIterRepeatApply
             return results ;
         }
 
-        private static boolean insert(Node inputNode, Node outputNode, Binding results)
+        private static boolean insert(Node inputNode, Node outputNode, BindingMap results)
         {
             if ( ! Var.isVar(inputNode) )
                 return true ;

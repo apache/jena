@@ -170,7 +170,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         {
             directives() ;
 
-            Binding binding = BindingFactory.create() ;
+            BindingMap binding = BindingFactory.create() ;
 
             int i = 0 ;
             
