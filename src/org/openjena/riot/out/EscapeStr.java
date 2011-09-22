@@ -22,6 +22,8 @@ import java.io.IOException ;
 import java.io.StringWriter ;
 import java.io.Writer ;
 
+import com.hp.hpl.jena.sparql.lang.ParserBase ;
+
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.OutputUtils ;
 
@@ -115,5 +117,17 @@ public class EscapeStr
                 OutputUtils.printHex(out, c, 4) ;
             }
         }
+    }
+    
+    // Utilities to remove escapes
+    
+    public static String unescapeStr(String s)
+    { return unescape(s, '\\') ; }
+    
+    // Worker function
+    public static String unescape(String s, char escape)
+    {
+        return ParserBase.unescape(s, escape, false,  -1, -1) ;
+        
     }
 }

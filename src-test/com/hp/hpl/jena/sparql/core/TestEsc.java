@@ -56,8 +56,6 @@ public class TestEsc extends TestCase
     @Test public void testEscUni17() { execTest("x\\tx\\nx\\r", "x\tx\nx\r") ; }
     @Test public void testEscUni18() { execTest("x\\t\\n\\r", "x\t\n\r") ; }
     
-    
-    
     private void execTestFail(String input)
     {
         try {

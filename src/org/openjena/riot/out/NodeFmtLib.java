@@ -7,114 +7,90 @@
 
 package org.openjena.riot.out;
 
+import java.io.StringWriter ;
+import java.io.Writer ;
+import java.net.MalformedURLException ;
+import java.util.Map ;
+
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.Chars ;
-import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.iri.IRI ;
+import com.hp.hpl.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.iri.IRIRelativize ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
+/** Presentation utilitiles for Nodes, Triples, Quads and more */ 
 public class NodeFmtLib
 {
-    // TODO Switch to using NodeFormatter.
+    // See OutputLangUtils.
+    // See and use EscapeStr
     
-    
-    // FmtUtils: This writes abbreviated bnodes (_:b0 etc)
-    // These utilities are lower level and reflect the bNodes label.
-    
-    
+    static PrefixMap dftPrefixMap = new PrefixMap() ;
+    static {
+        PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
+        Map<String, String> map = pm.getNsPrefixMap() ;
+        for ( Map.Entry<String, String> e : map.entrySet() )
+            dftPrefixMap.add(e.getKey(), e.getValue() ) ;
+    }
+
     public static String str(Triple t)
     {
-        return 
-            serialize(t.getSubject()) + " " +
-            serialize(t.getPredicate()) + " " +
-            serialize(t.getObject()) ; 
+        return str(t.getSubject(), t.getPredicate(),t.getObject()) ;
     }
 
     public static String str(Quad q)
     {
-        return 
-            serialize(q.getGraph()) + " " +
-            serialize(q.getSubject()) + " " +
-            serialize(q.getPredicate()) + " " +
-            serialize(q.getObject()) ; 
-    }
-
-    private static final boolean onlySafeBNodeLabels = false ;
-
-    public static String displayStr(Node n) { return FmtUtils.stringForNode(n) ; }
-
-    public static String serialize(Node n)
-    { return serialize(n, null, null) ; }
-
-    public static String serialize(Node n, Prologue prologue)
-    { return serialize(n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
-
-    
-    /** Encoding of a node so it can be reconstructed */ 
-    public static String serialize(Node n, String base, PrefixMap prefixMap)
-    {
-        // See also Nodec.
-        // See also OutputLangUtils - merge and this is a buffering call.
-        
-        if ( n == null )
-            return "<<null>>" ;
-        
-        if ( n.isBlank() )
-        {
-            String str = n.getBlankNodeLabel() ;
-            // c.f. OutputLangUtils
-            if ( onlySafeBNodeLabels )
-                str = encodeBNodeLabel(str) ;
-            return "_:"+str ;
-        }
-        
-        if ( n.isLiteral() )
-            return FmtUtils.stringForLiteral((Node_Literal)n, null) ;
-
-        if ( n.isURI() )
-        {
-            String uri = n.getURI() ;
-            return stringForURI(uri, base, prefixMap) ;
-        }
-        
-        // Safe name?
-        if ( n.isVariable() )
-            return "?"+n.getName() ;
-//        
-//        if ( n.equals(Node.ANY) )
-//            return "ANY" ;
-
-        throw new RiotException("Failed to turn a node into a string: "+n) ;
-        //return null ;
+        return str(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
     }
     
-    // c.f. FmtUtils.stringForURI
-    // Uses PrefixMap, not PrefixMapping
-    static String stringForURI(String uri, String base, PrefixMap mapping)
+
+    // Worker
+    public static String str(Node ... nodes)
     {
-        if ( mapping != null )
+        StringWriter sw = new StringWriter() ;
+        boolean first = true ;
+        for ( Node n : nodes ) 
         {
-            String pname = mapping.abbreviate(uri) ;
-            if ( pname != null )
-                return pname ;
+            if ( ! first )
+            {
+                sw.append(" ") ;
+                first = false ;
+            }
+            str(sw, n) ;
         }
-        if ( base != null )
-        {
-            String x = FmtUtils.abbrevByBase(uri, base) ;
-            if ( x != null ) 
-                return "<"+x+">" ;
-        }
-        return FmtUtils.stringForURI(uri) ; 
+        return sw.toString() ; 
     }
+
+    //public static String str(Node n)
+
+    private static final boolean onlySafeBNodeLabels = true ;
+
+    //public static String displayStr(Node n) { return serialize(n) ; }
+
+    public static void str(Writer w, Node n)
+    { serialize(w, n, null, null) ; }
+
+    public static void serialize(Writer w, Node n, Prologue prologue)
+    { serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
+
+    
+    public static void serialize(Writer w, Node n, String base, PrefixMap prefixMap)
+    {
+        if ( prefixMap == null )
+            prefixMap = dftPrefixMap ;
+        NodeFormatter formatter = new NodeFormatterTTL(base, prefixMap) ;
+        formatter.format(w, n) ;
+    }
+    
+    // ---- Blank node labels.
     
     // Strict N-triples only allows [A-Za-z][A-Za-z0-9]
     static char encodeMarkerChar = 'X' ;
@@ -193,32 +169,108 @@ public class NodeFmtLib
 
         return buffer.toString() ;
     }
-
     
-    //public static String safeBNodeLabel(String label)
+    // ---- Relative URIs.
     
-    public static String displayStr(Triple t, PrefixMapping prefixMapping)
+    static private int relFlags = IRIRelativize.SAMEDOCUMENT | IRIRelativize.CHILD ;
+    static public String abbrevByBase(String uri, String base)
     {
-        return FmtUtils.stringForTriple(t, prefixMapping) ;
+        if ( base == null )
+            return null ;
+        IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
+        IRI rel = baseIRI.relativize(uri, relFlags) ;
+        String r = null ;
+        try { r = rel.toASCIIString() ; }
+        catch (MalformedURLException  ex) { r = rel.toString() ; }
+        return r ;
     }
 
-    public static String displayStr(RDFNode obj)
-    {
-        return FmtUtils.stringForRDFNode(obj) ;
+    // ---- Escaping.
+    
+    static boolean applyUnicodeEscapes = false ;
+    
+    static EscapeStr escaper = new EscapeStr(false) ; 
+    
+    // take a string and make it safe for writing.
+    public static String stringEsc(String s)
+    { 
+        return stringEsc(s, true) ;
     }
     
-    //public static String str(Quad quad) {}
+    public static String stringEsc(String s, boolean singleLineString)
+    {
+        StringWriter sw = new StringWriter() ;
+        if ( singleLineString )
+            escaper.writeStr(sw, s) ;
+        else
+            escaper.writeStrMultiLine(sw, s) ;
+        return sw.toString() ;
+    }
+    
+    public static void stringEsc(StringBuilder sbuff, String s)
+    { stringEsc( sbuff,  s, true ) ; }
+
+    public static void stringEsc(StringBuilder sbuff, String s, boolean singleLineString)
+    {
+        int len = s.length() ;
+        for (int i = 0; i < len; i++) {
+            char c = s.charAt(i);
+
+            // Escape escapes and quotes
+            if (c == '\\' || c == '"' )
+            {
+                sbuff.append('\\') ;
+                sbuff.append(c) ;
+                continue ;
+            }
+            
+            // Characters to literally output.
+            // This would generate 7-bit safe files 
+//            if (c >= 32 && c < 127)
+//            {
+//                sbuff.append(c) ;
+//                continue;
+//            }    
+
+            // Whitespace
+            if ( singleLineString && ( c == '\n' || c == '\r' || c == '\f' ) )
+            {
+                if (c == '\n') sbuff.append("\\n");
+                if (c == '\t') sbuff.append("\\t");
+                if (c == '\r') sbuff.append("\\r");
+                if (c == '\f') sbuff.append("\\f");
+                continue ;
+            }
+            
+            // Output as is (subject to UTF-8 encoding on output that is)
+            
+            if ( ! applyUnicodeEscapes )
+                sbuff.append(c) ;
+            else
+            {
+                // Unicode escapes
+                // c < 32, c >= 127, not whitespace or other specials
+                if ( c >= 32 && c < 127 )
+                {
+                    sbuff.append(c) ;
+                }
+                else
+                {
+                    String hexstr = Integer.toHexString(c).toUpperCase();
+                    int pad = 4 - hexstr.length();
+                    sbuff.append("\\u");
+                    for (; pad > 0; pad--)
+                        sbuff.append("0");
+                    sbuff.append(hexstr);
+                }
+            }
+        }
+    }
     
 //    public static String stringEsc(String s)    { return FmtUtils.stringEsc(s) ; }
 //    
 //    public static String stringEsc(String s, boolean singleLineString)
 //    { return FmtUtils.stringEsc(s, singleLineString) ; }
-//    
-//    public static void stringEsc(StringBuilder sbuff, String s)
-//    { FmtUtils.stringEsc(sbuff, s) ; }
-//
-//    public static void stringEsc(StringBuilder sbuff, String s, boolean singleLineString)
-//    { FmtUtils.stringEsc(sbuff, s, singleLineString) ; }
 //
 //    public static String unescapeStr(String s)    { return ParserBase.unescapeStr(s) ; }
     

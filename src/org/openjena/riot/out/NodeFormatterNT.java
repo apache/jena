@@ -67,7 +67,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    private void writeEscaped(Writer w,String lex) throws IOException
+    private void writeEscaped(Writer w, String lex) throws IOException
     {
         w.write('"') ;
         w.write(lex) ;  // DO BETTER

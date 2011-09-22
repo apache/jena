@@ -34,6 +34,8 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class FmtUtils
 {
+    // OLD CODE - being replaces by riot.NodeFmtLib 
+    
     // Consider withdrawing non-serialzation context forms of this.
     // Or a temporary SerialzationContext does not abbreviate bNodes.
     static final String indentPrefix = "  " ;
