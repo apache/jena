@@ -66,18 +66,29 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
  */
 public class TestTransSystemJena91
 {
-    static { 
-        if ( false )
-            SystemTDB.setFileMode(FileMode.direct) ; 
-    }
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(TestTransSystemJena91.class) ;
+
+    /* Notes:
+	 * MS Windows does not allow memory mapped files to be deleted during the run of a JVM.
+	 * This means we can't delete a database and reuse it's directory (see clean()).
+	 * Therefore, this test program this does not run on MS Windows 64 bit mode.
+	 */
+	
+    static { 
+    	//SystemTDB.isWindows
+        if ( true )
+            SystemTDB.setFileMode(FileMode.direct) ;
+        
+        if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )
+        	log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
+    }
 
     static boolean MEM = false ;
     
     static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 
-    static final int Iterations             = MEM ? 1000 : 100 ;
+    static final int Iterations             = MEM ? 1000 : 1000 ;
     // Output style.
     static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
@@ -140,6 +151,7 @@ public class TestTransSystemJena91
     
     private static void clean()
     {
+    	
         StoreConnection.release(LOC) ;
         if ( ! LOC.isMem() )
             FileOps.clearDirectory(LOC.getDirectoryPath()) ;
