@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -164,20 +163,19 @@ public class SolverLib
 
     public static Binding convToBinding(NodeTable nodeTable, BindingNodeId bindingNodeIds)
     {
-        if ( true )
-            return new BindingTDB(bindingNodeIds, nodeTable) ;
-        else
-        {
-            // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
-            Binding b = new BindingMap() ;
-            for ( Var v : bindingNodeIds )
-            {
-                NodeId id = bindingNodeIds.get(v) ;
-                Node n = nodeTable.getNodeForNodeId(id) ;
-                b.add(v, n) ;
-            }
-            return b ;
-        }
+        return new BindingTDB(bindingNodeIds, nodeTable) ;
+
+//        {
+//            // Makes nodes immediately.  Causing unnecessary NodeTable accesses (e.g. project) 
+//            Binding b = new BindingMap() ;
+//            for ( Var v : bindingNodeIds )
+//            {
+//                NodeId id = bindingNodeIds.get(v) ;
+//                Node n = nodeTable.getNodeForNodeId(id) ;
+//                b.add(v, n) ;
+//            }
+//            return b ;
+//        }
     }
     
     // Transform : Binding ==> BindingNodeId
