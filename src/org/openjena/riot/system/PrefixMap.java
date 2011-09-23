@@ -103,7 +103,7 @@ public class PrefixMap
             String prefix = e.getValue().toString() ;
             
             if ( uriStr.startsWith(prefix) )
-                return new Pair<String, String>(e.getKey(), uriStr.substring(prefix.length())) ;
+                return Pair.create(e.getKey(), uriStr.substring(prefix.length())) ;
         }
         return null ;
     }

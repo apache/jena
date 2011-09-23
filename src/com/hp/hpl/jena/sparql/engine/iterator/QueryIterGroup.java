@@ -8,10 +8,8 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.List ;
-import java.util.Set ;
 
 import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
 import org.openjena.atlas.lib.MultiMap ;
@@ -40,7 +38,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
     {
         super(null, execCxt) ;
         this.embeddedIterator = qIter;
-        Iterator<Binding> iter = calcNEW(qIter, groupVars, aggregators, execCxt) ;
+        Iterator<Binding> iter = calc(qIter, groupVars, aggregators, execCxt) ;
         setIterator(iter) ;
     }
 
@@ -59,7 +57,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
 	private static Pair<Var, Accumulator> placeholder = Pair.create((Var)null, (Accumulator)null) ; 
 	
     
-    private static Iterator<Binding> calcNEW(final QueryIterator iter, 
+    private static Iterator<Binding> calc(final QueryIterator iter, 
                                           final VarExprList groupVarExpr, final List<ExprAggregator> aggregators,
                                           final ExecutionContext execCxt)
     {
@@ -167,113 +165,6 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                 return results.iterator() ;
             }
         };
-    }
-    
-
-    // Phase 1 : Consume the input iterator, assigning groups (keys) 
-    //           and push rows through the aggregator function. 
-    
-    // Phase 2 : Go over the group bindings and assign the value of each aggregation.
-    
-    private static Iterator<Binding> calcOLD(final QueryIterator iter, 
-                                          final VarExprList groupVarExpr, final List<ExprAggregator> aggregators,
-                                          final ExecutionContext execCxt)
-    {
-    	return new IteratorDelayedInitialization<Binding>() {
-    		@Override
-            protected Iterator<Binding> initializeIterator() {
-
-    		    // Phase 1 : assign bindings to buckets by key and pump through the aggregrators.
-    		    Set<Binding> buckets = new HashSet<Binding>() ;    
-
-    		    for ( ; iter.hasNext() ; )
-    		    {
-    		        Binding b = iter.nextBinding() ;
-    		        Binding key = genKey(groupVarExpr, b, execCxt) ;
-
-    		        // Assumes key binding has value based .equals/.hashCode. 
-    		        if ( ! buckets.contains(key) )
-    		            buckets.add(key) ;
-
-    		        // Assumes an aggregator is a per-execution mutable thingy
-    		        if ( aggregators != null )
-    		        {
-    		            for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
-    		            {
-    		                ExprAggregator agg = aggIter.next();
-    		                agg.getAggregator().accumulate(key, b, execCxt) ;
-    		            }
-    		        }
-    		    }
-
-    		    // Phase 2 : Empty input
-
-    		    // If there are no binding from the input stage, two things can happen.
-    		    //   If there are no aggregators, there are no groups.
-    		    //   If there are aggregators, then they may have a default value. 
-
-    		    if ( buckets.isEmpty() )
-    		    {
-    		        // The answer of an empty pattern. 
-    		        boolean valueExists = false ;
-    		        BindingMap binding = BindingFactory.create() ;
-
-    		        if ( aggregators != null )
-    		        {
-    		            for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
-    		            {
-    		                ExprAggregator agg = aggIter.next();
-    		                Var v = agg.getVar() ;
-    		                Node value = agg.getAggregator().getValueEmpty() ;
-    		                if ( value != null )
-    		                {
-    		                    binding.add(v, value) ;
-    		                    valueExists = true ;
-    		                }
-    		                else
-    		                    // One row of nothing.
-    		                    valueExists = true ;
-    		            }
-    		        }
-    		            
-    		        if ( valueExists )
-    		            return  QueryIterSingleton.create(binding, execCxt) ;
-    		        else 
-    		            return new QueryIterNullIterator(execCxt) ;
-    		            
-    		    }
-
-    		    // Phase 2 : There was input and so there are some groups.
-    		    // For each bucket, get binding, add aggregator values to the binding.
-    		    if ( aggregators != null )
-    		    {
-                    List<Binding> results = new ArrayList<Binding>() ;
-    		        for ( Iterator<Binding> bIter = buckets.iterator() ; bIter.hasNext(); )
-    		        {
-    		            Binding key = bIter.next();
-
-    		            // Maybe null
-    		            BindingMap binding = BindingFactory.create(key) ;
-
-    		            for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
-    		            {
-    		                ExprAggregator agg = aggIter.next();
-    		                Var v = agg.getVar() ;
-    		                Node value =  agg.getAggregator().getValue(key) ;
-    		                if ( value != null )
-    		                    // Extend with the aggregations.
-    		                    binding.add(v, value) ;
-    		            }
-    		            results.add(binding) ;
-    		            // the values are in binding
-    		        }
-    		        return results.iterator() ;
-    		    }
-    		    else
-    		        return buckets.iterator() ;
-    		}
-    	};
-    	
     }
     
     static private Binding genKey(VarExprList vars, Binding binding, ExecutionContext execCxt) 

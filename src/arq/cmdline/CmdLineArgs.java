@@ -27,7 +27,6 @@ public class CmdLineArgs extends CommandLineBase
     public CmdLineArgs(String[] args)
     {
         super(args) ;
-       
     }
 
     private boolean processedArgs = false ;

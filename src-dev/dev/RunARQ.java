@@ -9,8 +9,6 @@
 package dev;
 
 import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
@@ -24,13 +22,11 @@ import org.openjena.atlas.json.JSON ;
 import org.openjena.atlas.json.JsonValue ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.checker.CheckerIRI ;
-import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -62,7 +58,6 @@ import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -124,28 +119,9 @@ public class RunARQ
     @SuppressWarnings("deprecation")
     public static void main(String[] argv) throws Exception
     {
-
-        Sink<Quad> sink = new SinkNull<Quad>() ;
-
-        FileInputStream fis = null;
-
-        LangRIOT parser = null;
-        try {
-            fis = new FileInputStream("/home/afs/Desktop/X") ; // ("/absolute/path/to/nquads-chunk");
-            parser = RiotReader.createParserNQuads(fis, sink);
-            parser.parse();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                fis.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        exit(0) ;
-        arq.sparql.main("--data=D.ttl", "--query=Q1.rq") ;
+        String DIR = "testing/ARQ/GroupBy/" ;
+        
+        arq.sparql.main("-v", "--data="+DIR+"data-1.ttl", "--query="+DIR+"count-05.arq") ;
         exit(0) ;
         
         
