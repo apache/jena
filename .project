@@ -1,6 +1,6 @@
 <projectDescription>
   <name>larq</name>
-  <comment>LARQ - Free Text Indexing for SPARQL. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <comment>LARQ - Free Text Indexing for SPARQL.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
