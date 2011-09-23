@@ -29,7 +29,7 @@ public class AggSample extends AggregatorBase
     public String toPrefixString() { return "(sample "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccSample(expr) ;
     }

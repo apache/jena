@@ -29,7 +29,7 @@ public class AggSampleDistinct extends AggregatorBase
     public String toPrefixString() { return "(sample distinct"+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccSampleDistict(expr) ;
     }

@@ -36,7 +36,7 @@ public class AggCountDistinct extends AggregatorBase
     public Expr getExpr()           { return null ; }
     
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccCountDistinct() ; 
     }

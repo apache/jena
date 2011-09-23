@@ -88,7 +88,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                     {
                         for ( ExprAggregator agg : aggregators )
                         {
-                            Accumulator x = agg.getAggregator().createAcc() ;
+                            Accumulator x = agg.getAggregator().createAccumulator() ;
                             Var v = agg.getVar() ;
                             accumulators.put(key, Pair.create(v, x)) ;
                         }

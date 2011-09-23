@@ -22,7 +22,8 @@ abstract class AggMaxBase extends AggregatorBase
     public AggMaxBase(Expr expr) { this.expr = expr ; } 
 
     @Override
-    protected final Accumulator createAccumulator()
+    public
+    final Accumulator createAccumulator()
     { 
         return new AccMax(expr) ;
     }

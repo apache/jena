@@ -29,7 +29,7 @@ public class AggCountVarDistinct extends AggregatorBase
     public String toPrefixString()  { return "(count distinct "+expr+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccCountVarDistinct() ; 
     }

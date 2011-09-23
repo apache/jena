@@ -26,7 +26,7 @@ public class AggNull extends AggregatorBase
     public String toPrefixString() { return "(aggnull)" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return createAccNull() ;
     }

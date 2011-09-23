@@ -31,7 +31,7 @@ public class AggCount extends AggregatorBase
     public Expr getExpr()       { return null ; }
     
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AggCount.AccCount();
     }

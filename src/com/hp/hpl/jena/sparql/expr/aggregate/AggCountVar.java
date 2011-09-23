@@ -29,7 +29,7 @@ public class AggCountVar extends AggregatorBase
     public String toPrefixString() { return "(count "+expr+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccCountVar(expr) ;
     }

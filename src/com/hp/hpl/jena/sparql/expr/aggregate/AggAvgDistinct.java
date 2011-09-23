@@ -34,7 +34,7 @@ public class AggAvgDistinct extends AggregatorBase
     public String toPrefixString() { return "(avg distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccAvgDistinct(expr) ;
     }

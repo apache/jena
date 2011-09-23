@@ -36,7 +36,7 @@ public class AggAvg extends AggregatorBase
     public String toPrefixString() { return "(avg "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccAvg(expr) ;
     }

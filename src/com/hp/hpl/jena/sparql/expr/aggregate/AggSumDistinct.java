@@ -34,7 +34,7 @@ public class AggSumDistinct  extends AggregatorBase
     public String toPrefixString() { return "(sum distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccSumDistinct(expr) ;
     }

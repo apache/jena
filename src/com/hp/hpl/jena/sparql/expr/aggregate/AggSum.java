@@ -33,7 +33,7 @@ public class AggSum  extends AggregatorBase
     public String toPrefixString() { return "(sum "+WriterExpr.asString(expr)+")" ; }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccSum(expr) ;
     }

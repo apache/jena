@@ -73,7 +73,7 @@ public class AggGroupConcat extends AggregatorBase
     }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccGroupConcat(expr, separator) ;
     }

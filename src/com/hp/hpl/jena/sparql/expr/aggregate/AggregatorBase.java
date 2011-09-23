@@ -15,7 +15,6 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 /** Aggregate that does everything except the per-group aggregation that is needed for each operation */  
@@ -37,21 +36,7 @@ public abstract class AggregatorBase implements Aggregator
     
     private Map<Binding, Accumulator> buckets = new HashMap<Binding, Accumulator>() ;   // Bindingkey => Accumulator
 
-    final
-    public void accumulate(Binding key, Binding binding, FunctionEnv functionEnv)
-    {
-        Accumulator acc = buckets.get(key) ;
-        if ( acc == null )
-        {
-            acc = createAccumulator() ;
-            buckets.put(key, acc) ;
-        }
-        acc.accumulate(binding, functionEnv) ;
-    }
-
-    // Temporary for development.
-    public Accumulator createAcc() { return createAccumulator() ; }
-    protected abstract Accumulator createAccumulator() ;
+    public abstract Accumulator createAccumulator() ;
     
     public abstract Node getValueEmpty() ;
 

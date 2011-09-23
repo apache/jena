@@ -71,7 +71,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
     }
 
     @Override
-    protected Accumulator createAccumulator()
+    public Accumulator createAccumulator()
     { 
         return new AccGroupConcatDistinct(expr, separator) ;
     }

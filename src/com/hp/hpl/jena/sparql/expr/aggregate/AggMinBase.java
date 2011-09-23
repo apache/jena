@@ -22,7 +22,8 @@ abstract class AggMinBase extends AggregatorBase
     public AggMinBase(Expr expr) { this.expr = expr ; } 
 
     @Override
-    protected final Accumulator createAccumulator()
+    public
+    final Accumulator createAccumulator()
     { 
         return new AccMin(expr) ;
     }
