@@ -12,7 +12,7 @@
       [  mf:name    "Group By - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-01.arq> ;
+            [ qt:query  <group-01.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <group-01.srx>
       ]
@@ -20,7 +20,7 @@
       [  mf:name    "Group By - 2" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-02.arq> ;
+            [ qt:query  <group-02.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <group-02.srx>
       ]
@@ -28,7 +28,7 @@
       [  mf:name    "Group By - 3 (Group var does not occur)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-03.arq> ;
+            [ qt:query  <group-03.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <group-03.srx>
       ]
@@ -36,7 +36,7 @@
       [  mf:name    "Group By - 4 (Group expression)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-04.arq> ;
+            [ qt:query  <group-04.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <group-04.srx>
       ]
@@ -57,11 +57,11 @@
         mf:result  <group-06.srx>
       ]
 
-    ## Partial data
+          ## Partial data
       [  mf:name    "Group By - 10" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-10.arq> ;
+            [ qt:query  <group-10.rq> ;
               qt:data   <data-2.ttl> ] ;
         mf:result  <group-10.srx>
       ]
@@ -69,7 +69,7 @@
       [  mf:name    "Group By - 11" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-11.arq> ;
+            [ qt:query  <group-11.rq> ;
               qt:data   <data-2.ttl> ] ;
         mf:result  <group-11.srx>
       ]
@@ -87,7 +87,7 @@
      [  mf:name    "Group By - 20 / Zero data" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <group-20.arq> ;
+            [ qt:query  <group-20.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <group-20.srx>
       ]
@@ -105,7 +105,7 @@
       [  mf:name    "Count - 2 - No Group" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-02.arq> ;
+            [ qt:query  <count-02.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <count-02.srx>
       ]
@@ -113,7 +113,7 @@
       [  mf:name    "Count - 3" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-03.arq> ;
+            [ qt:query  <count-03.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <count-03.srx>
       ]
@@ -121,15 +121,15 @@
       [  mf:name    "Count - 4" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-04.arq> ;
+            [ qt:query  <count-04.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <count-04.srx>
       ]
 
-      [  mf:name    "Count - 5 - count(distinct)" ;
+      [  mf:name    "Count - 5 - count(*) / count(distinct *)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-05.arq> ;
+            [ qt:query  <count-05.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <count-05.srx>
       ]
@@ -137,16 +137,25 @@
       [  mf:name    "Count - 6 - count(?var) / count(distinct ?var)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-06.arq> ;
+            [ qt:query  <count-06.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <count-06.srx>
       ]
+
+      [  mf:name    "Count - 7 - count(*) / count(*)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-07.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-07.srx>
+      ]
+      
 
     ##  Empty pattern
       [  mf:name    "Count - 10 - count(*) / no matches" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-10.arq> ;
+            [ qt:query  <count-10.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <count-10.srx>
       ]
@@ -154,14 +163,14 @@
       [  mf:name    "Count - 11 - count(distinct *) / group / no matches" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-11.arq> ;
+            [ qt:query  <count-11.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <count-11.srx>
       ]
       [  mf:name    "Count - 12 - count(?z) / no matches" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-12.arq> ;
+            [ qt:query  <count-12.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <count-12.srx>
       ]
@@ -169,7 +178,7 @@
       [  mf:name    "Count - 13 - count(distinct ?z) / group / no matches" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <count-13.arq> ;
+            [ qt:query  <count-13.rq> ;
               qt:data   <data-0.ttl> ] ;
         mf:result  <count-13.srx>
       ]
@@ -212,7 +221,7 @@
       [  mf:name    "Sum - 1 - sum(?v)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <sum-01.arq> ;
+            [ qt:query  <sum-01.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <sum-01.srj>
       ]
@@ -220,7 +229,7 @@
       [  mf:name    "Min - 1 - min(?v)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <min-01.arq> ;
+            [ qt:query  <min-01.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <min-01.srj>
       ]
@@ -228,7 +237,7 @@
       [  mf:name    "Max - 1 - max(?v)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <max-01.arq> ;
+            [ qt:query  <max-01.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <max-01.srj>
       ]
@@ -236,7 +245,7 @@
       [  mf:name    "Avg - 1 - avg(?v)" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <avg-01.arq> ;
+            [ qt:query  <avg-01.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <avg-01.srj>
       ]
@@ -246,7 +255,7 @@
       [  mf:name    "Having - 1" ;
          rdf:type   mfx:TestQuery ; 
          mf:action
-            [ qt:query  <having-1.arq> ;
+            [ qt:query  <having-1.rq> ;
               qt:data   <data-1.ttl> ] ;
         mf:result  <having-1.srx>
       ]
