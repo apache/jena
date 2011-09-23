@@ -42,7 +42,7 @@ class HitConverter implements Map1<HitLARQ,Binding>
     
     public Binding map1(HitLARQ hit)
     {
-        Binding b = new BindingMap(binding) ;
+        BindingMap b = new BindingMap(binding) ;
         b.add(Var.alloc(subject), hit.getNode()) ;
         if ( score != null )
             b.add(Var.alloc(score), NodeFactory.floatToNode(hit.getScore())) ;

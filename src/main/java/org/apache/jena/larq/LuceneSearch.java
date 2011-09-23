@@ -236,7 +236,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
         
         public Binding map1(HitLARQ hit)
         {
-            Binding b = new BindingMap(binding) ;
+            BindingMap b = new BindingMap(binding) ;
             b.add(match, hit.getNode()) ;
             if ( score != null )
                 b.add(score, NodeFactory.floatToNode(hit.getScore())) ;
