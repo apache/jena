@@ -172,7 +172,7 @@ public class TestAPI extends BaseTest
     }
     
     
-    @Test(expected=AssertionError.class) public void testReuseQueryObject2()
+    @Test public void testReuseQueryObject2()
     {
         String queryString = "SELECT (count(?s) AS ?c) {?s ?p ?o} GROUP BY ?s";
         Query q = QueryFactory.create(queryString) ;

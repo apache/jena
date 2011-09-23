@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  * [See end of file]
  */
@@ -13,7 +13,6 @@ import java.util.Map ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -36,10 +35,10 @@ public abstract class AggregatorBase implements Aggregator
     
     protected AggregatorBase() {}
     
-    private Map<BindingKey, Accumulator> buckets = new HashMap<BindingKey, Accumulator>() ;   // Bindingkey => Accumulator
+    private Map<Binding, Accumulator> buckets = new HashMap<Binding, Accumulator>() ;   // Bindingkey => Accumulator
 
     final
-    public void accumulate(BindingKey key, Binding binding, FunctionEnv functionEnv)
+    public void accumulate(Binding key, Binding binding, FunctionEnv functionEnv)
     {
         Accumulator acc = buckets.get(key) ;
         if ( acc == null )
@@ -50,11 +49,13 @@ public abstract class AggregatorBase implements Aggregator
         acc.accumulate(binding, functionEnv) ;
     }
 
+    // Temporary for development.
+    public Accumulator createAcc() { return createAccumulator() ; }
     protected abstract Accumulator createAccumulator() ;
     
     public abstract Node getValueEmpty() ;
 
-    public Node getValue(BindingKey key)
+    public Node getValue(Binding key)
     {
         Accumulator acc = buckets.get(key) ;
         if ( acc == null )
@@ -110,11 +111,13 @@ public abstract class AggregatorBase implements Aggregator
     protected static final int HC_AggGroupConcat            =  0x17E ;
     protected static final int HC_AggGroupConcatDistinct    =  0x17F ;
     
+    protected static final int HC_AggNull                   =  0x180 ;
+    
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
+ * (c) Copyright 2010, 2011 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

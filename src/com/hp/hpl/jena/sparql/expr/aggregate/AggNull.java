@@ -1,61 +1,76 @@
+/*
+ * (c) Copyright 2011 Epimorphics Ltd.
+ * All rights reserved.
+ * [See end of file]
+ */
+
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
-/** Accumulator that passes down every value of an expression */
-abstract class AccumulatorExpr implements Accumulator
+/** The null aggregate (which can't be written in SPARQL) 
+ * calculates nothering but does help remember the group key  
+ */
+public class AggNull extends AggregatorBase
 {
-    private long count = 0 ;
-    protected long errorCount = 0 ; 
-    private final Expr expr ;
+    public AggNull() { } 
+    public Aggregator copy(Expr expr) { return this ; }
     
-    protected AccumulatorExpr(Expr expr)
-    {
-        this.expr = expr ;
+    @Override
+    public String toString() { return "aggnull()" ; }
+    @Override
+    public String toPrefixString() { return "(aggnull)" ; }
+
+    @Override
+    protected Accumulator createAccumulator()
+    { 
+        return createAccNull() ;
     }
+
+    @Override
+    public Node getValueEmpty()     { return null ; } 
+
+    //@Override
+    public Expr getExpr()           { return null ; }
     
-    final public void accumulate(Binding binding, FunctionEnv functionEnv)
+    @Override
+    public int hashCode()   { return HC_AggNull ; }
+    @Override
+    public boolean equals(Object other)
     {
-        try { 
-            NodeValue nv = expr.eval(binding, functionEnv) ;
-            accumulate(nv, binding, functionEnv) ;
-            count++ ;
-        } catch (ExprEvalException ex)
+        if ( this == other ) return true ; 
+        return ( other instanceof AggNull ) ;
+    } 
+
+    public static Accumulator createAccNull() { return new  AccNull() ; }
+    
+    // ---- Accumulator
+    private static class AccNull implements Accumulator
+    {
+        private int nBindings = 0 ;
+
+        public AccNull() { }
+
+        //@Override
+        public void accumulate(Binding binding, FunctionEnv functionEnv)
+        { nBindings++ ; }
+
+        //@Override
+        public NodeValue getValue()
         {
-            errorCount++ ;
-            accumulateError(binding, functionEnv) ;
+            return null ;
         }
     }
-    
-    
-    // Count(?v) is different
-    public NodeValue getValue()
-    {
-        if ( errorCount == 0 )
-            return getAccValue() ;  
-        return null ;
-    }
 
-    protected long getErrorCount() { return errorCount ; }
-    
-    /** Called if no errors to get the accumulated result */
-    protected abstract NodeValue getAccValue() ; 
-
-    /** Called when the expression beeing aggregated evaluates OK.
-     * Can throw ExprEvalException - in which case the accumulateError is called */
-    protected abstract void accumulate(NodeValue nv, Binding binding, FunctionEnv functionEnv) ;
-    /** Called when an evaluation of the expression causes an error
-     * or when the accumulation step throws ExprEvalException  
-     */
-    protected abstract void accumulateError(Binding binding, FunctionEnv functionEnv) ;
 }
 
 /*
  * (c) Copyright 2010 Talis Systems Ltd.
+ * (c) Copyright 2010 Epimorphics Ltd.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -58,6 +58,8 @@ public class AggregatorFactory
         return distinct ? new AggGroupConcatDistinct(expr, separator) : new AggGroupConcat(expr, separator) ;
     }
     
+    public static Aggregator createAggNull() { return new AggNull() ; }
+    
     private static Aggregator err(String label)
     {
         Log.fatal(AggregatorFactory.class, "Not implemented: "+label) ;

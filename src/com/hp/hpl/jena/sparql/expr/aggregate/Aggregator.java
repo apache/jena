@@ -10,7 +10,6 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingKey ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
@@ -20,13 +19,25 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 public interface Aggregator
 {
+    // Rename as createAccumulator
+    public Accumulator createAcc() ;
+    
+    
     //-- Aggregator - per query (strictly, one per SELECT level), unique even if mentioned several times.
     //-- Accumulator - per group per key section processors (from AggregatorBase)
 
-    public void accumulate(BindingKey key, Binding b, FunctionEnv functionEnv) ;
-    public Node getValue(BindingKey key) ;
+    // Remove 
+    public void accumulate(Binding key, Binding b, FunctionEnv functionEnv) ;
+    
+    // Push to Accumulator
+    
+    public Node getValue(Binding key) ;
     /** Value if there are no elements in any group : return null for no result */
     public Node getValueEmpty() ;
+    
+    
+    
+    
     public String toPrefixString()  ;
     // Key to identify an aggregator as syntax for duplicate use in a query.
     public String key() ;           

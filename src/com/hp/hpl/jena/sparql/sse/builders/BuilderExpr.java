@@ -16,7 +16,79 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.expr.E_Add ;
+import com.hp.hpl.jena.sparql.expr.E_BNode ;
+import com.hp.hpl.jena.sparql.expr.E_Bound ;
+import com.hp.hpl.jena.sparql.expr.E_Coalesce ;
+import com.hp.hpl.jena.sparql.expr.E_Conditional ;
+import com.hp.hpl.jena.sparql.expr.E_Datatype ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeDay ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeHours ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeMinutes ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeMonth ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeSeconds ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeTZ ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeTimezone ;
+import com.hp.hpl.jena.sparql.expr.E_DateTimeYear ;
+import com.hp.hpl.jena.sparql.expr.E_Divide ;
+import com.hp.hpl.jena.sparql.expr.E_Equals ;
+import com.hp.hpl.jena.sparql.expr.E_Exists ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.E_GreaterThan ;
+import com.hp.hpl.jena.sparql.expr.E_GreaterThanOrEqual ;
+import com.hp.hpl.jena.sparql.expr.E_IRI ;
+import com.hp.hpl.jena.sparql.expr.E_IsBlank ;
+import com.hp.hpl.jena.sparql.expr.E_IsIRI ;
+import com.hp.hpl.jena.sparql.expr.E_IsLiteral ;
+import com.hp.hpl.jena.sparql.expr.E_IsURI ;
+import com.hp.hpl.jena.sparql.expr.E_Lang ;
+import com.hp.hpl.jena.sparql.expr.E_LangMatches ;
+import com.hp.hpl.jena.sparql.expr.E_LessThan ;
+import com.hp.hpl.jena.sparql.expr.E_LessThanOrEqual ;
+import com.hp.hpl.jena.sparql.expr.E_LogicalAnd ;
+import com.hp.hpl.jena.sparql.expr.E_LogicalNot ;
+import com.hp.hpl.jena.sparql.expr.E_LogicalOr ;
+import com.hp.hpl.jena.sparql.expr.E_MD5 ;
+import com.hp.hpl.jena.sparql.expr.E_Multiply ;
+import com.hp.hpl.jena.sparql.expr.E_NotEquals ;
+import com.hp.hpl.jena.sparql.expr.E_NotExists ;
+import com.hp.hpl.jena.sparql.expr.E_NotOneOf ;
+import com.hp.hpl.jena.sparql.expr.E_Now ;
+import com.hp.hpl.jena.sparql.expr.E_NumAbs ;
+import com.hp.hpl.jena.sparql.expr.E_NumCeiling ;
+import com.hp.hpl.jena.sparql.expr.E_NumFloor ;
+import com.hp.hpl.jena.sparql.expr.E_NumRound ;
+import com.hp.hpl.jena.sparql.expr.E_OneOf ;
+import com.hp.hpl.jena.sparql.expr.E_Random ;
+import com.hp.hpl.jena.sparql.expr.E_Regex ;
+import com.hp.hpl.jena.sparql.expr.E_SHA1 ;
+import com.hp.hpl.jena.sparql.expr.E_SHA224 ;
+import com.hp.hpl.jena.sparql.expr.E_SHA256 ;
+import com.hp.hpl.jena.sparql.expr.E_SHA384 ;
+import com.hp.hpl.jena.sparql.expr.E_SHA512 ;
+import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
+import com.hp.hpl.jena.sparql.expr.E_Str ;
+import com.hp.hpl.jena.sparql.expr.E_StrConcat ;
+import com.hp.hpl.jena.sparql.expr.E_StrContains ;
+import com.hp.hpl.jena.sparql.expr.E_StrDatatype ;
+import com.hp.hpl.jena.sparql.expr.E_StrEncodeForURI ;
+import com.hp.hpl.jena.sparql.expr.E_StrEndsWith ;
+import com.hp.hpl.jena.sparql.expr.E_StrLang ;
+import com.hp.hpl.jena.sparql.expr.E_StrLength ;
+import com.hp.hpl.jena.sparql.expr.E_StrLowerCase ;
+import com.hp.hpl.jena.sparql.expr.E_StrStartsWith ;
+import com.hp.hpl.jena.sparql.expr.E_StrSubstring ;
+import com.hp.hpl.jena.sparql.expr.E_StrUpperCase ;
+import com.hp.hpl.jena.sparql.expr.E_Subtract ;
+import com.hp.hpl.jena.sparql.expr.E_URI ;
+import com.hp.hpl.jena.sparql.expr.E_UnaryMinus ;
+import com.hp.hpl.jena.sparql.expr.E_UnaryPlus ;
+import com.hp.hpl.jena.sparql.expr.E_Version ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
+import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 import com.hp.hpl.jena.sparql.expr.aggregate.AggregatorFactory ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -1090,7 +1162,7 @@ public class BuilderExpr
                 Expr expr = BuilderExpr.buildExpr(x.get(0)) ;
                 agg = AggregatorFactory.createCountExpr(distinct, expr) ;
             }
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
     
@@ -1100,7 +1172,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createSum(distinct, expr) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
     
@@ -1110,7 +1182,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createMin(distinct, expr) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
     
@@ -1120,7 +1192,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createMax(distinct, expr) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
 
@@ -1130,7 +1202,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createAvg(distinct, expr) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
 
@@ -1140,7 +1212,7 @@ public class BuilderExpr
         public Expr make(boolean distinct, Expr expr)
         {
             Aggregator agg = AggregatorFactory.createSample(distinct, expr) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
     
@@ -1172,9 +1244,20 @@ public class BuilderExpr
             
             Expr expr = buildExpr(x.get(0)) ;
             Aggregator agg = AggregatorFactory.createGroupConcat(distinct, expr, separator, null) ;
-            return new ExprAggregator((Var)null, agg) ; 
+            return new ExprAggregator(null, agg) ; 
         }
     };
+    
+    final protected Build buildAggNull = new Build()
+    {
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, list, "Broken syntax: "+list.shortString()) ;
+            return new ExprAggregator(null, AggregatorFactory.createAggNull()) ;
+        }
+    };
+    
+
 
 }
 

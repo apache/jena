@@ -97,6 +97,30 @@ public abstract class MultiMap<K, V>
     
     @Override
     public int hashCode()       { return map.hashCode()^ 0x01010101 ; }
+    
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder() ;
+        sb.append("{ ") ;
+        boolean firstKey = true ;
+        for ( K key : keys() )
+        {
+            if ( ! firstKey )
+                sb.append(", ") ;
+            firstKey = false ;
+            sb.append(key) ;
+            sb.append(" [") ;
+            for ( V value : values(key) )
+            {
+                sb.append(" ") ;
+                sb.append(value) ;
+            }
+            sb.append(" ] ") ;
+        }
+        sb.append("}") ;
+        return sb.toString() ;
+    }
 }
 
 /*
