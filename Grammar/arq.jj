@@ -667,8 +667,6 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = Assignment()
  |
-   el = FetchGraph()
- |
    el = ExistsElt()
  |
    el = NotExistsElt()
@@ -714,12 +712,6 @@ Element Assignment() : { Var v ; Expr expr ; }
   expr = Expression()
   <RPAREN>
     { return new ElementAssign(v, expr) ; }
-}
-Element FetchGraph() : { Node n ; }
-{
-  <FETCH>
-  n = VarOrIRIref()
-  { return new ElementFetch(n) ; }
 }
 Element ExistsElt() : { Element el ; }
 {
@@ -1327,9 +1319,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_StrLang(expr1, expr2) ; }
   | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrDatatype(expr1, expr2) ; }
-  // Also allowed ?func(?a1,?a2,...)
-  | <CALL> a = ExpressionList()
-    { return new E_Call(a) ; }
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
   | t = <IS_IRI> <LPAREN> expr = Expression() <RPAREN>
@@ -1444,16 +1433,6 @@ Expr IRIrefOrFunction() : { String iri ; ExprList a = null ;
   { if ( a == null )
        return asExpr(createNode(iri)) ;
     return new E_Function(iri, a) ;
-  }
-}
-// The case of "?var()" or just "?var"
-Expr VarOrFunction() : { Var v ; ExprList a = null ; }
-{
-  v = Var()
-  { Expr ev = new ExprVar(v) ; }
-  ( a = ExpressionList() )?
-  { if ( a == null ) return ev ;
-    return new E_FunctionDynamic(ev, a) ;
   }
 }
 Node RDFLiteral() : { Token t ; String lex = null ; }
