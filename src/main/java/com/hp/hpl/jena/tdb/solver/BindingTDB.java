@@ -39,10 +39,6 @@ public class BindingTDB extends BindingBase
     }
 
     @Override
-    protected void add1(Var var, Node node)
-    { throw new UnsupportedOperationException() ; }
-
-    @Override
     protected int size1() { return idBinding.size(); }
     
     /** Iterate over all the names of variables. */
@@ -114,10 +110,6 @@ public class BindingTDB extends BindingBase
         if ( cache == null ) return null ;
         return cache.get(var) ;
     }
-    
-    @Override
-    protected void checkAdd1(Var var, Node node)
-    { throw new UnsupportedOperationException() ; }
     
     @Override
     protected void format(StringBuffer sbuff, Var var)
