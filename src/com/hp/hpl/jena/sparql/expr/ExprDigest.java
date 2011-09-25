@@ -77,9 +77,15 @@ public abstract class ExprDigest extends ExprFunction1
         catch (Exception ex2) { throw new ARQInternalErrorException(ex2) ; } 
     }
     
+    NodeValue lastSeen = null ;
+    NodeValue lastCalc = null ;
+    
     @Override
     public NodeValue eval(NodeValue v)
-    { 
+    {
+        if ( lastSeen != null && lastSeen.equals(v) )
+            return lastCalc ;
+        
         Node n = v.asNode() ;
         if ( ! n.isLiteral() )
             throw new ExprEvalException("Not a literal: "+v) ;
@@ -95,7 +101,14 @@ public abstract class ExprDigest extends ExprFunction1
             byte b[] = x.getBytes("UTF-8") ;
             byte d[] = digest.digest(b) ;
             String y = Bytes.asHexLC(d) ;
-            return NodeValue.makeString(y) ; 
+            NodeValue result = NodeValue.makeString(y) ;
+            
+            // Cache
+            lastSeen = v ;
+            lastCalc = result ;
+            
+            return result ;
+            
         } catch (Exception ex2) { throw new ARQInternalErrorException(ex2) ; } 
         
     }
