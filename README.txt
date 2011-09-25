@@ -1,7 +1,13 @@
-ARQ <http://jena.hpl.hp.com/ARQ>
-================================
+ARQ : Jena SPARQL System
+=====================
 
-A query processor for Jena that implements SPARQL
+Apache Jena is an effort undergoing incubation at The Apache Software Foundation (ASF), 
+sponsored by the Incubator PMC. Incubation is required of all newly accepted projects 
+until a further review indicates that the infrastructure, communications, and decision 
+making process have stabilized in a manner consistent with other successful ASF projects.
+While incubation status is not necessarily a reflection of the completeness or stability 
+of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
+
 
 Website: http://incubator.apache.org/jena/ARQ
 Old ARQ website: http://openjena.org/ARQ
@@ -23,9 +29,9 @@ GroupId: com.hp.hpl.jena
 ArtifactId: arq
 
 (migrating to Aapche)
-Release repository: http://jena.hpl.hp.com/repo
+Release repository: http://openjena.org/repo
   Mirrored to http://repo1.maven.org/
-Development repo: http://jena.hpl.hp.com/repo-dev
+Development repo: http://openjena.org/repo-dev
 
 See below of maven repository contents.
 
