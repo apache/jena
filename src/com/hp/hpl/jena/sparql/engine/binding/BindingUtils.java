@@ -81,7 +81,7 @@ public class BindingUtils
         for ( ; iter.hasNext() ; )
         {
             Var v = iter.next() ;
-            Node n = dest.get(v) ;
+            Node n = src.get(v) ;
             dest.add(v, n) ;
         }
     }
