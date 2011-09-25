@@ -22,6 +22,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
@@ -111,7 +112,7 @@ public class SortedResultSet implements ResultSet
     
     private Binding copyToBinding(QuerySolution qs)
     {
-        BindingMap b = new BindingMap() ;
+        BindingMap b = BindingFactory.create() ;
         for ( Iterator<String> iter = qs.varNames() ; iter.hasNext() ; )
         {
             String varName = iter.next() ;

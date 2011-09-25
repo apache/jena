@@ -30,13 +30,13 @@ public abstract class BindingProjectBase extends BindingBase
         binding = bind ;
     }
 
-    @Override
-    protected void add1(Var var, Node node)
-    { throw new UnsupportedOperationException("BindingProject.add1") ; }
-
-    @Override
-    protected void checkAdd1(Var var, Node node)
-    {}
+//    @Override
+//    protected void add1(Var var, Node node)
+//    { throw new UnsupportedOperationException("BindingProject.add1") ; }
+//
+//    @Override
+//    protected void checkAdd1(Var var, Node node)
+//    {}
 
     protected abstract boolean accept(Var var) ; 
     

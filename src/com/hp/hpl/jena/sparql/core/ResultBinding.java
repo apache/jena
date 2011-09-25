@@ -35,7 +35,7 @@ public class ResultBinding extends QuerySolutionBase
 //    private ResultBinding( Model _model )
 //    {
 //        model = _model ;
-//        binding = new BindingMap() ;
+//        binding = BindingFactory.create() ;
 //    }
     
     @Override

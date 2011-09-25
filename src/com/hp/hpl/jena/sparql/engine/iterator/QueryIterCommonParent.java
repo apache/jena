@@ -14,6 +14,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import org.openjena.atlas.logging.Log ;
 
@@ -41,7 +42,7 @@ public class QueryIterCommonParent extends QueryIterConvert
                 return b ;
         
             // This is the result.  Could have BindingBase.setParent etc.  
-            BindingMap b2 = new BindingMap(parentBinding) ;
+            BindingMap b2 = BindingFactory.create(parentBinding) ;
 
             // Copy the resultSet bindings to the combined result binding with checking. 
             for ( Iterator<Var> iter = b.vars() ; iter.hasNext(); )

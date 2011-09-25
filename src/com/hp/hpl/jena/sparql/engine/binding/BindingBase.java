@@ -11,14 +11,19 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.IteratorConcat ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
-/** Machinary encapsulating a mapping from a name to a value. */
+
+/** Machinary encapsulating a mapping from a name to a value.
+ *  The "parent" is a shared, immutable, common set of bindings.
+ *  An association of var/node must not override a setting in the parent.
+ *  
+ *  @see BindingFactory
+ *  @see BindingMap for mutable bindings.
+ */
 
 
 abstract public class BindingBase implements Binding
@@ -50,31 +55,6 @@ abstract public class BindingBase implements Binding
     }
         
     public Binding getParent() { return parent ; }
-    
-    /** Add a (var,value) - the node value is never null */
-    final public void add(Var var, Node node)
-    { 
-        if ( node == null )
-        {
-            Log.warn(this, "Binding.add: null value - ignored") ;
-            return ;
-        }
-        checkAdd(var, node) ;
-        add1(var, node) ;
-    }
-
-    protected abstract void add1(Var name, Node node) ;
-
-    public void addAll(Binding other)
-    {
-        Iterator<Var> iter = other.vars() ;
-        for ( ; iter.hasNext(); )
-        {
-            Var v = iter.next();
-            Node n = other.get(v) ;
-            add(v, n) ;
-        }
-    }
     
     /** Iterate over all the names of variables. */
     final public Iterator<Var> vars()
@@ -184,24 +164,6 @@ abstract public class BindingBase implements Binding
         return sbuff.toString() ;
     }
 
-    private void checkAdd(Var var, Node node)
-    {
-        if ( ! CHECKING )
-            return ;
-        if ( var == null )
-            throw new ARQInternalErrorException("check("+var+", "+node+"): null var" ) ;
-        if ( node == null )
-            throw new ARQInternalErrorException("check("+var+", "+node+"): null node value" ) ;
-        if ( UNIQUE_NAMES_CHECK && contains(var) )
-            throw new ARQInternalErrorException("Attempt to reassign '"+var+
-                                                "' from '"+FmtUtils.stringForNode(get(var))+
-                                                "' to '"+FmtUtils.stringForNode(node)+"'") ;
-        // Let the implementation do a check as well.
-        checkAdd1(var, node) ;
-    }
-
-    protected abstract void checkAdd1(Var var, Node node) ;
-    
     @Override
     public int hashCode() { return hashCode(this) ; } 
     @Override

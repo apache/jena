@@ -17,6 +17,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
 import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
@@ -156,7 +157,7 @@ public class ParserQueryBase extends ParserBase
     
     protected void startBindingValueRow(int line, int col)
     { 
-        values.add(new BindingMap()) ;
+        values.add(BindingFactory.create()) ;
         currentColumn = -1 ;
     }
     

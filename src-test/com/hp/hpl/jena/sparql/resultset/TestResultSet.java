@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
@@ -320,7 +321,7 @@ public class TestResultSet extends BaseTest
     
     private ResultSet make(String var, Node val)
     {
-        BindingMap b = new BindingMap() ;
+        BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc(var), val) ;
         List<String> vars = new ArrayList<String>() ;
         vars.add(var) ;
@@ -331,9 +332,9 @@ public class TestResultSet extends BaseTest
 
     private ResultSet make2(String var, Node val)
     {
-        BindingMap b1 = new BindingMap() ;
+        BindingMap b1 = BindingFactory.create() ;
         b1.add(Var.alloc(var), val) ;
-        BindingMap b2 = new BindingMap() ;
+        BindingMap b2 = BindingFactory.create() ;
         b2.add(Var.alloc(var), val) ;
         
         List<String> vars = new ArrayList<String>() ;
@@ -365,7 +366,7 @@ public class TestResultSet extends BaseTest
     
     private ResultSet make(String var1, Node val1, String var2, Node val2 )
     {
-        BindingMap b = new BindingMap() ;
+        BindingMap b = BindingFactory.create() ;
         
         b.add(Var.alloc(var1), val1) ;
         b.add(Var.alloc(var2), val2) ;

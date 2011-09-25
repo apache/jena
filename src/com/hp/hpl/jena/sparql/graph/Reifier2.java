@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
@@ -114,7 +115,7 @@ public class Reifier2 implements Reifier
         
         if ( node != null || triple != null )
         {
-            BindingMap b2 = new BindingMap(b) ;
+            BindingMap b2 = BindingFactory.create(b) ;
             if ( node != null )
                 bind(b2, reifNodeVar, node) ; 
             if ( triple != null )

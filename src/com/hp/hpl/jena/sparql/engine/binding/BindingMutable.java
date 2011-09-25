@@ -21,19 +21,12 @@ package com.hp.hpl.jena.sparql.engine.binding;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** Bindings are immutable, and are equal-by-value, but 
- * they have to be constructed
- * somehow and this interface captures that.
- * Bindings should be created, then not changed, and 
- * returned as type "Binding".  
- */
-
-public interface BindingMap extends Binding
+public interface BindingMutable extends Binding
 {
-    /** Add a (var, value) pair- the value must not be null */
+    /** Add a (var, value) pair - the value must not be null */
     public void add(Var var, Node node) ;
 
-    /** Add all the (var, value) pairs from another binding */
-    public void addAll(Binding other) ;
+    /** Add all the var/node pairs from another binding */ 
+    public void addAll(Binding key) ;
 }
 

@@ -42,6 +42,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.ResultBinding ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
@@ -281,7 +282,7 @@ public class JSONInput extends SPARQLResult
                 if (row < 0 || row >= jbindings.size())
                     return null;
                 
-                BindingMap binding = new BindingMap() ;
+                BindingMap binding = BindingFactory.create() ;
                 JsonObject jsolution = jbindings.get(row).getAsObject() ;
                 
                 for ( String varName : jsolution.keys() )  

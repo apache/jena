@@ -30,7 +30,7 @@ public class BindingFactory
     }
     
     public static BindingMap create() { return create(noParent) ; }
-    public static BindingMap create(Binding parent) { return new BindingMap(parent)  ; }
+    public static BindingMap create(Binding parent) { return new BindingHashMap(parent)  ; }
 }
 
 /*

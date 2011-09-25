@@ -13,6 +13,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArgType ;
@@ -82,7 +83,7 @@ public class splitIRI extends PropertyFunctionEval //PropertyFunctionBase
         // New binding to return.
         BindingMap b = null ;
         if ( Var.isVar(namespaceNode) || Var.isVar(localnameNode) )
-            b = new BindingMap(binding) ;
+            b = BindingFactory.create(binding) ;
         
         if ( Var.isVar(namespaceNode) ) // .isVariable() )
         {

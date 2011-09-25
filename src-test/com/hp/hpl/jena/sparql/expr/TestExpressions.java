@@ -380,7 +380,7 @@ public class TestExpressions
     static String xsd = XSDDatatype.XSD+"#" ;
     static Binding env ; 
     static {
-        BindingMap b = new BindingMap() ;
+        BindingMap b = BindingFactory.create() ;
         b.add(Var.alloc("a"), Node.createLiteral("A")) ;
         b.add(Var.alloc("b"), Node.createAnon()) ;
         b.add(Var.alloc("x"), Node.createURI("urn:x")) ;

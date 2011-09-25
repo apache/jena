@@ -20,6 +20,7 @@ import javax.xml.stream.XMLStreamReader ;
 
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -33,8 +34,8 @@ import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.ResultBinding ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
@@ -402,7 +403,7 @@ class XMLInputStAX extends SPARQLResult
     private Binding getOneSolution() throws XMLStreamException
     {
         // At the start of <result>
-        BindingMap binding = new BindingMap() ;
+        BindingMap binding = BindingFactory.create() ;
         String varName = null ;
         
         while(parser.hasNext())
@@ -427,7 +428,7 @@ class XMLInputStAX extends SPARQLResult
                     tag = parser.getLocalName() ;
                     if ( isTag(tag, XMLResults.dfSolution) )
                     {
-                        binding = new BindingMap() ;
+                        binding = BindingFactory.create() ;
                         break ;
                     }
                     if ( isTag(tag, XMLResults.dfBinding ))

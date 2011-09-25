@@ -15,7 +15,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -69,7 +69,7 @@ public abstract class TestExpr extends TestCase
             queryCxt = QueryFactory.make() ;
         query = queryCxt ;
         if ( env == null )
-            env = new BindingMap() ;
+            env = BindingFactory.create() ;
         binding = env ;
         this.failureMode = failureOutcome ;
     }

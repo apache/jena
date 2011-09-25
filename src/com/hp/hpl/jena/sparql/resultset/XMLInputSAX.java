@@ -11,6 +11,7 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
 import org.xml.sax.Attributes ;
 import org.xml.sax.ContentHandler ;
 import org.xml.sax.InputSource ;
@@ -26,9 +27,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
@@ -172,7 +173,7 @@ class XMLInputSAX extends SPARQLResult
             
             if ( localName.equals(XMLResults.dfSolution) )
             {
-                binding = new BindingMap() ; 
+                binding = BindingFactory.create() ; 
                 return ;
             }
             

@@ -9,6 +9,7 @@ package arq;
 import java.util.Iterator ;
 
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
@@ -23,13 +24,12 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.sse.WriterSSE ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
@@ -171,7 +171,7 @@ public class qexpr
                 try {
                     if ( actionCopySubstitute )
                     {
-                        Expr e = expr.copySubstitute(new BindingMap(), true) ;
+                        Expr e = expr.copySubstitute(BindingFactory.create(), true) ;
                         System.out.println(e) ;
                     }
                     else

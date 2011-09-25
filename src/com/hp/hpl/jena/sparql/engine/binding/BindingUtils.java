@@ -45,7 +45,7 @@ public class BindingUtils
         if ( qSolution instanceof ResultBinding )
             // Only named variables.
             return new BindingProjectNamed( ((ResultBinding)qSolution).getBinding() ) ;
-        BindingMap binding = new BindingMap(null) ;
+        BindingMap binding = BindingFactory.create() ;
         addToBinding(binding, qSolution) ;
         return binding ;
     }

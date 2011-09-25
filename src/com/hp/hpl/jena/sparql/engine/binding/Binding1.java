@@ -24,17 +24,10 @@ public class Binding1 extends BindingBase
     /*package*/ Binding1(Binding parent, Var _var, Node _node)
     { 
         super(parent) ;
-        checkAdd1(_var, _node) ;
         var = _var ; 
         value = _node ;
     }
     
-    @Override
-    protected void add1(Var v, Node node)
-    {
-        throw new UnsupportedOperationException("Binding1.add1") ;
-    }
-
     @Override
     protected int size1() { return 1 ; }
     
@@ -62,9 +55,6 @@ public class Binding1 extends BindingBase
             return value ;
         return null ;
     }
-
-    @Override
-    protected void checkAdd1(Var v, Node val) { }
 }
 
 /*

@@ -20,12 +20,6 @@ public class Binding0 extends BindingBase
     /* package */ Binding0() { super(null) ; }
     /* package */ Binding0(Binding parent) { super(parent) ; }
 
-    @Override
-    protected void add1(Var var, Node node)
-    {
-        throw new UnsupportedOperationException("Binding0.add1") ;
-    }
-    
     /** Iterate over all the names of variables.
      */
     @Override
@@ -42,9 +36,6 @@ public class Binding0 extends BindingBase
     
     @Override
     public Node get1(Var var) { return null ; }
-
-    @Override
-    protected void checkAdd1(Var var, Node node) { }
 }
 
 /*
