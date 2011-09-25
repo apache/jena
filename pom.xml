@@ -384,11 +384,9 @@
 
   </mailingLists>
   
-  <!-- Temporary -->
+  <!-- Temporary : get old versions -->
   <repositories>
-
     <!-- jena-repo is mirrored to Maven central repository -->
-    <!-- In case mirroring has not happened yet ... -->
     <repository>
       <id>repo-jena</id>
       <name>Jena Maven - Repository</name>
@@ -410,29 +408,22 @@
     </repository>
   </repositories>
 
-  <!-- Temporary -->
+  <!-- Temporary for testing
   <distributionManagement>
-    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
-
     <repository>
       <id>jena-repo</id>
       <name>Jena repo</name>
-       <!-- **** dev repo (safety during development) **** -->
-      <url>sftp://openjena.org/var/repo-dev</url>
-      <!-- Because RC's are snapshots IMHO -->
-      <!-- <url>sftp://openjena.org/var/repo-dev</url> -->
+      <url>file:REPO</url>
       <layout>default</layout>
     </repository> 
 
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
-      <url>sftp://openjena.org/var/repo-dev</url>
-      <!--<url>file:tmp</url>-->
+      <url>file:REPO</url>
       <layout>default</layout>
     </snapshotRepository>
-
   </distributionManagement>
-
+  -->
 
 </project>
