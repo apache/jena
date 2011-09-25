@@ -31,6 +31,7 @@ import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.store.SQLBridgeBase;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
 
 public class SQLBridge1 extends SQLBridgeBase
@@ -76,7 +77,7 @@ public class SQLBridge1 extends SQLBridgeBase
     @Override
     protected Binding assembleBinding(ResultSetJDBC rs, Binding parent)
     {
-        BindingMap b = new BindingMap(parent) ;
+        BindingMap b = BindingFactory.create(parent) ;
         for ( Var v : getProject() )
         {
             String sqlVarName = getSqlName(v) ;
