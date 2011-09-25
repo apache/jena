@@ -84,13 +84,7 @@ public class BindingHashMap extends BindingBase implements BindingMap
     //@Override
     final public void addAll(Binding other)
     {
-        Iterator<Var> iter = other.vars() ;
-        for ( ; iter.hasNext(); )
-        {
-            Var v = iter.next();
-            Node n = other.get(v) ;
-            add(v, n) ;
-        }
+        BindingUtils.addAll(this, other) ;
     }
     
     private void checkAdd(Var var, Node node)

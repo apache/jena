@@ -9,6 +9,7 @@ import java.util.Iterator ;
 
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -70,6 +71,18 @@ public class BindingUtils
                 // bad binding attempt.
                 Log.warn(BindingUtils.class, "Attempt to bind "+n+" when already bound") ;
             }
+        }
+    }
+    
+    
+    public static void addAll(BindingMap dest, Binding src)
+    {
+        Iterator<Var> iter = src.vars() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Var v = iter.next() ;
+            Node n = dest.get(v) ;
+            dest.add(v, n) ;
         }
     }
     
