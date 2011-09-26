@@ -29,4 +29,3 @@ public interface BindingMutable extends Binding
     /** Add all the var/node pairs from another binding */ 
     public void addAll(Binding key) ;
 }
-

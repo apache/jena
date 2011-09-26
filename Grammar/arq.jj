@@ -1,16 +1,24 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
 // UPDATE : SPARQL 1.1. Update
 // ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
-// Author:  Andy Seaborne <andy.seaborne@epimorphics.com>
-// (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
-// (c) Copyright 2010 Talis Systems Ltd.
-// (c) Copyright 2010, 2011 Epimorphics Ltd.
-// All rights reserved.
-// See end of file for details.
-//
-// Constraint expression is derived from Java : 
-// example java1.2-a.jj grammer in JavaCC distribution
-// Much modifed over time.
 options
 {
    JAVA_UNICODE_ESCAPE = true ;
@@ -20,10 +28,22 @@ options
 //  DEBUG_TOKEN_MANAGER   = true ;
 }
 PARSER_BEGIN(ARQParser)
-/*
- * (c) Copyright 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
- * All rights reserved.
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.hp.hpl.jena.sparql.lang.arq ;
 import com.hp.hpl.jena.graph.* ;

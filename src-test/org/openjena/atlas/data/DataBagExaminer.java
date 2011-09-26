@@ -38,4 +38,3 @@ public class DataBagExaminer
         return count;
     }
 }
-

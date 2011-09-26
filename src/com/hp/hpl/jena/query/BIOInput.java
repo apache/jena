@@ -57,4 +57,3 @@ public class BIOInput
         return new ResultSetStream(Var.varNames(vars), m, qIter) ;
     }
 }
-

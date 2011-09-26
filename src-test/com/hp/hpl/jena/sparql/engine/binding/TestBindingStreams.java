@@ -172,4 +172,3 @@ public class TestBindingStreams extends BaseTest
         return BuilderBinding.build(item) ;
     }
 }
-

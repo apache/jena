@@ -58,4 +58,3 @@ public abstract class LangBase<X> extends LangEngine implements LangRIOT
         super.profile = profile ; 
     }
 }
-

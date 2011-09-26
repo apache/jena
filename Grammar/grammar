@@ -112,7 +112,8 @@ function rdqlGrammar
 
 if [ $# == 0 ]
 then
-    set -- sparql10 sparql11 arq
+    # Not sparql10
+    set -- sparql11 arq
     ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
     ## exit 1
     fi
@@ -123,8 +124,8 @@ do
       sparql10|sparql_10.jj)
     
           # SPARQL 1.0 - use a static copy.
-##           # The parser that is exactly the working group grammar.
-##           cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
+          # The parser that is exactly the working group grammar.
+##           #### cat "$GRAMMAR" | cpp -P -C -DSPARQL -DSPARQL_10 > sparql_10.jj
 ##           grammar sparql_10.jj sparql_10 SPARQLParser10
 ##           ;;
          echo "SPARQL 1.0 - not rebuilt"

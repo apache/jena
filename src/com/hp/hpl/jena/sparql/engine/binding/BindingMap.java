@@ -36,4 +36,3 @@ public interface BindingMap extends Binding
     /** Add all the (var, value) pairs from another binding */
     public void addAll(Binding other) ;
 }
-

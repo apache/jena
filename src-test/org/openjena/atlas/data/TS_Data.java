@@ -39,4 +39,3 @@ public class TS_Data
         return new JUnit4TestAdapter(TS_Data.class) ;
     }
 }
-

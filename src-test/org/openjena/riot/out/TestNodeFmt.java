@@ -134,4 +134,3 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_61()  { test(nodeFormatterTTL, "'.1e-10'^^<http://www.w3.org/2001/XMLSchema#double>", ".1e-10") ; }
     @Test public void nodefmt_ttl_62()  { test(nodeFormatterTTL, "'.e9'^^<http://www.w3.org/2001/XMLSchema#double>", "\".e9\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
 }
-

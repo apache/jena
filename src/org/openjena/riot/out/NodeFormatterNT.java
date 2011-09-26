@@ -94,4 +94,3 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 }
-

@@ -37,4 +37,3 @@ public class TransformDistinctToReduced extends TransformCopy {
     }
 
 }
-

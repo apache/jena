@@ -250,4 +250,3 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
 
     public void close()     { super.tokens.close() ; }
 }
-

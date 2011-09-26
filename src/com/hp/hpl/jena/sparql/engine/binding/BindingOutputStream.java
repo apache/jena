@@ -187,4 +187,3 @@ public class BindingOutputStream implements Sink<Binding>
         this.needOutputPMap = true ;
     }
 }
-
