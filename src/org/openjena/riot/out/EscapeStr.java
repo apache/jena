@@ -81,7 +81,7 @@ public class EscapeStr
         } catch (IOException e) { IO.exception(e) ; return null ; }
     }
     
-    private static void stringEsc(Writer out, String s, boolean singleLineString, boolean asciiOnly) throws IOException
+    public static void stringEsc(Writer out, String s, boolean singleLineString, boolean asciiOnly) throws IOException
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {

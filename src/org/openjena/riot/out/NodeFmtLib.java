@@ -54,17 +54,17 @@ public class NodeFmtLib
 
     public static String str(Triple t)
     {
-        return str(t.getSubject(), t.getPredicate(),t.getObject()) ;
+        return strNodes(t.getSubject(), t.getPredicate(),t.getObject()) ;
     }
 
     public static String str(Quad q)
     {
-        return str(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
+        return strNodes(q.getGraph(), q.getSubject(), q.getPredicate(), q.getObject()) ;
     }
     
 
     // Worker
-    public static String str(Node ... nodes)
+    public static String strNodes(Node ... nodes)
     {
         StringWriter sw = new StringWriter() ;
         boolean first = true ;
@@ -80,7 +80,12 @@ public class NodeFmtLib
         return sw.toString() ; 
     }
 
-    //public static String str(Node n)
+    public static String str(Node n)
+    {
+        StringWriter sw = new StringWriter() ;
+        str(sw, n) ;
+        return sw.toString() ; 
+    }
 
     private static final boolean onlySafeBNodeLabels = true ;
 
@@ -195,94 +200,4 @@ public class NodeFmtLib
         catch (MalformedURLException  ex) { r = rel.toString() ; }
         return r ;
     }
-
-    // ---- Escaping.
-    
-    static boolean applyUnicodeEscapes = false ;
-    
-    static EscapeStr escaper = new EscapeStr(false) ; 
-    
-    // take a string and make it safe for writing.
-    public static String stringEsc(String s)
-    { 
-        return stringEsc(s, true) ;
-    }
-    
-    public static String stringEsc(String s, boolean singleLineString)
-    {
-        StringWriter sw = new StringWriter() ;
-        if ( singleLineString )
-            escaper.writeStr(sw, s) ;
-        else
-            escaper.writeStrMultiLine(sw, s) ;
-        return sw.toString() ;
-    }
-    
-    public static void stringEsc(StringBuilder sbuff, String s)
-    { stringEsc( sbuff,  s, true ) ; }
-
-    public static void stringEsc(StringBuilder sbuff, String s, boolean singleLineString)
-    {
-        int len = s.length() ;
-        for (int i = 0; i < len; i++) {
-            char c = s.charAt(i);
-
-            // Escape escapes and quotes
-            if (c == '\\' || c == '"' )
-            {
-                sbuff.append('\\') ;
-                sbuff.append(c) ;
-                continue ;
-            }
-            
-            // Characters to literally output.
-            // This would generate 7-bit safe files 
-//            if (c >= 32 && c < 127)
-//            {
-//                sbuff.append(c) ;
-//                continue;
-//            }    
-
-            // Whitespace
-            if ( singleLineString && ( c == '\n' || c == '\r' || c == '\f' ) )
-            {
-                if (c == '\n') sbuff.append("\\n");
-                if (c == '\t') sbuff.append("\\t");
-                if (c == '\r') sbuff.append("\\r");
-                if (c == '\f') sbuff.append("\\f");
-                continue ;
-            }
-            
-            // Output as is (subject to UTF-8 encoding on output that is)
-            
-            if ( ! applyUnicodeEscapes )
-                sbuff.append(c) ;
-            else
-            {
-                // Unicode escapes
-                // c < 32, c >= 127, not whitespace or other specials
-                if ( c >= 32 && c < 127 )
-                {
-                    sbuff.append(c) ;
-                }
-                else
-                {
-                    String hexstr = Integer.toHexString(c).toUpperCase();
-                    int pad = 4 - hexstr.length();
-                    sbuff.append("\\u");
-                    for (; pad > 0; pad--)
-                        sbuff.append("0");
-                    sbuff.append(hexstr);
-                }
-            }
-        }
-    }
-    
-//    public static String stringEsc(String s)    { return FmtUtils.stringEsc(s) ; }
-//    
-//    public static String stringEsc(String s, boolean singleLineString)
-//    { return FmtUtils.stringEsc(s, singleLineString) ; }
-//
-//    public static String unescapeStr(String s)    { return ParserBase.unescapeStr(s) ; }
-    
 }

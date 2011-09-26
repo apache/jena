@@ -28,6 +28,8 @@ public class NodeFormatterNT extends NodeFormatterBase
     // Formatting for NTriples 
     // Turtles extends this class to intercept forms it can do better.
 
+    private final EscapeStr escapeProc = new EscapeStr(true) ; 
+    
     public NodeFormatterNT() {}
     
     //@Override
@@ -70,7 +72,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     private void writeEscaped(Writer w, String lex) throws IOException
     {
         w.write('"') ;
-        w.write(lex) ;  // DO BETTER
+        escapeProc.writeStr(w, lex) ;
         w.write('"') ;
     }
 
