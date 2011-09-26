@@ -35,16 +35,15 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import org.openjena.atlas.logging.Log ;
+
 /**
- * A JSON writer for SPARQL Result Sets
+ * A JSON writer for SPARQL Result Sets.  Uses jena' atlas JSON support. 
  * 
- * Format: <a href="http://www.w3.org/2001/sw/DataAccess/json-sparql/">Serializing SPARQL Query Results in JSON</a> 
- * 
- * JSON: <a href="http://json.org">http://json.org/</a> */
+ * Format: <a href="http://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a> 
+ */ 
 
 public class JSONOutputResultSet implements ResultSetProcessor
 {
-    // XXX JSONOutputResultSet - Could improve the streaming - minor. 
     static boolean multiLineValues = false ;
     static boolean multiLineVarNames = false ;
     
@@ -68,8 +67,6 @@ public class JSONOutputResultSet implements ResultSetProcessor
         doHead(rs) ;
         out.println(quoteName(dfResults)+": {") ;
         out.incIndent() ;
-//        out.println(quoteName(dfDistinct)+": "+(rs.isDistinct()?"true":"false")+" ,") ;
-//        out.println(quoteName(dfOrdered)+": " +(rs.isOrdered() ?"true":"false")+" ,") ;
         out.println(quoteName(dfBindings)+": [") ;
         out.incIndent() ;
         firstSolution = true ;

@@ -61,11 +61,10 @@ import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /**
  * Code that reads a JSON Result Set and builds the ARQ structure for the same.
- * Originally from Elias Torres &lt;<a href="mailto:elias@torrez.us">elias@torrez.us</a>&gt;
- * Updated to not use org.json code : Andy Seaborne (2010)
  */
 public class JSONInput extends SPARQLResult
 {
+    // This is like the XML reader but JSOn terms not XML tags.  
     public JSONInput(InputStream in)
     {
         this(in, null) ;
@@ -134,10 +133,6 @@ public class JSONInput extends SPARQLResult
 
         // Type
         boolean isResultSet = false;
-
-        // Result set
-        boolean ordered = false;
-        boolean distinct = false;
         boolean finished = false;
 
         Model model = null;
@@ -173,7 +168,6 @@ public class JSONInput extends SPARQLResult
         private void init() {
             processHead();
 
-            // Next should be a <result>, <boolean> element or </results>
             // Need to decide what sort of thing we are reading.
             if (json.hasKey(dfResults)) {
                 isResultSet = true;
@@ -188,7 +182,7 @@ public class JSONInput extends SPARQLResult
 
         public boolean hasNext() {
             if (!isResultSet)
-                throw new ResultSetException("Not an XML result set");
+                throw new ResultSetException("Not a JSON result set");
 
             if (finished)
                 return false;
@@ -226,10 +220,6 @@ public class JSONInput extends SPARQLResult
 
         public List<String> getResultVars() { return variables; }
 
-        public boolean isOrdered() { return ordered; }
-
-        public boolean isDistinct() { return distinct; }
-
         // No model - it was from a stream
         public Model getResourceModel() { return null ; }
         
@@ -264,8 +254,9 @@ public class JSONInput extends SPARQLResult
                         variables.add(vars.get(i).getAsString().value()) ;
                 }
 
-                if (head.hasKey(dfLink)) {
-                    // We're being lazy for now.
+                if (head.hasKey(dfLink))
+                {
+                    //No processing for link.
                 }
             } catch (JsonException e) {
                 throw new ResultSetException(e.getMessage(), e) ;
@@ -277,8 +268,6 @@ public class JSONInput extends SPARQLResult
         private void processResults() {
             try {
                 JsonObject results = json.get(dfResults).getAsObject() ;
-//                ordered = results.getAsBoolean(dfOrdered) ;
-//                distinct = results.getBoolean(dfDistinct) ;
             } catch (JsonException e) {
                 throw new ResultSetException(e.getMessage(), e) ;
             }

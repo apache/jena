@@ -27,12 +27,7 @@ import java.io.OutputStream ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.json.io.JSWriter ;
 
-/** JSON Output (ASK format)
- * 
- * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
- * Rewritten to remove use of org.json: Andy Seaborne (2010)
- */
-
+/** JSON Output (ASK format) */
 
 public class JSONOutputASK
 {
@@ -48,7 +43,7 @@ public class JSONOutputASK
         JSWriter out = new JSWriter(outStream) ;
         
         out.startOutput() ;
-        
+
         out.startObject() ;
         out.key(dfHead) ;
         out.startObject() ;

@@ -18,32 +18,29 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-
-/**
- * @author Elias Torres (<a href="mailto:elias@torrez.us">elias@torrez.us</a>)
- */
 public class JSONResults
 {
     public static final int INDENT = 2 ;
         
-    public static final String dfHead       = "head" ;
-    public static final String dfVars       = "vars" ;
-    public static final String dfLink       = "link" ;
-    public static final String dfResults    = "results" ;
-    public static final String dfBindings   = "bindings" ;
-    public static final String dfBoolean    = "boolean" ;
+    public static final String dfHead           = "head" ;
+    public static final String dfVars           = "vars" ;
+    public static final String dfLink           = "link" ;
+    public static final String dfResults        = "results" ;
+    public static final String dfBindings       = "bindings" ;
+    public static final String dfBoolean        = "boolean" ;
     
+    // Not part of SPARQl results formats any more. 
 //    public static final String dfOrdered    = "ordered" ;
 //    public static final String dfDistinct   = "distinct" ;
     
-    public static final String dfType       = "type" ;
-    public static final String dfValue      = "value" ;
-    public static final String dfDatatype   = "datatype" ;
-    public static final String dfLang       = "xml:lang" ;
+    public static final String dfType           = "type" ;
+    public static final String dfValue          = "value" ;
+    public static final String dfDatatype       = "datatype" ;
+    public static final String dfLang           = "xml:lang" ;
     
     public static final String dfBNode          = "bnode" ;
     public static final String dfURI            = "uri" ;
     public static final String dfLiteral        = "literal" ;
     public static final String dfTypedLiteral   = "typed-literal" ;  
-    public static final String dfUnbound    = "unbound" ;
+    public static final String dfUnbound        = "unbound" ;
 }
