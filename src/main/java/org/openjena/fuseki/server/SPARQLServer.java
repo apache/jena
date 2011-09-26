@@ -118,7 +118,10 @@ public class SPARQLServer
         
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setErrorHandler(new FusekiErrorHandler()) ;
+        // Increase form size.
+        context.getServletContext().getContextHandler().setMaxFormContentSize(10*1000*1000) ;
         server.setHandler(context);
+        
         // Constants. Add RDF types.
         MimeTypes mt = new MimeTypes() ; 
         mt.addMimeMapping("rdf",    WebContent.contentTypeRDFXML+";charset=utf-8") ;
@@ -127,7 +130,6 @@ public class SPARQLServer
         mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
         context.setMimeTypes(mt) ;
-        
         
         // Fixed for now.
         String pages = true ? Fuseki.PagesAll : Fuseki.PagesPublish ; 
