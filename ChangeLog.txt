@@ -3,6 +3,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
++ Fix reuse of query objects (aggregation used shared state) (JENA-121)
 + Spill to disk update (enable with ARQ.spillOnDiskUpdateThreshold) (JENA-45)
 + External sort (enable with ARQ.spillOnDiskSortingThreshold) (JENA-44) 
 + Remove RDQL from ARQ (code in Archive/ in SVN -- will not be updated) 
