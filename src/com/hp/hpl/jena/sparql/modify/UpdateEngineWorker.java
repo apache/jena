@@ -38,7 +38,6 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
@@ -159,10 +158,11 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         String source = update.getSource() ;
         Node dest = update.getDest() ;
-        Graph g = graph(graphStore, dest) ;
-        Model model = ModelFactory.createModelForGraph(g) ;
         try {
-            FileManager.get().readModel(model, source) ;
+            // Read into temporary model to protect against parse errors.
+            Model model = FileManager.get().loadModel(source) ;
+            Graph g = graph(graphStore, dest) ;
+            g.getBulkUpdateHandler().add(model.getGraph()) ;
         } catch (RuntimeException ex)
         {
             if ( ! update.getSilent() )
