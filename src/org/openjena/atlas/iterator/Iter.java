@@ -296,21 +296,35 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public static <T, R> Iterator<R> mapMany(final Iterator<? extends T> stream, final Transform<? super T, Iterator<R>> converter)
     {
         final Iterator<R> iter = new Iterator<R>(){
-            
-            private Iterator<? extends R> it = null;
+
+            private Iterator<? extends R> it = null;    // Iterator for the current element of stream.
             
             public boolean hasNext()
             {
-                return stream.hasNext() || ((null != it) ? it.hasNext() : false) ;
+                if ( it != null && it.hasNext() )
+                    // Element of the current iterator. 
+                    return true ;
+                // Start or current iterator has ended.
+                it = null ;
+                
+                // Need to move to next non-empty iterator of the stream. 
+                while ( stream.hasNext() )
+                {
+                    it = converter.convert(stream.next());
+                    if ( it.hasNext() )
+                        // There is something.
+                        return true ;
+                }
+                it = null ;
+                // Stream ran out.
+                return false ;
             }
     
             public R next()
             {
-                if ((null == it) || !it.hasNext())
-                {
-                    it = converter.convert(stream.next());
-                }
-                
+                if ( ! hasNext() )
+                    throw new NoSuchElementException() ;
+                // "it" is never left at the end. 
                 return it.next();
             }
     

@@ -166,6 +166,59 @@ public class TestIter
         
         test(it, "x", "xx", "y", "yy", "z", "zz");
     }
+    
+    @Test
+    public void mapMany_02()
+    {
+        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
+        {
+            public Iterator<String> convert(String item)
+            {
+                return Iter.nullIterator() ;
+            }
+        });
+        
+        assertFalse(it.hasNext()) ;
+    }
+    
+    @Test
+    public void mapMany_03()
+    {
+        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
+        {
+            int count = 0 ;
+            public Iterator<String> convert(String item)
+            {
+                count++ ;
+                if ( count%2 == 1 )
+                    return Iter.singleton(item) ;
+                else
+                    return Iter.nullIterator() ;
+            }
+        });
+        
+        test(it, "x", "z");
+    }
+
+    @Test
+    public void mapMany_04()
+    {
+        Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
+        {
+            int count = 0 ;
+            public Iterator<String> convert(String item)
+            {
+                count++ ;
+                if ( count%2 == 0 )
+                    return Iter.singleton(item) ;
+                else
+                    return Iter.nullIterator() ;
+            }
+        });
+        
+        test(it, "y");
+    }
+
 	
     Filter<String> filter = new Filter<String>() {
         public boolean accept(String item)
