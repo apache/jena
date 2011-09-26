@@ -193,6 +193,7 @@
         <artifactId>maven-remote-resources-plugin</artifactId>
         <version>1.2.1</version>
         <configuration>
+          <outputDirectory>src/main/resources</outputDirectory>
           <attached>false</attached>
         </configuration>
       </plugin>

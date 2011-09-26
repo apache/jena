@@ -1,0 +1,55 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+LARQ
+
+
+From: 'an unknown organization'
+  - ICU4J (http://www-306.ibm.com/software/globalization/icu/) com.ibm.icu:icu4j:jar:3.4.4
+    License: ICU License  (http://www-306.ibm.com/software/globalization/icu/license.jsp)
+  - StAX API (http://stax.codehaus.org/) stax:stax-api:jar:1.0.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Unnamed - xerces:xercesImpl:jar:2.7.1  xerces:xercesImpl:jar:2.7.1
+
+
+From: 'Apache Jena' (http://incubator.apache.org/jena)
+  - ARQ (http://openjena.org/ARQ) com.hp.hpl.jena:arq:jar:2.8.9-SNAPSHOT
+    License: Apache 2.0 License  (http://www.apache.org/licenses/LICENSE-2.0)
+
+From: 'Apache Software Foundation' (http://www.apache.org)
+  - Apache Log4j (http://logging.apache.org/log4j/1.2/) log4j:log4j:bundle:1.2.16
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Codehaus' (http://www.codehaus.org/)
+  - Woodstox (http://woodstox.codehaus.org) org.codehaus.woodstox:wstx-asl:jar:3.2.9
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'Hewlett-Packard' (http://www.hp.com/)
+  - Jena IRI (http://jena.sf.net/iri) com.hp.hpl.jena:iri:jar:0.8
+    License: BSD-style license  (http://jena.sourceforge.net/iri/license.html)
+
+From: 'QOS.ch' (http://www.qos.ch)
+  - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.6.1
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
+  - SLF4J LOG4J-12 Binding (http://www.slf4j.org) org.slf4j:slf4j-log4j12:jar:1.5.8
+
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons Codec (http://commons.apache.org/codec/) commons-codec:commons-codec:jar:1.4
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - HttpClient (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpclient:jar:4.1.2
+    License: Apache License  (LICENSE.txt)
+  - HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.1.2
+    License: Apache License  (LICENSE.txt)
+  - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.1.0
+    License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'The Jena Project' (http://www.openjena.org/)
+  - Jena (http://www.openjena.org/) com.hp.hpl.jena:jena:jar:2.6.4
+    License: BSD  (http://jena.sourceforge.net/license.html)
+
+
+
+
