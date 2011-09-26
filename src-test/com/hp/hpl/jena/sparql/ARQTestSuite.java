@@ -28,8 +28,8 @@ import org.openjena.riot.TC_Riot ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
+import com.hp.hpl.jena.sparql.engine.TS_Engine ;
 import com.hp.hpl.jena.sparql.engine.binding.TestBindingStreams ;
-import com.hp.hpl.jena.sparql.engine.TS_Engine;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
@@ -38,7 +38,6 @@ import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.lang.TS_Lang ;
-import com.hp.hpl.jena.sparql.larq.TS_LARQ ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
@@ -101,9 +100,6 @@ public class ARQTestSuite extends TestSuite
         
         // Scripted tests for SPARQL
         ts.addTest(ScriptTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
-      
-        // ARQ + Lucene
-        ts.addTest(TS_LARQ.suite()) ;
       
         // Scripted tests for ARQ features outside SPARQL syntax
         // Currently at end of manifest-arq.ttl

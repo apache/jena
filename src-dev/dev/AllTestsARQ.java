@@ -19,7 +19,6 @@
 package dev;
 
 import junit.framework.TestSuite ;
-import arq.examples.test.TestLARQExamples ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
@@ -60,7 +59,6 @@ public class AllTestsARQ extends TestSuite
         
         // Scripted tests for ARQ examples.
         ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Examples/manifest.ttl")) ;
-        ts.addTest(TestLARQExamples.suite()) ;
         return ts ;
     }
     
