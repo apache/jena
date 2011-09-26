@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>9</version>
+    <version>10</version>
   </parent> 
 
   <groupId>org.apache.jena</groupId>
@@ -185,6 +185,15 @@
           <doctitle>${project.name} ${project.version}</doctitle>
           <!-- Exclude the implementation -->
           <includePackageNames>org.apache.jena.larq</includePackageNames>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-remote-resources-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <attached>false</attached>
         </configuration>
       </plugin>
 

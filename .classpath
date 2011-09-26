@@ -3,7 +3,6 @@
   <classpathentry kind="src" path="src/test/resources" excluding="**/*.java"/>
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
-  <classpathentry kind="src" path="target/maven-shared-archive-resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes-eclipse"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-tests.jar" sourcepath="M2_REPO/com/hp/hpl/jena/arq/2.8.9-SNAPSHOT/arq-2.8.9-SNAPSHOT-test-sources.jar"/>
