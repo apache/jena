@@ -67,6 +67,8 @@ public class TestBindingStreams extends BaseTest
     static Binding b0  = build("") ;
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     
+    static Binding bb2 = build("(?a 'a\"b\"c') (?b 1)");
+    
     static PrefixMap pmap = new PrefixMap() ;
     static {
         pmap.add(":", "http://example/") ;
@@ -104,6 +106,10 @@ public class TestBindingStreams extends BaseTest
         b.add(Var.alloc("v"), bn) ;
         testWriteRead(b) ;
     }
+    
+    @Test
+    public void bindingStream_62()              { testWriteRead(bb2) ; }
+
     
     static void testRead(String x, Binding ... bindings)
     {
