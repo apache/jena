@@ -137,6 +137,7 @@ public class TemplateLib
         {
             public Iterator<Quad> convert(final Binding b)
             {
+                // Iteration is a new mapping of bnodes. 
                 final Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
 
                 List<Quad> quadList = new ArrayList<Quad>(quads.size());

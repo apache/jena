@@ -25,11 +25,10 @@ import java.util.List ;
 
 import org.openjena.atlas.data.BagFactory ;
 import org.openjena.atlas.data.DataBag ;
-import org.openjena.atlas.data.ThresholdPolicy;
-import org.openjena.atlas.data.ThresholdPolicyCount;
+import org.openjena.atlas.data.ThresholdPolicy ;
+import org.openjena.atlas.data.ThresholdPolicyCount ;
 import org.openjena.atlas.data.ThresholdPolicyNever ;
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -361,8 +360,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         {
             if ( update.getUsing().size() > 1 )
             {
-                Log.warn(this, "Multiple graphs in USING: not supported at scale (yet).") ;
-                // NO SCALING HERE
+                // Lack of scaling here
                 // Need to take a copy to merge.
                 Graph g = GraphFactory.createGraphMem() ;
                 
