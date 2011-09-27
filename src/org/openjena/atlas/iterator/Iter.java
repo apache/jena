@@ -324,7 +324,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             {
                 if ( ! hasNext() )
                     throw new NoSuchElementException() ;
-                // "it" is never left at the end. 
+                // "it" is always left with something to yield if hashNext is true. 
                 return it.next();
             }
     
