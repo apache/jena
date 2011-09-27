@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
+import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -86,6 +87,7 @@ public class AlgebraQuad extends TransformCopy
         @Override
         public Op transform(OpGraph opGraph, Op op)
         {
+            // Could just leave the (graph ) in place always - just rewrite BGPs. 
             boolean noPattern = false ;
             
             if ( OpBGP.isBGP(op) )
@@ -112,6 +114,15 @@ public class AlgebraQuad extends TransformCopy
             // Drop (graph...) because inside nodes
             // have been converted to quads.
             return op ;
+        }
+        
+        @Override
+        public Op transform(OpPropFunc opPropFunc, Op subOp)
+        {
+            if ( opPropFunc.getSubOp() != subOp )
+                opPropFunc = new OpPropFunc(opPropFunc.getProperty(), opPropFunc.getSubjectArgs(), opPropFunc.getObjectArgs(), subOp) ;
+            // Put the (graph) back round it so the property function works on the named graph.
+            return new OpGraph(getNode() , opPropFunc) ;
         }
         
         @Override
