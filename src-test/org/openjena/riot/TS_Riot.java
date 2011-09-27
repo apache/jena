@@ -33,6 +33,7 @@ import org.openjena.riot.lang.TestParserFactory ;
 import org.openjena.riot.lang.TestSuiteTrig ;
 import org.openjena.riot.lang.TestSuiteTurtle ;
 import org.openjena.riot.lang.TestTurtleTerms ;
+import org.openjena.riot.out.TestNodeFmt ;
 import org.openjena.riot.out.TestNodeFmtLib ;
 import org.openjena.riot.out.TestOutput ;
 import org.openjena.riot.out.TestOutputNTriples ;
@@ -63,6 +64,7 @@ import org.openjena.riot.tokens.TestTokenizer ;
 
     , TestParserFactory.class
 
+    , TestNodeFmt.class
     , TestNodeFmtLib.class
     , TestOutput.class
     , TestOutputNTriples.class

@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNodeFmt extends BaseTest
 {
-    private static String base = "http://example/base" ;
+    private static String base = "http://example.org/base" ;
     private static PrefixMap prefixMap = new PrefixMap() ;
     static {
         prefixMap.add(":", "http://example/p") ;
@@ -69,6 +69,8 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_nt_08()  { test(nodeFormatterNT, "\"123\"^^<http://www.w3.org/2001/XMLSchema#integer>" ) ; }
     @Test public void nodefmt_nt_09()  { test(nodeFormatterNT, Node.ANY, "ANY") ; }
     
+    @Test public void nodefmt_nt_10()  { test(nodeFormatterNT, "'Ω'", "\"\\u03A9\"") ; }
+    
     @Test public void nodefmt_ttl_01()  { test(nodeFormatterTTL, "?x") ; }
     @Test public void nodefmt_ttl_02()  { test(nodeFormatterTTL, "?xyz") ; }
     @Test public void nodefmt_ttl_03()  { test(nodeFormatterTTL, Var.alloc(""), "?") ; }
@@ -79,13 +81,18 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_07()  { test(nodeFormatterTTL, "\"abc\"@en") ; }
     @Test public void nodefmt_ttl_08()  { test(nodeFormatterTTL, Node.ANY, "ANY") ; }
     
-    @Test public void nodefmt_ttl_11()  { test(nodeFormatterTTL, "<http://example.org/resources>") ; }    // No match
+    @Test public void nodefmt_ttl_11()  { test(nodeFormatterTTL, "<http://example.com/resources>") ; }    // No match
     @Test public void nodefmt_ttl_12()  { test(nodeFormatterTTL, "<http://example/ex/>", "ex:") ; }
     @Test public void nodefmt_ttl_13()  { test(nodeFormatterTTL, "<http://example/ex/abc>", "ex:abc") ; }
     @Test public void nodefmt_ttl_14()  { test(nodeFormatterTTL, "<http://example/ex/ab/c>", "<http://example/ex/ab/c>") ; }
     @Test public void nodefmt_ttl_15()  { test(nodeFormatterTTL, "<http://example/p>", ":") ; }
     @Test public void nodefmt_ttl_16()  { test(nodeFormatterTTL, "<http://example/p#a>", "<http://example/p#a>") ; }
+    // Base URI
+    @Test public void nodefmt_ttl_17()  { test(nodeFormatterTTL, "<http://example.org/foo>", "<foo>") ; }
+    @Test public void nodefmt_ttl_18()  { test(nodeFormatterTTL, "<http://example.org/base#bar>", "<#bar>") ; }
 
+    @Test public void nodefmt_ttl_20()  { test(nodeFormatterTTL, "'Ω'", "\"Ω\"") ; }
+    
     @Test public void prefixedname_01() { testPrefix("", "") ; } 
     
     private void testPrefix(String prefix, String local)

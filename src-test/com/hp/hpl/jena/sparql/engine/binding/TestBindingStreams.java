@@ -68,6 +68,7 @@ public class TestBindingStreams extends BaseTest
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     
     static Binding bb2 = build("(?a 'a\"b\"c') (?b 1)");
+    static Binding bb3 = build("(?a 'aΩc') (?b 1)");
     
     static PrefixMap pmap = new PrefixMap() ;
     static {
@@ -95,8 +96,7 @@ public class TestBindingStreams extends BaseTest
     @Test public void bindingStream_51()        { testWriteRead(b0) ; }
     @Test public void bindingStream_52()        { testWriteRead(pmap, b12,x10,b19) ; }
     
-    @Test
-    public void bindingStream_60()              { testWriteRead(bb1) ; }
+    @Test public void bindingStream_60()              { testWriteRead(bb1) ; }
     
     @Test
     public void bindingStream_61()
@@ -107,8 +107,9 @@ public class TestBindingStreams extends BaseTest
         testWriteRead(b) ;
     }
     
-    @Test
-    public void bindingStream_62()              { testWriteRead(bb2) ; }
+    @Test public void bindingStream_62()              { testWriteRead(bb2) ; }
+
+    @Test public void bindingStream_63()              { testWriteRead(bb3) ; }
 
     
     static void testRead(String x, Binding ... bindings)

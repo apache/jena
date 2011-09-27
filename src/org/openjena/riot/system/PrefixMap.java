@@ -112,10 +112,10 @@ public class PrefixMap
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
         {
-            String prefix = e.getValue().toString() ;
+            String uriForPrefix = e.getValue().toString() ;
             
-            if ( uriStr.startsWith(prefix) )
-                return Pair.create(e.getKey(), uriStr.substring(prefix.length())) ;
+            if ( uriStr.startsWith(uriForPrefix) )
+                return Pair.create(e.getKey(), uriStr.substring(uriForPrefix.length())) ;
         }
         return null ;
     }
@@ -146,4 +146,26 @@ public class PrefixMap
         return prefix ;
     }
     
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder() ;
+        sb.append("{ ") ;
+        boolean first = true ;
+        
+        for ( Entry<String, IRI> e : prefixes.entrySet())
+        {
+            String prefix = e.getKey() ;
+            IRI iri = e.getValue() ;
+            if ( first )
+                first = false ;
+            else
+                sb.append(" ,") ;
+            sb.append(prefix) ;
+            sb.append(":=") ;
+            sb.append(iri.toString()) ;
+        }
+        sb.append(" }") ;
+        return sb.toString() ; 
+    }
 }

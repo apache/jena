@@ -39,13 +39,13 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private final String baseIRI ; 
     
    public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap) //OutputPolicy outputPolicy)
-    {
+   {
+       super(false) ;
        if ( prefixMap == null )
            prefixMap = new PrefixMap() ;
        this.prefixMap = prefixMap ;
        this.baseIRI = baseIRI ;
-       
-    }
+   }
     
     @Override
     public void formatURI(Writer w, String uriStr)
