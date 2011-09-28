@@ -384,31 +384,8 @@
 
   </mailingLists>
   
-  <!-- Temporary : get old versions -->
-  <repositories>
-    <!-- jena-repo is mirrored to Maven central repository -->
-    <repository>
-      <id>repo-jena</id>
-      <name>Jena Maven - Repository</name>
-      <layout>default</layout>
-      <url>http://openjena.org/repo</url>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
-    </repository>
+  <!-- Temporary for testing : file:REPO-->
 
-    <repository>
-      <id>repo-jena-dev</id>
-      <name>Jena Maven - Development Repository</name>
-      <layout>default</layout>
-      <url>http://openjena.org/repo-dev</url>
-      <snapshots>
-	<enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <!-- Temporary for testing
   <distributionManagement>
     <repository>
       <id>jena-repo</id>
@@ -416,14 +393,14 @@
       <url>file:REPO</url>
       <layout>default</layout>
     </repository> 
-
+    <!--
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>file:REPO</url>
       <layout>default</layout>
     </snapshotRepository>
+    -->
   </distributionManagement>
-  -->
 
 </project>
