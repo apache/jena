@@ -20,6 +20,8 @@ package dev;
 
 public class DevFuseki
 {
+    // SPARQL_QueryDataset.vialidate query -- but FROM etc is important for TDB. 
+    
     // Config:
     //   fuseki:name ==> fuseki:serviceName of fuseki:endpointBase 
     //   rdfs:label for log files.
