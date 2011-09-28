@@ -1,24 +1,8 @@
-@prefix :        <#> .
-@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :        <http://www.example.org/> .
 
-<#books>    rdf:type ja:RDFDataset ;
-    rdfs:label "Books" ;
-    ja:context [ ja:cxtName "arq:FOO" ; ja:cxtValue "BAR" ] ;
-    ja:defaultGraph 
-      [ rdfs:label "books.ttl" ;
-        a ja:MemoryModel ;
-      ] ;
-    .
+:y1  :a  :o1 .
+:o1 :b  :x1 .
 
+:y2  :b  :o2 .
+:o2  :a  :x2 .
 
-## @prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
-## @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-## @prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
-## @prefix : <http://example/> .
-## 
-## :x1 :p 123 .
-## :x2 :p 123 .
-## 
-## 

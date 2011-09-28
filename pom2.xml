@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
-  <artifactId>arq</artifactId>
+  <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
   <name>ARQ</name>
   <version>${ver.arq}</version>
@@ -32,7 +32,7 @@
     <ver.lucene>2.3.1</ver.lucene>
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
-    <assembly.root.name>apache-jena-${project.artifactId}-${project.version}</assembly.root.name>
+    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
 
   </properties>
 
@@ -212,14 +212,11 @@ build.time.txt=${build.time.txt}
         hence two executions configured -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <!--  But we want one with appendAssemblyId=false and one with it defaulting to true.
         <configuration>
           <descriptors>
             <descriptor>assembly.xml</descriptor>
-            <descriptor>assembly-testing.xml</descriptor>
           </descriptors>
         </configuration>
-        -->
 	<executions>
 	  <execution>
 	    <id>create-assembly</id>
@@ -233,20 +230,6 @@ build.time.txt=${build.time.txt}
 	      <descriptors>
 		<descriptor>assembly.xml</descriptor>
 	      </descriptors>
-	    </configuration>
-	  </execution>
-	  <execution>
-	    <id>create-assembly-test</id>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
-	    <configuration>
-	      <finalName>${assembly.root.name}-tests</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>assembly-testing.xml</descriptor>
-          	  </descriptors>
 	    </configuration>
 	  </execution>
 	</executions>

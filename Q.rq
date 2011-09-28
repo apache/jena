@@ -1,5 +1,4 @@
 PREFIX :	<http://www.example.org/>
 
-SELECT (count(*) AS ?c)
-{ ?s ?p ?o
-} GROUP BY ?s
+SELECT *
+{  ?x   ^(:a/:b)   ?y  }
