@@ -60,20 +60,6 @@ public class LangTriG extends LangTurtleBase<Quad>
     //@Override
     public Lang getLang()   { return Lang.TRIG ; }
 
-//    public enum BNodeLabelScope { document , graph }  
-//    
-//    public void setBNodeLabelScoping(BNodeLabelScope labelscope)
-//    {
-//        switch (labelscope) {
-//            case document : 
-//                super.labelmap = LabelToNode.createScopeByDocument() ;
-//                break ;
-//            case graph :
-//                super.labelmap = LabelToNode.createScopeByGraph() ;
-//                break ;
-//        }
-//    }
-    
     @Override
     protected final void oneTopLevelElement()
     {
