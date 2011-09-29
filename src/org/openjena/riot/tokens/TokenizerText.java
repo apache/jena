@@ -995,6 +995,7 @@ public final class TokenizerText implements Tokenizer
             case 'n':   return NL ; 
             case 'r':   return CR ;
             case 't':   return '\t' ;
+            case 'f':   return '\f' ;
             case '"':   return '"' ;
             case '\'':  return '\'' ;
             case '\\':  return '\\' ;

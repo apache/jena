@@ -158,7 +158,7 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenUnit_str4()
     {
-        tokenizeAndTestExact("'a\\'\\\"\\n\\t\\r'", TokenType.STRING1, "a'\"\n\t\r") ;
+        tokenizeAndTestExact("'a\\'\\\"\\n\\t\\r\\f'", TokenType.STRING1, "a'\"\n\t\r\f") ;
     }
 
     @Test(expected = RiotParseException.class)
