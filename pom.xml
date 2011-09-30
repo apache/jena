@@ -182,9 +182,7 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>src-test</testSourceDirectory>
-    
+
     <!-- The filter file is written by antrun -->
     <filters>
       <filter>${project.basedir}/target/filter.properties</filter>
@@ -194,7 +192,8 @@
       <resource>
         <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <filtering>true</filtering>
-        <directory>resources</directory>
+	<!-- FIXME -->
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
 
