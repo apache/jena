@@ -1,4 +1,3 @@
-// (c) Copyright 2007 Hewlett-Packard Development Company, LP
 // Basic tokens for SPARQL / RDF terms.
 // SSE - SPARQL S-Expressions
 // Not the keywords.
