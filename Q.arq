@@ -1,6 +1,0 @@
-SELECT *
-{
-?s ?p ?o .
-BIND( REPLACE(?o, "a", "A") AS ?o2 )
-BIND( UUID() AS ?o3 )
-}
