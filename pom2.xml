@@ -133,6 +133,35 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
+	
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      
+      </plugin>
+
+      	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-jar-plugin</artifactId>
+	  <executions>
+	    <execution>
+	      <goals>
+              <goal>test-jar</goal>
+	      </goals>
+	    </execution>
+	  </executions>
       </plugin>
 
       <plugin>
