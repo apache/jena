@@ -138,8 +138,8 @@ public class Tags
     public static final String tagBound         = "bound" ;
     public static final String tagCoalesce      = "coalesce" ;
     public static final String tagIf            = "if" ;
-    public static final String tagIRI           = "isIRI" ;
-    public static final String tagURI           = "isURI" ;
+    public static final String tagIsIRI         = "isIRI" ;
+    public static final String tagIsURI         = "isURI" ;
     public static final String tagIsBlank       = "isBlank" ;
     public static final String tagIsLiteral     = "isLiteral" ;
     public static final String tagRegex         = "regex" ;
@@ -156,6 +156,7 @@ public class Tags
     public static final String tagTZ            = "tz" ;
     
     public static final String tagNow           = "now" ;
+    public static final String tagUUID          = "uuid" ;
     public static final String tagVersion       = "version" ;
 
     public static final String tagMD5           = "md5" ;
@@ -167,6 +168,7 @@ public class Tags
     
     public static final String tagStrlen        = "strlen" ;
     public static final String tagSubstr        = "substr" ;
+    public static final String tagReplace       = "replace" ;
     public static final String tagStrUppercase  = "ucase" ;
     public static final String tagStrLowercase  = "lcase" ;
     public static final String tagStrEnds       = "strends" ;

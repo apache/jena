@@ -1594,7 +1594,7 @@ Expr BrackettedExpression() : { Expr expr ; }
     <LPAREN> expr = Expression() <RPAREN>  { return expr ; }
 }
 
-Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ; 
+Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
                        Node gn ; Token t ; ExprList a ; }
 {
     <STR> <LPAREN> expr = Expression() <RPAREN>
@@ -1640,6 +1640,10 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | expr = SubstringExpression() { return expr ; }
     
   | <STRLEN> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
+
+#ifdef ARQ
+  | expr = StrReplaceExpression() { return expr ; }
+#endif
     
   | <UCASE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrUpperCase(expr1) ; }
     
@@ -1672,7 +1676,9 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
 
   | <NOW> <NIL>   { return new E_Now() ; }
-
+#ifdef ARQ
+  | <UUID> <NIL>  { return new E_UUID() ; }
+#endif
   | <MD5>         <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
 
   | <SHA1>        <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA1(expr1) ; }
@@ -1685,7 +1691,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | <SHA512>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA512(expr1) ; }
 
-#if 0
+#if ARQ
   | <VERSION> <NIL>     { return new E_Version(); }
 #endif    
 
@@ -1761,6 +1767,21 @@ Expr SubstringExpression() :
       { return new E_StrSubstring(expr1, expr2, expr3) ; }
 }
 
+#ifdef ARQ
+Expr StrReplaceExpression() :
+{ Expr expr1 ; Expr expr2 = null ; Expr expr3 = null ; Expr expr4 = null ;}
+{
+  <REPLACE>
+  <LPAREN> 
+  expr1 = Expression() 
+  <COMMA> expr2 = Expression()
+  <COMMA> expr3 = Expression()
+  ( <COMMA> expr4 = Expression() ) ?
+  <RPAREN> 
+  { return new E_StrReplace(expr1,expr2,expr3,expr4) ; }
+}
+#endif
+
 Expr ExistsFunc() : { Element el ; }
 {
    <EXISTS>
@@ -1774,7 +1795,6 @@ Expr NotExistsFunc() : { Element el ; }
    el = GroupGraphPattern()
    { return createExprNotExists(el) ; }
 }
-
 
 Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
@@ -2108,12 +2128,15 @@ TOKEN [IGNORE_CASE] :
 |  < CONCAT:      "CONCAT" >
 |  < SUBSTR:      "SUBSTR" >
 |  < STRLEN:      "STRLEN" >
+#ifdef ARQ
+|  < REPLACE:     "REPLACE" >
+#endif
 |  < UCASE:       "UCASE" >
 |  < LCASE:       "LCASE" >
 |  < ENCODE_FOR_URI:      "ENCODE_FOR_URI" >
 |  < CONTAINS:    "CONTAINS" >
-|  < STRSTARTS:    "strSTARTS" >
-|  < STRENDS:        "strENDS" >
+|  < STRSTARTS:   "strSTARTS" >
+|  < STRENDS:     "strENDS" >
 |  < YEAR:        "YEAR" >
 |  < MONTH:       "MONTH" >
 |  < DAY:         "DAY" >
@@ -2123,8 +2146,8 @@ TOKEN [IGNORE_CASE] :
 |  < TIMEZONE:    "TIMEZONE" >
 |  < TZ:          "TZ" >
 |  < NOW:         "NOW" >
-
 #ifdef ARQ
+|  < UUID:        "UUID" >
 |  < VERSION:     "VERSION" >
 #endif
 

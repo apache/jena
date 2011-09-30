@@ -29,6 +29,7 @@ import java.text.DecimalFormat ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Set ;
+import java.util.regex.Pattern ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -39,10 +40,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
-import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 /**
  * Implementation of XQuery/XPath functions and operators.
@@ -415,6 +413,33 @@ public class XSDFuncOp
         return NodeValue.makeInteger(len) ;
     }
     
+    public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue nvFlags)
+    {
+        String pat = checkAndGetString("replace", nvPattern).getLiteralLexicalForm() ;
+        int flags = 0 ;
+        if ( nvFlags != null )
+        {
+            String flagsStr = checkAndGetString("replace", nvFlags).getLiteralLexicalForm() ;
+            flags = RegexJava.makeMask(flagsStr) ;
+        }
+        
+        return strReplace(nvStr, Pattern.compile(pat, flags), nvReplacement) ;
+    }
+
+    public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement)
+    {
+        String n = checkAndGetString("replace", nvStr).getLiteralLexicalForm() ;
+        String rep = checkAndGetString("replace", nvReplacement).getLiteralLexicalForm() ;
+        String x = pattern.matcher(n).replaceAll(rep) ;
+        return NodeValue.makeString(x) ;
+    }
+    
+
+    public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement)
+    {
+        return strReplace(nvStr, nvPattern, nvReplacement, null) ;
+    }    
+
     public static NodeValue substring(NodeValue v1, NodeValue v2)
     {
         return substring(v1, v2, null) ; 
@@ -444,7 +469,6 @@ public class XSDFuncOp
                 if ( start < 0 )
                     length = length-start ; // Address to end of string.
             }
-            
            
             int finish = start + length ;
             
@@ -1310,5 +1334,5 @@ public class XSDFuncOp
             idx++ ;
             sb.append(indicator) ;
         }
-    }        
+    }
 }

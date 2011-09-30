@@ -52,7 +52,7 @@ public class RegexJava implements RegexEngine
     }
 
 
-    private int makeMask(String modifiers)
+    public static int makeMask(String modifiers)
     {
         if ( modifiers == null )
             return 0 ;

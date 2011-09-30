@@ -3,7 +3,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.8.9
 
-+ Remove ALQR from ARQ.  LARQ is now a separate Jena module.
++ Add function UUID 
++ Add function REPLACE (see fn:string-replace in XPath/XQuery F&O)  
++ Remove LARQ from ARQ.  LARQ is now a separate Jena module.
 + Fix reuse of query objects (aggregation used shared state) (JENA-121)
 + Spill to disk update (enable with ARQ.spillOnDiskUpdateThreshold) (JENA-45)
 + External sort (enable with ARQ.spillOnDiskSortingThreshold) (JENA-44) 
