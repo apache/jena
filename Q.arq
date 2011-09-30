@@ -1,4 +1,0 @@
-SELECT GROUP_CONCAT(?o ; ORDER BY ?p )
-{
-  ?s ?p ?o
-} GROUP BY ?o

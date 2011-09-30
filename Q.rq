@@ -1,4 +1,0 @@
-PREFIX :	<http://www.example.org/>
-
-SELECT *
-{  ?x   ^(:a/:b)   ?y  }

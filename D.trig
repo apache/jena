@@ -1,9 +1,0 @@
-@prefix :     <http://example.org/book/> .
-@prefix : <http://example/> .
-{
-  :x1 a :C1 .
-}
-
-:graph {
-  :x2 a :C1 .
-}

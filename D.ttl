@@ -1,8 +1,0 @@
-@prefix :        <http://www.example.org/> .
-
-:y1  :a  :o1 .
-:o1 :b  :x1 .
-
-:y2  :b  :o2 .
-:o2  :a  :x2 .
-
