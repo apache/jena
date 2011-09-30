@@ -100,9 +100,6 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>src-test</testSourceDirectory>
-    
     <!-- The filter file is written by antrun -->
     <filters>
       <filter>${project.basedir}/target/filter.properties</filter>
@@ -112,6 +109,7 @@
       <resource>
         <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <filtering>true</filtering>
+	<!-- FIXME -->
         <directory>resources</directory>
       </resource>
     </resources>
@@ -130,6 +128,11 @@
             <include>**/TS_*.java</include>
           </includes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -212,18 +215,11 @@ build.time.txt=${build.time.txt}
         hence two executions configured -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-          </descriptors>
-        </configuration>
 	<executions>
 	  <execution>
 	    <id>create-assembly</id>
 	    <phase>package</phase>
-	    <goals>
-	      <goal>single</goal>
-	    </goals>
+	    <goals><goal>single</goal></goals>
 	    <configuration>
 	      <finalName>${assembly.root.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
