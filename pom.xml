@@ -206,12 +206,14 @@
 		<goal>jar-no-fork</goal> 
 	      </goals>
 	    </execution>
+	    <!-- Only material in the main jar
 	    <execution>
 	      <id>attach-sources-test</id>
 	      <goals>
 		<goal>test-jar-no-fork</goal>
 	      </goals>
 	    </execution>
+	    -->
 	  </executions>
 	</plugin>
 	
