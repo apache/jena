@@ -1,9 +1,0 @@
-##(graph@ "D.ttl")
-
-(prefix ((: <http://example/>)
-	 (z: <http://example/#>)
-	 (x: <http://example/#>))
-  (graph
-    (:x :p 1)
-    (triple :x x:p 2)
-    ))

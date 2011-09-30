@@ -1,5 +1,0 @@
-(prefix ((: <http://example/>))
-  (service <http://sparql.org/sparql>
-    (bgp [triple ?s ?p ?o])
-    ))
-
