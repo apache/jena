@@ -4,7 +4,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
@@ -33,7 +32,6 @@
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
-
   </properties>
 
   <dependencies>

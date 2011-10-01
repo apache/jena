@@ -122,6 +122,8 @@
 [<CONTAINS>]    ::= 'CONTAINS'
 [<STRSTARTS>]   ::= 'STRSTARTS'
 [<STRENDS>]     ::= 'STRENDS'
+[<STRBEFORE>]   ::= 'STRBEFORE'
+[<STRAFTER>]    ::= 'STRAFTER'
 [<YEAR>]        ::= 'YEAR'
 [<MONTH>]       ::= 'MONTH'
 [<DAY>]         ::= 'DAY'
@@ -134,7 +136,7 @@
 [<UUID>]        ::= 'UUID'
 [<VERSION>]     ::= 'VERSION'
 [<MD5>]         ::= 'MD5'
-[<SHA1>]        ::= 'SHA1'
+[<SHA1>]        ::= 'SHA1'SELECT * { ?s ?p ?o }
 [<SHA224>]      ::= 'SHA224'
 [<SHA256>]      ::= 'SHA256'
 [<SHA384>]      ::= 'SHA384'
