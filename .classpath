@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="src-test"/>
-	<classpathentry kind="src" path="resources"/>
-	<classpathentry excluding="/" kind="src" path="src-dev"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/icu4j_3_4.jar"/>
-	<classpathentry kind="lib" path="lib/junit-4.4.jar"/>
-	<classpathentry kind="lib" path="lib-build/JFlex-1.4.1.jar"/>
-	<classpathentry kind="output" path="classes"/>
+  <classpathentry excluding="/" kind="src" path="src-dev"/>
+  <classpathentry kind="src" path="src/main/java"/>
+  <classpathentry kind="src" path="src/main/resources"/>
+  <classpathentry kind="src" path="src/test/java"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" 
+		  path="M2_REPO/junit/junit/4.9/junit-4.9.jar" 
+		  sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
+  <classpathentry kind="var" 
+		  path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" 
+		  sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
+  <classpathentry kind="output" path="classes"/>
 </classpath>

@@ -1,5 +1,5 @@
 <assembly>
-  <!--<id>dist</id> Makes the name VER.zip -->
+  <id>dist</id>
   
   <baseDirectory>IRI-${project.version}</baseDirectory>
   <formats>
@@ -21,21 +21,15 @@
   <fileSets>
     <fileSet>
       <includes>
-        <include>Copyright.txt</include>
+        <include>README*</include>
+        <include>DISCLAIMER*</include>
+        <include>LICENSE*</include>
+        <include>NOTICE*</include>
+        <include>ChangeLog.txt</include>
         <include>pom.xml</include>
       </includes>
     </fileSet>
     
-    <!--
-     <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>${this.root}-tests.jar</include>
-      </includes>
-    </fileSet>
-    -->
-
      <!-- Put sources at the top level -->
     <fileSet>
       <directory>${project.build.directory}</directory>
