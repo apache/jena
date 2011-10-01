@@ -576,6 +576,38 @@ public class XSDFuncOp
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
     }
+    
+    public static NodeValue strBefore(NodeValue string, NodeValue match)
+    {
+        check2("strBefore", string, match) ;
+        String lex1 = string.asNode().getLiteralLexicalForm() ;
+        String lex2 = match.asNode().getLiteralLexicalForm() ;
+        if ( lex2.length() == 0 )
+            return NodeValue.nvEmptyString ;
+        
+        int i = lex1.indexOf(lex2) ;
+        if ( i < 0 )
+            return NodeValue.nvEmptyString ;
+        
+        String s = lex1.substring(0, i) ;
+        return NodeValue.makeString(s) ;
+    }
+    
+    public static NodeValue strAfter(NodeValue string, NodeValue match)
+    {
+        check2("strAfter", string, match) ;
+        String lex1 = string.asNode().getLiteralLexicalForm() ;
+        String lex2 = match.asNode().getLiteralLexicalForm() ;
+        if ( lex2.length() == 0 )
+            return NodeValue.nvEmptyString ;
+        
+        int i = lex1.indexOf(lex2) ;
+        if ( i < 0 )
+            return NodeValue.nvEmptyString ;
+        i += lex2.length() ;
+        String s = lex1.substring(i) ;
+        return NodeValue.makeString(s) ;
+    }
 
     public static NodeValue strLowerCase(NodeValue string)
     {

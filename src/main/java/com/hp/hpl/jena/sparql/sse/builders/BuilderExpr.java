@@ -263,6 +263,8 @@ public class BuilderExpr
         dispatch.put(Tags.tagStrLowercase, buildStrLowercase) ;
         dispatch.put(Tags.tagStrEnds, buildStrEnds) ;
         dispatch.put(Tags.tagStrStarts, buildStrStarts) ;
+        dispatch.put(Tags.tagStrBefore, buildStrBefore) ;
+        dispatch.put(Tags.tagStrAfter, buildStrAfter) ;
         dispatch.put(Tags.tagStrContains, buildStrContains) ;
         dispatch.put(Tags.tagStrEncodeForURI, buildStrEncode) ;
         dispatch.put(Tags.tagConcat, buildConcat) ;
@@ -796,7 +798,7 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {
-            BuilderLib.checkLength(3, list, "ends: wanted 2 arguments: got: "+numArgs(list)) ;
+            BuilderLib.checkLength(3, list, "strends: wanted 2 arguments: got: "+numArgs(list)) ;
             Expr ex1 = buildExpr(list.get(1)) ;
             Expr ex2 = buildExpr(list.get(2)) ;
             return new E_StrEndsWith(ex1, ex2) ; 
@@ -807,12 +809,36 @@ public class BuilderExpr
     {
         public Expr make(ItemList list)
         {     
-            BuilderLib.checkLength(3, list, "starts: wanted 2 arguments: got: "+numArgs(list)) ;
+            BuilderLib.checkLength(3, list, "strstarts: wanted 2 arguments: got: "+numArgs(list)) ;
             Expr ex1 = buildExpr(list.get(1)) ;
             Expr ex2 = buildExpr(list.get(2)) ;
             return new E_StrStartsWith(ex1, ex2) ; 
         }
     } ;
+
+    final protected Build buildStrBefore = new Build()
+    {
+        public Expr make(ItemList list)
+        {     
+            BuilderLib.checkLength(3, list, "strbefore: wanted 2 arguments: got: "+numArgs(list)) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrBefore(ex1, ex2) ; 
+        }
+    } ;
+    
+    final protected Build buildStrAfter = new Build()
+    {
+        public Expr make(ItemList list)
+        {     
+            BuilderLib.checkLength(3, list, "strafter: wanted 2 arguments: got: "+numArgs(list)) ;
+            Expr ex1 = buildExpr(list.get(1)) ;
+            Expr ex2 = buildExpr(list.get(2)) ;
+            return new E_StrAfter(ex1, ex2) ; 
+        }
+    } ;
+    
+
     
     final protected Build buildStrContains = new Build()
     {
