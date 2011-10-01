@@ -60,6 +60,7 @@
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
     -->
     <ver.junit>4.9</ver.junit>
+    <ver.icu4j>3.4.4</ver.icu4j>
     <ver.slf4j>1.6.1</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
 
