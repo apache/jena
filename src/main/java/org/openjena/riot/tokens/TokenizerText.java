@@ -461,7 +461,7 @@ public final class TokenizerText implements Tokenizer
     private void readPrefixedNameOrKeyword(Token token)
     {
         long posn = reader.getPosition() ;
-        String prefixPart = readPrefixPart() ;
+        String prefixPart = readPrefixPart() ; // (nameStartChar - '_') nameChar*
         token.setImage(prefixPart) ;
         token.setType(TokenType.KEYWORD) ;
         int ch = reader.peekChar() ;
@@ -469,7 +469,7 @@ public final class TokenizerText implements Tokenizer
         {
             reader.readChar() ;
             token.setType(TokenType.PREFIXED_NAME) ;
-            String ln = readLocalPart() ;
+            String ln = readLocalPart() ; // nameStartChar nameChar*
             token.setImage2(ln) ;
             if ( Checking ) checkPrefixedName(token.getImage(), token.getImage2()) ;
         }
