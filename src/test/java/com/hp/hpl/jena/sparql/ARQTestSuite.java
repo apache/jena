@@ -62,7 +62,6 @@ public class ARQTestSuite extends TestSuite
         
         // No warnings (e.g. bad lexical forms).
         ErrorHandlerFactory.setTestLogging(false) ;
-
         
         // ARQ dependencies
         ts.addTest(new JUnit4TestAdapter(TC_Atlas.class)) ;

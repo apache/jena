@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import java.net.MalformedURLException ;
+import java.util.regex.Pattern ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.logging.Log ;
@@ -407,12 +407,18 @@ public class FmtUtils
     
     static public String abbrevByBase(String uri, String base)
     {
+        if ( hasScheme(uri) )
+            return uri ;
         IRI baseIRI = IRIFactory.jenaImplementation().construct(base) ;
         IRI rel = baseIRI.relativize(uri, relFlags) ;
-        String r = null ;
-        try { r = rel.toASCIIString() ; }
-        catch (MalformedURLException  ex) { r = rel.toString() ; }
+        String r = rel.toString() ;
         return r ;
+    }
+    
+    static private Pattern schemePattern = Pattern.compile("[A-Za-z]+:") ;
+    static private boolean hasScheme(String uriStr)
+    {
+        return schemePattern.matcher(uriStr).matches() ;
     }
     
     private static String prefixFor(String uri, PrefixMapping mapping)
