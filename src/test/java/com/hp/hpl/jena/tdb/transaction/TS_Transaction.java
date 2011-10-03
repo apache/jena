@@ -23,6 +23,7 @@ import org.junit.runners.Suite ;
     , TestNodeTableTransDisk.class
     , TestTransSequentialMem.class
     , TestTransSequentialDisk.class
+    , TestTransRestart.class
 })
 public class TS_Transaction
 {

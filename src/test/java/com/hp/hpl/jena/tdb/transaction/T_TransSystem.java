@@ -16,14 +16,11 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.transaction ;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
 import static java.lang.String.format ;
 
-import java.io.File ;
-import java.util.ArrayList ;
-import java.util.Random ;
 import java.util.concurrent.Callable ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
@@ -40,67 +37,70 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
-/** System testing using multiple datasets of the transactions. */
-public class TestTransSystemMultiDatasets
+/** System testing of the transactions. */
+public class T_TransSystem
 {
-    // Use this to flip between FileMode.direct and FileMode.mapped
-    static { SystemTDB.setFileMode(FileMode.mapped) ; }
     static { org.openjena.atlas.logging.Log.setLog4j() ; }
-    private static Logger log = LoggerFactory.getLogger(TestTransSystemMultiDatasets.class) ;
+    private static Logger log = LoggerFactory.getLogger(T_TransSystem.class) ;
 
+    /* Notes:
+     * MS Windows does not allow memory mapped files to be deleted during the run of a JVM.
+     * This means we can't delete a database and reuse it's directory (see clean()).
+     * Therefore, this test program this does not run on MS Windows 64 bit mode.
+     */
+    
+    static { 
+        //SystemTDB.isWindows
+        if ( true )
+            SystemTDB.setFileMode(FileMode.direct) ;
+        
+        if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )
+            log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
+    }
+    
     static boolean MEM = false ;
-    static boolean USE_TRANSACTIONS = false ;
     
-    static final int NUM_DATASETS = 3 ;
-    static final ArrayList<Location> LOCATIONS = new ArrayList<Location>() ; 
-    
-    static {
-    	for ( int i = 0; i < NUM_DATASETS; i++ ) 
-    		LOCATIONS.add(createLocation()) ;
-    }
-
-    private static int count_datasets = 0 ;
-    static Location createLocation() {
-    	return MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB() + File.separator + "DB-" + ++count_datasets) ;
-    }
+    static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 
     static final int Iterations             = MEM ? 1000 : 100 ;
     // Output style.
     static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     
-    static final int numReaderTasks         = 10 ;
-    static final int numWriterTasksA        = 10 ;
-    static final int numWriterTasksC        = 10 ;
+    /*
+     * 5/0/5 blocks. with 50/50 pause, 50R/ 20W
+     * Others?
+     */
 
-    static final int readerSeqRepeats       = 8 ; 
-    static final int readerMaxPause         = 50 ;
+    static final int numReaderTasks         = 5 ;
+    static final int numWriterTasksA        = 2 ; 
+    static final int numWriterTasksC        = 5 ;
+
+    static final int readerSeqRepeats       = 8 ;
+    static final int readerMaxPause         = 25 ;
 
     static final int writerAbortSeqRepeats  = 4 ;
     static final int writerCommitSeqRepeats = 4 ;
-    static final int writerMaxPause         = 25 ;
-
+    static final int writerMaxPause         = 20 ;
     
     public static void main(String...args)
     {
+        String x = (MEM?"memory":"disk["+SystemTDB.fileMode()+"]") ;
+        
         if ( logging )
-            log.info("START ("+ (MEM?"memory":"disk") + ", {} iterations)", Iterations) ;
+            log.info("START ({}, {} iterations)", x, Iterations) ;
         else
-            printf("START (%s, %d iterations)\n", (MEM?"memory":"disk"), Iterations) ;
+            printf("START (%s, %d iterations)\n", x, Iterations) ;
         
         int N = (Iterations < 10) ? 1 : Iterations / 10 ;
         N = Math.min(N, 100) ;
@@ -120,7 +120,7 @@ public class TestTransSystemMultiDatasets
                 if ( i%N == (N-1) )
                     println() ;
             }
-            new TestTransSystemMultiDatasets().manyReaderAndOneWriter() ;
+            new T_TransSystem().manyReaderAndOneWriter() ;
         }
         if ( inlineProgress )
         {
@@ -137,33 +137,27 @@ public class TestTransSystemMultiDatasets
     
     private static void clean()
     {
-    	for ( Location location : LOCATIONS ) {
-            if ( USE_TRANSACTIONS ) 
-                StoreConnection.release(location) ;
-            else 
-                TDBMaker.releaseLocation(location) ;
-            if ( ! location.isMem() )
-                FileOps.clearDirectory(location.getDirectoryPath()) ;			
-		}
+        StoreConnection.release(LOC) ;
+        if ( ! LOC.isMem() )
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
     }
 
-    static class ReaderTx implements Callable<Object>
+    static class Reader implements Callable<Object>
     {
         private final int repeats ;
         private final int maxpause ;
-        private final TestTransSystemMultiDatasets tts ; 
+        private final StoreConnection sConn ; 
     
-        ReaderTx(TestTransSystemMultiDatasets tts, int numSeqRepeats, int pause)
+        Reader(StoreConnection sConn, int numSeqRepeats, int pause)
         {
             this.repeats = numSeqRepeats ;
             this.maxpause = pause ;
-            this.tts = tts ;
+            this.sConn = sConn ;
         }
     
         @Override
         public Object call()
         {
-        	StoreConnection sConn = tts.getStoreConnection() ;
             DatasetGraphTxn dsg = null ;
             try
             {
@@ -197,32 +191,31 @@ public class TestTransSystemMultiDatasets
         }
     }
 
-    static abstract class WriterTx implements Callable<Object>
+    static abstract class Writer implements Callable<Object>
     {
         private final int repeats ;
         private final int maxpause ;
-        private final TestTransSystemMultiDatasets tts ;
+        private final StoreConnection sConn ;
         private final boolean commit ; 
     
-        protected WriterTx(TestTransSystemMultiDatasets tts, int numSeqRepeats, int pause, boolean commit)
+        protected Writer(StoreConnection sConn, int numSeqRepeats, int pause, boolean commit)
         {
             this.repeats = numSeqRepeats ;
             this.maxpause = pause ;
-            this.tts = tts ;
+            this.sConn = sConn ;
             this.commit = commit ;
         }
         
         @Override
         public Object call()
         {
-        	StoreConnection sConn = tts.getStoreConnection() ;
             DatasetGraphTxn dsg = null ;
             try { 
                 int id = gen.incrementAndGet() ;
                 for ( int i = 0 ; i < repeats ; i++ )
                 {
-                    log.debug("writer start "+id+"/"+i) ;                
                     dsg = sConn.begin(ReadWrite.WRITE) ;
+                    log.debug("writer start "+id+"/"+i) ;
 
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     int z = change(dsg, id, i) ;
@@ -255,6 +248,7 @@ public class TestTransSystemMultiDatasets
             catch (RuntimeException ex)
             { 
                 ex.printStackTrace(System.err) ;
+                System.exit(1) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
@@ -269,158 +263,39 @@ public class TestTransSystemMultiDatasets
         protected abstract int change(DatasetGraphTxn dsg, int id, int i) ;
     }
 
-    static class Reader implements Callable<Object>
-    {
-        private final int repeats ;
-        private final int maxpause ;
-        private final TestTransSystemMultiDatasets tts ; 
-    
-        Reader(TestTransSystemMultiDatasets tts, int numSeqRepeats, int pause)
-        {
-            this.repeats = numSeqRepeats ;
-            this.maxpause = pause ;
-            this.tts = tts ;
-        }
-    
-        @Override
-        public Object call()
-        {
-            DatasetGraph dsg = null ; 
-            Lock lock = null ; 
-            try
-            {
-                dsg = tts.getDatasetGraph() ;
-                lock = dsg.getLock() ;
-                int id = gen.incrementAndGet() ;
-                for (int i = 0; i < repeats; i++)
-                {
-                    try {
-                        lock.enterCriticalSection(Lock.READ) ;
-                        log.debug("reader start " + id + "/" + i) ;
-
-                        int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                        pause(maxpause) ;
-                        int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                        if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
-                                                      "read-" + i, x1, x2, id, i)) ;
-                        log.debug("reader finish " + id + "/" + i) ;
-                    } catch (RuntimeException ex)
-                    {
-                        log.debug("reader error " + id + "/" + i) ;
-                        ex.printStackTrace() ;
-                    } finally {
-                        lock.leaveCriticalSection() ;                        
-                    }
-                }
-                return null ;
-            } catch (RuntimeException ex)
-            {
-                ex.printStackTrace(System.err) ;
-                return null ;
-            }
-        }
-    }
-    
-    static abstract class Writer implements Callable<Object>
-    {
-        private final int repeats ;
-        private final int maxpause ;
-        private final TestTransSystemMultiDatasets tts ;
-    
-        protected Writer(TestTransSystemMultiDatasets tts, int numSeqRepeats, int pause)
-        {
-            this.repeats = numSeqRepeats ;
-            this.maxpause = pause ;
-            this.tts = tts ;
-        }
-        
-        @Override
-        public Object call()
-        {
-            DatasetGraph dsg = null ; 
-            Lock lock = null ; 
-            try {
-                dsg = tts.getDatasetGraph() ;
-                lock = dsg.getLock() ;
-                int id = gen.incrementAndGet() ;
-                for ( int i = 0 ; i < repeats ; i++ )
-                {
-                    try {
-                        lock.enterCriticalSection(Lock.WRITE) ;
-                        log.debug("writer start "+id+"/"+i) ;                
-
-                        int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                        int z = change(dsg, id, i) ;
-                        pause(maxpause) ;
-                        int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                        if ( x1+z != x2 )
-                        {
-                            log.warn(format("WRITER: %s Change seen: %d + %d != %d : id=%d: i=%d", "write-" + i, x1, z, x2, id, i)) ;
-                            return null ;
-                        }
-                        log.debug("writer finish "+id+"/"+i) ;                
-                    } catch (RuntimeException ex)
-                    {
-                        log.debug("writer error "+id+"/"+i) ;         
-                        System.err.println(ex.getMessage()) ;
-                        ex.printStackTrace() ;
-                    } finally {
-                        lock.leaveCriticalSection() ;                        
-                    }
-                }
-                return null ;
-            } 
-            catch (RuntimeException ex) 
-            { 
-                ex.printStackTrace(System.err) ;
-                return null ;
-            } 
-        }
-    
-        // return the delta.
-        protected abstract int change(DatasetGraph dsg, int id, int i) ;
-    }
-    
     @BeforeClass 
     public static void beforeClass()
     {
-    	for ( Location location : LOCATIONS ) {
-            if ( ! location.isMem() )
-                FileOps.clearDirectory(location.getDirectoryPath()) ;    		
-    	}
+        if ( ! LOC.isMem() )
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
         StoreConnection.reset() ;
+        StoreConnection sConn = StoreConnection.make(LOC) ;
+        DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
+        dsg.add(q1) ;
+        dsg.add(q2) ;
+        initCount = 2 ;
+        dsg.commit() ;
+        dsg.close() ;
     }
-
+    
     @AfterClass 
     public static void afterClass() {}
 
     private StoreConnection sConn ;
-    private static Random random = new Random(System.currentTimeMillis()) ;
-
     protected synchronized StoreConnection getStoreConnection()
     {
-        StoreConnection sConn = StoreConnection.make(LOCATIONS.get(random.nextInt(NUM_DATASETS))) ;
+        StoreConnection sConn = StoreConnection.make(LOC) ;
         //sConn.getTransMgr().recording(true) ;
         return sConn ;
     }
     
-    protected synchronized DatasetGraph getDatasetGraph()
-    {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph(LOCATIONS.get(random.nextInt(NUM_DATASETS))) ; 
-        
-        if ( dsg == null )
-            throw new RuntimeException("DatasetGraph is null!") ;
-        
-        return dsg ;
-    }
-    
-    public TestTransSystemMultiDatasets() {}
+    public T_TransSystem() {}
         
     //@Test
     public void manyRead()
     {
         final StoreConnection sConn = getStoreConnection() ;
-        Callable<?> proc = new ReaderTx(this, 50, 200)  ;        // Number of repeats, max pause
+        Callable<?> proc = new Reader(sConn, 50, 200)  ;        // Number of repeats, max pause
             
         for ( int i = 0 ; i < 5 ; i++ )
             execService.submit(proc) ;
@@ -430,43 +305,37 @@ public class TestTransSystemMultiDatasets
             execService.awaitTermination(100, TimeUnit.SECONDS) ;
         } catch (InterruptedException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err) ;
         }
     }
     
     //@Test
     public void manyReaderAndOneWriter()
     {
-        Callable<?> procRTx = new ReaderTx(this, readerSeqRepeats, readerMaxPause) ;      // Number of repeats, max pause
-        Callable<?> procWTx_a = new WriterTx(this, writerAbortSeqRepeats, writerMaxPause, false)  // Number of repeats, max pause, commit. 
+        final StoreConnection sConn = getStoreConnection() ;
+        
+        Callable<?> procR = new Reader(sConn, readerSeqRepeats, readerMaxPause) ;      // Number of repeats, max pause
+        Callable<?> procW_a = new Writer(sConn, writerAbortSeqRepeats, writerMaxPause, false)  // Number of repeats, max pause, commit. 
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
-            { return changeProc(dsg, id, i) ; }
+            {  
+                return changeProc(dsg, id, i) ; 
+            }
         } ;
-        Callable<?> procWTx_c = new WriterTx(this, writerCommitSeqRepeats, writerMaxPause, true)  // Number of repeats, max pause, commit. 
+            
+        Callable<?> procW_c = new Writer(sConn, writerCommitSeqRepeats, writerMaxPause, true)  // Number of repeats, max pause, commit. 
         {
             @Override
             protected int change(DatasetGraphTxn dsg, int id, int i)
-            { return changeProc(dsg, id, i) ; }
+            { 
+                return changeProc(dsg, id, i) ;
+            }
         } ;
 
-        Callable<?> procR = new Reader(this, readerSeqRepeats, readerMaxPause) ;
-        Callable<?> procW = new Writer(this, writerCommitSeqRepeats, writerMaxPause) 
-        {
-            @Override
-            protected int change(DatasetGraph dsg, int id, int i)
-            { return changeProc(dsg, id, i) ; }
-        } ;
-
-        if ( USE_TRANSACTIONS ) {
-            submit(execService, procRTx,   numReaderTasks) ;
-            submit(execService, procWTx_c, numWriterTasksC) ;
-            submit(execService, procWTx_a, numWriterTasksA) ;
-        } else {
-            submit(execService, procR, numReaderTasks) ;
-            submit(execService, procW, numWriterTasksC) ;
-        }
+        submit(execService, procR,   numReaderTasks) ;
+        submit(execService, procW_c, numWriterTasksC) ;
+        submit(execService, procW_a, numWriterTasksA) ;
         
         try
         {
@@ -474,7 +343,7 @@ public class TestTransSystemMultiDatasets
             execService.awaitTermination(100, TimeUnit.SECONDS) ;
         } catch (InterruptedException e)
         {
-            e.printStackTrace();
+            e.printStackTrace(System.err) ;
         } 
     }
 
@@ -484,7 +353,7 @@ public class TestTransSystemMultiDatasets
             execService.submit(proc) ;
     }
 
-    static int changeProc(DatasetGraph dsg, int id, int i)
+    static int changeProc(DatasetGraphTxn dsg, int id, int i)
     {
         int count = 0 ;
         int maxN = 500 ;
