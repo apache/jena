@@ -72,8 +72,8 @@ public class ObjectFileStorage implements ObjectFile
     {
         this.file = file ;
         filesize = file.size() ;
+        this.file.position(filesize) ;  // End of file.
         log("File size: 0x%X, posn: 0x%X", filesize, file.position()) ;
-        //writeBuffer = null ; 
         writeBuffer = (bufferSize >= 0) ? ByteBuffer.allocate(bufferSize) : null ;
     }
     

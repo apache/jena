@@ -26,13 +26,13 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.junit.After ;
+import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
@@ -43,19 +43,43 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class TestNodeTableObjectFileCorruption {
 
-    // private static final String path = System.getProperty("java.io.tmpdir") + File.separator + "DB" ;
+    //private static final String path = System.getProperty("java.io.tmpdir") + File.separator + "DB" ;
     private static final String path = "tmp/DB" ;
     private static Location location = new Location (path) ;
-    
+    private static boolean useTransactionsSetup = false ;
+
     @Before public void setup() {
         cleanup() ;
-
         FileOps.ensureDir(path) ;
+        if (  useTransactionsSetup )
+            setupTxn() ;
+        else
+            setupPlain() ;
+    }
+    
+    @After public void teardown()
+    {
+        cleanup() ;
+    }
+    
+    private static void setupPlain() {
+        // Make without transactions.
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
+        //dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ; 
+        dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("foo")) ; 
+        dsg.close() ;
+        TDBMaker.releaseDataset(dsg) ;
+        return ;
+    }
+
+    private static void setupTxn() {
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
         dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("foo")) ; 
@@ -64,11 +88,7 @@ public class TestNodeTableObjectFileCorruption {
         dsg.close() ; 
         StoreConnection.release(location) ; 
     }
-    
-    @After public void teardown() {
-        cleanup() ;
-    }
-
+        
     private static void cleanup() {
         File dir = new File(path) ;
         if ( dir.exists() ) {
@@ -77,36 +97,30 @@ public class TestNodeTableObjectFileCorruption {
         }
         assertFalse ( dir.exists() ) ;
     }
+
     
-    @Test public void test_01() {
+    @Test
+    public void testPlain() {
+        assertEquals (3, countRDFNodes()) ;
+        DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
+        dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ; 
+        dsg.close() ; 
+        assertEquals (4, countRDFNodes()) ;
+    }
+    
+    @Test
+    public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
 
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
         dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ; 
         dsg.commit() ; 
-        dsg.close() ;
-        StoreConnection.release(location) ; 
-    
-        assertEquals (4, countRDFNodes()) ;
-    }
-
-
-    @Test public void test_02() {
-        assertEquals (3, countRDFNodes()) ;
-
-        DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
-        Lock lock = dsg.getLock() ;
-        lock.enterCriticalSection(Lock.WRITE) ;
-        dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ;
-        lock.leaveCriticalSection() ;
-        TDB.sync(dsg) ;
         dsg.close() ; 
-
         assertEquals (4, countRDFNodes()) ;
     }
     
-    private int countRDFNodes() {
+    private static int countRDFNodes() {
         ObjectFile objects = FileFactory.createObjectFileDisk( location.getPath(Names.indexId2Node, Names.extNodeData) ) ;
         int count = 0 ;
         Iterator<Pair<Long,ByteBuffer>> iter = objects.all() ; 
