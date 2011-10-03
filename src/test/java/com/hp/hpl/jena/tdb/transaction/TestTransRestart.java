@@ -45,6 +45,7 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 /** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
     static { 
+        // Only if run directly, not in test suite.
         if ( true )
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
@@ -95,7 +96,9 @@ public class TestTransRestart extends BaseTest {
             FileOps.clearDirectory(path) ;
             FileOps.delete(path) ;
         }
-        assertFalse ( dir.exists() ) ;
+        if ( ! SystemTDB.isWindows )
+            // Windows, any mode, does not remove directories, at least not instantly. 
+            assertFalse ( dir.exists() ) ;
     }
 
     
