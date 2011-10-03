@@ -33,16 +33,23 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.* ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
-/** Test of reattaching to persistent database */  
+/** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
-    private static final String path = ConfigTest.getTestingDirDB() ;
+    static { 
+        if ( false )
+            SystemTDB.setFileMode(FileMode.direct) ; 
+    }
+    
+    private static final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
     private static Location location = new Location (path) ;
     private static boolean useTransactionsSetup = false ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
