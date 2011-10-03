@@ -45,12 +45,13 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 /** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
     static { 
-        if ( false )
+        if ( true )
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     
-    private static final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
-    private static Location location = new Location (path) ;
+    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
+    private Location location = new Location (path) ;
+    
     private static boolean useTransactionsSetup = false ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
@@ -69,7 +70,7 @@ public class TestTransRestart extends BaseTest {
         cleanup() ;
     }
     
-    private static void setupPlain() {
+    private void setupPlain() {
         // Make without transactions.
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
         dsg.add(quad1) ; 
@@ -78,7 +79,7 @@ public class TestTransRestart extends BaseTest {
         return ;
     }
 
-    private static void setupTxn() {
+    private void setupTxn() {
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
         dsg.add(quad1) ; 
@@ -88,7 +89,7 @@ public class TestTransRestart extends BaseTest {
         StoreConnection.release(location) ; 
     }
         
-    private static void cleanup() {
+    private void cleanup() {
         File dir = new File(path) ;
         if ( dir.exists() ) {
             FileOps.clearDirectory(path) ;
@@ -123,7 +124,7 @@ public class TestTransRestart extends BaseTest {
     }
     
     // Only call when the dataset is not in TDBMaker or in StoreConnection  
-    private static int countRDFNodes() {
+    private int countRDFNodes() {
         ObjectFile objects = FileFactory.createObjectFileDisk( location.getPath(Names.indexId2Node, Names.extNodeData) ) ;
         int count = 0 ;
         Iterator<Pair<Long,ByteBuffer>> iter = objects.all() ; 
