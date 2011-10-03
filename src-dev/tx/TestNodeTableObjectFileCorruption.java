@@ -25,18 +25,21 @@ import java.io.File ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -45,11 +48,11 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class TestNodeTableObjectFileCorruption {
 
-    //private static final String path = System.getProperty("java.io.tmpdir") + File.separator + "DB" ;
+    // private static final String path = System.getProperty("java.io.tmpdir") + File.separator + "DB" ;
     private static final String path = "tmp/DB" ;
     private static Location location = new Location (path) ;
     
-    @BeforeClass public static void setup() {
+    @Before public void setup() {
         cleanup() ;
 
         FileOps.ensureDir(path) ;
@@ -62,7 +65,7 @@ public class TestNodeTableObjectFileCorruption {
         StoreConnection.release(location) ; 
     }
     
-    @AfterClass public static void teardown() {
+    @After public void teardown() {
         cleanup() ;
     }
 
@@ -75,15 +78,31 @@ public class TestNodeTableObjectFileCorruption {
         assertFalse ( dir.exists() ) ;
     }
     
-    @Test public void test() {
-        //assertEquals (3, countRDFNodes()) ;
+    @Test public void test_01() {
+        assertEquals (3, countRDFNodes()) ;
 
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
         dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ; 
         dsg.commit() ; 
-        dsg.close() ; 
+        dsg.close() ;
+        StoreConnection.release(location) ; 
     
+        assertEquals (4, countRDFNodes()) ;
+    }
+
+
+    @Test public void test_02() {
+        assertEquals (3, countRDFNodes()) ;
+
+        DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
+        Lock lock = dsg.getLock() ;
+        lock.enterCriticalSection(Lock.WRITE) ;
+        dsg.add(Quad.defaultGraphIRI, Node.createURI("foo:bar"), RDFS.label.asNode(), Node.createLiteral("bar")) ;
+        lock.leaveCriticalSection() ;
+        TDB.sync(dsg) ;
+        dsg.close() ; 
+
         assertEquals (4, countRDFNodes()) ;
     }
     
