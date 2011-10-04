@@ -17,6 +17,13 @@ public class TestObjectFileMem extends AbstractTestObjectFile
         return FileFactory.createObjectFileMem("test") ;
     }
 
+    @Override
+    protected void release(ObjectFile file)
+    {
+        file.truncate(0) ;
+        file.close() ;
+    }
+
 }
 
 /*

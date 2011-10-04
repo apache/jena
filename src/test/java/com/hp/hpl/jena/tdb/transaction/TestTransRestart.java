@@ -94,7 +94,7 @@ public class TestTransRestart extends BaseTest {
         File dir = new File(path) ;
         if ( dir.exists() ) {
             FileOps.clearDirectory(path) ;
-            FileOps.delete(path) ;
+            FileOps.deleteSilent(path) ;
         }
         if ( ! SystemTDB.isWindows )
             // Windows, any mode, does not remove directories, at least not instantly. 

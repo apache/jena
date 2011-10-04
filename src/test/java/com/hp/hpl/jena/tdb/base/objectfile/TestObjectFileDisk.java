@@ -27,6 +27,13 @@ public class TestObjectFileDisk extends AbstractTestObjectFile
         // No buffering.
         return new ObjectFileStorage(chan, -1) ;
     }
+    
+    @Override
+    protected void release(ObjectFile file)
+    {
+        file.truncate(0) ;
+        file.close() ;
+    }
 }
 
 /*

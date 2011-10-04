@@ -6,26 +6,32 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import static com.hp.hpl.jena.tdb.base.BufferTestLib.sameValue ;
+
 import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.block.Block ;
-
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
-import static com.hp.hpl.jena.tdb.base.BufferTestLib.* ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
 
 public abstract class AbstractTestObjectFile extends BaseTest
 {
+    ObjectFile file ;
+
+    @Before public void before() { file = make() ; }
+    @After public void after() { release(file); }
+    
     @Test public void objectfile_01()
     {
-        ObjectFile file = make() ;
+
         assertEquals(0, file.length()) ;
     }
 
     @Test public void objectfile_02()
     {
-        ObjectFile file = make() ;
         Block block = file.allocWrite(10) ;
         fill(block.getByteBuffer()) ;
         file.completeWrite(block) ;
@@ -37,12 +43,10 @@ public abstract class AbstractTestObjectFile extends BaseTest
         // position
         
         assertTrue(sameValue(block.getByteBuffer(), bb)) ;
-        
     }
 
     @Test public void objectfile_03()
     {
-        ObjectFile file = make() ;
         ByteBuffer bb = ByteBuffer.allocate(10) ;
         fill(bb) ;
         long x1 = file.write(bb) ;
@@ -51,8 +55,6 @@ public abstract class AbstractTestObjectFile extends BaseTest
 
     @Test public void objectfile_04()
     {
-        ObjectFile file = make() ;
-        
         Block block1 = file.allocWrite(10) ;
         fill(block1.getByteBuffer()) ;
         file.completeWrite(block1) ;
@@ -65,12 +67,10 @@ public abstract class AbstractTestObjectFile extends BaseTest
         long x2 = block2.getId() ;
         
         assertFalse(x1 == x2) ;
-        
     }
 
     @Test public void objectfile_05()
     {
-        ObjectFile file = make() ;
         ByteBuffer bb1 = ByteBuffer.allocate(10) ;
         fill(bb1) ;
         
@@ -84,7 +84,6 @@ public abstract class AbstractTestObjectFile extends BaseTest
 
     @Test public void objectfile_06()
     {
-        ObjectFile file = make() ;
         ByteBuffer bb1 = ByteBuffer.allocate(10) ;
         fill(bb1) ;
         
@@ -101,21 +100,21 @@ public abstract class AbstractTestObjectFile extends BaseTest
         assertTrue(sameValue(bb2, bb2a)) ;
     }
     
-    // Oversized writes.
-
-    @Test public void objectfile_07()
-    {
-        
-    }
-
-    @Test public void objectfile_08()
-    {}
-
-    @Test public void objectfile_09()
-    {}
-
-    @Test public void objectfile_10()
-    {}
+//    // Oversized writes.
+//
+//    @Test public void objectfile_07()
+//    {
+//        
+//    }
+//
+//    @Test public void objectfile_08()
+//    {}
+//
+//    @Test public void objectfile_09()
+//    {}
+//
+//    @Test public void objectfile_10()
+//    {}
     
     public static void fill(ByteBuffer byteBuffer)
     {
@@ -126,6 +125,7 @@ public abstract class AbstractTestObjectFile extends BaseTest
     }
 
     protected abstract ObjectFile make() ;
+    protected abstract void release(ObjectFile file) ;
 }
 
 /*
