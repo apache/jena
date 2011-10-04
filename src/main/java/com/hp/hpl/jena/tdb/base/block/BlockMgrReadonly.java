@@ -45,4 +45,3 @@ public class BlockMgrReadonly extends BlockMgrWrapper
 
     @Override public String toString()          { return "RO:"+super.toString() ; } 
 }
-

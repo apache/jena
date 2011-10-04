@@ -52,4 +52,3 @@ public class tdbrecovery extends CmdTDB
         JournalControl.recovery(dsg) ;
     }
 }
-

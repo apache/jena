@@ -30,4 +30,3 @@ public class TestIndexMem extends TestIndex
     }
 
 }
-

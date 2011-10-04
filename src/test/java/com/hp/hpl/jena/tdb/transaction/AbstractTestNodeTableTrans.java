@@ -290,4 +290,3 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     }
 
 }
-

@@ -54,4 +54,3 @@ public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
         return loc ;
     }
 }
-

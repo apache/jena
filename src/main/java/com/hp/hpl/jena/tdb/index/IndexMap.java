@@ -170,4 +170,3 @@ public class IndexMap implements Index
     }
 
 }
-

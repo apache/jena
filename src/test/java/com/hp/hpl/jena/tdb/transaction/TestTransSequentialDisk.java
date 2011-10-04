@@ -49,4 +49,3 @@ public class TestTransSequentialDisk extends AbstractTestTransSeq
         return StoreConnection.make(DIR) ;
     }
 }
-

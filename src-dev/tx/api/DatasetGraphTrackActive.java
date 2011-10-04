@@ -169,4 +169,3 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     public long size()
     { return get().size() ; }
 }
-

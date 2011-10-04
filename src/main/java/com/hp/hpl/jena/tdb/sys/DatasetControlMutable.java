@@ -58,4 +58,3 @@ public class DatasetControlMutable implements DatasetControl
         return other.iteratorControl(iter) ;
     }
 }
-

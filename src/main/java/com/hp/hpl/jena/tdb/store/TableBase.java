@@ -62,4 +62,3 @@ public class TableBase implements Sync, Closeable
     public boolean isEmpty()        { return table.isEmpty() ; }
     
 }
-

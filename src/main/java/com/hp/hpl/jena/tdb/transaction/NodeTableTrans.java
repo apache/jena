@@ -285,4 +285,3 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         }
     }
 }
-

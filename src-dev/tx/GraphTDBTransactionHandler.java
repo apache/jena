@@ -59,4 +59,3 @@ public class GraphTDBTransactionHandler implements TransactionHandler
     }
 
 }
-

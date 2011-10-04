@@ -40,4 +40,3 @@ public class TestTransSequentialMem extends AbstractTestTransSeq
         return StoreConnection.make(Location.mem()) ;
     }
 }
-

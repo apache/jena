@@ -45,4 +45,3 @@ public interface TransactionInfoMBean
     /** Number of read transactions executing */
     long getCurrentReadTransactionCount() ; 
 }
-

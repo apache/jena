@@ -94,4 +94,3 @@ public class ExTxTDB
         } finally { dsg.close() ; } // WARNING if no commit or abort.
     }
 }
-

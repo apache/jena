@@ -550,4 +550,3 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
     
 }
-

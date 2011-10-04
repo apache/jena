@@ -97,4 +97,3 @@ public class TransBlob implements TransactionLifecycle
         bytes = null ;
     }
 }
-

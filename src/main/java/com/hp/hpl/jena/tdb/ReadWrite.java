@@ -23,4 +23,3 @@ public enum ReadWrite
     READ,
     WRITE
 }
-

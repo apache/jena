@@ -36,4 +36,3 @@ public class TestNodeTableTransMem extends AbstractTestNodeTableTrans
         return Location.mem() ;
     }
 }
-
