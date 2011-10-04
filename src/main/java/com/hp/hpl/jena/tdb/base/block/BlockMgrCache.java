@@ -190,8 +190,12 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public void overwrite(Block block)
     {
-        writeCache(block) ;
+        Long id = block.getId() ;
+        // It can be a read block (by the transaction), now being written for real (enacting a transaction).
         super.overwrite(block) ;
+        // Keep read cache up-to-date. 
+        // Must at least expel the read block (which is not the overwrite block).
+        readCache.put(id, block) ;
     }
     
     private void writeCache(Block block)

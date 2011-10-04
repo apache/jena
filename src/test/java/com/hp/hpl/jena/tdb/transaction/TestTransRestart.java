@@ -46,7 +46,7 @@ import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 public class TestTransRestart extends BaseTest {
     static { 
         // Only if run directly, not in test suite.
-        if ( true )
+        if ( false )
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     

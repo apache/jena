@@ -17,6 +17,7 @@ import org.junit.runners.Suite ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.objectfile.TS_ObjectFile ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
@@ -54,6 +55,11 @@ import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
 
 public class TC_TDB
 {
+    static {
+        if ( false )
+            SystemTDB.setFileMode(FileMode.direct) ;
+    }
+    
     @BeforeClass static public void beforeClass()   
     {
         //org.apache.log4j.LogManager.resetConfiguration() ;
