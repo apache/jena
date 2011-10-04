@@ -201,7 +201,7 @@ public class BlockMgrCache extends BlockMgrSync
     private void writeCache(Block block)
     {
         Long id = block.getId() ;
-        log("Overwrite : %d", id) ;
+        log("WriteCache : %d", id) ;
         // Should not be in the read cache due to a getWrite earlier.
         if ( readCache.containsKey(id) )
             log.warn("write: Block in the read cache") ;
