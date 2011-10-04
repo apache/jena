@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
-  <artifactId>jena-arq</artifactId>
+  <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
   <version>${ver.tdb}</version>
@@ -41,10 +41,25 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.arq}</version>
       <classifier>tests</classifier>
+      <version>${ver.arq}</version>
       <scope>test</scope>
     </dependency>
+
+     <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
