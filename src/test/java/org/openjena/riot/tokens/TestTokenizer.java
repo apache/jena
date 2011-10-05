@@ -435,6 +435,47 @@ public class TestTokenizer extends BaseTest
         assertEquals("-456", token.getImage()) ;
     }
 
+    
+    @Test
+    public void tokenUnit_pname10()
+    {
+        tokenizeAndTestExact("a:a.b", TokenType.PREFIXED_NAME, "a", "a.b") ;
+    }
+    
+    @Test
+    public void tokenUnit_pname11()
+    {
+        tokenizeAndTestExact("a:0.b", TokenType.PREFIXED_NAME, "a", "0.b") ;
+    }
+    
+    @Test
+    public void tokenUnit_pname12()
+    {
+        tokenizeAndTestFirst("a:0. b", TokenType.PREFIXED_NAME, "a", "0") ;
+    }
+
+    @Test
+    public void tokenUnit_pname13()
+    {
+        // x00e9 é
+        // x0065 e and x0301 ́
+        tokenizeAndTestExact("a:xyzé", TokenType.PREFIXED_NAME, "a", "xyz\u00e9") ;
+    }
+
+    @Test
+    public void tokenUnit_pname14()
+    {
+        // x0065 e and x0301 ́  
+        tokenizeAndTestExact("a:xyze\u0301", TokenType.PREFIXED_NAME, "a", "xyze\u0301") ;
+    }
+
+    @Test
+    public void tokenUnit_pname15()
+    {
+        // x0065 e and x0301 ́  
+        tokenizeAndTestExact("a:xe\u0301y", TokenType.PREFIXED_NAME, "a", "xe\u0301y") ;
+    }
+    
 //    @Test
 //    public void tokenUnit_pname10()
 //    {
@@ -691,6 +732,12 @@ public class TestTokenizer extends BaseTest
     {
         token("''@9-b") ;
     }
+
+    @Test
+    public void directive_1() { tokenizeAndTestExact("@prefix", TokenType.DIRECTIVE, "prefix") ; }
+    
+    @Test
+    public void directive_2() { tokenizeAndTestExact("@base", TokenType.DIRECTIVE, "base") ; }
 
     @Test
     public void tokenComment_01()

@@ -18,15 +18,45 @@
 
 package org.openjena.riot.tokens;
 
-import static org.openjena.atlas.lib.Chars.* ;
-import static org.openjena.riot.system.RiotChars.* ;
+import static org.openjena.atlas.lib.Chars.CH_AT ;
+import static org.openjena.atlas.lib.Chars.CH_COLON ;
+import static org.openjena.atlas.lib.Chars.CH_COMMA ;
+import static org.openjena.atlas.lib.Chars.CH_DOT ;
+import static org.openjena.atlas.lib.Chars.CH_EQUALS ;
+import static org.openjena.atlas.lib.Chars.CH_GT ;
+import static org.openjena.atlas.lib.Chars.CH_HASH ;
+import static org.openjena.atlas.lib.Chars.CH_LBRACE ;
+import static org.openjena.atlas.lib.Chars.CH_LBRACKET ;
+import static org.openjena.atlas.lib.Chars.CH_LPAREN ;
+import static org.openjena.atlas.lib.Chars.CH_LT ;
+import static org.openjena.atlas.lib.Chars.CH_MINUS ;
+import static org.openjena.atlas.lib.Chars.CH_PLUS ;
+import static org.openjena.atlas.lib.Chars.CH_QMARK ;
+import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
+import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
+import static org.openjena.atlas.lib.Chars.CH_RBRACE ;
+import static org.openjena.atlas.lib.Chars.CH_RBRACKET ;
+import static org.openjena.atlas.lib.Chars.CH_RPAREN ;
+import static org.openjena.atlas.lib.Chars.CH_SEMICOLON ;
+import static org.openjena.atlas.lib.Chars.CH_STAR ;
+import static org.openjena.atlas.lib.Chars.CH_UNDERSCORE ;
+import static org.openjena.atlas.lib.Chars.CR ;
+import static org.openjena.atlas.lib.Chars.EOF ;
+import static org.openjena.atlas.lib.Chars.NL ;
+import static org.openjena.riot.system.RiotChars.charInArray ;
+import static org.openjena.riot.system.RiotChars.isA2Z ;
+import static org.openjena.riot.system.RiotChars.isA2ZN ;
+import static org.openjena.riot.system.RiotChars.isAlphaNumeric ;
+import static org.openjena.riot.system.RiotChars.isNewlineChar ;
+import static org.openjena.riot.system.RiotChars.isWhitespace ;
+import static org.openjena.riot.system.RiotChars.range ;
+import static org.openjena.riot.system.RiotChars.valHexChar ;
 
 import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.lib.Chars ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.RiotChars ;
 
@@ -497,8 +527,13 @@ public final class TokenizerText implements Tokenizer
     */
         
     
+    private String readPrefixPart()
+    //{ return readWordSub(false, false) ; }
+    { return readSegment(false) ; }
+    
     private String readLocalPart()
-    { return readWordSub(true, false) ; }
+    //{ return readWordSub(true, false) ; }
+    { return readSegment(true) ; }
 
     private String readSegment(boolean isLocalPart)
     { 
@@ -507,7 +542,7 @@ public final class TokenizerText implements Tokenizer
         // RiotChars has isPNChars_U_N for   ( PN_CHARS_U | [0-9] )
         stringBuilder.setLength(0) ;
         
-        // First character
+        // -- Test first character
         int ch = reader.peekChar() ;
         if ( ch == EOF )
             return "" ;
@@ -519,35 +554,47 @@ public final class TokenizerText implements Tokenizer
         {
             if ( ! RiotChars.isPNCharsBase(ch) ) return "" ;
         }
-        
+        // ch is not added to the buffer until ...
+        // -- Do remainer
         stringBuilder.append((char)ch) ;
         reader.readChar() ;
+        int chDot = 0 ;
         
-        boolean canBeLast = true ;
         for (;;)
         {
-            // Put previous chacarer in buffer
-            stringBuilder.append((char)ch) ;
-            reader.readChar() ;
-
             ch = reader.peekChar() ;
-            if ( ! RiotChars.isPNChars(ch) && ch == Chars.CH_DOT )
+            if ( RiotChars.isPNChars(ch) )
+            {
+                reader.readChar() ;
+                // Was there also a DOT?
+                if ( chDot != 0 )
+                {
+                    stringBuilder.append((char)chDot) ;
+                    chDot = 0 ;
+                }
+                stringBuilder.append((char)ch) ;
+                continue ;
+            }
+            // Not isPNChars
+            if ( ch != CH_DOT )
                 break ;
-        }
-        // End condition.
-        if ( ch != Chars.CH_DOT )
-        {
-            stringBuilder.append((char)ch) ;
+            // DOT
             reader.readChar() ;
+            chDot = ch ;
         }
+        // On exit, chDot may hold a character.
+
+        if ( chDot == CH_DOT )
+            // Unread it.
+            reader.pushbackChar(chDot) ;
+        
+        //stringBuilder.deleteCharAt(chDot)
+        
         return stringBuilder.toString() ;
     }
 
 
     
-    private String readPrefixPart()
-    { return readWordSub(false, false) ; }
-
     // Get characters between two markers.
     // strEscapes may be processed
     // endNL end of line as an ending is OK
