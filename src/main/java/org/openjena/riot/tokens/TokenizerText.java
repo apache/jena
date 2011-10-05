@@ -26,6 +26,7 @@ import java.util.NoSuchElementException ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.lib.Chars ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.RiotChars ;
 
@@ -485,7 +486,8 @@ public final class TokenizerText implements Tokenizer
     /*
     The token rules from SPARQL and Turtle.
     PNAME_NS       ::=  PN_PREFIX? ':'
-    PNAME_LN       ::=  PNAME_NS PN_LOCAL[131]  BLANK_NODE_LABEL  ::=  '_:' PN_LOCAL
+    PNAME_LN       ::=  PNAME_NS PN_LOCAL
+    
     PN_CHARS_BASE  ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
     PN_CHARS_U     ::=  PN_CHARS_BASE | '_'
     VARNAME        ::=  ( PN_CHARS_U  | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
@@ -498,6 +500,42 @@ public final class TokenizerText implements Tokenizer
     private String readLocalPart()
     { return readWordSub(true, false) ; }
 
+    private String readPrefixPart1()
+    { 
+        // PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+        stringBuilder.setLength(0) ;
+        
+        // First character
+        int ch = reader.peekChar() ;
+        if ( ch == EOF )
+            return "" ;
+        if ( ! RiotChars.isPNCharsBase(ch) )
+            return "" ;
+        stringBuilder.append((char)ch) ;
+        reader.readChar() ;
+        
+        boolean canBeLast = true ;
+        for (;;)
+        {
+            // Put previous chacarer in buffer
+            stringBuilder.append((char)ch) ;
+            reader.readChar() ;
+
+            ch = reader.peekChar() ;
+            if ( ! RiotChars.isPNChars(ch) && ch == Chars.CH_DOT )
+                break ;
+        }
+        // End condition.
+        if ( ch != Chars.CH_DOT )
+        {
+            stringBuilder.append((char)ch) ;
+            reader.readChar() ;
+        }
+        return stringBuilder.toString() ;
+    }
+
+
+    
     private String readPrefixPart()
     { return readWordSub(false, false) ; }
 

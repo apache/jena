@@ -91,6 +91,12 @@ PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
         return isPNCharsBase(ch) || ( ch == '_' ) ;
     }
     
+    public static boolean isPNChars(int ch)
+    {
+        // #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+        return isPNChars_U(ch) || ( ch == '-' ) || ch == 0x00B7 || r(ch, 0x306, 0x036F) || r(ch, 0x203F, 0x2040) ;
+    }
+    
     
     
     public static int valHexChar(int ch)
