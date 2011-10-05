@@ -500,17 +500,26 @@ public final class TokenizerText implements Tokenizer
     private String readLocalPart()
     { return readWordSub(true, false) ; }
 
-    private String readPrefixPart1()
+    private String readSegment(boolean isLocalPart)
     { 
-        // PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+        // PN_CHARS_BASE          ((PN_CHARS|'.')* PN_CHARS)?
+        // ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
+        // RiotChars has isPNChars_U_N for   ( PN_CHARS_U | [0-9] )
         stringBuilder.setLength(0) ;
         
         // First character
         int ch = reader.peekChar() ;
         if ( ch == EOF )
             return "" ;
-        if ( ! RiotChars.isPNCharsBase(ch) )
-            return "" ;
+        if ( isLocalPart )
+        {
+            if ( ! RiotChars.isPNChars_U_N(ch) ) return "" ; 
+        }
+        else
+        {
+            if ( ! RiotChars.isPNCharsBase(ch) ) return "" ;
+        }
+        
         stringBuilder.append((char)ch) ;
         reader.readChar() ;
         

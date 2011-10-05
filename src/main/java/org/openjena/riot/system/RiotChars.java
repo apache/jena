@@ -91,6 +91,11 @@ PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
         return isPNCharsBase(ch) || ( ch == '_' ) ;
     }
     
+    public static boolean isPNChars_U_N(int ch)
+    {
+        return isPNCharsBase(ch) || ( ch == '_' ) || isDigit(ch) ;
+    }
+    
     public static boolean isPNChars(int ch)
     {
         // #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
