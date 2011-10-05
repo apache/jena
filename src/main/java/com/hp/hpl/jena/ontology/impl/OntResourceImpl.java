@@ -1209,7 +1209,8 @@ public class OntResourceImpl
             if (j != null) { j.close(); }
         }
 
-        // default - try to convert and return false if fail
+        // dead code, but the compiler whines if this statement is not present
+        // and it whines (but less) if it is
         return canAs( Individual.class );
     }
 

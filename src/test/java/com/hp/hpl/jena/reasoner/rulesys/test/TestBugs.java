@@ -108,11 +108,11 @@ public class TestBugs extends TestCase {
         base.read("file:testing/reasoners/bugs/cceTest.owl");
         InfModel test = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), base);
 
-//        boolean b = 
+//        boolean b =
             anyInstancesOfNothing(test);
         ResIterator rIter = test.listSubjects();
         while (rIter.hasNext()) {
-//            Resource res = 
+//            Resource res =
                 rIter.nextResource();
         }
     }
@@ -446,7 +446,8 @@ public class TestBugs extends TestCase {
     }
 
     /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
-    public void test_oh_01() {
+    /** TODO: ijd - I temporarily disabled this test: I think we either have to remove it, rewrite it or get a license from Ole */
+    public void xxtest_oh_01() {
         String NS = "http://www.idi.ntnu.no/~herje/ja/";
         Resource[] expected = new Resource[] {
                 ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
@@ -721,7 +722,7 @@ public class TestBugs extends TestCase {
         List<Rule> rules = Rule.rulesFromURL("file:testing/reasoners/bugs/groundClosure2.rules");
         GenericRuleReasoner reasoner = new GenericRuleReasoner( rules );
         InfModel inf = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
-        
+
         String NS = "http://jena.hpl.hp.com/example#";
         Resource Phil = inf.getResource(NS + "Phil");
         Resource Paul = inf.getResource(NS + "Paul");
@@ -850,7 +851,7 @@ public class TestBugs extends TestCase {
         deductions = om.getDeductionsModel();
         assertFalse("Deductions model updating correctly", deductions.contains(i, RDF.type, B));
     }
-    
+
     /**
      * Builtin which just records whether it has been called.
      * Used in implementing testGroundClosure.
@@ -864,7 +865,7 @@ public class TestBugs extends TestCase {
             return true;
         }
     }
-    
+
     /**
      * Check ability to report literals as well as resources as culprits
      */
@@ -879,17 +880,17 @@ public class TestBugs extends TestCase {
         Object val = ((Literal)culprit).getValue();
         assertTrue( val instanceof Triple);
     }
-    
+
     private RDFNode doTestLiteralsInErrorReports(String rules) {
         GenericRuleReasoner reasoner = new GenericRuleReasoner( Rule.parseRules(rules) );
         InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
         ValidityReport validity = im.validate();
-        assertTrue (! validity.isValid()); 
+        assertTrue (! validity.isValid());
         ValidityReport.Report report = (validity.getReports().next());
         assertTrue( report.getExtension() instanceof RDFNode);
         return (RDFNode)report.getExtension();
     }
-    
+
     /**
      * Builtin which generates an arbitrary Triple to for testing.
      */
@@ -916,20 +917,20 @@ public class TestBugs extends TestCase {
         doTestRDFSSimple(ReasonerVocabulary.RDFS_DEFAULT);
         doTestRDFSSimple(ReasonerVocabulary.RDFS_SIMPLE);
     }
-    
+
     private void doTestRDFSSimple(String level) {
         Model model = ModelFactory.createDefaultModel();
         String NS = "http://jena.hpl.hp.com/example#";
         Property prop = model.createProperty(NS + "prop");
         model.add(prop, RDF.type, RDF.Property);
-        
+
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
-        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, level); 
+        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, level);
         InfModel im = ModelFactory.createInfModel(reasoner, model);
         assertTrue( im.contains(prop, RDFS.subPropertyOf, prop) );
     }
-    
-    
+
+
     /**
      * Layering one reasoner on another leads to exposed functors which
      * used to trip up validation

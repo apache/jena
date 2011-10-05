@@ -2,12 +2,12 @@
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:owl ="http://www.w3.org/2002/07/owl#"
-  xmlns     ="http://jena.hpl.hp.com/2003/03/testont/a#"
-  xml:base  ="http://jena.hpl.hp.com/2003/03/testont/a"
+  xmlns     ="http://incubator.apache.org/jena/2011/10/testont/a#"
+  xml:base  ="http://incubator.apache.org/jena/2011/10/testont/a"
 >
 
 <owl:Ontology rdf:about="">
-    <owl:imports rdf:resource="file:testing/ontology/bugs/test_hk_06/b.owl" />
+    <owl:imports rdf:resource="file:testing/ontology/testImport8/b.owl" />
 </owl:Ontology>
 
 <owl:Class rdf:ID="A">
@@ -16,5 +16,10 @@
         <rdf:Description rdf:ID="x1" />
     </owl:intersectionOf>
 </owl:Class>
+
+<owl:Property rdf:ID="p">
+  <rdfs:domain rdf:resource="#x0" />
+  <rdfs:domain rdf:resource="#x1" />
+</owl:Property>
 
 </rdf:RDF>

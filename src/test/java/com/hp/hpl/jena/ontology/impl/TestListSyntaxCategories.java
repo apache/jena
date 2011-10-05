@@ -439,6 +439,37 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
+        new DoListTest( "OWL list individuals with inference",  "file:testing/ontology/owl/list-syntax/owlDemoSchema.xml",  OntModelSpec.OWL_LITE_MEM_RULES_INF,  6, null )
+        {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
+        new DoListTest( "OWL list individuals in composite model",  null,  OntModelSpec.OWL_MEM, 1, new String[] {"http://example.com/foo#anInd"} )
+        {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel schema ) {
+                Model data = ModelFactory.createDefaultModel();
+                Resource c = schema.createResource( "http://example.com/foo#AClass" );
+                Resource i = data.createResource( "http://example.com/foo#anInd" );
+                schema.add( c, RDF.type, OWL.Class );
+                data.add( i, RDF.type, c );
+
+                OntModel composite = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, schema );
+                composite.addSubModel( data );
+
+                return composite.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
 
         new DoListTest( "OWL list all different",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )

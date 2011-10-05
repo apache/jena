@@ -24,11 +24,14 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import java.io.StringReader;
 import java.util.Iterator;
 
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
@@ -272,6 +275,174 @@ public class TestIndividual
                     iteratorTest( x.listOntClasses( false ), new Object[] {} );
                 }
             },
+
+            new OntTestCase( "Individual.canAs", true, true, true, false ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    OntClass A = m.createClass( NS + "A" );
+                    Resource r = m.createResource( NS + "r" );
+                    Resource s = m.createResource( NS + "s" );
+
+                    m.add( r, RDF.type, A );
+                    assertTrue( r.canAs( Individual.class ) );
+                    assertTrue( s.canAs( Individual.class ) ); // does not have to have an rdf:type to be an Individual
+
+                    Property p = m.createDatatypeProperty(NS + "p");
+                    m.add( r, p, m.createTypedLiteral( 42 ));
+                    assertFalse( r.getProperty( p ).getObject().canAs(Individual.class));
+                }
+            },
+
+            /** Test case for SF bug 945436 - a xml:lang='' in the dataset causes string index exception in getLabel() */
+            new OntTestCase( "Individual.canAs", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String SOURCE=
+                        "<?xml version='1.0'?>" +
+                        "<!DOCTYPE owl [" +
+                        "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" +
+                        "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" +
+                        "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" +
+                        "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" +
+                        "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" +
+                        "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" +
+                        "    ]>" +
+                        "<rdf:RDF xmlns:owl ='&owl;' xmlns:rdf='&rdf;' xmlns:rdfs='&rdfs;' xmlns:dc='&dc;' xmlns='&base;#' xml:base='&base;'>" +
+                        "  <C rdf:ID='x'>" +
+                        "    <rdfs:label xml:lang=''>a_label</rdfs:label>" +
+                        "  </C>" +
+                        "  <owl:Class rdf:ID='C'>" +
+                        "  </owl:Class>" +
+                        "</rdf:RDF>";
+                    m.read( new StringReader( SOURCE ), null );
+                    Individual x = m.getIndividual( "http://jena.hpl.hp.com/test#x" );
+                    assertEquals( "Label on resource x", "a_label", x.getLabel( null) );
+                    assertEquals( "Label on resource x", "a_label", x.getLabel( "" ) );
+                    assertSame( "fr label on resource x", null, x.getLabel( "fr" ) );
+                }
+            },
+
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    OntModel defModel = ModelFactory.createOntologyModel();
+                    OntClass c = defModel.createClass( "http://example.com/test#A" );
+                    Individual i = c.createIndividual();
+                    assertTrue( "i should be an individual", i.isIndividual() );
+                }
+            },
+            /** User report of builtin classes showing up as individuals */
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+
+                    OntClass c1 = m.createClass(NS + "C1");
+
+                    for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
+                        OntClass ontClass = it.next();
+                        assertFalse( ontClass.getLocalName() + "should not be an individual", ontClass.isIndividual() );
+                    }
+                }
+            },
+
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+
+                    OntClass c1 = m.createClass(NS + "C1");
+
+                    for (Iterator<OntClass> it=m.listClasses(); it.hasNext(); ) {
+                        OntClass ontClass = it.next();
+                        assertFalse( ontClass.getLocalName() + "should not be an individual", ontClass.isIndividual() );
+                    }
+                }
+            },
+
+            /** Edge case - suppose we imagine that user has materialised results of offline inference */
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+
+                    OntClass c1 = m.createClass(NS + "C1");
+                    m.add( OWL.Class, RDF.type, OWL.Class );
+
+                    for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
+                        OntClass ontClass = it.next();
+                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                    }
+                }
+            },
+
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+
+                    OntClass c1 = m.createClass(NS + "C1");
+                    m.add( OWL.Class, RDF.type, RDFS.Class );
+
+                    for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
+                        OntClass ontClass = it.next();
+                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                    }
+                }
+            },
+
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM);
+
+                    OntClass c1 = m.createClass(NS + "C1");
+                    m.add( RDFS.Class, RDF.type, RDFS.Class );
+
+                    for (Iterator<OntClass> it = m.listClasses(); it.hasNext(); ) {
+                        OntClass ontClass = it.next();
+                        assertFalse( ontClass.getLocalName() + " should not be an individual", ontClass.isIndividual() );
+                    }
+                }
+            },
+
+            /** But we do allow punning */
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+
+                    OntClass punned = m.createClass(NS + "C1");
+                    OntClass c2 = m.createClass(NS + "C2");
+                    m.add( punned, RDF.type, c2 ); // punned is a class and and instance of c2
+
+                    assertFalse( "should not be an individual", c2.isIndividual() );
+                    assertTrue(  "should be an individual", punned.isIndividual() );
+                }
+            },
+
+            new OntTestCase( "OntResource.isIndividual 1", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    String NS = "http://jena.hpl.hp.com/example#";
+                    m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+
+                    OntClass punned = m.createClass(NS + "C1");
+                    OntClass c2 = m.createClass(NS + "C2");
+                    m.add( punned, RDF.type, c2 ); // punned is a class and and instance of c2
+
+                    assertFalse( "should not be an individual", c2.isIndividual() );
+                    assertTrue(  "should be an individual", punned.isIndividual() );
+                }
+            }
+
+
         };
     }
 

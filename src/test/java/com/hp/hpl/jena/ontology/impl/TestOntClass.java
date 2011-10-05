@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.vocabulary.*;
@@ -269,6 +270,21 @@ public class TestOntClass
         TestUtil.assertIteratorValues( this, b.listSuperClasses( true ), new Object[] {a} );
     }
 
+    public void testListSuperClasses3() {
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        OntClass A = m.createClass( NS +"A");
+        OntClass B = m.createClass( NS +"B");
+        OntClass C = m.createClass( NS +"C");
+        A.addSuperClass(B);
+        A.addSuperClass(C);
+        B.addSuperClass(C);
+        C.addSuperClass(B);
+
+        TestUtil.assertIteratorValues( this, A.listSuperClasses( true ), new Object[] {B,C} );
+    }
+
+
+
     public void testListInstances0() {
         // no inference
         OntModel m = createABCDEFModel( OntModelSpec.OWL_MEM );
@@ -358,6 +374,53 @@ public class TestOntClass
         assertFalse( ia.hasOntClass( b ) );
     }
 
+    public void testDatatypeIsClassOwlFull() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        Resource c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+    }
+
+    public void testDatatypeIsClassOwlDL() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM );
+        Resource c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+    }
+
+    public void testDatatypeIsClassOwlLite() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
+        Resource c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+    }
+
+    public void testDatatypeIsClassOwlRDFS() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM );
+        Resource c = m.createResource();
+        c.addProperty( RDF.type, RDFS.Datatype );
+        assertTrue( c.canAs( OntClass.class ));
+    }
+
+    public void testOwlThingNothingClass() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+
+        Resource r = OWL.Thing.inModel( m );
+        OntClass thingClass = r.as( OntClass.class );
+        assertNotNull( thingClass );
+
+        r = OWL.Nothing.inModel( m );
+        OntClass nothingClass = r.as( OntClass.class );
+        assertNotNull( nothingClass );
+
+        OntClass c = m.getOntClass( OWL.Thing.getURI() );
+        assertNotNull( c );
+        assertEquals( c, OWL.Thing );
+
+        c = m.getOntClass( OWL.Nothing.getURI() );
+        assertNotNull( c );
+        assertEquals( c, OWL.Nothing );
+    }
 
     // Internal implementation methods
     //////////////////////////////////

@@ -141,16 +141,29 @@ public class TestOntModel
         assertTrue( "InputStream write/read cycle failed (2)", mIn2.isIsomorphicWith( m.getBaseModel() ) );
     }
 
-    public void testGetBaseModelPrefixes()
-        {
+    public void testGetBaseModelPrefixes() {
         OntModel om = ModelFactory.createOntologyModel();
         om.setNsPrefix( "bill", "http://bill.and.ben/flowerpot#" );
         om.setNsPrefix( "grue", "ftp://grue.and.bleen/2000#" );
         assertEquals( om.getNsPrefixMap(), om.getBaseModel().getNsPrefixMap() );
-        }
+    }
 
-    public void testWritesPrefixes()
-        {
+    /**
+     * The default namespace pefix of a non-base-model should not manifest as
+     * the default namespace prefix of the base model or the Ont model.
+     */
+    public void testPolyadicPrefixMapping() {
+        final String IMPORTED_NAMESPACE = "http://imported#";
+        final String LOCAL_NAMESPACE = "http://local#";
+        Model importedModel = ModelFactory.createDefaultModel();
+        importedModel.setNsPrefix( "", IMPORTED_NAMESPACE );
+        OntModel ontModel = ModelFactory.createOntologyModel();
+        ontModel.setNsPrefix( "", LOCAL_NAMESPACE );
+        ontModel.addSubModel( importedModel );
+        assertNull( ontModel.getNsURIPrefix( IMPORTED_NAMESPACE ) );
+    }
+
+    public void testWritesPrefixes() {
         OntModel om = ModelFactory.createOntologyModel();
         om.setNsPrefix( "spoo", "http://spoo.spoo.com/spoo#" );
         om.add( statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
@@ -160,7 +173,7 @@ public class TestOntModel
         String s = sw.getBuffer().toString();
         assertTrue( s.indexOf( "xmlns:spoo=\"http://spoo.spoo.com/spoo#\"" ) > 0 );
         assertTrue( s.indexOf( "xmlns:owl=\"" + OWL.getURI() + "\"" ) > 0 );
-        }
+    }
 
     /** Test writing the base model to an output stream */
     public void testWriteWriter() {
@@ -515,11 +528,6 @@ public class TestOntModel
         assertTrue( "c should be imported ", c.contains( "file:testing/ontology/testImport6/c.owl" ));
         assertTrue( "d should be imported ", c.contains( "file:testing/ontology/testImport6/d.owl" ));
     }
-
-    /* Test removed: superseded by testListSubmodelsN (below)
-    //    public void testListImportedModels() {
-     *
-     */
 
     /** Some tests for listing properties. See also {@link TestListSyntaxCategories} */
 
@@ -955,6 +963,25 @@ public class TestOntModel
         assertTrue( "b should be imported", m.hasLoadedImport( "file:testing/ontology/testImport3/b.owl" ) );
     }
 
+    /** Test that resources are attached to the right sub-models when importing */
+    public void testLoadImports2() {
+        OntModel ontModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        ontModel.read("file:testing/ontology/testImport8/a.owl");
+
+        String NSa = "http://incubator.apache.org/jena/2011/10/testont/a#";
+        String NSb = "http://incubator.apache.org/jena/2011/10/testont/b#";
+
+        OntClass A = ontModel.getOntClass(NSa + "A");
+        assertTrue( ontModel.isInBaseModel(A));
+
+        OntClass B = ontModel.getOntClass(NSb + "B");
+        assertFalse( ontModel.isInBaseModel(B));
+
+        assertTrue( ontModel.isInBaseModel(ontModel.createStatement(A, RDF.type, OWL.Class)));
+        assertFalse( ontModel.isInBaseModel(ontModel.createStatement(B, RDF.type, OWL.Class)));
+
+    }
+
     /** Test getting conclusions after loading imports */
     public void testAddImports0() {
         OntModel base = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
@@ -1001,6 +1028,97 @@ public class TestOntModel
         assertTrue( m.contains( c, RDFS.subClassOf, a ) );
     }
 
+    /**
+     * AddSubModel variant 2: base = no inf, import = no inf
+     */
+    public void testaddSubModel0() {
+        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+
+        OntClass c = m1.createClass( NS + "c" );
+
+        assertFalse( m0.containsResource( c ) );
+
+        m0.addSubModel( m1 );
+        assertTrue( m0.containsResource( c ) );
+
+        m0.removeSubModel( m1 );
+        assertFalse( m0.containsResource( c ) );
+    }
+
+    /**
+     * AddSubModel variant 2: base = inf, import = no inf
+     */
+    public void testaddSubModel1() {
+        OntDocumentManager.getInstance().setProcessImports( false );
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine",
+        "file:testing/ontology/owl/Wine/wine.owl" );
+        OntModel m0 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        OntModel m1 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+
+        String namespace = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine";
+        String classURI = namespace + "#Wine";
+        m1.read(namespace);
+        OntClass c = m1.getOntClass(classURI);
+
+        assertFalse(m0.containsResource(c));
+        m0.addSubModel(m1);
+        assertTrue(m0.containsResource(c));
+        m0.removeSubModel(m1);
+        assertFalse(m0.containsResource(c));
+    }
+
+    /**
+     * Variant 3: base = no inf, import = inf
+     */
+    public void testaddSubModel3() {
+        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
+
+        OntClass c = m1.createClass( NS + "c" );
+
+        assertFalse( m0.containsResource( c ) );
+
+        m0.addSubModel( m1 );
+        assertTrue( m0.containsResource( c ) );
+
+        m0.removeSubModel( m1 );
+        assertFalse( m0.containsResource( c ) );
+    }
+
+    /**
+     * Variant 4: base = inf, import = inf
+     */
+    public void testaddSubModel4() {
+        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
+        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
+
+        OntClass c = m1.createClass( NS + "c" );
+
+        assertFalse( m0.containsResource( c ) );
+
+        m0.addSubModel( m1 );
+        assertTrue( m0.containsResource( c ) );
+
+        m0.removeSubModel( m1 );
+        assertFalse( m0.containsResource( c ) );
+    }
+
+    /** Remove a sub model (imported model) */
+    public void testremoveSubModel0() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
+        m.read( "file:testing/ontology/testImport3/a.owl" );
+
+        assertEquals( 2, m.getSubGraphs().size() );
+
+        for (Iterator<OntModel> it = m.listSubModels(); it.hasNext();) {
+                m.removeSubModel( it.next() );
+        }
+
+        assertEquals( 0, m.getSubGraphs().size() );
+    }
+
+
     /** Getting the deductions model of an OntModel
      * see also {@link TestBugs#testOntModelGetDeductions()}
      * <p>ijd: Feb 6th, 2008 - this test has been disabled for
@@ -1031,6 +1149,142 @@ public class TestOntModel
         assertFalse( dm.contains( OWL.Nothing, RDFS.subClassOf, a ) );
         assertTrue( dm.contains( OWL.Nothing, RDFS.subClassOf, c ) );
     }
+
+    /**
+     * Test that using closed models in imports does not raise an exception
+     */
+    public void testImportClosedModel() {
+        String SOURCEA=
+            "<rdf:RDF" +
+            "    xmlns:rdf          ='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+            "    xmlns:owl          ='http://www.w3.org/2002/07/owl#'" +
+            "    xml:base           ='http://example.com/a#'" +
+            ">" +
+            "  <owl:Ontology>" +
+            "          <owl:imports rdf:resource='http://example.com/b' />" +
+            "  </owl:Ontology>" +
+            "</rdf:RDF>";
+
+        OntDocumentManager.getInstance().addAltEntry( "http://example.com/b", "file:testing/ontology/relativenames.rdf" );
+
+        OntModel a0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        a0.read( new StringReader( SOURCEA ), null );
+        long a0count = a0.size();
+
+        // key step - close a model which is now in the ODM cache
+        OntDocumentManager.getInstance().getModel( "http://example.com/b" ).close();
+
+        // this line threw an exception before the bug was fixed
+        OntModel a1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        a1.read( new StringReader( SOURCEA ), null );
+
+        // for completeness, check that we have read the same contents
+        assertEquals( "Models should be same size", a0count, a1.size() );
+    }
+
+    /**
+     * OntModel read should do content negotiation if no base URI is given
+     * @param ontModel
+     * @return
+     */
+    public void testReadConneg0() {
+        final boolean[] acceptHeaderSet = new boolean[] {false};
+
+        // because ModelCom has private fields it references directly, we have to mock
+        // a lot more pieces that I would prefer
+        OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
+            protected Model readDelegate( String url ) {
+                acceptHeaderSet[0] = true;
+                return super.readDelegate( url );
+            }
+
+            /** Allow pseudo-conneg even on file: uri's */
+            @Override
+            public boolean ignoreFileURI( String url ) {
+                return false;
+            }
+        };
+
+        assertFalse( acceptHeaderSet[0] );
+        m.read( "file:testing/ontology/owl/Property/test.rdf" );
+        assertTrue( acceptHeaderSet[0] );
+
+    }
+
+    /** No conneg for file: uri's normally */
+    public void testReadConneg1() {
+        final boolean[] acceptHeaderSet = new boolean[] {false};
+
+        // because ModelCom has private fields it references directly, we have to mock
+        // a lot more pieces that I would prefer
+        OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
+            protected Model readDelegate( String url ) {
+                acceptHeaderSet[0] = true;
+                return super.readDelegate( url );
+            }
+        };
+
+        assertFalse( acceptHeaderSet[0] );
+        m.read( "file:testing/ontology/owl/Property/test.rdf" );
+        assertFalse( acceptHeaderSet[0] );
+
+    }
+
+    /** With RDF/XML syntax specified, conneg */
+    public void testReadConneg2() {
+        final boolean[] acceptHeaderSet = new boolean[] {false};
+
+        // because ModelCom has private fields it references directly, we have to mock
+        // a lot more pieces that I would prefer
+        OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
+            protected Model readDelegate( String url, String lang ) {
+                acceptHeaderSet[0] = true;
+                return super.readDelegate( url, lang );
+            }
+
+            /** Allow pseudo-conneg even on file: uri's */
+            @Override
+            public boolean ignoreFileURI( String url ) {
+                return false;
+            }
+        };
+
+        assertFalse( acceptHeaderSet[0] );
+        m.read( "file:testing/ontology/owl/Property/test.rdf", "RDF/XML" );
+        assertTrue( acceptHeaderSet[0] );
+
+    }
+
+    /** With a base URI, no conneg */
+    public void testReadConneg3() {
+        final boolean[] acceptHeaderSet = new boolean[] {false};
+
+        // because ModelCom has private fields it references directly, we have to mock
+        // a lot more pieces that I would prefer
+        OntModel m = new OntModelImpl(OntModelSpec.OWL_MEM) {
+            @Override
+            protected Model readDelegate( String url, String lang ) {
+                acceptHeaderSet[0] = true;
+                return super.readDelegate( url, lang );
+            }
+
+            /** Allow pseudo-conneg even on file: uri's */
+            @Override
+            public boolean ignoreFileURI( String url ) {
+                return false;
+            }
+        };
+
+        assertFalse( acceptHeaderSet[0] );
+        m.read( "file:testing/ontology/owl/Property/test.rdf", "http://foo.com", "RDF/XML" );
+        assertFalse( acceptHeaderSet[0] );
+
+    }
+
+
 
 
     // Internal implementation methods

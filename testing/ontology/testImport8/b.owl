@@ -2,8 +2,8 @@
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:owl ="http://www.w3.org/2002/07/owl#"
-  xmlns     ="http://jena.hpl.hp.com/2003/03/testont/b#"
-  xml:base  ="http://jena.hpl.hp.com/2003/03/testont/b"
+  xmlns     ="http://incubator.apache.org/jena/2011/10/testont/b#"
+  xml:base  ="http://incubator.apache.org/jena/2011/10/testont/b"
 >
 
 <owl:Ontology rdf:about="">

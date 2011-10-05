@@ -447,6 +447,7 @@ public class TestClassExpression
                     HasValueRestriction A = m.createHasValueRestriction( NS + "A", p, b  );
 
                     assertEquals( "Restriction should be has value b", b, A.getHasValue() );
+                    assertTrue( A.getHasValue() instanceof Individual );
                     assertTrue( "Restriction should be to have value b", A.hasValue( b ) );
                     assertTrue( "Restriction should not be have value c", !A.hasValue( c ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.HAS_VALUE() ));
@@ -1290,6 +1291,40 @@ public class TestClassExpression
                 }
             },
 
+            // Removal
+
+            new OntTestCase( "Remove intersection", true, true, true, false )  {
+                @Override
+                protected void ontTest(OntModel m) throws Exception {
+                    String ns = "http://example.com/foo#";
+                    OntClass a = m.createClass(ns + "A");
+                    OntClass b = m.createClass(ns + "B");
+
+                    long old = m.size();
+
+                    RDFList members = m.createList(new RDFNode[] { a, b });
+                    IntersectionClass intersectionClass = m.createIntersectionClass(null, members);
+                    intersectionClass.remove();
+
+                    assertEquals( old, m.size() );
+                }
+            },
+            new OntTestCase( "Remove union", true, false, true, false )  {
+                @Override
+                protected void ontTest(OntModel m) throws Exception {
+                    String ns = "http://example.com/foo#";
+                    OntClass a = m.createClass(ns + "A");
+                    OntClass b = m.createClass(ns + "B");
+
+                    long old = m.size();
+
+                    RDFList members = m.createList(new RDFNode[] { a, b });
+                    UnionClass unionClass = m.createUnionClass(null, members);
+                    unionClass.remove();
+
+                    assertEquals( old, m.size() );
+                }
+            }
         };
     }
 

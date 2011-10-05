@@ -26,7 +26,7 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
-
+import com.hp.hpl.jena.vocabulary.OWL;
 import junit.framework.*;
 
 
@@ -52,6 +52,18 @@ public class TestCreate
     //////////////////////////////////
 
     protected static CreateTestCase[] testCases = new CreateTestCase[] {
+        new CreateTestCase( "OWL create resource - typed", ProfileRegistry.OWL_LANG, BASE + "r" ) {
+            @Override
+            public OntResource doCreate( OntModel m )   { return m.createOntResource( OntResource.class, OWL.Thing, BASE + "r" ); }
+            @Override
+            public boolean test( OntResource r )        { return r != null;}
+        },
+        new CreateTestCase( "OWL create resource - untyped", ProfileRegistry.OWL_LANG, BASE + "r" ) {
+            @Override
+            public OntResource doCreate( OntModel m )   { return m.createOntResource( OntResource.class, null, BASE + "r" ); }
+            @Override
+            public boolean test( OntResource r )        { return r != null;}
+        },
         new CreateTestCase( "OWL create ontology", ProfileRegistry.OWL_LANG, BASE ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createOntology( BASE ); }

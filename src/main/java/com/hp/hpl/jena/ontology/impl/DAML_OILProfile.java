@@ -24,13 +24,13 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.enhanced.*;
+import java.util.*;
+
+import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
-
-import java.util.*;
 
 
 
@@ -502,6 +502,13 @@ public class DAML_OILProfile
                                                        g.asGraph().contains( n, DAML_OIL.maxCardinalityQ.asNode(), Node.ANY );
                                             }
                                         }
+        },
+        {  Individual.class,    new SupportsCheck() {
+                    @Override
+                    public boolean doCheck( Node n, EnhGraph g ) {
+                        return n instanceof Node_URI || n instanceof Node_Blank;
+                    }
+                }
         },
     };
 

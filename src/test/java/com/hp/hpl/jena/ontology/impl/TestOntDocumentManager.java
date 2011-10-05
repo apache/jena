@@ -27,14 +27,17 @@ package com.hp.hpl.jena.ontology.impl;
 import java.io.StringReader;
 import java.util.*;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import junit.framework.*;
-
+import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.OntDocumentManager.ReadFailureHandler;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -286,7 +289,7 @@ public class TestOntDocumentManager
         assertSame( m1, odm.getModel(uri));
     }
 
-    public void testClearCache() {
+    public void testClearCache0() {
         OntDocumentManager odm = OntDocumentManager.getInstance();
         Model m = ModelFactory.createDefaultModel();
         String uri = "http://example.com/test#m";
@@ -294,6 +297,40 @@ public class TestOntDocumentManager
         odm.addModel( uri, m );
         odm.clearCache();
         assertSame( null, odm.getModel(uri));
+    }
+
+    /**
+     * Ensure that sub-model imports are not re-used after clearing the cache.
+     */
+    public void testClearCache1() {
+        OntModelSpec spec = new OntModelSpec(OntModelSpec.OWL_MEM);
+        spec.getDocumentManager().reset();
+        spec.getDocumentManager().setCacheModels(false);
+        spec.getDocumentManager().addAltEntry( "http://incubator.apache.org/jena/2011/10/testont/a",
+                                               "file:testing/ontology/testImport8/a.owl" );
+
+        OntModel m0 = ModelFactory.createOntologyModel(spec, null);
+        m0.read( "http://incubator.apache.org/jena/2011/10/testont/a" );
+        Model subModel0 = m0.listSubModels().next();
+        long count0 = subModel0.size();
+
+        OntClass ontClass = m0.getOntClass( "http://incubator.apache.org/jena/2011/10/testont/a#A" );
+        subModel0.add( ontClass, RDF.type, OWL.DeprecatedClass );
+        assertEquals( count0 + 1, subModel0.size() );
+
+        // TODO this workaround to be removed
+        SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getImportModelMaker()).getGraphMaker();
+        List<String> toGo = new ArrayList<String>();
+        for (Iterator<String> i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() )) {/**/}
+        for (Iterator<String> i = toGo.iterator(); i.hasNext(); sgm.removeGraph( i.next() )) {/**/}
+        spec.getDocumentManager().clearCache();
+
+        OntModel m1 = ModelFactory.createOntologyModel(spec, null);
+        m1.read( "http://incubator.apache.org/jena/2011/10/testont/a" );
+        Model subModel1 = m1.listSubModels().next();
+        assertNotSame( m1, m0 );
+        assertNotSame( subModel1, subModel0 );
+        assertEquals( count0, subModel1.size() );
     }
 
     public void testForget() {
@@ -339,6 +376,18 @@ public class TestOntDocumentManager
         odm.addAltEntry( "http://www.w3.org/2002/07/owl", "file:foo.bar" );
         assertEquals( "Failed to retrieve cache location", "file:foo.bar", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
     }
+
+    public void testRelativeNames() {
+        OntModel m = ModelFactory.createOntologyModel();
+        m.getDocumentManager().addAltEntry(
+            "http://jena.hpl.hp.com/testing/ontology/relativenames",
+            "file:testing/ontology/relativenames.rdf");
+
+        m.read("http://jena.hpl.hp.com/testing/ontology/relativenames");
+        assertTrue( m.getResource("http://jena.hpl.hp.com/testing/ontology/relativenames#A").canAs(OntClass.class));
+        assertFalse( m.getResource("file:testing/ontology/relativenames.rdf#A").canAs(OntClass.class));
+    }
+
 
 
     public void testIgnoreImport() {

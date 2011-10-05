@@ -24,10 +24,15 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import java.util.List;
+
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
@@ -97,6 +102,10 @@ public class TestProperty
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
                     p.removeSuperProperty( r );
                     assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
+
+                    // for symmetry with listSuperClasses(), exclude the reflexive case
+                    List<? extends OntProperty> sp = p.listSuperProperties().toList();
+                    assertFalse( "super-properties should not include reflexive case", sp.contains( p ) );
                 }
             },
             new OntTestCase( "OntProperty.sub-property", true, true, true, true ) {
@@ -219,6 +228,8 @@ public class TestProperty
                     p.addInverseOf( q );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
                     assertEquals( "p should have inverse q", q, p.getInverseOf() );
+                    assertTrue( "inverse value should be an object property", p.getInverseOf() instanceof ObjectProperty );
+                    assertTrue( "inverse value should be an object property", q.getInverse() instanceof ObjectProperty );
 
                     p.addInverseOf( r );
                     assertEquals( "Cardinality should be 2", 2, p.getCardinality( prof.INVERSE_OF() ) );
@@ -585,6 +596,24 @@ public class TestProperty
                     assertFalse( iteratorContains( p.listReferringRestrictions(), r3 ) );
 
                     assertNotNull( p.listReferringRestrictions().next() );
+                }
+            },
+            new OntTestCase( "no duplication from imported models", true, true, true, true ) {
+                @Override
+                protected void ontTest( OntModel m ) throws Exception {
+                    OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM_RULE_INF, null );
+                    FileManager.get().readModel( m0, "file:testing/ontology/testImport9/a.ttl" );
+
+                    OntProperty p0 = m0.getOntProperty( "http://incubator.apache.org/jena/2011/10/testont/b#propB" );
+                    TestUtil.assertIteratorLength( p0.listDomain(), 3 );
+
+                    // repeat test - thus using previously cached model for import
+
+                    OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM_RULE_INF, null );
+                    FileManager.get().readModel( m1, "file:testing/ontology/testImport9/a.ttl" );
+
+                    OntProperty p1 = m1.getOntProperty( "http://incubator.apache.org/jena/2011/10/testont/b#propB" );
+                    TestUtil.assertIteratorLength( p1.listDomain(), 3 );
                 }
             }
         };
