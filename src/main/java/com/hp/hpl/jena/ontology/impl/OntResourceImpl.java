@@ -1158,7 +1158,7 @@ public class OntResourceImpl
     public boolean isIndividual() {
         OntModel m = (getModel() instanceof OntModel) ? (OntModel) getModel() : null;
 
-        // can we use the reasoner's native abilities to do the isntance test?
+        // can we use the reasoner's native abilities to do the instance test?
         boolean useInf = false;
         useInf = m.getProfile().THING() != null &&
                  m.getReasoner() != null &&
@@ -1180,7 +1180,13 @@ public class OntResourceImpl
                         // if the type itself is OWL.Class or similar, we should ignore it ... this may
                         // arise in cases where the user has materialised results of inference and is then
                         // accessing them from a plain model
-                        if (rType.equals( getProfile().CLASS() )) {
+                        // JENA-3: we also ignore if the type is rdfs:Resource or similar, since it's not informative
+                        if (rType.equals( getProfile().CLASS() ) ||
+                            rType.equals( RDFS.Resource ) ||
+                            rType.equals( RDF.Property ) ||
+                            rType.equals( RDFS.Datatype ) ||
+                            rType.equals( RDF.List ))
+                        {
                             continue;
                         }
 

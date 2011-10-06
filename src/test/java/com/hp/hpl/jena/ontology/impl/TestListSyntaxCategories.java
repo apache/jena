@@ -416,6 +416,17 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
+        new DoListTest( "empty OWL+RDFS rule list individuals (bug report JENA-3)",  null,  OntModelSpec.RDFS_MEM_RDFS_INF,  0, new String[] {} )
+        {
+            @Override
+            public Iterator< ? extends Resource> doList( OntModel m ) {
+                return m.listIndividuals();
+            }
+            @Override
+            public boolean test( Resource r ) {
+                return r instanceof Individual;
+            }
+        },
         new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  6,
                         new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a1", NS+"a2", NS+"a0"} )
         {
