@@ -18,13 +18,15 @@
 
 package org.openjena.riot.lang;
 
-import junit.framework.TestCase ;
-import org.openjena.riot.system.JenaReaderTurtle2 ;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.shared.JenaException ;
+import junit.framework.TestCase ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.SinkNull ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.RiotReader ;
+
+import com.hp.hpl.jena.graph.Triple ;
 
 
 public class UnitTestTurtleBadSyntax extends TestCase
@@ -35,15 +37,12 @@ public class UnitTestTurtleBadSyntax extends TestCase
     @Override
     public void runTest()
     {
-        Model model = ModelFactory.createDefaultModel() ;
-        RDFReader t = new JenaReaderTurtle2() ;
+        InputStream in = IO.openFile(uri) ;
+        assertNotNull(in) ;
+        LangRIOT parser = RiotReader.createParserTurtle(in, uri, new SinkNull<Triple>()) ;
         try {
-            t.read(model, uri) ;
-            fail("Bad syntax test succeed in parsing the file") ;
-        } catch (JenaException ex)
-        {
-            return ;    
-        }
-
+            parser.parse() ;
+        } catch (RiotException ex) { return ; }
+        fail("Bad syntax RDF/JSON test succeed in parsing the file") ;
     }
 }
