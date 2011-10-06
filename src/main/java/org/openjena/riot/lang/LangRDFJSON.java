@@ -32,6 +32,9 @@ import org.openjena.riot.tokens.Tokenizer;
 
 import org.openjena.riot.system.ParserProfile;
 
+/**
+ * See http://docs.api.talis.com/platform-api/output-types/rdf-json
+ */
 public class LangRDFJSON extends LangBase<Triple>
 {
 
