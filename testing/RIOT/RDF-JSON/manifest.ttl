@@ -1,0 +1,36 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix t:      <http://openjena.org/test/riot#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDF/JSON test cases" ;
+    mf:entries 
+    (
+    <#rj0>
+    <#rj_90>
+    <#rj_91>
+    
+    ) .
+
+<#rj0>  rdf:type    t:TestInOut ;
+        mf:name     "rdf-json-00" ;
+        rdfs:comment "" ;
+        mf:action [ qt:data   <rdf-json-00.rj> ] ;
+        mf:result  <rdf-json-00.nt>
+        .
+
+<#rj_90>  rdf:type    t:TestInOut ;
+        mf:name     "rdf-json-90" ;
+        rdfs:comment "" ;
+        mf:action [ qt:data   <rdf-json-90.rj> ] ;
+        mf:result  <rdf-json-90.nt>
+        .
+
+<#rj_91>  rdf:type    t:TestInOut ;
+        mf:name     "rdf-json-91" ;
+        rdfs:comment "" ;
+        mf:action [ qt:data   <rdf-json-91.rj> ] ;
+        mf:result  <rdf-json-91.rdf>
+        .

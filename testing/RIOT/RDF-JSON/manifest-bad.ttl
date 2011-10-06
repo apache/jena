@@ -1,0 +1,25 @@
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix t:      <http://openjena.org/test/riot#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDF/JSON bad syntax test cases" ;
+    mf:entries
+    (
+    <#bad-01>
+    <#bad-02>
+    ) .
+
+
+<#bad-01> rdf:type t:TestBadSyntax ; 
+         mf:name      "String where JSON object expected for predicates" ;
+         rdfs:comment "" ;
+         mf:action [ qt:data   <rdf-json-bad-01.rj> ] ;
+         .
+<#bad-02> rdf:type t:TestBadSyntax ; 
+         mf:name      "String where JSON array expected for objects" ;
+         rdfs:comment "" ;
+         mf:action [ qt:data   <rdf-json-bad-02.rj> ] ;
+         .
