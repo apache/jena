@@ -26,6 +26,7 @@ import org.openjena.riot.lang.TestIRI ;
 import org.openjena.riot.lang.TestLang ;
 import org.openjena.riot.lang.TestLangNQuads ;
 import org.openjena.riot.lang.TestLangNTriples ;
+import org.openjena.riot.lang.TestLangRdfJson ;
 import org.openjena.riot.lang.TestLangTrig ;
 import org.openjena.riot.lang.TestLangTurtle ;
 import org.openjena.riot.lang.TestNodeAllocator ;
@@ -62,6 +63,8 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestLangTrig.class
     , TestSuiteTrig.class
 
+    , TestLangRdfJson.class
+    
     , TestParserFactory.class
 
     , TestNodeFmt.class

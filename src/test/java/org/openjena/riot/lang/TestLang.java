@@ -53,4 +53,11 @@ public class TestLang extends BaseTest
     
     @Test public void lang_09()
     { assertEquals(Lang.TRIG, Lang.get(WebContent.langTriG)) ; }
+
+    @Test public void lang_10()
+    { assertEquals(Lang.RDFJSON, Lang.get("RDF/JSON")) ; }
+
+    @Test public void lang_11()
+    { assertEquals(Lang.RDFJSON, Lang.get(WebContent.langRdfJson)) ; }
+
 }

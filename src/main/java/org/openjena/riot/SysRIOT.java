@@ -20,6 +20,7 @@ package org.openjena.riot;
 
 import org.openjena.atlas.event.EventType ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
+import org.openjena.riot.system.JenaReaderRdfJson ;
 import org.openjena.riot.system.JenaReaderTurtle2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -71,7 +72,11 @@ public class SysRIOT
             com.hp.hpl.jena.n3.turtle.TurtleReader 
             com.hp.hpl.jena.n3.turtle.TurtleReader 
          */
-        
+
+        //Add in the RDF/JSON reader
+        String readerRdfJson = JenaReaderRdfJson.class.getName();
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", readerRdfJson) ;
+
         // Override N-TRIPLES and Turtle with faster implementations.
         String readerNT = JenaReaderNTriples2.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", readerNT) ;
@@ -87,6 +92,8 @@ public class SysRIOT
     
     public static void resetJenaReaders()
     {
+    	//TODO: Should we unwire RDF/JSON reader here?
+
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
         RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",  jenaNTriplesReader) ;
         

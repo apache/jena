@@ -58,6 +58,8 @@ public class WebContent
 
     public static final String contentTypeTriX              = "application/trix+xml" ;
     public static final String contentTypeOctets            = "application/octet-stream" ;
+
+    public static final String contentTypeRdfJson			= "application/rdf+json" ;
     
     public static final String contentTypeResultsXML        = "application/sparql-results+xml" ;
     public static final String contentTypeResultsJSON       = "application/sparql-results+json" ;
@@ -90,6 +92,7 @@ public class WebContent
     public static final String langN3               = "N3" ;
     public static final String langTurtle           = "TURTLE" ;
     public static final String langTTL              = "TTL" ;
+    public static final String langRdfJson			= "RDF/JSON" ;
 
     public static final String langNQuads           = "NQUADS" ;
     public static final String langTriG             = "TRIG" ;
@@ -106,6 +109,7 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeTurtle3,        Lang.TURTLE) ;
         mapContentTypeToLang.put(contentTypeNTriples,       Lang.NTRIPLES) ;   // text/plain
         mapContentTypeToLang.put(contentTypeNTriplesAlt,    Lang.NTRIPLES) ;
+        mapContentTypeToLang.put(contentTypeRdfJson,		Lang.RDFJSON) ;
 
         mapContentTypeToLang.put(contentTypeNQuads,         Lang.NQUADS) ;
         mapContentTypeToLang.put(contentTypeNQuadsAlt,      Lang.NQUADS) ;
@@ -121,6 +125,7 @@ public class WebContent
         mapLangToContentType.put(Lang.TURTLE,       contentTypeTurtle2) ;
         mapLangToContentType.put(Lang.NTRIPLES,     contentTypeNTriples) ;
         mapLangToContentType.put(Lang.RDFXML,       contentTypeRDFXML) ;
+        mapLangToContentType.put(Lang.RDFJSON,		contentTypeRdfJson) ;
         
         mapLangToContentType.put(Lang.NQUADS,       contentTypeNQuads) ;
         mapLangToContentType.put(Lang.TRIG,         contentTypeTriG) ;

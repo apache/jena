@@ -70,6 +70,8 @@ public class RiotLib
             case NQUADS :
             case NTRIPLES :
                 return profile(baseIRI, false, false, handler) ;
+            case RDFJSON:
+            	return profile(baseIRI, false, true, handler) ;
             case N3 :
             case TURTLE :
             case TRIG :

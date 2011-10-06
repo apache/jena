@@ -33,6 +33,7 @@ public enum Lang
     NTRIPLES(   "N-Triples",    true, langNTriples, langNTriple) ,
     N3(         "N3",           true) ,
     TURTLE(     "Turtle",       true, langTTL) ,
+    RDFJSON(	"RDF/JSON",		true) ,
    
     NQUADS(     "N-Quads",      false, langNQuads) ,
     TRIG(       "TriG",         false) ,
@@ -58,6 +59,7 @@ public enum Lang
     private static final String[] extN3          = { "n3" } ;
     private static final String[] extNQuads      = { "nq" } ;
     private static final String[] extTrig        = { "trig" } ;
+    private static final String[] extRdfJson	 = { "rj", "json" } ;
     
     private Lang(String name, boolean isTriples, String...altNames)
     {
@@ -96,6 +98,7 @@ public enum Lang
         if ( matchesLangName(name, Lang.TURTLE) )       return TURTLE ;
         if ( matchesLangName(name, Lang.NQUADS) )       return NQUADS ;
         if ( matchesLangName(name, Lang.TRIG) )         return TRIG ;
+        if ( matchesLangName(name, Lang.RDFJSON) )		return RDFJSON ;
         return dftLang ;
     }
 
@@ -142,6 +145,7 @@ public enum Lang
         if ( isOneOf(ext, extN3) )          return N3 ;
         if ( isOneOf(ext, extNQuads) )      return NQUADS ;
         if ( isOneOf(ext, extTrig) )        return TRIG ;
+        if ( isOneOf(ext, extRdfJson) )		return RDFJSON ;
         return null ;
     }
 
