@@ -49,9 +49,12 @@
 
   <properties>
     <!-- Versions of Jena modules -->
+    <!-- managing versison here is an attempt to manage in one place
+	 It's not ideal.
+    -->
     <ver.jena>2.6.4</ver.jena>
     <ver.arq>2.8.9-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.8.11-incubating-SNAPSHOT</ver.tdb>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
     <ver.sdb>1.3.4-incubating-SNAPSHOT</ver.sdb>
 
     <!-- Versions of other things -->
