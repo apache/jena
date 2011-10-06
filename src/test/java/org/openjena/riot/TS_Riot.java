@@ -27,6 +27,7 @@ import org.openjena.riot.out.TestNodeFmt ;
 import org.openjena.riot.out.TestNodeFmtLib ;
 import org.openjena.riot.out.TestOutput ;
 import org.openjena.riot.out.TestOutputNTriples ;
+import org.openjena.riot.out.TestOutputRDFJSON;
 import org.openjena.riot.pipeline.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
 import org.openjena.riot.tokens.TestTokenizer ;
@@ -61,6 +62,7 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestNodeFmtLib.class
     , TestOutput.class
     , TestOutputNTriples.class
+    , TestOutputRDFJSON.class
     , TestLangTag.class
     , TestNormalization.class
 })

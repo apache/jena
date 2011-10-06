@@ -25,6 +25,7 @@ import java.util.Set;
 import org.openjena.atlas.json.io.JSWriter;
 import org.openjena.atlas.lib.Pair;
 import org.openjena.atlas.lib.Sink;
+import org.openjena.riot.RiotException;
 import org.openjena.riot.system.Prologue;
 import org.openjena.riot.system.SyntaxLabels;
 
@@ -33,8 +34,8 @@ import com.hp.hpl.jena.graph.Node;
 public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> {
 
     private Prologue prologue = null ;
-    private JSWriter out ;
     private NodeToLabel labelPolicy = null ;
+    private JSWriter out ;
 	
     public SinkEntityOutput(OutputStream outs)
     {
@@ -47,7 +48,7 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
     	setPrologue(prologue) ;
     	setLabelPolicy(labels) ;
     	out.startOutput() ;
-    	out.startArray() ;
+    	out.startObject() ;
     }
 
     public void setPrologue(Prologue prologue)
@@ -63,22 +64,49 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
     //@Override
 	public void send(Pair<Node, Map<Node, Set<Node>>> item) {
 		Node s = item.getLeft() ;
+		if ( s.isBlank() ) {
+			out.key("_:" + s.getBlankNodeLabel()) ;
+		} else if ( s.isURI() ) {
+			out.key(s.getURI()) ;
+		} else {
+			throw new RiotException ("Only URIs or blank nodes are legal subjects.") ;
+		}
+		out.startObject() ;
 		// out.pair(key, value) ;
 		Map<Node, Set<Node>> predicates = item.getRight() ;
 		for (Node p : predicates.keySet() ) {
-			Set<Node> objects = predicates.get(p) ;
+			out.key(p.getURI()) ;
 			out.startArray() ;
+			Set<Node> objects = predicates.get(p) ;
 			for ( Node o : objects ) {
-				// out.arrayElement(o) ;
-				// TODO
+				out.startObject() ;
+				if ( o.isBlank() ) {
+					out.pair("type", "bnode") ;
+					out.pair("value", "_:" + o.getBlankNodeLabel()) ;
+				} else if ( o.isURI() ) {
+					out.pair("type", "uri") ;
+					out.pair("value", "_:" + o.getURI()) ;					
+				} else if ( o.isLiteral() ) {
+			        String dt = o.getLiteralDatatypeURI() ;
+			        String lang = o.getLiteralLanguage() ;
+			        String lex = o.getLiteralLexicalForm() ;
+					out.pair("type", "literal") ;
+					out.pair("value", lex) ;
+			        if ( dt != null ) 
+			        	out.pair("datatype", dt) ;
+			        if ( ( lang != null ) && ( lang != "" ) ) 
+			        	out.pair("lang", lang) ;
+				}
+				out.finishObject() ;
 			}
 			out.finishArray() ;
 		}
+		out.finishObject() ;
 	}
 
     //@Override
 	public void flush() {
-		out.finishArray() ;
+		out.finishObject() ;
 		out.finishOutput();
 	}
 	
