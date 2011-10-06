@@ -22,6 +22,7 @@ import java.io.OutputStream ;
 
 import org.openjena.riot.out.NQuadsWriter ;
 import org.openjena.riot.out.NTriplesWriter ;
+import org.openjena.riot.out.RDFJSONWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -40,6 +41,11 @@ public class RiotWriter
     public static void writeTriples(OutputStream out, Graph graph)
     {
         NTriplesWriter.write(out, graph) ;
+    }
+
+    public static void writeRDFJSON(OutputStream out, Graph graph)
+    {
+    	RDFJSONWriter.write(out, graph) ;
     }
 
 }
