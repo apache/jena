@@ -146,10 +146,7 @@ public class RiotReader
         if ( lang == RDFXML )
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
         if ( lang == RDFJSON )
-        {
-        	TokenizerJSON jsonTokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
-        	return createParserRdfJson(jsonTokenizer, sink) ;
-        }
+            return createParserRdfJson(input, sink) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriples(tokenizer, lang, baseIRI ,sink) ;
     }
