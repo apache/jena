@@ -34,15 +34,15 @@ package com.hp.hpl.jena.rdf.model;
 /** An RDF Bag container.
  *
  * <p>This interface defines methods for accessing RDF Bag resources.
- * These methods operate on the RDF statements contained in a model.  The 
+ * These methods operate on the RDF statements contained in a model.  The
  * Bag implementation may cache state from the underlying model, so
  * objects should not be added to or removed a the Bag by directly
  * manipulating its properties, whilst the Bag is being
- * accessed through this interface.</p 
+ * accessed through this interface.</p>
  *
  * <p>When a member is deleted from a Bag using this interface, or an
  * iterator returned through this interface, all the other members with
- * higher ordinals are renumbered using an implementation dependendent
+ * higher ordinals are renumbered using an implementation dependent
  * algorithm.</p>
  *
  * @author bwm
@@ -51,7 +51,7 @@ package com.hp.hpl.jena.rdf.model;
 
 
 public interface Bag extends Container {
-    
+
     /** Remove a value from the container.
      *
      * <p>The predicate of the statement <CODE>s</CODE> identifies the
@@ -62,7 +62,7 @@ public interface Bag extends Container {
      * @return this container to enable cascading calls.
      */
     public Container remove(Statement s);
-    
+
     /** Remove a value from the container.
      *
      * <p>Any statement with an ordinal predicate and object <CODE>v</CODE>
