@@ -14,10 +14,6 @@ From: 'an unknown organization'
   - Unnamed - xerces:xercesImpl:jar:2.7.1  xerces:xercesImpl:jar:2.7.1
 
 
-From: 'Apache Jena' (http://incubator.apache.org/jena)
-  - ARQ (http://openjena.org/ARQ) com.hp.hpl.jena:arq:jar:2.8.9-SNAPSHOT
-    License: Apache 2.0 License  (http://www.apache.org/licenses/LICENSE-2.0)
-
 From: 'Apache Software Foundation' (http://www.apache.org)
   - Apache Log4j (http://logging.apache.org/log4j/1.2/) log4j:log4j:bundle:1.2.16
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -33,16 +29,18 @@ From: 'Hewlett-Packard' (http://www.hp.com/)
 From: 'QOS.ch' (http://www.qos.ch)
   - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.6.1
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
-  - SLF4J LOG4J-12 Binding (http://www.slf4j.org) org.slf4j:slf4j-log4j12:jar:1.5.8
-
+  - SLF4J LOG4J-12 Binding (http://www.slf4j.org) org.slf4j:slf4j-log4j12:jar:1.6.1
+    License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
 
 From: 'The Apache Software Foundation' (http://www.apache.org/)
-  - Commons Codec (http://commons.apache.org/codec/) commons-codec:commons-codec:jar:1.4
+  - Commons Codec (http://commons.apache.org/codec/) commons-codec:commons-codec:jar:1.5
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - HttpClient (http://hc.apache.org/httpcomponents-client) org.apache.httpcomponents:httpclient:jar:4.1.2
     License: Apache License  (LICENSE.txt)
   - HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.1.2
     License: Apache License  (LICENSE.txt)
+  - ARQ (http://incubator.apache.org/jena/jena-arq) org.apache.jena:jena-arq:jar:2.8.9-incubating-SNAPSHOT
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.1.0
     License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 

@@ -20,10 +20,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.apache</groupId>
-    <artifactId>apache</artifactId>
-    <version>10</version>
-  </parent> 
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-top</artifactId>
+    <version>0-SNAPSHOT</version>
+    <relativePath>../JenaTop/pom.xml</relativePath>
+  </parent>
 
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-larq</artifactId>
@@ -79,7 +80,7 @@
 
   <properties>
     <lucene.version>3.1.0</lucene.version>
-    <arq.version>2.8.9-SNAPSHOT</arq.version>
+    <arq.version>2.8.9-incubating-SNAPSHOT</arq.version>
     <tdb.version>0.8.11-SNAPSHOT</tdb.version>
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.8.2</junit.version>
@@ -91,8 +92,8 @@
   <dependencies>
 
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
       <version>${arq.version}</version>
     </dependency>
 
@@ -110,8 +111,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>arq</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
       <version>${arq.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
@@ -246,16 +247,6 @@
     </plugins>
 
   </build>
-  
-  <repositories>
-    <repository>
-      <id>repo-jena-dev</id>
-      <url>http://openjena.org/repo-dev</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <issueManagement>
     <system>JIRA</system>
