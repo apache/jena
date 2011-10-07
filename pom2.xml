@@ -113,6 +113,12 @@
     </resources>
 
     <plugins>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+      
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
@@ -150,16 +156,16 @@
       
       </plugin>
 
-      	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-jar-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <goals>
-              <goal>test-jar</goal>
-	      </goals>
-	    </execution>
-	  </executions>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <goals>
+	      <goal>test-jar</goal>
+	    </goals>
+	  </execution>
+	</executions>
       </plugin>
 
       <plugin>
@@ -179,16 +185,9 @@
               <packages>com.hp.hpl.jena.query:com.hp.hpl.jena.update</packages>
             </group>
             <group>
-              <title>LARQ -- Lucene Search for ARQ</title>
-              <packages>com.hp.hpl.jena.query.larq</packages>
-            </group>
-	    <!--
-            <group>
               <title>RIOT</title>
               <packages>org.openjena.riot</packages>
             </group>
-	    -->
-	    <!-- "Other packages" catches everything else unless excluded -->
 	  </groups>
           <bottom>
 	    Licenced under the Apache License, Version 2.0
