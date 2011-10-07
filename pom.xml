@@ -248,6 +248,18 @@
 
   </build>
 
+  <repositories>
+    <!-- This is here so that Maven can retrieve jena-top parent pom snapshots -->
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+    </repository>
+  </repositories>
+
   <issueManagement>
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
