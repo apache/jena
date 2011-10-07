@@ -58,6 +58,12 @@ public class TDB
     /** IRI for TDB */  
     public static final String tdbIRI = "http://jena.hpl.hp.com/#tdb" ;
     
+    /** Root of TDB-defined parameter names */  
+    public static final String tdbParamNS = "http://jena.hpl.hp.com/TDB#" ;
+    
+    /** Prefix for TDB-defined parameter names */  
+    public static final String tdbSymbolPrefix = "tdb" ;
+    
     // Internal logging
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
 
@@ -182,6 +188,7 @@ public class TDB
         AssemblerTDB.init();
         QueryEngineTDB.register() ;
         UpdateEngineTDB.register() ;
+        MappingRegistry.addPrefixMapping(TDB.tdbSymbolPrefix, TDB.tdbParamNS) ;
 
         wireIntoExecution() ;
         

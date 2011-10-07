@@ -55,8 +55,6 @@ public class SystemTDB
     /** Send warnings and error */
     public static final Logger errlog = LoggerFactory.getLogger("TDB") ;
     
-    public static final String TDB_NS = "http://jena.hpl.hp.com/TDB#" ;
-    
     // ---- Constants that can't be changed without invalidating on-disk data.  
     
     /** Size, in bytes, of a Java long */
