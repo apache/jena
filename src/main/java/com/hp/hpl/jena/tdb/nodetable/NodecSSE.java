@@ -22,6 +22,8 @@ import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
@@ -98,22 +100,20 @@ public class NodecSSE implements Nodec
             str = StrUtils.decodeHex(str, MarkerChar) ;
             return Node.createURI(str) ;
         }
-        // -- Old - expensive.
-        // Node n = NodeFactory.parseNode(str) ;
-        
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str) ;
-        Node n = tokenizer.next().asNode() ;
-        if ( n == null )
-            throw new TDBException("Not a node: "+str) ;
 
-        // Not a URI or bNode.
-//        if ( n.isURI() && n.getURI().indexOf(MarkerChar) >= 0 )
-//        {
-//            String uri = StrUtils.decode(n.getURI(), '_') ;
-//            if ( uri != n.getURI() )
-//                n = Node.createURI(uri) ;
-//        }
-        return n ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(str) ;
+        if ( ! tokenizer.hasNext() )
+            throw new TDBException("Failed to tokenise: "+str) ;
+        Token t = tokenizer.next() ;
+
+        try {
+            Node n = t.asNode() ;
+            if ( n == null ) throw new TDBException("Not a node: "+str) ;
+            return n ;
+        } catch (RiotException ex)
+        {
+            throw new TDBException("Bad string for node: "+str) ;
+        }
     }
 
     // Over-estimate the length of the encoding.
