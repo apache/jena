@@ -96,9 +96,9 @@ public class ARQ
     public static final String arqIRI = "http://jena.hpl.hp.com/#arq" ;
 
     /** Root of ARQ-defined parameter names */  
-    public static final String arqNS = "http://jena.hpl.hp.com/ARQ#" ;
+    public static final String arqParamNS = "http://jena.hpl.hp.com/ARQ#" ;
     
-    /** Root of ARQ-defined parameter names */  
+    /** Prefix for ARQ-defined parameter names */  
     public static final String arqSymbolPrefix = "arq" ;
     
     /** Stick exactly to the spec.
@@ -418,7 +418,7 @@ public class ARQ
             globalContext = defaultSettings() ;
             StageBuilder.init() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
-            MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqNS) ;
+            MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
             
             // This is the pattern for any subsystem to register. 
             String NS = ARQ.PATH ;
