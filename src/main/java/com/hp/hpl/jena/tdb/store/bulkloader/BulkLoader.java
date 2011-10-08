@@ -238,7 +238,7 @@ public class BulkLoader
                     Stats.write(filename, stats) ;
                 }
                 
-                dsg.sync();
+                forceSync(dsg) ;
             }
         } ;
         return sink ;
@@ -309,7 +309,7 @@ public class BulkLoader
                     String filename = dsg.getLocation().getPath(Names.optStats) ;
                     Stats.write(filename, stats) ;
                 }
-                dsg.sync() ;
+                forceSync(dsg) ;
             }
             
             @Override
@@ -318,5 +318,19 @@ public class BulkLoader
             final public void close() { }
         } ;
         return sink ;
+    }
+    
+    static void forceSync(DatasetGraphTDB dsg)
+    {
+        // Force sync - we have been bypassing DSG tables.
+        // THIS DOES NOT WORK IF modules check for SYNC necessity.
+        dsg.getTripleTable().getNodeTupleTable().getNodeTable().sync();
+        dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync();
+        dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync();
+        dsg.getPrefixes().getNodeTupleTable().getNodeTable().sync();                
+
+        // This is not enough -- modules whether sync needed.
+        dsg.sync() ;
+        
     }
 }

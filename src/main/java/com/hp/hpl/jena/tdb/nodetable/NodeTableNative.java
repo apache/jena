@@ -44,6 +44,7 @@ public class NodeTableNative implements NodeTable
 
     protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
+    private boolean syncNeeded = false ;
     
     // Delayed construction - must call init explicitly.
     protected NodeTableNative() {}
@@ -152,14 +153,14 @@ public class NodeTableNative implements NodeTable
     }
     
     // -------- NodeId<->Node
-    // Assumes NodeId inlining and caching has been handled.
-    // Assumes synchronized (the caches will be updated consistently)
-    
+    // Synchronization:
+    //   write: in accessIndex
+    //   read: synchronized here.
     // Only places for accessing the StringFile.
-    // 
     
     private final NodeId writeNodeToTable(Node node)
     {
+        syncNeeded = true ;
         // Synchroized in accessIndex
         long x = NodeLib.encodeStore(node, getObjects()) ;
         return NodeId.create(x);
@@ -240,10 +241,14 @@ public class NodeTableNative implements NodeTable
     @Override
     public void sync() 
     { 
-        if ( nodeHashToId != null )
-            nodeHashToId.sync() ;
-        if ( getObjects() != null )
-            getObjects().sync() ;
+        if ( syncNeeded )
+        {
+            if ( nodeHashToId != null )
+                nodeHashToId.sync() ;
+            if ( getObjects() != null )
+                getObjects().sync() ;
+            syncNeeded = false ;
+        }
     }
 
     public ObjectFile getObjects()

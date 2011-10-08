@@ -38,6 +38,8 @@ public class TupleTable implements Sync, Closeable
     
     private final TupleIndex[] indexes ;
     private final int tupleLen ;
+    private boolean syncNeeded = false ;
+
     
     public TupleTable(int tupleLen, TupleIndex[] indexes)
     {
@@ -76,7 +78,7 @@ public class TupleTable implements Sync, Closeable
                 unexpectedDuplicate(t, i) ;
                 throw new TDBException(format("Secondary index duplicate: %s -> %s",indexes[i].getLabel(), t)) ;
             }
-            
+            syncNeeded = true ;
         }
         return true ;
     }
@@ -117,6 +119,8 @@ public class TupleTable implements Sync, Closeable
             if ( indexes[i] == null ) continue ;
             // Use return boolean
             rc = indexes[i].delete(t) ;
+            if ( rc ) 
+                syncNeeded = true ;
         }
         return rc ;
 
@@ -193,10 +197,14 @@ public class TupleTable implements Sync, Closeable
     @Override
     public void sync()
     {
-        for ( TupleIndex idx : indexes )
+        if ( syncNeeded )
         {
-            if ( idx != null )
-                idx.sync() ;
+            for ( TupleIndex idx : indexes )
+            {
+                if ( idx != null )
+                    idx.sync() ;
+            }
+            syncNeeded = false ;
         }
     }
 
