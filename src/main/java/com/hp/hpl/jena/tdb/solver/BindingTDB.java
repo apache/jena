@@ -18,15 +18,13 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.HashMap ;
-import java.util.Iterator ;
-import java.util.Map ;
+import java.util.* ;
 
 import org.openjena.atlas.logging.Log ;
 
-
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingBase ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -45,6 +43,7 @@ public class BindingTDB extends BindingBase
 
     public BindingTDB(BindingNodeId idBinding, NodeTable nodeTable)
     {
+        // BindingNodeId contains the bindings actually used  copied down when created. 
         super(idBinding.getParentBinding()) ;
         this.idBinding = idBinding ;
         this.nodeTable = nodeTable ;
@@ -53,13 +52,34 @@ public class BindingTDB extends BindingBase
     @Override
     protected int size1() { return idBinding.size(); }
     
+    private List<Var> vars = null ;
+    
     /** Iterate over all the names of variables. */
     @Override
     protected Iterator<Var> vars1() 
     {
-        return idBinding.iterator() ;
+        if ( vars == null )
+            vars = calcVars() ;
+        return vars.iterator() ;
     }
 
+    private List<Var> calcVars()
+    {
+        List<Var> vars = new ArrayList<Var>(4) ;
+        // Only if not in parent.
+        // A (var/value) binding may have been copied down to record it's NodeId.  
+        
+        Binding b = idBinding.getParentBinding() ;
+        
+        Iterator<Var> iter = idBinding.iterator() ;
+        for ( Var v : idBinding )
+        {
+            if ( b == null || ! b.contains(v) )
+                vars.add(v) ;
+        }
+        return vars ;
+    }
+    
     @Override
     protected boolean isEmpty1()
     {
@@ -76,7 +96,6 @@ public class BindingTDB extends BindingBase
     
     public NodeId getNodeId(Var var)
     {
-        
         NodeId id = idBinding.get(var) ;
         if ( id != null )
             return id ;

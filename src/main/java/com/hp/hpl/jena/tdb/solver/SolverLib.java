@@ -219,7 +219,6 @@ public class SolverLib
                     // repeatedly looking up the same node in different bindings.
                     NodeId id = nodeTable.getNodeIdForNode(n) ;
                     // Even put in "does not exist" for a node now known not to be in the DB.
-                    // Removed at TDB 0.8.7: if ( ! NodeId.doesNotExist(id) )
                     b.put(v, id) ;
                 }
                 return b ;

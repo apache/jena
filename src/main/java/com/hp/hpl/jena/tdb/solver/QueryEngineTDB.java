@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
+import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
@@ -161,6 +162,7 @@ public class QueryEngineTDB extends QueryEngineMain
             // And set the default graph to be the union graph as well.
             DatasetGraphTDB ds = ((DatasetGraphTDB)dsg).duplicate() ;
             ds.setEffectiveDefaultGraph(new GraphNamedTDB(ds, Quad.unionGraph)) ;
+            Explain.explain("REWRITE(Union default graph)", op, context) ;
             dsg = ds ;
         }
         return super.eval(op, dsg, input, context) ;

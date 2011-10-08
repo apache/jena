@@ -60,14 +60,13 @@ public class BindingNodeId extends Map2<Var, NodeId>
     
     public Binding getParentBinding()    { return parentBinding ; } 
     
-    @Override public NodeId get(Var v)    { return super.get(v) ; } 
+    //@Override public NodeId get(Var v)    { return super.get(v) ; } 
     
     @Override public void put(Var v, NodeId n)
     {
         if ( v == null || n == null )
             throw new IllegalArgumentException("("+v+","+n+")") ;
         super.put(v, n) ;
-        
     }
     
     @Override
