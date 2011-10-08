@@ -144,9 +144,9 @@ public class SDB
     
     public static Symbol allocSymbol(String shortName)
     { 
-        if ( shortName.startsWith(ARQ.arqNS)) 
+        if ( shortName.startsWith(ARQ.arqParamNS) )
             throw new ARQInternalErrorException("Symbol short name begins with the ARQ namespace name: "+shortName) ;
-        return Symbol.create(ARQ.arqNS+shortName) ;
+        return Symbol.create(ARQ.arqParamNS+shortName) ;
     }
 
     // ----------------------------------
