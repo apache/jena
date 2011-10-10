@@ -44,14 +44,14 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
-public class JSONResultsReader extends SPARQLResult
+public class JSONInput extends SPARQLResult
 {
     static public void main(String... args) throws Exception
     {
         String FILE = "../ARQ/testing/ResultSet/output.srj" ;
         //String FILE = "../ARQ/testing/ARQ/Ask/ask-2.srj" ;
         InputStream in = new FileInputStream(FILE) ;
-        SPARQLResult r = new JSONResultsReader().process(in, null) ;
+        SPARQLResult r = new JSONInput().process(in, null) ;
         if ( r.isBoolean() )
             System.out.println("ASK: "+r.getBooleanResult()) ;
         if ( r.isResultSet() )
@@ -60,24 +60,24 @@ public class JSONResultsReader extends SPARQLResult
     
     public static ResultSet fromJSON(InputStream input)
     {
-        SPARQLResult r = new JSONResultsReader().process(input, null) ;
+        SPARQLResult r = new JSONInput().process(input, null) ;
         return r.getResultSet() ; 
     }
     
     public static SPARQLResult make(InputStream input, Model model)
     {
-        return new JSONResultsReader().process(input, model) ;
+        return new JSONInput().process(input, model) ;
     }
 
-    public JSONResultsReader() {}
+    public JSONInput() {}
     
-    public JSONResultsReader(InputStream in)
+    public JSONInput(InputStream in)
     {
         this(in, null) ;
     }
 
     // See also XMLInputSAX for design structure.
-    public JSONResultsReader(InputStream in, Model model)
+    public JSONInput(InputStream in, Model model)
     {
         if ( model == null )
             model = GraphFactory.makeJenaDefaultModel() ;

@@ -92,7 +92,7 @@ public class ResultSetFactory
         }
         
         if ( format.equals(ResultsFormat.FMT_RS_JSON) )
-            return JSONResultsReader.fromJSON(input) ;
+            return JSONInput.fromJSON(input) ;
         
         if ( format.equals(ResultsFormat.FMT_RS_TSV) )
             return TSVInput.fromTSV(input) ;
@@ -214,7 +214,7 @@ public class ResultSetFactory
             SPARQLResult x = null ;
             
             if ( format.equals(ResultsFormat.FMT_RS_JSON) )
-                x = JSONResultsReader.make(in, GraphFactory.makeDefaultModel()) ;
+                x = JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
             else
                 x = XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
                     
@@ -276,7 +276,7 @@ public class ResultSetFactory
             SPARQLResult x = null ;
             
             if ( format.equals(ResultsFormat.FMT_RS_JSON) )
-                return JSONResultsReader.make(in, GraphFactory.makeDefaultModel()) ;
+                return JSONInput.make(in, GraphFactory.makeDefaultModel()) ;
             else if ( format.equals(ResultsFormat.FMT_RS_XML) )
                 return XMLInput.make(in, GraphFactory.makeDefaultModel()) ;
             else if ( format.equals(ResultsFormat.FMT_RS_TSV) )
@@ -341,7 +341,7 @@ public class ResultSetFactory
      */  
     public static ResultSet fromJSON(InputStream in)
     {
-        return JSONResultsReader.fromJSON(in) ;
+        return JSONInput.fromJSON(in) ;
     }
     
     /** Read from an input stream which is the format of the SPARQL result set format in TSV.
