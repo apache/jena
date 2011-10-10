@@ -1,19 +1,34 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.ext;
 
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.StorageException;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase;
+import org.openjena.atlas.lib.NotImplemented ;
+
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase ;
 
 /** A HashBucket is a record buffer, with space store it's hash value and the bit length */  
 
@@ -24,22 +39,42 @@ public final class HashBucket extends RecordBufferPageBase
     final public static int TRIE        = COUNT+4 ;
     final public static int BITLEN      = TRIE+4 ;
     
-    final public static int FIELD_LENGTH      = BITLEN ;      // Length of the space needed
+    final public static int FIELD_LENGTH      = BITLEN ;      // Length of the space needed here (not count)
     
     // Trie/Hash of this bucket.
     private int trie ;
     // How many bits are used for storing in this bucket.
     private int bucketBitLen ;
-    private HashBucketMgr pageMgr ;
+
+    public static HashBucket format(Block block, RecordFactory factory)
+    {
+        ByteBuffer byteBuffer = block.getByteBuffer() ;
+        int count = byteBuffer.getInt(COUNT) ;
+        int hash = byteBuffer.getInt(TRIE) ;
+        int hashLen = byteBuffer.getInt(BITLEN) ;
+        HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, count) ;
+        return bucket ;
+    }
+    
+    public static HashBucket createBlank(Block block, RecordFactory factory)
+    {
+        ByteBuffer byteBuffer = block.getByteBuffer() ;
+        int count = 0 ; 
+        int hash = -1 ;
+        int hashLen = -1 ;
+        HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, count) ;
+        return bucket ;
+    }
+
+
     
     /** Create a bucket */
     public HashBucket(int id, int hashValue, int bucketBitLen,
-                      ByteBuffer byteBuffer,
-                      RecordFactory factory, HashBucketMgr hashBucketPageMgr, 
+                      Block block,
+                      RecordFactory factory, 
                       int count)
     {
-        super(id, FIELD_LENGTH, byteBuffer, factory, count) ;
-        this.pageMgr = hashBucketPageMgr ;
+        super(block, FIELD_LENGTH, factory, count) ;
         this.bucketBitLen = bucketBitLen ;
         this.trie = hashValue ;
     }
@@ -97,6 +132,10 @@ public final class HashBucket extends RecordBufferPageBase
         return true ;         
     }
     
+    @Override
+    public void _reset(Block block)
+    { throw new NotImplemented("reset") ; }
+
     public final boolean isFull()
     {
         return getRecordBuffer().isFull() ;
@@ -122,16 +161,16 @@ public final class HashBucket extends RecordBufferPageBase
     public final int getTrieBitLen()        { return bucketBitLen ; }
     
     public void setTrieLength(int trieBitLen) { bucketBitLen = trieBitLen ; }
-
-    public void setPageMgr(HashBucketMgr pageMgr)
-    {
-        this.pageMgr = pageMgr;
-    }
-
-    public HashBucketMgr getPageMgr()
-    {
-        return pageMgr;
-    }
+//
+//    public void setPageMgr(HashBucketMgr pageMgr)
+//    {
+//        this.pageMgr = pageMgr;
+//    }
+//
+//    public HashBucketMgr getPageMgr()
+//    {
+//        return pageMgr;
+//    }
 
     final void incTrieBitLen()              { bucketBitLen++ ; }
 
@@ -142,29 +181,3 @@ public final class HashBucket extends RecordBufferPageBase
     }
 
 }
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

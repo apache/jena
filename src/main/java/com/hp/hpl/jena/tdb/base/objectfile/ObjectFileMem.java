@@ -1,7 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.base.objectfile;
@@ -10,6 +22,9 @@ import java.nio.ByteBuffer ;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.IteratorInteger ;
@@ -21,20 +36,25 @@ import org.openjena.atlas.lib.ByteBufferLib ;
 
 /** In-memory ByteBufferFile (for testing) - copies bytes in and out
  * to ensure no implicit modification.  
+ * @deprecated Use new ObjectFileStorage(BufferChannelMem.create(filename)) (see FileFcatory)
  */
-
+@Deprecated
 public class ObjectFileMem implements ObjectFile 
 {
-    List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
-    boolean closed = false ;
+    private List<ByteBuffer> buffers = new ArrayList<ByteBuffer>() ;
+    private boolean closed = false ;
+
+    private final String label ;
 
     public ObjectFileMem(String label)
-    { }
+    { this.label = label ; }
 
     public ObjectFileMem()
-    { }
+    { this("ObjectFileMem") ; }
 
+    // Could have been ObjectFileStorage + a byte array.  
     
+    @Override
     public long length()
     {
         if ( closed )
@@ -42,10 +62,11 @@ public class ObjectFileMem implements ObjectFile
         return buffers.size() ;
     }
 
+    @Override
     public ByteBuffer read(long id)
     {
         if ( id < 0 || id >= buffers.size() )
-            throw new IllegalArgumentException("Id "+id+" not in range [0, "+buffers.size()+"]") ;
+            return null ;
         
         if ( closed )
             throw new IllegalStateException("Closed") ;
@@ -55,30 +76,78 @@ public class ObjectFileMem implements ObjectFile
         return bb2 ;
     }
 
+    @Override
     public long write(ByteBuffer bb)
     {
         if ( closed )
             throw new IllegalStateException("Closed") ;
+        int id = buffers.size() ;
+        buffers.add(null) ;
+        write(id, bb) ;
+        return id ; 
+    }
+
+    private void write(long id, ByteBuffer bb)
+    {
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
         ByteBuffer bb2 = ByteBufferLib.duplicate(bb) ;
-        buffers.add(bb2) ;
-        return buffers.size()-1 ; 
+        buffers.set((int)id, bb2) ;
     }
-
-    public ByteBuffer allocWrite(int maxBytes)
+    
+    private Block allocBlock = null ;
+    @Override
+    public Block allocWrite(int bytesSpace)
     {
-        return ByteBuffer.allocate(maxBytes) ;
+        long id = buffers.size() ;
+        buffers.add(null) ;
+        Block b = new Block(id, ByteBuffer.allocate(bytesSpace)) ;
+        allocBlock = b ;
+        return b ;
     }
 
-    public long completeWrite(ByteBuffer buffer)
+    @Override
+    public void completeWrite(Block block)
     {
-        return write(buffer) ;
+        if ( block.getId() != buffers.size()-1 )
+            throw new StorageException() ;
+        if ( block != allocBlock )
+            throw new StorageException() ;
+        allocBlock = null ;
+        write(block.getId(), block.getByteBuffer()) ;
     }
 
+    @Override
+    public void reposition(long id)
+    {
+        if ( allocBlock != null )
+            throw new StorageException("In the middle of an alloc-write") ;
+        int newSize = (int)id ;
+        if ( newSize < 0 || newSize > buffers.size() )
+            // Can reposition to the end of the file.
+            throw new StorageException() ;
+        if ( newSize == buffers.size() )
+            return ;
+        
+        List<ByteBuffer> buffers2 = new ArrayList<ByteBuffer>(newSize) ;
+        for ( int i = 0 ; i < id ; i++ )
+            buffers2.add(buffers.get(i)) ;
+        buffers = buffers2 ;
+    }
+
+    @Override
+    public void truncate(long size)
+    {
+        reposition(size) ;
+    }
+
+    @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         int N = buffers.size() ;
         Iterator<Long> iter = new IteratorInteger(0,N) ;
         Transform<Long, Pair<Long, ByteBuffer>> transform = new Transform<Long, Pair<Long, ByteBuffer>>() {
+            @Override
             public Pair<Long, ByteBuffer> convert(Long item)
             {
                 ByteBuffer bb = buffers.get(item.intValue()) ;
@@ -88,42 +157,20 @@ public class ObjectFileMem implements ObjectFile
         return Iter.map(iter, transform) ;
     }
 
+    @Override
     public void sync()
     {}
     
     public void sync(boolean force)
     {}
 
+    @Override
     public void close()
     {
         closed = true ;
     }
 
-}
+    @Override
+    public String getLabel()            { return label ; }
 
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+}

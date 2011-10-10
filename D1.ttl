@@ -1,0 +1,3 @@
+@prefix : <http://example/> .
+
+:z9 a :foo .

@@ -11,7 +11,7 @@ function log { echo " $(date $DATE)" "$@" ; }
 TMP=$$
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
-CP="$(make_classpath $TDBROOT)"
+CP="$($TDBROOT/bin/tdb_path $TDBROOT)"
 USAGE="Usage: $(basename $0) --loc location datafile ..."
 PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 

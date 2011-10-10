@@ -1,6 +1,11 @@
 #!/bin/bash
 # Sets CP
 
-# Adds "classes", "build/classes", "target/classes"
-CP="$($TDBROOT/bin/make_classpath "$TDBROOT")"
+# Check for development system
+if [ ! -e "$TDBROOT/lib" ]
+then
+    CP="$($TDBROOT/bin/make_classpath_mvn "$TDBROOT")"
+else
+    CP="$($TDBROOT/bin/make_classpath "$TDBROOT")"
+fi
 echo "$CP"

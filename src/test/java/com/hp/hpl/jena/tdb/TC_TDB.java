@@ -1,8 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb;
@@ -17,6 +28,8 @@ import org.junit.runners.Suite ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
 import com.hp.hpl.jena.tdb.base.TC_Base ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.base.objectfile.TS_ObjectFile ;
 import com.hp.hpl.jena.tdb.graph.TS_Graph ;
 import com.hp.hpl.jena.tdb.index.TS_Index ;
 import com.hp.hpl.jena.tdb.lib.TS_LibTDB ;
@@ -26,6 +39,7 @@ import com.hp.hpl.jena.tdb.solver.TS_SolverTDB ;
 import com.hp.hpl.jena.tdb.store.TS_Store ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TS_Sys ;
+import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
 
 // Naming conventions.
 // TS_* - Test sets: collections of testing files (Often Test*)
@@ -34,7 +48,7 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     // TDB
-    TC_Base.class         // Test Collection.    
+    TC_Base.class       // ==>  TS_Block, TS_File.class, TS_Record, TS_RecordFile
     , TS_LibTDB.class
     , TS_NodeTable.class
     , TS_Index.class
@@ -46,12 +60,21 @@ import com.hp.hpl.jena.tdb.sys.TS_Sys ;
     , TS_TDBAssembler.class
     , TS_Jena.class
     , TS_Migrate.class
+    , TS_Transaction.class
+    , TS_ObjectFile.class
 } )
 
 public class TC_TDB
 {
+    static {
+        if ( false )
+            SystemTDB.setFileMode(FileMode.direct) ;
+    }
+    
     @BeforeClass static public void beforeClass()   
     {
+        //org.apache.log4j.LogManager.resetConfiguration() ;
+        //org.apache.log4j.PropertyConfigurator.configure("log4j.properties") ;
         Logger.getLogger("com.hp.hpl.jena.tdb.info").setLevel(Level.WARN) ;
         //Logger.getLogger("com.hp.hpl.jena.tdb.exec").setLevel(Level.WARN) ;
         SystemTDB.defaultOptimizer = ReorderLib.identity() ;
@@ -64,32 +87,3 @@ public class TC_TDB
         return new junit.framework.JUnit4TestAdapter(TC_TDB.class) ;
     }
 }
-
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

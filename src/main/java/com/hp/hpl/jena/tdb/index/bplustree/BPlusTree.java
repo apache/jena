@@ -1,31 +1,43 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree ;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Iter ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.sys.Session ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrTracker ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordRangeIterator ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
 
 /** B-Tree converted to B+Tree
  * 
@@ -38,12 +50,12 @@ import com.hp.hpl.jena.tdb.sys.Session ;
  * Includes implementation of removal.
  * 
  * Notes:
- * Stores "records", which are a key and value (the valu emay be null).
+ * Stores "records", which are a key and value (the value may be null).
  * 
  * In this B+Tree implementation, the (key,value) pairs are held in
  * RecordBuffer, which wrap a ByteBuffer that only has records in it.  
  * BPTreeRecords provides the B+Tree view of a RecordBuffer. All records
- * are in RecordBufefr - the "tree" part is an index for finding the right
+ * are in RecordBuffer - the "tree" part is an index for finding the right
  * page. The tree only holds keys, copies from the (key, value) pairs in
  * the RecordBuffers. 
  *
@@ -60,7 +72,7 @@ import com.hp.hpl.jena.tdb.sys.Session ;
  * The root is always the same block.
  */
 
-public class BPlusTree implements Iterable<Record>, RangeIndex, Session
+public class BPlusTree implements Iterable<Record>, RangeIndex
 {
     /*
      * Insertion:
@@ -110,32 +122,36 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
      * sibling nodes instead of immediately splitting (like delete, only on insert).
      */ 
     
-    /* TODO
-     * static factories:
-     *   Simplify (or separate factory), return a RangeIndex  
-     *   If BPlusTreeLogging, the wrap in a logging RangeIndexWrapper
-     */
-    
     private static Logger log = LoggerFactory.getLogger(BPlusTree.class) ;
     
-    private long sessionCounter = 0 ;              // Session counter
-    private int rootIdx ;
-    BPTreeNode root ;
+    private int rootIdx = BPlusTreeParams.RootId ;
+    ///*package*/ BPTreeNode root ;
     private BPTreeNodeMgr nodeManager ; 
     private BPTreeRecordsMgr recordsMgr; 
     private BPlusTreeParams bpTreeParams ;
     
-    /** Create the in-memory structures to correspnond to
+    /** Create the in-memory structures to correspond to
      * the supplied block managers for the persistent storage.
+     * Initialize the persistent storage to the empty B+Tree if it does not exist.
      * This is the normal way to create a B+Tree.
      */
-    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    public static BPlusTree create(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
     { 
-        BPlusTree bpt = new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
-        bpt.attach() ;
+        BPlusTree bpt = attach(params, blkMgrNodes, blkMgrLeaves) ;
+        bpt.createIfAbsent() ;
         return bpt ;
     }
     
+    /** Create the in-memory structures to correspond to
+     *  the supplied block managers for the persistent storage.
+     *  Does not inityalize the B+Tree - it assumes the block managers
+     *  correspond to an existing B+Tree.
+     */
+    public static BPlusTree attach(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
+    { 
+        return new BPlusTree(params, blkMgrNodes, blkMgrRecords) ;
+    }
+
     /** (Testing mainly) Make an in-memory B+Tree, with copy-in, copy-out block managers */
     public static BPlusTree makeMem(int order, int minRecords, int keyLength, int valueLength)
     { return makeMem(null, order, minRecords, keyLength, valueLength) ; }
@@ -145,72 +161,98 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         BPlusTreeParams params = new BPlusTreeParams(order, keyLength, valueLength) ;
         
-        int maxRecords = 2*minRecords ;
-        //int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
+        int blkSize ;
+        if ( minRecords > 0 )
+        {
+            int maxRecords = 2*minRecords ;
+            //int rSize = RecordBufferPage.HEADER+(maxRecords*params.getRecordLength()) ;
+            blkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxRecords) ;
+        }
+        else
+            blkSize = params.getCalcBlockSize() ;
         
-        int blkSize = RecordBufferPage.calcBlockSize(params.getRecordFactory(), maxRecords) ;
-
-        BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getBlockSize()) ;
+        BlockMgr mgr1 = BlockMgrFactory.createMem(name+"(nodes)", params.getCalcBlockSize()) ;
         BlockMgr mgr2 = BlockMgrFactory.createMem(name+"(records)", blkSize) ;
         
-        BPlusTree bpTree = BPlusTree.attach(params, mgr1, mgr2) ;
+        BPlusTree bpTree = BPlusTree.create(params, mgr1, mgr2) ;
         return bpTree ;
     }
 
-    /** Create the in-memory structures to correspond to
-     *  the supplied block managers for the persistent storage.
-     *  Do not initialize root - only for testing.
-     */
-    public static BPlusTree dummy(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
-    { 
-        return new BPlusTree(params, blkMgrNodes, blkMgrLeaves) ;
-    }
-    
-    private BPlusTree(BPlusTreeParams params) { this.bpTreeParams = params ; }
-
-    BPlusTree(int N, int recordLength, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    /** Debugging */
+    public static BPlusTree addTracking(BPlusTree bpTree)
     {
-        this(new BPlusTreeParams(N, recordLength, 0), blkMgrNodes, blkMgrLeaves) ;
+        BlockMgr mgr1 = bpTree.getNodeManager().getBlockMgr() ;
+        BlockMgr mgr2 = bpTree.getRecordsMgr().getBlockMgr() ;
+//        mgr1 = BlockMgrTracker.track("BPT/Nodes", mgr1) ;
+//        mgr2 = BlockMgrTracker.track("BPT/Records", mgr2) ;
+        mgr1 = BlockMgrTracker.track(mgr1) ;
+        mgr2 = BlockMgrTracker.track(mgr2) ;
+
+        return BPlusTree.attach(bpTree.getParams(), mgr1, mgr2) ;
     }
 
-    BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrLeaves)
+    private BPlusTree(BPlusTreeParams params, BlockMgr blkMgrNodes, BlockMgr blkMgrRecords)
     {
         // Consistency checks.
         this.bpTreeParams = params ;
         this.nodeManager = new BPTreeNodeMgr(this, blkMgrNodes) ;
-        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrLeaves) ;
+        RecordBufferPageMgr recordPageMgr = new RecordBufferPageMgr(params.getRecordFactory(), blkMgrRecords) ;
         recordsMgr = new BPTreeRecordsMgr(this, recordPageMgr) ;
     }
 
-    /** Set up according to the attached block storage for the B+Tree */
-    void attach()
+    /** Create if does not exist */
+    private void createIfAbsent()
     {
         // This fixes the root to being block 0
-        if ( nodeManager.valid(0) )
+        if ( ! nodeManager.valid(BPlusTreeParams.RootId) )
+        //if ( ! nodeManager.getBlockMgr().isEmpty() )
         {
-            // Signal both?
-            nodeManager.startRead() ;       // Just the nodeManager
-            // Existing BTree
-            root = nodeManager.getRoot(rootIdx) ;
-            rootIdx = root.getId() ;
-            // Build root node.
-            // Per session count only.
-            sessionCounter = 0 ;
-            nodeManager.finishRead() ;
-        }
-        else
-        {
+            // Create as does not exist.
+            // [TxTDB:PATCH-UP]
+            // ** Better: seperate "does it exist? - create statics used in factory"
             startUpdateBlkMgr() ;
             // Fresh BPlusTree
-            root = nodeManager.createEmptyBPT() ;
-            rootIdx = root.getId() ;
+            rootIdx = nodeManager.createEmptyBPT() ;
             if ( rootIdx != 0 )
                 throw new InternalError() ;
-            sessionCounter = 0 ;
+            
             if ( CheckingNode )
+            {            
+                BPTreeNode root = nodeManager.getRead(rootIdx, BPlusTreeParams.RootParent) ;
                 root.checkNodeDeep() ;
+                root.release() ;
+            }
+            // Cache : not currently done - root is null
+            //setRoot(root) ;
             finishUpdateBlkMgr() ;
         }
+    }
+
+    private BPTreeNode getRoot()
+    {
+        // No caching here.
+        BPTreeNode root = nodeManager.getRoot(rootIdx) ;
+        //this.root = root ;
+        return root ;
+    }
+
+    private void releaseRoot(BPTreeNode rootNode)
+    {
+//        // [TxTDB:PATCH-UP]
+//        if ( root != null ) 
+//        {
+//            root.release() ;
+//            //nodeManager.release(rootNode) ;
+//        }
+//        if ( root != null && rootNode != root )
+//            log.warn("Root is not root!") ;
+        
+        rootNode.release() ;
+    }
+
+    private void setRoot(BPTreeNode node)
+    {
+        //root = node ;
     }
 
     /** Get the parameters describing this B+Tree */
@@ -221,48 +263,31 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     /** Only use for careful manipulation of structures */
     public BPTreeRecordsMgr getRecordsMgr()     { return recordsMgr ; }
     
+    @Override
     public RecordFactory getRecordFactory()
     {
         return bpTreeParams.recordFactory ;
     }
     
+    @Override
     public Record find(Record record)
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record v = root.search(record) ;
+        Record v = BPTreeNode.search(root, record) ;
         releaseRoot(root) ;
         finishReadBlkMgr() ;
         return v ;
     }
     
-    // Operations to bracket access to the root node.
-    
-    private BPTreeNode getRoot()
-    {
-        // Cache it?
-        // Across staert/Update
-        //BPTreeNode root2 = nodeManager.getRoot(rootIdx) ;
-        return root ;
-    }
-    
-    private void releaseRoot(BPTreeNode root)
-    {
-        //nodeManager.releaseRoot(rootIdx) ;
-        if ( root != this.root )
-            log.warn("Root is not root!") ;
-    }
-
+    @Override
     public boolean contains(Record record)
     {
-        startReadBlkMgr() ;
-        BPTreeNode root = getRoot() ;
-        Record r = root.search(record) ;
-        releaseRoot(root) ;
-        finishReadBlkMgr() ;
+        Record r = find(record) ;
         return r != null ;
     }
 
+    @Override
     public Record minKey()
     {
         startReadBlkMgr() ;
@@ -273,6 +298,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
 
+    @Override
     public Record maxKey()
     {
         startReadBlkMgr() ;
@@ -283,7 +309,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return r ;
     }
 
-    //@Override
+    @Override
     public boolean add(Record record)
     {
         return addAndReturnOld(record) == null ;
@@ -294,15 +320,14 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record r = root.insert(record) ;
-        if ( r == null )
-            sessionCounter++ ;
+        Record r = BPTreeNode.insert(root, record) ;
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
     
+    @Override
     public boolean delete(Record record)
     { return deleteAndReturnOld(record) != null ; }
     
@@ -310,52 +335,54 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
     {
         startUpdateBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Record r =  root.delete(record) ;
-        if ( r != null )
-            sessionCounter -- ;
+        Record r = BPTreeNode.delete(root, record) ;
         if ( CheckingTree ) root.checkNodeDeep() ;
         releaseRoot(root) ;
         finishUpdateBlkMgr() ;
         return r ;
     }
 
-    //@Override
+    @Override
     public Iterator<Record> iterator()
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Iterator<Record> iter = root.iterator() ;
+        Iterator<Record> iter = iterator(root) ;
         releaseRoot(root) ;
-        finishReadBlkMgr() ;    // WRONG!
+        finishReadBlkMgr() ;
         return iter ;
     }
     
+    @Override
     public Iterator<Record> iterator(Record fromRec, Record toRec)
     {
         startReadBlkMgr() ;
         BPTreeNode root = getRoot() ;
-        Iterator<Record> iter = root.iterator(fromRec, toRec) ;
+        Iterator<Record> iter = iterator(root, fromRec, toRec) ;
         releaseRoot(root) ;
-        finishReadBlkMgr() ;    // WRONG!
+        finishReadBlkMgr() ;
+        // Note that this end the read-part (find the start), not the iteration.
+        // Iterator read blocks still get handled.
         return iter ;
     }
     
-    //@Override
-    public void startRead()
-    { }
-
-    //@Override
-    public void finishRead()
-    { }
-
-    //@Override
-    public void startUpdate()
-    { }
+    /** Iterate over a range of fromRec (inclusive) to toRec (exclusive) */ 
+    private static Iterator<Record> iterator(BPTreeNode node, Record fromRec, Record toRec)
+    { 
+        // Look for starting RecordsBufferPage id.
+        int id = BPTreeNode.recordsPageId(node, fromRec) ; 
+        if ( id < 0 )
+            return Iter.nullIter() ;
+        RecordBufferPageMgr pageMgr = node.getBPlusTree().getRecordsMgr().getRecordBufferPageMgr() ;
+        // No pages are active at this point.
+        return RecordRangeIterator.iterator(id, fromRec, toRec, pageMgr) ;
+    }
     
-    //@Override
-    public void finishUpdate()
-    { }
-
+    private static Iterator<Record> iterator(BPTreeNode node)
+    { 
+        return iterator(node, null, null) ; 
+    }
+    
     // Internal calls.
     private void startReadBlkMgr()
     {
@@ -380,8 +407,8 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         nodeManager.finishUpdate() ;
         recordsMgr.finishUpdate() ;
     }
-
-    //@Override
+    
+    @Override
     public boolean isEmpty()
     {
         startReadBlkMgr() ;
@@ -392,11 +419,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
         return b ;
     }
     
-    //@Override
+    @Override
     public void clear()
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
     
-    //@Override
+    @Override
     public void sync() 
     { 
         if ( nodeManager.getBlockMgr() != null )
@@ -405,6 +432,7 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
             recordsMgr.getBlockMgr().sync() ;
     }
     
+    @Override
     public void close()
     { 
         if ( nodeManager.getBlockMgr() != null )
@@ -417,61 +445,26 @@ public class BPlusTree implements Iterable<Record>, RangeIndex, Session
 //    {
 //    }
 
-    public long sessionTripleCount()
-    {
-        return sessionCounter ;
-    }
-
+    @Override
     public long size()
     {
         Iterator<Record> iter = iterator() ;
         return Iter.count(iter) ;
     }
     
-    long sizeByCounting()
-    {
-        return root.size() ;
-    }
-
+    @Override
     public void check()
     {
-        root.checkNodeDeep() ;
+        getRoot().checkNodeDeep() ;
     }
 
     public void dump()
     {
-        root.dump() ;
+        getRoot().dump() ;
     }
     
     public void dump(IndentedWriter out)
     {
-        root.dump(out) ;
+        getRoot().dump(out) ;
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 2. Redistributions in
- * binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other
- * materials provided with the distribution. 3. The name of the author may not
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

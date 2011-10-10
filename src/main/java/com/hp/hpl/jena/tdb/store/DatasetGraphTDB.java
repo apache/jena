@@ -1,14 +1,25 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.store;
 
 
 import java.util.Iterator ;
-import java.util.Properties ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
@@ -24,7 +35,6 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -37,41 +47,41 @@ import com.hp.hpl.jena.update.GraphStore ;
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements DatasetGraph, Sync, Closeable, GraphStore, Session
 {
-    // or DatasetGraphCaching
     private TripleTable tripleTable ;
     private QuadTable quadTable ;
-    private DatasetPrefixStorage prefixes ;
+    private DatasetPrefixesTDB prefixes ;
     private final ReorderTransformation transform ;
-    private final Location location ;
-    private final Properties config ;
+    private final StoreConfig config ;
     
     private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
+    private boolean readOnly = false ;
 
-    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixStorage prefixes, 
-                           ReorderTransformation transform, Location location, Properties config)
+    public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
+                           ReorderTransformation transform, StoreConfig config)
     {
+        // ?? Change to 3 nodetables and add TripleTable/QuadTable/PrefixTable wrappers.
+        
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;
         this.transform = transform ;
-        this.location = location ;
         this.config = config ;
         this.effectiveDefaultGraph = getDefaultGraphTDB() ;
     }
     
     protected DatasetGraphTDB(DatasetGraphTDB other)
     {
-        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.location, other.config) ;
+        this(other.tripleTable, other.quadTable, other.prefixes, other.transform, other.config) ;
     }
 
     public DatasetGraphTDB duplicate()
     {
-        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, location, config) ;
+        return new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, config) ;
     }
     
     public QuadTable getQuadTable()         { return quadTable ; }
-    public TripleTable getTripleTable()     { return tripleTable ; } 
+    public TripleTable getTripleTable()     { return tripleTable ; }
     
 //    private Lock lock = new MRSWLite() ;
 //    @Override 
@@ -191,48 +201,40 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         return new GraphNamedTDB(this, graphNode) ;
     }
 
-    //@Override
-    public void setEffectiveDefaultGraph(GraphTDB g) { effectiveDefaultGraph = g ; }
+    public void setEffectiveDefaultGraph(GraphTDB g)    { effectiveDefaultGraph = g ; }
 
-    //@Override
-    public GraphTDB getEffectiveDefaultGraph() 
-    {
-        return effectiveDefaultGraph ;
-    }
+    public GraphTDB getEffectiveDefaultGraph()          { return effectiveDefaultGraph ; }
 
-    public Properties getConfig()
-    {
-        return config ;
-    }
+    public StoreConfig getConfig()                       { return config ; }
     
     public String getConfigValue(String key)
     {
         if ( config == null )
             return null ;
-        return config.getProperty(key) ;
+        return config.properties.getProperty(key) ;
     }
     
     public int getConfigValueAsInt(String key, int dftValue)
     {
         if ( config == null )
             return dftValue ;
-        return PropertyUtils.getPropertyAsInteger(config, key, dftValue) ;
+        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
     }
 
     public ReorderTransformation getTransform()     { return transform ; }
     
-    public DatasetPrefixStorage getPrefixes()       { return prefixes ; }
+    public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }
 
     static private Transform<Tuple<NodeId>, NodeId> project0 = new Transform<Tuple<NodeId>, NodeId>()
     {
-        //@Override
+        @Override
         public NodeId convert(Tuple<NodeId> item)
         {
             return item.get(0) ;
         }
     } ;
     
-
+    @Override
     public Iterator<Node> listGraphNodes()
     {
         Iterator<Tuple<NodeId>> x = quadTable.getNodeTupleTable().findAll() ;
@@ -246,7 +248,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     public boolean isEmpty()            { return getTripleTable().isEmpty() && getQuadTable().isEmpty() ; }
 
-    //@Override
     public void clear()
     {
         // Leave the node table alone.
@@ -254,9 +255,9 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         getQuadTable().clearQuads() ;
     }
     
-    public Location getLocation()       { return location ; }
+    public Location getLocation()       { return config.location ; }
 
-    //@Override
+    @Override
     public void sync()
     {
         tripleTable.sync() ;
@@ -267,13 +268,13 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     // Done by superclass that then call _close. public void close()
 
     // --- GraphStore
-    //@Override
+    @Override
     public void startRequest()      {}
 
-    //@Override
+    @Override
     public void finishRequest()     { this.sync() ; } 
 
-    //@Override
+    @Override
     public Dataset toDataset()      { return new DatasetImpl(this) ; }
 
     // ---- DataSourceGraph
@@ -291,43 +292,19 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         throw new UnsupportedOperationException("Can't set default graph via GraphStore on a TDB-backed dataset") ;
     }
 
+    @Override
     public void startUpdate()
     {}
 
+    @Override
     public void finishUpdate()
     {}
 
+    @Override
     public void startRead()
     {}
 
+    @Override
     public void finishRead()
     {}
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

@@ -1,8 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.solver;
@@ -30,6 +41,7 @@ import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
@@ -52,7 +64,7 @@ public class SolverLib
      * around the BindingNodeId stream. 
      */
     public final static ConvertNodeIDToNode converter = new ConvertNodeIDToNode(){
-        //@Override
+        @Override
         public Iterator<Binding> convert(NodeTable nodeTable, Iterator<BindingNodeId> iterBindingIds)
         {
             return Iter.map(iterBindingIds, convToBinding(nodeTable)) ;
@@ -153,7 +165,7 @@ public class SolverLib
     {
         return new Transform<BindingNodeId, Binding>()
         {
-            //@Override
+            @Override
             public Binding convert(BindingNodeId bindingNodeIds)
             {
                 return convToBinding(nodeTable, bindingNodeIds) ;
@@ -163,19 +175,20 @@ public class SolverLib
 
     public static Binding convToBinding(NodeTable nodeTable, BindingNodeId bindingNodeIds)
     {
-        return new BindingTDB(bindingNodeIds, nodeTable) ;
-
-//        {
-//            // Makes nodes immediately.  Causing unnecessary NodeTable accesses (e.g. project) 
-//            Binding b = new BindingMap() ;
-//            for ( Var v : bindingNodeIds )
-//            {
-//                NodeId id = bindingNodeIds.get(v) ;
-//                Node n = nodeTable.getNodeForNodeId(id) ;
-//                b.add(v, n) ;
-//            }
-//            return b ;
-//        }
+        if ( true )
+            return new BindingTDB(bindingNodeIds, nodeTable) ;
+        else
+        {
+            // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
+            BindingMap b = BindingFactory.create() ;
+            for ( Var v : bindingNodeIds )
+            {
+                NodeId id = bindingNodeIds.get(v) ;
+                Node n = nodeTable.getNodeForNodeId(id) ;
+                b.add(v, n) ;
+            }
+            return b ;
+        }
     }
     
     // Transform : Binding ==> BindingNodeId
@@ -183,7 +196,7 @@ public class SolverLib
     {
         return new Transform<Binding, BindingNodeId>()
         {
-            //@Override
+            @Override
             public BindingNodeId convert(Binding binding)
             {
                 if ( binding instanceof BindingTDB )
@@ -206,7 +219,6 @@ public class SolverLib
                     // repeatedly looking up the same node in different bindings.
                     NodeId id = nodeTable.getNodeIdForNode(n) ;
                     // Even put in "does not exist" for a node now known not to be in the DB.
-                    // Removed at TDB 0.8.7: if ( ! NodeId.doesNotExist(id) )
                     b.put(v, id) ;
                 }
                 return b ;
@@ -228,6 +240,7 @@ public class SolverLib
         
         final Var var = Var.alloc(graphNode) ;
         Transform<Node, Binding> bindGraphName = new Transform<Node, Binding>(){
+            @Override
             public Binding convert(Node node)
             {
                 return BindingFactory.binding(var, node) ;
@@ -258,31 +271,3 @@ public class SolverLib
     
 
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Epimorphics Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

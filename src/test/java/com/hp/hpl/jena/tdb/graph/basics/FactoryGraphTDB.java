@@ -1,7 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.graph.basics;
@@ -36,8 +48,8 @@ import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTriplesTDB ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
+import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -126,20 +138,20 @@ class FactoryGraphTDB
         return indexes ;
     }
     
-    private static TripleTable createTripleTableMem(ConcurrencyPolicy policy)
+    private static TripleTable createTripleTableMem(DatasetControl policy)
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createTripleTable(IndexBuilder.mem(), nodeTable, Location.mem(), tripleIndexes, policy) ;
     }
 
     /** Public for testing only : create a triple table.*/
-    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String[]descs, ConcurrencyPolicy policy)
+    private static TripleTable createTripleTable(IndexBuilder indexBuilder, NodeTable nodeTable, Location location, String[]descs, DatasetControl policy)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordTripleFactory, location, primaryIndexTriples, descs) ;
         return new TripleTable(indexes, nodeTable, policy) ;
     }
 
-    private static QuadTable createQuadTableMem(ConcurrencyPolicy policy)
+    private static QuadTable createQuadTableMem(DatasetControl policy)
     {
         NodeTable nodeTable = NodeTableFactory.createMem(IndexBuilder.mem()) ;
         return createQuadTable(IndexBuilder.mem(), nodeTable, null, tripleIndexes, policy) ;
@@ -147,7 +159,7 @@ class FactoryGraphTDB
     
     /** Public for testing only : create a quad table.*/
     private static QuadTable createQuadTable(IndexBuilder indexBuilder, NodeTable nodeTable,
-                                             Location location, String[]descs, ConcurrencyPolicy policy)
+                                             Location location, String[]descs, DatasetControl policy)
     {
         TupleIndex indexes[] = indexes(indexBuilder, indexRecordQuadFactory, location, primaryIndexQuads, descs) ;
         return new QuadTable(indexes, nodeTable, policy) ;
@@ -158,14 +170,14 @@ class FactoryGraphTDB
     /** Create or connect a TDB dataset (graph-level) */
     private static DatasetGraphTDB _createDatasetGraph(IndexBuilder indexBuilder, Location location, String[] graphIndexDesc, String[] quadIndexDesc)
     {
-        ConcurrencyPolicy policy = new ConcurrencyPolicyMRSW() ;
+        DatasetControl policy = new DatasetControlMRSW() ;
         @SuppressWarnings("deprecation")
         NodeTable nodeTable = NodeTableFactory.create(indexBuilder, location) ;
         TripleTable triples = createTripleTable(indexBuilder, nodeTable, location, graphIndexDesc, policy) ;
         QuadTable quads = createQuadTable(indexBuilder, nodeTable, location, quadIndexDesc, policy) ;
         @SuppressWarnings("deprecation")
         DatasetPrefixesTDB prefixes = DatasetPrefixesTDB.create(indexBuilder, location, policy) ;
-        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), location, null) ;
+        return new DatasetGraphTDB(triples, quads, prefixes, chooseOptimizer(location), null) ;
     }
 
     private static TupleIndex createTupleIndex(IndexBuilder indexBuilder, RecordFactory recordFactory, Location location, String primary, String desc)
@@ -236,30 +248,3 @@ class FactoryGraphTDB
 //        TDBFactory.setImplFactory(f) ;
 //    }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

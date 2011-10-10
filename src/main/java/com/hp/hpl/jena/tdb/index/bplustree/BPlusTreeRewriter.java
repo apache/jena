@@ -1,8 +1,19 @@
-/*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
@@ -25,8 +36,8 @@ import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer ;
 import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage ;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 
 public class BPlusTreeRewriter
 {
@@ -61,10 +72,10 @@ public class BPlusTreeRewriter
         
         if ( ! iterRecords.hasNext() )
             // No records. Just return a B+Tree.
-            return BPlusTree.attach(bptParams, blkMgrNodes, blkMgrRecords) ;
+            return BPlusTree.create(bptParams, blkMgrNodes, blkMgrRecords) ;
     
         // Dummy B+tree needed to carry parameters around.
-        BPlusTree bpt2 = BPlusTree.dummy(bptParams, blkMgrNodes, blkMgrRecords) ;
+        BPlusTree bpt2 = BPlusTree.attach(bptParams, blkMgrNodes, blkMgrRecords) ;
     
         // Allocate and format a root index block.
         // We will use this slot later and write in the correct root.
@@ -113,7 +124,7 @@ public class BPlusTreeRewriter
         blkMgrNodes.sync() ;
         blkMgrRecords.sync() ;
         // Force root reset.
-        bpt2 = BPlusTree.attach(bptParams, blkMgrNodes, blkMgrRecords) ;
+        bpt2 = BPlusTree.create(bptParams, blkMgrNodes, blkMgrRecords) ;
         return bpt2 ;
     }
 
@@ -128,17 +139,15 @@ public class BPlusTreeRewriter
             System.out.println("---- Data level") ;
         }
 
-        RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
+        final RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
         Iterator<RecordBufferPage> iter = new RecordBufferPageLinker(new RecordBufferPagePacker(records, mgr)) ;
 
         Transform<RecordBufferPage, Pair<Integer, Record>> transform = new Transform<RecordBufferPage, Pair<Integer, Record>>()
         {
-            //@Override
+            @Override
             public Pair<Integer, Record> convert(RecordBufferPage rbp)
             {
-                RecordBufferPageMgr mgr = rbp.getPageMgr() ;
-                
-                rbp.getPageMgr().put(rbp) ;
+                mgr.put(rbp) ;
                 Record r = rbp.getRecordBuffer().getHigh() ;
                 r = bpt.getRecordFactory().createKeyOnly(r) ;
                 return new Pair<Integer, Record>(rbp.getId(), r) ;
@@ -186,8 +195,8 @@ public class BPlusTreeRewriter
         protected Record rebalance(int id1, Record r1, int id2, Record r2)
         {
             RecordBufferPageMgr mgr = bpt.getRecordsMgr().getRecordBufferPageMgr() ;
-            RecordBufferPage page1 = mgr.get(id1) ;
-            RecordBufferPage page2 = mgr.get(id2) ;
+            RecordBufferPage page1 = mgr.getWrite(id1) ;
+            RecordBufferPage page2 = mgr.getWrite(id2) ;
             
             // Wrong calculatation.
             for ( int i = page2.getCount() ; i <  page1.getMaxSize()/2 ; i++ )
@@ -199,8 +208,8 @@ public class BPlusTreeRewriter
                 page2.getRecordBuffer().add(0, r) ;
             }
 
-            bpt.getRecordsMgr().getRecordBufferPageMgr().put(page1) ;
-            bpt.getRecordsMgr().getRecordBufferPageMgr().put(page2) ;
+            mgr.put(page1) ;
+            mgr.put(page2) ;
             
             Record splitPoint = page1.getRecordBuffer().getHigh() ;
             splitPoint = bpt.getRecordFactory().createKeyOnly(splitPoint) ;
@@ -309,8 +318,9 @@ public class BPlusTreeRewriter
         @Override
         protected Record rebalance(int id1, Record r1, int id2, Record r2)
         {
-            BPTreeNode node1 = bpt.getNodeManager().get(id1, -1) ;
-            BPTreeNode node2 = bpt.getNodeManager().get(id2, -1) ;
+            BPTreeNodeMgr mgr = bpt.getNodeManager() ; 
+            BPTreeNode node1 = mgr.getWrite(id1, BPlusTreeParams.NoParent) ;
+            BPTreeNode node2 = mgr.getWrite(id2, BPlusTreeParams.NoParent) ;
             
             // rebalence
             // ** Need rebalance of data leaf layer. 
@@ -320,68 +330,31 @@ public class BPlusTreeRewriter
 
             Record splitPoint = r1 ;
             
-            if ( false )
+            // Shift up all in one go and use .set.
+            // Convert to block move ; should be code in BPTreeNode to do this (insert).
+            for ( int i = node2.getCount() ; i <  bpt.getParams().getMinRec() ; i++ )
             {
-                // BROKEN.
-                // Shift in splitPoint.
-                
-                // Number of items to move to rebalance from node1 to node2.
-                int N = (bpt.getParams().getMinRec()-node2.getCount()) ;
 
-//                // Copy over N record from node1 to node2.
-//                RecordBuffer rec1 = node1.getRecordBuffer() ;
-//                RecordBuffer rec2 = node2.getRecordBuffer() ;
-//                PtrBuffer ptr1 = node1.getPtrBuffer() ;
-//                PtrBuffer ptr2 = node2.getPtrBuffer() ;
-//
-//                // copy = copy from ptr1 to ptr2
-//                // shift up ptr2
-//                if ( ptr2.size() > 0 )
-//                    ptr2.shiftUpN(0, N) ;
-//                ptr1.copy(ptr1.size()-N, ptr2, 0, N) ;
-//                ptr1.clear(ptr1.size()-N, N) ; 
-//                ptr1.setSize(ptr1.size()-N) ;
-//                
-//                if ( rec2.size() > 0 )
-//                    rec2.shiftUpN(0, N) ;
-//                rec1.copy(rec1.size()-N, rec2, 0, N) ;
-//                rec1.clear(rec1.size()-N, N) ; 
-//                rec1.setSize(rec1.size()-N) ;
-//                
-//                node1.setCount(node1.getCount()-N) ;
-//                node2.setCount(node2.getCount()-N) ;
-//                
-//                splitPoint = rec1.getHigh() ;
+                Record r = splitPoint ;
+
+                //shiftOneup(node1, node2) ;
+                int ptr = node1.getPtrBuffer().getHigh() ;
+                splitPoint = node1.getRecordBuffer().getHigh() ; 
+
+                node1.getPtrBuffer().removeTop() ;
+                node1.getRecordBuffer().removeTop() ;
+                node1.setCount(node1.getCount()-1) ;
+
+                node2.getPtrBuffer().add(0, ptr) ;
+                node2.getRecordBuffer().add(0, r) ;
+                node2.setCount(node2.getCount()+1) ;
+
+                // Need high of moved substree.
+
+                if ( debug ) System.out.printf("-- Shift up: %d %s\n", ptr, r) ;
             }
-            else
-            {
-                // Shift up all in one go and use .set.
-                // Convert to block move ; should be code in BPTreeNode to do this (insert).
-                for ( int i = node2.getCount() ; i <  bpt.getParams().getMinRec() ; i++ )
-                {
-
-                    Record r = splitPoint ;
-
-                    //shiftOneup(node1, node2) ;
-                    int ptr = node1.getPtrBuffer().getHigh() ;
-                    splitPoint = node1.getRecordBuffer().getHigh() ; 
-
-                    node1.getPtrBuffer().removeTop() ;
-                    node1.getRecordBuffer().removeTop() ;
-                    node1.setCount(node1.getCount()-1) ;
-
-                    node2.getPtrBuffer().add(0, ptr) ;
-                    node2.getRecordBuffer().add(0, r) ;
-                    node2.setCount(node2.getCount()+1) ;
-
-                    // Need high of moved substree.
-
-                    if ( debug ) System.out.printf("-- Shift up: %d %s\n", ptr, r) ;
-
-                }
-            }
-            bpt.getNodeManager().put(node1) ;
-            bpt.getNodeManager().put(node2) ;
+            mgr.put(node1) ;
+            mgr.put(node2) ;
             
             return splitPoint ;
         }
@@ -399,10 +372,10 @@ public class BPlusTreeRewriter
         }
         
         //BPTreeNode => BPTree copy.
-        BPTreeNode node = bpt2.getNodeManager().get(pair.car(), BPlusTreeParams.RootParent) ;
+        BPTreeNode node = bpt2.getNodeManager().getRead(pair.car(), BPlusTreeParams.RootParent) ;
         copyBPTreeNode(node, root, bpt2) ;
         
-        bpt2.getNodeManager().release(node.getId()) ;
+        bpt2.getNodeManager().release(node) ;
     }
     
     private static void copyBPTreeNode(BPTreeNode nodeSrc, BPTreeNode nodeDst, BPlusTree bpt2)
@@ -416,31 +389,3 @@ public class BPlusTreeRewriter
         bpt2.getNodeManager().put(nodeDst) ;
     }
 }
-
-/*
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2010 Epimorphics Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

@@ -1,5 +1,0 @@
-#!/bin/bash
-# Make directories that Eclipse/svn removes on a forced update.
-
-mkdir DB DB2 DS reports tmp tmp/testing lib2 build dist
-

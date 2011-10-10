@@ -1,7 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.base.block;
@@ -15,48 +27,41 @@ import com.hp.hpl.jena.tdb.TDBException ;
 public enum BlockType implements Printable, Named
 {
     // The id should fit into an unsigned byte.
-    BTREE_NODE
-    {
-        @Override public String getName()   { return "BTreeNode" ; }
-        @Override public int id()           { return 5 ; }
-    } ,
+    FREE(-1, "Free"), 
+    BTREE_NODE(5, "BTreeNode") ,
+    BPTREE_BRANCH(6, "BPlusTreeBranch") ,
+    BPTREE_LEAF(7, "BPlusTreeLeaf") ,
+    DICTIONARY(10, "Dictionary") ,
+    RECORD_BLOCK(99, "RecordBlock"),
     
-    BPTREE_BRANCH
-    {
-        @Override public String getName()   { return "BPlusTreeBranch" ; }
-        @Override public int id()           { return 6 ; }
-    } ,
-
-    BPTREE_LEAF
-    {
-        @Override public String getName()   { return "BPlusTreeLeaf" ; }
-        @Override public int id()           { return 7 ; }
-    } ,
-
-    DICTIONARY
-    {
-        @Override public String getName()   { return "Dictionary" ; }
-        @Override public int id()           { return 10 ; }
-    } ,
-    
-    RECORD_BLOCK
-    {
-        @Override public String getName()   { return "RecordBlock" ; }
-        @Override public int id()           { return 99 ; }
-    }
+    // [TxTDB:PATCH-UP]
+    UNDEF(-2, "UndefinedBlockType")
     ;
 
+    private final int id ;
+    private final String name ;
+
+    BlockType(int id, String name)
+    {
+        this.id = id ;
+        this.name = name ;
+        
+    }
+    
+    @Override
     public void output(IndentedWriter out)
     { out.print(getName()) ; }
 
-    abstract public int id() ;
-    abstract public String getName() ;
+    final public int id() { return id ; }
+    
+    @Override
+    final public String getName() { return name ; }
     
     @Override public String toString() { return getName() ; }
     
     public static BlockType extract(int x)
     {
-        if ( x == BTREE_NODE.id() )       return BTREE_NODE ;
+        if ( x == BTREE_NODE.id() )         return BTREE_NODE ;
         if ( x == BPTREE_BRANCH.id() )      return BPTREE_BRANCH ;
         if ( x == BPTREE_LEAF.id() )        return BPTREE_LEAF ;
         if ( x == RECORD_BLOCK.id() )       return RECORD_BLOCK ;
@@ -64,30 +69,3 @@ public enum BlockType implements Printable, Named
         throw new TDBException("No known block type for "+x) ;
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

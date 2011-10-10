@@ -1,8 +1,21 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 /* This file contains code under the Apache 2 license - see hashFNV */
 
 package com.hp.hpl.jena.tdb.index.ext;
@@ -87,9 +100,6 @@ public final class ExtHash implements Index
     // Current length of trie bit used.  Invariant: dictionary.length = 1<<bitLen 
     private int bitLen = 0 ;
     
-    // Number of things in the hash table. Session.
-    private long sessionCounter = 0 ;
-    
     private final HashBucketMgr hashBucketMgr ;
     private final RecordFactory recordFactory ;
     private final PlainFile dictionaryFile ;
@@ -121,12 +131,11 @@ public final class ExtHash implements Index
         }
         else
         {
-            int id = hashBucketMgr.allocateId() ;
-            if ( id != 0 )
-                throw new StorageException("ExtHash: First bucket is not id zero") ;
-            HashBucket hb = hashBucketMgr.create(id, 0, 0) ;
-            
-            dictionary.put(0, id) ;    
+//            int id = hashBucketMgr.allocateId() ;
+//            if ( id != 0 )
+//                throw new StorageException("ExtHash: First bucket is not id zero") ;
+            HashBucket hb = hashBucketMgr.create(0, 0) ;
+            dictionary.put(0, hb.getId()) ;    
             bitLen = 0 ;
             hashBucketMgr.put(hb) ;
         }
@@ -147,7 +156,7 @@ public final class ExtHash implements Index
     
     // Hash function that is the first 4 bytes of the key (key must be at least 4 bytes long). 
     static HashRecordKey hash4bytes = new HashRecordKey(){
-        //@Override
+        @Override
         public final int hashCode(byte[] key)
         { return Bytes.getInt(key) ; }
     } ;
@@ -166,7 +175,7 @@ public final class ExtHash implements Index
     static HashRecordKey hashFNV = new HashRecordKey(){
         private static final long FNV_BASIS = 0x811c9dc5;
         private static final long FNV_PRIME = (1 << 24) + 0x193;
-        //@Override
+        @Override
         public final int hashCode(byte[] key)
         {
             long hash = FNV_BASIS;
@@ -225,7 +234,7 @@ public final class ExtHash implements Index
             // NB Fills from high to low so that it works "in place"
             for ( int i = oldSize-1 ; i>=0 ; i-- )
             {
-                int b = dictionary.get(i) ; 
+                int b = newDictionary.get(i) ; 
                 //if ( logging() ) log("Resize: put: (%d, %d)", 2*i, b) ;
                 newDictionary.put(2*i, b) ; 
                 newDictionary.put(2*i+1, b) ; 
@@ -265,13 +274,13 @@ public final class ExtHash implements Index
     
     // =====================
     
-    //@Override
+    @Override
     public boolean contains(Record key)
     {
         return find(key) != null ;
     }
     
-    //@Override
+    @Override
     public Record find(Record key)
     {
         if ( logging() ) log(">> get(%s)", key) ;
@@ -283,14 +292,12 @@ public final class ExtHash implements Index
     }
 
     
-    //@Override
+    @Override
     public boolean add(Record record)
     {
         if ( logging() ) log(">> add(%s)", record) ;
         int h = trieKey(record) ;
         boolean b = put(record, h) ;
-        if ( b )
-            sessionCounter++ ;
         if ( logging() )
         {
             log("<< add(%s)", record) ;
@@ -300,7 +307,7 @@ public final class ExtHash implements Index
         return b ;
     }
         
-    //@Override
+    @Override
     public boolean delete(Record record)
     {
         if ( logging() ) log(">> remove(%s)", record) ;
@@ -309,25 +316,22 @@ public final class ExtHash implements Index
 
         boolean b = bucket.removeByKey(record) ;
         hashBucketMgr.put(bucket) ;
-        
-        if ( b )
-            sessionCounter-- ;
         internalCheck() ;
         if ( logging() ) log("<< remove(%s)", record) ;
         return b ;
     }
 
-    //@Override
+    @Override
     public RecordFactory getRecordFactory()
     { return recordFactory ; }
 
-    //@Override
+    @Override
     public Iterator<Record> iterator()
     {
         return new ExtHashIterator(this) ; 
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     { 
        if ( dictionary.limit() == 1 )
@@ -339,15 +343,14 @@ public final class ExtHash implements Index
        return false ;
     }
     
-    //@Override
+    @Override
     public void clear()
     { throw new UnsupportedOperationException("RangeIndex("+Utils.classShortName(this.getClass())+").clear") ; }
 
-    //@Override
+    @Override
     public long size()
     { return count() ; }
 
-    //@Override
     /** Explicitly count the items in the hash table */
     public long count()
     {
@@ -365,20 +368,14 @@ public final class ExtHash implements Index
         return count ;
     }
 
-    //@Override
+    @Override
     public void sync()
     { 
         hashBucketMgr.getBlockMgr().sync() ;
         dictionaryFile.sync() ;
     }
 
-    //@Override
-    public long sessionTripleCount()
-    {
-        return sessionCounter ;
-    }
-
-    //@Override
+    @Override
     public void close()
     {
         hashBucketMgr.getBlockMgr().close() ;
@@ -551,9 +548,9 @@ public final class ExtHash implements Index
         if ( logging() ) 
             log("split: bucket hashes 0x%04X 0x%04X", hash1, hash2) ;
 
-        // New bucket
-        int id2 = hashBucketMgr.allocateId() ;
-        HashBucket bucket2 = hashBucketMgr.create(id2, hash2, bucket.getTrieBitLen()) ;
+//        // New bucket
+        HashBucket bucket2 = hashBucketMgr.create(hash2, bucket.getTrieBitLen()) ;
+        
         if ( logging() ) log("New bucket: %s", bucket2) ;
         //bucket2.setTrieValue(hash2) ;
         
@@ -638,6 +635,7 @@ public final class ExtHash implements Index
         out.decIndent(4) ;
     }
     
+    @Override
     public void check()
     {
         performCheck() ;
@@ -728,30 +726,3 @@ public final class ExtHash implements Index
         log.debug(obj.toString()) ;
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

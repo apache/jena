@@ -1,8 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-P;ackard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.store;
@@ -32,8 +43,8 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableConcrete ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicyMRSW ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
+import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 
 public class DatasetPrefixesTDB implements DatasetPrefixStorage
@@ -48,16 +59,17 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     static final ColumnMap colMap = new ColumnMap("GPU", "GPU") ;
     
     public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
+
     
     @Deprecated
-    public static DatasetPrefixesTDB create(Location location, ConcurrencyPolicy policy) { return create(IndexBuilder.get(), location, policy) ; }
+    public static DatasetPrefixesTDB create(Location location, DatasetControl policy) { return create(IndexBuilder.get(), location, policy) ; }
     
     @Deprecated
-    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, ConcurrencyPolicy policy)
+    public static DatasetPrefixesTDB create(IndexBuilder indexBuilder, Location location, DatasetControl policy)
     { return new DatasetPrefixesTDB(indexBuilder, location, policy) ; }
 
     @Deprecated
-    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location, ConcurrencyPolicy policy)
+    private DatasetPrefixesTDB(IndexBuilder indexBuilder, Location location, DatasetControl policy)
     {
         // TO BE REMOVED when DI sorted out.
         // This is a table "G" "P" "U" (Graph, Prefix, URI), indexed on GPU only.
@@ -84,20 +96,24 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
 
     //---- DI version
     
-    public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes, ConcurrencyPolicy policy)
+    public DatasetPrefixesTDB(TupleIndex[] indexes, NodeTable nodes, DatasetControl policy)
     {
         this.nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
     
     private DatasetPrefixesTDB()
     {
-        this(IndexBuilder.mem(), Location.mem(), new ConcurrencyPolicyMRSW()) ;
+        this(IndexBuilder.mem(), Location.mem(), new DatasetControlMRSW()) ;
     }
     
     /** Testing - dataset prefixes in-memory */
     public static DatasetPrefixesTDB testing() { return new DatasetPrefixesTDB() ; }
+    
+    // Use DatasetControl
+//    public boolean isReadOnly() { return nodeTupleTable.isReadOnly() ; }
+//    public void setReadOnly(boolean mode) { nodeTupleTable.setReadOnly(mode) ; }
 
-    //@Override
+    @Override
     public synchronized void insertPrefix(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -107,7 +123,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         nodeTupleTable.addRow(g,p,u) ;
     }
 
-    //@Override
+    @Override
     public Set<String> graphNames()
     {
         Iterator<Tuple<Node>> iter = nodeTupleTable.find((Node)null, null, null) ;
@@ -118,22 +134,23 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return x ;
     }
     
-    //@Override
+    @Override
     public synchronized String readPrefix(String graphName, String prefix)
     {
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
         
         Iterator<Tuple<Node>> iter = nodeTupleTable.find(g, p, null) ;
-        if ( ! iter.hasNext() )
-            return null ;
-        Tuple<Node> t = iter.next() ;
-        Node uri = t.get(2) ;
-        Iter.close(iter) ;
-        return uri.getURI() ; 
+        try {
+            if ( ! iter.hasNext() )
+                return null ;
+            Tuple<Node> t = iter.next() ;
+            Node uri = t.get(2) ;
+            return uri.getURI() ;
+        } finally { Iter.close(iter) ; } 
     }
 
-    //@Override
+    @Override
     public synchronized String readByURI(String graphName, String uriStr)
     {
         Node g = Node.createURI(graphName) ; 
@@ -146,7 +163,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return prefix.getLiteralLexicalForm()  ;
     }
 
-    //@Override
+    @Override
     public synchronized Map<String, String> readPrefixMap(String graphName)
     {
         Node g = Node.createURI(graphName) ;
@@ -163,7 +180,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         return map ;
     }
     
-    //@Override
+    @Override
     public synchronized void loadPrefixMapping(String graphName, PrefixMapping pmap)
     {
         Node g = Node.createURI(graphName) ;
@@ -178,7 +195,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         Iter.close(iter) ;
     }
     
-    //@Override
+    @Override
     public synchronized void removeFromPrefixMap(String graphName, String prefix, String uri)
     {
         Node g = Node.createURI(graphName) ; 
@@ -193,12 +210,12 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     public NodeTupleTable getNodeTupleTable()  { return nodeTupleTable ; }
     
     /** Return a PrefixMapping for the unamed graph */
-    //@Override
+    @Override
     public PrefixMapping getPrefixMapping()
     { return getPrefixMapping(unamedGraphURI) ; }
 
     /** Return a PrefixMapping for a named graph */
-    //@Override
+    @Override
     public PrefixMapping getPrefixMapping(String graphName)
     { 
         PrefixMapping pm = new GraphPrefixesProjection(graphName, this) ;
@@ -207,41 +224,13 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         pm.getNsPrefixMap() ;
         return pm ;
     }
-
-    //@Override
+    
+    @Override
     public void close()
     {
         nodeTupleTable.close() ;
     }
 
-    //@Override
+    @Override
     public void sync()  { nodeTupleTable.sync() ; }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

@@ -1,5 +1,0 @@
-#!/bin/bash
-# Run whatever the development system is set up to do in RunTDB.
-
-source "$TDBROOT/bin/tdb_init"
-exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "dev.RunTDB" "$@"

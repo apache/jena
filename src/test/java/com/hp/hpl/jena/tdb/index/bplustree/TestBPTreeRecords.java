@@ -1,12 +1,26 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
+import org.junit.After ;
 import org.junit.AfterClass;
+import org.junit.Before ;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.junit.BaseTest ;
@@ -17,8 +31,8 @@ import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
 import com.hp.hpl.jena.tdb.base.record.Record;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory;
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageMgr;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageMgr ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreePage;
 import com.hp.hpl.jena.tdb.index.bplustree.BPTreeRecords;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
@@ -57,8 +71,8 @@ public class TestBPTreeRecords extends BaseTest
         blkMgrRecords = BlockMgrFactory.createMem("BPTreeRecords", blockSize) ;
         recordBufferPageMgr = new RecordBufferPageMgr(recordFactory, blkMgrRecords) ;
         
-        // Order does not matter.
-        bPlusTree = BPlusTree.dummy(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
+        // B+Tree order does not matter.
+        bPlusTree = BPlusTree.attach(new BPlusTreeParams(3, recordFactory), null, blkMgrRecords) ;
     }
     
     @AfterClass public static void afterClass()
@@ -68,15 +82,16 @@ public class TestBPTreeRecords extends BaseTest
         BPlusTreeParams.CheckingTree = oldCheckingBTree ;
     }
 
-//    @Before public void before() {}
-//    @After public void after() {}
-
     @Test public void bpt_records_1()
     {
         BPTreeRecords bpr = make() ;
         fill(bpr) ;
         check(bpr) ;
+        bpr.release() ;
     }
+    
+    @Before public void before() { blkMgrRecords.beginUpdate() ; }
+    @After public void after() { blkMgrRecords.endUpdate() ; }
     
 
     @Test public void bpt_records_2()
@@ -90,6 +105,8 @@ public class TestBPTreeRecords extends BaseTest
         assertEquals(s, z.getCount()+bpr.getCount()) ;
         check(bpr) ;
         check((BPTreeRecords)z) ;
+        bpr.release() ;
+        z.release() ;
     }
 
     @Test public void bpt_records_3()
@@ -98,6 +115,7 @@ public class TestBPTreeRecords extends BaseTest
         for ( int i = 0 ; bpr.getCount() < bpr.getMaxSize() ; i++ )
             insert(bpr, (i+0x20)) ;
         check(bpr) ;
+        bpr.release() ;
     }
     
     @Test public void bpt_records_4()
@@ -106,6 +124,7 @@ public class TestBPTreeRecords extends BaseTest
         for ( int i = bpr.getMaxSize()-1 ; i >= 0 ; i-- )
             insert(bpr, i+0x20) ;
         check(bpr) ;
+        bpr.release() ;
     }
     
     @Test public void bpt_records_5()
@@ -131,6 +150,8 @@ public class TestBPTreeRecords extends BaseTest
         bpr.internalDelete(bpr.getHighRecord()) ;
         assertEquals(N-4, bpr.getCount()) ;
         check(bpr) ;
+        
+        bpr.release() ;
     }
     
     @Test public void bpt_records_6()
@@ -152,7 +173,8 @@ public class TestBPTreeRecords extends BaseTest
         r = bpr.getHighRecord() ;
         r2 = search(bpr, r) ;
         assertTrue(Record.keyEQ(r, r2)) ;
-
+        
+        bpr.release() ;
     }
     
     @Test public void bpt_shift_1()
@@ -166,6 +188,10 @@ public class TestBPTreeRecords extends BaseTest
         //assertTrue(Record.keyEQ(r, RecordTestLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
+        
+        bpr1.release() ;
+        bpr2.release() ;
+
     }
     
     @Test public void bpt_shift_2()
@@ -179,6 +205,8 @@ public class TestBPTreeRecords extends BaseTest
         assertTrue(Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1) ;
         contains(bpr2, 10) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_shift_3()
@@ -194,6 +222,8 @@ public class TestBPTreeRecords extends BaseTest
         assertTrue(r+" != "+RecordLib.intToRecord(10), Record.keyEQ(r, RecordLib.intToRecord(10))) ;
         contains(bpr1, 10) ;
         contains(bpr2, 20, 99) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_shift_4()
@@ -209,6 +239,8 @@ public class TestBPTreeRecords extends BaseTest
         
         contains(bpr1, 20) ;
         contains(bpr2, 5, 10) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
     
     @Test public void bpt_merge_1()
@@ -223,6 +255,8 @@ public class TestBPTreeRecords extends BaseTest
         contains(bpr1, 10, 20, 99) ;
         contains(bpr2) ;
         assertSame(bpr1, bpr3) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
 
     @Test public void bpt_merge_2()
@@ -237,6 +271,8 @@ public class TestBPTreeRecords extends BaseTest
         contains(bpr1) ;
         contains(bpr2, 5, 10, 20) ;
         assertSame(bpr2, bpr3) ;
+        bpr1.release() ;
+        bpr2.release() ;
     }
     
     private static void check(BPTreeRecords bpr)
@@ -299,10 +335,10 @@ public class TestBPTreeRecords extends BaseTest
 
     private static BPTreeRecords make()
     {
-        int id = recordBufferPageMgr.allocateId() ;
-        RecordBufferPage page = recordBufferPageMgr.create(id) ;
+        RecordBufferPage page = recordBufferPageMgr.create() ;
         return new BPTreeRecords(bPlusTree, page) ;
     }
+    
     private static void fill(BPTreeRecords bpr)
     {
         RecordBuffer rb = bpr.getRecordBuffer() ;
@@ -310,30 +346,3 @@ public class TestBPTreeRecords extends BaseTest
             insert(bpr, (i+0x30)) ;
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

@@ -1,9 +1,19 @@
-/*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd
- * All rights reserved.
- * (c) Copyright 2010 IBM Corp. All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.sys ;
@@ -28,7 +38,6 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
@@ -60,9 +69,12 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.StoreConfig ;
 import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 /** Makes things: datasets from locations, indexes */
+
+// Future - this become a colection of tstaics making things in standard ways. Does not build adataset. 
 
 public class SetupTDB
 {
@@ -86,10 +98,7 @@ public class SetupTDB
     
     // IndexBuilder for metadata files. 
     
-    // TODO Check everywhere else for non-DI constructors.
-    
     // Old code:
-    // 
     // IndexBuilders.  Or add a new IndexBuilder that can make from meta files.
     
     static public final String NodeTableType   = "dat" ; 
@@ -109,12 +118,18 @@ public class SetupTDB
     
     public final static TDBSystemInfoMBean systemInfo = new TDBSystemInfoMBean() {
 		public int getSyncTick() { return getIntProperty(Names.pSyncTick); }
-		public int getSegmentSize() { return SystemTDB.SegmentSize; }
-		public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
-		public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
-		public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
-		public int getBlockSize() { return SystemTDB.BlockSize; }
-		public int getBlockReadCacheSize() { return getIntProperty(Names.pBlockReadCacheSize); }
+		@Override
+        public int getSegmentSize() { return SystemTDB.SegmentSize; }
+		@Override
+        public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
+		@Override
+        public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
+		@Override
+        public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
+		@Override
+        public int getBlockSize() { return SystemTDB.BlockSize; }
+		@Override
+        public int getBlockReadCacheSize() { return getIntProperty(Names.pBlockReadCacheSize); }
 		
 		private int getIntProperty(String name) {
 			return Integer.parseInt(globalConfig.getProperty(name));
@@ -187,7 +202,6 @@ public class SetupTDB
         // On return, can just read the metadata key/value. 
         
         /* Semi-global 
-         * TODO Configure caches.
          * tdb.cache.node2id.size=100000  # Smaller? Much smaller!
          * tdb.cache.id2node.size=100000
          * tdb.cache.blockwrite.size=2000
@@ -245,17 +259,18 @@ public class SetupTDB
                                             indexNode2Id, n2idCacheSize,
                                             indexId2Node, id2nCacheSize) ;
 
-        ConcurrencyPolicy policy = createConcurrencyPolicy() ;
+        DatasetControl policy = createConcurrencyPolicy() ;
         
         TripleTable tripleTable = makeTripleTable(location, config, nodeTable, 
                                                   Names.primaryIndexTriples, Names.tripleIndexes, policy) ;
         QuadTable quadTable = makeQuadTable(location, config, nodeTable,
                                             Names.primaryIndexQuads, Names.quadIndexes, policy) ;
 
-        DatasetPrefixStorage prefixes = makePrefixes(location, config, policy) ;
+        DatasetPrefixesTDB prefixes = makePrefixes(location, config, policy) ;
 
         // ---- Create the DatasetGraph object
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), location, config) ;
+        StoreConfig storeConfig = new StoreConfig(location, config, null, null, null) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, chooseOptimizer(location), storeConfig) ;
 
         // Finalize
         metafile.flush() ;
@@ -283,9 +298,9 @@ public class SetupTDB
         return dsg ;
     }
 
-    protected static ConcurrencyPolicy createConcurrencyPolicy() { return new ConcurrencyPolicyMRSW() ; }
+    protected static DatasetControl createConcurrencyPolicy() { return new DatasetControlMRSW() ; }
     
-    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
+    public static TripleTable makeTripleTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
     {
         MetaFile metafile = location.getMetaFile() ;
         String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
@@ -304,7 +319,7 @@ public class SetupTDB
         return tripleTable ;
     }
     
-    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, ConcurrencyPolicy policy)
+    public static QuadTable makeQuadTable(Location location, Properties config, NodeTable nodeTable, String dftPrimary, String[] dftIndexes, DatasetControl policy)
     {
         MetaFile metafile = location.getMetaFile() ; 
         String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
@@ -324,7 +339,7 @@ public class SetupTDB
     }
 
 
-    public static DatasetPrefixStorage makePrefixes(Location location, Properties config, ConcurrencyPolicy policy)
+    public static DatasetPrefixesTDB makePrefixes(Location location, Properties config, DatasetControl policy)
     {
         /*
          * tdb.prefixes.index.file=prefixIdx
@@ -556,6 +571,14 @@ public class SetupTDB
     }
     
     /** Make a NodeTable with cache and inline wrappers */ 
+    public static NodeTable makeNodeTable(Location location)
+    {
+        return makeNodeTable(location,
+                             Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
+                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
+    }
+    
+    /** Make a NodeTable with cache and inline wrappers */ 
     public static NodeTable makeNodeTable(Location location,
                                           String indexNode2Id, int nodeToIdCacheSize,
                                           String indexId2Node, int idToNodeCacheSize)
@@ -685,10 +708,45 @@ public class SetupTDB
 //        // Block size control?
 //        return chooseIndexBuilder(fileset).newRangeIndex(fileset, recordFactory) ;
 //    }
+    
+    /** Create a B+Tree using defaults */
+    public static RangeIndex createBPTree(FileSet fileset,
+                                          RecordFactory factory)
+    {
+        int readCacheSize = SystemTDB.BlockReadCacheSize ;
+        int writeCacheSize = SystemTDB.BlockWriteCacheSize ;
+        int blockSize = SystemTDB.BlockSize ;
+        if ( fileset.isMem() )
+        {
+            readCacheSize = 0 ;
+            writeCacheSize = 0 ;
+            blockSize = SystemTDB.BlockSizeTest ;
+        }
+        
+        return createBPTreeByBlockSize(fileset, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
+    /** Create a B+Tree by BlockSize */
+    public static RangeIndex createBPTreeByBlockSize(FileSet fileset,
+                                                     int blockSize,
+                                                     int readCacheSize, int writeCacheSize,
+                                                     RecordFactory factory)
+    {
+        return createBPTree(fileset, -1, blockSize, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
+    /** Create a B+Tree by Order */
+    public static RangeIndex createBPTreeByOrder(FileSet fileset,
+                                                 int order,
+                                                 int readCacheSize, int writeCacheSize,
+                                                 RecordFactory factory)
+    {
+        return createBPTree(fileset, order, -1, readCacheSize, writeCacheSize, factory) ; 
+    }
+    
 
     /** Knowing all the parameters, create a B+Tree */
-    public static RangeIndex createBPTree(FileSet fileset, int order, 
-                                          int blockSize,
+    public static RangeIndex createBPTree(FileSet fileset, int order, int blockSize,
                                           int readCacheSize, int writeCacheSize,
                                           RecordFactory factory)
     {
@@ -710,9 +768,9 @@ public class SetupTDB
         }
     
         BPlusTreeParams params = new BPlusTreeParams(order, factory) ;
-        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExt1, blockSize, readCacheSize, writeCacheSize) ;
-        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExt2, blockSize, readCacheSize, writeCacheSize) ;
-        return BPlusTree.attach(params, blkMgrNodes, blkMgrRecords) ;
+        BlockMgr blkMgrNodes = BlockMgrFactory.create(fileset, Names.bptExtTree, blockSize, readCacheSize, writeCacheSize) ;
+        BlockMgr blkMgrRecords = BlockMgrFactory.create(fileset, Names.bptExtRecords, blockSize, readCacheSize, writeCacheSize) ;
+        return BPlusTree.create(params, blkMgrNodes, blkMgrRecords) ;
     }
 
     /** Set the global flag that control the "No BGP optimizer" warning.
@@ -773,30 +831,3 @@ public class SetupTDB
         catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
     }
 }
-/*
- * (c) Copyright 2009 Hewlett-Packard Development Company, LP All rights
- * reserved.
- * (c) Copyright 2010 Talis Systems Ltd
- * (c) Copyright 2010 IBM Corp. All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 2. Redistributions in
- * binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other
- * materials provided with the distribution. 3. The name of the author may not
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

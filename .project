@@ -1,20 +1,10 @@
 <projectDescription>
-  <name>TDB</name>
+  <name>TxTDB</name>
   <comment>TDB is a storage subsystem for Jena and ARQ.</comment>
-  <projects>
-  </projects>
+  <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
-    </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-      <arguments>
-        <dictionary>
-          <key>LaunchConfigHandle</key>
-          <value>&lt;project&gt;/.externalToolBuilders/Maven_Ant_Builder.launch</value>
-        </dictionary>
-      </arguments>
     </buildCommand>
   </buildSpec>
   <natures>

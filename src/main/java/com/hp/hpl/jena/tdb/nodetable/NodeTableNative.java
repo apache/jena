@@ -1,7 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.nodetable;
@@ -24,7 +36,7 @@ import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.store.Hash ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
-/** A concrete NodeTable based on native storage (string file and a index) */ 
+/** A concrete NodeTable based on native storage (string file and an index) */ 
 public class NodeTableNative implements NodeTable
 {
     // Assumes an StringFile and an Indexer, which may be an Index but allows
@@ -32,6 +44,7 @@ public class NodeTableNative implements NodeTable
 
     protected ObjectFile objects ;
     protected Index nodeHashToId ;        // hash -> int
+    private boolean syncNeeded = false ;
     
     // Delayed construction - must call init explicitly.
     protected NodeTableNative() {}
@@ -52,22 +65,24 @@ public class NodeTableNative implements NodeTable
     // ---- Public interface for Node <==> NodeId
 
     /** Get the Node for this NodeId, or null if none */
-    //@Override
+    @Override
     public Node getNodeForNodeId(NodeId id)
     {
         return _retrieveNodeByNodeId(id) ;
     }
 
     /** Find the NodeId for a node, or return NodeId.NodeDoesNotExist */ 
-    //@Override
+    @Override
     public NodeId getNodeIdForNode(Node node)  { return _idForNode(node, false) ; }
 
     /** Find the NodeId for a node, allocating a new NodeId if the Node does not yet have a NodeId */ 
-    //@Override
+    @Override
     public NodeId getAllocateNodeId(Node node)  { return _idForNode(node, true) ; }
 
     // ---- The worker functions
     // Synchronization:
+    // accesIndex and readNodeFromTable
+    
     // Cache around this class further out in NodeTableCache are synchronized
     // to maintain cache validatity which indirectly sync access to the NodeTable.
     // But to be sure, we provide MRSW guarantees on this class.
@@ -75,14 +90,14 @@ public class NodeTableNative implements NodeTable
     // synchonization happens in accessIndex() and readNodeByNodeId
     
     // NodeId to Node worker.
-    private synchronized Node _retrieveNodeByNodeId(NodeId id)
+    private Node _retrieveNodeByNodeId(NodeId id)
     {
         if ( NodeId.doesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
         
-        Node n = readNodeByNodeId(id) ;
+        Node n = readNodeFromTable(id) ;
         return n ;
     }
 
@@ -95,6 +110,7 @@ public class NodeTableNative implements NodeTable
         if ( node == Node.ANY )
             return NodeId.NodeIdAny ;
         
+        // synchronized in accessIndex
         NodeId nodeId = accessIndex(node, allocate) ;
         return nodeId ;
     }
@@ -107,7 +123,7 @@ public class NodeTableNative implements NodeTable
         // Key only.
         Record r = nodeHashToId.getRecordFactory().create(k) ;
         
-        synchronized (this)  // Pair to readNodeByNodeId
+        synchronized (this)  // Pair to readNodeFromTable.
         {
             // Key and value, or null
             Record r2 = nodeHashToId.find(r) ;
@@ -137,30 +153,32 @@ public class NodeTableNative implements NodeTable
     }
     
     // -------- NodeId<->Node
-    // Assumes NodeId inlining and caching has been handled.
-    // Assumes synchronized (the caches will be updated consistently)
-    
+    // Synchronization:
+    //   write: in accessIndex
+    //   read: synchronized here.
     // Only places for accessing the StringFile.
-    // 
     
     private final NodeId writeNodeToTable(Node node)
     {
+        syncNeeded = true ;
         // Synchroized in accessIndex
         long x = NodeLib.encodeStore(node, getObjects()) ;
         return NodeId.create(x);
     }
     
 
-    private final Node readNodeByNodeId(NodeId id)
+    private final Node readNodeFromTable(NodeId id)
     {
         synchronized (this) // Pair to accessIndex
         {
+            if ( id.getId() >= getObjects().length() )
+                return null ;
             return NodeLib.fetchDecode(id.getId(), getObjects()) ;
         }
     }
     // -------- NodeId<->Node
 
-    //@Override
+    @Override
     public synchronized void close()
     {
         // Close once.  This may be shared (e.g. triples table and quads table). 
@@ -176,7 +194,14 @@ public class NodeTableNative implements NodeTable
         }
     }
 
+    @Override
+    public NodeId allocOffset()
+    {
+        return NodeId.create(getObjects().length()) ;
+    }
+    
     // Not synchronized
+    @Override
     public Iterator<Pair<NodeId, Node>> all() { return all2() ; }
     
     private Iterator<Pair<NodeId, Node>> all1()
@@ -186,6 +211,7 @@ public class NodeTableNative implements NodeTable
         Iterator<Record> iter = nodeHashToId.iterator() ; ;
 
         Transform<Record, Pair<NodeId, Node>> transform = new Transform<Record, Pair<NodeId, Node>>() {
+            @Override
             public Pair<NodeId, Node> convert(Record item)
             {
                 NodeId id = NodeId.create(item.getValue(), 0) ;
@@ -200,6 +226,7 @@ public class NodeTableNative implements NodeTable
         Iterator<Pair<Long, ByteBuffer>> objs = objects.all() ; 
         
         Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>> transform = new Transform<Pair<Long, ByteBuffer>, Pair<NodeId, Node>>() {
+            @Override
             public Pair<NodeId, Node> convert(Pair<Long, ByteBuffer> item)
             {
                 NodeId id = NodeId.create(item.car().longValue()) ;
@@ -211,46 +238,30 @@ public class NodeTableNative implements NodeTable
         return Iter.map(objs, transform) ;
     }
 
-    //@Override
-    public void sync() { sync(true) ; } 
-    
-    //@Override
-    public synchronized void sync(boolean force)
-    {
-        if ( nodeHashToId != null )
-            nodeHashToId.sync() ;
-        if ( getObjects() != null )
-            getObjects().sync() ;
+    @Override
+    public void sync() 
+    { 
+        if ( syncNeeded )
+        {
+            if ( nodeHashToId != null )
+                nodeHashToId.sync() ;
+            if ( getObjects() != null )
+                getObjects().sync() ;
+            syncNeeded = false ;
+        }
     }
 
     public ObjectFile getObjects()
     {
         return objects;
     }
+    
+    @Override
+    public String toString() { return objects.getLabel() ; }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return false ;
+    }
 }
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

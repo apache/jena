@@ -1,7 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package test;
@@ -38,6 +50,7 @@ public abstract class RunnerExecute
             System.err.println("No subcommand") ;
             System.exit(1) ;
         }
+        System.out.println(args) ;
         String subCmd = args.remove(0) ;
         RunType runType = null ;
         
@@ -51,13 +64,17 @@ public abstract class RunnerExecute
             System.exit(1) ;
         }
         
+        initialize(runType) ;
+        
         args = processArgs(args) ;
         int iterations = startRun(args, runType) ;
+        
         ExecGenerator gen = execGenerator() ;
         RepeatExecution.repeatExecutions(gen, iterations, showProgress) ;
         finishRun() ;
     }
     
+    protected abstract void initialize(RunType runType) ;
     protected abstract List<String> processArgs(List<String> args) ;
 
     protected abstract ExecGenerator execGenerator() ;
@@ -71,6 +88,7 @@ public abstract class RunnerExecute
         printStream.println("   --display") ;
         printStream.println("   --check (same as btree:checknode)") ;
         printStream.println("   --bptree:check") ;
+        printStream.println("   --bptree:track") ;
         printStream.println("   --bptree:checknode (expensive)") ;
         printStream.println("   --bptree:log") ;
         printStream.println("   --bptree:safe") ;
@@ -80,13 +98,14 @@ public abstract class RunnerExecute
     
     public static void perfTest(int order, int maxValue, int numKeys)
     {
+        // UNUSED.
 //        if ( numKeys >= 3000 )
 //            System.err.printf("Warning: too many keys\n") ;
-            
+       
         int[] keys1 = rand(numKeys, 0, maxValue) ;
         int[] keys2 = permute(keys1, numKeys) ;
         try {
-            IndexMaker maker = new BPlusTreeMaker(order, order) ;
+            IndexMaker maker = new BPlusTreeMaker(order, order, false) ;
             Index rIndex = IndexTestLib.buildIndex(maker, keys1);
             IndexTestLib.delete(rIndex, keys2) ;
         } catch (RuntimeException ex)
@@ -98,30 +117,3 @@ public abstract class RunnerExecute
         }
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

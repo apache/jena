@@ -1,9 +1,19 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.nodetable ;
@@ -20,48 +30,50 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;
-import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.lib.TupleLib ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.ConcurrencyPolicy ;
+import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 
 /** Group a tuple table and node table together to provide a real NodeTupleTable */
 public class NodeTupleTableConcrete implements NodeTupleTable
 {
     protected final NodeTable  nodeTable ;
     protected final TupleTable tupleTable ;
-    private final ConcurrencyPolicy conPolicy ;
+    private final DatasetControl dsPolicy ;
+
     /*
      * Concurrency checking: Everything goes through one of addRow, deleteRow or
      * find*
      */
 
-    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, ConcurrencyPolicy conPolicy)
+    public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl dsControl)
     {
         if (indexes.length == 0 || indexes[0] == null) throw new TDBException("A primary index is required") ;
         for (TupleIndex index : indexes)
         {
-            if (N != index.getTupleLength()) throw new TDBException(format("Inconsistent: TupleTable width is %d but index %s is %d",
-                                                                           N, index.getLabel(), index.getTupleLength())) ;
+            if (N != index.getTupleLength())
+                throw new TDBException(format("Inconsistent: TupleTable width is %d but index %s is %d",
+                                              N, index.getLabel(), index.getTupleLength())) ;
         }
 
-        this.conPolicy = conPolicy ;
+        this.dsPolicy = dsControl ;
         this.tupleTable = new TupleTable(N, indexes) ;
         this.nodeTable = nodeTable ;
     }
 
-    private void startWrite()
-    { conPolicy.startUpdate() ; }
+    private void startWrite()   { dsPolicy.startUpdate() ; }
 
-    private void finishWrite()
-    { conPolicy.finishUpdate() ; }
+    private void finishWrite()  { dsPolicy.finishUpdate() ; }
 
-    private void startRead()
-    { conPolicy.startRead() ; }
+    private void startRead()    { dsPolicy.startRead() ; }
 
-    private void finishRead()
-    { conPolicy.finishRead() ; }
+    private void finishRead()   { dsPolicy.finishRead() ; }
 
+    @Override
+    public DatasetControl getPolicy()
+    { return dsPolicy ; }
+    
+    @Override
     public boolean addRow(Node... nodes)
     {
         try
@@ -72,21 +84,14 @@ public class NodeTupleTableConcrete implements NodeTupleTable
                 n[i] = nodeTable.getAllocateNodeId(nodes[i]) ;
 
             Tuple<NodeId> t = Tuple.create(n) ;
-            try
-            {
-                return tupleTable.add(t) ;
-            } catch (TDBException ex)
-            {
-                String x = NodeLib.format(" ", nodes) ;
-                System.err.println("Bad add for tuple: " + x) ;
-                throw ex ;
-            }
+            return tupleTable.add(t) ;
         } finally
         {
             finishWrite() ;
         }
     }
 
+    @Override
     public boolean deleteRow(Node... nodes)
     {
         try
@@ -109,6 +114,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by node. */
+    @Override
     public Iterator<Tuple<Node>> find(Node... nodes)
     {
         try {
@@ -116,7 +122,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
             Iterator<Tuple<NodeId>> iter1 = findAsNodeIds(nodes) ; // **public call
             if (iter1 == null) return new NullIterator<Tuple<Node>>() ;
             Iterator<Tuple<Node>> iter2 = TupleLib.convertToNodes(nodeTable, iter1) ;
-            return checkIterator(iter2) ;
+            return iteratorControl(iter2) ;
         } finally { finishRead() ; }
     }
 
@@ -125,6 +131,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
      * node is known to be unknown) for not found as well as NullIterator (when
      * no tuples are found (unknown unknown).
      */
+    @Override
     public Iterator<Tuple<NodeId>> findAsNodeIds(Node... nodes)
     {
         NodeId n[] = new NodeId[nodes.length] ;
@@ -141,6 +148,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by NodeId. */
+    @Override
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
         Tuple<NodeId> tuple = Tuple.create(ids) ;
@@ -151,21 +159,24 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     /** Find by NodeId. */
+    @Override
     public Iterator<Tuple<NodeId>> find(Tuple<NodeId> tuple)
     {
+        // All find/*, except findAll, comes through this operation so startRead/finishRead/checkIterator only needs to happen here.
         try {
             startRead() ;
             // find worker - need also protect iterators that access the node table.
             Iterator<Tuple<NodeId>> iter = tupleTable.find(tuple) ;
-            return checkIterator(iter) ;
+            return iteratorControl(iter) ;
         } finally { finishRead() ; }
     }
 
+    @Override
     public Iterator<Tuple<NodeId>> findAll()
     {
         try {
             startRead() ;
-            return checkIterator(tupleTable.getIndex(0).all()) ;
+            return iteratorControl(tupleTable.getIndex(0).all()) ;
         } finally { finishRead() ; }
     }
 
@@ -184,23 +195,27 @@ public class NodeTupleTableConcrete implements NodeTupleTable
      * Return the undelying tuple table - used with great care by tools that
      * directly manipulate internal structures.
      */
+    @Override
     public final TupleTable getTupleTable()
     {
         return tupleTable ;
     }
 
     /** Return the node table */
+    @Override
     public final NodeTable getNodeTable()
     {
         return nodeTable ;
     }
 
+    @Override
     public boolean isEmpty()
     {
         return tupleTable.isEmpty() ;
     }
 
     /** Clear the tuple table - does not clear the node table */
+    @Override
     public void clear()
     {
         try
@@ -213,12 +228,14 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         }
     }
 
+    @Override
     public long size()
     {
         return tupleTable.size() ;
     }
 
     // @Override
+    @Override
     public final void close()
     {
         try
@@ -231,6 +248,7 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     }
 
     // @Override
+    @Override
     public final void sync()
     {
         try {
@@ -240,33 +258,5 @@ public class NodeTupleTableConcrete implements NodeTupleTable
         } finally { finishWrite() ; }
     }
 
-    private <T> Iterator<T> checkIterator(Iterator<T> iter) { return conPolicy.checkedIterator(iter) ; }
+    private <T> Iterator<T> iteratorControl(Iterator<T> iter) { return dsPolicy.iteratorControl(iter) ; }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * (c) Copyright 2010 Talis Systems Ltd.
- * (c) Copyright 2011 Epimorphics Ltd.
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 1. Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 2. Redistributions in
- * binary form must reproduce the above copyright notice, this list of
- * conditions and the following disclaimer in the documentation and/or other
- * materials provided with the distribution. 3. The name of the author may not
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
- * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
- * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
- * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
- * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
- * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
- * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

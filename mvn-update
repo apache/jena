@@ -1,21 +1,3 @@
 #!/bin/bash
 
-if [ -e "lib-src" ]
-then
-    mvn dependency:copy-dependencies \
-	-Dclassifier="sources"       \
-	-DoutputDirectory=lib-src    \
-	-DincludeGroupIds="com.hp.hpl.jena"
-
-    mvn dependency:copy-dependencies \
-	-Dclassifier="test-sources"  \
-	-DincludeScope="test"        \
-	-DoutputDirectory=lib-src    \
-	-DincludeArtifactIds="jena,arq"  \
-	-DincludeGroupIds="com.hp.hpl.jena"
-fi
-
-mvn dependency:copy-dependencies -DoutputDirectory=lib
-
-# This is a fix for Jena 2.6.3 and ARQ 2.8.5 which depends on IRI sources.
-rm -f lib/*-sources*
+mvn dependency:resolve dependency:sources

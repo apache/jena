@@ -1,39 +1,47 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.page.Page;
-import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.page.Page ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
 
 /** Abstraction of a B+Tree node - either an branch (BTreeNode) or leaf (BTreeLeaf - records)*/
 abstract public class BPTreePage implements Page
 {
-    // BPTreePageMgr to be superclass of BPTreeRecordsMgr and BPTreeNodeMgr 
-    //  Provides the commonn slots blockMgr, bpTree and their operations.
-    
-    // Only "public" for external very low level tools in development to access this class.
-    // Assume package access.
-
     // Does not use PageBase because BPTreeRecords does not need it.
     protected final BPlusTree bpTree ;
     protected final BPlusTreeParams params ;
-    //int parent ;   
-    protected final BlockMgr blockMgr ;
     
-    protected BPTreePage(BPlusTree bpTree, BlockMgr blockMgr)
+    protected BPTreePage(BPlusTree bpTree)
     {
         if ( bpTree == null )
             System.err.println("NULL B+Tree") ;
         
         this.bpTree = bpTree ;
         this.params = bpTree.getParams() ;
-        this.blockMgr = blockMgr ;
     }
+    
+    public final BPlusTree getBPlusTree()       { return bpTree ; } 
+    public final BPlusTreeParams getParams()    { return params ; }
+    
+//    /** Return the page number */
+//    abstract int getId() ;
     
     /** Split in two, return the new (upper) page.  
      *  Split key is highest key of the old (lower) page.
@@ -54,17 +62,9 @@ abstract public class BPTreePage implements Page
     abstract Record shiftLeft(BPTreePage other, Record splitKey) ;
     
     /** Merge this (left) and the page imemdiately to it's right other into a single block
-     * Return the new page (may be left or right)
      */
     abstract BPTreePage merge(BPTreePage right, Record splitKey) ;
-    
-//    /** Rebalance records/pointers across this page and page other. 
-//     *  Can assume other is the same type as 'this'
-//     *  Can assume that other is the immediate left or immediate right of this page; 
-//     *  which is indicated by the boolean.
-//     *  Return BPTreePage if it is the only page now used having released other.  
-//     */
-//    public abstract BPTreePage rebalance(BPTreePage other, boolean pageIsRight) ; 
+    //* Return the new page (may be left or right)
     
     /** Test whether this page is full (has no space for a new element) - used in "insert" */
     abstract boolean isFull() ;
@@ -72,17 +72,23 @@ abstract public class BPTreePage implements Page
     /**  Test whether this page is of minimum size (removing a record would violate the packing limits) - used in "delete" */
     abstract boolean isMinSize() ;
     
+    abstract int getCount() ;
+    
+    abstract void setCount(int count) ;
+  
+    abstract int getMaxSize() ;
+    
     /**  Test whether this page has any keys */
     abstract boolean hasAnyKeys() ;
 
     /** Find a record; return null if not found */
     abstract Record internalSearch(Record rec) ;
     
-    /** Find the page for the record (bottom-most page) */
-    abstract BPTreeRecords findPage(Record rec) ;
-    
-    /** Find the first page (supports iterators) */
-    abstract BPTreeRecords findFirstPage() ;
+//    /** Find the page for the record (bottom-most page) */
+//    abstract BPTreeRecords findPage(Record rec) ;
+//    
+//    /** Find the first page (supports iterators) */
+//    abstract BPTreeRecords findFirstPage() ;
 
     /** Insert a record - return existing value if any, else null - put back modifed blocks */
     abstract Record internalInsert(Record record) ;
@@ -102,12 +108,18 @@ abstract public class BPTreePage implements Page
     /** Greatest in subtree */
     abstract Record maxRecord() ;
     
-    /** Finished with this block (for now!) */
-    abstract void put() ;
+    /** Write, or at least ensure wil be written */
+    abstract void write() ; 
     
-    /** Discard with this block (for ever) */
+    /** Turn a read page into a write page */
+    abstract void promote() ;
+
+    /** Mark as no longer needed */
     abstract void release() ;
     
+    /** Discard with this block (for ever) */
+    abstract void free() ;
+
     /** Check - just this level.*/
     abstract void checkNode() ;
     
@@ -117,30 +129,3 @@ abstract public class BPTreePage implements Page
     /** Return the split point for this record (need only be a key)*/
     abstract Record getSplitKey() ;
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>${ver.tdb}</version>
+  <!-- <version>0.9.0-incubating-SNAPSHOT</version> -->
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-top</artifactId>
+    <version>0-incubating-SNAPSHOT</version>
+    <relativePath>../JenaTop/pom.xml</relativePath>
+  </parent> 
+
+  <description>TDB is a storage subsystem for Jena and ARQ</description>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
+  </scm>
+  
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.arq}</version>
+      <scope>test</scope>
+    </dependency>
+
+     <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <!-- The filter file is written by antrun -->
+    <filters>
+      <filter>${project.basedir}/target/filter.properties</filter>
+    </filters>
+
+    <resources>
+      <resource>
+	<targetPath>com/hp/hpl/jena/tdb/</targetPath>
+	<filtering>true</filtering>
+	<!-- FIXME -->
+	<directory>resources</directory>
+      </resource>
+    </resources>
+    
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+	
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      
+      </plugin>
+
+      	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-jar-plugin</artifactId>
+	  <executions>
+	    <execution>
+	      <goals>
+              <goal>test-jar</goal>
+	      </goals>
+	    </execution>
+	  </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+	  <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
+          <bottom>
+	    Licenced under the Apache License, Version 2.0
+	  </bottom>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-timestamp</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
+                </tstamp>
+                <!-- Do not indent (it does not work) -->
+                <echo file="${project.basedir}/target/filter.properties">
+#begin
+build.time.xsd=${build.time.xsd}
+build.time.txt=${build.time.txt}
+#end
+                </echo>
+                <echo message="version=${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <!-- Another task, another execution -->
+        </executions>
+      </plugin>
+
+      <plugin>
+        <!-- This must be the last plug-in attached to the package phase 
+             because it replies on the packaging of the jar to happen first.
+        -->
+        <!-- We want one with appendAssemblyId=false and one with it defaulting to true.
+        hence two executions configured -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>create-assembly</id>
+	    <phase>package</phase>
+	    <goals><goal>single</goal></goals>
+	    <configuration>
+	      <finalName>${assembly.root.name}</finalName>
+	      <appendAssemblyId>false</appendAssemblyId>
+	      <descriptors>
+		<descriptor>assembly.xml</descriptor>
+	      </descriptors>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <reporting>
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+  </reporting>
+
+
+</project>

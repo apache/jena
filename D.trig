@@ -1,8 +1,0 @@
-@prefix  : <http://example/> .
-
-{ :s :p :o , "dft" }
-
-:g1 { :s :p :o . :s :p "g1" . }
-:g2 { :s :p :o1 . :s :p "g2" . }
-:g3 { :s :p :o1 . :s :p "g3" . }
- 

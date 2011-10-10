@@ -1,128 +1,129 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.ext;
 
-import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase.COUNT;
-import static com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPageBase.NO_ID;
-import static com.hp.hpl.jena.tdb.index.ext.HashBucket.BITLEN;
-import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE;
+import static com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPageBase.COUNT ;
+import static com.hp.hpl.jena.tdb.index.ext.HashBucket.BITLEN ;
+import static com.hp.hpl.jena.tdb.index.ext.HashBucket.TRIE ;
 
-import java.nio.ByteBuffer;
+import java.nio.ByteBuffer ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockConverter;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockType;
-import com.hp.hpl.jena.tdb.base.record.RecordException;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.block.BlockConverter ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockType ;
+import com.hp.hpl.jena.tdb.base.page.PageBlockMgr ;
+import com.hp.hpl.jena.tdb.base.record.RecordException ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 
 
-public class HashBucketMgr extends BlockConverter<HashBucket>
+public class HashBucketMgr extends PageBlockMgr<HashBucket>
 {
     public HashBucketMgr(RecordFactory factory, BlockMgr blockMgr)
     {
         super(null, blockMgr) ;
-        Block2HashBucketMgr conv = new Block2HashBucketMgr(factory, null) ;
+        Block2HashBucketMgr conv = new Block2HashBucketMgr(factory) ;
         super.setConverter(conv) ;
     }
 
-    public HashBucket create(int id, int hash, int hashBitLen)
+    public HashBucket create(int hash, int hashBitLen)
     {
-        HashBucket bucket = super.create(id, BlockType.RECORD_BLOCK) ;
-        bucket.setId(id) ;
+        HashBucket bucket = super.create(BlockType.RECORD_BLOCK) ;
         bucket.setTrieValue(hash) ;
         bucket.setTrieLength(hashBitLen) ;
         return bucket ;
     }
     
+    // [TxTDB:PATCH-UP]
     @Override
-    public HashBucket get(int id)
+    public HashBucket getWrite(int id)
+    { 
+        HashBucket page = _get(id) ;
+        page.getBackingBlock().setModified(true) ;
+        return page ;
+    }
+    // [TxTDB:PATCH-UP]
+    @Override
+    public HashBucket getRead(int id)        { return _get(id) ; }
+    
+    // [TxTDB:PATCH-UP]
+    //@Override
+    public HashBucket get(int id)        { return getWrite(id) ; }
+    
+   
+    public HashBucket _get(int id)
     {
-        HashBucket bucket = super.get(id) ;
-        bucket.setPageMgr(this) ;
+        // [TxTDB:PATCH-UP]
+        HashBucket bucket = super.getWrite(id) ;
         // Link and Count are in the block and got done by the converter.
         return bucket ;
     }
     
-    private static class Block2HashBucketMgr implements Converter<HashBucket>
+    private static class Block2HashBucketMgr implements BlockConverter<HashBucket>
     {
         private RecordFactory factory ;
-        private HashBucketMgr pageMgr ;
 
-        Block2HashBucketMgr(RecordFactory factory, HashBucketMgr pageMgr)
+        Block2HashBucketMgr(RecordFactory factory)
         {
             this.factory = factory ;
-            this.pageMgr = pageMgr ;
         }
         
-        //@Override
-        public HashBucket createFromByteBuffer(ByteBuffer bb, BlockType blkType)
+        @Override
+        public HashBucket createFromBlock(Block block, BlockType blkType)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
             if ( blkType != BlockType.RECORD_BLOCK )
                 throw new RecordException("Not RECORD_BLOCK: "+blkType) ;
             // Initially empty
-            HashBucket bucket = new HashBucket(NO_ID, -1, -1, bb, factory, pageMgr, 0) ;
+            HashBucket bucket = HashBucket.createBlank(block, factory) ; // NO_ID, -1, -1, block, factory, 0) ;
             return bucket ;
         }
 
-        //@Override
-        public HashBucket fromByteBuffer(ByteBuffer byteBuffer)
+        @Override
+        public HashBucket fromBlock(Block block)
         {
-            synchronized (byteBuffer)
+            synchronized (block)
             {
-                // Be safe - one reader only.
-                // But it is likely that the caller needs to also
-                // perform internal updates so syncrhoized on
-                // the bytebuffer here is not enough.
-                int count = byteBuffer.getInt(COUNT) ;
-                int hash = byteBuffer.getInt(TRIE) ;
-                int hashLen = byteBuffer.getInt(BITLEN) ;
-                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, byteBuffer, factory, pageMgr, count) ;
+                HashBucket bucket = HashBucket.format(block, factory) ;
+//                // Be safe - one reader only.
+//                // But it is likely that the caller needs to also
+//                // perform internal updates so syncrhoized on
+//                // the bytebuffer here is not enough.
+//                ByteBuffer byteBuffer = block.getByteBuffer() ;
+//                int count = byteBuffer.getInt(COUNT) ;
+//                int hash = byteBuffer.getInt(TRIE) ;
+//                int hashLen = byteBuffer.getInt(BITLEN) ;
+//                HashBucket bucket = new HashBucket(NO_ID, hash, hashLen, block, factory, pageMgr, count) ;
                 return bucket ;
             }
         }
 
-        //@Override
-        public ByteBuffer toByteBuffer(HashBucket bucket)
+        @Override
+        public Block toBlock(HashBucket bucket)
         {
             // No need to additionally sync - this is a triggered by write operations so only one writer.
             int count = bucket.getRecordBuffer().size() ;
-            bucket.setCount(count) ;
-            bucket.getBackingByteBuffer().putInt(COUNT, bucket.getCount()) ;
-            bucket.getBackingByteBuffer().putInt(TRIE,  bucket.getTrieValue()) ;
-            bucket.getBackingByteBuffer().putInt(BITLEN,  bucket.getTrieBitLen()) ;
-            return bucket.getBackingByteBuffer() ;
+            ByteBuffer bb = bucket.getBackingBlock().getByteBuffer() ;
+            bb.putInt(COUNT, bucket.getCount()) ;
+            bb.putInt(TRIE,  bucket.getTrieValue()) ;
+            bb.putInt(BITLEN,  bucket.getTrieBitLen()) ;
+            return bucket.getBackingBlock() ;
         }
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */

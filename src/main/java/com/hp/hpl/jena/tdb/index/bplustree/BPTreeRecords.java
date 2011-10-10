@@ -1,41 +1,47 @@
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- * [See end of file]
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode;
-import static java.lang.String.format;
+import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
+import static java.lang.String.format ;
 import static org.openjena.atlas.lib.Alg.decodeIndex ;
-
-import java.nio.ByteBuffer;
-
-
 import org.openjena.atlas.io.IndentedWriter ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.base.StorageException;
-import com.hp.hpl.jena.tdb.base.recordfile.RecordBufferPage;
-
-import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer;
-import com.hp.hpl.jena.tdb.base.record.Record;
+import com.hp.hpl.jena.tdb.base.StorageException ;
+import com.hp.hpl.jena.tdb.base.block.Block ;
+import com.hp.hpl.jena.tdb.base.buffer.RecordBuffer ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 
 /** B+Tree wrapper over a block of records in a RecordBufferPage.
- * This class adds no peristent state to a RecordBufferPage */
+ * This class adds no persistent state to a RecordBufferPage */
 public final class BPTreeRecords extends BPTreePage
 {
-    // Could require all Page operations to the RecordBufferPage
-    // Page is then an interface and BPTreeNode has the state 
     private static Logger log = LoggerFactory.getLogger(BPTreeRecords.class) ;
-    private final RecordBufferPage    rBuffPage ;
-    private final RecordBuffer        rBuff ;        // Used heavily.
+    private final RecordBufferPage  rBuffPage ;
+    private RecordBuffer            rBuff ;         // Used heavily.
     
-    public BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
+    BPTreeRecords(BPlusTree bpTree, RecordBufferPage rbp)
     {
-        super(bpTree, bpTree.getRecordsMgr().getBlockMgr()) ;
+        super(bpTree) ;
         rBuffPage = rbp ;
         rBuff = rBuffPage.getRecordBuffer() ;
     }
@@ -46,23 +52,36 @@ public final class BPTreeRecords extends BPTreePage
     /*TEMP*/ public RecordBuffer getRecordBuffer()
     { return rBuff ; }
 
+    @Override
+    public final Block getBackingBlock()
+    {
+        return rBuffPage.getBackingBlock() ;
+    }
+    
+    @Override
+    public void reset(Block block)
+    { 
+        rBuffPage.reset(block) ;
+        rBuff = rBuffPage.getRecordBuffer() ;
+    }
+
     int getLink()
     { return rBuffPage.getLink() ; }
 
     @Override
-    boolean isFull()
+    public boolean isFull()
     {
         return ( rBuff.size() >= rBuff.maxSize() ) ;
     }
-
+    
     @Override
-    boolean hasAnyKeys()
+    public boolean hasAnyKeys()
     {
         return rBuff.size() > 0 ;
     }
 
     @Override
-    boolean isMinSize()
+    public boolean isMinSize()
     {
         // 50% packing minimum.
         // If of max length 5 (i.e. odd), min size is 2.  Integer division works.  
@@ -70,7 +89,7 @@ public final class BPTreeRecords extends BPTreePage
    }
 
     @Override
-    Record internalSearch(Record rec)
+    public Record internalSearch(Record rec)
     {
         int i = rBuff.find(rec) ;
         if ( i < 0 )
@@ -78,30 +97,38 @@ public final class BPTreeRecords extends BPTreePage
         return rBuff.get(i) ;
     }
 
-    @Override
-    BPTreeRecords findPage(Record record)
-    {
-        if ( rBuff.size() == 0 )
-            return this ;
-        
-        // Not true if above the last record.
-        if ( this.getLink() != RecordBufferPage.NO_ID && Record.keyGT(record, maxRecord()) ) 
-            error("Record [%s] not in this page: %s", record , this) ;
-        return this ;
-    }
-    
-    @Override
-    BPTreeRecords findFirstPage() { return this ; }
+//    @Override
+//    public BPTreeRecords findPage(Record record)
+//    {
+//        if ( rBuff.size() == 0 )
+//            return this ;
+//        
+//        // Not true if above the last record.
+//        if ( this.getLink() != RecordBufferPage.NO_ID && Record.keyGT(record, maxRecord()) ) 
+//            error("Record [%s] not in this page: %s", record , this) ;
+//        return this ;
+//    }
+//    
+//    @Override
+//    public BPTreeRecords findFirstPage() { return this ; }
 
     @Override final
-    void put()   { bpTree.getRecordsMgr().put(this) ; } 
+    public void write()     { bpTree.getRecordsMgr().write(this) ; } 
     
     @Override final
-    void release()   { bpTree.getRecordsMgr().release(getId()) ; } 
+    public void promote()   { bpTree.getRecordsMgr().promote(this) ; } 
     
+    @Override final
+    public void release()   { bpTree.getRecordsMgr().release(this) ; }
+    
+    @Override final
+    public void free()      { bpTree.getRecordsMgr().free(this) ; }
+
     @Override
-    Record internalInsert(Record record)
+    public Record internalInsert(Record record)
     {
+        // [TxTDB:PATCH-UP]
+        promote() ;
         int i = rBuff.find(record) ;
         Record r2 = null ;
         if ( i < 0 )
@@ -118,24 +145,25 @@ public final class BPTreeRecords extends BPTreePage
                 // Replace : return old
                 rBuff.set(i, record) ;
         }
-        put() ;
+        write() ;
         return r2 ;
     }
 
     @Override
-    Record internalDelete(Record record)
+    public Record internalDelete(Record record)
     {
+        promote() ;
         int i = rBuff.find(record) ;
         if ( i < 0 )
             return null ;
         Record r2 = rBuff.get(i) ;
         rBuff.remove(i) ;
-        put() ;
+        write() ;
         return r2 ;       
     }
     
     @Override final
-    Record getSplitKey()
+    public Record getSplitKey()
     {
         int splitIdx = rBuff.size()/2-1 ;
         Record r = rBuff.get(splitIdx) ;
@@ -146,7 +174,7 @@ public final class BPTreeRecords extends BPTreePage
      * Split is the high end of the low page.
      */
     @Override final
-    BPTreePage split() 
+    public BPTreePage split() 
     {
         // LinkIn
         // Create a new BPTreeRecords.
@@ -177,15 +205,13 @@ public final class BPTreeRecords extends BPTreePage
 
     private BPTreeRecords create(int linkId)
     {
-        int id = bpTree.getRecordsMgr().allocateId() ;
-        BPTreeRecords newPage = bpTree.getRecordsMgr().create(id) ;
+        BPTreeRecords newPage = bpTree.getRecordsMgr().create() ;
         newPage.getRecordBufferPage().setLink(linkId) ;
-        newPage.getRecordBufferPage().setId(id) ;
         return newPage ;
     }
 
     @Override
-    Record shiftRight(BPTreePage other, Record splitKey)
+    public Record shiftRight(BPTreePage other, Record splitKey)
     {
         // Error checking by RecordBuffer
         BPTreeRecords page = cast(other) ;
@@ -196,7 +222,7 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override
-    Record shiftLeft(BPTreePage other, Record splitKey)
+    public Record shiftLeft(BPTreePage other, Record splitKey)
     {
         // Error checking by RecordBuffer
         BPTreeRecords page = cast(other) ;
@@ -207,7 +233,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    BPTreePage merge(BPTreePage right, Record splitKey)
+    public BPTreePage merge(BPTreePage right, Record splitKey)
     {
         // Split key ignored - it's for the B+Tree case of pushing down a key
         // Records blocks have all the key/values in them anyway.
@@ -238,13 +264,13 @@ public final class BPTreeRecords extends BPTreePage
     }
     
     @Override final
-    Record minRecord()
+    public Record minRecord()
     {
         return getLowRecord() ;
     }
 
     @Override final
-    Record maxRecord()
+    public Record maxRecord()
     {
         return getHighRecord() ;
     }
@@ -258,7 +284,7 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final Record getLowRecord()
+    public final Record getLowRecord()
     {
         if ( rBuff.size() == 0 )
             return null ;
@@ -266,20 +292,20 @@ public final class BPTreeRecords extends BPTreePage
     }
 
     @Override
-    final Record getHighRecord()
+    public final Record getHighRecord()
     {
         if ( rBuff.size() == 0 )
             return null ;
         return rBuff.getHigh() ;
     }
 
-    //@Override
+    @Override
     public final int getMaxSize()             { return rBuff.maxSize() ; }
     
-    //@Override
+    @Override
     public final int getCount()             { return rBuff.size() ; }
  
-    //@Override
+    @Override
     public final void setCount(int count)   { rBuff.setSize(count) ; }
     
     @Override
@@ -306,44 +332,18 @@ public final class BPTreeRecords extends BPTreePage
     public final void checkNodeDeep()
     { checkNode() ; }
 
-    //@Override
-    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
+//    @Override
+//    public ByteBuffer getBackingByteBuffer()   { return rBuffPage.getBackingByteBuffer() ; }
 
-    //@Override
+    @Override
     public int getId()                  { return rBuffPage.getId() ; } 
 
-    //@Override
-    public void setId(int id)           { rBuffPage.setId(id) ; }
+//    @Override
+//    public void setId(int id)           { rBuffPage.setId(id) ; }
 
+    @Override
     public void output(IndentedWriter out)
     {
         out.print(toString()) ;
     }
 }
-
-/*
- * (c) Copyright 2008, 2009 Hewlett-Packard Development Company, LP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
