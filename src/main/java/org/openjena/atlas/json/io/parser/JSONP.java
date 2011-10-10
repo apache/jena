@@ -35,73 +35,72 @@ import org.openjena.atlas.json.io.JSONHandler ;
  */
 public class JSONP extends ParserBase
 {
-    private JSONHandler maker ;
+    private JSONHandler handler ;
 
-    public JSONP(TokenizerJSON tokens, JSONHandler maker)
+    public JSONP(TokenizerJSON tokens, JSONHandler handler)
     {
         super(tokens) ;
-        // Disable prefixnames, enable COLON
-        this.maker = maker ;
+        this.handler = handler ;
     }
     
     public void parse()
     {
-        if ( ! token().hasType(LBRACE) )
-            exception("Not a JSON object START: "+token()) ;
+        if ( ! peekToken().hasType(LBRACE) )
+            exception("Not a JSON object START: "+peekToken()) ;
         parseObject() ;
     }
     
     private void parseObject()
     {
         // JSON Object
-        maker.startObject() ;
-        move() ;
+        nextToken() ;
+        handler.startObject(currLine, currCol) ;
         if ( lookingAt(RBRACE) )
         {
-            move() ;
-            maker.finishObject() ;
+            nextToken() ;
+            handler.finishObject(currLine, currCol) ;
             return ;
         }
         // ** Read pairs until the cows come home.  Or a } occurs.
         for(;;)
         {
-            maker.startPair() ;
+            handler.startPair(currLine, currCol) ;
             if ( ! lookingAt(KEYWORD) && ! lookingAtString() )
-                exception("Not a key for a JSON object: "+token()) ;
-            String key = token().getImage() ;
-            move() ;
-            maker.valueString(key) ;
+                exception("Not a key for a JSON object: "+peekToken()) ;
+            String key = peekToken().getImage() ;
+            nextToken() ;
+            handler.valueString(key, currLine, currCol) ;
             if ( ! lookingAt(COLON) )
-                exception("Not a colon: "+token()) ;
-            move() ;
-            maker.keyPair() ;
+                exception("Not a colon: "+peekToken()) ;
+            nextToken() ;
+            handler.keyPair(currLine, currCol) ;
             
             // One parse.
             parseAny() ;
-            maker.finishPair() ;
+            handler.finishPair(currLine, currCol) ;
             if ( ! lookingAt(COMMA) )
                 break ;
-            move() ;
+            nextToken() ;
         }
         
         if ( ! lookingAt(RBRACE) )
-            exception("Illegal: "+token()) ;
-        move() ;
-        maker.finishObject() ;
+            exception("Illegal: "+peekToken()) ;
+        nextToken() ;
+        handler.finishObject(currLine, currCol) ;
     }
 
-    /** Parse one element into the JSONMaker (includes nesting) */
+    /** Parse one element into the JSONhandler (includes nesting) */
     public void parseAny()
     {
-        switch(token().getType())
+        switch(peekToken().getType())
         {
             case LBRACE:    { parseObject() ; return ; }
             case LBRACKET:  { parseArray() ; return ; }
             
             // Number
-            case INTEGER:   { maker.valueInteger(token().getImage()) ; move() ; return ; }
-            case DECIMAL:   { maker.valueDecimal(token().getImage()) ; move() ; return ; }
-            case DOUBLE:    { maker.valueDouble(token().getImage()) ; move() ; return ; }
+            case INTEGER:   { handler.valueInteger(peekToken().getImage(), currLine, currCol) ; nextToken() ; return ; }
+            case DECIMAL:   { handler.valueDecimal(peekToken().getImage(), currLine, currCol) ; nextToken() ; return ; }
+            case DOUBLE:    { handler.valueDouble(peekToken().getImage(), currLine, currCol) ; nextToken() ; return ; }
 
             // String - liberal
             case STRING1:
@@ -109,50 +108,50 @@ public class JSONP extends ParserBase
             case LONG_STRING1:
             case LONG_STRING2:
             {
-                maker.valueString(token().getImage()) ;
-                move() ; 
+                handler.valueString(peekToken().getImage(), currLine, currCol) ;
+                nextToken() ; 
                 return ;
             }
                 
             case KEYWORD:
             { 
-                String image = token().getImage() ;
-                if ( image.equalsIgnoreCase("true") )    { maker.valueBoolean(true) ; move() ; return ; }
-                if ( image.equalsIgnoreCase("false") )   { maker.valueBoolean(false) ; move() ; return ; }
-                if ( image.equalsIgnoreCase("null") )    { maker.valueNull() ; move() ; return ; }
+                String image = peekToken().getImage() ;
+                if ( image.equalsIgnoreCase("true") )    { handler.valueBoolean(true, currLine, currCol) ; nextToken() ; return ; }
+                if ( image.equalsIgnoreCase("false") )   { handler.valueBoolean(false, currLine, currCol) ; nextToken() ; return ; }
+                if ( image.equalsIgnoreCase("null") )    { handler.valueNull(currLine, currCol) ; nextToken() ; return ; }
                 //exception("Unrecognized keyword: "+token()) ;
                 // Very liberal
-                maker.valueString(image) ;
+                handler.valueString(image, currLine, currCol) ;
                 break ;
             }
 
             default:
-                exception("Unrecognized token: "+token()) ;
+                exception("Unrecognized token: "+peekToken()) ;
         }
     }
 
     private void parseArray()
     {
-        maker.startArray() ;
-        move() ;
+        handler.startArray(currLine, currCol) ;
+        nextToken() ;
         if ( lookingAt(RBRACKET) )
         {
-            move() ;
-            maker.finishArray() ;
+            nextToken() ;
+            handler.finishArray(currLine, currCol) ;
             return ;
         }
 
         for(;;)
         {
             parseAny() ;
-            maker.element() ;
+            handler.element(currLine, currCol) ;
             if ( ! lookingAt(COMMA) )
                 break ;
-            move() ;
+            nextToken() ;
         }
         if ( ! lookingAt(RBRACKET) )
-            exception("Illegal: "+token()) ;
-        move() ;
-        maker.finishArray() ;
+            exception("Illegal: "+peekToken()) ;
+        nextToken() ;
+        handler.finishArray(currLine, currCol) ;
     }
 }

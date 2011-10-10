@@ -22,66 +22,66 @@ package org.openjena.atlas.json.io;
 public class JSONHandlerBase implements JSONHandler
 {
     //@Override
-    public void startParse()
+    public void startParse(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishParse()
+    public void finishParse(long currLine, long currCol)
     {}
 
     //@Override
-    public void startObject()
+    public void startObject(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishObject()
+    public void finishObject(long currLine, long currCol)
     {}
 
     //@Override
-    public void startPair()
+    public void startPair(long currLine, long currCol)
     {}
 
     //@Override
-    public void keyPair()
+    public void keyPair(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishPair()
+    public void finishPair(long currLine, long currCol)
     {}
 
     //@Override
-    public void startArray()
+    public void startArray(long currLine, long currCol)
     {}
 
     //@Override
-    public void element()
+    public void element(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishArray()
+    public void finishArray(long currLine, long currCol)
     {}
 
     //@Override
-    public void valueString(String image)
+    public void valueString(String image, long currLine, long currCol)
     {}
 
     //@Override
-    public void valueInteger(String image)
+    public void valueInteger(String image, long currLine, long currCol)
     {}
 
     //@Override
-    public void valueDecimal(String image)
+    public void valueDecimal(String image, long currLine, long currCol)
     {}
 
     //@Override
-    public void valueDouble(String image)
+    public void valueDouble(String image, long currLine, long currCol)
     {}
 
     //@Override
-    public void valueBoolean(boolean b)
+    public void valueBoolean(boolean b, long currLine, long currCol)
     {}
 
     //@Override
-    public void valueNull()
+    public void valueNull(long currLine, long currCol)
     {}
 }

@@ -31,6 +31,8 @@ public class ParserBase
     protected boolean VERBOSE = true ;
     private Tokenizer tokens ;
     private PeekIterator<Token> peekTokens ;
+    protected long currLine = -1 ;
+    protected long currCol = -1 ;
 
     ParserBase(Tokenizer tokens)
     {
@@ -90,14 +92,14 @@ public class ParserBase
         return false ;
     }
     
-    final protected Token token()
+    final protected Token peekToken()
     {
         // Avoid repeating.
         if ( eof() ) return tokenEOF ;
         return peekTokens.peek() ;
     }
     
-    final protected Token move()
+    final protected Token nextToken()
     {
         if ( eof() )
         {
@@ -106,6 +108,8 @@ public class ParserBase
         }
         
         Token t = peekTokens.next() ;
+        currLine = t.getLine() ;
+        currCol = t.getColumn() ;
 //        if ( VERBOSE ) log.info("Move: " + t) ;
         return t ;
     }
@@ -122,7 +126,7 @@ public class ParserBase
     {
         if ( ! lookingAt(ttype) )
             exception(msg) ;
-        move() ;
+        nextToken() ;
     }
 
     final protected void exception(String msg, Object... args)

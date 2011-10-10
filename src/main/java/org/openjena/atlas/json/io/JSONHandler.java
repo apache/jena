@@ -20,26 +20,25 @@ package org.openjena.atlas.json.io;
 
 public interface JSONHandler
 {
-    void startParse() ;
-    void finishParse() ; 
-
+    void startParse(long currLine, long currCol) ;
+    void finishParse(long currLine, long currCol) ; 
     
-    void startObject() ;
-    void finishObject() ; 
+    void startObject(long currLine, long currCol) ;
+    void finishObject(long currLine, long currCol) ; 
 
     // "Pair" is the name used in the JSON spec. 
-    void startPair() ;
-    void keyPair() ;
-    void finishPair() ; 
+    void startPair(long currLine, long currCol) ;
+    void keyPair(long currLine, long currCol) ;
+    void finishPair(long currLine, long currCol) ; 
 
-    void startArray() ;
-    void element() ;
-    void finishArray() ;
+    void startArray(long currLine, long currCol) ;
+    void element(long currLine, long currCol) ;
+    void finishArray(long currLine, long currCol) ;
     
-    void valueString(String image) ;
-    void valueInteger(String image) ;
-    void valueDouble(String image) ;
-    void valueBoolean(boolean b) ;
-    void valueNull() ;
-    void valueDecimal(String image) ;
+    void valueString(String image, long currLine, long currCol) ;
+    void valueInteger(String image, long currLine, long currCol) ;
+    void valueDouble(String image, long currLine, long currCol) ;
+    void valueBoolean(boolean b, long currLine, long currCol) ;
+    void valueNull(long currLine, long currCol) ;
+    void valueDecimal(String image, long currLine, long currCol) ;
 }

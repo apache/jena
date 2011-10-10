@@ -34,30 +34,30 @@ public class JSON_ParserBase
     }
     
     // All the signals from the parsing process.
-    protected void startParse()                 { handler.startParse() ; }
-    protected void finishParse()                { handler.finishParse() ; }
+    protected void startParse(long currLine, long currCol)                 { handler.startParse(currLine, currCol) ; }
+    protected void finishParse(long currLine, long currCol)                { handler.finishParse(currLine, currCol) ; }
     
-    protected void startObject()                { handler.startObject() ; }
-    protected void finishObject()               { handler.finishObject() ; }
+    protected void startObject(long currLine, long currCol)                { handler.startObject(currLine, currCol) ; }
+    protected void finishObject(long currLine, long currCol)               { handler.finishObject(currLine, currCol) ; }
 
-    protected void startPair()                  { handler.startPair() ; }
-    protected void keyPair()                    { handler.keyPair() ; }
-    protected void finishPair()                 { handler.finishPair() ; }
+    protected void startPair(long currLine, long currCol)                  { handler.startPair(currLine, currCol) ; }
+    protected void keyPair(long currLine, long currCol)                    { handler.keyPair(currLine, currCol) ; }
+    protected void finishPair(long currLine, long currCol)                 { handler.finishPair(currLine, currCol) ; }
     
-    protected void startArray()                 { handler.startArray() ; }
-    protected void element()                    { handler.element() ; }
-    protected void finishArray()                { handler.finishArray() ; }
+    protected void startArray(long currLine, long currCol)                 { handler.startArray(currLine, currCol) ; }
+    protected void element(long currLine, long currCol)                    { handler.element(currLine, currCol) ; }
+    protected void finishArray(long currLine, long currCol)                { handler.finishArray(currLine, currCol) ; }
 
-    protected void valueString(String image)
+    protected void valueString(String image, long currLine, long currCol)
     {
         // Strip quotes
         image = image.substring(1,image.length()-1) ;
-        handler.valueString(image) ;
+        handler.valueString(image, currLine, currCol) ;
     }
         
-    protected void valueInteger(String image)   { handler.valueInteger(image) ; }
-    protected void valueDecimal(String image)   { handler.valueDecimal(image) ; }
-    protected void valueDouble(String image)    { handler.valueDouble(image) ; }
-    protected void valueBoolean(boolean b)      { handler.valueBoolean(b) ; }
-    protected void valueNull()                  { handler.valueNull() ; }
+    protected void valueInteger(String image, long currLine, long currCol)   { handler.valueInteger(image, currLine, currCol) ; }
+    protected void valueDecimal(String image, long currLine, long currCol)   { handler.valueDecimal(image, currLine, currCol) ; }
+    protected void valueDouble(String image, long currLine, long currCol)    { handler.valueDouble(image, currLine, currCol) ; }
+    protected void valueBoolean(boolean b, long currLine, long currCol)      { handler.valueBoolean(b, currLine, currCol) ; }
+    protected void valueNull(long currLine, long currCol)                    { handler.valueNull(currLine, currCol) ; }
 }

@@ -118,21 +118,21 @@ TOKEN :
 
 // ---- Parser entry points
 
-void unit() : {}
+void unit() : { Token t ; }
 {
-    { startParse() ; }
-    object()
-    { finishParse() ; }
-    <EOF>
+    { startParse(-1, -1) ; }
+    Object()
+    t = <EOF>
+    { finishParse(t.beginLine, t.beginColumn) ; }
 }
  
 
-void any() : {}
+void any() : { Token t ; }
 {
-    { startParse() ; }
+    { startParse(-1, -1) ; }
     (Value())?
-    { finishParse() ; }
-    <EOF>
+    t = <EOF>
+    { finishParse(t.beginLine, t.beginColumn) ; }
 }
 
 
@@ -140,54 +140,54 @@ void any() : {}
 
 void Value() : {}
 {
- SimpleValue()
-| object()
+  SimpleValue()
+| Object()
 | Array()
 }
 
-void object() : { }
+void Object() : { Token t ; }
 {
-  <LBRACE> 
-  { startObject() ; }
-  (Members())?
-  { finishObject(); }
-  <RBRACE>
+  t = <LBRACE> 
+  { startObject(t.beginLine, t.beginColumn) ; }
+  (Members(t))?
+  t = <RBRACE>
+  { finishObject(t.beginLine, t.beginColumn); }
 }
 
-void Members() : {}
+void Members(Token t) : { }
 {
-  Pair() 
-  (<COMMA> Pair())* 
+  Pair(t) 
+  (t = <COMMA> Pair(t))* 
 }
 
-void Pair() : {}
+void Pair(Token t) : { }
 {
-  { startPair() ; }
+  { startPair(t.beginLine, t.beginColumn) ; }
   String()
-  { keyPair() ; }
-  <COLON>
+  t = <COLON>
+  { keyPair(t.beginLine, t.beginColumn) ; }
   Value()
-  { finishPair() ; }
+  { finishPair(t.beginLine, t.beginColumn) ; }
 }
 
-void Array() : {}
+void Array() : { Token t ; }
 {
-   <LBRACKET> 
-    { startArray() ; }
-	(Elements())?
-    { finishArray() ; }
-   <RBRACKET>
+   t = <LBRACKET> 
+   { startArray(t.beginLine, t.beginColumn) ; }
+   (Elements(t))?
+   t = <RBRACKET>
+   { finishArray(t.beginLine, t.beginColumn) ; }
 }
 
-void Elements() : { }
+void Elements(Token t) : { }
 {
-    ArrayValue()
-    (<COMMA> ArrayValue())*
+    ArrayValue(t.beginLine, t.beginColumn)
+    (t = <COMMA> ArrayValue(t.beginLine, t.beginColumn))*
 }
 
-void ArrayValue() : { }
+void ArrayValue(long line, long col) : { }
 {
-    Value() { element() ; }
+    Value() { element(line, col) ; }
 }
 
 // ---- 
@@ -203,38 +203,38 @@ void SimpleValue() : {}
 
 void Number() : { Token t ; }
 {
-  t = <INTEGER> 		    { valueInteger(t.image) ; }
-| t = <DECIMAL>			    { valueDecimal(t.image) ; }
-| t = <DOUBLE>			    { valueDouble(t.image) ; }
-| t = <POSITIVE_INTEGER>	{ valueInteger(t.image) ; }
-| t = <POSITIVE_DECIMAL>	{ valueDecimal(t.image) ; }
-| t = <POSITIVE_DOUBLE>		{ valueDouble(t.image) ; }
-| t = <NEGATIVE_INTEGER>	{ valueInteger(t.image) ; }
-| t = <NEGATIVE_DECIMAL>	{ valueDecimal(t.image) ; }
-| t = <NEGATIVE_DOUBLE>		{ valueDouble(t.image) ; }
+  t = <INTEGER> 		    { valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <DECIMAL>			    { valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <DOUBLE>			    { valueDouble(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_INTEGER>	{ valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_DECIMAL>	{ valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_DOUBLE>		{ valueDouble(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_INTEGER>	{ valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_DECIMAL>	{ valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_DOUBLE>		{ valueDouble(t.image, t.beginLine, t.beginColumn) ; }
 }
 
 // Token to Java Object : These  rules exist to inject the 
 // necessary Java objects and code for the tokens.
 void String() : { Token t ; }
 {
-  t = <STRING_LITERAL2> { valueString(t.image); } 
+  t = <STRING_LITERAL2> { valueString(t.image, t.beginLine, t.beginColumn); } 
 	//  <STRING>
 }
 
 void True() : { Token t ; }
 {
-  <TRUE> { valueBoolean(true) ; }
+  t = <TRUE> { valueBoolean(true, t.beginLine, t.beginColumn) ; }
 }
 
 void False() : { Token t ; }
 {
-  <FALSE> { valueBoolean(false) ; }
+  t = <FALSE> { valueBoolean(false, t.beginLine, t.beginColumn) ; }
 }
 
 void Null() : { Token t ; }
 {
-  <NULL> { valueNull() ; }
+  t = <NULL> { valueNull(t.beginLine, t.beginColumn) ; }
 }
 
 

@@ -2,7 +2,7 @@
 # Parser builder
 
 GRAMMAR="${GRAMMAR:-"json.jj"}"
-ROOT=".."
+ROOT="../.."
 PKG=org/openjena/atlas/json/io/parserjavacc/javacc
 
 # --------------------------------------------------------
@@ -14,7 +14,7 @@ function grammar
     local CLASS="$3"
     echo "JavaCC: $1 $2 $3"
 
-    DIR="$ROOT/src/$PKG"
+    DIR="$ROOT/src/main/java/$PKG"
     ( cd $DIR ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java SimpleCharStream.java )
 
     echo "---- Process grammar -- $1"
@@ -92,7 +92,7 @@ for G in "$@"
   do
   case "$G" in
   json)
-    dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
+    cpp -P -C "$GRAMMAR" > parser.jj
     grammar parser.jj $PKG JSON_Parser
     [ "$RC" = 0 ] && rm -f parser.jj
     ;;

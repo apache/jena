@@ -28,27 +28,27 @@ public class JSONPrinter implements JSONHandler
     IndentedWriter out ;  
     
     //@Override
-    public void startParse()
+    public void startParse(long currLine, long currCol)
     {
         out = new IndentedWriter(System.out, true) ; 
         //out.setPadString("> ") ;
     }
 
     //@Override
-    public void finishParse()
+    public void finishParse(long currLine, long currCol)
     {
         out.flush() ;
     }
 
     //@Override
-    public void startObject()
+    public void startObject(long currLine, long currCol)
     { 
         out.println(">>Object") ;
         out.incIndent() ;
     }
 
     //@Override
-    public void finishObject()
+    public void finishObject(long currLine, long currCol)
     {
         out.decIndent() ;
         out.println("<<Object") ;
@@ -56,73 +56,73 @@ public class JSONPrinter implements JSONHandler
     }
     
     //@Override
-    public void startPair()
+    public void startPair(long currLine, long currCol)
     { 
         out.println(">Pair") ;
         out.incIndent() ;
     }
 
     //@Override
-    public void keyPair()
+    public void keyPair(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishPair()
+    public void finishPair(long currLine, long currCol)
     { 
         out.decIndent() ;
         out.println("<Pair") ;
     }
     
     //@Override
-    public void startArray()
+    public void startArray(long currLine, long currCol)
     {
         out.println(">>Array") ;
         out.incIndent() ;
     }
 
     //@Override
-    public void element()
+    public void element(long currLine, long currCol)
     {}
 
     //@Override
-    public void finishArray()
+    public void finishArray(long currLine, long currCol)
     {
         out.decIndent() ;
         out.println("<<Array") ;
     }
 
     //@Override
-    public void valueBoolean(boolean b)
+    public void valueBoolean(boolean b, long currLine, long currCol)
     {
         out.println("Boolean: "+b) ;
     }
 
     //@Override
-    public void valueDecimal(String image)
+    public void valueDecimal(String image, long currLine, long currCol)
     {
         out.println("Decimal: "+image) ;
     }
 
     //@Override
-    public void valueDouble(String image)
+    public void valueDouble(String image, long currLine, long currCol)
     {
         out.println("Double: "+image) ;
     }
 
     //@Override
-    public void valueInteger(String image)
+    public void valueInteger(String image, long currLine, long currCol)
     {
         out.println("Integer: "+image) ;
     }
 
     //@Override
-    public void valueNull()
+    public void valueNull(long currLine, long currCol)
     {
         out.println("Null") ;
     }
 
     //@Override
-    public void valueString(String image)
+    public void valueString(String image, long currLine, long currCol)
     {
         out.println("String: "+image) ;
     }
