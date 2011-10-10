@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import org.openjena.atlas.logging.Log ;
 
 /**
- * A JSON writer for SPARQL Result Sets.  Uses jena' atlas JSON support. 
+ * A JSON writer for SPARQL Result Sets.  Uses Jena Atlas JSON support. 
  * 
  * Format: <a href="http://www.w3.org/TR/sparql11-results-json/">SPARQL 1.1 Query Results JSON Format</a> 
  */ 
