@@ -19,8 +19,7 @@
 package com.hp.hpl.jena.sparql.resultset;
 
 
-import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfBoolean ;
-import static com.hp.hpl.jena.sparql.resultset.JSONResults.dfHead ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.* ;
 
 import java.io.OutputStream ;
 
@@ -45,10 +44,10 @@ public class JSONOutputASK
         out.startOutput() ;
 
         out.startObject() ;
-        out.key(dfHead) ;
+        out.key(kHead) ;
         out.startObject() ;
         out.finishObject() ;
-        out.pair(dfBoolean, result) ;
+        out.pair(kBoolean, result) ;
         out.finishObject() ;
         
         out.finishOutput() ;

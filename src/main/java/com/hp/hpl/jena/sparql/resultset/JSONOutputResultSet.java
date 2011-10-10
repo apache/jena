@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import static com.hp.hpl.jena.sparql.resultset.JSONResults.* ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.* ;
 
 import java.io.OutputStream ;
 import java.util.HashMap ;
@@ -65,9 +65,9 @@ public class JSONOutputResultSet implements ResultSetProcessor
         out.println("{") ;
         out.incIndent() ;
         doHead(rs) ;
-        out.println(quoteName(dfResults)+": {") ;
+        out.println(quoteName(kResults)+": {") ;
         out.incIndent() ;
-        out.println(quoteName(dfBindings)+": [") ;
+        out.println(quoteName(kBindings)+": [") ;
         out.incIndent() ;
         firstSolution = true ;
     }
@@ -88,7 +88,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
 
     private void doHead(ResultSet rs)
     {
-        out.println(quoteName(dfHead)+": {") ;
+        out.println(quoteName(kHead)+": {") ;
         out.incIndent() ;
         doLink(rs) ;
         doVars(rs) ;
@@ -105,7 +105,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     private void doVars(ResultSet rs)
     {
         // On one line.
-        out.print(quoteName(dfVars)+": [ ") ;
+        out.print(quoteName(kVars)+": [ ") ;
         if ( multiLineVarNames ) out.println() ;
         out.incIndent() ;
         for (Iterator<String> iter = rs.getResultVars().iterator() ; iter.hasNext() ; )
@@ -171,13 +171,13 @@ public class JSONOutputResultSet implements ResultSetProcessor
         out.print("}") ;        // NB No newline
     }
     
-    private void printUnbound()
-    {
-        out.print(quoteName(dfType)+ ": "+quote(dfUnbound)+" , ") ;
-        if ( multiLineValues ) out.println() ;
-        out.print(quoteName(dfValue)+": null") ;
-        if ( multiLineValues ) out.println() ;
-    }
+//    private void printUnbound()
+//    {
+//        out.print(quoteName(kType)+ ": "+quote(kUnbound)+" , ") ;
+//        if ( multiLineValues ) out.println() ;
+//        out.print(quoteName(kValue)+": null") ;
+//        if ( multiLineValues ) out.println() ;
+//    }
 
     private void printLiteral(Literal literal)
     {
@@ -186,25 +186,25 @@ public class JSONOutputResultSet implements ResultSetProcessor
         
         if ( datatype != null )
         {
-            out.print(quoteName(dfDatatype)+": "+quote(datatype)+" , ") ;
+            out.print(quoteName(kDatatype)+": "+quote(datatype)+" , ") ;
             if ( multiLineValues ) out.println() ;
             
-            out.print(quoteName(dfType)+": "+quote(dfTypedLiteral)+" , ") ;
+            out.print(quoteName(kType)+": "+quote(kTypedLiteral)+" , ") ;
             if ( multiLineValues ) out.println() ;
         }
         else
         {
-            out.print(quoteName(dfType)+": "+quote(dfLiteral)+" , ") ;
+            out.print(quoteName(kType)+": "+quote(kLiteral)+" , ") ;
             if ( multiLineValues ) out.println() ;
             
             if ( lang != null && !lang.equals("") )
             {
-                out.print(quoteName(dfLang)+": "+quote(lang)+" , ") ;
+                out.print(quoteName(kXmlLang)+": "+quote(lang)+" , ") ;
                 if ( multiLineValues ) out.println() ;
             }
         }
             
-        out.print(quoteName(dfValue)+": "+quote(literal.getLexicalForm())) ;
+        out.print(quoteName(kValue)+": "+quote(literal.getLexicalForm())) ;
         if ( multiLineValues ) out.println() ;
     }
 
@@ -222,18 +222,18 @@ public class JSONOutputResultSet implements ResultSetProcessor
                 label = bNodeMap.get(resource) ;
             }
             
-            out.print(quoteName(dfType)+": "+quote(dfBNode)+" , ") ;
+            out.print(quoteName(kType)+": "+quote(kBnode)+" , ") ;
             if ( multiLineValues ) out.println() ;
             
-            out.print(quoteName(dfValue)+": "+quote(label)) ;
+            out.print(quoteName(kValue)+": "+quote(label)) ;
             
             if ( multiLineValues ) out.println() ;
         }
         else
         {
-            out.print(quoteName(dfType)+": "+quote(dfURI)+" , ") ;
+            out.print(quoteName(kType)+": "+quote(kUri)+" , ") ;
             if ( multiLineValues ) out.println() ;
-            out.print(quoteName(dfValue)+": "+quote(resource.getURI())) ;
+            out.print(quoteName(kValue)+": "+quote(resource.getURI())) ;
             if ( multiLineValues ) out.println() ;
             return ;
         }
