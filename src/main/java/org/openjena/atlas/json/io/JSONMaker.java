@@ -110,7 +110,7 @@ public class JSONMaker implements JSONHandler
         String k = keys.pop();
         JsonObject obj = objects.peek() ;
         if ( obj.hasKey(k) )
-            Log.warn("JSON", "Duplicate key '"+k+"' for object") ;
+            Log.warn("JSON", "Duplicate key '"+k+"' for object ["+currLine+","+currCol+"]") ;
         obj.put(k, value) ;
         value = null ;
     }
