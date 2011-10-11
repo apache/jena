@@ -7,9 +7,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.hp.hpl.jena</groupId>
-  <artifactId>tx-tdb</artifactId>
+  <artifactId>tdb</artifactId>
   <packaging>jar</packaging>
-  <name>TxTDB</name>
+  <name>TDB</name>
   <version>0.9.0-SNAPSHOT</version>
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
