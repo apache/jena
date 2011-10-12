@@ -50,7 +50,7 @@
     <ver.jena>2.6.4</ver.jena>
     <ver.arq>2.8.9-SNAPSHOT</ver.arq>
     <ver.iri>0.8</ver.iri>
-    <ver.junit>4.8.2</ver.junit>
+    <ver.junit>4.9</ver.junit>
     <ver.slf4j>1.6.1</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
     <ver.jdk>1.6</ver.jdk>
