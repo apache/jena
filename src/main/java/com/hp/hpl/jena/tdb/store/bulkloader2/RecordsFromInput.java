@@ -127,8 +127,13 @@ public class RecordsFromInput implements Iterator<Record>
     private int fill()
     {
         try {
-            int len = input.read(buffer) ;
-            if ( len == -1 ) return -1 ;
+            int len = 0 ;
+            while ( len < buffer.length ) {
+                int count = input.read(buffer, len, buffer.length - len) ;
+                if ( count == -1 ) break ;
+                len += count ;
+            }
+            if ( len == 0 ) return -1 ;
             if ( len%rowLength != 0 )
                 throw new AtlasException("Wrong length: "+len) ;
             return len ;
