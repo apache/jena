@@ -37,12 +37,8 @@
   </licenses>
 
   <scm>
-    <!--
-      <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
-      <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
-    -->
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Experimental/TxTDB/</connection>
-    <url>http://svn.apache.org/viewvc/incubator/jena/Experimental/TxTDB/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
   </scm>
 
   <properties>
