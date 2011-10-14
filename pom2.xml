@@ -108,7 +108,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-	  <bottom>Licenced under the <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></bottom>
+          <bottom>Licenced under the &lt;a href="http://www.apache.org/licenses/LICENSE-2.0.txt"&gt;Apache License, Version 2.0&lt;/a&gt;</bottom>
 	</configuration>
       </plugin>
       
