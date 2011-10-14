@@ -539,6 +539,15 @@ public class Test_schemagen
 
     }
 
+    public void testConfigFile() throws Exception {
+        String SOURCE = PREFIX + "ex:A a owl:Class .";
+        testSchemagenOutput( SOURCE, null,
+                             new String[] {"-c", "testing/cmd/sg-test-config.rdf"},
+                             new String[] {".*OntClass.*"}, // if config is not processed, we will not get --ontology output
+                             new String[] {} );
+
+    }
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -559,10 +568,29 @@ public class Test_schemagen
                                           String[] posPatterns, String[] negPatterns )
         throws Exception
     {
-        sg = (sg == null) ? new SchemaGenAux() : sg;
-
         Model m = ModelFactory.createDefaultModel();
         m.read(  new StringReader( source ), "http://example.com/sg#", "N3" );
+        return testSchemagenOutput( m, sg, args, posPatterns, negPatterns );
+    }
+
+    /**
+     * Test the output from schemagen by saving the output to a string,
+     * then ensuring that every positive regex matches at least one line, and
+     * every negative regex matches at most no lines. Also checks that
+     * compiling the file does not cause any errors.
+     *
+     * @param m Source model to read from
+     * @param sg The schemagen object to test, or null for a default
+     * @param args list of args to pass to SG
+     * @param posPatterns array of regexps that must match at least once in the output
+     * @param negPatterns arrays of regexps that must not match the output
+     * @return The string defining the java class
+     */
+    protected String testSchemagenOutput( Model m, SchemaGenAux sg, String[] args,
+                                          String[] posPatterns, String[] negPatterns )
+        throws Exception
+    {
+        sg = (sg == null) ? new SchemaGenAux() : sg;
         sg.setSource( m );
 
         ByteArrayOutputStream buf = new ByteArrayOutputStream();

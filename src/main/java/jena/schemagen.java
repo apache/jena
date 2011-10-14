@@ -149,7 +149,7 @@ public class schemagen {
     //////////////////////////////////
 
     static {
-    	setLog4jConfiguration() ;
+        setLog4jConfiguration() ;
     }
 
     /* Main entry point. See Javadoc for details of the many command line arguments */
@@ -1565,9 +1565,6 @@ public class schemagen {
                 configURL = SchemagenUtils.urlCheck( getConfigFileOption() );
             }
 
-            // ensure we have a root URI for the configuration model
-            determineConfigRoot();
-
             // try to read the config URI
             try {
                 FileManager.get().readModel( m_config, configURL );
@@ -1578,6 +1575,9 @@ public class schemagen {
                     throw new SchemagenException( "Failed to read configuration from URL: " + configURL, e );
                 }
             }
+
+            // ensure we have a root URI for the configuration model
+            determineConfigRoot();
         }
 
         /**
