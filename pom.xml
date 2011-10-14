@@ -300,11 +300,6 @@
         <filtering>false</filtering>
       </resource>
       <resource>
-        <directory>vocabularies</directory>
-        <targetPath>vocabularies</targetPath>
-        <filtering>false</filtering>
-      </resource>
-      <resource>
         <directory>src/main/java</directory>
         <includes>
           <include>jena-log4j.properties</include>
