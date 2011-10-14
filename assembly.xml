@@ -4,7 +4,7 @@
 -->
 
 <assembly>
-  <!--<id>dist</id>-->
+  <id>dist</id>
   <baseDirectory>SDB-${project.version}</baseDirectory>
   <formats>
     <!--
