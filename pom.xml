@@ -13,20 +13,19 @@
   <url>http://jena.sf.net/iri</url>
 
   <organization>
-    <name>Hewlett-Packard</name>
-    <url>http://www.hp.com/</url>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
   </organization>
 
   <licenses>
     <license>
-      <name>BSD-style license</name>
-      <url>http://jena.sourceforge.net/iri/license.html</url>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
     </license>
   </licenses>
 
   <scm>
-    <url>http://jena.cvs.sourceforge.net/jena/iri</url>
-    <!--<connection>scm:cvs:pserver:anonymous@jena.cvs.sourceforge.net:/cvsroot/jena/iri</connection>-->
+    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/IRI</url>
   </scm>
 
   <properties>
@@ -110,7 +109,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-          <bottom>Copyright &#169; 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP</bottom>
+	  <bottom>Licenced under the <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></bottom>
         </configuration>
       </plugin>
       
