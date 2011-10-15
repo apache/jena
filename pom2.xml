@@ -85,7 +85,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} Framework</windowtitle>
           <doctitle>${project.name} Framework</doctitle>
-          <bottom>Licenced under the <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></bottom>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
           <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
           <groups>
             <group>
