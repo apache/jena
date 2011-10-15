@@ -222,9 +222,7 @@
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
           <excludePackageNames>com.hp.hpl.jena.tdb.*,org.openjena.atlas.*</excludePackageNames>
-          <bottom>
-	    Licenced under the Apache License, Version 2.0
-          </bottom> 
+          <bottom>Licenced under the Apache License, Version 2.0</bottom> 
         </configuration>
       </plugin>
 

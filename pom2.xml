@@ -138,7 +138,7 @@
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
 	  <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
-	  <bottom>Licenced under the <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></bottom>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
