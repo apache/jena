@@ -179,7 +179,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name}</windowtitle>
           <doctitle>${project.name}</doctitle>
-          <bottom>Licenced under the <a href="http://www.apache.org/licenses/LICENSE-2.0.txt">Apache License, Version 2.0</a></bottom>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
