@@ -281,9 +281,7 @@
 	    -->
 	    <!-- "Other packages" catches everything else unless excluded -->
 	  </groups>
-          <bottom>
-	    Licenced under the Apache License, Version 2.0
-	  </bottom>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
