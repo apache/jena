@@ -18,11 +18,7 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.LinkedHashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -30,15 +26,7 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.syntax.Element ;
-import com.hp.hpl.jena.sparql.syntax.ElementBind ;
-import com.hp.hpl.jena.sparql.syntax.ElementMinus ;
-import com.hp.hpl.jena.sparql.syntax.ElementSubQuery ;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitor ;
-import com.hp.hpl.jena.sparql.syntax.ElementVisitorBase ;
-import com.hp.hpl.jena.sparql.syntax.ElementWalker ;
-import com.hp.hpl.jena.sparql.syntax.PatternVars ;
-import com.hp.hpl.jena.sparql.syntax.PatternVarsVisitor ;
+import com.hp.hpl.jena.sparql.syntax.* ;
 
 /** Calculate in-scope variables from the AST */ 
 public class SyntaxVarScope
@@ -90,7 +78,10 @@ public class SyntaxVarScope
     {
         LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
         BindScopeChecker visitor = new BindScopeChecker(queryVars) ;
-        PatternVars.vars(query.getQueryPattern(), visitor) ;
+        //PatternVars.vars(query.getQueryPattern(), visitor) ;
+        
+        ElementWalker.Walker walker = new ScopeWalker(visitor) ;
+        ElementWalker.walk(query.getQueryPattern(), walker) ;
     }
     
     // Check subquery by finding subquries and recurisively checking.
@@ -117,7 +108,7 @@ public class SyntaxVarScope
         return vars ;
     }
     
-    // Other check (not scioping at this level) of a query
+    // Other check (not scoping at this level) of a query
     private static void check(Query query, Collection<Var> vars)
     {
         // Check any expressions are assigned to fresh variables.
@@ -248,7 +239,7 @@ public class SyntaxVarScope
         }
     }
 
-    /** Accumulate pattern variables but include some checking (BIND) as well */  
+    /** Accumulate pattern variables but include some checking (BIND) as well */
     private static class BindScopeChecker extends PatternVarsVisitor
     {
         public BindScopeChecker(Set<Var> s)
@@ -267,27 +258,80 @@ public class SyntaxVarScope
         }
     }
 
-    public static void varsWalk(Element element, PatternVarsVisitor visitor)
-    {
-        ElementWalker.Walker walker = new WalkerStack(visitor) ;
-        ElementWalker.walk(element, walker) ;
-    }
+    // Special version of walker for scoping rules.
     
-    public static class WalkerStack extends ElementWalker.Walker
+    public static class ScopeWalker extends ElementWalker.Walker
     {
-        protected WalkerStack(ElementVisitor visitor)
+        PatternVarsVisitor pvVisitor ;
+        
+        protected ScopeWalker(PatternVarsVisitor visitor)
         {
             super(visitor) ;
+            pvVisitor = visitor ;
         }
         
         @Override
         public void visit(ElementMinus el)
         {
-//            if ( el.getMinusElement() != null )
-//                el.getMinusElement().visit(this) ;
+            // Don't go down the RHS of MINUS
+            //if ( el.getMinusElement() != null )
+            //    el.getMinusElement().visit(this) ;
             proc.visit(el) ;
         }
-    }
-    
+        
+        // It is a top-down walk, so on enter an element of group or UNION,
+        // then the entry set is 
 
+        // Isolate elements of UNION
+        @Override
+        public void visit(ElementUnion el)
+        {
+            Set<Var> accState = new HashSet<Var>(pvVisitor.acc) ;
+            doMultipleIndependent(accState, el.getElements()) ;
+            pvVisitor.acc = accState ;
+            proc.visit(el) ;
+        }
+        
+        // There are different kinds of elements in a GROUP:
+        // BGPs (ElementTriplesBlock ElementPathBlock)
+        //   Rolling accumulation
+        // GRAPH ?g { ?s ?p ?o }
+        // BIND applies to BGP 
+        // FILTER end of group
+        // All other elements (SERVICE?) outcome is only to the overall results.
+        
+//        @Override
+//        public void visit(ElementGroup el)
+//        {
+//            // But BIND needs to be does over end of group.
+//            // Ditto FILTER tests.
+//            Set<Var> accState = new HashSet<Var>(pvVisitor.acc) ;
+//            doMultipleIndependent(accState, el.getElements()) ;
+//            pvVisitor.acc = accState ;
+//            proc.visit(el) ;
+//        }
+        
+
+        private void doMultipleIndependent(Set<Var> agg, List<Element> elements)
+        {
+            // agg is empty?
+            for ( Element e : elements )
+            {
+                pvVisitor.acc.clear() ;
+                // Do subelement.
+                e.visit(this) ;
+                // Accumulate for final result.
+                agg.addAll(pvVisitor.acc) ;
+            }
+        }
+        
+    }
+
+    
+//    public static void varsWalk(Element element, PatternVarsVisitor visitor)
+//    {
+//        ElementWalker.Walker walker = new ScopeWalker(visitor) ;
+//        ElementWalker.walk(element, walker) ;
+//    }
+//    
 }

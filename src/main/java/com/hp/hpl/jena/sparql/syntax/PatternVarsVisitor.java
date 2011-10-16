@@ -29,9 +29,9 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 public class PatternVarsVisitor extends ElementVisitorBase
 {
-    protected Set<Var> acc ;
+    public Set<Var> acc ;
     public PatternVarsVisitor(Set<Var> s) { acc = s ; } 
-
+    
     @Override
     public void visit(ElementTriplesBlock el)
     {

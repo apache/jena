@@ -54,8 +54,9 @@ public class PatternVars
         @Override
         public void visit(ElementMinus el)
         {
-//            if ( el.getMinusElement() != null )
-//                el.getMinusElement().visit(this) ;
+            // Don't go down the RHS of MINUS
+            //if ( el.getMinusElement() != null )
+            //    el.getMinusElement().visit(this) ;
             proc.visit(el) ;
         }
     }
