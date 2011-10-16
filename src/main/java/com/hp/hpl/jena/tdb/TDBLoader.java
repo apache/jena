@@ -32,10 +32,11 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphTDB ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 
-/** Public interface to the loader functionality */ 
+/** Public interface to the loader functionality.
+ * The bulk loader is not transactional. 
+ */ 
 public class TDBLoader
 {
-
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
      *  To a triples format, use @link{#load(GraphTDB, String)}
      *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)}
