@@ -54,10 +54,8 @@ public class NotEqual extends BaseBuiltin {
         checkArgs(length, context);
         Node n1 = getArg(0, args, context);
         Node n2 = getArg(1, args, context);
-        if (Util.isNumeric(n1) && Util.isNumeric(n2)) {
-            return Util.compareNumbers(n1, n2) != 0;
-        } else if (Util.isInstant(n1) && Util.isInstant(n2)) {
-            return Util.compareInstants(n1, n2) != 0;
+        if (Util.comparable(n1, n2)) {
+            return Util.compareTypedLiterals(n1, n2) != 0;
         } else {
             return ! n1.sameValueAs(n2);
         }

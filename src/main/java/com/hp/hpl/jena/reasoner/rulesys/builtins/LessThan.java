@@ -51,12 +51,10 @@ public class LessThan extends BaseBuiltin {
     @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        Node n0 = getArg(0, args, context);
-        Node n1 = getArg(1, args, context);
-        if ( Util.isNumeric(n0) && Util.isNumeric(n1) ) {
-            return Util.compareNumbers(n0, n1) < 0;
-        } else if (Util.isInstant(n0) && Util.isInstant(n1)) {
-            return Util.compareInstants(n0, n1) < 0;
+        Node n1 = getArg(0, args, context);
+        Node n2 = getArg(1, args, context);
+        if (Util.comparable(n1, n2)) {
+            return Util.compareTypedLiterals(n1, n2) < 0;
         } else {
             return false;
         }

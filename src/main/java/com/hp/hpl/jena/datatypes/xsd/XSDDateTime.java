@@ -122,7 +122,7 @@ public class XSDDateTime extends AbstractDateTime {
     private static int[] convertCalendar(Calendar date) {
         int[] data = new int[TOTAL_SIZE];
         int offset = date.get(Calendar.ZONE_OFFSET) + date.get(Calendar.DST_OFFSET);
-                                        //  Thanks to Greg Shueler for DST patch
+                                        //  Thanks to Greg Shueler for pointing out need for DST offset
         Calendar cal = date;
         if (offset != 0) {
             cal = (Calendar)date.clone();

@@ -47,6 +47,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestBugs", TestBugs.suite() );
         addTest( "TestOWLMisc", TestOWLMisc.suite() );
         addTest( "TestCapabilities", TestCapabilities.suite() );
+        addTest( "TestComparatorBuiltins", TestComparatorBuiltins.suite() );
         
         try {
             /* uncomment the following block when we switch to java 1.6 and update ConcurrentTest to do deadlock detection */
