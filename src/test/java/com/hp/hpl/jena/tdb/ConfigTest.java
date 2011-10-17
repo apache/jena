@@ -24,7 +24,7 @@ import org.openjena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
-    private static final String tmpRoot = System.getProperty("java.io.tmpdir") ;
+    private static final String tmpRoot = "tmp" ;
     private static final String testingDir = tmpRoot + File.separator + "testing" ;
     private static final String testingDirDB = tmpRoot + File.separator + "testing" + File.separator + "DB" ;
     
