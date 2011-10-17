@@ -75,6 +75,7 @@ public class TestTransRestart extends BaseTest {
         // Make without transactions.
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
         dsg.add(quad1) ; 
+        TDB.sync(dsg) ;
         dsg.close() ;
         TDBMaker.releaseDataset(dsg) ;
         return ;
@@ -104,7 +105,7 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testPlain() {
-        assertEquals ("OS is: " + System.getProperty("os.name"), 3, countRDFNodes()) ;
+        assertEquals (3, countRDFNodes()) ;
         DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ;
@@ -116,7 +117,6 @@ public class TestTransRestart extends BaseTest {
     @Test
     public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
-
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ;
         assertTrue(dsg.contains(quad1)) ;
