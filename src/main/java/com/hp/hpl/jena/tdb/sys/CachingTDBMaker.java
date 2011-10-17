@@ -79,16 +79,16 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
     @Override
     public void releaseLocation(Location location)
     {
+        // The dataset may already be closed.
+        
         if ( location == null /*|| location.isMem()*/ )
             return ;
         
         String absPath = location.getDirectoryPath() ;
         DatasetGraphTDB dsg = cache.get(absPath) ;
-        
         if ( dsg == null )
             return ;
         log.debug("Remove from dataset cache: "+absPath) ;
-        dsg.sync();
         cache.remove(absPath) ;
     }
 
