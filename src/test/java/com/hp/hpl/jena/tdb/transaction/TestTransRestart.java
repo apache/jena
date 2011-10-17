@@ -54,7 +54,8 @@ public class TestTransRestart extends BaseTest {
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     
-    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
+//    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
+    private final String path = "/tmp/TDB" ;
     private Location location = new Location (path) ;
     
     private static boolean useTransactionsSetup = false ;
