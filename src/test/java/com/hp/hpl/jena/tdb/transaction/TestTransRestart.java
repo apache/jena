@@ -75,6 +75,7 @@ public class TestTransRestart extends BaseTest {
         // Make without transactions.
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
         dsg.add(quad1) ; 
+        dsg.getTripleTable().getNodeTupleTable().getNodeTable().sync() ;
         TDB.sync(dsg) ;
         dsg.close() ;
         TDBMaker.releaseDataset(dsg) ;
@@ -86,7 +87,6 @@ public class TestTransRestart extends BaseTest {
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ; 
         dsg.add(quad1) ; 
         dsg.commit() ; 
-        dsg.getTripleTable().getNodeTupleTable().getNodeTable().sync() ;
         TDB.sync(dsg) ; 
         dsg.close() ; 
         StoreConnection.release(location) ; 
