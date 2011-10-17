@@ -80,6 +80,7 @@ public class TestTransRestart extends BaseTest {
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
         dsg.add(quad1) ; 
         dsg.close() ;
+        // Normally done via close() but be explicit. 
         TDBMaker.releaseDataset(dsg) ;
         return ;
     }
