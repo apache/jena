@@ -18,12 +18,15 @@
 
 package com.hp.hpl.jena.tdb;
 
+import java.io.File;
+
 import org.openjena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
-    private static final String testingDir = "/tmp/testing" ;
-    private static final String testingDirDB = "/tmp/testing/DB" ;
+    private static final String tmpRoot = System.getProperty("java.io.tmpdir") ;
+    private static final String testingDir = tmpRoot + File.separator + "testing" ;
+    private static final String testingDirDB = tmpRoot + File.separator + "testing" + File.separator + "DB" ;
     
     static boolean initialized = false ; 
     
@@ -31,7 +34,7 @@ public class ConfigTest
     {
         if ( ! initialized )
         {
-//            FileOps.ensureDir("tmp") ;
+            FileOps.ensureDir(tmpRoot) ;
             FileOps.ensureDir(testingDir) ;
             FileOps.ensureDir(testingDirDB) ;
         }
