@@ -2,7 +2,7 @@
  * File:        Equal.java
  * Created by:  Dave Reynolds
  * Created on:  24-Aug-2003
- * 
+ *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  * $Id: Equal.java,v 1.2 2009-08-04 13:37:51 der Exp $
@@ -12,25 +12,22 @@ package com.hp.hpl.jena.reasoner.rulesys.builtins;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
-// Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
-// to support XSDDateTime comparisons
-
 /**
  * Check that the two args are semantically equal.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  * @version $Revision: 1.2 $ on $Date: 2009-08-04 13:37:51 $
  */
 public class Equal extends BaseBuiltin {
 
     /**
-     * Return a name for this builtin, normally this will be the name of the 
+     * Return a name for this builtin, normally this will be the name of the
      * functor that will be used to invoke it.
      */
     public String getName() {
         return "equal";
     }
-    
+
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
@@ -41,7 +38,7 @@ public class Equal extends BaseBuiltin {
 
     /**
      * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
+     * @param args the array of argument values for the builtin, this is an array
      * of Nodes, some of which may be Node_RuleVariables.
      * @param length the length of the argument list, may be less than the length of the args array
      * for some rule engines
@@ -60,7 +57,7 @@ public class Equal extends BaseBuiltin {
             return n1.sameValueAs(n2);
         }
     }
-    
+
 }
 
 

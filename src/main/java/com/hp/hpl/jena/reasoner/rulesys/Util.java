@@ -2,7 +2,7 @@
  * File:        Util.java
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
- * 
+ *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  * $Id: Util.java,v 1.2 2009-07-27 09:13:37 andy_seaborne Exp $
@@ -23,12 +23,9 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import java.io.*;
 import java.util.*;
 
-//Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
-//to support XSDDateTime comparisons
-
 /**
  * A small random collection of utility functions used by the rule systems.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  * @version $Revision: 1.2 $ on $Date: 2009-07-27 09:13:37 $
  */
@@ -40,14 +37,14 @@ public class Util {
     public static boolean isNumeric(Node n) {
         return n.isLiteral() && n.getLiteralValue() instanceof Number;
     }
-    
+
     /**
      * Return the integer value of a literal node
      */
     public static int getIntValue(Node n) {
         return ((Number)n.getLiteralValue()).intValue();
     }
-   
+
     /**
      * Compare two numeric nodes.
      * @param n1 the first numeric valued literal node
@@ -60,7 +57,7 @@ public class Util {
             Object v1 = n1.getLiteralValue();
             Object v2 = n2.getLiteralValue();
             if (v1 instanceof Number && v2 instanceof Number) {
-                if (v1 instanceof Float || v1 instanceof Double 
+                if (v1 instanceof Float || v1 instanceof Double
                         || v2 instanceof Float || v2 instanceof Double) {
                             double d1 = ((Number)v1).doubleValue();
                             double d2 = ((Number)v2).doubleValue();
@@ -74,7 +71,7 @@ public class Util {
         }
         throw new ClassCastException("Non-numeric literal in compareNumbers");
     }
-    
+
     /**
      * Check whether a Node is an Instant (DateTime) value
      */
@@ -86,7 +83,7 @@ public class Util {
             return false;
         }
     }
-    
+
     /**
      * Compare two time Instant nodes.
      * @param n1 the first time instant (XSDDateTime) valued literal node
@@ -110,7 +107,10 @@ public class Util {
     /**
      * General order comparator for typed literal nodes, works for all numbers and
      * for date times.
+     *
      */
+    // Thanks to Bradley Schatz (Bradley@greystate.com) for the original suggestions
+    // for datetime comparison. This code is a rewrite based on those suggestions.
     public static int compareTypedLiterals(Node n1, Node n2) {
         if (n1.isLiteral() && n2.isLiteral()) {
             Object v1 = n1.getLiteralValue();
@@ -121,7 +121,7 @@ public class Util {
                 return a.compare(b);
             } else {
                 if (v1 instanceof Number && v2 instanceof Number) {
-                    if (v1 instanceof Float || v1 instanceof Double 
+                    if (v1 instanceof Float || v1 instanceof Double
                             || v2 instanceof Float || v2 instanceof Double) {
                                 double d1 = ((Number)v1).doubleValue();
                                 double d2 = ((Number)v2).doubleValue();
@@ -136,14 +136,14 @@ public class Util {
         }
         throw new ClassCastException("Compare typed literals can only compare numbers and datetimes");
     }
-    
+
     /**
      * Test if two literals are comparable by an order operator (both numbers or both times)
      */
     public static boolean comparable(Node n1, Node n2) {
        return (isNumeric(n1) && isNumeric(n2)) || (isInstant(n1) && isInstant(n2));
     }
-    
+
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
@@ -151,7 +151,7 @@ public class Util {
     public static Node getPropValue(Node root, Node prop, Finder context) {
         return doGetPropValue(context.find(new TriplePattern(root, prop, null)));
     }
-   
+
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
@@ -159,7 +159,7 @@ public class Util {
     public static Node getPropValue(Node root, Node prop, Graph context) {
         return doGetPropValue(context.find(root, prop, null));
     }
-    
+
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
@@ -167,7 +167,7 @@ public class Util {
     public static Node getPropValue(Node root, Node prop, RuleContext context) {
         return doGetPropValue(context.find(root, prop, null));
     }
-    
+
     /**
      * Internall implementation of all the getPropValue variants.
      */
@@ -179,7 +179,7 @@ public class Util {
         it.close();
         return result;
     }
-    
+
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
      * @param root the root node of the list
@@ -188,7 +188,7 @@ public class Util {
     public static List<Node> convertList(Node root, RuleContext context) {
         return convertList(root, context, new LinkedList<Node>());
     }
-    
+
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
      */
@@ -202,14 +202,14 @@ public class Util {
             return sofar;
         }
     }
-    
+
     /**
      * Construct a new integer valued node
      */
     public static Node makeIntNode(int value) {
         return Node.createLiteral(LiteralLabelFactory.create(new Integer(value)));
     }
-    
+
     /**
      * Construct a new long valued node
      */
@@ -220,14 +220,14 @@ public class Util {
             return Node.createLiteral(LiteralLabelFactory.create(new Integer((int)value)));
         }
     }
-    
+
     /**
      * Construct a new double valued node
      */
     public static Node makeDoubleNode(double value) {
         return Node.createLiteral(LiteralLabelFactory.create(new Double(value)));
     }
-    
+
     /**
      * Construct an RDF list from the given array of nodes and assert it
      * in the graph returning the head of the list.
@@ -235,7 +235,7 @@ public class Util {
     public static Node makeList(Node[] nodes, Graph graph) {
         return doMakeList(nodes, 0, graph);
     }
-    
+
     /**
      * Internals of makeList.
      */
@@ -249,7 +249,7 @@ public class Util {
             return RDF.Nodes.nil;
         }
     }
-    
+
     /**
      * Open a resource file and read it all into a single string.
      * Treats lines starting with # as comment lines, as per stringFromReader
@@ -257,7 +257,7 @@ public class Util {
     public static Rule.Parser loadRuleParserFromResourceFile( String filename ) {
         return Rule.rulesParserFromReader( FileUtils.openResourceFile( filename ) );
     }
-    
+
     /**
      * Open a file defined by a URL and read all of it into a single string.
      * If the URL fails it will try a plain file name as well.
@@ -276,7 +276,7 @@ public class Util {
         sw.close();
         return sw.toString();
     }
-    
+
     /**
      * Helper method - extracts the truth of a boolean configuration
      * predicate.
@@ -292,7 +292,7 @@ public class Util {
             return null;
         }
     }
-    
+
     /**
      * Helper method - extracts the value of an integer configuration
      * predicate.
@@ -327,7 +327,7 @@ public class Util {
         } else {
             throw new IllegalParameterException("Illegal type for " + parameter + " setting - use a Boolean");
         }
-        
+
     }
 
     /**
@@ -349,9 +349,9 @@ public class Util {
             }
         } else {
             throw new IllegalParameterException("Illegal type for " + parameter + " setting - use an integer");
-        }            
+        }
     }
-    
+
     /**
      * Replace the value for a given parameter on the resource by a new value.
      * @param config the resource whose values are to be updated

@@ -2,7 +2,7 @@
  * File:        LE.java
  * Created by:  Dave Reynolds
  * Created on:  24-Aug-2003
- * 
+ *
  * (c) Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  * $Id: LE.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
@@ -12,25 +12,22 @@ package com.hp.hpl.jena.reasoner.rulesys.builtins;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
-//Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
-//to support XSDDateTime comparisons
-
 /**
  * Tests if the first argument is less than or equal to the second.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class LE extends BaseBuiltin {
 
     /**
-     * Return a name for this builtin, normally this will be the name of the 
+     * Return a name for this builtin, normally this will be the name of the
      * functor that will be used to invoke it.
      */
     public String getName() {
         return "le";
     }
-    
+
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
@@ -41,7 +38,7 @@ public class LE extends BaseBuiltin {
 
     /**
      * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
+     * @param args the array of argument values for the builtin, this is an array
      * of Nodes, some of which may be Node_RuleVariables.
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
@@ -58,7 +55,7 @@ public class LE extends BaseBuiltin {
             return false;
         }
     }
-    
+
 }
 
 
