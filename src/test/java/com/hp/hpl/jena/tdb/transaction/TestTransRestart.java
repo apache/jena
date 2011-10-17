@@ -104,7 +104,7 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testPlain() {
-        assertEquals (3, countRDFNodes()) ;
+        assertEquals ("OS is: " + System.getProperty("os.name"), 3, countRDFNodes()) ;
         DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ;
