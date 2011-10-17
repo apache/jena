@@ -42,6 +42,7 @@ public class ConfigTest
     /** Get a empty directory name that has not been used before in this JVM */ 
     public static final String getTestingDirUnique()
     {
+        init() ;
     	String dn = testingDir+"/D-"+(++count) ;
     	FileOps.ensureDir(dn) ;
     	FileOps.clearDirectory(dn) ;
@@ -59,5 +60,4 @@ public class ConfigTest
         init() ;
         return testingDirDB ;
     }
-    
 }
