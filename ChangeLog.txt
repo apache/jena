@@ -6,6 +6,11 @@ Homepage:
 Documentation:
     http://jena.hpl.hp.com/wiki/SDB
 
+==== SDB v1.3.4-snapshot
+
++ Enable safe concurrent updates on postgresql, db2 and
+  oracle.
+
 ==== SDB v1.3.3
 
 + Upgraded to ARQ 2.8.6

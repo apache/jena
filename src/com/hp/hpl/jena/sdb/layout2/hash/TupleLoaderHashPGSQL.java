@@ -54,4 +54,9 @@ public class TupleLoaderHashPGSQL extends TupleLoaderHashBase {
 	public String getTupleLoader() {
 		return super.getTupleLoader() + hashCode();
 	}
+        
+        @Override
+        public String getLoadNodes() {
+            return "LOCK TABLE Nodes; " + super.getLoadNodes();
+        }
 }

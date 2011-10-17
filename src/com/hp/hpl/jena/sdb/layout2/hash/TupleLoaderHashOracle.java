@@ -48,4 +48,9 @@ public class TupleLoaderHashOracle extends TupleLoaderHashBase {
 	
 	@Override
 	public boolean clearsOnCommit() { return true; }
+        
+        @Override
+        public String getLoadNodes() {
+            return "LOCK TABLE Nodes IN EXCLUSIVE MODE; " + super.getLoadNodes();
+        }
 }

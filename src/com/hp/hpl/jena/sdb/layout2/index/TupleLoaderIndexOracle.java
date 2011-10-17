@@ -82,6 +82,7 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 	public String getLoadNodes() {
 		StringBuilder stmt = new StringBuilder();
 		
+                stmt.append("LOCK TABLE Nodes IN EXCLUSIVE MODE; ");
 		stmt.append("INSERT INTO Nodes \nSELECT nodeid.nextval , "); // Autoindex thingy
 		for (int i = 0; i < getNodeColTypes().length; i++) {
 			if (i != 0) stmt.append(" , ");

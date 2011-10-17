@@ -56,4 +56,9 @@ public class TupleLoaderHashDB2 extends TupleLoaderHashBase {
     public String getClearTempTuples() {
         return "DELETE FROM "+getTupleLoader()+" ";
     }
+    
+    @Override
+    public String getLoadNodes() {
+        return "LOCK TABLE Nodes IN EXCLUSIVE MODE; " + super.getLoadNodes();
+    }
 }

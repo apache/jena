@@ -88,7 +88,8 @@ public class TupleLoaderIndexDB2 extends TupleLoaderIndexBase {
 	@Override
 	public String getLoadNodes() {
 		StringBuilder stmt = new StringBuilder();
-		
+                
+                stmt.append("LOCK TABLE Nodes IN EXCLUSIVE MODE; ");
 		stmt.append("INSERT INTO Nodes \nSELECT (NEXT VALUE FOR nodeid) , "); // Autoindex thingy
 		for (int i = 0; i < getNodeColTypes().length; i++) {
 			if (i != 0) stmt.append(" , ");
