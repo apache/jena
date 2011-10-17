@@ -83,10 +83,12 @@ public final class CachingTDBMaker implements DatasetGraphMakerTDB
             return ;
         
         String absPath = location.getDirectoryPath() ;
+        DatasetGraphTDB dsg = cache.get(absPath) ;
         
-        if ( ! cache.containsKey(absPath) )
+        if ( dsg == null )
             return ;
         log.debug("Remove from dataset cache: "+absPath) ;
+        dsg.sync();
         cache.remove(absPath) ;
     }
 
