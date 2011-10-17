@@ -22,8 +22,8 @@ import org.openjena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
-    private static final String testingDir = "tmp/testing" ;
-    private static final String testingDirDB = "tmp/testing/DB" ;
+    private static final String testingDir = "/tmp/testing" ;
+    private static final String testingDirDB = "/tmp/testing/DB" ;
     
     static boolean initialized = false ; 
     
@@ -31,7 +31,7 @@ public class ConfigTest
     {
         if ( ! initialized )
         {
-            FileOps.ensureDir("tmp") ;
+//            FileOps.ensureDir("tmp") ;
             FileOps.ensureDir(testingDir) ;
             FileOps.ensureDir(testingDirDB) ;
         }
