@@ -18,33 +18,34 @@
 
 package com.hp.hpl.jena.tdb.transaction ;
 
-import java.io.File ;
-import java.nio.ByteBuffer ;
-import java.util.Iterator ;
+import java.io.File;
+import java.nio.ByteBuffer;
+import java.util.Iterator;
 
-import org.junit.After ;
-import org.junit.Before ;
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Pair ;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openjena.atlas.iterator.Iter;
+import org.openjena.atlas.junit.BaseTest;
+import org.openjena.atlas.lib.FileOps;
+import org.openjena.atlas.lib.Pair;
 
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
-import com.hp.hpl.jena.tdb.ReadWrite ;
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.base.file.FileFactory ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn;
+import com.hp.hpl.jena.tdb.ReadWrite;
+import com.hp.hpl.jena.tdb.StoreConnection;
+import com.hp.hpl.jena.tdb.TDB;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.base.block.FileMode;
+import com.hp.hpl.jena.tdb.base.file.FileFactory;
+import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.sys.Names;
+import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
@@ -108,7 +109,8 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testTxn() {
-        assertEquals (3, countRDFNodes()) ;
+        assertEquals (1L, countQuads()) ;
+//        assertEquals (3, countRDFNodes()) ;
 
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ;
@@ -122,7 +124,9 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testPlain() {
-        assertEquals (3, countRDFNodes()) ;
+        assertEquals (1L, countQuads()) ;
+//        assertEquals (3, countRDFNodes()) ;
+
         DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ;
@@ -142,6 +146,14 @@ public class TestTransRestart extends BaseTest {
             count++ ;
         }
         objects.close() ;
+        return count ;
+    }
+    
+    private long countQuads() {
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
+        long count = Iter.count(dsg.find()) ;
+        dsg.close() ;
+        TDBMaker.releaseDataset(dsg) ;
         return count ;
     }
     
