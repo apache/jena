@@ -321,10 +321,22 @@ public class QueryTest extends EarlTestCase
 
     public static boolean resultSetEquivalent(Query query, ResultSetRewindable resultsExpected, ResultSetRewindable resultsActual)
     {
-        if ( query.isOrdered() )
-            return ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual) ;
+        final boolean testByValue = true ;
+        if ( testByValue )
+        {
+            if ( query.isOrdered() )
+                return ResultSetCompare.equalsByValueAndOrder(resultsExpected, resultsActual) ;
+            else
+
+                return ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
+        }
         else
-            return ResultSetCompare.equalsByValue(resultsExpected, resultsActual) ;
+        {
+            if ( query.isOrdered() )
+                return ResultSetCompare.equalsByTermAndOrder(resultsExpected, resultsActual) ;
+            else
+                return ResultSetCompare.equalsByTerm(resultsExpected, resultsActual) ;
+        }
     }
     
     // TEMPORARY

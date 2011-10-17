@@ -1641,9 +1641,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     
   | <STRLEN> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrLength(expr1) ; }
 
-#ifdef ARQ
   | expr = StrReplaceExpression() { return expr ; }
-#endif
     
   | <UCASE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_StrUpperCase(expr1) ; }
     
@@ -1659,12 +1657,13 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     
   | <STRENDS> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrEndsWith(expr1, expr2) ; }
-#ifdef ARQ
-  |  <STRBEFORE>  <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
+
+  | <STRBEFORE>  <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrBefore(expr1, expr2) ; }
+
   | <STRAFTER>    <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrAfter(expr1, expr2) ; }
-#endif    
+
   | <YEAR> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeYear(expr1) ; }
     
   | <MONTH> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeMonth(expr1) ; }
@@ -1687,9 +1686,9 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <MD5>         <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
 
   | <SHA1>        <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA1(expr1) ; }
-
+#if 0
   | <SHA224>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA224(expr1) ; }
-
+#endif
   | <SHA256>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA256(expr1) ; }
 
   | <SHA384>      <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA384(expr1) ; }
@@ -1772,7 +1771,6 @@ Expr SubstringExpression() :
       { return new E_StrSubstring(expr1, expr2, expr3) ; }
 }
 
-#ifdef ARQ
 Expr StrReplaceExpression() :
 { Expr expr1 ; Expr expr2 = null ; Expr expr3 = null ; Expr expr4 = null ;}
 {
@@ -1785,7 +1783,6 @@ Expr StrReplaceExpression() :
   <RPAREN> 
   { return new E_StrReplace(expr1,expr2,expr3,expr4) ; }
 }
-#endif
 
 Expr ExistsFunc() : { Element el ; }
 {
@@ -2133,9 +2130,7 @@ TOKEN [IGNORE_CASE] :
 |  < CONCAT:      "CONCAT" >
 |  < SUBSTR:      "SUBSTR" >
 |  < STRLEN:      "STRLEN" >
-#ifdef ARQ
 |  < REPLACE:     "REPLACE" >
-#endif
 |  < UCASE:       "UCASE" >
 |  < LCASE:       "LCASE" >
 |  < ENCODE_FOR_URI:      "ENCODE_FOR_URI" >

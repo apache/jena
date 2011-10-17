@@ -9,5 +9,5 @@ then
 CP="$($ARQROOT/bin/arq_path)"
 
 #SOCKS="${SOCKS:-}"
-# echo $CP
+#echo $CP
 java $JAVA_OPTS_N3 $SOCKS -cp "$CP" arq.qtest "$@"
