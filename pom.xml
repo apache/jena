@@ -81,7 +81,7 @@
   <properties>
     <lucene.version>3.1.0</lucene.version>
     <arq.version>2.8.9-incubating-SNAPSHOT</arq.version>
-    <tdb.version>0.8.11-SNAPSHOT</tdb.version>
+    <tdb.version>0.9.0-incubating-SNAPSHOT</tdb.version>
     <slf4j.version>1.6.1</slf4j.version>
     <junit.version>4.8.2</junit.version>
     <jdk.version>1.6</jdk.version>
@@ -119,8 +119,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>tdb</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
       <version>${tdb.version}</version>
       <scope>test</scope>
     </dependency>
