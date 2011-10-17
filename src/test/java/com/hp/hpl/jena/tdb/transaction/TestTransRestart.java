@@ -54,17 +54,17 @@ public class TestTransRestart extends BaseTest {
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     
-//    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
-    private final String path = "tmp/testing/TDB" ;
+    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
     private Location location = new Location (path) ;
-    
+
     private static boolean useTransactionsSetup = false ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
     
     @Before public void setup() {
         cleanup() ;
-        FileOps.ensureDir(path) ;
+        // FileOps.ensureDir(path) ; // This does not ensure the creation of any necessary but nonexistent parent directories
+        new File(path).mkdirs() ;
         if (  useTransactionsSetup )
             setupTxn() ;
         else
