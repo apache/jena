@@ -109,6 +109,7 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testTxn() {
+        assertTrue(FileOps.exists(path));
         assertEquals (1L, countQuads()) ;
 //        assertEquals (3, countRDFNodes()) ;
 
@@ -124,6 +125,7 @@ public class TestTransRestart extends BaseTest {
     
     @Test
     public void testPlain() {
+        assertTrue(FileOps.exists(path));
         assertEquals (1L, countQuads()) ;
 //        assertEquals (3, countRDFNodes()) ;
 
