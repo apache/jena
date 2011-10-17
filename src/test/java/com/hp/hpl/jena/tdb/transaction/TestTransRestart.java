@@ -54,7 +54,7 @@ public class TestTransRestart extends BaseTest {
             SystemTDB.setFileMode(FileMode.direct) ; 
     }
     
-    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ) ; 
+    private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : "/tmp/DB" ) ; 
     private Location location = new Location (path) ;
 
     private static boolean useTransactionsSetup = false ;
@@ -63,8 +63,7 @@ public class TestTransRestart extends BaseTest {
     
     @Before public void setup() {
         cleanup() ;
-        // FileOps.ensureDir(path) ; // This does not ensure the creation of any necessary but nonexistent parent directories
-        new File(path).getParentFile().mkdirs() ;
+        FileOps.ensureDir(path) ;
         if (  useTransactionsSetup )
             setupTxn() ;
         else
