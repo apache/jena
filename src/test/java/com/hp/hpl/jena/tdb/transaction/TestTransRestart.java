@@ -18,6 +18,10 @@
 
 package com.hp.hpl.jena.tdb.transaction ;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -26,7 +30,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openjena.atlas.iterator.Iter;
-import org.openjena.atlas.junit.BaseTest;
 import org.openjena.atlas.lib.FileOps;
 import org.openjena.atlas.lib.Pair;
 
@@ -48,7 +51,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB;
 import com.hp.hpl.jena.tdb.sys.TDBMaker;
 
 /** Test of re-attaching to a pre-existing database */  
-public class TestTransRestart extends BaseTest {
+public class TestTransRestart {
     static { 
         // Only if run directly, not in test suite.
         if ( false )
@@ -108,7 +111,7 @@ public class TestTransRestart extends BaseTest {
     }
     
     @Test
-    public void testTxn() {
+    public void Txn() {
         assertTrue(FileOps.exists(path));
 //        assertEquals (1L, countQuads()) ;
 //        assertEquals (3, countRDFNodes()) ;
@@ -124,7 +127,7 @@ public class TestTransRestart extends BaseTest {
     }
     
     @Test
-    public void testPlain() {
+    public void Plain() {
         assertTrue(FileOps.exists(path));
 //        assertEquals (1L, countQuads()) ;
 //        assertEquals (3, countRDFNodes()) ;
