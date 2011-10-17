@@ -64,7 +64,7 @@ public class TestTransRestart extends BaseTest {
     @Before public void setup() {
         cleanup() ;
         // FileOps.ensureDir(path) ; // This does not ensure the creation of any necessary but nonexistent parent directories
-        new File(path).mkdirs() ;
+        new File(path).getParentFile().mkdirs() ;
         if (  useTransactionsSetup )
             setupTxn() ;
         else
