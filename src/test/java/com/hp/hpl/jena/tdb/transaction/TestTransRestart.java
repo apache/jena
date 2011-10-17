@@ -29,10 +29,14 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.* ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
+import com.hp.hpl.jena.tdb.ReadWrite ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -100,28 +104,30 @@ public class TestTransRestart extends BaseTest {
             // Windows, any mode, does not remove directories, at least not instantly. 
             assertFalse ( dir.exists() ) ;
     }
-
-    
-    @Test
-    public void testPlain() {
-        assertEquals (3, countRDFNodes()) ;
-        DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
-        assertTrue(dsg.contains(quad1)) ;
-        dsg.add(quad2) ;
-        assertTrue(dsg.contains(quad2)) ;
-        dsg.close() ; 
-        assertEquals (4, countRDFNodes()) ;
-    }
     
     @Test
     public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
+
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ; 
         dsg.commit() ; 
         dsg.close() ; 
+        StoreConnection.release(location) ;
+        assertEquals (4, countRDFNodes()) ;
+    }
+    
+    @Test
+    public void testPlain() {
+        assertEquals (3, countRDFNodes()) ;
+        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
+        assertTrue(dsg.contains(quad1)) ;
+        dsg.add(quad2) ;
+        assertTrue(dsg.contains(quad2)) ;
+        dsg.close() ; 
+        TDBMaker.releaseDataset(dsg) ;
         assertEquals (4, countRDFNodes()) ;
     }
     
