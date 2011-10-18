@@ -33,8 +33,9 @@ import com.hp.hpl.jena.vocabulary.OWL ;
 /** The main engine for all things Turtle-ish (Turtle, TriG). */
 public abstract class LangTurtleBase<X> extends LangBase<X>
 {
-    /* See http://www.w3.org/TeamSubmission/turtle/ */
-
+    /* See http://www.w3.org/TeamSubmission/turtle/
+     * http://www.w3.org/TR/turtle/
+     */
     /*
 [1]     turtleDoc       ::=     statement*
 [2]     statement       ::=     directive '.' | triples '.' | ws+
@@ -205,8 +206,9 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     }
     
     // Unlike many operations in this parser suite 
-    // this does not assume that we are definitely
-    // entering this state throws an error if the first token 
+    // this does not assume that we have definitely
+    // entering this state.  It does checks and may 
+    // signal a parse exception.
 
     protected final void triplesSameSubject()
     {
@@ -227,6 +229,27 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             // May be followed by: 
             //   A predicateObject list
             //   A DOT or EOF.
+            // But if a DOT or EOF, then it can't have been () or [].
+            
+            // Turtle, as spec'ed does nto allow 
+            // (1 2 3 4) .
+            // There must be a predicate and object.
+            
+            // -- If strict turtle.
+            if ( false )
+            {
+                if ( peekPredicate() )
+                {
+                    predicateObjectList(n) ;
+                    expectEndOfTriples() ;
+                    return ;
+                }
+                exception(peekToken(), "Prediate/object required after (...) and [...] - Unexpected token : %s", peekToken()) ;
+            }
+            // ---
+            // If we allow top-level lists and [...].
+            // Should check if () and [].
+            
             if ( lookingAt(EOF) )
                 return ;
             if ( lookingAt(DOT) )
@@ -234,6 +257,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 nextToken() ;
                 return ;
             }
+
             if ( peekPredicate() )
             {
                 predicateObjectList(n) ;
@@ -361,7 +385,8 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         }
     }
 
-    // A structure of triples that itself generates a node.  [] and (). 
+    // A structure of triples that itself generates a node.  
+    // Special checks for [] and (). 
     
     protected final Node triplesNode()
     {
@@ -440,6 +465,8 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         Node lastCell = null ;
         Node listHead = null ;
         
+        startList() ;
+        
         for ( ;; )
         {
             Token errorToken = peekToken() ;
@@ -479,9 +506,19 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         
         // Finish list.
         checkEmitTriple(lastCell, NodeConst.nodeRest, NodeConst.nodeNil) ;
+
+        finishList() ;
+
         return listHead ;
     }
    
+    // Signal start of a list
+    protected void finishList()     {}
+
+    // Signal end of a list
+    protected void startList()      {}
+    
+
     protected final void checkEmitTriple(Node subject, Node predicate, Node object)
     {
         emit(subject, predicate, object) ;
