@@ -59,7 +59,7 @@ public class QueryEngineSDB extends QueryEngineBase
 
     public QueryEngineSDB(Store store, Query q)
     {
-        this(new DatasetStoreGraph(store, SDB.getContext().copy()), q, BindingRoot.create(), null) ;
+        this(new DatasetStoreGraph(store, SDB.getContext().copy()), q, BindingRoot.create(), SDB.getContext().copy()) ;
     }
     
     public QueryEngineSDB(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
