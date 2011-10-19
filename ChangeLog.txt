@@ -2,6 +2,7 @@ ChangeLog for ARQ
 =================
 
 ==== ARQ 2.8.9
+** Java 6 is now required for running ARQ.
 
 + Add function STRBEFORE (see fn:substring-before in XPath/XQuery F&O)  [ARQ language only]  
 + Add function STRAFTER (see fn:substring-after in XPath/XQuery F&O)  [ARQ language only]   
