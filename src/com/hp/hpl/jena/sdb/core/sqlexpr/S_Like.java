@@ -48,5 +48,6 @@ public class S_Like extends SqlExprBase
         return caseInsensitive ;
     }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

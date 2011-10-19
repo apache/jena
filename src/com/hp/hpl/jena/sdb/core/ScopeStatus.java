@@ -22,9 +22,12 @@ import com.hp.hpl.jena.sparql.util.Named;
 
 public enum ScopeStatus implements Named 
 {
-    FIXED       { public String getName() { return "Fixed" ; } } , 
-    OPTIONAL    { public String getName() { return "Optional" ; } } ,
-    UNKNOWN     { public String getName() { return "Unknown" ; } } ,
+    FIXED       { @Override
+    public String getName() { return "Fixed" ; } } , 
+    OPTIONAL    { @Override
+    public String getName() { return "Optional" ; } } ,
+    UNKNOWN     { @Override
+    public String getName() { return "Unknown" ; } } ,
         ;
     
     @Override

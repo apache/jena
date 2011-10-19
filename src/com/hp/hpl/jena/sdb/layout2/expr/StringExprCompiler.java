@@ -57,6 +57,7 @@ public class StringExprCompiler implements ConditionCompiler
 //                                                                             new ActionMatchVar() }) ;
 
 
+    @Override
     public SDBConstraint recognize(Expr expr)
     {
         MapResult rMap = null ;

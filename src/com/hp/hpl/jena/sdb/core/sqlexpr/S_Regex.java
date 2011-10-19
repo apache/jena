@@ -44,5 +44,6 @@ public class S_Regex extends SqlExprBase
         return pattern ;
     }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

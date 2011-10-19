@@ -39,6 +39,7 @@ class ConditionCompiler2 implements ConditionCompiler
         new StringExprCompiler() ,
     } ;
 
+    @Override
     public SDBConstraint recognize(Expr expr)
     {
         for ( int i = 0 ; i < reg.length ; i++ )

@@ -27,11 +27,13 @@ public class SqlUnion extends SqlNodeBase2
         super(null, left, right) ;
     }
 
+    @Override
     public Scope getIdScope()
     {
         return null ;
     }
 
+    @Override
     public Scope getNodeScope()
     {
         return null ;
@@ -47,5 +49,6 @@ public class SqlUnion extends SqlNodeBase2
         return new SqlUnion(left, right) ;
     }
 
+    @Override
     public void visit(SqlNodeVisitor visitor)   { visitor.visit(this) ; }
 }

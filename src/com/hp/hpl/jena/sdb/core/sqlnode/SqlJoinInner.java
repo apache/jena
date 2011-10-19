@@ -32,6 +32,7 @@ public class SqlJoinInner extends SqlJoin
     @Override 
     public SqlJoinInner   asInnerJoin()         { return this ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
     
     @Override

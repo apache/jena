@@ -40,6 +40,7 @@ public class StoreTriplesNodesIndexHSQL extends StoreBaseHSQL
         ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 
+    @Override
     public long getSize(Node node)
     {
         return StoreBaseIndex.getSize(getConnection(), getQuadTableDesc(), node) ;

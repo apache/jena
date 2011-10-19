@@ -65,6 +65,7 @@ public class StoreList
     // Not Java's finest hour ...
     static Transform<Pair<String, String>, Pair<String, StoreDesc>> t1 = new  Transform<Pair<String, String>, Pair<String, StoreDesc>>()
     {
+        @Override
         public Pair<String, StoreDesc> convert(Pair<String, String> pair)
         {
             return new Pair<String, StoreDesc>(pair.car(), StoreDesc.read(pair.cdr())) ;
@@ -73,6 +74,7 @@ public class StoreList
 
     static Transform<Pair<String, StoreDesc>, Pair<String, Store>> t2 = new Transform<Pair<String, StoreDesc>, Pair<String, Store>>()
     {
+        @Override
         public Pair<String, Store> convert(Pair<String, StoreDesc> pair)
         {
             Store store = testStore(pair.cdr()) ;

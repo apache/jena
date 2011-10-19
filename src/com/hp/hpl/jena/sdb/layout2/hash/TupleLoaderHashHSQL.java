@@ -29,15 +29,18 @@ public class TupleLoaderHashHSQL extends TupleLoaderHashBase {
 		super(connection, tableDesc, chunkSize);
 	}
 	
-	public String[] getNodeColTypes() {
+	@Override
+    public String[] getNodeColTypes() {
 		return new String[] {"BIGINT", "VARCHAR", "VARCHAR(10)", "VARCHAR("+ TableDescNodes.DatatypeUriLength+ ")", "INT"};
 	}
 	
-	public String getTupleColType() {
+	@Override
+    public String getTupleColType() {
 		return "BIGINT";
 	}
 	
-	public String[] getCreateTempTable() {
+	@Override
+    public String[] getCreateTempTable() {
 		return new String[] { "CREATE TEMPORARY TABLE" , "ON COMMIT DELETE ROWS" };
 	}
 	

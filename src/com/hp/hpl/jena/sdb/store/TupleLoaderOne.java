@@ -56,6 +56,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
     public void finish()
     { super.finish(); }
 
+    @Override
     public void load(Node... row)
     {
         if ( row.length != getTableWidth() )
@@ -130,6 +131,7 @@ public abstract class TupleLoaderOne extends TupleLoaderBase
         
     }
 
+    @Override
     public void unload(Node... row)
     {
         String[] vals = new String[getTableWidth()] ;

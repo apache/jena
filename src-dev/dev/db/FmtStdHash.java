@@ -73,6 +73,7 @@ public class FmtStdHash extends StoreFormatterStd
     {
         return 
             new Transform<String, String>() {
+                @Override
                 public String convert(String colName)
                 { return col(colName, syntax.integer64(), NOT_NULL) ; }
             };   

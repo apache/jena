@@ -85,6 +85,8 @@ public abstract class SqlJoin extends SqlNodeBase2
     public void addCondition(SqlExpr e) { conditions.add(e) ; }
     public void addConditions(SqlExprList exprs) { conditions.addAll(exprs) ; }
     
+    @Override
     public Scope getIdScope()     { return idScope ; }
+    @Override
     public Scope getNodeScope()   { return nodeScope ; }
 }

@@ -109,6 +109,7 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>> implements
             add(i,i) ;
     }
 
+    @Override
     public Iterator<Pair<GNode, GNode>>iterator()
     {
         List<Pair<GNode, GNode>> x = new ArrayList<Pair<GNode, GNode>>() ;
@@ -137,6 +138,7 @@ public class TransGraph<GNode> extends HashMap<GNode, HashSet<GNode>> implements
     {
         linkApply(new LinkApply<GNode>()
                   {
+            @Override
             public void apply(GNode i, GNode j)
             {
                 System.out.printf("%s %s\n", i, j) ;

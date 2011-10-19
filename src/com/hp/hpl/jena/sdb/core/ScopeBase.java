@@ -40,6 +40,7 @@ public class ScopeBase implements Scope
 //        this.parent = parent ;
 //    }
     
+    @Override
     public boolean hasColumnForVar(Var var)
     { 
         if ( frame.containsKey(var) )
@@ -49,6 +50,7 @@ public class ScopeBase implements Scope
         return false ;
     }
         
+    @Override
     public Set<Var> getVars()
     {
         Set<Var> x = new HashSet<Var>() ;
@@ -58,9 +60,11 @@ public class ScopeBase implements Scope
         return x ;
     }
     
+    @Override
     public boolean isEmpty()
     { return frame.isEmpty() ; }
     
+    @Override
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
@@ -74,6 +78,7 @@ public class ScopeBase implements Scope
         return x ;
     }
     
+    @Override
     public ScopeEntry findScopeForVar(Var var)
     { 
         if ( frame.containsKey(var) )

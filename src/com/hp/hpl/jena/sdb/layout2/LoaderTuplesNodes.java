@@ -78,12 +78,14 @@ public class LoaderTuplesNodes
     	this.store = store;
     }
     
+    @Override
     public void startBulkUpdate()
 	{
     	init() ;
 	}
 
-	public void finishBulkUpdate()
+	@Override
+    public void finishBulkUpdate()
 	{
 		flushTriples() ;
 	}
@@ -92,6 +94,7 @@ public class LoaderTuplesNodes
      * Close this loader and finish the thread (if required)
      *
      */
+    @Override
     public void close()
     {
     	if (!initialized) return;
@@ -124,37 +127,45 @@ public class LoaderTuplesNodes
     	}
     }
     
+    @Override
     public void addTriple(Triple triple)
 	{
     	updateStore(new TupleChange(true, store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()));
 	}
     
+    @Override
     public void deleteTriple(Triple triple) 
     {
     	updateStore(new TupleChange(false, store.getTripleTableDesc(), triple.getSubject(), triple.getPredicate(), triple.getObject()));
     }
     
-	public void addQuad(Node g, Node s, Node p, Node o) {
+	@Override
+    public void addQuad(Node g, Node s, Node p, Node o) {
 		updateStore(new TupleChange(true, store.getQuadTableDesc(), g, s, p, o));		
 	}
 
-	public void addTuple(TableDesc t, Node... nodes) {
+	@Override
+    public void addTuple(TableDesc t, Node... nodes) {
 		updateStore(new TupleChange(true, t, nodes));
 	}
 
-	public void deleteQuad(Node g, Node s, Node p, Node o) {
+	@Override
+    public void deleteQuad(Node g, Node s, Node p, Node o) {
 		updateStore(new TupleChange(false, store.getQuadTableDesc(), g, s, p, o));
 	}
 
-	public void deleteTuple(TableDesc t, Node... nodes) {
+	@Override
+    public void deleteTuple(TableDesc t, Node... nodes) {
 		updateStore(new TupleChange(false, t, nodes));
 	}
     
-	public void deleteAll() {
+	@Override
+    public void deleteAll() {
 		updateStore(new TupleChange(false, store.getTripleTableDesc()));
 	}
 	
-	public void deleteAll(Node graph) {
+	@Override
+    public void deleteAll(Node graph) {
 		updateStore(new TupleChange(false, store.getQuadTableDesc(), graph));
 	}
 	
@@ -296,12 +307,16 @@ public class LoaderTuplesNodes
     	}
     }
     
+    @Override
     public void setChunkSize(int chunkSize)            { this.chunkSize = chunkSize ; }
 
+    @Override
     public int getChunkSize()                          { return this.chunkSize ; }
 
+    @Override
     public void setUseThreading(boolean useThreading)  { this.threading = useThreading ; }
 
+    @Override
     public boolean getUseThreading()                   { return this.threading ; }
 
     
@@ -314,6 +329,7 @@ public class LoaderTuplesNodes
     class Commiter implements Runnable
     {
 
+        @Override
         public void run()
         {
             log.debug("Running loader thread");

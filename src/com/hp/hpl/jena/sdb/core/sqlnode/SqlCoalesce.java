@@ -131,6 +131,7 @@ public class SqlCoalesce extends SqlNodeBase1
     
     public SqlJoin getJoinNode()        { return join ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 

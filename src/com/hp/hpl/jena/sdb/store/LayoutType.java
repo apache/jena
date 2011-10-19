@@ -89,6 +89,7 @@ public class LayoutType extends Symbol implements Named
         super(layoutName) ;
     }
 
+    @Override
     public String getName()
     {
         return super.getSymbol() ;

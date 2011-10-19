@@ -39,9 +39,11 @@ public class sdbtuple extends CmdArgsDB
     static class ModTuple extends ModBase
     {
         
+        @Override
         public void registerWith(CmdGeneral cmdLine)
         {}
 
+        @Override
         public void processArgs(CmdArgModule cmdLine)
         {}
         

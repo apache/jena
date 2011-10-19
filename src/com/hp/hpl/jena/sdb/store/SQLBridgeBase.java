@@ -70,6 +70,7 @@ public abstract class SQLBridgeBase implements SQLBridge
         this.sqlNode = sqlNode ;
     }
     
+    @Override
     public final
     void build()
     {
@@ -83,6 +84,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     // Build next row from the JDBC ResultSet
     protected abstract Binding assembleBinding(ResultSetJDBC rs, Binding binding) ;
 
+    @Override
     final
     public QueryIterator assembleResults(ResultSetJDBC rs, Binding binding, ExecutionContext execCxt)
     {
@@ -109,6 +111,7 @@ public abstract class SQLBridgeBase implements SQLBridge
     }
     
     protected SqlNode getSqlExprNode()          { return sqlNodeOriginal ; }
+    @Override
     public    SqlNode getSqlNode()              { return sqlNode ; }
     protected void setSqlNode(SqlNode sqlNode2) {  sqlNode = sqlNode2 ; }
     protected Collection<Var> getProject()      { return projectVars ; }

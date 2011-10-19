@@ -121,6 +121,7 @@ public class PatternTable extends TableDesc
             this.graphNode = graphNode ;
         }
 
+        @Override
         public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
         {
             SqlTable sqlTable = new SqlTable("ALIAS", "TABLE") ;
@@ -172,6 +173,7 @@ public class PatternTable extends TableDesc
         @Override
         public String toString() { return "PTable"; }
 
+        @Override
         public void output(IndentedWriter out)
         {  out.print("PTable") ; }
     }

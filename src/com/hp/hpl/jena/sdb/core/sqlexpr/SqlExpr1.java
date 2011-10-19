@@ -34,5 +34,6 @@ public class SqlExpr1 extends SqlExprBase
     public SqlExpr getExpr() { return expr ; }
     public String  getExprSymbol() { return exprSymbol ; }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

@@ -81,12 +81,14 @@ public class Feature extends PrintableBase implements Named, Printable
     }
     
     // Interface Named
+    @Override
     public String getName()
     {
         return name.getSymbol() ; 
     }
 
     // Printable
+    @Override
     public void output(IndentedWriter out)
     {
         out.print(toString()) ;

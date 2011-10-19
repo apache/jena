@@ -32,24 +32,30 @@ public class SqlNodeVisitorBase implements SqlNodeVisitor
     public void visit(SqlRename sqlRename)
     {}
 
+    @Override
     public void visit(SqlTable sqlTable)
     {}
 
+    @Override
     public void visit(SqlJoinInner sqlJoin)
     {}
 
+    @Override
     public void visit(SqlJoinLeftOuter sqlJoin)
     {}
 
+    @Override
     public void visit(SqlUnion sqlUnion)
     {}
     
+    @Override
     public void visit(SqlCoalesce sqlCoalesce)
     {}
 
     public void visit(SqlSlice sqlSlice)
     {}
 
+    @Override
     public void visit(SqlSelectBlock sqlSelectBlock)
     {}
 }

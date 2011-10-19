@@ -123,6 +123,7 @@ public class DatabaseType extends Symbol implements Named
         super(layoutName) ;
     }
 
+    @Override
     public String getName()
     {
         return super.getSymbol() ;

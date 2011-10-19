@@ -44,6 +44,7 @@ public class FormatterSimpleH2 extends FormatterSimple
         super(connection) ;
     }
     
+    @Override
     public void truncate()
     {
         try { 
@@ -55,6 +56,7 @@ public class FormatterSimpleH2 extends FormatterSimple
         }
     }
     
+    @Override
     public void format()
     {
         reformatPrefixesWorker(false) ;

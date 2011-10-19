@@ -45,10 +45,12 @@ public class TransactionHandlerSDB implements TransactionHandler
         this.inTransaction = false ;
     }
     
+    @Override
     public boolean transactionsSupported() { return true ; }
     
     // Simplistic
     
+    @Override
     public synchronized void begin()
     {
         if ( inTransaction )
@@ -62,6 +64,7 @@ public class TransactionHandlerSDB implements TransactionHandler
         } catch (SQLException ex) { new SDBExceptionSQL("begin", ex) ; }
     }
     
+    @Override
     public synchronized void commit()
     {
         if ( ! inTransaction )
@@ -76,6 +79,7 @@ public class TransactionHandlerSDB implements TransactionHandler
         } catch (SQLException ex) { new SDBExceptionSQL("commit", ex) ; }
     } 
     
+    @Override
     public synchronized void abort()
     {
         if ( ! inTransaction )
@@ -102,6 +106,7 @@ public class TransactionHandlerSDB implements TransactionHandler
     { try { abortFinally() ; } catch (SDBExceptionSQL ex) {} } 
 
     
+    @Override
     public Object executeInTransaction(Command c)
     {
         try {

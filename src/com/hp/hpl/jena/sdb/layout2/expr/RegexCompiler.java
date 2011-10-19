@@ -51,6 +51,7 @@ public class RegexCompiler implements ConditionCompiler
                                                                         new ActionMatchString()}) ;
 
     
+    @Override
     public SDBConstraint recognize(Expr expr)
     {
         MapResult rMap = null ;

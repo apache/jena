@@ -25,10 +25,15 @@ import com.hp.hpl.jena.sparql.core.Var;
 
 public class ScopeNull implements Scope 
 {
+    @Override
     public boolean          isEmpty()                   { return false ; }    
+    @Override
     public boolean          hasColumnForVar(Var var)    { return false ; }
+    @Override
     public ScopeEntry       findScopeForVar(Var var)    { return null ; }
+    @Override
     public Set<Var>         getVars()                   { return Collections.emptySet()  ; }
+    @Override
     public Set<ScopeEntry>  findScopes()                { return Collections.emptySet()  ; }
     
     @Override public String toString() { return "ScopeNull" ; }

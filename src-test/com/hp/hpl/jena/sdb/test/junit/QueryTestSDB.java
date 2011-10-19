@@ -104,6 +104,7 @@ public class QueryTestSDB extends EarlTestCase
         // Truncate outside a transaction.
         store.getTableFormatter().truncate() ;
         store.getConnection().executeInTransaction(new Command(){
+            @Override
             public Object execute()
             {
                 // Default graph

@@ -32,6 +32,7 @@ public class SQLBridgeFactory2 implements SQLBridgeFactory
     
     public  SQLBridgeFactory2() { }
     
+    @Override
     public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
     {
         return new SQLBridge2(request, sqlNode, projectVars) ;

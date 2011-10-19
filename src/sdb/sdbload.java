@@ -157,43 +157,54 @@ public class sdbload extends CmdArgsDB
         }
         
         
+        @Override
         public void notifyAddTriple(Graph g, Triple t) { addEvent(t) ; }
 
+        @Override
         public void notifyAddArray(Graph g, Triple[] triples)
         { 
             for ( Triple t : triples )
                 addEvent(t) ;
         }
 
+        @Override
         public void notifyAddList(Graph g, List<Triple> triples) 
         { 
             notifyAddIterator(g, triples.iterator()) ;
         }
 
+        @Override
         public void notifyAddIterator(Graph g, Iterator<Triple> it)
         {
             for ( ; it.hasNext() ; )
                 addEvent(it.next()) ;
         }
 
+        @Override
         public void notifyAddGraph(Graph g, Graph added)
         {}
 
+        @Override
         public void notifyDeleteTriple(Graph g, Triple t)
         {}
 
+        @Override
         public void notifyDeleteList(Graph g, List<Triple> L)
         {}
 
+        @Override
         public void notifyDeleteArray(Graph g, Triple[] triples)
         {}
 
+        @Override
         public void notifyDeleteIterator(Graph g, Iterator<Triple> it)
         {}
 
+        @Override
         public void notifyDeleteGraph(Graph g, Graph removed)
         {}
 
+        @Override
         public void notifyEvent(Graph source, Object value)
         {}
 

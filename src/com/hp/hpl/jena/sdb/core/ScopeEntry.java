@@ -33,18 +33,21 @@ public class ScopeEntry
     
     public static Filter<ScopeEntry> OptionalFilter = new Filter<ScopeEntry>()
     {
+        @Override
         public boolean accept(ScopeEntry item)
         { return item.getStatus() == ScopeStatus.OPTIONAL ; }
     } ;
     
     public static Transform<ScopeEntry, Var> ToVar = new Transform<ScopeEntry, Var>()
     {
+        @Override
         public Var convert(ScopeEntry item)
         { return item.getVar() ; } 
     } ;
     
     public static Action<ScopeEntry> SetOpt = new Action<ScopeEntry>()
     {
+        @Override
         public void apply(ScopeEntry item)
         { item.setStatus(ScopeStatus.OPTIONAL) ; } 
     } ;

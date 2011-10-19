@@ -154,42 +154,50 @@ public class StoreFactory
         
         register(Derby, LayoutTripleNodesHash, 
             new StoreMaker(){
+                @Override
                 public Store create(SDBConnection conn, StoreDesc desc)
                 { return new StoreTriplesNodesHashDerby(conn, desc) ; } }) ;
         
         register(HSQLDB, LayoutTripleNodesHash, 
                  new StoreMaker(){
-                     public Store create(SDBConnection conn, StoreDesc desc)
+                     @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
                      { return new StoreTriplesNodesHashHSQL(conn, desc) ; }} ) ;
         
         /* H2 contribution from Martin HEIN (m#)/March 2008 */
         register(H2, LayoutTripleNodesHash, 
                  new StoreMaker(){
-                     public Store create(SDBConnection conn, StoreDesc desc)
+                     @Override
+                    public Store create(SDBConnection conn, StoreDesc desc)
                      { return new StoreTriplesNodesHashH2(conn, desc) ; }} ) ;
         
         register(MySQL, LayoutTripleNodesHash,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashMySQL(conn, desc, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutTripleNodesHash,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashPGSQL(conn, desc) ; } }) ;
 
         register(SQLServer, LayoutTripleNodesHash,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashSQLServer(conn, desc) ; } }) ;
 
         register(Oracle, LayoutTripleNodesHash,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashOracle(conn, desc) ; } }) ;
 
         register(DB2, LayoutTripleNodesHash,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesHashDB2(conn, desc) ; } }) ;
 
@@ -197,42 +205,50 @@ public class StoreFactory
         
         register(Derby, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexDerby(conn, desc) ; }
                     }) ;
         
         register(HSQLDB, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexHSQL(conn, desc) ; } }) ;
         
         register(H2, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexH2(conn, desc) ; } }) ;
         
         register(MySQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexMySQL(conn, desc, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexPGSQL(conn, desc) ; } }) ;
 
         register(SQLServer, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexSQLServer(conn, desc) ; } }) ;
 
         register(Oracle, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexOracle(conn, desc) ; } }) ;
         
         register(DB2, LayoutTripleNodesIndex,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreTriplesNodesIndexDB2(conn, desc) ; } }) ;
         
@@ -240,42 +256,50 @@ public class StoreFactory
         
         register(Derby, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleDerby(conn, desc) ; }
                     }) ;
         
         register(HSQLDB, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleHSQL(conn, desc) ; } }) ;
         
         register(H2, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleH2(conn, desc) ; } }) ;
         
         register(MySQL, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleMySQL(conn, desc, desc.engineType) ; } }) ;
 
         register(PostgreSQL, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimplePGSQL(conn, desc) ; } }) ;
 
         register(SQLServer, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleSQLServer(conn, desc) ; } }) ;
 
         register(Oracle, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleOracle(conn, desc) ; } }) ;
 
         register(DB2, LayoutSimple,
                  new StoreMaker() {
+                    @Override
                     public Store create(SDBConnection conn, StoreDesc desc)
                     { return new StoreSimpleDB2(conn, desc) ; } }) ;
     }

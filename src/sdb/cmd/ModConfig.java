@@ -36,6 +36,7 @@ public class ModConfig extends ModBase
     
     public ModConfig() {}
 
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclCreate,
@@ -48,6 +49,7 @@ public class ModConfig extends ModBase
                     "--indexes", "Add indexes") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         format = cmdLine.contains(argDeclFormat) ;

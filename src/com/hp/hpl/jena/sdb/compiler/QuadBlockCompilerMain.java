@@ -38,10 +38,12 @@ public class QuadBlockCompilerMain implements QuadBlockCompiler
         this.slotCompiler = slotCompiler ;
     }
     
+    @Override
     public SlotCompiler getSlotCompiler()
     { return slotCompiler ; }
 
     //@Override
+    @Override
     final
     public SqlNode compile(QuadBlock quads)
     {

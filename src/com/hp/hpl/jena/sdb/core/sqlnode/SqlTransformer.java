@@ -85,27 +85,33 @@ public class SqlTransformer
         public void visit(SqlRestrict sqlRestrict)
         { visit1(sqlRestrict) ; }
         
+        @Override
         public void visit(SqlTable sqlTable)
         { visit0(sqlTable) ; }
 
         public void visit(SqlRename sqlRename)
         { visit1(sqlRename) ; }
         
+        @Override
         public void visit(SqlJoinInner sqlJoin)
         { visit2(sqlJoin) ; }
 
+        @Override
         public void visit(SqlJoinLeftOuter sqlJoin)
         { visit2(sqlJoin) ; }
 
+        @Override
         public void visit(SqlUnion sqlUnion)
         { visit2(sqlUnion) ; }
 
+        @Override
         public void visit(SqlCoalesce sqlCoalesce)
         { visit1(sqlCoalesce) ; }
 
         public void visit(SqlSlice sqlSlice)
         { visit1(sqlSlice) ; }
 
+        @Override
         public void visit(SqlSelectBlock sqlSelectBlock)
         { visit1(sqlSelectBlock) ; }
     }

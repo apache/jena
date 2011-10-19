@@ -34,6 +34,7 @@ public abstract class FormatterSimple extends StoreFormatterBase
         super(connection) ;
     }
     
+    @Override
     public void addIndexes()
     {
         try {
@@ -45,6 +46,7 @@ public abstract class FormatterSimple extends StoreFormatterBase
         }
     }
     
+    @Override
     public void dropIndexes()
     {
         try {

@@ -101,6 +101,7 @@ public class SqlRestrict extends SqlNodeBase1
 
     public SqlExprList getConditions() { return conditions ; }
 
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { throw new SDBInternalError("SqlRestrict.visit") ; }
     //{ visitor.visit(this) ; }

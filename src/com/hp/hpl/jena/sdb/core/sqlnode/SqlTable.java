@@ -59,11 +59,14 @@ public class SqlTable extends SqlNodeBase0
 
     public String getTableName()  { return tableName ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 
+    @Override
     public Scope getIdScope() { return idScope ; }
 
+    @Override
     public Scope getNodeScope() { return nodeScope ; }
     
     public void setIdColumnForVar(Var var, SqlColumn thisCol)

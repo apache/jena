@@ -30,6 +30,7 @@ public class QBR_SubProperty implements QuadBlockRewrite
 {
     private static final Node rdfType = RDF.type.asNode() ;
     
+    @Override
     public QuadBlock rewrite(SDBRequest request, QuadBlock quadBlock)
     {
         // Does not consider if the property slot is a variable.

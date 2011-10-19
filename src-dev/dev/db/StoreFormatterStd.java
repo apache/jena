@@ -38,6 +38,7 @@ public abstract class StoreFormatterStd extends StoreFormatterBase
 //        addIndexes() ;
 //    }
 
+    @Override
     public void format()
     { 
         formatTablePrefixes() ;
@@ -46,6 +47,7 @@ public abstract class StoreFormatterStd extends StoreFormatterBase
         formatTableQuads() ;
     }
     
+    @Override
     public void truncate()
     {
         truncateTablePrefixes() ;
@@ -54,12 +56,14 @@ public abstract class StoreFormatterStd extends StoreFormatterBase
         truncateTableQuads() ;
     }
     
+    @Override
     public void addIndexes()
     {
         addIndexesTableTriples() ;
         addIndexesTableQuads() ;
     }
     
+    @Override
     public void dropIndexes()
     {
         dropIndexesTableTriples() ;

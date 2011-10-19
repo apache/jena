@@ -32,6 +32,7 @@ public class QueryCompilerFactory1 implements QueryCompilerFactory
         this.codec = codec ;
     }
 
+    @Override
     public QueryCompiler createQueryCompiler(SDBRequest request)
     {
         return new QueryCompiler1(request, codec) ;

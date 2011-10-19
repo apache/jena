@@ -55,6 +55,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
         this.request = request ;
     }
     
+    @Override
     public Op compile(final Op op)
     {
         QuadBlockCompiler quadCompiler = createQuadBlockCompiler() ;
@@ -110,6 +111,7 @@ public abstract class QueryCompilerMain implements QueryCompiler
     
     public abstract QuadBlockCompiler createQuadBlockCompiler() ;
     
+    @Override
     public ConditionCompiler getConditionCompiler()
     {
         return null ;

@@ -32,11 +32,13 @@ public class CodecRDB implements EncoderDecoder
         driver = modelRDB.getConnection().getDriver() ;
     }
     
+    @Override
     public String encode(Node node)
     {
         return driver.nodeToRDBString(node, true) ;
     }
     
+    @Override
     public Node decode(String s)
     {
         return driver.RDBStringToNode(s) ; 

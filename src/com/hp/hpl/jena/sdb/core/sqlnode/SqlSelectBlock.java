@@ -215,6 +215,7 @@ public class SqlSelectBlock extends SqlNodeBase1
     public SqlNode copy(SqlNode subNode)
     { return new SqlSelectBlock(this.getAliasName(), subNode) ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { visitor.visit(this) ; }
 

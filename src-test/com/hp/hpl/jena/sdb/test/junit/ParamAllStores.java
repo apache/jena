@@ -37,6 +37,7 @@ public abstract class ParamAllStores
     // Make into Object[]{String,Store} lists just for JUnit. 
     static Transform<Pair<String, StoreDesc>, Object[]> fix = new Transform<Pair<String, StoreDesc>, Object[]>()
     {
+        @Override
         public Object[] convert(Pair<String, StoreDesc> item)
         { return new Object[]{item.car(), item.cdr()} ; }
     } ;

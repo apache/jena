@@ -58,6 +58,7 @@ class TransGraphNode extends TransGraph<Node>
         top.getList().add(Item.createSymbol(tag)) ;
 
         LinkApply<Node> x = new LinkApply<Node>() {
+            @Override
             public void apply(Node i, Node j)
             {
                 Item pair = pair(i,j) ;

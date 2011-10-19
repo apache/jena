@@ -155,6 +155,7 @@ public class QueryEngineSDB extends QueryEngineBase
     
     private static class QueryEngineFactorySDB implements QueryEngineFactory
     {
+        @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context)
         {
             if ( dataset instanceof DatasetStoreGraph )
@@ -162,12 +163,14 @@ public class QueryEngineSDB extends QueryEngineBase
             return false ;
         }
 
+        @Override
         public Plan create(Query query, DatasetGraph dataset, Binding inputBinding, Context context)
         {
             QueryEngineSDB qe = new QueryEngineSDB((DatasetStoreGraph)dataset , query, inputBinding, context) ;
             return qe.getPlan() ;
         }
 
+        @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context)
         {
             if ( dataset instanceof DatasetStoreGraph )
@@ -175,6 +178,7 @@ public class QueryEngineSDB extends QueryEngineBase
             return false ;
         }
 
+        @Override
         public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
         {
             if ( inputBinding == null )

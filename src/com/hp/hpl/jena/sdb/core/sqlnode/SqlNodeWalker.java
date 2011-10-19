@@ -63,18 +63,23 @@ public class SqlNodeWalker
             sqlNode.getSubNode().visit(this) ;
         }
 
+        @Override
         public void visit(SqlTable sqlNode)
         { sqlNode.visit(visitor) ; }
         
+        @Override
         public void visit(SqlJoinInner sqlNode)
         { visit2(sqlNode) ; }
     
+        @Override
         public void visit(SqlJoinLeftOuter sqlNode)
         { visit2(sqlNode) ; }
 
+        @Override
         public void visit(SqlUnion sqlNode)
         { visit2(sqlNode) ; }
 
+        @Override
         public void visit(SqlCoalesce sqlNode)
         {
             sqlNode.visit(visitor) ;
@@ -84,6 +89,7 @@ public class SqlNodeWalker
         public void visit(SqlSlice sqlNode)
         { visit1(sqlNode) ; }
 
+        @Override
         public void visit(SqlSelectBlock sqlNode)
         { visit1(sqlNode) ; }
     }

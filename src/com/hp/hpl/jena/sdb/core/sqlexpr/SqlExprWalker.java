@@ -32,21 +32,26 @@ public class SqlExprWalker
 
         private Walker(SqlExprVisitor visitor) { this.visitor = visitor ;  }
         
+        @Override
         public void visit(SqlColumn column) { column.visit(visitor) ; }
         
+        @Override
         public void visit(SqlConstant constant) { constant.visit(visitor) ; }
         
+        @Override
         public void visit(SqlFunction1 expr)
         {
             expr.getExpr().visit(this) ;
             expr.visit(visitor) ;
         }
     
+        @Override
         public void visit(SqlExpr1 expr)
         {
             expr.getExpr().visit(this) ;
             expr.visit(visitor) ;
         }
+        @Override
         public void visit(SqlExpr2 expr)
         {
             expr.getLeft().visit(this) ;
@@ -54,12 +59,14 @@ public class SqlExprWalker
             expr.visit(visitor) ;
         }
     
+        @Override
         public void visit(S_Like like)         
         {
             like.getExpr().visit(this) ;
             like.visit(visitor) ;
         }
         
+        @Override
         public void visit(S_Regex regex)
         {
             regex.getExpr().visit(this) ;

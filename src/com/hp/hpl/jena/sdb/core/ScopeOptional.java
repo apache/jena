@@ -33,6 +33,7 @@ public class ScopeOptional implements Scope
     public ScopeOptional(Scope subScope)
     { this.scope = subScope ; }
     
+    @Override
     public ScopeEntry findScopeForVar(Var var)
     {
         ScopeEntry e = scope.findScopeForVar(var) ;
@@ -43,14 +44,17 @@ public class ScopeOptional implements Scope
         return e ;
     }
 
+    @Override
     public Set<Var> getVars()
     {
         return scope.getVars() ;
     }
 
+    @Override
     public boolean isEmpty()
     { return scope.isEmpty() ; }
     
+    @Override
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = scope.findScopes() ;
@@ -58,6 +62,7 @@ public class ScopeOptional implements Scope
         return x ;
     }
     
+    @Override
     public boolean hasColumnForVar(Var var)
     {
         return scope.hasColumnForVar(var) ;

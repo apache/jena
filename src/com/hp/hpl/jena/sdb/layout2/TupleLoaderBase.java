@@ -77,7 +77,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		return this.getTableWidth();
 	}
 	
-	public void load(Node... row) {
+	@Override
+    public void load(Node... row) {
 		if (!amLoading) {
 			flush();
 			amLoading = true;
@@ -102,7 +103,8 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		if (tupleNum >= chunkSize) flush();
 	}
 
-	public void unload(Node... row) {
+	@Override
+    public void unload(Node... row) {
 		if (amLoading) {
 			flush();
 			amLoading = false;
@@ -321,15 +323,18 @@ public abstract class TupleLoaderBase extends com.hp.hpl.jena.sdb.store.TupleLoa
 		return stmt.toString();
 	}
 	
-	public String getClearTempNodes() {
+	@Override
+    public String getClearTempNodes() {
 		return "DELETE FROM " + getNodeLoader();
 	}
 	
-	public String getClearTempTuples() {
+	@Override
+    public String getClearTempTuples() {
 		return "DELETE FROM " + getTupleLoader();
 	}
 	
-	public boolean clearsOnCommit() { return false; }
+	@Override
+    public boolean clearsOnCommit() { return false; }
 	
 	// ---- Temporary table creation.
 	// Some databases (MySQL, MS SQL) do not make the temnporary tables visible to a metadata probe.

@@ -32,6 +32,7 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
         return asSQL(this) ;
     }
     
+    @Override
     public String asSQL() { return asSQL(this) ; } 
     
     public static String asSQL(SqlExpr expr)
@@ -42,6 +43,7 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
         return buff.toString() ; 
     }
     
+    @Override
     public Set<SqlColumn> getColumnsNeeded()
     {
         Set<SqlColumn> acc = new HashSet<SqlColumn>() ;
@@ -50,7 +52,9 @@ public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
         return acc ;
     }
     
+    @Override
     public boolean isColumn()   { return false ; }
+    @Override
     public boolean isConstant() { return false ; }
 
 }

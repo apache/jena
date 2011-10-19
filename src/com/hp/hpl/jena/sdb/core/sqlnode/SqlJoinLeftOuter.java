@@ -32,6 +32,7 @@ public class SqlJoinLeftOuter extends SqlJoin
     @Override 
     public SqlJoinLeftOuter   asLeftJoin()         { return this ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor) { visitor.visit(this) ; }
  
     @Override

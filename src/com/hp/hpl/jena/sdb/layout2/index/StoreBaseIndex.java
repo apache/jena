@@ -49,7 +49,8 @@ public class StoreBaseIndex extends StoreBase
               new TableNodesIndex()) ;
     }
 
-	public long getSize(Node node)
+	@Override
+    public long getSize(Node node)
 	{
 	    return getSize(getConnection(), getQuadTableDesc(), node) ;
 	}

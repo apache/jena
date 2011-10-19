@@ -43,9 +43,11 @@ public class TupleGraphLoader implements StoreLoader
         this.loader = loader ;
     }
         
+    @Override
     public void addTriple(Triple triple)
     { loader.load(row(triple)) ; }
 
+    @Override
     public void deleteTriple(Triple triple)
     { loader.unload(row(triple)) ; }
     
@@ -58,27 +60,35 @@ public class TupleGraphLoader implements StoreLoader
         return nodes ;
     }
 
+    @Override
     public void close()
     { loader.finish() ; }
 
+    @Override
     public void startBulkUpdate()
     { loader.start() ; }
 
+    @Override
     public void finishBulkUpdate()
     { loader.finish() ; }
 
+    @Override
     public int getChunkSize()
     { throw new SDBNotImplemented("TupleGraphLoader.getChunkSize") ; }
     
+    @Override
     public void setChunkSize(int chunks)
     { throw new SDBNotImplemented("TupleGraphLoader.setChunkSize") ; }
 
+    @Override
     public boolean getUseThreading()
     { throw new SDBNotImplemented("TupleGraphLoader.getUseThreading") ; }
 
+    @Override
     public void setUseThreading(boolean useThreading)
     { throw new SDBNotImplemented("TupleGraphLoader.setUseThreading") ; }
     
-	public void deleteAll()
+	@Override
+    public void deleteAll()
 	{ throw new SDBNotImplemented("TupleGraphLoader.deleteAll"); }
 }

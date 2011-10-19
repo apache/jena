@@ -21,18 +21,25 @@ package com.hp.hpl.jena.sdb.core.sqlexpr;
 public class SqlExprVisitorBase implements SqlExprVisitor
 {
 
+    @Override
     public void visit(SqlColumn column)      {}
 
+    @Override
     public void visit(SqlConstant constant)  {}
 
+    @Override
     public void visit(SqlFunction1 expr)     {}
 
+    @Override
     public void visit(SqlExpr1 expr)         {}
 
+    @Override
     public void visit(SqlExpr2 expr)         {}
 
+    @Override
     public void visit(S_Regex regex)         {}
 
+    @Override
     public void visit(S_Like like)           {}
 
     public void visit(S_IsNull isNull)       {}

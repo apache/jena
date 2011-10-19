@@ -55,6 +55,7 @@ public class SqlStageBasicQuad implements SqlStage
     //  SDB.unionDefaultGraph.
     
 
+    @Override
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler)
     {
         SqlExprList conditions = new SqlExprList() ;
@@ -134,6 +135,7 @@ public class SqlStageBasicQuad implements SqlStage
     @Override
     public String toString() { return "Table: "+quad ; } 
     
+    @Override
     public void output(IndentedWriter out)
     {  out.print(toString()) ; }
 

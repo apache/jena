@@ -115,6 +115,7 @@ public enum ValueType implements Named
     
     abstract public int getTypeId() ;
     abstract public XSDDatatype getDatatype() ;
+    @Override
     abstract public String getName() ;
     @Override public String toString() { return getName() ; }
     

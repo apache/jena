@@ -91,6 +91,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
     {
         // Iterator of domain objects
         
+        @Override
         public ExtendedIterator<Domain> executeBindings()
         {
             Set<Var> vars = OpVars.allVars(op) ;
@@ -99,6 +100,7 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
 
             Transform<Binding, Domain> b2d = new Transform<Binding, Domain>()
             {
+                @Override
                 public Domain convert(Binding binding)
                 {
                     Domain d = new Domain(variables.length) ;

@@ -96,6 +96,7 @@ import com.hp.hpl.jena.sdb.shared.SDBInternalError;
     @Override
     public Scope getNodeScope() { return nodeScope ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { throw new SDBInternalError("SqlRename.visit") ; }
     // { visitor.visit(this) ; }

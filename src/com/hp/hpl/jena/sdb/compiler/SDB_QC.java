@@ -149,6 +149,7 @@ public class SDB_QC
 
     
     private static Transform<String, Var> StringToVar = new Transform<String, Var>(){
+        @Override
         public Var convert(String varName)
         {
             return Var.alloc(varName) ;

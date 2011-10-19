@@ -64,5 +64,6 @@ public class SqlColumn extends SqlExprBase
     
     public String asString() { return getFullColumnName() ; }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

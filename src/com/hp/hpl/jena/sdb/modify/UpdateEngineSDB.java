@@ -43,11 +43,13 @@ public class UpdateEngineSDB extends UpdateEngineMain
     public static UpdateEngineFactory getFactory() { 
         return new UpdateEngineFactory()
         {
+            @Override
             public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
             {
                 return (graphStore instanceof DatasetStoreGraph) ;
             }
         
+            @Override
             public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
             {
                 return new UpdateEngineSDB((DatasetStoreGraph)graphStore, request, inputBinding, context) ;

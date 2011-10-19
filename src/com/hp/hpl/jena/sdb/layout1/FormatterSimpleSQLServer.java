@@ -42,6 +42,7 @@ public class FormatterSimpleSQLServer extends FormatterSimple
         super(connection) ;
     }
     
+    @Override
     public void truncate()
     {
         try { 
@@ -53,6 +54,7 @@ public class FormatterSimpleSQLServer extends FormatterSimple
         }
     }
     
+    @Override
     public void format()
     {
         reformatPrefixesWorker(false) ;

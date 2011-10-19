@@ -25,24 +25,29 @@ public class AnnotationsBase implements Annotations
 {
     //---- Annotations
     List<String> annotations = null ;
+    @Override
     public List<String> getNotes()
     {
         initAnnotations() ;
         return annotations ;
     }
 
+    @Override
     public boolean hasNotes()
     { return annotations != null && annotations.size() > 0 ; }
     
+    @Override
     public boolean hasOneNote()
     { return annotations != null && annotations.size() == 1 ; }
     
+    @Override
     public void addNote(String s)
     {
         initAnnotations() ;
         annotations.add(s) ;
     }
     
+    @Override
     public void addNotes(List<String> annotations)
     {
         initAnnotations() ;

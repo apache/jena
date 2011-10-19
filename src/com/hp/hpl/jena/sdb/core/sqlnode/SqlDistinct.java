@@ -47,6 +47,7 @@ import com.hp.hpl.jena.sdb.shared.SDBInternalError;
     public SqlDistinct asDistinct() { return this ; }
     
     //@Override
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { throw new SDBInternalError("SqlDistinct.visit") ; /*visitor.visit(this) ;*/ }
     

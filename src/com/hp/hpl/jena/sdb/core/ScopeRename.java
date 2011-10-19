@@ -49,6 +49,7 @@ public class ScopeRename implements Scope
     }
     
     
+    @Override
     public ScopeEntry findScopeForVar(Var var)
     {
         check(var) ;
@@ -64,6 +65,7 @@ public class ScopeRename implements Scope
 //        return converter.convert(e) ;
     }
 
+    @Override
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
@@ -78,14 +80,17 @@ public class ScopeRename implements Scope
 //        return x ;
     }
 
+    @Override
     public boolean isEmpty()
     { return frame.isEmpty() ; } 
 
+    @Override
     public Set<Var> getVars()
     {
         return frame.keySet() ;
     }
 
+    @Override
     public boolean hasColumnForVar(Var var)
     {
         check(var) ;
@@ -113,6 +118,7 @@ public class ScopeRename implements Scope
     
     private Transform<ScopeEntry, ScopeEntry> converter = 
         new Transform<ScopeEntry, ScopeEntry>(){
+            @Override
             public ScopeEntry convert(ScopeEntry entry)
             {
                 entry = new ScopeEntry(entry.getVar(), entry.getColumn()) ;

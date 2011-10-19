@@ -72,6 +72,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 
     // If nested (subquery) 
     
+    @Override
     public void visit(SqlSelectBlock sqlSelectBlock)
     {
         // Need a rename and alias if:
@@ -185,6 +186,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         out.decIndent() ;
     }
     
+    @Override
     public void visit(SqlTable table)
     {
         out.print(table.getTableName()) ;
@@ -193,6 +195,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         annotate(table) ;
     }
 
+    @Override
     public void visit(SqlJoinInner join)
     {
         join = rewrite(join) ;
@@ -253,6 +256,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
     }
     
     static final Transform<SqlColumn, SqlTable> colToTable = new Transform<SqlColumn, SqlTable>() {
+        @Override
         public SqlTable convert(SqlColumn item) { return item.getTable() ; }
     } ;
     
@@ -261,8 +265,10 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         return Iter.toSet(Iter.map(cols, colToTable)) ;
     }
 
+    @Override
     public void visit(SqlJoinLeftOuter join)    { visitJoin(join) ; }
 
+    @Override
     public void visit(SqlCoalesce sqlNode)
     {
         out.print("SELECT ") ;
@@ -315,6 +321,7 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         // Alias and annotations handled by outputNode
     }
 
+    @Override
     public void visit(SqlUnion sqlUnion)
     { throw new SDBNotImplemented("SQL generation of SqlUnion") ; }
 

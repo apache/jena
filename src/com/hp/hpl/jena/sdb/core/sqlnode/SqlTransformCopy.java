@@ -28,36 +28,45 @@ public class SqlTransformCopy implements SqlTransform
     public SqlTransformCopy() { this(COPY_ONLY_ON_CHANGE) ; }
     public SqlTransformCopy(boolean alwaysDuplicate)   { this.alwaysCopy = alwaysDuplicate ; }
     
+    @Override
     public SqlNode transform(SqlProject sqlProject, SqlNode subNode)
     { return xform(sqlProject, subNode) ; }
 
     public SqlNode transform(SqlDistinct sqlDistinct, SqlNode subNode)
     { return xform(sqlDistinct, subNode) ; }
 
+    @Override
     public SqlNode transform(SqlRestrict sqlRestrict, SqlNode subNode)
     { return xform(sqlRestrict, subNode) ; }
 
     public SqlNode transform(SqlSlice sqlSlice, SqlNode subNode)
     { return xform(sqlSlice, subNode) ; }
 
+    @Override
     public SqlNode transform(SqlSelectBlock sqlSelectBlock, SqlNode subNode)
     { return xform(sqlSelectBlock, subNode) ; }
 
+    @Override
     public SqlNode transform(SqlJoinInner sqlJoinInner, SqlNode left, SqlNode right)
     { return xform(sqlJoinInner, left, right) ; }
 
+    @Override
     public SqlNode transform(SqlJoinLeftOuter sqlJoinLeftOuter, SqlNode left, SqlNode right)
     { return xform(sqlJoinLeftOuter, left, right) ; }
 
+    @Override
     public SqlNode transform(SqlUnion sqlUnion, SqlNode left, SqlNode right)
     { return xform(sqlUnion, left, right) ; } 
 
+    @Override
     public SqlNode transform(SqlTable sqlTable)
     { return xform(sqlTable) ; }
 
+    @Override
     public SqlNode transform(SqlRename sqlRename, SqlNode subNode)
     { return xform(sqlRename, subNode) ; } 
 
+    @Override
     public SqlNode transform(SqlCoalesce sqlCoalesce, SqlNode subNode)
     { return xform(sqlCoalesce, subNode) ; }
     

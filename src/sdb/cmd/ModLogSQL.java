@@ -34,6 +34,7 @@ public class ModLogSQL extends ModBase
     // query, sql
     protected final ArgDecl argDeclLogSQL          = new ArgDecl(true, "log") ;
 
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("DB logging") ;
@@ -41,6 +42,7 @@ public class ModLogSQL extends ModBase
         
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         List<String> vals = cmdLine.getValues(argDeclLogSQL) ;

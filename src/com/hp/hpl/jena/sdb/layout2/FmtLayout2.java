@@ -31,6 +31,7 @@ public abstract class FmtLayout2
 {
     public FmtLayout2(SDBConnection connection) { super(connection) ; }
     
+    @Override
     public void format()
     { 
         formatTablePrefixes() ;
@@ -39,6 +40,7 @@ public abstract class FmtLayout2
         formatTableQuads() ;
     }
     
+    @Override
     public void truncate()
     {
         truncateTablePrefixes() ;
@@ -47,12 +49,14 @@ public abstract class FmtLayout2
         truncateTableQuads() ;
     }
     
+    @Override
     public void addIndexes()
     {
     	addIndexesTableTriples() ;
     	addIndexesTableQuads() ;
     }
     
+    @Override
     public void dropIndexes()
     {
     	dropIndexesTableTriples() ;

@@ -71,10 +71,13 @@ OR  left    logical disjunction
     SqlExprGenerateSQL(IndentedWriter out)
     { this.out = out ; }
 
+    @Override
     public void visit(SqlColumn column)     { out.print(column.asString()) ; }
     
+    @Override
     public void visit(SqlConstant constant) { out.print(constant.asSqlString()) ; }
     
+    @Override
     public void visit(SqlFunction1 expr)
     {
         out.print(expr.getFuncSymbol()) ;
@@ -83,6 +86,7 @@ OR  left    logical disjunction
         out.print(")") ;
     }
 
+    @Override
     public void visit(SqlExpr1 expr)
     {
         printExpr(expr.getExpr()) ;
@@ -90,6 +94,7 @@ OR  left    logical disjunction
         out.print(expr.getExprSymbol()) ;
     }
 
+    @Override
     public void visit(SqlExpr2 expr)
     {
         printExpr(expr.getLeft()) ;
@@ -99,6 +104,7 @@ OR  left    logical disjunction
         printExpr(expr.getRight()) ;
     }
 
+    @Override
     public void visit(S_Like pattern)
     {
         if ( pattern.isCaseInsensitive() )
@@ -119,6 +125,7 @@ OR  left    logical disjunction
     
     public String RegexOperator = "REGEXP" ; 
     
+    @Override
     public void visit(S_Regex regex)
     {
         // TODO Make per-store dependent for syntax and case sensitiveity reasons.

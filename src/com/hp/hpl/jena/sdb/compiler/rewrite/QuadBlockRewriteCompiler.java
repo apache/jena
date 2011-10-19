@@ -37,6 +37,7 @@ public class QuadBlockRewriteCompiler implements QuadBlockCompiler
         this.baseCompiler = baseCompiler ;
     }
     
+    @Override
     public SqlNode compile(QuadBlock quads)
     {
         quads = qbr1.rewrite(request, quads) ;
@@ -46,6 +47,7 @@ public class QuadBlockRewriteCompiler implements QuadBlockCompiler
         
     }
 
+    @Override
     public SlotCompiler getSlotCompiler()
     { return baseCompiler.getSlotCompiler() ; }
 

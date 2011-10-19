@@ -34,5 +34,6 @@ public class SqlConstant extends SqlExprBase
     @Override
     public boolean isConstant() { return true ; }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

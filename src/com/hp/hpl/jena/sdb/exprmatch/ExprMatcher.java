@@ -96,6 +96,7 @@ public class ExprMatcher
             this.target = target ;
         }
 
+        @Override
         public void startVisit()
         {}
 
@@ -151,6 +152,7 @@ public class ExprMatcher
          * The target must have the same.  
          */
 
+        @Override
         public void visit(NodeValue nv)
         {
             if ( ! target.isConstant() )
@@ -165,6 +167,7 @@ public class ExprMatcher
          * 2/ Invoke default action. 
          */
 
+        @Override
         public void visit(ExprVar patternVar)
         {
             Var vn = patternVar.asVar() ;
@@ -177,12 +180,15 @@ public class ExprMatcher
             throw new NoExprMatch("Action for "+patternVar+ "+failed") ;
         }
 
+        @Override
         public void visit(ExprFunctionOp funcOp)
         { throw new NoExprMatch("ExprFunctionOp") ; }
 
+        @Override
         public void visit(ExprAggregator eAgg)
         { throw new NoExprMatch("ExprAggregate") ; }
 
+        @Override
         public void finishVisit()
         {}
     }

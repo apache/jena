@@ -37,6 +37,7 @@ public class SQLBridgeFactory1 implements SQLBridgeFactory
         this.codec = codec ;
     }
     
+    @Override
     public SQLBridge create(SDBRequest request, SqlNode sqlNode, List<Var> projectVars)
     {
         return new SQLBridge1(request, sqlNode, projectVars, codec) ;

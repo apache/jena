@@ -33,6 +33,7 @@ public class GenerateSQL implements SQLGenerator
     { return new GenerateSQL().generatePartSQL(sqlNode) ; }
     
     /** Generate an SQL statement for the node - force the outer level to be a SELECT */
+    @Override
     public String generateSQL(SDBRequest request, SqlNode sqlNode)
     {
 //        if ( forceOldGenerator )

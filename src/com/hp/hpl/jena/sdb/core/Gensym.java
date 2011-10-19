@@ -36,6 +36,7 @@ public class Gensym implements Generator
     private Gensym(String base) { this(base, 1) ; }
     private Gensym(String base, int startCount) { this.base = base ; this.count = startCount ; }
     
+    @Override
     public String next()
     {
         String x = base+(count++) ;
@@ -43,6 +44,7 @@ public class Gensym implements Generator
         return x ;
     }
     
+    @Override
     public String current()
     {
         if ( lastAlloc == null )

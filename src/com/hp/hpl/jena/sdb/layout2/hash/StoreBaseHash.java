@@ -48,6 +48,7 @@ public class StoreBaseHash extends StoreBase
               new TableNodesHash()) ;
     }
 
+    @Override
     public long getSize(Node node)
     {
         return getSize(getConnection(), getQuadTableDesc(), node) ;

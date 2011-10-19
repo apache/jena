@@ -40,11 +40,13 @@ public class ModDatasetStore extends ModDataset
         return SDBFactory.connectDataset(filename) ;
     }
 
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclSDBdesc, "--store=FILE", "Dataset assembler for an SDB store") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         // Either a dataset or a store.

@@ -29,7 +29,8 @@ public abstract class TupleLoaderHashBase extends TupleLoaderBase {
 		super(connection, tableDesc, chunkSize);
 	}
 	
-	public String getLoadTuples() {
+	@Override
+    public String getLoadTuples() {
 		StringBuilder stmt = new StringBuilder();
 		
 		stmt.append("INSERT INTO ").append(this.getTableName()).append(" \nSELECT DISTINCT ");
@@ -52,7 +53,8 @@ public abstract class TupleLoaderHashBase extends TupleLoaderBase {
 		return stmt.toString();
 	}
 	
-	public String getDeleteTuples() {
+	@Override
+    public String getDeleteTuples() {
 		StringBuilder stmt = new StringBuilder();
 		
 		stmt.append("DELETE FROM ").append(this.getTableName()).append(" \nWHERE\n");
@@ -64,7 +66,8 @@ public abstract class TupleLoaderHashBase extends TupleLoaderBase {
 		return stmt.toString();
 	}
 	
-	public String getDeleteAllTuples() {
+	@Override
+    public String getDeleteAllTuples() {
 		StringBuilder stmt = new StringBuilder();
 		
 		stmt.append("DELETE FROM ").append(this.getTableName());

@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 
 public class ActionMatchNoBind implements ActionMatch
 {
+    @Override
     public boolean match(Var var, Expr expr, MapResult resultMap)
     { return true ; }
 }

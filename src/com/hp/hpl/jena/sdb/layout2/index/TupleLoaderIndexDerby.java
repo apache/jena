@@ -34,15 +34,18 @@ public class TupleLoaderIndexDerby extends TupleLoaderIndexBase {
 	}
 	
 	// A compromise. Derby's temporary tables are limited, but cleaning up afterwards is worse
-	public String[] getNodeColTypes() {
+	@Override
+    public String[] getNodeColTypes() {
 		return new String[] {"BIGINT", "VARCHAR (32672)", "VARCHAR(1024)", "VARCHAR(1024)", "INT"};
 	}
 	
-	public String getTupleColType() {
+	@Override
+    public String getTupleColType() {
 		return "BIGINT";
 	}
 	
-	public String[] getCreateTempTable() {
+	@Override
+    public String[] getCreateTempTable() {
 		return new String[] { "DECLARE GLOBAL TEMPORARY TABLE" , "ON COMMIT DELETE ROWS NOT LOGGED" };
 	}
 	

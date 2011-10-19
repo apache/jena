@@ -46,6 +46,7 @@ public class StoreTriplesNodesHashHSQL extends StoreBaseHSQL
         ((LoaderTuplesNodes) this.getLoader()).setStore(this);
     }
 
+    @Override
     public long getSize(Node node)
     {
         return StoreBaseHash.getSize(getConnection(), getQuadTableDesc(), node) ;

@@ -45,7 +45,9 @@ public abstract class TupleLoaderBase
     
     public String getTableName() { return tableDesc.getTableName() ; }
 
+    @Override
     public TableDesc getTableDesc() { return tableDesc ; }
+    @Override
     public void setTableDesc(TableDesc tDesc)
     { 
         this.tableDesc = tDesc ;
@@ -56,6 +58,7 @@ public abstract class TupleLoaderBase
     
     protected int getTableWidth() { return tableWidth ; }
     
+    @Override
     public void start()
     {
         if ( active )
@@ -63,11 +66,13 @@ public abstract class TupleLoaderBase
         active = true ;
     }
     
+    @Override
     public void finish()
     {
         active = false ;
     }
     
+    @Override
     public void close()
     {
     	finish(); // make sure we're done

@@ -37,6 +37,7 @@ public class Scope2 implements Scope
         //this.scopeStatus = status ;
     }
     
+    @Override
     public boolean hasColumnForVar(Var var)
     { 
         if ( left != null && left.hasColumnForVar(var) )
@@ -46,6 +47,7 @@ public class Scope2 implements Scope
         return false ;
     }
         
+    @Override
     public Set<Var> getVars()
     {
         // Better - implement Iterable 
@@ -55,9 +57,11 @@ public class Scope2 implements Scope
         return acc ;
     }
     
+    @Override
     public boolean isEmpty()
     { return left.isEmpty() && right.isEmpty() ; }
 
+    @Override
     public Set<ScopeEntry> findScopes()
     {
         Set<ScopeEntry> x = new HashSet<ScopeEntry>() ;
@@ -69,6 +73,7 @@ public class Scope2 implements Scope
         return x ;
     }
     
+    @Override
     public ScopeEntry findScopeForVar(Var var)
     {
         // Return a fixed ScopeEntry in preference to an optional one.

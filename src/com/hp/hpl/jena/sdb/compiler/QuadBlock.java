@@ -163,12 +163,14 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
     public String toString()
     { return PrintUtils.toString(this) ; }
 
+    @Override
     public void output(final IndentedWriter out, SerializationContext sCxt)
     { 
         final String sep = "\n" ;
 
         final Action<Quad> strAction = new Action<Quad>() {
             boolean first = true ; 
+            @Override
             public void apply(Quad quad)
             {
                 if ( ! first )
@@ -180,9 +182,11 @@ public class QuadBlock extends ArrayList<Quad> implements Iterable<Quad>, PrintS
             apply(this, strAction) ;
     }
 
+    @Override
     public String toString(PrefixMapping prefixMapping)
     { return QueryOutputUtils.toString(this, prefixMapping) ; }
 
+    @Override
     public void output(IndentedWriter out)
     { 
         String x = QueryOutputUtils.toString(this) ;

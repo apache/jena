@@ -55,9 +55,11 @@ public class FeatureSet extends PrintableBase implements Printable, Iterable<Fea
     
     public List <Feature> getFeatures() { return features ; }
 
+    @Override
     public Iterator<Feature> iterator()
     { return features.iterator() ; }
 
+    @Override
     public void output(IndentedWriter out)
     {
         out.print(Iter.asString(features)) ;

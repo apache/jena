@@ -36,5 +36,6 @@ public class SqlExpr2 extends SqlExprBase
     public SqlExpr getRight() { return right ; }
     public String getOpSymbol() { return opSymbol ; }
     
+    @Override
     public void visit(SqlExprVisitor visitor) { visitor.visit(this) ; }
 }

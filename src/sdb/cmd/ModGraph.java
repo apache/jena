@@ -38,12 +38,14 @@ public class ModGraph extends ModBase
     
     public ModGraph() {}
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(argDeclGraphName,
                     "--graph=URI", "Graph name") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         graphName = cmdLine.getValue(argDeclGraphName) ;

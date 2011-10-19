@@ -34,15 +34,18 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 		super(connection, tableDesc, chunkSize);
 	}
 	
-	public String[] getNodeColTypes() {
+	@Override
+    public String[] getNodeColTypes() {
 		return new String[] {"NUMBER(20)", "NCLOB", "NVARCHAR2(10)", "NVARCHAR2("+TableDescNodes.DatatypeUriLength+")", "INT"};
 	}
 	
-	public String getTupleColType() {
+	@Override
+    public String getTupleColType() {
 		return "NUMBER(20)";
 	}
 	
-	public String[] getCreateTempTable() {
+	@Override
+    public String[] getCreateTempTable() {
 		return new String[] { "CREATE GLOBAL TEMPORARY TABLE" , "ON COMMIT DELETE ROWS" };
 	}
 	

@@ -109,6 +109,7 @@ public class SqlProject extends SqlNodeBase1
 
     public List<ColAlias> getCols() { return cols ; }
 
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { throw new SDBInternalError("SqlProject.visit") ; }
     //{ visitor.visit(this) ; }

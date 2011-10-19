@@ -35,6 +35,7 @@ public class CodecSimple implements EncoderDecoder
     public CodecSimple(PrefixMapping pMap) { prefixMapping = pMap ; }
     
     // Does not need to make the string SQL-safe
+    @Override
     public String encode(Node node)
     {
         if ( node.isBlank() )
@@ -43,6 +44,7 @@ public class CodecSimple implements EncoderDecoder
         return s ; 
     }
     
+    @Override
     public Node decode(String s)
     {
         if ( s.startsWith("Double"))

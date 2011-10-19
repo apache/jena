@@ -34,14 +34,17 @@ public class TupleLoaderHashDB2 extends TupleLoaderHashBase {
         super(connection, tableDesc, chunkSize);
     }
     
+    @Override
     public String[] getNodeColTypes() {
         return new String[] {"BIGINT", "CLOB", "VARCHAR(10)", "VARCHAR("+TableDescNodes.DatatypeUriLength+")", "INTEGER"};
     }
     
+    @Override
     public String getTupleColType() {
         return "BIGINT";
     }
     
+    @Override
     public String[] getCreateTempTable() {
         // Not temporary : may revisit but they do need (1) correct permissions and (2) DECLARE-ing 
         return new String[] { "CREATE TABLE " , " CCSID UNICODE" };

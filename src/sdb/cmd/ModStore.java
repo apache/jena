@@ -85,6 +85,7 @@ public class ModStore extends ModBase
         SDBConnection.logSQLExceptions = true ;
     }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         final boolean AddUsage = false ;
@@ -142,6 +143,7 @@ public class ModStore extends ModBase
     }
     
     
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if (! cmdLine.contains(argDeclSDBdesc))

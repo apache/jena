@@ -51,6 +51,7 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
     
+    @Override
     public void truncate()
     {
         try { 
@@ -62,6 +63,7 @@ public class FormatterSimpleMySQL extends FormatterSimple
         }
     }
     
+    @Override
     public void format()
     {
         reformatPrefixesWorker(false) ;

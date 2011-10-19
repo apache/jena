@@ -72,42 +72,58 @@ public class StoreBase1
         configuration = new StoreConfig(connection()) ;
     }
     
+    @Override
     public SDBConnection   getConnection()                      {  return connection() ; }
     
+    @Override
     public QueryCompilerFactory   getQueryCompilerFactory()     { return compilerF ; }
 
+    @Override
     public SQLBridgeFactory getSQLBridgeFactory()               { return sqlBridgeF ; }
 
+    @Override
     public SQLGenerator    getSQLGenerator()                    { return sqlGenerator ; }
 
+    @Override
     public StoreFormatter  getTableFormatter()                  { return formatter ; }
 
+    @Override
     public StoreLoader     getLoader()                          { return loader ; }
 
+    @Override
     public StoreConfig     getConfiguration()                   { return configuration ; }
     
+    @Override
     public DatabaseType     getDatabaseType()                   { return storeDescription.getDbType() ; }
     
+    @Override
     public LayoutType       getLayoutType()                     { return storeDescription.getLayout() ; }
 
     // Note -- this does not close the JDBC connection, which may be shared.
     // See also StoreBaseHSQL
+    @Override
     public void close()                              { isClosed = true; }
+    @Override
     public boolean isClosed()                        { return isClosed; }
 
     /** Default implementation: get size of Triples table **/
+    @Override
     public long getSize()
     {
     	return TableUtils.getTableSize(getConnection().getSqlConnection(), "Triples");
     }
     
     /** Irrelevant for layout1 **/
+    @Override
     public long getSize(Node node) {
     	return getSize();
     }
     
+    @Override
     public TableDescNodes   getNodeTableDesc()                 { return null ; }
+    @Override
     public TableDescTriples getTripleTableDesc()               { return tripleTable ; }
+    @Override
     public TableDescQuads   getQuadTableDesc()                 { return null ; }
 
 //    @Override

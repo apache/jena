@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sdb.core.SDBRequest;
 
 public class QueryCompilerFactoryHash implements QueryCompilerFactory
 {
+    @Override
     public QueryCompiler createQueryCompiler(SDBRequest request)
     {
         return new QueryCompilerHash(request) ;

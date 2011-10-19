@@ -32,6 +32,7 @@ public class ConditionCompilerNone implements ConditionCompiler
     
     private ConditionCompilerNone() {}
     
+    @Override
     public SDBConstraint recognize(Expr expr)
     { return null ; }
 }

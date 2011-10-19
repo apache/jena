@@ -34,34 +34,53 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     
     public SqlNodeBase(String aliasName) { this.aliasName = aliasName ; }
     
+    @Override
     public boolean      isJoin()      { return false ; }
+    @Override
     public boolean      isInnerJoin() { return false ; }
+    @Override
     public boolean      isLeftJoin()  { return false ; }
 //    public boolean isRightJoin() { return false ; }
 //    public boolean isOuterJoin() { return false ; }
 
+    @Override
     public SqlJoin      asJoin()        { classError(SqlJoin.class) ; return null  ; }
+    @Override
     public SqlJoinLeftOuter     asLeftJoin() { classError(SqlJoinLeftOuter.class) ; return null  ; }
+    @Override
     public SqlJoinInner         asInnerJoin(){ classError(SqlJoinInner.class) ; return null  ; }
 
+    @Override
     public boolean      isRestrict()    { return false ; }
+    @Override
     public SqlRestrict  asRestrict()    { classError(SqlRestrict.class) ; return null  ; }
 
+    @Override
     public boolean      isProject()     { return false ; }
+    @Override
     public SqlProject   asProject()     { classError(SqlProject.class) ; return null  ; }
 
+    @Override
     public boolean      isDistinct()     { return false ; }
+    @Override
     public SqlDistinct  asDistinct()     { classError(SqlDistinct.class) ; return null  ; }
 
+    @Override
     public boolean      isCoalesce()    { return false ; }
+    @Override
     public SqlCoalesce  asCoalesce()    { classError(SqlCoalesce.class) ; return null  ; }
     
+    @Override
     public boolean      isTable()       { return false ; }
+    @Override
     public SqlTable     asTable()       { classError(SqlTable.class) ; return null  ; }
 
+    @Override
     public boolean         isSelectBlock() { return false ; }
+    @Override
     public SqlSelectBlock  asSelectBlock() { classError(SqlSelectBlock.class) ; return null  ; }
 
+    @Override
     public void output(IndentedWriter out)  { output(out, true) ; }
     
     public void output(IndentedWriter out, boolean withAnnotations)
@@ -75,6 +94,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
     
     public boolean usesColumn(SqlColumn c) { return false ; }
     
+    @Override
     final
     public String getAliasName() { return aliasName ; }
 
@@ -83,6 +103,7 @@ public abstract class SqlNodeBase extends AnnotationsBase implements SqlNode
         throw new ClassCastException("Wanted class: "+Utils.className(wanted)+" :: Actual class "+Utils.className(this) ) ;
     }
     
+    @Override
     public Set<SqlTable> tablesInvolved()
     {
         TableFinder t = new TableFinder() ;

@@ -41,6 +41,7 @@ public class FormatterSimpleDerby extends FormatterSimple
         super(connection) ;
     }
     
+    @Override
     public void truncate()
     {
         try { 
@@ -52,6 +53,7 @@ public class FormatterSimpleDerby extends FormatterSimple
         }
     }
     
+    @Override
     public void format()
     {
         reformatPrefixesWorker(false) ;

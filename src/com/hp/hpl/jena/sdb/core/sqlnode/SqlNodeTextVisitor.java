@@ -122,6 +122,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
     
+    @Override
     public void visit(SqlTable sqlNode)
     {
 //        if ( ! sqlNode.hasOneNote() )
@@ -134,12 +135,15 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
             addAnnotations(sqlNode) ;
     }
 
+    @Override
     public void visit(SqlJoinInner sqlJoin)
     { visitJoin(sqlJoin) ; }
  
+    @Override
     public void visit(SqlJoinLeftOuter sqlJoin)
     { visitJoin(sqlJoin) ; }
     
+    @Override
     public void visit(SqlUnion sqlUnion)
     {
         out.ensureStartOfLine() ;
@@ -156,6 +160,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
     
+    @Override
     public void visit(SqlCoalesce sqlNode)
     {
         start(sqlNode, "Coalesce", sqlNode.getAliasName()) ;
@@ -207,6 +212,7 @@ public class SqlNodeTextVisitor implements SqlNodeVisitor
         finish() ;
     }
 
+    @Override
     public void visit(SqlSelectBlock sqlNode)
     { 
         start(sqlNode, "SqlSelectBlock", sqlNode.getAliasName()) ;

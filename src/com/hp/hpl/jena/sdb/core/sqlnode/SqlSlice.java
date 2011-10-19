@@ -39,6 +39,7 @@ public class SqlSlice extends SqlNodeBase1
 //    @Override
 //    public boolean isModifier()     { return true ; }
     
+    @Override
     public void visit(SqlNodeVisitor visitor)
     { throw new SDBInternalError("SqlSlice.visit") ; }
     //{ visitor.visit(this) ; }
