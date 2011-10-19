@@ -214,11 +214,13 @@ public class Closure
     
     public static class ClosureBNode implements ClosureTest
     {
+        @Override
         public boolean traverse(Resource r)
         {
             return r.isAnon() ;
         }
 
+        @Override
         public boolean includeStmt(Statement s)
         {
             return true ;
@@ -229,11 +231,13 @@ public class Closure
     
     public static class ClosureReachable implements ClosureTest
     {
+        @Override
         public boolean traverse(Resource r)
         {
             return true ;
         }
 
+        @Override
         public boolean includeStmt(Statement s)
         {
             return true ;

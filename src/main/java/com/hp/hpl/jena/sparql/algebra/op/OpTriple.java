@@ -82,9 +82,11 @@ public class OpTriple extends Op0
         return OpBase.HashTriple ^ triple.hashCode() ;
     }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
+    @Override
     public String getName()
     {
         return Tags.tagTriple ;

@@ -38,6 +38,7 @@ public class QueryIterDistinguishedVars extends QueryIterConvert
 
     static class ProjectWrap implements Converter
     {
+        @Override
         public Binding convert(Binding binding)
         {
             return new BindingProjectNamed(binding) ;

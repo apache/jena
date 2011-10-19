@@ -49,6 +49,7 @@ public abstract class PropertyFunctionBase implements PropertyFunction
         this.objFuncArgType = objFuncArgType ;
     }
 
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     { 
         if ( subjArgType.equals(PropFuncArgType.PF_ARG_SINGLE) )
@@ -72,6 +73,7 @@ public abstract class PropertyFunctionBase implements PropertyFunction
 
 
     
+    @Override
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         // This is the property function equivalent of Substitute.

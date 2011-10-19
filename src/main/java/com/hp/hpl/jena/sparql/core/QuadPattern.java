@@ -44,6 +44,7 @@ public class QuadPattern implements Iterable<Quad>
     public void add(int i, Quad q) { quads.add(i, q) ; }
     
     public Quad get(int i) { return quads.get(i) ; }
+    @Override
     public ListIterator<Quad> iterator() { return quads.listIterator() ; } 
     public int size() { return quads.size() ; }
     public boolean isEmpty() { return quads.isEmpty() ; }

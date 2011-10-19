@@ -69,6 +69,7 @@ public class OpLabel extends Op1
         return x ;
     }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
@@ -76,6 +77,7 @@ public class OpLabel extends Op1
     
     public boolean hasSubOp() { return getSubOp() != null ; } 
     
+    @Override
     public String getName()
     {
         return Tags.tagLabel ;

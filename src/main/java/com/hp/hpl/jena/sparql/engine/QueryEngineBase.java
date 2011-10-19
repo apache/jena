@@ -114,6 +114,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     }
     
     // Record the query operation as it goes pass and call the actual worker
+    @Override
     final
     public QueryIterator evaluate(Op op, DatasetGraph dsg, Binding binding, Context context)
     {
@@ -141,6 +142,7 @@ public abstract class QueryEngineBase implements OpEval, Closeable
     
     protected Binding getStartBinding() { return startBinding ; }
     
+    @Override
     public void close()
     { }
     

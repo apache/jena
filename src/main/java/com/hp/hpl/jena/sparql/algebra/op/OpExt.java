@@ -48,8 +48,10 @@ public abstract class OpExt extends OpBase
      */
     public abstract QueryIterator eval(QueryIterator input, ExecutionContext execCxt) ;
     
+    @Override
     public final String getName() { return tag ; }
     
+    @Override
     public final void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 

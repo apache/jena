@@ -31,11 +31,13 @@ import com.hp.hpl.jena.graph.Node ;
 public abstract class DatasetGraphQuad extends DatasetGraphBase
 {
     static Transform<Quad, Node> projectGraphName = new Transform<Quad, Node>() {
+        @Override
         public Node convert(Quad quad)
         {
             return quad.getGraph() ; 
         }} ;
     
+    @Override
     public Iterator<Node> listGraphNodes()
     {
         Iter<Quad> iter = Iter.iter(find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
@@ -48,10 +50,10 @@ public abstract class DatasetGraphQuad extends DatasetGraphBase
         deleteAny(graphName, Node.ANY, Node.ANY, Node.ANY) ;
     }
     
-    //@Override
+    @Override
     public abstract Iterator<Quad> find(Node g, Node s, Node p, Node o) ;
 
-    //@Override
+    @Override
     public abstract Iterator<Quad> findNG(Node g, Node s, Node p, Node o) ;
 
     @Override

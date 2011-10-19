@@ -34,6 +34,7 @@ public class AggSumDistinct  extends AggregatorBase
     private Expr expr ;
 
     public AggSumDistinct(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggSumDistinct(expr) ; }
 
     private static final NodeValue noValuesToSum = NodeValue.nvZERO ; 
@@ -49,6 +50,7 @@ public class AggSumDistinct  extends AggregatorBase
         return new AccSumDistinct(expr) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
 
     @Override

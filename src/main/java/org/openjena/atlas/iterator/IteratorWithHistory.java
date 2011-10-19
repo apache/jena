@@ -43,7 +43,7 @@ public class IteratorWithHistory<T> implements Iterator<T>
         this.capacity = N ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         boolean b = iter.hasNext() ;
@@ -52,7 +52,7 @@ public class IteratorWithHistory<T> implements Iterator<T>
         return b ;
     }
 
-    //@Override
+    @Override
     public T next()
     {
         T item = null ;
@@ -65,7 +65,7 @@ public class IteratorWithHistory<T> implements Iterator<T>
         return item ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 

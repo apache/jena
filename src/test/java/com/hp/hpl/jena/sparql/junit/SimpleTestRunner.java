@@ -101,6 +101,7 @@ public class SimpleTestRunner extends BaseTestRunner
     static class Listener implements TestListener
     {
         Listener() {}
+        @Override
         public void addError(Test test, Throwable arg1)
         {
             System.out.println("** Error:    "+test) ;
@@ -113,6 +114,7 @@ public class SimpleTestRunner extends BaseTestRunner
             }
         }
         
+        @Override
         public void addFailure(Test test, AssertionFailedError arg1)
         { 
             System.out.println("** Failure:  "+test);
@@ -125,8 +127,10 @@ public class SimpleTestRunner extends BaseTestRunner
             }
         }
         
+        @Override
         public void endTest(Test test) { }
         
+        @Override
         public void startTest(Test test)
         { 
             // Compensate for TestCase.toString() adding "(class)" to the end of the name
@@ -141,9 +145,13 @@ public class SimpleTestRunner extends BaseTestRunner
     static class SilentListener implements TestListener
     {
         SilentListener() {}
+        @Override
         public void addError(Test test, Throwable arg1) {}
+        @Override
         public void addFailure(Test test, AssertionFailedError arg1) {}
+        @Override
         public void endTest(Test test) { }
+        @Override
         public void startTest(Test test) { }
     }
 

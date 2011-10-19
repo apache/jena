@@ -38,7 +38,9 @@ public class OpOrder extends OpModifier
     
     public List<SortCondition> getConditions() { return conditions ; }
     
+    @Override
     public String getName()                 { return Tags.tagOrderBy ; }
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }

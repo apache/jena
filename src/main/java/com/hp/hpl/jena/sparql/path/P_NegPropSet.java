@@ -53,7 +53,7 @@ public class P_NegPropSet extends PathBase
     public List<Node> getFwdNodes() { return forwardNodes ; }
     public List<Node> getBwdNodes() { return backwardNodes ; }
 
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

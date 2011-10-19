@@ -95,7 +95,6 @@ public class ExprAggregator extends ExprNode
     public ExprVar getAggVar() { return exprVar ; }
     
     // As an expression suitable for outputting the calculation. 
-    //@Override
     public String asSparqlExpr()        
     { return aggregator.toString() ; }
     
@@ -140,6 +139,7 @@ public class ExprAggregator extends ExprNode
     
     public Expr apply(ExprTransform transform)  { return transform.transform(this) ; }
     
+    @Override
     public void visit(ExprVisitor visitor)
     { visitor.visit(this) ; }
     

@@ -49,6 +49,7 @@ public class TSVOutput extends OutputBase
     static String NL   = "\n" ;
     static String SEP  = "\t" ;
     
+    @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         try {
@@ -106,6 +107,7 @@ public class TSVOutput extends OutputBase
     static final byte[] noBytes = StrUtils.asUTF8bytes("no") ;
     static final byte[] NLBytes = StrUtils.asUTF8bytes(NL) ;
     
+    @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         try

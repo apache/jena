@@ -58,7 +58,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
         this.iter2 = iter2 ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( iter1 != null )
@@ -77,7 +77,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
         return false ; 
     }
 
-    //@Override
+    @Override
     public T next()
     {
         if ( ! hasNext() )
@@ -89,7 +89,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
         throw new Error("Iterator2.next") ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { 
         if ( iter1 != null )
@@ -105,7 +105,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
         throw new NoSuchElementException("Iterator2.remove") ;
     }
 
-    //@Override
+    @Override
     public Iterator<T> iterator()
     {
         return this ;

@@ -49,6 +49,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     @Override
     public Graph getGraph(Node graphNode) { return null ; }
 
+    @Override
     public Iterator<Node> listGraphNodes()
     {
         return new NullIterator<Node>() ;

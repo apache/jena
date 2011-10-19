@@ -37,55 +37,56 @@ public class CacheLRU<K,V> implements Cache<K,V>
         this.cache = new CacheImpl<K, V>(loadFactor, maxSize) ;
     }
 
-    //@Override
+    @Override
     public void clear()
     { cache.clear() ; }
 
-    //@Override
+    @Override
     public boolean containsKey(K key)
     {
         return cache.containsKey(key) ;
     }
 
-    //@Override
+    @Override
     public V get(K key)
     {
         return cache.get(key) ;
     }
 
-    //@Override
+    @Override
     public V put(K key, V thing)
     {
         return cache.put(key, thing) ;
     }
 
-    //@Override
+    @Override
     public boolean remove(K key)
     {
         V old = cache.remove(key) ;
         return old != null ;
     }
 
-    //@Override
+    @Override
     public long size()
     {
         return cache.size() ;
     }
 
-    //@Override
+    @Override
     // NB Access the iterator must be thread-aware. 
     public Iterator<K> keys()
     {
         return cache.keySet().iterator() ;
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return cache.isEmpty() ;
     }
 
     /** Callback for entries when dropped from the cache */
+    @Override
     public void setDropHandler(ActionKeyValue<K,V> dropHandler)
     {
         cache.setDropHandler(dropHandler) ;

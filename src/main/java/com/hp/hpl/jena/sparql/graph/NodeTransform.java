@@ -25,5 +25,6 @@ import com.hp.hpl.jena.graph.Node ;
 /** Convert nodes to nodes - Vars may need to be translated into Vars. */
 public interface NodeTransform extends Transform<Node, Node>
 {
+    @Override
     public Node convert(Node node) ;
 }

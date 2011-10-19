@@ -22,47 +22,47 @@ package org.openjena.riot.tokens;
 public class TokenCheckerBase implements TokenChecker
 {
 
-    //@Override
+    @Override
     public void checkBlankNode(String blankNodeLabel)
     {}
 
-    //@Override
+    @Override
     public void checkControl(int code)
     {}
 
-    //@Override
+    @Override
     public void checkDirective(int cntrlCode)
     {}
 
-    //@Override
+    @Override
     public void checkKeyword(String lexical)
     {}
 
-    //@Override
+    @Override
     public void checkLiteralDT(String lexicalForm, Token datatype)
     {}
 
-    //@Override
+    @Override
     public void checkLiteralLang(String lexicalForm, String langTag)
     {}
 
-    //@Override
+    @Override
     public void checkNumber(String lexical, String datatypeURI)
     {}
 
-    //@Override
+    @Override
     public void checkPrefixedName(String prefixName, String localName)
     {}
 
-    //@Override
+    @Override
     public void checkString(String string)
     {}
 
-    //@Override
+    @Override
     public void checkURI(String uriStr)
     {}
 
-    //@Override
+    @Override
     public void checkVariable(String tokenImage)
     {}
 

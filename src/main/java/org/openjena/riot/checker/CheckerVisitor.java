@@ -29,26 +29,31 @@ import com.hp.hpl.jena.rdf.model.AnonId ;
 
 public class CheckerVisitor implements NodeVisitor
 {
+    @Override
     public Object visitAny(Node_ANY it)
     {
         return null ;
     }
 
+    @Override
     public Object visitBlank(Node_Blank it, AnonId id)
     {
         return null ;
     }
 
+    @Override
     public Object visitLiteral(Node_Literal it, LiteralLabel lit)
     {
         return null ;
     }
 
+    @Override
     public Object visitURI(Node_URI it, String uri)
     {
         return null ;
     }
 
+    @Override
     public Object visitVariable(Node_Variable it, String name)
     {
         return null ;

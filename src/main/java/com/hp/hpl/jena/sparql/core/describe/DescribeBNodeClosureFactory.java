@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.core.describe;
 
 public class DescribeBNodeClosureFactory implements DescribeHandlerFactory
 {
+    @Override
     public DescribeHandler create()
     {
         return new DescribeBNodeClosure() ;

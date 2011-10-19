@@ -57,7 +57,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         super(baseURI, tokens, profile, sink) ;
     }
     
-    //@Override
+    @Override
     public Lang getLang()   { return Lang.TRIG ; }
 
     @Override

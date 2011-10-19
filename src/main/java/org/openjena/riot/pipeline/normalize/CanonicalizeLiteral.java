@@ -38,6 +38,7 @@ public class CanonicalizeLiteral implements NodeTransform
 
     private CanonicalizeLiteral() {}
     
+    @Override
     public Node convert(Node node)
     {
         if ( ! node.isLiteral() )

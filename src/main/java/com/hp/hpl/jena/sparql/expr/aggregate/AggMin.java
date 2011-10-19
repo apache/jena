@@ -26,6 +26,7 @@ public class AggMin extends AggMinBase
 {
     // ---- MIN(?var)
     public AggMin(Expr expr) { super(expr) ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggMin(expr) ; }
 
     @Override

@@ -50,7 +50,7 @@ public final class Tuple<T> implements Iterable<T>
     public static <T> Iterator<T> project(final int slot, Iterator<Tuple<T>> iter)
     {
         Transform<Tuple<T>, T> projection = new Transform<Tuple<T>, T>(){
-            //@Override
+            @Override
             public T convert(Tuple<T> tuple)
             {
                 return tuple.get(slot) ;
@@ -62,7 +62,7 @@ public final class Tuple<T> implements Iterable<T>
     public static <T> Iterator<Tuple<T>> prefix(final int prefixLength, Iterator<Tuple<T>> iter)
     {
         Transform<Tuple<T>, Tuple<T>> sub = new Transform<Tuple<T>, Tuple<T>>(){
-            //@Override
+            @Override
             public Tuple<T> convert(Tuple<T> tuple)
             {
                 T[] x = ArrayUtils.copy(tuple.tuple,0, prefixLength) ;
@@ -100,7 +100,7 @@ public final class Tuple<T> implements Iterable<T>
         return ArrayUtils.copy(tuple) ;
     }
 
-    //@Override
+    @Override
     public Iterator<T> iterator()
     {
         return IteratorArray.create(tuple) ;

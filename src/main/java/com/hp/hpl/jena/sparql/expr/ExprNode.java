@@ -36,6 +36,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
  
 public abstract class ExprNode implements Expr
 {
+    @Override
     public boolean isSatisfied(Binding binding, FunctionEnv funcEnv)
     {
         try {
@@ -54,9 +55,12 @@ public abstract class ExprNode implements Expr
     
     // --- interface Constraint
     
+    @Override
     public abstract NodeValue eval(Binding binding, FunctionEnv env) ; 
     
+    @Override
     public Set<Var> getVarsMentioned() { return ExprVars.getVarsMentioned(this) ; }
+    @Override
     public void varsMentioned(Collection<Var> acc) { ExprVars.varsMentioned(acc, this) ; }
 
     public Set<String> getVarNamesMentioned() { return ExprVars.getVarNamesMentioned(this) ; }
@@ -73,27 +77,39 @@ public abstract class ExprNode implements Expr
         return expr.eval(binding, funcEnv) ;
     }
     
+    @Override
     final public Expr copySubstitute(Binding binding)
     { return copySubstitute(binding, false) ; }
     
+    @Override
     final public Expr deepCopy()                     
     { return copySubstitute(null, false) ; }
     
+    @Override
     public abstract Expr copySubstitute(Binding binding, boolean foldConstants) ;
     
+    @Override
     public abstract Expr applyNodeTransform(NodeTransform transform) ;
 
         
     // ---- Default implementations
+    @Override
     public boolean isVariable()        { return false ; }
+    @Override
     public String getVarName()         { return null ; } //throw new ExprException("Expr.getVarName called on non-variable") ; }
+    @Override
     public ExprVar getExprVar()        { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
+    @Override
     public Var asVar()                 { return null ; } //throw new ExprException("Expr.getVar called on non-variable") ; }
     
+    @Override
     public boolean isConstant()        { return false ; }
+    @Override
     public NodeValue getConstant()     { return null ; } // throw new ExprException("Expr.getConstant called on non-constant") ; }
     
+    @Override
     public boolean isFunction()        { return false ; }
+    @Override
     public ExprFunction getFunction()  { return null ; }
     
     public boolean isGraphPattern()    { return false ; }

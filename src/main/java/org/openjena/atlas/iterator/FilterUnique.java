@@ -27,6 +27,7 @@ public class FilterUnique<T> implements Filter<T>
     
     public FilterUnique() { }
     
+    @Override
     public boolean accept(T item)
     {
         if ( seen.contains(item) )

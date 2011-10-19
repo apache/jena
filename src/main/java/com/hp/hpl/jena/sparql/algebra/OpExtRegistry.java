@@ -63,6 +63,7 @@ public class OpExtRegistry
     // (ext NAME ...) form
     static public class BuildExtExt implements BuilderOp.Build 
     { 
+        @Override
         public Op make(ItemList list)
         {
             // 0 is the "ext"
@@ -75,6 +76,7 @@ public class OpExtRegistry
     // (NAME ...) form
     static public class BuildExt2 implements BuilderOp.Build 
     { 
+        @Override
         public Op make(ItemList list)
         {
             String subtag = list.get(0).getSymbol() ;

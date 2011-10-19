@@ -34,6 +34,7 @@ public class AggAvgDistinct extends AggregatorBase
     private Expr expr ;
 
     public AggAvgDistinct(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggAvgDistinct(expr) ; }
 
     private static final NodeValue noValuesToAvg = NodeValue.nvZERO ; 
@@ -49,6 +50,7 @@ public class AggAvgDistinct extends AggregatorBase
         return new AccAvgDistinct(expr) ;
     }
 
+    @Override
     public final Expr getExpr() { return expr ; }
 
     @Override

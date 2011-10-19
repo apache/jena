@@ -43,11 +43,13 @@ public class UpdateEngineMain extends UpdateEngineBase
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
     {
+        @Override
         public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
         {
             return true ;
         }
 
+        @Override
         public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
         {
             return new UpdateEngineMain(graphStore, request, inputBinding, context) ;

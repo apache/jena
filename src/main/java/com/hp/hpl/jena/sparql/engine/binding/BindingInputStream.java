@@ -117,19 +117,19 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         return iter.hasNext() ;
     }
 
-    //@Override
+    @Override
     public Binding next()
     {
         return iter.next() ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { iter.remove() ; }
     
@@ -248,5 +248,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
         }
     }
 
+    @Override
     public void close()     { super.tokens.close() ; }
 }

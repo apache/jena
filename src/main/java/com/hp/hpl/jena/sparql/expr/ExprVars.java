@@ -48,6 +48,7 @@ public class ExprVars
     {
         ExprVars.Action<Var> action =
             new ExprVars.Action<Var>(){
+                @Override
                 public void var(Collection<Var> acc, Var var)
                 {
                     acc.add(var) ;
@@ -68,6 +69,7 @@ public class ExprVars
     {
         ExprVars.Action<String> action =
             new ExprVars.Action<String>(){
+                @Override
                 public void var(Collection<String> acc, Var var)
                 {
                     acc.add(var.getVarName()) ;

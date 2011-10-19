@@ -39,7 +39,7 @@ public class CacheStatsSimple<Key,Value> extends CacheWrapper<Key,Value> impleme
         // Wrap any real drop handler. 
         EjectMonitor(ActionKeyValue<Key,Value> other) { this.other = other ; }
 
-        //@Override
+        @Override
         public void apply(Key key, Value thing)
         { 
             cacheEjects++ ;
@@ -98,8 +98,12 @@ public class CacheStatsSimple<Key,Value> extends CacheWrapper<Key,Value> impleme
         cache.setDropHandler(new EjectMonitor(dropHandler)) ;
     }
     
+    @Override
     public final long getCacheEntries() { return cacheEntries ; }
+    @Override
     public final long getCacheHits()    { return cacheHits ; }
+    @Override
     public final long getCacheMisses()  { return cacheMisses ; }
+    @Override
     public final long getCacheEjects()  { return cacheEjects ; }
 }

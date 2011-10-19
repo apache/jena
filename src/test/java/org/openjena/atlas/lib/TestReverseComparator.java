@@ -32,6 +32,7 @@ public class TestReverseComparator extends BaseTest
 {
     static Comparator<String> normal = new Comparator<String>()
     {
+        @Override
         public int compare(String o1, String o2)
         {
             return o1.compareTo(o2);
@@ -43,6 +44,7 @@ public class TestReverseComparator extends BaseTest
     
     static Comparator<String> maxMin = new Comparator<String>()
     {
+        @Override
         public int compare(String o1, String o2)
         {
             int value = o1.compareTo(o2);

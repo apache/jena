@@ -48,6 +48,7 @@ public class ItemTransformer
         public Item result()
         { return stack.peek() ; }
         
+        @Override
         public void visit(Item item, ItemList list)
         {
             ItemList newList = new ItemList(item.getLine(), item.getColumn()) ;
@@ -62,17 +63,20 @@ public class ItemTransformer
             push(newItemList) ;
         }
 
+        @Override
         public void visit(Item item, Node node)
         {
             Item newItem = transform.transform(item, node) ;
             push(newItem) ;
         }
 
+        @Override
         public void visit(Item item, String symbol)
         {
             Item newItem = transform.transform(item, symbol) ;
             push(newItem) ;
         }
+        @Override
         public void visitNil()
         { push(Item.nil) ; }
     }

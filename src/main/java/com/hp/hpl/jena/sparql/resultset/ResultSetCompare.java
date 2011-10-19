@@ -289,6 +289,7 @@ public class ResultSetCompare
 
     private static Transform<QuerySolution, Binding> qs2b = new Transform<QuerySolution, Binding> () {
 
+        @Override
         public Binding convert(QuerySolution item)
         {
             return BindingUtils.asBinding(item) ;
@@ -306,6 +307,7 @@ public class ResultSetCompare
             this.literalTest = literalTest ;
         }
     
+        @Override
         public boolean equal(Node n1, Node n2)
         {
             if ( n1 == null && n2 == null ) return true ;

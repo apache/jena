@@ -32,6 +32,7 @@ public class AggSampleDistinct extends AggregatorBase
     private final Expr expr ;
 
     public AggSampleDistinct(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggSampleDistinct(expr) ; }
 
     @Override
@@ -45,6 +46,7 @@ public class AggSampleDistinct extends AggregatorBase
         return new AccSampleDistict(expr) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
 
     @Override

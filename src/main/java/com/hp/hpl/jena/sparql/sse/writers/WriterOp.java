@@ -107,6 +107,7 @@ public class WriterOp
         final SerializationContext sCxt2 = sCxt ;
         WriterBasePrefix.Fmt fmt = 
             new WriterBasePrefix.Fmt() {
+                @Override
                 public void format() {op.visit(new OpWriterWorker(iWriter, sCxt2)) ;}
                 } ;
         WriterBasePrefix.output(iWriter, fmt, sCxt2.getPrologue()) ;
@@ -166,6 +167,7 @@ public class WriterOp
             finish(op) ;
         }
 
+        @Override
         public void visit(OpQuadPattern opQuadP)
         { 
             QuadPattern quads = opQuadP.getPattern() ;
@@ -185,6 +187,7 @@ public class WriterOp
             finish(opQuadP) ;
         }
         
+        @Override
         public void visit(OpBGP opBGP)
         {
             if ( opBGP.getPattern().size() == 1 )
@@ -216,11 +219,13 @@ public class WriterOp
             }
         }
         
+        @Override
         public void visit(OpTriple opTriple)
         {
             formatTriple(opTriple.getTriple()) ;
         }
 
+        @Override
         public void visit(OpPath opPath)
         {
             //start(opPath, NoNL) ;
@@ -228,6 +233,7 @@ public class WriterOp
             //finish(opPath) ;
         }
 
+        @Override
         public void visit(OpProcedure opProc)
         {
             start(opProc, NoNL) ;
@@ -239,6 +245,7 @@ public class WriterOp
             finish(opProc) ;
         }
         
+        @Override
         public void visit(OpPropFunc opPropFunc)
         {
             start(opPropFunc, NoNL) ;
@@ -263,30 +270,39 @@ public class WriterOp
             WriterNode.output(out, pfArg.getArgList(), sContext) ;
         }
         
+        @Override
         public void visit(OpJoin opJoin)
         { visitOp2(opJoin, null) ; }
 
+        @Override
         public void visit(OpSequence opSequence)
         { visitOpN(opSequence) ; }
 
+        @Override
         public void visit(OpDisjunction opDisjunction)
         { visitOpN(opDisjunction) ; }
         
+        @Override
         public void visit(OpLeftJoin opLeftJoin)
         { visitOp2(opLeftJoin, opLeftJoin.getExprs()) ; }
         
+        @Override
         public void visit(OpDiff opDiff)
         { visitOp2(opDiff, null) ; }
     
+        @Override
         public void visit(OpMinus opMinus)
         { visitOp2(opMinus, null) ; }
 
+        @Override
         public void visit(OpUnion opUnion)
         { visitOp2(opUnion, null) ; } 
     
+        @Override
         public void visit(OpConditional opCondition)
         { visitOp2(opCondition, null) ; }
 
+        @Override
         public void visit(OpFilter opFilter)
         { 
             start(opFilter, NoNL) ;
@@ -306,6 +322,7 @@ public class WriterOp
             finish(opFilter) ;
         }
     
+        @Override
         public void visit(OpGraph opGraph)
         {
             start(opGraph, NoNL) ;
@@ -314,6 +331,7 @@ public class WriterOp
             finish(opGraph) ;
         }
 
+        @Override
         public void visit(OpService opService)
         {
             start(opService, NoNL) ;
@@ -324,6 +342,7 @@ public class WriterOp
             finish(opService) ;
         }
 
+        @Override
         public void visit(OpTable opTable)
         {
             if ( TableUnit.isJoinUnit(opTable.getTable()) )
@@ -339,6 +358,7 @@ public class WriterOp
             finish(opTable) ;
         }
 
+        @Override
         public void visit(OpDatasetNames dsNames)
         {
             start(dsNames, NoNL) ;
@@ -346,6 +366,7 @@ public class WriterOp
             finish(dsNames) ;
         }
 
+        @Override
         public void visit(OpExt opExt)
         {
             //start(opExt, NL) ;
@@ -353,9 +374,11 @@ public class WriterOp
             //finish(opExt) ;
         }
 
+        @Override
         public void visit(OpNull opNull)
         { start(opNull, NoSP) ; finish(opNull) ; } 
         
+        @Override
         public void visit(OpLabel opLabel)
         { 
             String x = FmtUtils.stringForString(opLabel.getObject().toString()) ;
@@ -374,11 +397,13 @@ public class WriterOp
             }
         }
 
+        @Override
         public void visit(OpList opList)
         {
             visitOp1(opList) ;
         }
         
+        @Override
         public void visit(OpGroup opGroup)
         {
             start(opGroup, NoNL) ;
@@ -412,6 +437,7 @@ public class WriterOp
             finish(opGroup) ;
         }
         
+        @Override
         public void visit(OpOrder opOrder)
         { 
             start(opOrder, NoNL) ;
@@ -433,6 +459,7 @@ public class WriterOp
             finish(opOrder) ;
         }
         
+        @Override
         public void visit(OpTopN opTop)
         { 
             start(opTop, NoNL) ;
@@ -486,6 +513,7 @@ public class WriterOp
 
 
 
+        @Override
         public void visit(OpProject opProject)
         { 
             start(opProject, NoNL) ;
@@ -495,16 +523,19 @@ public class WriterOp
             finish(opProject) ;
         }
 
+        @Override
         public void visit(OpDistinct opDistinct)
         {
             visitOp1(opDistinct) ;
         }
         
+        @Override
         public void visit(OpReduced opReduced)
         {
             visitOp1(opReduced) ;
         }
         
+        @Override
         public void visit(OpAssign opAssign)
         {
             start(opAssign, NoNL) ;
@@ -514,6 +545,7 @@ public class WriterOp
             finish(opAssign) ;
         }
         
+        @Override
         public void visit(OpExtend opExtend)
         {
             start(opExtend, NoNL) ;
@@ -523,6 +555,7 @@ public class WriterOp
             finish(opExtend) ;
         }
         
+        @Override
         public void visit(OpSlice opSlice)
         { 
             start(opSlice, NoNL) ;

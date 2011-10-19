@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 
 public class eval implements Function
 {
+    @Override
     public void build(String uri, ExprList args)
     {
         if ( args.size() != 1 )
@@ -46,6 +47,7 @@ public class eval implements Function
     
     /** Processes unevaluated arguments */
     
+    @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         if ( args == null )

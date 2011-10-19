@@ -30,41 +30,41 @@ public class CacheSync<Key, T> implements Cache<Key, T>
     
     public CacheSync(Cache<Key,T> cache)         { this.cache = cache ; }
 
-    //@Override
+    @Override
     synchronized
     public void clear()                             { cache.clear(); }
 
-    //@Override
+    @Override
     synchronized
     public boolean containsKey(Key key)             { return cache.containsKey(key) ; }
     
-    //@Override
+    @Override
     //public V getObject(K key, boolean exclusive)    { return cache.getObject(key, exclusive) ; }
     synchronized
     public T get(Key key)                           { return cache.get(key) ; }
 
-    //@Override
+    @Override
     synchronized
     public boolean isEmpty()                        { return cache.isEmpty() ; }
 
-    //@Override
+    @Override
     synchronized
     public Iterator<Key> keys()                     { return cache.keys(); }
 
-    //@Override
+    @Override
     synchronized
     public T put(Key key, T thing)                  { return cache.put(key, thing) ; }
 
-    //@Override
+    @Override
     synchronized
     public boolean remove(Key key)                  { return cache.remove(key) ; }
 
-    //@Override
+    @Override
     synchronized
     public void setDropHandler(ActionKeyValue<Key, T> dropHandler)
     { cache.setDropHandler(dropHandler) ; }
 
-    //@Override
+    @Override
     synchronized
     public long size()                              { return cache.size() ; }
 

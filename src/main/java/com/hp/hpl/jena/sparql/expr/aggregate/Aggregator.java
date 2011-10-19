@@ -45,6 +45,8 @@ public interface Aggregator
     public Aggregator copy(Expr expr) ;
     public Aggregator copyTransform(NodeTransform transform) ;
     
+    @Override
     public int hashCode() ;
+    @Override
     public boolean equals(Object other) ;
 }

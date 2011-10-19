@@ -26,25 +26,31 @@ public class CacheSetWrapper<T> implements CacheSet<T>
 
     public CacheSetWrapper(CacheSet<T> cache){ this.cache = cache ; }
     
+    @Override
     public void add(T e)
     { cache.add(e) ; }
 
+    @Override
     public void clear()
     { cache.clear() ; }
 
+    @Override
     public boolean contains(T obj)
     {
         return cache.contains(obj) ;
     }
 
+    @Override
     public boolean isEmpty()
     {
         return cache.isEmpty() ;
     }
 
+    @Override
     public void remove(T obj)
     { cache.remove(obj) ; }
 
+    @Override
     public long size()
     {
         return cache.size() ; 

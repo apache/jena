@@ -75,6 +75,7 @@ public class ItemList extends ItemLocation implements Iterable<Item>
 
     public Item getLast()       { return get(_size()-1) ; }
 
+    @Override
     public Iterator<Item> iterator() { return elements.listIterator(offset) ; }
     
     public Item car()

@@ -33,6 +33,7 @@ public class RegexJava implements RegexEngine
         regexPattern = makePattern(pattern, flags) ;
     }
     
+    @Override
     public boolean match(String s)
     {
         Matcher m = regexPattern.matcher(s) ;

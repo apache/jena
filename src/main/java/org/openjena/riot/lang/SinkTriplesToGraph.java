@@ -48,7 +48,7 @@ public class SinkTriplesToGraph implements Sink<Triple>
         // Convert between the new global event system (EventManager)
         // and old style Jena graph events.
         el1 = new EventListener(){
-            //@Override
+            @Override
             public void event(Object dest, Event event)
             {
                 graph.getEventManager().notifyEvent( graph , GraphEvents.startRead ) ;
@@ -56,7 +56,7 @@ public class SinkTriplesToGraph implements Sink<Triple>
         } ;
 
         el2 = new EventListener(){
-            //@Override
+            @Override
             public void event(Object dest, Event event)
             {
                 graph.getEventManager().notifyEvent( graph , GraphEvents.finishRead ) ;
@@ -66,15 +66,16 @@ public class SinkTriplesToGraph implements Sink<Triple>
         EventManager.register(this, finishRead, el2) ;
     }
 
+    @Override
     public void send(Triple triple)
     {
         graph.add(triple) ;
     }
 
-    //@Override
+    @Override
     public void flush() { SystemARQ.sync(graph) ; }
     
-    //@Override
+    @Override
     public void close()
     {
         EventManager.unregister(this, finishRead, el2) ;

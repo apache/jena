@@ -102,6 +102,7 @@ public class OpExtend extends Op1
         assignments = exprs ;
     }
     
+    @Override
     public String getName() { return Tags.tagExtend ; }
     
     // Need to protect this with checking for var already used.
@@ -115,6 +116,7 @@ public class OpExtend extends Op1
     public int hashCode()
     { return assignments.hashCode() ^ getSubOp().hashCode() ; }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 

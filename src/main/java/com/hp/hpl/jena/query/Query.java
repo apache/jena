@@ -788,6 +788,7 @@ public class Query extends Prologue implements Cloneable, Printable
 //    public static boolean sameAs(Query query1, Query query2)
 //    { return query1.sameAs(query2) ; }  
 
+    @Override
     public void output(IndentedWriter out)
     {
         serialize(out) ;

@@ -42,6 +42,7 @@ public class XMLOutput extends OutputBase
     }
 
     
+    @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         XMLOutputResultSet xOut =  new XMLOutputResultSet(out) ;
@@ -67,6 +68,7 @@ public class XMLOutput extends OutputBase
     public void setStylesheetURL(String stylesheetURL)
     { this.stylesheetURL = stylesheetURL ; }
     
+    @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         XMLOutputASK xOut = new XMLOutputASK(out) ;

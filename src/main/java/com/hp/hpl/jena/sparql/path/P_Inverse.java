@@ -27,7 +27,7 @@ public class P_Inverse extends P_Path1
          super(p) ;
     }
     
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
     

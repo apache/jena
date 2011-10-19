@@ -59,6 +59,7 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     protected boolean isDebug()   { return modGeneral.debug ; }
     protected boolean help()      { return modGeneral.help ; }
 
+    @Override
     final public void doHelp()
     {
         usage() ;

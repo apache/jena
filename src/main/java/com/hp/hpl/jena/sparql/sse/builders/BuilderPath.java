@@ -122,6 +122,7 @@ public class BuilderPath
     
     final protected Build buildNotOneOf = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(1, list, "path: negative property set: must be at least one element") ;
@@ -141,6 +142,7 @@ public class BuilderPath
     
     final protected Build buildSeq = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(3, 3, list, "path seq: wanted 2 arguments") ;
@@ -152,6 +154,7 @@ public class BuilderPath
 
     final protected Build buildAlt = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(3, 3, list, "path alt: wanted 2 arguments") ;
@@ -164,6 +167,7 @@ public class BuilderPath
 
     final protected Build buildMod = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(4, 4, list, "path mod: wanted 3 arguments") ;
@@ -183,6 +187,7 @@ public class BuilderPath
 
     final protected Build buildFixedLength = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(3, 3, list, "path fixed repeat: wanted 2 arguments") ;
@@ -194,6 +199,7 @@ public class BuilderPath
 
     final protected Build buildZeroOrMore = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path ZeroOrMore: wanted 1 argument") ;
@@ -204,6 +210,7 @@ public class BuilderPath
     
     final protected Build buildZeroOrOne = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path ZeroOrOne: wanted 1 argument") ;
@@ -214,6 +221,7 @@ public class BuilderPath
     
     final protected Build buildOneOrMore = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path OneOrMore: wanted 1 argument") ;
@@ -224,6 +232,7 @@ public class BuilderPath
     
     final protected Build buildReverse = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path reverse: wanted 1 argument") ;
@@ -234,6 +243,7 @@ public class BuilderPath
     
     final protected Build buildRev = new Build()
     {
+        @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path reverse link: wanted 1 argument") ;

@@ -72,11 +72,13 @@ public class PropertiesSorted extends Properties
             this.iterator = iterator ;
         }
         
+        @Override
         public boolean hasMoreElements()
         {
             return iterator.hasNext() ;
         }
 
+        @Override
         public T nextElement()
         {
             return iterator.next();

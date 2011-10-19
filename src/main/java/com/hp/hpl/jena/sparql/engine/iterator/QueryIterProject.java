@@ -67,6 +67,7 @@ public class QueryIterProject extends QueryIterConvert
             this.projectionVars = vars ;
         }
 
+        @Override
         public Binding convert(Binding bind)
         {
             return new BindingProject(projectionVars, bind) ;

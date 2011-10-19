@@ -30,6 +30,7 @@ public class RegexXerces implements RegexEngine
         regexPattern = makePattern(pattern, flags) ;
     }
     
+    @Override
     public boolean match(String s)
     {
         return regexPattern.matches(s) ;

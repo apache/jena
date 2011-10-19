@@ -48,17 +48,23 @@ public class ParserRegistry
         
         reg.add(Syntax.syntaxSPARQL_10, 
                 new ParserFactory() {
+            @Override
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax) ; } 
+            @Override
             public Parser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
         
         reg.add(Syntax.syntaxSPARQL_11, 
                 new ParserFactory() {
+            @Override
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; } 
+            @Override
             public Parser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
    
         reg.add(Syntax.syntaxARQ, 
                 new ParserFactory() {
+            @Override
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
+            @Override
             public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
 
         // Defend against concurrent start up (even if not synchronised).

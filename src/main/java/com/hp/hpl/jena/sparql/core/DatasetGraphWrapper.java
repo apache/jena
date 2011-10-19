@@ -35,91 +35,95 @@ public class DatasetGraphWrapper implements DatasetGraph
         this.dsg = dsg ;
     }
 
-    //@Override
+    @Override
     public boolean containsGraph(Node graphNode)
     { return dsg.containsGraph(graphNode) ; }
 
-    //@Override
+    @Override
     public Graph getDefaultGraph()
     { return dsg.getDefaultGraph(); }
 
-    //@Override
+    @Override
     public Graph getGraph(Node graphNode)
     { return dsg.getGraph(graphNode) ; }
 
+    @Override
     public void addGraph(Node graphName, Graph graph)
     { dsg.addGraph(graphName, graph) ; }
 
+    @Override
     public void removeGraph(Node graphName)
     { dsg.removeGraph(graphName) ; }
 
+    @Override
     public void setDefaultGraph(Graph g)
     { dsg.setDefaultGraph(g) ; }
 
-    //@Override
+    @Override
     public Lock getLock()
     { return dsg.getLock() ; }
 
-    //@Override
+    @Override
     public Iterator<Node> listGraphNodes()
     { return dsg.listGraphNodes() ; }
 
-    //@Override
+    @Override
     public void add(Quad quad)
     { dsg.add(quad) ; }
 
-    //@Override
+    @Override
     public void delete(Quad quad)
     { dsg.delete(quad) ; }
 
-    //@Override
+    @Override
     public void add(Node g, Node s, Node p, Node o)
     { dsg.add(g, s, p, o) ; }
 
-    //@Override
+    @Override
     public void delete(Node g, Node s, Node p, Node o)
     { dsg.delete(g, s, p, o) ; }
     
+    @Override
     public void deleteAny(Node g, Node s, Node p, Node o)
     { dsg.deleteAny(g, s, p, o) ; }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     { return dsg.isEmpty() ; }
     
-    //@Override
+    @Override
     public Iterator<Quad> find()
     { return dsg.find() ; }
 
-    //@Override
+    @Override
     public Iterator<Quad> find(Quad quad)
     { return dsg.find(quad) ; }
 
-    //@Override
+    @Override
     public Iterator<Quad> find(Node g, Node s, Node p, Node o)
     { return dsg.find(g, s, p, o) ; }
 
-    //@Override
+    @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p, Node o)
     { return dsg.findNG(g, s, p, o) ; }
 
-    //@Override
+    @Override
     public boolean contains(Quad quad)
     { return dsg.contains(quad) ; }
 
-    //@Override
+    @Override
     public boolean contains(Node g, Node s, Node p, Node o)
     { return dsg.contains(g, s, p, o) ; }
 
-    //@Override
+    @Override
     public Context getContext()
     { return dsg.getContext() ; }
 
-    //@Override
+    @Override
     public long size()
     { return dsg.size() ; }
 
-    //@Override
+    @Override
     public void close()
     { dsg.close() ; }
 }

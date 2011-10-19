@@ -31,10 +31,12 @@ public class QueryEngineInfo implements QueryEngineInfoMBean
     // (reading longs is not atomic).
     
     private AtomicLong count = new AtomicLong(0) ;
+    @Override
     public long getQueryCount()                 { return count.get() ; }
     public void incQueryCount()                 { count.incrementAndGet() ; }
     
     Query query = null ;
+    @Override
     public String getLastQueryString()
     { 
         Query q = query ;    // Get once.
@@ -45,6 +47,7 @@ public class QueryEngineInfo implements QueryEngineInfoMBean
     public void setLastQueryString(Query q)     { query = q ; }
 
     private Op op = null ;
+    @Override
     public String getLastAlgebra()
     {
         Op _op = op ;   // Get once.
@@ -53,6 +56,7 @@ public class QueryEngineInfo implements QueryEngineInfoMBean
     public void setLastOp(Op op)                { this.op = op ; }
 
     private String timeSeen = "" ;
+    @Override
     public String getLastQueryExecAt()          { return timeSeen ; }
     public void setLastQueryExecAt()            { timeSeen = Utils.nowAsString() ; }
 

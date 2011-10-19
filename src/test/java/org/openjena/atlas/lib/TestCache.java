@@ -41,7 +41,9 @@ public class TestCache extends BaseTest
     private static CacheMaker<Integer, Integer> simple = 
         new CacheMaker<Integer, Integer>()
         { 
+        @Override
         public Cache<Integer, Integer> make(int size) { return CacheFactory.createSimpleCache(size) ; }
+        @Override
         public String name() { return "Simple" ; } 
         } 
     ;
@@ -49,7 +51,9 @@ public class TestCache extends BaseTest
     private static CacheMaker<Integer, Integer> standard = 
         new CacheMaker<Integer, Integer>()
         {
+        @Override
         public Cache<Integer, Integer> make(int size) { return CacheFactory.createCache(size) ; }
+        @Override
         public String name() { return "Standard" ; } 
         }
     ;
@@ -57,7 +61,9 @@ public class TestCache extends BaseTest
     private static CacheMaker<Integer, Integer> syncStandard = 
         new CacheMaker<Integer, Integer>()
         {
+        @Override
         public Cache<Integer, Integer> make(int size) { return CacheFactory.createSync(standard.make(size)) ; }
+        @Override
         public String name() { return "Sync Standard" ; } 
         }
     ;
@@ -65,11 +71,13 @@ public class TestCache extends BaseTest
     private static CacheMaker<Integer, Integer> stats = 
         new CacheMaker<Integer, Integer>()
         {
+        @Override
         public Cache<Integer, Integer> make(int size)
         { 
             Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
             return new CacheStatsSimple<Integer, Integer>(c) ;
         }
+        @Override
         public String name() { return "Stats" ; }
         }
     ;
@@ -77,11 +85,13 @@ public class TestCache extends BaseTest
     private static CacheMaker<Integer, Integer> statsAtomic = 
         new CacheMaker<Integer, Integer>()
         {
+        @Override
         public Cache<Integer, Integer> make(int size)
         { 
             Cache<Integer, Integer> c = CacheFactory.createCache(size) ;
             return new CacheStatsAtomic<Integer, Integer>(c) ;
         }
+        @Override
         public String name() { return "StatsAtomic" ; }
         }
     ;

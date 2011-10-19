@@ -128,7 +128,6 @@ public class MultiSet<T> implements Iterable<T>
         return multiSetSize ;
     }
     
-    //@Override
     private Iterator<T> iterator1()
     {
         // CRUDE
@@ -142,7 +141,7 @@ public class MultiSet<T> implements Iterable<T>
         return expanded.iterator() ;
     }
     
-    //@Override
+    @Override
     public Iterator<T> iterator()
     {
         return new Iterator<T>() {
@@ -152,7 +151,7 @@ public class MultiSet<T> implements Iterable<T>
             long keyCount = 0 ;
             T slot = null ;
             
-            //@Override
+            @Override
             public boolean hasNext()
             {
                 if ( slot != null )
@@ -184,7 +183,7 @@ public class MultiSet<T> implements Iterable<T>
                 return false ;
             }
 
-            //@Override
+            @Override
             public T next()
             {
                 if ( ! hasNext() ) throw new NoSuchElementException() ;
@@ -193,7 +192,7 @@ public class MultiSet<T> implements Iterable<T>
                 return x ;
             }
 
-            //@Override
+            @Override
             public void remove()
             { throw new UnsupportedOperationException() ; }
         } ; 

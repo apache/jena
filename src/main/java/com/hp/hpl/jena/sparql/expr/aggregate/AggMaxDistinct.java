@@ -26,6 +26,7 @@ public class AggMaxDistinct extends AggMaxBase
 {
     // ---- MAX( DISTINCT expr)
     public AggMaxDistinct(Expr expr) { super(expr) ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggMaxDistinct(expr) ; }
 
     @Override

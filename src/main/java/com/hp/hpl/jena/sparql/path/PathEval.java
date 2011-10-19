@@ -50,6 +50,7 @@ public class PathEval
     static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {
         Transform<Node, RDFNode> conv = new Transform<Node, RDFNode>(){
+            @Override
             public RDFNode convert(Node obj)
             {
                 return ModelUtils.convertGraphNodeToRDFNode(obj, model) ;
@@ -137,14 +138,14 @@ public class PathEval
             this.forwardMode = forward ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Link pathNode)
         {
             Iterator<Node> nodes = doOne(pathNode.getNode()) ;
             fill(nodes) ;
         }
         
-        //@Override
+        @Override
         public void visit(P_ReverseLink pathNode)
         {
             forwardMode = ! forwardMode ;
@@ -153,7 +154,7 @@ public class PathEval
             fill(nodes) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
             // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X }
@@ -169,7 +170,7 @@ public class PathEval
             }
         }
         
-        //@Override
+        @Override
         public void visit(P_Inverse inversePath)
         {
             //boolean b = forwardMode ;
@@ -179,7 +180,7 @@ public class PathEval
             forwardMode = ! forwardMode ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Alt pathAlt)
         {
             // Try both sizes, accumulate into output.
@@ -189,7 +190,7 @@ public class PathEval
             fill(iter) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Seq pathSeq)
         {
             Path part1 = forwardMode ? pathSeq.getLeft() : pathSeq.getRight() ;
@@ -203,7 +204,7 @@ public class PathEval
 
         static boolean DEBUG = false ;
         
-        //@Override
+        @Override
         public void visit(P_Mod pathMod)
         {
             if ( DEBUG ) IndentedWriter.stdout.println("Eval: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+")") ;
@@ -297,7 +298,7 @@ public class PathEval
             // If no matches, will not call eval and we drop out.
         }
         
-        //@Override
+        @Override
         public void visit(P_FixedLength pFixedLength)
         {
             if ( pFixedLength.getCount() == 0 )
@@ -318,20 +319,20 @@ public class PathEval
             }
         }
 
-        //@Override
+        @Override
         public void visit(P_ZeroOrOne path)
         { 
             doZero(path.getSubPath()) ;
             doOne(path.getSubPath()) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_ZeroOrMore path)
         { 
             doZeroOrMore(path.getSubPath()) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_OneOrMore path)
         { 
             doOneOrMore(path.getSubPath()) ;
@@ -371,18 +372,21 @@ public class PathEval
 
         private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getSubject() ; }
         } ;
 
         private static Transform<Triple, Node> selectPredicate = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getPredicate() ; }
         } ;
 
         private static Transform<Triple, Node> selectObject = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getObject() ; }
         } ;
@@ -409,6 +413,7 @@ public class PathEval
         {
             private Collection<Node> excludes ;
             public FilterExclude(Collection <Node> excludes) { this.excludes = excludes ; }
+            @Override
             public boolean accept(Triple triple)
             {
                 return ! excludes.contains(triple.getPredicate()) ;

@@ -36,7 +36,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
         this.input = input ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if  ( finished )
@@ -64,7 +64,7 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
 
     protected abstract Iterator<T> makeNextStage(T t) ;
     
-    //@Override
+    @Override
     public T next()
     {
         if ( ! hasNext() )
@@ -72,11 +72,11 @@ public abstract class RepeatApplyIterator<T> implements Iterator<T>, Closeable
         return currentStage.next() ;
     }
 
-    //@Override
+    @Override
     public final void remove()
     { throw new UnsupportedOperationException() ; }
     
-    //@Override
+    @Override
     public void close()
     {
         Iter.close(input) ;

@@ -80,8 +80,10 @@ public class FmtExpr
         }
 
 
+        @Override
         public void startVisit() { }
 
+        @Override
         public void visit(ExprFunction0 expr)
         {
             if ( expr.getOpName() == null )
@@ -93,6 +95,7 @@ public class FmtExpr
         }
 
         
+        @Override
         public void visit(ExprFunction1 expr)
         {
             if ( expr.getOpName() == null )
@@ -107,6 +110,7 @@ public class FmtExpr
             out.print(" )");
         }
 
+        @Override
         public void visit(ExprFunction2 expr)
         {
             if ( expr.getOpName() == null )
@@ -123,12 +127,14 @@ public class FmtExpr
             out.print(" )");
         }
 
+        @Override
         public void visit(ExprFunction3 expr)
         {
             printInFunctionForm(expr) ;
         }
 
 
+        @Override
         public void visit(ExprFunctionN func)
         {
             if ( func instanceof E_OneOf )
@@ -177,6 +183,7 @@ public class FmtExpr
             out.print(")");
         }
         
+        @Override
         public void visit(ExprFunctionOp funcOp)
         {
             FormatterElement fmtElt = new FormatterElement(out, context) ;
@@ -188,11 +195,13 @@ public class FmtExpr
             el.visit(fmtElt) ;
         }
 
+        @Override
         public void visit(NodeValue nv)
         {
             out.print(nv.asQuotedString(context)) ;
         }
 
+        @Override
         public void visit(ExprVar nv)
         {
             String s = nv.getVarName() ;
@@ -209,12 +218,14 @@ public class FmtExpr
             }
         }
 
+        @Override
         public void visit(ExprAggregator eAgg)
         {
             out.print(eAgg.asSparqlExpr()) ;
         }
         
         
+        @Override
         public void finishVisit() { out.flush() ; }
     }
 }

@@ -46,7 +46,6 @@ public class BindingHashMap extends BindingBase implements BindingMap
 
     /** Add a (name,value) */
     
-    //@Override
     protected void add1(Var var, Node node)
     {
         if ( ! Var.isAnonVar(var) )
@@ -82,7 +81,7 @@ public class BindingHashMap extends BindingBase implements BindingMap
     }
 
     /** Add a (var,value) - the node value is never null */
-    //@Override
+    @Override
     final public void add(Var var, Node node)
     { 
         if ( node == null )
@@ -94,7 +93,7 @@ public class BindingHashMap extends BindingBase implements BindingMap
         add1(var, node) ;
     }
 
-    //@Override
+    @Override
     final public void addAll(Binding other)
     {
         BindingUtils.addAll(this, other) ;
@@ -116,7 +115,5 @@ public class BindingHashMap extends BindingBase implements BindingMap
         checkAdd1(var, node) ;
     }
 
-
-    //@Override
     protected void checkAdd1(Var v, Node node) { }
 }

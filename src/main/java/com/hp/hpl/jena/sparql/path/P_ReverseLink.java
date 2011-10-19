@@ -33,7 +33,7 @@ public class P_ReverseLink extends P_Path0
     @Override
     public boolean isForward()  { return false ; }
     
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

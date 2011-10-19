@@ -31,6 +31,7 @@ class ProcedureFactoryAuto implements ProcedureFactory
         extClass = xClass ;
     }
     
+    @Override
     public Procedure create(String uri)
     {
         try

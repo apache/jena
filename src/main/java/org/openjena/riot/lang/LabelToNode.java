@@ -74,7 +74,9 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     private static class SingleScopePolicy implements ScopePolicy<String, Node, Node>
     { 
         private Map<String, Node> map = new HashMap<String, Node>() ;
+        @Override
         public Map<String, Node> getScope(Node scope) { return map ; }
+        @Override
         public void clear() { map.clear(); }
     }
     
@@ -83,6 +85,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     { 
         private Map<String, Node> dftMap = new HashMap<String, Node>() ;
         private Map<Node, Map<String, Node>> map = new HashMap<Node, Map<String, Node>>() ;
+        @Override
         public Map<String, Node> getScope(Node scope)
         {
             if ( scope == null )
@@ -96,6 +99,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             }
             return x ;
         }
+        @Override
         public void clear() { map.clear(); }
     }
 
@@ -103,9 +107,11 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     
     private static Allocator<String, Node> nodeMaker = new Allocator<String, Node>()
     {
+        @Override
         public Node create(String label)
         { return Node.createAnon() ; }
 
+        @Override
         public void reset()     {}
     } ;
 
@@ -113,12 +119,14 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     {
         private long counter = 0 ;
 
+        @Override
         public Node create(String label)
         {
             String $ = format("B0x%04X", ++counter) ;
             return Node.createAnon(new AnonId($)) ;
         }
 
+        @Override
         public void reset()     {}
     } ;
     
@@ -126,6 +134,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     {
         private long counter = 0 ;
         
+        @Override
         public Node create(String label)
         {
             if ( label == null )
@@ -133,6 +142,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             return Node.createAnon(new AnonId(label)) ;
         }
 
+        @Override
         public void reset()     {}
     } ;
     
@@ -140,6 +150,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
     {
         private long counter = 0 ;
         
+        @Override
         public Node create(String label)
         {
             if ( label == null )
@@ -147,6 +158,7 @@ public class LabelToNode extends MapWithScope<String, Node, Node>
             return Node.createAnon(new AnonId(NodeFmtLib.decodeBNodeLabel(label))) ;
         }
 
+        @Override
         public void reset()     {}
     } ;
 }

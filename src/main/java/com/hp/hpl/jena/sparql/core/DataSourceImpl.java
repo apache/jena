@@ -100,15 +100,19 @@ public class DataSourceImpl implements DataSource
     }
 
     //  Does it matter if this is not the same model each time?
+    @Override
     public Model getDefaultModel() 
     { 
         return graph2model(dsg.getDefaultGraph()) ;
     }
 
+    @Override
     public Lock getLock() { return dsg.getLock() ; }
 
+    @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
+    @Override
     public Model getNamedModel(String uri)
     { 
         Node n = Node.createURI(uri) ;
@@ -118,6 +122,7 @@ public class DataSourceImpl implements DataSource
         return graph2model(g) ;
     }
 
+    @Override
     public void addNamedModel(String uri, Model model) throws LabelExistsException
     { 
         addToCache(model) ;
@@ -125,6 +130,7 @@ public class DataSourceImpl implements DataSource
         dsg.addGraph(n, model.getGraph()) ;
     }
 
+    @Override
     public void removeNamedModel(String uri)
     { 
         Node n = Node.createURI(uri) ;
@@ -132,6 +138,7 @@ public class DataSourceImpl implements DataSource
         dsg.removeGraph(n) ;
     }
 
+    @Override
     public void replaceNamedModel(String uri, Model model)
     {
         Node n = Node.createURI(uri) ;
@@ -141,6 +148,7 @@ public class DataSourceImpl implements DataSource
         dsg.addGraph(n, model.getGraph() ) ;
     }
 
+    @Override
     public void setDefaultModel(Model model)
     { 
         removeFromCache(dsg.getDefaultGraph()) ;
@@ -148,6 +156,7 @@ public class DataSourceImpl implements DataSource
         dsg.setDefaultGraph(model.getGraph()) ;
     }
 
+    @Override
     public boolean containsNamedModel(String uri)
     { 
         Node n = Node.createURI(uri) ;
@@ -155,6 +164,7 @@ public class DataSourceImpl implements DataSource
     }
 
     // Don't look in the cache - go direct to source
+    @Override
     public Iterator<String> listNames()
     { 
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
@@ -164,6 +174,7 @@ public class DataSourceImpl implements DataSource
 //  -------
 //  Cache models wrapping graph
 
+    @Override
     public void close()
     {
         dsg.close() ;

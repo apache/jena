@@ -49,6 +49,7 @@ public class FmtTemplate extends FormatterBase
         return b.toString() ;
     }
 
+    @Override
     public void format(Template template)
     {
         out.print("{") ;

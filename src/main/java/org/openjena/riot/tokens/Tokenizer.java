@@ -26,9 +26,11 @@ import org.openjena.atlas.lib.Closeable ;
 public interface Tokenizer extends Iterator<Token>, Closeable
 {
     /** Is there another token? */
+    @Override
     public boolean hasNext() ;
 
     /** Move to next token */
+    @Override
     public Token next() ;
     
     /** Peek next token : null for no token. */

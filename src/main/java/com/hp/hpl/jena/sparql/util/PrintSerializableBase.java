@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.engine.Plan ;
 
 public abstract class PrintSerializableBase implements PrintSerializable
 {
+    @Override
     public String toString(PrefixMapping pmap)
     { return QueryOutputUtils.toString(this, pmap) ; }
 
@@ -35,6 +36,7 @@ public abstract class PrintSerializableBase implements PrintSerializable
     { return PrintUtils.toString(this) ; }
     
     /** Normally overridden for better information */ 
+    @Override
     public void output(IndentedWriter out)
     {
         out.print(Plan.startMarker) ;

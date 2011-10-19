@@ -50,6 +50,7 @@ class ExecutionDispatch implements OpVisitor
         return qIter ;
     }
 
+    @Override
     public void visit(OpBGP opBGP)
     {
         QueryIterator input = pop() ;
@@ -57,6 +58,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpQuadPattern quadPattern)
     {
         QueryIterator input = pop() ;
@@ -64,6 +66,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpTriple opTriple)
     {
         QueryIterator input = pop() ;
@@ -71,6 +74,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpPath opPath)
     {
         QueryIterator input = pop() ;
@@ -78,6 +82,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpProcedure opProc)
     {
         QueryIterator input = pop() ;
@@ -85,6 +90,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpPropFunc opPropFunc)
     {
         QueryIterator input = pop() ;
@@ -92,6 +98,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpJoin opJoin)
     {
         QueryIterator input = pop() ;
@@ -99,6 +106,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpSequence opSequence)
     {
         QueryIterator input = pop() ;
@@ -106,6 +114,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpDisjunction opDisjunction)
     {
         QueryIterator input = pop() ;
@@ -114,6 +123,7 @@ class ExecutionDispatch implements OpVisitor
     }
     
 
+    @Override
     public void visit(OpLeftJoin opLeftJoin)
     {
         QueryIterator input = pop() ;
@@ -121,6 +131,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpDiff opDiff)
     {
         QueryIterator input = pop() ;
@@ -128,6 +139,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpMinus opMinus)
     {
         QueryIterator input = pop() ;
@@ -135,6 +147,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpUnion opUnion)
     {
         QueryIterator input = pop() ;
@@ -142,6 +155,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpConditional opCondition)
     {
         QueryIterator input = pop() ;
@@ -149,6 +163,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpFilter opFilter)
     {
         QueryIterator input = pop() ;
@@ -156,6 +171,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpGraph opGraph)
     {
         QueryIterator input = pop() ;
@@ -163,6 +179,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpService opService)
     {
         QueryIterator input = pop() ;
@@ -170,6 +187,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpDatasetNames dsNames)
     {
         QueryIterator input = pop() ;
@@ -177,6 +195,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpTable opTable)
     {
         QueryIterator input = pop() ;
@@ -184,6 +203,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpExt opExt)
     {
         QueryIterator input = pop() ;
@@ -191,6 +211,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpNull opNull)
     {
         QueryIterator input = pop() ;
@@ -198,6 +219,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpLabel opLabel)
     {
         QueryIterator input = pop() ;
@@ -205,6 +227,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpList opList)
     {
         QueryIterator input = pop() ;
@@ -212,6 +235,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpOrder opOrder)
     {
         QueryIterator input = pop() ;
@@ -219,6 +243,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpProject opProject)
     {
         QueryIterator input = pop() ;
@@ -226,6 +251,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpDistinct opDistinct)
     {
         QueryIterator input = pop() ;
@@ -233,6 +259,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpReduced opReduced)
     {
         QueryIterator input = pop() ;
@@ -240,6 +267,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
 
+    @Override
     public void visit(OpAssign opAssign)
     {
         QueryIterator input = pop() ;
@@ -247,6 +275,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
+    @Override
     public void visit(OpExtend opExtend)
     {
         QueryIterator input = pop() ;
@@ -254,6 +283,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
+    @Override
     public void visit(OpSlice opSlice)
     {
         QueryIterator input = pop() ;
@@ -261,6 +291,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
+    @Override
     public void visit(OpGroup opGroup)
     { 
         QueryIterator input = pop() ;
@@ -268,6 +299,7 @@ class ExecutionDispatch implements OpVisitor
         push(qIter) ;
     }
     
+    @Override
     public void visit(OpTopN opTop)
     { 
         QueryIterator input = pop() ;

@@ -120,6 +120,7 @@ class NormalizeValue2
     // --- Working versions 
     
     static DatatypeHandler dtInteger = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             char[] chars = lexicalForm.toCharArray() ;
@@ -136,6 +137,7 @@ class NormalizeValue2
     } ;
 
     static DatatypeHandler dtDecimal = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             // Need to force "0."

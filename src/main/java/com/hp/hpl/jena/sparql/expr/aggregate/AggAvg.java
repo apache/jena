@@ -34,6 +34,7 @@ public class AggAvg extends AggregatorBase
     private Expr expr ;
 
     public AggAvg(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggAvg(expr) ; }
 
     // XQuery/XPath Functions&Operators suggests zero
@@ -51,6 +52,7 @@ public class AggAvg extends AggregatorBase
         return new AccAvg(expr) ;
     }
 
+    @Override
     public final Expr getExpr() { return expr ; }
 
     @Override

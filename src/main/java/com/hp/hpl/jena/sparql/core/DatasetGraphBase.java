@@ -52,46 +52,46 @@ abstract public class DatasetGraphBase implements DatasetGraph
     
     protected DatasetGraphBase() {}
     
-    //@Override
+    @Override
     public boolean containsGraph(Node graphNode)
     { return contains(graphNode, Node.ANY, Node.ANY, Node.ANY) ; }
     
-    //@Override
+    @Override
     public abstract Graph getDefaultGraph() ;
 
-    //@Override
+    @Override
     public abstract Graph getGraph(Node graphNode) ;
 
-    //@Override
+    @Override
     public void addGraph(Node graphName, Graph graph)
     { throw new UnsupportedOperationException("DatasetGraph.addGraph") ; }
 
-    //@Override
+    @Override
     public void removeGraph(Node graphName)
     { throw new UnsupportedOperationException("DatasetGraph.removeGraph") ; }
 
-    //@Override
+    @Override
     public void setDefaultGraph(Graph g)
     { throw new UnsupportedOperationException("DatasetGraph.setDefaultGraph") ; }
     
-    //@Override
+    @Override
     public void add(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.add(Quad)") ; } 
     
-    //@Override
+    @Override
     public void delete(Quad quad) { throw new UnsupportedOperationException("DatasetGraph.delete(Quad)") ; }
     
-//  //@Override
+//  @Override
 //  public void add(Node g, Node s, Node p, Node o) { throw new UnsupportedOperationException("DatasetGraph.add(Node, Node, Node, Node)") ; } 
 //  
-//  //@Override
+//  @Override
 //  public void delete(Node g, Node s, Node p, Node o) { throw new UnsupportedOperationException("DatasetGraph.delete(Node, Node, Node, Node)") ; }
 
-    //@Override
+    @Override
     public void add(Node g, Node s, Node p, Node o)     { add(new Quad(g,s,p,o)) ; }  
-    //@Override
+    @Override
     public void delete(Node g, Node s, Node p, Node o)  { delete(new Quad(g,s,p,o)) ; }
     
-    //@Override
+    @Override
     /** Simple implementation */
     public void deleteAny(Node g, Node s, Node p, Node o)
     { 
@@ -101,22 +101,22 @@ abstract public class DatasetGraphBase implements DatasetGraph
             delete(q) ;
     }
     
-    //@Override
+    @Override
     public Iterator<Quad> find()
     { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
 
     
-    //@Override
+    @Override
     public Iterator<Quad> find(Quad quad)
     { 
         if ( quad == null )
             return find() ;
         return find(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
     
-    //@Override
+    @Override
     public boolean contains(Quad quad) { return contains(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ; }
 
-    //@Override
+    @Override
     public boolean contains(Node g, Node s, Node p , Node o)
     {
         Iterator<Quad> iter = find(g, s, p, o) ;
@@ -130,27 +130,28 @@ abstract public class DatasetGraphBase implements DatasetGraph
         return g == null || g == Node.ANY ;
     }
     
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return ! contains(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
     }
 
-    //@Override
+    @Override
     public long size() { return -1 ; } 
     
-    //@Override
+    @Override
     public Lock getLock()
     {
         return lock ;
     }
     
+    @Override
     public Context getContext()
     {
         return context ;
     }
     
-    //@Override
+    @Override
     public void close()
     { }
     
@@ -175,6 +176,7 @@ abstract public class DatasetGraphBase implements DatasetGraph
     protected static Iter<Quad> triples2quads(final Node graphNode, Iterator<Triple> iter)
     {
         Transform<Triple, Quad> transformNamedGraph = new Transform<Triple, Quad> () {
+            @Override
             public Quad convert(Triple triple)
             {
                 return new Quad(graphNode, triple) ;

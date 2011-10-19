@@ -36,6 +36,7 @@ public abstract class JenaWriterBase implements RDFWriter
     protected Map<String, String> writerPropertyMap = new HashMap<String, String>() ;
     private RDFErrorHandler errorHandler = null ;
     
+    @Override
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
     {
         RDFErrorHandler old = errorHandler;
@@ -43,6 +44,7 @@ public abstract class JenaWriterBase implements RDFWriter
         return old;
     }
 
+    @Override
     public Object setProperty(String propName, Object propValue)
     {
         if ( ! ( propValue instanceof String ) )
@@ -66,11 +68,13 @@ public abstract class JenaWriterBase implements RDFWriter
         return propName ;
     }
     
+    @Override
     public void write(Model model, Writer out, String base)
     {
         write(model.getGraph(), out, base) ;
     }
 
+    @Override
     public void write(Model model, OutputStream out, String base)
     {
         BufferingWriter buff = BufferingWriter.create(out, 1023) ;

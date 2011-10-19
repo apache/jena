@@ -38,8 +38,10 @@ public class OpNull extends Op0
     @Override
     public Op copy() { return this ; }
 
+    @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
 
+    @Override
     public String getName()
     {
         return Tags.tagNull ;

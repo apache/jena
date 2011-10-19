@@ -42,6 +42,7 @@ public class ParserARQ extends Parser
         query.setSyntax(Syntax.syntaxARQ) ;
 
         Action action = new Action() {
+            @Override
             public void exec(ARQParser parser) throws Exception
             {
                 parser.QueryUnit() ;
@@ -57,6 +58,7 @@ public class ParserARQ extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
+            @Override
             public void exec(ARQParser parser) throws Exception
             {
                 Element el = parser.GroupGraphPattern() ;
@@ -71,6 +73,7 @@ public class ParserARQ extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
+            @Override
             public void exec(ARQParser parser) throws Exception
             {
                 Template t = parser.ConstructTemplate() ;

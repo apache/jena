@@ -45,6 +45,7 @@ public class ModQueryIn implements ArgModuleGeneral
     private String baseURI = null ;
     
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Query") ;
@@ -59,6 +60,7 @@ public class ModQueryIn implements ArgModuleGeneral
                     "Base URI for the query") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(queryBaseDecl) )

@@ -60,6 +60,7 @@ public class OpPropFunc extends Op1
         return transform.transform(this, subOp) ;
     }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 
@@ -87,6 +88,7 @@ public class OpPropFunc extends Op1
         return getSubOp().equalTo(procFunc.getSubOp(), labelMap) ;
     }
 
+    @Override
     public String getName()
     {
         return Tags.tagPropFunc ;

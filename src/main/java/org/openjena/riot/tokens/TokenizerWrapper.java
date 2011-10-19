@@ -28,47 +28,51 @@ public class TokenizerWrapper implements Tokenizer
         this.other = other ;
     }
     
-    //@Override
+    @Override
     public long getColumn()
     {
         return other.getColumn() ;
     }
 
-    //@Override
+    @Override
     public long getLine()
     {
         return other.getLine() ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         return other.hasNext() ;
     }
 
+    @Override
     public boolean eof()
     {
         return other.eof() ;
     }
 
-    //@Override
+    @Override
     public Token next()
     {
         return other.next();
     }
 
+    @Override
     public Token peek()
     {
         return other.peek() ;
     }
 
     // @Override
+    @Override
     public void remove()
     {
         other.remove() ;
     }
 
     // @Override
+    @Override
     public void close()
     {
         other.close() ;

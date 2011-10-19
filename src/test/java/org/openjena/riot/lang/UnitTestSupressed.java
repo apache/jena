@@ -26,11 +26,13 @@ public class UnitTestSupressed implements Test
     public UnitTestSupressed(String testName, Object object)
     {}
 
+    @Override
     public int countTestCases()
     {
         return 0 ;
     }
 
+    @Override
     public void run(TestResult arg0)
     {
         

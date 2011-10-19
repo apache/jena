@@ -36,12 +36,14 @@ public class ModRemote implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
     
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         serviceURL = cmdLine.getValue(serviceDecl) ;
         usePost = cmdLine.contains(postServiceDecl) ;
     }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Remote") ;

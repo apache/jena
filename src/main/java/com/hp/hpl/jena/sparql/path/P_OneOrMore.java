@@ -44,7 +44,7 @@ public class P_OneOrMore extends P_Path1
         return hashOneOrMore ^ getSubPath().hashCode() ;
     }
 
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 }

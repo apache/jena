@@ -40,6 +40,7 @@ public abstract class PathBase implements Path
     
     // If the labeMap is null, do .equals() on nodes, else map from
     // bNode varables in one to bNodes variables in the other 
+    @Override
     public abstract boolean equalTo(Path path2, NodeIsomorphismMap isoMap) ;
     
     @Override
@@ -58,6 +59,7 @@ public abstract class PathBase implements Path
         return PathWriter.asString(this) ;
     }
     
+    @Override
     public String toString(Prologue prologue)
     {
         return PathWriter.asString(this, prologue) ;

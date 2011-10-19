@@ -34,11 +34,13 @@ public class TableEmpty extends TableBase
     public TableEmpty()
     { }
     
+    @Override
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         return new QueryIterNullIterator(execCxt) ;
     }
 
+    @Override
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
@@ -56,8 +58,10 @@ public class TableEmpty extends TableBase
     @Override
     public void closeTable()    { }
 
+    @Override
     public List<String> getVarNames()   { return new ArrayList<String>() ; }
 
+    @Override
     public List<Var> getVars()       { return new ArrayList<Var>() ; }
     
     @Override

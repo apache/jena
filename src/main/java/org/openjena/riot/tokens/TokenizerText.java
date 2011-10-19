@@ -93,7 +93,7 @@ public final class TokenizerText implements Tokenizer
         this.reader = reader ;
     }
     
-    //@Override
+    @Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -130,12 +130,13 @@ public final class TokenizerText implements Tokenizer
     }    
     
     
+    @Override
     public final boolean eof()
     {
         return hasNext() ;
     }
 
-    //@Override
+    @Override
     public final Token next()
     {
         if ( ! hasNext() ) 
@@ -145,21 +146,21 @@ public final class TokenizerText implements Tokenizer
         return t ;
     }
     
-    //@Override
+    @Override
     public final Token peek()
     {
         if ( ! hasNext() ) return null ;
         return token ; 
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 
     public TokenChecker getChecker() { return checker ; }
     public void setChecker(TokenChecker checker) { this.checker = checker ; }
 
-    //@Override
+    @Override
     public void close()
     { 
         IO.close(reader) ;
@@ -1021,11 +1022,13 @@ public final class TokenizerText implements Tokenizer
         }
     }
 
+    @Override
     public long getColumn()
     {
         return reader.getColNum() ;
     }
 
+    @Override
     public long getLine()
     {
         return reader.getLineNum() ;

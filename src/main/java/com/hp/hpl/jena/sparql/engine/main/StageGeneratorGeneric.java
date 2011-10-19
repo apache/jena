@@ -49,6 +49,7 @@ public class StageGeneratorGeneric implements StageGenerator
     
     public StageGeneratorGeneric() {}
     
+    @Override
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,
                                  ExecutionContext execCxt)
@@ -109,14 +110,14 @@ public class StageGeneratorGeneric implements StageGenerator
     
     // ---- Execution policies
     private static StageGenerator executeQueryHandler = new StageGenerator() {
-        //@Override
+        @Override
         public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
         {
             return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
         }} ;
 
     private static StageGenerator executeInline = new StageGenerator() {
-        //@Override
+        @Override
         public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
         {
                 return QueryIterBlockTriples.create(input, pattern, execCxt) ;

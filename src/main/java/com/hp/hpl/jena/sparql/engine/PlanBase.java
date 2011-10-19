@@ -38,8 +38,10 @@ public abstract class PlanBase extends PrintSerializableBase implements Plan
 
     protected PlanBase(Op op, Closeable closeable)  { this.op = op ; this.closeable = closeable ; } 
     
+    @Override
     public Op getOp()       { return op ; }
     
+    @Override
     final
     public QueryIterator iterator() 
     {
@@ -58,11 +60,13 @@ public abstract class PlanBase extends PrintSerializableBase implements Plan
         output(out, sCxt) ;
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         op.output(out, sCxt) ;
     }
     
+    @Override
     public void close()
     { 
         if ( closed )

@@ -68,8 +68,10 @@ public class OpDisjunction extends OpN
     private OpDisjunction(List<Op> elts) { super(elts) ; }
     private OpDisjunction() { super() ; }
     
+    @Override
     public String getName() { return Tags.tagDisjunction ; }
     
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
     //{ throw new ARQNotImplemented("OpDisjunction.visit") ; }

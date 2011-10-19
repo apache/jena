@@ -84,11 +84,14 @@ public class ErrorHandlerFactory
     /** Ignores warnings, throws exceptions for errors */ 
     private static class ErrorHandlerSimple implements ErrorHandler
     {
+        @Override
         public void warning(String message, long line, long col)
         {}
+        @Override
         public void error(String message, long line, long col)
         { throw new RiotException(fmtMessage(message, line, col)) ; }
 
+        @Override
         public void fatal(String message, long line, long col)
         { throw new RiotException(fmtMessage(message, line, col)) ; }
     }
@@ -102,12 +105,12 @@ public class ErrorHandlerFactory
         }
         
         /** report a warning */
-        //@Override
+        @Override
         public void warning(String message, long line, long col)
         { logWarning(message, line, col) ; }
         
         /** report an error */
-        //@Override
+        @Override
         public void error(String message, long line, long col)
         { 
             logError(message, line, col) ;
@@ -115,7 +118,7 @@ public class ErrorHandlerFactory
         }
 
         /** report a fatal error - does not return */
-        //@Override
+        @Override
         public void fatal(String message, long line, long col)
         {
             logFatal(message, line, col) ;
@@ -132,7 +135,7 @@ public class ErrorHandlerFactory
         }
         
         /** report a warning  - do not carry on */
-        //@Override
+        @Override
         public void warning(String message, long line, long col)
         { 
             logWarning(message, line, col) ;
@@ -140,13 +143,14 @@ public class ErrorHandlerFactory
         }
         
         /** report an error - do not carry on */
-        //@Override
+        @Override
         public void error(String message, long line, long col)
         { 
             logError(message, line, col) ;
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
 
+        @Override
         public void fatal(String message, long line, long col)
         {
             logFatal(message, line, col) ;
@@ -160,16 +164,16 @@ public class ErrorHandlerFactory
         public ErrorHandlerWarning(Logger log)
         { super(log) ; }
         
-        //@Override
+        @Override
         public void warning(String message, long line, long col)
         { logWarning(message, line, col) ; }
         
         /** report an error but continue */
-        //@Override
+        @Override
         public void error(String message, long line, long col)
         { logError(message, line, col) ; }
 
-        //@Override
+        @Override
         public void fatal(String message, long line, long col)
         { 
             logFatal(message, line, col) ;

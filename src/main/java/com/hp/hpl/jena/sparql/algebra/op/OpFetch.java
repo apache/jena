@@ -51,9 +51,11 @@ public class OpFetch extends OpExt
         
         OpExtRegistry.register(new OpExtBuilder() {
             
+            @Override
             public OpExt make(ItemList argList)
             { return new OpFetch(argList.get(0).getNode()) ; }
             
+            @Override
             public String getTagName()
             { return TagFetch ; }
         }) ;

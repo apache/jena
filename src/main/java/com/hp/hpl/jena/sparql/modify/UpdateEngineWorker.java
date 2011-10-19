@@ -89,9 +89,11 @@ public class UpdateEngineWorker implements UpdateVisitor
         this.spillThreshold = (Long)graphStore.getContext().get(ARQ.spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
     }
 
+    @Override
     public void visit(UpdateDrop update)
     { execDropClear(update, false) ; }
 
+    @Override
     public void visit(UpdateClear update)
     { execDropClear(update, true) ; }
 
@@ -139,6 +141,7 @@ public class UpdateEngineWorker implements UpdateVisitor
             execDropClear(update, gn, isClear) ;
     }
 
+    @Override
     public void visit(UpdateCreate update)
     {
         Node g = update.getGraph() ;
@@ -154,6 +157,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         graphStore.addGraph(g, GraphFactory.createDefaultGraph()) ;
     }
 
+    @Override
     public void visit(UpdateLoad update)
     {
         String source = update.getSource() ;
@@ -170,6 +174,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         }
     }
 
+    @Override
     public void visit(UpdateAdd update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
@@ -177,6 +182,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         gsCopyTriples(graphStore, update.getSrc(), update.getDest()) ;
     }
 
+    @Override
     public void visit(UpdateCopy update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
@@ -184,6 +190,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
     }
 
+    @Override
     public void visit(UpdateMove update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
@@ -262,18 +269,21 @@ public class UpdateEngineWorker implements UpdateVisitor
     
     // ----
     
+    @Override
     public void visit(UpdateDataInsert update)
     {
         for ( Quad quad : update.getQuads() )
             graphStore.add(quad) ;
     }
 
+    @Override
     public void visit(UpdateDataDelete update)
     {
         for ( Quad quad : update.getQuads() )
             graphStore.delete(quad) ;
     }
 
+    @Override
     public void visit(UpdateDeleteWhere update)
     {
         List<Quad> quads = update.getQuads() ;
@@ -305,6 +315,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         }
     }
     
+    @Override
     public void visit(UpdateModify update)
     {
         Node withGraph = update.getWithIRI() ;

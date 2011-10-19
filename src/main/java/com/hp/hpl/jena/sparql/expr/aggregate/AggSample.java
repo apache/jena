@@ -32,6 +32,7 @@ public class AggSample extends AggregatorBase
     private final Expr expr ;
 
     public AggSample(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggSample(expr) ; }
     
     @Override
@@ -45,6 +46,7 @@ public class AggSample extends AggregatorBase
         return new AccSample(expr) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
 
     @Override

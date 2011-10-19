@@ -77,6 +77,7 @@ public class BindingOutputStream implements Sink<Binding>
     }
     
     public final void write(Binding binding) { send(binding) ; }
+    @Override
     public void send(Binding binding)
     {
         try {
@@ -156,11 +157,13 @@ public class BindingOutputStream implements Sink<Binding>
     }
 
 
+    @Override
     public void flush()
     {
         bw.flush() ;
     }
     
+    @Override
     public void close()
     {
         bw.close() ;

@@ -44,17 +44,20 @@ public class SinkExtendTriplesToQuads implements Sink<Triple>
         this.graph = gn ;
     }
     
+    @Override
     public void send(Triple triple)
     {
         Quad q = new Quad(graph, triple) ;
         quadSink.send(q) ;
     }
 
+    @Override
     public void flush()
     {
         quadSink.flush() ;
     }
     
+    @Override
     public void close()
     {
         // Don't close - the underlying sink may be reused. 

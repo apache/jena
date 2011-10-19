@@ -68,10 +68,13 @@ public class QuerySerializer implements QueryVisitor
     
     
     
+    @Override
     public void startVisit(Query query)  {}
     
+    @Override
     public void visitResultForm(Query query)  {}
 
+    @Override
     public void visitPrologue(Prologue prologue)
     { 
         int row1 = out.getRow() ;
@@ -81,6 +84,7 @@ public class QuerySerializer implements QueryVisitor
             out.newline() ;
     }
     
+    @Override
     public void visitSelectResultForm(Query query)
     {
         out.print("SELECT ") ;
@@ -97,6 +101,7 @@ public class QuerySerializer implements QueryVisitor
         out.newline() ;
     }
     
+    @Override
     public void visitConstructResultForm(Query query)
     {
         out.print("CONSTRUCT ") ;
@@ -115,6 +120,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitDescribeResultForm(Query query)
     {
         out.print("DESCRIBE ") ;
@@ -132,12 +138,14 @@ public class QuerySerializer implements QueryVisitor
         out.newline() ;
     }
     
+    @Override
     public void visitAskResultForm(Query query)
     {
         out.print("ASK") ;
         out.newline() ;
     }
     
+    @Override
     public void visitDatasetDecl(Query query)
     {
         if ( query.getGraphURIs() != null && query.getGraphURIs().size() != 0 )
@@ -161,6 +169,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitQueryPattern(Query query)
     {
         if ( query.getQueryPattern() != null )
@@ -178,6 +187,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitGroupBy(Query query)
     {
         if ( query.hasGroupBy() )
@@ -193,6 +203,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
 
+    @Override
     public void visitHaving(Query query)
     {
         if ( query.hasHaving() )
@@ -207,6 +218,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
 
+    @Override
     public void visitOrderBy(Query query)
     {
         if ( query.hasOrderBy() )
@@ -224,6 +236,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitLimit(Query query)
     {
         if ( query.hasLimit() )
@@ -233,6 +246,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitOffset(Query query)
     {
         if ( query.hasOffset() )
@@ -242,6 +256,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
     
+    @Override
     public void visitBindings(Query query)
     {
         if ( query.hasBindings() )
@@ -278,6 +293,7 @@ public class QuerySerializer implements QueryVisitor
         }
     }
 
+    @Override
     public void finishVisit(Query query)
     {
         out.flush() ;

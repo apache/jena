@@ -32,7 +32,7 @@ public class P_Link extends P_Path0
     @Override
     public boolean isForward()  { return true ; }
     
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

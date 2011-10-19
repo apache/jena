@@ -27,44 +27,53 @@ import org.openjena.atlas.lib.Cache ;
 /** A cache that keeps nothing */ 
 public final class Cache0<K, V> implements Cache<K,V>
 {
+    @Override
     public boolean containsKey(K key)
     {
         return false ;
     }
 
+    @Override
     public V get(K key)
     {
         return null ;
     }
 
+    @Override
     public V put(K key, V thing)
     {
         return null ;
     }
 
+    @Override
     public boolean remove(K key)
     {
         return false ;
     }
 
+    @Override
     public Iterator<K> keys()
     {
         return Iter.nullIterator() ;
     }
 
+    @Override
     public boolean isEmpty()
     {
         return true ;
     }
 
+    @Override
     public void clear()
     {}
 
+    @Override
     public long size()
     {
         return 0 ;
     }
 
+    @Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
     {}
 

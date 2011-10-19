@@ -153,15 +153,19 @@ public class Item extends ItemLocation
     static class ItemHashCode implements ItemVisitor
     {
         int hashCode = 0 ;
+        @Override
         public void visit(Item item, ItemList list)
         { hashCode = list.hashCode() ; }
 
+        @Override
         public void visit(Item item, Node node)
         { hashCode = node.hashCode() ; }
 
+        @Override
         public void visit(Item item, String symbol)
         { hashCode = symbol.hashCode() ; }
         
+        @Override
         public void visitNil()
         { hashCode = -99 ; }
     }
@@ -180,15 +184,19 @@ public class Item extends ItemLocation
         ItemEquals(Item other) { this.other = other ; }
         boolean result = false ;
 
+        @Override
         public void visit(Item item, ItemList list)
         { result = ( other.isList() && other.getList().equals(list) ) ; } 
 
+        @Override
         public void visit(Item item, Node node)
         { result = ( other.isNode() && other.getNode().equals(node) ) ; }
 
+        @Override
         public void visit(Item item, String symbol)
         { result = ( other.isSymbol() && other.getSymbol().equals(symbol) ) ; }
 
+        @Override
         public void visitNil()
         { result = other.isNil() ; }
 

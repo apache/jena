@@ -89,6 +89,7 @@ public abstract class QueryIteratorBase
     protected boolean isFinished() { return finished ; }
 
     /** final - subclasses implement hasNextBinding() */
+    @Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -119,12 +120,14 @@ public abstract class QueryIteratorBase
     }
     
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
+    @Override
     public final Binding next()
     {
         return nextBinding() ;
     }
 
     /** final - subclasses implement moveToNextBinding() */
+    @Override
     public final Binding nextBinding()
     {
         try {
@@ -166,12 +169,14 @@ public abstract class QueryIteratorBase
         }
     }
     
+    @Override
     public final void remove()
     {
         Log.warn(this, "Call to QueryIterator.remove() : "+Utils.className(this)+".remove") ;
         throw new UnsupportedOperationException(Utils.className(this)+".remove") ;
     }
     
+    @Override
     public void close()
     {
         if ( finished )
@@ -182,6 +187,7 @@ public abstract class QueryIteratorBase
         finished = true ;
     }
     
+    @Override
     @Deprecated
     public void abort()
     {
@@ -194,6 +200,7 @@ public abstract class QueryIteratorBase
     }
     
     /** Cancel this iterator */
+    @Override
     public final void cancel()
     {
         // Call requestCancel() once.

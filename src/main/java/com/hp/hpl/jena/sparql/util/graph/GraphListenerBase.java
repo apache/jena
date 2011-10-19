@@ -35,8 +35,10 @@ public abstract class GraphListenerBase implements GraphListener
     // ToDo: notifyAddGraph, notifyDeleteGraph
     public GraphListenerBase() {}
 
+    @Override
     public void notifyAddTriple(Graph g, Triple t) { addEvent(t) ; }
 
+    @Override
     public void notifyAddArray(Graph g, Triple[] triples)
     {
         for ( int i = 0 ; i < triples.length ; i++ )
@@ -45,28 +47,34 @@ public abstract class GraphListenerBase implements GraphListener
 //            addEvent(t) ;
     }
 
+    @Override
     public void notifyAddList(Graph g, List<Triple> triples) 
     { 
         notifyAddIterator(g, triples.iterator()) ;
     }
 
+    @Override
     public void notifyAddIterator(Graph g, Iterator<Triple> it)
     {
         for ( ; it.hasNext() ; )
             addEvent(it.next()) ;
     }
 
+    @Override
     public void notifyAddGraph(Graph g, Graph added)
     {}
 
+    @Override
     public void notifyDeleteTriple(Graph g, Triple t)
     { deleteEvent(t) ; }
 
+    @Override
     public void notifyDeleteList(Graph g, List<Triple> triples)
     {
         notifyDeleteIterator(g, triples.iterator()) ;
     }
 
+    @Override
     public void notifyDeleteArray(Graph g, Triple[] triples)
     {
         for ( int i = 0 ; i < triples.length ; i++ )
@@ -75,12 +83,14 @@ public abstract class GraphListenerBase implements GraphListener
 //            deleteEvent(t) ;
     }
 
+    @Override
     public void notifyDeleteIterator(Graph g, Iterator<Triple> it)
     {
         for ( ; it.hasNext() ; )
             deleteEvent(it.next()) ;
     }
 
+    @Override
     public void notifyDeleteGraph(Graph g, Graph removed)
     {}
     
@@ -91,6 +101,7 @@ public abstract class GraphListenerBase implements GraphListener
     // --------
 
 //    @Override
+    @Override
     public void notifyEvent(Graph source, Object value)
     {
         if ( value.equals(GraphEvents.startRead) )
@@ -100,11 +111,9 @@ public abstract class GraphListenerBase implements GraphListener
         //super.notifyEvent(source, value) ;
     }
 
-    //@Override
     protected void startRead()
     {}
             
-    //@Override
     protected void finishRead()
     {}
 }

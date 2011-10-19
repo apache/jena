@@ -36,6 +36,7 @@ public class FN_Matches implements Function
     E_Regex regex = null;
     ExprList myArgs = null ;
     
+    @Override
     public void build(String uri, ExprList args)
     {
         if ( args.size() != 3 && args.size() != 2 )
@@ -44,6 +45,7 @@ public class FN_Matches implements Function
         
     }
     
+    @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         if ( myArgs != args )

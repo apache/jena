@@ -22,16 +22,19 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class ItemTransformBase implements ItemTransform
 {
+    @Override
     public Item transform(Item item, ItemList list)
     {
         return Item.createList(list, item.getLine(), item.getColumn()) ;
     }
 
+    @Override
     public Item transform(Item item, Node node)
     {
         return Item.createNode(node, item.getLine(), item.getColumn()) ;
     }
     
+    @Override
     public Item transform(Item item, String symbol)
     {
         return Item.createSymbol(symbol, item.getLine(), item.getColumn()) ;

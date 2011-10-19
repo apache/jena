@@ -36,6 +36,7 @@ class PropertyFunctionFactoryAuto implements PropertyFunctionFactory
             throw new ARQInternalErrorException("No PropertyFunction interface for "+Utils.classShortName(xClass)) ;
     }
     
+    @Override
     public PropertyFunction create(String uri)
     {
         try

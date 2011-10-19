@@ -59,12 +59,14 @@ public abstract class GraphBase2 implements GraphWithPerform
     /**
            Close this graph. Subgraphs may extend to discard resources.
      */
+    @Override
     public void close() 
     { 
         closed = true;
         if (reifier != null) reifier.close(); 
     }
 
+    @Override
     public boolean isClosed()
     { return closed; }
 
@@ -72,6 +74,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Default implementation answers <code>true</code> iff this graph is the
            same graph as the argument graph.
      */
+    @Override
     public boolean dependsOn( Graph other ) 
     { return this == other; }
 
@@ -80,6 +83,7 @@ public abstract class GraphBase2 implements GraphWithPerform
           returns the same SimpleQueryHandler each time it is called; sub-classes
           may override if they need specialised query handlers.
      */
+    @Override
     public abstract QueryHandler queryHandler() ; 
 //    { 
 //        if (queryHandler == null) queryHandler = new SimpleQueryHandler(this);
@@ -92,6 +96,7 @@ public abstract class GraphBase2 implements GraphWithPerform
      */
     protected QueryHandler queryHandler;
 
+    @Override
     public GraphStatisticsHandler getStatisticsHandler()
     {
         if (statisticsHandler == null) statisticsHandler = createStatisticsHandler();
@@ -108,6 +113,7 @@ public abstract class GraphBase2 implements GraphWithPerform
           Subclasses may override if they have a more specialised event handler.
           The default is a SimpleEventManager.
      */
+    @Override
     public GraphEventManager getEventManager()
     { 
         if (gem == null) gem = new SimpleEventManager( this ); 
@@ -138,6 +144,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Answer a transaction handler bound to this graph. The default is
            SimpleTransactionHandler, which handles <i>no</i> transactions.
      */
+    @Override
     public TransactionHandler getTransactionHandler()
     { return new SimpleTransactionHandler(); }
 
@@ -147,6 +154,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            (add/delete) updates; the same handler is returned on each call. Subclasses
            may override if they have specialised implementations.
      */
+    @Override
     public BulkUpdateHandler getBulkUpdateHandler()
     { 
         if (bulkHandler == null) bulkHandler = new SimpleBulkUpdateHandler( this ); 
@@ -163,6 +171,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            (the same one each time, not that it matters - Capabilities should be 
            immutable).
      */
+    @Override
     public Capabilities getCapabilities()
     { 
         if (capabilities == null) capabilities = new AllCapabilities();
@@ -178,6 +187,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Answer the PrefixMapping object for this graph, the same one each time.
            Subclasses are unlikely to want to modify this.
      */
+    @Override
     public PrefixMapping getPrefixMapping()
     { 
         if ( pm == null )
@@ -194,6 +204,7 @@ public abstract class GraphBase2 implements GraphWithPerform
          override this - we might make it final. The triple is added using performAdd,
          and notification done by notifyAdd.
      */
+    @Override
     public void add( Triple t ) 
     {
         checkOpen();
@@ -206,6 +217,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            AddDeniedException; subclasses must override if they want to be able to
            add triples.
      */
+    @Override
     public void performAdd( Triple t )
     { throw new AddDeniedException( "GraphBase::performAdd" ); }
 
@@ -215,6 +227,7 @@ public abstract class GraphBase2 implements GraphWithPerform
          and notification done by notifyDelete.
      */
 
+    @Override
     public final void delete( Triple t )
     {
         checkOpen();
@@ -227,6 +240,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            a DeleteDeniedException; subclasses must override if they want to be able
            to remove triples.
      */
+    @Override
     public void performDelete( Triple t ) 
     { throw new DeleteDeniedException( "GraphBase::delete" ); }
 
@@ -236,6 +250,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            the appending of reification quadlets; instead they must implement
            graphBaseFind(TripleMatch).
      */
+    @Override
     public final ExtendedIterator<Triple> find( TripleMatch m )
     { 
         checkOpen(); 
@@ -254,6 +269,7 @@ public abstract class GraphBase2 implements GraphWithPerform
     public ExtendedIterator<Triple> forTestingOnly_graphBaseFind( TripleMatch tm )
     { return graphBaseFind( tm ); }
 
+    @Override
     public final ExtendedIterator<Triple> find(Node s, Node p, Node o)
     {
         checkOpen() ;
@@ -269,6 +285,7 @@ public abstract class GraphBase2 implements GraphWithPerform
           wildcards. Sub-classes may over-ride reifierContains and graphBaseContains
           for efficiency.
      */
+    @Override
     public final boolean contains( Triple t ) 
     { 
         checkOpen();
@@ -298,6 +315,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Answer <code>true</code> if this graph contains <code>(s, p, o)</code>;
            this canonical implementation cannot be over-ridden. 
      */
+    @Override
     public final boolean contains( Node s, Node p, Node o ) {
         checkOpen();
         return contains( Triple.create( s, p, o ) );
@@ -330,6 +348,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            SimpleReifier. Generally DO NOT override this method: override
            <code>constructReifier</code> instead.
      */
+    @Override
     public Reifier getReifier() 
     {
         if (reifier == null) reifier = constructReifier();
@@ -355,6 +374,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            must override graphBaseSize() to reimplement (and reifierSize if they have
            some special reason for redefined that).
      */
+    @Override
     public final int size() 
     {
         checkOpen() ;
@@ -407,6 +427,7 @@ public abstract class GraphBase2 implements GraphWithPerform
           if necessary. This method may become final and defined in terms of other
           methods.
      */
+    @Override
     public boolean isEmpty()
     { return size() == 0; }
 
@@ -414,6 +435,7 @@ public abstract class GraphBase2 implements GraphWithPerform
            Answer true iff this graph is isomorphic to <code>g</code> according to
            the algorithm (indeed, method) in <code>GraphMatcher</code>.
      */
+    @Override
     public boolean isIsomorphicWith( Graph g )
     { checkOpen();
     return g != null && GraphMatcher.equals( this, g ); }

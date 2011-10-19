@@ -60,6 +60,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         outputGraphBNodeLabels = ARQ.isTrue(ARQ.outputGraphBNodeLabels) ;
     }
     
+    @Override
     public void start(ResultSet rs)
     {
         out.println("{") ;
@@ -72,6 +73,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         firstSolution = true ;
     }
 
+    @Override
     public void finish(ResultSet rs)
     {
         // Close last binding.
@@ -124,6 +126,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
     boolean firstBindingInSolution = true ;
     
     // NB assumes are on end of previous line.
+    @Override
     public void start(QuerySolution qs)
     {
         if ( ! firstSolution )
@@ -134,6 +137,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         firstBindingInSolution = true ;
     }
 
+    @Override
     public void finish(QuerySolution qs)
     {
         out.println() ;     // Finish last binding
@@ -141,6 +145,7 @@ public class JSONOutputResultSet implements ResultSetProcessor
         out.print("}") ;    // NB No newline
     }
 
+    @Override
     public void binding(String varName, RDFNode value)
     {
         if ( value == null )

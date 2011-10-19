@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 public class AggNull extends AggregatorBase
 {
     public AggNull() { } 
+    @Override
     public Aggregator copy(Expr expr) { return this ; }
     
     @Override
@@ -46,7 +47,7 @@ public class AggNull extends AggregatorBase
     @Override
     public Node getValueEmpty()     { return null ; } 
 
-    //@Override
+    @Override
     public Expr getExpr()           { return null ; }
     
     @Override
@@ -67,11 +68,11 @@ public class AggNull extends AggregatorBase
 
         public AccNull() { }
 
-        //@Override
+        @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { nBindings++ ; }
 
-        //@Override
+        @Override
         public NodeValue getValue()
         {
             return null ;

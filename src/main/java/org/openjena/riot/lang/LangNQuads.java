@@ -41,7 +41,7 @@ public class LangNQuads extends LangNTuple<Quad>
         super(tokens, profile, sink) ;
     }
 
-    //@Override
+    @Override
     public Lang getLang()   { return Lang.NQUADS ; }
     
     @Override

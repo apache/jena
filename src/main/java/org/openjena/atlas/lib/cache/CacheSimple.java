@@ -55,7 +55,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
     }
     
 
-    //@Override
+    @Override
     public void clear()
     { 
         Arrays.fill(values, null) ;
@@ -64,7 +64,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
         currentSize = 0 ;
     }
 
-    //@Override
+    @Override
     public boolean containsKey(K key)
     {
         return get(key) != null ;
@@ -87,7 +87,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
         return -x-1 ;
     }
     
-    //@Override
+    @Override
     //public V getObject(K key, boolean exclusive)
     public V get(K key)
     {
@@ -97,7 +97,7 @@ public class CacheSimple<K,V> implements Cache<K,V>
         return values[x] ;
     }
 
-    //@Override
+    @Override
     public V put(K key, V thing)
     {
         int x = index(key) ;
@@ -123,33 +123,34 @@ public class CacheSimple<K,V> implements Cache<K,V>
         return old ;
     }
 
-    //@Override
+    @Override
     public boolean remove(K key)
     {
         V old = put(key, null) ;
         return old != null ;
     }
 
-    //@Override
+    @Override
     public long size()
     {
         return currentSize ;
     }
 
-    //@Override
+    @Override
     public Iterator<K> keys()
     {
         Iterator<K> iter = IteratorArray.create(keys) ;
         return Iter.removeNulls(iter) ;
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return currentSize == 0 ;
     }
 
     /** Callback for entries when dropped from the cache */
+    @Override
     public void setDropHandler(ActionKeyValue<K,V> dropHandler)
     {
         this.dropHandler = dropHandler ;

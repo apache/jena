@@ -52,89 +52,89 @@ public class ParserProfileBase implements ParserProfile
         this.labelMapping = labelMapping ;
     }
     
-    //@Override
+    @Override
     public ErrorHandler getHandler()    { return errorHandler ; }
 
-    //@Override
+    @Override
     public void setHandler(ErrorHandler handler) { errorHandler = handler ; }
 
-    //@Override
+    @Override
     public Prologue getPrologue()           { return prologue ; }      
 
-    //@Override
+    @Override
     public void setPrologue(Prologue p)     { prologue = p ; }      
 
-    //@Override
+    @Override
     public LabelToNode getLabelToNode()
     { return labelMapping ; }
 
-    //@Override
+    @Override
     public void setLabelToNode(LabelToNode mapper) { labelMapping = mapper ; }
 
-    //@Override
+    @Override
     public String resolveIRI(String uriStr, long line, long col)
     {
         return makeIRI(uriStr, line, col).toString() ;
     }
     
-    //@Override
+    @Override
     public IRI makeIRI(String uriStr, long line, long col)
     {
         IRI iri = prologue.getResolver().resolve(uriStr) ;
         return iri ;
     }
 
-    //@Override
+    @Override
     public Quad createQuad(Node g, Node s, Node p, Node o, long line, long col)
     {
         return new Quad(g,s,p,o) ;
     }
 
-    //@Override
+    @Override
     public Triple createTriple(Node s, Node p, Node o, long line, long col)
     {
         return new Triple(s, p, o) ;
     }
 
-    //@Override
+    @Override
     public Node createURI(String uriStr, long line, long col)
     {
         return Node.createURI(uriStr) ;
     }
 
-    //@Override
+    @Override
     public Node createBlankNode(Node scope, String label, long line, long col)
     {
         return labelMapping.get(scope, label) ;
     }
 
-//    //@Override
+//    @Override
 //    public Node createTypedLiteral(String lexical, String datatype, long line, long col)
 //    {
 //        RDFDatatype dt = Node.getType(datatype) ;
 //        return createTypedLiteral(lexical, dt, line, col) ;
 //    }
     
-    //@Override
+    @Override
     public Node createTypedLiteral(String lexical, RDFDatatype dt, long line, long col)
     {
         return Node.createLiteral(lexical, null, dt)  ;
     }
 
-    //@Override
+    @Override
     public Node createLangLiteral(String lexical, String langTag, long line, long col)
     {
         return Node.createLiteral(lexical, langTag, null)  ;
     }
 
-    //@Override
+    @Override
     public Node createPlainLiteral(String lexical, long line, long col)
     {
         return Node.createLiteral(lexical) ;
     }
     
     /** Special token forms*/ 
-    //@Override
+    @Override
     public Node createNodeFromToken(Node scope, Token token, long line, long col)
     {
         // OFF - Don't produce Node.ANY by default. 
@@ -146,7 +146,7 @@ public class ParserProfileBase implements ParserProfile
         return null ;
     }
 
-    //@Override
+    @Override
     public Node create(Node currentGraph, Token token)
     {
         // Dispatches to the underlying operation

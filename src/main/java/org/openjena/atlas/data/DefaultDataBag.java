@@ -78,7 +78,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         if (closed) throw new AtlasException("DefaultDataBag is closed, no operations can be performed on it.") ;
     }
     
-    //@Override
+    @Override
     public void add(E item)
     {
         checkClosed();
@@ -127,19 +127,19 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         memory = null;
     }
     
-    //@Override
+    @Override
     public boolean isSorted()
     {
         return false;
     }
 
-    //@Override
+    @Override
     public boolean isDistinct()
     {
         return false;
     }
     
-    //@Override
+    @Override
     public void flush()
     {
         if (policy.isThresholdExceeded() && (null != serializer))
@@ -148,7 +148,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         }
     }
     
-    //@Override
+    @Override
     public Iterator<E> iterator()
     {
         Iterator<E> toReturn;
@@ -198,7 +198,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         }
     }
     
-    //@Override
+    @Override
     public void close()
     {
         if (!closed)

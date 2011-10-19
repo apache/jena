@@ -37,14 +37,17 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
         super(dsg) ;
     }
 
+    @Override
     public Dataset toDataset()
     {
         return new DatasetImpl(getWrapped()) ;
     }
 
+    @Override
     public void startRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
 
+    @Override
     public void finishRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
     
@@ -54,6 +57,7 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
         GraphStoreUtils.actionAll(this, 
                                   new GraphStoreAction()
         {
+            @Override
             public void exec(Graph graph){ graph.close() ; }
         }) ;
     }

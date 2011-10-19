@@ -86,9 +86,11 @@ public class QueryEngineHTTP implements QueryExecution
 //    { this.params = params ; }
     
     // Meaning-less
+    @Override
     public void setFileManager(FileManager fm)
     { throw new UnsupportedOperationException("FileManagers do not apply to remote query execution") ; }  
 
+    @Override
     public void setInitialBinding(QuerySolution binding)
     { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
     
@@ -142,6 +144,7 @@ public class QueryEngineHTTP implements QueryExecution
         this.password = password ;
     }
     
+    @Override
     public ResultSet execSelect()
     {
         HttpQuery httpQuery = makeHttpQuery() ;
@@ -162,12 +165,16 @@ public class QueryEngineHTTP implements QueryExecution
         return rs ;
     }
 
+    @Override
     public Model execConstruct()             { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
     
+    @Override
     public Model execConstruct(Model model)  { return execModel(model) ; }
 
+    @Override
     public Model execDescribe()              { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
     
+    @Override
     public Model execDescribe(Model model)   { return execModel(model) ; }
 
     private Model execModel(Model model)
@@ -179,6 +186,7 @@ public class QueryEngineHTTP implements QueryExecution
         return model ;
     }
     
+    @Override
     public boolean execAsk()
     {
         HttpQuery httpQuery = makeHttpQuery() ;
@@ -191,24 +199,29 @@ public class QueryEngineHTTP implements QueryExecution
         return result;
     }
 
+    @Override
     public Context getContext() { return context ; }
     
+    @Override
     public void setTimeout(long timeout)
     {
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
 
+    @Override
     public void setTimeout(long timeout1, long timeout2)
     {
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
 
 
+    @Override
     public void setTimeout(long timeout, TimeUnit timeoutUnits)
     {
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
     }
 
+    @Override
     public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
     {
         throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
@@ -245,8 +258,10 @@ public class QueryEngineHTTP implements QueryExecution
     
     public void cancel() { finished = true ; }
     
+    @Override
     public void abort() { try { close() ; } catch (Exception ex) {} }
 
+    @Override
     public void close() {
         finished = false ;
         if (retainedConnection != null) {
@@ -265,6 +280,7 @@ public class QueryEngineHTTP implements QueryExecution
         return "GET "+httpQuery.toString() ;
     }
 
+    @Override
     public Dataset getDataset()
     {
         return null ;

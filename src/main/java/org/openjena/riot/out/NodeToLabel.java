@@ -68,7 +68,9 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     private static class SingleScopePolicy implements ScopePolicy<Node, String, Node>
     { 
         private Map<Node, String> map = new HashMap<Node, String>() ;
+        @Override
         public Map<Node, String> getScope(Node scope) { return map ; }
+        @Override
         public void clear() { map.clear(); }
     }
     
@@ -77,6 +79,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
     { 
         private Map<Node, String> dftMap = new HashMap<Node, String>() ;
         private Map<Node, Map<Node, String>> map = new HashMap<Node, Map<Node, String>>() ;
+        @Override
         public Map<Node, String> getScope(Node scope)
         {
             if ( scope == null )
@@ -90,6 +93,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
             }
             return x ;
         }
+        @Override
         public void clear() { map.clear(); }
     }
     
@@ -101,6 +105,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         // abstract to make you think about the policy!
         private long counter = 0 ;
         
+        @Override
         public final String create(Node node)
         {
             if ( node.isURI() )         return labelForURI(node) ;
@@ -129,6 +134,7 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
         {
             return "?"+node.getName() ;
         }
+        @Override
         public void reset()     {}
     }
     

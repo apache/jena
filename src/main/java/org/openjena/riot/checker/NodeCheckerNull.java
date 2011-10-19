@@ -22,5 +22,6 @@ import com.hp.hpl.jena.graph.Node ;
 
 public class NodeCheckerNull implements NodeChecker
 {
+    @Override
     public boolean check(Node node, long line, long col) { return true ; }
 }

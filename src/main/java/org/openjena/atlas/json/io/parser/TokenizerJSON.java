@@ -50,6 +50,7 @@ public class TokenizerJSON implements Tokenizer
         this.reader = reader ;
     }
     
+    @Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -63,12 +64,14 @@ public class TokenizerJSON implements Tokenizer
         return token != null ;
     }
     
+    @Override
     public final boolean eof()
     {
         return hasNext() ;
     }
 
     /** Move to next token */
+    @Override
     public final Token next()
     {
         if ( ! hasNext() )
@@ -79,13 +82,14 @@ public class TokenizerJSON implements Tokenizer
     }
 
     
+    @Override
     public final Token peek()
     {
         if ( ! hasNext() ) return null ;
         return token ; 
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 
@@ -629,11 +633,13 @@ public class TokenizerJSON implements Tokenizer
         }
     }
 
+    @Override
     public long getColumn()
     {
         return reader.getColNum() ;
     }
 
+    @Override
     public long getLine()
     {
         return reader.getLineNum() ;
@@ -641,7 +647,7 @@ public class TokenizerJSON implements Tokenizer
 
     // ---- Character classes 
     
-    //@Override
+    @Override
     public void close()
     {
         try { reader.close() ; }

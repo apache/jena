@@ -227,6 +227,7 @@ public class BuilderOp
     // Or assign null and create object on first call but that breaks add/remove
     final protected Build buildTable = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             Item t = Item.createList(list) ;
@@ -237,6 +238,7 @@ public class BuilderOp
 
     final protected Build buildBGP = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BasicPattern triples = buildBGP(list) ;
@@ -246,6 +248,7 @@ public class BuilderOp
 
     final protected Build buildQuadPattern = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             Node g = null ;
@@ -273,6 +276,7 @@ public class BuilderOp
     } ;
 
     final protected Build buildTriple = new Build(){
+        @Override
         public Op make(ItemList list)
         {
             Triple t = BuilderGraph.buildTriple(list) ;
@@ -281,6 +285,7 @@ public class BuilderOp
     
     
     final protected Build buildTriplePath = new Build(){
+        @Override
         public Op make(ItemList list)
         {
             TriplePath tp = BuilderPath.buildTriplePath(list) ;
@@ -289,6 +294,7 @@ public class BuilderOp
     
     final protected Build buildFilter = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "Malformed filter") ;
@@ -303,6 +309,7 @@ public class BuilderOp
 
     final protected Build buildJoin = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "Join") ;
@@ -325,6 +332,7 @@ public class BuilderOp
 
     final protected Build buildSequence = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(2, list, "Sequence") ;
@@ -336,6 +344,7 @@ public class BuilderOp
     
     final protected Build buildDisjunction = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(2, list, "Disjunction") ;
@@ -347,6 +356,7 @@ public class BuilderOp
 
     final protected Build buildLeftJoin = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
@@ -369,6 +379,7 @@ public class BuilderOp
 
     final protected Build buildDiff = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, 4, list, "diff: wanted 2 arguments") ;
@@ -381,6 +392,7 @@ public class BuilderOp
 
     final protected Build buildMinus = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, 4, list, "minus: wanted 2 arguments") ;
@@ -393,6 +405,7 @@ public class BuilderOp
 
     final protected Build buildUnion = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "union") ;
@@ -405,6 +418,7 @@ public class BuilderOp
     
     final protected Build buildConditional = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(2, 3, list, "condition") ;
@@ -420,6 +434,7 @@ public class BuilderOp
 
     final protected Build buildGraph = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "graph") ;
@@ -431,6 +446,7 @@ public class BuilderOp
 
     final protected Build buildService = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             boolean silent = false ;
@@ -457,6 +473,7 @@ public class BuilderOp
     
     final protected Build buildProcedure = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             // (proc <foo> (args) form)
@@ -473,6 +490,7 @@ public class BuilderOp
 
     final protected Build buildPropertyFunction = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             // (proc <foo> (subject args) (object args) form)
@@ -501,6 +519,7 @@ public class BuilderOp
 
     final protected Build buildToList = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "tolist") ;
@@ -514,6 +533,7 @@ public class BuilderOp
     final protected Build buildGroupBy = new Build()
     {
         // See buildProject
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, 4, list,  "Group") ;
@@ -548,6 +568,7 @@ public class BuilderOp
 
     final protected Build buildOrderBy = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list,  "Order") ;
@@ -591,6 +612,7 @@ public class BuilderOp
     
     final protected Build buildTopN = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list,  Tags.tagTopN) ;
@@ -616,6 +638,7 @@ public class BuilderOp
     
     final protected Build buildProject = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "project") ;
@@ -628,6 +651,7 @@ public class BuilderOp
     
     final protected Build buildDistinct = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "distinct") ;
@@ -638,6 +662,7 @@ public class BuilderOp
 
     final protected Build buildReduced = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "reduced") ;
@@ -648,6 +673,7 @@ public class BuilderOp
 
     final protected Build buildAssign = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "assign") ;
@@ -659,6 +685,7 @@ public class BuilderOp
 
     final protected Build buildExtend = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "extend") ;
@@ -672,6 +699,7 @@ public class BuilderOp
 
     final protected Build buildSlice = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(4, list, "slice") ;
@@ -690,6 +718,7 @@ public class BuilderOp
 
     final protected Build buildNull = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(1, list, Tags.tagNull) ;
@@ -699,6 +728,7 @@ public class BuilderOp
 
     final protected Build buildLabel = new Build()
     {
+        @Override
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(2, 3, list, Tags.tagLabel) ;

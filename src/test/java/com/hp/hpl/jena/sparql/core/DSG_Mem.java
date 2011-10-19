@@ -210,6 +210,7 @@ public class DSG_Mem extends DatasetGraphCaching
         return graphNodes().contains(graphNode) ;
     }
 
+    @Override
     public Iterator<Node> listGraphNodes()
     {
         return graphNodes().iterator() ;

@@ -71,6 +71,7 @@ public class ExecutionContext implements FunctionEnv
         this.executor = factory ;
     }
 
+    @Override
     public Context getContext()       { return context ; }
 
 //    public ExecutionContext getExecutionContext()       { return this ; }
@@ -106,6 +107,7 @@ public class ExecutionContext implements FunctionEnv
         this.executor = executor ;
     }
 
+    @Override
     public DatasetGraph getDataset()  { return dataset ; }
 
 //    /** Setter for the dataset - use with care */
@@ -118,6 +120,7 @@ public class ExecutionContext implements FunctionEnv
      * May be null if unknown or not applicable - for example, doing quad store access or
      * when sorting  
      */ 
+    @Override
     public Graph getActiveGraph()     { return activeGraph ; }
 
 //    /** Setter for the active graph - use with care */

@@ -33,7 +33,7 @@ public class TestEvent extends BaseTest
         public Object dest = null ;
         public Event event = null ;
         
-        //@Override
+        @Override
         public void event(Object dest, Event event)
         {
             eventCount++ ;

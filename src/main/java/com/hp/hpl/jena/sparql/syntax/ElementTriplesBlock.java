@@ -44,17 +44,22 @@ public class ElementTriplesBlock extends Element implements TripleCollector
 
     public boolean isEmpty() { return pattern.isEmpty() ; }
     
+    @Override
     public void addTriple(Triple t)
     { pattern.add(t) ; }
     
+    @Override
     public int mark() { return pattern.size() ; }
     
+    @Override
     public void addTriple(int index, Triple t)
     { pattern.add(index, t) ; }
     
+    @Override
     public void addTriplePath(TriplePath path)
     { throw new ARQException("Triples-only collector") ; }
 
+    @Override
     public void addTriplePath(int index, TriplePath path)
     { throw new ARQException("Triples-only collector") ; }
     

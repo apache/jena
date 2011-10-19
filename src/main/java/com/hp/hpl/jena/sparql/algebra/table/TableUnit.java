@@ -37,6 +37,7 @@ public class TableUnit extends TableBase
     
     public TableUnit() {}
     
+    @Override
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         // BindingRoot?
@@ -44,6 +45,7 @@ public class TableUnit extends TableBase
         return QueryIterSingleton.create(binding, execCxt) ;
     }
 
+    @Override
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execCxt)
@@ -60,8 +62,10 @@ public class TableUnit extends TableBase
     @Override
     public boolean isEmpty()    { return false ; }
 
+    @Override
     public List<String> getVarNames()   { return new ArrayList<String>() ; }
 
+    @Override
     public List<Var> getVars()       { return new ArrayList<Var>() ; }
     
     @Override

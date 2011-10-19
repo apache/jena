@@ -54,12 +54,15 @@ public class QueryCompare implements QueryVisitor
         
     }
 
+    @Override
     public void startVisit(Query query1)
     {  }  
 
+    @Override
     public void visitResultForm(Query query1)
     { check("Query result form", query1.getQueryType() == query2.getQueryType()) ; }
 
+    @Override
     public void visitPrologue(Prologue query1)
     {
         // This is after parsing so all IRIs in the query have been made absolute.
@@ -75,6 +78,7 @@ public class QueryCompare implements QueryVisitor
         check("Prefixes", query1.getPrefixMapping().samePrefixMappingAs(query2.getPrefixMapping())) ;
     }
 
+    @Override
     public void visitSelectResultForm(Query query1)
     { 
         check("Not both SELECT queries", query2.isSelectType()) ;
@@ -84,6 +88,7 @@ public class QueryCompare implements QueryVisitor
         check("Result variables",   query1.getProject(), query2.getProject() ) ;
     }
 
+    @Override
     public void visitConstructResultForm(Query query1)
     {
         check("Not both CONSTRUCT queries", query2.isConstructType()) ;
@@ -91,6 +96,7 @@ public class QueryCompare implements QueryVisitor
               query1.getConstructTemplate().equalIso(query2.getConstructTemplate(), new NodeIsomorphismMap()) ) ;
     }
 
+    @Override
     public void visitDescribeResultForm(Query query1)
     {
         check("Not both DESCRIBE queries", query2.isDescribeType()) ;
@@ -101,11 +107,13 @@ public class QueryCompare implements QueryVisitor
         
     }
 
+    @Override
     public void visitAskResultForm(Query query1)
     {
         check("Not both ASK queries", query2.isAskType()) ;
     }
 
+    @Override
     public void visitDatasetDecl(Query query1)
     {
         boolean b1 = Lib.equalsListAsSet(query1.getGraphURIs(), query2.getGraphURIs()) ;
@@ -114,6 +122,7 @@ public class QueryCompare implements QueryVisitor
         check("Named graph URIs", b2 ) ;
     }
 
+    @Override
     public void visitQueryPattern(Query query1)
     {
         if ( query1.getQueryPattern() == null &&
@@ -129,31 +138,37 @@ public class QueryCompare implements QueryVisitor
         check("Pattern", query1.getQueryPattern().equalTo(query2.getQueryPattern(), new NodeIsomorphismMap())) ;
     }
 
+    @Override
     public void visitGroupBy(Query query1)
     {
         check("GROUP BY", query1.getGroupBy(), query2.getGroupBy()) ;
     }
     
+    @Override
     public void visitHaving(Query query1) 
     {
         check("HAVING", query1.getHavingExprs(), query2.getHavingExprs()) ;
     }
     
+    @Override
     public void visitLimit(Query query1)
     {
         check("LIMIT", query1.getLimit() == query2.getLimit() ) ;
     }
 
-     public void visitOrderBy(Query query1)
+     @Override
+    public void visitOrderBy(Query query1)
      {
          check("ORDER BY", query1.getOrderBy(), query2.getOrderBy() ) ;
      }
 
-     public void visitOffset(Query query1)
+     @Override
+    public void visitOffset(Query query1)
     {
         check("OFFSET", query1.getOffset() == query2.getOffset() ) ;
     }
 
+    @Override
     public void visitBindings(Query query1)
     {
         // Must be same order for now.
@@ -161,6 +176,7 @@ public class QueryCompare implements QueryVisitor
         check("BINDINGS/values", query1.getBindingValues(), query2.getBindingValues()) ;
     }
 
+    @Override
     public void finishVisit(Query query1)
     {}
     

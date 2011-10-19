@@ -49,7 +49,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
 
     protected boolean isFinished() { return finished ; }
 
-    //@Override
+    @Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -70,7 +70,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
     }
     
     /** final - autoclose and registration relies on it - implement moveToNextBinding() */
-    //@Override
+    @Override
     public final T next()
     {
         if ( ! hasNext() ) throw new NoSuchElementException(Utils.className(this)) ;
@@ -95,7 +95,7 @@ public abstract class IteratorSlotted<T> implements Iterator<T>
         return slot ;
     }
     
-    //@Override
+    @Override
     public final void remove()
     {
         throw new UnsupportedOperationException(Utils.className(this)+".remove") ;

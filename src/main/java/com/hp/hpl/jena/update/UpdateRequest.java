@@ -60,6 +60,7 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
     /** @deprecated Use @link{#getOperations()} instead. */
     public List<Update> getUpdates() { return operationsView ; }
     
+    @Override
     public Iterator<Update> iterator()
     {
         return operationsView.iterator() ;
@@ -69,6 +70,7 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
     public String toString()
     { return PrintUtils.toString(this) ; } 
     
+    @Override
     public void output(IndentedWriter out)
     { UpdateWriter.output(this, out) ; }
 }

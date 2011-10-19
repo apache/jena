@@ -37,6 +37,7 @@ public class NodeTransformBNodesToVariables implements NodeTransform
         this.mapping = new HashMap<Node, Var>();
     }
 
+    @Override
     public Node convert(Node node)
     {
         if ( ! node.isBlank() )

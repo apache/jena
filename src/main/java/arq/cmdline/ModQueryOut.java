@@ -33,6 +33,7 @@ public class ModQueryOut implements ArgModuleGeneral
     private Syntax outputSyntax = Syntax.syntaxSPARQL ;
     private boolean lineNumbers = false ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output") ;
@@ -40,6 +41,7 @@ public class ModQueryOut implements ArgModuleGeneral
         cmdLine.add(queryNumberDecl, "--num", "Print line numbers") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(queryOutputSyntaxDecl) )

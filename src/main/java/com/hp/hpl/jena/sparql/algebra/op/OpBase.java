@@ -30,6 +30,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
 {
     @Override
     public abstract int hashCode() ;
+    @Override
     public abstract boolean equalTo(Op other, NodeIsomorphismMap labelMap) ;
 
     @Override
@@ -48,6 +49,7 @@ public abstract class OpBase extends PrintSerializableBase implements Op
         output(out, null) ;
     }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         int line = out.getRow() ;

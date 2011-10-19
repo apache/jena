@@ -30,6 +30,7 @@ abstract class AccumulatorDistinctAll implements Accumulator
     // COUNT(DISTINCT *)
     private final Set<Binding> rows = new HashSet<Binding>() ;
     
+    @Override
     final public void accumulate(Binding binding, FunctionEnv functionEnv)
     {
         if ( rows.contains(binding) )

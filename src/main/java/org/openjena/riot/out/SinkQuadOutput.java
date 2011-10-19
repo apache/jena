@@ -64,11 +64,13 @@ public class SinkQuadOutput implements Sink<Quad>
     }
 
 
+    @Override
     public void flush()
     {
         out.flush() ;
     }
 
+    @Override
     public void send(Quad quad)
     {
         Node s = quad.getSubject() ;
@@ -96,6 +98,7 @@ public class SinkQuadOutput implements Sink<Quad>
         return ( g != null && g != Quad.tripleInQuad && ! Quad.isDefaultGraph(g) ) ;
     }
 
+    @Override
     public void close()
     {
         flush();

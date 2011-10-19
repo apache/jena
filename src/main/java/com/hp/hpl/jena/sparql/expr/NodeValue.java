@@ -397,7 +397,6 @@ public abstract class NodeValue extends ExprNode
     @Override
     public NodeValue getConstant()     { return this ; }
 
-    //@Override
     public boolean isIRI()
     {
         if ( node == null ) return false ;
@@ -405,7 +404,6 @@ public abstract class NodeValue extends ExprNode
         return node.isURI() ;
     }
 
-    //@Override
     public boolean isBlank()
     {
         if ( node == null ) return false ;
@@ -1072,6 +1070,7 @@ public abstract class NodeValue extends ExprNode
         throw ex ; 
     }
 
+    @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
 
     private void forceToNode()

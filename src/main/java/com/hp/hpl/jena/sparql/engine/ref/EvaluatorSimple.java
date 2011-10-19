@@ -58,15 +58,18 @@ public class EvaluatorSimple implements Evaluator
         this.execCxt = context ;
     }
 
+    @Override
     public ExecutionContext getExecContext()
     { return execCxt ; }
 
+    @Override
     public Table basicPattern(BasicPattern pattern)
     {
         QueryIterator qIter = QC.executeDirect(pattern, QueryIterRoot.create(execCxt), execCxt) ;
         return TableFactory.create(qIter) ;
     }
 
+    @Override
     public Table pathPattern(TriplePath triplePath)
     {
         // Shudder - this may well be expensive, but this is the simple evaluator, written for correctness. 
@@ -76,6 +79,7 @@ public class EvaluatorSimple implements Evaluator
         return TableFactory.create(qIter) ;
     }
 
+    @Override
     public Table procedure(Table table, Node procId, ExprList args)
     {
         Procedure proc = ProcEval.build(procId, args, execCxt) ;
@@ -83,6 +87,7 @@ public class EvaluatorSimple implements Evaluator
         return TableFactory.create(qIter) ;
     }
     
+    @Override
     public Table propertyFunction(Table table, Node procId, PropFuncArg subjArgs, PropFuncArg objArgs)
     {
         Procedure proc = ProcEval.build(procId, subjArgs, objArgs, execCxt) ;
@@ -90,6 +95,7 @@ public class EvaluatorSimple implements Evaluator
         return TableFactory.create(qIter) ;
     }
 
+    @Override
     public Table join(Table tableLeft, Table tableRight)
     {
         if ( debug )
@@ -101,6 +107,7 @@ public class EvaluatorSimple implements Evaluator
         return joinWorker(tableLeft, tableRight, false, null) ;
     }
 
+    @Override
     public Table leftJoin(Table tableLeft, Table tableRight, ExprList exprs)
     {
         if ( debug )
@@ -115,6 +122,7 @@ public class EvaluatorSimple implements Evaluator
         return joinWorker(tableLeft, tableRight, true, exprs) ;
     }
 
+    @Override
     public Table diff(Table tableLeft, Table tableRight)
     {
         if ( debug )
@@ -126,6 +134,7 @@ public class EvaluatorSimple implements Evaluator
         return diffWorker(tableLeft, tableRight) ;
     }
 
+    @Override
     public Table minus(Table tableLeft, Table tableRight)
     {
         if ( debug )
@@ -138,6 +147,7 @@ public class EvaluatorSimple implements Evaluator
         return minusWorker(tableLeft, tableRight) ;
     }
 
+    @Override
     public Table filter(ExprList expressions, Table table)
     {
         if ( debug )
@@ -159,6 +169,7 @@ public class EvaluatorSimple implements Evaluator
 
 
 
+    @Override
     public Table union(Table tableLeft, Table tableRight)
     {
         if ( debug )
@@ -173,6 +184,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(output) ;
     }
 
+    @Override
     public Table condition(Table left, Table right)
     {
         if ( left.isEmpty() )
@@ -184,8 +196,10 @@ public class EvaluatorSimple implements Evaluator
         return left ;
     }
 
+    @Override
     public Table list(Table table) { return table ; } 
 
+    @Override
     public Table order(Table table, List<SortCondition> conditions)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -193,6 +207,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table groupBy(Table table, VarExprList groupVars, List<ExprAggregator> aggregators)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -200,6 +215,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
     
+    @Override
     public Table project(Table table, List<Var> projectVars)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -207,6 +223,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table reduced(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -214,6 +231,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table distinct(Table table)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -221,6 +239,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table slice(Table table, long start, long length)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -228,6 +247,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table assign(Table table, VarExprList exprs)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -235,6 +255,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table extend(Table table, VarExprList exprs)
     {
         QueryIterator qIter = table.iterator(getExecContext()) ;
@@ -242,6 +263,7 @@ public class EvaluatorSimple implements Evaluator
         return new TableN(qIter) ;
     }
 
+    @Override
     public Table unit()
     {
         return TableFactory.createUnit() ;

@@ -42,10 +42,12 @@ public class OpGroup extends Op1
         this.aggregators = aggregators ;
     }
     
+    @Override
     public String getName()                     { return Tags.tagGroupBy ; }
     public VarExprList getGroupVars()           { return groupVars ; }
     public List<ExprAggregator> getAggregators()  { return aggregators ; }
 
+    @Override
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators) ; }

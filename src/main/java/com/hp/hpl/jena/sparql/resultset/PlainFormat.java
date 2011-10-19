@@ -48,8 +48,11 @@ public class PlainFormat implements ResultSetProcessor
         this(outStream, new SerializationContext(prologue)) ;
     }
     
+    @Override
     public void start(ResultSet rs) {}
+    @Override
     public void finish(ResultSet rs) { out.flush() ; } 
+    @Override
     public void start(QuerySolution qs)
     {
         count++ ;
@@ -57,7 +60,9 @@ public class PlainFormat implements ResultSetProcessor
         first = true ;
     }
     
+    @Override
     public void finish(QuerySolution qs) { out.println() ; }
+    @Override
     public void binding(String varName, RDFNode value)
     {
         if ( value == null )

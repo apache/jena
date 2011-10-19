@@ -54,32 +54,35 @@ public class QuadAcc implements TripleCollector
         return quadsView ;
     }
     
-    //@Override
     public void addQuad(Quad quad)
     {
         check(quad) ;
         quads.add(quad) ;
     }
 
-    //@Override
+    @Override
     public void addTriple(Triple triple)
     {
         check(triple) ;
         quads.add(new Quad(graphNode, triple)) ;
     }
 
+    @Override
     public void addTriple(int index, Triple triple)
     {
         check(triple) ;
         quads.add(index, new Quad(graphNode, triple)) ;
     }
 
+    @Override
     public void addTriplePath(TriplePath tPath)
     { throw new UnsupportedOperationException("Can't add paths to quads") ; }
 
+    @Override
     public void addTriplePath(int index, TriplePath tPath)
     { throw new UnsupportedOperationException("Can't add paths to quads") ; }
 
+    @Override
     public int mark()
     {
         return quads.size() ;

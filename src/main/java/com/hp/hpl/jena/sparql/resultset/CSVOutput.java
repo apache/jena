@@ -54,6 +54,7 @@ public class CSVOutput extends OutputBase
     
     static String NL = "\r\n" ;
     
+    @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         try {
@@ -130,6 +131,7 @@ public class CSVOutput extends OutputBase
     static final byte[] noBytes = StrUtils.asUTF8bytes("no") ;
     static final byte[] NLBytes = StrUtils.asUTF8bytes(NL) ;
     
+    @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         try

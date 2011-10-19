@@ -98,7 +98,8 @@ public class TestIter
     }
     
     static Iter.Folder<String, String> f1 = new Iter.Folder<String, String>() {
-                                                 public String eval(String acc, String arg)
+                                                 @Override
+                                                public String eval(String acc, String arg)
                                                  {
                                                      return acc + arg ;
                                                  }
@@ -142,6 +143,7 @@ public class TestIter
     {
         Iterator<String> it = Iter.map(data2.iterator(), new Transform<String,String>()
         {
+            @Override
             public String convert(String item)
             {
                 return item + item;
@@ -155,6 +157,7 @@ public class TestIter
     {
         Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
         {
+            @Override
             public Iterator<String> convert(String item)
             {
                 List<String> l = new ArrayList<String>(2);
@@ -172,6 +175,7 @@ public class TestIter
     {
         Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
         {
+            @Override
             public Iterator<String> convert(String item)
             {
                 return Iter.nullIterator() ;
@@ -187,6 +191,7 @@ public class TestIter
         Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
         {
             int count = 0 ;
+            @Override
             public Iterator<String> convert(String item)
             {
                 count++ ;
@@ -206,6 +211,7 @@ public class TestIter
         Iterator<String> it = Iter.mapMany(data2.iterator(), new Transform<String,Iterator<String>>()
         {
             int count = 0 ;
+            @Override
             public Iterator<String> convert(String item)
             {
                 count++ ;
@@ -221,6 +227,7 @@ public class TestIter
 
 	
     Filter<String> filter = new Filter<String>() {
+        @Override
         public boolean accept(String item)
         {
             return item.length() == 1 ;
@@ -321,6 +328,7 @@ public class TestIter
     {
         Iterator<String> it = Iter.filter(data3, new Filter<String>()
         {
+            @Override
             public boolean accept(String item)
             {
                 return "x".equals(item) || "z".equals(item) ;
@@ -335,6 +343,7 @@ public class TestIter
     {
         Iterator<String> it = Iter.filter(data3, new Filter<String>()
         {
+            @Override
             public boolean accept(String item)
             {
                 return (null == item) || "x".equals(item) ;

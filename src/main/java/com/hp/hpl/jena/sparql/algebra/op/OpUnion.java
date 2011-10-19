@@ -40,7 +40,9 @@ public class OpUnion extends Op2
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
 
+    @Override
     public String getName()                 { return Tags.tagUnion ; }
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op newLeft, Op newRight)

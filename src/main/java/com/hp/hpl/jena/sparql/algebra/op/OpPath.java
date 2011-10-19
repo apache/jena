@@ -44,6 +44,7 @@ public class OpPath extends Op0
     
     public TriplePath getTriplePath()   { return triplePath ; }
 
+    @Override
     public String getName()     { return Tags.tagPath ; }
 
     @Override
@@ -67,6 +68,7 @@ public class OpPath extends Op0
         return triplePath.hashCode() ;
     }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 

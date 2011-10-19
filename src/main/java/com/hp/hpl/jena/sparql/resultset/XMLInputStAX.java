@@ -218,6 +218,7 @@ class XMLInputStAX extends SPARQLResult
         }
     }
         
+    @Override
     public boolean hasNext()
     {
         if ( ! isResultSet )
@@ -239,11 +240,13 @@ class XMLInputStAX extends SPARQLResult
         return b ;
     }
 
+    @Override
     public QuerySolution next()
     {
         return nextSolution() ; 
     }
 
+    @Override
     public Binding nextBinding()
     {
         if ( finished )
@@ -255,6 +258,7 @@ class XMLInputStAX extends SPARQLResult
         return r ;
     }
     
+    @Override
     public QuerySolution nextSolution()
     {
         Binding r = nextBinding() ;
@@ -262,11 +266,13 @@ class XMLInputStAX extends SPARQLResult
         return currentEnv ; 
     }
 
+    @Override
     public int getRowNumber()
     {
         return row ;
     }
 
+    @Override
     public List<String> getResultVars()
     {
         return variables ;
@@ -277,13 +283,16 @@ class XMLInputStAX extends SPARQLResult
     public boolean isDistinct() { return distinct ; }
 
     // No model - it was from a stream
+    @Override
     public Model getResourceModel() { return null ; }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException(XMLInputStAX.class.getName()) ; 
     }
     
+    @Override
     public void close()
     { finished = true ; }
 

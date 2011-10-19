@@ -60,6 +60,7 @@ public class BasicPattern implements Iterable<Triple>
     public void add(int i, Triple t) { triples.add(i, t) ; }
     
     public Triple get(int i) { return triples.get(i) ; }
+    @Override
     public Iterator<Triple> iterator() { return triples.listIterator() ; } 
     public int size() { return triples.size() ; }
     public boolean isEmpty() { return triples.isEmpty() ; }

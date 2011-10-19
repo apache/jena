@@ -35,6 +35,7 @@ public class ItemWalker
         private ItemVisitor visitor ;
         Worker(ItemVisitor visitor) { this.visitor = visitor ; }
         
+        @Override
         public void visit(Item item, ItemList list)
         {
             for ( Iterator<Item> iter = list.iterator() ; iter.hasNext() ; )
@@ -45,16 +46,19 @@ public class ItemWalker
             visitor.visit(item, list) ;
         }
         
+        @Override
         public void visit(Item item, Node node)
         {
             visitor.visit(item, node) ;
         }
         
+        @Override
         public void visit(Item item, String symbol)
         {
             visitor.visit(item, symbol) ;
         }
 
+        @Override
         public void visitNil()
         { visitor.visitNil() ; }
     }

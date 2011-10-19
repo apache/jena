@@ -102,6 +102,7 @@ public class FormatterElement extends FormatterBase
 
     public boolean topMustBeGroup() { return false ; }
     
+    @Override
     public void visit(ElementTriplesBlock el)
     {
         if ( el.isEmpty() )
@@ -112,6 +113,7 @@ public class FormatterElement extends FormatterBase
         formatTriples(el.getPattern()) ;
     }
     
+    @Override
     public void visit(ElementPathBlock el)
     {
         if ( el.isEmpty() )
@@ -148,6 +150,7 @@ public class FormatterElement extends FormatterBase
         }
     }
 
+    @Override
     public void visit(ElementDataset el)
     {
 //        if ( el.getDataset() != null)
@@ -176,6 +179,7 @@ public class FormatterElement extends FormatterBase
             visitAsGroup(el.getPatternElement()) ;
     }
 
+    @Override
     public void visit(ElementFilter el)
     {
         out.print("FILTER ") ;
@@ -199,6 +203,7 @@ public class FormatterElement extends FormatterBase
             out.print(" )") ;
     }
 
+    @Override
     public void visit(ElementAssign el)
     {
         out.print("LET (") ;
@@ -209,6 +214,7 @@ public class FormatterElement extends FormatterBase
         out.print(")") ;
     }
 
+    @Override
     public void visit(ElementBind el)
     {
         out.print("BIND(") ;
@@ -219,6 +225,7 @@ public class FormatterElement extends FormatterBase
         out.print(")") ;
     }
 
+    @Override
     public void visit(ElementUnion el)
     {
         if ( el.getElements().size() == 1 )
@@ -273,6 +280,7 @@ public class FormatterElement extends FormatterBase
     }
 
     
+    @Override
     public void visit(ElementGroup el)
     {
         if ( GROUP_UNNEST_ONE && el.getElements().size() == 1 )
@@ -328,6 +336,7 @@ public class FormatterElement extends FormatterBase
         out.print("}") ;
     }
 
+    @Override
     public void visit(ElementOptional el)
     {
         out.print("OPTIONAL") ;
@@ -338,11 +347,13 @@ public class FormatterElement extends FormatterBase
     }
 
 
+    @Override
     public void visit(ElementNamedGraph el)
     {
         visitNodePattern("GRAPH", el.getGraphNameNode(), el.getElement()) ;
     }
 
+    @Override
     public void visit(ElementService el)
     {
         String x = "SERVICE" ;
@@ -351,6 +362,7 @@ public class FormatterElement extends FormatterBase
         visitNodePattern(x, el.getServiceNode(), el.getElement()) ;
     }
 
+    @Override
     public void visit(ElementFetch el)
     {
         out.print("FETCH") ;
@@ -412,16 +424,19 @@ public class FormatterElement extends FormatterBase
             out.decIndent(len) ;
     }
 
+    @Override
     public void visit(ElementExists el)
     {
         visitElement1("EXISTS", el) ;
     }
 
+    @Override
     public void visit(ElementNotExists el)
     {
         visitElement1("NOT EXISTS", el) ;
     }
     
+    @Override
     public void visit(ElementMinus el)
     {
         out.print("MINUS") ;
@@ -431,6 +446,7 @@ public class FormatterElement extends FormatterBase
         out.decIndent(INDENT) ;
     }
     
+    @Override
     public void visit(ElementSubQuery el)
     {
         out.print("{ ") ;

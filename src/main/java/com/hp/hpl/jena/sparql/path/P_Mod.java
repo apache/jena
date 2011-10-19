@@ -36,7 +36,7 @@ public class P_Mod extends P_Path1
         this.max = max ;
     }
     
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

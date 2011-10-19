@@ -41,7 +41,6 @@ public class classify extends FunctionBase1
 {
     public classify() { super() ; }
 
-    //@Override
     @Override
     public NodeValue exec(NodeValue v)
     { 

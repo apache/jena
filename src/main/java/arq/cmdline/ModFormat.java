@@ -36,6 +36,7 @@ public class ModFormat implements ArgModuleGeneral
     
     public ModFormat() {}
     
+    @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
     {
         if ( cmdline.contains(resultsFmtDecl) )
@@ -47,6 +48,7 @@ public class ModFormat implements ArgModuleGeneral
         }
     }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Output format") ;

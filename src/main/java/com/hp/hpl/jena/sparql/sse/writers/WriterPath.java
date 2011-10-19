@@ -131,12 +131,13 @@ public class WriterPath
             out.print(FmtUtils.stringForNode(node, prologue)) ;
         }
         
-        //@Override
+        @Override
         public void visit(P_Link pathNode)
         {
             output(pathNode.getNode()) ;
         }
 
+        @Override
         public void visit(P_ReverseLink pathNode)
         {
             out.print("(") ;
@@ -146,7 +147,7 @@ public class WriterPath
             out.print(")") ;
         }
 
-        //@Override
+        @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
             out.print("(") ;
@@ -160,13 +161,13 @@ public class WriterPath
             out.print(")") ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Alt pathAlt)
         {
             visit2(pathAlt, Tags.tagPathAlt) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Seq pathSeq)
         {
             visit2(pathSeq, Tags.tagPathSeq) ;
@@ -185,7 +186,7 @@ public class WriterPath
             out.print(")") ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Mod pathMod)
         {
             out.print("(") ;
@@ -205,6 +206,7 @@ public class WriterPath
             return Long.toString(value) ;
         }
 
+        @Override
         public void visit(P_FixedLength path)
         {
             out.print("(") ;
@@ -216,16 +218,19 @@ public class WriterPath
             out.print(")") ;
         }
 
+        @Override
         public void visit(P_ZeroOrOne path)
         { 
             writeStarPlusQuery(Tags.tagPathZeroOrOne, path.getSubPath()) ;
         }
 
+        @Override
         public void visit(P_ZeroOrMore path)
         { 
             writeStarPlusQuery(Tags.tagPathZeroOrMore, path.getSubPath()) ;
         }
 
+        @Override
         public void visit(P_OneOrMore path)
         { 
             writeStarPlusQuery(Tags.tagPathOneOrMore, path.getSubPath()) ;
@@ -250,6 +255,7 @@ public class WriterPath
             out.print(")") ;
         }
 
+        @Override
         public void visit(P_Inverse reversePath)
         {
             out.print("(") ;

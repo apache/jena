@@ -29,6 +29,7 @@ public class DatasetGraphMaker extends DatasetGraphMap
     public interface GraphMaker { public Graph create() ; }
 
     private static GraphMaker graphMakerNull = new GraphMaker() {
+        @Override
         public Graph create()
         {
             return null ;

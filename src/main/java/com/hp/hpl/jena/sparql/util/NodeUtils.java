@@ -84,6 +84,7 @@ public class NodeUtils
     public static Iterator<String> nodesToURIs(Iterator<Node> iter)
     { 
         MapFilter<Node, String> mapper = new MapFilter<Node, String>(){
+            @Override
             public String accept(Node x)
             {
                 return x.getURI() ;  
@@ -239,6 +240,7 @@ public class NodeUtils
 
     // This is term comparison.
     public static EqualityTest sameTerm = new EqualityTest() {
+        @Override
         public boolean equal(Node n1, Node n2)
         {
             return NodeFunctions.sameTerm(n1, n2) ;
@@ -246,6 +248,7 @@ public class NodeUtils
     } ;
     // This is value comparison
     public static EqualityTest sameValue = new EqualityTest() {
+        @Override
         public boolean equal(Node n1, Node n2)
         {
             NodeValue nv1 = NodeValue.makeNode(n1) ;

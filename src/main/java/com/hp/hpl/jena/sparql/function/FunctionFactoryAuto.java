@@ -31,6 +31,7 @@ class FunctionFactoryAuto implements FunctionFactory
         extClass = xClass ;
     }
     
+    @Override
     public Function create(String uri)
     {
         try

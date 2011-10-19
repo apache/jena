@@ -47,8 +47,10 @@ public abstract class AggregatorBase implements Aggregator
     
     private Map<Binding, Accumulator> buckets = new HashMap<Binding, Accumulator>() ;   // Bindingkey => Accumulator
 
+    @Override
     public abstract Accumulator createAccumulator() ;
     
+    @Override
     public abstract Node getValueEmpty() ;
 
     public Node getValue(Binding key)
@@ -62,8 +64,10 @@ public abstract class AggregatorBase implements Aggregator
         return nv.asNode() ;
     }
     
+    @Override
     public String key() {  return toPrefixString() ; }
     
+    @Override
     public final Aggregator copyTransform(NodeTransform transform)
     {
         Expr e = getExpr() ;
@@ -75,6 +79,7 @@ public abstract class AggregatorBase implements Aggregator
     @Override
     public abstract String toString() ;
 
+    @Override
     public abstract String toPrefixString() ;
     
     @Override

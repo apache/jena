@@ -48,14 +48,17 @@ public class ProcedurePF extends PrintSerializableBase implements Procedure
     
     // Procedure interface
  
+    @Override
     public QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
     {
         return propFunc.exec(input, subjArg, pfNode, objArg, execCxt) ;
     }
 
+    @Override
     public void build(Node procId, ExprList args, ExecutionContext execCxt)
     {}
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         out.print("ProcedurePF ["+FmtUtils.stringForNode(pfNode, sCxt)+"]") ;

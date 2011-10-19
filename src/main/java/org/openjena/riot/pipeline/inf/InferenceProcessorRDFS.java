@@ -65,6 +65,7 @@ abstract class InferenceProcessorRDFS implements Processor
         this.state = state ;
     }
 
+    @Override
     public void process(Node s, Node p, Node o)
     {
         subClass(s,p,o) ;

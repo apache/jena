@@ -36,6 +36,7 @@ public class CastXSD implements FunctionFactory
         this.castType = dt ; 
     }
     
+    @Override
     public Function create(String uri)
     {        
         return new Instance(castType) ;

@@ -26,6 +26,7 @@ public class JSONOutput extends OutputBase
 {
     public JSONOutput() {}
     
+    @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
         // Use direct string output - more control
@@ -35,6 +36,7 @@ public class JSONOutput extends OutputBase
         a.apply() ;
     }
 
+    @Override
     public void format(OutputStream out, boolean booleanResult)
     {
         JSONOutputASK jsonOut = new JSONOutputASK(out) ;

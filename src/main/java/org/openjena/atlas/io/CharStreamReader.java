@@ -48,7 +48,9 @@ public abstract class CharStreamReader extends Reader implements CharStream
     public void close() throws IOException
     { closeStream() ; }
 
+    @Override
     public abstract int advance() ;
 
+    @Override
     public abstract void closeStream() ;
 }

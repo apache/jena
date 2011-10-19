@@ -90,7 +90,7 @@ public class Reifier2 implements Reifier
         this.factory = QueryEngineRegistry.findFactory(op, ds, null) ;
     }
     
-    //@Override
+    @Override
     public ExtendedIterator<Node> allNodes()
     {
         return allNodes(null) ;
@@ -111,7 +111,7 @@ public class Reifier2 implements Reifier
         @Override public void close() { iter.close() ; } 
     }
 
-    //@Override
+    @Override
     public ExtendedIterator<Node> allNodes(Triple triple)
     {
         QueryIterator qIter = nodesReifTriple(null, triple) ;
@@ -151,7 +151,7 @@ public class Reifier2 implements Reifier
         b.add(var, node) ;
     }
 
-    //@Override
+    @Override
     public void close()
     {}
 
@@ -171,7 +171,7 @@ public class Reifier2 implements Reifier
         @Override public void close() { iter.close() ; } 
     }
     
-    //@Override
+    @Override
     public ExtendedIterator<Triple> find(TripleMatch match)
     {
         return graph.find(match) ; 
@@ -180,7 +180,7 @@ public class Reifier2 implements Reifier
 //        return new MapperToTriple(qIter) ;
     }
 
-    //@Override
+    @Override
     public ExtendedIterator<Triple> findEither(TripleMatch match, boolean showHidden)
     {
         if ( showHidden )
@@ -191,7 +191,7 @@ public class Reifier2 implements Reifier
 
     
     static Filter<Triple> filterReif = new Filter<Triple>() {
-        //@Override
+        @Override
         public boolean accept(Triple triple)
         {
             return triple.getPredicate().equals(subject) ||
@@ -200,7 +200,7 @@ public class Reifier2 implements Reifier
                    ( triple.getPredicate().equals(rdfType) && triple.getObject().equals(statement) ) ;
         }} ; 
 
-    //@Override
+    @Override
     public ExtendedIterator<Triple> findExposed(TripleMatch match)
     {
         Iterator<Triple> it = graph.find(match) ;
@@ -208,39 +208,39 @@ public class Reifier2 implements Reifier
         return WrappedIterator.create(it) ;
     }
 
-    //@Override
+    @Override
     public Graph getParentGraph()
     {
         return graph ;
     }
 
-    //@Override
+    @Override
     public ReificationStyle getStyle()
     {
         return ReificationStyle.Standard ;
     }
 
-    //@Override
+    @Override
     public boolean handledAdd(Triple triple)
     {
         graph.add(triple) ;
         return true ;
     }
 
-    //@Override
+    @Override
     public boolean handledRemove(Triple triple)
     {
         graph.delete(triple) ;
         return true ;
     }
 
-    //@Override
+    @Override
     public boolean hasTriple(Node node)
     {
         return getTriple(node) != null ;
     }
 
-    //@Override
+    @Override
     public boolean hasTriple(Triple triple)
     {
         QueryIterator qIter = nodesReifTriple(null, triple) ;
@@ -257,7 +257,7 @@ public class Reifier2 implements Reifier
         } finally { qIter.close(); }
     }
 
-    //@Override
+    @Override
     public Node reifyAs(Node node, Triple triple)
     {
         if ( node == null )
@@ -285,7 +285,7 @@ public class Reifier2 implements Reifier
         return node ;
     }
 
-    //@Override
+    @Override
     public void remove(Triple triple)
     {
         // Materialize the nodes to delete - avoid ConcurrentModificationException.
@@ -293,7 +293,7 @@ public class Reifier2 implements Reifier
             remove(n, triple) ;
     }
 
-    //@Override
+    @Override
     public void remove(Node node, Triple triple)
     {
         //QueryIterator qIter = nodesReifTriple(node, triple) ;
@@ -313,13 +313,13 @@ public class Reifier2 implements Reifier
             acc.add(iter.next()) ;
     }
     
-    //@Override
+    @Override
     public int size()
     {
         return 0 ;
     }
 
-    //@Override
+    @Override
     public Triple getTriple(Node node)
     {
         

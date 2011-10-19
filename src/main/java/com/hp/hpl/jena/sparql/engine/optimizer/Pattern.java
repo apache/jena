@@ -46,6 +46,7 @@ public class Pattern implements Printable
         return PrintUtils.toString(this) ;
     }
     
+    @Override
     public void output(IndentedWriter out)
     {
         out.print("(") ;

@@ -34,45 +34,77 @@ public class TransformCopy implements Transform
     public TransformCopy()                                          { this(COPY_ONLY_ON_CHANGE) ; }
     public TransformCopy(boolean alwaysDuplicate)                   { this.alwaysCopy = alwaysDuplicate ; }
 
+    @Override
     public Op transform(OpTable opTable)                            { return xform(opTable) ; }
+    @Override
     public Op transform(OpBGP opBGP)                                { return xform(opBGP) ; }
+    @Override
     public Op transform(OpQuadPattern opQuadPattern)                { return xform(opQuadPattern) ; }
+    @Override
     public Op transform(OpTriple opTriple)                          { return xform(opTriple) ; }
+    @Override
     public Op transform(OpPath opPath)                              { return xform(opPath) ; }
 
+    @Override
     public Op transform(OpProcedure opProc, Op subOp)               { return xform(opProc, subOp) ; }
+    @Override
     public Op transform(OpPropFunc opPropFunc, Op subOp)            { return xform(opPropFunc, subOp) ; }
+    @Override
     public Op transform(OpDatasetNames opDatasetNames)              { return xform(opDatasetNames) ; }
 
+    @Override
     public Op transform(OpFilter opFilter, Op subOp)                { return xform(opFilter, subOp) ; }
+    @Override
     public Op transform(OpGraph opGraph, Op subOp)                  { return xform(opGraph, subOp) ; }
+    @Override
     public Op transform(OpService opService, Op subOp)              { return xform(opService, subOp) ; }
 
+    @Override
     public Op transform(OpAssign opAssign, Op subOp)                { return xform(opAssign, subOp) ; }
+    @Override
     public Op transform(OpExtend opExtend, Op subOp)                { return xform(opExtend, subOp) ; }
     
+    @Override
     public Op transform(OpJoin opJoin, Op left, Op right)           { return xform(opJoin, left, right) ; }
+    @Override
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return xform(opLeftJoin, left, right) ; }
+    @Override
     public Op transform(OpDiff opDiff, Op left, Op right)           { return xform(opDiff, left, right) ; }
+    @Override
     public Op transform(OpMinus opMinus, Op left, Op right)         { return xform(opMinus, left, right) ; }
+    @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return xform(opUnion, left, right) ; }
+    @Override
     public Op transform(OpConditional opCond, Op left, Op right)    { return xform(opCond, left, right) ; }
 
+    @Override
     public Op transform(OpSequence opSequence, List<Op> elts)           { return xform(opSequence, elts) ; }
+    @Override
     public Op transform(OpDisjunction opDisjunction, List<Op> elts)     { return xform(opDisjunction, elts) ; }
     
+    @Override
     public Op transform(OpExt opExt)                                { return opExt ; }
     
+    @Override
     public Op transform(OpNull opNull)                              { return opNull.copy() ; }
+    @Override
     public Op transform(OpLabel opLabel, Op subOp)                  { return xform(opLabel, subOp) ; }
     
+    @Override
     public Op transform(OpList opList, Op subOp)                    { return xform(opList, subOp) ; }
+    @Override
     public Op transform(OpOrder opOrder, Op subOp)                  { return xform(opOrder, subOp) ; }
+    @Override
     public Op transform(OpTopN opTop, Op subOp)                     { return xform(opTop, subOp) ; }
+    @Override
     public Op transform(OpProject opProject, Op subOp)              { return xform(opProject, subOp) ; }
+    @Override
     public Op transform(OpDistinct opDistinct, Op subOp)            { return xform(opDistinct, subOp) ; }
+    @Override
     public Op transform(OpReduced opReduced, Op subOp)              { return xform(opReduced, subOp) ; }
+    @Override
     public Op transform(OpSlice opSlice, Op subOp)                  { return xform(opSlice, subOp) ; }
+    @Override
     public Op transform(OpGroup opGroup, Op subOp)                  { return xform(opGroup, subOp) ; }
 
     private Op xform(Op0 op)

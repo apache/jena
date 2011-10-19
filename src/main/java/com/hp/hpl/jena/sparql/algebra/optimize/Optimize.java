@@ -43,10 +43,12 @@ public class Optimize implements Rewrite
     // ----    
     public static RewriterFactory noOptimizationFactory = new RewriterFactory()
     {
+        @Override
         public Rewrite create(Context context)
         {
             return new Rewrite() {
 
+                @Override
                 public Op rewrite(Op op)
                 {
                     return op ;
@@ -55,6 +57,7 @@ public class Optimize implements Rewrite
         
     public static RewriterFactory stdOptimizationFactory = new RewriterFactory()
     {
+        @Override
         public Rewrite create(Context context)
         {
             return new Optimize(context) ;

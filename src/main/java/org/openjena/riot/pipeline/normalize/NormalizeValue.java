@@ -44,6 +44,7 @@ class NormalizeValue
     // See Normalizevalue2 for "faster" versions (less parsing overhead). 
     
     static DatatypeHandler dtBoolean = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             if ( lexicalForm.equals("1") ) return NodeConst.nodeTrue ;
@@ -62,6 +63,7 @@ class NormalizeValue
     }
     
     static DatatypeHandler dtAnyDateTime = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             // Fast test: 
@@ -117,6 +119,7 @@ class NormalizeValue
     static DatatypeHandler dtDateTime = dtAnyDateTime ;
 
     static DatatypeHandler dtInteger = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             char[] chars = lexicalForm.toCharArray() ;
@@ -149,6 +152,7 @@ class NormalizeValue
     } ;
 
     static DatatypeHandler dtDecimal = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             BigDecimal bd = new BigDecimal(lexicalForm).stripTrailingZeros() ;
@@ -183,6 +187,7 @@ class NormalizeValue
      */
     
     static DatatypeHandler dtDouble = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             double d = Double.parseDouble(lexicalForm) ;
@@ -194,6 +199,7 @@ class NormalizeValue
     } ;
     
     static DatatypeHandler dtFloat = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             float f = Float.parseFloat(lexicalForm) ;
@@ -206,6 +212,7 @@ class NormalizeValue
 
     /** Convert xsd:string to simple literal */
     static DatatypeHandler dtXSDString = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             return Node.createLiteral(lexicalForm) ;
@@ -214,6 +221,7 @@ class NormalizeValue
     
     /** Convert simple literal to xsd:string */
     static DatatypeHandler dtSimpleLiteral = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             return Node.createLiteral(lexicalForm, "", datatype) ;
@@ -222,6 +230,7 @@ class NormalizeValue
 
     
     static DatatypeHandler dtPlainLiteral = new DatatypeHandler() {
+        @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
         {
             int idx = lexicalForm.lastIndexOf('@') ;

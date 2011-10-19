@@ -46,9 +46,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         Accumulate<T,Set<T>> action = new Accumulate<T,Set<T>>()
         {
             private Set<T> acc = null ;
+            @Override
             public void accumulate(T item)  { acc.add(item) ; }
+            @Override
             public Set<T> get()             { return acc ; }
+            @Override
             public void start()             { acc = new HashSet<T>() ; }
+            @Override
             public void finish()            {}
         } ;
         return reduce(stream, action) ;
@@ -62,9 +66,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         Accumulate<T,List<T>> action = new Accumulate<T,List<T>>()
         {
             private List<T> acc = null ;
+            @Override
             public void accumulate(T item)  { acc.add(item) ; }
+            @Override
             public List<T> get()            { return acc ; }
+            @Override
             public void start()             { acc = new ArrayList<T>() ; }
+            @Override
             public void finish()            {}
         } ;
         return reduce(stream, action) ;
@@ -155,6 +163,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             boolean slotOccupied = false ;
             T slot ;
             
+            @Override
             public boolean hasNext()
             {
                 if ( finished )
@@ -177,6 +186,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                 return slotOccupied ;
             }
     
+            @Override
             public T next()
             {
                 if ( hasNext() )
@@ -187,6 +197,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                 throw new NoSuchElementException("filter.next") ;
             }
     
+            @Override
             public void remove() { throw new UnsupportedOperationException("filter.remove") ; }
         } ;
         
@@ -200,6 +211,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         private Filter<T> baseFilter ;
         private InvertedFilter(Filter<T> baseFilter) { this.baseFilter = baseFilter ; }
         
+        @Override
         public boolean accept(T item)
         {
             return ! baseFilter.accept(item) ;
@@ -269,16 +281,19 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public static <T, R> Iterator<R> map(final Iterator<? extends T> stream, final Transform<T, R> converter)
     {
         final Iterator<R> iter = new Iterator<R>(){
+            @Override
             public boolean hasNext()
             {
                 return stream.hasNext() ;
             }
     
+            @Override
             public R next()
             {
                 return converter.convert(stream.next()) ;
             }
     
+            @Override
             public void remove() { throw new UnsupportedOperationException("map.remove") ; }
         } ;
         return iter ;
@@ -299,6 +314,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
             private Iterator<? extends R> it = null;    // Iterator for the current element of stream.
             
+            @Override
             public boolean hasNext()
             {
                 if ( it != null && it.hasNext() )
@@ -320,6 +336,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                 return false ;
             }
     
+            @Override
             public R next()
             {
                 if ( ! hasNext() )
@@ -328,6 +345,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                 return it.next();
             }
     
+            @Override
             public void remove() { throw new UnsupportedOperationException("mapMany.remove") ; }
         } ;
         
@@ -354,11 +372,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                                           final Action<T> action)
     {
         final Iterator<T> iter = new Iterator<T>(){
+            @Override
             public boolean hasNext()
             {
                 return stream.hasNext() ;
             }
     
+            @Override
             public T next()
             {
                 T t = stream.next() ;
@@ -366,6 +386,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
                 return t ;
             }
     
+            @Override
             public void remove() { throw new UnsupportedOperationException("operate.remove") ; }
         } ;
         return iter ;
@@ -381,6 +402,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public static <T> Iterator<T> printWrapper(final PrintStream out, final Iterator<? extends T> stream)
     {
         Action<T> action = new Action<T>(){
+            @Override
             public void apply(T item)
             { out.println(item) ; }
         } ;
@@ -478,7 +500,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     { 
         Transform<T,T> x = new Transform<T, T>()
         {
-            //@Override
+            @Override
             public T convert(T item)
             { 
                 System.out.println(item) ;
@@ -729,6 +751,7 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     }
 
     // ---- Iterable
+    @Override
     public Iterator<T>  iterator() { return iterator ; }
     
     // ---- Iterator
@@ -739,10 +762,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     // the same memory allocation.
     // And .. be an iterator framework for extension
     
+    @Override
     public boolean hasNext()    { return iterator.hasNext() ; }
 
+    @Override
     public T next()             { return iterator.next() ; }
 
+    @Override
     public void remove()        { iterator.remove() ; }
 
     //----

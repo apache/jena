@@ -35,11 +35,13 @@ public class ContextMBean implements DynamicMBean
 
     private Object getAsString(String name) { return context.getAsString(Symbol.create(name)) ; }
     
+    @Override
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException
     {
         return getAsString(attribute) ;
     }
 
+    @Override
     public AttributeList getAttributes(String[] attributes)
     {
         AttributeList x = new AttributeList() ;
@@ -51,6 +53,7 @@ public class ContextMBean implements DynamicMBean
         return x ;
     }
 
+    @Override
     public MBeanInfo getMBeanInfo()
     {
         /*
@@ -91,18 +94,21 @@ public class ContextMBean implements DynamicMBean
         return info ;
     }
 
+    @Override
     public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException,
                                                                                 ReflectionException
     {
         return null ;
     }
 
+    @Override
     public void setAttribute(Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException,
                                                  MBeanException, ReflectionException
     {
         context.set(Symbol.create(attribute.getName()), attribute.getValue()) ;
     }
 
+    @Override
     public AttributeList setAttributes(AttributeList attributes)
     {
         AttributeList results = new AttributeList() ;

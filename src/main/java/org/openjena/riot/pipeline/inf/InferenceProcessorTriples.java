@@ -42,15 +42,18 @@ class InferenceProcessorTriples implements Sink<Triple>
     }
 
     
+    @Override
     public void send(Triple triple)
     {
         output.send(triple) ;
         rdfs.process(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
+    @Override
     public void flush()
     { output.flush() ; }
 
+    @Override
     public void close()
     { output.close() ; }
 }

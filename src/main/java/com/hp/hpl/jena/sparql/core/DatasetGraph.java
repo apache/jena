@@ -131,5 +131,6 @@ public interface DatasetGraph extends Closeable
     public long size() ;
     
     /** Close the dataset */
+    @Override
     public void close() ;
 }

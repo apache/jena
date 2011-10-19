@@ -38,6 +38,7 @@ public class RefBoolean
         context.addCallback(
             new Callback()
             {
+                @Override
                 public synchronized void event(Symbol property)
                 {
                     if ( property.equals(monitoredProperty) )

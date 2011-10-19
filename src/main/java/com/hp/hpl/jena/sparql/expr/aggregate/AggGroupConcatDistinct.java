@@ -52,6 +52,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
         this.separator = separator ; 
     }
     
+    @Override
     public Aggregator copy(Expr expr) { return new AggGroupConcatDistinct(expr, separator, separatorSeen) ; }
 
     @Override
@@ -87,6 +88,7 @@ public class AggGroupConcatDistinct extends AggregatorBase
         return new AccGroupConcatDistinct(expr, separator) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 

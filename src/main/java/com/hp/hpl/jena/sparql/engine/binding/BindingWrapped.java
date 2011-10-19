@@ -33,16 +33,19 @@ public class BindingWrapped implements Binding
     
     public Binding getWrapped() { return binding ; }
 
+    @Override
     public boolean contains(Var var)
     {
         return binding.contains(var) ;
     }
 
+    @Override
     public Node get(Var var)
     {
         return binding.get(var) ;
     }
 
+    @Override
     public Iterator<Var> vars()
     {
         return binding.vars() ;
@@ -51,8 +54,10 @@ public class BindingWrapped implements Binding
     @Override
     public String toString() { return binding.toString(); }
 
+    @Override
     public int size()           { return binding.size() ; }
 
+    @Override
     public boolean isEmpty()    { return binding.isEmpty() ; }
     
     @Override

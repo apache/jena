@@ -86,6 +86,7 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class labelSearch implements PropertyFunction
 {
+    @Override
     public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         if ( argSubject.isList() || argObject.isList() )
@@ -99,6 +100,7 @@ public class labelSearch implements PropertyFunction
      * indicating no matches.  
      */
 
+    @Override
     public QueryIterator exec(QueryIterator input, PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt)
     {
         // No real need to check the pattern arguments because

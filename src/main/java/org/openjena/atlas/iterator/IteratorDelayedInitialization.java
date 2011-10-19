@@ -41,18 +41,21 @@ public abstract class IteratorDelayedInitialization<T> implements Iterator<T>
     // Called exactly once
     protected abstract Iterator<T> initializeIterator() ;
     
+    @Override
     public boolean hasNext()
     {
         init() ;
         return iterator.hasNext() ;
     }
 
+    @Override
     public T next()
     {
         init() ;
         return iterator.next() ;
     }
 
+    @Override
     public void remove()
     {
         init() ;

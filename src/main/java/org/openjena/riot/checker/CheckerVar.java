@@ -32,6 +32,7 @@ public class CheckerVar implements NodeChecker
         this.handler = handler ;
     } 
     
+    @Override
     public boolean check(Node node, long line, long col)
     { return Var.isVar(node) && checkVar(node, line, col) ; }
     

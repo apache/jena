@@ -31,6 +31,7 @@ public class ModTime implements ArgModuleGeneral
     
     private boolean timing = false ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Time") ;
@@ -40,6 +41,7 @@ public class ModTime implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         timing = cmdLine.contains(timeDecl) ;

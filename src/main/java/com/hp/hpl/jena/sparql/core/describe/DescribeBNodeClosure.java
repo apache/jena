@@ -36,6 +36,7 @@ public class DescribeBNodeClosure implements DescribeHandler
     
     public DescribeBNodeClosure() {}
     
+    @Override
     public void start(Model accumulateResultModel, Context cxt)
     {
         acc = accumulateResultModel ;
@@ -46,6 +47,7 @@ public class DescribeBNodeClosure implements DescribeHandler
     private static Query query = QueryFactory.create("SELECT DISTINCT ?g { GRAPH ?g { ?s ?p ?o } }") ; 
     
     // Check all named graphs
+    @Override
     public void describe(Resource r)
     {
         // Default model.
@@ -92,6 +94,7 @@ public class DescribeBNodeClosure implements DescribeHandler
         return r ;
     }
 
+    @Override
     public void finish()
     { }
 }

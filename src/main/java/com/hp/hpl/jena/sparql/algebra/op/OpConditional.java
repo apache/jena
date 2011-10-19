@@ -43,6 +43,7 @@ public class OpConditional extends Op2 //OpN??
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
+    @Override
     public void visit(OpVisitor opVisitor) 
     { opVisitor.visit(this) ; }
     
@@ -57,6 +58,7 @@ public class OpConditional extends Op2 //OpN??
         return super.sameArgumentsAs((OpConditional)op2, labelMap) ;
     }
     
+    @Override
     public String getName()
     {
         return Tags.tagConditional ;

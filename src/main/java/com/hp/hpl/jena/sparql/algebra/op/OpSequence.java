@@ -68,8 +68,10 @@ public class OpSequence extends OpN
     private OpSequence()           { super() ; }
     private OpSequence(List<Op> elts)  { super(elts) ; }
     
+    @Override
     public String getName() { return Tags.tagSequence ; }
 
+    @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     @Override

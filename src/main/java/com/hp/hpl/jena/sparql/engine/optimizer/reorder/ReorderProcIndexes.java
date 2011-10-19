@@ -35,7 +35,7 @@ public class ReorderProcIndexes implements ReorderProc
     /** Return a new basic pattern with the same triples as the input,
      *  but ordered as per the index list of this reorder processor. 
      */ 
-    //@Override
+    @Override
     public BasicPattern reorder(BasicPattern bgp)
     {
         if ( indexes.length != bgp.size() )

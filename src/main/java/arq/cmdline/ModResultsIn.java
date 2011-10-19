@@ -35,6 +35,7 @@ public class ModResultsIn implements ArgModuleGeneral
     private String resultsFilename = null ;
     private ResultSet resultSet = null ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Results") ;
@@ -46,6 +47,7 @@ public class ModResultsIn implements ArgModuleGeneral
                     "Results format (XML, JSON; RDF serialization)") ;  
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdline) throws IllegalArgumentException
     {
         // Input file.

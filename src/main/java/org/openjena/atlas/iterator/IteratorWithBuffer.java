@@ -59,13 +59,13 @@ public class IteratorWithBuffer<T> implements Iterator<T>
         }
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         return lookahead.size() > 0 ;
     }
 
-    //@Override
+    @Override
     public T next()
     {
         if ( !hasNext() )
@@ -86,7 +86,7 @@ public class IteratorWithBuffer<T> implements Iterator<T>
         return item ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("remove") ; }
 

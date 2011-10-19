@@ -96,7 +96,7 @@ public class PathLib
     {
         PropertyFunctionFactory pathPropFuncFactory = new PropertyFunctionFactory()
         {
-            //@Override
+            @Override
             public PropertyFunction create(String uri)
             {
                 return new PathPropertyFunction(path) ;

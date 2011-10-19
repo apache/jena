@@ -30,12 +30,15 @@ public class SinkWrapper<T> implements Sink<T>
         this.sink = sink ;
     }
     
+    @Override
     public void flush()
     { sink.flush(); }
 
+    @Override
     public void send(T item)
     { sink.send(item) ; }
 
+    @Override
     public void close()
     { sink.close(); }
 }

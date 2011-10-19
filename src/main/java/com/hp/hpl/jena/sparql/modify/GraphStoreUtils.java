@@ -32,6 +32,7 @@ public class GraphStoreUtils
     {
         actionAll(graphStore, new GraphStoreAction()
         {
+            @Override
             public void exec(Graph graph){ graph.getEventManager().notifyEvent(graph, object) ; }
         }) ; 
     }

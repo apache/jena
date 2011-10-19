@@ -30,11 +30,13 @@ public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
     
     public SingletonIterator(T thing) { this.thing = thing ; }
     
+    @Override
     public boolean hasNext()
     {
         return ! yielded ;
     }
 
+    @Override
     public T next()
     {
         if ( yielded )
@@ -43,9 +45,11 @@ public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
         return thing ;
     }
 
+    @Override
     public void remove()
     { throw new NoSuchElementException("SingletonIterator.remove") ;}
 
+    @Override
     public Iterator<T> iterator()
     {
         return this ;

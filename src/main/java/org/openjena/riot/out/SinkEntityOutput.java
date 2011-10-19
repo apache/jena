@@ -61,7 +61,7 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
     	this.labelPolicy = labels ;
     }
 
-    //@Override
+    @Override
 	public void send(Pair<Node, Map<Node, Set<Node>>> item) {
 		Node s = item.getLeft() ;
 		if ( s.isBlank() ) {
@@ -104,13 +104,13 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
 		out.finishObject() ;
 	}
 
-    //@Override
+    @Override
 	public void flush() {
 		out.finishObject() ;
 		out.finishOutput();
 	}
 	
-    //@Override
+    @Override
 	public void close() {
 		flush() ;
 	}

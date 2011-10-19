@@ -41,9 +41,11 @@ public class OpBGP extends Op0
     
     public BasicPattern getPattern()        { return pattern ; } 
     
+    @Override
     public String getName()                 { return Tags.tagBGP /*.toUpperCase()*/ ; }
     @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy()                        { return new OpBGP(pattern) ; }

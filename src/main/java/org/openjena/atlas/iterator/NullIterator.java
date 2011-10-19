@@ -24,19 +24,23 @@ import java.util.NoSuchElementException ;
 /** Null Iterator - also guaranteed sharable and immutable */
 public class NullIterator<T> implements Iterator<T>, Iterable<T>
 {
+    @Override
     public boolean hasNext()
     {
         return false ;
     }
 
+    @Override
     public T next()
     {
         throw new NoSuchElementException("NullIterator.next") ;
     }
 
+    @Override
     public void remove()
     { throw new NoSuchElementException("NullIterator.remove") ;}
 
+    @Override
     public Iterator<T> iterator()
     {
         return this ;

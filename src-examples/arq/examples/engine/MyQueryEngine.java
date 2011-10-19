@@ -98,9 +98,11 @@ public class MyQueryEngine extends QueryEngineMain
     static class MyQueryEngineFactory implements QueryEngineFactory
     {
         // Accept any dataset for query execution 
+        @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
+        @Override
         public Plan create(Query query, DatasetGraph dataset, Binding initial, Context context)
         {
             // Create a query engine instance.
@@ -108,11 +110,13 @@ public class MyQueryEngine extends QueryEngineMain
             return engine.getPlan() ;
         }
 
+        @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context)
         {   // Refuse to accept algebra expressions directly.
             return false ;
         }
 
+        @Override
         public Plan create(Op op, DatasetGraph dataset, Binding inputBinding, Context context)
         {   // Shodul notbe called because acceept/Op is false
             throw new ARQInternalErrorException("MyQueryEngine: factory calleddirectly with an algebra expression") ;

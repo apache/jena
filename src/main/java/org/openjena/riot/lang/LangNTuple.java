@@ -73,19 +73,19 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
     }
 
     // Assumes no syntax errors.
-    //@Override
+    @Override
     public final boolean hasNext()
     {
         return super.moreTokens() ;
     }
     
-    //@Override
+    @Override
     public final X next()
     {
         return parseOne() ;
     }
     
-    //@Override
+    @Override
     public final void remove()
     { throw new UnsupportedOperationException(); }
 

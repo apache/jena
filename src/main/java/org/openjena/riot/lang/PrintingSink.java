@@ -30,16 +30,16 @@ public class PrintingSink implements Sink<Triple>
 
     public PrintingSink(Logger log) { this.log = log ; }
 
-    //@Override
+    @Override
     public void send(Triple triple)
     {
         String string = NodeFmtLib.str(triple) ;
         log.info(string) ;
     }
 
-    //@Override
+    @Override
     public void flush() { }
     
-    //@Override
+    @Override
     public void close() { }
 }

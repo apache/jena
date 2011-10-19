@@ -61,28 +61,33 @@ public class EvaluatorDispatch implements OpVisitor
         return table ;
     }
     
+    @Override
     public void visit(OpBGP opBGP)
     {
         Table table = evaluator.basicPattern(opBGP.getPattern()) ;
         push(table) ;
     }
 
+    @Override
     public void visit(OpQuadPattern quadPattern)
     {
         push(Eval.evalQuadPattern(quadPattern, evaluator)) ;
     }
 
+    @Override
     public void visit(OpTriple opTriple)
     {
         visit(opTriple.asBGP()) ;
     }
 
+    @Override
     public void visit(OpPath opPath)
     {
         Table table = evaluator.pathPattern(opPath.getTriplePath()) ;
         push(table) ;
     }
 
+    @Override
     public void visit(OpProcedure opProc)
     {
         Table table = eval(opProc.getSubOp()) ;
@@ -90,6 +95,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpPropFunc opPropFunc)
     {
         Table table = eval(opPropFunc.getSubOp()) ;
@@ -97,6 +103,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpJoin opJoin)
     {
         Table left = eval(opJoin.getLeft()) ;
@@ -105,6 +112,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
     
+    @Override
     public void visit(OpSequence opSequence)
     {
         // Evaluation is as a sequence of joins.
@@ -119,6 +127,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpDisjunction opDisjunction)
     {
         // Evaluation is as a concatentation of alternatives 
@@ -133,6 +142,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
     
+    @Override
     public void visit(OpLeftJoin opLeftJoin)
     {
         Table left = eval(opLeftJoin.getLeft()) ;
@@ -141,6 +151,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpDiff opDiff)
     {
         Table left = eval(opDiff.getLeft()) ;
@@ -149,6 +160,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpMinus opMinus)
     {
         Table left = eval(opMinus.getLeft()) ;
@@ -157,6 +169,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpUnion opUnion)
     {
         Table left = eval(opUnion.getLeft()) ;
@@ -165,6 +178,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpConditional opCond)
     {
         Table left = eval(opCond.getLeft()) ;
@@ -174,6 +188,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
     
+    @Override
     public void visit(OpFilter opFilter)
     {
         Table table = eval(opFilter.getSubOp()) ;
@@ -181,11 +196,13 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpGraph opGraph)
     {
         push(Eval.evalGraph(opGraph, evaluator)) ;
     }
 
+    @Override
     public void visit(OpService opService)
     {
         QueryIterator qIter = Service.exec(opService, ARQ.getContext()) ;
@@ -193,24 +210,29 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpDatasetNames dsNames)
     {
         push(Eval.evalDS(dsNames, evaluator)) ;
     }
 
+    @Override
     public void visit(OpTable opTable)
     {
         push(opTable.getTable()) ;
     }
 
+    @Override
     public void visit(OpExt opExt)
     { throw new QueryExecException("Encountered OpExt during execution of reference engine") ; }
 
+    @Override
     public void visit(OpNull opNull)
     { 
         push(TableFactory.createEmpty()) ;
     }
     
+    @Override
     public void visit(OpLabel opLabel)
     {
         if ( opLabel.hasSubOp() )
@@ -220,6 +242,7 @@ public class EvaluatorDispatch implements OpVisitor
             push(TableFactory.createUnit()) ;
     }
 
+    @Override
     public void visit(OpList opList)
     {
         Table table = eval(opList.getSubOp()) ;
@@ -227,6 +250,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpOrder opOrder)
     {
         Table table = eval(opOrder.getSubOp()) ;
@@ -234,6 +258,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpTopN opTop)
     {
         Table table = eval(opTop.getSubOp()) ;
@@ -243,6 +268,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpProject opProject)
     {
         Table table = eval(opProject.getSubOp()) ;
@@ -250,6 +276,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpDistinct opDistinct)
     {
         Table table = eval(opDistinct.getSubOp()) ;
@@ -257,6 +284,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpReduced opReduced)
     {
         Table table = eval(opReduced.getSubOp()) ;
@@ -264,6 +292,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpSlice opSlice)
     {
         Table table = eval(opSlice.getSubOp()) ;
@@ -271,6 +300,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpAssign opAssign)
     {
         Table table = eval(opAssign.getSubOp()) ;
@@ -278,6 +308,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpExtend opExtend)
     {
         Table table = eval(opExtend.getSubOp()) ;
@@ -285,6 +316,7 @@ public class EvaluatorDispatch implements OpVisitor
         push(table) ;
     }
 
+    @Override
     public void visit(OpGroup opGroup)
     {
         Table table = eval(opGroup.getSubOp()) ;

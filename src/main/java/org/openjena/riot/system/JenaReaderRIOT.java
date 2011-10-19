@@ -46,6 +46,7 @@ public abstract class JenaReaderRIOT implements RDFReader
 	
 	protected JenaReaderRIOT() {}
 
+    @Override
     final
     public void read(Model model, Reader r, String base) 
 	{ 
@@ -53,6 +54,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         readImpl(model, makeTokenizer(r), base) ;
 	}
 
+    @Override
     final
 	public void read(Model model, String url) 
 	{
@@ -86,6 +88,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         }
 	}
 
+    @Override
     final
     public void read(Model model, InputStream in, String base) 
 	{
@@ -104,6 +107,7 @@ public abstract class JenaReaderRIOT implements RDFReader
         return TokenizerFactory.makeTokenizer(r) ;
     }
     
+    @Override
     final
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
 	{
@@ -112,6 +116,7 @@ public abstract class JenaReaderRIOT implements RDFReader
 		return old ;
 	}
     
+    @Override
     final
 	public Object setProperty(String propName, Object propValue)
 	{ return null ; }

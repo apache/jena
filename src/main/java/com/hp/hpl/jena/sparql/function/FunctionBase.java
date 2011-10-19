@@ -37,6 +37,7 @@ public abstract class FunctionBase implements Function
     protected ExprList arguments = null ;
     private FunctionEnv env ;
     
+    @Override
     public final void build(String uri, ExprList args)
     {
         this.uri = uri ;
@@ -44,6 +45,7 @@ public abstract class FunctionBase implements Function
         checkBuild(uri, args) ;
     }
 
+    @Override
     public NodeValue exec(Binding binding, ExprList args, String uri, FunctionEnv env)
     {
         // This is merely to allow functions to be 

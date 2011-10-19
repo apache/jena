@@ -31,12 +31,15 @@ public class ErrorHandlerTestLib
 
     public static class ErrorHandlerEx implements ErrorHandler
     {
+        @Override
         public void warning(String message, long line, long col)
         { throw new ExWarning() ; }
     
+        @Override
         public void error(String message, long line, long col)
         { throw new ExError() ; }
     
+        @Override
         public void fatal(String message, long line, long col)
         { throw new ExFatal() ; }
     }
@@ -46,12 +49,15 @@ public class ErrorHandlerTestLib
     {
         public List<String> msgs = new ArrayList<String>() ;
     
+        @Override
         public void warning(String message, long line, long col)
         { msgs.add(message) ; }
     
+        @Override
         public void error(String message, long line, long col)
         { msgs.add(message) ; }
     
+        @Override
         public void fatal(String message, long line, long col)
         { msgs.add(message) ; throw new ExFatal() ; }
     }

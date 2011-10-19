@@ -37,7 +37,7 @@ public class Cache1<K, V> implements Cache<K,V>
     
     public Cache1() { clear() ; }
     
-    //@Override
+    @Override
     public boolean containsKey(K key)
     {
         if ( cacheKey == null )
@@ -45,7 +45,7 @@ public class Cache1<K, V> implements Cache<K,V>
         return cacheKey.equals(key) ;
     }
 
-    //@Override
+    @Override
     public V get(K key)
     {
         if ( cacheKey == null ) return null ;
@@ -53,7 +53,7 @@ public class Cache1<K, V> implements Cache<K,V>
         return null ;
     }
 
-    //@Override
+    @Override
     public void clear()
     { 
         if ( cacheKey == null )
@@ -67,19 +67,19 @@ public class Cache1<K, V> implements Cache<K,V>
         notifyDrop(k, v) ;
     }
 
-    //@Override
+    @Override
     public boolean isEmpty()
     {
         return cacheKey == null ;
     }
 
-    //@Override
+    @Override
     public Iterator<K> keys()
     {
         return new SingletonIterator<K>(cacheKey) ;
     }
 
-    //@Override
+    @Override
     public V put(K key, V thing)
     {
         if ( Lib.equal(cacheKey, key) && Lib.equal(cacheValue, thing) )
@@ -96,7 +96,7 @@ public class Cache1<K, V> implements Cache<K,V>
         return v ;
     }
 
-    //@Override
+    @Override
     public boolean remove(K key)
     {
         if ( cacheKey == null ) return false ;
@@ -109,7 +109,7 @@ public class Cache1<K, V> implements Cache<K,V>
         return false ;
     }
 
-    //@Override
+    @Override
     public void setDropHandler(ActionKeyValue<K, V> dropHandler)
     {
         this.dropHandler = dropHandler ;
@@ -121,7 +121,7 @@ public class Cache1<K, V> implements Cache<K,V>
             dropHandler.apply(key, thing) ;
     }
     
-    //@Override
+    @Override
     public long size()
     {
         return (cacheKey == null) ? 0 : 1 ;

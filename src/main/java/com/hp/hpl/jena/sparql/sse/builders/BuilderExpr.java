@@ -357,6 +357,7 @@ public class BuilderExpr
     
     final protected Build buildRegex = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, 4, list, "Regex: wanted 2 or 3 arguments") ;
@@ -373,6 +374,7 @@ public class BuilderExpr
     // Special
     final protected Build buildPlus = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, 3, list, "+: wanted 1 or 2 arguments") ;
@@ -390,6 +392,7 @@ public class BuilderExpr
 
     final protected Build buildMinus = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, 3, list, "-: wanted 1 or 2 arguments") ;
@@ -409,6 +412,7 @@ public class BuilderExpr
     
     final protected Build buildEQ = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "=: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -420,6 +424,7 @@ public class BuilderExpr
 
     final protected Build buildNE = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "!=: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -431,6 +436,7 @@ public class BuilderExpr
 
     final protected Build buildGT = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, ">: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -442,6 +448,7 @@ public class BuilderExpr
 
     final protected Build buildLT = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "<: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -453,6 +460,7 @@ public class BuilderExpr
 
     final protected Build buildLE = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "<=: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -464,6 +472,7 @@ public class BuilderExpr
 
     final protected Build buildGE = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, ">=: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -475,6 +484,7 @@ public class BuilderExpr
 
     final protected Build buildOr = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "||: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -486,6 +496,7 @@ public class BuilderExpr
 
     final protected Build buildAnd = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "&&: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -497,6 +508,7 @@ public class BuilderExpr
 
     final protected Build buildMult = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "*: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -508,6 +520,7 @@ public class BuilderExpr
 
     final protected Build buildDiv = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "/: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -519,6 +532,7 @@ public class BuilderExpr
 
     final protected Build buildNot = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "!: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -529,6 +543,7 @@ public class BuilderExpr
 
     final protected Build buildStr = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "str: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -539,6 +554,7 @@ public class BuilderExpr
 
     final protected Build buildStrLang = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "strlang: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -550,6 +566,7 @@ public class BuilderExpr
 
     final protected Build buildStrDatatype = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "strlang: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -561,6 +578,7 @@ public class BuilderExpr
     
     final protected Build buildRand = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, list, "rand: wanted 0 arguments: got: "+numArgs(list)) ;
@@ -570,6 +588,7 @@ public class BuilderExpr
     
     final protected Build buildYear = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "year: wanted 1 argument: got: "+numArgs(list)) ;
@@ -580,6 +599,7 @@ public class BuilderExpr
     
     final protected Build buildMonth = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "month: wanted 1 argument: got: "+numArgs(list)) ;
@@ -590,6 +610,7 @@ public class BuilderExpr
 
     final protected Build buildDay = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "day: wanted 1 argument: got: "+numArgs(list)) ;
@@ -600,6 +621,7 @@ public class BuilderExpr
 
     final protected Build buildHours = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "hours: wanted 1 argument: got: "+numArgs(list)) ;
@@ -610,6 +632,7 @@ public class BuilderExpr
 
     final protected Build buildMinutes = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "minutes: wanted 1 argument: got: "+numArgs(list)) ;
@@ -620,6 +643,7 @@ public class BuilderExpr
 
     final protected Build buildSeconds = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "seconds: wanted 1 argument: got: "+numArgs(list)) ;
@@ -630,6 +654,7 @@ public class BuilderExpr
     
     final protected Build buildTimezone = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "timezone: wanted 1 argument: got: "+numArgs(list)) ;
@@ -640,6 +665,7 @@ public class BuilderExpr
     
     final protected Build buildTZ = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "TZ: wanted 1 argument: got: "+numArgs(list)) ;
@@ -650,6 +676,7 @@ public class BuilderExpr
 
     final protected Build buildNow = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, list, "now: wanted 0 arguments: got: "+numArgs(list)) ;
@@ -659,6 +686,7 @@ public class BuilderExpr
     
     final protected Build buildUUID = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, list, "uuid: wanted 0 arguments: got: "+numArgs(list)) ;
@@ -668,6 +696,7 @@ public class BuilderExpr
     
     final protected Build buildVersion = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, list, "version: wanted 0 arguments: got: "+numArgs(list)) ;
@@ -677,6 +706,7 @@ public class BuilderExpr
 
     final protected Build buildMD5 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -687,6 +717,7 @@ public class BuilderExpr
     
     final protected Build buildSHA1 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -697,6 +728,7 @@ public class BuilderExpr
     
     final protected Build buildSHA224 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -707,6 +739,7 @@ public class BuilderExpr
     
     final protected Build buildSHA256 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -717,6 +750,7 @@ public class BuilderExpr
     
     final protected Build buildSHA384 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -727,6 +761,7 @@ public class BuilderExpr
 
     final protected Build buildSHA512 = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "md5: wanted 1 argument: got: "+numArgs(list)) ;
@@ -737,6 +772,7 @@ public class BuilderExpr
     
     final protected Build buildStrlen = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "strlen: wanted 1 argument: got: "+numArgs(list)) ;
@@ -747,6 +783,7 @@ public class BuilderExpr
     
     final protected Build buildSubstr = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3,4, list, "substr: wanted 2 or 3 arguments: got: "+numArgs(list)) ;
@@ -761,6 +798,7 @@ public class BuilderExpr
     
     final protected Build buildStrReplace = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(4, 5, list, "replace: wanted 3 or 4 arguments: got: "+numArgs(list)) ;
@@ -776,6 +814,7 @@ public class BuilderExpr
     
     final protected Build buildStrUppercase = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "ucase: wanted 1 argument: got: "+numArgs(list)) ;
@@ -786,6 +825,7 @@ public class BuilderExpr
     
     final protected Build buildStrLowercase = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "lcase: wanted 1 argument: got: "+numArgs(list)) ;
@@ -796,6 +836,7 @@ public class BuilderExpr
     
     final protected Build buildStrEnds = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "strends: wanted 2 arguments: got: "+numArgs(list)) ;
@@ -807,6 +848,7 @@ public class BuilderExpr
     
     final protected Build buildStrStarts = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {     
             BuilderLib.checkLength(3, list, "strstarts: wanted 2 arguments: got: "+numArgs(list)) ;
@@ -818,6 +860,7 @@ public class BuilderExpr
 
     final protected Build buildStrBefore = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {     
             BuilderLib.checkLength(3, list, "strbefore: wanted 2 arguments: got: "+numArgs(list)) ;
@@ -829,6 +872,7 @@ public class BuilderExpr
     
     final protected Build buildStrAfter = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {     
             BuilderLib.checkLength(3, list, "strafter: wanted 2 arguments: got: "+numArgs(list)) ;
@@ -842,6 +886,7 @@ public class BuilderExpr
     
     final protected Build buildStrContains = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "contains: wanted 2 arguments: got: "+numArgs(list)) ;
@@ -853,6 +898,7 @@ public class BuilderExpr
     
     final protected Build buildStrEncode = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "encode: wanted 1 argument: got: "+numArgs(list)) ;
@@ -863,6 +909,7 @@ public class BuilderExpr
     
     final protected Build buildNumAbs = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "abs: wanted 1 argument: got: "+numArgs(list)) ;
@@ -873,6 +920,7 @@ public class BuilderExpr
     
     final protected Build buildNumRound = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "round: wanted 1 argument: got: "+numArgs(list)) ;
@@ -883,6 +931,7 @@ public class BuilderExpr
     
     final protected Build buildNumCeiling = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "ceiling: wanted 1 argument: got: "+numArgs(list)) ;
@@ -893,6 +942,7 @@ public class BuilderExpr
     
     final protected Build buildNumFloor = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "floor: wanted 1 argument: got: "+numArgs(list)) ;
@@ -902,6 +952,7 @@ public class BuilderExpr
 
     final protected Build buildLang = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "lang: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -912,6 +963,7 @@ public class BuilderExpr
 
     final protected Build buildLangMatches = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "langmatches: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -923,6 +975,7 @@ public class BuilderExpr
 
     final protected Build buildSameTerm = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(3, list, "sameterm: wanted 2 arguments: got :"+numArgs(list)) ;
@@ -934,6 +987,7 @@ public class BuilderExpr
 
     final protected Build buildDatatype = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "datatype: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -944,6 +998,7 @@ public class BuilderExpr
 
     final protected Build buildBound = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "bound: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -954,6 +1009,7 @@ public class BuilderExpr
 
     final protected Build buildCoalesce = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             ExprList exprs = buildExprListUntagged(list, 1) ;
@@ -963,6 +1019,7 @@ public class BuilderExpr
 
     final protected Build buildConcat = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             ExprList exprs = buildExprListUntagged(list, 1) ;
@@ -972,6 +1029,7 @@ public class BuilderExpr
 
     final protected Build buildConditional = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(4, list, "IF: wanted 3 arguments: got :"+numArgs(list)) ;
@@ -984,6 +1042,7 @@ public class BuilderExpr
 
     final protected Build buildIsIRI = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "isIRI: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -994,6 +1053,7 @@ public class BuilderExpr
 
     final protected Build buildIsURI = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "isURI: wanted 1 arguments: got :"+numArgs(list)) ;
@@ -1004,6 +1064,7 @@ public class BuilderExpr
 
     final protected Build buildIsBlank = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "isBlank: wanted 1 arguments: got: "+numArgs(list)) ;
@@ -1014,6 +1075,7 @@ public class BuilderExpr
 
     final protected Build buildIsLiteral = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "isLiteral: wanted 1 arguments: got: "+numArgs(list)) ;
@@ -1024,6 +1086,7 @@ public class BuilderExpr
     
     final protected Build buildExists = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "exists: wanted 1 arguments: got: "+numArgs(list)) ;
@@ -1034,6 +1097,7 @@ public class BuilderExpr
     
     final protected Build buildNotExists = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "notexists: wanted 1 arguments: got: "+numArgs(list)) ;
@@ -1044,6 +1108,7 @@ public class BuilderExpr
     
     final protected Build buildBNode = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, 2, list, "bnode: wanted 0 or 1 arguments: got: "+numArgs(list)) ;
@@ -1057,6 +1122,7 @@ public class BuilderExpr
     
     final protected Build buildIri = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "iri: wanted 1 argument: got: "+numArgs(list)) ;
@@ -1067,6 +1133,7 @@ public class BuilderExpr
     
     final protected Build buildUri = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(2, list, "uri: wanted 1 argument: got: "+numArgs(list)) ;
@@ -1079,6 +1146,7 @@ public class BuilderExpr
     
     final protected Build buildIn = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(1, list, "in: wanted 1 or more arguments: got: "+numArgs(list)) ;
@@ -1091,6 +1159,7 @@ public class BuilderExpr
     
     final protected Build buildNotIn = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLengthAtLeast(1, list, "notin: wanted 1 or more arguments: got: "+numArgs(list)) ;
@@ -1119,6 +1188,7 @@ public class BuilderExpr
     // All the one expression cases
     static abstract class BuildAggCommon implements Build
     {
+        @Override
         public final Expr make(ItemList list)
         {
             ItemList x = list.cdr();    // drop "sum"
@@ -1136,6 +1206,7 @@ public class BuilderExpr
     
     final protected Build buildCount = new Build()
     {
+        @Override
         public Expr make(final ItemList list)
         {
             ItemList x = list.cdr();    // drop "count"
@@ -1209,6 +1280,7 @@ public class BuilderExpr
     
     final protected Build buildGroupConcat = new Build()
     {
+        @Override
         public Expr make(final ItemList list)
         {
             ItemList x = list.cdr();    // drop "group_concat"
@@ -1241,6 +1313,7 @@ public class BuilderExpr
     
     final protected Build buildAggNull = new Build()
     {
+        @Override
         public Expr make(ItemList list)
         {
             BuilderLib.checkLength(1, list, "Broken syntax: "+list.shortString()) ;

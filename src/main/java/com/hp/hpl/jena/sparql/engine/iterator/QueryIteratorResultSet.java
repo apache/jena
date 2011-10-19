@@ -39,6 +39,7 @@ public class QueryIteratorResultSet extends QueryIteratorBase
     @Override
     protected Binding moveToNextBinding()   { return resultSet.nextBinding() ; }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext cxt)
     {
         out.print(Utils.className(this)) ;

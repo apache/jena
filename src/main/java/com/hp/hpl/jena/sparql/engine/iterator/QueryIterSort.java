@@ -104,7 +104,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
             return db.iterator();
         }
 
-        //@Override
+        @Override
         public void close()
         {
             db.close();

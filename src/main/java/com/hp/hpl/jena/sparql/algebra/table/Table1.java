@@ -44,6 +44,7 @@ public class Table1 extends TableBase
         this.value = value ;
     }
     
+    @Override
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         // Root binding?
@@ -52,6 +53,7 @@ public class Table1 extends TableBase
         return qIter ;
     }
 
+    @Override
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
@@ -83,6 +85,7 @@ public class Table1 extends TableBase
     @Override
     public void closeTable()        {}
 
+    @Override
     public List<Var> getVars()
     {
         List<Var> x = new ArrayList<Var>() ;
@@ -90,6 +93,7 @@ public class Table1 extends TableBase
         return x ;
     }
     
+    @Override
     public List<String> getVarNames()
     {
         List<String> x = new ArrayList<String>() ;

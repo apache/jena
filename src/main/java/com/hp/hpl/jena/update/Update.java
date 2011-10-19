@@ -32,16 +32,19 @@ public abstract class Update implements PrintSerializable
 {
     public abstract void visit(UpdateVisitor visitor) ; 
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         UpdateWriter.output(this, out, sCxt) ;
     }
 
+    @Override
     public void output(IndentedWriter out)
     {
         UpdateWriter.output(this, out, null) ;
     }
 
+    @Override
     public String toString(PrefixMapping pmap)
     { return QueryOutputUtils.toString(this, pmap) ; } 
     

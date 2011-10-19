@@ -47,6 +47,7 @@ public class ExprWalker //implements ExprVisitor
             this.topDown = topDown ;
         }
         
+        @Override
         public void startVisit() {}
         
         @Override
@@ -83,13 +84,18 @@ public class ExprWalker //implements ExprVisitor
 //                func.visit(visitor) ;
 //        }
         
+        @Override
         public void visit(ExprFunctionOp funcOp)
         { funcOp.visit(visitor) ; }
         
+        @Override
         public void visit(NodeValue nv)         { nv.visit(visitor) ; }
+        @Override
         public void visit(ExprVar v)            { v.visit(visitor) ; }
+        @Override
         public void visit(ExprAggregator eAgg)    { eAgg.visit(visitor) ; }
         
+        @Override
         public void finishVisit() { }
     }
     

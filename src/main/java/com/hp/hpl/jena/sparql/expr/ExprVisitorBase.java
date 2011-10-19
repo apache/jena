@@ -20,17 +20,28 @@ package com.hp.hpl.jena.sparql.expr;
 
 public class ExprVisitorBase implements ExprVisitor 
 {
+    @Override
     public void startVisit()                {}
     
+    @Override
     public void visit(ExprFunction0 func)   {}
+    @Override
     public void visit(ExprFunction1 func)   {}
+    @Override
     public void visit(ExprFunction2 func)   {}
+    @Override
     public void visit(ExprFunction3 func)   {}
+    @Override
     public void visit(ExprFunctionN func)   {}
+    @Override
     public void visit(ExprFunctionOp op)    {}
+    @Override
     public void visit(NodeValue nv)         {}
+    @Override
     public void visit(ExprVar nv)           {}
+    @Override
     public void visit(ExprAggregator eAgg)    {}
 
+    @Override
     public void finishVisit()               {}
 }

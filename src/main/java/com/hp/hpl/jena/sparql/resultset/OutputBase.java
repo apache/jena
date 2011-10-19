@@ -27,6 +27,7 @@ import org.openjena.atlas.logging.Log ;
 
 public abstract class OutputBase implements OutputFormatter
 {
+    @Override
     public String asString(ResultSet resultSet)
     {
         ByteArrayOutputStream arr = new ByteArrayOutputStream() ;

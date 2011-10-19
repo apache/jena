@@ -32,44 +32,76 @@ public class TransformWrapper implements Transform
         this.transform = transform ;
     }
     
+    @Override
     public Op transform(OpTable opTable)                    { return transform.transform(opTable) ; }
+    @Override
     public Op transform(OpBGP opBGP)                        { return transform.transform(opBGP) ; }
+    @Override
     public Op transform(OpTriple opTriple)                  { return transform.transform(opTriple) ; }
+    @Override
     public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; } 
 
+    @Override
     public Op transform(OpProcedure opProc, Op subOp)       { return transform.transform(opProc, subOp) ; }
+    @Override
     public Op transform(OpPropFunc opPropFunc, Op subOp)    { return transform.transform(opPropFunc, subOp) ; }
 
+    @Override
     public Op transform(OpDatasetNames dsNames)             { return transform.transform(dsNames) ; }
+    @Override
     public Op transform(OpQuadPattern quadPattern)          { return transform.transform(quadPattern) ; }
     
+    @Override
     public Op transform(OpFilter opFilter, Op subOp)        { return transform.transform(opFilter, subOp) ; }
+    @Override
     public Op transform(OpGraph opGraph, Op subOp)          { return transform.transform(opGraph, subOp) ; } 
+    @Override
     public Op transform(OpService opService, Op subOp)      { return transform.transform(opService, subOp) ; } 
 
+    @Override
     public Op transform(OpAssign opAssign, Op subOp)        { return transform.transform(opAssign, subOp) ; }
+    @Override
     public Op transform(OpExtend opExtend, Op subOp)        { return transform.transform(opExtend, subOp) ; }
     
+    @Override
     public Op transform(OpJoin opJoin, Op left, Op right)           { return transform.transform(opJoin, left, right) ; }
+    @Override
     public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)   { return transform.transform(opLeftJoin, left, right) ; }
+    @Override
     public Op transform(OpDiff opDiff, Op left, Op right)           { return transform.transform(opDiff, left, right) ; }
+    @Override
     public Op transform(OpMinus opMinus, Op left, Op right)         { return transform.transform(opMinus, left, right) ; }
+    @Override
     public Op transform(OpUnion opUnion, Op left, Op right)         { return transform.transform(opUnion, left, right) ; }
+    @Override
     public Op transform(OpConditional opCond, Op left, Op right)    { return transform.transform(opCond, left, right) ; } 
     
+    @Override
     public Op transform(OpSequence opSequence, List<Op> elts)       { return transform.transform(opSequence, elts) ; }
+    @Override
     public Op transform(OpDisjunction opDisjunction, List<Op> elts) { return transform.transform(opDisjunction, elts) ; }
 
+    @Override
     public Op transform(OpExt opExt)                        { return transform.transform(opExt) ; }
+    @Override
     public Op transform(OpNull opNull)                      { return transform.transform(opNull) ; }
+    @Override
     public Op transform(OpLabel opLabel, Op subOp)          { return transform.transform(opLabel, subOp) ; }
     
+    @Override
     public Op transform(OpList opList, Op subOp)            { return transform.transform(opList, subOp) ; }
+    @Override
     public Op transform(OpOrder opOrder, Op subOp)          { return transform.transform(opOrder, subOp) ; }
+    @Override
     public Op transform(OpTopN opTop, Op subOp)             { return transform.transform(opTop, subOp) ; }
+    @Override
     public Op transform(OpProject opProject, Op subOp)      { return transform.transform(opProject, subOp) ; }
+    @Override
     public Op transform(OpDistinct opDistinct, Op subOp)    { return transform.transform(opDistinct, subOp) ; }
+    @Override
     public Op transform(OpReduced opReduced, Op subOp)      { return transform.transform(opReduced, subOp) ; }
+    @Override
     public Op transform(OpSlice opSlice, Op subOp)          { return transform.transform(opSlice, subOp) ; }
+    @Override
     public Op transform(OpGroup opGroup, Op subOp)          { return transform.transform(opGroup, subOp) ; }
 }

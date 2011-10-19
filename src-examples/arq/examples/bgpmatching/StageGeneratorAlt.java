@@ -41,6 +41,7 @@ public class StageGeneratorAlt implements StageGenerator
     }
     
     
+    @Override
     public QueryIterator execute(BasicPattern pattern, 
                                  QueryIterator input,
                                  ExecutionContext execCxt)

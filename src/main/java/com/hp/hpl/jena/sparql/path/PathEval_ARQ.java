@@ -57,6 +57,7 @@ public class PathEval_ARQ
     NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {
         Transform<Node, RDFNode> conv = new Transform<Node, RDFNode>(){
+            @Override
             public RDFNode convert(Node obj)
             {
                 return ModelUtils.convertGraphNodeToRDFNode(obj, model) ;
@@ -142,14 +143,14 @@ public class PathEval_ARQ
             this.forwardMode = forward ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Link pathNode)
         {
             Iterator<Node> nodes = doOne(pathNode.getNode()) ;
             fill(nodes) ;
         }
         
-        //@Override
+        @Override
         public void visit(P_ReverseLink pathNode)
         {
             forwardMode = ! forwardMode ;
@@ -158,7 +159,7 @@ public class PathEval_ARQ
             fill(nodes) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
             if ( pathNotOneOf.getBwdNodes().size() > 0 )
@@ -174,7 +175,7 @@ public class PathEval_ARQ
             fill(nodes) ;
         }
         
-        //@Override
+        @Override
         public void visit(P_Inverse inversePath)
         {
             //boolean b = forwardMode ;
@@ -184,7 +185,7 @@ public class PathEval_ARQ
             forwardMode = ! forwardMode ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Alt pathAlt)
         {
             // Try both sizes, accumulate into output.
@@ -194,7 +195,7 @@ public class PathEval_ARQ
             fill(iter) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Seq pathSeq)
         {
             Path part1 = forwardMode ? pathSeq.getLeft() : pathSeq.getRight() ;
@@ -206,7 +207,7 @@ public class PathEval_ARQ
             fill(iter) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Mod pathMod)
         {
             if ( pathMod.isZeroOrMore() )
@@ -252,7 +253,7 @@ public class PathEval_ARQ
             // If no matches, will not call eval and we drop out.
         }
         
-        //@Override
+        @Override
         public void visit(P_FixedLength pFixedLength)
         {
             // P_Mod(path, count, count)
@@ -268,18 +269,18 @@ public class PathEval_ARQ
             }
         }
 
-        //@Override
+        @Override
         public void visit(P_ZeroOrOne path)
         { 
             doZero(path.getSubPath()) ;
             doOne(path.getSubPath()) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_ZeroOrMore path)
         { doZeroOrMore(path.getSubPath()) ; }
 
-        //@Override
+        @Override
         public void visit(P_OneOrMore path)
         { 
             doOneOrMore(path.getSubPath()) ;
@@ -305,18 +306,21 @@ public class PathEval_ARQ
 
         private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getSubject() ; }
         } ;
 
         private static Transform<Triple, Node> selectPredicate = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getPredicate() ; }
         } ;
 
         private static Transform<Triple, Node> selectObject = new Transform<Triple, Node>()
         {
+            @Override
             public Node convert(Triple triple)
             { return triple.getObject() ; }
         } ;
@@ -343,6 +347,7 @@ public class PathEval_ARQ
         {
             private Collection<Node> excludes ;
             public FilterExclude(Collection <Node> excludes) { this.excludes = excludes ; }
+            @Override
             public boolean accept(Triple triple)
             {
                 return ! excludes.contains(triple.getPredicate()) ;

@@ -49,6 +49,7 @@ public class OpProcedure extends Op1
         this(Node.createURI(iri), args, op) ;
     }
     
+    @Override
     public String getName()
     {
         return Tags.tagProc ;
@@ -76,6 +77,7 @@ public class OpProcedure extends Op1
         return x ;
     }
 
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 

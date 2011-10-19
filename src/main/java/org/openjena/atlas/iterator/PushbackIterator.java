@@ -38,12 +38,14 @@ public class PushbackIterator<T> implements Iterator<T>
         items.push(item) ;
     }
     
+    @Override
     public boolean hasNext()
     {
         if ( !items.empty() ) return true ;
         return iter.hasNext() ;
     }
 
+    @Override
     public T next()
     {
         if ( !items.empty() ) 
@@ -51,6 +53,7 @@ public class PushbackIterator<T> implements Iterator<T>
         return iter.next() ;
     }
 
+    @Override
     public void remove()
     {
         // Need to track if last next() was from the stack or not.

@@ -53,6 +53,7 @@ public class ModLangParse implements ArgModuleGeneral
     private boolean strict              = false ;
     private boolean validate            = false ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Parser control") ;
@@ -69,6 +70,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argStop,    "--stop",           "Stop parsing on encountering a bad RDF term") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(argValidate) )

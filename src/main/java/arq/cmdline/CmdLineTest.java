@@ -29,8 +29,11 @@ public class CmdLineTest extends CommandLineBase
 
     static class Proc implements ArgProc
     {
+        @Override
         public void startArgs() {}
+        @Override
         public void finishArgs() {}
+        @Override
         public void arg(String arg, int i) { System.out.println("Arg: "+arg) ; } 
     }
 }

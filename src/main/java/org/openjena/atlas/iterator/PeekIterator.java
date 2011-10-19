@@ -55,7 +55,7 @@ public class PeekIterator<T> implements Iterator<T>
         }
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if ( finished )
@@ -79,7 +79,7 @@ public class PeekIterator<T> implements Iterator<T>
         return slot ;
     }
     
-    //@Override
+    @Override
     public T next()
     {
         if ( finished )
@@ -90,7 +90,7 @@ public class PeekIterator<T> implements Iterator<T>
         return x ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 

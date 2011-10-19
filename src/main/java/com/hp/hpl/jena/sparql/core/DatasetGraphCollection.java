@@ -79,7 +79,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     }
 
     
-    //@Override
+    @Override
     public abstract Iterator<Node> listGraphNodes() ;
 
     protected Graph fetchGraph(Node gn)

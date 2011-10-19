@@ -38,10 +38,12 @@ public class OpGraph extends Op1
     
     public Node getNode() { return node ; }
     
+    @Override
     public String getName()                         { return Tags.tagGraph ; }
 
     @Override
     public Op apply(Transform transform, Op op)     { return transform.transform(this, op) ; } 
+    @Override
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op newOp)                        { return new OpGraph(node, newOp) ; }

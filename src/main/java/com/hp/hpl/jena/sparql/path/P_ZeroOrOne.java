@@ -44,7 +44,7 @@ public class P_ZeroOrOne extends P_Path1
         return hashZeroOrOne ^ getSubPath().hashCode() ;
     }
 
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 }

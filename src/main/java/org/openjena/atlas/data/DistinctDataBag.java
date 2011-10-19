@@ -119,6 +119,7 @@ public class DistinctDataBag<E> extends SortedDataBag<E>
             return item;
         }
         
+        @Override
         public void close()
         {
             Iter.close(iter);

@@ -43,8 +43,10 @@ public class OpTopN extends OpModifier
     public List<SortCondition> getConditions()  { return conditions ; }
     public int getLimit()                       { return limit ; }
     
+    @Override
     public String getName()                 { return Tags.tagTopN ; }
     
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                { return new OpTopN(subOp, limit, conditions) ; }

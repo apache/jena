@@ -39,10 +39,12 @@ public interface ResultSet extends Iterator<QuerySolution>
     /**
      * Is there another result?
      */
+    @Override
     public boolean hasNext() ;
 
     /** Moves onto the next result. */
     
+    @Override
     public QuerySolution next() ;
 
     /** Moves onto the next result (legacy - use .next()). */

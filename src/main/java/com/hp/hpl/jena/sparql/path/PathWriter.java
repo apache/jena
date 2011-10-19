@@ -82,13 +82,11 @@ public class PathWriter
             needParens = b ;
         }
         
-        //@Override
         private void output(Node node)
         {
             out.print(FmtUtils.stringForNode(node, prologue)) ;
         }
         
-      //@Override
         private void output(P_Path0 path0)
         {
             if ( ! path0.isForward() )
@@ -96,19 +94,20 @@ public class PathWriter
             out.print(FmtUtils.stringForNode(path0.getNode(), prologue)) ;
         }
         
-        //@Override
+        @Override
         public void visit(P_Link pathNode)
         {
             output(pathNode.getNode()) ;
         }
         
+        @Override
         public void visit(P_ReverseLink pathNode)
         {
             out.println("^") ;
             output(pathNode.getNode()) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
             List<P_Path0> props = pathNotOneOf.getNodes() ;
@@ -152,13 +151,13 @@ public class PathWriter
 
         
         
-        //@Override
+        @Override
         public void visit(P_Alt pathAlt)
         {
             visit2(pathAlt, "|", true) ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Seq pathSeq)
         {
             visit2(pathSeq, "/", false) ;
@@ -185,7 +184,7 @@ public class PathWriter
             if ( needParens ) out.print(")") ;
         }
 
-        //@Override
+        @Override
         public void visit(P_Mod pathMod)
         {
             if ( needParens )
@@ -224,6 +223,7 @@ public class PathWriter
                 out.print(")") ;
         }
 
+        @Override
         public void visit(P_FixedLength pFixedLength)
         {
             if ( needParens )
@@ -241,12 +241,15 @@ public class PathWriter
                 out.print(")") ;
         }
 
+        @Override
         public void visit(P_ZeroOrOne path)
         { printPathMod("?", path.getSubPath()) ; }
 
+        @Override
         public void visit(P_ZeroOrMore path)
         { printPathMod("*", path.getSubPath()) ; }
 
+        @Override
         public void visit(P_OneOrMore path)
         { printPathMod("+", path.getSubPath()) ; }
 
@@ -262,6 +265,7 @@ public class PathWriter
         }
         
         // Need to consider binary ^
+        @Override
         public void visit(P_Inverse inversePath)
         {
             out.print("^") ;

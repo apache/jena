@@ -173,6 +173,7 @@ public class QueryExecutionBase implements QueryExecution
 //        cancel = true ;
 //    }
 
+    @Override
     public void close()
     {
         if ( queryIterator != null )
@@ -185,6 +186,7 @@ public class QueryExecutionBase implements QueryExecution
     @Deprecated
     public static boolean cancelAllowDrain = false ; 
     //public synchronized void cancel()
+    @Override
     public synchronized void abort()
 	{
 	    // This is called asynchronously to the execution.
@@ -206,6 +208,7 @@ public class QueryExecutionBase implements QueryExecution
         cancel = true ;
 	}
     
+    @Override
     public ResultSet execSelect()
     {
         if ( ! query.isSelectType() )
@@ -214,9 +217,11 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     // Construct
+    @Override
     public Model execConstruct()
     { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
 
+    @Override
     public Model execConstruct(Model model)
     {
         if ( ! query.isConstructType() )
@@ -252,10 +257,12 @@ public class QueryExecutionBase implements QueryExecution
         return model ;
     }
 
+    @Override
     public Model execDescribe()
     { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
 
 
+    @Override
     public Model execDescribe(Model model)
     {
         if ( ! query.isDescribeType() )
@@ -328,6 +335,7 @@ public class QueryExecutionBase implements QueryExecution
         return model ; 
     }
 
+    @Override
     public boolean execAsk()
     {
         if ( ! query.isAskType() )
@@ -339,7 +347,7 @@ public class QueryExecutionBase implements QueryExecution
         return r ; 
     }
 
-    //@Override
+    @Override
     public void setTimeout(long timeout, TimeUnit timeUnit)
     {
         long x = asMillis(timeout, timeUnit) ;
@@ -347,13 +355,13 @@ public class QueryExecutionBase implements QueryExecution
         this.timeout2 = TIMEOUT_UNSET ;
     }
 
-    //@Override
+    @Override
     public void setTimeout(long timeout)
     {
         setTimeout(timeout, TimeUnit.MILLISECONDS) ;
     }
 
-    //@Override
+    @Override
     public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
     {
         long x1 = asMillis(timeout1, timeUnit1) ;
@@ -365,7 +373,7 @@ public class QueryExecutionBase implements QueryExecution
             this.timeout2 = x2 ;
     }
 
-    //@Override
+    @Override
     public void setTimeout(long timeout1, long timeout2)
     {
         setTimeout(timeout1, TimeUnit.MILLISECONDS, timeout2, TimeUnit.MILLISECONDS) ;
@@ -384,6 +392,7 @@ public class QueryExecutionBase implements QueryExecution
     private static AlarmClock alarmClock = AlarmClock.get() ; 
     private static final Callback<QueryExecution> callback = 
         new Callback<QueryExecution>() {
+            @Override
             public void proc(QueryExecution qExec)
             {
                 qExec.abort() ;
@@ -393,7 +402,6 @@ public class QueryExecutionBase implements QueryExecution
         
     private Pingback<QueryExecution> pingback = null ;
     
-    //@Override
     private void initTimeout1()
     {
         if ( timeout1 == TIMEOUT_UNSET ) return ;
@@ -530,8 +538,10 @@ public class QueryExecutionBase implements QueryExecution
         return "<<unknown>>" ;
     }
 
+    @Override
     public Context getContext() { return context ; }
     
+    @Override
     public Dataset getDataset() { return dataset ; }
     
     // Call after setFM called.
@@ -556,8 +566,10 @@ public class QueryExecutionBase implements QueryExecution
     }
 
     
+    @Override
     public void setFileManager(FileManager fm) { fileManager = fm ; }
     
+    @Override
     public void setInitialBinding(QuerySolution startSolution)
     { 
         initialBinding = startSolution ;

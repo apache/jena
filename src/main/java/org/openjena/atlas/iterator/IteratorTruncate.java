@@ -35,6 +35,7 @@ public class IteratorTruncate<T> implements Iterator<T>
     public IteratorTruncate (Test test, Iterator<T> iter)
     { this.test = test ; this.iter = iter ; }
 
+    @Override
     public boolean hasNext()
     {
         if ( ! active ) return false ;
@@ -58,6 +59,7 @@ public class IteratorTruncate<T> implements Iterator<T>
         return false ;
     }
 
+    @Override
     public T next()
     {
         if ( ! hasNext() )
@@ -67,6 +69,7 @@ public class IteratorTruncate<T> implements Iterator<T>
         return x ;
     }
 
+    @Override
     public void remove()
     { throw new UnsupportedOperationException("IteratorTruncate.remove"); }
 

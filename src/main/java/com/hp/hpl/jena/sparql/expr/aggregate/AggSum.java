@@ -35,6 +35,7 @@ public class AggSum  extends AggregatorBase
     private Expr expr ;
 
     public AggSum(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggSum(expr) ; }
 
     @Override
@@ -48,6 +49,7 @@ public class AggSum  extends AggregatorBase
         return new AccSum(expr) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
 
     @Override

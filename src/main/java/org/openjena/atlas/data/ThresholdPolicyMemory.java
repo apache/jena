@@ -49,6 +49,7 @@ public class ThresholdPolicyMemory<T> implements ThresholdPolicy<T>
     /* (non-Javadoc)
      * @see org.openjena.atlas.io.ThresholdPolicy#increment(java.lang.Object)
      */
+    @Override
     public void increment(T item)
     {
         count++;
@@ -58,6 +59,7 @@ public class ThresholdPolicyMemory<T> implements ThresholdPolicy<T>
     /* (non-Javadoc)
      * @see org.openjena.atlas.io.ThresholdPolicy#isThresholdExceeded()
      */
+    @Override
     public boolean isThresholdExceeded()
     {
         return (size >= threshold);
@@ -67,6 +69,7 @@ public class ThresholdPolicyMemory<T> implements ThresholdPolicy<T>
      * (non-Javadoc)
      * @see org.openjena.atlas.data.ThresholdPolicy#reset()
      */
+    @Override
     public void reset()
     {
         count = 0;

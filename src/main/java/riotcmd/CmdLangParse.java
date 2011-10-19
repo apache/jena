@@ -77,17 +77,23 @@ public abstract class CmdLangParse extends CmdGeneral
 
     static LangHandler langHandlerQuads = new LangHandler()
     {
+        @Override
         public String getItemsName()        { return "quads" ; }
+        @Override
         public String getRateName()         { return "QPS" ; }
     } ;
     static LangHandler langHandlerTriples = new LangHandler()
     {
+        @Override
         public String getItemsName()        { return "triples" ; }
+        @Override
         public String getRateName()         { return "TPS" ; }
     } ;
     static LangHandler langHandlerAny = new LangHandler()
     {
+        @Override
         public String getItemsName()        { return "tuples" ; }
+        @Override
         public String getRateName()         { return "TPS" ; }
     } ;
     

@@ -38,6 +38,7 @@ public class ModSymbol implements ArgModuleGeneral
     
     public ModSymbol(String namespace) { this.namespace = namespace ; }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Symbol definition") ;
@@ -47,6 +48,7 @@ public class ModSymbol implements ArgModuleGeneral
     public void checkCommandLine(CmdArgModule cmdLine)
     {}
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )

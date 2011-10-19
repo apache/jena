@@ -44,16 +44,19 @@ public class SystemInfo implements SystemInfoMBean
         } catch (RuntimeException ex) { return null ; }
     }
         
+    @Override
     public String getBuildDate()
     {
         return buildDate ;
     }
 
+    @Override
     public String getVersion()
     {
         return version ;
     }
 
+    @Override
     public String getName()
     { 
         return name ;

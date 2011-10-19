@@ -45,14 +45,17 @@ public class ParseHandlerPlain implements ParseHandler
     private VarAlloc       varAllocND      = new VarAlloc(ARQConstants.allocSSEAnonVars) ;
     private VarAlloc       varAllocIntern  = new VarAlloc(ARQConstants.allocSSENamedVars) ;
     
+    @Override
     public Item getItem()
     {
         return currentItem ; 
     }
     
+    @Override
     public void parseStart()
     { depth = 0 ; }
     
+    @Override
     public void parseFinish()
     {
         if ( depth != 0 )
@@ -60,6 +63,7 @@ public class ParseHandlerPlain implements ParseHandler
         depth = -1 ;
     }
     
+    @Override
     public void listStart(int line, int column)
     {
         ItemList list = new ItemList(line, column) ;
@@ -67,6 +71,7 @@ public class ParseHandlerPlain implements ParseHandler
         setCurrentItem(Item.createList(list)) ;
     }
 
+    @Override
     public void listFinish(int line, int column)
     {
         ItemList list = popList() ;
@@ -96,11 +101,13 @@ public class ParseHandlerPlain implements ParseHandler
         setCurrentItem(item) ;
     }
     
+    @Override
     public void emitSymbol(int line, int column, String symbol)
     {
         listAdd(Item.createSymbol(symbol, line, column)) ;
     }
 
+    @Override
     public void emitVar(int line, int column, String varName)
     {
         Var var = null ;
@@ -116,6 +123,7 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
     
+    @Override
     public void emitLiteral(int line, int column, String lexicalForm, String langTag, String datatypeIRI, String datatypePN)
     {
         Node n = null ;
@@ -134,6 +142,7 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
 
+    @Override
     final
     public void emitBNode(int line, int column, String label)
     {
@@ -147,6 +156,7 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
 
+    @Override
     public void emitIRI(int line, int column, String iriStr)
     {
         Node n = Node.createURI(iriStr) ;
@@ -154,6 +164,7 @@ public class ParseHandlerPlain implements ParseHandler
         listAdd(item) ;
     }
 
+    @Override
     public void emitPName(int line, int column, String pname)
     {
         String iriStr = resolvePrefixedName(pname, line, column) ;

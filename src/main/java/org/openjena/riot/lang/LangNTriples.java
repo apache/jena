@@ -41,7 +41,7 @@ public final class LangNTriples extends LangNTuple<Triple>
         super(tokens, profile, sink) ;
     }
     
-    //@Override
+    @Override
     public Lang getLang()   { return Lang.NTRIPLES ; }
 
 //    static final Node X = Node.createURI("http://example") ;

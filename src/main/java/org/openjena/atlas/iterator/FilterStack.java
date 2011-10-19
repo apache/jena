@@ -34,6 +34,7 @@ public abstract class FilterStack<T> implements  Filter<T>
         this.subFilterLast = callOldFilterFirst ;
     }
    
+    @Override
     public final boolean accept(T item)
     {
         if ( subFilterLast )

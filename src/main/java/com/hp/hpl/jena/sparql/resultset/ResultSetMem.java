@@ -135,6 +135,7 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
      *  @throws UnsupportedOperationException always thrown.
      */
 
+    @Override
     public void remove() throws java.lang.UnsupportedOperationException
     {
         throw new java.lang.UnsupportedOperationException(
@@ -144,30 +145,37 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     /**
      * Is there another possibility?
      */
+    @Override
     public boolean hasNext() { return iterator.hasNext() ; }
 
     /** Moves onto the next result possibility.
      */
     
+    @Override
     public QuerySolution nextSolution()  { return new ResultBinding(model, nextBinding()) ; }
     
+    @Override
     public Binding nextBinding()  { rowNumber++ ; return iterator.next() ; }
 
     /** Moves onto the next result possibility.
      *  The returned object should be of class QuerySolution
      */
 
+    @Override
     public QuerySolution next() { return nextSolution() ; }
 
     /** Reset this result set back to the beginning */
     public void rewind( ) { reset() ; }
 
+    @Override
     public void reset() { iterator = rows.iterator() ; rowNumber = 0 ; }
 
     /** Return the "row" number for the current iterator item
      */
+    @Override
     public int getRowNumber() { return rowNumber ; }
 
+    @Override
     public Model getResourceModel()
     {
         return model ;
@@ -175,10 +183,12 @@ public class ResultSetMem implements com.hp.hpl.jena.query.ResultSetRewindable
     
     /** Return the number of rows
      */
+    @Override
     public int size() { return rows.size() ; }
     
     /** Get the variable names for the projection
      */
+    @Override
     public List<String> getResultVars() { return varNames ; }
 
 }

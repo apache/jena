@@ -82,7 +82,7 @@ public class TestQueryIterSort {
         
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
         iterator.setCallback(new Callback() {
-            //@Override 
+            @Override 
             public void call() { throw new QueryCancelledException() ; }
         });
     }
@@ -90,7 +90,8 @@ public class TestQueryIterSort {
     @Test
     public void testNoSpill()
     {
-        iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
+        iterator.setCallback(new Callback() { @Override
+        public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
@@ -112,7 +113,8 @@ public class TestQueryIterSort {
     @Test
     public void testCleanAfterClose()
     {
-        iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
+        iterator.setCallback(new Callback() { @Override
+        public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
@@ -137,7 +139,8 @@ public class TestQueryIterSort {
     @Test
     public void testCleanAfterExhaustion()
     {
-        iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
+        iterator.setCallback(new Callback() { @Override
+        public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
@@ -220,7 +223,8 @@ public class TestQueryIterSort {
     public void testCancelInterruptsExternalSortAtStartOfIteration() 
     {
         iterator = new CallbackIterator(unsorted.iterator(), 25, null);
-        iterator.setCallback(new Callback() { public void call() { /* do nothing */ } });
+        iterator.setCallback(new Callback() { @Override
+        public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
         context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
@@ -297,13 +301,13 @@ public class TestQueryIterSort {
             this.callback = callback ;
         }
         
-        //@Override
+        @Override
         public boolean hasNext() 
         {
             return delegate.hasNext() ;
         }
 
-        //@Override
+        @Override
         public Binding next() 
         {
             if (elementsReturned++ >= trigger)
@@ -313,7 +317,7 @@ public class TestQueryIterSort {
             return delegate.next() ;
         }
 
-        //@Override
+        @Override
         public void remove()
         {
             delegate.remove() ;
@@ -328,29 +332,29 @@ public class TestQueryIterSort {
             return canceled ;
         }
 
-        //@Override
+        @Override
         public Binding nextBinding() 
         {
             if (elementsReturned++ >= trigger) callback.call() ;
             return delegate.next() ;
         }
 
-        //@Override
+        @Override
         @SuppressWarnings("deprecation") public void abort() { throw new ARQNotImplemented() ; }
         
-        //@Override
+        @Override
         public void cancel() { canceled = true ; }
         
-        //@Override
+        @Override
         public void close() { throw new ARQNotImplemented() ; }
         
-        //@Override
+        @Override
         public void output(IndentedWriter out, SerializationContext sCxt) { throw new ARQNotImplemented() ; }
         
-        //@Override
+        @Override
         public String toString(PrefixMapping pmap) { throw new ARQNotImplemented() ; }
         
-        //@Override
+        @Override
         public void output(IndentedWriter out) { throw new ARQNotImplemented() ; }
 
     }

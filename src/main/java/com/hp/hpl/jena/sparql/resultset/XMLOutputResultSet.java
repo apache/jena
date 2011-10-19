@@ -60,6 +60,7 @@ public class XMLOutputResultSet
         out = indentedOut ;
     }
     
+    @Override
     public void start(ResultSet rs)
     {
         if ( xmlInst )
@@ -110,6 +111,7 @@ public class XMLOutputResultSet
         out.incIndent(INDENT) ;
     }
 
+    @Override
     public void finish(ResultSet rs)
     {
         out.decIndent(INDENT) ;
@@ -119,6 +121,7 @@ public class XMLOutputResultSet
         out.flush() ;
     }
 
+    @Override
     public void start(QuerySolution qs)
     {
         out.println("<"+dfSolution+">") ;
@@ -126,12 +129,14 @@ public class XMLOutputResultSet
         out.incIndent(INDENT) ;
     }
 
+    @Override
     public void finish(QuerySolution qs)
     {
         out.decIndent(INDENT) ;
         out.println("</"+dfSolution+">") ;
     }
 
+    @Override
     public void binding(String varName, RDFNode node)
     {
         if ( node == null && ! outputExplicitUnbound )

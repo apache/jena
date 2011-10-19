@@ -50,7 +50,7 @@ public class HttpResponseLib
     static abstract class AbstractGraphReader implements HttpCaptureResponse<Graph>
     {
         private Graph graph = null ;
-        //@Override
+        @Override
         final public void handle(String contentType, String baseIRI, HttpResponse response)
         {
             try {
@@ -67,7 +67,7 @@ public class HttpResponseLib
             } catch (IOException ex) { IO.exception(ex) ; }
         }
     
-        //@Override
+        @Override
         public Graph get() { return graph ; }
         
         abstract protected LangRIOT createParser(InputStream in, String baseIRI, Sink<Triple> sink) ;
@@ -75,7 +75,7 @@ public class HttpResponseLib
 
     public static HttpResponseHandler httpDumpResponse = new HttpResponseHandler()
     {
-        //@Override
+        @Override
         public void handle(String contentType, String baseIRI, HttpResponse response)
         {
             try {
@@ -134,7 +134,7 @@ public class HttpResponseLib
     public static class HttpCaptureResponseResultSet implements HttpCaptureResponse<ResultSet>
     {    
         ResultSet rs = null ;
-        //@Override
+        @Override
         public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
         {
             MediaType mt = new MediaType(contentType) ;
@@ -145,7 +145,7 @@ public class HttpResponseLib
             rs = ResultSetFactory.copyResults(rs) ;
         }
 
-        //@Override
+        @Override
         public ResultSet get()
         {
             return rs ;

@@ -107,12 +107,14 @@ public class RecursiveElementVisitor implements ElementVisitor
     
     // Visitor pattern on Elements
     
+    @Override
     public final void visit(ElementTriplesBlock el)
     {
         startElement(el) ;
         endElement(el) ;
     }
     
+    @Override
     public final void visit(ElementDataset el)
     {
         startElement(el) ;
@@ -120,24 +122,28 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    @Override
     public final void visit(ElementFilter el)
     {
         startElement(el) ;
         endElement(el) ;
     }
 
+    @Override
     public void visit(ElementAssign el)
     {
         startElement(el) ;
         endElement(el) ;
     }
 
+    @Override
     public void visit(ElementBind el)
     {
         startElement(el) ;
         endElement(el) ;
     }
     
+    @Override
     public final void visit(ElementUnion el)
     {
         startElement(el) ;
@@ -150,6 +156,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
     
+    @Override
     public final void visit(ElementGroup el)
     {
         startElement(el) ;
@@ -162,6 +169,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    @Override
     public final void visit(ElementOptional el)
     {
         startElement(el) ;
@@ -170,6 +178,7 @@ public class RecursiveElementVisitor implements ElementVisitor
     }
 
 
+    @Override
     public final void visit(ElementNamedGraph el)
     {
         startElement(el) ;
@@ -177,6 +186,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    @Override
     public final void visit(ElementService el)
     {
         startElement(el) ;
@@ -184,12 +194,14 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
     
+    @Override
     public final void visit(ElementFetch el)
     {
         startElement(el) ;
         endElement(el) ;
     }
     
+    @Override
     public final void visit(ElementExists el)
     {
         startElement(el) ;
@@ -197,6 +209,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    @Override
     public final void visit(ElementNotExists el)
     {
         startElement(el) ;
@@ -204,6 +217,7 @@ public class RecursiveElementVisitor implements ElementVisitor
         endElement(el) ;
     }
 
+    @Override
     public final void visit(ElementMinus el)
     {
         startElement(el) ;
@@ -213,11 +227,13 @@ public class RecursiveElementVisitor implements ElementVisitor
 
 
     
+    @Override
     public void visit(ElementSubQuery el)
     { 
         startElement(el) ;
         endElement(el) ;
     }
+    @Override
     public void visit(ElementPathBlock el)
     {
         startElement(el) ;

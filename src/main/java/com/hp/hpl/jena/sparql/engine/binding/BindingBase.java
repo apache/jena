@@ -69,6 +69,7 @@ abstract public class BindingBase implements Binding
     public Binding getParent() { return parent ; }
     
     /** Iterate over all the names of variables. */
+    @Override
     final public Iterator<Var> vars()
     {
         Iterator<Var> iter = vars1() ;
@@ -78,6 +79,7 @@ abstract public class BindingBase implements Binding
     }
     protected abstract Iterator<Var> vars1() ;
     
+    @Override
     final public int size()
     {
         int x = size1() ;
@@ -88,6 +90,7 @@ abstract public class BindingBase implements Binding
     
     protected abstract int size1() ;
     
+    @Override
     public boolean isEmpty() 
     {
         if ( ! isEmpty1() ) 
@@ -101,6 +104,7 @@ abstract public class BindingBase implements Binding
     protected abstract boolean isEmpty1() ;
     
     /** Test whether a name is bound to some object */
+    @Override
     public boolean contains(Var var)
     {
         if ( contains1(var) )
@@ -113,6 +117,7 @@ abstract public class BindingBase implements Binding
     protected abstract boolean contains1(Var var) ;
 
     /** Return the object bound to a name, or null */
+    @Override
     final public Node get(Var var)
     {
         Node node = get1(var) ;

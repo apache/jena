@@ -29,17 +29,22 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 
 public abstract class QuerySolutionBase implements QuerySolution
 {
+    @Override
     public RDFNode get(String varName)          { return _get(Var.canonical(varName)) ; }
     
     protected abstract RDFNode _get(String varName) ; 
 
+    @Override
     public Resource getResource(String varName) { return (Resource)get(varName) ; } 
 
+    @Override
     public Literal getLiteral(String varName)   { return (Literal)get(varName) ; }
 
+    @Override
     public boolean contains(String varName)     { return _contains(Var.canonical(varName)) ; }  
 
     protected abstract boolean _contains(String varName) ;
     
+    @Override
     public abstract Iterator<String> varNames() ;
 }

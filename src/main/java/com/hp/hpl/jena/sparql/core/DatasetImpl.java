@@ -58,6 +58,7 @@ public class DatasetImpl implements Dataset
     }
 
     /** Return the default model */
+    @Override
     public Model getDefaultModel() 
     { 
         synchronized(lock)
@@ -68,11 +69,14 @@ public class DatasetImpl implements Dataset
         }
     }
 
+    @Override
     public Lock getLock() { return dsg.getLock() ; }
     
+    @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
     /** Return a model for the named graph - repeated calls so not guarantee to return the same Java object */
+    @Override
     public Model getNamedModel(String uri)
     { 
         checkGraphName(uri) ;
@@ -96,6 +100,7 @@ public class DatasetImpl implements Dataset
             throw new ARQException("null for graph name") ; 
     }
 
+    @Override
     public boolean containsNamedModel(String uri)
     {
         checkGraphName(uri) ;
@@ -108,12 +113,14 @@ public class DatasetImpl implements Dataset
         return dsg.containsGraph(Node.createURI(uri)) ;
     }
 
+    @Override
     public void close()
     {
         cache = null ;
         dsg.close();
     }
 
+    @Override
     public Iterator<String> listNames()
     { 
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;

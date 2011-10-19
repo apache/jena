@@ -38,14 +38,18 @@ public class ParseHandlerDebug implements ParseHandler
         indent() ;
     }
 
+    @Override
     public Item getItem()       { return null ; }
     
+    @Override
     public void parseStart()
     { System.out.println("<<<<") ; }
 
+    @Override
     public void parseFinish()
     { System.out.println(">>>>") ; }
 
+    @Override
     public void listStart(int line, int column)
     { 
         start(line, column) ;
@@ -53,6 +57,7 @@ public class ParseHandlerDebug implements ParseHandler
         System.out.println("(") ;
     }
 
+    @Override
     public void listFinish(int line, int column)
     {
         count-- ;         
@@ -62,6 +67,7 @@ public class ParseHandlerDebug implements ParseHandler
 
 
 
+    @Override
     public void emitBNode(int line, int column, String label)
     { 
         start(line, column) ;
@@ -69,12 +75,14 @@ public class ParseHandlerDebug implements ParseHandler
     }
 
 
+    @Override
     public void emitIRI(int line, int column, String iriStr)
     { 
         start(line, column) ;
         System.out.println("IRI: "+iriStr) ;
     }
 
+    @Override
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
     { 
         start(line, column) ;
@@ -86,18 +94,21 @@ public class ParseHandlerDebug implements ParseHandler
             System.out.println("Literal: "+lex+" ^^"+datatype_pn) ;
     }
 
+    @Override
     public void emitPName(int line, int column, String pname)
     { 
         start(line, column) ;
         System.out.println("PName: "+pname) ;
     }
 
+    @Override
     public void emitSymbol(int line, int column, String symbol)
     { 
         start(line, column) ;
         System.out.println("Symbol: "+symbol) ;
     }
 
+    @Override
     public void emitVar(int line, int column, String varName)
     { 
         start(line, column) ;

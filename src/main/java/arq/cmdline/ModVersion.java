@@ -37,11 +37,13 @@ public class ModVersion implements ArgModuleGeneral
     
     public void addClass(Class<?> c) { versionMgr.addClass(c) ; }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.add(versionDecl, "--version", "Version information") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(versionDecl) )

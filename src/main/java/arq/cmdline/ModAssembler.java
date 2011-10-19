@@ -41,13 +41,14 @@ public class ModAssembler extends ModBase
     
     // Dataset : default graph and named graphs
 
-    //@Override
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(assemblerDescDecl) )
             assemblerFile = cmdLine.getValue(assemblerDescDecl) ;
     }
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         //cmdLine.getUsage().startCategory("Dataset") ;

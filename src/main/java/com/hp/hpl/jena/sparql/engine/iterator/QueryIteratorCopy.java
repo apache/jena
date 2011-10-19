@@ -55,6 +55,7 @@ class QueryIteratorCopy extends QueryIteratorBase
         return iterator.nextBinding() ;
     }
 
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         out.print("QueryIteratorCopy") ;

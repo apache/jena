@@ -20,10 +20,15 @@ package com.hp.hpl.jena.sparql.expr;
 
 public abstract class ExprVisitorFunction implements ExprVisitor 
 {
+    @Override
     public void visit(ExprFunction0 func) { visitExprFunction(func) ; }
+    @Override
     public void visit(ExprFunction1 func) { visitExprFunction(func) ; }
+    @Override
     public void visit(ExprFunction2 func) { visitExprFunction(func) ; }
+    @Override
     public void visit(ExprFunction3 func) { visitExprFunction(func) ; }
+    @Override
     public void visit(ExprFunctionN func) { visitExprFunction(func) ; }
 
     protected abstract void visitExprFunction(ExprFunction func) ;

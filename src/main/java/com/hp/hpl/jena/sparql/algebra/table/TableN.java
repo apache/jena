@@ -73,6 +73,7 @@ public class TableN extends TableBase
 
     
     // Note - this table is the RIGHT table, and takes a LEFT binding.
+    @Override
     public QueryIterator matchRightLeft(Binding bindingLeft, boolean includeOnNoMatch,
                                         ExprList conditions,
                                         ExecutionContext execContext)
@@ -97,6 +98,7 @@ public class TableN extends TableBase
         return new QueryIterPlainWrapper(out.iterator(), execContext) ;
     }
  
+    @Override
     public QueryIterator iterator(ExecutionContext execCxt)
     {
         return new QueryIterPlainWrapper(rows.iterator(), execCxt) ;
@@ -109,7 +111,9 @@ public class TableN extends TableBase
         // Don't clear the vars in case code later asks for the variables. 
     }
 
+    @Override
     public List<String> getVarNames()   { return Var.varNames(vars) ; }
 
+    @Override
     public List<Var> getVars()          { return  vars ; }
 }

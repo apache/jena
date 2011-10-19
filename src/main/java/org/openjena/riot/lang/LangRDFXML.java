@@ -58,11 +58,13 @@ public class LangRDFXML implements LangRIOT
     private Sink<Triple> sink ;
     private ParserProfile profile ;             // Warning - we don't use all of this.
     
+    @Override
     public ParserProfile getProfile()
     {
         return profile ;
     }
 
+    @Override
     public void setProfile(ParserProfile profile)
     { this.profile = profile ; }
 
@@ -85,10 +87,11 @@ public class LangRDFXML implements LangRIOT
         this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
     }
     
-    //@Override
+    @Override
     public Lang getLang()   { return Lang.RDFXML ; }
 
     
+    @Override
     public void parse()
     {   
         // Hacked out of ARP because of all the "private" methods
@@ -125,9 +128,11 @@ public class LangRDFXML implements LangRIOT
             this.checker = new CheckerLiterals(errHandler) ;
         }
         
+        @Override
         public void statement(AResource subj, AResource pred, AResource obj)
         { sink.send(convert(subj, pred, obj)); }
 
+        @Override
         public void statement(AResource subj, AResource pred, ALiteral lit)
         { sink.send(convert(subj, pred, lit)) ; }
 
@@ -172,9 +177,11 @@ public class LangRDFXML implements LangRIOT
             return Triple.create(convert(s), convert(p), object);
         }
         
+        @Override
         public void endPrefixMapping(String prefix)
         {}
 
+        @Override
         public void startPrefixMapping(String prefix, String uri)
         {}
     }
@@ -188,8 +195,11 @@ public class LangRDFXML implements LangRIOT
             this.errorHandler = hander ;
         }
         
+        @Override
         public void warning(Exception e)        { errorHandler.warning(e.getMessage(), -1, -1) ; }
+        @Override
         public void error(Exception e)          { errorHandler.error(e.getMessage(), -1, -1) ; }
+        @Override
         public void fatalError(Exception e)     { errorHandler.fatal(e.getMessage(), -1, -1) ; }
     }
 }

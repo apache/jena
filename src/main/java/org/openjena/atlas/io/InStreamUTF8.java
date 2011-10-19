@@ -108,7 +108,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     public void close() throws IOException
     { input.close() ; }
     
-    //@Override
+    @Override
     public void closeStream()
     { IO.close(input) ; }
 
@@ -142,6 +142,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
     /** Next codepoint, given the first byte of any UTF-8 byte sequence is already known.
      *  Not necessarily a valid char (this function can be used a straight UTF8 decoder
      */
+    @Override
     public final int advance()
     { return advance(input) ; }
     

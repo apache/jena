@@ -295,6 +295,7 @@ public abstract class IRIResolver
         protected IRIResolverNoOp() {}
 
         final private Getter<String, IRI> getter = new Getter<String, IRI>() {
+            @Override
             public IRI get(String relURI) { return  iriFactory.create(relURI) ; }
         } ;
         private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
@@ -336,6 +337,7 @@ public abstract class IRIResolver
         final private IRI base;
         // The cache.  Maybe this should be in Prologue.
         final private Getter<String, IRI> getter = new Getter<String, IRI>() {
+            @Override
             public IRI get(String relURI) { return  base.resolve(relURI) ; }
         } ;
         // Not static - contains relative IRIs

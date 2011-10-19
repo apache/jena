@@ -51,8 +51,10 @@ public class OpTable extends Op0
     public Table getTable()
     { return table ; }
     
+    @Override
     public String getName() { return Tags.tagTable ; }
     
+    @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
 

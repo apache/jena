@@ -84,16 +84,19 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         if (closed) throw new AtlasException("SortedDataBag is closed, no operations can be performed on it.") ;
     }
     
+    @Override
     public boolean isSorted()
     {
         return true;
     }
 
+    @Override
     public boolean isDistinct()
     {
         return false;
     }
 
+    @Override
     public void add(E item)
     {
         checkClosed();
@@ -155,6 +158,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         }
     }
 
+    @Override
     public void flush()
     {
         spill();
@@ -167,6 +171,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
      * 
      * @return an Iterator
      */
+    @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Iterator<E> iterator()
     {
@@ -234,6 +239,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         }
     }
     
+    @Override
     public void close()
     {
         if (!closed)
@@ -278,11 +284,13 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
             }
         }
 
+        @Override
         public boolean hasNext()
         {
             return (minHeap.peek() != null);
         }
 
+        @Override
         public T next()
         {
             if (!hasNext())
@@ -297,11 +305,13 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
             return curr.getTuple();
         }
 
+        @Override
         public void remove()
         {
             throw new UnsupportedOperationException("SpillSortIterator.remove");
         }
 
+        @Override
         public void close()
         {
             for (Iterator<T> it : inputs)
@@ -333,6 +343,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
                 return tuple;
             }
             
+            @Override
             @SuppressWarnings("unchecked")
             public int compareTo(Item<U> o)
             {

@@ -52,6 +52,7 @@ public class PrefixMapping2 implements PrefixMapping
 
     
     /** @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefix(java.lang.String, java.lang.String) */
+    @Override
     public PrefixMapping setNsPrefix(String prefix, String uri)
     {
         pmapLocal.setNsPrefix(prefix, uri) ;
@@ -59,6 +60,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#removeNsPrefix(java.lang.String) */
+    @Override
     public PrefixMapping removeNsPrefix(String prefix)
     {
         pmapLocal.removeNsPrefix(prefix) ;
@@ -68,6 +70,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(com.hp.hpl.jena.shared.PrefixMapping) */
+    @Override
     public PrefixMapping setNsPrefixes(PrefixMapping other)
     {
        pmapLocal.setNsPrefixes(other) ;
@@ -75,6 +78,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map) */
+    @Override
     public PrefixMapping setNsPrefixes(Map<String, String> map)
     {
         pmapLocal.setNsPrefixes(map) ;
@@ -82,6 +86,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsPrefixURI(java.lang.String) */
+    @Override
     public String getNsPrefixURI(String prefix)
     {
         String s = pmapLocal.getNsPrefixURI(prefix) ;
@@ -94,6 +99,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsURIPrefix(java.lang.String) */
+    @Override
     public String getNsURIPrefix(String uri)
     {
         String s = pmapLocal.getNsURIPrefix(uri) ;
@@ -107,6 +113,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#getNsPrefixMap() */
+    @Override
     public Map<String, String> getNsPrefixMap() { return getNsPrefixMap(true) ; }
     
     public Map<String, String> getNsPrefixMap(boolean includeGlobalMap)
@@ -123,6 +130,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#expandPrefix(java.lang.String) */
+    @Override
     public String expandPrefix(String prefixed)
     {
         // Returns the unchanged prefixed name if no transformation
@@ -140,6 +148,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#shortForm(java.lang.String) */
+    @Override
     public String shortForm(String uri)
     {
         String s = pmapLocal.shortForm(uri) ;
@@ -152,6 +161,7 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String) */
+    @Override
     public String qnameFor(String uri)
     {
         String s = pmapLocal.qnameFor(uri) ;
@@ -165,12 +175,14 @@ public class PrefixMapping2 implements PrefixMapping
     }
 
     /** @see com.hp.hpl.jena.shared.PrefixMapping#lock() */
+    @Override
     public PrefixMapping lock()
     {
         pmapLocal.lock() ;
         return this;
     }
 
+    @Override
     public PrefixMapping withDefaultMappings(PrefixMapping map)
     {
         Iterator<Map.Entry<String, String>> it = map.getNsPrefixMap().entrySet().iterator();
@@ -185,6 +197,7 @@ public class PrefixMapping2 implements PrefixMapping
         return this;
     }
 
+    @Override
     public boolean samePrefixMappingAs(PrefixMapping other)
     {
         if ( other == null )

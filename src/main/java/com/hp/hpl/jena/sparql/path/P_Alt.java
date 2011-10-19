@@ -27,7 +27,7 @@ public class P_Alt extends P_Path2
         super(p1, p2) ;
     }
 
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

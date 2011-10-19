@@ -35,6 +35,7 @@ class FindableBasicPattern implements Findable
 
     FindableBasicPattern(BasicPattern triples) { this.triples = triples ; }
 
+    @Override
     public Iterator<Triple> find(Node s, Node p, Node o)
     {
         if ( s == Node.ANY ) s = null ;
@@ -53,6 +54,7 @@ class FindableBasicPattern implements Findable
         return r.iterator() ;
     }
     
+    @Override
     public boolean contains(Node s, Node p, Node o)
     {
         if ( s == Node.ANY ) s = null ;

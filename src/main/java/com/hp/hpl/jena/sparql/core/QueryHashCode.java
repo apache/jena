@@ -41,12 +41,15 @@ public class QueryHashCode
         public QueryHashCodeWorker()
         {}
 
+        @Override
         public void startVisit(Query query)
         { } 
 
+        @Override
         public void visitResultForm(Query query)
         { }
 
+        @Override
         public void visitPrologue(Prologue query)
         {
             if ( query.explicitlySetBaseURI() )
@@ -54,6 +57,7 @@ public class QueryHashCode
             x ^= query.getPrefixMapping().getNsPrefixMap().hashCode() ;
         }
 
+        @Override
         public void visitSelectResultForm(Query query)
         { 
             //query.setResultVars() ;
@@ -61,59 +65,70 @@ public class QueryHashCode
                 x^= query.getProject().hashCode() ;
         }
 
+        @Override
         public void visitConstructResultForm(Query query)
         {
             x ^= query.getConstructTemplate().hashCode() ;
         }
 
+        @Override
         public void visitDescribeResultForm(Query query)
         {
             x ^= query.getResultVars().hashCode() ;
             x ^= query.getResultURIs().hashCode() ;
         }
 
+        @Override
         public void visitAskResultForm(Query query)
         { }
 
+        @Override
         public void visitDatasetDecl(Query query)
         {
             x ^= query.getNamedGraphURIs().hashCode() ; 
         }
 
+        @Override
         public void visitQueryPattern(Query query)
         {
             if ( query.getQueryPattern() != null )
                 x ^= query.getQueryPattern().hashCode() ;
         }
 
+        @Override
         public void visitGroupBy(Query query)
         {
             if ( query.hasGroupBy() )
                 x ^= query.getGroupBy().hashCode() ;
         }
         
+        @Override
         public void visitHaving(Query query) 
         {
             if ( query.hasHaving() )
                 x ^= query.getHavingExprs().hashCode() ;
         }
         
+        @Override
         public void visitOrderBy(Query query)
         {
             if ( query.getOrderBy() != null )
                 x ^= query.getOrderBy().hashCode() ;
         }
 
+        @Override
         public void visitLimit(Query query)
         {
             x ^= query.getLimit() ;
         }
 
+        @Override
         public void visitOffset(Query query)
         {
             x ^= query.getOffset() ;
         }
 
+        @Override
         public void visitBindings(Query query)
         {
             if ( query.hasBindings() )
@@ -123,6 +138,7 @@ public class QueryHashCode
             }
         }
 
+        @Override
         public void finishVisit(Query query)
         {}
 

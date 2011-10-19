@@ -92,6 +92,7 @@ public abstract class ExprFunctionOp extends ExprFunction
     protected abstract NodeValue eval(Binding binding, QueryIterator iter, FunctionEnv env) ;
     
     public abstract ExprFunctionOp copy(ExprList args, Op x) ;
+    @Override
     public void visit(ExprVisitor visitor) { visitor.visit(this) ; }
     public Expr apply(ExprTransform transform, ExprList args, Op x) { return transform.transform(this, args, x) ; }
 }

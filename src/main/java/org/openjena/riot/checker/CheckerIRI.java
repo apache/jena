@@ -49,6 +49,7 @@ public class CheckerIRI implements NodeChecker
         this.iriFactory = iriFactory ;
     }
     
+    @Override
     public boolean check(Node node, long line, long col)
     { return node.isURI() && checkURI(node, line, col) ; }
 

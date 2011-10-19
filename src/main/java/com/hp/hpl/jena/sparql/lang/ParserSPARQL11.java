@@ -43,6 +43,7 @@ public class ParserSPARQL11 extends Parser
         query.setSyntax(Syntax.syntaxSPARQL_11) ;
 
         Action action = new Action() {
+            @Override
             public void exec(SPARQLParser11 parser) throws Exception
             {
                 parser.QueryUnit() ;
@@ -58,6 +59,7 @@ public class ParserSPARQL11 extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
+            @Override
             public void exec(SPARQLParser11 parser) throws Exception
             {
                 Element el = parser.GroupGraphPattern() ;
@@ -72,6 +74,7 @@ public class ParserSPARQL11 extends Parser
     {
         final Query query = new Query () ;
         Action action = new Action() {
+            @Override
             public void exec(SPARQLParser11 parser) throws Exception
             {
                 Template t = parser.ConstructTemplate() ;

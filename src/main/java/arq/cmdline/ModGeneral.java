@@ -35,6 +35,7 @@ public class ModGeneral extends ModBase
     protected boolean debug = false ;
     protected boolean help = false ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("General") ;
@@ -44,6 +45,7 @@ public class ModGeneral extends ModBase
         cmdLine.add(argDeclHelp, "--help", null) ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         verbose = cmdLine.contains(argDeclVerbose) ;

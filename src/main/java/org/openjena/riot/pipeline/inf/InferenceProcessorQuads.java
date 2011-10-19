@@ -43,6 +43,7 @@ class InferenceProcessorQuads implements Sink<Quad>
     }
 
     
+    @Override
     public void send(Quad quad)
     {
         output.send(quad) ;
@@ -51,9 +52,11 @@ class InferenceProcessorQuads implements Sink<Quad>
         rdfs.process(quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
+    @Override
     public void flush()
     { output.flush() ; }
 
+    @Override
     public void close()
     { output.close() ; }
 }

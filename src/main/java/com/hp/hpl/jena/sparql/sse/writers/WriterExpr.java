@@ -105,6 +105,7 @@ public class WriterExpr
             context = cxt ;
         }
 
+        @Override
         public void startVisit() {}
 
         @Override
@@ -136,6 +137,7 @@ public class WriterExpr
             out.decIndent() ;
         }
 
+        @Override
         public void visit(ExprFunctionOp funcOp)
         {
             out.print("(") ;
@@ -177,21 +179,25 @@ public class WriterExpr
         }
                                
         
+        @Override
         public void visit(NodeValue nv)
         {
             out.print(nv.asQuotedString(context)) ;
         }
 
+        @Override
         public void visit(ExprVar nv)
         {
             out.print(nv.toPrefixString()) ;
         }
 
+        @Override
         public void visit(ExprAggregator eAgg)
         { 
             out.print(eAgg.getAggregator().toPrefixString()) ;
         }
 
+        @Override
         public void finishVisit() { out.flush() ; }
 
         private void endLine()

@@ -31,6 +31,7 @@ public class CheckerBlankNodes implements NodeChecker
         this.handler = handler ;
     }
     
+    @Override
     public boolean check(Node node, long line, long col)
     { return node.isBlank() && checkBlank(node, line, col) ; }
     

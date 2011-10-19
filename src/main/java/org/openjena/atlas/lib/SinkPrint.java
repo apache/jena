@@ -31,15 +31,15 @@ public class SinkPrint<T> implements Sink<T>
     public SinkPrint(PrintStream out) 
     { this.out = out ; }
     
-    //@Override
+    @Override
     public void send(T item)
     {
         out.println("Sink: "+item) ;
     }
 
-    //@Override 
+    @Override 
     public void flush() { }
     
-    //@Override
+    @Override
     public void close() {}
 }

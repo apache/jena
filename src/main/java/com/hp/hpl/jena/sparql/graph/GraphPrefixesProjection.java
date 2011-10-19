@@ -40,8 +40,7 @@ public class GraphPrefixesProjection extends PrefixMappingImpl
         this.prefixes = prefixes ;
     }
 
-    //@Override
-    //protected void regenerateReverseMapping() {}
+    //@Override protected void regenerateReverseMapping() {}
 
     @Override
     public String getNsURIPrefix( String uri )

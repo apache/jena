@@ -46,6 +46,7 @@ public class CheckerLiterals implements NodeChecker
         this.handler = handler ;
     }
     
+    @Override
     public boolean check(Node node, long line, long col)
     { return node.isLiteral() && checkLiteral(node, handler, line, col) ; }
     

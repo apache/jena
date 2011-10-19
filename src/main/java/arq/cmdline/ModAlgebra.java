@@ -30,6 +30,7 @@ public class ModAlgebra implements ArgModuleGeneral
     private String queryString = null ;
     private Op op = null ;
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Query") ;
@@ -38,6 +39,7 @@ public class ModAlgebra implements ArgModuleGeneral
                     "File containing an algebra query") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(queryFileDecl) )

@@ -31,6 +31,7 @@ public class AggCountVarDistinct extends AggregatorBase
     private Expr expr ;
 
     public AggCountVarDistinct(Expr expr) { this.expr = expr ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggCountVarDistinct(expr) ; }
 
     @Override
@@ -44,6 +45,7 @@ public class AggCountVarDistinct extends AggregatorBase
         return new AccCountVarDistinct() ; 
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
 
     @Override

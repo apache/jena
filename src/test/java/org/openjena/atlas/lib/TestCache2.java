@@ -49,6 +49,7 @@ public class TestCache2 extends BaseTest
     }
     
     static Getter<Integer, String> getter = new Getter<Integer, String>() {
+        @Override
         public String get(Integer key)
         { return key.toString() ; }
     } ;

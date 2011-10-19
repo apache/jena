@@ -39,7 +39,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     protected DatasetGraphBaseFind() {}
     
     /** Implementation of find based on splitting into triples (default graph) and quads (named graph) */
-    //@Override
+    @Override
     public Iterator<Quad> find(Node g, Node s, Node p , Node o)
     {
         if ( ! isWildcard(g) )
@@ -55,7 +55,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
         return findAny(s, p, o) ;
     }
     
-    //@Override
+    @Override
     public Iterator<Quad> findNG(Node g, Node s, Node p , Node o)
     {
         Iterator<Quad> qIter ;

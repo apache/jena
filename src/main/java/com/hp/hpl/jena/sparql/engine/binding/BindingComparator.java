@@ -45,6 +45,7 @@ public class BindingComparator implements java.util.Comparator<Binding>
 {
     private static Comparator<Var> varComparator = new Comparator<Var>()
         {
+            @Override
             public int compare(Var o1, Var o2)
             {
                 return o1.getName().compareTo(o2.getName());
@@ -72,6 +73,7 @@ public class BindingComparator implements java.util.Comparator<Binding>
     // Node comparsion is:
     //  Compare by 
 
+    @Override
     public int compare(Binding bind1, Binding bind2)
     {
         for ( Iterator<SortCondition> iter = conditions.iterator() ; iter.hasNext() ; )

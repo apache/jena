@@ -24,7 +24,8 @@ import org.openjena.atlas.junit.BaseTest ;
 
 public class TestAlarmClock extends BaseTest
 {
-    Callback<?> callback = new Callback<Object>() { public void proc(Object arg) {} } ; 
+    Callback<?> callback = new Callback<Object>() { @Override
+    public void proc(Object arg) {} } ; 
     
     @Test public void alarm_01()
     {

@@ -36,6 +36,7 @@ public abstract class LangBase<X> extends LangEngine implements LangRIOT
         this.sink = sink ;
     }
 
+    @Override
     public void parse()
     {
         EventManager.send(sink, new Event(SysRIOT.startRead, null)) ;
@@ -48,11 +49,13 @@ public abstract class LangBase<X> extends LangEngine implements LangRIOT
     /** Run the parser - events have been handled. */
     protected abstract void runParser() ;
 
+    @Override
     public ParserProfile getProfile()
     {
         return profile ;
     }
 
+    @Override
     public void setProfile(ParserProfile profile)
     {
         super.profile = profile ; 

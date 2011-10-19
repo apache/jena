@@ -31,7 +31,7 @@ public final class CharStreamSequence implements CharStream
         this.idx = 0 ;
     }
 
-    //@Override
+    @Override
     public int advance()
     {
         if ( idx >= string.length() )
@@ -39,7 +39,7 @@ public final class CharStreamSequence implements CharStream
         return string.charAt(idx++);
     }
 
-    //@Override
+    @Override
     public void closeStream()
     {
         string = null ;

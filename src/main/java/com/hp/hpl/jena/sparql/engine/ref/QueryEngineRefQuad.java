@@ -56,18 +56,22 @@ public class QueryEngineRefQuad extends QueryEngineRef
     
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
+        @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
+        @Override
         public Plan create(Query query, DatasetGraph dataset, Binding binding, Context context)
         {
             QueryEngineRefQuad engine = new QueryEngineRefQuad(query, dataset, binding, context) ;
             return engine.getPlan() ;
         }
         
+        @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context) 
         { return true ; }
 
+        @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
             QueryEngineRefQuad engine = new QueryEngineRefQuad(op, dataset, binding, context) ;

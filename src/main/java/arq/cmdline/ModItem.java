@@ -32,12 +32,14 @@ public class ModItem implements ArgModuleGeneral
     
     public ModItem() {}
     
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("Item") ;
         cmdLine.add(queryFileDecl, "--file=", "File") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( cmdLine.contains(queryFileDecl) )

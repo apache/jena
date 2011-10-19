@@ -31,6 +31,7 @@ public class AggCountDistinct extends AggregatorBase
 {
     // ---- COUNT(DISTINCT *)
     public AggCountDistinct() { super() ; }
+    @Override
     public Aggregator copy(Expr expr)
     { 
         if ( expr != null )
@@ -43,6 +44,7 @@ public class AggCountDistinct extends AggregatorBase
     @Override
     public String toPrefixString()  { return "(count distinct)" ; }
 
+    @Override
     public Expr getExpr()           { return null ; }
     
     @Override
@@ -75,6 +77,7 @@ public class AggCountDistinct extends AggregatorBase
 
         // Errors can't occur.
 
+        @Override
         public NodeValue getValue()
         { return NodeValue.makeInteger(count) ; }
     }

@@ -36,6 +36,7 @@ public class SinkQuadsToDataset implements Sink<Quad>
         this.dataset = dataset ;
     }
     
+    @Override
     public void send(Quad quad)
     {
         if ( quad.isTriple() )
@@ -44,11 +45,13 @@ public class SinkQuadsToDataset implements Sink<Quad>
             dataset.add(quad) ;
     }
 
+    @Override
     public void flush()
     {
         SystemARQ.sync(dataset) ;
     }
 
+    @Override
     public void close()
     {}
 }

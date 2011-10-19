@@ -60,6 +60,7 @@ public class TextOutput extends OutputBase
     public TextOutput(SerializationContext cxt )
     { context = cxt ; }
 
+    @Override
     public void format(OutputStream outs, ResultSet resultSet)
     { write(outs, resultSet) ; }
 
@@ -222,6 +223,7 @@ public class TextOutput extends OutputBase
         return FmtUtils.stringForRDFNode(obj, context) ;
     }
 
+    @Override
     public void format(OutputStream out, boolean answer)
     {
       PrintWriter pw = FileUtils.asPrintWriterUTF8(out) ;

@@ -45,6 +45,7 @@ public class P_FixedLength extends P_Path1
         return hashFixedLength ^ (int)count ^ getSubPath().hashCode() ;
     }
 
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
 

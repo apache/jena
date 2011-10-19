@@ -32,6 +32,7 @@ public abstract class TableBase implements Table
 {
     protected TableBase() {}
 
+    @Override
     final public
     void close()
     {
@@ -43,9 +44,11 @@ public abstract class TableBase implements Table
     final public Table eval(Evaluator evaluator)  { return this ; }
     
    
+    @Override
     public void addBinding(Binding binding)
     { throw new UnsupportedOperationException("Table.add") ; }
     
+    @Override
     public boolean contains(Binding b)
     {
         QueryIterator qIter = iterator(null) ;
@@ -60,10 +63,13 @@ public abstract class TableBase implements Table
         } finally { qIter.close() ; }
     }
     
+    @Override
     public abstract int size() ;
     
+    @Override
     public abstract boolean isEmpty() ;
     
+    @Override
     public ResultSet toResultSet()
     {
         QueryIterator qIter = iterator(null) ;

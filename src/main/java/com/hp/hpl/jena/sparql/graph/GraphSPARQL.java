@@ -93,7 +93,6 @@ public class GraphSPARQL extends GraphBase implements Graph
 
     
     /* We don't support value tests, hence handlesLiteralTyping is false */
-    //@Override
     @Override
     public Capabilities getCapabilities()
     { 
@@ -107,7 +106,6 @@ public class GraphSPARQL extends GraphBase implements Graph
     
     public DatasetGraph getDataset() { return dataset ; } 
 
-    //@Override
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {

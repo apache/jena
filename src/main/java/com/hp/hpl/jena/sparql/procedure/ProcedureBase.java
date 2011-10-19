@@ -36,12 +36,14 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
     private Node procId ;
     private ExprList args ;
 
+    @Override
     public void build(Node procId, ExprList args, ExecutionContext execCxt)
     {
         this.procId = procId ;
         this.args = args ;
     }
  
+    @Override
     public final QueryIterator proc(QueryIterator input, ExecutionContext execCxt)
     {
         return new RepeatApplyIteratorProc(input, execCxt) ;
@@ -50,6 +52,7 @@ public abstract class ProcedureBase extends PrintSerializableBase implements Pro
     public abstract QueryIterator exec(Binding binding, Node name, ExprList args, ExecutionContext execCxt) ;
     
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {
         out.print("Procedure ["+FmtUtils.stringForNode(procId, sCxt)+"]") ;

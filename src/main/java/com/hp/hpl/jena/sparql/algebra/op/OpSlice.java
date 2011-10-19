@@ -44,7 +44,9 @@ public class OpSlice extends OpModifier
         return null ;
     }
 
+    @Override
     public String getName()                 { return Tags.tagSlice ; }
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }

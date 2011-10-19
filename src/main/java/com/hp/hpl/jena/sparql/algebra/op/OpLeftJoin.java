@@ -47,12 +47,14 @@ public class OpLeftJoin extends Op2
     }
     
     public ExprList getExprs()      { return expressions ; } 
+    @Override
     public String getName()         { return Tags.tagLeftJoin ; }
     
     @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
+    @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op newLeft, Op newRight)

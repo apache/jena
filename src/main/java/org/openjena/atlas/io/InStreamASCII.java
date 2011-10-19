@@ -53,7 +53,7 @@ public final class InStreamASCII extends Reader implements CharStream
     public void close() throws IOException
     { input.close() ; }
 
-    //@Override
+    @Override
     public void closeStream()
     { IO.close(input) ; }
 
@@ -80,6 +80,7 @@ public final class InStreamASCII extends Reader implements CharStream
     public int read() throws IOException
     { return advance() ; }
     
+    @Override
     public int advance()
     {
         count++ ;

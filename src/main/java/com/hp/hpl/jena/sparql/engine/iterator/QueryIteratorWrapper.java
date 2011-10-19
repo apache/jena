@@ -61,6 +61,7 @@ public class QueryIteratorWrapper extends QueryIteratorBase
         }
     }
     
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     {   
         out.println(Utils.className(this)+"/"+Utils.className(iterator)) ;

@@ -78,32 +78,38 @@ public class SortedResultSet implements ResultSet
         //resultSet = new ResultSetStream(rs.getResultVars(), null, qIter) ;
     }
     
+    @Override
     public boolean hasNext()
     {
         return qIter.hasNext() ;
     }
 
+    @Override
     public QuerySolution next()
     {
         return new ResultBinding(model, nextBinding()) ;
     }
 
+    @Override
     public Binding nextBinding()
     {
         rowNumber++ ;
         return qIter.nextBinding() ;
     }
 
+    @Override
     public QuerySolution nextSolution()
     {
         return new ResultBinding(null, nextBinding()) ;
     }
     
+    @Override
     public int getRowNumber()
     {
         return rowNumber ;
     }
 
+    @Override
     public List<String> getResultVars()
     {
         return resultVars ;
@@ -111,11 +117,13 @@ public class SortedResultSet implements ResultSet
 
     public boolean isOrdered() { return true ; }
     
+    @Override
     public Model getResourceModel()
     {
         return model ;
     }
 
+    @Override
     public void remove()
     {
         throw new UnsupportedOperationException(SortedResultSet.class.getName()+".remove") ;

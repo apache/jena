@@ -37,7 +37,7 @@ public class LangTurtle extends LangTurtleBase<Triple>
         setCurrentGraph(null) ;
     }
 
-    //@Override
+    @Override
     public Lang getLang()   { return Lang.TURTLE ; }
     
     @Override

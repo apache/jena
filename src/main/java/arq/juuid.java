@@ -103,6 +103,7 @@ public class juuid extends CmdGeneral
 
     class ModJUUID extends ModBase
     {
+        @Override
         public void registerWith(CmdGeneral cmdLine)
         {
             cmdLine.add(argDeclNum) ;
@@ -113,6 +114,7 @@ public class juuid extends CmdGeneral
             cmdLine.add(argDeclPlain) ;
         }
         
+        @Override
         public void processArgs(CmdArgModule cmdLine)
         {
             String numStr = null ;

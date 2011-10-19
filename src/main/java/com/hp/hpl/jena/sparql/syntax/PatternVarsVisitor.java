@@ -57,10 +57,10 @@ public class PatternVarsVisitor extends ElementVisitorBase
     }
         
     // Variables here are non-binding.
-    //@Override public void visit(ElementExists el)       { }
-    //@Override public void visit(ElementNotExists el)    { }
-    //@Override public void visit(ElementMinus el)        { }
-    //@Override public void visit(ElementFilter el)       { }
+    @Override public void visit(ElementExists el)       { }
+    @Override public void visit(ElementNotExists el)    { }
+    @Override public void visit(ElementMinus el)        { }
+    @Override public void visit(ElementFilter el)       { }
 
     @Override
     public void visit(ElementNamedGraph el)

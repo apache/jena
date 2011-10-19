@@ -74,6 +74,7 @@ public class TemplateLib
         if ( dftGraph != null )
         {
             Transform<Quad, Quad> nt = new Transform<Quad, Quad>() {
+                @Override
                 public Quad convert(Quad quad)
                 {
                     if ( ! quad.isDefaultGraph() ) return quad ;
@@ -135,6 +136,7 @@ public class TemplateLib
     {
         return Iter.mapMany(bindings, new Transform<Binding, Iterator<Quad>>()
         {
+            @Override
             public Iterator<Quad> convert(final Binding b)
             {
                 // Iteration is a new mapping of bnodes. 

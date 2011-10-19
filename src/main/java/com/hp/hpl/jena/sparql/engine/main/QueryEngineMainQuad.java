@@ -53,18 +53,22 @@ public class QueryEngineMainQuad extends QueryEngineMain
 
     private static QueryEngineFactory factory = new QueryEngineFactory()
     {
+        @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
         { return true ; }
 
+        @Override
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
             QueryEngineMainQuad engine = new QueryEngineMainQuad(query, dataset, input, context) ;
             return engine.getPlan() ;
         }
         
+        @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context) 
         { return true ; }
 
+        @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
             QueryEngineMainQuad engine = new QueryEngineMainQuad(op, dataset, binding, context) ;

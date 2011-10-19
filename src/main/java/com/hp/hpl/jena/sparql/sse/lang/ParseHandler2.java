@@ -34,6 +34,7 @@ public class ParseHandler2 implements ParseHandler
         this.handler2 = handler2 ;
     }
 
+    @Override
     public Item getItem()
     {
         Item item = handler1.getItem() ;
@@ -42,6 +43,7 @@ public class ParseHandler2 implements ParseHandler
         return item ;
     }
 
+    @Override
     public void parseStart()
     {
         handler1.parseStart() ;
@@ -49,12 +51,14 @@ public class ParseHandler2 implements ParseHandler
         
     }
 
+    @Override
     public void parseFinish()
     {
         handler1.parseFinish() ;
         handler2.parseFinish() ; 
     }
 
+    @Override
     public void listStart(int line, int column)
     {
         handler1.listStart(line, column) ;
@@ -62,42 +66,49 @@ public class ParseHandler2 implements ParseHandler
         
     }
 
+    @Override
     public void listFinish(int line, int column)
     {
         handler1.listFinish(line, column) ;
         handler2.listFinish(line, column) ;
     }
 
+    @Override
     public void emitBNode(int line, int column, String label)
     { 
         handler1.emitBNode(line, column, label) ;
         handler2.emitBNode(line, column, label) ;
     }
 
+    @Override
     public void emitIRI(int line, int column, String iriStr)
     {
         handler1.emitIRI(line, column, iriStr) ;
         handler2.emitIRI(line, column, iriStr) ;
     }
 
+    @Override
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
     {
         handler1.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
         handler2.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
     }
 
+    @Override
     public void emitPName(int line, int column, String pname)
     {
         handler1.emitPName(line, column, pname) ;
         handler2.emitPName(line, column, pname) ;
     }
 
+    @Override
     public void emitSymbol(int line, int column, String symbol)
     {
         handler1.emitSymbol(line, column, symbol) ;
         handler2.emitSymbol(line, column, symbol) ;
     }
 
+    @Override
     public void emitVar(int line, int column, String varName)
     {
         handler1.emitVar(line, column, varName) ;

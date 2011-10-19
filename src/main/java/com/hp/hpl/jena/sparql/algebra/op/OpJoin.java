@@ -58,12 +58,14 @@ public class OpJoin extends Op2
     
     private OpJoin(Op left, Op right) { super(left, right) ; }
     
+    @Override
     public String getName() { return Tags.tagJoin ; }
 
     @Override
     public Op apply(Transform transform, Op left, Op right)
     { return transform.transform(this, left, right) ; }
         
+    @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     @Override

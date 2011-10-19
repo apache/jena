@@ -91,9 +91,11 @@ public class OpQuadPattern extends Op0
     
     public boolean isUnionGraph()           { return Quad.isUnionGraph(graphNode) ; }
     
+    @Override
     public String getName()                 { return Tags.tagQuadPattern ; }
     @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy()                        { return new OpQuadPattern(graphNode, triples) ; }

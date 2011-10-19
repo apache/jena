@@ -32,18 +32,21 @@ public class SinkSplit<T> implements Sink<T>
         this.sink2 = sink2 ;
     }
     
+    @Override
     public void flush()
     { 
         sink1.flush();
         sink2.flush();
     }
         
+    @Override
     public void send(T item)
     { 
         sink1.send(item) ;
         sink2.send(item) ;
     }
 
+    @Override
     public void close()
     {
         sink1.close(); 

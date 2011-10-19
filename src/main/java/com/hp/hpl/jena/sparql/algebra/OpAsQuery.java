@@ -105,6 +105,7 @@ public class OpAsQuery
             return endSubGroup() ;
         }
 
+        @Override
         public void visit(OpBGP opBGP)
         {
             currentGroup().addElement(process(opBGP.getPattern())) ;
@@ -116,14 +117,17 @@ public class OpAsQuery
 //            currentGroup().addElement(process(opBGP.getPattern())) ;
 //        }
         
+        @Override
         public void visit(OpTriple opTriple)
         { currentGroup().addElement(process(opTriple.getTriple())) ; }
 
+        @Override
         public void visit(OpProcedure opProcedure)
         {
             throw new ARQNotImplemented("OpProcedure") ;
         }
         
+        @Override
         public void visit(OpPropFunc opPropFunc)
         {
             Node s = processPropFuncArg(opPropFunc.getSubjectArgs()) ;
@@ -147,6 +151,7 @@ public class OpAsQuery
             return head ;
         }
         
+        @Override
         public void visit(OpSequence opSequence)
         {
             ElementGroup g = currentGroup() ;
@@ -170,6 +175,7 @@ public class OpAsQuery
             return ;
         }
         
+        @Override
         public void visit(OpDisjunction opDisjunction)
         {
             throw new ARQNotImplemented("OpDisjunction") ;
@@ -211,12 +217,15 @@ public class OpAsQuery
             return e ;
         }
         
+        @Override
         public void visit(OpQuadPattern quadPattern)
         { throw new ARQNotImplemented("OpQuadPattern") ; }
 
+        @Override
         public void visit(OpPath opPath)
         { throw new ARQNotImplemented("OpPath") ; }
 
+        @Override
         public void visit(OpJoin opJoin)
         {
             // Keep things clearly separated.
@@ -237,6 +246,7 @@ public class OpAsQuery
             return eg.isEmpty() ;
         }
         
+        @Override
         public void visit(OpLeftJoin opLeftJoin)
         {
             Element eLeft = asElement(opLeftJoin.getLeft()) ;
@@ -257,12 +267,15 @@ public class OpAsQuery
             g.addElement(opt) ;
         }
 
+        @Override
         public void visit(OpDiff opDiff)
         { throw new ARQNotImplemented("OpDiff") ; }
 
+        @Override
         public void visit(OpMinus opMinus)
         { throw new ARQNotImplemented("OpMinus") ; }
 
+        @Override
         public void visit(OpUnion opUnion)
         {
             Element eLeft = asElementGroup(opUnion.getLeft()) ;
@@ -287,9 +300,11 @@ public class OpAsQuery
             currentGroup().addElement(elUnion) ;
         }
 
+        @Override
         public void visit(OpConditional opCondition)
         { throw new ARQNotImplemented("OpCondition") ; }
 
+        @Override
         public void visit(OpFilter opFilter)
         {
             // (filter .. (filter ( ... ))   (non-canonicalizing OpFilters)
@@ -307,6 +322,7 @@ public class OpAsQuery
             }
         }
 
+        @Override
         public void visit(OpGraph opGraph)
         {
             startSubGroup() ;
@@ -317,6 +333,7 @@ public class OpAsQuery
             currentGroup().addElement(graphElt) ;
         }
 
+        @Override
         public void visit(OpService opService)
         { 
             // Hmm - if the subnode has been optimized, we may fail.
@@ -326,9 +343,11 @@ public class OpAsQuery
             currentGroup().addElement(elt) ;
         }
         
+        @Override
         public void visit(OpDatasetNames dsNames)
         { throw new ARQNotImplemented("OpDatasetNames") ; }
 
+        @Override
         public void visit(OpTable opTable)
         { 
             // This will go in a group so simply forget it. 
@@ -336,6 +355,7 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpTable") ;
         }
 
+        @Override
         public void visit(OpExt opExt)
         {
 //            Op op = opExt.effectiveOp() ;
@@ -344,15 +364,18 @@ public class OpAsQuery
             throw new ARQNotImplemented("OpExt") ;
         }
 
+        @Override
         public void visit(OpNull opNull)
         { throw new ARQNotImplemented("OpNull") ; }
 
+        @Override
         public void visit(OpLabel opLabel)
         {
             if ( opLabel.hasSubOp() )
                 opLabel.getSubOp().visit(this) ;
         }
 
+        @Override
         public void visit(OpAssign opAssign)
         {
 	        /**
@@ -381,6 +404,7 @@ public class OpAsQuery
             }
         }
 
+        @Override
         public void visit(OpExtend opExtend)
         { 
             /**
@@ -410,9 +434,11 @@ public class OpAsQuery
         }
 
         
+        @Override
         public void visit(OpList opList)
         { /* No action */ }
 
+        @Override
         public void visit(OpOrder opOrder)
         {
             List<SortCondition> x = opOrder.getConditions() ;
@@ -421,6 +447,7 @@ public class OpAsQuery
             opOrder.getSubOp().visit(this) ;
         }
 
+        @Override
         public void visit(OpProject opProject)
         {
             // Defer adding result vars until the end.
@@ -429,18 +456,21 @@ public class OpAsQuery
             opProject.getSubOp().visit(this) ;
         }
 
+        @Override
         public void visit(OpReduced opReduced)
         { 
             query.setReduced(true) ;
             opReduced.getSubOp().visit(this) ;
         }
 
+        @Override
         public void visit(OpDistinct opDistinct)
         { 
             query.setDistinct(true) ;
             opDistinct.getSubOp().visit(this) ;
         }
 
+        @Override
         public void visit(OpSlice opSlice)
         {
             if ( opSlice.getStart() != Query.NOLIMIT )
@@ -450,6 +480,7 @@ public class OpAsQuery
             opSlice.getSubOp().visit(this) ;
         }
 
+        @Override
         @SuppressWarnings("unchecked")
         public void visit(OpGroup opGroup) {
             visit(opGroup, Collections.EMPTY_MAP);
@@ -486,6 +517,7 @@ public class OpAsQuery
             opGroup.getSubOp().visit(this);
         }
 
+        @Override
         public void visit(OpTopN opTop)
         { throw new ARQNotImplemented("OpTopN") ; }
         

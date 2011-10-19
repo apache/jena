@@ -49,6 +49,7 @@ public class BindingIndex implements VariableIndexes, IndexValues
     /*
      * @see com.hp.hpl.jena.graph.query.VariableIndexes#indexOf(java.lang.String)
      */
+    @Override
     public int indexOf(String varname)
     {
         for ( int i = 0 ; i < indexes.size() ; i++ )
@@ -63,6 +64,7 @@ public class BindingIndex implements VariableIndexes, IndexValues
     /*
      * @see com.hp.hpl.jena.graph.query.IndexValues#get(int)
      */
+    @Override
     public Object get(int index)
     {
         if ( index < 0 || index > indexes.size() )

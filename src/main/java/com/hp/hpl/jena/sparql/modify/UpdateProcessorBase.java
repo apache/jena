@@ -54,20 +54,20 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.factory = factory ;
     }
 
-    //@Override
+    @Override
     public void execute()
     {
         UpdateEngine proc = factory.create(request, graphStore, initialBinding, context) ;
         proc.execute() ;
     }
 
-    //@Override
+    @Override
     public GraphStore getGraphStore()
     {
         return graphStore ;
     }
 
-    //@Override
+    @Override
     public void setInitialBinding(QuerySolution binding)
     {
         BindingUtils.addToBinding(initialBinding, binding) ;
@@ -78,7 +78,6 @@ public class UpdateProcessorBase implements UpdateProcessor
         initialBinding.addAll(binding) ;
     }
 
-    //@Override
     public Context getContext()
     {
         return context ;

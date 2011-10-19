@@ -31,7 +31,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
  */
 public abstract class NodeFormatterBase implements NodeFormatter
 {
-    //@Override
+    @Override
     public void format(Writer w, Node n)
     {
         if ( n.isBlank() )
@@ -49,13 +49,13 @@ public abstract class NodeFormatterBase implements NodeFormatter
             throw new ARQInternalErrorException("Unknow node type: "+n) ;
     }
     
-    //@Override
+    @Override
     public void formatURI(Writer w, Node n)         { formatURI(w, n.getURI()) ; }
 
-    //@Override
+    @Override
     public void formatBNode(Writer w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
 
-    //@Override
+    @Override
     public void formatLiteral(Writer w, Node n)
     {
         String dt = n.getLiteralDatatypeURI() ;
@@ -73,6 +73,6 @@ public abstract class NodeFormatterBase implements NodeFormatter
             formatLitDT(w, lex, dt) ;
     }
 
-    //@Override
+    @Override
     public void formatVar(Writer w, Node n)         { formatVar(w, n.getName()) ; }
 }

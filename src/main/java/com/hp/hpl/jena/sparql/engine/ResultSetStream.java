@@ -55,6 +55,7 @@ public class ResultSetStream implements ResultSet
      *  @throws UnsupportedOperationException Always thrown.
      */
 
+    @Override
     public void remove() throws java.lang.UnsupportedOperationException
     {
         throw new UnsupportedOperationException(this.getClass().getName()+".remove") ;
@@ -63,6 +64,7 @@ public class ResultSetStream implements ResultSet
     /**
      * Is there another possibility?
      */
+    @Override
     public boolean hasNext()
     {
         if ( queryExecutionIter == null )
@@ -71,6 +73,7 @@ public class ResultSetStream implements ResultSet
         return r;
     }
 
+    @Override
     public Binding nextBinding()
     {
         if ( queryExecutionIter == null )
@@ -88,6 +91,7 @@ public class ResultSetStream implements ResultSet
      *  The returned object is actual the binding for this
      *  result.
      */
+    @Override
     public QuerySolution nextSolution()
     {
         if ( queryExecutionIter == null )
@@ -103,12 +107,14 @@ public class ResultSetStream implements ResultSet
     
     /** Moves onto the next result possibility.*/
     
+    @Override
     public QuerySolution next() { return nextSolution() ; }
     
     /** Return the "row number" - a count of the number of possibilities returned so far.
      *  Remains valid (as the total number of possibilities) after the iterator ends.
      */
 
+    @Override
     public int getRowNumber()
     {
         return rowNumber ;
@@ -117,10 +123,12 @@ public class ResultSetStream implements ResultSet
     /** Get the variable names for the projection
      */
 
+    @Override
     public List<String> getResultVars() { return resultVars ; }
     
     public Model getModel() { return model ; }
     
+    @Override
     public Model getResourceModel() { return model ; }
 
 }

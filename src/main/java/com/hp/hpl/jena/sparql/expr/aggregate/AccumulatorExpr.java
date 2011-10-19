@@ -36,6 +36,7 @@ abstract class AccumulatorExpr implements Accumulator
         this.expr = expr ;
     }
     
+    @Override
     final public void accumulate(Binding binding, FunctionEnv functionEnv)
     {
         try { 
@@ -51,6 +52,7 @@ abstract class AccumulatorExpr implements Accumulator
     
     
     // Count(?v) is different
+    @Override
     public NodeValue getValue()
     {
         if ( errorCount == 0 )

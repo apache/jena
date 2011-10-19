@@ -45,12 +45,16 @@ public class UpdateParserRegistry
         
         reg.add(Syntax.syntaxSPARQL_11, 
                 new UpdateParserFactory() {
+            @Override
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; } 
+            @Override
             public UpdateParser create( Syntax syntax ) { return new ParserSPARQL11Update() ; } }) ;
    
         reg.add(Syntax.syntaxARQ, 
                 new UpdateParserFactory() {
+            @Override
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
+            @Override
             public UpdateParser create ( Syntax syntax ) { return new ParserARQUpdate() ; } }) ;
         
         registry = reg ;

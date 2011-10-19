@@ -42,7 +42,9 @@ public class OpProject extends OpModifier
     
     public List<Var> getVars() { return vars ; }
     
+    @Override
     public String getName() { return Tags.tagProject ; }
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                { return new OpProject(subOp, vars) ; }

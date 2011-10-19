@@ -66,11 +66,13 @@ public class SinkTripleOutput implements Sink<Triple>
         this.labelPolicy = labels ;
     }
     
+    @Override
     public void flush()
     {
         out.flush() ;
     }
 
+    @Override
     public void send(Triple triple)
     {
         Node s = triple.getSubject() ;
@@ -85,6 +87,7 @@ public class SinkTripleOutput implements Sink<Triple>
         out.output(" .\n") ;
     }
 
+    @Override
     public void close()
     {
         flush();

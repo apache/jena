@@ -28,6 +28,7 @@ public class AccString<T> implements Accumulate<T, String>
     public AccString(String sep) { this.sep = sep ; }
     public AccString() { this(" ") ; }
 
+    @Override
     public void accumulate(T item)
     { 
         if ( ! first )
@@ -45,11 +46,13 @@ public class AccString<T> implements Accumulate<T, String>
         return item.toString() ; 
     }
     
+    @Override
     public String get()
     {
         return buffer.toString() ;
     }
 
+    @Override
     public void start()
     { 
         // Resets on each use.
@@ -57,6 +60,7 @@ public class AccString<T> implements Accumulate<T, String>
         first = true ;
     }
     
+    @Override
     public void finish() {}
 
 }

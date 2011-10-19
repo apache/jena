@@ -49,7 +49,7 @@ public class CacheStatsAtomic<Key,Value> extends CacheWrapper<Key,Value> impleme
         // Wrap any real drop handler. 
         EjectMonitor(ActionKeyValue<Key,Value> other) { this.other = other ; }
 
-        //@Override
+        @Override
         public void apply(Key key, Value thing)
         { 
             cacheEjects.getAndIncrement() ;
@@ -109,8 +109,12 @@ public class CacheStatsAtomic<Key,Value> extends CacheWrapper<Key,Value> impleme
         cache.setDropHandler(new EjectMonitor(dropHandler)) ;
     }
     
+    @Override
     public final long getCacheEntries() { return cacheEntries.get() ; }
+    @Override
     public final long getCacheHits()    { return cacheHits.get() ; }
+    @Override
     public final long getCacheMisses()  { return cacheMisses.get() ; }
+    @Override
     public final long getCacheEjects()  { return cacheEjects.get() ; }
 }

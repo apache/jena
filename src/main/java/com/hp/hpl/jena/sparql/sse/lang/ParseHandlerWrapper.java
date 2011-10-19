@@ -32,56 +32,67 @@ public class ParseHandlerWrapper implements ParseHandler
         this.handler = handler ;
     }
 
+    @Override
     public Item getItem()
     {
         return handler.getItem() ;
     }
 
+    @Override
     public void parseStart()
     {
         handler.parseStart() ;
     }
 
+    @Override
     public void parseFinish()
     {
         handler.parseFinish() ;
     }
 
+    @Override
     public void listStart(int line, int column)
     {
         handler.listStart(line, column) ;
     }
 
+    @Override
     public void listFinish(int line, int column)
     {
         handler.listFinish(line, column) ;
     }
 
+    @Override
     public void emitBNode(int line, int column, String label)
     { 
         handler.emitBNode(line, column, label) ;
     }
 
+    @Override
     public void emitIRI(int line, int column, String iriStr)
     {
         handler.emitIRI(line, column, iriStr) ;
     }
 
+    @Override
     public void emitLiteral(int line, int column, String lex, String lang, String datatype_iri, String datatype_pn)
     {
         handler.emitLiteral(line, column, lex, lang, datatype_iri, datatype_pn) ;
     }
 
+    @Override
     public void emitPName(int line, int column, String pname)
     {
         handler.emitPName(line, column, pname) ;
     }
 
+    @Override
     public void emitSymbol(int line, int column, String symbol)
     {
         handler.emitSymbol(line, column, symbol) ;
     }
 
+    @Override
     public void emitVar(int line, int column, String varName)
     {
         handler.emitVar(line, column, varName) ;

@@ -32,12 +32,14 @@ public class AggCount extends AggregatorBase
     // ---- COUNT(*)
 
     public AggCount() { }
+    @Override
     public Aggregator copy(Expr expr)
     { 
         if ( expr != null )
             Log.warn(this, "Copying non-null expression for COUNT(*)") ;
         return new AggCount() ; }
 
+    @Override
     public Expr getExpr()       { return null ; }
     
     @Override
@@ -69,9 +71,11 @@ public class AggCount extends AggregatorBase
     {
         private long count = 0 ;
         public AccCount()   { }
+        @Override
         public void accumulate(Binding binding, FunctionEnv functionEnv)
         { count++ ; }
         // Errors can't occur.
+        @Override
         public NodeValue getValue()             { return NodeValue.makeInteger(count) ; }
     }
 }

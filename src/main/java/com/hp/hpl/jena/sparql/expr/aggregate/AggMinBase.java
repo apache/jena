@@ -38,6 +38,7 @@ abstract class AggMinBase extends AggregatorBase
         return new AccMin(expr) ;
     }
 
+    @Override
     public final Expr getExpr() { return expr ; }
 
     @Override

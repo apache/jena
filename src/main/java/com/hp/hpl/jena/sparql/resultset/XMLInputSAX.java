@@ -133,20 +133,26 @@ class XMLInputSAX extends SPARQLResult
         
         ResultSetXMLHandler2() {}
         
+        @Override
         public void setDocumentLocator(Locator locator) {}
         
+        @Override
         public void startDocument() throws SAXException {}
         
+        @Override
         public void endDocument() throws SAXException {}
         
+        @Override
         public void startPrefixMapping(String prefix, String uri)  throws SAXException
         {
             if ( uri.equals(RDF.getURI()) )
                 rdfPrefix = prefix ;
         }
         
+        @Override
         public void endPrefixMapping(String prefix) throws SAXException {}
         
+        @Override
         public void startElement(String ns, String localName, String qName, Attributes attrs) throws SAXException
         {
             if ( ! ns.equals(namespace) )
@@ -222,6 +228,7 @@ class XMLInputSAX extends SPARQLResult
             
         }
         
+        @Override
         public void endElement(String ns, String localName, String qName) throws SAXException
         {
             if ( ! ns.equals(namespace) )
@@ -394,6 +401,7 @@ class XMLInputSAX extends SPARQLResult
         }
         
         
+        @Override
         public void characters(char[] chars, int start, int finish) throws SAXException
         {
             if ( accumulate )
@@ -404,10 +412,13 @@ class XMLInputSAX extends SPARQLResult
             }
         }
         
+        @Override
         public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {}
         
+        @Override
         public void processingInstruction(String target, String data) throws SAXException {}
         
+        @Override
         public void skippedEntity(String name) throws SAXException {}
     }
 }

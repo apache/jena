@@ -68,6 +68,7 @@ public class DatasetGraphFactory
     
     private static DatasetGraphMaker.GraphMaker memGraphMaker = new DatasetGraphMaker.GraphMaker()
     {
+        @Override
         public Graph create()
         {
             return GraphFactory.createDefaultGraph() ;

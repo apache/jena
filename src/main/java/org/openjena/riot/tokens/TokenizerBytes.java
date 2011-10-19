@@ -82,7 +82,7 @@ public final class TokenizerBytes implements Tokenizer
     }
     
     // Share with TokenizerText
-    //@Override
+    @Override
     public final boolean hasNext()
     {
         if ( finished )
@@ -114,7 +114,7 @@ public final class TokenizerBytes implements Tokenizer
         }
     }
     
-    //@Override
+    @Override
     public final Token next()
     {
         if ( ! hasNext() )
@@ -125,25 +125,27 @@ public final class TokenizerBytes implements Tokenizer
     }
     
     
+    @Override
     public final Token peek()
     {
         if ( ! hasNext() ) return null ;
         return token ;
     }
     
+    @Override
     public final boolean eof()
     {
         return hasNext() ;
     }
     
-    //@Override
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 
     public TokenChecker getChecker() { return checker ; }
     public void setChecker(TokenChecker checker) { this.checker = checker ; }
 
-    //@Override
+    @Override
     public void close()
     { 
         try { inputStream.close() ; }
@@ -809,11 +811,13 @@ public final class TokenizerBytes implements Tokenizer
 
     
     
+    @Override
     public long getColumn()
     {
         return inputStream.getColNum() ;
     }
 
+    @Override
     public long getLine()
     {
         return inputStream.getLineNum() ;

@@ -40,8 +40,10 @@ public class OpReduced extends OpModifier
     public Op apply(Transform transform, Op subOp)
     { return transform.transform(this, subOp) ; }
 
+    @Override
     public String getName()                 { return Tags.tagReduced ; }
 
+    @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
     public Op copy(Op subOp)                { return new OpReduced(subOp) ; }

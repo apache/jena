@@ -26,6 +26,7 @@ public class AggMinDistinct extends AggMinBase
 {
     // ---- MIN(DISTINCT expr)
     public AggMinDistinct(Expr expr) { super(expr) ; }
+    @Override
     public Aggregator copy(Expr expr) { return new AggMinDistinct(expr) ; }
 
     @Override

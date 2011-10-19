@@ -26,19 +26,19 @@ public class WrapperIterator<T> implements Iterator<T>
 
     public WrapperIterator(Iterator<T> iter) { this.iter = iter ; }
     
-    //@Override
+    @Override
     public boolean hasNext()
     {
         return iter.hasNext() ;
     }
 
-    //@Override
+    @Override
     public T next()
     {
         return iter.next() ;
     }
 
-    //@Override
+    @Override
     public void remove()
     { iter.remove() ; }
 

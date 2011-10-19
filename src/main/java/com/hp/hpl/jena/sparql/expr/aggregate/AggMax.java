@@ -26,6 +26,7 @@ public class AggMax extends AggMaxBase
 {
     // ---- MAX(expr)
     public AggMax(Expr expr) { super(expr) ; } 
+    @Override
     public Aggregator copy(Expr expr) { return new AggMax(expr) ; }
 
     @Override

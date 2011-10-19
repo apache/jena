@@ -34,7 +34,7 @@ public class NodeFormatterNT extends NodeFormatterBase
     
     protected NodeFormatterNT(boolean asciiOnly) { escapeProc = new EscapeStr(asciiOnly) ;}
     
-    //@Override
+    @Override
     public void formatURI(Writer w, String uriStr)
     {
         try {
@@ -44,7 +44,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; } 
     }
 
-    //@Override
+    @Override
     public void formatVar(Writer w, String name)
     {
         try {
@@ -53,7 +53,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    //@Override
+    @Override
     public void formatBNode(Writer w, String label)
     {
         try {
@@ -63,7 +63,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    //@Override
+    @Override
     public void formatLitString(Writer w, String lex)
     {
         try {
@@ -78,7 +78,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         w.write('"') ;
     }
 
-    //@Override
+    @Override
     public void formatLitLang(Writer w, String lex, String langTag)
     {
         try {
@@ -88,7 +88,7 @@ public class NodeFormatterNT extends NodeFormatterBase
         } catch (IOException ex) { IO.exception(ex) ; }
     }
 
-    //@Override
+    @Override
     public void formatLitDT(Writer w, String lex, String datatypeURI)
     {
         try {

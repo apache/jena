@@ -41,10 +41,13 @@ public class TestParserFactory extends BaseTest
         int flushCalled = 0 ;
         int closeCalled = 0 ;
 
+        @Override
         public void send(T item)
         { things.add(item) ; }
 
+        @Override
         public void flush() { flushCalled ++ ; }
+        @Override
         public void close() { closeCalled++ ; }
         
         public T getLast()

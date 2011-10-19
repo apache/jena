@@ -38,6 +38,7 @@ abstract class AggMaxBase extends AggregatorBase
         return new AccMax(expr) ;
     }
 
+    @Override
     public final Expr getExpr() { return expr ; }
 
     @Override

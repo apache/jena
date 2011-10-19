@@ -47,7 +47,7 @@ public class IteratorResourceClosing<T> implements Iterator<T>, Closeable
         if (finished) throw new AtlasException("IteratorResourceClosing is closed, no further operations can be performed on it.") ;
     }
 
-    //@Override
+    @Override
     public boolean hasNext()
     {
         if (finished)
@@ -63,21 +63,21 @@ public class IteratorResourceClosing<T> implements Iterator<T>, Closeable
         return toReturn ;
     }
 
-    //@Override
+    @Override
     public T next()
     {
         checkFinished();
         return iter.next() ;
     }
 
-    //@Override
+    @Override
     public void remove()
     {
         checkFinished();
         iter.remove() ;
     }
 
-    //@Override
+    @Override
     public void close()
     {
         if (!finished)

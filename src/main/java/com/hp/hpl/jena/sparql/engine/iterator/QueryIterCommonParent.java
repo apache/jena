@@ -48,6 +48,7 @@ public class QueryIterCommonParent extends QueryIterConvert
         
         ConverterExtend(Binding parent) { parentBinding = parent ; }
         
+        @Override
         public Binding convert(Binding b)
         {
             if ( parentBinding == null || parentBinding.isEmpty() )

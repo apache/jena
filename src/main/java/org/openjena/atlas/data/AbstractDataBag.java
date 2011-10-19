@@ -52,16 +52,19 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         return (size == 0);
     }
 
+    @Override
     public long size()
     {
         return size;
     }
 
+    @Override
     public void addAll(Iterable<? extends E> c)
     {
         addAll(c.iterator());
     }
 
+    @Override
     public void addAll(Iterator<? extends E> it)
     {
         while (it.hasNext())
@@ -71,6 +74,7 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         }
     }
 
+    @Override
     public void send(E item)
     {
         add(item);

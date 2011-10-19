@@ -221,15 +221,15 @@ public final class BufferingWriter extends Writer
         public SinkChannel(WritableByteChannel out)
         { this.out = out ; }
 
-        //@Override
+        @Override
         public void send(ByteBuffer bb)
         { try { out.write(bb) ; } catch (IOException ex) { exception(ex) ; } }
         
-        //@Override
+        @Override
         public void close()
         { try { out.close() ; } catch (IOException ex) { exception(ex) ; } }
 
-        //@Override
+        @Override
         public void flush()
         { }
     }
@@ -241,15 +241,15 @@ public final class BufferingWriter extends Writer
         public SinkBuffer(ByteBuffer out)
         { this.out = out ; }
 
-        //@Override
+        @Override
         public void send(ByteBuffer bb)
         { out.put(bb) ; }
         
-        //@Override
+        @Override
         public void close()
         { }
 
-        //@Override
+        @Override
         public void flush()
         { }
     }
@@ -261,15 +261,15 @@ public final class BufferingWriter extends Writer
         public SinkOutputStream(OutputStream out)
         { this.out = out ; }
 
-        //@Override
+        @Override
         public void send(ByteBuffer bb)
         { try { out.write(bb.array(), 0, bb.limit()) ; } catch (IOException ex) { exception(ex) ; } }
         
-        //@Override
+        @Override
         public void close()
         { try { out.close(); } catch (IOException ex) { exception(ex) ; } }
 
-        //@Override
+        @Override
         public void flush()
         { try { out.flush() ; } catch (IOException ex) { exception(ex) ; } }
     }

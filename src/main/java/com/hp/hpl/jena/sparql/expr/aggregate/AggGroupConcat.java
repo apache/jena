@@ -54,6 +54,7 @@ public class AggGroupConcat extends AggregatorBase
         this.separator = separator ; 
     }
     
+    @Override
     public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, separator, separatorSeen) ; }
 
     @Override
@@ -89,6 +90,7 @@ public class AggGroupConcat extends AggregatorBase
         return new AccGroupConcat(expr, separator) ;
     }
 
+    @Override
     public Expr getExpr() { return expr ; }
     protected final String getSeparator() { return separator ; }
 

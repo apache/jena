@@ -56,11 +56,13 @@ public class FunctionEnvBase implements FunctionEnv
         this.dataset = dataset ;
     }
 
+    @Override
     public Graph getActiveGraph()
     {
         return activeGraph ;
     }
 
+    @Override
     public Context getContext()
     {
         return context ;
@@ -73,6 +75,7 @@ public class FunctionEnvBase implements FunctionEnv
 //        return execContext ;
 //    }
 
+    @Override
     public DatasetGraph getDataset()
     {
         return dataset ;

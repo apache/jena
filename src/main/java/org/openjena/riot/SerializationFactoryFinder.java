@@ -48,16 +48,19 @@ public class SerializationFactoryFinder
     {
         return new SerializationFactory<Binding>()
         {
+            @Override
             public Sink<Binding> createSerializer(OutputStream out)
             {
                 return new BindingOutputStream(out);
             }
             
+            @Override
             public Iterator<Binding> createDeserializer(InputStream in)
             {
                 return new BindingInputStream(in);
             }
 
+            @Override
             public long getEstimatedMemorySize(Binding item)
             {
                 // TODO traverse the binding, and add up the variable + node sizes + object overhead
@@ -70,11 +73,13 @@ public class SerializationFactoryFinder
     {
         return new SerializationFactory<Triple>()
         {
+            @Override
             public Sink<Triple> createSerializer(OutputStream out)
             {
                 return new SinkTripleOutput(out, null, NodeToLabel.createBNodeByLabelEncoded()) ;
             }
             
+            @Override
             public Iterator<Triple> createDeserializer(InputStream in)
             {
                 Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
@@ -83,6 +88,7 @@ public class SerializationFactoryFinder
                 return parser ;
             }
             
+            @Override
             public long getEstimatedMemorySize(Triple item)
             {
                 // TODO
@@ -95,11 +101,13 @@ public class SerializationFactoryFinder
     {
         return new SerializationFactory<Quad>()
         {
+            @Override
             public Sink<Quad> createSerializer(OutputStream out)
             {
                 return new SinkQuadOutput(out, null, NodeToLabel.createBNodeByLabelEncoded()) ;
             }
             
+            @Override
             public Iterator<Quad> createDeserializer(InputStream in)
             {
                 Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(in) ;
@@ -108,6 +116,7 @@ public class SerializationFactoryFinder
                 return parser ;
             }
             
+            @Override
             public long getEstimatedMemorySize(Quad item)
             {
                 // TODO

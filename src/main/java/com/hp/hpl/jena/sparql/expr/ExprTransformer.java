@@ -83,16 +83,20 @@ public class ExprTransformer
         ApplyExprTransformVisitor(ExprTransform transform)
         { this.transform = transform ; }
 
+        @Override
         public void startVisit()    {}
+        @Override
         public void finishVisit()   {}
 
         
+        @Override
         public void visit(ExprFunction0 func)
         {
             Expr e = func.apply(transform) ;
             push(stack, e) ;
         }
         
+        @Override
         public void visit(ExprFunction1 func)
         {
             Expr e1 = pop(stack) ;
@@ -100,6 +104,7 @@ public class ExprTransformer
             push(stack, e) ;
         }
 
+        @Override
         public void visit(ExprFunction2 func)
         {
             Expr e2 = pop(stack) ;
@@ -108,6 +113,7 @@ public class ExprTransformer
             push(stack, e) ;
         }
 
+        @Override
         public void visit(ExprFunction3 func)
         {
             Expr e3 = pop(stack) ;
@@ -117,6 +123,7 @@ public class ExprTransformer
             push(stack, e) ;
         }
 
+        @Override
         public void visit(ExprFunctionN func)
         {
             ExprList x = process(func.getArgs()) ;
@@ -137,6 +144,7 @@ public class ExprTransformer
             return new ExprList(x) ;
         }
         
+        @Override
         public void visit(ExprFunctionOp funcOp)
         {
             ExprList x = null ;
@@ -154,18 +162,21 @@ public class ExprTransformer
 
         }
 
+        @Override
         public void visit(NodeValue nv)
         {
             Expr e = nv.apply(transform) ;
             push(stack, e) ;
         }
 
+        @Override
         public void visit(ExprVar var)
         {
             Expr e = var.apply(transform) ;
             push(stack, e) ;
         }
         
+        @Override
         public void visit(ExprAggregator eAgg)
         {
             Expr e = eAgg.apply(transform) ;

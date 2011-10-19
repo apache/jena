@@ -47,7 +47,8 @@ public class LangRDFJSON extends LangBase<Triple>
 		}
 	}
 
-	public Lang getLang()
+	@Override
+    public Lang getLang()
 	{
 		return Lang.RDFJSON ;
 	}

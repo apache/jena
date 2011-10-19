@@ -56,6 +56,7 @@ public class ModDatasetGeneral extends ModDataset
     private DataFormat dataSyntax        = null ;
     private FileManager fileManager     = FileManager.get() ;    
 
+    @Override
     public void registerWith(CmdGeneral cl)
     {
         cl.getUsage().startCategory("Dataset") ;
@@ -72,6 +73,7 @@ public class ModDatasetGeneral extends ModDataset
                "Specify a location mapping file") ;
     }
     
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         graphURLs = cmdLine.getValues(graphDecl) ;

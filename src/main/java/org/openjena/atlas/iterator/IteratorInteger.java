@@ -40,11 +40,13 @@ public class IteratorInteger implements Iterator<Long>
         this.current = start ;
     }
     
+    @Override
     public boolean hasNext()
     {
         return ( current < finish ) ;
     }
 
+    @Override
     public Long next()
     {
         Long v = Long.valueOf(current) ;
@@ -52,6 +54,7 @@ public class IteratorInteger implements Iterator<Long>
         return v ;
     }
 
+    @Override
     public void remove()
     { throw new UnsupportedOperationException() ; }
 

@@ -70,7 +70,6 @@ public final class InputStreamBuffered extends InputStream
         source.close() ;
     }
     
-    //@Override
     public final int advance()
     {
         if ( idx >= buffLen )

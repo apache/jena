@@ -29,7 +29,7 @@ public class P_Seq extends P_Path2
         
     }
 
-    //@Override
+    @Override
     public void visit(PathVisitor visitor)
     { visitor.visit(this) ; }
     

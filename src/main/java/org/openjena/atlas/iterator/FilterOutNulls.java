@@ -23,6 +23,7 @@ public class FilterOutNulls<T> implements Filter<T>
 {
     public FilterOutNulls() { }
     
+    @Override
     public boolean accept(T item)
     {
         return item != null ;

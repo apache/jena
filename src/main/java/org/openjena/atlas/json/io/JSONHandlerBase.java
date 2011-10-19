@@ -21,67 +21,67 @@ package org.openjena.atlas.json.io;
 
 public class JSONHandlerBase implements JSONHandler
 {
-    //@Override
+    @Override
     public void startParse(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void finishParse(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void startObject(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void finishObject(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void startPair(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void keyPair(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void finishPair(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void startArray(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void element(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void finishArray(long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueString(String image, long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueInteger(String image, long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueDecimal(String image, long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueDouble(String image, long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueBoolean(boolean b, long currLine, long currCol)
     {}
 
-    //@Override
+    @Override
     public void valueNull(long currLine, long currCol)
     {}
 }

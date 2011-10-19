@@ -30,6 +30,7 @@ class FindableGraph implements Findable
 
     FindableGraph(Graph graph) { this.graph = graph ; }
 
+    @Override
     public Iterator<Triple> find(Node s, Node p, Node o)
     {
         if ( s == null ) s = Node.ANY ;
@@ -38,6 +39,7 @@ class FindableGraph implements Findable
         return graph.find(s, p ,o) ;
     }
 
+    @Override
     public boolean contains(Node s, Node p, Node o)
     {
         if ( s == null ) s = Node.ANY ;
