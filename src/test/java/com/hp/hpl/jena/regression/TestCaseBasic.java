@@ -320,7 +320,8 @@ public class TestCaseBasic extends JenaTestBase {
 
 			Model cache[] = new Model[4];
 			int i = 4;
-			public Model get() {
+			@Override
+            public Model get() {
 				if (i == 4) {
 					try {
 						tearDown();

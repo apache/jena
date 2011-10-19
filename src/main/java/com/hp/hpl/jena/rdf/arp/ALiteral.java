@@ -65,6 +65,7 @@ public interface ALiteral extends ANode {
 /** The string value of the literal.
  * @return The string.
  */    
+    @Override
     public String toString();
     
     // never null - maybe ""

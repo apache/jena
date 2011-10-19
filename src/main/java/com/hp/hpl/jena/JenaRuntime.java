@@ -68,6 +68,7 @@ public class JenaRuntime
                 return defaultValue ;
             try {
                 PrivilegedAction<String> a = new PrivilegedAction<String>() {
+                    @Override
                     public String run() {
                         return System.getProperty(propName);
                     }

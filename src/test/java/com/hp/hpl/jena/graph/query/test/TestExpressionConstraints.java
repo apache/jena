@@ -103,6 +103,7 @@ public class TestExpressionConstraints extends QueryTestBase
         
         public VI set( String x, int i ) { values.put( x, new Integer( i ) ); return this; }    
         
+        @Override
         public int indexOf( String name ) { return values.get( name ).intValue(); }
         }
     
@@ -112,6 +113,7 @@ public class TestExpressionConstraints extends QueryTestBase
         
         public IV set( int i, String x ) { values.put( new Integer( i ), Node.createLiteral( x ) ); return this; }    
         
+        @Override
         public Object get( int i ) { return values.get( new Integer( i ) ); }
         }
         
@@ -179,7 +181,8 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testUnknownExpression()
         {
         Expression eOpaque = new Expression.Base()
-            { public Valuator prepare(VariableIndexes vi) 
+            { @Override
+            public Valuator prepare(VariableIndexes vi) 
                 { return null; }
             };
         assertFalse( Util.containsAllVariablesOf( new HashSet<String>(), eOpaque ) );

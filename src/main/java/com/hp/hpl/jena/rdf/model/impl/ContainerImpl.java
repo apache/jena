@@ -55,88 +55,109 @@ public class ContainerImpl extends ResourceImpl
         return hasProperty(RDF.type, r);
     }
     
+    @Override
     public boolean isAlt() {
         return is(RDF.Alt);
     }
     
+    @Override
     public boolean isBag() {
         return is(RDF.Bag);
     }
     
+    @Override
     public boolean isSeq() {
         return is(RDF.Seq);
     }
     
+    @Override
     public Container add(RDFNode n)  {
         int i = size();
         addProperty(RDF.li(i+1), n);
         return this;
     } 
     
+    @Override
     public Container add(boolean o)  {
         return add( String.valueOf( o ) );
     }
     
+    @Override
     public Container add(long o)  {
         return add( String.valueOf( o ) );
     }
     
+    @Override
     public Container add(char o)  {
         return add( String.valueOf( o ) );
     }
     
+    @Override
     public Container add( float o )  {
         return add( String.valueOf( o ) );
     }
     
+    @Override
     public Container add(double o)  {
         return add( String.valueOf( o ) );
     }
 
+    @Override
     public Container add(Object o)  {
         return add( String.valueOf( o ) );
     }
      
+    @Override
     public Container add(String o)  {
         return add( o, "" );
     }
     
+    @Override
     public Container add(String o, String l)  {
         return add( literal( o, l ) );
     }
     
+    @Override
     public boolean contains(RDFNode n)  {
         return containerContains( n );
     }
 
+    @Override
     public boolean contains(boolean o)  {
         return contains( String.valueOf( o ) );
     }
 
+    @Override
     public boolean contains(long o)  {
         return contains( String.valueOf( o ) );
     }
 
+    @Override
     public boolean contains(char o)  {
         return contains( String.valueOf( o ) );
     }
 
+    @Override
     public boolean contains(float o)  {
         return contains( String.valueOf( o ) );
     }
 
+    @Override
     public boolean contains(double o)  {
         return contains( String.valueOf( o ) );
     }
 
+    @Override
     public boolean contains(Object o)  {
         return contains( String.valueOf( o ) );
     }
     
+    @Override
     public boolean contains(String o)  {
         return contains( o, "" );
     }
     
+    @Override
     public boolean contains( String o, String l )  {
         return contains( literal( o, l ) );
     }
@@ -144,9 +165,11 @@ public class ContainerImpl extends ResourceImpl
     private Literal literal( String s, String lang )
         { return new LiteralImpl( Node.createLiteral( s, lang, false ), getModelCom() ); }
             
+    @Override
     public NodeIterator iterator()  
         { return listContainerMembers( iteratorFactory ); }
         
+    @Override
     public int size()  
         {
         int result = 0;
@@ -157,6 +180,7 @@ public class ContainerImpl extends ResourceImpl
         return result;
         }
         
+    @Override
     public Container remove(Statement s)  {
         int size = size();
         Statement last = null;
@@ -172,6 +196,7 @@ public class ContainerImpl extends ResourceImpl
         return this;
     }
     
+    @Override
     public Container remove(int index, RDFNode object)  {
         remove(getModel().createStatement(this, RDF.li(index), object));
         return this;

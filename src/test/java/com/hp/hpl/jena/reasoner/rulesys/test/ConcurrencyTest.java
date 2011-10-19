@@ -95,6 +95,7 @@ public class ConcurrencyTest  extends TestCase {
         model.leaveCriticalSection();
 
         class QueryExecutingRunnable implements Runnable {
+            @Override
             @SuppressWarnings("unchecked")
             public void run() {
                 // Keep this thread running until the specified duration has expired
@@ -171,7 +172,8 @@ public class ConcurrencyTest  extends TestCase {
     }
     
     public void testWithOWLMemMicroRuleInfModel() throws InterruptedException {
-        runConcurrencyTest(new ModelCreator() { public OntModel createModel() {
+        runConcurrencyTest(new ModelCreator() { @Override
+        public OntModel createModel() {
             return ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
         }}, "OWL_MEM_MICRO_RULE_INF");
     }

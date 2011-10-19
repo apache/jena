@@ -177,6 +177,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * </p>
      * @return A reference to this model's document manager, obtained from the specification object
      */
+    @Override
     public OntDocumentManager getDocumentManager() {
         return m_spec.getDocumentManager();
     }
@@ -201,6 +202,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over ontology resources.
      */
+    @Override
     public ExtendedIterator<Ontology> listOntologies() {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return UniqueExtendedIterator.create(
@@ -233,6 +235,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over property resources.
      */
+    @Override
     public ExtendedIterator<OntProperty> listOntProperties() {
         ExtendedIterator<OntProperty> i = UniqueExtendedIterator.create(
                                 findByTypeAs( RDF.Property, OntProperty.class ) );
@@ -260,6 +263,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * whether a reasoner is available to perform <code>rdf:type</code> entailments.
      * Each property will appear exactly once in the iterator.
      */
+    @Override
     public ExtendedIterator<OntProperty> listAllOntProperties() {
         ExtendedIterator<OntProperty> i = findByTypeAs( RDF.Property, OntProperty.class )
                                                    .andThen( listObjectProperties() )
@@ -293,6 +297,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over object property resources.
      */
+    @Override
     public ExtendedIterator<ObjectProperty> listObjectProperties() {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -320,6 +325,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over datatype property resources.
      */
+    @Override
     public ExtendedIterator<DatatypeProperty> listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -342,6 +348,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over functional property resources.
      */
+    @Override
     public ExtendedIterator<FunctionalProperty> listFunctionalProperties() {
         checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -362,6 +369,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over transitive property resources.
      */
+    @Override
     public ExtendedIterator<TransitiveProperty> listTransitiveProperties() {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -382,6 +390,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over symmetric property resources.
      */
+    @Override
     public ExtendedIterator<SymmetricProperty> listSymmetricProperties() {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -402,6 +411,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over inverse functional property resources.
      */
+    @Override
     public ExtendedIterator<InverseFunctionalProperty> listInverseFunctionalProperties() {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
         return UniqueExtendedIterator.create(
@@ -422,6 +432,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over Individuals.
      */
+    @Override
     public ExtendedIterator<Individual> listIndividuals() {
         // since the reasoner implements some OWL full functionality for RDF compatibility, we
         // have to decide which strategy to use for identifying individuals depending on whether
@@ -465,6 +476,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over individual resources whose <code>rdf:type</code>
      * is <code>cls</code>.
      */
+    @Override
     public ExtendedIterator<Individual> listIndividuals( Resource cls ) {
         return UniqueExtendedIterator.create(
                 findByTypeAs( cls, Individual.class ) );
@@ -487,6 +499,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over class description resources.
      */
+    @Override
     public ExtendedIterator<OntClass> listClasses() {
         return UniqueExtendedIterator.create(
             findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class ) );
@@ -501,6 +514,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * as a direct super-class, or the classes which have no declared super-class.</p>
      * @return An iterator of the root classes in the local class hierarchy
      */
+    @Override
     public ExtendedIterator<OntClass> listHierarchyRootClasses() {
         // look for the shortcut of using direct subClass on :Thing
         if (getReasoner() != null) {
@@ -545,6 +559,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over enumerated class resources.
      * @see Profile#ONE_OF
      */
+    @Override
     public ExtendedIterator<EnumeratedClass> listEnumeratedClasses()  {
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         return UniqueExtendedIterator.create(
@@ -567,6 +582,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over union class resources.
      * @see Profile#UNION_OF
      */
+    @Override
     public ExtendedIterator<UnionClass> listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
         return UniqueExtendedIterator.create(
@@ -589,6 +605,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over complement class resources.
      * @see Profile#COMPLEMENT_OF
      */
+    @Override
     public ExtendedIterator<ComplementClass> listComplementClasses() {
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         return UniqueExtendedIterator.create(
@@ -611,6 +628,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over complement class resources.
      * @see Profile#INTERSECTION_OF
      */
+    @Override
     public ExtendedIterator<IntersectionClass> listIntersectionClasses() {
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         return UniqueExtendedIterator.create(
@@ -632,6 +650,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over named class resources.
      */
+    @Override
     public ExtendedIterator<OntClass> listNamedClasses() {
         return listClasses().filterDrop(
             new Filter<OntClass>() {
@@ -659,6 +678,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over restriction class resources.
      * @see Profile#RESTRICTION
      */
+    @Override
     public ExtendedIterator<Restriction> listRestrictions() {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return UniqueExtendedIterator.create(
@@ -679,6 +699,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An iterator over AllDifferent nodes.
      */
+    @Override
     public ExtendedIterator<AllDifferent> listAllDifferent() {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
         return UniqueExtendedIterator.create(
@@ -690,6 +711,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * are any.</p>
      * @return An iterator, whose values are {@link DataRange} objects.
      */
+    @Override
     public ExtendedIterator<DataRange> listDataRanges() {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
         return UniqueExtendedIterator.create(
@@ -712,6 +734,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator over annotation properties.
      * @see Profile#getAnnotationProperties()
      */
+    @Override
     public ExtendedIterator<AnnotationProperty> listAnnotationProperties() {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         Resource r = getProfile().ANNOTATION_PROPERTY();
@@ -739,6 +762,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * of the document itself.
      * @return An Ontology resource or null.
      */
+    @Override
     public Ontology getOntology( String uri ) {
         return (Ontology) findByURIAs( uri, Ontology.class );
     }
@@ -754,6 +778,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the requried individual
      * @return An Individual resource or null.
      */
+    @Override
     public Individual getIndividual( String uri ) {
         return (Individual) findByURIAs( uri, Individual.class );
     }
@@ -769,6 +794,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the property.
      * @return An OntProperty resource or null.
      */
+    @Override
     public OntProperty getOntProperty( String uri ) {
         return (OntProperty) findByURIAs( uri, OntProperty.class );
     }
@@ -784,6 +810,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the object property. May not be null.
      * @return An ObjectProperty resource or null.
      */
+    @Override
     public ObjectProperty getObjectProperty( String uri ) {
         return (ObjectProperty) findByURIAs( uri, ObjectProperty.class );
     }
@@ -796,6 +823,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the property. May not be null.
      * @return A TransitiveProperty resource or null
      */
+    @Override
     public TransitiveProperty getTransitiveProperty( String uri ) {
         return (TransitiveProperty) findByURIAs( uri, TransitiveProperty.class );
     }
@@ -808,6 +836,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the property. May not be null.
      * @return A SymmetricProperty resource or null
      */
+    @Override
     public SymmetricProperty getSymmetricProperty( String uri ) {
         return (SymmetricProperty) findByURIAs( uri, SymmetricProperty.class );
     }
@@ -820,6 +849,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the property. May not be null.
      * @return An InverseFunctionalProperty resource or null
      */
+    @Override
     public InverseFunctionalProperty getInverseFunctionalProperty( String uri ) {
         return (InverseFunctionalProperty) findByURIAs( uri, InverseFunctionalProperty.class );
     }
@@ -835,6 +865,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the datatype property. May not be null.
      * @return A DatatypeProperty resource or null
      */
+    @Override
     public DatatypeProperty getDatatypeProperty( String uri ) {
         return (DatatypeProperty) findByURIAs( uri, DatatypeProperty.class );
     }
@@ -850,6 +881,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the annotation property. May not be null.
      * @return An AnnotationProperty resource or null
      */
+    @Override
     public AnnotationProperty getAnnotationProperty( String uri ) {
         return (AnnotationProperty) findByURIAs( uri, AnnotationProperty.class );
     }
@@ -865,6 +897,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the class node, or null for an anonymous class.
      * @return An OntClass resource or null.
      */
+    @Override
     public OntClass getOntClass( String uri ) {
         OntClass c = (OntClass) findByURIAs( uri, OntClass.class );
 
@@ -892,6 +925,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of the new complement class.
      * @return A complement class or null
      */
+    @Override
     public ComplementClass getComplementClass( String uri ) {
         return (ComplementClass) findByURIAs( uri, ComplementClass.class );
     }
@@ -904,6 +938,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of the new enumeration class.
      * @return An enumeration class or null
      */
+    @Override
     public EnumeratedClass getEnumeratedClass( String uri ) {
         return (EnumeratedClass) findByURIAs( uri, EnumeratedClass.class );
     }
@@ -916,6 +951,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of the new union class.
      * @return A union class description or null
      */
+    @Override
     public UnionClass getUnionClass( String uri ) {
         return (UnionClass) findByURIAs( uri, UnionClass.class );
     }
@@ -928,6 +964,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of the new intersection class.
      * @return An intersection class description or null
      */
+    @Override
     public IntersectionClass getIntersectionClass( String uri ) {
         return (IntersectionClass) findByURIAs( uri, IntersectionClass.class );
     }
@@ -943,6 +980,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the restriction node.
      * @return A Restriction resource or null
      */
+    @Override
     public Restriction getRestriction( String uri ) {
         return (Restriction) findByURIAs( uri, Restriction.class );
     }
@@ -957,6 +995,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a has-value restriction or null
      */
+    @Override
     public HasValueRestriction getHasValueRestriction( String uri ) {
         return (HasValueRestriction) findByURIAs( uri, HasValueRestriction.class );
     }
@@ -971,6 +1010,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a some-values-from restriction, or null
      */
+    @Override
     public SomeValuesFromRestriction getSomeValuesFromRestriction( String uri ) {
         return (SomeValuesFromRestriction) findByURIAs( uri, SomeValuesFromRestriction.class );
     }
@@ -985,6 +1025,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing an all-values-from restriction or null
      */
+    @Override
     public AllValuesFromRestriction getAllValuesFromRestriction( String uri ) {
         return (AllValuesFromRestriction) findByURIAs( uri, AllValuesFromRestriction.class );
     }
@@ -999,6 +1040,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a has-value restriction, or null
      */
+    @Override
     public CardinalityRestriction getCardinalityRestriction( String uri ) {
         return (CardinalityRestriction) findByURIAs( uri, CardinalityRestriction.class );
     }
@@ -1013,6 +1055,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a min-cardinality restriction, or null
      */
+    @Override
     public MinCardinalityRestriction getMinCardinalityRestriction( String uri ) {
         return (MinCardinalityRestriction) findByURIAs( uri, MinCardinalityRestriction.class );
     }
@@ -1027,6 +1070,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a mas-cardinality restriction, or null
      */
+    @Override
     public MaxCardinalityRestriction getMaxCardinalityRestriction( String uri ) {
         return (MaxCardinalityRestriction) findByURIAs( uri, MaxCardinalityRestriction.class );
     }
@@ -1042,6 +1086,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a qualified restriction, or null
      */
+    @Override
     public QualifiedRestriction getQualifiedRestriction( String uri ) {
         return (QualifiedRestriction) findByURIAs( uri, QualifiedRestriction.class );
     }
@@ -1057,6 +1102,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a qualified cardinality restriction, or null
      */
+    @Override
     public CardinalityQRestriction getCardinalityQRestriction( String uri ) {
         return (CardinalityQRestriction) findByURIAs( uri, CardinalityQRestriction.class );
     }
@@ -1072,6 +1118,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a qualified min cardinality restriction, or null
      */
+    @Override
     public MinCardinalityQRestriction getMinCardinalityQRestriction( String uri ) {
         return (MinCardinalityQRestriction) findByURIAs( uri, MinCardinalityQRestriction.class );
     }
@@ -1087,6 +1134,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI for the restriction
      * @return A resource representing a qualified max cardinality restriction, or null
      */
+    @Override
     public MaxCardinalityQRestriction getMaxCardinalityQRestriction( String uri ) {
         return (MaxCardinalityQRestriction) findByURIAs( uri, MaxCardinalityQRestriction.class );
     }
@@ -1103,6 +1151,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * of the document itself.
      * @return An Ontology resource.
      */
+    @Override
     public Ontology createOntology( String uri ) {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return createOntResource( Ontology.class, getProfile().ONTOLOGY(), uri );
@@ -1118,6 +1167,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls Resource representing the ontology class to which the individual belongs
      * @return A new anoymous Individual of the given class.
      */
+    @Override
     public Individual createIndividual( Resource cls ) {
         return createOntResource( Individual.class, cls, null );
     }
@@ -1134,6 +1184,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the individual, or null for an anonymous individual.
      * @return An Individual resource.
      */
+    @Override
     public Individual createIndividual( String uri, Resource cls ) {
         return createOntResource( Individual.class, cls, uri );
     }
@@ -1150,6 +1201,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the property. May not be null.
      * @return An OntProperty resource.
      */
+    @Override
     public OntProperty createOntProperty( String uri ) {
         Property p = createProperty( uri );
         p.addProperty( RDF.type, getProfile().PROPERTY() );
@@ -1167,6 +1219,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An ObjectProperty resource.
      * @see #createObjectProperty( String, boolean )
      */
+    @Override
     public ObjectProperty createObjectProperty( String uri ) {
         return createObjectProperty( uri, false );
     }
@@ -1186,6 +1239,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * that is, a property that has a unique range value for any given domain value.
      * @return An ObjectProperty resource, optionally also functional.
      */
+    @Override
     public ObjectProperty createObjectProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         ObjectProperty p = createOntResource( ObjectProperty.class, getProfile().OBJECT_PROPERTY(), uri );
@@ -1205,6 +1259,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An TransitiveProperty resource
      * @see #createTransitiveProperty( String, boolean )
      */
+    @Override
     public TransitiveProperty createTransitiveProperty( String uri ) {
         return createTransitiveProperty( uri, false );
     }
@@ -1219,6 +1274,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param functional If true, the property is also functional
      * @return An TransitiveProperty resource, optionally also functional.
      */
+    @Override
     public TransitiveProperty createTransitiveProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
         TransitiveProperty p = createOntResource( TransitiveProperty.class, getProfile().TRANSITIVE_PROPERTY(), uri );
@@ -1238,6 +1294,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An SymmetricProperty resource
      * @see #createSymmetricProperty( String, boolean )
      */
+    @Override
     public SymmetricProperty createSymmetricProperty( String uri ) {
         return createSymmetricProperty( uri, false );
     }
@@ -1250,6 +1307,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param functional If true, the property is also functional
      * @return An SymmetricProperty resource, optionally also functional.
      */
+    @Override
     public SymmetricProperty createSymmetricProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
         SymmetricProperty p = createOntResource( SymmetricProperty.class, getProfile().SYMMETRIC_PROPERTY(), uri );
@@ -1269,6 +1327,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An InverseFunctionalProperty resource
      * @see #createInverseFunctionalProperty( String, boolean )
      */
+    @Override
     public InverseFunctionalProperty createInverseFunctionalProperty( String uri ) {
         return createInverseFunctionalProperty( uri, false );
     }
@@ -1281,6 +1340,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param functional If true, the property is also functional
      * @return An InverseFunctionalProperty resource, optionally also functional.
      */
+    @Override
     public InverseFunctionalProperty createInverseFunctionalProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
         InverseFunctionalProperty p = createOntResource( InverseFunctionalProperty.class, getProfile().INVERSE_FUNCTIONAL_PROPERTY(), uri );
@@ -1304,6 +1364,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return A DatatypeProperty resource.
      * @see #createDatatypeProperty( String, boolean )
      */
+    @Override
     public DatatypeProperty createDatatypeProperty( String uri ) {
         return createDatatypeProperty( uri, false );
     }
@@ -1323,6 +1384,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * that is, a property that has a unique range value for any given domain value.
      * @return A DatatypeProperty resource.
      */
+    @Override
     public DatatypeProperty createDatatypeProperty( String uri, boolean functional ) {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         DatatypeProperty p = createOntResource( DatatypeProperty.class, getProfile().DATATYPE_PROPERTY(), uri );
@@ -1346,6 +1408,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the annotation property.
      * @return An AnnotationProperty resource.
      */
+    @Override
     public AnnotationProperty createAnnotationProperty( String uri ) {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         return createOntResource( AnnotationProperty.class, getProfile().ANNOTATION_PROPERTY(), uri );
@@ -1361,6 +1424,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return An anonymous Class resource.
      */
+    @Override
     public OntClass createClass() {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         return createOntResource( OntClass.class, getProfile().CLASS(), null );
@@ -1377,6 +1441,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the class node, or null for an anonymous class.
      * @return A Class resource.
      */
+    @Override
     public OntClass createClass( String uri ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         return createOntResource( OntClass.class, getProfile().CLASS(), uri );
@@ -1389,6 +1454,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls Resource denoting the class that the new class is a complement of
      * @return A complement class
      */
+    @Override
     public ComplementClass createComplementClass( String uri, Resource cls ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
@@ -1407,6 +1473,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param members An optional list of resources denoting the individuals in the enumeration
      * @return An enumeration class
      */
+    @Override
     public EnumeratedClass createEnumeratedClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
@@ -1424,6 +1491,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param members A list of resources denoting the classes that comprise the union
      * @return A union class description
      */
+    @Override
     public UnionClass createUnionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
@@ -1441,6 +1509,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param members A list of resources denoting the classes that comprise the intersection
      * @return An intersection class description
      */
+    @Override
     public IntersectionClass createIntersectionClass( String uri, RDFList members ) {
         checkProfileEntry( getProfile().CLASS(), "CLASS" );
         OntClass c = createOntResource( OntClass.class, getProfile().CLASS(), uri );
@@ -1462,6 +1531,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param p The property that is restricted by this restriction
      * @return An anonymous Restriction resource.
      */
+    @Override
     public Restriction createRestriction( Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
@@ -1484,6 +1554,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param p The property that is restricted by this restriction
      * @return A Restriction resource.
      */
+    @Override
     public Restriction createRestriction( String uri, Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1505,6 +1576,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param value The value of the property, as a resource or RDF literal
      * @return A new resource representing a has-value restriction
      */
+    @Override
     public HasValueRestriction createHasValueRestriction( String uri, Property prop, RDFNode value ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1531,6 +1603,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls The class to which at least one value of the property belongs
      * @return A new resource representing a some-values-from restriction
      */
+    @Override
     public SomeValuesFromRestriction createSomeValuesFromRestriction( String uri, Property prop, Resource cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1557,6 +1630,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls The class to which any value of the property belongs
      * @return A new resource representing an all-values-from restriction
      */
+    @Override
     public AllValuesFromRestriction createAllValuesFromRestriction( String uri, Property prop, Resource cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1583,6 +1657,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cardinality The exact cardinality of the property
      * @return A new resource representing a has-value restriction
      */
+    @Override
     public CardinalityRestriction createCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1609,6 +1684,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cardinality The minimum cardinality of the property
      * @return A new resource representing a min-cardinality restriction
      */
+    @Override
     public MinCardinalityRestriction createMinCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1635,6 +1711,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cardinality The maximum cardinality of the property
      * @return A new resource representing a mas-cardinality restriction
      */
+    @Override
     public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         Restriction r = createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
@@ -1663,6 +1740,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls The class to which all values of the restricted property should belong
      * @return A new resource representing a mas-cardinality restriction
      */
+    @Override
     public MaxCardinalityQRestriction createMaxCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
@@ -1698,6 +1776,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls The class to which all values of the restricted property should belong
      * @return A new resource representing a mas-cardinality restriction
      */
+    @Override
     public MinCardinalityQRestriction createMinCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
@@ -1733,6 +1812,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param cls The class to which all values of the restricted property should belong
      * @return A new resource representing a mas-cardinality restriction
      */
+    @Override
     public CardinalityQRestriction createCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
@@ -1764,6 +1844,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *                 or null to define an empty data range
      * @return A new data range containing the given literals as permissible values
      */
+    @Override
     public DataRange createDataRange( RDFList literals ) {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
         DataRange d = createOntResource( DataRange.class, getProfile().DATARANGE(), null );
@@ -1785,6 +1866,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return A new AllDifferent resource
      */
+    @Override
     public AllDifferent createAllDifferent() {
         return createAllDifferent( null );
     }
@@ -1800,6 +1882,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param differentMembers A list of the class expressions that denote a set of mutually disjoint classes
      * @return A new AllDifferent resource
      */
+    @Override
     public AllDifferent createAllDifferent( RDFList differentMembers ) {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
         AllDifferent ad = createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
@@ -1833,6 +1916,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The uri for the ontology resource, or null for an anonymous resource.
      * @return An ontology resource, of the type specified by the <code>javaClass</code>
      */
+    @Override
     public <T extends OntResource> T createOntResource( Class<T> javaClass, Resource rdfType, String uri ) {
         return getResourceWithType( uri, rdfType ).as( javaClass );
     }
@@ -1843,6 +1927,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of the resource, or null for an anonymous resource (aka bNode)
      * @return An OntResource with the given URI
      */
+    @Override
     public OntResource createOntResource( String uri ) {
         return getResource( uri ).as( OntResource.class );
     }
@@ -1869,6 +1954,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return A language profile
      */
+    @Override
     public Profile getProfile() {
         return m_spec.getProfile();
     }
@@ -1882,6 +1968,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * sets of import statements. Note that actual implementation is delegated to
      * the associated {@link OntDocumentManager}.
      */
+    @Override
     public void loadImports() {
         // load the imports closure, according to the policies in my document manager
         getDocumentManager().loadImports( this );
@@ -1899,6 +1986,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return True if the document corresponding to the URI has been successfully loaded
      * into this model
      */
+    @Override
     public boolean hasLoadedImport( String uri ) {
         return m_imported.contains( uri );
     }
@@ -1912,6 +2000,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @param uri A document URI that has now been imported into the model.
      */
+    @Override
     public void addLoadedImport( String uri ) {
         m_imported.add( uri );
     }
@@ -1925,6 +2014,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @param uri A document URI that is no longer imported into the model.
      */
+    @Override
     public void removeLoadedImport( String uri ) {
         m_imported.remove( uri );
     }
@@ -1940,6 +2030,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
+    @Override
     public Set<String> listImportedOntologyURIs() {
         return listImportedOntologyURIs( false );
     }
@@ -1959,6 +2050,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
+    @Override
     public Set<String> listImportedOntologyURIs( boolean closure ) {
         Set<String> results = new HashSet<String>();
         List<Model> queue = new ArrayList<Model>();
@@ -2000,6 +2092,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return The local graph factory
      */
+    @Override
     public ModelMaker getImportModelMaker() {
         return m_spec.getImportModelMaker();
     }
@@ -2007,6 +2100,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     /**
          @deprecated use getImportModelMaker instead.
     */
+    @Override
     @Deprecated
     public ModelMaker getModelMaker() {
         return getImportModelMaker();
@@ -2161,6 +2255,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return A list of sub graphs for this ontology model
      */
+    @Override
     public List<Graph> getSubGraphs() {
         return getUnionGraph().getSubGraphs();
     }
@@ -2180,6 +2275,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @see #listSubModels()
      * @see #listSubModels(boolean)
      */
+    @Override
     @Deprecated
     public ExtendedIterator<OntModel> listImportedModels() {
         return listSubModels( true );
@@ -2209,10 +2305,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An iterator, each value of which will be an <code>OntModel</code>
      * representing a sub-model of this ontology.
      */
+    @Override
     public ExtendedIterator<OntModel> listSubModels( final boolean withImports ) {
         ExtendedIterator<Graph> i = WrappedIterator.create( getSubGraphs().iterator() );
 
         return i.mapWith( new Map1<Graph, OntModel>() {
+                    @Override
                     public OntModel map1( Graph o ) {
                         Model base = ModelFactory.createModelForGraph( o );
                         OntModel om = new OntModelImpl( m_spec, base, withImports );
@@ -2238,6 +2336,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * representing a sub-model of this ontology.
      * @see #listSubModels(boolean)
      */
+    @Override
     public ExtendedIterator<OntModel> listSubModels() {
         return listSubModels( false );
     }
@@ -2248,6 +2347,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * base model.</p>
      * @return The number of sub-models, &ge; zero.
      */
+    @Override
     public int countSubModels() {
         int count = 0;
         for (Iterator<Graph> i = getSubGraphs().iterator(); i.hasNext(); ) {
@@ -2266,6 +2366,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return A model representing the imported ontology with the given URI, or
      * null.
      */
+    @Override
     public OntModel getImportedModel( String uri ) {
         if (listImportedOntologyURIs( true ).contains( uri )) {
             Model mi = getDocumentManager().getModel( uri );
@@ -2310,6 +2411,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return The base model for this ontology model
      */
+    @Override
     public Model getBaseModel() {
         return ModelFactory.createModelForGraph( getBaseGraph() );
     }
@@ -2329,6 +2431,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @param model A sub-model to add
      */
+    @Override
     public void addSubModel( Model model) {
         addSubModel( model, true );
     }
@@ -2350,6 +2453,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param rebind If true, rebind any associated inferencing engine to the new data (which
      * may be an expensive operation)
      */
+    @Override
     public void addSubModel( Model model, boolean rebind ) {
         getUnionGraph().addGraph( model.getGraph() );
         if (rebind) {
@@ -2368,6 +2472,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param model A sub-model to remove
      * @see #addSubModel( Model, boolean )
      */
+    @Override
     public void removeSubModel( Model model ) {
         removeSubModel( model, true );
     }
@@ -2382,6 +2487,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param rebind If true, rebind any associated inferencing engine to the new data (which
      * may be an expensive operation)
      */
+    @Override
     public void removeSubModel( Model model, boolean rebind ) {
         Graph subG = model.getGraph();
         getUnionGraph().removeGraph( subG );
@@ -2407,6 +2513,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param node An RDF node (Resource, Property or Literal) to test
      * @return True if the given node is from the base model
      */
+    @Override
     public boolean isInBaseModel( RDFNode node ) {
         Node n = node.asNode();
         Graph b = getBaseGraph();
@@ -2424,6 +2531,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param stmt A statement to test
      * @return True if the given statement is from the base model
      */
+    @Override
     public boolean isInBaseModel( Statement stmt ) {
         Node s = stmt.getSubject().asNode();
         Node p = stmt.getPredicate().asNode();
@@ -2444,6 +2552,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return True if in strict checking mode
      */
+    @Override
     public boolean strictMode() {
         return m_strictMode;
     }
@@ -2457,6 +2566,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param strict
      * @see #strictMode()
      */
+    @Override
     public void setStrictMode( boolean strict ) {
         m_strictMode = strict;
     }
@@ -2470,6 +2580,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * model will result in a change in the imports closure.  If false, changes
      * to the imports are not monitored dynamically. Default false.
      */
+    @Override
     public void setDynamicImports( boolean dynamic ) {
         if (dynamic) {
             if (m_importsListener == null) {
@@ -2493,6 +2604,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * updated as imports statements are added and removed.</p>
      * @return True if the imports closure is updated dynamically.
      */
+    @Override
     public boolean getDynamicImports() {
         return m_importsListener != null;
     }
@@ -2502,6 +2614,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * <p>Answer the ontology model specification that was used to construct this model</p>
      * @return An ont model spec instance.
      */
+    @Override
     public OntModelSpec getSpecification() {
         return m_spec;
     }
@@ -2521,6 +2634,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return ExtendedIterator An iterator over the (assumed single) results of
      * executing the queries.
      */
+    @Override
     public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey ) {
         GetBinding firstBinding  = new GetBinding( 0 );
 
@@ -2555,10 +2669,12 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public Model write( OutputStream out, String lang, String base) { return getBaseModel().write( out, lang, base ); }
 
+    @Override
     public Model writeAll( Writer writer, String lang, String base ) {
         return super.write( writer, lang, base );
     }
 
+    @Override
     public Model writeAll( OutputStream out, String lang, String base ) {
         return super.write( out, lang, base );
     }
@@ -2570,6 +2686,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * Return the raw RDF model being processed (i.e. the argument
      * to the Reasonder.bind call that created this InfModel).
      */
+    @Override
     public Model getRawModel() {
         return getBaseModel();
     }
@@ -2577,6 +2694,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     /**
      * Return the Reasoner which is being used to answer queries to this graph.
      */
+    @Override
     public Reasoner getReasoner() {
         return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).getReasoner() : null;
     }
@@ -2588,6 +2706,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * are made "behind the InfModels's back" and this forces a full reconsult of
      * the changed data.
      */
+    @Override
     public void rebind() {
         if (getGraph() instanceof InfGraph) {
             ((InfGraph) getGraph()).rebind();
@@ -2602,6 +2721,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * rule system) and where an application might wish greater control over when
      * this prepration is done rather than just leaving to be done at first query time.
      */
+    @Override
     public void prepare() {
         if (getGraph() instanceof InfGraph) {
             ((InfGraph) getGraph()).prepare();
@@ -2614,6 +2734,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * unbounded memory use at the expense of more expensive future queries. A reset
      * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
      */
+    @Override
     public void reset() {
         if (getGraph() instanceof InfGraph) {
             ((InfGraph) getGraph()).reset();
@@ -2630,6 +2751,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      *
      * @return The derivations model, if one is defined, or else null
      */
+    @Override
     public Model getDeductionsModel() {
         if (m_deductionsModel == null) {
             InfGraph infGraph = getInfGraph();
@@ -2656,6 +2778,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * schema data.
      * @return a ValidityReport structure
      */
+    @Override
     public ValidityReport validate() {
         return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).validate() : null;
     }
@@ -2678,6 +2801,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param object    The value sought
      * @param posit Model containing additional assertions to be considered when matching statements
      */
+    @Override
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         if (getGraph() instanceof InfGraph) {
             Graph gp = posit == null ? ModelFactory.createDefaultModel().getGraph() : posit.getGraph();
@@ -2694,6 +2818,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * is a made that fact is recorded and the resulting record can be access through a later
      * getDerivation call. This may consume a lot of space!
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         if (getGraph() instanceof InfGraph) {
             ((InfGraph) getGraph()).setDerivationLogging( logOn );
@@ -2707,6 +2832,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
+    @Override
     public Iterator<Derivation> getDerivation(Statement statement) {
         return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).getDerivation( statement.asTriple() ) : null;
     }
@@ -2943,6 +3069,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param uri The URI of a resource
      * @return An OntResource with the given URI, or null
      */
+    @Override
     public OntResource getOntResource( String uri ) {
         Resource r = getResource( uri );
         if (containsResource( r )) {
@@ -2958,6 +3085,7 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @return An {@link OntResource} attached to this model that has the same URI
      * or anonID as the given resource
      */
+    @Override
     public OntResource getOntResource( Resource res ) {
         return res.inModel( this ).as( OntResource.class );
     }
@@ -3038,6 +3166,7 @@ public class OntModelImpl extends ModelCom implements OntModel
 
         protected SubjectNodeAs( Class<To> asKey ) { m_asKey = asKey; }
 
+        @Override
         public To map1( Triple x ) {
             return getNodeAs( x.getSubject(), m_asKey );
         }
@@ -3050,6 +3179,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         protected Class<To> m_asKey;
         protected NodeAs( Class<To> asKey ) { m_asKey = asKey; }
 
+        @Override
         public To map1( Node x ) {
             return getNodeAs( x, m_asKey );
         }
@@ -3096,6 +3226,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     {
         protected int m_index;
         protected GetBinding( int index ) { m_index = index; }
+        @Override
         public Node map1( Domain x ) { return x.get( m_index );  }
     }
 
@@ -3104,6 +3235,7 @@ public class OntModelImpl extends ModelCom implements OntModel
     {
         protected Resource m_type;
         protected RdfTypeTestFn( Resource type ) { m_type = type; }
+        @Override
         public Object reduce( RDFNode node, Object accumulator ) {
             Boolean acc = (Boolean) accumulator;
             if (acc.booleanValue()) {

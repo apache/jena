@@ -82,6 +82,7 @@ public class FileGraphMaker
     public Graph createGraph()
         { return FileGraph.create(); }
         
+    @Override
     public Graph createGraph( String name, boolean strict )
         {
         File f = withRoot( name );
@@ -95,6 +96,7 @@ public class FileGraphMaker
             }
         }
 
+    @Override
     public Graph openGraph( String name, boolean strict )
         { 
         File f = withRoot( name );
@@ -104,6 +106,7 @@ public class FileGraphMaker
             ;
         }
 
+    @Override
     public void notifyClosed( File f )
         {
         toDelete.add( f );
@@ -145,6 +148,7 @@ public class FileGraphMaker
             .replaceAll( "_U", "_" ); 
         }
                 
+    @Override
     public void removeGraph( String name )
         { forget( withRoot( name ) ).delete(); }
 
@@ -160,12 +164,14 @@ public class FileGraphMaker
         return f;
         }
         
+    @Override
     public boolean hasGraph( String name )
         {
         File f = withRoot( name );
         return created.containsKey( f ) || f.exists(); 
         }
         
+    @Override
     public void close()
         {
         if (deleteOnClose)
@@ -182,7 +188,8 @@ public class FileGraphMaker
         A Map1 that will convert filename strings to the corresponding graphname strings.
     */
     private static Map1<String, String> unconvert = new Map1<String, String>()
-        { public String map1( String x )
+        { @Override
+        public String map1( String x )
             { return toGraphname( x ); }
         };
         
@@ -195,6 +202,7 @@ public class FileGraphMaker
     public static FilenameFilter graphName()
         { return new FilenameFilter()
             {
+            @Override
             public boolean accept( File file, String name )
                 { return !new File( file, name ).isDirectory()
                     && FileGraph.isPlausibleGraphName( name ); }    
@@ -207,6 +215,7 @@ public class FileGraphMaker
          
      	@see com.hp.hpl.jena.graph.GraphMaker#listGraphs()
      */
+    @Override
     public ExtendedIterator<String> listGraphs()
         { String [] fileNames = new File( fileBase ).list( graphName() );
         Set<String> allNames = CollectionFactory.createHashedSet( Arrays.asList( fileNames ) );

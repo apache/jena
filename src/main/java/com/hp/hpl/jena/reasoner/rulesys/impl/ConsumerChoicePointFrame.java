@@ -143,6 +143,7 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     /**
      * Return true if this choice point could usefully be restarted.
      */
+    @Override
     public boolean isReady() {
         return generator.numResults() > resultIndex;
     }
@@ -165,6 +166,7 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     /**
      * Reactivate this choice point to return new results.
      */
+    @Override
     public void pump() {
         if (context instanceof Generator) {
             ((Generator)context).pump(this);
@@ -176,6 +178,7 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     /**
      * Return the generator associated with this entry (might be the entry itself)
      */
+    @Override
     public Generator getGenerator() {
         return generator;
     }

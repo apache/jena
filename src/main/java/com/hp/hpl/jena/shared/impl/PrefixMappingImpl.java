@@ -43,12 +43,14 @@ public class PrefixMappingImpl implements PrefixMapping
     protected String get( String prefix )
         { return prefixToURI.get( prefix ); }
            
+    @Override
     public PrefixMapping lock()
         { 
         locked = true; 
         return this;
         }
         
+    @Override
     public PrefixMapping setNsPrefix( String prefix, String uri ) 
         {
         checkUnlocked();
@@ -59,6 +61,7 @@ public class PrefixMappingImpl implements PrefixMapping
         return this;
         }
     
+    @Override
     public PrefixMapping removeNsPrefix( String prefix )
         {
         checkUnlocked();
@@ -96,6 +99,7 @@ public class PrefixMappingImpl implements PrefixMapping
         
         @param other the PrefixMapping whose bindings we are to add to this.
     */
+    @Override
     public PrefixMapping setNsPrefixes( PrefixMapping other )
         { return setNsPrefixes( other.getNsPrefixMap() ); }
     
@@ -104,6 +108,7 @@ public class PrefixMappingImpl implements PrefixMapping
          mappings in <code>other</code> where neither <code>p</code> nor
          <code>u</code> appear in this mapping.
     */
+    @Override
     public PrefixMapping withDefaultMappings( PrefixMapping other )
         {
         checkUnlocked();
@@ -124,6 +129,7 @@ public class PrefixMappingImpl implements PrefixMapping
         
          @param other the Map whose bindings we are to add to this.
     */
+    @Override
     public PrefixMapping setNsPrefixes( Map<String, String> other )
         {
         checkUnlocked();
@@ -141,12 +147,15 @@ public class PrefixMappingImpl implements PrefixMapping
             throw new PrefixMapping.IllegalPrefixException( prefix ); 
         }
         
+    @Override
     public String getNsPrefixURI( String prefix ) 
         { return get( prefix ); }
         
+    @Override
     public Map<String, String> getNsPrefixMap()
         { return CollectionFactory.createHashedMap( prefixToURI ); }
         
+    @Override
     public String getNsURIPrefix( String uri )
         { return URItoPrefix.get( uri ); }
         
@@ -155,6 +164,7 @@ public class PrefixMappingImpl implements PrefixMapping
         Head:Tail is subject to mapping if Head is in the prefix mapping. So, if
         someone takes it into their heads to define eg "http" or "ftp" we have problems.
     */
+    @Override
     public String expandPrefix( String prefixed )
         {
         int colon = prefixed.indexOf( ':' );
@@ -184,6 +194,7 @@ public class PrefixMappingImpl implements PrefixMapping
         
      	@see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String)
     */
+    @Override
     public String qnameFor( String uri )
         { 
         int split = Util.splitNamespace( uri );
@@ -200,12 +211,14 @@ public class PrefixMappingImpl implements PrefixMapping
         efficient algorithm available, preprocessing the prefix strings into some
         kind of search table, but for the moment we don't need it.
     */
+    @Override
     public String shortForm( String uri )
         {
         Entry<String, String> e = findMapping( uri, true );
         return e == null ? uri : e.getKey() + ":" + uri.substring( (e.getValue()).length() );
         }
         
+    @Override
     public boolean samePrefixMappingAs( PrefixMapping other )
         {
         return other instanceof PrefixMappingImpl 

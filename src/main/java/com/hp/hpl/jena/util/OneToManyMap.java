@@ -85,6 +85,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
     /**
      * Clear all entries from the map.
      */
+    @Override
     public void clear() {
         m_table.clear();
     }
@@ -96,6 +97,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param key The key object to test for
      * @return True or false
      */
+    @Override
     public boolean containsKey( Object key ) {
         return m_table.containsKey( key );
     }
@@ -109,6 +111,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param value The value to test for
      * @return True if the value is in the map
      */
+    @Override
     public boolean containsValue( Object value ) {
         for (Iterator<List<To>> values = m_table.values().iterator();  values.hasNext(); ) {
             List<To> x = values.next();
@@ -140,6 +143,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @return A Set of the mappings as Map.Entry values.
      */
+    @Override
     public Set<Map.Entry<From, To>> entrySet() {
         Set<Map.Entry<From, To>> s = CollectionFactory.createHashedSet();
 
@@ -184,6 +188,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @return One of the values this key corresponds to, or null.
      * @see #getAll
      */
+    @Override
     public To get( Object key ) {
         List<To> entry = m_table.get( key );
 
@@ -234,6 +239,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @return True if there are no entries.
      */
+    @Override
     public boolean isEmpty() {
         return m_table.isEmpty();
     }
@@ -244,6 +250,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      *
      * @return The keys of the map as a Set
      */
+    @Override
     public Set<From> keySet() {
         return m_table.keySet();
     }
@@ -259,6 +266,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param value The value object
      * @return Null.
      */
+    @Override
     public To put( From key, To value ) {
         List<To> entries = m_table.get( key );
         if (entries == null) entries = new ArrayList<To>();
@@ -274,6 +282,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * OneToManyMap, and, if so, copies all of the entries for each key.</p>
      * @param m The map whose contents are to be copied into this map
      */
+    @Override
     public void putAll( Map<? extends From, ? extends To> m ) {
         boolean many = (m instanceof OneToManyMap<?,?>);
         
@@ -307,6 +316,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * @param key All associations with this key will be removed
      * @return null
      */
+    @Override
     public To remove( Object key ) {
         m_table.remove( key );
         return null;
@@ -339,6 +349,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * <p>Answer the number of key-value mappings in the map</p>
      * @return The number of key-value pairs.
      */
+    @Override
     public int size() {
         int size = 0;
         for (Iterator<From> i = m_table.keySet().iterator();  i.hasNext();  ) {
@@ -354,6 +365,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
      * for multiple keys are suppressed.</p>
      * @return A set of the values contained in this map.
      */
+    @Override
     public Collection<To> values() {
         Set<To> s = CollectionFactory.createHashedSet();
         for (Iterator<From> e = m_table.keySet().iterator();  e.hasNext();  ) {
@@ -459,6 +471,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          *
          * @return The key object
          */
+        @Override
         public From getKey() {
             return m_key;
         }
@@ -469,6 +482,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
          *
          * @return The value object
          */
+        @Override
         public To getValue() {
             return m_value;
         }
@@ -477,6 +491,7 @@ public class OneToManyMap<From, To> implements Map<From, To>
         /**
          * Set the value, which writes through to the map. Not implemented.
          */
+        @Override
         public To setValue( To value )
             throws  UnsupportedOperationException
         {

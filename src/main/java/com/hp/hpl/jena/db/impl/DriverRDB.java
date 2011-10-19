@@ -271,7 +271,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	/**
 	 * Return the connection
 	 */
-	public IDBConnection getConnection() {
+	@Override
+    public IDBConnection getConnection() {
 		return m_dbcon;
 	}
 	
@@ -282,7 +283,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * be formatted, else null is returned and the (unformatted
 	 * database is unchanged).
 	 */
-	public SpecializedGraph getSystemSpecializedGraph(boolean doInit) {
+	@Override
+    public SpecializedGraph getSystemSpecializedGraph(boolean doInit) {
 
 		SpecializedGraph res = null;
 		
@@ -484,14 +486,16 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	abstract String[] getCreateTableParams( int graphId, boolean isReif );
 	
-	abstract public int graphIdAlloc ( String graphName );	
+	@Override
+    abstract public int graphIdAlloc ( String graphName );	
 	
 	
 	
 	/**
 	 * Construct and return a new specialized graph.
 	 */
-	public List<SpecializedGraph> createSpecializedGraphs(String graphName,
+	@Override
+    public List<SpecializedGraph> createSpecializedGraphs(String graphName,
 			Graph requestedProperties) {
 
 		/*
@@ -661,6 +665,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphProperties
 	 *            A set of customization properties for the graph.
 	 */
+    @Override
     public List<SpecializedGraph> recreateSpecializedGraphs(DBPropGraph graphProperties) {
 		
 		List<SpecializedGraph> result = new ArrayList<SpecializedGraph>();
@@ -726,6 +731,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @param graphId The identity of the Graph which these specialized graphs should hold
 	 * @param graphProperties The properties for the graph to be removed.
 	 */
+    @Override
     public void removeSpecializedGraphs( DBPropGraph graphProperties, List<SpecializedGraph> specializedGraphs) {
 			
 		int graphId = graphProperties.getGraphId();
@@ -804,7 +810,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 
 	 * @param databaseProperties is a Graph containing a full set of database properties
 	 */
-	public void setDatabaseProperties(Graph databaseProperties) {
+	@Override
+    public void setDatabaseProperties(Graph databaseProperties) {
 		SpecializedGraph toGraph = getSystemSpecializedGraph(true);
 		// really need to start a transaction here
 
@@ -830,7 +837,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * If none are stored, then load default properties into the database.
 	 * @return Graph containg the default properties for a new model
 	 */
-	public DBPropGraph getDefaultModelProperties() {
+	@Override
+    public DBPropGraph getDefaultModelProperties() {
 		SpecializedGraph sg = getSystemSpecializedGraph(true);
 		DBPropGraph result = DBPropGraph.findPropGraphByName(sg, DEFAULT_PROPS);
 		if (result == null) {
@@ -848,7 +856,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 
 	 * @return boolean true if database is correctly formatted, false on any error.
 	 */
-	public boolean isDBFormatOK() throws RDFRDBException {
+	@Override
+    public boolean isDBFormatOK() throws RDFRDBException {
 		boolean result = true;
 		boolean[] found = new boolean[SYSTEM_TABLE_CNT];
 		int i = 0;
@@ -893,6 +902,7 @@ public abstract class DriverRDB implements IRDBDriver {
      * return true if the mutex is acquired, else false 
      */
 
+    @Override
     public boolean tryLockDB() {
 		boolean res = true;
 		try {
@@ -904,7 +914,8 @@ public abstract class DriverRDB implements IRDBDriver {
     }
 
 	
-	public void lockDB() throws RDFRDBException {
+	@Override
+    public void lockDB() throws RDFRDBException {
     	String err = "";
     	int cnt = 0;
     	while ( cnt++ < lockTryMax ) {
@@ -929,6 +940,7 @@ public abstract class DriverRDB implements IRDBDriver {
      * Release the mutex lock in the database.
      */
     
+    @Override
     public void unlockDB() throws RDFRDBException {
     	String err;
     	int cnt = 0;
@@ -952,6 +964,7 @@ public abstract class DriverRDB implements IRDBDriver {
     
     /* return true if the mutex is held. */
     
+    @Override
     public boolean DBisLocked() throws RDFRDBException {
     	try {
     		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
@@ -967,7 +980,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graphRDB.IRDBDriver#cleanDB()
 	 */
-	public void cleanDB() {
+	@Override
+    public void cleanDB() {
 
 		// assumes database lock is not held.
 		try {
@@ -1134,7 +1148,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @return the name of the new table 
 	 * 
 	 */
-	public String createTable( int graphId, boolean isReif) { 	
+	@Override
+    public String createTable( int graphId, boolean isReif) { 	
 		String opname = isReif ? "createReifStatementTable" : "createStatementTable";
 		int i = 0;
 		String params[];
@@ -1160,7 +1175,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 
 	 * @param tableName the name of the table to delete.	 * 
 	 */
-	public void deleteTable( String tableName ) {
+	@Override
+    public void deleteTable( String tableName ) {
 		
 		String opname = "dropTable";
 		PreparedStatement ps = null;
@@ -1322,7 +1338,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * autocommit off, then begin a new transaction. Note that transactions are
 	 * associated with connections, not with Models. This
 	 */
-	public synchronized void begin() throws RDFRDBException {
+	@Override
+    public synchronized void begin() throws RDFRDBException {
 		if (transactionsSupported()) {
 			xactOp(xactBegin);
 		} else {
@@ -1334,7 +1351,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * If the underlying database connection supports transactions, call
 	 * commit(), then turn autocommit on.
 	 */
-	public void commit() throws RDFRDBException {
+	@Override
+    public void commit() throws RDFRDBException {
 		if (transactionsSupported()) {
 			xactOp(xactCommit);
 		} else {
@@ -1346,7 +1364,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * If underlying database connection supports transactions, call abort() on
 	 * the connection, then turn autocommit on.
 	 */
-	public synchronized void abort() throws RDFRDBException {
+	@Override
+    public synchronized void abort() throws RDFRDBException {
 		if (transactionsSupported()) {
 			xactOp(xactAbort);
 		} else {
@@ -1360,14 +1379,16 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * Return a string identifying underlying database type.
 	 *
 	 */
-	public String getDatabaseType() {
+	@Override
+    public String getDatabaseType() {
 		return(DATABASE_TYPE);
 	}
 
 	/**
 	 * Returns true if the underlying database supports transactions.
 	 */
-	public boolean transactionsSupported() { 
+	@Override
+    public boolean transactionsSupported() { 
 		if (m_transactionsSupported != null) {
 			return(m_transactionsSupported.booleanValue());	
 		}
@@ -1394,6 +1415,7 @@ public abstract class DriverRDB implements IRDBDriver {
      * @throws RDFDBException if there is an access problem
      */
 
+    @Override
     public void close() throws RDFRDBException
     { }
     
@@ -1507,7 +1529,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	* @param addIfLong If the node is a long object and is not in the database, add it.
 	* @return the string or null if failure.
 	*/
-	public String nodeToRDBString ( Node node, boolean addIfLong ) throws RDFRDBException {
+	@Override
+    public String nodeToRDBString ( Node node, boolean addIfLong ) throws RDFRDBException {
 		String res = null;
 		if ( node.isURI() ) {
 			String uri = new String(((Node_URI) node).getURI());
@@ -1611,7 +1634,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	* @param RDBstring The string to convert to a node.
 	* @return The node or null if failure.
 	*/
-	public Node RDBStringToNode ( String RDBString ) throws RDFRDBException {	
+	@Override
+    public Node RDBStringToNode ( String RDBString ) throws RDFRDBException {	
 		Node res = null;
 		int len = RDBString.length();
 		if ( len < 3 ) 
@@ -2019,7 +2043,8 @@ public abstract class DriverRDB implements IRDBDriver {
     // Common way to get the sequence ID, even though the SQL statements are quite different. 
     // MySQL is different (it overrides this in Driver_MySQL).
     
-	public int getInsertID(String tableName)
+	@Override
+    public int getInsertID(String tableName)
 	{
 	    DBIDInt result = null;
         PreparedStatement ps = null ;
@@ -2242,16 +2267,19 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 	}
 	
-	public String genSQLReifQualStmt () {
+	@Override
+    public String genSQLReifQualStmt () {
 		return "Stmt = ?";
 	}
 	
-	public String genSQLReifQualAnyObj( boolean objIsStmt) {
+	@Override
+    public String genSQLReifQualAnyObj( boolean objIsStmt) {
 		return "( Subj = ? OR Prop = ? OR Obj = ?" + (objIsStmt ? " OR HasType = " +
 			QUOTE_CHAR + "T" + QUOTE_CHAR + " )" : " )");		
 	}
 	
-	public String genSQLReifQualObj ( char reifProp, boolean hasObj ) {
+	@Override
+    public String genSQLReifQualObj ( char reifProp, boolean hasObj ) {
 		String qual = "";
 		if ( reifProp == 'T' ) {
 			qual = "HasType = " + QUOTE_CHAR + "T" + QUOTE_CHAR;
@@ -2312,7 +2340,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * for now, we'll ignore this case and document it as a bug.
 	 */
 	
-	public String genSQLQualConst ( int alias, char pred, Node lit ) {
+	@Override
+    public String genSQLQualConst ( int alias, char pred, Node lit ) {
 		String val = nodeToRDBString(lit, false);
 		if ( val == null )
 			// constant not in database.
@@ -2323,7 +2352,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		return colAliasToString(alias,pred) + "=" + qval ;		
 	}
 
-	public String genSQLReifQualConst ( int alias, char pred, Node lit ) {
+	@Override
+    public String genSQLReifQualConst ( int alias, char pred, Node lit ) {
 		String val = "";
 		if ( (pred == 'T') && (lit.equals(RDF.Nodes.Statement)) )
 			val = "T";
@@ -2333,21 +2363,25 @@ public abstract class DriverRDB implements IRDBDriver {
 		return colAliasToString(alias,pred) + "=" + qval ;		
 	}
 	
-	public String genSQLQualParam( int alias, char pred ) {
+	@Override
+    public String genSQLQualParam( int alias, char pred ) {
 		return colAliasToString(alias,pred) + "=?";			
 	}
 
-	public String genSQLQualGraphId( int alias, int graphId ) {
+	@Override
+    public String genSQLQualGraphId( int alias, int graphId ) {
 		return colAliasToString(alias,'G') + "=" + graphId;			
 	}
 
-	public String genSQLJoin( int lhsAlias, char lhsCol,
+	@Override
+    public String genSQLJoin( int lhsAlias, char lhsCol,
 		int rhsAlias, char rhsCol ) {
 			return colAliasToString(lhsAlias,lhsCol) + "=" +
 			colAliasToString(rhsAlias,rhsCol);
 	}
 
-	public String genSQLStringMatch( int alias, char col,
+	@Override
+    public String genSQLStringMatch( int alias, char col,
 		String fun, String stringToMatch ) {
 		boolean ignCase = 
 		   fun.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
@@ -2369,7 +2403,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		return qual;
 	}
 	
-	public String genSQLStringMatchLHS( boolean ignCase, String var ) {
+	@Override
+    public String genSQLStringMatchLHS( boolean ignCase, String var ) {
 		return ignCase ? genSQLStringMatchLHS_IC(var): var;
 	}
 
@@ -2378,18 +2413,22 @@ public abstract class DriverRDB implements IRDBDriver {
 				stringMatchAllChar() + QUOTE_CHAR;
 	}
 
-	public String genSQLStringMatchOp( boolean ignCase, String fun ) {
+	@Override
+    public String genSQLStringMatchOp( boolean ignCase, String fun ) {
 		return ignCase ? genSQLStringMatchOp_IC(fun): 
 		                 genSQLStringMatchOp(fun);
 	}
 
-	public String stringMatchAllChar() { return "%"; }
+	@Override
+    public String stringMatchAllChar() { return "%"; }
 	public String stringMatchAnyChar() { return "_"; }
-	public String stringMatchEscapeChar() { return "\\\\"; }
+	@Override
+    public String stringMatchEscapeChar() { return "\\\\"; }
 	public String stringMatchLongObj() { return "r"; }
 	public String stringMatchShortObj() { return "v"; }
 
-	public String genSQLStringMatchRHS( boolean ignCase, boolean pfxMatch,
+	@Override
+    public String genSQLStringMatchRHS( boolean ignCase, boolean pfxMatch,
 									String strToMatch ) {
 		boolean isEscaped = stringMatchNeedsEscape(strToMatch);
 		if ( isEscaped ) strToMatch = addEscape(strToMatch);
@@ -2411,37 +2450,45 @@ public abstract class DriverRDB implements IRDBDriver {
 		return qual;
 	}
 	
-	public String genSQLStringMatchLHS_IC(String var) {
+	@Override
+    public String genSQLStringMatchLHS_IC(String var) {
 		return var;
 	}
 
-	public String genSQLStringMatchRHS_IC(String strToMatch) {
+	@Override
+    public String genSQLStringMatchRHS_IC(String strToMatch) {
 		return strToMatch;
 	}
 
-	public String genSQLStringMatchOp( String fun ) {
+	@Override
+    public String genSQLStringMatchOp( String fun ) {
 		return genSQLLikeKW();
 	}
 
-	public String genSQLStringMatchOp_IC( String fun ) {
+	@Override
+    public String genSQLStringMatchOp_IC( String fun ) {
 		return genSQLLikeKW();
 	}
 	
-	public boolean stringMatchNeedsEscape ( String strToMatch ) {
+	@Override
+    public boolean stringMatchNeedsEscape ( String strToMatch ) {
 		return strToMatch.indexOf('_') >= 0;
 	}
 
-	public String addEscape ( String strToMatch ) {
+	@Override
+    public String addEscape ( String strToMatch ) {
 		int i = strToMatch.indexOf('_');
 		return strToMatch.substring(0,i) + stringMatchEscapeChar() + 
 					strToMatch.substring(i);
 	}
 	
-	public String genSQLStringMatchEscape() {
+	@Override
+    public String genSQLStringMatchEscape() {
 		return "";
 	}
 	
-	public String genSQLResList( int resIndex[], VarDesc[] binding ) {
+	@Override
+    public String genSQLResList( int resIndex[], VarDesc[] binding ) {
 		String resList = "";
 		int i,j;
 		for(i=0,j=0;i<binding.length;i++) {
@@ -2457,7 +2504,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		return resList;
 	}
 	
-	public String genSQLFromList( int aliasCnt, String table ) {
+	@Override
+    public String genSQLFromList( int aliasCnt, String table ) {
 		int i;
 		String resList = "";
 		for(i=0;i<aliasCnt;i++) {
@@ -2467,11 +2515,13 @@ public abstract class DriverRDB implements IRDBDriver {
 
 	}
 	
-	public String genSQLLikeKW() {
+	@Override
+    public String genSQLLikeKW() {
 		return "Like ";
 	}
 
-	public String genSQLEscapeKW() {
+	@Override
+    public String genSQLEscapeKW() {
 		return "Escape ";
 	}
 
@@ -2493,7 +2543,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 
 	
-	public String genSQLSelectStmt( String res, String from, String qual ) {
+	@Override
+    public String genSQLSelectStmt( String res, String from, String qual ) {
 		return genSQLSelectKW() + res + " " + 
 			genSQLFromKW() + from + " " +
 			(qual.length() == 0 ? qual :genSQLWhereKW()) + qual;
@@ -2530,15 +2581,18 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * getters and setters for database options
 	 */
 	 
-	 public int getLongObjectLengthMax () {
+	 @Override
+    public int getLongObjectLengthMax () {
 		 	return LONG_OBJECT_LENGTH_MAX;
 		 }
 		 
-	 public int getLongObjectLength () {
+	 @Override
+    public int getLongObjectLength () {
 	 	return LONG_OBJECT_LENGTH;
 	 }
 	 
-	 public void setLongObjectLength ( int len ) {
+	 @Override
+    public void setLongObjectLength ( int len ) {
 		checkDbUninitialized();
 		if ( len > LONG_OBJECT_LENGTH_MAX )
 			throw new JenaException("LongObjectLength exceeds maximum value for database (" +
@@ -2546,15 +2600,18 @@ public abstract class DriverRDB implements IRDBDriver {
 		LONG_OBJECT_LENGTH = len;
 	}
 
-	 public int getIndexKeyLengthMax () {
+	 @Override
+    public int getIndexKeyLengthMax () {
 		 	return INDEX_KEY_LENGTH_MAX;
 		 }
 		 
-	public int getIndexKeyLength () {
+	@Override
+    public int getIndexKeyLength () {
    		return INDEX_KEY_LENGTH;
 	}
 	 
-	public void setIndexKeyLength ( int len ) {
+	@Override
+    public void setIndexKeyLength ( int len ) {
 		checkDbUninitialized();
 		if ( len > INDEX_KEY_LENGTH_MAX )
 			throw new JenaException("IndexKeyLength exceeds maximum value for database ("
@@ -2562,39 +2619,47 @@ public abstract class DriverRDB implements IRDBDriver {
 		INDEX_KEY_LENGTH = len;
 	}
 	
-	public boolean getIsTransactionDb () {
+	@Override
+    public boolean getIsTransactionDb () {
 		return IS_XACT_DB;
 	}
 	 
-	public void setIsTransactionDb ( boolean bool ) {
+	@Override
+    public void setIsTransactionDb ( boolean bool ) {
 		checkDbUninitialized();
 		if ( bool == false )
 			throw new JenaException("setIsTransactionDb unsupported for this database engine");
 	}
 
-	public boolean getDoCompressURI () {
+	@Override
+    public boolean getDoCompressURI () {
 			return URI_COMPRESS;
 	}
 	
-	public void setDoCompressURI ( boolean bool ) {
+	@Override
+    public void setDoCompressURI ( boolean bool ) {
 		checkDbUninitialized();
 		URI_COMPRESS = bool;
 	}
 	
-	public int getCompressURILength() {
+	@Override
+    public int getCompressURILength() {
 		return URI_COMPRESS_LENGTH;
 	}
 	
-	public void setCompressURILength ( int len ) {
+	@Override
+    public void setCompressURILength ( int len ) {
 		checkDbUninitialized();
 		URI_COMPRESS_LENGTH = len;
 	}
 	
-	public boolean getDoDuplicateCheck() {
+	@Override
+    public boolean getDoDuplicateCheck() {
 		return !SKIP_DUPLICATE_CHECK;
 	}
 	
-	public void setDoDuplicateCheck(boolean bool) {
+	@Override
+    public void setDoDuplicateCheck(boolean bool) {
 		SKIP_DUPLICATE_CHECK = !bool;
 	}
 
@@ -2612,11 +2677,13 @@ public abstract class DriverRDB implements IRDBDriver {
 			throw new JenaException("Database configuration option cannot be set after database is formatted");
 	}
 
-	public String getTableNamePrefix() {
+	@Override
+    public String getTableNamePrefix() {
 		return TABLE_NAME_PREFIX;
 	}
 
-	public void setTableNamePrefix ( String prefix ) {
+	@Override
+    public void setTableNamePrefix ( String prefix ) {
 		if ( dbIsOpen() )
 			throw new JenaException("Table name prefix must be set before opening or connecting to a model.");
 		/* sanity check that the new prefix length is not too long.
@@ -2681,7 +2748,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * Return the number of system tables.
 	 */
 
-	public int getSystemTableCount() {
+	@Override
+    public int getSystemTableCount() {
 		return SYSTEM_TABLE_CNT;
 	}
 	
@@ -2689,29 +2757,34 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * Return the name of a system table
 	 */
 
-	public String getSystemTableName ( int i ) {
+	@Override
+    public String getSystemTableName ( int i ) {
 		return ((i < 0) || (i >= SYSTEM_TABLE_CNT)) ?
 			null : SYSTEM_TABLE_NAME[i];
 	}
 
 	
-	public String getStoreWithModel() {
+	@Override
+    public String getStoreWithModel() {
 		return STORE_WITH_MODEL;
 	}
 
-	public void setStoreWithModel(String modelName) {
+	@Override
+    public void setStoreWithModel(String modelName) {
 		String name = null;
 		if ((modelName != null) && !modelName.equals(""))
 			name = modelName;
 		STORE_WITH_MODEL = name;
 	}
 
-	public int getCompressCacheSize() {
+	@Override
+    public int getCompressCacheSize() {
 		checkDbIsOpen();
 		return prefixCache.getLimit();
 	}
 
-	public void setCompressCacheSize(int count) {
+	@Override
+    public void setCompressCacheSize(int count) {
 		checkDbIsOpen();
 		prefixCache.setLimit(count);
 	}

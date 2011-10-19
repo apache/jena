@@ -17,30 +17,39 @@ public class TestCapabilities extends GraphTestBase
     {
     protected final class AllFalse implements Capabilities
         {
+        @Override
         public boolean sizeAccurate()
             { return false; }
 
+        @Override
         public boolean addAllowed()
             { return false; }
 
+        @Override
         public boolean addAllowed( boolean everyTriple )
             { return false; }
 
+        @Override
         public boolean deleteAllowed()
             { return false; }
 
+        @Override
         public boolean deleteAllowed( boolean everyTriple )
             { return false; }
 
+        @Override
         public boolean iteratorRemoveAllowed()
             { return false; }
 
+        @Override
         public boolean canBeEmpty()
             { return false; }
 
+        @Override
         public boolean findContractSafe()
             { return false; }
 
+        @Override
         public boolean handlesLiteralTyping()
             { return false; }
         }

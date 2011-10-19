@@ -253,6 +253,7 @@ public interface Model
      * representation for this java class. No language tag is supplied.
      * @param value the literal value to encapsulate
      */
+    @Override
     public Literal createTypedLiteral(Object value);
 
 	/**
@@ -858,7 +859,8 @@ public interface Model
 	 * @return true if <code>m</code> shares a graph object with this model
      * @see #isIsomorphicWith(Model)
 	 */
-	public boolean equals(Object m);
+	@Override
+    public boolean equals(Object m);
 
 	/** Begin a new transation.
 	 *

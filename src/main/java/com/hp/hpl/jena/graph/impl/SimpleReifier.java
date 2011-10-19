@@ -51,25 +51,31 @@ public class SimpleReifier implements Reifier
         this.style = style; 
         }
         
+    @Override
     public ReificationStyle getStyle()
         { return style; }
             
     /** return the parent graph we are bound to */
+    @Override
     public Graph getParentGraph()
         { return parent; }
         
     /** return the triple bound to _n_ */
+    @Override
     public Triple getTriple( Node n )        
         { return tripleMap.getTriple( n ); }
         
     /** true iff there is a triple bound to _n_ */
+    @Override
     public boolean hasTriple( Node n )
     	{ return getTriple( n ) != null; }
         
     /** */
+    @Override
     public ExtendedIterator<Node> allNodes()
         { return tripleMap.tagIterator(); }
         
+    @Override
     public ExtendedIterator<Node> allNodes( Triple t )
         { return tripleMap.tagIterator( t ); }
 
@@ -83,6 +89,7 @@ public class SimpleReifier implements Reifier
         reifiy <code>toReify</code> with tag <code>tag</code>. If a different triple is 
         already reified under <code>tag</code>, throw an AlreadyReifiedException.
     */
+    @Override
     public Node reifyAs( Node tag, Triple toReify )
     	{
         Triple existing = tripleMap.getTriple( tag );
@@ -115,6 +122,7 @@ public class SimpleReifier implements Reifier
         If n is bound to the triple t, remove that triple. If we're not concealing reification 
         quadlets, we need to remove them from the parent graph too.
     */    	
+    @Override
     public void remove( Node n, Triple t )
         {
         Triple x = tripleMap.getTriple( n );
@@ -123,12 +131,15 @@ public class SimpleReifier implements Reifier
             if (!concealing) parentRemoveQuad( n, t ); }
         }
 
+    @Override
     public void remove( Triple t )
         { tripleMap.removeTriple( t ); }
             
+    @Override
     public boolean hasTriple( Triple t )
         { return tripleMap.hasTriple( t ); }
           
+    @Override
     public boolean handledAdd( Triple fragment )
         {
         if (intercepting)
@@ -174,6 +185,7 @@ public class SimpleReifier implements Reifier
         if (t != null) tripleMap.putTriple( tag, t );
         }
 
+    @Override
     public boolean handledRemove( Triple fragment )
         {
         if (intercepting)
@@ -206,6 +218,7 @@ public class SimpleReifier implements Reifier
             tripleMap.putTriple( tag, complete );
         }        
     
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         {
         return matchesReification( m ) 
@@ -231,12 +244,15 @@ public class SimpleReifier implements Reifier
     private boolean matchesStatement( Node x )
         { return !x.isConcrete() || x.equals( RDF.Nodes.Statement ); }
     
+    @Override
     public ExtendedIterator<Triple> findExposed( TripleMatch m )
         { return findEither( m, false ); }
     
+    @Override
     public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden )
         { return showHidden == concealing ? find( m ) : Triple.None; }
         
+    @Override
     public int size()
         { return concealing ? 0 : tripleMap.size() + fragmentsMap.size(); }
     
@@ -271,6 +287,7 @@ public class SimpleReifier implements Reifier
     /**
          Close this reifier - discard (big) resources.
     */
+    @Override
     public void close()
         {
         fragmentsMap = null;

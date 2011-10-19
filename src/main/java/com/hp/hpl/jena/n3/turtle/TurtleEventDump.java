@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.Triple;
 public class TurtleEventDump implements TurtleEventHandler
 {
     
+    @Override
     public void triple(int line, int col, Triple triple)
     {
         System.out.print(mark(line, col)) ;
@@ -19,12 +20,14 @@ public class TurtleEventDump implements TurtleEventHandler
         System.out.println(triple.toString()) ;
     }
     
+    @Override
     public void startFormula(int line, int col)
     {
         System.out.print(mark(line, col)) ;
         System.out.println("{") ;
     }
     
+    @Override
     public void endFormula(int line, int col)
     {
         System.out.print(mark(line, col)) ;
@@ -33,6 +36,7 @@ public class TurtleEventDump implements TurtleEventHandler
 
     private String mark(int line, int col) { return "["+line+", "+col+"]" ; }
 
+    @Override
     public void prefix(int line, int col, String prefix, String iri)
     { 
         System.out.print(mark(line, col)) ;

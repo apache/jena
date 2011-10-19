@@ -106,6 +106,7 @@ public class LocatorFile implements Locator
         return f.exists() ;
     }
     
+    @Override
     public TypedStream open(String filenameOrURI)
     {
         // Worry about %20.
@@ -143,6 +144,7 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
+    @Override
     public String getName()
     {
         String tmp = "LocatorFile" ;

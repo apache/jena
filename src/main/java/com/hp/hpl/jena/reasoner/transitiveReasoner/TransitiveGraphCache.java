@@ -355,6 +355,7 @@ public class TransitiveGraphCache implements Finder {
             members = new HashSet<GraphNode>();
             members.add(endN);
             startN.visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>() {
+                @Override
                 public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> members, GraphNode endN) {
                     if (endN.pathTo(node)) members.add( node );
                     return null;
@@ -462,6 +463,7 @@ public class TransitiveGraphCache implements Finder {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
+    @Override
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         Node p = pattern.getPredicate();
         
@@ -481,6 +483,7 @@ public class TransitiveGraphCache implements Finder {
     /**
      * Return true if the given pattern occurs somewhere in the find sequence.
      */
+    @Override
     public boolean contains(TriplePattern pattern) {
         ClosableIterator<Triple> it = find(pattern);
         boolean result = it.hasNext();
@@ -525,6 +528,7 @@ public class TransitiveGraphCache implements Finder {
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
      */
+    @Override
     public ExtendedIterator<Triple> find(TriplePattern pattern) {
     	if (deletesPending != null && deletesPending.size() > 0) {
     		processDeletes();

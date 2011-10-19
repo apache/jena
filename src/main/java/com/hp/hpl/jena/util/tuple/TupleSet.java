@@ -37,6 +37,7 @@ public class TupleSet implements Iterator<List<TupleItem>>
             in = (BufferedReader)r;
     }
 
+    @Override
     public boolean hasNext()
     {
         if ( finished ) return false ;
@@ -46,6 +47,7 @@ public class TupleSet implements Iterator<List<TupleItem>>
         return current != null ;
     }
 
+    @Override
     public List<TupleItem> next()
     {
         if ( hasNext() )
@@ -59,6 +61,7 @@ public class TupleSet implements Iterator<List<TupleItem>>
     }
 
 
+    @Override
     public void remove()
     {
         throw new java.lang.UnsupportedOperationException("TupleSet.remove") ;

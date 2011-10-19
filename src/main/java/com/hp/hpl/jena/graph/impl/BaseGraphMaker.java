@@ -30,6 +30,7 @@ public abstract class BaseGraphMaker implements GraphMaker
     /**
         Answer our reification style.
     */
+    @Override
     public ReificationStyle getReificationStyle()
         { return style; }
         
@@ -37,6 +38,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         Answer the default graph for this maker. If we haven't already made it, make it
         now.
      */
+    @Override
     public Graph getGraph()
         { 
         if (defaultGraph == null) { defaultGraph = createGraph(); }
@@ -45,6 +47,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         
     private Graph defaultGraph;
     
+    @Override
     public Graph openGraph()
         { if (defaultGraph == null) throw new DoesNotExistException
             ( "no default graph in this GraphMaker [" + this.getClass() + "]" ); 
@@ -53,6 +56,7 @@ public abstract class BaseGraphMaker implements GraphMaker
     /**
         Make a fresh anonymous graph.
     */
+    @Override
     public Graph createGraph()
         { return createGraph( "anon_" + counter++ + "", false ); }
          
@@ -60,6 +64,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         A non-strict create.
       	@see com.hp.hpl.jena.graph.GraphMaker#createGraph(java.lang.String)
       */
+    @Override
     public Graph createGraph(String name)
         { return createGraph( name, false ); }
         
@@ -67,6 +72,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         A non-strict open.
      	@see com.hp.hpl.jena.graph.GraphMaker#openGraph(java.lang.String)
      */
+    @Override
     public Graph openGraph( String name )
         { return openGraph( name, false ); }
 

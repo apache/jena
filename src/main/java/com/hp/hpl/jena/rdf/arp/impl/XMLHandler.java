@@ -515,22 +515,28 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     final public static StatementHandler nullStatementHandler =
     new StatementHandler() {
+        @Override
         public void statement(AResource s, AResource p, AResource o) {
         }
+        @Override
         public void statement(AResource s, AResource p, ALiteral o) {
         }
     };
     final public static ExtendedHandler nullScopeHandler = new ExtendedHandler() {
         
+        @Override
         public void endBNodeScope(AResource bnode) {
         }
 
+        @Override
         public void startRDF() {
         }
 
+        @Override
         public void endRDF() {
         }
 
+        @Override
         public boolean discardNodesWithNodeID() {
             return true;
         }

@@ -75,6 +75,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * information supplied at construction time. May be null if there are
      * no useful capabilities registered.
      */
+    @Override
     public Model getReasonerCapabilities() {
         if (factory != null) {
             return factory.getCapabilities();
@@ -89,6 +90,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * @param configSpec a Model into which the configuration information should be placed
      * @param base the Resource to which the configuration parameters should be added.
      */
+    @Override
     public void addDescription(Model configSpec, Resource base) {
         // No configuration
     }
@@ -100,6 +102,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * this is part of the SPI rather than API
      * @return true if the given property is handled specially by the reasoner.
      */
+    @Override
     public boolean supportsProperty(Property property) {
         if (factory == null) return false;
         Model caps = factory.getCapabilities();
@@ -111,6 +114,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         InfGraph graph = new BasicForwardRuleInfGraph(this, rules, null, tbox);
         return new BasicForwardRuleReasoner(rules, graph, factory);
@@ -120,6 +124,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Precompute the implications of a schema Model. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
         InfGraph graph = new BasicForwardRuleInfGraph(this, rules, null, tbox.getGraph());
         return new BasicForwardRuleReasoner(rules, graph, factory);
@@ -136,6 +141,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         BasicForwardRuleInfGraph graph = new BasicForwardRuleInfGraph(this, rules, schemaGraph);
         graph.setDerivationLogging(recordDerivations);
@@ -160,6 +166,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * <p>
      * Default - false.
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         recordDerivations = logOn;
     }
@@ -184,6 +191,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      */
+    @Override
     public void setParameter(Property parameter, Object value) {
         if (parameter.equals(ReasonerVocabulary.PROPderivationLogging)) {
             recordDerivations = Util.convertBooleanPredicateArg(parameter, value);
@@ -199,6 +207,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * Return the Jena Graph Capabilties that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Override
     public Capabilities getGraphCapabilities() {
         if (capabilities == null) {
             capabilities = new BaseInfGraph.InfCapabilities();

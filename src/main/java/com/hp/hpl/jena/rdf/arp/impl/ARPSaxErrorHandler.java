@@ -23,14 +23,17 @@ public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandl
         this.errorHandler = errorHandler;
     }
     
+    @Override
     public void error(SAXParseException e) throws SAXException {
         errorHandler.error(e);
     }
     
+    @Override
     public void warning(SAXParseException e) throws SAXException {
         errorHandler.warning(e);
     }
     
+    @Override
     public void fatalError(SAXParseException e) throws SAXException {
         errorHandler.fatalError(e);
     }

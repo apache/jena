@@ -192,15 +192,18 @@ public class ExceptionTests
 	
 
 
-	public void warning(Exception e) {
+	@Override
+    public void warning(Exception e) {
 		throw new JenaException(e);
 	}
 
-	public void error(Exception e) {
+	@Override
+    public void error(Exception e) {
 		throw new JenaException(e);
 	}
 
-	public void fatalError(Exception e) {
+	@Override
+    public void fatalError(Exception e) {
 	}
 
 }

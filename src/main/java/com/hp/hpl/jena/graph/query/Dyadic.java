@@ -61,16 +61,19 @@ public abstract class Dyadic extends Application
         throw new JenaException( "not Boolean: " + x );
         }
     
+    @Override
     public Valuator prepare( VariableIndexes vi )
         {
         final Valuator l = L.prepare( vi ), r = R.prepare( vi );
         return new Valuator()
             {
+            @Override
             public boolean evalBool( IndexValues iv)
                 {
                 return ((Boolean) evalObject( iv )).booleanValue();
                 }
     
+            @Override
             public Object evalObject( IndexValues iv )
                 {
                 return Dyadic.this.evalObject( l.evalObject( iv ), r.evalObject( iv ) );

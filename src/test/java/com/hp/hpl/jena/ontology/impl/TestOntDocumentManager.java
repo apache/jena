@@ -525,6 +525,7 @@ public class TestOntDocumentManager
         assertNull( o1.getReadFailureHandler() );
 
         OntDocumentManager.ReadFailureHandler rfh = new OntDocumentManager.ReadFailureHandler() {
+            @Override
             public void handleFailedRead( String url, Model model, Exception e ) {/**/}};
 
         o1.setReadFailureHandler( rfh );
@@ -664,6 +665,7 @@ public class TestOntDocumentManager
         implements ReadFailureHandler
     {
         public boolean m_seen = false;
+        @Override
         public void handleFailedRead( String url, Model model, Exception e ) {
             m_seen = true;
             log.debug( "Seeing failed read of " + url, e );
@@ -682,10 +684,12 @@ public class TestOntDocumentManager
             m_renaming = renaming;
         }
 
+        @Override
         public void afterRead( Model model, String source, OntDocumentManager odm ) {
             m_after++;
         }
 
+        @Override
         public String beforeRead( Model model, String source, OntDocumentManager odm ) {
             if (m_renaming) {
                 // local rewrite of the source file, which could be used e.g. to

@@ -27,6 +27,7 @@ public class ResIteratorImpl extends WrappedIterator<Resource> implements ResIte
     public ResIteratorImpl( Iterator<Resource> iter )
         { super( iter ); }
 
+    @Override
     public Resource nextResource() {
         return next();
     }

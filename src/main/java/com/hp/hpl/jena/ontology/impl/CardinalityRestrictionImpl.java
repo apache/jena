@@ -106,6 +106,7 @@ public class CardinalityRestrictionImpl
      * @param cardinality The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
+    @Override
     public void setCardinality( int cardinality ) {
         setPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
@@ -115,6 +116,7 @@ public class CardinalityRestrictionImpl
      * @return The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
+    @Override
     public int getCardinality() {
         return objectAsInt( getProfile().CARDINALITY(), "CARDINALITY" );
     }
@@ -125,6 +127,7 @@ public class CardinalityRestrictionImpl
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
      * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasCardinality( int cardinality ) {
         return hasPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
@@ -135,6 +138,7 @@ public class CardinalityRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param cardinality A cardinality value to be removed from this restriction
      */
+    @Override
     public void removeCardinality( int cardinality ) {
         removePropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }

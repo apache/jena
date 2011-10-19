@@ -32,7 +32,8 @@ public class ModelQueryUtil
         ( final Model model, Model query, Resource [] variables )
         {
         Map1<Domain, List<? extends RDFNode>> mm = new Map1<Domain, List<? extends RDFNode>>()
-            { public List<? extends RDFNode> map1( Domain x ) { return mappy( model, x ); } };
+            { @Override
+            public List<? extends RDFNode> map1( Domain x ) { return mappy( model, x ); } };
         QueryMapper qm = new QueryMapper( query, variables );
         return
             qm.getQuery().executeBindings( model.getGraph(), qm.getVariables() )

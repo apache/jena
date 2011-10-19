@@ -209,23 +209,28 @@ public class ResourceFactory {
         Impl() {
         }
 
+        @Override
         public Resource createResource() {
             return new ResourceImpl();
         }
 
+        @Override
         public Resource createResource(String uriref) {
             return new ResourceImpl(uriref);
         }
         
+        @Override
         public Literal createPlainLiteral( String string ) {
             return new LiteralImpl(  Node.createLiteral( string, "", false ), null );
         }
 
+        @Override
         public Literal createTypedLiteral( String string , RDFDatatype dType)
         {
             return new LiteralImpl(Node.createLiteral(string, "", dType), null) ;
         }
 
+        @Override
         public Literal createTypedLiteral( Object value ) {
             LiteralLabel ll = null;
             if (value instanceof Calendar) {
@@ -237,14 +242,17 @@ public class ResourceFactory {
             return new LiteralImpl(Node.createLiteral( ll ), null) ;
         }
         
+        @Override
         public Property createProperty(String uriref) {
             return new PropertyImpl(uriref);
         }
 
+        @Override
         public Property createProperty(String namespace, String localName) {
             return new PropertyImpl(namespace, localName);
         }
 
+        @Override
         public Statement createStatement(
             Resource subject,
             Property predicate,

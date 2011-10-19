@@ -100,6 +100,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
 
     /** Notify this context that a brach was suspended awaiting futher
      *  results from the given generator. */
+    @Override
     public void notifyBlockedOn(ConsumerChoicePointFrame ccp) {
         choicePoints.add(ccp);
         checkReadyNeeded = true;
@@ -109,6 +110,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * Notify this context that the given choice point has terminated
      * and can be remove from the wait list.
      */
+    @Override
     public void notifyFinished(ConsumerChoicePointFrame ccp) {
         choicePoints.remove(ccp);
         checkReadyNeeded = true;
@@ -118,6 +120,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * Directly set that this generator is ready (because the generating
      * for one of its generatingCPs has produced new results).
      */
+    @Override
     public void setReady(ConsumerChoicePointFrame ccp) {
         nextToRun = ccp;
         isReady = true;
@@ -128,6 +131,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * Return true if the iterator is ready to be scheduled (i.e. it is not
      * known to be complete and not known to be waiting for a dependent generator).
      */
+    @Override
     public boolean isReady() {
         if (checkReadyNeeded) {
             isReady = false;
@@ -151,6 +155,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     /**
      * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
      */
+    @Override
     public synchronized void close() {
         if (interpreter != null) {
             synchronized (interpreter.getEngine()) {
@@ -176,6 +181,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     /**
      * @see java.util.Iterator#hasNext()
      */
+    @Override
     public boolean hasNext() {
         checkCME();
         if (!lookaheadValid) moveForward();
@@ -185,6 +191,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     /**
      * @see java.util.Iterator#next()
      */
+    @Override
     public Triple next() {
         checkCME();
         if (!lookaheadValid) moveForward();
@@ -218,6 +225,7 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
     /**
      * @see java.util.Iterator#remove()
      */
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

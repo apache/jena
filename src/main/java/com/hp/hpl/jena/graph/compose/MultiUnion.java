@@ -211,6 +211,7 @@ public class MultiUnion extends Polyadic
         public MultiUnionStatisticsHandler( MultiUnion mu )
             { this.mu = mu; }
     
+        @Override
         public long getStatistic( Node S, Node P, Node O )
             {
             long result = 0;

@@ -242,6 +242,7 @@ public class Functor implements ClauseEntry {
      * Compare Functors, taking into account variable indices.
      * The equality function ignores differences between variables.
      */
+    @Override
     public boolean sameAs(Object o) {
         if (o instanceof Functor) {
             Functor f2 = (Functor)o;

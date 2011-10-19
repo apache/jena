@@ -47,14 +47,17 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
             final Graph schema = loadSchema( root, a );
             return new ReasonerFactory()
                 {
+                @Override
                 public Reasoner create( Resource configuration )
                     {
                     return rf.create( configuration ).bindSchema( schema );
                     }
 
+                @Override
                 public Model getCapabilities()
                     { return rf.getCapabilities(); }
 
+                @Override
                 public String getURI()
                     { return rf.getURI(); }
                 };
@@ -85,6 +88,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
                 {
                 return new ReasonerFactory()
                     {
+                    @Override
                     public Reasoner create( Resource configuration )
                         {
                         GenericRuleReasoner result = (GenericRuleReasoner) r.create( configuration );
@@ -92,9 +96,11 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
                         return result;
                         }
 
+                    @Override
                     public Model getCapabilities()
                         { return r.getCapabilities(); }
 
+                    @Override
                     public String getURI()
                         { return r.getURI(); }
                     };

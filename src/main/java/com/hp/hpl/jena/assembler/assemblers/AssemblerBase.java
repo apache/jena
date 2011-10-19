@@ -24,18 +24,22 @@ public abstract class AssemblerBase implements Assembler
         public MapObjectToContent( Assembler a ) 
             { this.a = a; }
         
+        @Override
         public Content map1( Statement o )
             { return (Content) a.open( getResource( o ) ); }
         }
 
     protected static final Map1<Statement, RDFNode> getObject = Statement.Util.getObject;
         
+    @Override
     public final Object open( Resource root )
         { return open( this, root ); }
 
+    @Override
     public final Object open( Assembler a, Resource root )
         { return open( a, root, Mode.DEFAULT ); }
 
+    @Override
     public abstract Object open( Assembler a, Resource root, Mode mode );
 
     protected static Resource getUniqueResource( Resource root, Property property )
@@ -66,9 +70,11 @@ public abstract class AssemblerBase implements Assembler
             throw new CannotConstructException( this.getClass(), root, type );
         }
 
+    @Override
     public Model openModel( Resource root, Mode mode )
         { return (Model) open( this, root, mode ); }
     
+    @Override
     public Model openModel( Resource root )
         { return openModel( root, Mode.DEFAULT ); }
 

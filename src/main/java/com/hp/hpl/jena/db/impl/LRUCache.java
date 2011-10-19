@@ -53,7 +53,8 @@ public class LRUCache<K,T> implements ICache<K,T>
 	protected int maxCount;
 	protected int count;
 
-	public T get(K id) {
+	@Override
+    public T get(K id) {
 		return keyCache.get(id);
 	}
 	
@@ -62,7 +63,8 @@ public class LRUCache<K,T> implements ICache<K,T>
 	}
 
 
-	public void put(K id, T val) {
+	@Override
+    public void put(K id, T val) {
 		synchronized (this) {
 			int curSize = keyCache.size();
 			keyCache.put(id, val);
@@ -94,11 +96,13 @@ public class LRUCache<K,T> implements ICache<K,T>
     	count = 0;
     }
     
-	public void setLimit(int max) {
+	@Override
+    public void setLimit(int max) {
 		resize(max);
 	}
 
-	public int getLimit() {
+	@Override
+    public int getLimit() {
 		return maxCount;
 	}
 

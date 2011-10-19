@@ -14,9 +14,13 @@ import com.hp.hpl.jena.graph.Triple;
  */
 public class TurtleEventNull implements TurtleEventHandler
 {
+    @Override
     public void triple(int line, int col, Triple triple)  {}
+    @Override
     public void startFormula(int line, int col)           {}
+    @Override
     public void endFormula(int line, int col)             {}
+    @Override
     public void prefix(int line, int col, String prefix, String iri) {}
 }
 

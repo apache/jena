@@ -19,36 +19,47 @@ public class RecordingListener implements GraphListener
     {
     public List<Object> history = new ArrayList<Object>();
     
+    @Override
     public void notifyAddTriple( Graph g, Triple t )
         { record( "add", g, t ); }
         
+    @Override
     public void notifyAddArray( Graph g, Triple [] triples )
         { record( "add[]", g, triples ); }
         
+    @Override
     public void notifyAddList( Graph g, List<Triple> triples )
         { record( "addList", g, triples ); }
         
+    @Override
     public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { record( "addIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
+    @Override
     public void notifyAddGraph( Graph g, Graph added )
         { record( "addGraph", g, added ); }
         
+    @Override
     public void notifyDeleteTriple( Graph g, Triple t )
         { record( "delete", g, t ); }
         
+    @Override
     public void notifyDeleteArray( Graph g, Triple [] triples )
         { record( "delete[]", g, triples ); }
         
+    @Override
     public void notifyDeleteList( Graph g, List<Triple> triples )
         { record( "deleteList", g, triples ); }
         
+    @Override
     public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { record( "deleteIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
+    @Override
     public void notifyDeleteGraph( Graph g, Graph removed )
         { record( "deleteGraph", g, removed ); }
     
+    @Override
     public void notifyEvent( Graph source, Object event )
         { record( "someEvent", source, event ); }
         

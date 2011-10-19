@@ -111,6 +111,7 @@ public abstract class NodeToTriplesMapBase
 
             class NotifyMe implements HashCommon.NotifyEmpty
                 {
+                @Override
                 public void emptied()
                     { nodes.remove(); }
                 }

@@ -30,39 +30,50 @@ public class ModelListenerAdapter implements GraphListener
     public ModelListenerAdapter( ModelCom m, ModelChangedListener L )
         { this.m = m; this.L = L; }
 
+    @Override
     public void notifyAddArray( Graph graph, Triple [] triples )
         { L.addedStatements( m.asStatements( triples ) ); }
         
+    @Override
     public void notifyDeleteArray( Graph g, Triple [] triples )
         { L.removedStatements( m.asStatements( triples ) ); }
         
+    @Override
     public void notifyAddTriple( Graph g, Triple t )
         { L.addedStatement( m.asStatement( t ) ); }
 
+    @Override
     public void notifyAddList( Graph g, List<Triple> triples )
         { L.addedStatements( m.asStatements( triples ) ); }  
               
+    @Override
     public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { L.addedStatements( m.asStatements( it ) ); }
         
+    @Override
     public void notifyAddGraph( Graph g, Graph added )
         { L.addedStatements( m.asModel( added ) ); }
         
+    @Override
     public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { L.removedStatements( m.asStatements( it ) ); }
         
+    @Override
     public void notifyDeleteTriple( Graph g, Triple t )
         { L.removedStatement( m.asStatement( t ) ); }
         
     public void notifyAddIterator( Graph g, List<Triple> triples )
         { L.addedStatements( m.asStatements( triples ) ); }
         
+    @Override
     public void notifyDeleteList( Graph g, List<Triple> triples )
         { L.removedStatements( m.asStatements( triples ) ); }
 
+    @Override
     public void notifyDeleteGraph( Graph g, Graph removed )
         { L.removedStatements( m.asModel( removed ) ); }
     
+    @Override
     public void notifyEvent( Graph g, Object event )
         { L.notifyEvent( m, event ); }
         

@@ -21,6 +21,7 @@ public abstract class StatementBoundaryBase implements StatementBoundary
          definition is !continueWith(s). <i>exactly one</code> of these two methods
          must be defined.
     */
+    @Override
     public boolean stopAt( Statement s ) 
         { return !continueWith( s ); }
 
@@ -35,6 +36,7 @@ public abstract class StatementBoundaryBase implements StatementBoundary
     /**
          Expresses this StatementBoundary as a TripleBoundary.
     */
+    @Override
     public final TripleBoundary asTripleBoundary( Model m ) 
         { return convert( m, this ); }
 
@@ -44,7 +46,8 @@ public abstract class StatementBoundaryBase implements StatementBoundary
     public static TripleBoundary convert( final Model s, final StatementBoundary b )
         {
         return new TripleBoundary()
-            { public boolean stopAt( Triple t ) { return b.stopAt( s.asStatement( t ) ); } };
+            { @Override
+            public boolean stopAt( Triple t ) { return b.stopAt( s.asStatement( t ) ); } };
         }
     }
 

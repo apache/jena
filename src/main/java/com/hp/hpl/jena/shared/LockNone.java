@@ -8,10 +8,12 @@ package com.hp.hpl.jena.shared;
 
 public class LockNone implements Lock 
 {
+    @Override
     public void enterCriticalSection(boolean readLockRequested)
     {
     }
 
+    @Override
     public void leaveCriticalSection()
     {
     }

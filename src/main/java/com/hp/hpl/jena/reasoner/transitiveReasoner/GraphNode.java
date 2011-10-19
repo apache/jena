@@ -251,7 +251,8 @@ class GraphNode {
         Set<GraphNode> sc = new HashSet<GraphNode>(target.succClosed);
         sc.add(target); 
 		visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>() {
-			public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, GraphNode target) {
+			@Override
+            public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, GraphNode target) {
 				// Add closure
 				node.succClosed.addAll( sc );
 				// Scan for redundant links
@@ -283,7 +284,8 @@ class GraphNode {
 		visited.add(this);
 		// Scan predecessors not including ourselves
 		doVisitPredecessors(new Visitor<Set<GraphNode>, Object>() {
-			public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, Object ignored ) {
+			@Override
+            public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> sc, Object ignored ) {
 				// Add closure
 				node.succClosed.addAll(sc);
 				// Scan for redundant links
@@ -359,6 +361,7 @@ class GraphNode {
      */
     private void relocateAllRefTo(GraphNode lead, Set<GraphNode> done) {
         visitPredecessors(new Visitor<Set<GraphNode>, GraphNode>(){
+            @Override
             public List<GraphNode> visit(GraphNode node, GraphNode processing, Set<GraphNode> done, GraphNode leadIn) {
                 if (done.add( node )) {
                     Set<GraphNode> members = leadIn.siblings();

@@ -28,6 +28,7 @@ public abstract class JenaReaderBase implements RDFReader
 	
 	public JenaReaderBase() {}
 
+    @Override
     final
     public void read(Model model, Reader r, String base) 
 	{ 
@@ -35,6 +36,7 @@ public abstract class JenaReaderBase implements RDFReader
         readImpl(model, r, base) ;
 	}
 
+    @Override
     final
 	public void read(Model model, java.lang.String url) 
 	{
@@ -62,12 +64,14 @@ public abstract class JenaReaderBase implements RDFReader
         }
 	}
 
+    @Override
     final
     public void read(Model model, InputStream in, String base) 
 	{
         readImpl(model, FileUtils.asBufferedUTF8(in), base) ;
     }
 	
+    @Override
     final
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
 	{
@@ -76,6 +80,7 @@ public abstract class JenaReaderBase implements RDFReader
 		return old ;
 	}
     
+    @Override
     final
 	public Object setProperty(String propName, Object propValue)
 	{ return null ; }

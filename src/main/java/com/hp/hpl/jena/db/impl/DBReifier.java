@@ -59,9 +59,11 @@ public class DBReifier implements Reifier
     /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#getParentGraph()
 	 */
-	public Graph getParentGraph() { 
+	@Override
+    public Graph getParentGraph() { 
     	return m_parent; }
         
+    @Override
     public ReificationStyle getStyle()
         { return m_style; }
 
@@ -74,15 +76,19 @@ public class DBReifier implements Reifier
 		return m_hiddenTriples;
 	}
     
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         { return getReificationTriples().find( m ); }
     
+    @Override
     public ExtendedIterator<Triple> findExposed( TripleMatch m )
         { return getReificationTriples().find( m ); }
     
+    @Override
     public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden )
         { return showHidden == m_style.conceals() ? getReificationTriples().find( m ) : Triple.None; }
 
+    @Override
     public int size() 
         { return m_style.conceals() ? 0 : getReificationTriples().size(); }
 
@@ -96,7 +102,8 @@ public class DBReifier implements Reifier
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#reifyAs(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	 */
-	public Node reifyAs( Node n, Triple t ) {
+	@Override
+    public Node reifyAs( Node n, Triple t ) {
 		m_reifier.add( n, t, newComplete() );
 		return n;
 	}
@@ -104,21 +111,24 @@ public class DBReifier implements Reifier
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Node)
 	 */
-	public boolean hasTriple(Node n) {
+	@Override
+    public boolean hasTriple(Node n) {
 		return m_reifier.findReifiedTriple( n, newComplete() ) != null;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean hasTriple( Triple t ) {
+	@Override
+    public boolean hasTriple( Triple t ) {
 		return m_reifier.findReifiedNodes(t, newComplete() ).hasNext();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#allNodes()
 	 */
-	public ExtendedIterator<Node> allNodes() {
+	@Override
+    public ExtendedIterator<Node> allNodes() {
 		return m_reifier.findReifiedNodes( null, newComplete() );
 	}
     
@@ -126,27 +136,31 @@ public class DBReifier implements Reifier
         All the nodes reifying triple <code>t</code>, using the matching code
         from SimpleReifier.
     */
+    @Override
     public ExtendedIterator<Node> allNodes( Triple t )
         { return m_reifier.findReifiedNodes( t, newComplete() ); }
         
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	 */
-	public void remove( Node n, Triple t ) {
+	@Override
+    public void remove( Node n, Triple t ) {
 		m_reifier.delete( n, t, newComplete() );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void remove( Triple t ) {
+	@Override
+    public void remove( Triple t ) {
 		m_reifier.delete(null,t, newComplete() );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#handledAdd(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean handledAdd(Triple t) {
+	@Override
+    public boolean handledAdd(Triple t) {
 		SpecializedGraph.CompletionFlag complete = newComplete();
 		m_reifier.add(t, complete);
 		return complete.isDone();
@@ -155,7 +169,8 @@ public class DBReifier implements Reifier
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#handledRemove(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean handledRemove(Triple t) {
+	@Override
+    public boolean handledRemove(Triple t) {
 		SpecializedGraph.CompletionFlag complete = newComplete();
 		m_reifier.delete(t, complete);
 		return complete.isDone();
@@ -164,10 +179,12 @@ public class DBReifier implements Reifier
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.GetTriple#getTriple(com.hp.hpl.jena.graph.Node)
 	 */
-	public Triple getTriple(Node n) {
+	@Override
+    public Triple getTriple(Node n) {
 		return m_reifier.findReifiedTriple(n, newComplete() );
 	}
     
+    @Override
     public void close() {
         // TODO anything useful for a close operation
     }

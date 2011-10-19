@@ -14,25 +14,38 @@ import java.util.List;
 */
 public class SimpleGenerator implements RegexpTreeGenerator
     {
+    @Override
     public RegexpTree getAnySingle() { return RegexpTree.ANY; }
+    @Override
     public RegexpTree getStartOfLine() { return RegexpTree.SOL; }
+    @Override
     public RegexpTree getEndOfLine() { return RegexpTree.EOL; }
+    @Override
     public RegexpTree getNothing() { return RegexpTree.NON; }
     
+    @Override
     public RegexpTree getText( char ch ) { return Text.create( ch ); }
     
+    @Override
     public RegexpTree getZeroOrMore( RegexpTree d ) { return new ZeroOrMore( d ); }
+    @Override
     public RegexpTree getOneOrMore( RegexpTree d ) { return new OneOrMore( d ); }
+    @Override
     public RegexpTree getOptional( RegexpTree d ) { return new Optional( d ); }
     
+    @Override
     public RegexpTree getSequence( List<? extends RegexpTree> operands ) { return Sequence.create( operands ); }
+    @Override
     public RegexpTree getAlternatives( List<? extends RegexpTree> operands ) { return Alternatives.create( operands ); }
     
+    @Override
     public RegexpTree getBackReference( int n ) { return new BackReference( n ); }
     
+    @Override
     public RegexpTree getClass( String chars, boolean reject ) 
         { return reject ? (RegexpTree) new NoneOf( chars ) : new AnyOf( chars ); }
     
+    @Override
     public RegexpTree getParen( RegexpTree operand, int index ) 
         { return new Paren( operand, index ); }
     }

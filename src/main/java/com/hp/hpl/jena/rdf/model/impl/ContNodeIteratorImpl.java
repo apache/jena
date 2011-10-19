@@ -45,6 +45,7 @@ public class ContNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeI
     @Override public boolean hasNext()
         { return iterator.hasNext(); }
     
+    @Override
     public RDFNode nextNode() throws NoSuchElementException 
         { return next(); }
             

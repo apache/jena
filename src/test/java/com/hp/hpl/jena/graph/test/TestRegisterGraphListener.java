@@ -53,22 +53,33 @@ public class TestRegisterGraphListener extends GraphTestBase {
 			if (inPlay && !notified) fail("listener that was in-play was not notified of adding triple.");
 		}
 		
+        @Override
         final public void notifyAddTriple(Graph g, Triple t) {
 			notified = true;
 			doSomeDamage();
 		}
 		abstract void doSomeDamage();
 		
-		public void notifyAddArray(Graph g, Triple[] triples) {}
-		public void notifyAddGraph(Graph g, Graph added) {}
-		public void notifyAddIterator(Graph g, Iterator<Triple> it) {}
-		public void notifyAddList(Graph g, List<Triple> triples) {}
-		public void notifyDeleteArray(Graph g, Triple[] triples) {}
-		public void notifyDeleteGraph(Graph g, Graph removed) {}
-		public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {}
-		public void notifyDeleteList(Graph g, List<Triple> L) {}
-		public void notifyDeleteTriple(Graph g, Triple t) {}
-		public void notifyEvent(Graph source, Object value) {}
+		@Override
+        public void notifyAddArray(Graph g, Triple[] triples) {}
+		@Override
+        public void notifyAddGraph(Graph g, Graph added) {}
+		@Override
+        public void notifyAddIterator(Graph g, Iterator<Triple> it) {}
+		@Override
+        public void notifyAddList(Graph g, List<Triple> triples) {}
+		@Override
+        public void notifyDeleteArray(Graph g, Triple[] triples) {}
+		@Override
+        public void notifyDeleteGraph(Graph g, Graph removed) {}
+		@Override
+        public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {}
+		@Override
+        public void notifyDeleteList(Graph g, List<Triple> L) {}
+		@Override
+        public void notifyDeleteTriple(Graph g, Triple t) {}
+		@Override
+        public void notifyEvent(Graph source, Object value) {}
 		
 	}
 	public TestRegisterGraphListener(String name) {

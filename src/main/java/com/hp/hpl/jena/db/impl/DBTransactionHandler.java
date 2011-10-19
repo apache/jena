@@ -30,19 +30,23 @@ public class DBTransactionHandler extends TransactionHandlerBase {
 		m_driver = driver;
 	}
 
-	public boolean transactionsSupported() {
+	@Override
+    public boolean transactionsSupported() {
 		return m_driver.transactionsSupported();
 	}
 
-	public void begin() {
+	@Override
+    public void begin() {
 		m_driver.begin(); 
 	}
 
-	public void abort() {
+	@Override
+    public void abort() {
 		m_driver.abort();
 	}
 
-	public void commit() {
+	@Override
+    public void commit() {
 		m_driver.commit();
 	}
 

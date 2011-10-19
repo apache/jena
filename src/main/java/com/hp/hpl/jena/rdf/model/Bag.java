@@ -61,6 +61,7 @@ public interface Bag extends Container {
      * @param s The statement to be removed from the model.
      * @return this container to enable cascading calls.
      */
+    @Override
     public Container remove(Statement s);
 
     /** Remove a value from the container.

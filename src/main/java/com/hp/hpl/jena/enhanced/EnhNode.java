@@ -40,6 +40,7 @@ public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
      * Answer the graph node that this enhanced node wraps
      * @return A plain node
      */
+    @Override
     public Node asNode() {
         return node;
     }

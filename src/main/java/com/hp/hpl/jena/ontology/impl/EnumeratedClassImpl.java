@@ -110,6 +110,7 @@ public class EnumeratedClassImpl
      * @param en A list of individuals that defines the class extension for this class
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void setOneOf( RDFList en ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", en );
     }
@@ -119,6 +120,7 @@ public class EnumeratedClassImpl
      * @param res An individual to add to the enumeration
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addOneOf( Resource res ) {
         addListPropertyValue( getProfile().ONE_OF(), "ONE_OF", res );
     }
@@ -129,6 +131,7 @@ public class EnumeratedClassImpl
      * @param individuals An iterator over individuals
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addOneOf( Iterator<? extends Resource> individuals ) {
         while( individuals.hasNext() ) {
             addOneOf( individuals.next() );
@@ -140,6 +143,7 @@ public class EnumeratedClassImpl
      * @return A list of individuals that is the class extension
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public RDFList getOneOf() {
         return objectAs( getProfile().ONE_OF(), "ONE_OF", RDFList.class );
     }
@@ -150,6 +154,7 @@ public class EnumeratedClassImpl
      * @return An iterator over the individuals in the class extension
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<? extends OntResource> listOneOf() {
         return getOneOf().iterator().mapWith( new AsMapper<OntResource>( OntResource.class ) );
     }
@@ -161,6 +166,7 @@ public class EnumeratedClassImpl
      * @return True if the given individual is in the class extension for this class.
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasOneOf( Resource res ) {
         return getOneOf().contains( res );
     }
@@ -171,6 +177,7 @@ public class EnumeratedClassImpl
      * @param res A resource that may be declared to be part of this enumeration, and which is
      * no longer one of the enumeration values.
      */
+    @Override
     public void removeOneOf( Resource res ) {
         setOneOf( getOneOf().remove( res ) );
     }

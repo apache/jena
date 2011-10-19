@@ -28,6 +28,7 @@ public class ListMapAsSubject extends BaseBuiltin {
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
+    @Override
     public String getName() {
         return "listMapAsSubject";
     }

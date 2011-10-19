@@ -171,19 +171,23 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public InfTransactionHandler( BaseInfGraph base )
             { this.base = base; }
 
+        @Override
         public boolean transactionsSupported()
             { return getBaseHandler().transactionsSupported(); }
 
         protected TransactionHandler getBaseHandler()
             { return base.getRawGraph().getTransactionHandler(); }
 
+        @Override
         public void begin()
             { getBaseHandler().begin(); }
 
+        @Override
         public void abort()
             { getBaseHandler().abort();
             base.rebind(); }
 
+        @Override
         public void commit()
             { getBaseHandler().commit(); }
         }
@@ -199,6 +203,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * Return the raw RDF data Graph being processed (i.e. the argument
      * to the Reasonder.bind call that created this InfGraph).
      */
+    @Override
     public Graph getRawGraph() {
         return fdata.getGraph();
     }
@@ -206,6 +211,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Return the Reasoner which is being used to answer queries to this graph.
      */
+    @Override
     public Reasoner getReasoner() {
         return reasoner;
     }
@@ -217,6 +223,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * inference graph and the raw data, before processing.
      * @param data the new raw data graph
      */
+    @Override
     public void rebind(Graph data) {
         fdata = new FGraph(data);
         isPrepared = false;
@@ -229,6 +236,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * are made "behind the InfGraph's back" and this forces a full reconsult of
      * the changed data.
      */
+    @Override
     public void rebind() {
         version++;
         isPrepared = false;
@@ -240,6 +248,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * unbounded memory use at the expense of more expensive future queries. A reset
      * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
      */
+    @Override
     public void reset() {
         version++;
     }
@@ -252,6 +261,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * rule system) and where an application might wish greater control over when
      * this prepration is done.
      */
+    @Override
     public void prepare() {
         // Default is to do no preparation
         isPrepared = true;
@@ -267,6 +277,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return the deductions graph, if relevant for this class of inference
      * engine or null if not.
      */
+    @Override
     public Graph getDeductionsGraph() {
         return null;
     }
@@ -280,6 +291,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return a Node giving the value of the global property, this may
      * be a boolean literal, some other literal value (e.g. a size).
      */
+    @Override
     public Node getGlobalProperty(Node property) {
         throw new ReasonerException("Global property not implemented: " + property);
     }
@@ -288,6 +300,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * A convenience version of getGlobalProperty which can only return
      * a boolean result.
      */
+    @Override
     public boolean testGlobalProperty(Node property) {
         Node resultNode = getGlobalProperty(property);
         if (resultNode.isLiteral()) {
@@ -307,6 +320,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * schema data.
      * @return a ValidityReport structure
      */
+    @Override
     public ValidityReport validate() {
         checkOpen();
         return new StandardValidityReport();
@@ -326,6 +340,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @param param a small graph encoding an expression which the subject and/or
      * object nodes refer.
      */
+    @Override
     public ExtendedIterator<Triple> find(Node subject, Node property, Node object, Graph param) {
         return cloneWithPremises(param).find(subject, property, object);
     }
@@ -388,6 +403,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Switch on/off drivation logging
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         recordDerivations = logOn;
     }
@@ -399,6 +415,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
+    @Override
     public Iterator<Derivation> getDerivation(Triple triple) {
         return null;
     }

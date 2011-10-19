@@ -29,6 +29,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
 
     public Taint taint = new TaintImpl();
 
+    @Override
     public FrameI getParent() {
         return parent;
     }
@@ -53,10 +54,12 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
     }
     
 
+    @Override
     public void afterChild() {
         taint = new TaintImpl();
     }
 
+    @Override
     public void comment(char[] ch, int start, int length)
             throws SAXParseException {
         // generally ignore
@@ -72,10 +75,12 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
      * @throws SAXParseException
      * 
      */
+    @Override
     public void endElement() throws SAXParseException {
         // often nothing
     }
 
+    @Override
     public void processingInstruction(String target, String data)
             throws SAXParseException {
         // generally ignored, maybe not what was intended.
@@ -116,6 +121,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
         }
     }
 
+    @Override
     public void abort() {
         // nothing.
     }
@@ -148,6 +154,7 @@ public abstract class Frame extends ParserSupport implements Names, FrameI,
         return " Maybe there should be an rdf:parseType='Literal' for embedding mixed XML content in RDF.";
     }
 
+    @Override
     public void characters(char[] ch, int start, int length)
             throws SAXParseException {
         if ((!nonWhiteMsgGiven) && !isWhite(ch, start, length)) {

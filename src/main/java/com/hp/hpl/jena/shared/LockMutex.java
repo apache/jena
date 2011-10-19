@@ -11,11 +11,13 @@ public class LockMutex implements Lock
 {
     java.util.concurrent.locks.Lock mutex = new java.util.concurrent.locks.ReentrantLock() ;
     
+    @Override
     public void enterCriticalSection(boolean readLockRequested)
     {
         mutex.lock();
     }
 
+    @Override
     public void leaveCriticalSection()
     {
         mutex.unlock() ;

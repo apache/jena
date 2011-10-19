@@ -29,16 +29,27 @@ public class ObjectListener implements ModelChangedListener
     */
     public void removed( Object x ) {}
 /* */
+    @Override
     public void addedStatement( Statement s ) { added( s ); }
+    @Override
     public void addedStatements( Statement [] statements ) { added( statements ); }
+    @Override
     public void addedStatements( List<Statement> statements ) { added( statements ); }
+    @Override
     public void addedStatements( StmtIterator statements ) { added( statements ); }
+    @Override
     public void addedStatements( Model m ) { added( m ); }
+    @Override
     public void removedStatement( Statement s ) { removed( s ); }   
+    @Override
     public void removedStatements( Statement [] statements ) { removed( statements ); }
+    @Override
     public void removedStatements( List<Statement> statements ) { removed( statements ); }
+    @Override
     public void removedStatements( StmtIterator statements ) { removed( statements ); }
+    @Override
     public void removedStatements( Model m ) { removed( m ); }       
+    @Override
     public void notifyEvent( Model m, Object event ) {}         
     }
 

@@ -55,9 +55,11 @@ public class TestRDFWriterMap extends JenaTestBase
             setWriterClassName( NTRIPLES, Jena.PATH + ".rdf.model.impl.NTripleWriter" );
             }
 
+        @Override
         public RDFWriter getWriter()
             { return getWriter( "RDF/XML" ); }
 
+        @Override
         public RDFWriter getWriter( String lang )
             {
             Class<RDFWriter> result = map.get( lang );
@@ -69,6 +71,7 @@ public class TestRDFWriterMap extends JenaTestBase
                 { throw new JenaException( e ); }
             }
 
+        @Override
         public String setWriterClassName( String lang, String className )
             {
             try

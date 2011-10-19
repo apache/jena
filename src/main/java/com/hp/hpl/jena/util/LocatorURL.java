@@ -29,6 +29,7 @@ public class LocatorURL implements Locator
     
     static final String[] schemeNames = { "http:" , "https:" } ;    // Must be lower case and include the ":"
 
+    @Override
     public TypedStream open(String filenameOrURI)
     {
         if ( ! acceptByScheme(filenameOrURI) )
@@ -105,6 +106,7 @@ public class LocatorURL implements Locator
         return LocatorURL.class.hashCode();
     }
     
+    @Override
     public String getName() { return "LocatorURL" ; } 
     
     private boolean acceptByScheme(String filenameOrURI)

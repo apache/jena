@@ -47,21 +47,24 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void add( Triple t ) {
+	@Override
+    public void add( Triple t ) {
 		throw new AddDeniedException( "cannot add to DB reifier", t );		
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void delete(Triple t) {
+	@Override
+    public void delete(Triple t) {
 		throw new DeleteDeniedException( "cannot delete from a DB reifier", t );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
-	public int size() {
+	@Override
+    public int size() {
         checkUnclosed();
 		int result =0;		
 		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
@@ -72,13 +75,15 @@ public class DBReifierGraph implements Graph {
 		return result;
 	}
 
+    @Override
     public boolean isEmpty()
         { return size() == 0; }
         
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean contains(Triple t) {
+	@Override
+    public boolean contains(Triple t) {
         checkUnclosed();
 		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator<SpecializedGraphReifier> it = m_specializedGraphs.iterator();
@@ -96,17 +101,20 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
 	 */
-	public boolean contains(Node s, Node p, Node o) {
+	@Override
+    public boolean contains(Node s, Node p, Node o) {
 		return contains( Triple.create( s, p, o ) );
 	} 
 
+    @Override
     public GraphStatisticsHandler getStatisticsHandler()
         { return null; }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
-	public ExtendedIterator<Triple> find(TripleMatch m) {
+	@Override
+    public ExtendedIterator<Triple> find(TripleMatch m) {
         checkUnclosed();
 		ExtendedIterator<Triple> result = NullIterator.instance() ;
 		SpecializedGraph.CompletionFlag complete = newComplete();
@@ -124,7 +132,8 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
 	 */
-	public PrefixMapping getPrefixMapping() { 
+	@Override
+    public PrefixMapping getPrefixMapping() { 
 		return m_parent.getPrefixMapping();
 	}
 
@@ -132,18 +141,21 @@ public class DBReifierGraph implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getTransactionHandler()
 	 */
-	public TransactionHandler getTransactionHandler() {
+	@Override
+    public TransactionHandler getTransactionHandler() {
 		return m_parent.getTransactionHandler();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		m_specializedGraphs = null;
 		m_parent = null;
 	}
 
+    @Override
     public boolean isClosed()
         { return m_specializedGraphs == null; }
     
@@ -153,55 +165,63 @@ public class DBReifierGraph implements Graph {
             throw new ClosedException( "this DB Reifier has been closed", this );
         }
     
+    @Override
     public GraphEventManager getEventManager()
         { throw new BrokenException( "DB reifiers do not yet implement getEventManager" ); }
 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#dependsOn(com.hp.hpl.jena.graph.Graph)
 	 */
-	public boolean dependsOn(Graph other) {
+	@Override
+    public boolean dependsOn(Graph other) {
 		return m_parent.dependsOn(other);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#queryHandler()
 	 */
-	public QueryHandler queryHandler() {
+	@Override
+    public QueryHandler queryHandler() {
 		return new SimpleQueryHandler(this);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getBulkUpdateHandler()
 	 */
-	public BulkUpdateHandler getBulkUpdateHandler() {
+	@Override
+    public BulkUpdateHandler getBulkUpdateHandler() {
 		return m_parent.getBulkUpdateHandler();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getCapabilities()
 	 */
-	public Capabilities getCapabilities() {
+	@Override
+    public Capabilities getCapabilities() {
 		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
 	 */
-	public Reifier getReifier() {
+	@Override
+    public Reifier getReifier() {
 		throw new JenaException( "DB Reifier graphs have no reifiers" );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
 	 */
-	public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
+	@Override
+    public ExtendedIterator<Triple> find(Node s, Node p, Node o) {
 		return find( Triple.createMatch( s, p, o ) );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#isIsomorphicWith(com.hp.hpl.jena.graph.Graph)
 	 */
-	public boolean isIsomorphicWith(Graph g) {
+	@Override
+    public boolean isIsomorphicWith(Graph g) {
 		return g != null && GraphMatcher.equals( this, g );
 	}
 

@@ -409,18 +409,21 @@ public class testWriterAndReader
 	/** report a warning
 	 * @param e an exception representing the error
 	 */
-	public void warning(Exception e) {
+	@Override
+    public void warning(Exception e) {
 //		logger.warn( toString() + " " + e.getMessage(), e );
         System.out.println(new String(tmpOut.toString()));
         
 		throw new JenaException( e );
 	}
     
-	public void error(Exception e) {
+	@Override
+    public void error(Exception e) {
 		fail(e.getMessage());
 	}
 
-	public void fatalError(Exception e) {
+	@Override
+    public void fatalError(Exception e) {
 		error(e);
 		throw new JenaException(e);
 	}

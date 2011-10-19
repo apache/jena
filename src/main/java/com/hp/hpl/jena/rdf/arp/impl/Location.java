@@ -66,15 +66,19 @@ public class Location implements Locator {
         "line " + endLine + " in '"
         + inputName + "'";
     }
+    @Override
     public String getSystemId() {
         return inputName;
     }
+    @Override
     public int getLineNumber() {
         return endLine;
     }
+    @Override
     public int getColumnNumber() {
         return endColumn;
     }
+    @Override
     public String getPublicId() {
         return publicId;
     }

@@ -50,10 +50,12 @@ public class ArrayIterator<T> implements Iterator<T> {
 		if (!a.getClass().isArray())
 			throw new ArrayStoreException();
 	}
-	public boolean hasNext() {
+	@Override
+    public boolean hasNext() {
 		return i<Array.getLength(a);
 	}
-	public T next() throws NoSuchElementException {
+	@Override
+    public T next() throws NoSuchElementException {
 		try {
 			return a[i++]; // Array.get(a,i++);
 		}
@@ -65,6 +67,7 @@ public class ArrayIterator<T> implements Iterator<T> {
  * @throws java.lang.UnsupportedOperationException Always.
  *
  */        
+        @Override
         public void remove() {
 
             throw new UnsupportedOperationException();

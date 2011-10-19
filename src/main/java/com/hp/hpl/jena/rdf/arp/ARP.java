@@ -173,6 +173,7 @@ IOException {
      * @see #setHandlersWith
      * @return The handlers used during parsing.
      */
+    @Override
     public ARPHandlers getHandlers() {
     	return arpf.getHandlers();
     }
@@ -184,6 +185,7 @@ IOException {
      * instance's copy of the handler information.
      * @param handlers The new values to use.
      */
+    @Override
     public void setHandlersWith(ARPHandlers handlers){
     	arpf.setHandlersWith(handlers);
     }
@@ -205,6 +207,7 @@ IOException {
      * @return The handlers used during parsing.
      */
     
+    @Override
     public ARPOptions getOptions(){
     	return arpf.getOptions();
     }
@@ -217,6 +220,7 @@ IOException {
      * instance's copy of the options.
      * @param opts The new values to use.
      */
+    @Override
     public void setOptionsWith(ARPOptions opts){
     	arpf.setOptionsWith(opts);
     }

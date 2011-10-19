@@ -94,24 +94,31 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	/**
 	 * Link an existing instance of the IPSet to a specific driver
 	 */
-	public void setDriver(IRDBDriver driver) throws RDFRDBException {
+	@Override
+    public void setDriver(IRDBDriver driver) throws RDFRDBException {
 		m_driver = driver;
 	}
 
     private static Logger logger = LoggerFactory.getLogger(PSet_TripleStore_RDB.class);
     
-	public void setSQLType(String value) { ID_SQL_TYPE = value; }
-	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
-	public void setSQLCache(SQLCache cache ) { m_sql = cache; }
-	public SQLCache getSQLCache() { return m_sql; }
-	public void setCachePreparedStatements(boolean value) { CACHE_PREPARED_STATEMENTS = value; }
+	@Override
+    public void setSQLType(String value) { ID_SQL_TYPE = value; }
+	@Override
+    public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
+	@Override
+    public void setSQLCache(SQLCache cache ) { m_sql = cache; }
+	@Override
+    public SQLCache getSQLCache() { return m_sql; }
+	@Override
+    public void setCachePreparedStatements(boolean value) { CACHE_PREPARED_STATEMENTS = value; }
 	
 	
 	/**
 	 * Sets m_tblName variable.
 	 * @param tblName the name of the Statement Table
 	 */
-	public void setTblName(String tblName){
+	@Override
+    public void setTblName(String tblName){
 		m_tblName = tblName;
 	}
 	
@@ -119,7 +126,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * Accessor for m_tblName.
 	 * @return name of the Statement table.
 	 */
-	public String getTblName() {
+	@Override
+    public String getTblName() {
 		return m_tblName;
 	}
 	
@@ -127,7 +135,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	/**
 	 * Close this PSet
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		// no need to do anything here for now
 	}
 	
@@ -135,7 +144,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @return the database driver.
 	 */
 
-	public IRDBDriver driver() {
+	@Override
+    public IRDBDriver driver() {
 		return m_driver;
 	}
 
@@ -143,6 +153,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
     /**
      * Remove all RDF information about this pset from a database.
      */
+    @Override
     public void cleanDB() {
     	
     	// drop my own table(s)
@@ -191,7 +202,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * 
 	 * @return int count.
 	 */
-	public int rowCount(int gid) {
+	@Override
+    public int rowCount(int gid) {
 	String tName = getTblName();
 	int result = 0;
 	ResultSet rs=null;
@@ -228,7 +240,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 *    S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral
 	 * @param rs the resultSet to be processed.
 	 */
-	public Triple extractTripleFromRowData(
+	@Override
+    public Triple extractTripleFromRowData(
 		String subj,
 		String pred,
 		String obj) {
@@ -262,7 +275,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @param complete is true if this handler is capable of adding this triple.
 	 *
 	 **/
-  public void deleteTriple(Triple t, IDBID graphID) {
+  @Override
+public void deleteTriple(Triple t, IDBID graphID) {
   	deleteTriple(t, graphID, false, null);
   }
   	
@@ -381,7 +395,8 @@ public void deleteTripleAR(
 		 * @param complete is true if this handler is capable of adding this triple.
 		 *
 		 **/
-	  public void storeTriple(Triple t, IDBID graphID) {
+	  @Override
+    public void storeTriple(Triple t, IDBID graphID) {
 	  	storeTriple(t,graphID,false, null);
 	  }
 	  
@@ -573,7 +588,8 @@ public void deleteTripleAR(
 	 * @param my_GID
 	 *            ID of the graph.
 	 */
-	public void storeTripleList(List<Triple> triples, IDBID my_GID) {
+	@Override
+    public void storeTripleList(List<Triple> triples, IDBID my_GID) {
 		// for relational dbs, there are two styles for bulk inserts.
 		// JDBC 2.0 supports batched updates.
 		// MySQL also supports a multiple-row insert.
@@ -670,7 +686,8 @@ public void deleteTripleAR(
 	 * @param my_GID
 	 *            ID of the graph.
 	 */
-	public void deleteTripleList(List<Triple> triples, IDBID my_GID) {
+	@Override
+    public void deleteTripleList(List<Triple> triples, IDBID my_GID) {
 		// for relational dbs, there are two styles for bulk operations.
 		// JDBC 2.0 supports batched updates.
 		// MySQL also supports a multiple-row update.
@@ -757,7 +774,8 @@ public void deleteTripleAR(
 	 * 
 	 * @return int count.
 	 */
-	public int tripleCount(IDBID graphId) {
+	@Override
+    public int tripleCount(IDBID graphId) {
 		int gid = ((DBIDInt) graphId).getIntID();
 		return(rowCount(gid));
 	}
@@ -769,7 +787,8 @@ public void deleteTripleAR(
 	 * @param graphID is the id of the graph.
 	 * @return boolean result to indicte if the tripple was contained
 	 */
-	public boolean statementTableContains(IDBID graphID, Triple t) {
+	@Override
+    public boolean statementTableContains(IDBID graphID, Triple t) {
 	   ExtendedIterator<Triple> it = find( t,  graphID );
 	   boolean res = it.hasNext();
 	   it.close();
@@ -779,7 +798,8 @@ public void deleteTripleAR(
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
-	public ExtendedIterator<Triple> find(TripleMatch t, IDBID graphID) {
+	@Override
+    public ExtendedIterator<Triple> find(TripleMatch t, IDBID graphID) {
 		String astName = getTblName();
 		Node subj_node = t.getMatchSubject();
 		Node pred_node = t.getMatchPredicate();
@@ -883,7 +903,8 @@ if ( hack != 0 ) {
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.graphRDB.IPSet#removeStatementsFromDB()
 		 */
-		public void removeStatementsFromDB(IDBID graphID) {
+		@Override
+        public void removeStatementsFromDB(IDBID graphID) {
 			int gid = graphID.getIntID() ;
 			
 			try {

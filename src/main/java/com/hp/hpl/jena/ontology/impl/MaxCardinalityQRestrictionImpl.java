@@ -111,6 +111,7 @@ public class MaxCardinalityQRestrictionImpl
      * @param cardinality The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void setMaxCardinalityQ( int cardinality ) {
         setPropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -120,6 +121,7 @@ public class MaxCardinalityQRestrictionImpl
      * @return The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public int getMaxCardinalityQ() {
         return objectAsInt( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q" );
     }
@@ -130,6 +132,7 @@ public class MaxCardinalityQRestrictionImpl
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
      * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasMaxCardinalityQ( int cardinality ) {
         return hasPropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -141,6 +144,7 @@ public class MaxCardinalityQRestrictionImpl
      * @param cardinality A cardinality value to be removed from this restriction
      * @exception OntProfileException If the {@link Profile#MAX_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void removeMaxCardinalityQ( int cardinality ) {
         removePropertyValue( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }

@@ -71,12 +71,14 @@ public class MoreDOM2RDFTest extends TestCase implements StatementHandler {
 	}
 
 
+    @Override
     public void statement(AResource subj, AResource pred, AResource obj) {
         count++;
         
     }
 
 
+    @Override
     public void statement(AResource subj, AResource pred, ALiteral lit) {
         count++;
         

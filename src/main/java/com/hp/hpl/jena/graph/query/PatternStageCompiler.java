@@ -64,15 +64,19 @@ public final class PatternStageCompiler implements PatternCompiler
     /*
         satisfy the interface
     */            
+    @Override
     public Element fixed( Node value )
         { return new Fixed( value ); }
         
+    @Override
     public Element bound( Node n, int index )
         { return new Bound( index ); }
         
+    @Override
     public Element bind( Node n, int index )
         { return new Bind( index ); }
         
+    @Override
     public Element any()
         { return Element.ANY; }
     }

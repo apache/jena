@@ -28,21 +28,27 @@ public class SimpleQueryHandler implements QueryHandler
     public SimpleQueryHandler( Graph graph )
         { this.graph = graph; }
 
+    @Override
     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
         { return new PatternStage( graph, map, constraints, t ); }
                 
+    @Override
     public BindingQueryPlan prepareBindings( Query q, Node [] variables )   
         { return new SimpleQueryPlan( graph, q, variables ); }
         
+    @Override
     public TreeQueryPlan prepareTree( Graph pattern )
     	{ return new SimpleTreeQueryPlan( graph, pattern ); }
     	
-	public ExtendedIterator<Node> objectsFor( Node s, Node p )
+	@Override
+    public ExtendedIterator<Node> objectsFor( Node s, Node p )
 		{ return objectsFor( graph, s, p ); }
 		
-	public ExtendedIterator<Node> subjectsFor( Node p, Node o )
+	@Override
+    public ExtendedIterator<Node> subjectsFor( Node p, Node o )
 		{ return subjectsFor( graph, p, o ); }
     
+    @Override
     public ExtendedIterator<Node> predicatesFor( Node s, Node o )
         { return predicatesFor( graph, s, o ); }
     
@@ -75,6 +81,7 @@ public class SimpleQueryHandler implements QueryHandler
         up to three times to locate the node. Almost certainly particular graphs
         will be able to offer better query-handlers ...
     */
+    @Override
     public boolean containsNode( Node n )
         {
         return 

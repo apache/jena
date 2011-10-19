@@ -280,7 +280,8 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.util.iterator.Map1#map1(java.lang.Object)
 		 */
-		public Node map1(List<String> l) {
+		@Override
+        public Node map1(List<String> l) {
 //            String s = null;
             String n = l.get(0);
 //            if ( (n instanceof String) || (n instanceof Byte) )

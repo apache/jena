@@ -73,6 +73,7 @@ public abstract class AbstractProfile
      * @param res A resource (including properties) to test for an alias
      * @return True if there is an alias for <code>res</code>
      */
+    @Override
     public boolean hasAliasFor( Resource res ) {
         return aliasMap().containsKey( res );
     }
@@ -89,6 +90,7 @@ public abstract class AbstractProfile
      * than one is defined, or null if no alias is defined for <code>res</code>.
      * 
      */
+    @Override
     public Resource getAliasFor( Resource res ) {
         return aliasMap().get( res );
     }
@@ -102,6 +104,7 @@ public abstract class AbstractProfile
      * @return An iterator over the aliases for <code>res</code>. If there are
      * no aliases, the empty iterator is returned.
      */
+    @Override
     public Iterator<Resource> listAliasesFor( Resource res ) {
         return aliasMap().getAll( res );
     }

@@ -39,6 +39,7 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
      * @param inserts a temporary graph into which the hook should insert
      * all new deductions that should be seen by the rules.
      */
+    @Override
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
         ExtendedIterator<Triple> it = dataFind.find(new TriplePattern(null, null, null));
         HashSet<Node> properties = new HashSet<Node>();
@@ -62,6 +63,7 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
      * then the inference will be restarted at next prepare time. Incremental
      * re-processing is not yet supported but in this case would be useful.
      */
+    @Override
     public boolean needsRerun(FBRuleInfGraph infGraph, Triple t) {
         return (t.getPredicate().getURI().startsWith(memberPrefix));
     }

@@ -38,6 +38,7 @@ public class StmtIteratorImpl extends WrappedIterator<Statement> implements Stmt
         current.remove();
         }
         
+    @Override
     public Statement nextStatement()
         { return next(); }
     }

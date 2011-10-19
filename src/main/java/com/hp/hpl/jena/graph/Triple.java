@@ -70,21 +70,27 @@ public class Triple implements TripleMatch
 	public final Node getObject() 
         { return obj; }
 
+    @Override
     public Node getMatchSubject()
         { return anyToNull( subj ); }
     
     public static final Map1<Triple, Node> getSubject = new Map1<Triple, Node>() 
-        { public Node map1( Triple t ) { return t.getSubject(); } };
+        { @Override
+        public Node map1( Triple t ) { return t.getSubject(); } };
         
     public static final Map1<Triple, Node> getPredicate = new Map1<Triple, Node>() 
-        { public Node map1( Triple t ) { return t.getPredicate(); } };
+        { @Override
+        public Node map1( Triple t ) { return t.getPredicate(); } };
         
     public static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
-        { public Node map1( Triple t ) { return t.getObject(); } };
+        { @Override
+        public Node map1( Triple t ) { return t.getObject(); } };
         
+    @Override
     public Node getMatchPredicate()
         { return anyToNull( pred ); }
         
+    @Override
     public Node getMatchObject()
         { return anyToNull( obj ); }
         
@@ -94,6 +100,7 @@ public class Triple implements TripleMatch
     private static Node nullToAny( Node n )
         { return n == null ? Node.ANY : n; }        
         
+    @Override
     public Triple asTriple()
         { return this; }
         

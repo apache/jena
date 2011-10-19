@@ -115,9 +115,11 @@ public class PropertyImpl extends ResourceImpl implements Property
         this.ordinal = ordinal;
         }
 
+    @Override
     public boolean isProperty()
         { return true; }
 
+    @Override
     public int getOrdinal()
         {
         if (ordinal < 0) ordinal = computeOrdinal();

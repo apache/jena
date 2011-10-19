@@ -85,6 +85,7 @@ public abstract class BooleanClassDescriptionImpl
      * @param operands The list of operands to this expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public void setOperands( RDFList operands ) {
         setPropertyValue( operator(), getOperatorName(), operands );
     }
@@ -94,6 +95,7 @@ public abstract class BooleanClassDescriptionImpl
      * @param cls A class that will be added to the operands of this Boolean expression
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public void addOperand( Resource cls ) {
         addListPropertyValue( operator(), getOperatorName(), cls );
     }
@@ -103,6 +105,7 @@ public abstract class BooleanClassDescriptionImpl
      * @param classes A iterator over classes that will be added to the operands of this Boolean expression
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public void addOperands( Iterator<? extends Resource> classes ) {
         while (classes.hasNext()) {
             addOperand( classes.next() );
@@ -114,6 +117,7 @@ public abstract class BooleanClassDescriptionImpl
      * @return A list of the operands of this expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public RDFList getOperands() {
         return objectAs( operator(), getOperatorName(), RDFList.class );
     }
@@ -124,6 +128,7 @@ public abstract class BooleanClassDescriptionImpl
      * @return An iterator over the operands of the expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<? extends OntClass> listOperands() {
         return getOperands().iterator().mapWith( new AsMapper<OntClass>( OntClass.class ) );
     }
@@ -134,6 +139,7 @@ public abstract class BooleanClassDescriptionImpl
      * @return True if the given class is an operand to this expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public boolean hasOperand( Resource cls ) {
         return getOperands().contains( cls );
     }
@@ -143,6 +149,7 @@ public abstract class BooleanClassDescriptionImpl
      * <p>Remove the given resource from the operands of this class expression.</p>
      * @param res An resource to be removed from the operands of this class expression
      */
+    @Override
     public void removeOperand( Resource res ) {
         setOperands( getOperands().remove( res ) );
     }
@@ -152,6 +159,7 @@ public abstract class BooleanClassDescriptionImpl
      * {@link Profile#UNION_OF()}.</p>
      * @return The property used to construct this Boolean class expression.
      */
+    @Override
     public abstract Property operator();
 
 

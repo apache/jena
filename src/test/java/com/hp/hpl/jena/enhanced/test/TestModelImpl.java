@@ -32,14 +32,17 @@ public class TestModelImpl extends EnhGraph implements TestModel {
             { if (it != null) it.close(); }
         }
         
+    @Override
     public TestObject anObject() {
         return getNodeAs(aTriple().getObject(),TestObject.class);
     }
     
+    @Override
     public TestProperty aProperty() {
         return getNodeAs(aTriple().getPredicate(),TestProperty.class);
     }
     
+    @Override
     public TestSubject aSubject() {
         return getNodeAs(aTriple().getSubject(),TestSubject.class);
     }

@@ -70,6 +70,7 @@ public class SeqNodeIteratorImpl extends NiceIterator<RDFNode> implements NodeIt
         return stmt.getObject();
     }
     
+    @Override
     public RDFNode nextNode() {
         return next();
     }

@@ -63,6 +63,7 @@ public class RETETerminal implements RETESinkNode {
      * @param env a set of variable bindings for the rule being processed. 
      * @param isAdd distinguishes between add and remove operations.
      */
+    @Override
     public void fire(BindingVector env, boolean isAdd) {
         Rule rule = context.getRule();
         context.setEnv(env);
@@ -79,6 +80,7 @@ public class RETETerminal implements RETESinkNode {
      * @param context the new context to which the network is being ported
      */
     
+    @Override
     public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext contextIn) {
         RETETerminal clone = (RETETerminal)netCopy.get(this);
         if (clone == null) {

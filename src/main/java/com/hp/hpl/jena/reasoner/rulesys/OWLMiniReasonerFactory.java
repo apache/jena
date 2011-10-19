@@ -50,6 +50,7 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
      * @param configuration a set of arbitrary configuration information to be 
      * passed the reasoner encoded within an RDF graph
      */
+    @Override
     public Reasoner create(Resource configuration) {
         OWLMiniReasoner reasoner = new OWLMiniReasoner(this);
         if (configuration != null) {
@@ -70,6 +71,7 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -111,6 +113,7 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

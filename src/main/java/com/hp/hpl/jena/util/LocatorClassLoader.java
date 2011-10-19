@@ -34,6 +34,7 @@ public class LocatorClassLoader  implements Locator
     public int hashCode()
         { return classLoader.hashCode(); }
     
+    @Override
     public TypedStream open(String filenameOrURI)
     {
         if ( classLoader == null )
@@ -60,6 +61,7 @@ public class LocatorClassLoader  implements Locator
         // base = classLoader.getResource(fn).toExternalForm ;       
         return new TypedStream(in) ;
     }
+    @Override
     public String getName() { return "ClassLoaderLocator" ; }
 }
 /*

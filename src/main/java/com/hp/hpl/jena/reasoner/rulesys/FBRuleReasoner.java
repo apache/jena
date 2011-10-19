@@ -134,6 +134,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * information supplied at construction time. May be null if there are
      * no useful capabilities registered.
      */
+    @Override
     public Model getReasonerCapabilities() {
         if (factory != null) {
             return factory.getCapabilities();
@@ -156,6 +157,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * @param configSpec a Model into which the configuration information should be placed
      * @param base the Resource to which the configuration parameters should be added.
      */
+    @Override
     public void addDescription(Model configSpec, Resource base) {
         if (configuration != null) {
             StmtIterator i = configuration.listProperties();
@@ -173,6 +175,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * this is part of the SPI rather than API
      * @return true if the given property is handled specially by the reasoner.
      */
+    @Override
     public boolean supportsProperty(Property property) {
         if (factory == null) return false;
         Model caps = factory.getCapabilities();
@@ -184,6 +187,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Precompute the implications of a schema graph. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         if (schemaGraph != null) {
             throw new ReasonerException("Can only bind one schema at a time to an OWLRuleReasoner");
@@ -200,6 +204,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Precompute the implications of a schema Model. The statements in the graph
      * will be combined with the data when the final InfGraph is created.
      */
+    @Override
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
         return bindSchema(tbox.getGraph());
     }
@@ -215,6 +220,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind( Graph data ) throws ReasonerException {
         ReificationStyle style = data.getReifier().getStyle();
         Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph) schemaGraph; 
@@ -229,6 +235,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Set (or change) the rule set that this reasoner should execute.
      * @param rules a list of Rule objects
      */
+    @Override
     public void setRules(List<Rule> rules) {
         this.rules = rules;
         preload = null;
@@ -244,6 +251,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Return the list of Rules used by this reasoner
      * @return a List of Rule objects
      */
+    @Override
     public List<Rule> getRules() {
         return rules;
     } 
@@ -293,6 +301,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * <p>
      * Default - false.
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         recordDerivations = logOn;
     }
@@ -326,6 +335,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * java object like Boolean or Integer.
      * @throws IllegalParameterException if the parameter is unknown 
      */
+    @Override
     public void setParameter(Property parameter, Object value) {
         if (!doSetParameter(parameter, value)) {
             throw new IllegalParameterException("RuleReasoner does not recognize configuration parameter " + parameter);
@@ -394,6 +404,7 @@ public class FBRuleReasoner implements RuleReasoner {
      * Return the Jena Graph Capabilties that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Override
     public Capabilities getGraphCapabilities() {
         if (capabilities == null) {
             capabilities = new BaseInfGraph.InfCapabilities();

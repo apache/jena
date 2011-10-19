@@ -58,7 +58,8 @@ public class Driver_MySQL extends DriverRDB {
 	/**
 	 * Set the database connection
 	 */
-	public void setConnection( IDBConnection dbcon ) {
+	@Override
+    public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
 		
 		try {   		
@@ -94,7 +95,8 @@ public class Driver_MySQL extends DriverRDB {
 	 * Dellocate an identifier for a graph.
 	 *
 	 */
-	public void graphIdDealloc ( int graphId ) {
+	@Override
+    public void graphIdDealloc ( int graphId ) {
 		DBIDInt result = null;
 		try {
 			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph",GRAPH_TABLE);

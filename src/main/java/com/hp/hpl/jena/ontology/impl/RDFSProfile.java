@@ -62,69 +62,128 @@ public class RDFSProfile
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public String   NAMESPACE() {                   return RDFS.getURI(); }
 
+    @Override
     public Resource CLASS() {                       return RDFS.Class; }
+    @Override
     public Resource RESTRICTION() {                 return null; }
+    @Override
     public Resource THING() {                       return null; }
+    @Override
     public Resource NOTHING() {                     return null; }
+    @Override
     public Resource PROPERTY() {                    return RDF.Property; }
+    @Override
     public Resource OBJECT_PROPERTY() {             return null; }
+    @Override
     public Resource DATATYPE_PROPERTY() {           return null; }
+    @Override
     public Resource TRANSITIVE_PROPERTY() {         return null; }
+    @Override
     public Resource SYMMETRIC_PROPERTY() {          return null; }
+    @Override
     public Resource FUNCTIONAL_PROPERTY() {         return null; }
+    @Override
     public Resource INVERSE_FUNCTIONAL_PROPERTY() { return null; }
+    @Override
     public Resource ALL_DIFFERENT() {               return null; }
+    @Override
     public Resource ONTOLOGY() {                    return null; }
+    @Override
     public Resource DEPRECATED_CLASS() {            return null; }
+    @Override
     public Resource DEPRECATED_PROPERTY() {         return null; }
+    @Override
     public Resource ANNOTATION_PROPERTY() {         return null; }
+    @Override
     public Resource ONTOLOGY_PROPERTY() {           return null; }
+    @Override
     public Resource LIST() {                        return RDF.List; }
+    @Override
     public Resource NIL() {                         return RDF.nil; }
+    @Override
     public Resource DATARANGE() {                   return null; }
 
 
+    @Override
     public Property EQUIVALENT_PROPERTY() {         return null; }
+    @Override
     public Property EQUIVALENT_CLASS() {            return null; }
+    @Override
     public Property DISJOINT_WITH() {               return null; }
+    @Override
     public Property SAME_INDIVIDUAL_AS() {          return null; }
+    @Override
     public Property SAME_AS() {                     return null; }
+    @Override
     public Property DIFFERENT_FROM() {              return null; }
+    @Override
     public Property DISTINCT_MEMBERS() {            return null; }
+    @Override
     public Property UNION_OF() {                    return null; }
+    @Override
     public Property INTERSECTION_OF() {             return null; }
+    @Override
     public Property COMPLEMENT_OF() {               return null; }
+    @Override
     public Property ONE_OF() {                      return null; }
+    @Override
     public Property ON_PROPERTY() {                 return null; }
+    @Override
     public Property ALL_VALUES_FROM() {             return null; }
+    @Override
     public Property HAS_VALUE() {                   return null; }
+    @Override
     public Property SOME_VALUES_FROM() {            return null; }
+    @Override
     public Property MIN_CARDINALITY() {             return null; }
+    @Override
     public Property MAX_CARDINALITY() {             return null; }
+    @Override
     public Property CARDINALITY() {                 return null; }
+    @Override
     public Property INVERSE_OF() {                  return null; }
+    @Override
     public Property IMPORTS() {                     return null; }
+    @Override
     public Property PRIOR_VERSION() {               return null; }
+    @Override
     public Property BACKWARD_COMPATIBLE_WITH() {    return null; }
+    @Override
     public Property INCOMPATIBLE_WITH() {           return null; }
+    @Override
     public Property SUB_PROPERTY_OF() {             return RDFS.subPropertyOf; }
+    @Override
     public Property SUB_CLASS_OF() {                return RDFS.subClassOf; }
+    @Override
     public Property DOMAIN() {                      return RDFS.domain; }
+    @Override
     public Property RANGE() {                       return RDFS.range; }
+    @Override
     public Property FIRST() {                       return RDF.first; }
+    @Override
     public Property REST() {                        return RDF.rest; }
+    @Override
     public Property MIN_CARDINALITY_Q() {           return null; }
+    @Override
     public Property MAX_CARDINALITY_Q() {           return null; }
+    @Override
     public Property CARDINALITY_Q() {               return null; }
+    @Override
     public Property HAS_CLASS_Q() {                 return null; }
 
     // Annotations
+    @Override
     public Property VERSION_INFO() {                return null; }
+    @Override
     public Property LABEL() {                       return RDFS.label; }
+    @Override
     public Property COMMENT() {                     return RDFS.comment; }
+    @Override
     public Property SEE_ALSO() {                    return RDFS.seeAlso; }
+    @Override
     public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
 
 
@@ -136,6 +195,7 @@ public class RDFSProfile
     }
 
     /** The only first-class axiom type in OWL is AllDifferent */
+    @Override
     public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -144,6 +204,7 @@ public class RDFSProfile
     }
 
     /** The annotation properties of OWL */
+    @Override
     public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
@@ -155,6 +216,7 @@ public class RDFSProfile
         ).iterator();
     }
 
+    @Override
     public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -178,6 +240,7 @@ public class RDFSProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
+    @Override
     public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
@@ -205,6 +268,7 @@ public class RDFSProfile
      * </p>
      * @return "OWL Full"
      */
+    @Override
     public String getLabel() {
         return "RDFS";
     }

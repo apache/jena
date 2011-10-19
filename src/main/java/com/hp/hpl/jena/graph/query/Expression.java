@@ -99,13 +99,21 @@ public interface Expression
     */
     public static abstract class Base implements Expression
         {        
+        @Override
         public boolean isVariable() { return false; }
+        @Override
         public boolean isApply() { return false; }
+        @Override
         public boolean isConstant() { return false; }
+        @Override
         public String getName() { return null; }
+        @Override
         public Object getValue() { return null; }
+        @Override
         public int argCount() { return 0; }
+        @Override
         public String getFun() { return null; }
+        @Override
         public Expression getArg( int i ) { return null; }
         
         @Override
@@ -139,6 +147,7 @@ public interface Expression
         public Object getValue()
             { return value; }
         
+        @Override
         public Valuator prepare( VariableIndexes vi ) 
             { return new FixedValuator( value ); }
         
@@ -257,6 +266,7 @@ public interface Expression
         
         public Valof( VariableIndexes map ) { this.map = map; }
         
+        @Override
         public final Object get( String name )
              { return dom.get( map.indexOf( name ) );  }
                  
@@ -275,9 +285,12 @@ public interface Expression
         // TODO when moving to Jave 1.4 can use Boolean.valueOf( value )
         @Override
         public Object getValue() { return value ? Boolean.TRUE : Boolean.FALSE; }
+        @Override
         public Valuator prepare( VariableIndexes vi ) { return this; }   
         public boolean evalBool( VariableValues vv ) { return value; }
+        @Override
         public boolean evalBool( IndexValues vv ) { return value; }
+        @Override
         public Object evalObject( IndexValues iv ) { return getValue(); }
         }    
     }

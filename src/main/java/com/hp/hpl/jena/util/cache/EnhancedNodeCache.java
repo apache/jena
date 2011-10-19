@@ -43,6 +43,7 @@ public class EnhancedNodeCache implements Cache
         { this.name = name;
         this.elements = new EnhNode[size]; }
 
+    @Override
     public Object get( Object key )
         {
         if (enabled)
@@ -60,6 +61,7 @@ public class EnhancedNodeCache implements Cache
         return null;
         }
 
+    @Override
     public void put( Object key, Object value )
         {
         if (enabled)
@@ -78,23 +80,29 @@ public class EnhancedNodeCache implements Cache
     protected int hashNode( Node n )
         { return (n.hashCode() & 0x7fffffff) % elements.length; }
 
+    @Override
     public boolean getEnabled()
         { return enabled; }
 
+    @Override
     public boolean setEnabled( boolean enabled )
         { boolean result = this.enabled;
         this.enabled = enabled;
         return result; }
     
+    @Override
     public void clear()
         { for (int i = 0; i < elements.length; i += 1) elements[i] = null; }
 
+    @Override
     public long getGets()
         { return gets; }
 
+    @Override
     public long getPuts()
         { return puts; }
 
+    @Override
     public long getHits()
         { return hits; }
 

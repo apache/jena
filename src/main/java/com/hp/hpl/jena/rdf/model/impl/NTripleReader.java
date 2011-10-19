@@ -66,11 +66,13 @@ public class NTripleReader extends Object implements RDFReader {
 
     NTripleReader() {
     }
+    @Override
     public void read(Model model, InputStream in, String base)
          {
         // N-Triples must be in ASCII, we permit UTF-8.
         read(model, FileUtils.asUTF8(in), base);
     }
+    @Override
     public void read(Model model, Reader reader, String base)
          {
 
@@ -87,6 +89,7 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
+    @Override
     public void read(Model model, String url)  {
         try {
             read(
@@ -102,12 +105,14 @@ public class NTripleReader extends Object implements RDFReader {
         }
     }
 
+    @Override
     public Object setProperty(String propName, Object propValue)
          {
         errorHandler.error(new UnknownPropertyException( propName ));
         return null;
     }
 
+    @Override
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
         RDFErrorHandler old = this.errorHandler;
         this.errorHandler = errHandler;

@@ -27,13 +27,15 @@ public class FixedValuator implements Valuator
 	 	object, as a <code>boolean</code>. The index values
 	 	are irrelevant.
 	*/
-	public boolean evalBool( IndexValues iv )
+	@Override
+    public boolean evalBool( IndexValues iv )
 	    { return ((Boolean) evalObject( iv )).booleanValue(); }
 	        
 	/**
 	 	Answer this FixedValuator's value, as supplied when it was constructed.
 	*/
-	public Object evalObject( IndexValues iv )
+	@Override
+    public Object evalObject( IndexValues iv )
 	    { return value; }
 	}
 

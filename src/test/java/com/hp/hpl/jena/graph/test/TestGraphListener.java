@@ -64,28 +64,33 @@ public class TestGraphListener extends MetaTestGraph {
 					);
 		}
 
-		public void notifyAddIterator(Graph g, Iterator<Triple> it) {
+		@Override
+        public void notifyAddIterator(Graph g, Iterator<Triple> it) {
 			while (it.hasNext()) copy.add(it.next());
 			verify();		
 	    }
 
-		public void notifyAddTriple(Graph g, Triple t) {
+		@Override
+        public void notifyAddTriple(Graph g, Triple t) {
 			copy.add(t);
 			verify();
 		}
 
-		public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
+		@Override
+        public void notifyDeleteIterator(Graph g, Iterator<Triple> it) {
 			while (it.hasNext()) copy.delete(it.next());
 			verify();
 		}
 
 
-		public void notifyDeleteTriple(Graph g, Triple t) {
+		@Override
+        public void notifyDeleteTriple(Graph g, Triple t) {
 			copy.delete(t);
 			verify();
 		}
 
-		public void notifyEvent(Graph source, Object value) {
+		@Override
+        public void notifyEvent(Graph source, Object value) {
 			if (value instanceof GraphEvents) {
 				if (GraphEvents.removeAll.equals(value)) {
 					notifyRemoveAll(source,Triple.ANY);
@@ -107,31 +112,37 @@ public class TestGraphListener extends MetaTestGraph {
 		}
 
 
-		public void notifyAddList(Graph g, List<Triple> triples) {
+		@Override
+        public void notifyAddList(Graph g, List<Triple> triples) {
 			notifyAddIterator(g, triples.iterator());
 		}
 
 
-		public void notifyDeleteArray(Graph g, Triple[] triples) {
+		@Override
+        public void notifyDeleteArray(Graph g, Triple[] triples) {
 			notifyDeleteIterator(g,Arrays.asList(triples).iterator());
 		}
 
-		public void notifyAddArray(Graph g, Triple[] triples) {
+		@Override
+        public void notifyAddArray(Graph g, Triple[] triples) {
 			notifyAddIterator(g,Arrays.asList(triples).iterator());
 		}
-		public void notifyAddGraph(Graph g, Graph added) {
+		@Override
+        public void notifyAddGraph(Graph g, Graph added) {
 			notifyAddIterator(g,added.find(Triple.ANY));
 		}
 
 
 
-		public void notifyDeleteGraph(Graph g, Graph removed) {
+		@Override
+        public void notifyDeleteGraph(Graph g, Graph removed) {
 			notifyDeleteIterator(g,removed.find(Triple.ANY));
 		}
 
 
 
-		public void notifyDeleteList(Graph g, List<Triple> list) {
+		@Override
+        public void notifyDeleteList(Graph g, List<Triple> list) {
 			notifyDeleteIterator(g, list.iterator());
 		}
 

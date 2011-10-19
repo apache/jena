@@ -57,16 +57,19 @@ public class TestErrorMsg extends TestCase {
 		ARP arp = new ARP();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 
-			public void warning(SAXParseException exception) {
+			@Override
+            public void warning(SAXParseException exception) {
 				buf.append(exception.getMessage());
 				buf.append("\n");
 			}
 
-			public void error(SAXParseException e) {
+			@Override
+            public void error(SAXParseException e) {
 				warning(e);
 			}
 
-			public void fatalError(SAXParseException e) {
+			@Override
+            public void fatalError(SAXParseException e) {
 				warning(e);
 			}
 

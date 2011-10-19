@@ -94,10 +94,12 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     public  RDFReaderFImpl() {
     }
 
+    @Override
     public RDFReader getReader()  {
         return getReader(DEFAULTLANG);
     }
 
+    @Override
     public RDFReader getReader(String lang)  {
 
         // setup default language
@@ -122,6 +124,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     }
 
 
+    @Override
     public String setReaderClassName( String lang,String className ) {
         return setBaseReaderClassName( lang, className );
     }

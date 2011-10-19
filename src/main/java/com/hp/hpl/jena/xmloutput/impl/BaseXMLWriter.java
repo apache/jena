@@ -92,10 +92,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	private static Logger xlogger = LoggerFactory.getLogger( BaseXMLWriter.class );
     
     protected static SimpleLogger logger = new SimpleLogger() {
-      	public void warn(String s) {
+      	@Override
+        public void warn(String s) {
       		xlogger.warn(s);
       	}
-      	public void warn(String s, Exception e) {
+      	@Override
+        public void warn(String s, Exception e) {
       		xlogger.warn(s,e);
       	}
   };
@@ -454,7 +456,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param out the OutputStream to receive the serialization
 	 * @param base The URL at which the file will be placed.
 	 */
-	final public void write(Model model, OutputStream out, String base)
+	@Override
+    final public void write(Model model, OutputStream out, String base)
 		 { write( model, FileUtils.asUTF8(out), base ); }
 
 	/** Serialize Model <code>model</code> to Writer <code>out</out>.
@@ -463,7 +466,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param base the base URI for relative URI calculations.  <code>
 	 * null</code> means use only absolute URI's.
 	 */
-	synchronized public void write(Model baseModel, Writer out, String base)
+	@Override
+    synchronized public void write(Model baseModel, Writer out, String base)
 		 {        
         Model model = ModelFactory.withHiddenStatements( baseModel );
 		setupNamespaces( baseModel, model );
@@ -593,7 +597,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param errHandler The new error handler to be used, or null for the default handler.
 	 * @return the old error handler
 	 */
-	synchronized public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
+	@Override
+    synchronized public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
 		// null means no user defined error handler.
 		// We implement this using defaultErrorHandler,
 		// but hide this fact from the user.
@@ -637,7 +642,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
          
      	@see com.hp.hpl.jena.rdf.model.RDFWriter#setProperty(java.lang.String, java.lang.Object)
      */
-	final synchronized public Object setProperty( String propName, Object propValue ) {
+	@Override
+    final synchronized public Object setProperty( String propName, Object propValue ) {
 		if (propName.equalsIgnoreCase("showXmlDeclaration")) {
 			return setShowXmlDeclaration(propValue);
         } else if (propName.equalsIgnoreCase( "showDoctypeDeclaration" )) {

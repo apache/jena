@@ -17,21 +17,27 @@ public class WrappedHashMap implements BunchMap
     {
     protected final Map<Object, TripleBunch> map = CollectionFactory.createHashedMap();
     
+    @Override
     public void clear()
         { map.clear(); }
     
+    @Override
     public long size()
         { return map.size(); }
 
+    @Override
     public TripleBunch get( Object key )
         { return map.get( key ); }
 
+    @Override
     public void put( Object key, TripleBunch value )
         { map.put( key, value ); }
 
+    @Override
     public void remove( Object key )
         { map.remove( key ); }
 
+    @Override
     public ExtendedIterator<Object> keyIterator()
         { return WrappedIterator.create( map.keySet().iterator() ); }
     }

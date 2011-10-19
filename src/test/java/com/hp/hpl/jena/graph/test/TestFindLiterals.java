@@ -27,6 +27,7 @@ public class TestFindLiterals extends GraphTestBase
 
     static final Map1<Triple, Node> getObject = new Map1<Triple, Node>() 
         {
+        @Override
         public Node map1( Triple o ) { return o.getObject(); }
         };
     

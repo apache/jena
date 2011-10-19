@@ -88,6 +88,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     /**
      	Create an RDB graph and remember its name.
      */
+    @Override
     public Graph createGraph( String name, boolean strict )
         {
         created.add( name );
@@ -99,6 +100,7 @@ public class GraphRDBMaker extends BaseGraphMaker
         Open an existing graph; if there's no such graph, but failIfAbsent is
         false, create a new one. In any case, return that graph.
     */
+    @Override
     public Graph openGraph( String name, boolean strict )
         {
         boolean fresh = hasGraph( name ) == false && strict == false;
@@ -117,6 +119,7 @@ public class GraphRDBMaker extends BaseGraphMaker
         opening it first.
         
     */
+    @Override
     public void removeGraph( String name )
         {
         GraphRDB toDelete = (GraphRDB) openGraph( name, true );
@@ -128,6 +131,7 @@ public class GraphRDBMaker extends BaseGraphMaker
     /**
         Return true iff there's a graph with the given name.
     */
+    @Override
     public boolean hasGraph( String name )
         { return c.containsModel( name ); }
         
@@ -140,9 +144,11 @@ public class GraphRDBMaker extends BaseGraphMaker
         while (it.hasNext()) removeGraph( it.next() );
         }
         
+    @Override
     public void close()
         { /* should consider - do we close the connection or not? */ }
         
+    @Override
     public ExtendedIterator<String> listGraphs()
         { return c.getAllModelNames() .filterDrop ( filterDEFAULT ); }
         

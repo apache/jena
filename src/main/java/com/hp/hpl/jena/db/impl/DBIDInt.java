@@ -38,11 +38,13 @@ public class DBIDInt implements IDBID {
 
     /** get the identifier as an Integer, fits calling signature of our generic sql interface. */
     // OLD
+    @Override
     public Object _getID() {
         return m_dbid;
     }
 
     /** get the identifier as a plain int */
+    @Override
     public int getIntID() {
         return m_dbid.intValue();
     }

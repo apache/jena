@@ -61,6 +61,7 @@ public abstract class TestFactoryManifest implements ManifestItemHandler
     protected TestSuite getTestSuite() { return currentTestSuite ; }
     
     /** Handle an item in a manifest */
+    @Override
     public final boolean processManifestItem(Resource manifest ,
                                        Resource item ,
                                        String testName ,

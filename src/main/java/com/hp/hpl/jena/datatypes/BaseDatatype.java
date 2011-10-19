@@ -35,6 +35,7 @@ public class BaseDatatype implements RDFDatatype {
     /**
      * Return the URI which is the label for this datatype
      */
+    @Override
     public String getURI() {
         return uri;
     }
@@ -74,6 +75,7 @@ public class BaseDatatype implements RDFDatatype {
      * Convert a value of this datatype out
      * to lexical form.
      */
+    @Override
     public String unparse(Object value) {
         // Default implementation expects a parsed TypedValue but will 
         // accept a pure lexical form
@@ -87,6 +89,7 @@ public class BaseDatatype implements RDFDatatype {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
+    @Override
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         return new TypedValue(lexicalForm, getURI());
     }
@@ -95,6 +98,7 @@ public class BaseDatatype implements RDFDatatype {
      * Test whether the given string is a legal lexical form
      * of this datatype.
      */
+    @Override
     public boolean isValid(String lexicalForm) {
         try {
             parse(lexicalForm);
@@ -111,6 +115,7 @@ public class BaseDatatype implements RDFDatatype {
      * never considered valid as an xsd:integer (even if it is
      * lexically legal like "1").
      */
+    @Override
     public boolean isValidLiteral(LiteralLabel lit) {
         // default is that only literals with the same type are valid
         return equals(lit.getDatatype());
@@ -120,6 +125,7 @@ public class BaseDatatype implements RDFDatatype {
      * Test whether the given object is a legal value form
      * of this datatype.
      */
+    @Override
     public boolean isValidValue(Object valueForm) {
         // Default to brute force
         return isValid(unparse(valueForm));
@@ -129,6 +135,7 @@ public class BaseDatatype implements RDFDatatype {
      * Compares two instances of values of the given datatype.
      * This default requires value and datatype equality.
      */
+    @Override
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         return value1.getDatatype() == value2.getDatatype()
              && value1.getValue().equals(value2.getValue());
@@ -138,6 +145,7 @@ public class BaseDatatype implements RDFDatatype {
          Default implementation of getHashCode() delegates to the default from
          the literal label.
     */
+    @Override
     public int getHashCode( LiteralLabel lit ) {
         return lit.getDefaultHashcode();
         }
@@ -157,6 +165,7 @@ public class BaseDatatype implements RDFDatatype {
      * Returns the java class which is used to represent value
      * instances of this datatype.
      */
+    @Override
     public Class<?> getJavaClass() {
         return null;
     }
@@ -167,6 +176,7 @@ public class BaseDatatype implements RDFDatatype {
      * the Java object representation to the narrowest of the Number
      * subclasses to ensure that indexing of typed literals works. 
      */
+    @Override
     public Object cannonicalise( Object value ) {
         return value;
     }
@@ -177,6 +187,7 @@ public class BaseDatatype implements RDFDatatype {
      * this will be an instance of 
      * <code>org.apache.xerces.impl.xs.psvi.XSTypeDefinition</code>.
      */
+    @Override
     public Object extendedTypeDefinition() {
         return null;
     }
@@ -193,6 +204,7 @@ public class BaseDatatype implements RDFDatatype {
      * @param dt the currently set data type
      * @return a narrower version of the datatype based on the actual value range
      */
+    @Override
     public RDFDatatype normalizeSubType(Object value, RDFDatatype dt) {
         return this; // default is no narrowing
     }

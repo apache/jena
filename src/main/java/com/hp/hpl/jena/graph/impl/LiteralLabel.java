@@ -33,6 +33,7 @@ public interface LiteralLabel
      */
     public String toString(boolean quoting) ;
 
+    @Override
     public String toString() ;
 
     /** 
@@ -73,6 +74,7 @@ public interface LiteralLabel
      	Answer true iff this literal is syntactically equal to <code>other</code>.
         Note: this is <i>not</i> <code>sameValueAs</code>.
      */
+    @Override
     public boolean equals(Object other) ;
 
     /** 
@@ -85,6 +87,7 @@ public interface LiteralLabel
      	Answer the hashcode of this literal, derived from its value if it's
         well-formed and otherwise its lexical form.
      */
+    @Override
     public int hashCode() ;
 
     /**

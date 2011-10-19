@@ -30,6 +30,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
     /**
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#isWellFormedXML()
      */
+    @Override
     public boolean isWellFormedXML() {
         return false; //datatype.equals(ARPString.RDFXMLLiteral);
     }
@@ -37,6 +38,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#getParseType()
      * @deprecated
      */
+    @Override
     @Deprecated
     public String getParseType() {
         return null;
@@ -49,6 +51,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
     /**
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#getDatatypeURI()
      */
+    @Override
     public String getDatatypeURI() {
         return datatype;
     }
@@ -56,6 +59,7 @@ public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
     /**
      * @see com.hp.hpl.jena.rdf.arp.ALiteral#getLang()
      */
+    @Override
     public String getLang() {
         return ""; //lang;
     }

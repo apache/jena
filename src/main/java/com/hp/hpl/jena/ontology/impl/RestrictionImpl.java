@@ -106,6 +106,7 @@ public class RestrictionImpl
      * @param prop The property that this restriction applies to
      * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
+    @Override
     public void setOnProperty( Property prop ) {
         setPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
@@ -117,6 +118,7 @@ public class RestrictionImpl
      * @return The property that this property restriction applies to
      * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
+    @Override
     public OntProperty getOnProperty() {
         return objectAs( getProfile().ON_PROPERTY(), "ON_PROPERTY", OntProperty.class );
     }
@@ -127,6 +129,7 @@ public class RestrictionImpl
      * @return True if this restriction is a restriction on <code>prop</code>
      * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.
      */
+    @Override
     public boolean onProperty( Property prop ) {
         return hasPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
@@ -136,6 +139,7 @@ public class RestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param prop The property to be removed as a the property that this restriction applies to
      */
+    @Override
     public void removeOnProperty( Property prop ) {
         removePropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
@@ -147,6 +151,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to an all values from restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public AllValuesFromRestriction asAllValuesFromRestriction() {
         return as( AllValuesFromRestriction.class );
     }
@@ -157,6 +162,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to an all values from restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public SomeValuesFromRestriction asSomeValuesFromRestriction() {
         return as( SomeValuesFromRestriction.class );
     }
@@ -167,6 +173,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to a has value restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public HasValueRestriction asHasValueRestriction() {
         return as( HasValueRestriction.class );
     }
@@ -177,6 +184,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to a cardinality restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public CardinalityRestriction asCardinalityRestriction() {
         return as( CardinalityRestriction.class );
     }
@@ -187,6 +195,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to a min cardinality restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public MinCardinalityRestriction asMinCardinalityRestriction() {
         return as( MinCardinalityRestriction.class );
     }
@@ -197,6 +206,7 @@ public class RestrictionImpl
      * @exception ConversionException if the class cannot be converted to a max cardinality restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public MaxCardinalityRestriction asMaxCardinalityRestriction() {
         return as( MaxCardinalityRestriction.class );
     }
@@ -209,6 +219,7 @@ public class RestrictionImpl
      * @return True if this is an allValuesFrom property restriction
      * @exception ProfileException if {@link Profile#ALL_VALUES_FROM()} is not supported in the current profile
      */
+    @Override
     public boolean isAllValuesFromRestriction() {
         checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
         return hasProperty( getProfile().ALL_VALUES_FROM() );
@@ -219,6 +230,7 @@ public class RestrictionImpl
      * @return True if this is a someValuesFrom property restriction
      * @exception ProfileException if {@link Profile#SOME_VALUES_FROM()} is not supported in the current profile
      */
+    @Override
     public boolean isSomeValuesFromRestriction() {
         checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
         return hasProperty( getProfile().SOME_VALUES_FROM() );
@@ -229,6 +241,7 @@ public class RestrictionImpl
      * @return True if this is a hasValue property restriction
      * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
      */
+    @Override
     public boolean isHasValueRestriction() {
         checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
         return hasProperty( getProfile().HAS_VALUE() );
@@ -241,6 +254,7 @@ public class RestrictionImpl
      * @return True if this is a cardinality property restriction
      * @exception ProfileException if {@link Profile#CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public boolean isCardinalityRestriction() {
         checkProfile( getProfile().CARDINALITY(), "CARDINALITY" );
         return hasProperty( getProfile().CARDINALITY() );
@@ -253,6 +267,7 @@ public class RestrictionImpl
      * @return True if this is a minCardinality property restriction
      * @exception ProfileException if {@link Profile#MIN_CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public boolean isMinCardinalityRestriction() {
         checkProfile( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
         return hasProperty( getProfile().MIN_CARDINALITY() );
@@ -265,6 +280,7 @@ public class RestrictionImpl
      * @return True if this is a maxCardinality property restriction
      * @exception ProfileException if {@link Profile#MAX_CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public boolean isMaxCardinalityRestriction() {
         checkProfile( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
         return hasProperty( getProfile().MAX_CARDINALITY() );
@@ -280,6 +296,7 @@ public class RestrictionImpl
      * @return This class, but converted to a AllValuesFromRestriction class expression
      * @exception ProfileException if {@link Profile#ALL_VALUES_FROM()} is not supported in the current profile
      */
+    @Override
     public AllValuesFromRestriction convertToAllValuesFromRestriction( Resource cls ) {
         setPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
         return as( AllValuesFromRestriction.class );
@@ -292,6 +309,7 @@ public class RestrictionImpl
      * @return This class, but converted to a SomeValuesFromRestriction node
      * @exception ProfileException if {@link Profile#SOME_VALUES_FROM()} is not supported in the current profile
      */
+    @Override
     public SomeValuesFromRestriction convertToSomeValuesFromRestriction( Resource cls ) {
         setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
         return as( SomeValuesFromRestriction.class );
@@ -304,6 +322,7 @@ public class RestrictionImpl
      * @return This class, but converted to a HasValueRestriction
      * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
      */
+    @Override
     public HasValueRestriction convertToHasValueRestriction( RDFNode value ) {
         setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
         return as( HasValueRestriction.class );
@@ -315,6 +334,7 @@ public class RestrictionImpl
      * @return This class, but converted to a CardinalityRestriction node
      * @exception ProfileException if {@link Profile#CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public CardinalityRestriction convertToCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
         return as( CardinalityRestriction.class );
@@ -326,6 +346,7 @@ public class RestrictionImpl
      * @return This class, but converted to a MinCardinalityRestriction node
      * @exception ProfileException if {@link Profile#MIN_CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public MinCardinalityRestriction convertToMinCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
         return as( MinCardinalityRestriction.class );
@@ -337,6 +358,7 @@ public class RestrictionImpl
      * @return This class, but converted to a MaxCardinalityRestriction node
      * @exception ProfileException if {@link Profile#MAX_CARDINALITY()} is not supported in the current profile
      */
+    @Override
     public MaxCardinalityRestriction convertToMaxCardinalityRestriction( int cardinality ) {
         setPropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
         return as( MaxCardinalityRestriction.class );

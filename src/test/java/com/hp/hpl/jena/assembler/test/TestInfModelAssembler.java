@@ -54,12 +54,15 @@ public class TestInfModelAssembler extends AssemblerTestBase
         { 
         return new ReasonerFactory() 
             {
+            @Override
             public Reasoner create( Resource configuration )
                 { return R; }
 
+            @Override
             public Model getCapabilities()
                 { throw new RuntimeException( "mock doesn't do getCapabilities" ); }
 
+            @Override
             public String getURI()
                 { throw new RuntimeException( "mock doesn't do getURI" ); }
             };

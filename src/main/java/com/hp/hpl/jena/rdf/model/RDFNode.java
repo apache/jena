@@ -47,6 +47,7 @@ public interface RDFNode extends FrontsNode
         depends on the type of the node and is intended for human consumption,
         not machine analysis.
     */
+    @Override
     public String toString();
     
     /** 

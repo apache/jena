@@ -40,6 +40,7 @@ class LocatorZip implements Locator
         }
     }
     
+    @Override
     public TypedStream open(String filenameOrURI)
     {
         ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
@@ -71,6 +72,7 @@ class LocatorZip implements Locator
             return null;
         }
     }
+    @Override
     public String getName() { return "LocatorZip("+zipFileName+")" ; } 
 
 }

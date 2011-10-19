@@ -404,6 +404,7 @@ public interface OntProperty
      * @exception ConversionException if the resource cannot be converted to a datatype property
      * given the language profile and the current state of the underlying model.
      */
+    @Override
     public DatatypeProperty asDatatypeProperty();
 
     /**
@@ -412,6 +413,7 @@ public interface OntProperty
      * @exception ConversionException if the resource cannot be converted to an object property
      * given the language profile and the current state of the underlying model.
      */
+    @Override
     public ObjectProperty asObjectProperty();
 
     /**
@@ -489,12 +491,14 @@ public interface OntProperty
      * <p>Answer true if this property is a datatype property</p>
      * @return True if this this property has an <code>rdf:type</code> that defines it as a datatype property.
      */
+    @Override
     public boolean isDatatypeProperty();
 
     /**
      * <p>Answer true if this property is an object property</p>
      * @return True if this this property has an <code>rdf:type</code> that defines it as an object property.
      */
+    @Override
     public boolean isObjectProperty();
 
     /**

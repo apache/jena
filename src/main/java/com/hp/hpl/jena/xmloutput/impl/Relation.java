@@ -193,6 +193,7 @@ class Relation<T> {
     private static <X> Map1<X, PairEntry<X, X>> inner(final X a)
     {
         return new Map1<X, PairEntry<X, X>>() {
+            @Override
             public PairEntry<X, X> map1(X b)
             {
                 return new PairEntry<X, X>(a, b) ;
@@ -225,6 +226,7 @@ class Relation<T> {
         
         Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>> m1 = 
         new Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>>(){
+            @Override
             public Iterator<PairEntry<T, T>> map1(Entry<T, Set<T>> entry)
             {
                 return pairEntry(entry) ;

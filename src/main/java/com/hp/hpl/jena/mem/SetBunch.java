@@ -31,9 +31,11 @@ public class SetBunch implements TripleBunch
         return o.isLiteral() ? o.getLiteralDatatype() == null : true;
         }
 
+    @Override
     public boolean contains( Triple t )
         { return elements.contains( t ); }
     
+    @Override
     public boolean containsBySameValueAs( Triple t )
         { return equalsObjectOK( t ) ? elements.contains( t ) : slowContains( t ); }
     
@@ -45,23 +47,29 @@ public class SetBunch implements TripleBunch
         return false;
         }
 
+    @Override
     public int size()
         { return elements.size(); }
     
+    @Override
     public void add( Triple t )
         { elements.add( t ); }
     
+    @Override
     public void remove( Triple t )
         { elements.remove( t ); }
     
+    @Override
     public ExtendedIterator<Triple> iterator( HashCommon.NotifyEmpty container )
         {
         return iterator();
         }
     
+    @Override
     public ExtendedIterator<Triple> iterator()
         { return WrappedIterator.create( elements.iterator() ); }        
     
+    @Override
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
         Iterator<Triple> it = iterator();

@@ -32,16 +32,27 @@ public class ChangedListener implements ModelChangedListener
         @return true iff a change has occurred since the last call to hasChanged
     */
     public boolean hasChanged() { try { return changed; } finally { changed = false; } }
+    @Override
     public void addedStatement( Statement s ) { setChanged(); }
+    @Override
     public void addedStatements( Statement [] statements ) { setChanged(); }
+    @Override
     public void addedStatements( List<Statement> statements ) { setChanged(); }
+    @Override
     public void addedStatements( StmtIterator statements ) { setChanged(); }
+    @Override
     public void addedStatements( Model m ) { setChanged(); }
+    @Override
     public void removedStatement( Statement s ) { setChanged(); }   
+    @Override
     public void removedStatements( Statement [] statements ) { setChanged(); }
+    @Override
     public void removedStatements( List<Statement> statements ) { setChanged(); }
+    @Override
     public void removedStatements( StmtIterator statements ) { setChanged(); }
+    @Override
     public void removedStatements( Model m ) { setChanged(); }          
+    @Override
     public void notifyEvent( Model m, Object event ) {}
     }       
 

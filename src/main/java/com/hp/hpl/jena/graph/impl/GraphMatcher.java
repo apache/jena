@@ -558,6 +558,7 @@ public class GraphMatcher extends java.lang.Object {
         public String toString() {
             return "f" + hash;
         }
+        @Override
         public int myHashCodeFromStatement() {
             return hash;
         }
@@ -565,6 +566,7 @@ public class GraphMatcher extends java.lang.Object {
             hash = n.hashCode();
             node = n;
         }
+        @Override
         public boolean mightBeEqual(SomeResource r) {
             if (r!=null && (r instanceof FixedResource)) {
                 FixedResource f = (FixedResource)r;
@@ -735,6 +737,7 @@ public class GraphMatcher extends java.lang.Object {
             unboundAnonResources.add(this);
             this.r = r;
         }
+        @Override
         public int myHashCodeFromStatement() {
             if ( bound != null )
                 return boundHash;
@@ -828,6 +831,7 @@ public class GraphMatcher extends java.lang.Object {
                 statements.add(wrapStatement(it.next()));
             return statements;
         }
+        @Override
         public boolean mightBeEqual(SomeResource r) {
             if (r!=null && (r instanceof AnonResource)) {
                 AnonResource a = (AnonResource)r;

@@ -179,12 +179,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     private IRI testDir;
     
     private Act noop = new Act() {
+        @Override
         public void act(Resource r) {
         }
     };
     
     private Act semTest = new Act() {
-		  public void act(Resource r) {
+		  @Override
+        public void act(Resource r) {
 		  	if (doSemanticTests()){
 //		  		addTest(r, new ReasoningTest(r));
 		  	}
@@ -202,6 +204,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     {
         behaviours
             .put(new ResourceImpl(testNS + "PositiveParserTest"), new Act() {
+            @Override
             public void act(Resource r)  {
                 //		if (r.getProperty(status).getString().equals(approved))
                 //  if (r.getURI().endsWith("rdfms-xmllang/test004"))
@@ -214,6 +217,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
         behaviours
             .put(new ResourceImpl(testNS + "NegativeParserTest"), new Act() {
+            @Override
             public void act(Resource r)  {
                 //		if (r.getProperty(status).getString().equals(approved))
                 addTest(r, new NegativeTest(r));
@@ -230,6 +234,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 		        semTest);
         behaviours
             .put(new ResourceImpl(testNS + "MiscellaneousTest"), new Act() {
+            @Override
             public void act(Resource r) {
                 String uri = r.getURI();
                 if (!misc.contains(uri))
@@ -252,7 +257,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return null;
             in.close();
             m = loadRDF(new InFactoryX(){
-            	public InputStream open() throws IOException {
+            	@Override
+                public InputStream open() throws IOException {
             		return fact.fullyOpen(file);
             } }, null, base + file);
         } catch (JenaException e) {
@@ -452,7 +458,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return loadRDF(
                 new InFactoryX(){
 
-					public InputStream open() throws IOException {
+					@Override
+                    public InputStream open() throws IOException {
 						return factory.open(uri);
 					}
                 }
@@ -474,12 +481,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         	}
         }
         abstract void reallyRunTest();
+        @Override
         public void warning(Exception e) {
             error(0, e);
         }
+        @Override
         public void error(Exception e) {
             error(1, e);
         }
+        @Override
         public void fatalError(Exception e) {
             error(2, e);
         }
@@ -739,7 +749,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return loadRDF(
                 new InFactoryX(){
 
-					public InputStream open() throws IOException {
+					@Override
+                    public InputStream open() throws IOException {
 						return factory.open(uri);
 					}
                 }
@@ -748,14 +759,17 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             
         }
         
+        @Override
         public void warning(Exception e) {
             error(0, e);
         }
         
+        @Override
         public void error(Exception e) {
             error(1, e);
         }
         
+        @Override
         public void fatalError(Exception e) {
             error(2, e);
         }

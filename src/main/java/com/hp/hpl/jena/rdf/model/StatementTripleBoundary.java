@@ -27,12 +27,14 @@ public class StatementTripleBoundary implements StatementBoundary
     /**
          Answer whatever the triple-boundary answers for the triple of <code>s</code>.
     */
+    @Override
     public boolean stopAt( Statement s )
         { return tb.stopAt( s.asTriple() ); }
     
     /**
          Answer the supplied-to-constructor TripleBoundary.
     */
+    @Override
     public TripleBoundary asTripleBoundary( Model ignored )
         { return tb; }
     }

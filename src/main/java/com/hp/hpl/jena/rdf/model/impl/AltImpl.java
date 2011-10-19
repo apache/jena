@@ -79,74 +79,92 @@ public class AltImpl extends ContainerImpl implements Alt {
         return stmt;
     	}
     	
+    @Override
     public RDFNode getDefault()  {
     	return needDefaultStatement().getObject();
     }
     
+    @Override
     public Resource getDefaultResource()  {
     	return needDefaultStatement().getResource();
     }
     
+    @Override
     public Literal getDefaultLiteral()  {
     	return needDefaultStatement().getLiteral();
     }
     
+    @Override
     public boolean getDefaultBoolean()  {
     	return needDefaultStatement().getBoolean();
     }
     
+    @Override
     public byte getDefaultByte()  {
     	return needDefaultStatement().getByte();
     }
     
+    @Override
     public short getDefaultShort()  {
     	return needDefaultStatement().getShort();
     }
     
+    @Override
     public int getDefaultInt()  {
     	return needDefaultStatement().getInt();
     }
     
+    @Override
     public long getDefaultLong()  {
     	return needDefaultStatement().getLong();
     }
     
+    @Override
     public char getDefaultChar()  {
 		return needDefaultStatement().getChar();
     }
     
+    @Override
     public float getDefaultFloat()  {
     	return needDefaultStatement().getFloat();
     }
     
+    @Override
     public double getDefaultDouble()  {
     	return needDefaultStatement().getDouble();
     }
     
+    @Override
     public String getDefaultString()  {
     	return needDefaultStatement().getString();
     }
     
+    @Override
     public String getDefaultLanguage()  {
     	return needDefaultStatement().getLanguage();
     }
     
+    @Override
     @Deprecated public Resource getDefaultResource(ResourceF f)  {
     	return needDefaultStatement().getResource();
     }
     
+    @Override
     public Alt getDefaultAlt()  {
     	return needDefaultStatement().getAlt();
     }
     
+    @Override
     public Bag getDefaultBag()  {
     	return needDefaultStatement().getBag();
     }
     
+    @Override
     public Seq getDefaultSeq()  {
     	return needDefaultStatement().getSeq();
     }
     
+    @Override
     public Alt setDefault(RDFNode o)  {
         Statement stmt = getDefaultStatement();
         if (stmt != null) getModel().remove( stmt );
@@ -154,34 +172,42 @@ public class AltImpl extends ContainerImpl implements Alt {
         return this;
     }    
     
+    @Override
     public Alt setDefault(boolean o)  {
         return setDefault( String.valueOf( o ) );
     }
     
+    @Override
     public Alt setDefault(long o)  {
         return setDefault( String.valueOf( o ) );
     }    
     
+    @Override
     public Alt setDefault(char o)  {
         return setDefault( String.valueOf( o ) );
     }        
     
+    @Override
     public Alt setDefault(float o)  {
         return setDefault( String.valueOf( o ) );
     } 
     
+    @Override
     public Alt setDefault(double o)  {
         return setDefault( String.valueOf( o ) );
     }    
     
+    @Override
     public Alt setDefault(Object o)  {
         return setDefault( String.valueOf( o ) );
     }
    
+    @Override
     public Alt setDefault(String o)  {
         return setDefault( o, "" );
     }    
     
+    @Override
     public Alt setDefault(String o, String l)  {
         return setDefault( new LiteralImpl( Node.createLiteral( o,l, false ), getModelCom()) );
     }      

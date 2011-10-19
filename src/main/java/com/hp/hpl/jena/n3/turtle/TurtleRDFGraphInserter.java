@@ -16,6 +16,7 @@ public class TurtleRDFGraphInserter implements TurtleEventHandler
     Graph graph = null ;
     public TurtleRDFGraphInserter(Graph graph) { this.graph = graph ; }
     
+    @Override
     public void triple(int line, int col, Triple triple)
     {
         //Check it's valid triple.
@@ -33,12 +34,15 @@ public class TurtleRDFGraphInserter implements TurtleEventHandler
         graph.add(triple) ;
     }
 
+    @Override
     public void startFormula(int line, int col)
     { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
 
+    @Override
     public void endFormula(int line, int col)
     { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
 
+    @Override
     public void prefix(int line, int col, String prefix, String iri)
     { graph.getPrefixMapping().setNsPrefix(prefix, iri) ; }
 }

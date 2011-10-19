@@ -332,6 +332,7 @@ public class TriplePattern implements ClauseEntry {
      * Compare triple patterns, taking into account variable indices.
      * The equality function ignores differences between variables.
      */
+    @Override
     public boolean sameAs(Object o) {
         if (! (o instanceof TriplePattern) ) return false;
         TriplePattern other = (TriplePattern) o;

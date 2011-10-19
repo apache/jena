@@ -45,6 +45,7 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
      * @param configuration a set of arbitrary configuration information for the reasoner, this will be 
      * ignored in this case because the micro reasoner is not configurable
      */
+    @Override
     public Reasoner create(Resource configuration) {
         return new DAMLMicroReasoner(this);
     }
@@ -54,6 +55,7 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -78,6 +80,7 @@ public class DAMLMicroReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

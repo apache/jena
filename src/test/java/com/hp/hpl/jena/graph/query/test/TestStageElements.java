@@ -47,23 +47,28 @@ public class TestStageElements extends QueryTestBase
         {
         public Domain lastPut;
         
+        @Override
         public boolean hasNext()
             {
             return false;
             }
 
+        @Override
         public Domain get()
             {
             return null;
             }
 
+        @Override
         public void put( Domain d )
             { lastPut = d; }
 
+        @Override
         public void close()
             {
             }
 
+        @Override
         public void close( Exception e )
             {
             }

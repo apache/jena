@@ -178,6 +178,7 @@ public abstract class AbsXMLLiteral extends Frame {
         checkComposingChar = true;
     }
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName, Attributes atts) {
 
         checkComposingChar = true;

@@ -34,12 +34,14 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         this.manager = graph.getEventManager();
         }
 
+    @Override
     public void add( Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) graph.performAdd( triples[i] ); 
         manager.notifyAddArray( graph, triples );
         }
         
+    @Override
     public void add( List<Triple> triples )
         { add( triples, true ); }
         
@@ -49,6 +51,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         if (notify) manager.notifyAddList( graph, triples );
         }
 
+    @Override
     public void add( Iterator<Triple> it )
         { addIterator( it, true ); }
 
@@ -59,9 +62,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         if (notify) manager.notifyAddIterator( graph, s );
         }
         
+    @Override
     public void add( Graph g )
         { add( g, false ); }
         
+    @Override
     public void add( Graph g, boolean withReifications )
         { 
         addIterator( GraphUtil.findAll( g ), false );  
@@ -91,12 +96,14 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
             }
         }
 
+    @Override
     public void delete( Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) graph.performDelete( triples[i] ); 
         manager.notifyDeleteArray( graph, triples );
         }
     
+    @Override
     public void delete( List<Triple> triples )
         { delete( triples, true ); }
         
@@ -106,6 +113,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         if (notify) manager.notifyDeleteList( graph, triples );
         }
     
+    @Override
     public void delete( Iterator<Triple> it )
         { deleteIterator( it, true ); }
         
@@ -124,9 +132,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         return L;
         }
             
+    @Override
     public void delete( Graph g )
         { delete( g, false ); }
         
+    @Override
     public void delete( Graph g, boolean withReifications )
         { 
         if (g.dependsOn( graph ))
@@ -137,6 +147,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         manager.notifyDeleteGraph( graph, g );
         }
     
+    @Override
     public void removeAll()
         { removeAll( graph ); 
         notifyRemoveAll(); }
@@ -144,6 +155,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     protected void notifyRemoveAll()
         { manager.notifyEvent( graph, GraphEvents.removeAll ); }
 
+    @Override
     public void remove( Node s, Node p, Node o )
         { removeAll( graph, s, p, o ); 
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) ); }

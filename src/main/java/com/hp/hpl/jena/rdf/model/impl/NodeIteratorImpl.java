@@ -23,6 +23,7 @@ public class NodeIteratorImpl extends WrappedIterator<RDFNode> implements NodeIt
         super( iter );
     }
     
+    @Override
     public RDFNode nextNode() {
         return super.next();
     }

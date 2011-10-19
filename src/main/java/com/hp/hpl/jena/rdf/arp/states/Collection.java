@@ -37,7 +37,8 @@ public FrameI startElement(String uri, String localName, String rawName,
       firstTriple(bnode,subject);
       final ANode thisNode = bnode;
       nextSlot = new WantsObjectI() {
-          public void theObject(ANode a) {
+          @Override
+        public void theObject(ANode a) {
                  restTriple(thisNode,a);
           }
       };

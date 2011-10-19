@@ -18,6 +18,7 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
     
     public abstract boolean clashesWith( ReifierFragmentsMap map, Node fragmentObject, Triple reified );
     
+    @Override
     public boolean clashedWith( Node tag, Node fragmentObject, Triple reified )
         {
         if (clashesWith( map, fragmentObject, reified ))
@@ -29,6 +30,7 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
             return false;
         }
     
+    @Override
     public Triple reifyIfCompleteQuad( Triple fragment, Node tag, Node object )
         {
         return map.reifyCompleteQuad( this, fragment, tag, object );
@@ -40,6 +42,7 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
      * @param fragment
      * @return
      */
+    @Override
     public Triple removeFragment( Node tag, Triple already, Triple fragment )
         { 
         return map.removeFragment( this, tag, already, fragment );

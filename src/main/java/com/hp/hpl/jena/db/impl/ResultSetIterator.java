@@ -139,17 +139,20 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
     /**
      * Test if there is a next result to return
      */
+    @Override
     public boolean hasNext() {
         if (!m_finished && !m_prefetched) moveForward();
         return !m_finished;
     }
     
+    @Override
     public T removeNext()
         { cantRemove(); return null; }
 
     /**
      * Return the current row
      */
+    @Override
     public T next() {
         if (!m_finished && !m_prefetched) moveForward();
         m_prefetched = false;
@@ -162,6 +165,7 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
     /**
      * Delete the current row entry
      */
+    @Override
     public void remove() {
         cantRemove();
     }
@@ -217,6 +221,7 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
      * Clean up the allocated resources - result set and statement.
      * If we know of an SQLCache return the statement there, otherwise close it.
      */
+    @Override
     public void close() {
         if (!m_finished) {
             if (m_resultSet != null) {
@@ -266,14 +271,17 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
          then all the elements of the other iterator. Does not copy either iterator;
          they are consumed as the result iterator is consumed.
      */
-	public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ) {
+	@Override
+    public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other ) {
 		return NiceIterator.andThen(this, other);
 	}
 
+    @Override
     public Set<T> toSet() {
         return NiceIterator.asSet( this ); 
         }
     
+    @Override
     public List<T> toList() {
         return NiceIterator.asList( this ); 
         }
@@ -281,14 +289,16 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#filterKeep(com.hp.hpl.jena.util.iterator.Filter)
 	 */
-	public ExtendedIterator<T> filterKeep(Filter<T> f) {
+	@Override
+    public ExtendedIterator<T> filterKeep(Filter<T> f) {
 		return new FilterIterator<T>( f, this );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#filterDrop(com.hp.hpl.jena.util.iterator.Filter)
 	 */
-	public ExtendedIterator<T> filterDrop(final Filter<T> f)
+	@Override
+    public ExtendedIterator<T> filterDrop(final Filter<T> f)
     {
         Filter<T> notF = new Filter<T>() {
             @Override
@@ -303,7 +313,8 @@ public abstract class ResultSetIterator<T> implements ExtendedIterator<T>{
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.util.iterator.ExtendedIterator#mapWith(com.hp.hpl.jena.util.iterator.Map1)
 	 */
-	public <X> ExtendedIterator<X> mapWith(Map1<T,X> map1) {
+	@Override
+    public <X> ExtendedIterator<X> mapWith(Map1<T,X> map1) {
 		return new Map1Iterator<T,X>( map1, this ); 
 	}
 

@@ -134,53 +134,62 @@ public class TestModelMakerImpl extends ModelTestBase
         public MockGraphMaker( Graph graph )
             { this.graph = graph; }
 
+        @Override
         public ReificationStyle getReificationStyle()
             {
             history.add( "getReificationStyle()" );
             return null;
             }
 
+        @Override
         public Graph getGraph()
             {
             history.add( "get()" );
             return graph;
             }
 
+        @Override
         public Graph createGraph()
             {
             history.add( "create()" );
             return graph;
             }
 
+        @Override
         public Graph createGraph( String name, boolean strict )
             {
             history.add( "create(" + name + "," + strict + ")" );
             return graph;
             }
 
+        @Override
         public Graph createGraph( String name )
             {
             history.add( "create(" + name + ")" );
             return graph;
             }
 
+        @Override
         public Graph openGraph( String name, boolean strict )
             {
             history.add( "open(" + name + "," + strict + ")" );
             return graph;
             }
 
+        @Override
         public Graph openGraph( String name )
             {
             history.add( "open(" + name + ")" );
             return graph;
             }
 
+        @Override
         public void removeGraph( String name )
             {
             history.add( "remove(" + name + ")" );
             }
 
+        @Override
         public boolean hasGraph( String name )
             {
             history.add( "has(" + name + ")" );
@@ -205,17 +214,20 @@ public class TestModelMakerImpl extends ModelTestBase
             return desc;
             }
 
+        @Override
         public void close()
             {
             history.add( "close()" );
             }
 
+        @Override
         public ExtendedIterator<String> listGraphs()
             {
             history.add( "listModels()" );
             return NullIterator.instance();
             }
 
+        @Override
         public Graph openGraph()
             {
             

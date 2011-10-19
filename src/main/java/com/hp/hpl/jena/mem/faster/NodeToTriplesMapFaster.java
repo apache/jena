@@ -80,6 +80,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             { this.key = key; }
         
         // TODO fix the way this interacts (badly) with iteration and CMEs.
+        @Override
         public void emptied()
             { if (false) throw new JenaException( "BOOM" ); /* System.err.println( ">> OOPS" ); */ bunchMap.remove( key ); }
         }

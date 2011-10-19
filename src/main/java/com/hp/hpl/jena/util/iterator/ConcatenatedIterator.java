@@ -77,6 +77,7 @@ public class ConcatenatedIterator<T> implements Iterator<T>
      *
      * @return true if the iterator has more elements.
      */
+    @Override
     public boolean hasNext() {
         return m_iter0.hasNext()  ||  m_iter1.hasNext() || (hasDefaultValue() && !m_defaultValueSeen);
     }
@@ -89,6 +90,7 @@ public class ConcatenatedIterator<T> implements Iterator<T>
      *         underlying iteration, projected to the range of the projection function.
      * @exception NoSuchElementException - iteration has no more elements.
      */
+    @Override
     public T next() {
         boolean next0 = m_iter0.hasNext();
         boolean next1 = m_iter1.hasNext();
@@ -128,6 +130,7 @@ public class ConcatenatedIterator<T> implements Iterator<T>
      *            called, or the remove method has already been called after the
      *            last call to the next method.
      */
+    @Override
     public void remove() {
         throw new UnsupportedOperationException( "Cannot remove elements from concatenated iterator" );
     }

@@ -169,6 +169,7 @@ public class RETEClauseFilter implements RETESourceNode {
     /**
      * Set the continuation node for this node.
      */
+    @Override
     public void setContinuation(RETESinkNode continuation) {
         this.continuation = continuation;
     }
@@ -246,6 +247,7 @@ public class RETEClauseFilter implements RETESourceNode {
      * @param netCopy a map from RETENode to cloned instance
      * @param context the new context to which the network is being ported
      */
+    @Override
     public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) {
         RETEClauseFilter clone = (RETEClauseFilter)netCopy.get(this);
         if (clone == null) {

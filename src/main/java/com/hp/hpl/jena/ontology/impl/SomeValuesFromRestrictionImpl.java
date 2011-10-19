@@ -108,6 +108,7 @@ public class SomeValuesFromRestrictionImpl
      * @param cls The class that at least one value of the property must belong to
      * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public void setSomeValuesFrom( Resource cls ) {
         setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
     }
@@ -119,6 +120,7 @@ public class SomeValuesFromRestrictionImpl
      *        ({@link OntClass} or {@link DataRange}) if appropriate.
      * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public Resource getSomeValuesFrom() {
         checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
         Resource r = (Resource) getRequiredProperty( getProfile().SOME_VALUES_FROM() ).getObject();
@@ -152,6 +154,7 @@ public class SomeValuesFromRestrictionImpl
      * @return True if the given class is the class to which at least one value must belong
      * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSomeValuesFrom( Resource cls ) {
         return hasPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
     }
@@ -162,6 +165,7 @@ public class SomeValuesFromRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param cls A Resource the denotes the class to be removed from this restriction
      */
+    @Override
     public void removeSomeValuesFrom( Resource cls ) {
         removePropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
     }

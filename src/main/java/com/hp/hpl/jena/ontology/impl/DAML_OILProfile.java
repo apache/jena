@@ -140,69 +140,128 @@ public class DAML_OILProfile
     public static String _NAMESPACE() {             return "http://www.daml.org/2001/03/daml+oil#"; }
 
 
+    @Override
     public String   NAMESPACE() {                   return DAML_OILProfile._NAMESPACE(); }
 
+    @Override
     public Resource CLASS() {                       return m_class; }
+    @Override
     public Resource RESTRICTION() {                 return m_restriction; }
+    @Override
     public Resource THING() {                       return m_thing; }
+    @Override
     public Resource NOTHING() {                     return m_nothing; }
+    @Override
     public Resource PROPERTY() {                    return m_property; }
+    @Override
     public Resource OBJECT_PROPERTY() {             return m_objectProperty; }
+    @Override
     public Resource DATATYPE_PROPERTY() {           return m_datatypeProperty; }
+    @Override
     public Resource TRANSITIVE_PROPERTY() {         return m_transitiveProperty; }
+    @Override
     public Resource SYMMETRIC_PROPERTY() {          return m_symmetricProperty; }
+    @Override
     public Resource FUNCTIONAL_PROPERTY() {         return m_functionalProperty; }
+    @Override
     public Resource INVERSE_FUNCTIONAL_PROPERTY() { return m_inverseFunctionalProperty; }
+    @Override
     public Resource ALL_DIFFERENT() {               return m_allDifferent; }
+    @Override
     public Resource ONTOLOGY() {                    return m_ontology; }
+    @Override
     public Resource DEPRECATED_CLASS() {            return m_deprecatedClass; }
+    @Override
     public Resource DEPRECATED_PROPERTY() {         return m_deprecatedProperty; }
+    @Override
     public Resource ANNOTATION_PROPERTY() {         return m_annotationProperty; }
+    @Override
     public Resource ONTOLOGY_PROPERTY() {           return m_ontologyProperty; }
+    @Override
     public Resource LIST() {                        return m_list; }
+    @Override
     public Resource NIL() {                         return m_nil; }
+    @Override
     public Resource DATARANGE() {                   return m_datarange; }
 
+    @Override
     public Property EQUIVALENT_PROPERTY() {         return m_equivalentProperty; }
+    @Override
     public Property EQUIVALENT_CLASS() {            return m_equivalentClass; }
+    @Override
     public Property DISJOINT_WITH() {               return m_disjointWith; }
+    @Override
     public Property SAME_INDIVIDUAL_AS() {          return m_sameIndividualAs; }
+    @Override
     public Property SAME_AS() {                     return m_sameAs; }
+    @Override
     public Property DIFFERENT_FROM() {              return m_differentFrom; }
+    @Override
     public Property DISTINCT_MEMBERS() {            return m_distinctMembers; }
+    @Override
     public Property UNION_OF() {                    return m_unionOf; }
+    @Override
     public Property INTERSECTION_OF() {             return m_intersectionOf; }
+    @Override
     public Property COMPLEMENT_OF() {               return m_complementOf; }
+    @Override
     public Property ONE_OF() {                      return m_oneOf; }
+    @Override
     public Property ON_PROPERTY() {                 return m_onProperty; }
+    @Override
     public Property ALL_VALUES_FROM() {             return m_allValuesFrom; }
+    @Override
     public Property HAS_VALUE() {                   return m_hasValue; }
+    @Override
     public Property SOME_VALUES_FROM() {            return m_someValuesFrom; }
+    @Override
     public Property MIN_CARDINALITY() {             return m_minCardinality; }
+    @Override
     public Property MAX_CARDINALITY() {             return m_maxCardinality; }
+    @Override
     public Property CARDINALITY() {                 return m_cardinality; }
+    @Override
     public Property INVERSE_OF() {                  return m_inverseOf; }
+    @Override
     public Property IMPORTS() {                     return m_imports; }
+    @Override
     public Property PRIOR_VERSION() {               return m_priorVersion; }
+    @Override
     public Property BACKWARD_COMPATIBLE_WITH() {    return m_backwardsCompatibleWith; }
+    @Override
     public Property INCOMPATIBLE_WITH() {           return m_incompatibleWith; }
+    @Override
     public Property SUB_CLASS_OF() {                return m_subClassOf; }
+    @Override
     public Property SUB_PROPERTY_OF() {             return m_subPropertyOf; }
+    @Override
     public Property DOMAIN() {                      return m_domain; }
+    @Override
     public Property RANGE() {                       return m_range; }
+    @Override
     public Property FIRST() {                       return m_first; }
+    @Override
     public Property REST() {                        return m_rest; }
+    @Override
     public Property MIN_CARDINALITY_Q() {           return m_minCardinalityQ; }
+    @Override
     public Property MAX_CARDINALITY_Q() {           return m_maxCardinalityQ; }
+    @Override
     public Property CARDINALITY_Q() {               return m_cardinalityQ; }
+    @Override
     public Property HAS_CLASS_Q() {                 return m_hasClassQ; }
 
 
     // Annotations
+    @Override
     public Property VERSION_INFO() {                return m_versionInfo; }
+    @Override
     public Property LABEL() {                       return RDFS.label; }
+    @Override
     public Property COMMENT() {                     return RDFS.comment; }
+    @Override
     public Property SEE_ALSO() {                    return RDFS.seeAlso; }
+    @Override
     public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
 
     @Override
@@ -224,6 +283,7 @@ public class DAML_OILProfile
     }
 
     /** There are no first-class axioms in DAML */
+    @Override
     public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -232,6 +292,7 @@ public class DAML_OILProfile
     }
 
     /** The annotation properties of DAML (currently none) */
+    @Override
     public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
@@ -239,6 +300,7 @@ public class DAML_OILProfile
         ).iterator();
     }
 
+    @Override
     public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -265,6 +327,7 @@ public class DAML_OILProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
+    @Override
     public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
@@ -297,6 +360,7 @@ public class DAML_OILProfile
      * </p>
      * @return "DAML+OIL"
      */
+    @Override
     public String getLabel() {
         return "DAML+OIL";
     }

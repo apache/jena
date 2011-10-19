@@ -42,6 +42,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information for the reasoner
      */
+    @Override
     public Reasoner create(Resource configuration) {
         return new RDFSRuleReasoner (this, configuration );
     }
@@ -51,6 +52,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -71,6 +73,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

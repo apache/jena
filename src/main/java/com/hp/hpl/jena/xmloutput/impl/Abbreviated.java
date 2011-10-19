@@ -144,15 +144,18 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 	}
 
 	// Implemenatation of RDFErrorHandler
-	public void error(Exception e) {
+	@Override
+    public void error(Exception e) {
 		errorHandler.error(e);
 	}
 
-	public void warning(Exception e) {
+	@Override
+    public void warning(Exception e) {
 		errorHandler.warning(e);
 	}
 
-	public void fatalError(Exception e) {
+	@Override
+    public void fatalError(Exception e) {
 		errorHandler.fatalError(e);
 	}
 

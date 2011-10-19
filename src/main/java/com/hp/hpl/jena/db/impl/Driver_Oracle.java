@@ -72,7 +72,8 @@ public class Driver_Oracle extends DriverRDB {
 	/**
 	 * Set the database connection
 	 */
-	public void setConnection( IDBConnection dbcon ) {
+	@Override
+    public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
         
         
@@ -120,7 +121,8 @@ public class Driver_Oracle extends DriverRDB {
 	 * Dellocate an identifier for a graph.
 	 *
 	 */
-	public void graphIdDealloc ( int graphId ) {
+	@Override
+    public void graphIdDealloc ( int graphId ) {
 		DBIDInt result = null;
 		try {
 			String op = "deleteGraph";

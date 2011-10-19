@@ -124,6 +124,7 @@ public class OntResourceImpl
      * answer null.</p>
      * @return The ont model that this resource is attached to, or null.
      */
+    @Override
     public OntModel getOntModel() {
         Model m = getModel();
         return (m instanceof OntModel) ? (OntModel) m : null;
@@ -139,6 +140,7 @@ public class OntResourceImpl
      * @throws JenaException if the resource is not bound to an OntModel, since
      * that's the only way to get the profile for the resource
      */
+    @Override
     public Profile getProfile() {
         try {
             return ((OntModel) getModel()).getProfile();
@@ -155,6 +157,7 @@ public class OntResourceImpl
      * this resource is in one of those pre-declared namespaces.</p>
      * @return True if this is a term in the language namespace for OWL, RDF, RDFS or DAML+OIL.
      */
+    @Override
     public boolean isOntLanguageTerm() {
         if (!isAnon()) {
             for (int i = 0; i < KNOWN_LANGUAGES.length; i++) {
@@ -175,6 +178,7 @@ public class OntResourceImpl
      * @param res The resource that is declared to be the same as this resource
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
+    @Override
     public void setSameAs( Resource res ) {
         setPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
@@ -184,6 +188,7 @@ public class OntResourceImpl
      * @param res A resource that declared to be the same as this resource
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
+    @Override
     public void addSameAs( Resource res ) {
         addPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
@@ -194,6 +199,7 @@ public class OntResourceImpl
      * @return res An ont resource that declared to be the same as this resource
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getSameAs() {
         return objectAsResource( getProfile().SAME_AS(), "SAME_AS" );
     }
@@ -204,6 +210,7 @@ public class OntResourceImpl
      * @return An iterator over the resources equivalent to this resource.
      * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listSameAs() {
         return listAs( getProfile().SAME_AS(), "SAME_AS", OntResource.class );
     }
@@ -213,6 +220,7 @@ public class OntResourceImpl
      * @param res A resource to test against
      * @return True if the resources are declared the same via a <code>sameAs</code> statement.
      */
+    @Override
     public boolean isSameAs( Resource res ) {
         return hasPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
@@ -222,6 +230,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that may be declared to be the sameAs this resource
      */
+    @Override
     public void removeSameAs( Resource res ) {
         removePropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
@@ -234,6 +243,7 @@ public class OntResourceImpl
      * @param res The resource that is declared to be distinct from this resource
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public void setDifferentFrom( Resource res ) {
         setPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
@@ -243,6 +253,7 @@ public class OntResourceImpl
      * @param res A resource that declared to be distinct from this resource
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public void addDifferentFrom( Resource res ) {
         addPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
@@ -253,6 +264,7 @@ public class OntResourceImpl
      * @return res An ont resource that declared to be different from this resource
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getDifferentFrom() {
         return objectAsResource( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
     }
@@ -263,6 +275,7 @@ public class OntResourceImpl
      * @return An iterator over the resources different from this resource.
      * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listDifferentFrom() {
         return listAs( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", OntResource.class );
     }
@@ -272,6 +285,7 @@ public class OntResourceImpl
      * @param res A resource to test against
      * @return True if the resources are declared to be distinct via a <code>differentFrom</code> statement.
      */
+    @Override
     public boolean isDifferentFrom( Resource res ) {
         return hasPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
@@ -281,6 +295,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that may be declared to be differentFrom this resource
      */
+    @Override
     public void removeDifferentFrom( Resource res ) {
         removePropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
@@ -292,6 +307,7 @@ public class OntResourceImpl
      * @param res A resource that can provide additional information about this resource
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
+    @Override
     public void setSeeAlso( Resource res ) {
         setPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
@@ -301,6 +317,7 @@ public class OntResourceImpl
      * @param res A resource that provides extra information on this resource
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
+    @Override
     public void addSeeAlso( Resource res ) {
         addPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
@@ -311,6 +328,7 @@ public class OntResourceImpl
      * @return res A resource that provides additional information about this resource
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
+    @Override
     public Resource getSeeAlso() {
         return objectAsResource( getProfile().SEE_ALSO(), "SEE_ALSO" );
     }
@@ -321,6 +339,7 @@ public class OntResourceImpl
      * @return An iterator over the resources providing additional definition on this resource.
      * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<RDFNode> listSeeAlso() {
         checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
         return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
@@ -332,6 +351,7 @@ public class OntResourceImpl
      * @param res A resource to test against
      * @return True if the <code>res</code> provides more information on this resource.
      */
+    @Override
     public boolean hasSeeAlso( Resource res ) {
         return hasPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
@@ -342,6 +362,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that may be declared to provide additional information about this resource
      */
+    @Override
     public void removeSeeAlso( Resource res ) {
         removePropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
     }
@@ -354,6 +375,7 @@ public class OntResourceImpl
      * @param res The resource that is declared to be a definition of this resource.
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
+    @Override
     public void setIsDefinedBy( Resource res ) {
         setPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
@@ -363,6 +385,7 @@ public class OntResourceImpl
      * @param res A defining resource
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
+    @Override
     public void addIsDefinedBy( Resource res ) {
         addPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
@@ -373,6 +396,7 @@ public class OntResourceImpl
      * @return res An ont resource that is declared to provide a definition of this resource
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
+    @Override
     public Resource getIsDefinedBy() {
         return objectAsResource( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
     }
@@ -383,6 +407,7 @@ public class OntResourceImpl
      * @return An iterator over the resources defining this resource.
      * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<RDFNode> listIsDefinedBy() {
         checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
         return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
@@ -394,6 +419,7 @@ public class OntResourceImpl
      * @param res A resource to test against
      * @return True if <code>res</code> defines this resource.
      */
+    @Override
     public boolean isDefinedBy( Resource res ) {
         return hasPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
@@ -403,6 +429,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that may be declared to define this resource
      */
+    @Override
     public void removeDefinedBy( Resource res ) {
         removePropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
     }
@@ -416,6 +443,7 @@ public class OntResourceImpl
      * @param info The version information for this resource
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
+    @Override
     public void setVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         removeAll( getProfile().VERSION_INFO() );
@@ -427,6 +455,7 @@ public class OntResourceImpl
      * @param info A version information string for this resource
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
+    @Override
     public void addVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         addProperty( getProfile().VERSION_INFO(), getModel().createLiteral( info ) );
@@ -438,6 +467,7 @@ public class OntResourceImpl
      * @return A version info string
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
+    @Override
     public String getVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         try {
@@ -453,6 +483,7 @@ public class OntResourceImpl
      * @return An iterator over the version info strings for this resource.
      * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<String> listVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return WrappedIterator.create( listProperties( getProfile().VERSION_INFO() ) )
@@ -464,6 +495,7 @@ public class OntResourceImpl
      * @param info Version information to test for
      * @return True if this resource has <code>info</code> as version information.
      */
+    @Override
     public boolean hasVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return hasProperty( getProfile().VERSION_INFO(), info );
@@ -475,6 +507,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param info A version information string to be removed
      */
+    @Override
     public void removeVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         Literal infoAsLiteral = ResourceFactory.createPlainLiteral( info );
@@ -490,6 +523,7 @@ public class OntResourceImpl
      * @param lang The language attribute for this label (EN, FR, etc) or null if not specified.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
+    @Override
     public void setLabel( String label, String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         removeAll( getProfile().LABEL() );
@@ -502,6 +536,7 @@ public class OntResourceImpl
      * @param lang The language attribute for this label (EN, FR, etc) or null if not specified.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
+    @Override
     public void addLabel( String label, String lang ) {
         addLabel( getModel().createLiteral( label, lang ) );
     }
@@ -511,6 +546,7 @@ public class OntResourceImpl
      * @param label The literal label
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
+    @Override
     public void addLabel( Literal label ) {
         addPropertyValue( getProfile().LABEL(), "LABEL", label );
     }
@@ -523,6 +559,7 @@ public class OntResourceImpl
      * @return A label string matching the given language, or null if there is no matching label.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
+    @Override
     public String getLabel( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         if (lang == null || lang.length() == 0) {
@@ -546,6 +583,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<RDFNode> listLabels( String lang ) {
         checkProfile( getProfile().LABEL(), "LABEL" );
         return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
@@ -559,6 +597,7 @@ public class OntResourceImpl
      * @param lang The optional language tag, or null for don't care.
      * @return True if this resource has <code>label</code> as a label.
      */
+    @Override
     public boolean hasLabel( String label, String lang ) {
         return hasLabel( getModel().createLiteral( label, lang ) );
     }
@@ -568,6 +607,7 @@ public class OntResourceImpl
      * @param label The label to test for
      * @return True if this resource has <code>label</code> as a label.
      */
+    @Override
     public boolean hasLabel( Literal label ) {
         boolean found = false;
 
@@ -587,6 +627,7 @@ public class OntResourceImpl
      * @param label A label string to be removed
      * @param lang A lang tag
      */
+    @Override
     public void removeLabel( String label, String lang ) {
         removeLabel( getModel().createLiteral( label, lang ) );
     }
@@ -597,6 +638,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param label A label literal to be removed
      */
+    @Override
     public void removeLabel( Literal label ) {
         removePropertyValue( getProfile().LABEL(), "LABEL", label );
     }
@@ -610,6 +652,7 @@ public class OntResourceImpl
      * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
+    @Override
     public void setComment( String comment, String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         removeAll( getProfile().COMMENT() );
@@ -622,6 +665,7 @@ public class OntResourceImpl
      * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
+    @Override
     public void addComment( String comment, String lang ) {
         addComment( getModel().createLiteral( comment, lang ) );
     }
@@ -631,6 +675,7 @@ public class OntResourceImpl
      * @param comment The literal comment
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
+    @Override
     public void addComment( Literal comment ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         addProperty( getProfile().COMMENT(), comment );
@@ -644,6 +689,7 @@ public class OntResourceImpl
      * @return A comment string matching the given language, or null if there is no matching comment.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
+    @Override
     public String getComment( String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         if (lang == null) {
@@ -667,6 +713,7 @@ public class OntResourceImpl
      * @return An iterator over RDF {@link Literal}'s.
      * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<RDFNode> listComments( String lang ) {
         checkProfile( getProfile().COMMENT(), "COMMENT" );
         return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
@@ -680,6 +727,7 @@ public class OntResourceImpl
      * @param lang The optional language tag, or null for don't care.
      * @return True if this resource has <code>comment</code> as a comment.
      */
+    @Override
     public boolean hasComment( String comment, String lang ) {
         return hasComment( getModel().createLiteral( comment, lang ) );
     }
@@ -689,6 +737,7 @@ public class OntResourceImpl
      * @param comment The comment to test for
      * @return True if this resource has <code>comment</code> as a comment.
      */
+    @Override
     public boolean hasComment( Literal comment ) {
         boolean found = false;
 
@@ -708,6 +757,7 @@ public class OntResourceImpl
      * @param comment A comment string to be removed
      * @param lang A lang tag
      */
+    @Override
     public void removeComment( String comment, String lang ) {
         removeComment( getModel().createLiteral( comment, lang ) );
     }
@@ -718,6 +768,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param comment A comment literal to be removed
      */
+    @Override
     public void removeComment( Literal comment ) {
         removePropertyValue( getProfile().COMMENT(), "COMMENT", comment );
     }
@@ -733,6 +784,7 @@ public class OntResourceImpl
      * @param cls The RDF resource denoting the new value for the <code>rdf:type</code> property,
      *                 which will replace any existing type property.
      */
+    @Override
     public void setRDFType( Resource cls ) {
         setPropertyValue( RDF.type, "rdf:type", cls );
     }
@@ -742,6 +794,7 @@ public class OntResourceImpl
      *
      * @param cls An RDF resource denoting a new value for the <code>rdf:type</code> property.
      */
+    @Override
     public void addRDFType( Resource cls ) {
         addPropertyValue( RDF.type, "rdf:type", cls );
     }
@@ -757,6 +810,7 @@ public class OntResourceImpl
      * @return A resource that is the rdf:type for this resource, or one of them if
      * more than one is defined.
      */
+    @Override
     public Resource getRDFType() {
         return getRDFType( false );
     }
@@ -774,6 +828,7 @@ public class OntResourceImpl
      * @return A resource that is the rdf:type for this resource, or one of them if
      * more than one is defined.
      */
+    @Override
     public Resource getRDFType( boolean direct ) {
         ExtendedIterator<Resource> i = null;
         try {
@@ -795,6 +850,7 @@ public class OntResourceImpl
      * @return An iterator over the set of this resource's classes, each of which
      * will be a {@link Resource}.
      */
+    @Override
     public ExtendedIterator<Resource> listRDFTypes( boolean direct ) {
         ExtendedIterator<Resource> i = listDirectPropertyValues( RDF.type, "rdf:type", Resource.class, getProfile().SUB_CLASS_OF(), direct, false );
         // we only want each result once
@@ -809,6 +865,7 @@ public class OntResourceImpl
      * @param uri Denotes the URI of a class to which this value may belong
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
+    @Override
     public boolean hasRDFType( String uri ) {
         return hasRDFType( getModel().getResource( uri ) );
     }
@@ -825,6 +882,7 @@ public class OntResourceImpl
      * @param ontClass Denotes a class to which this value may belong
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
+    @Override
     public boolean hasRDFType( Resource ontClass ) {
         return hasRDFType( ontClass, "unknown", false );
     }
@@ -840,6 +898,7 @@ public class OntResourceImpl
      * the super-classes of the stated types.
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
+    @Override
     public boolean hasRDFType( Resource ontClass, boolean direct ) {
         return hasRDFType( ontClass, "unknown", direct );
     }
@@ -875,6 +934,7 @@ public class OntResourceImpl
      * is not true of the current model, nothing happens.</p>
      * @param cls A resource denoting a class that that is to be removed from the classes of this resource
      */
+    @Override
     public void removeRDFType( Resource cls ) {
         removePropertyValue( RDF.type, "rdf:type", cls );
     }
@@ -888,6 +948,7 @@ public class OntResourceImpl
      * @return The cardinality for the property <code>p</code> on this resource, as an
      * integer greater than or equal to zero.
      */
+    @Override
     public int getCardinality( Property p ) {
         int n = 0;
         for (Iterator<RDFNode> i = UniqueExtendedIterator.create( listPropertyValues( p ) );  i.hasNext(); n++) {
@@ -911,6 +972,7 @@ public class OntResourceImpl
      * @param value The new value of the property as an RDFNode, or null to
      *              effectively remove this property.
      */
+    @Override
     public void setPropertyValue( Property property, RDFNode value ) {
         // if there is an existing property, remove it
         removeAll( property );
@@ -935,6 +997,7 @@ public class OntResourceImpl
      * @return An RDFNode whose value is the value, or one of the values, of the
      *         given property. If the property is not defined the method returns null.
      */
+    @Override
     public RDFNode getPropertyValue( Property property ) {
         Statement s = getProperty( property );
         if (s == null) {
@@ -954,6 +1017,7 @@ public class OntResourceImpl
      * @param property The property whose values are sought
      * @return An Iterator over the values of the property
      */
+    @Override
     public NodeIterator listPropertyValues( Property property ) {
         return new NodeIteratorImpl( listProperties( property ).mapWith( new ObjectAsOntResourceMapper() ), null );
     }
@@ -974,6 +1038,7 @@ public class OntResourceImpl
     * calling this remove method.
     * </p>
     */
+    @Override
     public void remove() {
         Set<Statement> stmts = new HashSet<Statement>();
         List<Resource> lists = new ArrayList<Resource>();
@@ -1030,6 +1095,7 @@ public class OntResourceImpl
      * @param property The property to be removed
      * @param value The specific value of the property to be removed
      */
+    @Override
     public void removeProperty( Property property, RDFNode value ) {
         getModel().remove( this, property, value );
     }
@@ -1040,6 +1106,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an AnnotationProperty
      * @exception ConversionException if the resource cannot be converted to an annotation property
      */
+    @Override
     public AnnotationProperty asAnnotationProperty() {
         return as( AnnotationProperty.class );
     }
@@ -1049,6 +1116,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an OntProperty
      * @exception ConversionException if the resource cannot be converted to a property
      */
+    @Override
     public OntProperty asProperty() {
         return as( OntProperty.class );
     }
@@ -1058,6 +1126,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an ObjectProperty
      * @exception ConversionException if the resource cannot be converted to an object property
      */
+    @Override
     public ObjectProperty asObjectProperty() {
         return as( ObjectProperty.class );
     }
@@ -1067,6 +1136,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as a DatatypeProperty
      * @exception ConversionException if the resource cannot be converted to a datatype property
      */
+    @Override
     public DatatypeProperty asDatatypeProperty() {
         return as( DatatypeProperty.class );
     }
@@ -1076,6 +1146,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an Individual
      * @exception ConversionException if the resource cannot be converted to an individual
      */
+    @Override
     public Individual asIndividual() {
         return as( Individual.class );
     }
@@ -1085,6 +1156,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an OntClass
      * @exception ConversionException if the resource cannot be converted to a class
      */
+    @Override
     public OntClass asClass() {
         return as( OntClass.class );
     }
@@ -1094,6 +1166,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an Ontology
      * @exception ConversionException if the resource cannot be converted to an ontology description node
      */
+    @Override
     public Ontology asOntology() {
         return as( Ontology.class );
     }
@@ -1103,6 +1176,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as an AllDifferent node
      * @exception ConversionException if the resource cannot be converted to an all different declaration
      */
+    @Override
     public AllDifferent asAllDifferent() {
         return as( AllDifferent.class );
     }
@@ -1112,6 +1186,7 @@ public class OntResourceImpl
      * @return This resource, but viewed as a DataRange
      * @exception ConversionException if the resource cannot be converted to a data range
      */
+    @Override
     public DataRange asDataRange() {
         return as( DataRange.class );
     }
@@ -1123,6 +1198,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as an annotation property</p>
      * @return True if this resource can be viewed as an AnnotationProperty
      */
+    @Override
     public boolean isAnnotationProperty() {
         return getProfile().ANNOTATION_PROPERTY() != null && canAs( AnnotationProperty.class );
     }
@@ -1131,6 +1207,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as a property</p>
      * @return True if this resource can be viewed as an OntProperty
      */
+    @Override
     public boolean isProperty() {
         return canAs( OntProperty.class );
     }
@@ -1139,6 +1216,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as an object property</p>
      * @return True if this resource can be viewed as an ObjectProperty
      */
+    @Override
     public boolean isObjectProperty() {
         return getProfile().OBJECT_PROPERTY() != null && canAs( ObjectProperty.class );
     }
@@ -1147,6 +1225,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as a datatype property</p>
      * @return True if this resource can be viewed as a DatatypeProperty
      */
+    @Override
     public boolean isDatatypeProperty() {
         return getProfile().DATATYPE_PROPERTY() != null && canAs( DatatypeProperty.class );
     }
@@ -1155,6 +1234,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as an individual</p>
      * @return True if this resource can be viewed as an Individual
      */
+    @Override
     public boolean isIndividual() {
         OntModel m = (getModel() instanceof OntModel) ? (OntModel) getModel() : null;
 
@@ -1224,6 +1304,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as a class</p>
      * @return True if this resource can be viewed as an OntClass
      */
+    @Override
     public boolean isClass() {
         return canAs( OntClass.class );
     }
@@ -1232,6 +1313,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as an ontology description node</p>
      * @return True if this resource can be viewed as an Ontology
      */
+    @Override
     public boolean isOntology() {
         return getProfile().ONTOLOGY() != null && canAs( Ontology.class );
     }
@@ -1240,6 +1322,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as a data range</p>
      * @return True if this resource can be viewed as a DataRange
      */
+    @Override
     public boolean isDataRange() {
         return getProfile().DATARANGE() != null && canAs( DataRange.class );
     }
@@ -1248,6 +1331,7 @@ public class OntResourceImpl
      * <p>Answer true if this resource can be viewed as an 'all different' declaration</p>
      * @return True if this resource can be viewed as an AllDifferent node
      */
+    @Override
     public boolean isAllDifferent() {
         return getProfile().ALL_DIFFERENT() != null && canAs( AllDifferent.class );
     }
@@ -1575,6 +1659,7 @@ public class OntResourceImpl
     {
         private Class<T> m_as;
         public AsMapper( Class<T> as ) { m_as = as; }
+        @Override
         public T map1( RDFNode x ) { return x.as( m_as ); }
     }
 
@@ -1583,6 +1668,7 @@ public class OntResourceImpl
     {
         private Class<T> m_as;
         public ResourceAsMapper( Class<T> as ) { m_as = as; }
+        @Override
         public T map1( Resource x ) { return x.as( m_as ); }
     }
 
@@ -1591,6 +1677,7 @@ public class OntResourceImpl
     {
         private Class<T> m_as;
         public SubjectAsMapper( Class<T> as ) { m_as = as; }
+        @Override
         public T map1( Statement x ) {
             return x.getSubject().as( m_as );
         }
@@ -1599,6 +1686,7 @@ public class OntResourceImpl
     /** Implementation of Map1 that extracts the subject of a statement */
     protected static class SubjectMapper implements Map1<Statement, Resource>
     {
+        @Override
         public Resource map1( Statement x ) {
             return x.getSubject();
         }
@@ -1610,6 +1698,7 @@ public class OntResourceImpl
         private Class<T> m_as;
         public ObjectAsMapper( Class<T> as )
             { m_as = as; }
+        @Override
         public T map1( Statement x ) {
             return x.getObject().as( m_as );
         }
@@ -1618,18 +1707,21 @@ public class OntResourceImpl
     /** Implementation of Map1 that performs getString on the object of a statement */
     protected class ObjectAsStringMapper implements Map1<Statement, String>
     {
+        @Override
         public String map1( Statement x ) { return x.getString(); }
     }
 
     /** Implementation of Map1 that returns the object of a statement */
     protected static class ObjectMapper implements Map1<Statement, RDFNode>
     {
+        @Override
         public RDFNode map1( Statement x ) { return x.getObject(); }
     }
 
     /** Implementation of Map1 that returns the object of a statement as an ont resource */
     protected static class ObjectAsOntResourceMapper implements Map1<Statement, RDFNode>
     {
+        @Override
         public RDFNode map1( Statement x ) {
             return asOntResource( x.getObject() );
         }

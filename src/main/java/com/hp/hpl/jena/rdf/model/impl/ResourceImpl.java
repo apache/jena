@@ -97,15 +97,19 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( Node.createURI( nameSpace + localName ), m );
     }
 
+    @Override
     public Object visitWith( RDFVisitor rv )
         { return isAnon() ? rv.visitBlank( this, getId() ) : rv.visitURI( this, getURI() ); }
         
+    @Override
     public Resource asResource()
         { return this; }
     
+    @Override
     public Literal asLiteral()
         { throw new LiteralRequiredException( asNode() ); }
     
+    @Override
     public Resource inModel( Model m )
         { 
         return 
@@ -118,21 +122,26 @@ public class ResourceImpl extends EnhNode implements Resource {
     private static Node fresh( String uri )
         { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
 
+    @Override
     public AnonId getId() 
         { return asNode().getBlankNodeId(); }
 
+    @Override
     public String  getURI() {
         return isAnon() ? null : node.getURI();
     }
 
+    @Override
     public String getNameSpace() {
         return isAnon() ? null : node.getNameSpace();
     }
     
-	public String getLocalName() {
+	@Override
+    public String getLocalName() {
         return isAnon() ? null : node.getLocalName(); 
     }
 
+    @Override
     public boolean hasURI( String uri ) 
         { return node.hasURI( uri ); }
     
@@ -147,18 +156,23 @@ public class ResourceImpl extends EnhNode implements Resource {
 		return model;
 		}
 		    
+    @Override
     public Statement getRequiredProperty(Property p) 
     	{ return mustHaveModel().getRequiredProperty( this, p ); }
         
+    @Override
     public Statement getProperty( Property p )
         { return mustHaveModel().getProperty( this, p ); }
 
+    @Override
     public StmtIterator listProperties(Property p) 
 		{ return mustHaveModel().listStatements( this, p, (RDFNode) null ); }
 
+    @Override
     public StmtIterator listProperties() 
     	{ return mustHaveModel().listStatements( this, null, (RDFNode) null ); }	
     
+    @Override
     public Resource addLiteral( Property p, boolean o ) 
         {
         ModelCom m = mustHaveModel();
@@ -171,6 +185,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
     }
     
+    @Override
     public Resource addLiteral( Property p, long o ) 
         {
         Model m = mustHaveModel();
@@ -178,6 +193,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
         }
     
+    @Override
     public Resource addLiteral( Property p, char o )  
         {
         ModelCom m = mustHaveModel();
@@ -195,6 +211,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
     }
     
+    @Override
     public Resource addLiteral( Property p, double o ) 
         {
         Model m = mustHaveModel();
@@ -202,6 +219,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
         }
     
+    @Override
     public Resource addLiteral( Property p, float o ) 
         {
         Model m = mustHaveModel();
@@ -209,23 +227,27 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
         }
 
+    @Override
     public Resource addProperty(Property p, String o) {
         mustHaveModel().add( this, p, o );
         return this;
     }
 
+    @Override
     public Resource addProperty(Property p, String o, String l)
     {
         mustHaveModel().add( this, p, o, l );
         return this;
     }
 
+    @Override
     public Resource addProperty(Property p, String lexicalForm, RDFDatatype datatype)
     {
         mustHaveModel().add(this, p, lexicalForm, datatype) ;
         return this ;
     }
 
+    @Override
     public Resource addLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
@@ -233,95 +255,113 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
         }
     
+    @Override
     public Resource addLiteral( Property p, Literal o )
         {
         mustHaveModel().add( this, p, o );
         return this;
         }
 
+    @Override
     public Resource addProperty( Property p, RDFNode o ) 
         {
         mustHaveModel().add( this, p, o );
         return this;
         }
 
+    @Override
     public boolean hasProperty(Property p)  {
         return mustHaveModel().contains( this, p );
     }
     
+    @Override
     public boolean hasLiteral( Property p, boolean o )  
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
+    @Override
     public boolean hasLiteral( Property p, long o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
+    @Override
     public boolean hasLiteral( Property p, char o )  
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
+    @Override
     public boolean hasLiteral( Property p, double o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
+    @Override
     public boolean hasLiteral( Property p, float o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
     
+    @Override
     public boolean hasProperty(Property p, String o) {
         return mustHaveModel().contains( this, p, o );
     }
 
+    @Override
     public boolean hasProperty(Property p, String o, String l) {
         return mustHaveModel().contains( this, p, o, l );
     }
 
+    @Override
     public boolean hasLiteral( Property p, Object o ) 
         {
         ModelCom m = mustHaveModel();
         return m.contains( this, p, m.createTypedLiteral( o ) );
         }
 
+    @Override
     public boolean hasProperty(Property p, RDFNode o)  {
         return mustHaveModel().contains( this, p, o );
     }
 
+    @Override
     public Resource removeProperties()  {
         removeAll(null);
         return this;
     }
     
+    @Override
     public Resource removeAll( Property p ) {
         mustHaveModel().removeAll( this, p, (RDFNode) null );
         return this;
     }
     
+    @Override
     public Resource begin()  {
         mustHaveModel().begin();
         return this;
     }
 
+    @Override
     public Resource abort()  {
         mustHaveModel().abort();
         return this;
     }
 
+    @Override
     public Resource commit()  {
         mustHaveModel().commit();
         return this;
     }
 
+    @Override
     public Model getModel() {
         return (Model) getGraph();
     }
@@ -329,6 +369,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     protected ModelCom getModelCom()
         { return (ModelCom) getGraph(); }
 
+    @Override
     public Resource getPropertyResourceValue( Property p )
         {
         for (StmtIterator it = listProperties( p ); it.hasNext();)

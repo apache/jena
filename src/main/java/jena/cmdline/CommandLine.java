@@ -423,6 +423,7 @@ public class CommandLine
         final PrintStream _out = System.err ;
         return new ArgHandler()
             {
+                @Override
                 public void action (String arg, String val) //throws java.lang.IllegalArgumentException
                 {
                     if ( _out != null )

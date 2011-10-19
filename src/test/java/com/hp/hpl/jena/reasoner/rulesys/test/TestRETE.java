@@ -138,6 +138,7 @@ public class TestRETE  extends TestCase {
          * @param env a set of variable bindings for the rule being processed. 
          * @param isAdd distinguishes between add and remove operations.
          */
+        @Override
         public void fire(BindingVector env, boolean isAdd) {
             firings++;
             this.env = env;
@@ -149,6 +150,7 @@ public class TestRETE  extends TestCase {
          * @param netCopy a map from RETENodes to cloned instance so far.
          * @param context the new context to which the network is being ported
          */
+        @Override
         public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) {
             // Dummy, not used in testing
             return this;

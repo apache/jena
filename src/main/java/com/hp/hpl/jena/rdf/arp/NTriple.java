@@ -264,12 +264,14 @@ public class NTriple implements ARPErrorNumbers {
 				arp.getHandlers().setStatementHandler(new StatementHandler(){
 int debugC = 0;
 
-					public void statement(AResource subj, AResource pred, AResource obj) {
+					@Override
+                    public void statement(AResource subj, AResource pred, AResource obj) {
 						statement(null,null,(ALiteral)null);
 						
 					}
 
-					public void statement(AResource subj, AResource pred, ALiteral lit) {
+					@Override
+                    public void statement(AResource subj, AResource pred, ALiteral lit) {
 						if (++debugC%100 == 0) {
 							System.out.println("T: " + debugC);
 							rt.gc();
@@ -318,8 +320,11 @@ int debugC = 0;
 					break;
                 case 'E':
                     arp.getHandlers().setErrorHandler(new ErrorHandler(){
+                        @Override
                         public void warning(SAXParseException exception) { /* ignore */ }
+                        @Override
                         public void error(SAXParseException exception) { /* ignore */ }
+                        @Override
                         public void fatalError(SAXParseException exception) { /* ignore */ }     
                     });
                     
@@ -445,11 +450,13 @@ int debugC = 0;
 	}
 	private static class TwoSH implements StatementHandler {
 		final StatementHandler a, b;
-		public void statement(AResource subj, AResource pred, AResource obj) {
+		@Override
+        public void statement(AResource subj, AResource pred, AResource obj) {
 			a.statement(subj, pred, obj);
 			b.statement(subj, pred, obj);
 		}
-		public void statement(AResource subj, AResource pred, ALiteral lit) {
+		@Override
+        public void statement(AResource subj, AResource pred, ALiteral lit) {
 			a.statement(subj, pred, lit);
 			b.statement(subj, pred, lit);
 		}
@@ -465,12 +472,14 @@ int debugC = 0;
 ////		        n.setUserData(new Integer(ix++));
 //		    }
 //		}
-	    public void statement(AResource subj, AResource pred, AResource obj) {
+	    @Override
+        public void statement(AResource subj, AResource pred, AResource obj) {
 //		    userData(subj);
 //		    userData(pred);
 //		    userData(obj);
 		}
-		public void statement(AResource subj, AResource pred, ALiteral lit) {
+		@Override
+        public void statement(AResource subj, AResource pred, ALiteral lit) {
 //		    userData(subj);
 //		    userData(pred);
 		    }
@@ -480,7 +489,8 @@ int debugC = 0;
         SH(PrintStream out){
             this.out = out;
         }
-		public void statement(AResource subj, AResource pred, AResource obj) {
+		@Override
+        public void statement(AResource subj, AResource pred, AResource obj) {
 			lineNumber();
 			resource(subj);
 			resource(pred);
@@ -489,7 +499,8 @@ int debugC = 0;
 			out.println(line);
 			line.setLength(0);
 		}
-		public void statement(AResource subj, AResource pred, ALiteral lit) {
+		@Override
+        public void statement(AResource subj, AResource pred, ALiteral lit) {
 //			String lang = lit.getLang();
 //			String parseType = lit.getParseType();
 			lineNumber();

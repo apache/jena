@@ -121,6 +121,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
         {
         Map1<Statement, Statement> replace = new Map1<Statement, Statement>() 
             {
+            @Override
             public Statement map1( Statement o )
                 { 
                 Statement s = o;

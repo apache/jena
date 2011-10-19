@@ -42,6 +42,7 @@ import java.util.Iterator;
  */
 public class ContNodeIteratorFactoryImpl implements NodeIteratorFactory 
     {
+    @Override
     public NodeIterator createIterator( Iterator<Statement> iter,Object o,Container cont )
         { return new ContNodeIteratorImpl(iter, o, cont); }
     }

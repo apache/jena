@@ -22,36 +22,47 @@ public class RecordingModelListener implements ModelChangedListener
     {
     List<Object> history = new ArrayList<Object>();
     
+    @Override
     public void addedStatement( Statement s )
         { record( "add", s ); }
         
+    @Override
     public void addedStatements( Statement [] statements )
         { record( "add[]", Arrays.asList( statements ) ); }
         
+    @Override
     public void addedStatements( List<Statement> statements )
         { record( "addList", statements ); }
         
+    @Override
     public void addedStatements( StmtIterator statements )
         { record( "addIterator", GraphTestBase.iteratorToList( statements ) ); }
         
+    @Override
     public void addedStatements( Model m )
         { record( "addModel", m ); }
         
+    @Override
     public void removedStatements( Statement [] statements )
         { record( "remove[]", Arrays.asList( statements ) ); }
     
-   public void removedStatement( Statement s )
+   @Override
+public void removedStatement( Statement s )
         { record( "remove", s ); }
         
+    @Override
     public void removedStatements( List<Statement> statements )
         { record( "removeList", statements ); }
         
+    @Override
     public void removedStatements( StmtIterator statements )
         { record( "removeIterator", GraphTestBase.iteratorToList( statements ) ); }
         
+    @Override
     public void removedStatements( Model m )
         { record( "removeModel", m ); }
     
+    @Override
     public void notifyEvent( Model m, Object event )
         { record( "someEvent", m, event ); }
     

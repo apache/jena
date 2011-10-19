@@ -14,15 +14,19 @@ public class SimpleTransactionHandler extends TransactionHandlerBase
     public SimpleTransactionHandler()
         { super(); }
 
+    @Override
     public boolean transactionsSupported()
         { return false; }
         
+    @Override
     public void begin()
         { notSupported(); }
         
+    @Override
     public void abort()
         { notSupported(); }
         
+    @Override
     public void commit()
         { notSupported(); }
         

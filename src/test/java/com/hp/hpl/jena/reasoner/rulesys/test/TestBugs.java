@@ -857,6 +857,7 @@ public class TestBugs extends TestCase {
      * Used in implementing testGroundClosure.
      */
     private static class Flag extends BaseBuiltin {
+        @Override
         public String getName() {  return "flag";  }
         public boolean fired = false;
         @Override
@@ -895,6 +896,7 @@ public class TestBugs extends TestCase {
      * Builtin which generates an arbitrary Triple to for testing.
      */
     private static class SomeTriple extends BaseBuiltin {
+        @Override
         public String getName() {  return "someTriple";  }
         @Override
         public int getArgLength() { return 1; }

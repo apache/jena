@@ -42,6 +42,7 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
 
     static final private int PARSETYPE = 4;
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearObject();
@@ -183,14 +184,17 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                 .suggestParsetypeLiteral();
     }
 
+    @Override
     public void aPredAndObj(ANode p, ANode o) {
         triple(object, p, o);
     }
 
+    @Override
     public void makeSubjectReificationWith(ANode r) {
         triple(r, RDF_SUBJECT, object);
     }
 
+    @Override
     public void theObject(ANode o) {
         HasSubjectFrameI p = (HasSubjectFrameI) getParent();
         p.aPredAndObj(predicate, o);

@@ -41,6 +41,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
     @Override public <X extends RDFNode> boolean supports( Class<X> t )
         { return t.isInstance( this ) && isObject(); }
         
+    @Override
     public boolean isObject() {
         return findObject() != null;
     }
@@ -53,6 +54,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
      * 
      * @see com.hp.hpl.jena.enhanced.test.TestObject#aSubject()
      */
+    @Override
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");

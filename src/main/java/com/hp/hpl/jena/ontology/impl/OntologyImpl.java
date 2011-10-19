@@ -107,6 +107,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology imports.
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
      */
+    @Override
     public void setImport( Resource res ) {
         setPropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
     }
@@ -117,6 +118,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology imports.
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
      */
+    @Override
     public void addImport( Resource res ) {
         addPropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
     }
@@ -127,6 +129,7 @@ public class OntologyImpl
      * @return An ont resource representing a resource that this ontology imports
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getImport() {
         return objectAsResource( getProfile().IMPORTS(), "IMPORTS" );
     }
@@ -137,6 +140,7 @@ public class OntologyImpl
      * @return An iterator over the ontology import resources
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listImports() {
         return listAs( getProfile().IMPORTS(), "IMPORTS", OntResource.class );
     }
@@ -147,6 +151,7 @@ public class OntologyImpl
      * @param res A resource to test against
      * @return True if this ontology imports the ontology represented by <code>res</code>
      */
+    @Override
     public boolean imports( Resource res ) {
         return hasPropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
     }
@@ -156,6 +161,7 @@ public class OntologyImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that represents an ontology that is no longer to be imported
      */
+    @Override
     public void removeImport( Resource res ) {
         removePropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
     }
@@ -169,6 +175,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology is compatible with.
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public void setBackwardCompatibleWith( Resource res ) {
         setPropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
     }
@@ -179,6 +186,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology is compatible with.
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public void addBackwardCompatibleWith( Resource res ) {
         addPropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
     }
@@ -189,6 +197,7 @@ public class OntologyImpl
      * @return An ont resource representing an ontology that this ontology is compatible with
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getBackwardCompatibleWith() {
         return objectAsResource( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH" );
     }
@@ -200,6 +209,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources compatible with this ontology
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listBackwardCompatibleWith() {
         return listAs( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", OntResource.class );
     }
@@ -210,6 +220,7 @@ public class OntologyImpl
      * @param res A resource to test against
      * @return True if this ontology is compatible with the ontology represented by <code>res</code>
      */
+    @Override
     public boolean isBackwardCompatibleWith( Resource res ) {
         return hasPropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
     }
@@ -220,6 +231,7 @@ public class OntologyImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that represents an ontology that is no longer to be imported
      */
+    @Override
     public void removeBackwardCompatibleWith( Resource res ) {
         removePropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
     }
@@ -233,6 +245,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology supercedes.
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
+    @Override
     public void setPriorVersion( Resource res ) {
         setPropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
     }
@@ -243,6 +256,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology supercedes.
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
+    @Override
     public void addPriorVersion( Resource res ) {
         addPropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
     }
@@ -253,6 +267,7 @@ public class OntologyImpl
      * @return An ont resource representing an ontology that this ontology supercedes
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getPriorVersion() {
         return objectAsResource( getProfile().PRIOR_VERSION(), "PRIOR_VERSION" );
     }
@@ -264,6 +279,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources superceded by this ontology
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listPriorVersion() {
         return listAs( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", OntResource.class );
     }
@@ -274,6 +290,7 @@ public class OntologyImpl
      * @param res A resource to test against
      * @return True if this ontology supercedes the ontology represented by <code>res</code>
      */
+    @Override
     public boolean hasPriorVersion( Resource res ) {
         return hasPropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
     }
@@ -283,6 +300,7 @@ public class OntologyImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that represents an ontology that is no longer a prior version of this ontology
      */
+    @Override
     public void removePriorVersion( Resource res ) {
         removePropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
     }
@@ -296,6 +314,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology is incompatible with.
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public void setIncompatibleWith( Resource res ) {
         setPropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
     }
@@ -306,6 +325,7 @@ public class OntologyImpl
      * @param res Represents a resource that this ontology is incompatible with.
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public void addIncompatibleWith( Resource res ) {
         addPropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
     }
@@ -316,6 +336,7 @@ public class OntologyImpl
      * @return An ont resource representing an ontology that this ontology is incompatible with
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getIncompatibleWith() {
         return objectAsResource( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH" );
     }
@@ -327,6 +348,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources that this ontology is incompatible with
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntResource> listIncompatibleWith() {
         return listAs( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", OntResource.class );
     }
@@ -337,6 +359,7 @@ public class OntologyImpl
      * @param res A resource to test against
      * @return True if this ontology is incompatible with the ontology represented by <code>res</code>
      */
+    @Override
     public boolean isIncompatibleWith( Resource res ) {
         return hasPropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
     }
@@ -346,6 +369,7 @@ public class OntologyImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that represents an ontology that is no longer incompatible with this ontology
      */
+    @Override
     public void removeIncompatibleWith( Resource res ) {
         removePropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
     }

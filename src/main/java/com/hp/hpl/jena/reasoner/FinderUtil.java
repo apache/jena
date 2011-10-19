@@ -81,6 +81,7 @@ public class FinderUtil {
          * @return a ClosableIterator over all Triples in the data set
          *  that match the pattern
          */
+        @Override
         public ExtendedIterator<Triple> find(TriplePattern pattern) {
             if (second == null) {
                 return first.find(pattern);
@@ -102,6 +103,7 @@ public class FinderUtil {
          * will be asked for additional match results if the implementor
          * may not have completely satisfied the query.
          */
+        @Override
         public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
             return (FinderUtil.cascade(first, second, continuation)).find(pattern);
         }
@@ -109,6 +111,7 @@ public class FinderUtil {
         /**
          * Return true if the given pattern occurs somewhere in the find sequence.
          */
+        @Override
         public boolean contains(TriplePattern pattern) {
             ClosableIterator<Triple> it = find(pattern);
             boolean result = it.hasNext();

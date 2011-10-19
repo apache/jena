@@ -21,9 +21,11 @@ public class ModelMakerImpl implements ModelMaker
     public ModelMakerImpl( GraphMaker maker )
         { this.maker = maker; }
         
+    @Override
     public GraphMaker getGraphMaker()
         { return maker; }
         
+    @Override
     public void close()
         { maker.close(); }
        
@@ -33,45 +35,57 @@ public class ModelMakerImpl implements ModelMaker
     protected Model makeModel( Graph g )
         { return new ModelCom( g ); }
     
+    @Override
     public Model openModelIfPresent( String name )
         { return maker.hasGraph( name ) ? openModel( name ) : null; }
     
+    @Override
     public Model openModel( String name, boolean strict )
         { return makeModel( maker.openGraph( name, strict ) ); }
         
+    @Override
     public Model openModel( String name )
         { return openModel( name, false ); }
         
+    @Override
     public Model createModel( String name, boolean strict )
         { return makeModel( maker.createGraph( name, strict ) ); }
         
+    @Override
     public Model createModel( String name )
         { return createModel( name, false ); }
         
     public Model createModelOver( String name )
         { return createModel( name ); }
         
+    @Override
     public Model createFreshModel()
         { return makeModel( maker.createGraph() ); }
         
+    @Override
     public Model createDefaultModel()
         { return makeModel( maker.getGraph() ); }
         
+    @Override
     public void removeModel( String name )
         { maker.removeGraph( name ); }
         
+    @Override
     public boolean hasModel( String name )
         { return maker.hasGraph( name ); }
       
+    @Override
     public ExtendedIterator<String> listModels()
         { return maker.listGraphs(); }
     
     /**
         ModelGetter implementation component.     
     */
+    @Override
     public Model getModel( String URL )
         { return hasModel( URL ) ? openModel( URL ) : null; }         
     
+    @Override
     public Model getModel( String URL, ModelReader loadIfAbsent )
         { 
         Model already = getModel( URL );

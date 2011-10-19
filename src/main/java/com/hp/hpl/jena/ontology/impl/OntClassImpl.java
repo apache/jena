@@ -145,6 +145,7 @@ public class OntClassImpl
      * @param cls The class that this class is a sub-class of
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void setSuperClass( Resource cls ) {
         setPropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
     }
@@ -154,6 +155,7 @@ public class OntClassImpl
      * @param cls A class that is a super-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addSuperClass( Resource cls ) {
         addPropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
     }
@@ -164,6 +166,7 @@ public class OntClassImpl
      * @return A super-class of this class
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public OntClass getSuperClass() {
         return objectAs( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class );
     }
@@ -174,6 +177,7 @@ public class OntClassImpl
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listSuperClasses() {
         return listSuperClasses( false );
     }
@@ -191,6 +195,7 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
         return UniqueExtendedIterator.create(
                 listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
@@ -203,6 +208,7 @@ public class OntClassImpl
      * @return True if the given class is a super-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSuperClass( Resource cls ) {
         return hasSuperClass( cls, false );
     }
@@ -213,6 +219,7 @@ public class OntClassImpl
      * @return True if this class has any known super-class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSuperClass() {
         return getSuperClass() != null;
     }
@@ -228,6 +235,7 @@ public class OntClassImpl
      * @return True if the given class is a super-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSuperClass( Resource cls, boolean direct ) {
         if (!direct) {
             // don't need any special case, we just get the property
@@ -264,6 +272,7 @@ public class OntClassImpl
      * @param cls A class to be removed from the super-classes of this class
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
      */
+    @Override
     public void removeSuperClass( Resource cls ) {
         removePropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
     }
@@ -274,6 +283,7 @@ public class OntClassImpl
      * @param cls The class that is a sub-class of this class
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void setSubClass( Resource cls ) {
         // first we have to remove all of the inverse sub-class links
         checkProfile( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
@@ -289,6 +299,7 @@ public class OntClassImpl
      * @param cls A class that is a sub-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addSubClass( Resource cls ) {
         cls.as( OntClass.class ).addSuperClass( this );
     }
@@ -301,6 +312,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()}
      * property is not supported in the current language profile.
      */
+    @Override
     public OntClass getSubClass() {
         checkProfile( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
         StmtIterator i = getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this );
@@ -325,6 +337,7 @@ public class OntClassImpl
      * @return An iterator over the sub-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listSubClasses() {
         return listSubClasses( false );
     }
@@ -373,6 +386,7 @@ public class OntClassImpl
      * @return an iterator over the resources representing this class's sub-classes
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
         return UniqueExtendedIterator.create(
                 listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
@@ -386,6 +400,7 @@ public class OntClassImpl
      * @return True if the given class is a sub-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSubClass( Resource cls ) {
         return hasSubClass( cls, false );
     }
@@ -396,6 +411,7 @@ public class OntClassImpl
      * @return True if this class has any known sub-class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSubClass() {
         return getSubClass() != null;
     }
@@ -411,6 +427,7 @@ public class OntClassImpl
      * @return True if the given class is a sub-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasSubClass( Resource cls, boolean direct ) {
         if (getModel() instanceof OntModel &&
             (cls.getModel() == null || !(cls.getModel() instanceof OntModel)))
@@ -427,6 +444,7 @@ public class OntClassImpl
      * @param cls A class to be removed from the sub-classes of this class
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.
      */
+    @Override
     public void removeSubClass( Resource cls ) {
         (cls.as( OntClass.class)).removeSuperClass( this );
     }
@@ -440,6 +458,7 @@ public class OntClassImpl
      * @param cls The class that this class is a equivalent to.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
+    @Override
     public void setEquivalentClass( Resource cls ) {
         setPropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
     }
@@ -449,6 +468,7 @@ public class OntClassImpl
      * @param cls A class that is equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
+    @Override
     public void addEquivalentClass( Resource cls ) {
         addPropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
     }
@@ -459,6 +479,7 @@ public class OntClassImpl
      * @return A class equivalent to this class
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
+    @Override
     public OntClass getEquivalentClass() {
         return objectAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class );
     }
@@ -469,6 +490,7 @@ public class OntClassImpl
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listEquivalentClasses() {
         return UniqueExtendedIterator.create( listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class ) );
     }
@@ -479,6 +501,7 @@ public class OntClassImpl
      * @return True if the given property is equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasEquivalentClass( Resource cls ) {
         return hasPropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
     }
@@ -490,6 +513,7 @@ public class OntClassImpl
      * @param cls A class that may be declared to be equivalent to this class, and which is no longer equivalent
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()()} property is not supported in the current language profile.
      */
+    @Override
     public void removeEquivalentClass( Resource cls ) {
         removePropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
     }
@@ -502,6 +526,7 @@ public class OntClassImpl
      * @param cls The property that this class is disjoint with.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
+    @Override
     public void setDisjointWith( Resource cls ) {
         setPropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
@@ -511,6 +536,7 @@ public class OntClassImpl
      * @param cls A class that has no instances in common with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
+    @Override
     public void addDisjointWith( Resource cls ) {
         addPropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
@@ -521,6 +547,7 @@ public class OntClassImpl
      * @return A class disjoint with this class
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
+    @Override
     public OntClass getDisjointWith() {
         return objectAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class );
     }
@@ -531,6 +558,7 @@ public class OntClassImpl
      * @return An iterator over the classes disjoint with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<OntClass> listDisjointWith() {
         return UniqueExtendedIterator.create( listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class ) );
     }
@@ -541,6 +569,7 @@ public class OntClassImpl
      * @return True if the this class is disjoint with the the given class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.
      */
+    @Override
     public boolean isDisjointWith( Resource cls ) {
         return hasPropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
@@ -552,6 +581,7 @@ public class OntClassImpl
      * @param cls A class that may be declared to be disjoint with this class, and which is no longer disjoint
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()()()} property is not supported in the current language profile.
      */
+    @Override
     public void removeDisjointWith( Resource cls ) {
         removePropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
@@ -571,6 +601,7 @@ public class OntClassImpl
      * @return An iteration of the properties that are associated with this class
      * by their domain.
      */
+    @Override
     public ExtendedIterator<OntProperty> listDeclaredProperties() {
         return listDeclaredProperties( false );
     }
@@ -589,6 +620,7 @@ public class OntClassImpl
      * @return An iteration of the properties that are associated with this class
      * by their domain.
      */
+    @Override
     public ExtendedIterator<OntProperty> listDeclaredProperties( boolean direct ) {
         // first collect the candidate properties
         Set<RDFNode> candSet = new HashSet<RDFNode>();
@@ -624,6 +656,7 @@ public class OntClassImpl
      * @return True if <code>p</code> is one of the declared properties of
      * this class
      */
+    @Override
     public boolean hasDeclaredProperty( Property p, boolean direct ) {
         return testDomain( p, direct );
     }
@@ -636,6 +669,7 @@ public class OntClassImpl
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
+    @Override
     public ExtendedIterator<Individual> listInstances() {
         return listInstances( false );
     }
@@ -650,6 +684,7 @@ public class OntClassImpl
      * @return An iterator over those instances that have this class as one of
      *         the classes to which they belong
      */
+    @Override
     public ExtendedIterator<Individual> listInstances( final boolean direct ) {
         return UniqueExtendedIterator.create(
                 getModel()
@@ -669,6 +704,7 @@ public class OntClassImpl
      * <p>Answer a new individual that has this class as its <code>rdf:type</code></p>
      * @return A new anonymous individual that is an instance of this class
      */
+    @Override
     public Individual createIndividual() {
         return ((OntModel) getModel()).createIndividual( this );
     }
@@ -679,6 +715,7 @@ public class OntClassImpl
      * @param uri The URI of the new individual
      * @return A new named individual that is an instance of this class
      */
+    @Override
     public Individual createIndividual( String uri ) {
         return ((OntModel) getModel()).createIndividual( uri, this );
     }
@@ -691,6 +728,7 @@ public class OntClassImpl
      * @param individual A resource denoting an individual that is no longer to be a member
      * of this class
      */
+    @Override
     public void dropIndividual( Resource individual ) {
         getModel().remove( individual, RDF.type, this );
     }
@@ -704,6 +742,7 @@ public class OntClassImpl
      * @return True if this class is the root of the class hierarchy in the
      * model it is attached to
      */
+    @Override
     public boolean isHierarchyRoot() {
         // sanity check - :Nothing is never a root class
         if (equals( getProfile().NOTHING() )) {
@@ -748,6 +787,7 @@ public class OntClassImpl
      * @exception ConversionException if the class cannot be converted to an enumerated class
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public EnumeratedClass asEnumeratedClass() {
         return as( EnumeratedClass.class );
     }
@@ -758,6 +798,7 @@ public class OntClassImpl
      * @exception ConversionException if the class cannot be converted to a union class
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public UnionClass asUnionClass()  {
         return as( UnionClass.class );
     }
@@ -768,6 +809,7 @@ public class OntClassImpl
      * @exception ConversionException if the class cannot be converted to an intersection class
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public IntersectionClass asIntersectionClass()  {
         return as( IntersectionClass.class );
     }
@@ -778,6 +820,7 @@ public class OntClassImpl
      * @exception ConversionException if the class cannot be converted to a complement class
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public ComplementClass asComplementClass() {
         return as( ComplementClass.class );
     }
@@ -788,6 +831,7 @@ public class OntClassImpl
      * @exception ConversionException if the class cannot be converted to a restriction
      * given the lanuage profile and the current state of the underlying model.
      */
+    @Override
     public Restriction asRestriction() {
         return as( Restriction.class );
     }
@@ -799,6 +843,7 @@ public class OntClassImpl
      * <p>Answer true if this class is an enumerated class expression</p>
      * @return True if this is an enumerated class expression
      */
+    @Override
     public boolean isEnumeratedClass() {
         checkProfile( getProfile().ONE_OF(), "ONE_OF" );
         return hasProperty( getProfile().ONE_OF() );
@@ -808,6 +853,7 @@ public class OntClassImpl
      * <p>Answer true if this class is a union class expression</p>
      * @return True if this is a union class expression
      */
+    @Override
     public boolean isUnionClass() {
         checkProfile( getProfile().UNION_OF(), "UNION_OF" );
         return hasProperty( getProfile().UNION_OF() );
@@ -817,6 +863,7 @@ public class OntClassImpl
      * <p>Answer true if this class is an intersection class expression</p>
      * @return True if this is an intersection class expression
      */
+    @Override
     public boolean isIntersectionClass() {
         checkProfile( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         return hasProperty( getProfile().INTERSECTION_OF() );
@@ -826,6 +873,7 @@ public class OntClassImpl
      * <p>Answer true if this class is a complement class expression</p>
      * @return True if this is a complement class expression
      */
+    @Override
     public boolean isComplementClass() {
         checkProfile( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         return hasProperty( getProfile().COMPLEMENT_OF() );
@@ -835,6 +883,7 @@ public class OntClassImpl
      * <p>Answer true if this class is a property restriction</p>
      * @return True if this is a restriction
      */
+    @Override
     public boolean isRestriction() {
         checkProfile( getProfile().RESTRICTION(), "RESTRICTION" );
         return hasProperty( getProfile().ON_PROPERTY() ) ||
@@ -850,6 +899,7 @@ public class OntClassImpl
      * class converted to an enumeration
      * @return This ontology class, converted to an enumeration of the given individuals
      */
+    @Override
     public EnumeratedClass convertToEnumeratedClass( RDFList individuals ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", individuals );
         return as( EnumeratedClass.class );
@@ -860,6 +910,7 @@ public class OntClassImpl
      * @param classes A list of the classes that will comprise the operands of the intersection
      * @return This ontology class, converted to an intersection of the given classes
      */
+    @Override
     public IntersectionClass convertToIntersectionClass( RDFList classes ) {
         setPropertyValue( getProfile().INTERSECTION_OF(), "INTERSECTION_OF", classes );
         return as( IntersectionClass.class );
@@ -870,6 +921,7 @@ public class OntClassImpl
      * @param classes A list of the classes that will comprise the operands of the union
      * @return This ontology class, converted to an union of the given classes
      */
+    @Override
     public UnionClass convertToUnionClass( RDFList classes ) {
         setPropertyValue( getProfile().UNION_OF(), "UNION_OF", classes );
         return as( UnionClass.class );
@@ -880,6 +932,7 @@ public class OntClassImpl
      * @param cls An ontology classs that will be operand of the complement
      * @return This ontology class, converted to an complement of the given class
      */
+    @Override
     public ComplementClass convertToComplementClass( Resource cls ) {
         setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
         return as( ComplementClass.class );
@@ -890,6 +943,7 @@ public class OntClassImpl
      * @param prop A property this is the subject of a property restriction class expression
      * @return This ontology class, converted to a restriction on the given property
      */
+    @Override
     public Restriction convertToRestriction( Property prop ) {
         if (!hasRDFType( getProfile().RESTRICTION(), "RESTRICTION", false )) {
             setRDFType( getProfile().RESTRICTION() );

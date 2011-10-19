@@ -75,6 +75,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param url
      *            The URL of the RDF/XML document.
      */
+    @Override
     public void read(Model m, String url) throws JenaException {
         try {
             URLConnection conn = new URL(url).openConnection();
@@ -178,6 +179,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase
      *            The base URI of the document or "".
      */
+    @Override
     public void read(final Model m, Reader reader, String xmlBase)
             throws JenaException {
         read(m, new InputSource(reader), xmlBase);
@@ -210,6 +212,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * @param xmlBase
      *            The base URI of the document or "".
      */
+    @Override
     public void read(final Model m, InputStream in, String xmlBase)
             throws JenaException {
         read(m, new InputSource(in), xmlBase);
@@ -243,6 +246,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      *            The new error handler.
      * @return The old error handler.
      */
+    @Override
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
         RDFErrorHandler old = this.errorHandler;
         this.errorHandler = errHandler;
@@ -344,6 +348,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      *             For bad values.
      * @return The old value, or null if none, or old value is inaccesible.
      */
+    @Override
     public Object setProperty(String str, Object value) throws JenaException {
         Object obj = value;
         if (str.startsWith("http:")) {

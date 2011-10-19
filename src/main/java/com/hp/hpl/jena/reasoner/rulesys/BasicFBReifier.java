@@ -26,18 +26,23 @@ public class BasicFBReifier implements Reifier
     interface GetReifier
         { Reifier getReifier(); }
 
+    @Override
     public ExtendedIterator<Node> allNodes()
         { return base.allNodes().andThen( deductions.getReifier().allNodes() ); }
 
+    @Override
     public ExtendedIterator<Node> allNodes( Triple t )
         { return base.allNodes( t ).andThen( deductions.getReifier().allNodes() );  }
 
+    @Override
     public void close()
         { base.close(); }
 
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         { return base.find( m ).andThen( deductions.getReifier().find( m ) ); }
 
+    @Override
     public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden )
         { 
         return 
@@ -45,39 +50,51 @@ public class BasicFBReifier implements Reifier
             .andThen( deductions.getReifier().findEither(  m, showHidden ) ); 
         }
 
+    @Override
     public ExtendedIterator<Triple> findExposed( TripleMatch m )
         { return base.findExposed( m ).andThen( deductions.getReifier().findExposed( m ) );  }
 
+    @Override
     public Graph getParentGraph()
         { return parent; }
 
+    @Override
     public ReificationStyle getStyle()
         { return base.getStyle(); }
 
+    @Override
     public boolean handledAdd( Triple t )
         { return base.handledAdd( t ); }
 
+    @Override
     public boolean handledRemove( Triple t )
         { return base.handledRemove( t ); }
 
+    @Override
     public boolean hasTriple( Node n )
         { return base.hasTriple( n ) || deductions.getReifier().hasTriple( n ); }
 
+    @Override
     public boolean hasTriple( Triple t )
         { return base.hasTriple( t ) || deductions.getReifier().hasTriple( t ); }
 
+    @Override
     public Node reifyAs( Node n, Triple t )
         { return base.reifyAs( n, t ); }
 
+    @Override
     public void remove( Node n, Triple t )
         { base.remove( n, t ); }
 
+    @Override
     public void remove( Triple t )
         { base.remove(  t  ); }
 
+    @Override
     public int size()
         { return deductions.getReifier().size(); }
 
+    @Override
     public Triple getTriple( Node n )
         {
         Triple a = base.getTriple( n );

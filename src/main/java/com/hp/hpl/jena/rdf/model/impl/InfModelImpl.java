@@ -42,6 +42,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * Return the raw RDF model being processed (i.e. the argument
      * to the Reasonder.bind call that created this InfModel).
      */
+    @Override
     public Model getRawModel() {
         return new ModelCom(getInfGraph().getRawGraph());
     }
@@ -49,6 +50,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
     /**
      * Return the Reasoner which is being used to answer queries to this graph.
      */
+    @Override
     public Reasoner getReasoner() {
         return getInfGraph().getReasoner();
     }
@@ -60,6 +62,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * are made "behind the InfModels's back" and this forces a full reconsult of
      * the changed data. 
      */
+    @Override
     public void rebind() {
         getInfGraph().rebind();
     }
@@ -72,6 +75,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * rule system) and where an application might wish greater control over when
      * this prepration is done rather than just leaving to be done at first query time.
      */
+    @Override
     public void prepare() {
         getInfGraph().prepare();
     }
@@ -82,6 +86,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * unbounded memory use at the expense of more expensive future queries. A reset
      * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
      */
+    @Override
     public void reset() {
         getInfGraph().reset();
     }
@@ -92,6 +97,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * schema data. 
      * @return a ValidityReport structure
      */
+    @Override
     public ValidityReport validate() {
         return getInfGraph().validate();
     }
@@ -113,6 +119,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @param predicate The predicate sought
      * @param object    The value sought
      */ 
+    @Override
     public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
         Iterator<Triple> iter = getInfGraph().find(asNode(subject), asNode(predicate), asNode(object), posit.getGraph());
         return IteratorFactory.asStmtIterator(iter,this);
@@ -123,6 +130,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * is a made that fact is recorded and the resulting record can be access through a later
      * getDerivation call. This may consume a lot of space!
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         getInfGraph().setDerivationLogging(logOn);
     }
@@ -134,6 +142,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @return an iterator over Derivation records or null if there is no derivation information
      * available for this triple.
      */
+    @Override
     public Iterator<Derivation> getDerivation(Statement statement) {
         return getInfGraph().getDerivation(statement.asTriple());
     }
@@ -148,6 +157,7 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * @return the deductions model, if relevant for this class of inference
      * engine or null if not.
      */
+    @Override
     public Model getDeductionsModel() {
         Graph deductionsGraph = getInfGraph().getDeductionsGraph();
         if (deductionsGraph != null) {

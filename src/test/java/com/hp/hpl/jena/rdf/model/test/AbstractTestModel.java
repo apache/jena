@@ -35,7 +35,8 @@ public abstract class AbstractTestModel extends ModelTestBase
     public void testTransactions()
         { 
         Command cmd = new Command() 
-        	{ public Object execute() { return null; } };
+        	{ @Override
+            public Object execute() { return null; } };
         if (model.supportsTransactions()) model.executeInTransaction( cmd );
         }
         

@@ -31,18 +31,21 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         this.manager = graph.getEventManager();
         }
 
+    @Override
     public void add( Triple [] triples )
         {
         base.add( triples );
         manager.notifyAddArray( graph, triples );
         }
     
+    @Override
     public void add( List<Triple> triples )
         {
         base.add( triples );
         manager.notifyAddList( graph, triples );
         }
 
+    @Override
     public void add( Iterator<Triple> it )
         {
         List<Triple> s = IteratorCollection.iteratorToList( it );
@@ -50,30 +53,35 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         manager.notifyAddIterator( graph, s );
         }
 
+    @Override
     public void add( Graph g, boolean withReifications )
         {
         base.add( g, withReifications );
         manager.notifyAddGraph( graph, g );
         }
     
+    @Override
     public void add( Graph g )
         {
 	    base.add( g );
 	    manager.notifyAddGraph( graph, g );
         }
 
+    @Override
     public void delete( Triple[] triples )
         {
         base.delete( triples );
         manager.notifyDeleteArray( graph, triples );
         }
 
+    @Override
     public void delete( List<Triple> triples )
         {
         base.delete( triples );
         manager.notifyDeleteList( graph, triples );
         }
 
+    @Override
     public void delete( Iterator<Triple> it )
         {
         List<Triple> s = IteratorCollection.iteratorToList( it );
@@ -81,24 +89,28 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         manager.notifyDeleteIterator( graph, s );
         }
 
+    @Override
     public void delete( Graph g )
         {
         base.delete( g );
         manager.notifyDeleteGraph( graph, g );
         }
 
+    @Override
     public void delete( Graph g, boolean withReifications )
         {
         base.delete( g, withReifications );
         manager.notifyDeleteGraph( graph, g );
         }
 
+    @Override
     public void removeAll()
         {
         base.removeAll();
         manager.notifyEvent( graph, GraphEvents.removeAll );
         }
 
+    @Override
     public void remove( Node s, Node p, Node o )
         {
         base.remove( s, p, o );

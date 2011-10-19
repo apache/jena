@@ -25,6 +25,7 @@ public abstract class TransactionHandlerBase implements TransactionHandler
         completes normally, commit the transaction and return the result.
         Otherwise abort the transaction and throw a wrapped exception.
     */
+    @Override
     public Object executeInTransaction( Command c )
         {
         begin();

@@ -620,8 +620,11 @@ public abstract class AbstractTestQuery extends QueryTestBase
         protected String modifiers = "";
         public PL( String content ) { super( content ); }
         public PL( String content, String modifiers ) { super( content ); this.modifiers = modifiers; }
+        @Override
         public String getPatternString() { return (String) value; }
+        @Override
         public String getPatternModifiers() { return modifiers; }
+        @Override
         public String getPatternLanguage() { return rdql; }
         }
     
@@ -668,6 +671,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         return new TripleSorter()
             {
+            @Override
             public Triple [] sort( Triple [] triples )
                 { return new Triple[] {triples[a], triples[b], triples[c]}; }    
             };    

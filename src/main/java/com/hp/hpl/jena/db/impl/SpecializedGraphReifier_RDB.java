@@ -80,7 +80,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#add(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(Node n, Triple t, CompletionFlag complete) throws CannotReifyException {
+	@Override
+    public void add(Node n, Triple t, CompletionFlag complete) throws CannotReifyException {
 		ReificationStatementMask same = new ReificationStatementMask();
 		ReificationStatementMask diff = new ReificationStatementMask();
 		ReificationCache rs = m_reifCache.load(n, t, same, diff);
@@ -128,7 +129,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#delete(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(Node n, Triple t, CompletionFlag complete) {
+	@Override
+    public void delete(Node n, Triple t, CompletionFlag complete) {
 		m_reifCache.flushAll();
 		m_reif.deleteReifStmt( n, t, my_GID);
 		complete.setDone();
@@ -137,7 +139,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public boolean contains(Node n, Triple t, CompletionFlag complete) {
+	@Override
+    public boolean contains(Node n, Triple t, CompletionFlag complete) {
 		if (true)
 			throw new JenaException("SpecializedGraphReifier.contains called");
 		return false;
@@ -146,7 +149,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedNodes(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator<Node> findReifiedNodes(Triple t, CompletionFlag complete) {
+	@Override
+    public ExtendedIterator<Node> findReifiedNodes(Triple t, CompletionFlag complete) {
 		complete.setDone();
 		return m_reif.findReifStmtURIByTriple(t, my_GID);
 	}
@@ -154,7 +158,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedTriple(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public Triple findReifiedTriple(Node n, CompletionFlag complete) {
+	@Override
+    public Triple findReifiedTriple(Node n, CompletionFlag complete) {
 		ResultSetReifIterator it = m_reif.findReifStmt(n, true, my_GID, false);
 		Triple res = null;
 		if ( it.hasNext() ) {
@@ -207,14 +212,16 @@ public class SpecializedGraphReifier_RDB
 	 * @param g is a graph containing triples to be added
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
 	 */
-	public void add( Graph g, CompletionFlag complete ) {
+	@Override
+    public void add( Graph g, CompletionFlag complete ) {
 		throw new AddDeniedException( "sorry, not implemented" );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(Triple frag, CompletionFlag complete) throws AlreadyReifiedException {
+	@Override
+    public void add(Triple frag, CompletionFlag complete) throws AlreadyReifiedException {
 		ReificationStatementMask fragMask = new ReificationStatementMask(frag);
 		if (fragMask.hasNada())
 			return;
@@ -264,7 +271,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(Triple frag, CompletionFlag complete) {
+	@Override
+    public void delete(Triple frag, CompletionFlag complete) {
 		ReificationStatementMask fragMask = new ReificationStatementMask(frag);
 		if (fragMask.hasNada())
 			return;
@@ -361,7 +369,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(List<Triple> triples, CompletionFlag complete) {
+	@Override
+    public void add(List<Triple> triples, CompletionFlag complete) {
 		List<Triple> remainingTriples = new ArrayList<Triple>();
 		for( int i=0; i< triples.size(); i++) {
 			CompletionFlag partialResult = newComplete();
@@ -379,7 +388,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(List<Triple> triples, CompletionFlag complete) {
+	@Override
+    public void delete(List<Triple> triples, CompletionFlag complete) {
 		boolean result = true;
 		Iterator<Triple> it = triples.iterator();
 		while(it.hasNext()) {
@@ -393,7 +403,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#tripleCount()
 	 */
-	public int tripleCount() {
+	@Override
+    public int tripleCount() {
 		// A very inefficient, but simple implementation
 		ExtendedIterator<Triple> it = find( null, null, null, newComplete() );
 		int count = 0;
@@ -407,7 +418,8 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
+	@Override
+    public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
 		
 //		Node stmtURI = t.getMatchSubject();	// note: can be null
 //		ResultSetReifIterator it = m_reif.findReifStmt(stmtURI, false, my_GID, true);
@@ -423,7 +435,8 @@ public class SpecializedGraphReifier_RDB
 	 *  no other specialized graph  could hold any matching triples.
 	 * @return boolean result to indicate if the triple was contained
 	 */
-	public boolean contains(Triple t, CompletionFlag complete) {
+	@Override
+    public boolean contains(Triple t, CompletionFlag complete) {
 		// A very inefficient, but simple implementation
 		ExtendedIterator<Triple> it = find( t, complete );
 		try { return it.hasNext(); } finally { it.close(); }
@@ -432,14 +445,16 @@ public class SpecializedGraphReifier_RDB
 	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#close()
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		m_reif.close();
 	}
 
 	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#clear()
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		m_reif.removeStatementsFromDB(my_GID);
 	}
 
@@ -453,21 +468,24 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#graphIdGet()
 	 */
-	public int getGraphId() {
+	@Override
+    public int getGraphId() {
 		return ((DBIDInt)my_GID).getIntID();
     }
     
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#PSetGet()
 	 */
-	public IPSet getPSet() {
+	@Override
+    public IPSet getPSet() {
 		return m_pset;
 	}
     	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#DBPropLSetGet()
 	 */
-	public DBPropLSet getDBPropLSet() {
+	@Override
+    public DBPropLSet getDBPropLSet() {
 		return m_dbPropLSet;
 	}
 	
@@ -490,7 +508,8 @@ public class SpecializedGraphReifier_RDB
 	 * ANY !conc    ANY       none      none     some
 	 * else                   none      none     none
 	 */
-	 public char subsumes ( Triple pattern, int reifBehavior ) {
+	 @Override
+    public char subsumes ( Triple pattern, int reifBehavior ) {
 		char res = noTriplesForPattern;
 		if ( reifBehavior != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
 			return res;

@@ -27,6 +27,7 @@ public abstract class BaseBuiltin implements Builtin {
     /**
      * Return the full URI which identifies this built in.
      */
+    @Override
     public String getURI() {
         return BASE_URI + getName();
     }
@@ -34,6 +35,7 @@ public abstract class BaseBuiltin implements Builtin {
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
+    @Override
     public int getArgLength() {
         return 0;
     }
@@ -58,6 +60,7 @@ public abstract class BaseBuiltin implements Builtin {
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
+    @Override
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         throw new BuiltinException(this, context, "builtin " + getName() + " not usable in rule bodies");
     }
@@ -72,6 +75,7 @@ public abstract class BaseBuiltin implements Builtin {
      * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
+    @Override
     public void headAction(Node[] args, int length, RuleContext context) {
         throw new BuiltinException(this, context, "builtin " + getName() + " not usable in rule heads");
     }
@@ -80,6 +84,7 @@ public abstract class BaseBuiltin implements Builtin {
      * Returns false if this builtin has side effects when run in a body clause,
      * other than the binding of environment variables.
      */
+    @Override
     public boolean isSafe() {
         // Default is safe!
         return true;
@@ -91,6 +96,7 @@ public abstract class BaseBuiltin implements Builtin {
      * be an action and makes the overall rule and ruleset non-monotonic. 
      * Most JenaRules are monotonic deductive closure rules in which this should be false.
      */
+    @Override
     public boolean isMonotonic() {
         return true;
     }

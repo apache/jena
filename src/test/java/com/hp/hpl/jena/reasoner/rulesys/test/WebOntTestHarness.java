@@ -200,6 +200,7 @@ public class WebOntTestHarness {
         for (int idir = 0; idir < TEST_DIRS.length; idir++) {
             File dir = new File(BASE_TESTDIR + TEST_DIRS[idir]);
             String[] manifests = dir.list(new FilenameFilter() {
+                    @Override
                     public boolean accept(File df, String name) {
                         if (name.startsWith("Manifest") && name.endsWith(".rdf")) {
                             return includeModified || ! name.endsWith("-mod.rdf");

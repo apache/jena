@@ -108,6 +108,7 @@ public class AllValuesFromRestrictionImpl
      * @param cls The class that all values of the property must belong to
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public void setAllValuesFrom( Resource cls ) {
         setPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
     }
@@ -119,6 +120,7 @@ public class AllValuesFromRestrictionImpl
      *        ({@link OntClass} or {@link DataRange}) if appropriate.
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public Resource getAllValuesFrom() {
         checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
         Resource r = (Resource) getRequiredProperty( getProfile().ALL_VALUES_FROM() ).getObject();
@@ -152,6 +154,7 @@ public class AllValuesFromRestrictionImpl
      * @return True if the given class is the class to which all values must belong
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasAllValuesFrom( Resource cls ) {
         return hasPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
     }
@@ -162,6 +165,7 @@ public class AllValuesFromRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param cls A Resource the denotes the class to be removed from this restriction
      */
+    @Override
     public void removeAllValuesFrom( Resource cls ) {
         removePropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
     }

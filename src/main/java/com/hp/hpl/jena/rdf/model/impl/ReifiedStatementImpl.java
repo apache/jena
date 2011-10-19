@@ -46,6 +46,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         answer [a .equals() version of] the Statement that this ReifiedStatement
         represents.
     */
+    @Override
     public Statement getStatement() 
         { return statement; }
        

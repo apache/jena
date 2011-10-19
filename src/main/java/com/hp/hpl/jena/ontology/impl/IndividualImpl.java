@@ -111,6 +111,7 @@ public class IndividualImpl
      * @param cls The RDF resource denoting the new class to which this individual belongs,
      *                 which will replace any existing <code>rdf:type</code> property.
      */
+    @Override
     public void setOntClass( Resource cls ) {
         setRDFType( cls );
     }
@@ -123,6 +124,7 @@ public class IndividualImpl
      * @param cls An RDF resource denoting an additional class to which this individual
      * belongs.
      */
+    @Override
     public void addOntClass( Resource cls ) {
         addRDFType( cls );
     }
@@ -146,6 +148,7 @@ public class IndividualImpl
      * ontology class, assuming strict type checking is turned on for the underlying
      * <code>OntModel</code>. See {@link OntModel#setStrictMode(boolean)}
      */
+    @Override
     public OntClass getOntClass() {
         return getOntClass( false );
     }
@@ -171,6 +174,7 @@ public class IndividualImpl
      * ontology class, assuming strict type checking is turned on for the underlying
      * <code>OntModel</code>. See {@link OntModel#setStrictMode(boolean)}
      */
+    @Override
     public OntClass getOntClass( boolean direct ) {
         return (getRDFType( direct ).as( OntClass.class ));
     }
@@ -186,6 +190,7 @@ public class IndividualImpl
      * @return An iterator over the set of this individual's classes. Each member
      * of the iteration will be an {@link OntClass}.
      */
+    @Override
     public <T extends OntClass> ExtendedIterator<T> listOntClasses( boolean direct ) {
         @SuppressWarnings("unchecked")
         ExtendedIterator<T> iter = 
@@ -205,6 +210,7 @@ public class IndividualImpl
      * @return True if this individual is a member of the given class, possibly taking the
      * directness constraint into account.
      */
+    @Override
     public boolean hasOntClass( Resource ontClass, boolean direct ) {
         return hasRDFType( ontClass, direct );
     }
@@ -222,6 +228,7 @@ public class IndividualImpl
      * @param ontClass Denotes a class to which this individual may belong
      * @return True if this individual has the given class as one of its <code>rdf:type</code>'s.
      */
+    @Override
     public boolean hasOntClass( Resource ontClass ) {
         return hasOntClass( ontClass, false );
     }
@@ -234,6 +241,7 @@ public class IndividualImpl
      * @param uri Denotes the URI of a class to which this value may belong
      * @return True if this individual has the given class as one of its <code>rdf:type</code>'s.
      */
+    @Override
     public boolean hasOntClass( String uri ) {
         return hasRDFType( uri );
     }
@@ -253,6 +261,7 @@ public class IndividualImpl
      * @param ontClass A resource denoting a class that that is to be removed from
      * the set of classes to which this individual belongs
      */
+    @Override
     public void removeOntClass( Resource ontClass ) {
         removeRDFType( ontClass );
     }

@@ -20,6 +20,7 @@ public class TestMapIterators extends ModelTestBase
         {
         Map1<String, String> map = new Map1<String, String>() 
             {
+            @Override
             public String map1( String o )
                 { return null; }
             };

@@ -51,7 +51,8 @@ public class SpecializedGraph_TripleStore_RDB extends SpecializedGraph_TripleSto
 	 * else                   all       all      all
 	 */
 	
-	public char subsumes ( Triple pattern, int reifBehavior ) {
+	@Override
+    public char subsumes ( Triple pattern, int reifBehavior ) {
 		// we assume that other sg's have been called first
 		char res = allTriplesForPattern;
 		if ( reifBehavior == GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS )

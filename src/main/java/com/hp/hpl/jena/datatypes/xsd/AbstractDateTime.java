@@ -77,6 +77,7 @@ public class AbstractDateTime implements Comparable<AbstractDateTime> {
      * as equals. This is not strictly correct but seems like an appropriate
      * way to handle partially ordered objects.
      */
+    @Override
     public int compareTo(AbstractDateTime o) {
         switch (compare(o)) {
         case EQUAL:

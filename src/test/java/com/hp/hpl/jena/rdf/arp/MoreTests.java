@@ -204,12 +204,14 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 		String subj;
 
-		public void statement(AResource sub, AResource pred, ALiteral lit) {
+		@Override
+        public void statement(AResource sub, AResource pred, ALiteral lit) {
 			// System.out.println("(" + sub + ", " + pred + ", " + lit + ")");
 			subj = sub.toString();
 		}
 
-		public void statement(AResource sub, AResource pred, AResource ob) {
+		@Override
+        public void statement(AResource sub, AResource pred, AResource ob) {
 			//  System.out.println("(" + sub + ", " + pred + ", " + ob + ")");
 			obj = ob.toString();
 		}
@@ -463,23 +465,28 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		a.getHandlers().setStatementHandler(new StatementHandler() {
 			int countDown = 10;
 
-			public void statement(AResource subj, AResource pred, AResource obj) {
+			@Override
+            public void statement(AResource subj, AResource pred, AResource obj) {
 				if (countDown-- == 0)
 					Thread.currentThread().interrupt();
 
 			}
 
-			public void statement(AResource subj, AResource pred, ALiteral lit) {
+			@Override
+            public void statement(AResource subj, AResource pred, ALiteral lit) {
 
 			}
 		});
         a.getHandlers().setErrorHandler(new ErrorHandler(){
+            @Override
             public void error(SAXParseException exception) throws SAXException {
                 throw new RuntimeException("Unexpected error", exception);
             }
+            @Override
             public void fatalError(SAXParseException exception) throws SAXException {
               throw exception;  
             }
+            @Override
             public void warning(SAXParseException exception) throws SAXException {
                 throw new RuntimeException("Unexpected warning", exception);
             }});
@@ -580,15 +587,18 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			}
 	}
 
-	public void warning(Exception e) {
+	@Override
+    public void warning(Exception e) {
 		error(0, e);
 	}
 
-	public void error(Exception e) {
+	@Override
+    public void error(Exception e) {
 		error(1, e);
 	}
 
-	public void fatalError(Exception e) {
+	@Override
+    public void fatalError(Exception e) {
 		error(2, e);
 	}
 

@@ -225,14 +225,17 @@ public class SimpleSelector extends Object implements Selector {
     /** Return the subject constraint of this selector.
      * @return the subject constraint
      */
+    @Override
     public Resource getSubject() { return subject; }
     /** Return the predicate constraint of this selector.
      * @return the predicate constraint
      */
+    @Override
     public Property getPredicate() { return predicate; }
     /** Return the object constraint of this selector.
      * @return the object constraint
      */
+    @Override
     public RDFNode  getObject() { return object; }
     
     /**
@@ -243,6 +246,7 @@ public class SimpleSelector extends Object implements Selector {
         
         @return true iff this selector only depends on S/P/O identity.
     */
+    @Override
     public boolean isSimple()
         { return this.getClass() == SimpleSelector.class; }
         
@@ -254,6 +258,7 @@ public class SimpleSelector extends Object implements Selector {
      * @return true if the statement satisfies the subject, object
      * and predicate constraints and the selects constraint.
      */
+    @Override
     public boolean test(Statement s) {
        return (subject == null || subject.equals(s.getSubject()))
             && (predicate == null || predicate.equals(s.getPredicate()))

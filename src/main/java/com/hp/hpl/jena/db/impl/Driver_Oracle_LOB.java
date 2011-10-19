@@ -91,7 +91,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	/**
 	 * Set the database connection
 	 */
-	public void setConnection( IDBConnection dbcon ) {
+	@Override
+    public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
 /* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE TRY BLOCK)  -------
 		try {
@@ -139,7 +140,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 * Dellocate an identifier for a graph.
 	 *
 	 */
-	public void graphIdDealloc ( int graphId ) {
+	@Override
+    public void graphIdDealloc ( int graphId ) {
 		try {
 			String op = "deleteGraph";
 			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);

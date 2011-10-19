@@ -106,8 +106,10 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		SimpleLogger old = null;
 		try {
 			old = BaseXMLWriter.setLogger(new SimpleLogger(){
-				public void warn(String s) {}
-				public void warn(String s, Exception e) {}
+				@Override
+                public void warn(String s) {}
+				@Override
+                public void warn(String s, Exception e) {}
 			});
 			m.write(new FileWriter(fileName), lang);
 			m1 = createMemModel();

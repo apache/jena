@@ -414,6 +414,7 @@ public class LPBRuleEngine {
         }
         
         /** Ordering */
+        @Override
         public int compareTo(Count other) {
             return (count < other.count) ? -1 : ( (count == other.count) ? 0 : +1);
         }

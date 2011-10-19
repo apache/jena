@@ -45,6 +45,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
      */
+    @Override
     public boolean contains(Node s, Node p, Node o) {
         ClosableIterator<Triple> i = find(s, p, o);
         boolean result = i.hasNext();
@@ -55,6 +56,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#contains(com.hp.hpl.jena.graph.Triple)
      */
+    @Override
     public boolean contains(Triple t) {
         return contains(t.getSubject(), t.getPredicate(), t.getObject());
     }
@@ -62,6 +64,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
      */
+    @Override
     public ClosableIterator<Triple> find(Node s, Node p, Node o) {
         return graph.findDataMatches(new TriplePattern(s, p, o));
 //        return searchpath.find(new TriplePattern(s, p, o));
@@ -70,6 +73,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#getEnv()
      */
+    @Override
     public BindingEnvironment getEnv() {
         return env;
     }
@@ -84,6 +88,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#getGraph()
      */
+    @Override
     public InfGraph getGraph() {
         return graph;
     }
@@ -91,6 +96,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#getRule()
      */
+    @Override
     public Rule getRule() {
         return rule;
     }
@@ -98,6 +104,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * @see com.hp.hpl.jena.reasoner.rulesys.RuleContext#setRule(com.hp.hpl.jena.reasoner.rulesys.Rule)
      */
+    @Override
     public void setRule(Rule rule) {
         this.rule = rule;
     }
@@ -105,6 +112,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
+    @Override
     public void silentAdd(Triple t) {
         ((SilentAddI)graph).silentAdd(t);
     }
@@ -113,6 +121,7 @@ public class BBRuleContext implements RuleContext {
      * Assert a new triple in the deduction graph, triggering any consequent processing as appropriate.
      * In the backward case there no immediate consequences so this is equivalent to a silentAdd.
      */
+    @Override
     public void add(Triple t) {
         ((SilentAddI)graph).silentAdd(t);
     }
@@ -120,6 +129,7 @@ public class BBRuleContext implements RuleContext {
     /**
      * Remove a triple from the deduction graph (and the original graph if relevant).
      */
+    @Override
     public void remove(Triple t) {
         graph.delete(t);
     }

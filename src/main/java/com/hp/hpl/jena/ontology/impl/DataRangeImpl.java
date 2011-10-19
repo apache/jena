@@ -112,6 +112,7 @@ public class DataRangeImpl
      * @param en A list of literals that defines the permissible values for this datarange
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void setOneOf( RDFList en ) {
         setPropertyValue( getProfile().ONE_OF(), "ONE_OF", en );
     }
@@ -121,6 +122,7 @@ public class DataRangeImpl
      * @param lit A literal to add to the enumeration
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addOneOf( Literal lit ) {
         addListPropertyValue( getProfile().ONE_OF(), "ONE_OF", lit );
     }
@@ -131,6 +133,7 @@ public class DataRangeImpl
      * @param literals An iterator over literals
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public void addOneOf( Iterator<Literal> literals ) {
         while( literals.hasNext() ) {
             addOneOf( literals.next() );
@@ -142,6 +145,7 @@ public class DataRangeImpl
      * @return A list of literals that is the permissible values
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public RDFList getOneOf() {
         return objectAs( getProfile().ONE_OF(), "ONE_OF", RDFList.class );
     }
@@ -152,6 +156,7 @@ public class DataRangeImpl
      * @return An iterator over the literals that are the permissible values
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<Literal> listOneOf() {
         return getOneOf().iterator().mapWith( new AsMapper<Literal>( Literal.class ) );
     }
@@ -163,6 +168,7 @@ public class DataRangeImpl
      * @return True if the given literal is in the permissible values for this class.
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasOneOf( Literal lit ) {
         return getOneOf().contains( lit );
     }
@@ -173,6 +179,7 @@ public class DataRangeImpl
      * @param lit A literal that may be declared to be part of this data range, and which is
      * no longer to be one of the data range values.
      */
+    @Override
     public void removeOneOf( Literal lit ) {
         setOneOf( getOneOf().remove( lit ) );
     }

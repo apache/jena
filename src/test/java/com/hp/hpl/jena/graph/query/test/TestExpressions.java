@@ -249,12 +249,15 @@ public class TestExpressions extends QueryTestBase
         {
         return new PatternLiteral()
             {
+            @Override
             public String getPatternString()
                 { return c; }
 
+            @Override
             public String getPatternModifiers()
                 { return m; }
 
+            @Override
             public String getPatternLanguage()
                 { return rdql; }
             };

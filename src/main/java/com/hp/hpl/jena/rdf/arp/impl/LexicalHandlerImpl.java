@@ -44,43 +44,50 @@ class LexicalHandlerImpl extends DefaultHandler implements LexicalHandler {
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endCDATA()
 	 */
-	public void endCDATA() throws SAXException {
+	@Override
+    public void endCDATA() throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endDTD()
 	 */
-	public void endDTD() throws SAXException {
+	@Override
+    public void endDTD() throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startCDATA()
 	 */
-	public void startCDATA() throws SAXException {
+	@Override
+    public void startCDATA() throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
 	 */
-	public void comment(char[] ch, int start, int length) throws SAXException {
+	@Override
+    public void comment(char[] ch, int start, int length) throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
 	 */
-	public void endEntity(String name) throws SAXException {
+	@Override
+    public void endEntity(String name) throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
 	 */
-	public void startEntity(String name) throws SAXException {
+	@Override
+    public void startEntity(String name) throws SAXException {
 	}
 
 	/* (non-Javadoc)
 	 * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void startDTD(String name, String publicId, String systemId)
+	@Override
+    public void startDTD(String name, String publicId, String systemId)
 			throws SAXException {
 	}
 

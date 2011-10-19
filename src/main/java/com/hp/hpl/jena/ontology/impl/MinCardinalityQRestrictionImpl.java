@@ -110,6 +110,7 @@ public class MinCardinalityQRestrictionImpl
      * @param cardinality The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void setMinCardinalityQ( int cardinality ) {
         setPropertyValue( getProfile().MIN_CARDINALITY_Q(), "MIN_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -119,6 +120,7 @@ public class MinCardinalityQRestrictionImpl
      * @return The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public int getMinCardinalityQ() {
         return objectAsInt( getProfile().MIN_CARDINALITY_Q(), "MIN_CARDINALITY_Q" );
     }
@@ -129,6 +131,7 @@ public class MinCardinalityQRestrictionImpl
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
      * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasMinCardinalityQ( int cardinality ) {
         return hasPropertyValue( getProfile().MIN_CARDINALITY_Q(), "MIN_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -140,6 +143,7 @@ public class MinCardinalityQRestrictionImpl
      * @param cardinality A cardinality value to be removed from this restriction
      * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void removeMinCardinalityQ( int cardinality ) {
         removePropertyValue( getProfile().MIN_CARDINALITY_Q(), "MIN_CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }

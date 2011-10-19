@@ -18,6 +18,7 @@ public class rdfparse implements Command
     public rdfparse( boolean internetTest )
         { this.internetTest = internetTest; }
     
+    @Override
     public Object execute()
         { ARPTests.internet = internetTest;
 //        TestRunner.main( new String[] { "-noloading", ARPTests.class.getName()});

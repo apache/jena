@@ -56,10 +56,12 @@ public class ARPHandlers {
 
     private NamespaceHandler nameHandler = new NamespaceHandler() {
 
+        @Override
         public void startPrefixMapping(String prefix, String uri) {
 
         }
 
+        @Override
         public void endPrefixMapping(String prefix) {
 
         }

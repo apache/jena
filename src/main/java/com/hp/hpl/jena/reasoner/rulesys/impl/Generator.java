@@ -91,6 +91,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Return true if the generator is ready to be scheduled (i.e. it is not
      * known to be complete and not known to be waiting for a dependent generator).
      */
+    @Override
     public boolean isReady() {
         if (isComplete()) return false;
         if (checkReadyNeeded) {
@@ -112,6 +113,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Directly set that this generator is ready (because the generator
      * for one of its generatingCPs has produced new results).
      */
+    @Override
     public void setReady(ConsumerChoicePointFrame ccp) {
         if (!isComplete()) {
             interpreter.engine.schedule(ccp);
@@ -202,6 +204,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     /**
      * Notify that the interpreter has now blocked on the given choice point.
      */
+    @Override
     public void notifyBlockedOn(ConsumerChoicePointFrame ccp) {
         generatingCPs.add(ccp);
         checkReadyNeeded = true; 
@@ -211,6 +214,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Notify this context that the given choice point has terminated
      * and can be remove from the wait list. 
      */
+    @Override
     public void notifyFinished(ConsumerChoicePointFrame ccp) {
         if (generatingCPs != null) {
             generatingCPs.remove(ccp); 
@@ -222,6 +226,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Start this generator running for the first time.
      * Should be called from within an appropriately synchronized block.
      */
+    @Override
     public void pump() {
         pump(this);
     }
@@ -266,6 +271,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     /**
      * Return the generator associated with this entry (might be the entry itself)
      */
+    @Override
     public Generator getGenerator() {
         return this;
     }

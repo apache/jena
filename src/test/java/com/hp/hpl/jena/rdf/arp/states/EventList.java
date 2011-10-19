@@ -68,6 +68,7 @@ class EventList implements Attributes, Cloneable {
         }
         
     }
+    @Override
     public int getLength() {
         int sz = 0;
         while (pos+sz < size && events[pos+sz].isAttribute())
@@ -77,36 +78,47 @@ class EventList implements Attributes, Cloneable {
     private QName q(int i) {
         return ((AttrEvent)events[pos+i]).q;
     }
+    @Override
     public String getURI(int index) {
         return q(index).uri;
     }
+    @Override
     public String getLocalName(int index) {
         return q(index).localName;
     }
+    @Override
     public String getQName(int index) {
         return q(index).qName;
     }
+    @Override
     public String getType(int index) {
         return null;
     }
+    @Override
     public String getValue(int index) {
         return ((AttrEvent)events[pos+index]).value;
     }
+    @Override
     public int getIndex(String uri, String localName) {
         return -1;
     }
+    @Override
     public int getIndex(String qName) {
         return -1;
     }
+    @Override
     public String getType(String uri, String localName) {
         return null;
     }
+    @Override
     public String getType(String qName) {
         return null;
     }
+    @Override
     public String getValue(String uri, String localName) {
         return null;
     }
+    @Override
     public String getValue(String qName) {
         return null;
     }

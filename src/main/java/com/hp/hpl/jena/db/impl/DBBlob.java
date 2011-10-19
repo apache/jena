@@ -60,7 +60,8 @@ public abstract class DBBlob implements IDBBlob {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IDBBlob#asOracleBlob()
 	 */
-	public Blob getBlob() {
+	@Override
+    public Blob getBlob() {
 		// TODO Auto-generated method stub
 		return ((java.sql.Blob) m_blob);
 	}

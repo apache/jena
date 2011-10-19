@@ -21,28 +21,39 @@ public class StatementListener implements ModelChangedListener
     /**
         Override this to listen to all incoming added statements
     */
+    @Override
     public void addedStatement( Statement s ) {}
     /**
         Override this to listen to all incoming removed statements
     */
+    @Override
     public void removedStatement( Statement s ) {}   
 /* */
+    @Override
     public void addedStatements( Statement [] statements ) 
         { for (int i = 0; i < statements.length; i += 1) addedStatement( statements[i] ); }
+    @Override
     public void addedStatements( List<Statement> statements ) 
         { for (int i = 0; i < statements.size(); i += 1) addedStatement( statements.get(i) ); }
+    @Override
     public void addedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) addedStatement( statements.nextStatement() ); }
+    @Override
     public void addedStatements( Model m ) 
         { addedStatements( m.listStatements() ); }
+    @Override
     public void removedStatements( Statement [] statements ) 
         { for (int i = 0; i < statements.length; i += 1) removedStatement( statements[i] ); }
+    @Override
     public void removedStatements( List<Statement> statements ) 
         { for (int i = 0; i < statements.size(); i += 1) removedStatement( statements.get(i) ); }
+    @Override
     public void removedStatements( StmtIterator statements ) 
         { while (statements.hasNext()) removedStatement( statements.nextStatement() ); }
+    @Override
     public void removedStatements( Model m ) 
         { removedStatements( m.listStatements() ); }            
+    @Override
     public void notifyEvent( Model m, Object event ) 
         {}
     }

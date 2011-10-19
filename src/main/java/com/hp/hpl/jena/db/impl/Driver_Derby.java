@@ -132,6 +132,7 @@ public class Driver_Derby extends DriverRDB
         return dbid;
     }
     
+    @Override
     public void graphIdDealloc ( int graphId ) {
         DBIDInt result = null;
         try {
@@ -162,6 +163,7 @@ public class Driver_Derby extends DriverRDB
 //
 //    }
 
+    @Override
     public void setConnection(IDBConnection dbcon)
     {
         m_dbcon = dbcon;

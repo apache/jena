@@ -82,6 +82,7 @@ public class TransitiveReasoner implements Reasoner {
      * information supplied at construction time. May be null if there are
      * no useful capabilities registered.
      */
+    @Override
     public Model getReasonerCapabilities() {
         return TransitiveReasonerFactory.theInstance().getCapabilities();
     }
@@ -92,6 +93,7 @@ public class TransitiveReasoner implements Reasoner {
      * @param configSpec a Model into which the configuration information should be placed
      * @param base the Resource to which the configuration parameters should be added.
      */
+    @Override
     public void addDescription(Model configSpec, Resource base) {
         // No configuration
     }
@@ -103,6 +105,7 @@ public class TransitiveReasoner implements Reasoner {
      * this is part of the SPI rather than API
      * @return true if the given property is handled specially by the reasoner.
      */
+    @Override
     public boolean supportsProperty(Property property) {
         ReasonerFactory rf = TransitiveReasonerFactory.theInstance();
         Model caps = rf.getCapabilities();
@@ -119,6 +122,7 @@ public class TransitiveReasoner implements Reasoner {
      * subClassOf is discovered.
      * @param tbox schema containing the property and class declarations
      */
+    @Override
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         return bindSchema(new FGraph(tbox));
     }
@@ -132,6 +136,7 @@ public class TransitiveReasoner implements Reasoner {
      * subClassOf is discovered.
      * @param tbox schema containing the property and class declarations
      */
+    @Override
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
         return bindSchema(new FGraph(tbox.getGraph()));
     }
@@ -168,6 +173,7 @@ public class TransitiveReasoner implements Reasoner {
      * @throws ReasonerException if the data is ill-formed according to the
      * constraints imposed by this reasoner.
      */
+    @Override
     public InfGraph bind(Graph data) throws ReasonerException {
         return new TransitiveInfGraph(data, this);
     }   
@@ -180,6 +186,7 @@ public class TransitiveReasoner implements Reasoner {
      * <p>
      * Default - false.
      */
+    @Override
     public void setDerivationLogging(boolean logOn) {
         // Irrelevant to this reasoner
     }
@@ -193,7 +200,8 @@ public class TransitiveReasoner implements Reasoner {
       * @param value the new value for the parameter, typically this is a wrapped
       * java object like Boolean or Integer.
       */
-     public void setParameter(Property parameter, Object value) {
+     @Override
+    public void setParameter(Property parameter, Object value) {
          throw new IllegalParameterException(parameter.toString());
      }
     
@@ -225,6 +233,7 @@ public class TransitiveReasoner implements Reasoner {
      * Return the Jena Graph Capabilties that the inference graphs generated
      * by this reasoner are expected to conform to.
      */
+    @Override
     public Capabilities getGraphCapabilities() {
         if (capabilities == null) {
             capabilities = new BaseInfGraph.InfFindSafeCapabilities();

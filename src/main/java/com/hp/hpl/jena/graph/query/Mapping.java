@@ -54,6 +54,7 @@ public class Mapping implements VariableIndexes
         return res;
         }
         
+    @Override
     public int indexOf( String name )
         { return indexOf( Node.createVariable( name ) ); }
 

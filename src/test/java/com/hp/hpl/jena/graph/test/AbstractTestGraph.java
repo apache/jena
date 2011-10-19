@@ -261,7 +261,8 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         try { th.begin(); th.commit(); } catch (UnsupportedOperationException x) {}
     /* */
         Command cmd = new Command() 
-            { public Object execute() { return null; } };
+            { @Override
+            public Object execute() { return null; } };
         try { th.executeInTransaction( cmd ); } 
         catch (UnsupportedOperationException x) {}
         }
@@ -272,7 +273,8 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         if (th.transactionsSupported())
             {
             Command cmd = new Command() 
-                { public Object execute() throws Error { throw new Error(); } };
+                { @Override
+                public Object execute() throws Error { throw new Error(); } };
             try { th.executeInTransaction( cmd ); } 
             catch (JenaException x) {}
             }

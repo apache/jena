@@ -110,6 +110,7 @@ public class HasValueRestrictionImpl
      * class defined by this restriction.
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
      */
+    @Override
     public void setHasValue( RDFNode value ) {
         setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }
@@ -119,6 +120,7 @@ public class HasValueRestrictionImpl
      * @return An RDFNode that is the value of the restricted property
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
      */
+    @Override
     public RDFNode getHasValue() {
         checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
         RDFNode n = getPropertyValue( getProfile().HAS_VALUE() );
@@ -138,6 +140,7 @@ public class HasValueRestrictionImpl
      * @return True if the given value is the value of the restricted property in this restriction
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasValue( RDFNode value ) {
         return hasPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }
@@ -148,6 +151,7 @@ public class HasValueRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param value An RDF value that is to be removed as the required value for the restricted property
      */
+    @Override
     public void removeHasValue( RDFNode value ) {
         removePropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", value );
     }

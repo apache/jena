@@ -28,7 +28,8 @@ public interface TripleSorter
         A TripleSorter that does not alter the triple array at all.
      */
     public static final TripleSorter dontSort = new TripleSorter()
-        { public Triple []  sort( Triple [] ts ) { return ts; } };        
+        { @Override
+        public Triple []  sort( Triple [] ts ) { return ts; } };        
     }
 
 

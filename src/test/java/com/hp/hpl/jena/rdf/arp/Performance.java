@@ -627,11 +627,14 @@ class Performance  {
 	}
 	static void parseRDF(InputStream in, String base) throws IOException {
 		ErrorHandler eh = new ErrorHandler() {
-			public void warning(SAXParseException e) {
+			@Override
+            public void warning(SAXParseException e) {
 			}
-			public void error(SAXParseException e) {
+			@Override
+            public void error(SAXParseException e) {
 			}
-			public void fatalError(SAXParseException e) {
+			@Override
+            public void fatalError(SAXParseException e) {
 			}
 		};
 		InputStream oldIn = System.in;

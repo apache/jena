@@ -92,6 +92,7 @@ public class TestUnionStatistics extends GraphTestBase
                 {
                 return new GraphStatisticsHandler()
                     {
+                    @Override
                     public long getStatistic( Node S, Node P, Node O )
                         { return x.value; }
                     };

@@ -27,6 +27,7 @@ public class LookingForRDF extends Frame {
         super(s, x);
     }
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         return rdfStartElement(uri, localName, rawName, atts);

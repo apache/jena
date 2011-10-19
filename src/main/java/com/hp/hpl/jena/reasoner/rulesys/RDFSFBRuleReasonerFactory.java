@@ -42,6 +42,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner encoded within an RDF graph, the current implemenation
      * is not configurable and will ignore this parameter.
      */
+    @Override
     public Reasoner create(Resource configuration) {
         return new RDFSFBRuleReasoner(this);
     }
@@ -51,6 +52,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -71,6 +73,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

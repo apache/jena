@@ -24,6 +24,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     @Override protected Triple[] newKeyArray( int size )
         { return new Triple[size]; }
 
+    @Override
     public boolean contains( Triple t )
         { return findSlot( t ) < 0; }    
     
@@ -39,6 +40,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
             }
         }
     
+    @Override
     public boolean containsBySameValueAs( Triple t )
         { return findSlotBySameValueAs( t ) < 0; }
     
@@ -46,6 +48,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
         Answer the number of items currently in this TripleBunch. 
         @see com.hp.hpl.jena.mem.TripleBunch#size()
     */
+    @Override
     public int size()
         { return size; }
     
@@ -56,6 +59,7 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     public int currentCapacity()
         { return capacity; }
     
+    @Override
     public void add( Triple t )
         {
         keys[findSlot( t )] = t;
@@ -82,12 +86,15 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
         changes += 1;
         }
     
+    @Override
     public ExtendedIterator<Triple> iterator()
         { return iterator( NotifyEmpty.ignore ); }
     
+    @Override
     public ExtendedIterator<Triple> iterator( final NotifyEmpty container )
         { return keyIterator( container ); }
     
+    @Override
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
         int i = capacity, initialChanges = changes;

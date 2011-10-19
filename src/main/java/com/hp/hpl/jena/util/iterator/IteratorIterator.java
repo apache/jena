@@ -56,7 +56,8 @@ public class IteratorIterator<T> implements Iterator<T>
 /** Is there another element in one of the Iterator's
  * still to consider.
  */        
-	public boolean hasNext() {
+	@Override
+    public boolean hasNext() {
 		while ( currentMember == null || !currentMember.hasNext() ) {
 			if (!top.hasNext())
 				return false;
@@ -65,7 +66,8 @@ public class IteratorIterator<T> implements Iterator<T>
 		return true;
 	}
 
-	public T next() {
+	@Override
+    public T next() {
 		hasNext();
 		if (currentMember == null)
 			throw new NoSuchElementException();
@@ -74,6 +76,7 @@ public class IteratorIterator<T> implements Iterator<T>
 /** remove's the element from the underlying Iterator
  * in which it is a member.
  */        
+        @Override
         public void remove() {
 	  if (currentMember == null)
 			throw new IllegalStateException();

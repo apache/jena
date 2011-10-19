@@ -218,7 +218,8 @@ This is a list of
  * @return the old value for this property, or <code>null</code>
  * if no value was set.
  */
- Object setProperty(
+ @Override
+Object setProperty(
     String propName,
     Object propValue);
 

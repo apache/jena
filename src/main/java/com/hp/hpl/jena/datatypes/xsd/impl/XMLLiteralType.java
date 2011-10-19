@@ -80,17 +80,21 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
         ARP arp = new ARP();
         
         arp.getHandlers().setErrorHandler(new ErrorHandler(){
-        	public void fatalError(SAXParseException e){
+        	@Override
+            public void fatalError(SAXParseException e){
         		status[0] = true;
         	}
-			public void error(SAXParseException e){
+			@Override
+            public void error(SAXParseException e){
 				status[0] = true;
 			}
-			public void warning(SAXParseException e){
+			@Override
+            public void warning(SAXParseException e){
 				status[0] = true;
 			}
         });
         arp.getHandlers().setStatementHandler(new StatementHandler(){
+        @Override
         public void statement(AResource a, AResource b, ALiteral l){
         	/* this method is invoked exactly once
         	 * while parsing the dummy document.
@@ -106,7 +110,8 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
             status[1] = true;
             status[2] = l.toString().equals(lexicalForm);
         }
-		public void statement(AResource a, AResource b, AResource l){
+		@Override
+        public void statement(AResource a, AResource b, AResource l){
 	      status[0] = true;
 	      //throw new BrokenException("resource valued RDF/XML in XMLLiteral code.");
 	    }

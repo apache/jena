@@ -29,6 +29,7 @@ public class ArrayBunch implements TripleBunch
     public ArrayBunch()
         { elements = new Triple[5]; }
     
+    @Override
     public boolean containsBySameValueAs( Triple t )
         {
         int i = size;
@@ -36,6 +37,7 @@ public class ArrayBunch implements TripleBunch
         return false;
         }
     
+    @Override
     public boolean contains( Triple t )
         {
         int i = size;
@@ -43,9 +45,11 @@ public class ArrayBunch implements TripleBunch
         return false;
         }
     
+    @Override
     public int size()
         { return size; }
     
+    @Override
     public void add( Triple t )
         { 
         if (size == elements.length) grow();
@@ -66,6 +70,7 @@ public class ArrayBunch implements TripleBunch
         elements = newElements;
         }
 
+    @Override
     public void remove( Triple t )
         {
         changes += 1;
@@ -77,6 +82,7 @@ public class ArrayBunch implements TripleBunch
             }
         }
     
+    @Override
     public void app( Domain d, StageElement next, MatchOrBind s )
         {
         int i = size, initialChanges = changes;
@@ -87,11 +93,14 @@ public class ArrayBunch implements TripleBunch
             }
         }
     
+    @Override
     public ExtendedIterator<Triple> iterator()
         {
-        return iterator( new HashCommon.NotifyEmpty() { public void emptied() {} } );
+        return iterator( new HashCommon.NotifyEmpty() { @Override
+        public void emptied() {} } );
         }
     
+    @Override
     public ExtendedIterator<Triple> iterator( final HashCommon.NotifyEmpty container )
         {
 //        System.err.println( ">> ArrayBunch::iterator: intial state" );

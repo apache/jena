@@ -29,6 +29,7 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
     }
     ANode subject;
     boolean subjectIsBlank = false;
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         clearSubject();
@@ -97,11 +98,13 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
     }
 
  
+    @Override
     public void aPredAndObj(ANode p, ANode o) {
         triple(subject,p,o);
         
     }
 
+    @Override
     public void makeSubjectReificationWith(ANode r) {
         triple(r,RDF_SUBJECT,subject);
     }

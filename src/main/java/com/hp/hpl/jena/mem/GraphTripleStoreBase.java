@@ -36,13 +36,15 @@ public abstract class GraphTripleStoreBase implements TripleStore
     /**
         Destroy this triple store - discard the indexes.
     */
-     public void close()
+     @Override
+    public void close()
          { subjects = predicates = objects = null; }
      
      /**
           Add a triple to this triple store.
      */
-     public void add( Triple t )
+     @Override
+    public void add( Triple t )
          {
          if (subjects.add( t ))
              {
@@ -54,7 +56,8 @@ public abstract class GraphTripleStoreBase implements TripleStore
      /**
           Remove a triple from this triple store.
      */
-     public void delete( Triple t )
+     @Override
+    public void delete( Triple t )
          {
          if (subjects.remove( t ))
              {
@@ -66,7 +69,8 @@ public abstract class GraphTripleStoreBase implements TripleStore
      /**
           Clear this store, ie remove all triples from it.
      */
-     public void clear()
+     @Override
+    public void clear()
          {
          subjects.clear();
          predicates.clear();
@@ -76,28 +80,34 @@ public abstract class GraphTripleStoreBase implements TripleStore
      /**
           Answer the size (number of triples) of this triple store.
      */
-     public int size()
+     @Override
+    public int size()
          { return subjects.size(); }
      
      /**
           Answer true iff this triple store is empty.
      */
-     public boolean isEmpty()
+     @Override
+    public boolean isEmpty()
          { return subjects.isEmpty(); }
      
-     public ExtendedIterator<Node> listSubjects()
+     @Override
+    public ExtendedIterator<Node> listSubjects()
          { return expectOnlyNodes( subjects.domain() ); }
      
-     public ExtendedIterator<Node> listPredicates()
+     @Override
+    public ExtendedIterator<Node> listPredicates()
          { return expectOnlyNodes( predicates.domain() ); }
     
      private ExtendedIterator<Node> expectOnlyNodes( Iterator<Object> elements )
         { return WrappedIterator.<Object>createNoRemove( elements ).mapWith( expectNode ); }
      
      private static final Map1<Object, Node> expectNode = new Map1<Object, Node>()
-         { public Node map1( Object o ) { return (Node) o; }};
+         { @Override
+        public Node map1( Object o ) { return (Node) o; }};
      
-     public ExtendedIterator<Node> listObjects()
+     @Override
+    public ExtendedIterator<Node> listObjects()
          {
          return new ObjectIterator( objects.domain() )
              {
@@ -109,7 +119,8 @@ public abstract class GraphTripleStoreBase implements TripleStore
      /**
           Answer true iff this triple store contains the (concrete) triple <code>t</code>.
      */
-     public boolean contains( Triple t )
+     @Override
+    public boolean contains( Triple t )
          { return subjects.containsBySameValueAs( t ); }
      
      public boolean containsByEquality( Triple t )
@@ -132,7 +143,8 @@ public abstract class GraphTripleStoreBase implements TripleStore
          (ANY, P, O) searches on largish models with few predicates declined
          dramatically - specifically on the not-galen.owl ontology.
      */
-     public ExtendedIterator<Triple> find( TripleMatch tm )
+     @Override
+    public ExtendedIterator<Triple> find( TripleMatch tm )
          {
          Triple t = tm.asTriple();
          Node pm = t.getPredicate();

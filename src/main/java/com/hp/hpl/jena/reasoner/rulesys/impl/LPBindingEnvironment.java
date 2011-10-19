@@ -38,6 +38,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
      * just return it, if it is a varible bound in this environment return the binding,
      * if it is an unbound variable return the variable.
      */
+    @Override
     public Node getGroundVersion(Node node) {
         return LPInterpreter.deref(node);
     }
@@ -49,6 +50,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
      * @param value the value to bind
      * @return false if the binding fails
      */
+    @Override
     public boolean bind(Node var, Node value) {
         Node dvar = var;
         if (dvar instanceof Node_RuleVariable) dvar = ((Node_RuleVariable)dvar).deref();
@@ -69,6 +71,7 @@ public class LPBindingEnvironment implements BindingEnvironment {
      * @param env the current binding environment
      * @return a new, instantiated triple
      */
+    @Override
     public Triple instantiate(TriplePattern pattern) {
         Node s = getGroundVersion(pattern.getSubject());
         if (s.isVariable()) s = Node.createAnon();

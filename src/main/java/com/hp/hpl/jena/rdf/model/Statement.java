@@ -44,10 +44,12 @@ public interface Statement extends FrontsTriple
      * @param o the object to be compared
      */
     
+    @Override
     public boolean equals(Object o);
     
     /** Returns asTriple().hashCode()
      */
+    @Override
     public int hashCode();
     
     /** An accessor method to return the subject of the statements.
@@ -388,16 +390,19 @@ public interface Statement extends FrontsTriple
         {
         public static final Map1<Statement, Resource> getSubject = new Map1<Statement, Resource>() 
             {
+            @Override
             public Resource map1( Statement o ) { return o.getSubject(); }
             };
             
         public static final Map1<Statement, Property> getPredicate = new Map1<Statement, Property>() 
             {
+            @Override
             public Property map1( Statement o ) { return o.getPredicate(); }
             };
             
         public static final Map1<Statement, RDFNode> getObject = new Map1<Statement, RDFNode>() 
             {
+            @Override
             public RDFNode map1( Statement o ) { return o.getObject(); }
             };
         }

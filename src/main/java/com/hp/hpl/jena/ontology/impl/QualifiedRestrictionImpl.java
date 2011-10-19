@@ -112,6 +112,7 @@ public class QualifiedRestrictionImpl
      * @param cls The class to which all of the value of the restricted property must belong
      * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void setHasClassQ( OntClass cls ) {
         setPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
     }
@@ -121,6 +122,7 @@ public class QualifiedRestrictionImpl
      * @return The ontology class of the restricted property values
      * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
+    @Override
     public OntResource getHasClassQ() {
         checkProfile( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q" );
         Resource r = getProperty( getProfile().HAS_CLASS_Q() ).getResource();
@@ -142,6 +144,7 @@ public class QualifiedRestrictionImpl
      * @return True if the given class is the class to which all members of this restriction must belong
      * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasHasClassQ( OntClass cls ) {
         return hasPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", cls );
     }
@@ -153,6 +156,7 @@ public class QualifiedRestrictionImpl
      * @return True if the given class is the class to which all members of this restriction must belong
      * @exception OntProfileException If the {@link Profile#HAS_CLASS_Q()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasHasClassQ( DataRange dr ) {
         return hasPropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", dr );
     }
@@ -163,6 +167,7 @@ public class QualifiedRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param cls The ont class that is the object of the <code>hasClassQ</code> property.
      */
+    @Override
     public void removeHasClassQ( OntClass cls ) {
         Property has_class_q = getProfile().HAS_CLASS_Q();
         removePropertyValue( has_class_q, "HAS_CLASS_Q", cls );
@@ -174,6 +179,7 @@ public class QualifiedRestrictionImpl
      * is not true of the current model, nothing happens.</p>
      * @param dr The datarange that is the object of the <code>hasClassQ</code> property.
      */
+    @Override
     public void removeHasClassQ( DataRange dr ) {
         removePropertyValue( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q", dr );
     }

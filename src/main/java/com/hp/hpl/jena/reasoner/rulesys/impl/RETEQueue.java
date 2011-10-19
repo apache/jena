@@ -67,6 +67,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
     /**
      * Set the continuation node for this node (and any sibling)
      */
+    @Override
     public void setContinuation(RETESinkNode continuation) {
         this.continuation = continuation;
         if (sibling != null) sibling.continuation = continuation;
@@ -77,6 +78,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
      * @param env a set of variable bindings for the rule being processed. 
      * @param isAdd distinguishes between add and remove operations.
      */
+    @Override
     public void fire(BindingVector env, boolean isAdd) {
         // Store the new token in this store
         Count count = queue.get(env);
@@ -158,6 +160,7 @@ public class RETEQueue implements RETESinkNode, RETESourceNode {
      * Clone this node in the network.
      * @param context the new context to which the network is being ported
      */
+    @Override
     public RETENode clone(Map<RETENode, RETENode> netCopy, RETERuleContext context) {
         RETEQueue clone = (RETEQueue)netCopy.get(this);
         if (clone == null) {

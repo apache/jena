@@ -63,6 +63,7 @@ public class RandCache implements Cache, CacheControl {
         collection = map.values();
     }
 
+    @Override
     public synchronized Object get(Object key) {
         if (enabled) {
             if (gets == Long.MAX_VALUE) {
@@ -79,6 +80,7 @@ public class RandCache implements Cache, CacheControl {
         }
     }
 
+    @Override
     public synchronized void put(Object key, Object value) {
 
         // don't allow null values
@@ -113,28 +115,34 @@ public class RandCache implements Cache, CacheControl {
         }
     }
 
+    @Override
     public synchronized boolean getEnabled() {
         return enabled;
     }
 
+    @Override
     public synchronized boolean setEnabled(boolean enabled) {
         boolean result = enabled;
         this.enabled = enabled;
         return result;
     }
 
+    @Override
     public synchronized void clear() {
         map.clear();
     }
 
+    @Override
     public synchronized long getHits() {
         return hits;
     }
 
+    @Override
     public synchronized long getGets() {
         return gets;
     }
 
+    @Override
     public synchronized long getPuts() {
         return puts;
     }

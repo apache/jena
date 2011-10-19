@@ -1055,6 +1055,7 @@ public class Rule implements ClauseEntry {
      * Compare clause entries, taking into account variable indices.
      * The equality function ignores differences between variables.
      */
+    @Override
     public boolean sameAs(Object o) {
         return equals(o);
     }

@@ -230,7 +230,8 @@ public class DBPropGraph extends DBProp {
 	
 	
 	private class MapToLSet implements Map1<Triple, DBPropLSet> {
-		public DBPropLSet map1( Triple t) {
+		@Override
+        public DBPropLSet map1( Triple t) {
 			return new DBPropLSet( graph, t.getObject() );			
 		}
 	}
@@ -239,7 +240,8 @@ public class DBPropGraph extends DBProp {
         @author kers
      */
 	private class MapToPrefix implements Map1<Triple,DBPropPrefix> {
-		public DBPropPrefix map1(Triple t) {
+		@Override
+        public DBPropPrefix map1(Triple t) {
 			return new DBPropPrefix( graph, t.getObject() );			
 		}
 	}

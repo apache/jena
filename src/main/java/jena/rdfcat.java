@@ -134,6 +134,7 @@ public class rdfcat
     /** Argument setting expected input language to N3 */
     public final ArgDecl IN_N3 = new ArgDecl( true, "n", "n3", "ttl", "N3",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     m_actionQ.add( new ReadAction( val, "N3") );
             }} );
@@ -141,6 +142,7 @@ public class rdfcat
     /** Argument setting expected input language to RDF/XML */
     public final ArgDecl IN_RDF_XML = new ArgDecl( true, "x", "xml", "rdfxml", "rdf",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     m_actionQ.add( new ReadAction( val, "RDF/XML") );
             }} );
@@ -148,6 +150,7 @@ public class rdfcat
     /** Argument setting expected input language to NTRIPLE */
     public final ArgDecl IN_NTRIPLE = new ArgDecl( true, "t", "ntriples", "ntriple", "n-triple", "n-triples",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     m_actionQ.add( new ReadAction( val, "N-TRIPLE" ) );
             }} );
@@ -155,6 +158,7 @@ public class rdfcat
     /** Argument to set the output language */
     public final ArgDecl OUT_LANG = new ArgDecl( true, "out",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     setOutput( val );
             }} );
@@ -162,6 +166,7 @@ public class rdfcat
     /** Argument to set the default input language */
     public final ArgDecl IN_LANG = new ArgDecl( true, "in",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     expectInput( val );
             }} );
@@ -169,6 +174,7 @@ public class rdfcat
     /** Argument to turn include processing on */
     public final ArgDecl INCLUDE = new ArgDecl( false, "include",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     setInclude( true );
             }} );
@@ -176,6 +182,7 @@ public class rdfcat
     /** Argument to turn include processing off */
     public final ArgDecl NOINCLUDE = new ArgDecl( false, "noinclude",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     setInclude( false );
             }} );
@@ -183,6 +190,7 @@ public class rdfcat
     /** Argument to leave import/seeAlso statements in place in flattened models */
     public final ArgDecl NOFILTER = new ArgDecl( false, "nofilter",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     setRemoveIncludeStatements( false );
             }} );
@@ -190,11 +198,13 @@ public class rdfcat
     /** Argument to show usage */
     public final ArgDecl HELP = new ArgDecl( false, "help",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     usage();
             }} );
     public final ArgDecl USAGE = new ArgDecl( false, "usage",
             new ArgHandler() {
+                @Override
                 public void action( String arg, String val ) throws IllegalArgumentException {
                     usage();
             }} );
@@ -538,6 +548,7 @@ public class rdfcat
         }
 
         /** perform the action of reading a uri */
+        @Override
         public void run( rdfcat rc ) {
             String l = rc.getExpectedInput();
             if (m_lang != null) {

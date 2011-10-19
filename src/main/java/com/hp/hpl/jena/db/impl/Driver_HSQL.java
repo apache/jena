@@ -137,6 +137,7 @@ public class Driver_HSQL extends DriverRDB
         return dbid;
     }
     
+    @Override
     public void graphIdDealloc ( int graphId ) {
         DBIDInt result = null;
         try {
@@ -166,6 +167,7 @@ public class Driver_HSQL extends DriverRDB
 //        return result.getIntID();
 //    }
 
+    @Override
     public void setConnection(IDBConnection dbcon)
     {
         m_dbcon = dbcon;

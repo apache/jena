@@ -46,6 +46,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         Create a graph and record it with the given name in the local map.
      */
+    @Override
     public Graph createGraph( String name, boolean strict )
         {
         GraphMemBase already = (GraphMemBase) graphs.get( name );
@@ -64,6 +65,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         Open (aka find) a graph with the given name in the local map.
      */
+    @Override
     public Graph openGraph( String name, boolean strict )
         {
         GraphMemBase already = (GraphMemBase) graphs.get( name );
@@ -81,6 +83,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         Remove the mapping from name to any graph from the local map.
      */
+    @Override
     public void removeGraph( String name )
         {
         if (!graphs.containsKey( name )) throw new DoesNotExistException( name );
@@ -90,15 +93,18 @@ public class SimpleGraphMaker extends BaseGraphMaker
     /**
         Return true iff we have a graph with the given name
     */
+    @Override
     public boolean hasGraph( String name )
         { return graphs.containsKey( name ); }
              
     /**
         Close this factory - we choose to do nothing.
      */
+    @Override
     public void close()
         { /* nothing to do */ }
         
+    @Override
     public ExtendedIterator<String> listGraphs()
         { return WrappedIterator.create( graphs.keySet().iterator() ); }
 	}

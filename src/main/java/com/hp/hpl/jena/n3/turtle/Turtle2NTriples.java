@@ -18,6 +18,7 @@ public class Turtle2NTriples implements TurtleEventHandler
     PrintStream out = System.out ;
     public Turtle2NTriples(PrintStream out) { this.out = out ; }
     
+    @Override
     public void triple(int line, int col, Triple triple)
     {
         //Check it's valid triple.
@@ -81,12 +82,15 @@ public class Turtle2NTriples implements TurtleEventHandler
         System.err.println("Illegal node: "+node) ;
     }
 
+    @Override
     public void startFormula(int line, int col)
     { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
 
+    @Override
     public void endFormula(int line, int col)
     { throw new TurtleParseException("["+line+", "+col+"] : Error: Formula found") ; }
 
+    @Override
     public void prefix(int line, int col, String prefix, String iri)
     {  }
     

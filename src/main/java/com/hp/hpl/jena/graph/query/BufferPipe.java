@@ -53,15 +53,19 @@ public class BufferPipe implements Pipe
         catch (Exception e) { throw new BoundedBufferPutException( e ); }
         }
         
+    @Override
     public void put( Domain d )
         { putAny( d ); }
 
+    @Override
     public void close()
         { putAny( finished );  }
     
+    @Override
     public void close( Exception e )
         { putAny( new Finished( e ) ); }
 
+    @Override
     public boolean hasNext()
         {
         if (open)
@@ -90,6 +94,7 @@ public class BufferPipe implements Pipe
             return false; 
         }
         
+    @Override
     public Domain get()
         {
         if (hasNext() == false) throw new NoSuchElementException(); 

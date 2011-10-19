@@ -18,16 +18,27 @@ import com.hp.hpl.jena.rdf.model.*;
 */
 public class NullListener implements ModelChangedListener
     {
+    @Override
     public void addedStatement( Statement s ) {}
+    @Override
     public void addedStatements( Statement [] statements ) {}
+    @Override
     public void addedStatements( List<Statement> statements ) {}
+    @Override
     public void addedStatements( StmtIterator statements ) {}
+    @Override
     public void addedStatements( Model m ) {}
+    @Override
     public void removedStatement( Statement s ) {}   
+    @Override
     public void removedStatements( Statement [] statements ) {}
+    @Override
     public void removedStatements( List<Statement> statements ) {}
+    @Override
     public void removedStatements( StmtIterator statements ) {}
+    @Override
     public void removedStatements( Model m ) {}            
+    @Override
     public void notifyEvent( Model m, Object event ) {}
     }
         

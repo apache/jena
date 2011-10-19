@@ -33,10 +33,12 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
     @Override public <X extends RDFNode> boolean supports( Class<X> t )
         { return t.isInstance( this ) && isSubject(); }
         
+    @Override
     public boolean isSubject() {
         return findSubject() != null;
     }
     
+    @Override
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");

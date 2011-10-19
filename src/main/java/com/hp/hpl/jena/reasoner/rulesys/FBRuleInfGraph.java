@@ -220,6 +220,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * This may different from the normal find operation in the base of hybrid reasoners
      * where we are side-stepping the backward deduction step.
      */
+    @Override
     public ExtendedIterator<Triple> findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
     }
@@ -231,6 +232,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param rule the rule which is invoking this call
      * @return true if the predicate succeeds
      */
+    @Override
     public boolean processBuiltin(ClauseEntry clause, Rule rule, BindingEnvironment env) {
         throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of builtin in rule " + rule);
         // TODO: Remove 
@@ -333,6 +335,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param pclass the (optional, can be null) class for the inferred value.
      * @return the bNode representing the property value 
      */
+    @Override
     public Node getTemp(Node instance, Node prop, Node pclass) {
         return tempNodecache.getTemp(instance, prop, pclass);
     }

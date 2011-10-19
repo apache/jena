@@ -53,6 +53,7 @@ public class SimpleCache<K, V> implements ICache<K, V> {
      * @param id the database ID to be used as an index
      * @param val the literal or resources to be stored
      */
+    @Override
     public void put(K id, V val) {
         if (threshold == 0) return;
         if (threshold > 0 && count >= threshold) {
@@ -68,6 +69,7 @@ public class SimpleCache<K, V> implements ICache<K, V> {
      * @param id the database ID of the object to be retrieved
      * @return the object or null if it is not in the cache
      */
+    @Override
     public V get(K id) {
         return cache.get(id);
     }
@@ -80,6 +82,7 @@ public class SimpleCache<K, V> implements ICache<K, V> {
      * @param threshold the cache size limit, use 0 for no cache, -1 for
      * unlimited cache growth; any other number indicates the number of cache entries
      */
+    @Override
     public void setLimit(int threshold) {
         this.threshold = threshold;
         if (threshold >= 0 && count > threshold) {
@@ -91,6 +94,7 @@ public class SimpleCache<K, V> implements ICache<K, V> {
     /**
      * Return the current threshold limit for the cache size.
      */
+    @Override
     public int getLimit() {
         return threshold;
     }

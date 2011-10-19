@@ -72,7 +72,8 @@ public abstract class QueryTestBase extends GraphTestBase
     protected Map1<Domain, Node> select( final int index )
         {
         return new Map1<Domain, Node>() 
-            { public Node map1( Domain o ) { return o.get( index ); } };
+            { @Override
+            public Node map1( Domain o ) { return o.get( index ); } };
         }
 
     /**
@@ -88,7 +89,8 @@ public abstract class QueryTestBase extends GraphTestBase
             public String getName()
 	            { return x.getName(); }
 	    
-	        public Valuator prepare( VariableIndexes vi )
+	        @Override
+            public Valuator prepare( VariableIndexes vi )
 	            { return new SlotValuator( vi.indexOf( x.getName() ) ); }
 	        };
 	    return new Expression.Fixed( x );
@@ -99,13 +101,15 @@ public abstract class QueryTestBase extends GraphTestBase
      	assumes the elements are lists and extracts their first elements.
     */
     protected static Map1<Domain, Node> getFirst = new Map1<Domain, Node>() 
-    	{ public Node map1( Domain x ) { return x.get(0); } };  
+    	{ @Override
+        public Node map1( Domain x ) { return x.get(0); } };  
     
     /**
        An IndexValues with no elements - ever slot maps to null
     */
     protected static final IndexValues noIVs = new IndexValues() 
-        { public Object get( int i ) { return null; } };
+        { @Override
+        public Object get( int i ) { return null; } };
 
     /**
          A mapping with no elements pre-defined
@@ -117,7 +121,8 @@ public abstract class QueryTestBase extends GraphTestBase
      	are defined (all names map to the non-existant slot -1).
      */
     protected VariableIndexes noVariables = new VariableIndexes()
-        { public int indexOf( String name ) { return -1; } };
+        { @Override
+        public int indexOf( String name ) { return -1; } };
         
     /**
      	A Node with spelling "X".

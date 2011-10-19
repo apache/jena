@@ -83,6 +83,7 @@ public interface Resource extends RDFNode {
         Override RDFNode.inModel() to produce a staticly-typed Resource
         in the given Model.
     */
+    @Override
     public Resource inModel( Model m );
 
     /**
@@ -114,6 +115,7 @@ public interface Resource extends RDFNode {
      * @return Return a string representation of the resource.
      * if it is anonymous.
      */
+    @Override
     public String toString();
 
     /** Determine whether two objects represent the same resource.
@@ -126,6 +128,7 @@ public interface Resource extends RDFNode {
      * @param o The object to be compared.
      * @return true if and only if both objects are equal
      */
+    @Override
     public boolean equals( Object o );
 
     /** Get a property value of this resource.

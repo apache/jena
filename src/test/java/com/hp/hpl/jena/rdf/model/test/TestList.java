@@ -691,7 +691,8 @@ public class TestList
             
             class MyApply implements RDFList.ApplyFn {
                String collect = "";
-               public void apply( RDFNode n ) {
+               @Override
+            public void apply( RDFNode n ) {
                    collect = collect + ((Resource) n).getLocalName();  
                } 
             }
@@ -715,7 +716,8 @@ public class TestList
             RDFList root = getListRoot( m );
             
             RDFList.ReduceFn f = new RDFList.ReduceFn() {
-               public Object reduce( RDFNode n, Object acc ) {
+               @Override
+            public Object reduce( RDFNode n, Object acc ) {
                    return ((String) acc) + ((Resource) n).getLocalName();  
                } 
             };
@@ -733,7 +735,8 @@ public class TestList
             m.read( "file:testing/ontology/list5.rdf" );
            
             RDFList root = getListRoot( m );
-            iteratorTest( root.mapWith( new Map1<RDFNode, String>() {public String map1( RDFNode x ){return ((Resource) x).getLocalName();} } ), 
+            iteratorTest( root.mapWith( new Map1<RDFNode, String>() {@Override
+            public String map1( RDFNode x ){return ((Resource) x).getLocalName();} } ), 
                           new Object[] {"a","b","c","d","e"} );            
         }
     }

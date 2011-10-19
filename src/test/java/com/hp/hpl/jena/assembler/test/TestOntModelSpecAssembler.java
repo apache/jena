@@ -156,8 +156,10 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
         Assembler a = new OntModelSpecAssembler();
         ModelGetter getter = new ModelGetter() 
             { 
+            @Override
             public Model getModel( String URL ) { return null; }
 
+            @Override
             public Model getModel( String URL, ModelReader loadIfAbsent )
                 { throw new CannotCreateException( URL ); }
             };
@@ -169,12 +171,15 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
 
     private static final class FakeReasonerFactory implements ReasonerFactory
         {
+        @Override
         public Reasoner create( Resource configuration )
             { return null; }
 
+        @Override
         public Model getCapabilities()
             { return null; }
 
+        @Override
         public String getURI()
             { return null; }
         }

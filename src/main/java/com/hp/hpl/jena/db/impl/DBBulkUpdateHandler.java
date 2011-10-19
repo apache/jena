@@ -41,12 +41,14 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         add a list of triples to the graph; the add is done as a list with notify off,
         and then the array-notify invoked.
     */
-	public void add(Triple[] triples) {
+	@Override
+    public void add(Triple[] triples) {
 		add( Arrays.asList(triples), false );
         manager.notifyAddArray( graph, triples );
 	}
 
-	public void add( List<Triple> triples ) 
+	@Override
+    public void add( List<Triple> triples ) 
         { add( triples, true ); }
         
     /**
@@ -64,7 +66,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         turned off.
      	@see com.hp.hpl.jena.graph.BulkUpdateHandler#add(java.util.Iterator)
      */
-	public void add(Iterator<Triple> it) 
+	@Override
+    public void add(Iterator<Triple> it) 
         { 
         if (manager.listening())
             {
@@ -88,9 +91,11 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		}
     }
         
+    @Override
     public void add( Graph g )
         { add( g, false ); }
         
+    @Override
     public void add( Graph g, boolean withReifications ) {
         Iterator<Triple> triplesToAdd = GraphUtil.findAll( g );
 		try { addIterator( triplesToAdd ); } finally { NiceIterator.close(triplesToAdd); }
@@ -102,11 +107,13 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         remove a list of triples from the graph; the remove is done as a list with notify off,
         and then the array-notify invoked.
     */
-	public void delete( Triple[] triples ) {
+	@Override
+    public void delete( Triple[] triples ) {
 		delete( Arrays.asList(triples), false );
         manager.notifyDeleteArray( graph, triples );
 	}
 
+    @Override
     public void delete( List<Triple> triples )
         { delete( triples, true ); }
         
@@ -125,6 +132,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         with notification turned off.
         @see com.hp.hpl.jena.graph.BulkUpdateHandler#add(java.util.Iterator)
      */
+    @Override
     public void delete(Iterator<Triple> it) 
         { 
         if (manager.listening())
@@ -148,9 +156,11 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		}
 	}
 
-	public void delete(Graph g)
+	@Override
+    public void delete(Graph g)
         { delete( g, false ); }
         
+    @Override
     public void delete( Graph g, boolean withReifications ) {
         Iterator<Triple> triplesToDelete = GraphUtil.findAll( g );
 		try { deleteIterator( triplesToDelete ); } finally { NiceIterator.close(triplesToDelete) ; }
@@ -158,10 +168,12 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         manager.notifyDeleteGraph( graph, g );
    	}
     
+    @Override
     public void removeAll()
         { graph.clear();
         manager.notifyEvent( graph, GraphEvents.removeAll ); }
     
+    @Override
     public void remove( Node s, Node p, Node o )
         { SimpleBulkUpdateHandler.removeAll( graph, s, p, o ); 
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) ); }

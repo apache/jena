@@ -64,69 +64,128 @@ public class OWLProfile
     // External signature methods
     //////////////////////////////////
 
+    @Override
     public String   NAMESPACE() {                   return OWL.getURI(); }
 
+    @Override
     public Resource CLASS() {                       return OWL.Class; }
+    @Override
     public Resource RESTRICTION() {                 return OWL.Restriction; }
+    @Override
     public Resource THING() {                       return OWL.Thing; }
+    @Override
     public Resource NOTHING() {                     return OWL.Nothing; }
+    @Override
     public Resource PROPERTY() {                    return RDF.Property; }
+    @Override
     public Resource OBJECT_PROPERTY() {             return OWL.ObjectProperty; }
+    @Override
     public Resource DATATYPE_PROPERTY() {           return OWL.DatatypeProperty; }
+    @Override
     public Resource TRANSITIVE_PROPERTY() {         return OWL.TransitiveProperty; }
+    @Override
     public Resource SYMMETRIC_PROPERTY() {          return OWL.SymmetricProperty; }
+    @Override
     public Resource FUNCTIONAL_PROPERTY() {         return OWL.FunctionalProperty; }
+    @Override
     public Resource INVERSE_FUNCTIONAL_PROPERTY() { return OWL.InverseFunctionalProperty; }
+    @Override
     public Resource ALL_DIFFERENT() {               return OWL.AllDifferent; }
+    @Override
     public Resource ONTOLOGY() {                    return OWL.Ontology; }
+    @Override
     public Resource DEPRECATED_CLASS() {            return OWL.DeprecatedClass; }
+    @Override
     public Resource DEPRECATED_PROPERTY() {         return OWL.DeprecatedProperty; }
+    @Override
     public Resource ANNOTATION_PROPERTY() {         return OWL.AnnotationProperty; }
+    @Override
     public Resource ONTOLOGY_PROPERTY() {           return OWL.OntologyProperty; }
+    @Override
     public Resource LIST() {                        return RDF.List; }
+    @Override
     public Resource NIL() {                         return RDF.nil; }
+    @Override
     public Resource DATARANGE() {                   return OWL.DataRange; }
 
 
+    @Override
     public Property EQUIVALENT_PROPERTY() {         return OWL.equivalentProperty; }
+    @Override
     public Property EQUIVALENT_CLASS() {            return OWL.equivalentClass; }
+    @Override
     public Property DISJOINT_WITH() {               return OWL.disjointWith; }
+    @Override
     public Property SAME_INDIVIDUAL_AS() {          return null; }
+    @Override
     public Property SAME_AS() {                     return OWL.sameAs; }
+    @Override
     public Property DIFFERENT_FROM() {              return OWL.differentFrom; }
+    @Override
     public Property DISTINCT_MEMBERS() {            return OWL.distinctMembers; }
+    @Override
     public Property UNION_OF() {                    return OWL.unionOf; }
+    @Override
     public Property INTERSECTION_OF() {             return OWL.intersectionOf; }
+    @Override
     public Property COMPLEMENT_OF() {               return OWL.complementOf; }
+    @Override
     public Property ONE_OF() {                      return OWL.oneOf; }
+    @Override
     public Property ON_PROPERTY() {                 return OWL.onProperty; }
+    @Override
     public Property ALL_VALUES_FROM() {             return OWL.allValuesFrom; }
+    @Override
     public Property HAS_VALUE() {                   return OWL.hasValue; }
+    @Override
     public Property SOME_VALUES_FROM() {            return OWL.someValuesFrom; }
+    @Override
     public Property MIN_CARDINALITY() {             return OWL.minCardinality; }
+    @Override
     public Property MAX_CARDINALITY() {             return OWL.maxCardinality; }
+    @Override
     public Property CARDINALITY() {                 return OWL.cardinality; }
+    @Override
     public Property INVERSE_OF() {                  return OWL.inverseOf; }
+    @Override
     public Property IMPORTS() {                     return OWL.imports; }
+    @Override
     public Property PRIOR_VERSION() {               return OWL.priorVersion; }
+    @Override
     public Property BACKWARD_COMPATIBLE_WITH() {    return OWL.backwardCompatibleWith; }
+    @Override
     public Property INCOMPATIBLE_WITH() {           return OWL.incompatibleWith; }
+    @Override
     public Property SUB_PROPERTY_OF() {             return RDFS.subPropertyOf; }
+    @Override
     public Property SUB_CLASS_OF() {                return RDFS.subClassOf; }
+    @Override
     public Property DOMAIN() {                      return RDFS.domain; }
+    @Override
     public Property RANGE() {                       return RDFS.range; }
+    @Override
     public Property FIRST() {                       return RDF.first; }
+    @Override
     public Property REST() {                        return RDF.rest; }
+    @Override
     public Property MIN_CARDINALITY_Q() {           return null; }      // qualified restrictions are not in the first version of OWL
+    @Override
     public Property MAX_CARDINALITY_Q() {           return null; }
+    @Override
     public Property CARDINALITY_Q() {               return null; }
+    @Override
     public Property HAS_CLASS_Q() {                 return null; }
 
     // Annotations
+    @Override
     public Property VERSION_INFO() {                return OWL.versionInfo; }
+    @Override
     public Property LABEL() {                       return RDFS.label; }
+    @Override
     public Property COMMENT() {                     return RDFS.comment; }
+    @Override
     public Property SEE_ALSO() {                    return RDFS.seeAlso; }
+    @Override
     public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
 
 
@@ -137,6 +196,7 @@ public class OWLProfile
     }
 
     /** The only first-class axiom type in OWL is AllDifferent */
+    @Override
     public Iterator<Resource> getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -146,6 +206,7 @@ public class OWLProfile
     }
 
     /** The annotation properties of OWL */
+    @Override
     public Iterator<Resource> getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
@@ -158,6 +219,7 @@ public class OWLProfile
         ).iterator();
     }
 
+    @Override
     public Iterator<Resource> getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -183,6 +245,7 @@ public class OWLProfile
      * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
+    @Override
     public <T> boolean isSupported( Node n, EnhGraph g, Class<T> type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
@@ -210,6 +273,7 @@ public class OWLProfile
      * </p>
      * @return "OWL Full"
      */
+    @Override
     public String getLabel() {
         return "OWL Full";
     }

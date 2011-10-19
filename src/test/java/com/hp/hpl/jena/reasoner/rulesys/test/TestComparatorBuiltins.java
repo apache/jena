@@ -119,18 +119,22 @@ public class TestComparatorBuiltins extends TestCase {
     
     static class DummyRuleContext implements RuleContext {
 
+        @Override
         public BindingEnvironment getEnv() {
             return new BindingEnvironment() {
                 
+                @Override
                 public Triple instantiate(TriplePattern pattern) {
                     // TODO Auto-generated method stub
                     return null;
                 }
                 
+                @Override
                 public Node getGroundVersion(Node node) {
                     return node;
                 }
                 
+                @Override
                 public boolean bind(Node var, Node value) {
                     // TODO Auto-generated method stub
                     return false;
@@ -138,46 +142,55 @@ public class TestComparatorBuiltins extends TestCase {
             };
         }
 
+        @Override
         public InfGraph getGraph() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public Rule getRule() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public void setRule(Rule rule) {
             // TODO Auto-generated method stub
             
         }
 
+        @Override
         public boolean contains(Triple t) {
             // TODO Auto-generated method stub
             return false;
         }
 
+        @Override
         public boolean contains(Node s, Node p, Node o) {
             // TODO Auto-generated method stub
             return false;
         }
 
+        @Override
         public ClosableIterator<Triple> find(Node s, Node p, Node o) {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public void silentAdd(Triple t) {
             // TODO Auto-generated method stub
             
         }
 
+        @Override
         public void add(Triple t) {
             // TODO Auto-generated method stub
             
         }
 
+        @Override
         public void remove(Triple t) {
             // TODO Auto-generated method stub
             

@@ -82,7 +82,8 @@ class NTripleTestSuite extends WGTestSuite {
 		Set<AResource> oldAnon = new HashSet<AResource>();
 		int state = 1; // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
 		int countDown;
-		public void statement(AResource subj, AResource pred, AResource obj) {
+		@Override
+        public void statement(AResource subj, AResource pred, AResource obj) {
 			Assert.assertEquals(state, 2);
 			seeing(subj);
 			seeing(obj);
@@ -119,14 +120,16 @@ class NTripleTestSuite extends WGTestSuite {
 			oldAnon.add(subj);
 		}
 
-		public void statement(AResource subj, AResource pred, ALiteral lit) {
+		@Override
+        public void statement(AResource subj, AResource pred, ALiteral lit) {
 			Assert.assertEquals("no start RDF seen", state, 2);
 			seeing(subj);
 			if (--countDown == 0)
 				throw new SimulatedException();
 		}
 
-		public void endBNodeScope(AResource bnode) {
+		@Override
+        public void endBNodeScope(AResource bnode) {
 			Assert.assertTrue(bnode.isAnonymous());
 			switch (state) {
 				case 1 :
@@ -147,7 +150,8 @@ class NTripleTestSuite extends WGTestSuite {
 
 		}
 
-		public void startRDF() {
+		@Override
+        public void startRDF() {
 			switch (state) {
 				case 2 :
 				case 4 :
@@ -156,16 +160,19 @@ class NTripleTestSuite extends WGTestSuite {
 			state = 2;
 		}
 
-		public void endRDF() {
+		@Override
+        public void endRDF() {
 			Assert.assertEquals(state, 2);
 			state = 3;
 		}
 
-		public void startPrefixMapping(String prefix, String uri) {
+		@Override
+        public void startPrefixMapping(String prefix, String uri) {
 
 		}
 
-		public void endPrefixMapping(String prefix) {
+		@Override
+        public void endPrefixMapping(String prefix) {
 
 		}
 
@@ -231,7 +238,8 @@ class NTripleTestSuite extends WGTestSuite {
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.rdf.arp.ExtendedHandler#discardNodesWithNodeID()
 		 */
-		public boolean discardNodesWithNodeID() {
+		@Override
+        public boolean discardNodesWithNodeID() {
 			return false;
 		}
 

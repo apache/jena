@@ -17,10 +17,12 @@ public class MemoryModelGetter implements ModelGetter
 	{
 	protected HashMap<String, Model> models = new HashMap<String, Model>();
 	
-	public Model getModel(String URL) 
+	@Override
+    public Model getModel(String URL) 
 		{ return models.get( URL ); }
 	
-	public Model getModel(String URL, ModelReader loadIfAbsent) 
+	@Override
+    public Model getModel(String URL, ModelReader loadIfAbsent) 
 		{
 		Model m = models.get( URL );
 		if (m == null) models.put( URL, m = ModelFactory.createDefaultModel() );

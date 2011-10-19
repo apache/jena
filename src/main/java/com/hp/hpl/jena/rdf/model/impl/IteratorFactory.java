@@ -32,7 +32,8 @@ public final class IteratorFactory
 	static public StmtIterator asStmtIterator( Iterator<Triple> i, final ModelCom m ) 
 	    {
 	    Map1<Triple, Statement> asStatement = new Map1<Triple, Statement>() 
-	        { public Statement map1( Triple t ) { return m.asStatement( t ); }};
+	        { @Override
+            public Statement map1( Triple t ) { return m.asStatement( t ); }};
 	    return new StmtIteratorImpl( WrappedIterator.create( i ).mapWith( asStatement ) );
 	   }
 
@@ -42,7 +43,8 @@ public final class IteratorFactory
 	static public ResIterator asResIterator( Iterator<Node> i, final ModelCom m) 
 	    {
 		Map1<Node, Resource> asResource = new Map1<Node, Resource>() 
-		    { public Resource map1( Node o) { return (Resource) m.asRDFNode( o ); }};
+		    { @Override
+            public Resource map1( Node o) { return (Resource) m.asRDFNode( o ); }};
 		return new ResIteratorImpl( WrappedIterator.create( i ).mapWith( asResource ), null );
 	    }
 
@@ -52,7 +54,8 @@ public final class IteratorFactory
 	static public NodeIterator asRDFNodeIterator( Iterator<Node> i, final ModelCom m) 
 	    {      
 	    Map1<Node, RDFNode> asRDFNode = new Map1<Node, RDFNode>() 
-	        { public RDFNode map1( Node o) { return m.asRDFNode( o ); }};
+	        { @Override
+            public RDFNode map1( Node o) { return m.asRDFNode( o ); }};
 	    return new NodeIteratorImpl( WrappedIterator.create( i ).mapWith( asRDFNode ), null );
 	    }
 	    

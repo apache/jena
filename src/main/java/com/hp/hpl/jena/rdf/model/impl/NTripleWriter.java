@@ -51,6 +51,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     
     public NTripleWriter() {
     }
+    @Override
     public void write(Model model, OutputStream out, String base)
          {
         try {
@@ -68,6 +69,7 @@ public class NTripleWriter extends Object implements RDFWriter {
             errorHandler.error(ioe);
         }
     }
+    @Override
     public void write(Model baseModel, Writer writer, String base)
          {
         try {
@@ -106,6 +108,7 @@ public class NTripleWriter extends Object implements RDFWriter {
      * @param propValue The new value of the property
      * @return the previous value of the property
      */
+    @Override
     public Object setProperty(String propName, Object propValue) {
         throw new UnknownPropertyException( propName );
     }
@@ -116,6 +119,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     public String getPrefixFor( String uri )
         { return null; }
 
+    @Override
     public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler) {
         RDFErrorHandler old = this.errorHandler;
         this.errorHandler = errHandler;

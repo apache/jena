@@ -85,7 +85,8 @@ public abstract class HashCommon<Key>
              A NotifyEmpty instance that ignores the notification.
         */
         public static NotifyEmpty ignore = new NotifyEmpty() 
-            { public void emptied() { }};
+            { @Override
+            public void emptied() { }};
         
         /**
              Method to call to notify that the collection has become empty.

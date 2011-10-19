@@ -116,13 +116,15 @@ public class N3JenaWriterCommon implements RDFWriter
     // ----------------------------------------------------
     // Jena RDFWriter interface
 
-	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
+	@Override
+    public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
 	{
 		RDFErrorHandler old = errorHandler;
 		errorHandler = errHandler;
 		return old;
 	}
 
+    @Override
     public Object setProperty(String propName, Object propValue) 
     {
         if ( ! ( propValue instanceof String ) )
@@ -164,6 +166,7 @@ public class N3JenaWriterCommon implements RDFWriter
     * @see #write(Model,Writer,String)
     */
 
+    @Override
     public void write(Model baseModel, Writer _out, String base) 
     {
         if (!(_out instanceof BufferedWriter))
@@ -185,7 +188,8 @@ public class N3JenaWriterCommon implements RDFWriter
 	 * @see #write(Model,Writer,String)
 	 */
 
-	public synchronized void write(Model model, OutputStream output, String base) 
+	@Override
+    public synchronized void write(Model model, OutputStream output, String base) 
 	{
 		try {
 			Writer w =  new BufferedWriter(new OutputStreamWriter(output, "UTF-8")) ;

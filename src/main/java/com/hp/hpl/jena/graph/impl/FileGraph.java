@@ -29,7 +29,8 @@ public class FileGraph extends GraphMemFaster
         void notifyClosed( File f );
         
         static final NotifyOnClose ignore = new NotifyOnClose()
-            { public void notifyClosed( File f ) {} };
+            { @Override
+            public void notifyClosed( File f ) {} };
         }
 
     /**

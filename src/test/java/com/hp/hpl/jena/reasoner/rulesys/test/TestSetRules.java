@@ -51,14 +51,17 @@ public class TestSetRules extends ModelTestBase
             { assertEquals( TestSetRules.rules, rules );
             done.add( "addRules" ); }
     
+        @Override
         public Reasoner create(Resource configuration)
             { done.add( "create" );
             return reasoner; }
     
+        @Override
         public Model getCapabilities()
             { done.add( "capabilities" );
             return capabilities; }
     
+        @Override
         public String getURI()
             { done.add( "uri" );
             return uri; }

@@ -28,17 +28,20 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 	public LazyIterator() {
 	}
 
-	public boolean hasNext() {
+	@Override
+    public boolean hasNext() {
 		lazy();
 		return it.hasNext();
 	}
 
-	public T next() {
+	@Override
+    public T next() {
 		lazy();
 		return it.next();
 	}
 
-	public void remove() {
+	@Override
+    public void remove() {
 		lazy();
 		it.remove();
 	}
@@ -48,22 +51,26 @@ abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 		return it.andThen(other);
 	}
 
-	public ExtendedIterator<T> filterKeep(Filter<T> f) {
+	@Override
+    public ExtendedIterator<T> filterKeep(Filter<T> f) {
 		lazy();
 		return it.filterKeep(f);
 	}
 
-	public ExtendedIterator<T> filterDrop(Filter<T> f) {
+	@Override
+    public ExtendedIterator<T> filterDrop(Filter<T> f) {
 		lazy();
 		return it.filterDrop(f);
 	}
 
-	public <U> ExtendedIterator<U> mapWith(Map1<T,U> map1) {
+	@Override
+    public <U> ExtendedIterator<U> mapWith(Map1<T,U> map1) {
 		lazy();
 		return it.mapWith(map1);
 	}
 
-	public void close() {
+	@Override
+    public void close() {
 		lazy();
 		it.close();
 			

@@ -24,13 +24,15 @@ public interface TripleBoundary
          A TripleBoundary without limits - stopAt always returns false.
     */
     public static final TripleBoundary stopNowhere = new TripleBoundary()
-        { public boolean stopAt( Triple t ) { return false; } };
+        { @Override
+        public boolean stopAt( Triple t ) { return false; } };
     
     /**
         A TripleBoundary that stops at triples with anonymous objects.
     */
     public static final TripleBoundary stopAtAnonObject = new TripleBoundary()
-        { public boolean stopAt( Triple t ) { return t.getObject().isBlank(); } };
+        { @Override
+        public boolean stopAt( Triple t ) { return t.getObject().isBlank(); } };
 
     }
 

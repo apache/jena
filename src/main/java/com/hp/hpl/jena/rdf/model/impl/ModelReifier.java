@@ -187,6 +187,7 @@ public class ModelReifier
     */
     protected final Map1<Node, ReifiedStatement> mapToRS = new Map1<Node, ReifiedStatement>()
         {
+        @Override
         public ReifiedStatement map1( Node node ) { return getRS( node ); }
         };
 

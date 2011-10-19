@@ -29,6 +29,7 @@ public class GraphAddList implements GraphAdd
     /**
          Add the triple <code>t</code> to this list if it is matched by the pattern.
     */
+    @Override
     public void add( Triple t ) { if (match.matches( t )) triples.add( t ); }
     
     /**

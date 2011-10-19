@@ -71,6 +71,7 @@ public class StandardValidityReport implements ValidityReport {
      * be present. As of Jena 2.2 we regard classes which can't be instantiated
      * as warnings rather than errors. 
      */
+    @Override
     public boolean isValid() {
         return !isError;
     }
@@ -79,6 +80,7 @@ public class StandardValidityReport implements ValidityReport {
      * Returns true if the model is both valid (logically consistent) and no
      * warnings were generated. 
      */
+    @Override
     public boolean isClean() {
         return reports.isEmpty();
     }
@@ -95,6 +97,7 @@ public class StandardValidityReport implements ValidityReport {
     /**
      * Return an iterator over the separate ValidityReport.Report records.
      */
+    @Override
     public Iterator<Report> getReports() {
         return reports.iterator();
     }

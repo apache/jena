@@ -1568,6 +1568,7 @@ public interface OntModel
      * @param writer A writer to which the XML will be written
      * @return this model
      */
+    @Override
     public Model write( Writer writer ) ;
 
     /**
@@ -1587,6 +1588,7 @@ public interface OntModel
      * @param lang The output language
      * @return this model
      */
+    @Override
     public Model write( Writer writer, String lang ) ;
 
     /**
@@ -1608,6 +1610,7 @@ public interface OntModel
      * @param lang The language in which the RDF should be written
      * @return this model
      */
+    @Override
     public Model write( Writer writer, String lang, String base );
 
     /**
@@ -1624,6 +1627,7 @@ public interface OntModel
      * @param out The output stream to which the XML will be written
      * @return This model
      */
+    @Override
     public Model write( OutputStream out );
 
     /**
@@ -1641,6 +1645,7 @@ public interface OntModel
      * @param lang The output language
      * @return This model
      */
+    @Override
     public Model write( OutputStream out, String lang );
 
     /**
@@ -1660,6 +1665,7 @@ public interface OntModel
      * @param lang The language in which the RDF should be written
      * @return This model
      */
+    @Override
     public Model write( OutputStream out, String lang, String base );
 
     /**

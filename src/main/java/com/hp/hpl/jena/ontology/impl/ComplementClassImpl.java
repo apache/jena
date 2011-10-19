@@ -115,6 +115,7 @@ public class ComplementClassImpl
      * @exception Always throws UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
+    @Override
     public void setOperands( RDFList operands ) {
         throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
     }
@@ -126,6 +127,7 @@ public class ComplementClassImpl
      * be replaced.</p>
      * @param cls The class that this class is a complement of.
      */
+    @Override
     public void setOperand( Resource cls ) {
         setPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
     }
@@ -136,6 +138,7 @@ public class ComplementClassImpl
      * @exception Always throws UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
+    @Override
     public void addOperand( Resource cls ) {
         throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
     }
@@ -146,6 +149,7 @@ public class ComplementClassImpl
      * @exception Always throws UnsupportedOperationException since a complement expression takes only
      * a single argument.
      */
+    @Override
     public void addOperands( Iterator<? extends Resource> classes ) {
         throw new UnsupportedOperationException( "ComplementClass is only defined for  a single operand.");
     }
@@ -155,6 +159,7 @@ public class ComplementClassImpl
      * @return A list of the operands of this expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public RDFList getOperands() {
         throw new UnsupportedOperationException( "ComplementClass takes a single operand, not a list.");
     }
@@ -165,6 +170,7 @@ public class ComplementClassImpl
      * @return An iterator over the operands of the expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<? extends OntClass> listOperands() {
         return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
     }
@@ -175,6 +181,7 @@ public class ComplementClassImpl
      * @return True if the given class is an operand to this expression.
      * @exception OntProfileException If the operand property is not supported in the current language profile.
      */
+    @Override
     public boolean hasOperand( Resource cls ) {
         return hasPropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", cls );
     }
@@ -184,6 +191,7 @@ public class ComplementClassImpl
      * is a complement of.</p>
      * @return The class that this class is a complement of.
      */
+    @Override
     public OntClass getOperand() {
         return objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
     }
@@ -192,6 +200,7 @@ public class ComplementClassImpl
      * <p>Remove the given resource from the operands of this class expression.</p>
      * @param res An resource to be removed from the operands of this class expression
      */
+    @Override
     public void removeOperand( Resource res ) {
         removePropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", res );
     }
@@ -202,6 +211,7 @@ public class ComplementClassImpl
      * {@link Profile#UNION_OF()}.</p>
      * @return {@link Profile#COMPLEMENT_OF()}
      */
+    @Override
     public Property operator() {
         return getProfile().COMPLEMENT_OF();
     }

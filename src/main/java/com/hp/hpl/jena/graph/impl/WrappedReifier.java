@@ -28,72 +28,89 @@ public class WrappedReifier implements Reifier
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#getStyle()
 	*/
-	public ReificationStyle getStyle() { return base.getStyle(); }
+	@Override
+    public ReificationStyle getStyle() { return base.getStyle(); }
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#getParentGraph()
 	*/
-	public Graph getParentGraph() { return parent; }
+	@Override
+    public Graph getParentGraph() { return parent; }
     
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m ) { return base.find( m ); }
     
+    @Override
     public ExtendedIterator<Triple> findExposed( TripleMatch m ) { return base.findExposed( m ); }
     
+    @Override
     public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden ) 
         { return base.findEither( m, showHidden ); }
     
+    @Override
     public int size() { return base.size(); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#reifyAs(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	*/
-	public Node reifyAs( Node n, Triple t ) { return base.reifyAs( n, t ); }
+	@Override
+    public Node reifyAs( Node n, Triple t ) { return base.reifyAs( n, t ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Node)
 	*/
-	public boolean hasTriple( Node n ) { return base.hasTriple( n ); }
+	@Override
+    public boolean hasTriple( Node n ) { return base.hasTriple( n ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Triple)
 	*/
-	public boolean hasTriple( Triple t ) { return base.hasTriple( t ); }
+	@Override
+    public boolean hasTriple( Triple t ) { return base.hasTriple( t ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#allNodes()
 	*/
-	public ExtendedIterator<Node> allNodes() { return base.allNodes(); }
+	@Override
+    public ExtendedIterator<Node> allNodes() { return base.allNodes(); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#allNodes(com.hp.hpl.jena.graph.Triple)
 	*/
-	public ExtendedIterator<Node> allNodes( Triple t ) { return base.allNodes( t ); }
+	@Override
+    public ExtendedIterator<Node> allNodes( Triple t ) { return base.allNodes( t ); }
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	*/
-	public void remove( Node n, Triple t ) { base.remove( n, t ); }
+	@Override
+    public void remove( Node n, Triple t ) { base.remove( n, t ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Triple)
 	*/
-	public void remove( Triple t ) { base.remove( t ); }
+	@Override
+    public void remove( Triple t ) { base.remove( t ); }
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#handledAdd(com.hp.hpl.jena.graph.Triple)
 	*/
-	public boolean handledAdd( Triple t ) { return base.handledAdd( t ); }
+	@Override
+    public boolean handledAdd( Triple t ) { return base.handledAdd( t ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.Reifier#handledRemove(com.hp.hpl.jena.graph.Triple)
 	*/
-	public boolean handledRemove( Triple t ) { return base.handledRemove( t ); }
+	@Override
+    public boolean handledRemove( Triple t ) { return base.handledRemove( t ); }
 
 	/** 
 	 	@see com.hp.hpl.jena.graph.GetTriple#getTriple(com.hp.hpl.jena.graph.Node)
 	*/
-	public Triple getTriple( Node n ) { return base.getTriple( n ); }
+	@Override
+    public Triple getTriple( Node n ) { return base.getTriple( n ); }
 
     /**
      	@see com.hp.hpl.jena.graph.Reifier#close()
     */
+    @Override
     public void close() { base.close(); }
 
     }

@@ -227,6 +227,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Add a new deduction to the deductions graph.
      */
+    @Override
     public void addDeduction(Triple t) {
         getDeductionsGraph().add(t);
     }
@@ -235,6 +236,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Set to true to cause functor-valued literals to be dropped from rule output.
      * Default is true.
      */
+    @Override
     public void setFunctorFiltering(boolean param) {
         filterFunctors = param;
     }
@@ -370,6 +372,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Adds a new Backward rule as a rules of a forward rule process. Only some
      * infgraphs support this.
      */
+    @Override
     public void addBRule(Rule brule) {
         throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
     }
@@ -378,6 +381,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Deletes a new Backward rule as a rules of a forward rule process. Only some
      * infgraphs support this.
      */
+    @Override
     public void deleteBRule(Rule brule) {
         throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
     }
@@ -419,6 +423,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * can be used for update (thus triggering listeners) but not
      * for access to generalized triples
      */
+    @Override
     public Graph getCurrentDeductionsGraph() {
         return safeDeductions;
 //        return fdeductions.getGraph();
@@ -429,6 +434,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * This may different from the normal find operation in the base of hybrid reasoners
      * where we are side-stepping the backward deduction step.
      */
+    @Override
     public ExtendedIterator<Triple> findDataMatches(Node subject, Node predicate, Node object) {
         return findWithContinuation(new TriplePattern(subject, predicate, object), null, false);
     }
@@ -437,6 +443,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Log a dervivation record against the given triple.
      */
+    @Override
     public void logDerivation(Triple t, Derivation derivation) {
         derivations.put(t, derivation);
     }
@@ -444,6 +451,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
+    @Override
     public void silentAdd(Triple t) {
         fdeductions.getGraph().add(t);
     }
@@ -468,6 +476,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Return true if derivation logging is enabled.
      */
+    @Override
     public boolean shouldLogDerivations() {
         return recordDerivations;
     }
@@ -497,6 +506,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Return true if tracing should be acted on - i.e. if traceOn is true
      * and we are past the bootstrap phase.
      */
+    @Override
     public boolean shouldTrace() {
         return traceOn && engine.shouldTrace();
     }
@@ -514,6 +524,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         { 
         BasicFBReifier.GetReifier deductionsReifier = new BasicFBReifier.GetReifier()
             {
+            @Override
             public Reifier getReifier() { return getDeductionsGraph().getReifier(); }
             };
         return new BasicFBReifier( this, getRawGraph().getReifier(), deductionsReifier, style ); 

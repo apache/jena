@@ -22,9 +22,11 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     
     protected Map<Node, Triple> forwardMap = CollectionFactory.createHashedMap();    
     
+    @Override
     public Triple getTriple( Node tag )
         { return forwardMap.get( tag ); }
 
+    @Override
     public void clear()
         {
         forwardMap.clear();
@@ -33,9 +35,11 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
     /**
          Answer true iff we have a reified triple <code>t</code>.
     */
+    @Override
     public boolean hasTriple( Triple t )
         { return inverseMap.containsKey( t ); }
     
+    @Override
     public Triple putTriple( Node key, Triple value )
         {
         forwardMap.put( key, value );
@@ -43,6 +47,7 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         return value;
         }
     
+    @Override
     public void removeTriple( Node key )
         {
         Object t = forwardMap.get( key );
@@ -50,12 +55,14 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         if (t instanceof Triple) inverseRemove( (Triple) t, key );
         }
     
+    @Override
     public void removeTriple( Node key, Triple value )
         {
         forwardMap.remove( key );
         inverseRemove( value, key );
         }
     
+    @Override
     public void removeTriple( Triple t )
         {
         ExtendedIterator<Node> it = tagIterator( t );
@@ -82,6 +89,7 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         s.add( key );
         }            
 
+    @Override
     public ExtendedIterator<Node> tagIterator( Triple t )
         { 
         Set<Node> s = inverseMap.get( t );
@@ -135,15 +143,18 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
             { @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch tm ) { return allTriples( tm ); } };
         }
     
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         { return allTriples( m ); }
     
+    @Override
     public int size()
         { return forwardMap.size() * 4; }
     
     /**
          Answer an iterator over all the fragment tags in this map.
     */
+    @Override
     public ExtendedIterator<Node> tagIterator()
         { return WrappedIterator.create( forwardMap.keySet().iterator() ); }
     }

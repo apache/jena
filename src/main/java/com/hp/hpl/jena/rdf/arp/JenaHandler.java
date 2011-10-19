@@ -58,6 +58,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
         h.setNamespaceHandler( this );
         }
 
+    @Override
     public void statement( AResource subj, AResource pred, AResource obj )
         {
         try
@@ -67,6 +68,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
         if (here == BULK_UPDATE_SIZE) bulkUpdate();
         }
 
+    @Override
     public void statement( AResource subj, AResource pred, ALiteral lit )
         {
         try
@@ -89,11 +91,13 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
             { here = 0; }
         }
 
+    @Override
     public void startPrefixMapping( String prefix, String uri )
         {
         if (PrefixMappingImpl.isNiceURI( uri )) prefixMapping.setNsPrefix( prefix, uri );
         }
 
+    @Override
     public void endPrefixMapping( String prefix )
         {}
     }

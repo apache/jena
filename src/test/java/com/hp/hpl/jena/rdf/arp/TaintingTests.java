@@ -226,7 +226,8 @@ public class TaintingTests extends TestCase implements ErrorHandler,
 	
 	
     static public boolean seen[] = new boolean[400];
-	public void warning(SAXParseException e) {
+	@Override
+    public void warning(SAXParseException e) {
         int eNo =((ParseException)e).getErrorNumber();
         if (!seen[eNo]) {
         seen[((ParseException)e).getErrorNumber()] = true;
@@ -235,10 +236,12 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         }
 	}
 
-	public void error(SAXParseException e) {
+	@Override
+    public void error(SAXParseException e) {
 	}
 
-	public void fatalError(SAXParseException e) {
+	@Override
+    public void fatalError(SAXParseException e) {
 	}
 
 }

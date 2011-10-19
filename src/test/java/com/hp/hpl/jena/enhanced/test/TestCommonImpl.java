@@ -57,14 +57,17 @@ class TestCommonImpl extends EnhNode implements TestNode {
         
     // Convenience routines, that wrap the generic
     // routines from EnhNode.
+    @Override
     public TestSubject asSubject() {
         return asInternal(TestSubject.class);
     }
     
+    @Override
     public TestObject asObject() {
         return asInternal(TestObject.class);
     }
     
+    @Override
     public TestProperty asProperty() {
         return asInternal(TestProperty.class);
     }

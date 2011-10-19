@@ -73,10 +73,12 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
     
 
     // AResource interface.
+    @Override
     public boolean isAnonymous() {
         return true;
     }
     
+    @Override
     public String getAnonymousID() {
         return nodeID==null
                 ? ( "A" + Integer.toString(genId) )
@@ -84,6 +86,7 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
     }
     
     
+    @Override
     public String getURI() {
         return null;
     }
@@ -113,6 +116,7 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
     
     private Object userData;
     
+    @Override
     public Object getUserData() {
 //    	if ( uri != null )
 //    	  throw new IllegalStateException("User data only supported on blank nodes");
@@ -120,6 +124,7 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
                 userData : arp.getUserData(nodeID);
     }
     
+    @Override
     public void setUserData(Object d) {
 //    	if ( uri != null )
 //    	  throw new IllegalStateException("User data only supported on blank nodes");
@@ -132,7 +137,8 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.AResource#hasNodeID()
 	 */
-	public boolean hasNodeID() {
+	@Override
+    public boolean hasNodeID() {
 		return nodeID!=null;
 	}
   private boolean used = false;
@@ -140,7 +146,8 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
 	 */
-	public void setHasBeenUsed() {
+	@Override
+    public void setHasBeenUsed() {
 		used = true;
 	} 
 
@@ -148,7 +155,8 @@ public class ARPResource extends TaintImpl implements  AResourceInternal {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
 	 */
-	public boolean getHasBeenUsed() {
+	@Override
+    public boolean getHasBeenUsed() {
 		return used;
 	}
     

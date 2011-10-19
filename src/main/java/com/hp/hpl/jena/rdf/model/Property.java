@@ -42,18 +42,21 @@ public interface Property extends Resource {
   /** Returns the namespace associated with this property.
      * @return The namespace for this property.
      */
-  public String getNameSpace();
+  @Override
+public String getNameSpace();
 
   /**
       Override RDFNode.inModel() to produce a staticly-typed Property
       in the given Model.
   */
-  public Property inModel( Model m );
+  @Override
+public Property inModel( Model m );
   
     /** Returns the name of this property within its namespace.
      * @return The name of this property within its namespace.
      */
-  public String getLocalName();
+  @Override
+public String getLocalName();
   
   /** Returns the ordinal value of a containment property.
      *

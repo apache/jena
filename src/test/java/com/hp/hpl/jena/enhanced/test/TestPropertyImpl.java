@@ -32,10 +32,12 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
     @Override public <X extends RDFNode> boolean supports( Class<X> t )
         { return t.isInstance( this ) && isProperty(); }
         
+    @Override
     public boolean isProperty() {
         return findPredicate() != null;
     }
         
+    @Override
     public TestObject anObject() {
         if (!isProperty())
             throw new IllegalStateException("Node is not the property of a triple.");

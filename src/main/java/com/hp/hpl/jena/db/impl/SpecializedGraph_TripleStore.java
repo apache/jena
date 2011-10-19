@@ -79,6 +79,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 * @param g is a graph containing triples to be added
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
      */
+    @Override
     public void add(Graph g, CompletionFlag complete) {
     	ExtendedIterator<Triple> it = GraphUtil.findAll( g );
     	while (it.hasNext()) add( it.next(), complete );
@@ -89,7 +90,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(Triple t, CompletionFlag complete) {
+	@Override
+    public void add(Triple t, CompletionFlag complete) {
         m_pset.storeTriple(t, my_GID);
 		complete.setDone();
 	}
@@ -98,7 +100,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(List<Triple> triples, CompletionFlag complete) {
+	@Override
+    public void add(List<Triple> triples, CompletionFlag complete) {
 		m_pset.storeTripleList(triples,my_GID);
 		complete.setDone();
 	}
@@ -106,7 +109,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(Triple t, CompletionFlag complete) {
+	@Override
+    public void delete(Triple t, CompletionFlag complete) {
 		m_pset.deleteTriple(t, my_GID);
 		complete.setDone();
 	}
@@ -114,7 +118,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void delete(List<Triple> triples, CompletionFlag complete) {
+	@Override
+    public void delete(List<Triple> triples, CompletionFlag complete) {
 		m_pset.deleteTripleList(triples,my_GID);
 		complete.setDone();
 	}
@@ -122,14 +127,16 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#tripleCount()
 	 */
-	public int tripleCount() {
+	@Override
+    public int tripleCount() {
 		return(m_pset.tripleCount(my_GID));
 	}
 	
 	/* (non-Javadoc)
  	* @see com.hp.hpl.jena.db.impl.SpecializedGraph#contains(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
  	*/
-	public boolean contains(Triple t, CompletionFlag complete) {
+	@Override
+    public boolean contains(Triple t, CompletionFlag complete) {
 		complete.setDone(); 
 		return (m_pset.statementTableContains(my_GID, t));
 	}
@@ -137,7 +144,8 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
+	@Override
+    public ExtendedIterator<Triple> find(TripleMatch t, CompletionFlag complete) {
 		complete.setDone();
 		return m_pset.find(t, my_GID);
 		}
@@ -145,35 +153,40 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#close()
 	 */
-	public void close() {
+	@Override
+    public void close() {
 		m_pset.close();
 	}
 
 	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#clear()
 	 */
-	public void clear() {
+	@Override
+    public void clear() {
 		m_pset.removeStatementsFromDB(my_GID);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#graphIdGet()
 	 */
-	public int getGraphId() {
+	@Override
+    public int getGraphId() {
 		return ((DBIDInt)my_GID).getIntID();
 	}
     
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#PSetGet()
 	 */
-	public IPSet getPSet() {
+	@Override
+    public IPSet getPSet() {
 		return m_pset;
 	}
     	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#DBPropLSetGet()
 	 */
-	public DBPropLSet getDBPropLSet() {
+	@Override
+    public DBPropLSet getDBPropLSet() {
 		return m_dbPropLSet;
 	}
 

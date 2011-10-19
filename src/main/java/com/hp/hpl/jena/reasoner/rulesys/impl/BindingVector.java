@@ -102,6 +102,7 @@ public class BindingVector implements BindingEnvironment {
      * just return it, if it is a varible bound in this enviroment return the binding,
      * if it is an unbound variable return the variable.
      */
+    @Override
     public Node getGroundVersion(Node node) {
         Node bind = getBinding(node);
         if (bind == null) {
@@ -137,6 +138,7 @@ public class BindingVector implements BindingEnvironment {
      * @param value the value to bind
      * @return false if the binding fails
      */
+    @Override
     public boolean bind(Node var, Node value) {
         if (var instanceof Node_RuleVariable) {
             return bind(((Node_RuleVariable)var).getIndex(), value);
@@ -180,6 +182,7 @@ public class BindingVector implements BindingEnvironment {
      * @param env the current binding environment
      * @return a new, instantiated triple
      */
+    @Override
     public Triple instantiate(TriplePattern pattern) {
         Node s = getGroundVersion(pattern.getSubject());
         if (s.isVariable()) s = Node.createAnon();

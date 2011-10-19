@@ -478,10 +478,15 @@ public class TestNode extends GraphTestBase
         {
        NodeVisitor returnNode = new NodeVisitor() 
             {
+            @Override
             public Object visitAny( Node_ANY it ) { return it; }
+            @Override
             public Object visitBlank( Node_Blank it, AnonId id ) { return it; }
+            @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return it; }
+            @Override
             public Object visitURI( Node_URI it, String uri ) { return it; }
+            @Override
             public Object visitVariable( Node_Variable it, String name ) { return it; }
             };
         testVisitorPatternNode( "sortOfURI", returnNode );
@@ -510,14 +515,19 @@ public class TestNode extends GraphTestBase
         {
         NodeVisitor checkValue = new NodeVisitor() 
             {
+            @Override
             public Object visitAny( Node_ANY it ) 
                 { return null; }
+            @Override
             public Object visitBlank( Node_Blank it, AnonId id ) 
                 { assertTrue( it.getBlankNodeId() == id ); return null; }
+            @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
                 { assertTrue( it.getLiteral() == lit ); return null; }
+            @Override
             public Object visitURI( Node_URI it, String uri ) 
                 { assertTrue( it.getURI() == uri ); return null; }
+            @Override
             public Object visitVariable( Node_Variable it, String name ) 
                 { assertEquals( it.getName(), name ); return null; }
             };
@@ -533,14 +543,19 @@ public class TestNode extends GraphTestBase
         final String [] strings = new String [] { "" };
         NodeVisitor checkCalled = new NodeVisitor() 
             {
+            @Override
             public Object visitAny( Node_ANY it ) 
                 { strings[0] += " any"; return null; }
+            @Override
             public Object visitBlank( Node_Blank it, AnonId id ) 
                 { strings[0] += " blank"; return null; }
+            @Override
             public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
                 { strings[0] += " literal"; return null; }
+            @Override
             public Object visitURI( Node_URI it, String uri ) 
                 { strings[0] += " uri"; return null; }
+            @Override
             public Object visitVariable( Node_Variable it, String name ) 
                 { strings[0] += " variable"; return null; }
             };

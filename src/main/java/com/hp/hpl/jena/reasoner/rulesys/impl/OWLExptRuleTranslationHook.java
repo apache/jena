@@ -36,6 +36,7 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
      * @param inserts a temporary graph into which the hook should insert
      * all new deductions that should be seen by the rules.
      */
+    @Override
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
         Iterator<Triple> it = dataFind.find(new TriplePattern(null, OWL.intersectionOf.asNode(), null));
         while (it.hasNext()) {
@@ -88,6 +89,7 @@ public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
      * then the inference will be restarted at next prepare time. Incremental
      * re-processing is not yet supported.
      */
+    @Override
     public boolean needsRerun(FBRuleInfGraph infGraph, Triple t) {
         return (t.getPredicate().equals(OWL.intersectionOf.asNode()));
     }

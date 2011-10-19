@@ -27,17 +27,21 @@ public class ReificationWrapper implements Reifier
         this.base = this.graph.getBase(); 
         }
     
+    @Override
     public ExtendedIterator<Node> allNodes()
         { // TODO needs constraining for :subject :object etc
         return base.find( Node.ANY, RDF.Nodes.type, RDF.Nodes.Statement ).mapWith( Triple.getSubject );
         }
     
+    @Override
     public ExtendedIterator<Node> allNodes( Triple t )
         { throw new BrokenException( "this reifier operation" ); }
     
+    @Override
     public void close()
         { /* nothing to do */ }
     
+    @Override
     public ExtendedIterator<Triple>find( TripleMatch m )
         { return base.find( m ).filterKeep( isReificationTriple ); }
     
@@ -47,30 +51,38 @@ public class ReificationWrapper implements Reifier
             { return isReificationTriple( o ); }  
         };
     
+    @Override
     public ExtendedIterator<Triple> findEither( TripleMatch m, boolean showHidden )
         { return showHidden == style.conceals() ? find( m ) : Triple.None; }
     
+    @Override
     public ExtendedIterator<Triple> findExposed( TripleMatch m )
         { return find( m ); }
     
+    @Override
     public Graph getParentGraph()
         { return graph; }
     
+    @Override
     public ReificationStyle getStyle()
         { return style; }
     
+    @Override
     public boolean handledAdd( Triple t )
         {
         base.add( t );
         return isReificationTriple( t );
         }
     
+    @Override
     public boolean handledRemove( Triple t )
         { throw new BrokenException( "this reifier operation" ); }
     
+    @Override
     public boolean hasTriple( Node n )
         { return getTriple( n ) != null; }
     
+    @Override
     public Node reifyAs( Node n, Triple t )
         {
         Triple already = getTriple( n );
@@ -94,6 +106,7 @@ public class ReificationWrapper implements Reifier
         throw new CannotReifyException( n );
         }
     
+    @Override
     public void remove( Node n, Triple t )
         { // TODO fix to ensure only works on complete reifications
         base.delete(  Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
@@ -102,9 +115,11 @@ public class ReificationWrapper implements Reifier
         base.delete(  Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
         }
     
+    @Override
     public void remove( Triple t )
         { throw new BrokenException( "this reifier operation" ); }
     
+    @Override
     public int size()
         { return style.conceals() ? 0: countQuadlets(); }
     
@@ -128,6 +143,7 @@ public class ReificationWrapper implements Reifier
             ;
         }
     
+    @Override
     public boolean hasTriple( Triple t )
         { // CHECK: there's one match AND it matches the triple t.
         Node X = Query.X,  S = Query.S, P = Query.P, O = Query.O;
@@ -142,6 +158,7 @@ public class ReificationWrapper implements Reifier
             ( domain.getElement(1), domain.getElement(2), domain.getElement(3) );
         }
     
+    @Override
     public Triple getTriple( Node n )
         {
         Node S = Query.S, P = Query.P, O = Query.O;

@@ -109,6 +109,7 @@ public class CardinalityQRestrictionImpl
      * @param cardinality The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void setCardinalityQ( int cardinality ) {
         setPropertyValue( getProfile().CARDINALITY_Q(), "CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -118,6 +119,7 @@ public class CardinalityQRestrictionImpl
      * @return The cardinality of the restricted property
      * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public int getCardinalityQ() {
         return objectAsInt( getProfile().CARDINALITY_Q(), "CARDINALITY_Q" );
     }
@@ -128,6 +130,7 @@ public class CardinalityQRestrictionImpl
      * @return True if the given cardinality is the cardinality of the restricted property in this restriction
      * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasCardinalityQ( int cardinality ) {
         return hasPropertyValue( getProfile().CARDINALITY_Q(), "CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }
@@ -139,6 +142,7 @@ public class CardinalityQRestrictionImpl
      * @param cardinality A cardinality value to be removed from this restriction
      * @exception OntProfileException If the {@link Profile#CARDINALITY_Q()} property is not supported in the current language profile.
      */
+    @Override
     public void removeCardinalityQ( int cardinality ) {
         removePropertyValue( getProfile().CARDINALITY_Q(), "CARDINALITY_Q", getModel().createTypedLiteral( cardinality ) );
     }

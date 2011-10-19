@@ -50,15 +50,18 @@ public class DefaultErrorHandler implements org.xml.sax.ErrorHandler {
         // no initialization
     }
 
+    @Override
     public void error(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
         System.err.println("Error: " + ParseException.formatMessage(e)); 
     }
     
+    @Override
     public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
         System.err.println("Fatal Error: " + ParseException.formatMessage(e));
         throw e;
     }
     
+    @Override
     public void warning(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException {
         System.err.println("Warning: " + ParseException.formatMessage(e)); 
 //        e.printStackTrace();

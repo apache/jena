@@ -135,6 +135,7 @@ class Unparser {
             res2statement = new HashMap<Resource, Statement>();
             statement2res = new HashMap<Statement, Resource>();
             ClosableIterator<Resource> reified = new MapFilterIterator<Resource, Resource>(new MapFilter<Resource, Resource>() {
+                @Override
                 public Resource accept(Resource o) {
                     Resource r = o;
                     return (r.hasProperty(RDF.subject)
@@ -1253,6 +1254,7 @@ class Unparser {
                 (!r.isAnon()) && isLocalReference(r)
                 && res2statement.containsKey(r)) {
             ss = new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+                @Override
                 public Statement accept(Statement o) {
                     Statement s = o;
                     Property p = s.getPredicate();
@@ -1272,6 +1274,7 @@ class Unparser {
 
     private ExtendedIterator<Statement> listProperties(Resource r) {
         return new MapFilterIterator<Statement, Statement>(new MapFilter<Statement, Statement>() {
+            @Override
             public Statement accept( Statement o ) {
                 return doneSet.contains(o) ? null : o;
             }
@@ -1560,6 +1563,7 @@ class Unparser {
 
         Map1<Set<Resource>, Iterator<Resource>> mapper = new Map1<Set<Resource>, Iterator<Resource>>() {
 
+            @Override
             public Iterator<Resource> map1(Set<Resource> bkt)
             {
                 return bkt.iterator() ;

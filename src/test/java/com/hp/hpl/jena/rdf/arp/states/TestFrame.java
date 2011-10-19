@@ -37,11 +37,13 @@ class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
     public void endElement() {
     }
 
+    @Override
     public void theObject(ANode a) {
         oCount++;
 
     }
 
+    @Override
     public void aPredAndObj(ANode p, ANode o) {
         pCount++;
     }
@@ -61,6 +63,7 @@ class TestFrame extends AbsXMLLiteral implements WantsObjectFrameI,
         Assert.assertEquals("reification count",r.reify,rCount);   
     }
 
+    @Override
     public void makeSubjectReificationWith(ANode r) {
         rCount++;
     }

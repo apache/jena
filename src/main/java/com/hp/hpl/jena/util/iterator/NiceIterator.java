@@ -24,12 +24,14 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
         default close: don't need to do anything.
     */
+    @Override
     public void close()
         { }
 
     /**
         default hasNext: no elements, return false.
     */
+    @Override
     public boolean hasNext()
         {  return false; }
 
@@ -39,6 +41,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
         default next: throw an exception.
     */
+    @Override
     public T next()
         { throw new NoSuchElementException( "empty NiceIterator" ); }
         
@@ -56,6 +59,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
         default remove: we have no elements, so we can't remove any.
     */
+    @Override
     public void remove()
         { 
         throw new UnsupportedOperationException( "remove not supported for this iterator" ); 
@@ -64,6 +68,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
          Answer the next object, and remove it.
     */
+    @Override
     public T removeNext()
         { T result = next(); remove(); return result; }
         
@@ -117,24 +122,28 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
         make a new iterator, which is us then the other chap.
     */   
+    @Override
     public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other )
         { return andThen( this, other ); }
         
     /**
         make a new iterator, which is our elements that pass the filter
     */
+    @Override
     public ExtendedIterator<T> filterKeep( Filter<T> f )
         { return new FilterKeepIterator<T>( f, this ); }
 
     /**
         make a new iterator, which is our elements that do not pass the filter
     */        
+    @Override
     public ExtendedIterator<T> filterDrop( final Filter<T> f )
         { return new FilterDropIterator<T>( f, this ); }
    
     /**
         make a new iterator which is the elementwise _map1_ of the base iterator.
     */     
+    @Override
     public <U> ExtendedIterator<U> mapWith( Map1<T, U> map1 )
         { return new Map1Iterator<T, U>( map1, this ); }
 
@@ -155,12 +164,14 @@ public class NiceIterator<T> implements ExtendedIterator<T>
     /**
         Answer a list of the elements in order, consuming this iterator.
     */
+    @Override
     public List<T> toList()
         { return asList( this ); }
 
     /**
         Answer a list of the elements in order, consuming this iterator.
     */
+    @Override
     public Set<T> toSet()
         { return asSet( this ); }
 

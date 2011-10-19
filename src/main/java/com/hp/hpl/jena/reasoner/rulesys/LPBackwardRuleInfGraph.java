@@ -274,6 +274,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Log a dervivation record against the given triple.
      */
+    @Override
     public void logDerivation(Triple t, Derivation derivation) {
         derivations.put(t, derivation);
     }
@@ -282,6 +283,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * Match a pattern just against the stored data (raw data, schema,
      * axioms) but no derivation.
      */
+    @Override
     public ExtendedIterator<Triple> findDataMatches(TriplePattern pattern) {
         return dataFind.find(pattern);
     }
@@ -293,6 +295,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * @param rule the rule which is invoking this call
      * @return true if the predicate succeeds
      */
+    @Override
     public boolean processBuiltin(ClauseEntry clause, Rule rule, BindingEnvironment env) {
         throw new ReasonerException("Internal error in FBLP rule engine, incorrect invocation of building in rule " + rule); 
     }
@@ -300,6 +303,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
+    @Override
     public void silentAdd(Triple t) {
         fdeductions.getGraph().add(t);
     }
@@ -311,6 +315,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * @param pclass the (optional, can be null) class for the inferred value.
      * @return the bNode representing the property value 
      */
+    @Override
     public Node getTemp(Node instance, Node prop, Node pclass) {
         return tempNodecache.getTemp(instance, prop, pclass);
     }

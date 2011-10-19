@@ -174,19 +174,30 @@ public class StAX2SAX {
         
         public LocatorConv(XMLStreamReader reader) { this.reader = reader; }
 
+        @Override
         public final String getPublicId() { return reader.getLocation().getPublicId(); }
+        @Override
         public final String getSystemId() { return reader.getLocation().getSystemId(); }
+        @Override
         public final int getLineNumber() { return reader.getLocation().getLineNumber(); }
+        @Override
         public final int getColumnNumber() { return reader.getLocation().getColumnNumber(); }
     }
     
     final static LexicalHandler NO_LEXICAL_HANDLER = new LexicalHandler() {
+        @Override
         public void startDTD(String string, String string1, String string2) throws SAXException {}
+        @Override
         public void endDTD() throws SAXException {}
+        @Override
         public void startEntity(String string) throws SAXException {}
+        @Override
         public void endEntity(String string) throws SAXException {}
+        @Override
         public void startCDATA() throws SAXException {}
+        @Override
         public void endCDATA() throws SAXException {}
+        @Override
         public void comment(char[] chars, int i, int i1) throws SAXException {}
     };
 }

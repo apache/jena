@@ -45,6 +45,7 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner, encoded as RDF properties of a base configuration resource,
      * can be null in no custom configuration is required.
      */
+    @Override
     public Reasoner create( Resource configuration ) {
         return new GenericRuleReasoner( this, configuration ); 
     }
@@ -54,6 +55,7 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -68,6 +70,7 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

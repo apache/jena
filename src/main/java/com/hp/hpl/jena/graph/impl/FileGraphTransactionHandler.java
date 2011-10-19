@@ -31,9 +31,11 @@ public class FileGraphTransactionHandler
     public FileGraphTransactionHandler( FileGraph fileGraph )
         { this.fileGraph = fileGraph; }
     
+    @Override
     public boolean transactionsSupported()
         { return true; }
     
+    @Override
     public void begin()
         { if (inTransaction) 
             throw new JenaException( "nested transactions not supported" );
@@ -52,12 +54,14 @@ public class FileGraphTransactionHandler
         return start + "checkPoint-" + finish;
         }
     
+    @Override
     public void abort()
         { fileGraph.getBulkUpdateHandler().removeAll();
         fileGraph.readModelFrom( fileGraph.model, true, checkPointFile );
         checkPointFile.delete();
         inTransaction = false; }
     
+    @Override
     public void commit()
         { fileGraph.saveContents( fileGraph.name ); 
         checkPointFile.delete(); 

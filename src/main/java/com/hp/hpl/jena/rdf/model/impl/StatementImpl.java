@@ -73,7 +73,8 @@ public class StatementImpl  extends StatementBase implements Statement {
 		return object;
 		}
 
-	public Statement getStatementProperty( Property p )
+	@Override
+    public Statement getStatementProperty( Property p )
 		{
 		return asResource().getRequiredProperty( p );
 		}
@@ -82,9 +83,11 @@ public class StatementImpl  extends StatementBase implements Statement {
     public Resource getResource()
         { return mustBeResource( object ); }
     
+    @Override
     @Deprecated public Resource getResource( ResourceF f )
         { return f.createResource( getResource() ); }
     
+    @Override
     public Statement getProperty(Property p)  {
         return getResource().getRequiredProperty( p );
     }    
@@ -102,14 +105,17 @@ public class StatementImpl  extends StatementBase implements Statement {
         }
     }
         
+    @Override
     public Bag getBag()  {
         return object.as( Bag.class );
     }
     
+    @Override
     public Alt getAlt()  {
         return object.as( Alt.class );
     }
     
+    @Override
     public Seq getSeq()  {
         return object.as( Seq.class );
     }    
@@ -146,16 +152,19 @@ public class StatementImpl  extends StatementBase implements Statement {
     	return model.getAnyReifiedStatement(this);
     }    
 
+    @Override
     public Statement remove()
         {
         model.remove( this );
         return this;
         }
     
+    @Override
     public void removeReification() {
     	model.removeAllReifications(this);
     }
     
+    @Override
     public Triple asTriple() {
     	return Triple.create( subject.asNode(), predicate.asNode(), object.asNode() );
     }
@@ -173,6 +182,7 @@ public class StatementImpl  extends StatementBase implements Statement {
         return triples;
         }
     
+    @Override
     public boolean isReified()  {
         return model.isReified( this );
     }
@@ -180,6 +190,7 @@ public class StatementImpl  extends StatementBase implements Statement {
     /**
         create a ReifiedStatement corresponding to this Statement
     */
+    @Override
     public ReifiedStatement createReifiedStatement()
         { return ReifiedStatementImpl.create( this ); }
         
@@ -187,9 +198,11 @@ public class StatementImpl  extends StatementBase implements Statement {
         create a ReifiedStatement corresponding to this Statement
         and with the given _uri_.
     */
+    @Override
     public ReifiedStatement createReifiedStatement( String uri )
         { return ReifiedStatementImpl.create( (ModelCom) this.getModel(), uri, this ); }
         
+    @Override
     public RSIterator listReifiedStatements()
         { return model.listReifiedStatements( this ); }
 

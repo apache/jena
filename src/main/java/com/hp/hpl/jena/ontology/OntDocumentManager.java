@@ -1030,6 +1030,7 @@ public class OntDocumentManager
         // otherwise, we use the model maker to get the model anew
         Model m = spec.getImportModelGetter()
                    .getModel( importURI, new ModelReader() {
+                                            @Override
                                             public Model readModel( Model toRead, String URL ) {
                                                read( toRead, URL, true );
                                                return toRead;
@@ -1164,10 +1165,12 @@ public class OntDocumentManager
     public static class DefaultReadHook
         implements ReadHook
     {
+        @Override
         public void afterRead( Model model, String source, OntDocumentManager odm ) {
             // do nothing
         }
 
+        @Override
         public String beforeRead( Model model, String source, OntDocumentManager odm ) {
             return source;
         }

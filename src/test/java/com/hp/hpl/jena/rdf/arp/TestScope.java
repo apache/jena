@@ -54,13 +54,16 @@ public class TestScope extends TestCase {
     }
 	static RDFErrorHandler suppress = new RDFErrorHandler(){
 
-		public void warning(Exception e) {
+		@Override
+        public void warning(Exception e) {
 		}
 
-		public void error(Exception e) {
+		@Override
+        public void error(Exception e) {
 		}
 
-		public void fatalError(Exception e) {
+		@Override
+        public void fatalError(Exception e) {
 		}
 		
 	};
@@ -68,7 +71,8 @@ public class TestScope extends TestCase {
 		
 		NTripleTestSuite.loadRDFx(new InFactoryX(){
 
-			public InputStream open() throws IOException {
+			@Override
+            public InputStream open() throws IOException {
 				return new FileInputStream(fn);
 			}
 		},suppress,"http://example.org/a",false,0);

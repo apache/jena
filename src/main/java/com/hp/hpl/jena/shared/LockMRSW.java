@@ -59,6 +59,7 @@ public class LockMRSW implements Lock
      * </pre>
      */
     
+    @Override
     final public void enterCriticalSection(boolean readLockRequested)
     {
         // Don't make {enter|leave}CriticalSection synchronized - deadlock will occur.
@@ -122,6 +123,7 @@ public class LockMRSW implements Lock
      *  @see #enterCriticalSection
      */
     
+    @Override
     final public void leaveCriticalSection()
     {
         

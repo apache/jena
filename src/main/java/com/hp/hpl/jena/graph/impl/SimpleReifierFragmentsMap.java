@@ -28,6 +28,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     protected void removeFragments( Node key )
         { forwardMap.remove( key ); }
     
+    @Override
     public void clear()
         { forwardMap.clear(); }
     
@@ -78,9 +79,11 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         return WrappedIterator.create( L.iterator() );
         }
 
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         { return allTriples( m ); }
     
+    @Override
     public int size()
         { 
         int result = 0;
@@ -97,6 +100,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         given a triple t, see if it's a reification triple and if so return the internal selector;
         otherwise return null.
     */ 
+    @Override
     public ReifierFragmentHandler getFragmentHandler( Triple t )
         {
         Node p = t.getPredicate();
@@ -149,20 +153,25 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     protected Fragments explode( Node s, Triple t )
         { return putFragments( s, new Fragments( s, t ) ); }
 
+    @Override
     public boolean hasFragments( Node tag )
         { return getFragments( tag ) != null; }
 
     protected static final Fragments.GetSlot TYPES_index = new Fragments.GetSlot() 
-        { public Set<Node> get( Fragments f ) { return f.types; } };
+        { @Override
+        public Set<Node> get( Fragments f ) { return f.types; } };
     
     protected static final Fragments.GetSlot SUBJECTS_index = 
-        new Fragments.GetSlot() { public Set<Node> get( Fragments f ) { return f.subjects; } };
+        new Fragments.GetSlot() { @Override
+        public Set<Node> get( Fragments f ) { return f.subjects; } };
     
     protected static final Fragments.GetSlot OBJECTS_index = 
-        new Fragments.GetSlot() { public Set<Node> get( Fragments f ) { return f.objects; } };
+        new Fragments.GetSlot() { @Override
+        public Set<Node> get( Fragments f ) { return f.objects; } };
     
     protected static final Fragments.GetSlot PREDICATES_index = 
-        new Fragments.GetSlot() { public Set<Node> get( Fragments f ) { return f.predicates; } };
+        new Fragments.GetSlot() { @Override
+        public Set<Node> get( Fragments f ) { return f.predicates; } };
     
     protected final ReifierFragmentHandler TYPES = new SimpleReifierFragmentHandler( this, TYPES_index) 
         { @Override public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };

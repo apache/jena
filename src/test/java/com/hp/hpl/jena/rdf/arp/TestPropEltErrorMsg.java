@@ -309,48 +309,60 @@ public class TestPropEltErrorMsg extends TestCase {
         
     static private class Atts implements Attributes {
         ArrayList<Att> atts = new ArrayList<Att>();
+        @Override
         public int getLength() {
             return atts.size();
         }
+        @Override
         public String getURI(int index) {
             return atts.get(index).getURI();
         }
+        @Override
         public String getLocalName(int index) {
             return atts.get(index).getLocalName();
         }
 
+        @Override
         public String getQName(int index) {
             return atts.get(index).getQName();
         }
 
+        @Override
         public String getType(int index) {
             return null;
         }
 
+        @Override
         public String getValue(int index) {
             return atts.get(index).getValue();
         }
 
+        @Override
         public int getIndex(String uri, String localName) {
             return -1;
         }
 
+        @Override
         public int getIndex(String qName) {
             return -1;
         }
 
+        @Override
         public String getType(String uri, String localName) {
             return null;
         }
 
+        @Override
         public String getType(String qName) {
             return null;
         }
 
+        @Override
         public String getValue(String uri, String localName) {
             return null;
         }
 
+        @Override
         public String getValue(String qName) {
             return null;
         }
@@ -427,16 +439,19 @@ public class TestPropEltErrorMsg extends TestCase {
 		XMLHandler arp = new XMLHandler();
 		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 
-			public void warning(SAXParseException exception) {
+			@Override
+            public void warning(SAXParseException exception) {
 				buf.append(exception.getMessage());
 				buf.append("\n");
 			}
 
-			public void error(SAXParseException e) {
+			@Override
+            public void error(SAXParseException e) {
 				warning(e);
 			}
 
-			public void fatalError(SAXParseException e) {
+			@Override
+            public void fatalError(SAXParseException e) {
 				warning(e);
 			}
 

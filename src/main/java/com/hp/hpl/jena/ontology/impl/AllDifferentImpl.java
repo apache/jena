@@ -109,6 +109,7 @@ public class AllDifferentImpl
      * @param members A list of the members that are declared to be distinct.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public void setDistinctMembers( RDFList members ) {
         setPropertyValue( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", members );
     }
@@ -118,6 +119,7 @@ public class AllDifferentImpl
      * @param res A resource that will be added to the list of all different members.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public void addDistinctMember( Resource res ) {
         addListPropertyValue( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", res );
     }
@@ -127,6 +129,7 @@ public class AllDifferentImpl
      * @param individuals An iterator over the distinct invididuals that will be added
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public void addDistinctMembers( Iterator<? extends Resource> individuals ) {
         while (individuals.hasNext()) {
             addDistinctMember( individuals.next() );
@@ -138,6 +141,7 @@ public class AllDifferentImpl
      * @return The list of individuals declared distinct by this AllDifferent declaration.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public RDFList getDistinctMembers() {
         return objectAs( getProfile().DISTINCT_MEMBERS(), "DISTINCT_MEMBERS", RDFList.class );
     }
@@ -148,8 +152,10 @@ public class AllDifferentImpl
      * @return An iterator over distinct individuals.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public ExtendedIterator<? extends OntResource> listDistinctMembers() {
         return getDistinctMembers().mapWith( new Map1<RDFNode,OntResource>() {
+            @Override
             public OntResource map1( RDFNode o ) {
                 return ((Resource) o).as( OntResource.class );
             }} );
@@ -161,6 +167,7 @@ public class AllDifferentImpl
      * @return True if <code>res</code> is declared to be distinct from the other individuals in this declation.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.
      */
+    @Override
     public boolean hasDistinctMember( Resource res ) {
         return getDistinctMembers().contains( res );
     }
@@ -170,6 +177,7 @@ public class AllDifferentImpl
      * is not true of the current model, nothing happens.</p>
      * @param res A resource that is no longer distinct from the other listed individuals
      */
+    @Override
     public void removeDistinctMember( Resource res ) {
         setDistinctMembers( getDistinctMembers().remove( res ) );
     }

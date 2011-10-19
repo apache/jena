@@ -58,12 +58,15 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
 
     public static class MockBase implements ReasonerFactory
         {
+        @Override
         public Reasoner create( Resource configuration )
             { return null; }
 
+        @Override
         public Model getCapabilities()
             { return null; }
 
+        @Override
         public String getURI()
             { return null; }
         }

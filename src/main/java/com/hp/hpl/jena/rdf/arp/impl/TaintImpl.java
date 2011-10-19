@@ -15,10 +15,12 @@ public class TaintImpl implements Taint {
     public TaintImpl() { 
     }
 
+    @Override
     public void taint() {
   tainted = true;
     }
 
+    @Override
     public boolean isTainted() {
        return tainted;
     }

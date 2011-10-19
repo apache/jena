@@ -65,6 +65,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         super( n, m );
     }
     
+    @Override
     public Object visitWith( RDFVisitor rv )
         { return rv.visitLiteral( this ); }
         
@@ -73,6 +74,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         @param m a model to move the literal into
         @return this
     */
+    @Override
     public Literal inModel( Model m )
         {
         return getModel() == m 
@@ -81,15 +83,18 @@ public class LiteralImpl extends EnhNode implements Literal {
             ;
          }
     
+    @Override
     public Literal asLiteral()
         { return this; }
     
+    @Override
     public Resource asResource()
         { throw new ResourceRequiredException( asNode() ); }
     
     /**
         Answer the model this literal was created in, if any, otherwise null.
     */
+    @Override
     public Model getModel()
         { return (ModelCom) getGraph(); }
     
@@ -104,6 +109,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * of typed literals representing a java primitive then the appropriate
      * java wrapper class (Integer etc) will be returned.
      */
+    @Override
     public Object getValue() {
         return asNode().getLiteralValue();
     }
@@ -112,6 +118,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * Return the datatype of the literal. This will be null in the
      * case of plain literals.
      */
+    @Override
     public RDFDatatype getDatatype() {
         return asNode().getLiteralDatatype();
     }
@@ -120,6 +127,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * Return the uri of the datatype of the literal. This will be null in the
      * case of plain literals.
      */
+    @Override
     public String getDatatypeURI() {
         return asNode().getLiteralDatatypeURI();
     }
@@ -134,10 +142,12 @@ public class LiteralImpl extends EnhNode implements Literal {
     /**
      * Return the lexical form of the literal.
      */
+    @Override
     public String getLexicalForm() {
         return asNode().getLiteralLexicalForm();
     }
 
+    @Override
     public boolean getBoolean()  {
         Object value = asNode().getLiteralValue();
         if (isPlainLiteral()) {
@@ -159,6 +169,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
     
+    @Override
     public byte getByte()  {
         if (isPlainLiteral()) {
             return Byte.parseByte(getLexicalForm());
@@ -168,6 +179,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
 
     
+    @Override
     public short getShort()  {
         if (isPlainLiteral()) {
             return Short.parseShort(getLexicalForm());
@@ -176,6 +188,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
+    @Override
     public int getInt()  {
         if (isPlainLiteral()) {
             return Integer.parseInt(getLexicalForm());
@@ -184,6 +197,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
+    @Override
     public long getLong()  {
         if (isPlainLiteral()) {
             return Long.parseLong(getLexicalForm());
@@ -192,6 +206,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
+    @Override
     public char getChar()  {
         if (isPlainLiteral()) {
             if (getString().length()==1) {
@@ -209,6 +224,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
     
+    @Override
     public float getFloat()  {
         if (isPlainLiteral()) {
             return Float.parseFloat(getLexicalForm());
@@ -217,6 +233,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
+    @Override
     public double getDouble()  {
         if (isPlainLiteral()) {
             return Double.parseDouble(getLexicalForm());
@@ -225,6 +242,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         }
     }
 
+    @Override
     public String getString()  {
         return asNode().getLiteralLexicalForm();
     }
@@ -241,10 +259,12 @@ public class LiteralImpl extends EnhNode implements Literal {
 //        }
 //    }
     
+    @Override
     public String getLanguage() {
         return asNode().getLiteralLanguage();
     }
     
+    @Override
     public boolean isWellFormedXML() {
         return asNode().getLiteralIsXML();
     } 
@@ -257,6 +277,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * equivalent but distinguished by the java equality function
      * in order to support round tripping.
      */
+    @Override
     public boolean sameValueAs(Literal other) {
         return asNode().sameValueAs(other.asNode());
     }

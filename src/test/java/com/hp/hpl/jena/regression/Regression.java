@@ -4869,6 +4869,7 @@ public class Regression extends Object {
 //    }
 
     @Deprecated public static class ResTestObjF implements ResourceF {
+        @Override
         public Resource createResource(Resource r)
             { return new ResourceImpl( r, (ModelCom) r.getModel() ); }
     }

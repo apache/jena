@@ -119,36 +119,44 @@ public class TestResourceFactory extends TestCase {
             resource = r;
         }
 
+        @Override
         public Resource createResource() {
             return resource;
         }
 
+        @Override
         public Resource createResource(String uriref) {
             return null;
         }
         
+        @Override
         public Literal createPlainLiteral( String string ) {
             return null;
         }
 
+        @Override
         public Literal createTypedLiteral(String string, RDFDatatype datatype)
         {
             return null ;
         }
 
+        @Override
         public Literal createTypedLiteral(Object value)
         {
             return null ;
         }
 
+        @Override
         public Property createProperty(String uriref) {
             return null;
         }
 
+        @Override
         public Property createProperty(String namespace, String localName) {
             return null;
         }
 
+        @Override
         public Statement createStatement(
             Resource subject,
             Property predicate,

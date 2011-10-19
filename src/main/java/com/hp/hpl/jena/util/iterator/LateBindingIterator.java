@@ -58,16 +58,19 @@ abstract public class LateBindingIterator<T> implements Iterator<T> {
     public LateBindingIterator() {
     }
 
+    @Override
     public boolean hasNext() {
         lazy();
         return it.hasNext();
     }
     
+    @Override
     public T next() {
         lazy();
         return it.next();
     }
     
+    @Override
     public void remove() {
         lazy();
         it.remove();

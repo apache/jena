@@ -35,6 +35,7 @@ public class TestRDFNodes extends ModelTestBase
     /* */
         RDFVisitor rv = new RDFVisitor() 
             {
+            @Override
             public Object visitBlank( Resource R, AnonId id )
                 { 
                 history.add( "blank" ); 
@@ -42,6 +43,7 @@ public class TestRDFNodes extends ModelTestBase
                 assertEquals( "must have correct field", R.getId(), id );
                 return "blank result"; 
                 }
+            @Override
             public Object visitURI( Resource R, String uri )
                 { 
                 history.add( "uri" ); 
@@ -49,6 +51,7 @@ public class TestRDFNodes extends ModelTestBase
                 assertEquals( "must have correct field", R.getURI(), uri );
                 return "uri result"; 
                 }
+            @Override
             public Object visitLiteral( Literal L )
                 { 
                 history.add( "literal" );

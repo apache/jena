@@ -48,6 +48,7 @@ public class SimpleTripleSorter implements TripleSorter
         a new permuted copy of the original array. The work is done by a new instance
         of SimpleTripleSorter specialised to this triple array (and with helpful state). 
     */
+    @Override
     public Triple [] sort( Triple[] ts )
         { return new SimpleTripleSorter( ts ) .sort(); }        
         

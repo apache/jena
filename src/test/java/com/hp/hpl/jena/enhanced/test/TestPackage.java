@@ -379,18 +379,23 @@ public class TestPackage extends GraphTestBase  {
                 { return n.isURI(); }
             };
 
+        @Override
         public RDFNode inModel( Model m )
             { return null; }
         
+        @Override
         public Model getModel() 
             { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }
         
+        @Override
         public Resource asResource()
             { throw new JenaException( "asResource() should not be called in the EnhGraph/Node tests" ); }
         
+        @Override
         public Literal asLiteral()
             { throw new JenaException( "asLiteral() should not be called in the EnhGraph/Node tests" ); }
 
+        @Override
         public Object visitWith( RDFVisitor rv )
             { return null; }
         }

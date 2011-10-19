@@ -33,6 +33,7 @@ public final class WrappedReasonerFactory implements ReasonerFactory
          loaded with this Wrapper's rules (if the Reasoner is a RuleReasoner) and
          bound to this Wrapper's schemas (in an unspecified order).
      */
+    @Override
     public Reasoner create( Resource ignored )
         { Reasoner result = factory.create( config );
         return schemaUnion.isEmpty() ? result : result.bindSchema( schemaUnion ); }
@@ -59,12 +60,14 @@ public final class WrappedReasonerFactory implements ReasonerFactory
     /**
          Answer the capabilities of the underlying ReasonerFactory.
     */
+    @Override
     public Model getCapabilities()
         { return factory.getCapabilities(); }
     
     /**
          Answer the URI of the underlying ReasonerFactory. 
     */
+    @Override
     public String getURI()
         { return factory.getURI(); }
     }

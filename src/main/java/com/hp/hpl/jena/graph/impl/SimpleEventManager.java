@@ -58,87 +58,103 @@ public class SimpleEventManager implements GraphEventManager
  */
         }
     
+    @Override
     public GraphEventManager register( GraphListener listener ) 
         { 
         listeners.add( listener );
         return this; 
         }
         
+    @Override
     public GraphEventManager unregister( GraphListener listener ) 
         { 
         listeners.remove( listener ); 
         return this;
         }
     
+    @Override
     public boolean listening()
         { return listeners.size() > 0; }
         
+    @Override
     public void notifyAddTriple( Graph g, Triple t ) 
         {
         for (GraphListener l:listeners) 
             l.notifyAddTriple( g, t ); 
         }
     
+    @Override
     public void notifyAddArray( Graph g, Triple [] ts )
         {
         for (GraphListener l:listeners) 
             l.notifyAddArray( g, ts ); 
         }
         
+    @Override
     public void notifyAddList( Graph g, List<Triple> L )
         {
         for (GraphListener l:listeners) 
             l.notifyAddList( g, L);      
         }
         
+    @Override
     public void notifyAddIterator( Graph g, List<Triple> it )
         {
         for (GraphListener l:listeners) 
             l.notifyAddIterator( g, it.iterator() ); 
         }
         
+    @Override
     public void notifyAddIterator( Graph g, Iterator<Triple> it )
         { notifyAddIterator( g, IteratorCollection.iteratorToList( it ) ); }
         
+    @Override
     public void notifyAddGraph( Graph g, Graph added )
         {
         for (GraphListener l:listeners) 
             l.notifyAddGraph( g, added ); 
         }
         
+    @Override
     public void notifyDeleteTriple( Graph g, Triple t ) 
         { 
         for (GraphListener l:listeners) 
             l.notifyDeleteTriple( g, t ); 
         }
         
+    @Override
     public void notifyDeleteArray( Graph g, Triple [] ts )
         {
         for (GraphListener l:listeners) 
             l.notifyDeleteArray( g, ts ); 
         }
         
+    @Override
     public void notifyDeleteList( Graph g, List<Triple> L )
         {
         for (GraphListener l:listeners) 
             l.notifyDeleteList( g, L );      
         }
         
+    @Override
     public void notifyDeleteIterator( Graph g, List<Triple> L )
         {
         for (GraphListener l:listeners) 
             l.notifyDeleteIterator( g, L.iterator() ); 
         }
         
+    @Override
     public void notifyDeleteIterator( Graph g, Iterator<Triple> it )
         { notifyDeleteIterator( g, IteratorCollection.iteratorToList( it ) ); }    
             
+    @Override
     public void notifyDeleteGraph( Graph g, Graph removed )
         {
         for (GraphListener l:listeners) 
             l.notifyDeleteGraph( g, removed ); 
         }
     
+    @Override
     public void notifyEvent( Graph source, Object event )
         {
         for (GraphListener l:listeners) 

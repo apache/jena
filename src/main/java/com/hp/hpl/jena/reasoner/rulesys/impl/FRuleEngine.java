@@ -99,6 +99,7 @@ public class FRuleEngine implements FRuleEngineI {
      * @param inserts the set of triples to be processed, normally this is the
      * raw data graph but may include additional deductions made by preprocessing hooks
      */
+    @Override
     public void init(boolean ignoreBrules, Finder inserts) {
         if (clauseIndex == null) compile(rules, ignoreBrules);
         findAndProcessAxioms();
@@ -113,6 +114,7 @@ public class FRuleEngine implements FRuleEngineI {
      * @param inserts the set of triples to be processed, normally this is the
      * raw data graph but may include additional deductions made by preprocessing hooks
      */
+    @Override
     public void fastInit(Finder inserts) {
         findAndProcessActions();
         // Create the reasoning context
@@ -138,6 +140,7 @@ public class FRuleEngine implements FRuleEngineI {
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
+    @Override
     public synchronized void add(Triple t) {
         BFRuleContext context = new BFRuleContext(infGraph);
         context.addTriple(t);
@@ -149,6 +152,7 @@ public class FRuleEngine implements FRuleEngineI {
      * @return true if the effects could be correctly propagated or
      * false if not (in which case the entire engine should be restarted).
      */
+    @Override
     public synchronized boolean delete(Triple t) {
         // Incremental delete not supported
         return false;
@@ -158,6 +162,7 @@ public class FRuleEngine implements FRuleEngineI {
      * Return the number of rules fired since this rule engine instance
      * was created and initialized
      */
+    @Override
     public long getNRulesFired() {
         return nRulesFired;
     }
@@ -166,6 +171,7 @@ public class FRuleEngine implements FRuleEngineI {
      * Return true if the internal engine state means that tracing is worthwhile.
      * It will return false during the axiom bootstrap phase.
      */
+    @Override
     public boolean shouldTrace() {
 //        return processedAxioms;
         return true;
@@ -174,6 +180,7 @@ public class FRuleEngine implements FRuleEngineI {
     /**
      * Set to true to enable derivation caching
      */
+    @Override
     public void setDerivationLogging(boolean recordDerivations) {
         this.recordDerivations = recordDerivations;
     }
@@ -182,6 +189,7 @@ public class FRuleEngine implements FRuleEngineI {
      * Access the precomputed internal rule form. Used when precomputing the
      * internal axiom closures.
      */
+    @Override
     public Object getRuleStore() {
         return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
     }
@@ -189,6 +197,7 @@ public class FRuleEngine implements FRuleEngineI {
     /**
      * Set the internal rule from from a precomputed state.
      */
+    @Override
     public void setRuleStore(Object ruleStore) {
         RuleStore rs = (RuleStore)ruleStore;
         clauseIndex = rs.clauseIndex;

@@ -43,6 +43,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
      * passed the reasoner encoded within an RDF graph. This reasoner has no
      * configuration parameters so this arg is always ignored.
      */
+    @Override
     public Reasoner create(Resource configuration) {
         return new TransitiveReasoner();
     }
@@ -52,6 +53,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
      * RDF. This method is normally called by the ReasonerRegistry which caches
      * the resulting information so dynamically creating here is not really an overhead.
      */
+    @Override
     public Model getCapabilities() {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
@@ -70,6 +72,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
     /**
      * Return the URI labelling this type of reasoner
      */
+    @Override
     public String getURI() {
         return URI;
     }

@@ -26,7 +26,8 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 		this.pattern = pattern;
 		}
 		
-	public Graph executeTree() 
+	@Override
+    public Graph executeTree() 
 		{ 
 		Graph result = Factory.createGraphMem();
 		Set<Node> roots = getRoots( pattern );

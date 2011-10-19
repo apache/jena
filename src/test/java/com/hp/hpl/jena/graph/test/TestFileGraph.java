@@ -128,6 +128,7 @@ public class TestFileGraph extends GraphTestBase
         final List<File> history = new ArrayList<File>();
         FileGraph.NotifyOnClose n = new FileGraph.NotifyOnClose() 
             {
+            @Override
             public void notifyClosed( File f )
                 { history.add( f ); }
             };

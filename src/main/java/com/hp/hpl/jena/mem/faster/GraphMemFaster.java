@@ -87,6 +87,7 @@ public class GraphMemFaster extends GraphMemBase
             
          	@see com.hp.hpl.jena.graph.GraphStatisticsHandler#getStatistic(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
          */
+        @Override
         public long getStatistic( Node S, Node P, Node O )
             {
             if (reifier.size() > 0) return -1;

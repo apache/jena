@@ -17,6 +17,7 @@ public class RSIteratorImpl extends WrappedIterator<ReifiedStatement> implements
     public RSIteratorImpl( Iterator<ReifiedStatement> iterator )
         { super( iterator ); }
 
+    @Override
     public ReifiedStatement nextRS()
         { return next(); }
     }

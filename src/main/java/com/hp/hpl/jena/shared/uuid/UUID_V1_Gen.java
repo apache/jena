@@ -102,12 +102,14 @@ public class UUID_V1_Gen implements UUIDFactory
 
     /** (Re)set the network id (a random number) and the timstamp */
     
+    @Override
     public void reset()
     {
         setInitialState() ;
         setTime() ;
     }
 
+    @Override
     public JenaUUID generate()
     { return generateV1() ; }
         
@@ -140,6 +142,7 @@ public class UUID_V1_Gen implements UUIDFactory
      */
 
     
+    @Override
     public JenaUUID parse(String s) throws FormatException
     {
         s = s.toLowerCase() ;

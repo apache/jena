@@ -31,8 +31,10 @@ public class XMLOutputTestBase extends ModelTestBase
     
     static SimpleLogger falseLogger = new SimpleLogger() 
         {
+        @Override
         public void warn(String s) { sawErrors = true; }
 
+        @Override
         public void warn(String s, Exception e) { sawErrors = true; }
         };
     

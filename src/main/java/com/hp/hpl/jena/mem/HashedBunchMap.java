@@ -28,21 +28,25 @@ public class HashedBunchMap extends HashCommon<Object> implements BunchMap
         Clear this map: all entries are removed. The keys <i>and value</i> array 
         elements are set to null (so the values may be garbage-collected).
     */
+    @Override
     public void clear()
         {
         size = 0;
         for (int i = 0; i < capacity; i += 1) keys[i] = values[i] = null; 
         }  
     
+    @Override
     public long size()
         { return size; }
         
+    @Override
     public TripleBunch get( Object key )
         {
         int slot = findSlot( key );
         return slot < 0 ? values[~slot] : null;
         }
 
+    @Override
     public void put( Object key, TripleBunch value )
         {
         int slot = findSlot( key );

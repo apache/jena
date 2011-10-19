@@ -25,7 +25,8 @@ public class UUID_V4_Gen implements UUIDFactory
     
     public UUID_V4_Gen() {}
     
-	public JenaUUID generate()
+	@Override
+    public JenaUUID generate()
     { return generateV4() ; }
     
     public UUID_V4 generateV4()
@@ -39,7 +40,8 @@ public class UUID_V4_Gen implements UUIDFactory
     }
     
     
-	public JenaUUID parse(String s)
+	@Override
+    public JenaUUID parse(String s)
     { return parseV4(s) ; }
     
     public UUID_V4 parseV4(String s)
@@ -99,6 +101,7 @@ public class UUID_V4_Gen implements UUIDFactory
             reset() ;
     }
 
+    @Override
     public void reset() 
     {
         random =  LibUUID.makeRandom() ; 

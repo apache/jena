@@ -46,9 +46,11 @@ class PairEntry<K,V>  implements java.util.Map.Entry<K,V>  {
         return false;
         
     }
+    @Override
     public K getKey() {
         return a;
     }
+    @Override
     public V getValue() {
         return b;
     }
@@ -56,6 +58,7 @@ class PairEntry<K,V>  implements java.util.Map.Entry<K,V>  {
     public int hashCode() {
         return a.hashCode() ^ b.hashCode();
     }
+    @Override
     public V setValue(Object value) {
         throw new UnsupportedOperationException();
     }

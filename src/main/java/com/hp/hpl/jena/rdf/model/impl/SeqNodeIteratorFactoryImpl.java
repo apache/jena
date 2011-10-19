@@ -43,6 +43,7 @@ import java.util.Iterator;
  */
 public class SeqNodeIteratorFactoryImpl implements NodeIteratorFactory 
     {
+    @Override
     public NodeIterator createIterator( Iterator<Statement> iter, Object ignored, Container cont ) 
         { return new SeqNodeIteratorImpl( iter, (Seq) cont ); }
     }

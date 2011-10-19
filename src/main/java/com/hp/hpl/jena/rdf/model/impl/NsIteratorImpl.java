@@ -22,6 +22,7 @@ public class NsIteratorImpl extends WrappedIterator<String> implements NsIterato
     public NsIteratorImpl( Iterator<String> iter, Object o ) 
         { super( iter ); }
 
+    @Override
     public String nextNs()
         { return next(); }
     }

@@ -63,15 +63,18 @@ public class ModelCom extends EnhGraph
         defaultPrefixMapping = pm;
         return result; }
     
+    @Override
     public QueryHandler queryHandler()
     	{ return getGraph().queryHandler(); }
 		
+    @Override
     public Graph getGraph()
         { return graph; }
                
     protected static Model createWorkModel()
         { return ModelFactory.createDefaultModel(); }
     
+    @Override
     public RDFNode asRDFNode( Node n )
         {
         return n.isLiteral() 
@@ -79,6 +82,7 @@ public class ModelCom extends EnhGraph
           : (RDFNode) this.getNodeAs( n, Resource.class );
         }
 
+    @Override
     public Resource wrapAsResource( Node n )
         {
         if (n.isLiteral()) 
@@ -91,6 +95,7 @@ public class ModelCom extends EnhGraph
     */
     protected ModelReifier modelReifier = new ModelReifier( this ); 
 	
+    @Override
     @Deprecated public Resource getResource(String uri, ResourceF f)  {
         try {
             return f.createResource(getResource(uri));
@@ -99,28 +104,36 @@ public class ModelCom extends EnhGraph
         }
     }
     
+    @Override
     public Model addLiteral( Resource s, Property p, boolean o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model addLiteral( Resource s, Property p, long o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model addLiteral( Resource s, Property p, int o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model addLiteral( Resource s, Property p, char o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model addLiteral( Resource s, Property p, float o )  
         { return add( s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model addLiteral( Resource s, Property p, double o )  
         { return add(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Model add(Resource s, Property p, String o)  {
         return add( s, p, o, "", false );
     }
     
+    @Override
     public Model add(Resource s, Property p, String o, boolean wellFormed)
         {
         add( s, p, literal( o, "", wellFormed ) );
@@ -133,6 +146,7 @@ public class ModelCom extends EnhGraph
         return this;
     }
     
+    @Override
     public Model add(Resource s, Property p, String lex, RDFDatatype datatype)
     {
         add( s, p, literal( lex, datatype)) ;
@@ -145,64 +159,78 @@ public class ModelCom extends EnhGraph
     private Literal literal( String lex, RDFDatatype datatype)
     { return new LiteralImpl( Node.createLiteral( lex, "", datatype), this ); }
 
+    @Override
     public Model add( Resource s, Property p, String o, String l )
         { return add( s, p, o, l, false ); }
 
+    @Override
     @Deprecated public Model addLiteral( Resource s, Property p, Object o )  
         { return add( s, p, asObject( o ) ); }
 
+    @Override
     public Model addLiteral( Resource s, Property p, Literal o )  
         { return add( s, p, o ); }
     
     private RDFNode asObject( Object o )
         { return o instanceof RDFNode ? (RDFNode) o : createTypedLiteral( o ); }
 
+    @Override
     public Model add( StmtIterator iter )  {
         try { getBulkUpdateHandler().add( asTriples( iter ) ); }
         finally { iter.close(); }
         return this;
     }
     
+    @Override
     public Model add( Model m )  
         { return add( m, false ); }
         
+    @Override
     public Model add( Model m, boolean suppressReifications ) {
         getBulkUpdateHandler().add( m.getGraph(), !suppressReifications );
         return this;
     }
     
+    @Override
     public RDFReader getReader()  {
         return readerFactory.getReader();
     }
     
+    @Override
     public RDFReader getReader(String lang)  {
         return readerFactory.getReader(lang);
     }
     
+    @Override
     public String setReaderClassName(String lang, String className) {
         return readerFactory.setReaderClassName(lang, className);
     } 
     
+    @Override
     public Model read(String url)  {
         readerFactory .getReader() .read(this, url);
         return this;
     }
     
+    @Override
     public Model read(Reader reader, String base)  {
         readerFactory .getReader() .read(this, reader, base);
         return this;
     }
     
-  	public Model read(InputStream reader, String base)  {
+  	@Override
+    public Model read(InputStream reader, String base)  {
   		readerFactory .getReader() .read(this, reader, base);
   		return this;
   	} 
     
+    @Override
     public Model read(String url, String lang)  {
         readerFactory. getReader(lang) .read(this, url);
         return this;
     }
     
+    @Override
     public Model read( String url, String base, String lang )
         {
         try 
@@ -215,13 +243,15 @@ public class ModelCom extends EnhGraph
         return this;
         }
     
+    @Override
     public Model read(Reader reader, String base, String lang)
        {
         readerFactory .getReader(lang) .read(this, reader, base);
         return this;
        }
     
-  	public Model read(InputStream reader, String base, String lang)
+  	@Override
+    public Model read(InputStream reader, String base, String lang)
   	   {
   		readerFactory .getReader(lang) .read(this, reader, base);
   		return this;
@@ -231,6 +261,7 @@ public class ModelCom extends EnhGraph
         Get the model's writer after priming it with the model's namespace
         prefixes.
     */
+    @Override
     public RDFWriter getWriter()  {
         return writerFactory.getWriter();
     }
@@ -239,119 +270,145 @@ public class ModelCom extends EnhGraph
         Get the model's writer after priming it with the model's namespace
         prefixes.
     */
+    @Override
     public RDFWriter getWriter(String lang)  {
         return writerFactory.getWriter(lang);
     }
     
 
+    @Override
     public String setWriterClassName(String lang, String className) {
         return writerFactory.setWriterClassName(lang, className);
     }
     
+    @Override
     public Model write(Writer writer) 
         {
         getWriter() .write(this, writer, "");
         return this;
         }
     
+    @Override
     public Model write(Writer writer, String lang) 
         {
         getWriter(lang) .write(this, writer, "");
         return this;
         }
     
+    @Override
     public Model write(Writer writer, String lang, String base)
         {
         getWriter(lang) .write(this, writer, base);
         return this;
         }
     
-  	public Model write( OutputStream writer )
+  	@Override
+    public Model write( OutputStream writer )
         {
         getWriter() .write(this, writer, "");
   		return this;    
         }
     
-  	public Model write(OutputStream writer, String lang) 
+  	@Override
+    public Model write(OutputStream writer, String lang) 
         {
   		getWriter(lang) .write(this, writer, "");
   		return this;
   	    }
     
-  	public Model write(OutputStream writer, String lang, String base)
+  	@Override
+    public Model write(OutputStream writer, String lang, String base)
   	    {
         getWriter(lang) .write(this, writer, base);
   		return this;
   	    }
     
+    @Override
     public Model remove(Statement s)  {
         graph.delete(s.asTriple());
         return this;
     }
     
+    @Override
     public Model remove( Resource s, Property p, RDFNode o ) {
         graph.delete( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
     }
         
     
+    @Override
     public Model remove( StmtIterator iter ) 
         {
         getBulkUpdateHandler().delete( asTriples( iter ) );
         return this;
         }
     
+    @Override
     public Model remove( Model m )
         { return remove( m, false ); }
         
+    @Override
     public Model remove( Model m, boolean suppressReifications ) 
         {
         getBulkUpdateHandler().delete( m.getGraph(), !suppressReifications );
         return this;
         }
     
+    @Override
     public Model removeAll()
         { 
         getGraph().getBulkUpdateHandler().removeAll();
         return this; 
         }
     
+    @Override
     public Model removeAll( Resource s, Property p, RDFNode o )
         {
         getGraph().getBulkUpdateHandler().remove( asNode( s ), asNode( p ), asNode( o ) );
         return this;
         }
         
+    @Override
     public boolean containsLiteral( Resource s, Property p, boolean o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean containsLiteral( Resource s, Property p, long o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean containsLiteral( Resource s, Property p, int o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean containsLiteral( Resource s, Property p, char o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean containsLiteral( Resource s, Property p, float o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean containsLiteral( Resource s, Property p, double o )
         { return contains(s, p, createTypedLiteral( o ) ); }
     
+    @Override
     public boolean contains( Resource s, Property p, String o )
         { return contains( s, p, o, "" ); }
     
+    @Override
     public boolean contains( Resource s, Property p, String o, String l )
         { return contains( s, p, literal( o, l, false ) ); }
     
+    @Override
     public boolean containsLiteral(Resource s, Property p, Object o)
         { return contains( s, p, asObject( o ) ); }
     
+    @Override
     public boolean containsAny( Model model ) 
         { return containsAnyThenClose( model.listStatements() ); }
     
+    @Override
     public boolean containsAll( Model model )  
         { return containsAllThenClose( model.listStatements() ); }
     
@@ -361,12 +418,14 @@ public class ModelCom extends EnhGraph
     protected boolean containsAllThenClose( StmtIterator iter )
         { try { return containsAll( iter ); } finally { iter.close(); } }
     
+    @Override
     public boolean containsAny( StmtIterator iter ) 
         {
         while (iter.hasNext()) if (contains(iter.nextStatement())) return true;
         return false;
         }
     
+    @Override
     public boolean containsAll( StmtIterator iter )  
         {
         while (iter.hasNext()) if (!contains(iter.nextStatement())) return false;
@@ -379,31 +438,39 @@ public class ModelCom extends EnhGraph
             ( graph.find( asNode( S ), asNode( P ), O ), this );
         }
     
+    @Override
     public StmtIterator listStatements( Resource S, Property P, RDFNode O )
         { return listStatements( S, P, asNode( O ) ); }
     
+    @Override
     public StmtIterator listStatements( Resource S, Property P, String O ) {
         return O == null ? listStatements(S, P, Node.ANY) 
                 :  listStatements( S, P, Node.createLiteral( O ) ); 
     }
     
+    @Override
     public StmtIterator listStatements( Resource S, Property P, String O, String L ) {
         return O == null ? listStatements(S, P, Node.ANY) 
                 :  listStatements( S, P, Node.createLiteral( O, L, false ) ); 
     }
     
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, boolean O )
         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, long O )
         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, char  O )
         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, float O )
          { return listStatements( S, P, createTypedLiteral( O ) ); }
     
+    @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, double  O )
         { return listStatements( S, P, createTypedLiteral( O ) ); }
     
@@ -411,45 +478,59 @@ public class ModelCom extends EnhGraph
          list resources with property [was: list subjects with property]
     */
         
+    @Override
     public ResIterator listResourcesWithProperty( Property p, boolean o )
         { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listResourcesWithProperty( Property p, char o )
         { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listResourcesWithProperty( Property p, long o )
         { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listResourcesWithProperty( Property p, float o )
         { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listResourcesWithProperty( Property p, double o )
         { return listResourcesWithProperty(p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listResourcesWithProperty( Property p, Object o )
         { return listResourcesWithProperty( p, createTypedLiteral( o ) ); }
     
+    @Override
     public ResIterator listSubjectsWithProperty( Property p, RDFNode o )
         { return listResourcesWithProperty( p, o ); }
     
+    @Override
     public ResIterator listSubjectsWithProperty( Property p, String o )
         { return listSubjectsWithProperty( p, o, "" ); }
     
+    @Override
     public ResIterator listSubjectsWithProperty( Property p, String o, String l )
         { return listResourcesWithProperty(p, literal( o, l, false ) ); }
     
+    @Override
     public Resource createResource( Resource type )  
         { return createResource().addProperty( RDF.type, type ); }
     
+    @Override
     public Resource createResource( String uri,Resource type )
         { return getResource( uri ).addProperty( RDF.type, type ); }
     
+    @Override
     @Deprecated public Resource createResource( ResourceF f )  
         { return createResource( null, f ); }
     
+    @Override
     public Resource createResource( AnonId id )
         { return new ResourceImpl( id, this ); }
         
+    @Override
     @Deprecated public Resource createResource( String uri, ResourceF f )  
         { return f.createResource( createResource( uri ) ); }
     
@@ -462,6 +543,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */
+    @Override
     public Literal createTypedLiteral( boolean v )  {
         return createTypedLiteral( new Boolean( v ) );
     }
@@ -472,6 +554,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */   
+    @Override
     public Literal createTypedLiteral(int v)   {
         return createTypedLiteral(new Integer(v));
     }
@@ -482,6 +565,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */   
+    @Override
     public Literal createTypedLiteral(long v)   {
         return createTypedLiteral(new Long(v));
     }
@@ -492,6 +576,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */
+    @Override
     public Literal createTypedLiteral(char v)  {
         return createTypedLiteral(new Character(v));
     }
@@ -502,6 +587,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */
+    @Override
     public Literal createTypedLiteral(float v)  {
         return createTypedLiteral(new Float(v));
     }
@@ -512,6 +598,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */
+    @Override
     public Literal createTypedLiteral(double v)  {
         return createTypedLiteral(new Double(v));
     }
@@ -522,6 +609,7 @@ public class ModelCom extends EnhGraph
      * 
      * @return a new literal representing the value v
      */
+    @Override
     public Literal createTypedLiteral(String v)  {
         LiteralLabel ll = LiteralLabelFactory.create(v);
         return new LiteralImpl(Node.createLiteral(ll), this);
@@ -530,6 +618,7 @@ public class ModelCom extends EnhGraph
     /**
      * Create a typed literal xsd:dateTime from a Calendar object. 
      */
+    @Override
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
         LiteralLabel ll = LiteralLabelFactory.create(value, "", XSDDatatype.XSDdateTime);
@@ -546,6 +635,7 @@ public class ModelCom extends EnhGraph
      * @param dtype the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
+    @Override
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
                                         throws DatatypeFormatException {
         return new LiteralImpl( Node.createLiteral( lex, "", dtype ), this);
@@ -557,6 +647,7 @@ public class ModelCom extends EnhGraph
      * @param value the value of the literal
      * @param dtype the type of the literal, null for old style "plain" literals
      */
+    @Override
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
         LiteralLabel ll = LiteralLabelFactory.create(value, "", dtype);
         return new LiteralImpl( Node.createLiteral(ll), this );
@@ -571,6 +662,7 @@ public class ModelCom extends EnhGraph
      * @param typeURI the uri of the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
+    @Override
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.createLiteralLabel( lex, "", dt );
@@ -583,6 +675,7 @@ public class ModelCom extends EnhGraph
      * @param value the value of the literal
      * @param typeURI the URI of the type of the literal, null for old style "plain" literals
      */
+    @Override
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = LiteralLabelFactory.create(value, "", dt);
@@ -595,6 +688,7 @@ public class ModelCom extends EnhGraph
      * representation for this java class. No language tag is supplied.
      * @param value the literal value to encapsulate
      */
+    @Override
     public Literal createTypedLiteral( Object value ) 
         {
         // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
@@ -604,59 +698,76 @@ public class ModelCom extends EnhGraph
         return new LiteralImpl( Node.createLiteral( ll ), this);
         }
     
+    @Override
     public Literal createLiteral( String v )  
         { return createLiteral( v, "" ); }
     
+    @Override
     public Literal createLiteral( String v, String l )  
         { return literal( v, l, false ); }
     
+    @Override
     public Literal createLiteral( String v, boolean wellFormed ) 
         { return literal( v, "", wellFormed ); }
     
     public Literal createLiteral(String v, String l, boolean wellFormed) 
         { return literal( v, l, wellFormed ); }
     
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, boolean o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, long o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
 
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, int o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, char o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, float o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, double o )
         { return createStatement( r, p, createTypedLiteral( o ) ); }
     
+    @Override
     public Statement createStatement( Resource r, Property p, String o )
         { return createStatement( r, p, createLiteral( o ) ); }
 
+    @Override
     public Statement createLiteralStatement( Resource r, Property p, Object o )
         { return createStatement( r, p, asObject( o ) ); }
     
+    @Override
     public Statement createStatement
         ( Resource r, Property p, String o, boolean wellFormed )  
         { return createStatement( r, p, o, "", wellFormed ); }
     
+    @Override
     public Statement createStatement(Resource r, Property p, String o, String l)
         { return createStatement( r, p, o, l, false ); }
     
+    @Override
     public Statement createStatement
         ( Resource r, Property p, String o, String l, boolean wellFormed )  
         { return createStatement( r, p, literal( o, l, wellFormed ) ); }
     
+    @Override
     public Bag createBag()  
         { return createBag( null ); }
     
+    @Override
     public Alt createAlt()  
         { return createAlt( null ); }
     
+    @Override
     public Seq createSeq()  
         { return createSeq( null ); }
     
@@ -664,6 +775,7 @@ public class ModelCom extends EnhGraph
         Answer a (the) new empty list
         @return An RDF-encoded list of no elements (ie nil)
     */
+    @Override
     public RDFList createList() 
         { return getResource( RDF.nil.getURI() ).as( RDFList.class ); }
     
@@ -673,6 +785,7 @@ public class ModelCom extends EnhGraph
      * @param members An iterator, each value of which is expected to be an RDFNode.
      * @return An RDF-encoded list of the elements of the iterator
      */
+    @Override
     public RDFList createList( Iterator<? extends RDFNode> members ) 
         {
         RDFList list = createList();
@@ -686,49 +799,62 @@ public class ModelCom extends EnhGraph
      * @param members An array of RDFNodes that will be the members of the list
      * @return An RDF-encoded list 
      */
+    @Override
     public RDFList createList( RDFNode[] members ) {
         return createList( Arrays.asList( members ).iterator() );
     }
     
+    @Override
     public RDFNode getRDFNode( Node n )
         { return asRDFNode( n ); }
     
+    @Override
     public Resource getResource( String uri )  
         { return IteratorFactory.asResource(makeURI(uri),this); }
     
+    @Override
     public Property getProperty( String uri )  
         {
         if (uri == null) throw new InvalidPropertyURIException( null );
         return IteratorFactory.asProperty( makeURI(uri), this );
         }
     
+    @Override
     public Property getProperty( String nameSpace,String localName )
         { return getProperty( nameSpace + localName ); }
     
+    @Override
     public Seq getSeq( String uri )  
         { return (Seq) IteratorFactory.asResource( makeURI( uri ),Seq.class, this); }
     
+    @Override
     public Seq getSeq( Resource r )  
         { return r.as( Seq.class ); }
     
+    @Override
     public Bag getBag( String uri )  
         { return (Bag) IteratorFactory.asResource( makeURI( uri ),Bag.class, this ); }
     
+    @Override
     public Bag getBag( Resource r )  
         { return r.as( Bag.class ); }
     
     static private Node makeURI(String uri) 
         { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
     
+    @Override
     public Alt getAlt( String uri )  
         { return (Alt) IteratorFactory.asResource( makeURI(uri) ,Alt.class, this ); }
     
+    @Override
     public Alt getAlt( Resource r )  
         { return r.as( Alt.class ); }
     
+    @Override
     public long size()  
         { return graph.size(); }
 
+    @Override
     public boolean isEmpty()
         { return graph.isEmpty(); }
         
@@ -758,6 +884,7 @@ public class ModelCom extends EnhGraph
         return types.iterator();
         }
      
+    @Override
     public NsIterator listNameSpaces()  {
         Set<String> nameSpaces = CollectionFactory.createHashedSet();
         updateNamespace( nameSpaces, listPredicates() );
@@ -768,60 +895,73 @@ public class ModelCom extends EnhGraph
     private PrefixMapping getPrefixMapping()
         { return getGraph().getPrefixMapping(); }
     
+    @Override
     public boolean samePrefixMappingAs( PrefixMapping other )
         { return getPrefixMapping().samePrefixMappingAs( other ); }
         
+    @Override
     public PrefixMapping lock()
         {
         getPrefixMapping().lock();
         return this;
         }
         
+    @Override
     public PrefixMapping setNsPrefix( String prefix, String uri )
         { 
         getPrefixMapping().setNsPrefix( prefix, uri ); 
         return this;
         }
         
+    @Override
     public PrefixMapping removeNsPrefix( String prefix )
         {
         getPrefixMapping().removeNsPrefix( prefix );
         return this;
         }
     
+    @Override
     public PrefixMapping setNsPrefixes( PrefixMapping pm )
         { 
         getPrefixMapping().setNsPrefixes( pm );
         return this;
         }
         
+    @Override
     public PrefixMapping setNsPrefixes( Map<String, String> map )
         { 
         getPrefixMapping().setNsPrefixes( map ); 
         return this;
         }
     
+    @Override
     public PrefixMapping withDefaultMappings( PrefixMapping other )
         {
         getPrefixMapping().withDefaultMappings( other );
         return this;
         }
         
+    @Override
     public String getNsPrefixURI( String prefix ) 
         { return getPrefixMapping().getNsPrefixURI( prefix ); }
 
+    @Override
     public String getNsURIPrefix( String uri )
         { return getPrefixMapping().getNsURIPrefix( uri ); }
                 
+    @Override
     public Map<String, String> getNsPrefixMap()
         { return getPrefixMapping().getNsPrefixMap(); }
         
+    @Override
     public String expandPrefix( String prefixed )
         { return getPrefixMapping().expandPrefix( prefixed ); }
     
+    @Override
     public String qnameFor( String uri )
         { return getPrefixMapping().qnameFor( uri ); }
     
+    @Override
     public String shortForm( String uri )
         { return getPrefixMapping().shortForm( uri ); }
         
@@ -855,12 +995,14 @@ public class ModelCom extends EnhGraph
             }            
         }
         
+    @Override
     public StmtIterator listStatements()  
         { return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this); }
 
     /**
         add a Statement to this Model by adding its SPO components.
     */
+    @Override
     public Model add( Statement s )  
         {
         add( s.getSubject(), s.getPredicate(), s.getObject() );
@@ -871,6 +1013,7 @@ public class ModelCom extends EnhGraph
         Add all the statements to the model by converting them to an array of corresponding
         triples and removing those from the underlying graph.
     */
+    @Override
     public Model add( Statement [] statements )
         {
         getBulkUpdateHandler().add( StatementImpl.asTriples( statements ) );
@@ -884,6 +1027,7 @@ public class ModelCom extends EnhGraph
         Add all the statements to the model by converting the list to an array of
         Statement and removing that.
     */
+    @Override
     public Model add( List<Statement> statements )
         {
         getBulkUpdateHandler().add( asTriples( statements ) );
@@ -902,12 +1046,14 @@ public class ModelCom extends EnhGraph
         { return it.mapWith( mapAsTriple ); }
         
     private Map1<Statement, Triple> mapAsTriple = new Map1<Statement, Triple>()
-        { public Triple map1( Statement s ) { return s.asTriple(); } };
+        { @Override
+        public Triple map1( Statement s ) { return s.asTriple(); } };
         
     /**
         remove all the Statements from the model by converting them to triples and
         removing those triples from the underlying graph.        
     */ 
+    @Override
     public Model remove( Statement [] statements )
         {
         getBulkUpdateHandler().delete( StatementImpl.asTriples( statements ) );        
@@ -918,24 +1064,28 @@ public class ModelCom extends EnhGraph
         Remove all the Statements from the model by converting the List to a
         List(Statement) and removing that.
     */
+    @Override
     public Model remove( List<Statement> statements )
         {
         getBulkUpdateHandler().delete( asTriples( statements ) );
         return this;
         }
            
+    @Override
     public Model add( Resource s, Property p, RDFNode o )  {
         modelReifier.noteIfReified( s, p, o );
         graph.add( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
     }
     
+    @Override
     public ReificationStyle getReificationStyle()
         { return modelReifier.getReificationStyle(); }
         
     /**
         @return an iterator which delivers all the ReifiedStatements in this model
     */
+    @Override
     public RSIterator listReifiedStatements()
         { return modelReifier.listReifiedStatements(); }
 
@@ -943,12 +1093,14 @@ public class ModelCom extends EnhGraph
         @return an iterator each of whose elements is a ReifiedStatement in this
             model such that it's getStatement().equals( st )
     */
+    @Override
     public RSIterator listReifiedStatements( Statement st )
         { return modelReifier.listReifiedStatements( st ); }
                 
     /**
         @return true iff this model has a reification of _s_ in some Statement
     */
+    @Override
     public boolean isReified( Statement s ) 
         { return modelReifier.isReified( s ); }
    
@@ -959,6 +1111,7 @@ public class ModelCom extends EnhGraph
         @param s for which a reification is sought
         @return a ReifiedStatement that reifies _s_
     */
+    @Override
     public Resource getAnyReifiedStatement(Statement s) 
         { return modelReifier.getAnyReifiedStatement( s ); }
     
@@ -966,38 +1119,48 @@ public class ModelCom extends EnhGraph
         remove any ReifiedStatements reifying the given statement
         @param s the statement who's reifications are to be discarded
     */
+    @Override
     public void removeAllReifications( Statement s ) 
         { modelReifier.removeAllReifications( s ); }
         
+    @Override
     public void removeReification( ReifiedStatement rs )
         { modelReifier.removeReification( rs ); }
     	
     /**
         create a ReifiedStatement that encodes _s_ and belongs to this Model.
     */
+    @Override
     public ReifiedStatement createReifiedStatement( Statement s )
         { return modelReifier.createReifiedStatement( s ); }
         
+    @Override
     public ReifiedStatement createReifiedStatement( String uri, Statement s )
         { return modelReifier.createReifiedStatement( uri, s ); }
     
+    @Override
     public boolean contains( Statement s )    
         { return graph.contains( s.asTriple() ); }
     
+    @Override
     public boolean containsResource( RDFNode r )
         { return graph.queryHandler().containsNode( r.asNode() ); }
 
+    @Override
     public boolean contains( Resource s, Property p ) 
         { return contains( s, p, (RDFNode) null );  }
     
+    @Override
     public boolean contains( Resource s, Property p, RDFNode o )
         { return graph.contains( asNode( s ), asNode( p ), asNode( o ) ); }
         
+    @Override
     public Statement getRequiredProperty( Resource s, Property p )  
         { Statement st = getProperty( s, p );
         if (st == null) throw new PropertyNotFoundException( p );
         return st; }
     
+    @Override
     public Statement getProperty( Resource s, Property p )
         {
         StmtIterator iter = listStatements( s, p, (RDFNode) null );
@@ -1020,27 +1183,35 @@ public class ModelCom extends EnhGraph
         return IteratorFactory.asResIterator( xit, this );
         }
                 
+    @Override
     public ResIterator listSubjects()  
         { return listSubjectsFor( null, null ); }
     
+    @Override
     public ResIterator listResourcesWithProperty(Property p)
         { return listSubjectsFor( p, null ); }
     
+    @Override
     public ResIterator listSubjectsWithProperty(Property p)
         { return listResourcesWithProperty( p ); }
     
+    @Override
     public ResIterator listResourcesWithProperty(Property p, RDFNode o)
         { return listSubjectsFor( p, o ); }
     
+    @Override
     public NodeIterator listObjects()  
         { return listObjectsFor( null, null ); }
     
+    @Override
     public NodeIterator listObjectsOfProperty(Property p)  
         { return listObjectsFor( null, p ); }
     
+    @Override
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
         { return listObjectsFor( s, p ); }
             
+    @Override
     public StmtIterator listStatements( final Selector selector )
         {
         StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
@@ -1076,51 +1247,65 @@ public class ModelCom extends EnhGraph
             ( asNode( s.getSubject() ), asNode( s.getPredicate() ), asNode( s.getObject() ) );    
         }
 
+    @Override
     public boolean supportsTransactions() 
         { return getTransactionHandler().transactionsSupported(); }
     	
+    @Override
     public Model begin() 
         { getTransactionHandler().begin(); return this; }
     
+    @Override
     public Model abort() 
         { getTransactionHandler().abort(); return this; }
     
+    @Override
     public Model commit() 
         { getTransactionHandler().commit(); return this; }
     
+    @Override
     public Object executeInTransaction( Command cmd )
         { return getTransactionHandler().executeInTransaction( cmd ); }
         
     private TransactionHandler getTransactionHandler()
         { return getGraph().getTransactionHandler(); }
         
+    @Override
     public boolean independent() 
         { return true; }
     
+    @Override
     public Resource createResource()  
         { return IteratorFactory.asResource( Node.createAnon(),this ); }
     
+    @Override
     public Resource createResource( String uri )  
         { return getResource( uri ); }
     
+    @Override
     public Property createProperty( String uri )  
         { return getProperty( uri ); }
     
+    @Override
     public Property createProperty(String nameSpace, String localName)
         { return getProperty(nameSpace, localName); }
     
     /**
         create a Statement from the given r, p, and o.
     */
+    @Override
     public Statement createStatement(Resource r, Property p, RDFNode o)
         { return new StatementImpl( r, p, o, this ); }
     
+    @Override
     public Bag createBag(String uri)  
         { return (Bag) getBag(uri).addProperty( RDF.type, RDF.Bag ); }
     
+    @Override
     public Alt createAlt( String uri ) 
         { return (Alt) getAlt(uri).addProperty( RDF.type, RDF.Alt ); }
     
+    @Override
     public Seq createSeq(String uri)  
         { return (Seq) getSeq(uri).addProperty( RDF.type, RDF.Seq ); }
 
@@ -1129,6 +1314,7 @@ public class ModelCom extends EnhGraph
         @param t a triple to wrap as a statement
         @return a statement wrapping the triple and in this model
     */
+    @Override
     public Statement asStatement( Triple t )
         { return StatementImpl.toStatement( t, this ); }
         
@@ -1153,23 +1339,29 @@ public class ModelCom extends EnhGraph
         { return new StmtIteratorImpl( new Map1Iterator<Triple, Statement>( mapAsStatement, it ) ); }
     
     protected Map1<Triple, Statement> mapAsStatement = new Map1<Triple, Statement>()
-        { public Statement map1( Triple t ) { return asStatement( t ); } };
+        { @Override
+        public Statement map1( Triple t ) { return asStatement( t ); } };
 	
 	public StmtIterator listBySubject( Container cont )
         { return listStatements( cont, null, (RDFNode) null ); }
 
+    @Override
     public void close() 
         { graph.close(); }
     
+    @Override
     public boolean isClosed()
         { return graph.isClosed(); }
     
+    @Override
     public boolean supportsSetOperations() 
         {return true;}
     
+    @Override
     public Model query( Selector selector )  
         { return createWorkModel() .add( listStatements( selector ) ); }
     
+    @Override
     public Model union( Model model )  
         { return createWorkModel() .add(this) .add( model ); }
     
@@ -1181,6 +1373,7 @@ public class ModelCom extends EnhGraph
         
      	@see com.hp.hpl.jena.rdf.model.Model#intersection(com.hp.hpl.jena.rdf.model.Model)
     */
+    @Override
     public Model intersection( Model other )
         { return this.size() < other.size() ? intersect( this, other ) : intersect( other, this ); }
         
@@ -1217,6 +1410,7 @@ public class ModelCom extends EnhGraph
         return result;
         }
 
+    @Override
     public Model difference(Model model)  {
         Model resultModel = createWorkModel();
         StmtIterator iter = null;
@@ -1260,6 +1454,7 @@ public class ModelCom extends EnhGraph
         Answer whether or not these two graphs are isomorphic, taking the
         hidden (reification) statements into account.
     */
+    @Override
     public boolean isIsomorphicWith( Model m )
         {
         Graph L = ModelFactory.withHiddenStatements( this ).getGraph();            
@@ -1274,17 +1469,20 @@ public class ModelCom extends EnhGraph
         return modelLock ;
     }
     
+    @Override
     public synchronized Lock getLock()
     {
         return getModelLock() ;
     }
     
     
+    @Override
     public void enterCriticalSection(boolean requestReadLock)
     {
         this.getModelLock().enterCriticalSection(requestReadLock) ;
     }
     
+    @Override
     public void leaveCriticalSection()
     {
         this.getModelLock().leaveCriticalSection() ;
@@ -1297,6 +1495,7 @@ public class ModelCom extends EnhGraph
         @param a ModelChangedListener to register for model events
         @return this model, for cascading 
     */
+    @Override
     public Model register( ModelChangedListener listener )
         {
         getGraph().getEventManager().register( adapt( listener ) );
@@ -1309,6 +1508,7 @@ public class ModelCom extends EnhGraph
         @param  a ModelChangedListener to unregister from model events
         @return this model, for cascading 
     */
+    @Override
     public Model unregister( ModelChangedListener listener )
         {
         getGraph().getEventManager().unregister( adapt( listener ) );
@@ -1325,6 +1525,7 @@ public class ModelCom extends EnhGraph
     public GraphListener adapt( final ModelChangedListener L )
         { return new ModelListenerAdapter( this, L ); }
     
+    @Override
     public Model notifyEvent( Object e )
         {
         getGraph().getEventManager().notifyEvent( getGraph(), e );

@@ -229,17 +229,20 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	/** 
         Answer true iff this is a well-formed XML literal.
     */
-	public boolean isXML() {
+	@Override
+    public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
     
 	/** 
      	Answer true iff this is a well-formed literal.
     */
-	public boolean isWellFormed() {
+	@Override
+    public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
 	}
     
+    @Override
     public boolean isWellFormedRaw() {
         return wellformed;
     }
@@ -249,7 +252,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	    Answer a human-acceptable representation of this literal value.
 	    This is NOT intended for a machine-processed result. 
 	*/
-	public String toString(boolean quoting) {
+	@Override
+    public String toString(boolean quoting) {
 		StringBuffer b = new StringBuffer();
 		if (quoting) b.append('"');
 		b.append(getLexicalForm());
@@ -268,7 +272,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      	Answer the lexical form of this literal, constructing it on-the-fly
         (and remembering it) if necessary.
     */
-	public String getLexicalForm() {
+	@Override
+    public String getLexicalForm() {
 		if (lexicalForm == null)
 			lexicalForm = (dtype == null ? value.toString() : dtype.unparse(value));
 		return lexicalForm;
@@ -278,6 +283,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      	Answer the value used to index this literal
         TODO Consider pushing indexing decisions down to the datatype
     */
+    @Override
     public Object getIndexingValue() {
         return
             isXML() ? this
@@ -291,7 +297,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      	Answer the language associated with this literal (the empty string if
         there's no language).
     */
-	public String language() {
+	@Override
+    public String language() {
 		return lang;
 	}
 
@@ -299,7 +306,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      	Answer a suitable instance of a Java class representing this literal's
         value. May throw an exception if the literal is ill-formed.
     */
-	public Object getValue() throws DatatypeFormatException {
+	@Override
+    public Object getValue() throws DatatypeFormatException {
 		if (wellformed) {
 			return value;
 		} else {
@@ -313,14 +321,16 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 	/** 
      	Answer the datatype of this literal, null if it is untyped.
     */
-	public RDFDatatype getDatatype() {
+	@Override
+    public RDFDatatype getDatatype() {
 		return dtype;
 	}
 
 	/** 
      	Answer the datatype URI of this literal, null if it untyped.
     */
-	public String getDatatypeURI() {
+	@Override
+    public String getDatatypeURI() {
 		if (dtype == null)
 			return null;
 		return dtype.getURI();
@@ -352,7 +362,8 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
      	Answer true iff this literal represents the same (abstract) value as
         the other one.
     */
-	public boolean sameValueAs( LiteralLabel other ) {
+	@Override
+    public boolean sameValueAs( LiteralLabel other ) {
 		if (other == null)
 			return false;
 		if (!wellformed || !other.isWellFormedRaw()) 
@@ -431,6 +442,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
         which support hashCode() naturally: it is derived from its value if it is 
         well-formed and otherwise from its lexical form.
     */
+    @Override
     public int getDefaultHashcode()
         { return (wellformed ? value : getLexicalForm()).hashCode(); }
 

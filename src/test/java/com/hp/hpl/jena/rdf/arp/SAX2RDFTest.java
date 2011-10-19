@@ -1126,7 +1126,8 @@ public class SAX2RDFTest extends TestCase {
 		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#warning(java.lang.Exception)
 		 */
-		public void warning(Exception e) {
+		@Override
+        public void warning(Exception e) {
 			s("W", e);
 		}
 
@@ -1135,7 +1136,8 @@ public class SAX2RDFTest extends TestCase {
 		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#error(java.lang.Exception)
 		 */
-		public void error(Exception e) {
+		@Override
+        public void error(Exception e) {
 			s("E", e);
 		}
 
@@ -1144,7 +1146,8 @@ public class SAX2RDFTest extends TestCase {
 		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler.errorError(java.lang.Exception)
 		 */
-		public void fatalError(Exception e) {
+		@Override
+        public void fatalError(Exception e) {
 			s("F", e);
 		}
 

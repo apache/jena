@@ -71,6 +71,7 @@ public class RuleDerivation implements Derivation {
      * @param bindings set to true to print intermediate variable bindings for
      * each stage in the derivation
      */
+    @Override
     public void printTrace(PrintWriter out, boolean bindings) {
        printTrace(out, bindings, 0, new HashSet<RuleDerivation>());
     }

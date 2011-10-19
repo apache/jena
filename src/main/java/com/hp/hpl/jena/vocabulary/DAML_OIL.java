@@ -324,168 +324,222 @@ public class DAML_OIL
 
 
     /** Answer the DAML namespace resource for the current release */
+    @Override
     public Resource NAMESPACE_DAML() { return NAMESPACE_DAML; }
 
     /** Answer the RDF resource for DAML List class.   */
+    @Override
     public Resource List() { return List; }
 
     /** Answer the RDF resource for DAML UniqueProperty class */
+    @Override
     public Resource UniqueProperty() { return UniqueProperty; }
 
     /** Answer the RDF resource for DAML TransitiveProperty class */
+    @Override
     public Resource TransitiveProperty() { return TransitiveProperty; }
 
     /** Answer the RDF resource for DAML UnambiguousProperty class */
+    @Override
     public Resource UnambiguousProperty() { return UnambiguousProperty; }
 
     /** Answer the RDF resource for DAML Restriction class */
+    @Override
     public Resource Restriction() { return Restriction; }
 
     /** Answer the RDF resource for DAML Ontology class */
+    @Override
     public Resource Ontology() { return Ontology; }
 
     /** Answer the RDF resource for the nil (empty) list.  */
+    @Override
     public Resource nil() { return nil; }
 
     /** Answer the RDF resource for the top type (i.e. the super-type of all types).  */
+    @Override
     public Resource Thing() { return Thing; }
 
     /** Answer the RDF resource for the bottom type (i.e. the super-type of no types).  */
+    @Override
     public Resource Nothing() { return Nothing; }
 
     /** Answer the Alias for rdfs:Literal in the daml namespace.  */
+    @Override
     public Resource Literal() { return Literal; }
 
     /** Answer the RDF resource for DAML Class class (a DAML sub-class of rdfs:Class).   */
+    @Override
     public Resource Class() { return Class; }
 
     /** Answer the RDF resource for DAML Datatype class (a DAML sub-class of rdfs:Class).   */
+    @Override
     public Resource Datatype() { return Datatype; }
 
     /** Answer the RDF resource for DAML DatatypeProperty class (a DAML sub-class of rdf:Property).   */
+    @Override
     public Resource DatatypeProperty() { return DatatypeProperty; }
 
     /** Answer the RDF resource for DAML ObjectProperty class (a DAML sub-class of rdf:Property).   */
+    @Override
     public Resource ObjectProperty() { return ObjectProperty; }
 
 
     /* Properties */
 
     /** Answer the RDF Property for the DAML versionInfo property */
+    @Override
     public Property versionInfo() { return versionInfo; }
 
     /** Answer the RDF Property for the DAML imports property on Ontologies */
+    @Override
     public Property imports() { return imports; }
 
     /** Answer the RDF Property for the DAML disjointWith property on Classes */
+    @Override
     public Property disjointWith() { return disjointWith; }
 
     /** Answer the RDF Property for the DAML disjointUnionOf property on Classes */
+    @Override
     public Property disjointUnionOf() { return disjointUnionOf; }
 
     /** Answer the RDF Property for the DAML sameClassAs property on Classes */
+    @Override
     public Property sameClassAs() { return sameClassAs; }
 
     /** Answer the RDF Property for the DAML samePropertyAs property on Properties */
+    @Override
     public Property samePropertyAs() { return samePropertyAs; }
 
     /** Answer the RDF Property for the oneOf property on DAML class expressions */
+    @Override
     public Property oneOf() { return oneOf; }
 
     /** Answer the RDF Property for the intersectionOf property on class expressions */
+    @Override
     public Property intersectionOf() { return intersectionOf; }
 
     /** Answer the RDF Property for the unionOf property on class expressions  */
+    @Override
     public Property unionOf() { return unionOf; }
 
     /** Answer the RDF Property for the complementOf property on class expressions */
+    @Override
     public Property complementOf() { return complementOf; }
 
     /** Answer the RDF Property for the equivalentTo property on DAML values */
+    @Override
     public Property equivalentTo() { return equivalentTo; }
 
     /** Answer the RDF Property for the DAML onProperty property on Restrictions */
+    @Override
     public Property onProperty() { return onProperty; }
 
     /** Answer the RDF Property for the DAML toClass property on Restrictions */
+    @Override
     public Property toClass() { return toClass; }
 
     /** Answer the RDF Property for the DAML hasValue property on Restrictions */
+    @Override
     public Property hasValue() { return hasValue; }
 
     /** Answer the RDF Property for the DAML hasClass property on Restrictions */
+    @Override
     public Property hasClass() { return hasClass; }
 
     /** Answer the RDF Property for the DAML hasClassQ property on Restrictions */
+    @Override
     public Property hasClassQ() { return hasClassQ; }
 
     /** Answer the RDF Property for the DAML cardinality property on Restrictions */
+    @Override
     public Property cardinality() { return cardinality; }
 
     /** Answer the RDF Property for the DAML minCardinality property on Restrictions */
+    @Override
     public Property minCardinality() { return minCardinality; }
 
     /** Answer the RDF Property for the DAML maxCardinality property on Restrictions */
+    @Override
     public Property maxCardinality() { return maxCardinality; }
 
     /** Answer the RDF Property for the DAML cardinalityQ property on Restrictions */
+    @Override
     public Property cardinalityQ() { return cardinalityQ; }
 
     /** Answer the RDF Property for the DAML minCardinalityQ property on Restrictions */
+    @Override
     public Property minCardinalityQ() { return minCardinalityQ; }
 
     /** Answer the RDF Property for the DAML maxCardinalityQ property on Restrictions */
+    @Override
     public Property maxCardinalityQ() { return maxCardinalityQ; }
 
     /** Answer the RDF Property for the DAML inverseOf property on Properties */
+    @Override
     public Property inverseOf() { return inverseOf; }
 
     /** Answer the RDF Property for the DAML first property on Lists */
+    @Override
     public Property first() { return first; }
 
     /** Answer the RDF Property for the DAML rest property on Lists */
+    @Override
     public Property rest() { return rest; }
 
     /** Answer the RDF Property for the DAML item property on Lists */
+    @Override
     public Property item() { return item; }
 
     /** Answer the alias for rdfs:subPropertyOf in daml namespace */
+    @Override
     public Property subPropertyOf() { return subPropertyOf; }
 
     /** Answer the alias for rdf:type in daml namespace */
+    @Override
     public Property type() { return type; }
 
     /** Answer the alias for rdf:value in daml namespace */
+    @Override
     public Property value() { return value; }
 
     /** Answer the alias for rdfs:subClassOf in daml namespace */
+    @Override
     public Property subClassOf() { return subClassOf; }
 
     /** Answer the alias for rdfs:domain in daml namespace */
+    @Override
     public Property domain() { return domain; }
 
     /** Answer the alias for rdfs:range in daml namespace */
+    @Override
     public Property range() { return range; }
 
     /** Answer the alias for rdfs:label in daml namespace */
+    @Override
     public Property label() { return label; }
 
     /** Answer the alias for rdfs:comment in daml namespace */
+    @Override
     public Property comment() { return comment; }
 
     /** Answer the alias for rdfs:seeAlso in daml namespace */
+    @Override
     public Property seeAlso() { return seeAlso; }
 
     /** Answer the alias for rdfs:isDefinedBy in daml namespace */
+    @Override
     public Property isDefinedBy() { return isDefinedBy; }
 
     /** Answer the RDF Property for the DAML sameIndividualAs property on instances */
+    @Override
     public Property sameIndividualAs() { return sameIndividualAs; }
 
     /** Answer the RDF Property for the DAML differentIndvidualFrom property on instances */
+    @Override
     public Property differentIndividualFrom() { return differentIndividualFrom; }
 
     /** Answer the alias for rdfs:Property in the daml namespace.  From 2001/03 onwards, it is preferable to use either DatatypeProperty or ObjectProperty. */
+    @Override
     public Resource Property() { return Property; }
 
 

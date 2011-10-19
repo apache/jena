@@ -30,6 +30,7 @@ public class SimpleQueryPlan implements BindingQueryPlan
         this.variables = variables;
         }
         
+    @Override
     public ExtendedIterator<Domain> executeBindings()
         // { return query.executeBindings( graph, variables ); }
         {

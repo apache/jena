@@ -48,6 +48,7 @@ public class RETERuleContext implements RuleContext {
      * Returns the current variable binding environment for the current rule.
      * @return BindingEnvironment
      */
+    @Override
     public BindingEnvironment getEnv() {
         return env;
     }
@@ -56,6 +57,7 @@ public class RETERuleContext implements RuleContext {
      * Returns the graph.
      * @return InfGraph
      */
+    @Override
     public InfGraph getGraph() {
         return graph;
     }
@@ -71,6 +73,7 @@ public class RETERuleContext implements RuleContext {
      * Returns the rule.
      * @return Rule
      */
+    @Override
     public Rule getRule() {
         return rule;
     }
@@ -79,6 +82,7 @@ public class RETERuleContext implements RuleContext {
      * Sets the rule.
      * @param rule The rule to set
      */
+    @Override
     public void setRule(Rule rule) {
         this.rule = rule;
     }
@@ -95,6 +99,7 @@ public class RETERuleContext implements RuleContext {
      * Return true if the triple is already in either the graph or the stack.
      * I.e. it has already been deduced.
      */
+    @Override
     public boolean contains(Triple t) {
         // Can't use stackCache.contains because that does not do semantic equality
         return contains(t.getSubject(), t.getPredicate(), t.getObject());
@@ -104,6 +109,7 @@ public class RETERuleContext implements RuleContext {
      * Return true if the triple pattern is already in either the graph or the stack.
      * I.e. it has already been deduced.
      */
+    @Override
     public boolean contains(Node s, Node p, Node o) {
         ClosableIterator<Triple> it = find(s, p, o);
         boolean result = it.hasNext();
@@ -116,6 +122,7 @@ public class RETERuleContext implements RuleContext {
      * visible to the underlying graph but need to be checked for.
      * However, currently this calls the graph find directly.
      */
+    @Override
     public ClosableIterator<Triple> find(Node s, Node p, Node o) {
         //return graph.find(s, p, o).andThen(pendingCache.find(s, p, o));
         return graph.findDataMatches(s, p, o);
@@ -124,6 +131,7 @@ public class RETERuleContext implements RuleContext {
     /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
+    @Override
     public void silentAdd(Triple t) {
         ((SilentAddI)graph).silentAdd(t);
     }
@@ -131,6 +139,7 @@ public class RETERuleContext implements RuleContext {
     /**
      * Remove a triple from the deduction graph (and the original graph if relevant).
      */
+    @Override
     public void remove(Triple t) {
         graph.getRawGraph().delete(t);
         engine.deleteTriple(t, true);
@@ -139,6 +148,7 @@ public class RETERuleContext implements RuleContext {
     /**
      * Assert a new triple in the deduction graph, triggering any consequent processing as appropriate.
      */
+    @Override
     public void add(Triple t) {
         engine.addTriple(t, true);
     }

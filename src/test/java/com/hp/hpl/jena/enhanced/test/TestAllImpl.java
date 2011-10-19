@@ -41,18 +41,22 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
             ;
         }
         
+    @Override
     public boolean isObject() {
         return findObject() != null;
     }
     
+    @Override
     public boolean isProperty() {
         return findPredicate() != null;
     }
     
+    @Override
     public boolean isSubject() {
         return findSubject() != null;
     } 
     
+    @Override
     public TestObject anObject() {
         if (!isProperty())
             
@@ -60,12 +64,14 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         return enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
     }
     
+    @Override
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
         return enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
     }
     
+    @Override
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");

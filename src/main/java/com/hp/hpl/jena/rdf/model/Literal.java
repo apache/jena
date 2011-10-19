@@ -67,6 +67,7 @@ public interface Literal extends RDFNode {
         already in m, answer itself rather than create a new literal. This
         method covariantly overrides the method in RDFNode.
     */
+    @Override
     public Literal inModel( Model m );
     
     /**
@@ -217,6 +218,7 @@ public interface Literal extends RDFNode {
      * @param o The object to test against
      * @return true if the the objects are equal, false otherwise
      */    
+    @Override
     public boolean equals(Object o);
    
     /**

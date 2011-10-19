@@ -77,23 +77,28 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
         return uri;
     }
 
+    @Override
     public boolean isAnonymous() {
         return false;
     }
 
+    @Override
     public String getAnonymousID() {
         return null;
     }
 
+    @Override
     public String getURI() {
         return uri;
     }
 
+    @Override
     public Object getUserData() {
         throw new IllegalStateException(
                 "User data only supported on blank nodes");
     }
 
+    @Override
     public void setUserData(Object d) {
         throw new IllegalStateException(
                 "User data only supported on blank nodes");
@@ -118,6 +123,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * 
      * @see com.hp.hpl.jena.rdf.arp.AResource#hasNodeID()
      */
+    @Override
     public boolean hasNodeID() {
         return false;
     }
@@ -127,6 +133,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * 
      * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
      */
+    @Override
     public void setHasBeenUsed() {
     }
 
@@ -135,6 +142,7 @@ public class URIReference extends TaintImpl implements AResourceInternal, ARPErr
      * 
      * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
      */
+    @Override
     public boolean getHasBeenUsed() {
         throw new UnsupportedOperationException("Internal error");
     }

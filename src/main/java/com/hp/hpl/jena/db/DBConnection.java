@@ -96,7 +96,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getConnection()
 	 */
-	public Connection getConnection() throws SQLException {
+	@Override
+    public Connection getConnection() throws SQLException {
 		if (m_connection == null) {
 			if (m_url != null) {
 				m_connection =
@@ -110,7 +111,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#close()
 	 */
-	public void close() throws SQLException {
+	@Override
+    public void close() throws SQLException {
 		if( m_driver != null ) {
 			m_driver.close();
 			m_driver = null;
@@ -124,7 +126,8 @@ public class DBConnection implements IDBConnection {
     /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#cleanDB()
 	 */
-	public void cleanDB() throws SQLException {
+	@Override
+    public void cleanDB() throws SQLException {
 		if (m_driver == null)
 			m_driver = getDriver();
     	m_driver.cleanDB();
@@ -133,7 +136,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#isFormatOK()
 	 */
-	public boolean isFormatOK() {
+	@Override
+    public boolean isFormatOK() {
 // Removed exception trap, an exception might be a connection
 // failure on a well formated database - der 24/7/04        
 //		try {
@@ -148,7 +152,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#setDatabaseProperties(com.hp.hpl.jena.rdf.model.Model)
 	 */
-	public void setDatabaseProperties(Model dbProperties) throws RDFRDBException {
+	@Override
+    public void setDatabaseProperties(Model dbProperties) throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		m_driver.setDatabaseProperties( dbProperties.getGraph());
@@ -157,7 +162,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDatabaseProperties()
 	 */
-	public Model getDatabaseProperties() throws RDFRDBException {
+	@Override
+    public Model getDatabaseProperties() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		Model resultModel = ModelFactory.createDefaultModel();
@@ -169,7 +175,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDefaultModelProperties()
 	 */
-	public Model getDefaultModelProperties() throws RDFRDBException {
+	@Override
+    public Model getDefaultModelProperties() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		DBPropGraph defaultProps = m_driver.getDefaultModelProperties();
@@ -183,7 +190,8 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getAllModelNames()
 	 */
-	public ExtendedIterator<String> getAllModelNames() throws RDFRDBException {
+	@Override
+    public ExtendedIterator<String> getAllModelNames() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
 		SpecializedGraph sg = m_driver.getSystemSpecializedGraph(false);
@@ -200,7 +208,8 @@ public class DBConnection implements IDBConnection {
 	 /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#containsModel(java.lang.String)
 	 */
-	public boolean containsModel(String name) throws RDFRDBException {
+	@Override
+    public boolean containsModel(String name) throws RDFRDBException {
 		boolean res = false;
 		if (m_driver == null)
 			m_driver = getDriver();
@@ -215,7 +224,8 @@ public class DBConnection implements IDBConnection {
 	 /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#containsDefaultModel()
 	 */
-	public boolean containsDefaultModel() throws RDFRDBException {
+	@Override
+    public boolean containsDefaultModel() throws RDFRDBException {
 		return containsModel(GraphRDB.DEFAULT);
 	 }
 
@@ -240,7 +250,8 @@ public class DBConnection implements IDBConnection {
 	 *
 	 * @throws UnsupportedDatabaseException thrown if {@code databaseType} isn't a supported type 
 	 */
-	public void setDatabaseType( String databaseType ) 
+	@Override
+    public void setDatabaseType( String databaseType ) 
 	{
 	    if ( databaseType == null )
 	    {
@@ -257,14 +268,16 @@ public class DBConnection implements IDBConnection {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDatabaseType()
 	 */
-	public String getDatabaseType() {
+	@Override
+    public String getDatabaseType() {
 		return m_databaseType == null? null: m_databaseType.getDisplayName(); 
 	}
 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#getDriver()
 	 */
-	public IRDBDriver getDriver() throws RDFRDBException {
+	@Override
+    public IRDBDriver getDriver() throws RDFRDBException {
 		try {
 			if (m_connection == null)
 				getConnection();
@@ -289,7 +302,8 @@ public class DBConnection implements IDBConnection {
     /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#setDriver(com.hp.hpl.jena.db.impl.IRDBDriver)
 	 */
-	public void setDriver(IRDBDriver driver) {
+	@Override
+    public void setDriver(IRDBDriver driver) {
     	m_driver = driver;
     }
 }

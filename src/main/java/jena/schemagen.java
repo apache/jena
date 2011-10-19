@@ -942,6 +942,7 @@ public class schemagen {
 
         // collect the classes to list
         List<Resource> classes = m_source.listStatements( null, RDF.type, cls ).mapWith( new Map1<Statement, Resource>() {
+                                                            @Override
                                                             public Resource map1( Statement s ) {
                                                                 return s.getSubject();
                                                             }}
@@ -1278,6 +1279,7 @@ public class schemagen {
     /** Answer an iterator that contains the elements of the given iterator, but sorted by URI */
     protected ExtendedIterator<? extends RDFNode> sorted( List<? extends RDFNode> members ) {
         Collections.sort( members, new Comparator<RDFNode>() {
+            @Override
             public int compare( RDFNode n0, RDFNode n1 ) {
                 if (n0.isLiteral() || n1.isLiteral()) {
                     if (n0.isLiteral() && n1.isLiteral()) {
@@ -1691,69 +1693,133 @@ public class schemagen {
 
         // External interface methods
 
+        @Override
         public boolean hasConfigFileOption() { return hasValue( OPT.CONFIG_FILE ); }
+        @Override
         public String getConfigFileOption() { return getStringValue( OPT.CONFIG_FILE ); }
+        @Override
         public boolean hasRootOption() { return hasValue( OPT.ROOT ); }
+        @Override
         public String getRootOption() { return getStringValue( OPT.ROOT ); }
+        @Override
         public boolean hasNoCommentsOption() { return isTrue( OPT.NO_COMMENTS ); }
+        @Override
         public String getNoCommentsOption() { return getStringValue( OPT.NO_COMMENTS ); }
+        @Override
         public boolean hasInputOption() { return hasValue( OPT.INPUT ); }
+        @Override
         public Resource getInputOption() { return getResource( OPT.INPUT ); }
+        @Override
         public boolean hasLangDamlOption() { return isTrue( OPT.LANG_DAML ); }
+        @Override
         public String getLangDamlOption() { return getStringValue( OPT.LANG_DAML ); }
+        @Override
         public boolean hasLangOwlOption() { return isTrue( OPT.LANG_OWL ); }
+        @Override
         public String getLangOwlOption() { return getStringValue( OPT.LANG_OWL ); }
+        @Override
         public boolean hasLangRdfsOption() { return isTrue( OPT.LANG_RDFS ); }
+        @Override
         public String getLangRdfsOption() { return getStringValue( OPT.LANG_RDFS ); }
+        @Override
         public boolean hasOutputOption() { return hasValue( OPT.OUTPUT ); }
+        @Override
         public String getOutputOption() { return getStringValue( OPT.OUTPUT ); }
+        @Override
         public boolean hasHeaderOption() { return isTrue( OPT.HEADER ); }
+        @Override
         public String getHeaderOption() { return getStringValue( OPT.HEADER ); }
+        @Override
         public boolean hasFooterOption() { return isTrue( OPT.FOOTER ); }
+        @Override
         public String getFooterOption() { return getStringValue( OPT.FOOTER ); }
+        @Override
         public boolean hasMarkerOption() { return hasValue( OPT.MARKER ); }
+        @Override
         public String getMarkerOption() { return getStringValue( OPT.MARKER ); }
+        @Override
         public boolean hasPackagenameOption() { return hasValue( OPT.PACKAGENAME ); }
+        @Override
         public String getPackagenameOption() { return getStringValue( OPT.PACKAGENAME ); }
+        @Override
         public boolean hasOntologyOption() { return isTrue( OPT.ONTOLOGY ); }
+        @Override
         public String getOntologyOption() { return getStringValue( OPT.ONTOLOGY ); }
+        @Override
         public boolean hasClassnameOption() { return hasValue( OPT.CLASSNAME ); }
+        @Override
         public String getClassnameOption() { return getStringValue( OPT.CLASSNAME ); }
+        @Override
         public boolean hasClassdecOption() { return hasValue( OPT.CLASSDEC ); }
+        @Override
         public String getClassdecOption() { return getStringValue( OPT.CLASSDEC ); }
+        @Override
         public boolean hasNamespaceOption() { return hasValue( OPT.NAMESPACE ); }
+        @Override
         public Resource getNamespaceOption() { return getResource( OPT.NAMESPACE ); }
+        @Override
         public boolean hasDeclarationsOption() { return hasValue( OPT.DECLARATIONS ); }
+        @Override
         public String getDeclarationsOption() { return getStringValue( OPT.DECLARATIONS ); }
+        @Override
         public boolean hasPropertySectionOption() { return hasValue( OPT.PROPERTY_SECTION ); }
+        @Override
         public String getPropertySectionOption() { return getStringValue( OPT.PROPERTY_SECTION ); }
+        @Override
         public boolean hasClassSectionOption() { return hasValue( OPT.CLASS_SECTION ); }
+        @Override
         public String getClassSectionOption() { return getStringValue( OPT.CLASS_SECTION ); }
+        @Override
         public boolean hasIndividualsSectionOption() { return hasValue( OPT.INDIVIDUALS_SECTION ); }
+        @Override
         public String getIndividualsSectionOption() { return getStringValue( OPT.INDIVIDUALS_SECTION ); }
+        @Override
         public boolean hasNopropertiesOption() { return isTrue( OPT.NOPROPERTIES ); }
+        @Override
         public boolean hasNoclassesOption() { return isTrue( OPT.NOCLASSES ); }
+        @Override
         public boolean hasNoindividualsOption() { return isTrue( OPT.NOINDIVIDUALS ); }
+        @Override
         public boolean hasPropTemplateOption() { return hasValue( OPT.PROP_TEMPLATE ); }
+        @Override
         public String getPropTemplateOption() { return getStringValue( OPT.PROP_TEMPLATE ); }
+        @Override
         public boolean hasClassTemplateOption() { return hasValue( OPT.CLASS_TEMPLATE ); }
+        @Override
         public String getClassTemplateOption() { return getStringValue( OPT.CLASS_TEMPLATE ); }
+        @Override
         public boolean hasIndividualTemplateOption() { return hasValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        @Override
         public String getIndividualTemplateOption() { return getStringValue( OPT.INDIVIDUAL_TEMPLATE ); }
+        @Override
         public boolean hasUcNamesOption() { return isTrue( OPT.UC_NAMES ); }
+        @Override
         public boolean hasIncludeOption() { return hasValue( OPT.INCLUDE ); }
+        @Override
         public List<String> getIncludeOption() { return getAllValues( OPT.INCLUDE ); }
+        @Override
         public boolean hasClassnameSuffixOption() { return hasValue( OPT.CLASSNAME_SUFFIX ); }
+        @Override
         public String getClassnameSuffixOption() { return getStringValue( OPT.CLASSNAME_SUFFIX ); }
+        @Override
         public boolean hasNoheaderOption() { return isTrue( OPT.NOHEADER ); }
+        @Override
         public boolean hasEncodingOption() { return hasValue( OPT.ENCODING ); }
+        @Override
         public String getEncodingOption() { return getStringValue( OPT.ENCODING ); }
+        @Override
         public boolean hasHelpOption() { return hasValue( OPT.HELP ); }
+        @Override
         public String getHelpOption() { return getStringValue( OPT.HELP ); }
+        @Override
         public boolean hasDosOption() { return isTrue( OPT.DOS ); }
+        @Override
         public boolean hasUseInfOption() { return isTrue( OPT.USE_INF ); }
+        @Override
         public boolean hasStrictIndividualsOption() { return isTrue( OPT.STRICT_INDIVIDUALS ); }
+        @Override
         public boolean hasIncludeSourceOption() { return isTrue( OPT.INCLUDE_SOURCE ); }
+        @Override
         public boolean hasNoStrictOption() { return isTrue( OPT.NO_STRICT ); }
     }
 

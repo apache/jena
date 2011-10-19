@@ -121,10 +121,12 @@ public class DBPropDatabase extends DBProp {
 	}
 
     static final Map1<DBPropGraph,String> graphToName = new Map1<DBPropGraph,String>() 
-        { public String map1( DBPropGraph o)  { return o.getName(); } };
+        { @Override
+        public String map1( DBPropGraph o)  { return o.getName(); } };
 
 	private class MapToLSet implements Map1<Triple,DBPropGraph> {
-		public DBPropGraph map1( Triple t) {
+		@Override
+        public DBPropGraph map1( Triple t) {
 			return new DBPropGraph( graph, t.getObject() );			
 		}
 	}

@@ -171,6 +171,7 @@ public class RDFListImpl
      * 
      * @return The length of the list as an integer
      */
+    @Override
     public int size() {
         if (s_checkValid) {
             checkValid();
@@ -193,6 +194,7 @@ public class RDFListImpl
      * @return The value that is associated with the head of the list.
      * @exception EmptyListException if this list is the empty list
      */
+    @Override
     public RDFNode getHead() {
         if (s_checkValid) {
             checkValid();
@@ -213,6 +215,7 @@ public class RDFListImpl
      * @param value The value that will become the value of the list head
      * @exception EmptyListException if this list is the empty list
      */
+    @Override
     public RDFNode setHead( RDFNode value ) {
         if (s_checkValid) {
             checkValid();
@@ -240,6 +243,7 @@ public class RDFListImpl
      * @return The tail of the list, as a list
      * @exception EmptyListException if this list is the empty list
      */
+    @Override
     public RDFList getTail() {
         if (s_checkValid) {
             checkValid();
@@ -261,6 +265,7 @@ public class RDFListImpl
      * @param tail The new tail for this list.
      * @return The old tail.
      */
+    @Override
     public RDFList setTail( RDFList tail ) {
         if (s_checkValid) {
             checkValid();
@@ -277,6 +282,7 @@ public class RDFListImpl
      * 
      * @return True if this is the empty (nil) list, otherwise false.
      */
+    @Override
     public boolean isEmpty() {
         if (s_checkValid) {
             checkValid();
@@ -295,6 +301,7 @@ public class RDFListImpl
      * @param value A new value to add to the head of the list
      * @return The new list, whose head is <code>value</code>
      */
+    @Override
     public RDFList cons( RDFNode value ) {
         if (s_checkValid) {
             checkValid();
@@ -322,6 +329,7 @@ public class RDFListImpl
      * @exception EmptyListUpdateException if an attempt is made to 
      * <code>add</code> to the empty list.
      */
+    @Override
     public void add( RDFNode value ) {
         if (s_checkValid) {
             checkValid();
@@ -354,6 +362,7 @@ public class RDFListImpl
      * @param value A value to add to the end of the list
      * @return The list that results from adding a value to the end of this list 
      */
+    @Override
     public RDFList with( RDFNode value ) {
         if (s_checkValid) {
             checkValid();
@@ -385,6 +394,7 @@ public class RDFListImpl
      * @exception ListIndexException if the list has fewer than (i + 1)
      * elements.
      */
+    @Override
     public RDFNode get( int i ) {
         if (s_checkValid) {
             checkValid();
@@ -408,6 +418,7 @@ public class RDFListImpl
      * @exception ListIndexException if the list has fewer than (i + 1)
      * elements.
      */
+    @Override
     public RDFNode replace( int i, RDFNode value ) {
         if (s_checkValid) {
             checkValid();
@@ -427,6 +438,7 @@ public class RDFListImpl
      * @param value A value to test for
      * @return True if the list contains value.
      */
+    @Override
     public boolean contains( RDFNode value ) {
         return indexOf( value, 0 ) >= 0;
     }
@@ -442,6 +454,7 @@ public class RDFListImpl
      * @return The index of the first occurrence of value in the list, or
      * <code>-1</code> if not found.
      */
+    @Override
     public int indexOf( RDFNode value ) {
         return indexOf( value, 0 );
     }
@@ -462,6 +475,7 @@ public class RDFListImpl
      * @exception ListIndexException if <code>start</code> is greater than the
      * length of the list.
      */
+    @Override
     public int indexOf( RDFNode value, int start ) {
         if (s_checkValid) {
             checkValid();
@@ -502,6 +516,7 @@ public class RDFListImpl
      * @return A new RDFList that contains all of this elements of this list,
      * followed by all of the elements of the given iterator.
      */
+    @Override
     public RDFList append( Iterator<? extends RDFNode> nodes ) {
         return append( copy( nodes) );
     }
@@ -520,6 +535,7 @@ public class RDFListImpl
      * @return A new RDFList that contains all of this elements of this list,
      * followed by all of the elements of the given list.
      */
+    @Override
     public RDFList append( RDFList list ) {
         if (s_checkValid) {
             checkValid();
@@ -555,6 +571,7 @@ public class RDFListImpl
      * @param list The argument list to concatenate to this list
      * @exception EmptyListUpdateException if this list is the nil list
      */
+    @Override
     public void concatenate( RDFList list ) {
         if (s_checkValid) {
             checkValid();
@@ -580,6 +597,7 @@ public class RDFListImpl
      * @exception EmptyListUpdateException if this list is the nil list
      * @see #concatenate(RDFList) for details on avoiding the empty list update exception.
      */
+    @Override
     public void concatenate( Iterator<? extends RDFNode> nodes ) {
         // make a list of the nodes and add to the end of this
         concatenate( copy( nodes ) );
@@ -594,6 +612,7 @@ public class RDFListImpl
      * 
      * @return A copy of the current list
      */
+    @Override
     public RDFList copy() {
         if (s_checkValid) {
             checkValid();
@@ -610,6 +629,7 @@ public class RDFListImpl
      * 
      * @param fn The function to apply to each list node.
      */
+    @Override
     public void apply( ApplyFn fn ) {
         if (s_checkValid) {
             checkValid();
@@ -632,6 +652,7 @@ public class RDFListImpl
      * @param initial The initial value for the accumulator
      * @return The final value of the accumulator.
      */
+    @Override
     public Object reduce( ReduceFn fn, Object initial ) {
         if (s_checkValid) {
             checkValid();
@@ -653,6 +674,7 @@ public class RDFListImpl
      * @param fn A Map function
      * @return The iterator of the elements of this list mapped with the given map function.
      */
+    @Override
     public <T> ExtendedIterator<T> mapWith( Map1<RDFNode, T> fn ) {
         return iterator().mapWith( fn );
     }
@@ -669,6 +691,7 @@ public class RDFListImpl
      * @return The remainder of the list after the head is removed (i&#046;e&#046; the
      * pre-removal list tail)
      */
+    @Override
     public RDFList removeHead() {
         if (s_checkValid) {
             checkValid();
@@ -694,6 +717,7 @@ public class RDFListImpl
      * @return The resulting list, which will be the same as the current list in most
      * cases, except when <code>val</code> occurs at the head of the list.
      */
+    @Override
     public RDFList remove( RDFNode val ) {
         if (s_checkValid) {
             checkValid();
@@ -734,6 +758,7 @@ public class RDFListImpl
      * again. Therefore, this method name has been deprecated in favour of {@link #removeList}</p>
      * @deprecated Replaced by {@link #removeList}
      */
+    @Override
     @Deprecated
     public void removeAll() {
         removeList();
@@ -756,6 +781,7 @@ public class RDFListImpl
      * referenced by the list - unless being the object of an <code>rdf:first</code>
      * statement is the only mention of that resource in the model.</p>
      */
+    @Override
     public void removeList() {
         for (Iterator<Statement> i = collectStatements().iterator(); i.hasNext(); ) {
             i.next().remove();
@@ -797,6 +823,7 @@ public class RDFListImpl
      * 
      * @return A closable iterator over the elements of the list.
      */
+    @Override
     public ExtendedIterator<RDFNode> iterator() {
         return new RDFListIterator( this );
     }
@@ -809,6 +836,7 @@ public class RDFListImpl
      * 
      * @return The contents of this list as a Java List.
      */
+    @Override
     public List<RDFNode> asJavaList() {
         List<RDFNode> l = new ArrayList<RDFNode>();
         
@@ -833,6 +861,7 @@ public class RDFListImpl
      * @return True if the given list and this list are the same length, and
      * contain equal elements in the same order.
      */
+    @Override
     public boolean sameListAs( RDFList list ) {
         if (s_checkValid) {
             checkValid();
@@ -874,6 +903,7 @@ public class RDFListImpl
      * 
      * @return True lists are being strictly checked.
      */
+    @Override
     public boolean getStrict() {
         return s_checkValid;
     }
@@ -889,6 +919,7 @@ public class RDFListImpl
      * 
      * @param strict The <b>static</b> flag for whether lists will be checked strictly.
      */
+    @Override
     public void setStrict( boolean strict ) {
         s_checkValid = strict;
     }
@@ -926,6 +957,7 @@ public class RDFListImpl
      * 
      * @return The most recent error message, or null.
      */
+    @Override
     public String getValidityErrorMessage() {
         return m_errorMsg;
     }

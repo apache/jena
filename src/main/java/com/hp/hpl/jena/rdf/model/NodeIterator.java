@@ -50,12 +50,14 @@ public interface NodeIterator extends ExtendedIterator<RDFNode>
      * @return true if and only if there are more values available
      * from the iteration.
      */
+    @Override
     public boolean hasNext();
     
     /** Return the next RDFNode of the iteration.
      * @throws NoSuchElementException if there are no more nodes to be returned.
      * @return The next RDFNode from the iteration.
      */
+    @Override
     public RDFNode next() throws  NoSuchElementException;
 
     /** Return the next RDFNode of the iteration.
@@ -67,6 +69,7 @@ public interface NodeIterator extends ExtendedIterator<RDFNode>
     /** Unsupported Operation.
      * @throws NoSuchElementException
      */
+    @Override
     public void remove() throws NoSuchElementException;
     
     /** Terminate the iteration and free up resources.
@@ -77,5 +80,6 @@ public interface NodeIterator extends ExtendedIterator<RDFNode>
      * completing the iteration, this method should be called.</p>
      .
      */
+    @Override
     public void close() ;
 }

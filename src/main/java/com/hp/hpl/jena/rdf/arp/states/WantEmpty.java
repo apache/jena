@@ -21,6 +21,7 @@ public class WantEmpty extends Frame {
         warning(ERR_SYNTAX_ERROR,"The attributes on this property element, are not permitted with any content; expecting end element tag.");
     }
 
+    @Override
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
         warning(ERR_SYNTAX_ERROR,"XML element <"+rawName+"> inside an empty property element, whose attributes prohibit any content.");

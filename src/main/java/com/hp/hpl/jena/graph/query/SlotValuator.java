@@ -30,7 +30,8 @@ public class SlotValuator implements Valuator
 	 	Answer the value of the <code>index</code>th element of the
 	 	index values bindings.
 	*/
-	public Object evalObject( IndexValues iv )
+	@Override
+    public Object evalObject( IndexValues iv )
 	    { return iv.get( index ); }
 	
 	/**
@@ -38,7 +39,8 @@ public class SlotValuator implements Valuator
 	 	element of the index value bindings, which must be a 
 	 	<code>Boolean</code> value.
 	*/
-	public boolean evalBool( IndexValues iv )
+	@Override
+    public boolean evalBool( IndexValues iv )
 	    { return ((Boolean) evalObject( iv )).booleanValue(); }        
 	}
 

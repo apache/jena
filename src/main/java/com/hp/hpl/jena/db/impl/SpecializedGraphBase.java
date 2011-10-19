@@ -24,6 +24,7 @@ public abstract class SpecializedGraphBase implements SpecializedGraph
     public CompletionFlag newComplete()
         { return new CompletionFlag(); }
         
+    @Override
     public ExtendedIterator<Triple> find( Node s, Node p, Node o, CompletionFlag complete )
         { return find( Triple.createMatch( s, p, o ), complete ); }
     }
