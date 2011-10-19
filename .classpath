@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry excluding="/" kind="src" path="src-dev"/>
-  <classpathentry kind="src" path="src/main/java"/>
-  <classpathentry kind="src" path="src/main/resources"/>
-  <classpathentry kind="src" path="src/test/java"/>
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="var" 
-		  path="M2_REPO/junit/junit/4.9/junit-4.9.jar" 
-		  sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
-  <classpathentry kind="var" 
-		  path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" 
-		  sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
-  <classpathentry kind="output" path="classes"/>
+	<classpathentry excluding="/" kind="src" path="src-dev"/>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/main/resources"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar" sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>

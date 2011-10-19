@@ -170,10 +170,12 @@ abstract public class AbsIRIImpl extends  IRI implements
                private Iterator<Violation> underlying = foundExceptions.iterator();
   
                 private Violation next;
+                @Override
                 public void remove() {
                     throw new UnsupportedOperationException();
                 }
 
+                @Override
                 public boolean hasNext() {
                     if (next==null) {
                         while (underlying.hasNext()) {
@@ -188,6 +190,7 @@ abstract public class AbsIRIImpl extends  IRI implements
                     return true;
                 }
 
+                @Override
                 public Violation next() {
                     if (hasNext()) {
                         Violation rslt = next;

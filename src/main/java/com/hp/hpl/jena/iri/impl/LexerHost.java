@@ -1236,6 +1236,7 @@ class LexerHost implements com.hp.hpl.jena.iri.ViolationCodes, com.hp.hpl.jena.i
     private int range;
     
     
+    @Override
     public void analyse(Parser p,int r) {
         if (!p.has(r)) 
             return;
