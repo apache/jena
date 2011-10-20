@@ -184,8 +184,8 @@ public class Transaction
         this.activedsg = activedsg ;
     }
 
-    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
-    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
+    public synchronized void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    public synchronized void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
     
     public List<TransactionLifecycle> components()
