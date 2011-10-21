@@ -47,14 +47,14 @@
     </dependency>
 
      <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
       <version>${ver.jena}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.hp.hpl.jena</groupId>
-      <artifactId>jena</artifactId>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
       <version>${ver.jena}</version>
       <scope>test</scope>
