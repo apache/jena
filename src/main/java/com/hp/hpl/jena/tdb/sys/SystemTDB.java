@@ -133,6 +133,8 @@ public class SystemTDB
         if ( propertyFileName == null )
             propertyFileName = System.getProperty(propertyFileKey2) ;
     }
+    
+    public static final boolean is64bitSystem = determineIf64Bit() ;
 
     private static Properties properties = readPropertiesFile() ;
 
@@ -175,7 +177,7 @@ public class SystemTDB
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
      */
-    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", 100*1000) ;
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 100*1000 ) ) ;
 
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
     public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
@@ -294,8 +296,6 @@ public class SystemTDB
     		return false ;
     	return s.startsWith("Windows ") ;
 	}
-
-    public static final boolean is64bitSystem = determineIf64Bit() ;
 
     private static boolean determineIf64Bit()
     {
