@@ -299,6 +299,16 @@
         <targetPath>etc</targetPath>
         <filtering>false</filtering>
       </resource>
+
+      <resource>
+	<directory>vocabularies</directory>
+	<targetPath>vocabularies</targetPath>
+	<filtering>false</filtering>
+	<includes>
+	  <include>assembler.n3</include>
+        </includes>
+      </resource>
+
       <resource>
         <directory>src/main/java</directory>
         <includes>

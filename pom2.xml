@@ -30,8 +30,12 @@
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
   </properties>
 
-  <!-- See JenaTop -->
   <dependencies>
+    <dependency>
+       <groupId>org.apache.jena</groupId>
+       <artifactId>jena-iri</artifactId>
+       <version>0.9.0-incubating-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -179,11 +183,22 @@
     </plugins>
 
     <resources>
+
       <resource>
         <directory>etc</directory>
         <targetPath>etc</targetPath>
         <filtering>false</filtering>
       </resource>
+
+      <resource>
+        <directory>vocabularies</directory>
+	<targetPath>vocabularies</targetPath>
+        <filtering>false</filtering>
+        <includes>
+          <include>assembler.n3</include>
+        </includes>
+      </resource>
+
       <resource>
         <directory>src/main/java</directory>
         <includes>
