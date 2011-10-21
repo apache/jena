@@ -19,6 +19,8 @@
 package org.openjena.riot.lang;
 
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream ;
 import java.io.Reader ;
 
@@ -27,10 +29,12 @@ import org.openjena.atlas.io.PeekReader ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
+import org.openjena.riot.system.JenaWriterRdfJson;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.rdf.model.RDFWriter;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class UnitTestRDFJSON extends TestCase
@@ -51,6 +55,12 @@ public class UnitTestRDFJSON extends TestCase
     @Override
     public void runTest()
     {
+    	testJenaReaderRdfJson() ;
+    	testJenaWriterRdfJson() ;
+    }
+    
+    private void testJenaReaderRdfJson() 
+    {
         Model model = ModelFactory.createDefaultModel() ;
         RDFReader t = new JenaReaderRdfJson() ;
         try {
@@ -68,12 +78,7 @@ public class UnitTestRDFJSON extends TestCase
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )
             {
-                model.isIsomorphicWith(results) ;
-//                System.out.println("---- Parsed");
-//                model.write(System.out, "RDF/JSON") ;
-//                System.out.println("---- Expected");
-//                results.write(System.out, "RDF/JSON") ;
-//                System.out.println("--------");
+            	write ( model, results ) ;
             }
             
             assertTrue("Models not isomorphic", b) ;
@@ -85,6 +90,67 @@ public class UnitTestRDFJSON extends TestCase
         catch (RuntimeException ex) 
         { 
             ex.printStackTrace(System.err) ;
-            throw ex ; }
+            throw ex ; 
+        }
     }
+
+    private void testJenaWriterRdfJson() 
+    {
+    	Model results = FileManager.get().loadModel(output) ;
+
+        RDFWriter writer = new JenaWriterRdfJson() ;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream() ;
+        writer.write(results, baos, baseIRI) ;
+
+        InputStream in = new ByteArrayInputStream(baos.toByteArray()) ;
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader reader = new JenaReaderRdfJson() ;
+        try {
+            if ( baseIRI != null )
+            {
+                Reader r = PeekReader.makeUTF8(in) ;
+                reader.read(model, r, baseIRI) ;
+            }
+            else
+                reader.read(model, in, null) ;  
+
+            boolean b = model.isIsomorphicWith(results) ;
+            if ( !b )
+            {
+            	write ( model, results ) ;
+                System.out.println("---- Parsed");
+                // model.write(System.out, "RDF/JSON") ;
+                writer.write(model, System.out, baseIRI) ; // for now, until the plumbing with Jena gets released. See JENA-135
+                System.out.println("---- Expected");
+                // results.write(System.out, "RDF/JSON") ;
+                writer.write(results, System.out, baseIRI) ; 
+                System.out.println("--------");
+            }
+            
+            assertTrue("Models not isomorphic", b) ;
+        } catch (RiotParseException ex)
+        {
+            // Catch and retrhow - debugging.
+            throw ex ;    
+        }
+        catch (RuntimeException ex) 
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ; 
+        }
+    }
+
+    private void write (Model parsed, Model expected)
+    {
+    	// This is temporary, until the plumbing with Jena gets released (or ARQ depends on the jena-core SNAPSHOT). See: JENA-135
+    	RDFWriter writer = new JenaWriterRdfJson() ;
+        System.out.println("---- Parsed");
+        // parsed.write(System.out, "RDF/JSON") ;
+        writer.write(parsed, System.out, baseIRI) ; 
+        System.out.println("---- Expected");
+        // expected.write(System.out, "RDF/JSON") ;
+        writer.write(expected, System.out, baseIRI) ;
+        System.out.println("--------");
+    }
+
 }

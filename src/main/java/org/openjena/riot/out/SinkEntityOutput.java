@@ -102,7 +102,7 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
 					out.pair("value", "_:" + o.getBlankNodeLabel()) ;
 				} else if ( o.isURI() ) {
 					out.pair("type", "uri") ;
-					out.pair("value", "_:" + o.getURI()) ;					
+					out.pair("value", o.getURI()) ;					
 				} else if ( o.isLiteral() ) {
 			        String dt = o.getLiteralDatatypeURI() ;
 			        String lang = o.getLiteralLanguage() ;
