@@ -41,12 +41,12 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: Apache License  (LICENSE.txt)
   - ARQ (http://incubator.apache.org/jena/jena-arq) org.apache.jena:jena-arq:jar:2.8.9-incubating-SNAPSHOT
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Jena Core (http://incubator.apache.org/jena/jena-core) org.apache.jena:jena-core:jar:2.6.5-incubating-SNAPSHOT
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - IRI (http://jena.sf.net/iri) org.apache.jena:jena-iri:jar:0.9.0-incubating-SNAPSHOT
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.1.0
     License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-From: 'The Jena Project' (http://www.openjena.org/)
-  - Jena (http://www.openjena.org/) com.hp.hpl.jena:jena:jar:2.6.4
-    License: BSD  (http://jena.sourceforge.net/license.html)
 
 
 
