@@ -18,29 +18,32 @@
 
 package org.openjena.riot.out;
 
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.io.OutputStream ;
+import java.util.HashMap ;
+import java.util.HashSet ;
+import java.util.Map ;
+import java.util.Set ;
 
-import org.openjena.atlas.lib.Pair;
-import org.openjena.atlas.lib.Sink;
-import org.openjena.riot.system.Prologue;
-import org.openjena.riot.system.SyntaxLabels;
+import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class RDFJSONWriter {
 
 	public static void write (OutputStream out, Graph graph) {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
 		Sink<Pair<Node, Map<Node, Set<Node>>>> sink = new SinkEntityOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-
+		write ( sink, graph ) ;
+	}
+	
+	private static void write (Sink<Pair<Node, Map<Node, Set<Node>>>> sink, Graph graph) {
 		QueryHandler queryHandler = graph.queryHandler() ;
 		ExtendedIterator<Node> subjects = queryHandler.subjectsFor(Node.ANY, Node.ANY) ;
 		try {
@@ -69,7 +72,7 @@ public class RDFJSONWriter {
 		} finally {
 			if ( subjects != null ) subjects.close() ;
 			sink.close() ;
-		}		
+		}
 	}
-
+	
 }
