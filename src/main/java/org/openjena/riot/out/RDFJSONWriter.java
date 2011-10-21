@@ -19,6 +19,7 @@
 package org.openjena.riot.out;
 
 import java.io.OutputStream ;
+import java.io.Writer ;
 import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Map ;
@@ -43,6 +44,12 @@ public class RDFJSONWriter {
 		write ( sink, graph ) ;
 	}
 	
+	public static void write (Writer out, Graph graph) {
+        Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
+		Sink<Pair<Node, Map<Node, Set<Node>>>> sink = new SinkEntityOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
+		write ( sink, graph ) ;
+	}
+
 	private static void write (Sink<Pair<Node, Map<Node, Set<Node>>>> sink, Graph graph) {
 		QueryHandler queryHandler = graph.queryHandler() ;
 		ExtendedIterator<Node> subjects = queryHandler.subjectsFor(Node.ANY, Node.ANY) ;

@@ -18,16 +18,18 @@
 
 package org.openjena.riot.out;
 
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.Set;
+import java.io.OutputStream ;
+import java.io.Writer ;
+import java.util.Map ;
+import java.util.Set ;
 
-import org.openjena.atlas.json.io.JSWriter;
-import org.openjena.atlas.lib.Pair;
-import org.openjena.atlas.lib.Sink;
-import org.openjena.riot.RiotException;
-import org.openjena.riot.system.Prologue;
-import org.openjena.riot.system.SyntaxLabels;
+import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.json.io.JSWriter ;
+import org.openjena.atlas.lib.Pair ;
+import org.openjena.atlas.lib.Sink ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.system.Prologue ;
+import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node;
 
@@ -44,7 +46,22 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
     
     public SinkEntityOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
-    	out = new JSWriter(outs) ;
+    	init(new JSWriter(outs), prologue, labels) ;
+    }
+
+    public SinkEntityOutput(Writer outs)
+    {
+        this(outs, null, SyntaxLabels.createNodeToLabel()) ;
+    }
+    
+    public SinkEntityOutput(Writer outs, Prologue prologue, NodeToLabel labels)
+    {
+    	init(new JSWriter(new IndentedWriterEx(outs)), prologue, labels) ;
+    }
+    
+    private void init (JSWriter out, Prologue prologue, NodeToLabel labels) 
+    {
+    	this.out = out ;
     	setPrologue(prologue) ;
     	setLabelPolicy(labels) ;
     	out.startOutput() ;
@@ -114,5 +131,11 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
 	public void close() {
 		flush() ;
 	}
+
+    private class IndentedWriterEx extends IndentedWriter {
+		public IndentedWriterEx(Writer writer) {
+			super(writer);
+		}
+    }
 
 }

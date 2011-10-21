@@ -20,6 +20,8 @@ package org.openjena.riot.system;
 
 import java.io.Writer ;
 
+import org.openjena.riot.out.RDFJSONWriter ;
+
 import com.hp.hpl.jena.graph.Graph ;
 
 public class JenaWriterRdfJson extends JenaWriterBase
@@ -27,8 +29,7 @@ public class JenaWriterRdfJson extends JenaWriterBase
 
 	@Override
 	protected void write(Graph graph, Writer out, String base) {
-		// TODO: RiotWriter wants an OutputStream not a Writer...
-		// RiotWriter.writeRDFJSON(out, graph) ;
+		RDFJSONWriter.write(out, graph) ;
 	}
 
 }
