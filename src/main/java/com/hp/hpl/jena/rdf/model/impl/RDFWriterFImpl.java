@@ -129,8 +129,13 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
     @Override
     public String setWriterClassName(String lang, String className) {
+    	return setBaseWriterClassName(lang, className);
+    }
+
+    public static String setBaseWriterClassName(String lang, String className) {
         String oldClassName = langToClassName.getProperty(lang);
         langToClassName.setProperty(lang, className);
         return oldClassName;
     }
+
 }
