@@ -19,7 +19,6 @@
 package org.openjena.riot;
 
 import org.openjena.atlas.event.EventType ;
-import org.openjena.riot.out.RDFJSONWriter ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
 import org.openjena.riot.system.JenaReaderTurtle2 ;
@@ -28,6 +27,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
 
 public class SysRIOT
 {
@@ -86,12 +86,11 @@ public class SysRIOT
         RDFReaderFImpl.setBaseReaderClassName("Turtle", readerTTL) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL",    readerTTL) ;
 
-        // Add in the RDF/JSON reader
+        // Add in the RDF/JSON reader and writer
         String readerRdfJson = JenaReaderRdfJson.class.getName() ;
         RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", readerRdfJson) ;
         String writerRdfJson = JenaWriterRdfJson.class.getName() ;
-        // TODO: JENA-131, the static method below is not yet available in a released version of Jena
-        // RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", writerRdfJson) ;
+        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", writerRdfJson) ;
     }
     
     public static void resetJenaReaders()
@@ -105,8 +104,7 @@ public class SysRIOT
         RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
 
         RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", null) ;
-        // TODO: JENA-131, the static method below is not yet available in a released version of Jena
-        // RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", null) ;
+        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", null) ;
     }
 
 }
