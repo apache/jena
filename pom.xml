@@ -39,7 +39,7 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.6.4</ver.jena>
+    <ver.jena>2.6.5-SNAPSHOT</ver.jena>
     <ver.arq>${project.version}</ver.arq>
     <ver.iri>0.8</ver.iri>
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
@@ -485,6 +485,16 @@ build.time.txt=${build.time.txt}
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+    </repository>
+
   </repositories>
 
   <distributionManagement>
