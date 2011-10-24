@@ -167,7 +167,7 @@
       <compilerarg value="-Xlint:deprecation"/>
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
-    <copy todir="${classes.dir}" file="${bldsrc.dir}/log4j.properties" />
+    <copy todir="${classes.dir}" file="${bldsrc.dir}/jena-log4j.properties" />
     <copy todir="${classes.dir}/com/hp/hpl/jena/" file="${bldsrc.dir}/jena-properties.xml"/>
   </target>
 
