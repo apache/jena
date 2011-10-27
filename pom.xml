@@ -43,7 +43,7 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.6.4</ver.jena>
+    <ver.jena>2.6.5-SNAPSHOT</ver.jena>
     <ver.arq>2.8.9-SNAPSHOT</ver.arq>
     <ver.iri>0.8</ver.iri>
     <ver.junit>4.9</ver.junit>
