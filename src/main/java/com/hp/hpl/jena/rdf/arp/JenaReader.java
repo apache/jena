@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale ;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -437,7 +438,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         if (v == null)
             v = "";
         if (v instanceof String) {
-            v = ((String) v).toUpperCase();
+            v = ((String) v).toUpperCase(Locale.ENGLISH);
         }
         if (str.equals("ERROR-MODE")) {
             if (v instanceof String) {
