@@ -17,6 +17,8 @@ do
    CP="$CP:$M2_REPO$x"
 done
 
-CP="$DIRROOT/target/classes$CP"
+[ -e "classes" ] && CP="$DIRROOT/classes$CP"
+[ -e "target/classes" ] && CP="$DIRROOT/target/classes$CP"
+
 echo "$CP"
 
