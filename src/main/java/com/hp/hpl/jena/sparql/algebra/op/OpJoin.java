@@ -31,7 +31,7 @@ public class OpJoin extends Op2
     public static Op create(Op left, Op right)
     {
         // Don't simplify here - changes SPARQL for OPTIONAL {{ FILTER }}
-        // The  {{}} reslts in (join unit (filter ...)) the filter is not moved
+        // The  {{}} results in (join unit (filter ...)) the filter is not moved
         // into the LeftJoin.  
         
 //        // Inline simplification (too early - changes SPARQL for OPTIONAL {{ FILTER }} 

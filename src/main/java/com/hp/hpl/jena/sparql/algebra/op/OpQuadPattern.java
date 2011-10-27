@@ -71,13 +71,6 @@ public class OpQuadPattern extends Op0
         return quads ;
     } 
     
-//    @Deprecated
-//    public List<Quad> getQuads()
-//    {
-//        initQuads() ;
-//        return quads.getList() ;
-//    }
-    
     public Node getGraphNode()              { return graphNode ; } 
     public BasicPattern getBasicPattern()   { return triples ; }
     public boolean isEmpty()                { return triples.size() == 0 ; }

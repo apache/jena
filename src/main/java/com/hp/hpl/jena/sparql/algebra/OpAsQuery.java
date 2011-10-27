@@ -122,6 +122,11 @@ public class OpAsQuery
         { currentGroup().addElement(process(opTriple.getTriple())) ; }
 
         @Override
+        public void visit(OpQuad opQuad)
+        { throw new ARQNotImplemented("OpQuad") ; }
+
+
+        @Override
         public void visit(OpProcedure opProcedure)
         {
             throw new ARQNotImplemented("OpProcedure") ;

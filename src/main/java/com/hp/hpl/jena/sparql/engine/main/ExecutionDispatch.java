@@ -75,6 +75,14 @@ class ExecutionDispatch implements OpVisitor
     }
 
     @Override
+    public void visit(OpQuad opQuad)
+    {
+        QueryIterator input = pop() ;
+        QueryIterator qIter = opExecutor.execute(opQuad, input) ;
+        push(qIter) ;
+    }
+
+    @Override
     public void visit(OpPath opPath)
     {
         QueryIterator input = pop() ;

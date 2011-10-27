@@ -22,6 +22,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpDatasetNames extends Op0
@@ -36,7 +37,7 @@ public class OpDatasetNames extends Op0
     }
 
     @Override
-    public String getName()                 { return "DatasetNames" ; }
+    public String getName()                 { return Tags.tagDatasetNames ; } 
 
     @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 

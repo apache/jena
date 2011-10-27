@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TestPattern2Join ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
 
 import junit.framework.TestSuite ;
@@ -33,6 +34,7 @@ import org.junit.runners.Suite ;
     , TestFilterTransform.class
     , TestVarRename.class
     , TestOptimizer.class
+    , TestPattern2Join.class
 //    , TestUnionGraph.class
 //    , TestUnionTransformTriples.class
 //    , TestUnionTransformQuads.class

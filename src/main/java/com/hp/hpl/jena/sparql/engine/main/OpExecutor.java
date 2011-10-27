@@ -136,6 +136,12 @@ public class OpExecutor
         return execute(opTriple.asBGP(), input) ;
     }
 
+    protected QueryIterator execute(OpQuad opQuad, QueryIterator input)
+    {
+        return execute(opQuad.asQuadPattern(), input) ;
+    }
+
+
     protected QueryIterator execute(OpQuadPattern quadPattern, QueryIterator input)
     {
         // Convert to BGP forms to execute in this graph-centric engine.

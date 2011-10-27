@@ -71,6 +71,7 @@ public class Tags
     public static final String tagDiff          = "diff" ;
     public static final String tagMinus         = "minus" ;
     public static final String tagUnion         = "union" ;
+    public static final String tagDatasetNames  = "datasetnames" ;
 
     public static final String tagToList        = "tolist" ;
     public static final String tagOrderBy       = "order" ;

@@ -49,6 +49,10 @@ public abstract class OpVisitorByType implements OpVisitor
     { visit0(opTriple) ; }
     
     @Override
+    public void visit(OpQuad opQuad)
+    { visit0(opQuad) ; }
+
+    @Override
     public void visit(OpPath opPath)
     { visit0(opPath) ; }
     

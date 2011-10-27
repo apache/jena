@@ -31,6 +31,8 @@ public class TransformBase implements Transform
     @Override
     public Op transform(OpTriple opTriple)                  { return opTriple ; }
     @Override
+    public Op transform(OpQuad opQuad)                      { return opQuad ; }
+    @Override
     public Op transform(OpPath opPath)                      { return opPath ; } 
 
     @Override

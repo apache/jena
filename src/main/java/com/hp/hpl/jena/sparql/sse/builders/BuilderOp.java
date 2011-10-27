@@ -76,6 +76,7 @@ public class BuilderOp
         addBuild(Tags.tagBGP,           buildBGP) ;
         addBuild(Tags.tagQuadPattern,   buildQuadPattern) ;
         addBuild(Tags.tagTriple,        buildTriple) ;
+        addBuild(Tags.tagQuad,          buildQuad) ;
         addBuild(Tags.tagTriplePath,    buildTriplePath) ;
         addBuild(Tags.tagFilter,        buildFilter) ;
         addBuild(Tags.tagGraph,         buildGraph) ;
@@ -89,6 +90,7 @@ public class BuilderOp
         addBuild(Tags.tagDiff,          buildDiff) ;
         addBuild(Tags.tagMinus,         buildMinus) ;
         addBuild(Tags.tagUnion,         buildUnion) ;
+        addBuild(Tags.tagDatasetNames,  buildDatasetNames) ;
         addBuild(Tags.tagConditional,   buildConditional) ;
 
         addBuild(Tags.tagToList,        buildToList) ;
@@ -283,6 +285,13 @@ public class BuilderOp
             return new OpTriple(t) ;
         }} ;
     
+    final protected Build buildQuad = new Build(){
+        @Override
+        public Op make(ItemList list)
+        {
+            Quad q = BuilderGraph.buildQuad(list) ;
+            return new OpQuad(q) ;
+        }} ;
     
     final protected Build buildTriplePath = new Build(){
         @Override
@@ -413,6 +422,17 @@ public class BuilderOp
             Op right  = build(list, 2) ;
             Op op = new OpUnion(left, right) ;
             return op ;
+        }
+    } ;
+    
+    final protected Build buildDatasetNames = new Build()
+    {
+        @Override
+        public Op make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, Tags.tagDatasetNames) ;
+            Node n = BuilderNode.buildNode(list.get(1)) ;
+            return new OpDatasetNames(n) ;
         }
     } ;
     

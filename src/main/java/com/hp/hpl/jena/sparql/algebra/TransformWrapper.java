@@ -22,7 +22,7 @@ import java.util.List ;
 
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 
-/** Wrap another tranform and pass on the transform operation */
+/** Wrap another transform and pass on the transform operation */
 public class TransformWrapper implements Transform
 {
     protected final Transform transform ;
@@ -38,6 +38,8 @@ public class TransformWrapper implements Transform
     public Op transform(OpBGP opBGP)                        { return transform.transform(opBGP) ; }
     @Override
     public Op transform(OpTriple opTriple)                  { return transform.transform(opTriple) ; }
+    @Override
+    public Op transform(OpQuad opQuad)                      { return transform.transform(opQuad) ; }
     @Override
     public Op transform(OpPath opPath)                      { return transform.transform(opPath) ; } 
 

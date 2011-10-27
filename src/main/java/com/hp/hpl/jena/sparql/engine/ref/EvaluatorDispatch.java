@@ -81,6 +81,11 @@ public class EvaluatorDispatch implements OpVisitor
     }
 
     @Override
+    public void visit(OpQuad opQuad)
+    {
+        visit(opQuad.asQuadPattern()) ;
+    }
+    @Override
     public void visit(OpPath opPath)
     {
         Table table = evaluator.pathPattern(opPath.getTriplePath()) ;

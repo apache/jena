@@ -226,6 +226,13 @@ public class WriterOp
         }
 
         @Override
+        public void visit(OpQuad opQuad)
+        {
+            formatQuad(opQuad.getQuad()) ;
+        }
+
+
+        @Override
         public void visit(OpPath opPath)
         {
             //start(opPath, NoNL) ;

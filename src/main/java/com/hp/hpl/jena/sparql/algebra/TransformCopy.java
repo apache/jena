@@ -43,6 +43,8 @@ public class TransformCopy implements Transform
     @Override
     public Op transform(OpTriple opTriple)                          { return xform(opTriple) ; }
     @Override
+    public Op transform(OpQuad opQuad)                              { return xform(opQuad) ; }
+    @Override
     public Op transform(OpPath opPath)                              { return xform(opPath) ; }
 
     @Override
