@@ -68,7 +68,7 @@ public class TestPattern2Join extends BaseTest
                                            "   (quad ?g ?s3 ?p3 ?o3) )") ; }
 
     @Test public void qp2join_06() { test4("{GRAPH ?g1 { ?s1 ?p1 ?o1 } GRAPH ?g2 { ?s2 ?p2 ?o2 } }", 
-                                           "(join (quadpattern (?g1 ?s1 ?p1 ?o1)) (quadpattern (?g2 ?s2 ?p2 ?o2)) )") ; }
+                                           "(join (quad ?g1 ?s1 ?p1 ?o1) (quad ?g2 ?s2 ?p2 ?o2) )") ; }
 
     
     @Test public void qp2join_07() { test4("{GRAPH ?g1 { ?s1 ?p1 ?o1 . ?s9 ?p9 ?o9} GRAPH ?g2 { ?s2 ?p2 ?o2 . ?s8 ?p8 ?o8}}",     
@@ -95,12 +95,10 @@ public class TestPattern2Join extends BaseTest
     
     private static void test(Op input, String... joinForm)
     {
-        System.out.println(input) ;
-
         Op op2 = Transformer.transform(new TransformPattern2Join() , input) ;
         String x = StrUtils.strjoinNL(joinForm) ;
         Op opExpected = SSE.parseOp("(prefix ((: <http://example/>)) "+x+")") ;
-        assertEquals(op2, opExpected) ; 
+        assertEquals(opExpected, op2) ; 
     }
 }
 
