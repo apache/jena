@@ -133,6 +133,6 @@ public class CmdIndexBuild
         int rowBlock = 1000 ;
         Iterator<Record> iter = new RecordsFromInput(input, tupleLength, colMap, rowBlock) ;
         BPlusTree bpt2 = BPlusTreeRewriter.packIntoBPlusTree(iter, bptParams, recordFactory, blkMgrNodes, blkMgrRecords) ;
-        bpt2.sync() ;
+        bpt2.close() ;
     }
 }
