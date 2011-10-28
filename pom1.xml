@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>jena</artifactId>
+  <version>2.6.5-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Jena</name>
+  <url>http://www.openjena.org/</url>
+  <inceptionYear>2000</inceptionYear>
+  <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
+
+  <licenses>
+    <license>
+      <name>BSD</name>
+      <url>http://jena.sourceforge.net/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:cvs:pserver:anonymous:@jena.cvs.sourceforge.net:/cvsroot/jena:jena2</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@jena.cvs.sourceforge.net:/cvsroot/jena:jena2</developerConnection> <!-- TO TEST! -->
+    <tag>HEAD</tag>
+    <url>http://jena.cvs.sourceforge.net/jena/jena2/</url>
+  </scm>
+
+  <organization>
+    <name>The Jena Project</name>
+    <url>http://www.openjena.org/</url>
+  </organization>
+  
+   <dependencies>
+     <!-- 
+       Runtime scope also means it must be available at test time.  But Jena
+       does not depend on ARQ for testing and this creates a loop when ARQ and
+       Jena move version together that we can't break.
+       
+       LATEST or RELEASE do not work, as expected. Perhaps we could use:
+       <version>[2.8.0,)</version>
+     -->
+     <!--
+     <dependency>
+       <groupId>com.hp.hpl.jena</groupId>
+       <artifactId>arq</artifactId>
+       <version>[2.8.6,)</version>
+       <scope>runtime</scope>
+     </dependency>
+     -->
+
+     <dependency>
+       <groupId>com.hp.hpl.jena</groupId>
+       <artifactId>iri</artifactId>
+       <version>0.8</version>
+     </dependency>
+
+     <dependency>
+       <groupId>com.ibm.icu</groupId>
+       <artifactId>icu4j</artifactId>
+       <version>3.4.4</version>
+     </dependency>
+
+     <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>2.7.1</version>
+     </dependency>
+
+     <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>4.5</version>
+       <scope>test</scope>
+     </dependency>
+
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+       <version>1.5.8</version>
+     </dependency>
+
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
+       <version>1.5.8</version>
+       <scope>runtime</scope>
+     </dependency>
+
+     <dependency>
+       <groupId>log4j</groupId>
+       <artifactId>log4j</artifactId>
+       <version>1.2.13</version>
+       <scope>runtime</scope>
+     </dependency>
+
+  </dependencies>
+  
+  <build>
+
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+          <optimize>true</optimize>
+          <source>1.6</source>
+          <target>1.6</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <includes>
+            <include>com/hp/hpl/jena/test/TestPackage.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version> <!-- Need for *no-fork : remove when maven catches up -->
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+	      <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <phase>package</phase>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <author>true</author>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} Framework</windowtitle>
+          <doctitle>${project.name} Framework</doctitle>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
+          <excludePackageNames>com.hp.hpl.jena.shared.*:*.impl:com.hp.hpl.jena.assembler.assemblers:*.exceptions:*.regexptrees:com.hp.hpl.jena.mem:com.hp.hpl.jena.mem.*:com.hp.hpl.jena.n3:com.hp.hpl.jena.n3.*:com.hp.hpl.jena.rdf.arp.*:com.hp.hpl.jena.util.*:jena.cmdline:jena.util</excludePackageNames>
+          <groups>
+            <group>
+              <title>API - Application Programming Interface</title>
+              <packages>com.hp.hpl.jena.db:com.hp.hpl.jena.rdf.model:com.hp.hpl.jena.rdf.listeners:com.hp.hpl.jena.rdf.arp:com.hp.hpl.jena.rdf.arp.lang:com.hp.hpl.jena.datatypes:com.hp.hpl.jena.datatypes.xsd:com.hp.hpl.jena.rdql:com.hp.hpl.jena.shared:com.hp.hpl.jena.vocabulary:com.hp.hpl.jena.xmloutput:com.hp.hpl.jena.ontology:com.hp.hpl.jena.ontology.daml:com.hp.hpl.jena.reasoner:com.hp.hpl.jena.reasoner.rulesys:com.hp.hpl.jena.reasoner.rulesys.builtins:com.hp.hpl.jena.reasoner.transitiveReasoner:com.hp.hpl.jena.reasoner.dig</packages>
+            </group>
+            <group>
+              <title>SPI - System Programming Interface</title>
+              <packages>com.hp.hpl.jena.enhanced:com.hp.hpl.jena.graph:com.hp.hpl.jena.graph.compose:com.hp.hpl.jena.graph.query:com.hp.hpl.jena.util:com.hp.hpl.jena.util.iterator</packages>
+            </group>
+            <group>
+              <title>Command line tools</title>
+              <packages>jena</packages>
+            </group>
+            <group>
+              <title>Other Packages</title>
+              <packages>com.hp.hpl.jena.assembler</packages>
+            </group>
+          </groups>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.basedir}/lib</outputDirectory>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteSnapshots>true</overWriteSnapshots>
+        </configuration>
+        <executions>
+          <execution>
+            <id>copy-source-dependencies-for-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <classifier>sources</classifier>
+              <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+              <includeScope>runtime</includeScope>
+              <outputDirectory>${project.build.directory}/dependency-sources</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build-time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build-time.txt" pattern="yyyy-MM-dd HH:mm z"/>
+                </tstamp>
+                <echo message="version=${project.version}"/>
+                <echo message="build.time=${build-time.txt}"/>
+                <copy file="src/main/resources/jena-properties.xml" toFile="${project.basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
+                  <filterset>
+                    <filter token="NAME" value="${project.name}"/>
+                    <filter token="WEBSITE" value="${project.url}"/>
+                    <filter token="VERSION" value="${project.version}"/>
+                    <filter token="BUILD_TIME_XSD" value="${build-time.xsd}"/>
+                  </filterset>
+                </copy>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <!-- Must be last in phase "package" (else use "verify") -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>etc</directory>
+        <targetPath>etc</targetPath>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
+	<directory>vocabularies</directory>
+	<targetPath>vocabularies</targetPath>
+	<filtering>false</filtering>
+	<includes>
+	  <include>assembler.n3</include>
+        </includes>
+      </resource>
+
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>jena-log4j.properties</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+    
+    <!-- To be removed
+    <testResources>
+      <testResource>
+        <filtering>false</filtering>
+        <directory>testing</directory>
+        <targetPath>testing</targetPath>
+      </testResource>
+      <testResource>
+        <directory>doc</directory>
+        <includes>
+          <include>inference/data/owlDemoSchema.xml</include>
+        </includes>
+        <targetPath>doc/inference/data</targetPath>
+      </testResource>
+    </testResources>
+    -->
+
+  </build>
+  
+  <reporting>
+    <outputDirectory>${project.build.directory}/site</outputDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.9</version>
+        <!-- Put surfire report somewhere in the build area -->
+        <configuration>
+          <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changelog-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.7</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+    </plugins>
+  
+  </reporting>
+
+  <profiles>
+
+    <profile>
+      <id>OSGi</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>2.2</version>
+            <configuration>
+              <archive>
+                <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+              </archive>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <extensions>true</extensions>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>manifest</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+  <repositories>
+    <!-- repo-jena is mirrored to Maven central repository -->
+    <!-- In case mirroring has not happened yet ... -->
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- repo-jena-dev is where SNAPSHOTs are published -->  
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <!-- <downloadUrl>http://openjena.org/repo-dev</downloadUrl> -->
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+      <url>sftp://openjena.org/var/repo</url>
+      <!-- Note: RC aren't snapshots so go to jena-repo -->
+      <!--<url>sftp://openjena.org/var/repo-dev</url>-->
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
+</project>
