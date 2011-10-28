@@ -75,12 +75,6 @@
   <!-- General dependencies for all systems -->
 
   <dependencies>
-    <dependency>
-       <groupId>com.hp.hpl.jena</groupId>
-       <artifactId>iri</artifactId>
-       <version>0.8</version>
-    </dependency>
-
      <dependency>
        <groupId>com.ibm.icu</groupId>
        <artifactId>icu4j</artifactId>
