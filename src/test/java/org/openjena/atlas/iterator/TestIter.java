@@ -58,6 +58,90 @@ public class TestIter
         test(iter, "a", "x", "y", "z") ;
     }
 
+    @Test
+    public void append_4()
+    {
+        List<String> L = new ArrayList<String>(3);
+        L.add("a");
+        L.add("b");
+        L.add("c");
+        List<String> R = new ArrayList<String>(3);
+        R.add("d");
+        R.add("e");
+        R.add("f");
+        
+        
+        Iterator<String> LR = Iter.append(L, R) ;
+        
+        while (LR.hasNext())
+        {
+            String s = LR.next();
+            
+            if ("c".equals(s))
+            {
+                LR.hasNext();  // test for JENA-60
+                LR.remove();
+            }
+        }
+        
+        assertEquals("ab", Iter.asString(L, ""));
+        assertEquals("def", Iter.asString(R, ""));
+    }
+    
+    @Test
+    public void append_5()
+    {
+        List<String> L = new ArrayList<String>(3);
+        L.add("a");
+        L.add("b");
+        L.add("c");
+        List<String> R = new ArrayList<String>(3);
+        R.add("d");
+        R.add("e");
+        R.add("f");
+        
+        
+        Iterator<String> LR = Iter.append(L, R) ;
+        
+        while (LR.hasNext())
+        {
+            String s = LR.next();
+            
+            if ("d".equals(s))
+            {
+                LR.hasNext();  // test for JENA-60
+                LR.remove();
+            }
+        }
+        
+        assertEquals("abc", Iter.asString(L, ""));
+        assertEquals("ef", Iter.asString(R, ""));
+    }
+    
+    @Test
+    public void append_6()
+    {
+        List<String> L = new ArrayList<String>(3);
+        L.add("a");
+        L.add("b");
+        L.add("c");
+        List<String> R = new ArrayList<String>(3);
+        R.add("d");
+        R.add("e");
+        R.add("f");
+        
+        
+        Iterator<String> LR = Iter.append(L, R) ;
+        
+        while (LR.hasNext())
+        {
+            LR.next() ;
+        }
+        LR.remove() ;
+        
+        assertEquals("abc", Iter.asString(L, "")) ;
+        assertEquals("de", Iter.asString(R, "")) ;
+    }
     
     @Test
     public void asString_1() 

@@ -28,6 +28,7 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
 {
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;
+    private Iterator<? extends T> removeFrom ;
 
     public static <X> Iterator<X> create(Iterator<? extends X> iter1, Iterator<? extends X> iter2)
     {
@@ -83,26 +84,26 @@ public class IteratorCons<T> implements Iterator<T>, Iterable<T>
         if ( ! hasNext() )
             throw new NoSuchElementException("Iterator2.next") ;
         if ( iter1 != null )
+        {
+            removeFrom = iter1 ;
             return iter1.next();
+        }
         if ( iter2 != null )
+        {
+            removeFrom = iter2 ;
             return iter2.next();
+        }
         throw new Error("Iterator2.next") ;
     }
 
     @Override
     public void remove()
-    { 
-        if ( iter1 != null )
-        {
-            iter1.remove();
-            return ;
-        }
-        if ( iter2 != null )
-        {
-            iter2.remove();
-            return ;
-        }
-        throw new NoSuchElementException("Iterator2.remove") ;
+    {
+        if ( null == removeFrom )
+            throw new IllegalStateException("no calls to next() since last call to remove()") ;
+        
+        removeFrom.remove() ;
+        removeFrom = null ;
     }
 
     @Override
