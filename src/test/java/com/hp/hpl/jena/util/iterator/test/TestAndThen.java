@@ -6,12 +6,14 @@
 
 package com.hp.hpl.jena.util.iterator.test;
 
-import java.util.List;
+import java.util.List ;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class TestAndThen extends ModelTestBase
     {
@@ -53,6 +55,86 @@ public class TestAndThen extends ModelTestBase
         assertTrue( "middle iterator should have been closed", M.isClosed() );
         assertTrue( "final iterator should have been closed", R.isClosed() );
         }
+    
+    public void testRemove1()
+    {
+        List<String> L = listOfStrings("a b c");
+        List<String> R = listOfStrings("d e f");
+        
+        ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
+        ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
+        
+        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        
+        while (LR.hasNext())
+        {
+            String s = LR.next();
+            
+            if ("c".equals(s))
+            {
+                LR.hasNext();  // test for JENA-60
+                LR.remove();
+            }
+        }
+        
+        assertEquals("ab", concatAsString(L));
+        assertEquals("def", concatAsString(R));
+    }
+    
+    public void testRemove2()
+    {
+        List<String> L = listOfStrings("a b c");
+        List<String> R = listOfStrings("d e f");
+        
+        ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
+        ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
+        
+        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        
+        while (LR.hasNext())
+        {
+            String s = LR.next();
+            
+            if ("d".equals(s))
+            {
+                LR.hasNext();  // test for JENA-60
+                LR.remove();
+            }
+        }
+        
+        assertEquals("abc", concatAsString(L));
+        assertEquals("ef", concatAsString(R));
+    }
+    
+    public void testRemove3()
+    {
+        List<String> L = listOfStrings("a b c");
+        List<String> R = listOfStrings("d e f");
+        
+        ExtendedIterator<String> Lit = WrappedIterator.create(L.iterator());
+        ExtendedIterator<String> Rit = WrappedIterator.create(R.iterator());
+        
+        ExtendedIterator<String> LR = Lit.andThen( Rit ) ;
+        
+        while (LR.hasNext())
+        {
+            LR.next();
+        }
+        LR.remove();
+        
+        assertEquals("abc", concatAsString(L));
+        assertEquals("de", concatAsString(R));
+    }
+    
+    private String concatAsString(List<String> strings)
+    {
+        String toReturn = "";
+        for(String s : strings)
+        {
+            toReturn += s;
+        }
+        return toReturn;
+    }
     
     }
 

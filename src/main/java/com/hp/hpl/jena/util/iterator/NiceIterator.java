@@ -85,6 +85,7 @@ public class NiceIterator<T> implements ExtendedIterator<T>
             private int index = 0;
             
             private Iterator<? extends T> current = a;
+            private Iterator<? extends T> removeFrom = null;
             
             @Override public boolean hasNext()
                 { 
@@ -101,17 +102,26 @@ public class NiceIterator<T> implements ExtendedIterator<T>
                 }
                 
             @Override public T next()
-                { return hasNext() ? current.next() : noElements( "concatenation" ); }
+                {
+                if (!hasNext()) noElements( "concatenation" );
+                removeFrom = current;
+                return current.next();
+                }
                 
             @Override public void close()
                 {
                 close( current );
                 for (int i = index; i < pending.size(); i += 1) close( pending.get(i) );
                 pending.clear();
+                removeFrom = null;
                 }
                 
             @Override public void remove()
-                { current.remove(); }
+                {
+                if (null == removeFrom) throw new IllegalStateException("no calls to next() since last call to remove()");
+                removeFrom.remove();
+                removeFrom = null;
+                }
             
             @Override public <X extends T> ExtendedIterator<T> andThen( Iterator<X> other )
                 { pending.add( other ); 
