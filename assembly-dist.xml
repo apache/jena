@@ -8,6 +8,8 @@ Assumes jar made and onejar has been assembled.
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 
+  <id>distribution</id>
+
   <formats>
     <format>zip</format>
   </formats>
@@ -16,9 +18,9 @@ Assumes jar made and onejar has been assembled.
 
   <files>
     <file>
-      <source>${project.build.directory}/${this.root}-sys.jar</source>
+      <source>${project.build.directory}/${server.jar.name}.jar</source>
       <outputDirectory></outputDirectory>
-      <destName>fuseki-sys.jar</destName>
+      <destName>fuseki-server.jar</destName>
     </file>
   </files>
 

@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-fuseki</artifactId>
+  <packaging>jar</packaging>
+  <name>Fuseki</name>
+  <version>0.2.1-incubating-SNAPSHOT</version>
+  <description/>
+  <url>http://incubator.apache.org/jena</url>
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-top</artifactId>
+    <version>0-incubating-SNAPSHOT</version>
+    <relativePath>../JenaTop/pom.xml</relativePath>
+  </parent> 
+
+  <organization>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/</connection>
+    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
+  </scm>
+
+  <!-- Problems with additional artifacts:
+       Any names set here are lost on installation.
+         Solution: use install:install-file.
+	 Solution: separate artifacts (heavyweight)
+  -->
+
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <!-- and the classifier is added using the id -->
+    <server.jar.name>fuseki-server-${project.version}</server.jar.name>
+    <assembly.name>${this.root}</assembly.name>
+    <assembly.soh.name>${this.root}</assembly.soh.name>
+    <assembly.zip.name>${this.root}</assembly.zip.name>
+
+    <ver.jena>2.6.5-incubating-SNAPSHOT</ver.jena>
+    <ver.arq>2.8.9-incubating-SNAPSHOT</ver.arq>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+
+    <!-- These two go together -->
+    <ver.jetty>7.2.1.v20101111</ver.jetty>
+    <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
+
+    <ver.http-client>4.1.2</ver.http-client>
+    <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
+    <ver.commons-codec>1.5</ver.commons-codec>
+    <ver.slf4j>1.6.1</ver.slf4j>
+    <ver.log4j>1.2.16</ver.log4j>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.arq}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.tdb}</version>
+    </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>sdb</artifactId>
+      <version>${ver.sdb}</version>
+      <optional>true</optional>
+    </dependency>
+    -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+      <version>${ver.junit}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>${ver.http-client}</version>
+      <exclusions>
+	<!-- Replace with slf4j adapter -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-fileupload</groupId>
+      <artifactId>commons-fileupload</artifactId>
+      <version>${ver.commons-fileupload}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jsp-2.1</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.mortbay.jetty</groupId>
+      <artifactId>jsp-2.1-glassfish</artifactId>
+      <version>${ver.servlet-jsp}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>    
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${ver.slf4j}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${ver.slf4j}</version>
+    </dependency>
+
+    <!-- Intercept any uses of Jakarta Commons Logging e.g. Apache Common HTTP client. -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>${ver.slf4j}</version>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- Needed because the Fuseki test suite resets logging levels -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${ver.log4j}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+      </exclusions> 
+    </dependency>
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+	<!--
+        <targetPath>org/openjena/fuseki</targetPath>
+	-->
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+    <filters>
+      <filter>${project.basedir}/target/filter.properties</filter>
+    </filters>
+    
+    <plugins>
+      <!-- This produce a java properties file 'filter.properties' with timestanps in
+	   For use with fileritng resources.
+      -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+	
+        <executions>
+          <execution>
+            <id>ant-generate-resources</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+                </tstamp>
+                <echo file="${project.basedir}/target/filter.properties">
+                  #begin
+                  build.time.xsd=${build.time.xsd}
+                  build.time.txt=${build.time.txt}
+                  #end
+                </echo>
+                <echo message="Version = ${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+	<configuration>
+	  <encoding>UTF-8</encoding>
+          <optimize>true</optimize>
+	  <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+	  <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+         <version>2.1.2</version>
+	 <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+	<version>2.9</version>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+
+	<executions>
+
+	  <execution>
+	    <id>create-server-assembly</id>
+	    <phase>package</phase>
+	    <goals><goal>single</goal></goals>
+	    <configuration>
+	      <archive>
+		<manifest>
+		  <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
+		</manifest>
+	      </archive>
+	      <finalName>${server.jar.name}</finalName>
+	      <appendAssemblyId>false</appendAssemblyId>
+	      <descriptors>
+		<descriptor>assembly-server.xml</descriptor>
+	      </descriptors>
+	    </configuration>
+	  </execution>
+
+	  <!--
+	  <execution>
+	    <id>create-soh-assembly</id>
+	    <phase>package</phase>
+	    <goals><goal>single</goal></goals>
+	    <configuration>
+	      <finalName>${assembly.soh.name}</finalName>
+	      <!- -<appendAssemblyId>false</appendAssemblyId> - ->
+	      <descriptors>
+		<descriptor>assembly-soh.xml</descriptor>
+	      </descriptors>
+	    </configuration>
+	  </execution>
+	  -->
+
+	  <execution>
+	    <id>create-zip-assembly</id>
+	    <phase>package</phase>
+	    <goals><goal>single</goal></goals>
+	    <configuration>
+	      <finalName>${assembly.zip.name}</finalName>
+	      <appendAssemblyId>false</appendAssemblyId>
+	      <descriptors>
+		<descriptor>assembly-dist.xml</descriptor>
+	      </descriptors>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+	<version>2.5</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+  
+</project>
