@@ -28,7 +28,6 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
-    <ver.lucene>2.3.1</ver.lucene>
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
@@ -60,12 +59,6 @@
       <artifactId>woodstox-core-asl</artifactId>
       <version>4.0.0</version>
       -->
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>${ver.lucene}</version>
     </dependency>
 
     <dependency>

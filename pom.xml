@@ -43,7 +43,6 @@
     <ver.arq>${project.version}</ver.arq>
     <ver.iri>0.8</ver.iri>
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
-    <ver.lucene>2.3.1</ver.lucene>
     <ver.junit>4.8.2</ver.junit>
     <ver.slf4j>1.6.1</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
@@ -83,12 +82,6 @@
       <artifactId>woodstox-core-asl</artifactId>
       <version>4.0.0</version>
       -->
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.lucene</groupId>
-      <artifactId>lucene-core</artifactId>
-      <version>${ver.lucene}</version>
     </dependency>
 
     <!--
