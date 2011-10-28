@@ -53,6 +53,11 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public class ResourceUtils {
 
     /**
+     * The size of the temporary list that hold triples to be added or deleted in bulk.
+     */
+    private static final int WINDOW_SIZE = 1000 ;
+    
+    /**
      * <p>
      * Answer the maximal lower elements of the given collection, given the partial
      * ordering <code>rel</code>. See {@link #maximalLowerElements( Iterator, Property, boolean )}
@@ -208,40 +213,84 @@ public class ResourceUtils {
         // Work at the graph level. Also, work underneath one layer of inference
         // if it's there. This avoids both fighting the inference engine and the
         // Statement reconstruction work of the Model layer.
-        String oldURI = old.getURI();
-        if (oldURI != null && oldURI.equals( uri )) return old;
-       	Node resAsNode = old.asNode();
-       	Model model = old.getModel();
-       	Graph graph = model.getGraph();
-       	Graph rawGraph = graph instanceof InfGraph ? ((InfGraph) graph).getRawGraph() : graph;
-     	Resource newRes = model.createResource(uri);
-       	Node newResAsNode = newRes.asNode();
-       	List<Triple> triples = new ArrayList<Triple>();
-     //
-       	for (ExtendedIterator<Triple> x = rawGraph.find( resAsNode, Node.ANY, Node.ANY ); x.hasNext();) {
-       	    triples.add( x.next() );
-       	    x.remove();
-       	}
-       	for (ExtendedIterator<Triple> x = rawGraph.find( Node.ANY, Node.ANY, resAsNode ); x.hasNext();) {
-            triples.add( x.next() );
-            x.remove();
+        String oldURI = old.getURI() ;
+        if ( oldURI != null && oldURI.equals(uri) )
+        {
+            return old ;
         }
-    //
-    // It's possible there are triples (old wossname old) that are in triples 
-    // twice. It doesn't matter.
-    //
-       	for (Triple t: triples) {
-       	    Node oldS = t.getSubject(), oldO = t.getObject();
-       	    Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS;
-       	    Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO;
-       	    rawGraph.add( Triple.create( newS, t.getPredicate(), newO ) );
-       	 }
-     //
-  	 // If we were underneath an InfGraph, and at least one triple changed,
-     // then we have to rebind.
-     //
-       	if (rawGraph != graph && triples.size() > 0) ((InfGraph) graph).rebind();
-       	return newRes;
+        Node resAsNode = old.asNode() ;
+        Model model = old.getModel() ;
+        Graph graph = model.getGraph() ;
+        Graph rawGraph = graph instanceof InfGraph ? ((InfGraph) graph).getRawGraph() : graph ;
+        Resource newRes = model.createResource(uri) ;
+        Node newResAsNode = newRes.asNode() ;
+       	
+        
+        boolean changeOccured = false ;
+        List<Triple> triples = new ArrayList<Triple>(WINDOW_SIZE) ;
+        
+        // An optimization to prevent concatenating the two find() operations together every time through the outer loop
+        boolean onFirstIterator = true;
+
+        // It's possible there are triples (old wossname old) that are in triples twice. It doesn't matter.
+        ExtendedIterator<Triple> it = rawGraph.find(resAsNode, Node.ANY, Node.ANY) ;
+        try
+        {
+            if ( !it.hasNext() )
+            {
+                it.close() ;
+                onFirstIterator = false ;
+                it = rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
+            }
+            changeOccured = it.hasNext() ;
+
+            while ( it.hasNext() )
+            {
+                int count = 0 ;
+                while ( it.hasNext() && count < WINDOW_SIZE )
+                {
+                    triples.add(it.next()) ;
+                    count++ ;
+                }
+
+                it.close() ;
+                
+                // Iterate over the triples collection twice (this may be more efficient than interleaving deletes and adds)
+                for ( Triple t : triples )
+                {
+                    rawGraph.delete(t) ;
+                }
+                
+                for ( Triple t : triples )
+                {
+                    Node oldS = t.getSubject(), oldO = t.getObject() ;
+                    Node newS = oldS.equals(resAsNode) ? newResAsNode : oldS ;
+                    Node newO = oldO.equals(resAsNode) ? newResAsNode : oldO ;
+                    
+                    rawGraph.add(Triple.create(newS, t.getPredicate(), newO));
+                }
+                triples.clear();
+
+                it = onFirstIterator ? rawGraph.find(resAsNode, Node.ANY, Node.ANY) : rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
+                if ( onFirstIterator && !it.hasNext() )
+                {
+                    it.close() ;
+                    onFirstIterator = false ;
+                    it = rawGraph.find(Node.ANY, Node.ANY, resAsNode) ;
+                }
+            }
+        }
+        finally
+        {
+            it.close() ;
+        }
+       	
+        // If we were underneath an InfGraph, and at least one triple changed, then we have to rebind.
+        if ( rawGraph != graph && changeOccured )
+        {
+            ((InfGraph) graph).rebind() ;
+        }
+        return newRes ;
     }
 
 
