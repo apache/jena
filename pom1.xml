@@ -2,47 +2,48 @@
 
 <!-- POM file for Jena IRI library -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
-  <artifactId>jena-iri</artifactId>
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>iri</artifactId>
   <packaging>jar</packaging>
-  <name>IRI</name>
-  <version>0.9.0-incubating-SNAPSHOT</version>
+  <name>Jena IRI</name>
+  <version>0.9-SNAPSHOT</version>
   <description/>
   <url>http://jena.sf.net/iri</url>
 
-  <parent>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
-  </parent> 
+  <organization>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
+  </organization>
+
+  <licenses>
+    <license>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/</connection>
-    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/</url>
+    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/IRI</url>
   </scm>
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>com.ibm.icu</groupId>
       <artifactId>icu4j</artifactId>
-      <version>${ver.icu4j}</version>
+      <version>3.4.4</version>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <version>4.5</version>
       <scope>test</scope>
-      <version>${ver.junit}</version>
     </dependency>
 
   </dependencies>
@@ -108,7 +109,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
       
@@ -138,15 +139,11 @@
         <executions>
           <execution>
             <id>create-assembly</id>
-            <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <finalName>${assembly.root.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>assembly.xml</descriptor>
-	      </descriptors>
-	    </configuration>
+            <!-- Better after package because of javadoc, source and test-jar-->
+            <phase>verify</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -162,4 +159,23 @@
     </plugins>
   </build>
   
+  <distributionManagement>
+
+    <repository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo</url>
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </repository>
+
+    <snapshotRepository>
+      <id>jena-repo</id>
+      <name>Jena Repository</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
