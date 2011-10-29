@@ -2,20 +2,13 @@
 
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
-  <artifactId>jena-fuseki</artifactId>
+  <groupId>org.openjena</groupId>
+  <artifactId>fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.2.1-incubating-SNAPSHOT</version>
+  <version>0.2.1-SNAPSHOT</version>
   <description/>
   <url>http://incubator.apache.org/jena</url>
-
-  <parent>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
-  </parent> 
 
   <organization>
     <name>Apache Jena</name>
@@ -34,30 +27,21 @@
     <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
-  <!-- Problems with additional artifacts:
-       Any names set here are lost on installation.
-         Solution: use install:install-file.
-	 Solution: separate artifacts (heavyweight)
-  -->
-
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <!-- and the classifier is added using the id -->
-    <server.jar.name>fuseki-server-${project.version}</server.jar.name>
-    <assembly.name>${this.root}</assembly.name>
-    <assembly.soh.name>${this.root}</assembly.soh.name>
-    <assembly.zip.name>${this.root}</assembly.zip.name>
+    <server.jar.name>${project.artifactId}-${project.version}</server.jar.name>
 
-    <ver.jena>2.6.5-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.8.9-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
-
+    <ver.jena>2.6.5-SNAPSHOT</ver.jena>
+    <ver.arq>2.8.9-SNAPSHOT</ver.arq>
+    <ver.tdb>0.8.11-SNAPSHOT</ver.tdb>
+    <!-- But <optional> does not work -->
+    <!-- <ver.sdb>1.3.3</ver.sdb> -->
     <!-- These two go together -->
     <ver.jetty>7.2.1.v20101111</ver.jetty>
     <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
-
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
+    <ver.junit>4.8.2</ver.junit>
     <ver.commons-codec>1.5</ver.commons-codec>
     <ver.slf4j>1.6.1</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
@@ -66,42 +50,42 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
       <version>${ver.jena}</version>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
       <classifier>tests</classifier>
       <version>${ver.jena}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>tdb</artifactId>
       <version>${ver.tdb}</version>
     </dependency>
 
     <!--
     <dependency>
-      <groupId>org.apache.jena</groupId>
+      <groupId>com.hp.hpl.jena</groupId>
       <artifactId>sdb</artifactId>
       <version>${ver.sdb}</version>
       <optional>true</optional>
@@ -111,7 +95,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
       <version>${ver.junit}</version>
     </dependency>
 
@@ -134,6 +117,12 @@
       <version>${ver.commons-fileupload}</version>
     </dependency>
 
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>${ver.commons-codec}</version>
+    </dependency>
+    
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -311,55 +300,35 @@
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-
-	<executions>
-
-	  <execution>
-	    <id>create-server-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <archive>
-		<manifest>
-		  <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
-		</manifest>
-	      </archive>
-	      <finalName>${server.jar.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>assembly-server.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-
-	  <!--
-	  <execution>
-	    <id>create-soh-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <finalName>${assembly.soh.name}</finalName>
-	      <!- -<appendAssemblyId>false</appendAssemblyId> - ->
-	      <descriptors>
-		<descriptor>assembly-soh.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
+            </manifest>
+          </archive>
+	  <descriptors>
+	    <descriptor>assembly-server.xml</descriptor>
+	    <descriptor>assembly-soh.xml</descriptor>
+	    <descriptor>assembly-dist.xml</descriptor>
+	  </descriptors>
+	  <!-- 
+	    This works as well, but generates a "NOTE" message
+	  <finalName>fuseki-sys</finalName>
+	  <descriptorRefs>
+	    <descriptorRef>jar-with-dependencies</descriptorRef>
+	  </descriptorRefs>
+	  <appendAssemblyId>false</appendAssemblyId>
 	  -->
-
-	  <execution>
-	    <id>create-zip-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <finalName>${assembly.zip.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      <descriptors>
-		<descriptor>assembly-dist.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-	</executions>
+        </configuration>
+	<executions>
+          <execution>
+            <id>create-assemblies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       
       <plugin>
@@ -375,4 +344,43 @@
 
   </build>
   
+  <repositories>
+
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <downloadUrl>http://openjena.org/repo</downloadUrl>
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+      <url>sftp://openjena.org/var/repo</url>
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
 </project>
