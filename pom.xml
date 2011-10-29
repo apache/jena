@@ -29,6 +29,8 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
+    <server.jar.name>${project.artifactId}-${project.version}</server.jar.name>
+
     <ver.jena>2.6.5-SNAPSHOT</ver.jena>
     <ver.arq>2.8.9-SNAPSHOT</ver.arq>
     <ver.tdb>0.8.11-SNAPSHOT</ver.tdb>
