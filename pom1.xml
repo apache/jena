@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project>
+
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.jena</groupId>
-  <artifactId>jena-sdb</artifactId>
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>sdb</artifactId>
   <packaging>jar</packaging>
   <name>SDB</name>
-  <version>${ver.sdb}</version>
+  <version>1.3.5-SNAPSHOT</version>
+  <description/>
+   <url>http://incubator.apache.org/jena</url>
 
-  <parent>
-    <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
-  </parent> 
+  <organization>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
+  </organization>
 
-  <description>SDB is a persistence layer that uses an SQL databases.</description>
+  <licenses>
+    <license>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
 
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/SDB/</connection>
@@ -26,36 +30,36 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.6.5-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.8.9-incubating-SNAPSHOT</ver.arq>
+    <ver.jena>2.6.5-SNAPSHOT</ver.jena>
+    <ver.arq>2.8.9-SNAPSHOT</ver.arq>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
       <version>${ver.jena}</version>
     </dependency>
 
     <!-- Need the tests as well -->
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
       <classifier>tests</classifier>
       <version>${ver.jena}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
     </dependency>
 
     <!-- Need the tests as well -->
     <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
       <version>${ver.arq}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -64,14 +68,14 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${ver.junit}</version>
-      <!-- <scope>test</scope> see: JENA-141 -->
+      <version>4.5</version>
+      <!-- <scope>test</scope> -->
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${ver.slf4j}</version>
+      <version>1.5.8</version>
     </dependency>
 
     <dependency>
@@ -179,7 +183,7 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name}</windowtitle>
           <doctitle>${project.name}</doctitle>
-          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
@@ -274,5 +278,63 @@ build.time.txt=${build.time.txt}
     </plugins>
 
   </build>
+
+  <reporting>
+    <!-- Does not include the script outputs!
+         <plugins>
+         <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+         <artifactId>maven-surefire-report-plugin</artifactId>
+         <configuration>
+         <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+         </configuration>
+         </plugin>
+         </plugins>
+    -->
+  </reporting>
+
+   <repositories>
+
+    <!-- jena-repo is mirrored to Maven central repository -->
+    <!-- In case mirroring has not happened yet ... -->
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- jena-repo-dev is where SNAPSHOTs and RCs are published -->  
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  
+  <distributionManagement>
+    <downloadUrl>http://openjena.org/repo-dev</downloadUrl>
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+      <url>sftp://openjena.org/var/repo</url>
+      <!-- <url>sftp://openjena.org/var/repo-dev</url>-->
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <!-- <url>file:tmp</url> -->
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
 
 </project>
