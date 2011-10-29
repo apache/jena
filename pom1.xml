@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.hp.hpl.jena</groupId>
+  <artifactId>tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>0.9.0-SNAPSHOT</version>
+
+  <description>TDB is a storage subsystem for Jena and ARQ</description>
+  <url>http://openjena.org/TDB</url>
+
+  <organization>
+    <name>Apache Jena</name>
+    <url>http://incubator.apache.org/jena</url>
+  </organization>
+
+  <developers>
+    <developer>
+      <name>Andy Seaborne</name>
+    </developer>
+    <developer>
+      <name>Paolo Castagna</name>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>Apache 2.0 License</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
+  </scm>
+
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <ver.jena>2.6.5-SNAPSHOT</ver.jena>
+    <ver.arq>2.8.9-SNAPSHOT</ver.arq>
+    <ver.iri>0.8</ver.iri>
+    <ver.junit>4.9</ver.junit>
+    <ver.slf4j>1.6.1</ver.slf4j>
+    <ver.log4j>1.2.16</ver.log4j>
+    <ver.jdk>1.6</ver.jdk>
+  </properties>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>arq</artifactId>
+      <version>${ver.arq}</version>
+      <classifier>tests</classifier>
+      <!--<type>test-jar</type>-->
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>jena</artifactId>
+      <type>test-jar</type>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>    
+
+    <dependency>
+      <groupId>com.hp.hpl.jena</groupId>
+      <artifactId>iri</artifactId>
+      <version>${ver.iri}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${ver.junit}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${ver.slf4j}</version>
+    </dependency>
+
+    <!-- Choose your logging provider 
+         But note ARQ confgures log4j (and java.util.logging)
+         in its logging support utilities so needs it to 
+         compile.
+    -->
+    
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <optional>true</optional>
+      <version>${ver.slf4j}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${ver.log4j}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.jms</groupId>
+          <artifactId>jms</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jdmk</groupId>
+          <artifactId>jmxtools</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jmx</groupId>
+          <artifactId>jmxri</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+      </exclusions> 
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <!-- The filter file is written by antrun -->
+    <filters>
+      <filter>${project.basedir}/target/filter.properties</filter>
+    </filters>
+
+    <resources>
+      <resource>
+        <targetPath>com/hp/hpl/jena/tdb/</targetPath>
+        <filtering>true</filtering>
+        <directory>resources</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <debug>true</debug>
+          <debuglevel>source,lines,vars</debuglevel>
+          <optimize>true</optimize>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.2</version>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal> 
+            </goals>
+          </execution>
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.8</version>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <excludePackageNames>com.hp.hpl.jena.tdb.*,org.openjena.atlas.*</excludePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom> 
+        </configuration>
+      </plugin>
+
+      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-timestamp</id>
+            <phase>generate-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.basedir}/target"/>
+                <tstamp>
+                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
+                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm z"/>
+                </tstamp>
+                <!-- Do not indent (it does not work) -->
+                <echo file="${project.basedir}/target/filter.properties">
+#begin
+build.time.xsd=${build.time.xsd}
+build.time.txt=${build.time.txt}
+#end
+                </echo>
+                <echo message="version=${project.version}"/>
+                <echo message="build.time=${build.time.txt}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <!-- Another task, another execution -->
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+            <descriptor>assembly-testing.xml</descriptor>
+          </descriptors>
+        </configuration>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <!-- Must be last plugin attached to "package" -->
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+  <reporting>
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.9</version>
+        <configuration>
+          <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>cobertura-maven-plugin</artifactId>
+        <version>2.5.1</version>
+        <configuration>
+          <formats>
+            <format>html</format>
+            <format>xml</format>
+          </formats>
+          <instrumentation>
+            <ignores>
+              <ignore>org.slf4j.*</ignore>
+            </ignores>
+          </instrumentation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>${ver.jdk}</targetJdk>
+          <failOnViolation>false</failOnViolation>
+        </configuration>
+      </plugin>
+      -->
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <omitVisitors>Naming</omitVisitors>
+          <onlyAnalyze>org.apache.jena.larq.*</onlyAnalyze>
+          <findbugsXmlOutput>true</findbugsXmlOutput>
+          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+          <xmlOutput>true</xmlOutput>
+        </configuration>
+      </plugin>
+
+    </plugins>
+  </reporting>
+
+  <repositories>
+
+    <!-- jena-repo is mirrored to Maven central repository -->
+    <!-- In case mirroring has not happened yet ... -->
+    <repository>
+      <id>repo-jena</id>
+      <name>Jena Maven - Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- jena-repo-dev is where SNAPSHOTs and RCs are published -->  
+    <repository>
+      <id>repo-jena-dev</id>
+      <name>Jena Maven - Development Repository</name>
+      <layout>default</layout>
+      <url>http://openjena.org/repo-dev</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+
+      <url>sftp://openjena.org/var/repo</url>
+      <!-- Because RC's are snapshots IMHO -->
+      <!--<url>sftp://openjena.org/var/repo-dev</url>-->
+      <!--<url>file:tmp</url>-->
+      <layout>default</layout>
+    </repository> 
+
+    <!--
+    <snapshotRepository>
+      <id>apache.snapshots.https</id>
+      <name>Apache Development Snapshot Repository</name>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    -->
+
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <layout>default</layout>
+    </snapshotRepository>
+
+  </distributionManagement>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+  
+  <mailingLists>
+    <mailingList>
+      <name>Users</name>
+      <post>jena-users@incubator.apache.org</post>
+      <subscribe>jena-users-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-users-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-users/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-users/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Development</name>
+      <post>jena-dev@incubator.apache.org</post>
+      <subscribe>jena-dev-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-dev-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-dev/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-dev/</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Commits</name>
+      <post>jena-commits@incubator.apache.org</post>
+      <subscribe>jena-commits-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-commits-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-commits/</archive>
+      <otherArchives>
+	<otherArchive>http://incubator.apache.org/mail/jena-commits/</otherArchive>
+      </otherArchives>
+    </mailingList>
+  </mailingLists>
+
+</project>
