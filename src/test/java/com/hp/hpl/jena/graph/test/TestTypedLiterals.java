@@ -9,25 +9,36 @@
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.datatypes.xsd.*;
-import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.vocabulary.XSD;
-import com.hp.hpl.jena.enhanced.EnhNode;
+import java.io.* ;
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
+import java.util.* ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
+import org.apache.xerces.impl.dv.util.HexBin ;
 
-import java.math.*;
-import java.util.*;
-import java.io.*;
-
-import org.apache.xerces.impl.dv.util.HexBin;
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.IllegalDateTimeFieldException ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
+import com.hp.hpl.jena.enhanced.EnhNode ;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
+import com.hp.hpl.jena.graph.query.Domain ;
+import com.hp.hpl.jena.graph.query.Query ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.vocabulary.XSD ;
    
 /**
  * Unit test for the typed literal machinery - including RDFDatatype,
@@ -966,6 +977,13 @@ public class TestTypedLiterals extends TestCase {
         m2.read(ins, null);
         ins.close();
         assertTrue(orig.isIsomorphicWith(m2));
+    }
+    
+    /** Test that XSD anyURI is not sameValueAs XSD string (Xerces returns a string as the value for both) */ 
+    public void testXSDanyURI() {
+        Node node1 = Node.createLiteral("http://example/", null, XSDDatatype.XSDanyURI) ;
+        Node node2 = Node.createLiteral("http://example/", null, XSDDatatype.XSDstring) ;
+        assertFalse(node1.sameValueAs(node2)) ;
     }
     
     /**

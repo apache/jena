@@ -109,7 +109,10 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
     
     /** Datatype representing xsd:anyURI */
-    public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);  
+    // If you see this, remove commented lines.
+    // Merely temporary during switch over and testing.   
+    //public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);  
+    public static final XSDDatatype XSDanyURI = new XSDPlainType("anyURI");
     
     /** Datatype representing xsd:token */
     public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
@@ -118,7 +121,10 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDName = new XSDBaseStringType("Name");
 
     /** Datatype representing xsd:QName */
-    public static final XSDDatatype XSDQName = new XSDDatatype("QName");
+    // If you see this, remove commented lines.
+    // Merely temporary during switch over and testing.   
+    // public static final XSDDatatype XSDQName = new XSDDatatype("QName");
+    public static final XSDDatatype XSDQName = new XSDPlainType("QName");
 
     /** Datatype representing xsd:language */
     public static final XSDDatatype XSDlanguage = new XSDBaseStringType("language");
@@ -136,10 +142,16 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDNCName = new XSDBaseStringType("NCName");
 
     /** Datatype representing xsd:IDREF */
-    public static final XSDDatatype XSDIDREF = new XSDDatatype("IDREF");
+    // If you see this, remove commented lines.
+    // Merely temporary during switch over and testing.   
+    //public static final XSDDatatype XSDIDREF = new XSDDatatype("IDREF");
+    public static final XSDDatatype XSDIDREF = new XSDPlainType("IDREF");
 
     /** Datatype representing xsd:NOTATION */
-    public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");
+    // If you see this, remove commented lines.
+    // Merely temporary during switch over and testing.   
+    //public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");
+    public static final XSDDatatype XSDNOTATION = new XSDPlainType("NOTATION");
 
     /** Datatype representing xsd:hexBinary */
     public static final XSDDatatype XSDhexBinary = new XSDhexBinary("hexBinary");

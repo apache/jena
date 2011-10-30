@@ -136,10 +136,15 @@ public class BaseDatatype implements RDFDatatype {
      * This default requires value and datatype equality.
      */
     @Override
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        return value1.getDatatype() == value2.getDatatype()
-             && value1.getValue().equals(value2.getValue());
+    public boolean isEqual(LiteralLabel litLabel1, LiteralLabel litLabel2) {
+        return isEqualPlain(litLabel1, litLabel2) ;
     }
+    
+    /** The default for equality - same datatype, same value */ 
+    protected static boolean isEqualPlain(LiteralLabel litLabel1, LiteralLabel litLabel2) {
+        return litLabel1.getDatatype() == litLabel2.getDatatype()
+        && litLabel1.getValue().equals(litLabel2.getValue());
+}
     
     /**
          Default implementation of getHashCode() delegates to the default from
