@@ -4,10 +4,8 @@ ChangeLog for ARQ
 ==== ARQ 2.8.9
 ** Java 6 is now required for running ARQ.
 
-+ Add function STRBEFORE (see fn:substring-before in XPath/XQuery F&O)  [ARQ language only]  
-+ Add function STRAFTER (see fn:substring-after in XPath/XQuery F&O)  [ARQ language only]   
++ Add function STRBEFORE, STRAFTER and REPLACE for SPARQL 1.1
 + Add function UUID  [ARQ language only]  
-+ Add function REPLACE (see fn:string-replace in XPath/XQuery F&O)  [ARQ language only]   
 + Remove LARQ from ARQ.  LARQ is now a separate Jena module.
 + Fix reuse of query objects (aggregation used shared state) (JENA-121)
 + Spill to disk update (enable with ARQ.spillOnDiskUpdateThreshold) (JENA-45)

@@ -15,7 +15,6 @@
     <format>zip</format>
   </formats>
 
-  <!-- To exclude files may be better to use a fileset -->
   <dependencySets>
     <dependencySet>
       <unpack>false</unpack>
@@ -33,15 +32,6 @@
         <include>NOTICE*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-      </includes>
-    </fileSet>
-
-    <!-- More for the lib/ -->
-    <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>${this.root}-tests.jar</include>
       </includes>
     </fileSet>
 
@@ -67,32 +57,9 @@
       <directory>bat</directory>
     </fileSet>
 
-    <!-- For testing the deployment -->
-    <fileSet>
-      <directory>testing</directory>
-    </fileSet>
-
-    <fileSet>
-      <includes>
-        <include>test.sh</include>
-      </includes>
-    </fileSet>
-
-    <fileSet>
-      <directory>doc</directory>
-      <excludes>
-        <exclude>linkcheck</exclude>
-        <exclude>template.html</exclude>
-        <exclude>**/_*/**</exclude>
-        <exclude>**/desktop.ini</exclude>
-        <!-- javadoc done separately below -->
-        <exclude>javadoc/**</exclude>
-      </excludes>
-    </fileSet>
-
     <fileSet>
       <directory>${project.build.directory}/apidocs</directory>
-      <outputDirectory>doc/javadoc</outputDirectory>
+      <outputDirectory>javadoc</outputDirectory>
     </fileSet>
 
     <fileSet>
