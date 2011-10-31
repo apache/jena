@@ -364,9 +364,7 @@ public class XSDFuncOp
     }
 
     // @@ To NodeFunctions.
-    /** String operations - se NodeFunctions beause we have to cope with 
-     * simple literals, literals with language and xsd;string 
-     * @param subLabel 
+    /** check and get a string (may be a simple literal, literal with language tag or an XSD string).
      */
 
     private static Node checkAndGetString(String label, NodeValue nv)
@@ -431,9 +429,9 @@ public class XSDFuncOp
         String n = checkAndGetString("replace", nvStr).getLiteralLexicalForm() ;
         String rep = checkAndGetString("replace", nvReplacement).getLiteralLexicalForm() ;
         String x = pattern.matcher(n).replaceAll(rep) ;
-        return NodeValue.makeString(x) ;
+        //return NodeValue.makeString(x) ;
+        return calcReturn(x, nvStr.asNode()) ;
     }
-    
 
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement)
     {
@@ -577,20 +575,37 @@ public class XSDFuncOp
         return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
     }
     
+    private static NodeValue calcReturn(String result, Node arg)
+    {
+        if ( arg.getLiteralDatatype() != null )
+        {
+            if ( arg.getLiteralDatatype() != XSDDatatype.XSDstring )
+                throw new ARQInternalErrorException("Excepted only xsd:string: "+arg) ; 
+            // Must be xsd:string
+            return NodeValue.makeNode(result, XSDDatatype.XSDstring ) ;
+        }
+        String lang = arg.getLiteralLanguage() ;
+        if ( lang == null ) lang = "" ;
+        if ( lang.equals("") ) return NodeValue.makeString(result) ;
+        return NodeValue.makeNode(result, lang, (String)null) ;
+    }
+    
     public static NodeValue strBefore(NodeValue string, NodeValue match)
     {
         check2("strBefore", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
+        Node mainArg = string.asNode() ;
+        
         if ( lex2.length() == 0 )
-            return NodeValue.nvEmptyString ;
+            return calcReturn("", mainArg) ;
         
         int i = lex1.indexOf(lex2) ;
         if ( i < 0 )
-            return NodeValue.nvEmptyString ;
+            return calcReturn("", mainArg) ;
         
         String s = lex1.substring(0, i) ;
-        return NodeValue.makeString(s) ;
+        return calcReturn(s, string.asNode()) ;
     }
     
     public static NodeValue strAfter(NodeValue string, NodeValue match)
@@ -598,15 +613,17 @@ public class XSDFuncOp
         check2("strAfter", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
+        Node mainArg = string.asNode() ;
+        
         if ( lex2.length() == 0 )
-            return NodeValue.nvEmptyString ;
+            return calcReturn("", mainArg) ;
         
         int i = lex1.indexOf(lex2) ;
         if ( i < 0 )
-            return NodeValue.nvEmptyString ;
+            return calcReturn("", mainArg) ;
         i += lex2.length() ;
         String s = lex1.substring(i) ;
-        return NodeValue.makeString(s) ;
+        return calcReturn(s, string.asNode()) ;
     }
 
     public static NodeValue strLowerCase(NodeValue string)

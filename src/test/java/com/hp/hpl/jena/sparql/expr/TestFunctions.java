@@ -70,12 +70,56 @@ public class TestFunctions
     @Test public void exprStrStart3() { test("fn:starts-with('abc', 'abc')", TRUE) ; }
     @Test public void exprStrStart4() { test("fn:starts-with('abc', 'abcd')", FALSE) ; }
     
+    @Test public void exprStrStart10() { test("STRSTARTS('abc', 'abcd')", FALSE) ; }
+    @Test public void exprStrStart11() { test("STRSTARTS('abc'@en, 'ab')", TRUE) ; }
+    @Test public void exprStrStart12() { test("STRSTARTS('abc'^^xsd:string, 'ab')", TRUE) ; }
+    @Test public void exprStrStart13() { test("STRSTARTS('abc'^^xsd:string, 'ab'^^xsd:string)", TRUE) ; }
+    @Test public void exprStrStart14() { test("STRSTARTS('abc', 'ab'^^xsd:string)", TRUE) ; }
+    @Test public void exprStrStart15() { test("STRSTARTS('abc'@en, 'ab'@en)", TRUE) ; }
+    
+    @Test public void exprStrStart16() { testEvalException("STRSTARTS('ab'@en, 'ab'@fr)") ; }
+    @Test public void exprStrStart17() { testEvalException("STRSTARTS(123, 'ab'@fr)") ; }
+    @Test public void exprStrStart18() { testEvalException("STRSTARTS('123'^^xsd:string, 12.3)") ; }
+
+    @Test public void exprStrBefore0() { test("STRBEFORE('abc', 'abcd')", NodeValue.nvEmptyString) ; }
+    @Test public void exprStrBefore1() { test("STRBEFORE('abc'@en, 'b')", NodeValue.makeNode("a", "en", (String)null)) ; }
+    @Test public void exprStrBefore2() { test("STRBEFORE('abc'^^xsd:string, 'c')", NodeValue.makeNode("ab", XSDDatatype.XSDstring)) ; }
+    @Test public void exprStrBefore3() { test("STRBEFORE('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("", XSDDatatype.XSDstring)) ; }
+    @Test public void exprStrBefore4() { test("STRBEFORE('abc', 'ab'^^xsd:string)", NodeValue.nvEmptyString) ; }
+    @Test public void exprStrBefore5() { test("STRBEFORE('abc'@en, 'b'@en)", NodeValue.makeNode("a", "en", (String)null)) ; }
+    
+    @Test public void exprStrBefore6() { testEvalException("STRBEFORE('ab'@en, 'ab'@fr)") ; }
+    @Test public void exprStrBefore7() { testEvalException("STRBEFORE(123, 'ab'@fr)") ; }
+    @Test public void exprStrBefore8() { testEvalException("STRBEFORE('123'^^xsd:string, 12.3)") ; }
+    
+    @Test public void exprStrAfter0() { test("STRAFTER('abc', 'abcd')", NodeValue.nvEmptyString) ; }
+    @Test public void exprStrAfter1() { test("STRAFTER('abc'@en, 'b')", NodeValue.makeNode("c", "en", (String)null)) ; }
+    @Test public void exprStrAfter2() { test("STRAFTER('abc'^^xsd:string, 'a')", NodeValue.makeNode("bc", XSDDatatype.XSDstring)) ; }
+    @Test public void exprStrAfter3() { test("STRAFTER('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("", XSDDatatype.XSDstring)) ; }
+    @Test public void exprStrAfter4() { test("STRAFTER('abc', 'bc'^^xsd:string)", NodeValue.nvEmptyString) ; }
+    @Test public void exprStrAfter5() { test("STRAFTER('abc'@en, 'b'@en)", NodeValue.makeNode("c", "en", (String)null)) ; }
+    
+    @Test public void exprStrAfter6() { testEvalException("STRAFTER('ab'@en, 'ab'@fr)") ; }
+    @Test public void exprStrAfter7() { testEvalException("STRAFTER(123, 'ab'@fr)") ; }
+    @Test public void exprStrAfter8() { testEvalException("STRAFTER('123'^^xsd:string, 12.3)") ; }
+
     @Test public void exprStrEnds0() { test("fn:ends-with('abc', '')", TRUE) ; }
     @Test public void exprStrEnds1() { test("fn:ends-with('abc', 'c')", TRUE) ; }
     @Test public void exprStrEnds2() { test("fn:ends-with('abc', 'bc')", TRUE) ; }
     @Test public void exprStrEnds3() { test("fn:ends-with('abc', 'abc')", TRUE) ; }
     @Test public void exprStrEnds4() { test("fn:ends-with('abc', 'zabc')", FALSE) ; }
     
+    @Test public void exprStrEnds10() { test("STRENDS('abc', 'abcd')", FALSE) ; }
+    @Test public void exprStrEnds11() { test("STRENDS('abc'@en, 'bc')", TRUE) ; }
+    @Test public void exprStrEnds12() { test("STRENDS('abc'^^xsd:string, 'c')", TRUE) ; }
+    @Test public void exprStrEnds13() { test("STRENDS('abc'^^xsd:string, 'c'^^xsd:string)", TRUE) ; }
+    @Test public void exprStrEnds14() { test("STRENDS('abc', 'ab'^^xsd:string)", FALSE) ; }
+    @Test public void exprStrEnds15() { test("STRENDS('abc'@en, 'abc'@en)", TRUE) ; }
+    
+    @Test public void exprStrEnds16() { testEvalException("STRENDS('ab'@en, 'ab'@fr)") ; }
+    @Test public void exprStrEnds17() { testEvalException("STRENDS(123, 'ab'@fr)") ; }
+    @Test public void exprStrEnds18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
+
     @Test public void exprStrCase1() { test("fn:lower-case('aBc')", NodeValue.makeString("abc")) ; }
     @Test public void exprStrCase2() { test("fn:lower-case('abc')", NodeValue.makeString("abc")) ; }
     @Test public void exprStrCase3() { test("fn:upper-case('abc')", NodeValue.makeString("ABC")) ; }
@@ -92,6 +136,25 @@ public class TestFunctions
     @Test public void exprStrContains6() { test("fn:contains('abc', 'abc')", TRUE) ; }
     @Test public void exprStrContains7() { test("fn:contains('abc', 'Xc')", FALSE) ; }
     @Test public void exprStrContains8() { test("fn:contains('abc', 'Xa')", FALSE) ; }
+
+    @Test public void exprContains10() { test("Contains('abc', 'abcd')", FALSE) ; }
+    @Test public void exprContains11() { test("Contains('abc'@en, 'bc')", TRUE) ; }
+    @Test public void exprContains12() { test("Contains('abc'^^xsd:string, 'c')", TRUE) ; }
+    @Test public void exprContains13() { test("Contains('abc'^^xsd:string, 'c'^^xsd:string)", TRUE) ; }
+    @Test public void exprContains14() { test("Contains('abc', 'z'^^xsd:string)", FALSE) ; }
+    @Test public void exprContains15() { test("Contains('abc'@en, 'abc'@en)", TRUE) ; }
+    
+    @Test public void exprContains16() { testEvalException("Contains('ab'@en, 'ab'@fr)") ; }
+    @Test public void exprContains17() { testEvalException("Contains(123, 'ab'@fr)") ; }
+    @Test public void exprContains18() { testEvalException("STRENDS('123'^^xsd:string, 12.3)") ; }
+
+    @Test public void exprReplace1()   { test("REPLACE('abc', 'b', 'Z')", NodeValue.makeString("aZc")) ; }
+    @Test public void exprReplace2()   { test("REPLACE('abc', 'b.', 'Z')", NodeValue.makeString("aZ")) ; }
+    @Test public void exprReplace3()   { test("REPLACE('abcbd', 'b.', 'Z')", NodeValue.makeString("aZZ")) ; }
+    
+    @Test public void exprReplace4()   { test("REPLACE('abcbd'^^xsd:string, 'b.', 'Z')", NodeValue.makeNode("aZZ", XSDDatatype.XSDstring)) ; }
+    @Test public void exprReplace5()   { test("REPLACE('abcbd'@en, 'b.', 'Z')", NodeValue.makeNode("aZZ", "en", (String)null)) ; }
+    @Test public void exprReplace6()   { test("REPLACE('abcbd', 'B.', 'Z', 'i')", NodeValue.makeString("aZZ")) ; }
     
     @Test public void exprBoolean1()    { test("fn:boolean('')", FALSE) ; }
     @Test public void exprBoolean2()    { test("fn:boolean(0)", FALSE) ; }
