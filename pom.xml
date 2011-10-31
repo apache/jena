@@ -30,13 +30,10 @@
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
-    <!-- No - the zip file is uploaded as ${project.artifactId}-${project.version}.zip
-	 Use install:install-file??
-    -->
-    <!--
+    <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
+	 or else the name is changed on install
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
     -->
-    <assembly.root.name>${project.artifactId}-${project.version}</assembly.root.name>
   </properties>
 
   <dependencies>
@@ -244,8 +241,10 @@ build.time.txt=${build.time.txt}
 	    <phase>package</phase>
 	    <goals><goal>single</goal></goals>
 	    <configuration>
+	      <!--
 	      <finalName>${assembly.root.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
 	      <descriptors>
 		<descriptor>assembly.xml</descriptor>
 	      </descriptors>
