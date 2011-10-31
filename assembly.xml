@@ -100,25 +100,12 @@
     </fileSet>
 
     <fileSet>
-      <directory>doc</directory>
-      <excludes>
-        <exclude>release</exclude>
-        <exclude>linkcheck</exclude>
-        <exclude>produce</exclude>
-        <exclude>merge</exclude>
-        <exclude>template.html</exclude>
-        <exclude>**/_*/**</exclude>
-        <exclude>**/desktop.ini</exclude>
-      </excludes>
-    </fileSet>
-
-    <fileSet>
       <directory>src-examples</directory>
     </fileSet>
 
     <fileSet>
       <directory>${project.build.directory}/apidocs</directory>
-      <outputDirectory>doc/javadoc</outputDirectory>
+      <outputDirectory>javadoc</outputDirectory>
     </fileSet>
 
   </fileSets>
