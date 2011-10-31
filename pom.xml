@@ -27,7 +27,10 @@
   
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
+    <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
+	 or else the name is changed on install
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
+    -->
   </properties>
 
   <dependencies>
@@ -194,8 +197,10 @@ build.time.txt=${build.time.txt}
 	    <phase>package</phase>
 	    <goals><goal>single</goal></goals>
 	    <configuration>
+	      <!--
 	      <finalName>${assembly.root.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
 	      <descriptors>
 		<descriptor>assembly.xml</descriptor>
 	      </descriptors>
