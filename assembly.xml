@@ -28,21 +28,11 @@
       <includes>
         <include>Copyright.txt</include>
         <include>README*</include>
+        <include>DISCLAIMER*</include>
+	<include>LICENSE*</include>
+	<include>NOTICE*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-	<include>assembly.xml</include>
-        <include>assembly-testing.xml</include>
-      </includes>
-    </fileSet>
-
-    <!-- More for the lib/ -->
-    <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory>lib</outputDirectory>
-      <includes>
-        <include>${this.root}-tests.jar</include>
-        <include>jena-*-tests.jar</include>
-        <include>arq-*-tests.jar</include>
       </includes>
     </fileSet>
 
@@ -52,7 +42,6 @@
       <outputDirectory></outputDirectory>
       <includes>
         <include>${this.root}-sources.jar</include>
-        <include>${this.root}-test-sources.jar</include>
       </includes>
     </fileSet>
 
@@ -80,31 +69,12 @@
     </fileSet>
 
     <fileSet>
-      <directory>doc</directory>
-      <excludes>
-        <exclude>linkcheck</exclude>
-        <exclude>template.html</exclude>
-        <exclude>**/_*/**</exclude>
-        <exclude>**/desktop.ini</exclude>
-        <exclude>javadoc/**</exclude>
-      </excludes>
-    </fileSet>
-
-    <fileSet>
       <directory>${project.build.directory}/apidocs</directory>
-      <outputDirectory>doc/javadoc</outputDirectory>
+      <outputDirectory>javadoc</outputDirectory>
     </fileSet>
     
     <fileSet>
       <directory>src-examples</directory>
-    </fileSet>
-
-    <fileSet>
-      <directory>etc</directory>
-    </fileSet>
-
-    <fileSet>
-      <directory>Vocabularies</directory>
     </fileSet>
 
   </fileSets>
