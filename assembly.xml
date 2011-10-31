@@ -1,7 +1,7 @@
 <assembly>
-  <id>dist</id>
+  <id>distribution</id>
   
-  <baseDirectory>IRI-${project.version}</baseDirectory>
+  <baseDirectory>${project.name}-${project.version}</baseDirectory>
   <formats>
     <!--
     <format>tar.gz</format>
