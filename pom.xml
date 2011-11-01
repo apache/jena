@@ -241,7 +241,7 @@
             <id>ant-timestamp</id>
             <phase>generate-resources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <mkdir dir="${project.basedir}/target"/>
                 <tstamp>
                   <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
@@ -255,7 +255,7 @@ build.time.txt=${build.time.txt}
                 </echo>
 		<echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
