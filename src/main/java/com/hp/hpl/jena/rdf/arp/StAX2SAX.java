@@ -64,7 +64,7 @@ public class StAX2SAX {
         this.lhandler = (handler instanceof LexicalHandler) ?
                 (LexicalHandler) handler :
                 NO_LEXICAL_HANDLER ;
-        this.xef = XMLInputFactory.newFactory();
+        this.xef = XMLInputFactory.newInstance();
     }
     
     // I'd be happier doing stream reader, but we can only convert this way
