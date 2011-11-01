@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
     <relativePath>../JenaTop/pom.xml</relativePath>
-  </parent> 
+  </parent>
 
   <description>ARQ is a SPARQL 1.1 query engine for Jena</description>
 
@@ -24,7 +24,7 @@
     <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/</connection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/</url>
   </scm>
-  
+
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
@@ -69,7 +69,7 @@
       <artifactId>commons-codec</artifactId>
       <version>${ver.commons-codec}</version>
     </dependency>
-      
+
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
@@ -81,7 +81,7 @@
 	  <groupId>commons-logging</groupId>
 	  <artifactId>commons-logging</artifactId>
 	</exclusion>
-      </exclusions>      
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -114,7 +114,7 @@
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-resources-plugin</artifactId>
       </plugin>
-      
+
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-compiler-plugin</artifactId>
@@ -133,13 +133,13 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-	
-        <executions> 
+
+        <executions>
           <execution>
             <id>attach-sources</id>
             <!-- <phase>package</phase> package is the default -->
             <goals>
-              <goal>jar-no-fork</goal> 
+              <goal>jar-no-fork</goal>
             </goals>
           </execution>
           <execution>
@@ -149,7 +149,7 @@
             </goals>
           </execution>
         </executions>
-      
+
       </plugin>
 
       <plugin>
@@ -193,7 +193,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -202,7 +202,7 @@
             <id>ant-timestamp</id>
             <phase>generate-resources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <mkdir dir="${project.basedir}/target"/>
                 <tstamp>
                   <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
@@ -217,7 +217,7 @@ build.time.txt=${build.time.txt}
                 </echo>
                 <echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -228,7 +228,7 @@ build.time.txt=${build.time.txt}
       </plugin>
 
       <plugin>
-        <!-- This must be the last plug-in attached to the package phase 
+        <!-- This must be the last plug-in attached to the package phase
              because it replies on the packaging of the jar to happen first.
         -->
         <!-- We want one with appendAssemblyId=false and one with it defaulting to true.
