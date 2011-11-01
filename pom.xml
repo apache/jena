@@ -43,7 +43,10 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <!-- and the classifier is added using the id -->
+    <!--
     <server.jar.name>fuseki-server-${project.version}</server.jar.name>
+    -->
+    <server.jar.name>${this.root}-server</server.jar.name>
     <assembly.name>${this.root}</assembly.name>
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
@@ -354,8 +357,10 @@
 	    <phase>package</phase>
 	    <goals><goal>single</goal></goals>
 	    <configuration>
+	      <!--
 	      <finalName>${assembly.zip.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
 	      <descriptors>
 		<descriptor>assembly-dist.xml</descriptor>
 	      </descriptors>

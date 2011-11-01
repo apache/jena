@@ -16,17 +16,6 @@ Assumes jar made and onejar has been assembled.
 
   <baseDirectory>${project.name}-${project.version}</baseDirectory>
 
-  <fileSet>
-    <includes>
-      <include>README*</include>
-      <include>DISCLAIMER*</include>
-      <include>LICENSE*</include>
-      <include>NOTICE*</include>
-      <include>ChangeLog.txt</include>
-      <include>pom.xml</include>
-      </includes>
-  </fileSet>
-  
   <files>
     <file>
       <source>${project.build.directory}/${server.jar.name}.jar</source>
@@ -36,6 +25,18 @@ Assumes jar made and onejar has been assembled.
   </files>
 
   <fileSets>
+    <fileSet>
+      <outputDirectory></outputDirectory>
+      <includes>
+	<include>README*</include>
+	<include>DISCLAIMER*</include>
+	<include>LICENSE*</include>
+	<include>NOTICE*</include>
+	<include>ChangeLog.txt</include>
+	<include>pom.xml</include>
+      </includes>
+    </fileSet>
+
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
