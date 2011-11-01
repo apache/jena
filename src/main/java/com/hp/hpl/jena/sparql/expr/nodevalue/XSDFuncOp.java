@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions.* ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DOUBLE ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_FLOAT ;
@@ -362,24 +363,7 @@ public class XSDFuncOp
                 throw new ARQInternalErrorException("Unrecognized numeric operation : "+v) ;   
         }
     }
-
-    // @@ To NodeFunctions.
-    /** check and get a string (may be a simple literal, literal with language tag or an XSD string).
-     */
-
-    private static Node checkAndGetString(String label, NodeValue nv)
-    {
-        Node n = nv.asNode() ;
-        if ( ! n.isLiteral() )
-            throw new ExprEvalException(label+": Not a literal: "+n) ;
-        RDFDatatype dt = n.getLiteralDatatype() ;
-        String lang = n.getLiteralLanguage() ;
-        
-        if ( dt != null && ! dt.equals(XSDDatatype.XSDstring) )
-            throw new ExprEvalException(label+": Not a string: "+n) ;
-        return n ;
-    }
-    
+   
     // NB Java string start from zero and uses start/end
     // F&O strings start from one and uses start/length
 
@@ -406,18 +390,18 @@ public class XSDFuncOp
     
     public static NodeValue strlen(NodeValue nvString)
     {
-        Node n = checkAndGetString("strlen", nvString) ;
+        Node n = checkAndGetStringLiteral("strlen", nvString) ;
         int len = n.getLiteralLexicalForm().length() ;
         return NodeValue.makeInteger(len) ;
     }
     
     public static NodeValue strReplace(NodeValue nvStr, NodeValue nvPattern, NodeValue nvReplacement, NodeValue nvFlags)
     {
-        String pat = checkAndGetString("replace", nvPattern).getLiteralLexicalForm() ;
+        String pat = checkAndGetStringLiteral("replace", nvPattern).getLiteralLexicalForm() ;
         int flags = 0 ;
         if ( nvFlags != null )
         {
-            String flagsStr = checkAndGetString("replace", nvFlags).getLiteralLexicalForm() ;
+            String flagsStr = checkAndGetStringLiteral("replace", nvFlags).getLiteralLexicalForm() ;
             flags = RegexJava.makeMask(flagsStr) ;
         }
         
@@ -426,10 +410,9 @@ public class XSDFuncOp
 
     public static NodeValue strReplace(NodeValue nvStr, Pattern pattern, NodeValue nvReplacement)
     {
-        String n = checkAndGetString("replace", nvStr).getLiteralLexicalForm() ;
-        String rep = checkAndGetString("replace", nvReplacement).getLiteralLexicalForm() ;
+        String n = checkAndGetStringLiteral("replace", nvStr).getLiteralLexicalForm() ;
+        String rep = checkAndGetStringLiteral("replace", nvReplacement).getLiteralLexicalForm() ;
         String x = pattern.matcher(n).replaceAll(rep) ;
-        //return NodeValue.makeString(x) ;
         return calcReturn(x, nvStr.asNode()) ;
     }
 
@@ -445,7 +428,7 @@ public class XSDFuncOp
 
     public static NodeValue substring(NodeValue nvString, NodeValue nvStart, NodeValue nvLength)
     {
-        Node n = checkAndGetString("substring", nvString) ;
+        Node n = checkAndGetStringLiteral("substring", nvString) ;
         RDFDatatype dt = n.getLiteralDatatype() ;
         String lang = n.getLiteralLanguage() ;
         
@@ -490,11 +473,10 @@ public class XSDFuncOp
                 finish = 0 ;
             
             if ( string.length() == 0 )
-                return NodeValue.nvEmptyString ;
+                return calcReturn("", n) ;
             
             String lex2 = string.substring(start, finish) ;
-            Node n2 = Node.createLiteral(lex2, lang, dt) ;
-            return NodeValue.makeNode(n2) ;
+            return calcReturn(lex2, n) ;
         } catch (IndexOutOfBoundsException ex)
         {
             throw new ExprEvalException("IndexOutOfBounds", ex) ;
@@ -522,37 +504,10 @@ public class XSDFuncOp
         }
         throw new ExprEvalException("Not a number:"+nv) ;
     }
-    
-    // Check for string operations with primary first arg and second second arg (e.g. CONTAINS)
-    private static void check2(String label, NodeValue arg1, NodeValue arg2) 
-    {
-        Node n1 = checkAndGetString(label, arg1) ;
-        Node n2 = checkAndGetString(label, arg2) ;
-        String lang1 = n1.getLiteralLanguage() ;
-        String lang2 = n2.getLiteralLanguage() ;
-        if (lang1 == null ) lang1 = "" ;
-        if (lang2 == null ) lang2 = "" ;
-        
-        if ( n1.getLiteralDatatype() != null )
-        {
-            // n1 is an xsd string by checkAndGetString
-            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) ) return ; 
-            if ( n2.getLiteralLanguage().equals("") ) return ;
-            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
-        }
-        
-        // Incompatible?
-        // arg1 simple or xsd:string, arg2 has a lang.
-        if ( lang1.equals("") && ! lang2.equals("") )
-            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
-        // arg1 with lang, arg2 has a different lang.
-        if ( ! lang1.equals("") && (!lang2.equals("") && ! lang1.equals(lang2) ) )  
-            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
-    }
-    
+ 
     public static NodeValue strContains(NodeValue string, NodeValue match)
     {
-        check2("contains", string, match) ;
+        checkTwoArgumentStringLiterals("contains", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         boolean x = StrUtils.contains(lex1, lex2) ;
@@ -561,7 +516,7 @@ public class XSDFuncOp
     
     public static NodeValue strStartsWith(NodeValue string, NodeValue match)
     {
-        check2("strStarts", string, match) ;
+        checkTwoArgumentStringLiterals("strStarts", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         return NodeValue.booleanReturn(lex1.startsWith(lex2)) ;
@@ -569,7 +524,7 @@ public class XSDFuncOp
     
     public static NodeValue strEndsWith(NodeValue string, NodeValue match)
     {
-        check2("strEnds", string, match) ;
+        checkTwoArgumentStringLiterals("strEnds", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         return NodeValue.booleanReturn(lex1.endsWith(lex2)) ;
@@ -577,22 +532,25 @@ public class XSDFuncOp
     
     private static NodeValue calcReturn(String result, Node arg)
     {
-        if ( arg.getLiteralDatatype() != null )
-        {
-            if ( arg.getLiteralDatatype() != XSDDatatype.XSDstring )
-                throw new ARQInternalErrorException("Excepted only xsd:string: "+arg) ; 
-            // Must be xsd:string
-            return NodeValue.makeNode(result, XSDDatatype.XSDstring ) ;
-        }
-        String lang = arg.getLiteralLanguage() ;
-        if ( lang == null ) lang = "" ;
-        if ( lang.equals("") ) return NodeValue.makeString(result) ;
-        return NodeValue.makeNode(result, lang, (String)null) ;
+        Node n2 = Node.createLiteral(result, arg.getLiteralLanguage(), arg.getLiteralDatatype()) ; 
+        return NodeValue.makeNode(n2) ;
+        
+//        if ( arg.getLiteralDatatype() != null )
+//        {
+//            if ( arg.getLiteralDatatype() != XSDDatatype.XSDstring )
+//                throw new ARQInternalErrorException("Excepted only xsd:string: "+arg) ; 
+//            // Must be xsd:string
+//            return NodeValue.makeNode(result, XSDDatatype.XSDstring ) ;
+//        }
+//        String lang = arg.getLiteralLanguage() ;
+//        if ( lang == null ) lang = "" ;
+//        if ( lang.equals("") ) return NodeValue.makeString(result) ;
+//        return NodeValue.makeNode(result, lang, (String)null) ;
     }
     
     public static NodeValue strBefore(NodeValue string, NodeValue match)
     {
-        check2("strBefore", string, match) ;
+        checkTwoArgumentStringLiterals("strBefore", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         Node mainArg = string.asNode() ;
@@ -610,7 +568,7 @@ public class XSDFuncOp
     
     public static NodeValue strAfter(NodeValue string, NodeValue match)
     {
-        check2("strAfter", string, match) ;
+        checkTwoArgumentStringLiterals("strAfter", string, match) ;
         String lex1 = string.asNode().getLiteralLexicalForm() ;
         String lex2 = match.asNode().getLiteralLexicalForm() ;
         Node mainArg = string.asNode() ;
@@ -628,18 +586,18 @@ public class XSDFuncOp
 
     public static NodeValue strLowerCase(NodeValue string)
     {
-        Node n = checkAndGetString("lcase", string) ;
+        Node n = checkAndGetStringLiteral("lcase", string) ;
         String lex = n.getLiteralLexicalForm() ;
-        Node n2 = Node.createLiteral(lex.toLowerCase(), n.getLiteralLanguage(), n.getLiteralDatatype()) ; 
-        return NodeValue.makeNode(n2) ;
+        String lex2 = lex.toLowerCase() ;
+        return calcReturn(lex2, string.asNode()) ;
     }
 
     public static NodeValue strUpperCase(NodeValue string)
     {
-        Node n = checkAndGetString("ucase", string) ;
+        Node n = checkAndGetStringLiteral("ucase", string) ;
         String lex = n.getLiteralLexicalForm() ;
-        Node n2 = Node.createLiteral(lex.toUpperCase(), n.getLiteralLanguage(), n.getLiteralDatatype()) ; 
-        return NodeValue.makeNode(n2) ;
+        String lex2 = lex.toUpperCase() ;
+        return calcReturn(lex2, string.asNode()) ;
     }
     
     // F&O fn;concat (implicit cast to strings).
@@ -669,7 +627,7 @@ public class XSDFuncOp
         
         for ( NodeValue nv : args )
         {
-            Node n = checkAndGetString("CONCAT", nv) ;
+            Node n = checkAndGetStringLiteral("CONCAT", nv) ;
             String lang1 = n.getLiteralLanguage() ;
             if ( ! lang1.equals("") )
             {

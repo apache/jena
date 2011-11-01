@@ -19,6 +19,9 @@
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 import java.util.Iterator ;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
@@ -27,7 +30,6 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
@@ -37,6 +39,52 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 public class NodeFunctions
 {
     private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
+    
+
+    // Helper functions
+    /** check and get a string (may be a simple literal, literal with language tag or an XSD string). */
+    public static Node checkAndGetStringLiteral(String label, NodeValue nv)
+    {
+        Node n = nv.asNode() ;
+        if ( ! n.isLiteral() )
+            throw new ExprEvalException(label+": Not a literal: "+nv) ;
+        RDFDatatype dt = n.getLiteralDatatype() ;
+        String lang = n.getLiteralLanguage() ;
+        
+        if ( dt != null && ! dt.equals(XSDDatatype.XSDstring) )
+            throw new ExprEvalException(label+": Not a string literal: "+nv) ;
+        return n ;
+    }
+    
+    
+    /** Check for string operations with primary first arg and second second arg (e.g. CONTAINS) */
+    public static void checkTwoArgumentStringLiterals(String label, NodeValue arg1, NodeValue arg2) 
+    {
+        Node n1 = checkAndGetStringLiteral(label, arg1) ;
+        Node n2 = checkAndGetStringLiteral(label, arg2) ;
+        String lang1 = n1.getLiteralLanguage() ;
+        String lang2 = n2.getLiteralLanguage() ;
+        if (lang1 == null ) lang1 = "" ;
+        if (lang2 == null ) lang2 = "" ;
+        
+        if ( n1.getLiteralDatatype() != null )
+        {
+            // n1 is an xsd string by checkAndGetString
+            if ( XSDDatatype.XSDstring.equals(n2.getLiteralDatatypeURI()) ) return ; 
+            if ( n2.getLiteralLanguage().equals("") ) return ;
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+        }
+        
+        // Incompatible?
+        // arg1 simple or xsd:string, arg2 has a lang.
+        if ( lang1.equals("") && ! lang2.equals("") )
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+        // arg1 with lang, arg2 has a different lang.
+        if ( ! lang1.equals("") && (!lang2.equals("") && ! lang1.equals(lang2) ) )  
+            throw new ExprEvalException(label+": Incompatible: "+arg1+" and "+arg2) ;
+    }
+   
+ 
     
     // -------- sameTerm
     

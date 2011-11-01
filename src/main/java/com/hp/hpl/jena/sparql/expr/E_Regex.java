@@ -20,8 +20,11 @@ package com.hp.hpl.jena.sparql.expr;
 
 import java.util.List ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
 /** Indirect to the choosen regular expression implementation */
@@ -76,18 +79,15 @@ public class E_Regex extends ExprFunctionN
     @Override
     public NodeValue eval(List<NodeValue> args)
     {
-        NodeValue v = args.get(0) ;
+        Node arg = NodeFunctions.checkAndGetStringLiteral("REGEX", args.get(0)) ;
         NodeValue vPattern = args.get(1) ;
         NodeValue vFlags = ( args.size() == 2 ? null : args.get(2) ) ;
         
-        if ( ! v.isString() )
-            throw new ExprEvalException("REGEX: "+v+" is not a string") ;
-
         RegexEngine regex = regexEngine ;
         if ( regex == null  )
             regex = makeRegexEngine(vPattern, vFlags) ;
         
-        boolean b = regex.match(v.getString()) ;
+        boolean b = regex.match(arg.getLiteralLexicalForm()) ;
         
         return b ?  NodeValue.TRUE : NodeValue.FALSE ; 
     }
