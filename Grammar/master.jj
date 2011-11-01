@@ -1501,24 +1501,6 @@ Expr AdditiveExpression() : { Expr expr1, expr2, expr3 ; boolean addition ; Node
     { expr1 = new E_Add(expr1, expr2) ; }
   | <MINUS> expr2 = MultiplicativeExpression()
     { expr1 = new E_Subtract(expr1, expr2) ; }
-
-// SPARQL Bug.
-//   | n = NumericLiteralPositive()
-//     { 
-//       n = stripSign(n) ;
-//       expr2 = asExpr(n) ;
-//       expr1 = new E_Add(expr1, expr2) ; 
-//     }
-//   |
-//     n = NumericLiteralNegative()
-//     { 
-//       n = stripSign(n) ;
-//       expr2 = asExpr(n) ;
-//       expr1 = new E_Subtract(expr1, expr2) ; 
-//     }
-//   )*
-
-  // Expression - no + or -
   |
     (
       n = NumericLiteralPositive()

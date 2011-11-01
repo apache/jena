@@ -102,7 +102,7 @@ public class ModLangParse implements ArgModuleGeneral
         if ( cmdLine.contains(argBase) )
         {
             baseIRI = cmdLine.getValue(argBase) ;
-            IRI iri = IRIResolver.get().resolve(baseIRI) ;
+            IRI iri = IRIResolver.resolveIRI(baseIRI) ;
             if ( iri.hasViolation(false) )
                 throw new CmdException("Bad base IRI: "+baseIRI) ;
             if ( ! iri.isAbsolute() )
