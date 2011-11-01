@@ -30,7 +30,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 
 public interface BindingMap extends Binding
 {
-    /** Add a (var, value) pair- the value must not be null */
+    /** Add a (var, value) pair - the value must not be null */
     public void add(Var var, Node node) ;
 
     /** Add all the (var, value) pairs from another binding */
