@@ -10,31 +10,33 @@
 
 package com.hp.hpl.jena.datatypes.xsd;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.io.Reader;
-import java.util.*;
+import java.io.Reader ;
+import java.math.BigDecimal ;
+import java.math.BigInteger ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.datatypes.xsd.impl.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import org.apache.xerces.impl.dv.* ;
+import org.apache.xerces.impl.dv.util.Base64 ;
+import org.apache.xerces.impl.dv.util.HexBin ;
+import org.apache.xerces.impl.dv.xs.DecimalDV ;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl ;
+import org.apache.xerces.impl.validation.ValidationState ;
+import org.apache.xerces.parsers.XMLGrammarPreparser ;
+import org.apache.xerces.util.SymbolHash ;
+import org.apache.xerces.xni.grammars.XMLGrammarDescription ;
+import org.apache.xerces.xni.grammars.XSGrammar ;
+import org.apache.xerces.xni.parser.XMLInputSource ;
+import org.apache.xerces.xs.XSConstants ;
+import org.apache.xerces.xs.XSNamedMap ;
+import org.apache.xerces.xs.XSTypeDefinition ;
 
-import org.apache.xerces.impl.dv.util.Base64;
-import org.apache.xerces.impl.dv.util.HexBin;
-import org.apache.xerces.impl.dv.xs.DecimalDV;
-import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
-import org.apache.xerces.impl.dv.*;
-import org.apache.xerces.impl.validation.ValidationState;
-import org.apache.xerces.util.SymbolHash;
-
-import org.apache.xerces.parsers.XMLGrammarPreparser;
-import org.apache.xerces.xni.grammars.XMLGrammarDescription;
-import org.apache.xerces.xni.parser.XMLInputSource;
-import org.apache.xerces.xs.XSConstants;
-import org.apache.xerces.xs.XSTypeDefinition;
-import org.apache.xerces.xs.XSNamedMap;
-import org.apache.xerces.xni.grammars.XSGrammar;
+import com.hp.hpl.jena.datatypes.BaseDatatype ;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.impl.* ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 
 /**
  * Representation of an XSD datatype based on the Xerces-2 

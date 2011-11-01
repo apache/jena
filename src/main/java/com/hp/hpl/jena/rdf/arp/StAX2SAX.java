@@ -101,8 +101,11 @@ public class StAX2SAX {
     }
 
     private void emitSE(StartElement se) throws SAXException {
+        @SuppressWarnings("unchecked")
+        Iterator<Attribute> aIter = se.getAttributes() ;
         handler.startElement(se.getName().getNamespaceURI(), 
-                se.getName().getLocalPart(), qnameToS(se.getName()), convertAttrs(se.getAttributes()));
+                se.getName().getLocalPart(), qnameToS(se.getName()), convertAttrs(aIter));
+        @SuppressWarnings("unchecked")
         Iterator<Namespace> it = se.getNamespaces();
         while (it.hasNext()) emitNS(it.next());
     }
@@ -110,6 +113,7 @@ public class StAX2SAX {
     private void emitEE(EndElement ee) throws SAXException {
         handler.endElement(ee.getName().getNamespaceURI(), 
                 ee.getName().getLocalPart(), qnameToS(ee.getName()));
+        @SuppressWarnings("unchecked")
         Iterator<Namespace> it = ee.getNamespaces();
         while (it.hasNext()) emitNSGone(it.next());
     }
