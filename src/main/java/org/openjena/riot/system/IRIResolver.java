@@ -105,9 +105,9 @@ public abstract class IRIResolver
      * The current working directory, as a string.
      */
     static private String globalBase = IRILib.filenameToIRI("./") ; // FileUtils.toURL(".").replace("/./", "/") ;
-    
+    static private Object globalResolverLock = new Object() ;
     private static IRIResolver globalResolver ; 
-    public static IRIResolver get() { return globalResolver ; }
+    //public static IRIResolver get() { return globalResolver ; }
     
     /**
      * The current global resolver based on the working directory
@@ -132,14 +132,18 @@ public abstract class IRIResolver
      * @param filename
      * @return String The filename as an absolute URL
      */
-    static public String resolveFileURL(String filename) throws IRIException {
-        IRI r = globalResolver.resolve(filename);
-        if (!r.getScheme().equalsIgnoreCase("file")) 
+    static public String resolveFileURL(String filename) throws IRIException
+    {
+        synchronized(globalResolverLock)
         {
-            // Pragmatic hack that copes with "c:"
-            return resolveFileURL("./" + filename);
+            IRI r = globalResolver.resolve(filename);
+            if (!r.getScheme().equalsIgnoreCase("file")) 
+            {
+                // Pragmatic hack that copes with "c:"
+                return resolveFileURL("./" + filename);
+            }
+            return r.toString();
         }
-        return r.toString();
     }
 
     /**
@@ -153,8 +157,8 @@ public abstract class IRIResolver
      * @throws RiotException
      *             If result would not be legal, absolute IRI
      */
-    static public IRI resolve(String relStr, String baseStr)
-            throws RiotException {
+    static public IRI resolve(String relStr, String baseStr) throws RiotException
+    {
         return exceptions(resolveIRI(relStr, baseStr)) ;
     }
 
@@ -169,26 +173,38 @@ public abstract class IRIResolver
      * @throws RiotException
      *             If result would not be legal, absolute IRI
      */
-    static public String resolveString(String relStr, String baseStr)
-            throws RiotException {
+    static public String resolveString(String relStr, String baseStr) throws RiotException
+    {
         return exceptions(resolveIRI(relStr, baseStr)).toString() ;
     }
 
-
+    /** Resolve an IRI against whatever is the base for this process 
+     * (likely to be based on the current working directory of this process
+     * at the time of initialization of this class).
+     */
+    public static IRI resolveIRI(String uriStr)
+    {
+        return exceptions(globalResolver.resolve(uriStr)) ;
+    }
+    
     /*
      * No exception thrown by this method.
      */
-    static private IRI resolveIRI(String relStr, String baseStr) {
-        IRI i = iriFactory.create(relStr);
-        if (i.isAbsolute())
-            // removes excess . segments
-            return globalResolver.getBaseIRI().create(i);
+    static private IRI resolveIRI(String relStr, String baseStr)
+    {
+        synchronized(globalResolverLock)
+        {
+            IRI i = iriFactory.create(relStr);
+            if (i.isAbsolute())
+                // removes excess . segments
+                return globalResolver.getBaseIRI().create(i);
 
-        IRI base = iriFactory.create(baseStr);
+            IRI base = iriFactory.create(baseStr);
 
-        if ("file".equalsIgnoreCase(base.getScheme()))
-            return globalResolver.getBaseIRI().create(i);
-        return base.create(i);
+            if ("file".equalsIgnoreCase(base.getScheme()))
+                return globalResolver.getBaseIRI().create(i);
+            return base.create(i);
+        }
     }
 
     public static IRIResolver create()                  { return new IRIResolverNormal() ; }
@@ -213,7 +229,10 @@ public abstract class IRIResolver
      */
     
     static public IRI chooseBaseURI() {
-        return globalResolver.getBaseIRI() ;
+        synchronized(globalResolverLock)
+        {
+            return globalResolver.getBaseIRI() ;
+        }
     }
 
     /**
@@ -221,14 +240,17 @@ public abstract class IRIResolver
      * @return IRI (if relative, relative to current working directory).
      */
     @Deprecated
-    static public IRI chooseBaseURI(String baseURI) {
-        if (baseURI == null)
-            return chooseBaseURI() ;
-            baseURI = "file:.";
-        if ( baseURI.startsWith("file:") )
-            return globalResolver.resolveSilent(IRILib.filenameToIRI(baseURI)) ;
-        else
-            return get().resolveSilent(baseURI);
+    static public IRI chooseBaseURI(String baseURI)
+    {
+        synchronized (globalResolver)
+        {
+            if (baseURI == null) return chooseBaseURI() ;
+            baseURI = "file:." ;
+            if (baseURI.startsWith("file:")) 
+                return globalResolver.resolveSilent(IRILib.filenameToIRI(baseURI)) ;
+            else
+                return globalResolver.resolveSilent(baseURI) ;
+        }
     }
 
     public String getBaseIRIasString()
