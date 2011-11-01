@@ -114,7 +114,7 @@ public class StoreConnection
         cache.remove(location) ;
     }
     
-    /** Return a StoreConnection for a particular conenction.  
+    /** Return a StoreConnection for a particular connection.  
      * This is used to create transactions for the database at the location.
      */ 
     public static synchronized StoreConnection make(Location location)
@@ -133,4 +133,12 @@ public class StoreConnection
         }
         return sConn ; 
     }
+    
+    /** Return a StoreConnection backed by in-memory datastructures (for testing).
+     */ 
+    public static StoreConnection createMemUncached()
+    {
+        return new StoreConnection(Location.mem()) ;
+    }
+    
 }
