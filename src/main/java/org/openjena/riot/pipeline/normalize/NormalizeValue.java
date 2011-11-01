@@ -21,7 +21,9 @@ package org.openjena.riot.pipeline.normalize;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.DecimalFormat ;
+import java.text.DecimalFormatSymbols ;
 import java.text.NumberFormat ;
+import java.util.Locale ;
 
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
@@ -169,7 +171,8 @@ class NormalizeValue
         }
     } ;
     
-    static private NumberFormat fmtFloatingPoint = new DecimalFormat("0.0#################E0") ;
+    static private DecimalFormatSymbols decimalNumberSymbols = new DecimalFormatSymbols(Locale.ROOT) ;
+    static private NumberFormat fmtFloatingPoint = new DecimalFormat("0.0#################E0", decimalNumberSymbols) ;
     
     /* http://www.w3.org/TR/xmlschema-2/#double-canonical-representation */
     /*
