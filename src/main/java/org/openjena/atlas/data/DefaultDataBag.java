@@ -191,8 +191,16 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         {
             if (policy.isThresholdExceeded())
             {
-                serializer.close();
-                IO.close(out);
+                // It is possible for "serializer" and "out" to be null even if the policy is exceeded.
+                // This can happen if nothing was ever added (i.e. a zero count policy)
+                if (null != serializer)
+                {
+                    serializer.close();
+                }
+                if (null != out)
+                {
+                    IO.close(out);
+                }
             }
             finishedAdding = true;
         }
