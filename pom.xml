@@ -324,8 +324,10 @@
 		  <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
 		</manifest>
 	      </archive>
+	      <!--
 	      <finalName>${server.jar.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
 	      <descriptors>
 		<descriptor>assembly-server.xml</descriptor>
 	      </descriptors>
