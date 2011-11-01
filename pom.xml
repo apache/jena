@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
+<project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
     <relativePath>../JenaTop/pom.xml</relativePath>
-  </parent> 
+  </parent>
 
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
@@ -24,7 +24,7 @@
     <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/</connection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/</url>
   </scm>
-  
+
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
@@ -62,7 +62,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <executions> 
+        <executions>
           <execution>
             <id>attach-sources</id>
             <phase>package</phase>
@@ -121,7 +121,7 @@
           <execution>
             <phase>process-resources</phase>
             <configuration>
-              <tasks>
+              <target>
                 <mkdir dir="${project.basedir}/target"/>
                 <tstamp>
                   <format property="build-time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
@@ -137,7 +137,7 @@
                     <filter token="BUILD_TIME_XSD" value="${build-time.xsd}"/>
                   </filterset>
                 </copy>
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>
@@ -212,7 +212,7 @@
         <filtering>false</filtering>
       </resource>
     </resources>
-    
+
   </build>
 
   <reporting>
