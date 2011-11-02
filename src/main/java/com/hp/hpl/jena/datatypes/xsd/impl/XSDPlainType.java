@@ -23,14 +23,26 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 
 /** A datatype that does not use the Xerces machinary for isEqual, yet is still an XSDDatatype.
  * Assumes no derived XSD datatypes.
- */  
+ */
 
 public class XSDPlainType extends XSDDatatype
 {
-    public XSDPlainType(String typeName)
+	/**
+    * New instance creation delegating to {@link XSDDatatype#XSDDatatype(String)}.
+    */
+   public XSDPlainType(String typeName)
     {
         super(typeName) ;
     }
+
+    /**
+     * New instance creation delegating to {@link XSDDatatype#XSDDatatype(String, Class)}.
+     */
+    public XSDPlainType(String typeName, Class<?> clazz)
+    {
+        super(typeName, clazz) ;
+    }
+
     /**
      * Compares two instances of values of the given datatype.
      * This default requires value and datatype equality.

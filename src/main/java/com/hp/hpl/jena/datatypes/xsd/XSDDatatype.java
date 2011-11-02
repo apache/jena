@@ -2,7 +2,7 @@
  * File:        XSDDatatype.java
  * Created by:  Dave Reynolds
  * Created on:  09-Dec-02
- * 
+ *
  * (c) Copyright 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
  * [See end of file]
  * $Id: XSDDatatype.java,v 1.1 2009-06-29 08:56:03 castagna Exp $
@@ -13,6 +13,7 @@ package com.hp.hpl.jena.datatypes.xsd;
 import java.io.Reader ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.net.URI;
 import java.util.ArrayList ;
 import java.util.List ;
 
@@ -39,9 +40,9 @@ import com.hp.hpl.jena.datatypes.xsd.impl.* ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 
 /**
- * Representation of an XSD datatype based on the Xerces-2 
+ * Representation of an XSD datatype based on the Xerces-2
  * XSD implementation.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
  */
@@ -49,73 +50,73 @@ public class XSDDatatype extends BaseDatatype {
 
 //=======================================================================
 // Global statics - define single instance for each import XSD type
-    
+
     /** The xsd namespace */
     public static final String XSD = "http://www.w3.org/2001/XMLSchema";
-    
+
     /** Datatype representing xsd:float */
     public static final XSDDatatype XSDfloat = new XSDFloat("float", Float.class);
-    
+
     /** Datatype representing xsd:double */
     public static final XSDDatatype XSDdouble = new XSDDouble("double", Double.class);
-    
+
     /** Datatype representing xsd:int */
     public static final XSDDatatype XSDint = new XSDBaseNumericType("int", Integer.class);
-    
+
     /** Datatype representing xsd:long */
     public static final XSDDatatype XSDlong = new XSDBaseNumericType("long", Long.class);
-       
+
     /** Datatype representing xsd:short */
     public static final XSDDatatype XSDshort = new XSDBaseNumericType("short", Short.class);
-       
+
     /** Datatype representing xsd:byte */
     public static final XSDDatatype XSDbyte = new XSDByteType("byte", Byte.class);
-       
+
     /** Datatype representing xsd:unsignedByte */
     public static final XSDDatatype XSDunsignedByte = new XSDBaseNumericType("unsignedByte");
-       
+
     /** Datatype representing xsd:unsignedShort */
     public static final XSDDatatype XSDunsignedShort = new XSDBaseNumericType("unsignedShort");
-       
+
     /** Datatype representing xsd:unsignedInt */
     public static final XSDDatatype XSDunsignedInt = new XSDBaseNumericType("unsignedInt");
-       
+
     /** Datatype representing xsd:unsignedLong */
     public static final XSDDatatype XSDunsignedLong = new XSDBaseNumericType("unsignedLong");
-       
+
     /** Datatype representing xsd:decimal */
     public static final XSDDatatype XSDdecimal = new XSDBaseNumericType("decimal", BigDecimal.class);
-       
+
     /** Datatype representing xsd:integer */
     public static final XSDDatatype XSDinteger = new XSDBaseNumericType("integer", BigInteger.class);
-       
+
     /** Datatype representing xsd:nonPositiveInteger */
     public static final XSDDatatype XSDnonPositiveInteger = new XSDBaseNumericType("nonPositiveInteger");
-       
+
     /** Datatype representing xsd:nonNegativeInteger */
     public static final XSDDatatype XSDnonNegativeInteger = new XSDBaseNumericType("nonNegativeInteger");
-       
+
     /** Datatype representing xsd:positiveInteger */
     public static final XSDDatatype XSDpositiveInteger = new XSDBaseNumericType("positiveInteger");
-       
+
     /** Datatype representing xsd:negativeInteger */
     public static final XSDDatatype XSDnegativeInteger = new XSDBaseNumericType("negativeInteger");
-       
+
     /** Datatype representing xsd:boolean */
     public static final XSDDatatype XSDboolean = new XSDDatatype("boolean", Boolean.class);
-    
+
     /** Datatype representing xsd:string */
     public static final XSDDatatype XSDstring = new XSDBaseStringType("string", String.class);
-    
+
     /** Datatype representing xsd:normalizedString */
     public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
-    
+
     /** Datatype representing xsd:anyURI */
     // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.   
-    //public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);  
-    public static final XSDDatatype XSDanyURI = new XSDPlainType("anyURI");
-    
+    // Merely temporary during switch over and testing.
+    //public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI", URI.class);
+    public static final XSDDatatype XSDanyURI = new XSDPlainType("anyURI", URI.class);
+
     /** Datatype representing xsd:token */
     public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
 
@@ -124,7 +125,7 @@ public class XSDDatatype extends BaseDatatype {
 
     /** Datatype representing xsd:QName */
     // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.   
+    // Merely temporary during switch over and testing.
     // public static final XSDDatatype XSDQName = new XSDDatatype("QName");
     public static final XSDDatatype XSDQName = new XSDPlainType("QName");
 
@@ -145,13 +146,13 @@ public class XSDDatatype extends BaseDatatype {
 
     /** Datatype representing xsd:IDREF */
     // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.   
+    // Merely temporary during switch over and testing.
     //public static final XSDDatatype XSDIDREF = new XSDDatatype("IDREF");
     public static final XSDDatatype XSDIDREF = new XSDPlainType("IDREF");
 
     /** Datatype representing xsd:NOTATION */
     // If you see this, remove commented lines.
-    // Merely temporary during switch over and testing.   
+    // Merely temporary during switch over and testing.
     //public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");
     public static final XSDDatatype XSDNOTATION = new XSDPlainType("NOTATION");
 
@@ -189,7 +190,7 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDgMonthDay = new XSDMonthDayType("gMonthDay");
 
     // The following are list rather than simple types and are omitted for now
-    
+
 //    /** Datatype representing xsd:ENTITIES */
 //    public static final XSDDatatype XSDENTITIES = new XSDBaseStringType("ENTITIES");
 //
@@ -201,22 +202,22 @@ public class XSDDatatype extends BaseDatatype {
 
 //=======================================================================
 // local variables
-        
+
     /** the Xerces internal type declaration */
     protected XSSimpleType typeDeclaration;
-    
+
     /** the corresponding java primitive class, if any */
     protected Class<?> javaClass = null;
-    
+
     /** Used to access the values and facets of any of the decimal numeric types */
     static final DecimalDV decimalDV = new DecimalDV();
-    
+
 //=======================================================================
 // Methods
 
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      */
     public XSDDatatype(String typeName) {
@@ -224,10 +225,10 @@ public class XSDDatatype extends BaseDatatype {
         typeDeclaration = SchemaDVFactory.getInstance().getBuiltInType(typeName);
         uri = typeDeclaration.getNamespace() + "#" + typeDeclaration.getName();
     }
-    
+
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
+     * Constructor.
+     * @param typeName the name of the XSD type to be instantiated, this is
      * used to lookup a type definition from the Xerces schema factory.
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
@@ -236,12 +237,12 @@ public class XSDDatatype extends BaseDatatype {
         this(typeName);
         this.javaClass = javaClass;
     }
-    
+
     /**
      * Constructor used when loading in external user defined XSD types -
      * should only be used by the internals but public scope because
      * the internals spread across multiple packages.
-     * 
+     *
      * @param xstype the XSSimpleType definition to be wrapped
      * @param namespace the namespace for the type (used because the grammar loading doesn't seem to keep that)
      */
@@ -250,7 +251,7 @@ public class XSDDatatype extends BaseDatatype {
         typeDeclaration = xstype;
         this.uri = namespace + "#" + typeDeclaration.getName();
     }
-        
+
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
@@ -262,11 +263,11 @@ public class XSDDatatype extends BaseDatatype {
             ValidatedInfo resultInfo = new ValidatedInfo();
             Object result = typeDeclaration.validate(lexicalForm, context, resultInfo);
             return convertValidatedDataValue(resultInfo);
-        } catch (InvalidDatatypeValueException e) { 
+        } catch (InvalidDatatypeValueException e) {
             throw new DatatypeFormatException(lexicalForm, this, "during parse -" + e);
-        } 
+        }
     }
-    
+
     /**
      * Convert a value of this datatype out
      * to lexical form.
@@ -275,7 +276,7 @@ public class XSDDatatype extends BaseDatatype {
     public String unparse(Object value) {
         return value.toString();
     }
-    
+
     /**
      * Compares two instances of values of the given datatype.
      * This ignores lang tags and defers to the equality function
@@ -285,7 +286,7 @@ public class XSDDatatype extends BaseDatatype {
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
        return typeDeclaration.isEqual(value1.getValue(), value2.getValue());
     }
-    
+
     /**
      * If this datatype is used as the cannonical representation
      * for a particular java datatype then return that java type,
@@ -295,7 +296,7 @@ public class XSDDatatype extends BaseDatatype {
     public Class< ? > getJavaClass() {
         return javaClass;
     }
-    
+
     /**
      * Returns the Xerces datatype representation for this type, this
      * is an XSSimpleType, in fact an XSSimpleTypeDecl.
@@ -304,51 +305,51 @@ public class XSDDatatype extends BaseDatatype {
     public Object extendedTypeDefinition() {
         return typeDeclaration;
     }
-    
+
     /**
      * Create and register a set of types specified in a user schema file.
      * We use the (illegal) DAML+OIL approach that the uriref of the type
      * is the url of the schema file with fragment ID corresponding the
      * the name of the type.
-     * 
+     *
      * @param uri the absolute uri of the schema file to be loaded
      * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
      * @param encoding the encoding of the source file (can be null)
      * @param tm the type mapper into which to load the definitions
      * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces 
+     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
      * in default mode for load which may provide diagnostic output direct to stderr)
      */
     public static List<String> loadUserDefined(String uri, Reader reader, String encoding, TypeMapper tm) throws DatatypeFormatException {
         return loadUserDefined(new XMLInputSource(null, uri, uri, reader, encoding), tm);
     }
-      
+
     /**
      * Create and register a set of types specified in a user schema file.
      * We use the (illegal) DAML+OIL approach that the uriref of the type
      * is the url of the schema file with fragment ID corresponding the
      * the name of the type.
-     * 
+     *
      * @param uri the absolute uri of the schema file to be loaded, this should be a resolvable URL
      * @param encoding the encoding of the source file (can be null)
      * @param tm the type mapper into which to load the definitions
      * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces 
+     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
      * in default mode for load which may provide diagnostic output direct to stderr)
      */
     public static List<String> loadUserDefined(String uri, String encoding, TypeMapper tm) throws DatatypeFormatException {
-        return loadUserDefined(new XMLInputSource(null, uri, uri), tm);        
+        return loadUserDefined(new XMLInputSource(null, uri, uri), tm);
     }
-    
+
     /**
      * Internal implementation of loadUserDefined
-     * 
+     *
      * @param uri the absolute uri of the schema file to be loaded
      * @param reader the Reader stream onto the file (useful if you wish to load a cached copy of the schema file)
      * @param encoding the encoding of the source file (can be null)
      * @param tm the type mapper into which to load the definitions
      * @return a List of strings giving the uri's of the newly defined datatypes
-     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces 
+     * @throws DatatypeFormatException if there is a problem during load (not that we use Xerces
      * in default mode for load which may provide diagnostic output direct to stderr)
      */
     private static List<String> loadUserDefined(XMLInputSource source, TypeMapper tm) throws DatatypeFormatException {
@@ -376,13 +377,13 @@ public class XSDDatatype extends BaseDatatype {
             throw new DatatypeFormatException(e.toString());
         }
     }
-    
+
     /**
      * Convert a validated xerces data value into the corresponding java data value.
      * This function is currently the most blatently xerces-version dependent part
-     * of this subsystem. In many cases it also involves reparsing data which has 
+     * of this subsystem. In many cases it also involves reparsing data which has
      * already been parsed as part of the validation.
-     * 
+     *
      * @param validatedInfo a fully populated Xerces data validation context
      * @return the appropriate java wrapper type
      */
@@ -391,10 +392,10 @@ public class XSDDatatype extends BaseDatatype {
             case XSConstants.BASE64BINARY_DT:
                 byte[] decoded = Base64.decode(validatedInfo.normalizedValue);
                 return (decoded);
-                
+
             case XSConstants.BOOLEAN_DT:
                 return validatedInfo.actualValue;
-                                
+
             case XSConstants.HEXBINARY_DT:
                 decoded = HexBin.decode(validatedInfo.normalizedValue);
                 return (decoded);
@@ -411,7 +412,7 @@ public class XSDDatatype extends BaseDatatype {
             case XSConstants.SHORT_DT:
             case XSConstants.BYTE_DT:
                 return Integer.valueOf(trimPlus(validatedInfo.normalizedValue));
-                                
+
             case XSConstants.UNSIGNEDLONG_DT:
             case XSConstants.INTEGER_DT:
             case XSConstants.NONNEGATIVEINTEGER_DT:
@@ -438,7 +439,7 @@ public class XSDDatatype extends BaseDatatype {
                 } else {
                     return suitableInteger( lexical );
                 }
-                
+
             default:
                 return parseValidated(validatedInfo.normalizedValue);
         }
@@ -462,7 +463,7 @@ public class XSDDatatype extends BaseDatatype {
         {
         if (number > Integer.MAX_VALUE || number < Integer.MIN_VALUE)
             return new Long( number );
-        else 
+        else
             return new Integer( (int) number );
         }
 
@@ -474,7 +475,7 @@ public class XSDDatatype extends BaseDatatype {
     public Object parseValidated(String lexical) {
         return lexical;
     }
-    
+
     /**
      * Test whether the given LiteralLabel is a valid instance
      * of this datatype. This takes into accound typing information
@@ -486,7 +487,7 @@ public class XSDDatatype extends BaseDatatype {
     public boolean isValidLiteral(LiteralLabel lit) {
         return isBaseTypeCompatible(lit) && isValid(lit.getLexicalForm());
     }
-    
+
     /**
      * Test if the given typed value is in the right partition of the XSD type space.
      * If this test passes then if the typed value has a legal lexical form for
@@ -506,7 +507,7 @@ public class XSDDatatype extends BaseDatatype {
             return false;
         }
     }
-    
+
     /**
      * Return the most specific type below xsd:anySimpleType that this type is derived from.
      */
@@ -519,7 +520,7 @@ public class XSDDatatype extends BaseDatatype {
         }
         return founding;
     }
-            
+
     /**
      * Helper function to return the substring of a validated number string
      * omitting any leading + sign.
@@ -532,21 +533,21 @@ public class XSDDatatype extends BaseDatatype {
             return str.substring(i+1);
         }
     }
-    
+
     /**
      * Add all of the XSD pre-defined simple types to the given
      * type mapper registry.
      */
     public static void loadXSDSimpleTypes(TypeMapper tm) {
         tm.registerDatatype(new XSDDatatype("anySimpleType"));
-        
+
         tm.registerDatatype(XSDdecimal);
         tm.registerDatatype(XSDinteger);
         tm.registerDatatype(XSDnonPositiveInteger);
         tm.registerDatatype(XSDnonNegativeInteger);
         tm.registerDatatype(XSDpositiveInteger);
         tm.registerDatatype(XSDnegativeInteger);
-        
+
         tm.registerDatatype(XSDbyte);
         tm.registerDatatype(XSDunsignedByte);
         tm.registerDatatype(XSDdouble);
@@ -556,12 +557,12 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDunsignedShort);
         tm.registerDatatype(XSDunsignedLong);
         tm.registerDatatype(XSDint);
-        tm.registerDatatype(XSDshort);        
+        tm.registerDatatype(XSDshort);
 
-        tm.registerDatatype(XSDboolean);        
+        tm.registerDatatype(XSDboolean);
         tm.registerDatatype(XSDbase64Binary);
         tm.registerDatatype(XSDhexBinary);
-        
+
         tm.registerDatatype(XSDdate);
         tm.registerDatatype(XSDtime);
         tm.registerDatatype(XSDdateTime);
@@ -571,11 +572,11 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDgMonth);
         tm.registerDatatype(XSDgDay);
         tm.registerDatatype(XSDgYear);
-        
+
         tm.registerDatatype(XSDnormalizedString);
         tm.registerDatatype(XSDstring);
         tm.registerDatatype(XSDanyURI);
-        
+
         tm.registerDatatype(XSDtoken);
         tm.registerDatatype(XSDName);
         tm.registerDatatype(XSDlanguage);
@@ -586,7 +587,7 @@ public class XSDDatatype extends BaseDatatype {
         tm.registerDatatype(XSDNCName);
         tm.registerDatatype(XSDNOTATION);
         tm.registerDatatype(XSDIDREF);
-        
+
 //        tm.registerDatatype(XSDIDREFS);
 //        tm.registerDatatype(XSDENTITIES);
 //        tm.registerDatatype(XSDNMTOKENS);
@@ -594,7 +595,7 @@ public class XSDDatatype extends BaseDatatype {
 
     // Temporary - used bootstrap the above initialization code
     public static void main(String[] args) {
-        SymbolHash types = SchemaDVFactory.getInstance().getBuiltInTypes();        
+        SymbolHash types = SchemaDVFactory.getInstance().getBuiltInTypes();
         int len = types.getLength();
         Object[] values = new Object[len];
         types.getValues(values, 0);
@@ -608,17 +609,17 @@ public class XSDDatatype extends BaseDatatype {
                 System.out.println(" - " + values[i]);
             }
         }
-    }    
-    
+    }
+
     public int getHashCode( byte [] bytes )
         {
         int length = bytes.length;
-        return length == 0 
-            ? 0 
+        return length == 0
+            ? 0
             : (bytes[0] << 12) ^ (bytes[length / 2] << 6) ^ (bytes[length - 1]) ^ length
             ;
         }
-        
+
 }
 
 /*
