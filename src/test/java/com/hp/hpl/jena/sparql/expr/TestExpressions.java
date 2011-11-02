@@ -20,6 +20,9 @@ package com.hp.hpl.jena.sparql.expr;
 
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertTrue ;
+
+import java.math.BigDecimal ;
+
 import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
@@ -105,6 +108,10 @@ public class TestExpressions
     @Test public void testNumeric_25() { testNumeric("1.5 + 2", 1.5+2) ; }
     @Test public void testNumeric_26() { testNumeric("4111222333444", 4111222333444L) ; }
     @Test public void testNumeric_27() { testNumeric("1234 + 4111222333444", 1234 + 4111222333444L) ; }
+    
+    @Test public void testNumeric_28() { testNumeric("+2.5", new BigDecimal("+2.5")) ; }
+    @Test public void testNumeric_29() { testNumeric("-2.5", new BigDecimal("-2.5")) ; }
+    
     @Test public void testBoolean_1() { testBoolean("4111222333444 > 1234", 4111222333444L > 1234) ; }
     @Test public void testBoolean_2() { testBoolean("4111222333444 < 1234", 4111222333444L < 1234L) ; }
     @Test public void testBoolean_3() { testBoolean("1.5 < 2", 1.5 < 2 ) ; }
@@ -224,7 +231,7 @@ public class TestExpressions
     @Test(expected=QueryParseException.class)
     public void testURI_17()      { testURI("x.:a.a",  xNS+"a.a") ; }
     
-    @Test public void testNumeric_28()  { testNumeric("1:b", 1) ; }
+    @Test public void testNumeric_50()  { testNumeric("1:b", 1) ; }
     @Test public void testURI_18()      { testURI("ex:2",    exNS+"2" ) ; }
     @Test public void testURI_19()      { testURI("ex:2ab_c",    exNS+"2ab_c" ) ; }
     @Test public void testBoolean_76()  { testBoolean("'fred'@en = 'fred'", false ) ; }
@@ -254,7 +261,7 @@ public class TestExpressions
     @Test(expected=ExprEvalException.class) public void testBoolean_94() { testEval("'fred'^^<type1> = 'fred'" ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_95() { testEval("'fred'^^<type1> != 'fred'" ) ; }
     @Test(expected=ExprEvalException.class) public void testBoolean_96() { testBoolean("'21'^^<int> = '21'", true ) ; }
-    @Test public void testNumeric_29() { testNumeric("'21'^^<"+XSDDatatype.XSDinteger.getURI()+">", 21) ; }
+    @Test public void testNumeric_51() { testNumeric("'21'^^<"+XSDDatatype.XSDinteger.getURI()+">", 21) ; }
     @Test public void testBoolean_97() { testBoolean("'21'^^<"+XSDDatatype.XSDinteger.getURI()+"> = 21", true) ; }
     @Test public void testBoolean_98() { testBoolean("'21'^^<"+XSDDatatype.XSDinteger.getURI()+"> = 22", false) ; }
     @Test public void testBoolean_99() { testBoolean("'21'^^<"+XSDDatatype.XSDinteger.getURI()+"> != 21", false) ; }
@@ -423,6 +430,14 @@ public class TestExpressions
         NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
         assertTrue(v.isInteger()) ;
         assertEquals(i, v.getInteger().intValue()) ;
+    }
+    
+    private static void testNumeric(String string, BigDecimal decimal)
+    {
+        Expr expr = parse(string) ;
+        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
+        assertTrue(v.isDecimal()) ;
+        assertEquals(decimal, v.getDecimal()) ;
     }
 
     private static void testNumeric(String string, double d)

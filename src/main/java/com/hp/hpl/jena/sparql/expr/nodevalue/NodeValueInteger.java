@@ -35,7 +35,7 @@ public class NodeValueInteger extends NodeValue
     
     public NodeValueInteger(BigInteger i)         { super() ; integer = i ; }
     public NodeValueInteger(BigInteger i, Node n) { super(n) ; integer = i ; }
-    public NodeValueInteger(long i, Node n)       { super(n) ; integer = new BigInteger(Long.toString(i)) ; }
+//   public NodeValueInteger(long i, Node n)       { super(n) ; integer = new BigInteger(Long.toString(i)) ; }
     public NodeValueInteger(long i)               { super() ; integer = new BigInteger(Long.toString(i)) ; }
 
     @Override

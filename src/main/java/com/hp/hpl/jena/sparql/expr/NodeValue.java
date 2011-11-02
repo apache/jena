@@ -948,10 +948,14 @@ public abstract class NodeValue extends ExprNode
             {
                 if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
                 {
+                    String s = node.getLiteralLexicalForm() ;
+                    if ( s.startsWith("+") )
+                        // BigInteger does not accept leading "+"
+                        s = s.substring(1) ;
                     // Includes subtypes (int, byte, postiveInteger etc).
                     // NB Known to be valid for type by now
-                    long i = ((Number)lit.getValue()).longValue() ;
-                    return new NodeValueInteger(i, node) ;
+                    BigInteger integer = new BigInteger(s) ;
+                    return new NodeValueInteger(integer, node) ;
                 }
             }
             
