@@ -109,7 +109,9 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * Get the single static precomputed rule closure.
      */
     @Override
-    public InfGraph getPreload() {
+    public synchronized InfGraph getPreload() {
+        // Method synchronized - synchronize with other FBRulereasoer sync methods
+        // synchronized block - sync on static 
         synchronized (OWLFBRuleReasoner.class) {
             if (staticPreload == null) {
                 boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
