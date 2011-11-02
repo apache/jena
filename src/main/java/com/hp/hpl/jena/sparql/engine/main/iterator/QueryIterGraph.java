@@ -151,13 +151,6 @@ public class QueryIterGraph extends QueryIterRepeatApply
                 return null ;
             Node gn = graphNames.next() ;
 
-//            Graph g = getExecContext().getDataset().getGraph(gn) ;
-//            if ( g == null )
-//                return null ;
-//                
-//            // Create a new context with a different active graph
-//            ExecutionContext execCxt2 = new ExecutionContext(getExecContext(), g) ;
-                
             Binding b = parentBinding ;
             if ( Var.isVar(opGraph.getNode()) )
                 // (graph ?g (...))
@@ -172,11 +165,9 @@ public class QueryIterGraph extends QueryIterRepeatApply
         {
             if ( !graphNode.isURI() )
                 // e.g. variable bound to a literal or blank node.
-                // Alow this?
                 throw new ARQInternalErrorException("QueryIterGraphInner.buildIterator") ;
-                //return null ;
             
-            // TODO Think about avoiding substitution.
+            // Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = QC.substitute(opGraph.getSubOp(), binding) ;
             Graph g = outerCxt.getDataset().getGraph(graphNode) ;

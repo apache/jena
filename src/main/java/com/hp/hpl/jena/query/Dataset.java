@@ -45,6 +45,22 @@ public interface Dataset
     /** Get the lock for this dataset */
     public Lock getLock() ;
     
+    /** Does this dataset support transactions?
+     *  Supporting transactions mean that the dataset implementation
+     *  provides {@link #begin}, {@link #commit}, {@link #abort},
+     *  which otherwise may throw {@link UnsupportedOperationException}
+     */
+    public boolean supportsTransactions() ;
+
+    
+    /** Start a transaction */
+    public void begin(ReadWrite mode) ;
+    public void commit() ;
+    public void abort() ;
+    
+    
+    
+    
     /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 
     

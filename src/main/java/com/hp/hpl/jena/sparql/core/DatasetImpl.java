@@ -26,6 +26,7 @@ import org.openjena.atlas.lib.CacheFactory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.Lock ;
@@ -72,6 +73,11 @@ public class DatasetImpl implements Dataset
     @Override
     public Lock getLock() { return dsg.getLock() ; }
     
+    @Override public boolean supportsTransactions() { return false ; }
+    @Override public void begin(ReadWrite mode)     { throw new UnsupportedOperationException("Transactions not supported") ; }
+    @Override public void commit()                  { throw new UnsupportedOperationException("Transactions not supported") ; }
+    @Override public void abort()                   { throw new UnsupportedOperationException("Transactions not supported") ; }
+ 
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
