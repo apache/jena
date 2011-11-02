@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertTrue ;
 
 import java.math.BigDecimal ;
+import java.math.BigInteger ;
 
 import junit.framework.JUnit4TestAdapter ;
 import org.junit.AfterClass ;
@@ -111,6 +112,8 @@ public class TestExpressions
     
     @Test public void testNumeric_28() { testNumeric("+2.5", new BigDecimal("+2.5")) ; }
     @Test public void testNumeric_29() { testNumeric("-2.5", new BigDecimal("-2.5")) ; }
+    @Test public void testNumeric_30() { testNumeric("10000000000000000000000000000+1", new BigInteger("10000000000000000000000000001")) ; }
+    @Test public void testNumeric_31() { testNumeric("-10000000000000000000000000000+1", new BigInteger("-9999999999999999999999999999")) ; }
     
     @Test public void testBoolean_1() { testBoolean("4111222333444 > 1234", 4111222333444L > 1234) ; }
     @Test public void testBoolean_2() { testBoolean("4111222333444 < 1234", 4111222333444L < 1234L) ; }
@@ -347,9 +350,9 @@ public class TestExpressions
     @Test public void testString_22()   { testString("str('lex'^^<x:unknown>)", "lex") ; }
     @Test public void testBoolean_147() { testBoolean("sameTerm(1, 1)", true, env) ; }
     @Test public void testBoolean_148() { testBoolean("sameTerm(1, 1.0)", false, env) ; }
-    @Test public void testNumeric_30()  { testNumeric("<"+xsd+"integer>('3')", 3) ; }
-    @Test public void testNumeric_31()  { testNumeric("<"+xsd+"byte>('3')", 3) ; }
-    @Test public void testNumeric_32()  { testNumeric("<"+xsd+"int>('3')", 3) ; }
+    @Test public void testNumeric_52()  { testNumeric("<"+xsd+"integer>('3')", 3) ; }
+    @Test public void testNumeric_53()  { testNumeric("<"+xsd+"byte>('3')", 3) ; }
+    @Test public void testNumeric_54()  { testNumeric("<"+xsd+"int>('3')", 3) ; }
     @Test public void testBoolean_149() { testBoolean("<"+xsd+"double>('3') = 3", true) ; }
     @Test public void testBoolean_150() { testBoolean("<"+xsd+"float>('3') = 3", true) ; }
     @Test public void testBoolean_151() { testBoolean("<"+xsd+"double>('3') = <"+xsd+"float>('3')", true) ; }
@@ -440,6 +443,13 @@ public class TestExpressions
         assertEquals(decimal, v.getDecimal()) ;
     }
 
+    private static void testNumeric(String string, BigInteger integer)
+    {
+        Expr expr = parse(string) ;
+        NodeValue v = expr.eval( BindingFactory.binding() , new FunctionEnvBase()) ;
+        assertTrue(v.isInteger()) ;
+        assertEquals(integer, v.getInteger()) ;
+    }
     private static void testNumeric(String string, double d)
     {
         Expr expr = parse(string) ;
