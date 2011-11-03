@@ -33,15 +33,20 @@ import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorCheck ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
-
+/** "Reference" query engine - this simply executes the algebra expression as-is
+ *  using a simple (non-scalable) execution strategy that follows the definition
+ *  of SPARQL as closely as possible.  The referenc query engine does provide the
+ *  algebra extensions. 
+ */
 public class QueryEngineRef extends QueryEngineBase
 {
     public QueryEngineRef(Op op, DatasetGraph dataset, Context context)
-    { this(op, dataset, null, context) ; }
+    { this(op, dataset, BindingFactory.root(), context) ; }
     
     public QueryEngineRef(Op op, DatasetGraph dataset, Binding input, Context context)
     { super(op, dataset, input, context) ; }

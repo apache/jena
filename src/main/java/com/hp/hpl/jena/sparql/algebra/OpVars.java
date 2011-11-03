@@ -51,7 +51,7 @@ public class OpVars
         OpWalker.walk(new WalkerVisitorSkipMinus(visitor), op, visitor) ;
     }
     
-    public static Set<Var> allVars(Op op)
+    public static Collection<Var> allVars(Op op)
     {
         Set<Var> acc = new HashSet<Var>() ;
         allVars(op, acc) ;
@@ -61,6 +61,13 @@ public class OpVars
     public static void allVars(Op op, Set<Var> acc)
     {
         OpWalker.walk(op, new OpVarsQuery(acc)) ;
+    }
+    
+    public static Collection<Var> vars(BasicPattern pattern)
+    {
+        Set<Var> acc = new HashSet<Var>() ;
+        vars(pattern, acc) ;
+        return acc ;
     }
     
     public static void vars(BasicPattern pattern, Collection<Var> acc)

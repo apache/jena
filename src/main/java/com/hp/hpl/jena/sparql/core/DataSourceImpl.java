@@ -75,7 +75,10 @@ public class DataSourceImpl implements DataSource
         ds.dsg = new DatasetGraphMap(datasetGraph) ;
         return ds ;
     }
-    
+
+    /** Create a Dataset with the model as default model.
+     *  Named models must be explicitly added to identify the storage to be used.
+     */
     public DataSourceImpl(Model model)
     {
         addToCache(model) ;

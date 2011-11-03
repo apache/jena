@@ -95,7 +95,7 @@ public class TransformFilterPlacement extends TransformCopy
         op = buildFilter(exprs, op) ;
         return op ;
     }
-        
+    
     private static Op transform(ExprList exprs, Set<Var> varsScope, Op x)
     {
         // TODO Dispatch by visitor
@@ -118,6 +118,8 @@ public class TransformFilterPlacement extends TransformCopy
         OpVars.patternVars(x, varsScope) ;
         return x ;
     }
+    
+    // == The transformFilter* modify the exprs and patternVarsScope arguments 
     
     private static Op transformFilterBGP(ExprList exprs, Set<Var> patternVarsScope, OpBGP x)
     {
@@ -151,7 +153,7 @@ public class TransformFilterPlacement extends TransformCopy
             // Attempt to place any filters
             op = insertAnyFilter(exprs, patternVarsScope, op) ;
         } 
-        // Leave any remaining filter expressions - don't wrap up any as somethign else may take them.
+        // Leave any remaining filter expressions - don't wrap up any as something else may take them.
         return op ;
     }
     
@@ -187,14 +189,13 @@ public class TransformFilterPlacement extends TransformCopy
     {
         // Any filters that depend on no variables. 
         Op op = insertAnyFilter(exprs, patternVarsScope, null) ;
-        // Any filters that depend on just the graph node.
         if ( Var.isVar(graphNode) )
         {
-            patternVarsScope.add(Var.alloc(graphNode)) ;
-            op = insertAnyFilter(exprs, patternVarsScope, op) ;
+            // Add in the graph node of the quad block.
+            // It's picked up after the first triple is processed.
+            VarUtils.addVar(patternVarsScope, Var.alloc(graphNode)) ;
         }
         
-
         for ( Triple triple : pattern )
         {
             OpQuadPattern opQuad = getQuads(op) ;
@@ -205,11 +206,14 @@ public class TransformFilterPlacement extends TransformCopy
             }
             
             opQuad.getBasicPattern().add(triple) ;
-            // Update varaibles in scope.
+            // Update variables in scope.
             VarUtils.addVarsFromTriple(patternVarsScope, triple) ;
+
             // Attempt to place any filters
             op = insertAnyFilter(exprs, patternVarsScope, op) ;
-        } 
+        }
+        
+        
         return op ;
     }
     

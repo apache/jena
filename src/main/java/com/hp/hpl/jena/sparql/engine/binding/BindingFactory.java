@@ -43,4 +43,6 @@ public class BindingFactory
     
     public static BindingMap create() { return create(noParent) ; }
     public static BindingMap create(Binding parent) { return new BindingHashMap(parent)  ; }
+    
+    public static Binding root() { return BindingRoot.create() ; }
 }

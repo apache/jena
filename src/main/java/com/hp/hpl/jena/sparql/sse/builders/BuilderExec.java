@@ -51,6 +51,6 @@ public class BuilderExec
         
         DatasetGraph dsg = BuilderGraph.buildDataset(list.get(1)) ;
         Op op = BuilderOp.build(list.get(2)) ;
-        QueryExecUtils.executeAlgebra(op, dsg, ResultsFormat.FMT_TEXT) ;
+        QueryExecUtils.execute(op, dsg, ResultsFormat.FMT_TEXT) ;
     }
 }

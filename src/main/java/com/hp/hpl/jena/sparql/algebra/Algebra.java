@@ -163,9 +163,9 @@ public class Algebra
         return execRef(op, DatasetGraphFactory.createOneGraph(graph)) ;
     }
 
-    static public QueryIterator execRef(Op op, DatasetGraph ds)
+    static public QueryIterator execRef(Op op, DatasetGraph dsg)
     {
-        QueryEngineRef qe = new QueryEngineRef(op, ds, null) ;
+        QueryEngineRef qe = new QueryEngineRef(op, dsg, ARQ.getContext().copy()) ;
         return qe.getPlan().iterator() ;
     }
     

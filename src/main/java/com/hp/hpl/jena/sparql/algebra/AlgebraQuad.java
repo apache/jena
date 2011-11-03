@@ -18,7 +18,10 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.Collection ;
 import java.util.Stack ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
@@ -29,6 +32,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Convert an algebra expression into a quad form */
 public class AlgebraQuad extends TransformCopy
@@ -89,6 +93,13 @@ public class AlgebraQuad extends TransformCopy
         {
             // Could just leave the (graph ) in place always - just rewrite BGPs. 
             boolean noPattern = false ;
+            
+            // << JENA-154
+//            Node gn = getNode() ;
+//            Collection<Var> vars = OpVars.allVars(op) ;
+//            if ( vars.contains(gn) )
+//                Log.warn(this, "Use of GRAPH var in pattern") ;
+            // >> JENA-154
             
             if ( OpBGP.isBGP(op) )
             {

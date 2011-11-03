@@ -200,6 +200,14 @@ public class Optimize implements Rewrite
         return op ;
     }
     
+    public static Op apply(Transform transform, Op op)
+    {
+        Op op2 = Transformer.transformSkipService(transform, op) ;
+        if ( op2 != op )
+            return op2 ; 
+        return op ;
+    }
+    
     public static Op apply(String label, Transform transform, Op op)
     {
         // Use this to apply inside NOT EXISTS and EXISTS 
@@ -214,21 +222,29 @@ public class Optimize implements Rewrite
         
         if ( debug )
         {
-            log.info("Transform: "+label) ;
+            if ( label != null && log.isInfoEnabled() )
+                    log.info("Transform: "+label) ;
             if ( op == op2 ) 
             {
-                log.info("No change (==)") ;
+                if ( log.isInfoEnabled() ) 
+                    log.info("No change (==)") ;
                 return op2 ;
             }
 
             if ( op.equals(op2) ) 
             {
-                log.info("No change (equals)") ;
+                if ( log.isInfoEnabled() )
+                    log.info("No change (equals)") ;
                 return op2 ;
             }
-            log.info("\n"+op.toString()) ;
-            log.info("\n"+op2.toString()) ;
+            if ( log.isInfoEnabled() )
+            {
+                log.info("\n"+op.toString()) ;
+                log.info("\n"+op2.toString()) ;
+            }
         }
-        return op2 ;
+        if ( op2 != op )
+            return op2 ; 
+        return op ;
     }
 }

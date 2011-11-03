@@ -82,7 +82,24 @@ public class QueryExecUtils
         queryExecution.close() ;
     }
 
-    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
+    /**
+     * @deprecated Use execute(Op, DatasetGraph)
+     */
+    @Deprecated
+    public static void executeAlgebra(Op op, DatasetGraph dsg) { execute(op, dsg) ; } 
+    
+    /**
+     * @deprecated Use execute(Op, DatasetGraph)
+     */
+    @Deprecated
+    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat) { execute(op, dsg, outputFormat) ; } 
+
+    public static void execute(Op op, DatasetGraph dsg)
+    {
+        execute(op, dsg, ResultsFormat.FMT_TEXT) ;
+    }
+    
+    public static void execute(Op op, DatasetGraph dsg, ResultsFormat outputFormat)
     {
         QueryIterator qIter = Algebra.exec(op, dsg) ;
 
@@ -95,7 +112,7 @@ public class QueryExecUtils
 
         ResultSet results = ResultSetFactory.create(qIter, vars) ;
         outputResultSet(results, null, outputFormat) ;
-     }
+    }
     
     public static void outputResultSet(ResultSet results, Prologue prologue, ResultsFormat outputFormat)
     {
