@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterAssignVarValue ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSingleton ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterSub ;
@@ -151,12 +151,23 @@ public class QueryIterGraph extends QueryIterRepeatApply
                 return null ;
             Node gn = graphNames.next() ;
 
-            Binding b = parentBinding ;
-            if ( Var.isVar(opGraph.getNode()) )
-                // (graph ?g (...))
-                b = BindingFactory.binding(b, Var.alloc(opGraph.getNode()), gn) ;
+//            Binding b = parentBinding ;
+//            if ( Var.isVar(opGraph.getNode()) )
+//                // (graph ?g (...))
+//                b = BindingFactory.binding(b, Var.alloc(opGraph.getNode()), gn) ;
+//            QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ;
             
-            QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ; 
+            
+            QueryIterator qIter = buildIterator(parentBinding, gn, opGraph, getExecContext()) ;
+            if ( Var.isVar(opGraph.getNode()) )
+            {
+                // This is the join.
+                // Do after the subpattern so that the variable is not visible to the
+                // subpattern.
+                Var v = Var.alloc(opGraph.getNode()) ;
+                qIter = new QueryIterAssignVarValue(qIter, v, gn, getExecContext()) ;
+            }
+            
             return qIter ;
         }
         

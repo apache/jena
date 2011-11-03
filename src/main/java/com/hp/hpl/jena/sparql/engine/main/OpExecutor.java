@@ -475,6 +475,9 @@ public class OpExecutor
 
     protected QueryIterator execute(OpExtend opExtend, QueryIterator input)
     {
+        // We know (parse time checking) the variable is unused so far in
+        // the query so we can use QueryIterAssign knowing that it behaves
+        // the same as extend. The boolean should only be a check. 
         QueryIterator qIter = executeOp(opExtend.getSubOp(), input) ;
         qIter = new QueryIterAssign(qIter, opExtend.getVarExprList(), execCxt, true) ;
         return qIter ;

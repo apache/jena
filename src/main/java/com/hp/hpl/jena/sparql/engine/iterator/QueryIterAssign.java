@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
+import org.openjena.atlas.io.IndentedWriter ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -27,20 +29,28 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Extend each solution by an expressions */ 
+/** Extend each solution by a (var, expression) */ 
 
 public class QueryIterAssign extends QueryIterProcessBinding
 {
     private VarExprList exprs ;
     private final boolean mustBeNewVar ;
     
+    public QueryIterAssign(QueryIterator input, Var var, Expr expr, ExecutionContext qCxt)
+    {
+        this(input, new VarExprList(var, expr) , qCxt, false) ;
+    }
+    
     public QueryIterAssign(QueryIterator input, VarExprList exprs, ExecutionContext qCxt, boolean mustBeNewVar)
     {
         // mustBeNewVar : any variable introduced must not already exist.
         // true => BIND
         // false => LET 
-        // Syntax checking should have assured this.
+        // Syntax checking of BIND should have assured this.
         super(input, qCxt) ;
         this.exprs = exprs ;
         this.mustBeNewVar = mustBeNewVar ;
@@ -78,4 +88,13 @@ public class QueryIterAssign extends QueryIterProcessBinding
         }
         return b ;
     }
+    
+    @Override
+    protected void details(IndentedWriter out, SerializationContext cxt)
+    { 
+        out.print(Utils.className(this)) ;
+        out.print(" ") ;
+        out.print(exprs.toString()) ;
+    }
+       
 }

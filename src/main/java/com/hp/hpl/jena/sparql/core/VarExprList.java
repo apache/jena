@@ -57,6 +57,12 @@ public class VarExprList
         this.exprs = new HashMap<Var, Expr>() ;
     }
     
+    public VarExprList(Var var, Expr expr)
+    {
+        this() ;
+        add(var, expr) ;
+    }
+
     public List<Var> getVars() { return vars ; }
     public Map<Var, Expr> getExprs() { return exprs ; }
     

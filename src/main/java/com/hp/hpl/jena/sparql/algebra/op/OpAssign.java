@@ -33,7 +33,7 @@ public class OpAssign extends Op1
 {
     private VarExprList assignments ;
     
-    // There factory operations compress nested assignments if possible.
+    // These factory operations compress nested assignments if possible.
     // Not possible if it's the reassignment of something already assigned.
     // Or we could implement something like (let*).
     
@@ -44,9 +44,11 @@ public class OpAssign extends Op1
         
         OpAssign opAssign = (OpAssign)op ;
         if ( opAssign.assignments.contains(var) )
+            // Same variable : 
+            // Layer one assignment over the top of another 
             return createAssign(op, var, expr) ;
 
-        opAssign.assignments.add(var, expr) ;
+        opAssign.add(var, expr) ;
         return opAssign ;
     }
     
@@ -66,7 +68,7 @@ public class OpAssign extends Op1
         return opAssign ;
     }
     
-    /** Make a OpAssign - guaranteed to return an OpFilter */
+    /** Make a OpAssign - guaranteed to return an OpAssign */
     public static OpAssign assignDirect(Op op, VarExprList exprs)
     {
         return new OpAssign(op, exprs) ;
@@ -74,9 +76,7 @@ public class OpAssign extends Op1
 
     static private Op createAssign(Op op, Var var, Expr expr)
     {
-        VarExprList x = new VarExprList() ;
-        x.add(var, expr) ;
-        return new OpAssign(op, x) ;
+        return new OpAssign(op, new VarExprList(var, expr)) ;
     }   
     
     static private Op createAssign(Op op, VarExprList exprs)
@@ -102,10 +102,11 @@ public class OpAssign extends Op1
     @Override
     public String getName() { return Tags.tagAssign ; }
     
-    // Need to protect this with checking for var already used.
-    // See the factories in statics above. 
     private void add(Var var, Expr expr)
-    { assignments.add(var, expr) ; }
+    {
+        // This checks for duplicate assignment. 
+        assignments.add(var, expr) ;
+    }
 
     public VarExprList getVarExprList() { return assignments ; }
 

@@ -32,9 +32,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 public class QueryIterExtendByVar extends QueryIter
 {
     // Use QueryIterProcessBinding?
-    Binding binding ;
-    Var var ;
-    Iterator<Node> members ;
+    private Binding binding ;
+    private Var var ;
+    private Iterator<Node> members ;
     
     public QueryIterExtendByVar(Binding binding, Var var, Iterator<Node> members, ExecutionContext execCxt)
     {
