@@ -91,15 +91,28 @@ public class AlgebraQuad extends TransformCopy
         @Override
         public Op transform(OpGraph opGraph, Op op)
         {
-            // Could just leave the (graph ) in place always - just rewrite BGPs. 
+            // Could just leave the (graph) in place always - just rewrite BGPs. 
             boolean noPattern = false ;
             
-            // << JENA-154
+            /* One case to consider is when the pattern for the GRAPH
+             * statement includes uses the variable in the GRAPH clause. 
+             * In this case, we must rename away the inner variable,
+             * and check on exit.
+             * (This is what QueryIterGraph does using a streaming join)
+             */
+//            // << JENA-154
+//            
+//            // PROBLEM - op is already quads by this point.
+//            // Oops.
+//            
 //            Node gn = getNode() ;
-//            Collection<Var> vars = OpVars.allVars(op) ;
-//            if ( vars.contains(gn) )
-//                Log.warn(this, "Use of GRAPH var in pattern") ;
-            // >> JENA-154
+//            if ( Var.isVar(gn) )
+//            {
+//                Collection<Var> vars = OpVars.allVars(op) ;
+//                if ( vars.contains(gn) )
+//                    Log.warn(this, "Use of GRAPH var in pattern") ;
+//            }
+//            // >> JENA-154
             
             if ( OpBGP.isBGP(op) )
             {
