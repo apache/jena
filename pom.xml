@@ -15,7 +15,6 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
   </parent> 
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
