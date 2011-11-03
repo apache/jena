@@ -61,6 +61,11 @@ public interface QueryExecution
      */ 
     public Context getContext() ;
     
+    /** The query associated with a query execution.  
+     *  May be null (QueryExecution may have been created by other means)
+     */ 
+    public Query getQuery() ;
+
     /** Execute a SELECT query */
 	public ResultSet execSelect();
     

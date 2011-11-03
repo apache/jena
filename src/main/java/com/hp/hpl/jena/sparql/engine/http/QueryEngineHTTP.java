@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.NotImplemented ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -49,10 +50,11 @@ public class QueryEngineHTTP implements QueryExecution
 {
     private static Logger log = LoggerFactory.getLogger(QueryEngineHTTP.class) ;
     
-    public static final String QUERY_MIME_TYPE = "application/sparql-query" ;
-    String queryString ;
-    String service ;
-    Context context = null ;
+    public static final String QUERY_MIME_TYPE = WebContent.contentTypeSPARQLQuery ; // "application/sparql-query" ;
+    private final Query query ;
+    private final String queryString ;
+    private final String service ;
+    private final Context context ;
     
     //Params
     Params params = null ;
@@ -71,17 +73,23 @@ public class QueryEngineHTTP implements QueryExecution
     
     public QueryEngineHTTP(String serviceURI, Query query)
     { 
-        this(serviceURI, query.toString()) ;
+        this(serviceURI, query, query.toString()) ;
     }
     
     public QueryEngineHTTP(String serviceURI, String queryString)
     { 
-        this.queryString = queryString ;
-        service = serviceURI ;
-        // Copy the global context to freeze it.
-        context = new Context(ARQ.getContext()) ;
+        this(serviceURI, null, queryString) ;
     }
 
+    private QueryEngineHTTP(String serviceURI, Query query, String queryString)
+    { 
+        this.query = query ;
+        this.queryString = queryString ;
+        this.service = serviceURI ;
+        // Copy the global context to freeze it.
+        this.context = new Context(ARQ.getContext()) ;
+    }
+    
 //    public void setParams(Params params)
 //    { this.params = params ; }
     
@@ -202,6 +210,13 @@ public class QueryEngineHTTP implements QueryExecution
     @Override
     public Context getContext() { return context ; }
     
+    @Override public Dataset getDataset()   { return null ; }
+
+    // This may be null - if we were created form a query string, 
+    // we don't guarantee to parse it so we let through non-SPARQL
+    // extensions to the far end. 
+    @Override public Query getQuery()       { return query ; }
+    
     @Override
     public void setTimeout(long timeout)
     {
@@ -278,11 +293,5 @@ public class QueryEngineHTTP implements QueryExecution
     {
         HttpQuery httpQuery = makeHttpQuery() ;
         return "GET "+httpQuery.toString() ;
-    }
-
-    @Override
-    public Dataset getDataset()
-    {
-        return null ;
     }
 }

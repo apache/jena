@@ -543,7 +543,10 @@ public class QueryExecutionBase implements QueryExecution
     
     @Override
     public Dataset getDataset() { return dataset ; }
-    
+
+    @Override
+    public Query getQuery()     { return query ; }
+
     // Call after setFM called.
     private static DatasetGraph prepareDataset(Dataset dataset, Query query, FileManager fileManager)
     {
