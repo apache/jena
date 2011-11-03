@@ -15,7 +15,6 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
   </parent>
 
   <description>ARQ is a SPARQL 1.1 query engine for Jena</description>
