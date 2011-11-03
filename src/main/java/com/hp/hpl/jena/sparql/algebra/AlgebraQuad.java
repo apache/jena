@@ -100,19 +100,19 @@ public class AlgebraQuad extends TransformCopy
              * and check on exit.
              * (This is what QueryIterGraph does using a streaming join)
              */
-//            // << JENA-154
-//            
-//            // PROBLEM - op is already quads by this point.
-//            // Oops.
-//            
-//            Node gn = getNode() ;
-//            if ( Var.isVar(gn) )
-//            {
-//                Collection<Var> vars = OpVars.allVars(op) ;
+            // << JENA-154
+
+            // Note: op is already quads by this point.
+            // Must test scoping by the subOp of GRAPH
+            
+            Node gn = getNode() ;
+            if ( Var.isVar(gn) )
+            {
+                Collection<Var> vars = OpVars.allVars(opGraph.getSubOp()) ;
 //                if ( vars.contains(gn) )
 //                    Log.warn(this, "Use of GRAPH var in pattern") ;
-//            }
-//            // >> JENA-154
+            }
+            // >> JENA-154
             
             if ( OpBGP.isBGP(op) )
             {
