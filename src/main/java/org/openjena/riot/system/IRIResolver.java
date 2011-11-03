@@ -363,7 +363,7 @@ public abstract class IRIResolver
             public IRI get(String relURI) { return  base.resolve(relURI) ; }
         } ;
         // Not static - contains relative IRIs
-        // Could split into absolute (statical, global cached) and relative.
+        // Could split into absolute (static, global cached) and relative.
         private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
 
 
