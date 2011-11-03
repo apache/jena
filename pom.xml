@@ -14,7 +14,6 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
   </parent> 
 
   <description>SDB is a persistence layer that uses an SQL databases.</description>
