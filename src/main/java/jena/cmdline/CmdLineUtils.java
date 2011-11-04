@@ -18,9 +18,14 @@ public class CmdLineUtils
 
     static public void setLog4jConfiguration() 
     {
+		setLog4jConfiguration("jena-log4j.properties") ;
+    }
+    
+    static public void setLog4jConfiguration(String filename) 
+    {
     	if ( System.getProperty("log4j.configuration") == null ) 
     	{
-        	System.setProperty("log4j.configuration", "jena-log4j.properties") ;    		
+        	System.setProperty("log4j.configuration", filename) ;    		
     	}
     }
 }

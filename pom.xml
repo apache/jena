@@ -165,25 +165,25 @@
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-
         <executions>
           <execution>
             <id>create-assembly</id>
             <!-- Must be last in phase "package" (else use "verify") -->
             <phase>package</phase>
             <goals><goal>single</goal></goals>
-	    <configuration>
-	      <!--
-	      <finalName>${assembly.root.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      -->
-	      <descriptors>
-		<descriptor>assembly.xml</descriptor>
-	  </descriptors>
-	    </configuration>
-	  </execution>
+            <configuration>
+              <!--
+	          <finalName>${assembly.root.name}</finalName>
+	          <appendAssemblyId>false</appendAssemblyId>
+	          -->
+	          <descriptors>
+		        <descriptor>assembly.xml</descriptor>
+              </descriptors>
+	        </configuration>
+          </execution>
         </executions>
       </plugin>
+
     </plugins>
 
     <resources>
@@ -196,7 +196,7 @@
 
       <resource>
         <directory>vocabularies</directory>
-	<targetPath>vocabularies</targetPath>
+        <targetPath>vocabularies</targetPath>
         <filtering>false</filtering>
         <includes>
           <include>assembler.n3</include>
@@ -217,6 +217,5 @@
   <reporting>
     <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
   </reporting>
-
 
 </project>

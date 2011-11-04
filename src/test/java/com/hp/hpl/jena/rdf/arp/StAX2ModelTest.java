@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.regression.testReaderInterface;
 import javax.xml.stream.XMLInputFactory;
 
@@ -1147,9 +1148,20 @@ public class StAX2ModelTest extends TestCase {
         this.file = "testing/" + dir + file;
     }
 
+    private boolean errorHanderFlag;
+    @Override
+    public void setUp() {
+    	errorHanderFlag = RDFDefaultErrorHandler.silent; 
+    	RDFDefaultErrorHandler.silent = true; // JENA-36
+    }
+    
+    @Override
+    public void tearDown() {
+    	RDFDefaultErrorHandler.silent = errorHanderFlag;    	
+    }
+    
     @Override
     public void runTest() throws Exception {
-
         Model expected = ModelFactory.createDefaultModel();
         Model got = ModelFactory.createDefaultModel();
         
