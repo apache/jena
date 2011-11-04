@@ -211,13 +211,30 @@ public class ARQ
     /** Symbol to name the Xerces-J regular expression engine */ 
     public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
 
-    // Spilling controls.
-
-    /** Symbol to set the threshold representing the number of bindings when to use external sorting for queries using ORDER BY */ 
-    public static final Symbol spillOnDiskSortingThreshold = ARQConstants.allocSymbol("spillOnDiskSortingThreshold") ;
-
-    /** Symbol to set the threshold representing the number of bindings when to spill on disk when an update is received */ 
-    public static final Symbol spillOnDiskUpdateThreshold = ARQConstants.allocSymbol("spillOnDiskUpdateThreshold") ;
+    
+    /**
+     * A Long value that specifies the number of bindings (or triples for CONSTRUCT queries) to be stored in memory by sort
+     * operations or hash tables before switching to temporary disk files.  The value defaults to -1, which will always
+     * keep the bindings in memory and never write to temporary files.  The amount of memory used will vary based on
+     * the size of the bindings.  If you are retrieving large literal strings, then you may need to lower the value. 
+     * <p/>
+     * Note that for a complex query, several sort or hash operations might be running in parallel; each one will be
+     * allowed to retain as many bindings in memory as this value specifies before it starts putting data in temporary
+     * files.  Also, several running sessions could be doing such operations concurrently.  Therefore, the total number
+     * of bindings held in memory could be many times this value; it is necessary to keep this fact in mind when
+     * choosing the value.
+     * <p/>
+     * Operations currently affected by this symbol: <br/>
+     * ORDER BY, SPARQL Update, CONSTRUCT (optionally)
+     * <p/>
+     * TODO: Give a reasonable suggested value here.  10,000?
+     * <p/>
+     * @see <a href="https://issues.apache.org/jira/browse/JENA-119">JENA-119</a>
+     */
+    // Some possible additions to the list:
+    // Sort: DISTINCT, merge joins<br/>
+    // Hash table: GROUP BY, MINUS, SERVICE, BINDINGS, and hash joins <br/>
+    public static final Symbol spillToDiskThreshold = ARQConstants.allocSymbol("spillToDiskThreshold") ;
     
     // Optimizer controls.
     

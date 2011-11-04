@@ -235,7 +235,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         
         GraphStore gStore = getEmptyGraphStore() ;
         // Set the threshold to in order to force spill to disk
-        gStore.getContext().set(ARQ.spillOnDiskUpdateThreshold, 0L) ;
+        gStore.getContext().set(ARQ.spillToDiskThreshold, 0L) ;
         
         defaultGraphData(gStore, data(t)) ;
         namedGraphData(gStore, graphIRI, data(t));
@@ -262,7 +262,7 @@ public abstract class TestUpdateGraph extends TestUpdateBase
         
         GraphStore gStore = getEmptyGraphStore() ;
         // Set the threshold to in order to force spill to disk
-        gStore.getContext().set(ARQ.spillOnDiskUpdateThreshold, 0L) ;
+        gStore.getContext().set(ARQ.spillToDiskThreshold, 0L) ;
         
         defaultGraphData(gStore, data(triple1, triple2, t)) ;
         namedGraphData(gStore, graphIRI, data(t2));

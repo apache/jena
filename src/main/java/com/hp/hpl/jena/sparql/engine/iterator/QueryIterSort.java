@@ -25,13 +25,11 @@ import java.util.List ;
 import org.openjena.atlas.data.BagFactory ;
 import org.openjena.atlas.data.SortedDataBag ;
 import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyCount ;
-import org.openjena.atlas.data.ThresholdPolicyNever ;
+import org.openjena.atlas.data.ThresholdPolicyFactory ;
 import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -48,8 +46,6 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingComparator ;
 
 public class QueryIterSort extends QueryIterPlainWrapper
 {
-    private static final long defaultSpillOnDiskSortingThreshold = -1 ; // off by default
-    
 	private final QueryIterator embeddedIterator;      // Keep a record of the underlying source for .cancel.
 	final SortedDataBag<Binding> db;
 	
@@ -63,8 +59,7 @@ public class QueryIterSort extends QueryIterPlainWrapper
         super(null, context) ;
         this.embeddedIterator = qIter ;
         
-        long threshold = (Long)context.getContext().get(ARQ.spillOnDiskSortingThreshold, defaultSpillOnDiskSortingThreshold) ;
-        ThresholdPolicy<Binding> policy = (threshold >= 0) ? new ThresholdPolicyCount<Binding>(threshold) : new ThresholdPolicyNever<Binding>() ;
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(context.getContext());
         this.db = BagFactory.newSortedBag(policy, SerializationFactoryFinder.bindingSerializationFactory(), comparator);
         
         this.setIterator(new SortedBindingIterator(qIter));

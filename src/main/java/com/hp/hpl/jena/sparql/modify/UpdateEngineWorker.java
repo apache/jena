@@ -26,15 +26,13 @@ import java.util.List ;
 import org.openjena.atlas.data.BagFactory ;
 import org.openjena.atlas.data.DataBag ;
 import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyCount ;
-import org.openjena.atlas.data.ThresholdPolicyNever ;
+import org.openjena.atlas.data.ThresholdPolicyFactory ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -75,18 +73,14 @@ import com.hp.hpl.jena.util.FileManager ;
 /** Implementation of general purpose update request execution */ 
 public class UpdateEngineWorker implements UpdateVisitor
 {
-    static final long defaultSpillOnDiskUpdateThreshold = -1 ;
-
     protected final GraphStore graphStore ;
     protected final Binding initialBinding ;
     protected final boolean alwaysSilent = true ;
-    private final long spillThreshold ;
 
     public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
-        this.spillThreshold = (Long)graphStore.getContext().get(ARQ.spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
     }
 
     @Override
@@ -233,8 +227,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         Graph gDest = graph(gStore, dest) ;
         
         // Avoids concurrency problems by reading fully before writing
-        long threshold = (Long)gStore.getContext().get(ARQ.spillOnDiskUpdateThreshold, defaultSpillOnDiskUpdateThreshold) ;
-        ThresholdPolicy<Triple> policy = (threshold >= 0) ? new ThresholdPolicyCount<Triple>(threshold) : new ThresholdPolicyNever<Triple>();
+        ThresholdPolicy<Triple> policy = ThresholdPolicyFactory.policyFromContext(gStore.getContext());
         DataBag<Triple> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.tripleSerializationFactory()) ;
         try
         {
@@ -297,7 +290,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         // Decided to serialize the bindings, but could also have decided to
         // serialize the quads after applying the template instead.
         
-        ThresholdPolicy<Binding> policy = (spillThreshold >= 0) ? new ThresholdPolicyCount<Binding>(spillThreshold) : new ThresholdPolicyNever<Binding>();
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(graphStore.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
@@ -334,7 +327,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( dsg == null )
             dsg = graphStore ;
         
-        ThresholdPolicy<Binding> policy = (spillThreshold >= 0) ? new ThresholdPolicyCount<Binding>(spillThreshold) : new ThresholdPolicyNever<Binding>();
+        ThresholdPolicy<Binding> policy = ThresholdPolicyFactory.policyFromContext(graphStore.getContext());
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {

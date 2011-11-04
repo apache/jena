@@ -117,7 +117,7 @@ public class TestQueryIterSort {
         public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try
@@ -143,7 +143,7 @@ public class TestQueryIterSort {
         public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         
@@ -167,7 +167,7 @@ public class TestQueryIterSort {
 
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try 
@@ -193,7 +193,7 @@ public class TestQueryIterSort {
     {
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try
@@ -227,7 +227,7 @@ public class TestQueryIterSort {
         public void call() { /* do nothing */ } });
         assertEquals(0, iterator.getReturnedElementCount());
         Context context = new Context() ;
-        context.set(ARQ.spillOnDiskSortingThreshold, 10L) ;
+        context.set(ARQ.spillToDiskThreshold, 10L) ;
         ExecutionContext executionContext = new ExecutionContext(context, (Graph)null, (DatasetGraph)null, (OpExecutorFactory)null) ;
         QueryIterSort qIter = new QueryIterSort(iterator, comparator, executionContext) ;
         try 
