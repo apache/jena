@@ -25,7 +25,7 @@
         <Describe/manifest.ttl>
         <Ask/manifest.ttl>
 
-        <Dataset/manifest.n3>
+        <Dataset/manifest.ttl>
 
         <Bound/manifest.n3>
         <Expr/manifest.ttl>

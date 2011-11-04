@@ -40,8 +40,9 @@ public class Rename
     public static Var chooseVarName(Var var, Collection<Var> inUse, String prefix)
     {
         Var var2 = var ;
-        for( ; inUse.contains(var2) ; )    
+        do {
             var2 = Var.alloc(prefix+var2.getName()) ;
+        } while (inUse.contains(var2)) ;    
         return var2 ;
     }
     
@@ -143,7 +144,7 @@ public class Rename
             // Really safe - use the global allocator.
             //var2 = allocator.allocVar() ;
             
-            var2 = Rename.chooseVarName(var2, constants, prefix) ;
+            var2 = Rename.chooseVarName(var, constants, prefix) ;
             aliases.put(var, var2) ;
             return var2 ; 
         }
