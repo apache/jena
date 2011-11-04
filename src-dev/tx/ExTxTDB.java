@@ -28,7 +28,6 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -36,16 +35,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class ExTxTDB
 {
-    // Internal state of a DSG
-    enum DSG_STATE { DSG_READ, DSG_WRITE, DGS_BLOCKED } ;
-    
-    interface DatasetTx extends Dataset
-    {
-        public Transaction getTransaction() ; //{ return transaction ; }
-        public void commit() ; // { transaction.commit() ; }
-        public void abort() ; //{ transaction.abort() ; }
-    }
-    
+   
     public static void example1()
     {
         StoreConnection sConn = StoreConnection.make("DB") ;
