@@ -118,6 +118,7 @@ public class ARQConstants
      * Naming:
      *   Named (distinguished) allocated variables start "?."
      *   Non-Distinguished, allocated variables start "??"
+     *   Quad transform hidden vars: "?*"
      * 
      * Scopes and usages:
      *   Global:        
@@ -129,6 +130,7 @@ public class ARQConstants
      *              Via LabelToNodeMap ("??")
      *   Algebra Generator:
      *              PathCompiler ("??P")    : Non-distinguished variables.
+     *              
      *   SSE 
      *      "?"     short hand for "some variable" using ?0, ?1, ?2 naming (legal SPARQL names)
      *      "??"    short hand for "some new anon variable"
@@ -149,8 +151,11 @@ public class ARQConstants
     /** Marker for variables replacing blank nodes in SPARQL Update patterns */
     public static final String allocVarBNodeToVar =  "~" ;
 
-    /** Marker for variables renamed to make variabes hidden by scope have globally unique names */
+    /** Marker for variables renamed to make variables hidden by scope have globally unique names */
     public static final String allocVarScopeHiding =  "/" ;
+
+    /** Marker for variables renamed to make variables hidden because of quad transformation */
+    public static final String allocVarQuad =  "*" ;
 
     // Spare primary marker.
     //private static final String executionVar =  "@" ;

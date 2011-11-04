@@ -27,10 +27,10 @@ import com.hp.hpl.jena.sparql.path.PathLib ;
 
 public class TransformPathFlattern extends TransformCopy
 {
-    // This also turns off path flattening in the algebra generator.
-    // Note that the algebra generator always turns paths of exactly one predicate to triples.
+    // *** THE algebra generator does this ***
+    // This transform is also used so programmtically built queries also get converted.  
+    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse)
     
-    // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse) 
     private PathCompiler pathCompiler ;
 
     public TransformPathFlattern() { this(new PathCompiler()) ; }

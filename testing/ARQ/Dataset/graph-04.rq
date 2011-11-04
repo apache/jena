@@ -1,8 +1,8 @@
 SELECT  *
-FROM        <dft.n3>
-FROM NAMED  <dft.n3> 
-FROM NAMED  <a.n3>
-FROM NAMED  <b.n3>
+FROM        <dft.ttl>
+FROM NAMED  <dft.ttl> 
+FROM NAMED  <a.ttl>
+FROM NAMED  <b.ttl>
 WHERE
     { GRAPH ?src1
         { ?x ?y ?z } . 

@@ -27,7 +27,7 @@ import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.VarRename ;
+import com.hp.hpl.jena.sparql.engine.Rename ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestVarRename extends BaseTest
@@ -89,7 +89,7 @@ public class TestVarRename extends BaseTest
     {
         Op opOrig = SSE.parseOp(string) ;
         Op opExpected = SSE.parseOp(string2) ;
-        Op opActual = VarRename.reverseRename(opOrig, repeatedly) ;
+        Op opActual = Rename.reverseVarRename(opOrig, repeatedly) ;
         assertEquals(opExpected, opActual) ;
     }
 
@@ -105,13 +105,13 @@ public class TestVarRename extends BaseTest
     {
         Op opOrig = SSE.parseOp(string) ;
         Op opExpected = SSE.parseOp(string2) ;
-        Op opActual = VarRename.rename(opOrig, constant) ;
+        Op opActual = Rename.renameVars(opOrig, constant) ;
         assertEquals(opExpected, opActual) ;
         
         if ( reversable )
         {
             // Undo.
-            Op opRebuilt = VarRename.reverseRename(opActual, false) ;
+            Op opRebuilt = Rename.reverseVarRename(opActual, false) ;
             assertEquals(opOrig, opRebuilt) ;
         }
     }

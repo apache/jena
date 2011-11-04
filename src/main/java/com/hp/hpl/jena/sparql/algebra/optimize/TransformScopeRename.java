@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpModifier ;
 import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.engine.VarRename ;
+import com.hp.hpl.jena.sparql.engine.Rename ;
 
 /** Rename variables so that names can be treated globally.
  *  (project) and (group) can hide variables, but we only
@@ -111,7 +111,7 @@ public class TransformScopeRename
                 // We already stripped outer modifier. 
                 if ( projectCount >= projectRenameDepth )
                     // Inner ones already done.
-                    subOp = VarRename.rename(subOp, opProject.getVars()) ;
+                    subOp = Rename.renameVars(subOp, opProject.getVars()) ;
                 return super.transform(opProject, subOp) ;
             }
         }

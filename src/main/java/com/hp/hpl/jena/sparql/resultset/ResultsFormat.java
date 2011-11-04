@@ -66,6 +66,8 @@ public class ResultsFormat extends Symbol
         names.put("xml",         FMT_RS_XML) ;
         
         names.put("json",        FMT_RS_JSON) ;
+        names.put("srj",         FMT_RS_JSON) ;
+        
         names.put("sse",         FMT_RS_SSE) ;
         names.put("csv",         FMT_RS_CSV) ;
         names.put("tsv",         FMT_RS_TSV) ;

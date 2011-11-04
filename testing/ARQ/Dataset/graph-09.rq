@@ -1,4 +1,4 @@
 PREFIX : <.>
 
 SELECT ?x
-  { GRAPH <a.n3> { } }
+  { GRAPH <a.ttl> { } }

@@ -120,18 +120,20 @@ public class Optimize implements Rewrite
     }
 
     /** Alternative name for compatibility only */
-    public static final Symbol filterPlacement2 = ARQConstants.allocSymbol("filterPlacement") ;
+    public static final Symbol filterPlacementOldName = ARQConstants.allocSymbol("filterPlacement") ;
     
     @SuppressWarnings("all")
     public Op rewrite(Op op)
     {
+        // Record optimizer
         if ( context.get(ARQConstants.sysOptimizer) == null )
             context.set(ARQConstants.sysOptimizer, this) ;
         
-        if ( context.isDefined(filterPlacement2) ) 
+        // Old name, new name fixup.
+        if ( context.isDefined(filterPlacementOldName) ) 
         {
-            if ( context.isUndef(ARQ.filterPlacement) )
-                context.set(ARQ.filterPlacement, context.get(filterPlacement2)) ;
+            if ( context.isUndef(ARQ.optFilterPlacement) )
+                context.set(ARQ.optFilterPlacement, context.get(filterPlacementOldName)) ;
         }
         
         if ( false )
@@ -143,14 +145,13 @@ public class Optimize implements Rewrite
 
         // ** TransformScopeRename::
         // This is a requirement for the linearization execution that the default
-        // ARQ query engine uses where possible.  So the transformation must be done
-        // by QueryEngineBase if no optimziation is done. 
+        // ARQ query engine uses where possible.  
+        // This transformation must be done (e.g. by QueryEngineBase) if no other optimziation is done. 
         op = TransformScopeRename.transform(op) ;
         
-        
-        // Remove "group of one" join 
+        // Remove "group of one" join
+        // Done in AlgebraGenerator
         // e..g CONSTRUCT {} WHERE { SELECT ... } 
-        
         //op = TransformTopLevelSelect.simplify(op) ;
         
         // Prepare expressions.
@@ -167,9 +168,6 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
 
-        // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
-        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
-        
         // TODO Improve filter placement to go through assigns that have no effect.
         // Do this before filter placement and other sequence generating transformations.
         // or improve to place in a sequence.
@@ -192,8 +190,14 @@ public class Optimize implements Rewrite
 
         if ( context.isTrueOrUndef(ARQ.optDistinctToReduced) )
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
-
+        
+        // Convert paths to triple patterns. 
+        // Also done in the AlgebraGenerator so this transofmr step catches programattically built op expressions 
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
+        
+        // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
+        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
+        
         // Mark
         if ( false )
             op = OpLabel.create("Transformed", op) ;

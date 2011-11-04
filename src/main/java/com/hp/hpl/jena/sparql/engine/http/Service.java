@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.VarRename ;
+import com.hp.hpl.jena.sparql.engine.Rename ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -46,9 +46,9 @@ public class Service
         // This relies on the observation that the query was originally correct,
         // so reversing the scope renaming is safe (it merely restores the algebra expression).
         // Any variables that reappear should be internal ones that were hidden by renaming
-        // in teh first place.
+        // in the first place.
         // Any substitution is also safe because it replaced variables by values. 
-        Op opRemote = VarRename.reverseRename(op.getSubOp(), true) ;
+        Op opRemote = Rename.reverseVarRename(op.getSubOp(), true) ;
 
         //Explain.explain("HTTP", opRemote, context) ;
         

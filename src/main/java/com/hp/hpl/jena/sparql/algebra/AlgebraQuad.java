@@ -21,9 +21,9 @@ package com.hp.hpl.jena.sparql.algebra;
 import java.util.Collection ;
 import java.util.Stack ;
 
-import org.openjena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
@@ -33,6 +33,8 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.Rename ;
+import com.hp.hpl.jena.sparql.expr.ExprVar ;
 
 /** Convert an algebra expression into a quad form */
 public class AlgebraQuad extends TransformCopy
@@ -91,16 +93,17 @@ public class AlgebraQuad extends TransformCopy
         @Override
         public Op transform(OpGraph opGraph, Op op)
         {
-            // Could just leave the (graph) in place always - just rewrite BGPs. 
+            // ?? Could just leave the (graph) in place always - just rewrite BGPs. 
             boolean noPattern = false ;
             
             /* One case to consider is when the pattern for the GRAPH
-             * statement includes uses the variable in the GRAPH clause. 
-             * In this case, we must rename away the inner variable,
-             * and check on exit.
-             * (This is what QueryIterGraph does using a streaming join)
+             * statement includes uses the variable inside the GRAPH clause. 
+             * In this case, we must rename away the inner variable
+             * to allow stream execution via index joins, 
+             * and then put back the value via an assign.
+             * (This is what QueryIterGraph does using a streaming join
+             * for triples)
              */
-            // << JENA-154
 
             // Note: op is already quads by this point.
             // Must test scoping by the subOp of GRAPH
@@ -109,10 +112,14 @@ public class AlgebraQuad extends TransformCopy
             if ( Var.isVar(gn) )
             {
                 Collection<Var> vars = OpVars.allVars(opGraph.getSubOp()) ;
-//                if ( vars.contains(gn) )
-//                    Log.warn(this, "Use of GRAPH var in pattern") ;
+                if ( vars.contains(gn) )
+                {
+                    Var gVar = Var.alloc(gn) ;
+                    Var var = Rename.chooseVarName(gVar, vars, ARQConstants.allocVarQuad) ;
+                    op = Rename.renameNode(op, gn, var) ;
+                    op = OpAssign.assign(op, gVar, new ExprVar(var)) ;
+                }
             }
-            // >> JENA-154
             
             if ( OpBGP.isBGP(op) )
             {
