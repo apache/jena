@@ -75,7 +75,7 @@ public class NodeTableFactory
         {
             Index nodeToId = indexBuilder.newIndex(FileSet.mem(), SystemTDB.nodeRecordFactory) ;
             ObjectFile objects = FileFactory.createObjectFileMem(filename) ;
-            NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
+            NodeTable nodeTable = new NodeTableNative2(nodeToId, objects) ;
             
             nodeTable = NodeTableCache.create(nodeTable, 100, 100) ; 
             nodeTable =  NodeTableInline.create(nodeTable) ;
@@ -88,7 +88,7 @@ public class NodeTableFactory
         Index nodeToId = indexBuilder.newIndex(fsNodeToId, SystemTDB.nodeRecordFactory) ;
         // Node table.
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
-        NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
+        NodeTable nodeTable = new NodeTableNative2(nodeToId, objects) ;
         nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ;

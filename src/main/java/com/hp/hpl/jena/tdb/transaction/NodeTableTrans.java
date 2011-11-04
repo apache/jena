@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative2 ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 public class NodeTableTrans implements NodeTable, TransactionLifecycle
@@ -154,7 +154,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
         
         offset += journalOffset ;
-        this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
+        this.nodeTableJournal = new NodeTableNative2(nodeIndex, journal) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
         // Do not add the inline NodeTable here - don't convert it's values by the offset!  
     }

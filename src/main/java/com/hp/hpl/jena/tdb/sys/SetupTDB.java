@@ -64,7 +64,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative2 ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -566,7 +566,7 @@ public class SetupTDB
         Index nodeToId = makeIndex(location, indexNode2Id, LenNodeHash, SizeOfNodeId, -1 ,-1) ;
         
         // -- Make the node table using the components established above.
-        NodeTable nodeTable = new NodeTableNative(nodeToId, stringFile) ;
+        NodeTable nodeTable = new NodeTableNative2(nodeToId, stringFile) ;
         return nodeTable ;
     }
     

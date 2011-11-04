@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative2 ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -84,7 +84,7 @@ public class Builder
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
             Index idx = indexBuilder.buildIndex(fsIndex, recordFactory) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
-            NodeTable nodeTable = new NodeTableNative(idx, objectFile) ;
+            NodeTable nodeTable = new NodeTableNative2(idx, objectFile) ;
             nodeTable = NodeTableCache.create(nodeTable, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
             nodeTable = NodeTableInline.create(nodeTable) ;
             return nodeTable ;
