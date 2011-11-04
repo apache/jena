@@ -18,11 +18,9 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
-import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
-import java.util.Set ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
@@ -39,7 +37,6 @@ import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
