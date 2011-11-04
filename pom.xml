@@ -52,6 +52,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <systemProperties>
+            <property>
+              <name>log4j.configuration</name>
+              <value>jena-test-log4j.properties</value>
+            </property>
+          </systemProperties>
           <includes>
             <include>com/hp/hpl/jena/test/TestPackage.java</include>
           </includes>

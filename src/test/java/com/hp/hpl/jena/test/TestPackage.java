@@ -23,7 +23,7 @@ public class TestPackage extends TestCase{
 
     static {
     	// better to have a separate log4j.properties for testing, see JENA-36
-    	setLog4jConfiguration("log4j.properties") ;
+    	setLog4jConfiguration("jena-test-log4j.properties") ;
     }
 	
     static public TestSuite suite() {
