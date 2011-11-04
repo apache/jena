@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>TxTDB</name>
+  <name>TDB</name>
   <comment>TDB is a storage subsystem for Jena and ARQ.</comment>
   <projects/>
   <buildSpec>
