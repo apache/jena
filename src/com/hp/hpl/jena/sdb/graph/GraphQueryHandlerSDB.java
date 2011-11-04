@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
+import java.util.Collection ;
 import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
@@ -94,7 +95,6 @@ public class GraphQueryHandlerSDB extends SimpleQueryHandler
         @Override
         public ExtendedIterator<Domain> executeBindings()
         {
-            Set<Var> vars = OpVars.allVars(op) ;
             Plan plan = QueryEngineSDB.getFactory().create(op, datasetStore, null, null) ;
             QueryIterator qIter = plan.iterator() ;
 
