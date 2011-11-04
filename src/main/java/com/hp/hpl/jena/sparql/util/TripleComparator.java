@@ -16,18 +16,29 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.graph;
+package com.hp.hpl.jena.sparql.util;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import java.util.Comparator ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestGraphsMem.class
-    , TestDatasetGraphMem.class
-    , TestGraphsDataBag.class
-})
-public class TS_Graph
+import com.hp.hpl.jena.graph.Triple ;
+
+public class TripleComparator implements Comparator<Triple>
 {
-
+    private static final NodeComparator nc = new NodeComparator();
+    
+	@Override
+    public int compare(Triple o1, Triple o2)
+    {
+        int toReturn = nc.compare(o1.getSubject(), o2.getSubject());
+        if (toReturn == 0)
+        {
+            toReturn = nc.compare(o1.getPredicate(), o2.getPredicate());
+            if (toReturn == 0)
+            {
+                toReturn = nc.compare(o1.getObject(), o2.getObject());
+            }
+        }
+        
+        return toReturn;
+    }
 }

@@ -16,18 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.graph;
+package com.hp.hpl.jena.sparql.util;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import java.util.Comparator ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-      TestGraphsMem.class
-    , TestDatasetGraphMem.class
-    , TestGraphsDataBag.class
-})
-public class TS_Graph
+import com.hp.hpl.jena.graph.Node ;
+
+public class NodeComparator implements Comparator<Node>
 {
-
+    @Override
+    public int compare(Node o1, Node o2)
+    {
+        return NodeUtils.compareRDFTerms(o1, o2);
+        //return NodeValue.compareAlways(NodeValue.makeNode(o1), NodeValue.makeNode(o2));
+    }
 }
+

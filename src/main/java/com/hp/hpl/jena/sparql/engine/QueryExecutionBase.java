@@ -219,8 +219,22 @@ public class QueryExecutionBase implements QueryExecution
     // Construct
     @Override
     public Model execConstruct()
-    { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
+    {
+        return execConstruct(GraphFactory.makeJenaDefaultModel()) ;
+    }
 
+//  TODO: enable this?
+//    /**
+//     * Executes as a construct query, placing the results into a newly constructed {@link com.hp.hpl.jena.sparql.graph.GraphDistinctDataBag}.
+//     * The threshold policy is set from the current context.
+//     */
+//    @Override
+//    public Model execConstructDataBag()
+//    {
+//        ThresholdPolicy<Triple> thresholdPolicy = ThresholdPolicyFactory.policyFromContext(context);
+//        return execConstruct(GraphFactory.makeDataBagModel(thresholdPolicy)) ;
+//    }
+	
     @Override
     public Model execConstruct(Model model)
     {
