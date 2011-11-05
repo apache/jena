@@ -381,6 +381,7 @@ public class TransactionManager
             x.commitEnact(transaction) ;
             x.commitClearup(transaction) ;
         }
+        transaction.flushed = true ;
     }
 
     void processDelayedReplayQueue(Transaction txn)

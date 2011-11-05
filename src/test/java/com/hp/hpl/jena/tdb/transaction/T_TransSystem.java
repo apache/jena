@@ -68,7 +68,7 @@ public class T_TransSystem
             log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
     }
     
-    static boolean MEM = false ;
+    static boolean MEM = true ;
     
     static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
 
@@ -77,11 +77,6 @@ public class T_TransSystem
     static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
     
-    /*
-     * 5/0/5 blocks. with 50/50 pause, 50R/ 20W
-     * Others?
-     */
-
     static final int numReaderTasks         = 5 ;
     static final int numWriterTasksA        = 2 ; 
     static final int numWriterTasksC        = 5 ;
@@ -137,9 +132,11 @@ public class T_TransSystem
     
     private static void clean()
     {
-        StoreConnection.release(LOC) ;
         if ( ! LOC.isMem() )
+        {
+            StoreConnection.release(LOC) ;
             FileOps.clearDirectory(LOC.getDirectoryPath()) ;
+        }
     }
 
     static class Reader implements Callable<Object>
@@ -154,7 +151,7 @@ public class T_TransSystem
             this.maxpause = pause ;
             this.sConn = sConn ;
         }
-    
+
         @Override
         public Object call()
         {
@@ -205,7 +202,7 @@ public class T_TransSystem
             this.sConn = sConn ;
             this.commit = commit ;
         }
-        
+
         @Override
         public Object call()
         {
@@ -333,9 +330,9 @@ public class T_TransSystem
             }
         } ;
 
-        submit(execService, procR,   numReaderTasks) ;
-        submit(execService, procW_c, numWriterTasksC) ;
-        submit(execService, procW_a, numWriterTasksA) ;
+        submit(execService, procR,   numReaderTasks, "READ-") ;
+        submit(execService, procW_c, numWriterTasksC, "COMMIT-") ;
+        submit(execService, procW_a, numWriterTasksA, "ABORT-") ;
         
         try
         {
@@ -347,10 +344,24 @@ public class T_TransSystem
         } 
     }
 
-    private void submit(ExecutorService execService2, Callable<?> proc, int numTasks)
+    static class Callable2Runnable<T> implements Runnable
+    {
+        private Callable<T> callable ;
+
+        Callable2Runnable(Callable<T> callable) { this.callable = callable ; }
+        
+        @Override public void run() { try { callable.call() ; } catch (Exception ex) {} }
+    }
+    
+    private static int counter = 0 ;
+    private <T> void submit(ExecutorService execService, Callable<T> proc, int numTasks, String label)
     {
         for ( int i = 0 ; i < numTasks ; i++ )
-            execService.submit(proc) ;
+        {
+            //execService.submit(proc) ;
+            counter++ ;
+            new Thread(new Callable2Runnable<T>(proc), label+counter).start() ;
+        }
     }
 
     static int changeProc(DatasetGraphTxn dsg, int id, int i)
