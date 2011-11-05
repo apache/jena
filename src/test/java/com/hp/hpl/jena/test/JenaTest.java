@@ -22,5 +22,5 @@ package com.hp.hpl.jena.test;
 public class JenaTest
 {
     /** name of the log4j properties file used in running test suites */
-    static final String log4jFilenameTests = "jena-test-log4j.properties" ;
+    public static final String log4jFilenameTests = "jena-test-log4j.properties" ;
 }
