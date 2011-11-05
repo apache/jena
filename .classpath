@@ -2,6 +2,8 @@
 <classpath>
   <classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
   <classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src/main/resources"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src/test/resources"/>
   <classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
 
   <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar"/>

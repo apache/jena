@@ -22,6 +22,7 @@ package com.hp.hpl.jena.sparql;
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
 import org.openjena.atlas.TC_Atlas ;
+import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.TC_Riot ;
 
@@ -52,6 +53,10 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
 
 public class ARQTestSuite extends TestSuite
 {
+    // Log4j for testing.
+    public static final String log4jPropertiesFilename = "log4j-testing.properties" ;
+    static { Log.setLog4j(log4jPropertiesFilename) ; }
+    
     public static final String testDirARQ = "testing/ARQ" ;
     
     static public TestSuite suite()
