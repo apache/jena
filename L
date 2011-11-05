@@ -1,0 +1,20 @@
+src/com/hp/hpl/jena/sdb/assembler/AssemblerVocab.java:    // ModeRDB graph name - on the connection
+src/com/hp/hpl/jena/sdb/assembler/AssemblerVocab.java:    public static final Property pRDBtype           = Vocab.property(NS, "rdbType") ;
+src/com/hp/hpl/jena/sdb/assembler/AssemblerVocab.java:    // ModeRDB graph name - on the layout
+src/com/hp/hpl/jena/sdb/assembler/AssemblerVocab.java:    public static final Property pModelRDBname      = Vocab.property(NS, "rdbModelName") ;
+src/com/hp/hpl/jena/sdb/assembler/SDBConnectionDescAssembler.java:        sDesc.setRdbType(  GraphUtils.getStringValue(root, AssemblerVocab.pRDBtype) ) ;
+src/com/hp/hpl/jena/sdb/assembler/StoreDescAssembler.java:        // ModelRDB special
+src/com/hp/hpl/jena/sdb/assembler/StoreDescAssembler.java:        storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
+src/com/hp/hpl/jena/sdb/StoreDesc.java:    /** ModelRDB spefic */
+src/com/hp/hpl/jena/sdb/layout1/TableDescRDB.java:public class TableDescRDB extends TableDescTriples
+src/com/hp/hpl/jena/sdb/layout1/TableDescRDB.java:    public TableDescRDB()
+src/com/hp/hpl/jena/sdb/graph/PrefixMappingSDB.java:        // ModelRDB does not support prefixes in the same way as models/graphs over SDB stores. 
+src/com/hp/hpl/jena/sdb/sql/SDBConnectionDesc.java:    public String rdbType    = null ;    // ModelRDB specific
+src/com/hp/hpl/jena/sdb/store/Feature.java://    LayoutRDB          { public String getName() { return "RDB" ; } } ,          
+src/com/hp/hpl/jena/sdb/store/LayoutType.java:    public static final LayoutType LayoutRDB              = new LayoutType("layoutRDB") ;
+src/com/hp/hpl/jena/sdb/store/LayoutType.java:        register(LayoutRDB) ;
+src/sdb/sdbprint.java:        if ( storeDesc.getLayout() != LayoutType.LayoutRDB )
+src/sdb/sdbprint.java:            // Only fake the connection if not ModelRDB
+src-dev/dev/RDB.java:/** Setup RDB properties */ 
+src-dev/dev/RDB.java:public class RDB
+src-test/com/hp/hpl/jena/sdb/test/misc/TestRegistry.java:                                "layoutRDB" } ;
