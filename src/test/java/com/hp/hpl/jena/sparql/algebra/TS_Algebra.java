@@ -35,6 +35,7 @@ import org.junit.runners.Suite ;
     , TestVarRename.class
     , TestOptimizer.class
     , TestPattern2Join.class
+    , TestTransformQuads.class
 //    , TestUnionGraph.class
 //    , TestUnionTransformTriples.class
 //    , TestUnionTransformQuads.class

@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-/** Convert query in algrebra form so that the default graph of the query is teh union of named graphs */  
+/** Convert query in algrebra form so that the default graph of the query is the union of named graphs */  
 public class TransformUnionQuery extends TransformCopy
 {
     public static Op transform(Op op)

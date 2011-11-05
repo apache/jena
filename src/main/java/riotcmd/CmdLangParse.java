@@ -110,7 +110,7 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected LangHandler langHandlerOverall = null ;
 
-    // This is teh setup for command for their message via the logging in ErrorHandlers
+    // This is the setup for command for their message via the logging in ErrorHandlers
     private static final String log4Jsetup = StrUtils.strjoin("\n"
 //                    , "## Plain output to stdout"
 //                    , "log4j.appender.riot.plain=org.apache.log4j.ConsoleAppender"

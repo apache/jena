@@ -63,7 +63,7 @@ public class DatasetFactory
     public static DataSource create(DatasetGraph dataset)
     { return DataSourceImpl.wrap(dataset) ; }
     
-    /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
+    /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 
      * @param uriList   URIs merged to form the default dataset 
      * @return Dataset
@@ -81,7 +81,7 @@ public class DatasetFactory
     public static Dataset create(String uri)
     { return create(uri, null, null, null) ; }
 
-    /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
+    /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 
      * @param uriList   URIs merged to form the default dataset 
      * @param fileManager
@@ -91,7 +91,7 @@ public class DatasetFactory
     public static Dataset create(List<String> uriList, FileManager fileManager)
     { return create(uriList, null, fileManager, null) ; }
                                               
-    /** Create a dataset based on a list of URIs : these are merged into the default graph of teh dataset.
+    /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 
      * @param uri              graph to be loaded into the unnamed, default graph
      * @param fileManager

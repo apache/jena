@@ -23,17 +23,10 @@ import java.util.Stack ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPropFunc ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.Rename ;
+import com.hp.hpl.jena.sparql.core.VarAlloc ;
 import com.hp.hpl.jena.sparql.expr.ExprVar ;
 
 /** Convert an algebra expression into a quad form */
@@ -51,8 +44,9 @@ public class AlgebraQuad extends TransformCopy
 
     public static Op quadize(Op op)
     {
-        final Stack<Node> stack = new Stack<Node>() ;
-        stack.push(Quad.defaultGraphNodeGenerated) ;             // Starting condition
+        final Stack<QuadSlot> stack = new Stack<QuadSlot>() ;
+        QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
+        stack.push(qSlot) ;             // Starting condition
         
         OpVisitor before = new Pusher(stack) ;
         OpVisitor after = new Popper(stack) ;
@@ -61,34 +55,68 @@ public class AlgebraQuad extends TransformCopy
         return Transformer.transformSkipService(qg, op, before, after) ;
     }
     
+    /** This is the record of the transformation.
+     *  The rewriteGraphName is the node to put in the graph slot of the quad.
+     *  The actualGraphName is the node used in SPARQL.
+     *  If they are the same (by ==), the quadrewrite is OK as is.
+     *  If they are different (and that means they are variables)
+     *  an assign is done after the execution of the graph pattern block. 
+     */
+    private static class QuadSlot
+    {   // Oh scala, where art thou!
+        final Node actualGraphName ;
+        final Node rewriteGraphName ;
+        QuadSlot(Node actualGraphName, Node rewriteGraphName)
+        {
+            this.actualGraphName = actualGraphName ;
+            this.rewriteGraphName = rewriteGraphName ;
+        }
+    }
+    
     private static class Pusher extends OpVisitorBase
     {
-        Stack<Node> stack ;
-        Pusher(Stack<Node> stack) { this.stack = stack ; }
+        Stack<QuadSlot> stack ;
+        VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarQuad) ;
+        Pusher(Stack<QuadSlot> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph)
         {
-            stack.push(opGraph.getNode()) ;
+            // Name in SPARQL
+            Node gn = opGraph.getNode() ;
+            // Name in rewrite
+            Node gnQuad = gn ;
+            
+            if ( Var.isVar(gn) )
+            {
+                Collection<Var> vars = OpVars.allVars(opGraph.getSubOp()) ;
+                if ( vars.contains(gn) )
+                    gnQuad = varAlloc.allocVar() ;
+            }
+            stack.push(new QuadSlot(gn, gnQuad)) ;
         }
     }
     
     private static class Popper extends OpVisitorBase
     {
-        Stack<Node> stack ;
-        Popper(Stack<Node> stack) { this.stack = stack ; }
+        Stack<QuadSlot> stack ;
+        Popper(Stack<QuadSlot> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph)
         {
-            Node n = stack.pop() ;
+            // The final work is done in the main vistor, 
+            // which is called after the subnode has been 
+            // rewritten.
+            stack.pop() ;
         }
     }
 
     private static class TransformQuadGraph extends TransformCopy
     {
-        private Stack<Node> tracker ;
+        private Stack<QuadSlot> tracker ;
 
-        public TransformQuadGraph(Stack<Node> tracker) { this.tracker = tracker ; }
-        private Node getNode() { return tracker.peek() ; }
+        public TransformQuadGraph(Stack<QuadSlot> tracker) { this.tracker = tracker ; }
+        
+        private Node getNode() { return tracker.peek().rewriteGraphName ; }
 
         @Override
         public Op transform(OpGraph opGraph, Op op)
@@ -108,18 +136,9 @@ public class AlgebraQuad extends TransformCopy
             // Note: op is already quads by this point.
             // Must test scoping by the subOp of GRAPH
             
-            Node gn = getNode() ;
-            if ( Var.isVar(gn) )
-            {
-                Collection<Var> vars = OpVars.allVars(opGraph.getSubOp()) ;
-                if ( vars.contains(gn) )
-                {
-                    Var gVar = Var.alloc(gn) ;
-                    Var var = Rename.chooseVarName(gVar, vars, ARQConstants.allocVarQuad) ;
-                    op = Rename.renameNode(op, gn, var) ;
-                    op = OpAssign.assign(op, gVar, new ExprVar(var)) ;
-                }
-            }
+            QuadSlot qSlot = tracker.peek() ;
+            Node actualName= qSlot.actualGraphName ;
+            Node rewriteName= qSlot.rewriteGraphName ; 
             
             if ( OpBGP.isBGP(op) )
             {
@@ -142,6 +161,9 @@ public class AlgebraQuad extends TransformCopy
                 return new OpDatasetNames(opGraph.getNode()) ;
             }
             
+            if ( actualName != rewriteName )
+                op = OpAssign.assign(op, Var.alloc(actualName), new ExprVar(rewriteName)) ;
+
             // Drop (graph...) because inside nodes
             // have been converted to quads.
             return op ;

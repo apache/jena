@@ -93,7 +93,7 @@ public class UpdateEngineRegistry
     /** Allow <b>careful</b> manipulation of the factories list */
     public List<UpdateEngineFactory> factories() { return factories ; }
 
-    /** Check whether a query engine factory is already registered in teh default registry*/
+    /** Check whether a query engine factory is already registered in the default registry*/
     public static boolean containsFactory(UpdateEngineFactory f) { return get().contains(f) ; }
 
     /** Check whether a query engine factory is already registered */

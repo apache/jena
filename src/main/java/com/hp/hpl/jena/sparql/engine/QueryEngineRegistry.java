@@ -140,7 +140,7 @@ public class QueryEngineRegistry
     /** Allow <b>careful</b> manipulation of the factories list */
     public List<QueryEngineFactory> factories() { return factories ; }
 
-    /** Check whether a query engine factory is already registered in teh default registry*/
+    /** Check whether a query engine factory is already registered in the default registry*/
     public static boolean containsFactory(QueryEngineFactory f) { return get().contains(f) ; }
 
     /** Check whether a query engine factory is already registered */

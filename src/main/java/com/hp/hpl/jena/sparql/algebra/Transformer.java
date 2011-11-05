@@ -365,7 +365,7 @@ public class Transformer
 //            if ( op.getSubOp() != null ) op.getSubOp().visit(this) ;
             
             // Just visit the OpService node itself.
-            // The transformer needs to push teh code as a result (see ApplyTransformVisitorSkipService)
+            // The transformer needs to push the code as a result (see ApplyTransformVisitorSkipService)
             if ( visitor != null ) op.visit(visitor) ;
             
             after(op) ;

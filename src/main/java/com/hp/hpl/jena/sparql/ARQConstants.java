@@ -155,7 +155,7 @@ public class ARQConstants
     public static final String allocVarScopeHiding =  "/" ;
 
     /** Marker for variables renamed to make variables hidden because of quad transformation */
-    public static final String allocVarQuad =  "*" ;
+    public static final String allocVarQuad =  "*g" ;
 
     // Spare primary marker.
     //private static final String executionVar =  "@" ;
