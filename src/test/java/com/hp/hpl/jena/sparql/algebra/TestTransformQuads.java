@@ -29,19 +29,6 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 //Tests for conversion of algebra forms to quad form. 
 public class TestTransformQuads extends BaseTest
 {
-    /*
-     *  
-"(sequence   (quadpattern (quad ?g ?s ?p ?o))   (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))"
-"(sequence   (quadpattern (quad ?g ?s ?p ?o))   (quadpattern (quad ?g ?s1 ?p1 ?o1)))"
-"(sequence   (quadpattern (quad ?g ?s ?p ?o))   (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))"
-"(assign ((?g ?*g0))   (sequence     (quadpattern (quad ?*g0 ?s ?p ?o))     (quadpattern (quad ?g ?s1 ?p1 ?o1))))" 
-"(assign ((?g ?*g0))   (filter (= (str ?g) "graphURI")     (quadpattern (quad ?*g0 ?s ?p ?o))))" 
-"(filter (= (str ?g) "graphURI")   (quadpattern (quad ?g ?s ?p ?o)))"
-"(assign ((?g ?*g0))   (sequence     (quadpattern (quad ?*g0 ?s ?p ?o))     (filter (= (str ?g) "graphURI")       (quadpattern (quad ?g1 ?s1 ?p1 ?o1)))))"
-"(sequence   (quadpattern (quad ?g ?s ?p ?o))   (assign ((?g1 ?*g0))     (filter (= (str ?g1) "graphURI")       (quadpattern (quad ?*g0 ?s1 ?p1 ?o1)))))"
-"(sequence   (assign ((?g ?*g0))     (filter (= (str ?g) "graphURI")       (quadpattern (quad ?*g0 ?s ?p ?o))))   (assign ((?g ?*g1))     (filter (= (str ?g) "graphURI")       (quadpattern (quad ?*g1 ?s ?p ?o)))))" 
-
-     */
     // Simple
     @Test public void quads01() { test ("{ GRAPH ?g { ?s ?p ?o } }", 
                                         "(quadpattern (quad ?g ?s ?p ?o))" 

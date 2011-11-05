@@ -37,8 +37,8 @@ public class AlgebraQuad extends TransformCopy
     //   + Drop (previous) OpGraph 
     //   + Paths (complex - simple ones are flatten elsewhere) go to (graph (path ...)) [later: quad paths] 
 
-    // Done as a before/after pair to run the stack of graph
-    // nodes and a transform to do the conversion. 
+    // Done as a before/after pair to run the stack of graph nodes for rewrite.
+    // Need to be careful of use of a variable in GRAPH ?g { .. } and then use ?g inside the pattern.
     
     private AlgebraQuad() { }
 
