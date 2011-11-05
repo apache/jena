@@ -4,6 +4,7 @@ ChangeLog for ARQ
 ==== ARQ 2.8.9
 ** Java 6 is now required for running ARQ.
 
++ BUG FIX: Mis-execution of GRAPH ?g { .. } where ?g used inside { .. } (JENA-154)
 + REGEX now accepts xsd:string and literals with language tags in the first argument. 
 + Add function STRBEFORE, STRAFTER and REPLACE for SPARQL 1.1
 + Add function UUID  [ARQ language only]  
