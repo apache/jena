@@ -22,8 +22,7 @@ import com.hp.hpl.jena.assembler.test.TestAssemblerPackage;
 public class TestPackage extends TestCase{
 
     static {
-    	// better to have a separate log4j.properties for testing, see JENA-36
-    	setLog4jConfiguration("jena-test-log4j.properties") ;
+    	setLog4jConfiguration(JenaTest.log4jFilenameTests) ;
     }
 	
     static public TestSuite suite() {
