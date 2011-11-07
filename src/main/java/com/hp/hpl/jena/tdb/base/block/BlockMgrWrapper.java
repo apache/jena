@@ -33,7 +33,7 @@ public class BlockMgrWrapper implements BlockMgr
     /** Set another BlockMgr as the target of the wrapper - return the old one */ 
     protected final BlockMgr setBlockMgr(BlockMgr blockMgr)
     {
-        BlockMgr old = blockMgr ;
+        BlockMgr old = this.blockMgr ;
         this.blockMgr = blockMgr ;
         return old ;
     }
