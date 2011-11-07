@@ -287,7 +287,7 @@
      doctitle="${Name} Framework"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP"
+     bottom="Licenced under the Apache License, Version 2.0"
      additionalparam="-breakiterator"
     >
       <classpath refid="classpath"/>

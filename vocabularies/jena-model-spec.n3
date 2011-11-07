@@ -1,7 +1,3 @@
-# (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
-# All rights reserved.
-# $Id: jena-model-spec.n3,v 1.7 2005-07-29 09:11:29 chris-dollin Exp $
-
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .

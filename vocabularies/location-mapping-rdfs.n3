@@ -6,7 +6,6 @@
 
 :   rdfs:comment     "Jena vocabulary for location mapping" ;
     dc:creator       "Andy Seaborne" ;
-    dc:publisher     "Hewlett-Packard Development Company, LP" ;
     dc:title         "Jena vocabulary for location mapping" ;
     dc:description   "Jena vocabulary for location mapping" ;
     dc:date          "2004-08" ;

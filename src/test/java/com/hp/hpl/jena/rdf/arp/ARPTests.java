@@ -1,33 +1,19 @@
 /*
- *  (c) Copyright 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- 
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
-*
- * ARPTests.java
- *
- * Created on September 18, 2001, 7:50 PM
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.hp.hpl.jena.rdf.arp;
@@ -117,34 +103,24 @@ public class ARPTests extends java.lang.Object {
 	static public void main(String args[]) throws IOException {
 		Test ts = suite();
         PrintWriter pw = new PrintWriter(new FileWriter("src/com/hp/hpl/jena/rdf/arp/test/TestPackage.java"));
-        pw.println("/*");
-        pw.println(" *  (c) Copyright 2005, 2006, 2007, 2008, 2009 Hewlett-Packard Development Company, LP") ;
-        pw.println(" *  All rights reserved.");
-        pw.println(" *");
-        pw.println(" * Redistribution and use in source and binary forms, with or without");
-        pw.println(" * modification, are permitted provided that the following conditions");
-        pw.println(" * are met:");
-        pw.println(" * 1. Redistributions of source code must retain the above copyright");
-        pw.println(" *    notice, this list of conditions and the following disclaimer.");
-        pw.println(" * 2. Redistributions in binary form must reproduce the above copyright");
-        pw.println(" *    notice, this list of conditions and the following disclaimer in the");
-        pw.println(" *    documentation and/or other materials provided with the distribution.");
-        pw.println(" * 3. The name of the author may not be used to endorse or promote products");
-        pw.println(" *    derived from this software without specific prior written permission.");
-        pw.println("");
-        pw.println(" * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR");
-        pw.println(" * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES");
-        pw.println(" * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.");
-        pw.println(" * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,");
-        pw.println(" * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT");
-        pw.println(" * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,");
-        pw.println(" * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY");
-        pw.println(" * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT");
-        pw.println(" * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF");
-        pw.println(" * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.");
-        pw.println(" *");
-        pw.println(" */");
-        
+		pw.println("/*") ;
+		pw.println(" * Licensed to the Apache Software Foundation (ASF) under one") ;
+		pw.println(" * or more contributor license agreements.  See the NOTICE file") ;
+		pw.println(" * distributed with this work for additional information") ;
+		pw.println(" * regarding copyright ownership.  The ASF licenses this file") ;
+		pw.println(" * to you under the Apache License, Version 2.0 (the") ;
+		pw.println(" * \"License\"); you may not use this file except in compliance") ;
+		pw.println(" * with the License.  You may obtain a copy of the License at") ;
+		pw.println(" *") ;
+		pw.println(" *     http://www.apache.org/licenses/LICENSE-2.0") ;
+		pw.println(" *") ;
+		pw.println(" * Unless required by applicable law or agreed to in writing, software") ;
+		pw.println(" * distributed under the License is distributed on an \"AS IS\" BASIS,") ;
+		pw.println(" * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.") ;
+		pw.println(" * See the License for the specific language governing permissions and") ;
+		pw.println(" * limitations under the License.") ;
+		pw.println(" */") ;
+		pw.println() ;
         pw.println("package com.hp.hpl.jena.rdf.arp.test;");
         pw.println("import junit.framework.TestSuite;");
         pw.println("import junit.framework.Test;");

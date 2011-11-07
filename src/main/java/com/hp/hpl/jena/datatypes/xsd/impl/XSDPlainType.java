@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -54,4 +54,3 @@ public class XSDPlainType extends XSDDatatype
         return isEqualPlain(litLabel1, litLabel2) ;
     }
 }
-
