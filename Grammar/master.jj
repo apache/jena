@@ -290,6 +290,7 @@ void AskQuery() : {}
   <ASK> { getQuery().setQueryAskType() ; }
   ( DatasetClause() )*
   WhereClause()
+  SolutionModifier()
 }
 
 // ----

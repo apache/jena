@@ -387,6 +387,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       DatasetClause();
     }
     WhereClause();
+    SolutionModifier();
   }
 
 // ----
