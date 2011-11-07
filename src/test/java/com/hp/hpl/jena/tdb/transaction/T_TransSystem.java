@@ -358,9 +358,11 @@ public class T_TransSystem
     {
         for ( int i = 0 ; i < numTasks ; i++ )
         {
-            //execService.submit(proc) ;
-            counter++ ;
-            new Thread(new Callable2Runnable<T>(proc), label+counter).start() ;
+            execService.submit(proc) ;
+            // This creates an lot of threads, which aren't collected up.
+            // But the thread is named.
+//            counter++ ;
+//            new Thread(new Callable2Runnable<T>(proc), label+counter).start() ;
         }
     }
 
