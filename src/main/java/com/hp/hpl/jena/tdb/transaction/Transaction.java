@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -184,62 +184,83 @@ public class Transaction
         this.activedsg = activedsg ;
     }
 
-    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    private static final boolean DEBUG = false ;
+    
+    //public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    public void addIterator(Iterator<?> iter)
+    {
+        if ( ! DEBUG )
+            iterators.add(iter) ;
+        else
+        {
+            if ( iterators.contains(iter) )
+                System.err.println("Already added") ;
+            iterators.add(iter) ;
+        }
+    }
+    
     //public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     
     private volatile StackTraceElement[] enteredThread      = null ;
     private volatile String              previousThreadName = null ;
     private static final int SLEN = 25 ;
-    private static final Object lock = new Object() ;
-    private static volatile int counter = 0 ;
-    private static volatile Transaction otherTransaction = null ;
+    private final Object lock = new Object() ;
+    private volatile int counter = 0 ;
+    //private volatile Transaction otherTransaction = null ;
     /*package*/ volatile boolean flushed = false ;
     
     public void removeIterator(Iterator<? > iter)
     {
-        if ( false )
+        if ( ! DEBUG )
             iterators.remove(iter) ;
         else
+
         {
-            StackTraceElement[] previousThread = enteredThread ;
-            Transaction otherTransaction2 = otherTransaction ;
-            if (previousThread != null)
-            {
-                synchronized(lock)
-                {
-                    Thread currentThread = Thread.currentThread() ;
-                    System.out.println() ;
-                    System.out.println("2 threads accessing removeIterator at the same time in transaction") ;
-                    System.out.println("Previous: "+ otherTransaction2) ;
-                    System.out.println("Current: "+ this) ;
-                    System.out.println("Transaction flushed: "+flushed) ; 
-                    System.out.println("Iterator recorded: "+iterators.contains(iter)) ;
-    
-                    System.out.println("previous thread:" + previousThreadName) ;
-    
-                    for (int i = 0; i < Math.min(SLEN, previousThread.length); i++)
-                    {
-                        System.out.println("  "+previousThread[i].toString()) ;
-                    }
-                    System.out.println() ;
-                    System.out.println("current thread:" + currentThread.getName()) ;
-                    StackTraceElement[] currentStackTrace = currentThread.getStackTrace() ;
-                    for (int i = 0; i < Math.min(SLEN, currentStackTrace.length); i++)
-                    {
-                        System.out.println("  "+currentStackTrace[i].toString()) ;
-                    }
-                    counter ++ ;
-                    if ( counter >= 1 )
-                        System.exit(-99) ;
-                }
-            }
-            otherTransaction = this ;
-            enteredThread = Thread.currentThread().getStackTrace() ;
-            previousThreadName = Thread.currentThread().getName() ;
+            if ( ! iterators.contains(iter) )
+                System.err.println("Already closed or not tracked") ;
             iterators.remove(iter) ;
-            enteredThread = null ;
-            otherTransaction = null ;
         }
+
+//        {
+//            StackTraceElement[] previousThread = enteredThread ;
+//            //Transaction otherTransaction2 = otherTransaction ;
+//            if (previousThread != null)
+//            {
+//                //synchronized(lock)
+//                {
+//                    Thread currentThread = Thread.currentThread() ;
+//                    System.out.println() ;
+//                    System.out.println("2 threads accessing removeIterator at the same time in transaction") ;
+//                    //System.out.println("Previous: "+ otherTransaction2) ;
+//                    System.out.println("Current: "+ this) ;
+//                    System.out.println("Transaction flushed: "+flushed) ; 
+//                    System.out.println("Iterator recorded: "+iterators.contains(iter)) ;
+//    
+//                    System.out.println("previous thread:" + previousThreadName) ;
+//    
+//                    for (int i = 0; i < Math.min(SLEN, previousThread.length); i++)
+//                    {
+//                        System.out.println("  "+previousThread[i].toString()) ;
+//                    }
+//                    System.out.println() ;
+//                    System.out.println("current thread:" + currentThread.getName()) ;
+//                    StackTraceElement[] currentStackTrace = currentThread.getStackTrace() ;
+//                    for (int i = 0; i < Math.min(SLEN, currentStackTrace.length); i++)
+//                    {
+//                        System.out.println("  "+currentStackTrace[i].toString()) ;
+//                    }
+//                    counter ++ ;
+//                    if ( counter >= 1 )
+//                        System.exit(-99) ;
+//                }
+//            }
+//            //otherTransaction = this ;
+//            enteredThread = Thread.currentThread().getStackTrace() ;
+//            previousThreadName = Thread.currentThread().getName() ;
+//            iterators.remove(iter) ;
+//            enteredThread = null ;
+//            //otherTransaction = null ;
+//        }
     }
     
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
