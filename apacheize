@@ -8,7 +8,7 @@
 # find src* -name \*.java -print -o -name .svn -prune |  xargs -n 1 perl -i.bak ../JenaTop/apacheize
 
 $HTEXT= <<'END';
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information

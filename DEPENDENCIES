@@ -1,6 +1,6 @@
-This file lists the dependences for ARQ.
+This file lists the dependences for Jena.
   Version numbers are given in the POM file for a particular distribution. 
-
+  Additional dependencies may be specified in individual modules.
 
 Apache Projects:   Apache Software License
   Apache Jena, including the Jena IRI library
