@@ -87,6 +87,8 @@ public class T_TransSystem
     static final int writerAbortSeqRepeats  = 4 ;
     static final int writerCommitSeqRepeats = 4 ;
     static final int writerMaxPause         = 20 ;
+
+    private ExecutorService execService = Executors.newCachedThreadPool() ;
     
     public static void main(String...args)
     {
@@ -359,10 +361,9 @@ public class T_TransSystem
         for ( int i = 0 ; i < numTasks ; i++ )
         {
             execService.submit(proc) ;
-            // This creates an lot of threads, which aren't collected up.
-            // But the thread is named.
 //            counter++ ;
-//            new Thread(new Callable2Runnable<T>(proc), label+counter).start() ;
+//            Thread t = new Thread(new Callable2Runnable<T>(proc), label+counter) ;
+//            t.start();
         }
     }
 
@@ -411,8 +412,6 @@ public class T_TransSystem
     {
         System.out.printf(string, args) ;
     }
-
-    private ExecutorService execService = Executors.newCachedThreadPool() ;
 
     static Quad q  = SSE.parseQuad("(_ <s> <p> <o>) ") ;
 
