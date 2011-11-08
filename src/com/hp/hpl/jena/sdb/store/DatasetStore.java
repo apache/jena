@@ -18,16 +18,13 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import com.hp.hpl.jena.sparql.core.DataSourceImpl;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
-import com.hp.hpl.jena.sparql.core.DatasetImpl;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 
-import com.hp.hpl.jena.query.Dataset;
-
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-
-public class DatasetStore extends DataSourceImpl
+public class DatasetStore
 {
     static { SDB.init() ; }
     
@@ -46,7 +43,4 @@ public class DatasetStore extends DataSourceImpl
     { 
         return new DatasetStoreGraph(store, SDB.getContext().copy()) ;
     }
-
-    // Do not call.
-    private DatasetStore() { super((Dataset)null) ; }
 }
