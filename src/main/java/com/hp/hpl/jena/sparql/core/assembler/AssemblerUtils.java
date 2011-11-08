@@ -65,7 +65,7 @@ public class AssemblerUtils
     static public void register(AssemblerGroup g)
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        g.implementWith(DataSourceAssembler.getType(), new DataSourceAssembler()) ;
+        g.implementWith(DatasetAssembler.getType(), new DatasetAssembler()) ;
         g.implementWith(GraphStoreAssembler.getType(), new GraphStoreAssembler()) ;
     }
     

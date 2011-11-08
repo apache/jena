@@ -24,10 +24,9 @@ import java.util.List ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetDesc ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -60,7 +59,7 @@ public class DatasetUtils
     public static Dataset createDataset(List<String> uriList, List<String> namedSourceList,
                                         FileManager fileManager, String baseURI)
     {
-        DataSource ds = DataSourceImpl.createMem() ;
+        Dataset ds = DatasetFactory.createMem() ;
         addInGraphs(ds, uriList, namedSourceList, fileManager, baseURI) ;
         return ds ;
     }
@@ -78,13 +77,13 @@ public class DatasetUtils
     
     
     /** add graphs into an exiting DataSource */
-    public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList)
+    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList)
     {
         return addInGraphs(ds, uriList, namedSourceList, null, null) ;
     }
     
     /** add graphs into an existing DataSource */
-    public static Dataset addInGraphs(DataSource ds, List<String> uriList, List<String> namedSourceList,
+    public static Dataset addInGraphs(Dataset ds, List<String> uriList, List<String> namedSourceList,
                                       FileManager fileManager, String baseURI)
     {
         if ( fileManager == null )

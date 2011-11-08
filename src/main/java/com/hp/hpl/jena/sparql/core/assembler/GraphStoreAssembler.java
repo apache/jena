@@ -20,12 +20,12 @@ package com.hp.hpl.jena.sparql.core.assembler;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
-import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 
-public class GraphStoreAssembler extends DataSourceAssembler
+public class GraphStoreAssembler extends DatasetAssembler
 {
     public static Resource getType() { return DatasetAssemblerVocab.tGraphStore ; }
     
@@ -33,12 +33,12 @@ public class GraphStoreAssembler extends DataSourceAssembler
     public Object open(Assembler a, Resource root, Mode mode)
     {
         // Same vocabulary as datasets.
-        // Have dispatched on type by now so can just call the dataset code to build a DataSource.
+        // Have dispatched on type by now so can just call the dataset code to build a Dataset.
         
         GraphStore gs = null ;
         Object ds = super.open(a, root, mode) ;
-        if ( ds instanceof DataSource )
-            gs = GraphStoreFactory.create((DataSource)ds) ;
+        if ( ds instanceof Dataset )
+            gs = GraphStoreFactory.create((Dataset)ds) ;
         else
             throw new DatasetAssemblerException(root, "Not a graph store") ;
             

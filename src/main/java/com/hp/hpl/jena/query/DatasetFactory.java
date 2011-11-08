@@ -22,12 +22,14 @@ import java.util.List ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.assembler.DataSourceAssembler ;
+import com.hp.hpl.jena.sparql.core.DatasetImpl ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
+import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -35,33 +37,43 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class DatasetFactory
 {
-    /** Create a Dataset
-     * 
-     * @return DataSource
+    /** Create an in-memory, modifable Dataset */
+    public static Dataset createMem() { return create() ; }
+    
+    /** Create an in-memory, modifable Dataset
+     * @deprecated Use createMem
      */
+    @Deprecated
     public static DataSource create()
-    { return DataSourceImpl.createMem() ; }
+    { 
+        // This may not be a defaultJena model - during testing, 
+        // we use a graph that is not value-aware for xsd:String vs plain literals.
+        return new DatasetImpl(ModelFactory.createModelForGraph(GraphFactory.createDefaultGraph())) ;
+    }
 
     /** Create a dataset with the given model as the default graph
      * @param model
-     * @return DataSource (Updateable Dataset) 
+     * @return Dataset 
      */ 
+    @SuppressWarnings("deprecation")
     public static DataSource create(Model model)
-    { return new DataSourceImpl(model) ; }
+    { return new DatasetImpl(model) ; }
 
     /** Create a dataset
      * @param dataset
-     * @return DataSource (Updateable Dataset) 
+     * @return Dataset 
      */ 
+    @SuppressWarnings("deprecation")
     public static DataSource create(Dataset dataset)
-    { return new DataSourceImpl(dataset) ; }
+    { return new DatasetImpl(dataset) ; }
 
     /** Wrap a datasetgraph to make a mutable dataset
      * @param dataset DatasetGraph
-     * @return DataSource (Updateable Dataset) 
+     * @return Dataset 
      */ 
+    @SuppressWarnings("deprecation")
     public static DataSource create(DatasetGraph dataset)
-    { return DataSourceImpl.wrap(dataset) ; }
+    { return new DatasetImpl(dataset) ; }
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 
@@ -197,7 +209,7 @@ public class DatasetFactory
 
     public static Dataset make(Dataset ds, Model defaultModel)
     {
-        DataSourceImpl ds2 = new DataSourceImpl(ds) ;
+        Dataset ds2 = new DatasetImpl(ds) ;
         ds2.setDefaultModel(defaultModel) ;
         return ds2 ; 
     }
@@ -221,9 +233,9 @@ public class DatasetFactory
      */
     public static Dataset assemble(Model model)
     {
-        Resource r = GraphUtils.findRootByType(model, DataSourceAssembler.getType()) ;
+        Resource r = GraphUtils.findRootByType(model, DatasetAssembler.getType()) ;
         if ( r == null )
-            throw new ARQException("No root found for type <"+DataSourceAssembler.getType()+">") ;
+            throw new ARQException("No root found for type <"+DatasetAssembler.getType()+">") ;
         
         return assemble(r) ;
     }

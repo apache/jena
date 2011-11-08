@@ -20,9 +20,9 @@ package com.hp.hpl.jena.sparql.modify;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.update.GraphStore ;
 
 public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
@@ -40,7 +40,7 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
     @Override
     public Dataset toDataset()
     {
-        return new DatasetImpl(getWrapped()) ;
+        return DatasetFactory.create(getWrapped()) ;
     }
 
     @Override

@@ -25,15 +25,15 @@ import org.openjena.atlas.lib.Closeable ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.TripleMatch ;
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** DatasetGraph: The graph representation of an RDF Dataset. See {@link Dataset}
  * for the Model level, read-only view (fixed set of models - the models
- * themselves are still mutable) of an RDF dataset and {@link DataSource} for an
- * mutabe RDF Datset Whether a dataset contains a graph if there are no triples
+ * themselves are still mutable) of an RDF dataset.  
+ * <p>
+ * Whether a dataset contains a graph if there are no triples
  * is not defined; see the specifc implementation. Some datasets are "open" -
  * they have all graphs even if no triples, Some datasets are "closed" - fixed
  * set of graphs

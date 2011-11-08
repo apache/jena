@@ -33,12 +33,24 @@ public interface Dataset
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
 
+    /** Set the background graph.  Can be set to null for none.  */
+    public void  setDefaultModel(Model model) ;
+
     /** Get a graph by name as a Jena Model */
     public Model getNamedModel(String uri) ;
 
     /** Does the dataset contain a model with the name supplied? */ 
     public boolean containsNamedModel(String uri) ;
 
+    /** Set a named graph. */
+    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
+
+    /** Remove a named graph. */
+    public void  removeNamedModel(String uri) ;
+
+    /** Change a named graph for another using the same name */
+    public void  replaceNamedModel(String uri, Model model) ;
+    
     /** List the names */
     public Iterator<String> listNames() ;
     

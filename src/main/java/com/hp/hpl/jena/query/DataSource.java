@@ -20,21 +20,10 @@ package com.hp.hpl.jena.query;
 
 //import java.util.Iterator;
 
-import com.hp.hpl.jena.rdf.model.Model ;
 
-/** A DataSource is a Dataset that has modification operations. */
+/** A DataSource is a Dataset that has modification operations.
+ * @deprecated Use Dataset, which now has the operations for add/remove of named models. 
+ * */
 
-public interface DataSource extends Dataset
-{
-    /** Set the background graph.  Can be set to null for none.  */
-    public void  setDefaultModel(Model model) ;
-
-    /** Set a named graph. */
-    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
-
-    /** Remove a named graph. */
-    public void  removeNamedModel(String uri) ;
-
-    /** Change a named graph for another using the same name */
-    public void  replaceNamedModel(String uri, Model model) ;
-}
+@Deprecated
+public interface DataSource extends Dataset {}

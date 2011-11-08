@@ -43,8 +43,8 @@ public class ExRIOT_3
         // read some (more) data into a dataset graph.
         RiotLoader.read("data2.trig", dsg) ;
         
-        // Create a daatset,
-        Dataset ds = DatasetFactory.create() ;
+        // Create a dataset,
+        Dataset ds = DatasetFactory.createMem() ;
         // read in data.
         RiotLoader.read("data2.trig", ds.asDatasetGraph()) ;
 

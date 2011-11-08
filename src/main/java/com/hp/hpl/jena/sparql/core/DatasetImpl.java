@@ -25,7 +25,9 @@ import org.openjena.atlas.lib.CacheFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.LabelExistsException ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -33,40 +35,74 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
-/** Wrapper around a DatasetGraph. See also DataSourceImpl. */
+/** A implementation of a Dataset.
+ * This is the "usual" implementation based on wrapping a DatasetGraph
+ * and providing an adapter layer from Model/Resource to Graph/Node
+ * The characteristics of this adpter depend on the charcateristics of
+ * DatasetGraph.   
+ */
 
-public class DatasetImpl implements Dataset
+@SuppressWarnings("deprecation")
+public class DatasetImpl implements Dataset, DataSource
 {
-    protected DatasetGraph dsg = null ;
-    private Object lock = new Object() ;
-    
-    // A small cache so that calls getDefaultModel()/getNamedModel() are
-    // cheap when used repeatedly in code.  This is not an excuse for
-    // DatasetGraph not to cache if appropriate for the storage technology.
-    private Model defaultModel = null ;
-    // read synchronised in this class, not need for a sync wrapper.
-    private Cache<String, Model> cache = CacheFactory.createCache(0.75f, 20) ;      
+    /* 
+     * We are cautious - SPARQL Update can change the graphs in a store
+     * so we assume DatasetGraph.getGraph is efficient and
+     * here cut the overhead of model wrappers.
+     */
 
-    public DatasetImpl(Model model)
-    {
-        defaultModel = model ;
-        this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
-    }
+    protected DatasetGraph dsg = null ;
+    // Cache of graph -> model so that we don't churn model creation.
+    private Cache<Graph, Model> cache = CacheFactory.createCache(0.75f, 20) ;
+    private Object internalLock = new Object() ;
+
+    protected DatasetImpl()
+    {}
     
     public DatasetImpl(DatasetGraph dsg)
     {
         this.dsg = dsg ;
     }
+    /** Wrap an existing DatasetGraph */
+    public static Dataset wrap(DatasetGraph datasetGraph)
+    {
+        DatasetImpl ds = new DatasetImpl() ;
+        ds.dsg = datasetGraph ; 
+        return ds ;
+    }
+    
+    /** Clone the structure of a DatasetGraph.
+     * The current graph themselves are shared but new naming and new graphs are
+     * only in the cloned    
+     */
+    public static Dataset cloneStructure(DatasetGraph datasetGraph)
+    { 
+        DatasetImpl ds = new DatasetImpl() ;
+        ds.dsg = new DatasetGraphMap(datasetGraph) ;
+        return ds ;
+    }
 
-    /** Return the default model */
+    /** Create a Dataset with the model as default model.
+     *  Named models must be explicitly added to identify the storage to be used.
+     */
+    public DatasetImpl(Model model)
+    {
+        addToCache(model) ;
+        // TODO Is this right? this sort of DatasetGraph can't auto-add graphs.
+        this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
+    }
+
+    public DatasetImpl(Dataset ds)
+    {
+        this.dsg = DatasetGraphFactory.create(ds.asDatasetGraph()) ;
+    }
+
     @Override
     public Model getDefaultModel() 
     { 
-        synchronized(lock)
+        synchronized(internalLock)
         {
-            if ( defaultModel == null )
-                defaultModel = graph2model(dsg.getDefaultGraph()) ;
-            return defaultModel ;
+            return graph2model(dsg.getDefaultGraph()) ;
         }
     }
 
@@ -77,53 +113,72 @@ public class DatasetImpl implements Dataset
     @Override public void begin(ReadWrite mode)     { throw new UnsupportedOperationException("Transactions not supported") ; }
     @Override public void commit()                  { throw new UnsupportedOperationException("Transactions not supported") ; }
     @Override public void abort()                   { throw new UnsupportedOperationException("Transactions not supported") ; }
- 
+  
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
-    /** Return a model for the named graph - repeated calls so not guarantee to return the same Java object */
     @Override
     public Model getNamedModel(String uri)
     { 
         checkGraphName(uri) ;
-        
-        // synchronized because we need to read and possible update the cache atomically 
-        synchronized(lock)
+        Node n = Node.createURI(uri) ;
+        synchronized(internalLock)
         {
-            Model m = cache.get(uri) ;
-            if ( m == null )
-            {
-                m = graph2model(dsg.getGraph(Node.createURI(uri))) ;
-                cache.put(uri, m) ;
-            }
-            return m ;
+            Graph g = dsg.getGraph(n) ;
+            if ( g == null )
+                return null ;
+            return graph2model(g) ;
         }
     }
 
-    private static void checkGraphName(String uri)
+    @Override
+    public void addNamedModel(String uri, Model model) throws LabelExistsException
+    { 
+        checkGraphName(uri) ;
+        // Assumes single writer.
+        addToCache(model) ;
+        Node n = Node.createURI(uri) ;
+        dsg.addGraph(n, model.getGraph()) ;
+    }
+
+    @Override
+    public void removeNamedModel(String uri)
+    { 
+        checkGraphName(uri) ;
+        Node n = Node.createURI(uri) ;
+        // Assumes single writer.
+        removeFromCache(dsg.getGraph(n)) ;
+        dsg.removeGraph(n) ;
+    }
+
+    @Override
+    public void replaceNamedModel(String uri, Model model)
     {
-        if ( uri == null )
-            throw new ARQException("null for graph name") ; 
+        // Assumes single writer.
+        checkGraphName(uri) ;
+        Node n = Node.createURI(uri) ;
+        removeFromCache(dsg.getGraph(n)) ;
+        dsg.removeGraph(n) ;
+        addToCache(model) ;
+        dsg.addGraph(n, model.getGraph() ) ;
+    }
+
+    @Override
+    public void setDefaultModel(Model model)
+    { 
+        // Assumes single writer.
+        removeFromCache(dsg.getDefaultGraph()) ;
+        addToCache(model) ;
+        dsg.setDefaultGraph(model.getGraph()) ;
     }
 
     @Override
     public boolean containsNamedModel(String uri)
-    {
+    { 
+        // Does not touch the cache.
         checkGraphName(uri) ;
-
-        // Don't look in the cache - just ask the DSG which either caches graphs
-        // or asks the storage as needed. The significant case is whether an
-        // empty graph is contained in a dataset.  If it's pure quad storage,
-        // the answer is usually better as "no"; if it's an in-memory
-        // dataset the answer is "yes". 
-        return dsg.containsGraph(Node.createURI(uri)) ;
-    }
-
-    @Override
-    public void close()
-    {
-        cache = null ;
-        dsg.close();
+        Node n = Node.createURI(uri) ;
+        return dsg.containsGraph(n) ;
     }
 
     @Override
@@ -132,8 +187,49 @@ public class DatasetImpl implements Dataset
         return NodeUtils.nodesToURIs(dsg.listGraphNodes()) ;
     }
 
+
+    //  -------
+    //  Cache models wrapping graphs
+    // Assumes outser syncrhonization of necessary (multiple readers possible).
+    // Assume MRSW (Multiple Reader OR Single Writer)
+
+    @Override
+    public void close()
+    {
+        dsg.close() ;
+        cache = null ;
+    }
+
+    private void removeFromCache(Graph graph)
+    {
+        // Assume MRSW - no synchronized needed.
+        if ( graph == null )
+            return ;
+        cache.remove(graph) ;
+    }
+
+    private void addToCache(Model model)
+    {
+        // Assume MRSW - no synchronized needed.
+        cache.put(model.getGraph(), model) ;
+    }
+
     private Model graph2model(Graph graph)
     { 
-        return ModelFactory.createModelForGraph(graph) ;
+        // Called from readers -- outer synchronation needed.
+        Model model = cache.get(graph) ;
+        if ( model == null )
+        {
+            model = ModelFactory.createModelForGraph(graph) ;
+            cache.put(graph, model) ;
+        }
+        return model ;
     }
+    
+    private static void checkGraphName(String uri)
+    {
+        if ( uri == null )
+            throw new ARQException("null for graph name") ; 
+    }
+
 }

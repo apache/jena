@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.query;
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
@@ -33,10 +33,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
-
 
 /** Place to make QueryExecution objects from Query objects or a string. */
  
@@ -179,7 +177,7 @@ public class QueryExecutionFactory
     {
         checkArg(query) ;
         checkArg(model) ;
-        return make(query, new DatasetImpl(model)) ;
+        return make(query, DatasetFactory.create(model)) ;
     }
 
     /** Create a QueryExecution to execute over the Model.
@@ -261,7 +259,7 @@ public class QueryExecutionFactory
     static public QueryExecution create(Query query, Model model, QuerySolution initialBinding)
     {
         checkArg(model) ;
-        return create(query, new DataSourceImpl(model), initialBinding) ;
+        return create(query, DatasetFactory.create(model), initialBinding) ;
     }
     
     /** Create a QueryExecution to execute over the Model, 

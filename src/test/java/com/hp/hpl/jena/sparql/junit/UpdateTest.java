@@ -24,14 +24,13 @@ import java.util.List ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.riot.checker.CheckerLiterals ;
 
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
-import com.hp.hpl.jena.sparql.core.DataSourceImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.TestManifestUpdate_11 ;
@@ -70,11 +69,11 @@ public class UpdateTest extends EarlTestCase
         this.result = result ;
         /*
          *  mf:action [ ut:query <insert-data-spo1.rq> ; 
-                ut:data <empty.ttl> 
-              ] ;
-    mf:result [ ut:result ut:success ; 
-                ut:data  <spo.ttl>
-              ] .
+                        ut:data <empty.ttl> 
+                      ] ;
+            mf:result [ ut:result ut:success ; 
+                        ut:data  <spo.ttl>
+                      ] .
 
          */
         
@@ -130,8 +129,6 @@ public class UpdateTest extends EarlTestCase
         }
     }
     
-    
-    
     private boolean datasetSame(Dataset ds1, Dataset ds2, boolean verbose)
     {
         List<String> names1 = Iter.toList(ds1.listNames()) ;
@@ -173,7 +170,7 @@ public class UpdateTest extends EarlTestCase
         //DataSource ds = DatasetFactory.create() ;
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // Growing. dataset.
-        DataSource ds = DataSourceImpl.wrap(dsg) ;
+        Dataset ds = DatasetFactory.create(dsg) ;
         
         
         List<String> dftData = getAll(r,  TestManifestUpdate_11.data) ;

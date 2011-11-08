@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.core;
 
 import junit.framework.JUnit4TestAdapter ;
 
-import com.hp.hpl.jena.query.DataSource ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
 public class TestDatasetDataSource extends TestDataset 
@@ -31,7 +31,5 @@ public class TestDatasetDataSource extends TestDataset
     }
     
     @Override
-    protected DataSource create() { return DatasetFactory.create() ; }
-    
-
+    protected Dataset create() { return DatasetFactory.createMem() ; }
 }

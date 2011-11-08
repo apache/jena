@@ -123,7 +123,7 @@ public class sse_query extends CmdARQ
         Dataset dataset = modDataset.getDataset() ;
         // Check there is a dataset.
         if ( dataset == null )
-            dataset = DatasetFactory.create() ;
+            dataset = DatasetFactory.createMem() ;
 
         modTime.startTimer() ;
         DatasetGraph dsg = dataset.asDatasetGraph() ;

@@ -164,7 +164,7 @@ public class qparse extends CmdARQ
             { 
                 divider() ;
                 // This forces internal query initialization - must be after QueryUtils.checkQuery
-                QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create()) ;
+                QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.createMem()) ;
                 QueryOutputUtils.printPlan(query, qExec) ; 
             }
         }

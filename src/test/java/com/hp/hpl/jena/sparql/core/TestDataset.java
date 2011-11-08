@@ -29,7 +29,6 @@ import java.util.List ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -38,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 
 public abstract class TestDataset
 {
-    protected abstract DataSource create() ;
+    protected abstract Dataset create() ;
     
     static Model model1 = ModelFactory.createDefaultModel() ;
     static Model model2 = ModelFactory.createDefaultModel() ;
@@ -88,7 +87,7 @@ public abstract class TestDataset
 
     @Test public void datasource_01()
     {
-        DataSource ds = create() ;
+        Dataset ds = create() ;
         ds.setDefaultModel(model2) ;
         assertTrue(model2.isIsomorphicWith(ds.getDefaultModel())) ;
     }
@@ -96,7 +95,7 @@ public abstract class TestDataset
     @Test public void datasource_02()
     {
         String graphName = "http://example/" ;
-        DataSource ds = create() ;
+        Dataset ds = create() ;
         ds.addNamedModel(graphName, model1) ;
         assertTrue(ds.containsNamedModel(graphName)) ;
         
@@ -118,7 +117,7 @@ public abstract class TestDataset
     @Test public void datasource_03()
     {
         String graphName = "http://example/" ;
-        DataSource ds = create() ;
+        Dataset ds = create() ;
         ds.addNamedModel(graphName, model1) ;
         ds.replaceNamedModel(graphName, model2) ;
         assertTrue(ds.containsNamedModel(graphName)) ;

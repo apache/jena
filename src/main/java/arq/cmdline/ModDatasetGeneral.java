@@ -26,7 +26,6 @@ import org.openjena.riot.RiotLoader ;
 
 import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.LabelExistsException ;
@@ -97,13 +96,13 @@ public class ModDatasetGeneral extends ModDataset
         
         // This can auto-add graphs.
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        DataSource ds = DatasetFactory.create(dsg) ;
+        Dataset ds = DatasetFactory.create(dsg) ;
         addGraphs(ds) ;
         dataset = ds ;
         return dataset ;
     }
         
-    protected void addGraphs(DataSource ds)
+    protected void addGraphs(Dataset ds)
     {
         try {
             if ( (graphURLs != null) || (namedGraphURLs != null) )
