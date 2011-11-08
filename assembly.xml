@@ -5,7 +5,7 @@
 
 <assembly>
   <id>distribution</id>
-  <baseDirectory>SDB-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
   <formats>
     <!--
     <format>tar.gz</format>

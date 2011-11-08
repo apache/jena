@@ -2,7 +2,7 @@
 
 <assembly>
   <id>tests</id>
-  <baseDirectory>ARQ-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
   <formats>
     <!--
       <format>tar.gz</format>
