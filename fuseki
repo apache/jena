@@ -1,7 +1,7 @@
 #!/bin/bash
 
 M2_REPO="/home/afs/.m2/repo" ;
-X=$(perl -ne 'next unless /kind="var"\s*path="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
+X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
 
 CP=
 for x in $X
