@@ -30,11 +30,7 @@ import static org.openjena.fuseki.HttpNames.paramQuery ;
 import static org.openjena.fuseki.HttpNames.paramQueryRef ;
 import static org.openjena.fuseki.HttpNames.paramStyleSheet ;
 
-import java.util.Arrays ;
-import java.util.Collections ;
-import java.util.HashSet ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -45,7 +41,6 @@ import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.fuseki.migrate.GraphLoadUtils ;
 import org.openjena.riot.RiotException ;
 
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -142,7 +137,7 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
             if ( graphURLs.size() == 0 && namedGraphs.size() == 0 )
                 return null ;
             
-            DataSource dataset = DatasetFactory.create() ;
+            Dataset dataset = DatasetFactory.createMem() ;
             // Look in cache for loaded graphs!!
 
             // ---- Default graph
