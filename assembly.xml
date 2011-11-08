@@ -1,7 +1,7 @@
 <assembly>
   <id>distribution</id>
   
-  <baseDirectory>${project.name}-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
   <formats>
     <!--
     <format>tar.gz</format>
