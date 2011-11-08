@@ -34,7 +34,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
 	
 
     /** the Graph this handler is working for */
-	private GraphRDB graph;
+	@SuppressWarnings("hiding")
+    private GraphRDB graph;
 	boolean queryOnlyStmt;  // if true, query only asserted stmt (ignore reification)
 	boolean queryOnlyReif;  // if true, query only reified stmt (ignore asserted)
 	boolean queryFullReif;  // if true, ignore partially reified statements

@@ -90,6 +90,7 @@ public abstract class Polyadic extends CompositionBase
         }
     }
 
+    @SuppressWarnings("hiding")
     private PrefixMapping pm;
 
     @Override
