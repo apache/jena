@@ -32,7 +32,6 @@ public class ModDatasetStore extends ModDataset
 {
     protected final ArgDecl argDeclSDBdesc       = new ArgDecl(true, "sdb", "store", "desc");
     protected String filename = null ;
-    protected Dataset dataset = null ;
     
     @Override
     public Dataset createDataset()

@@ -40,10 +40,9 @@ import com.hp.hpl.jena.update.GraphStore ;
 public class DatasetStoreGraph extends DatasetGraphCaching
     implements DatasetGraph, Closeable, GraphStore 
 {
-    final Store store ;
-    Graph defaultGraph = null ;
-    Lock lock = new LockMRSW() ;
-    final Context context ;
+    private final Store store ;
+    private Lock lock = new LockMRSW() ;
+    private final Context context ;
     
     public DatasetStoreGraph(Store store, Context context)
     {
