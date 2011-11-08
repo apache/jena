@@ -7,7 +7,7 @@
           xsi:schemaLocation="xmlns=http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.1 http://maven.apache.org/xsd/assembly-1.1.1.xsd">
 
   <id>tests</id>
-  <baseDirectory>${project.name}-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
   <formats>
     <!--
       <format>tar.gz</format>
