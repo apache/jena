@@ -14,7 +14,7 @@ Assumes jar made and onejar has been assembled.
     <format>zip</format>
   </formats>
 
-  <baseDirectory>${project.name}-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
 
   <files>
     <file>

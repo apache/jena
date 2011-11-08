@@ -13,7 +13,7 @@ The SOH distribution.
     <format>zip</format>
   </formats>
 
-  <baseDirectory>${project.name}-${project.version}</baseDirectory>
+  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
 
   <fileSets>
     <fileSet>
