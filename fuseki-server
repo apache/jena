@@ -1,7 +1,7 @@
 #!/bin/bash
 
-JAR1="fuseki-sys.jar"
-JAR2="target/fuseki-*-sys.jar"
+JAR1="fuseki-server.jar"
+JAR2="target/fuseki-*-server.jar"
 JAR=""
 
 for J in "$JAR1" "$JAR2"
