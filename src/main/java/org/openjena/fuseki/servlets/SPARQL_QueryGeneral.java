@@ -128,6 +128,11 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         return datasetFromDescription(action, graphURLs, namedGraphs) ;
     }
     
+    /**
+     * Construct a Dataset based on a list of IRIs for the default graph
+     * and list of IRI s for he named graphs 
+     */
+    
     protected Dataset datasetFromDescription(HttpActionQuery action, List<String> graphURLs, List<String> namedGraphs)
     {
         try {
