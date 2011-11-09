@@ -5,13 +5,15 @@ ChangeLog for ARQ
 ** Java 6 is now required for running ARQ.
 
 + BUG FIX: Mis-execution of GRAPH ?g { .. } where ?g used inside { .. } (JENA-154)
++ Bug fix: ResourceUtils.renameResource() no longer uses Iterator.remove() (JENA-76)
++ Bug fix: Query objects with aggregators cannot be reused (JENA-120)
 + REGEX now accepts xsd:string and literals with language tags in the first argument. 
 + Add function STRBEFORE, STRAFTER and REPLACE for SPARQL 1.1
 + Add function UUID  [ARQ language only]  
 + Remove LARQ from ARQ.  LARQ is now a separate Jena module.
 + Fix reuse of query objects (aggregation used shared state) (JENA-121)
-+ Spill to disk update (enable with ARQ.spillOnDiskUpdateThreshold) (JENA-45)
-+ External sort (enable with ARQ.spillOnDiskSortingThreshold) (JENA-44) 
++ Spill to disk update (enable with ARQ.spillToDiskThreshold) (JENA-45)
++ External sort (enable with ARQ.spillToDiskThreshold) (JENA-44) 
 + Remove RDQL from ARQ (code in Archive/ in SVN -- will not be updated) 
 + ResultSetUtils.union(ResultSet ... sets)
 + Add optimization for DISTINCT/ORDER BY/LIMIT N (JENA-108)
