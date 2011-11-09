@@ -130,7 +130,7 @@ public class DatasetBuilderTxn
                 objectFile = FileFactory.createObjectFileDisk(objFilename) ;
 
             NodeTableTrans ntt = new NodeTableTrans(txn ,fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
-            txn.add(ntt) ;
+            txn.addComponent(ntt) ;
             
             // Add inline wrapper.
             NodeTable nt = NodeTableInline.create(ntt) ;
@@ -149,7 +149,7 @@ public class DatasetBuilderTxn
             if ( baseMgr == null )
                 throw new TDBException("No BlockMgr for "+ref) ;
             BlockMgrJournal blkMgr = new BlockMgrJournal(txn, ref, baseMgr) ;
-            txn.add(blkMgr) ;
+            txn.addComponent(blkMgr) ;
             return blkMgr ;
         }
     }

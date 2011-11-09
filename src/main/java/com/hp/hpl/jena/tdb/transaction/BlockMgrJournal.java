@@ -28,6 +28,7 @@ import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -49,6 +50,9 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         reset(txn, fileRef, underlyingBlockMgr) ;
+        if ( txn.getMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
+            System.err.println("Two level BlockMgrJournal") ;
+        
     }
 
     @Override

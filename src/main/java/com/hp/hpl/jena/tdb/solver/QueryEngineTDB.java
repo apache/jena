@@ -82,8 +82,6 @@ public class QueryEngineTDB extends QueryEngineMain
         // Dynamic dataset done as a special dataset
         if ( ! DynamicDatasetByRewrite && query.hasDatasetDescription() )
         {
-            //UGLY
-            
             // MIGRATION.
             // 1 - All this to ARQ.
             //     Context slot for real default graph and union graph.
@@ -92,25 +90,7 @@ public class QueryEngineTDB extends QueryEngineMain
             
             doingDynamicDatasetBySpecialDataset = true ;
             DatasetGraph dsg = super.dataset; 
-            // Before dynamic dataset processing.
-            //Graph realDftGraph = dsg.getDefaultGraph() ;
             dsg = DynamicDatasets.dynamicDataset(query, dsg, super.context.isTrue(TDB.symUnionDefaultGraph) ) ;  // Flag for default union graph?
-            
-////            // Create a union graph.
-////            List<Node> namedGraphs = Iter.toList(dsg.listGraphNodes()) ;
-////            Graph unionGraph = new GraphUnionRead(dsg, namedGraphs) ;
-////            if ( super.context.isTrue(TDB.symUnionDefaultGraph) && ( query.getGraphURIs() == null || query.getGraphURIs().size() == 0 ) )
-////                dsg.setDefaultGraph(unionGraph) ;
-//
-//            // What about <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph>?
-//            // really, really create those names?
-//            // --> shows in listGraphs.
-////            dsg.addGraph(Quad.unionGraph, unionGraph) ;
-////            dsg.addGraph(Quad.defaultGraphIRI, realDftGraph) ;
-//
-//            //EXPERIMENT
-//            dsg = new DynamicDatasets.DynamicDatasetGraph(dsg) ;
-//            // ----
             super.dataset = dsg ;
         }
         this.initialInput = input ; 

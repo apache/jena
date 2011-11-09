@@ -38,14 +38,14 @@ public class Transaction
     private final TransactionManager txnMgr ;
     private final List<Iterator<?>> iterators ; 
     private final Journal journal ;
-    private TxnState state ;
-    private ReadWrite mode ;
-    
+    private final ReadWrite mode ;
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
-    private DatasetGraphTDB     basedsg ;
-    private DatasetGraphTxn     activedsg ;
+    private final DatasetGraphTDB   basedsg ;
+
+    private TxnState state ;
+    private DatasetGraphTxn         activedsg ;
 
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
     {
@@ -184,6 +184,8 @@ public class Transaction
         this.activedsg = activedsg ;
     }
 
+    public Journal getJournal()    { return journal ; }
+
     private static final boolean DEBUG = false ;
     
     //public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
@@ -217,7 +219,7 @@ public class Transaction
 
         {
             if ( ! iterators.contains(iter) )
-                System.err.println("Already closed or not tracked") ;
+                System.err.println("Already closed or not tracked: "+iter) ;
             iterators.remove(iter) ;
         }
 
@@ -267,21 +269,18 @@ public class Transaction
     
     public List<TransactionLifecycle> components()
     {
-        // FIX NEEDED
         List<TransactionLifecycle> x = new ArrayList<TransactionLifecycle>() ;
         x.addAll(nodeTableTrans) ;
         x.addAll(blkMgrs) ;
         return x ;
     }
     
-    public Journal getJournal()    { return journal ; }
-
-    public void add(NodeTableTrans ntt)
+    public void addComponent(NodeTableTrans ntt)
     {
         nodeTableTrans.add(ntt) ;
     }
 
-    public void add(BlockMgrJournal blkMgr)
+    public void addComponent(BlockMgrJournal blkMgr)
     {
         blkMgrs.add(blkMgr) ;
     }
