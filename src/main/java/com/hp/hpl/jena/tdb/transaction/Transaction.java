@@ -17,11 +17,13 @@
  */
 
 package com.hp.hpl.jena.tdb.transaction;
-
+import static com.hp.hpl.jena.tdb.ReadWrite.* ;
 import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.ReadWrite ;
@@ -32,20 +34,21 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** A transaction.  Much of the work is done in the transaction manager */
 public class Transaction
 {
-    // TODO split internal and external features.
     private final long id ;
     private final String label ;
     private final TransactionManager txnMgr ;
-    private final List<Iterator<?>> iterators ; 
     private final Journal journal ;
     private final ReadWrite mode ;
+    
     private final List<NodeTableTrans> nodeTableTrans = new ArrayList<NodeTableTrans>() ;
     private final List<BlockMgrJournal> blkMgrs = new ArrayList<BlockMgrJournal>() ;
     // The dataset this is a transaction over - may be a commited, pending dataset.
     private final DatasetGraphTDB   basedsg ;
 
-    private TxnState state ;
+    private final List<Iterator<?>> iterators ;     // Tracking iterators 
     private DatasetGraphTxn         activedsg ;
+    private TxnState state ;
+    private boolean changesPending ;
 
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
     {
@@ -67,6 +70,7 @@ public class Transaction
         activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;
+        changesPending = (mode == WRITE) ;
     }
 
     /* Commit is a 4 step process
@@ -126,8 +130,7 @@ public class Transaction
 
         // [TxTDB:TODO]
         // journal.truncate to last commit 
-        // No need currently as the jounral is only written in prepare. 
-        
+        // Not need currently as the journal is only written in prepare. 
 
         state = TxnState.ABORTED ;
         txnMgr.notifyAbort(this) ;
@@ -168,6 +171,15 @@ public class Transaction
         iterators.clear() ;
     }
     
+    /** A write transaction has been processed and all chanages propageted back to the database */  
+    synchronized
+    /*package*/ void signalEnacted()
+    {
+        if ( ! changesPending )
+            Log.warn(this, "Transaction was a read transaction or a write transaction that has already been flushed") ; 
+       changesPending = false ;
+    }
+
     public ReadWrite getMode()                      { return mode ; }
     public TxnState getState()                      { return state ; }
     
@@ -186,9 +198,18 @@ public class Transaction
 
     public Journal getJournal()    { return journal ; }
 
-    private static final boolean DEBUG = false ;
+    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
+//    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+//    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     
-    //public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    // Debugging versions - concurrency problems show up because concurrent access
+    // to iterators.contains can miss entries when removed by abother thread.
+    // (At least on Oracle JRE - the underlying array is shuffled down by .remove).
+    // See also JENA-131.
+    // After TDB 0.9 release, remove debug versions and leave code above.
+
+    private static final boolean DEBUG = false ;     // Don't check-in to SVN trunk with this set to true.
+
     public void addIterator(Iterator<?> iter)
     {
         if ( ! DEBUG )
@@ -200,72 +221,17 @@ public class Transaction
             iterators.add(iter) ;
         }
     }
-    
-    //public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
-    
-    private volatile StackTraceElement[] enteredThread      = null ;
-    private volatile String              previousThreadName = null ;
-    private static final int SLEN = 25 ;
-    private final Object lock = new Object() ;
-    private volatile int counter = 0 ;
-    //private volatile Transaction otherTransaction = null ;
-    /*package*/ volatile boolean flushed = false ;
-    
+
     public void removeIterator(Iterator<? > iter)
     {
         if ( ! DEBUG )
             iterators.remove(iter) ;
         else
-
         {
             if ( ! iterators.contains(iter) )
                 System.err.println("Already closed or not tracked: "+iter) ;
-            iterators.remove(iter) ;
         }
-
-//        {
-//            StackTraceElement[] previousThread = enteredThread ;
-//            //Transaction otherTransaction2 = otherTransaction ;
-//            if (previousThread != null)
-//            {
-//                //synchronized(lock)
-//                {
-//                    Thread currentThread = Thread.currentThread() ;
-//                    System.out.println() ;
-//                    System.out.println("2 threads accessing removeIterator at the same time in transaction") ;
-//                    //System.out.println("Previous: "+ otherTransaction2) ;
-//                    System.out.println("Current: "+ this) ;
-//                    System.out.println("Transaction flushed: "+flushed) ; 
-//                    System.out.println("Iterator recorded: "+iterators.contains(iter)) ;
-//    
-//                    System.out.println("previous thread:" + previousThreadName) ;
-//    
-//                    for (int i = 0; i < Math.min(SLEN, previousThread.length); i++)
-//                    {
-//                        System.out.println("  "+previousThread[i].toString()) ;
-//                    }
-//                    System.out.println() ;
-//                    System.out.println("current thread:" + currentThread.getName()) ;
-//                    StackTraceElement[] currentStackTrace = currentThread.getStackTrace() ;
-//                    for (int i = 0; i < Math.min(SLEN, currentStackTrace.length); i++)
-//                    {
-//                        System.out.println("  "+currentStackTrace[i].toString()) ;
-//                    }
-//                    counter ++ ;
-//                    if ( counter >= 1 )
-//                        System.exit(-99) ;
-//                }
-//            }
-//            //otherTransaction = this ;
-//            enteredThread = Thread.currentThread().getStackTrace() ;
-//            previousThreadName = Thread.currentThread().getName() ;
-//            iterators.remove(iter) ;
-//            enteredThread = null ;
-//            //otherTransaction = null ;
-//        }
     }
-    
-    public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
     
     public List<TransactionLifecycle> components()
     {

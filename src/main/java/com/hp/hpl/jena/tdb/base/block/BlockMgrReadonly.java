@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import java.util.Iterator ;
+
 import com.hp.hpl.jena.tdb.TDBException ;
 
 public class BlockMgrReadonly extends BlockMgrWrapper
@@ -36,7 +38,11 @@ public class BlockMgrReadonly extends BlockMgrWrapper
     @Override public void write(Block block)            { throw new TDBException("Read-only block manager") ; }
     @Override public void overwrite(Block block)        { throw new TDBException("Read-only block manager") ; }
     @Override public void free(Block block)             { throw new TDBException("Read-only block manager") ; }
-
+    
+    // Don't track.  We don't assume read iterators are well managed. 
+    @Override public void beginIterator(Iterator<?> iterator) {}
+    @Override public void endIterator(Iterator<?> iterator)   {}
+    
 //    @Override 
 //    public void sync()
 //    {

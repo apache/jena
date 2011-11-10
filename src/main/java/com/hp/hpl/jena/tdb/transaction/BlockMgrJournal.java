@@ -305,7 +305,8 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         checkIfClosed() ; 
         transaction.addIterator(iterator) ;
-        blockMgr.beginIterator(iterator) ;
+        // Don't pass down the beginIterator call - we track and manage here, not lower down.  
+        //blockMgr.beginIterator(iterator) ;
     }
 
     @Override
@@ -313,7 +314,8 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         checkIfClosed() ; 
         transaction.removeIterator(iterator) ;
-        blockMgr.endIterator(iterator) ;
+        // Don't pass down the beginIterator call - we track and manage here, not lower down.  
+        //blockMgr.endIterator(iterator) ;
     }
 
     @Override
