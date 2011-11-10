@@ -32,7 +32,6 @@ public class LayoutType extends Symbol implements Named
     public static final LayoutType LayoutTripleNodesHash  = new LayoutType("layout2/hash") ;
     public static final LayoutType LayoutTripleNodesIndex = new LayoutType("layout2/index") ;
     public static final LayoutType LayoutSimple           = new LayoutType("layout1") ;
-    public static final LayoutType LayoutRDB              = new LayoutType("layoutRDB") ;
     
     static SymbolRegistry<LayoutType> registry = new SymbolRegistry<LayoutType>() ;
     static { init() ; }
@@ -57,7 +56,6 @@ public class LayoutType extends Symbol implements Named
         
         register(LayoutTripleNodesIndex) ;
         register(LayoutSimple) ;
-        register(LayoutRDB) ;
     }
     
     static public List<String> allNames() { return registry.allNames() ; }

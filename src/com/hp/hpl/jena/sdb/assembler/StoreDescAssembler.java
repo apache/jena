@@ -77,8 +77,6 @@ public class StoreDescAssembler extends AssemblerBase implements Assembler
             try { storeDesc.engineType= MySQLEngineType.convert(engineName) ; }
             catch (SDBException ex) {}
             
-        // ModelRDB special
-        storeDesc.rdbModelName = GraphUtils.getStringValue(root, AssemblerVocab.pModelRDBname) ;
         return storeDesc ;
     }
     

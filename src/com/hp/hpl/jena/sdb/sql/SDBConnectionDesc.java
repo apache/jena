@@ -41,8 +41,6 @@ public class SDBConnectionDesc
     private String label     = null ;
     private int    poolSize  = 0 ;      // Less then 1 means no pool.
     
-    public String rdbType    = null ;    // ModelRDB specific
-    
     public static SDBConnectionDesc blank()
     { return new SDBConnectionDesc() ; }
     
@@ -147,12 +145,6 @@ public class SDBConnectionDesc
 
     public void setPassword(String password)
     { this.password = password ; }
-
-    public String getRdbType()
-    { return rdbType ; }
-
-    public void setRdbType(String rdbType)
-    { this.rdbType = rdbType ; }
 
     public String getType()
     { return type ; }

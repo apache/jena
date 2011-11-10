@@ -74,8 +74,6 @@ public class AssemblerVocab
     public static final Property pSDBhost            = Vocab.property(NS, "sdbHost") ;
     public static final Property pSDBname            = Vocab.property(NS, "sdbName") ;
     //public static final Property pSDBschema          = Vocab.property(NS, "sdbSchema") ;
-    // ModeRDB graph name - on the connection
-    public static final Property pRDBtype           = Vocab.property(NS, "rdbType") ;
     
     // The JDBC URL written out long form.  Overrides the above.
     public static final Property pJDBC               = Vocab.property(NS, "jdbcURL") ;
@@ -94,8 +92,6 @@ public class AssemblerVocab
     
     // MySQL engine type
     public static final Property pMySQLEngine       = Vocab.property(NS, "engine") ;
-    // ModeRDB graph name - on the layout
-    public static final Property pModelRDBname      = Vocab.property(NS, "rdbModelName") ;
     
     private static boolean initialized = false ; 
     

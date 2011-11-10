@@ -76,9 +76,7 @@ public class PrefixMappingSDB extends PrefixMappingImpl
         super() ;
         graphName = graphURI ;
         connection = sdb  ;
-        // ModelRDB does not support prefixes in the same way as models/graphs over SDB stores. 
-        try { readPrefixMapping() ; }
-        catch (Throwable th) { }
+        readPrefixMapping() ;
     }
     
     @Override

@@ -104,8 +104,6 @@ public class Feature extends PrintableBase implements Named, Printable
 //    
 //    // Some placeholders
 //    
-//    // The Jena2 database layout
-//    LayoutRDB          { public String getName() { return "RDB" ; } } ,          
 //    // A database layout that uses a single triple table, with entries being SPARQL-syntax RDF-terms
 //    LayoutSimple       { public String getName() { return "Layout1" ; } } ,   
 //    // The Triple table/Node table layout 

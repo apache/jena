@@ -45,10 +45,6 @@ public class StoreDesc
     private LayoutType layout           = null ;
     private FeatureSet featureSet       = null ;
     
-    /** ModelRDB spefic */
-    public String rdbModelName          = null ;
-    public String rdbModelType          = null ;
-
     /** MySQL specific */
     public MySQLEngineType engineType   = null ;
     
