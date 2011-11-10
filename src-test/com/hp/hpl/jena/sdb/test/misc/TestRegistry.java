@@ -32,8 +32,7 @@ public class TestRegistry
     
     String[] layoutNames = {    "layout2/hash" , "layout2", 
                                 "layout2/index", 
-                                "layout1",
-                                "layoutRDB" } ;
+                                "layout1" } ;
     
     @Test public void reg_database_1()
     {
