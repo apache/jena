@@ -181,7 +181,7 @@ public class BulkLoader
         return destination(dsg, ntt2, showProgress) ;
     }
 
-    private static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress)
+    public static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress)
     {
         if ( showProgress ) 
             return new LoadMonitor(dsg, loadLogger, itemName, DataTickPoint, IndexTickPoint) ;

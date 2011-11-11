@@ -3,6 +3,7 @@
   <classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
   <classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
   <classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
+  <classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
   <classpathentry excluding="**/*.java" kind="src" path="resources"/>
   <classpathentry excluding="**/*.java" kind="src" path="resources2"/>
 

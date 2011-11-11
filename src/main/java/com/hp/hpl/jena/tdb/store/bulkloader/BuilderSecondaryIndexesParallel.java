@@ -23,11 +23,11 @@ import java.util.concurrent.Semaphore ;
 import com.hp.hpl.jena.sparql.util.Timer ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 
-class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
+public class BuilderSecondaryIndexesParallel implements BuilderSecondaryIndexes
 {
     private LoadMonitor monitor ;
 
-    BuilderSecondaryIndexesParallel(LoadMonitor monitor) { this.monitor = monitor ; } 
+    public BuilderSecondaryIndexesParallel(LoadMonitor monitor) { this.monitor = monitor ; } 
     
     @Override
     public void createSecondaryIndexes(TupleIndex   primaryIndex ,
