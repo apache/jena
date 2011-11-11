@@ -21,7 +21,6 @@
 jms:MakerSpec           rdf:type     rdfs:Class .
 jms:FileMakerSpec       rdf:type     rdfs:Class .
 jms:MemMakerSpec        rdf:type     rdfs:Class .
-jms:RDBMakerSpec        rdf:type     rdfs:Class .
 
 jms:ModelSpec rdf:type rdfs:Class
     ; rdfs:comment "the base type of all model specifications"
@@ -72,12 +71,6 @@ jms:importMaker         rdf:type     rdf:Property .
 jms:reasonsWith         rdf:type     rdf:Property .
 jms:policyPath          rdf:type     rdf:Property .
 
-jms:dbUser              rdf:type     rdf:Property .
-jms:dbPassword          rdf:type     rdf:Property .
-jms:dbURL               rdf:type     rdf:Property .
-jms:dbType              rdf:type     rdf:Property .
-jms:dbClass             rdf:type     rdf:Property .
-
 jms:maker               rdf:type     rdf:Property .
 jms:reificationMode     rdf:type     rdf:Property .
 jms:reasoner            rdf:type     rdf:Property .
@@ -88,7 +81,6 @@ jms:modelName           rdf:type     rdf:Property .
 
 jms:MemMakerSpec        rdfs:subClassOf     jms:MakerSpec .
 jms:FileMakerSpec       rdfs:subClassOf     jms:MakerSpec .
-jms:RDBMakerSpec        rdfs:subClassOf     jms:MakerSpec .
 
 jms:DefaultModelSpec    rdfs:subClassOf     jms:ModelSpec .
 jms:PlainModelSpec      rdfs:subClassOf     jms:ModelSpec .
@@ -104,7 +96,6 @@ jms:ontLanguage         rdfs:domain         jms:OntModelSpec .
 jms:reasonsWith         rdfs:domain         jms:InfModelSpec .
 jms:modelName           rdfs:domain         jms:ModelSpec .
 jms:fileBase            rdfs:domain         jms:FileMakerSpec .
-jms:hasConnection       rdfs:domain         jms:RDBMakerSpec .
 
 jms:importMaker         rdfs:subPropertyOf  jms:maker .
 

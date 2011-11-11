@@ -69,8 +69,6 @@ public class JA
 
     public static final Resource Content = resource( "Content" );
 
-    public static final Resource Connectable = resource( "Connectable" );
-
     public static final Resource LiteralContent = resource( "LiteralContent" );
 
     public static final Resource OntModelSpec = resource( "OntModelSpec" );

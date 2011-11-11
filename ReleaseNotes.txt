@@ -4,6 +4,7 @@ Release Notes
 ==== Jena 2.6.5
 
 ** Java 6 is now required for running Jena.
+** The deprecate RDB subsystem has been removed.  Please use TDB or SDB.
 
 ==== Jena 2.6.4
 

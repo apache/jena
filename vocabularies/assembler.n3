@@ -183,7 +183,7 @@ ja:NamedModel a rdfs:Class
     ; rdfs:subClassOf [owl:onProperty ja:modelName; owl:cardinality 1]
     ; rdfs:label "Assembler.NamedModel"
     ; rdfs:comment
-        """shared superclass for FileModel and RDBModel,
+        """superclass for FileModel,
         accepting the modelName property"""
     .
 
@@ -236,52 +236,17 @@ ja:fileEncoding a rdf:Property
     ; rdfs:label "Assemble.fileEncoding"
     ; rdfs:comment """FileModel property to give language encoding"""
     .
-	
-#
-# database models
-#
-
-ja:RDBModel a rdfs:Class
-    ; rdfs:subClassOf ja:NamedModel
-    ; rdfs:subClassOf [owl:onProperty ja:connection; owl:cardinality 1]
-    ; rdfs:subClassOf ja:Connectable
-    ; owl:equivalentClass [owl:intersectionOf (ja:Connectable ja:NamedModel)]
-    ; rdfs:label "Assembler.RDBModel"
-    ; rdfs:comment
-        """a Model from a Jena relational database, specified by a
-        Connection and with a given name."""
-    .
 
 ja:Connectable a rdfs:Class
     ; rdfs:subClassOf ja:Object
     ; rdfs:label "Assembler.Connectable"
-    ; rdfs:comment
-        """The class of Objects which can be the subject of a ja:connection
-        property."""
     .
-
-ja:connection a rdf:Property
-    ; rdfs:label "Assembler.connection"
-    ; rdfs:comment
-        """property specifying that the subject RDBModel is built
-        using the connection specified by the object."""
-    ; rdfs:domain ja:Connectable
-    ; rdfs:range ja:Connection
-    .
-
+	
 ja:ModelSource a rdfs:Class
     ; rdfs:subClassOf ja:Connectable
     ; rdfs:label "Assembler.ModelSource"
     ; rdfs:comment "Source of models by name for an OntModelSpec"
     .
-
-ja:RDBModelSource a rdfs:Class
-    ; rdfs:subClassOf ja:ModelSource
-    ; rdfs:subClassOf ja:Connectable
-    ; rdfs:label "Assembler.RDBModelSource"
-    ; rdfs:comment "A ModelSource backed by an RDB"
-    .
-
 #
 # inference models
 #
@@ -547,109 +512,6 @@ ja:rootModel a rdf:Property
     ; rdfs:label "Assembler.rootModel"
     ; rdfs:comment
         """property of a UnionModel that specifies its mutable base model"""
-    .
-
-#
-# connections
-#
-
-ja:Connection a rdfs:Class
-    ; rdfs:subClassOf [owl:onProperty ja:dbURL; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbURLProperty; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbUser; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbUserProperty; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbPassword; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbPasswordProperty; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbType; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbTypeProperty; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbClass; owl:maxCardinality 1]
-    ; rdfs:subClassOf [owl:onProperty ja:dbClassProperty; owl:maxCardinality 1]
-    ; rdfs:subClassOf ja:Object
-    ; rdfs:label "Assembler.Connection"
-    ; rdfs:comment
-        "class of RDB Connection objects for JDBC database connections."
-    .
-
-ja:dbURL a rdf:Property
-    ; rdfs:label "Assembler.dbURL"
-    ; rdfs:comment
-        """property of a Connection that specifies as a URI Resource
-        the URL of the database to connect to."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbUser a rdf:Property
-    ; rdfs:label "Assembler.dbUser"
-    ; rdfs:comment
-        """property of a database connection that specifies as a string
-        the name of the database user for which the connection is to be made."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbPassword a rdf:Property
-    ; rdfs:label "Assembler.dbPassword"
-    ; rdfs:comment
-        """property of a database connection that specifies as a string the
-        password used to authorise the connection."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbType a rdf:Property
-    ; rdfs:label "Assembler.dbType"
-    ; rdfs:comment
-        """property of a database connection that specifies as a string the
-        type of the database to connect to."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbURLProperty a rdf:Property
-    ; rdfs:label "Assembler.dbURLProperty"
-    ; rdfs:comment
-        """property of a Connection that specifies the name of a Java
-		system property containing the URL of the database to connect to."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbUserProperty a rdf:Property
-    ; rdfs:label "Assembler.dbUserProperty"
-    ; rdfs:comment
-        """property of a database connection that specifies the name of
-		a Java system property containing the name of the database user
-        for which the connection is to be made."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbPasswordProperty a rdf:Property
-    ; rdfs:label "Assembler.dbPasswordProperty"
-    ; rdfs:comment
-        """property of a database connection that specifies the name of
-		a Java system property the password used to authorise the connection."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbTypeProperty a rdf:Property
-    ; rdfs:label "Assembler.dbTypeProperty"
-    ; rdfs:comment
-        """property of a database connection that specifies the name of a
-		Java system property containing the type of the database to connect to."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbClass a rdf:Property
-    ; rdfs:label "Assembler.dbClass"
-    ; rdfs:comment
-        """property of a database connection that specifies as a string the
-        name of a Java class to be loaded before connection is attemped."""
-    ; rdfs:domain ja:Connection
-    .
-
-ja:dbClassProperty a rdf:Property
-    ; rdfs:label "Assembler.dbClass"
-    ; rdfs:comment
-        """property of a database connection that specifies as a string the
-        name a Java system property containing the name of a Java class to be
-        loaded before connection is attemped."""
-    ; rdfs:domain ja:Connection
     .
 
 #

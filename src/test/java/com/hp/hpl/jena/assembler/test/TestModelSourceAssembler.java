@@ -35,11 +35,6 @@ public class TestModelSourceAssembler extends AssemblerTestBase
     public void testModelSourceAssemblerType()
         { testDemandsMinimalType( new ModelSourceAssembler(), JA.ModelSource );  }
    
-    public void testModelSourceVocabulary()
-        {
-        assertSubclassOf( JA.Connectable, JA.Object );
-        }
-    
     public void testMemModelMakerSource()
         {
         Assembler a = new ModelSourceAssembler();

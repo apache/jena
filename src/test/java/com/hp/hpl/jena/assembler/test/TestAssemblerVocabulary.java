@@ -105,7 +105,6 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertSubclassOf( JA.NamedModel, JA.Model );
         assertSubclassOf( JA.FileModel, JA.NamedModel );
         // assertSubclassOf( JA.OntModelSpec, JA.ReasonerFactory );
-        assertSubclassOf( JA.ModelSource, JA.Connectable );
         }
     
     public void testInfModelProperties()
