@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.engine.main;
 
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.TERM ;
 
-import com.hp.hpl.jena.db.GraphRDB ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler ;
 import com.hp.hpl.jena.graph.Node ;
@@ -64,17 +63,7 @@ public class StageGeneratorGeneric implements StageGenerator
         final ReorderTransformation reorder ;
         final StageGenerator executor ;
         
-        if ( graph instanceof GraphMemFaster )
-        {
-            reorder = reorderBasicStats(graph) ;
-            executor = executeInline ; 
-        }
-        else if ( graph instanceof GraphRDB )
-        {
-            reorder = null ;
-            executor = executeQueryHandler ;
-        }
-        else if ( graph instanceof GraphMem )            // Old Graph-in-memory
+        if ( graph instanceof GraphMemFaster || graph instanceof GraphMem )            // New and old Graph-in-memory
         {
             reorder = reorderBasicStats(graph) ;
             executor = executeInline ; 
