@@ -29,45 +29,7 @@ import com.hp.hpl.jena.shared.*;
 */
 public class ModelFactoryBase
     {
-    public static String guessDBURL()
-        { return gp( "db.url" ); }
-    
-    public static String guessDBUser()
-        { return gp( "db.user", "test" ); }
-    
-    public static String guessDBPassword()
-        { return gp( "db.password", "" ); }
-    
-    public static String guessDBType()
-        { 
-        String possible = gp( "db.type", null );
-        if (possible == null) possible = extractType( guessDBURL() );    
-        if (possible == null) throw new JenaException( "cannot guess database type" );
-        return possible;
-        }
-        
-    public static String guessDBDriver()
-        { return gp( "db.driver", null ); }
-    
-    /** Return true if the database should support concurrent read during transactions */
-    public static boolean guessDBConcurrent() {
-        return gp("db.concurrent", "true").equalsIgnoreCase("true");
-    }
-    
-    /**
-        Guess the database type as the string between the first and second colons of the
-        URL. This method is public so that it may be invoked from test packages.
-    
-        @param dbURL a string of the form nocolons:somename:somestuff
-        @return somename
-    */
-    public static String extractType( String dbURL )
-        {
-        int a = dbURL.indexOf( ':' );
-        int b = dbURL.indexOf( ':', a + 1 );
-        return dbURL.substring( a + 1, b );
-        }
-    
+
     protected static String gp( String name )
         {
         String answer = gp( name, null );

@@ -67,16 +67,12 @@ public interface Assembler
 
     public static final Assembler infModel = new InfModelAssembler();
 
-    public static final Assembler rdbModel = new RDBModelAssembler();
-    
     public static final Assembler ontModel = new OntModelAssembler();
 
     public static final Assembler reasonerFactory = new ReasonerFactoryAssembler();
 
     public static final Assembler content = new ContentAssembler();
     
-    public static final Assembler connection = new ConnectionAssembler();
-
     public static final Assembler prefixMapping = new PrefixMappingAssembler();
 
     public static final Assembler fileModel = new FileModelAssembler();
@@ -101,11 +97,8 @@ public interface Assembler
         .implementWith( JA.InfModel, infModel )
         .implementWith( JA.ReasonerFactory, reasonerFactory )
         .implementWith( JA.ModelSource, modelSource )
-        .implementWith( JA.RDBModelSource, modelSource )
         .implementWith( JA.Content, content )
         .implementWith( JA.ContentItem, content )
-        .implementWith( JA.Connection, connection )
-        .implementWith( JA.RDBModel, rdbModel )
         .implementWith( JA.UnionModel, unionModel )
         .implementWith( JA.PrefixMapping, prefixMapping )
         .implementWith( JA.SinglePrefixMapping, prefixMapping )

@@ -199,17 +199,6 @@ public class TestAssemblerGroup extends AssemblerTestBase
             ;
         AssemblerGroup copy = initial.copy();
         assertSame( initial.assemblerFor( JA.InfModel ), copy.assemblerFor( JA.InfModel ) );
-        assertNull( copy.assemblerFor( JA.Connection ) );
         }
     
-    public void testCopyHasOwnMapping()
-        {
-        AssemblerGroup initial = AssemblerGroup
-            .create()
-            .implementWith(  JA.InfModel, new InfModelAssembler() )
-            ;
-        AssemblerGroup copy = initial.copy();
-        copy.implementWith( JA.Connection, new ConnectionAssembler() );
-        assertNull( initial.assemblerFor( JA.Connection ) );
-        }
     }

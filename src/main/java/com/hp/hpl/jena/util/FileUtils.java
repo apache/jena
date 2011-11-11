@@ -35,9 +35,6 @@ public class FileUtils
     public static final String langNTriple      = "N-TRIPLE" ;
     public static final String langN3           = "N3" ;
     public static final String langTurtle       = "TURTLE" ;
-    // Non-standard
-    public static final String langBDB          = "RDF/BDB" ;
-    public static final String langSQL          = "RDF/SQL" ;
     
     /** Java name for UTF-8 encoding */
     public static final String encodingUTF8     = "utf-8" ;
@@ -86,14 +83,13 @@ public class FileUtils
         return new PrintWriter(asUTF8(out)); 
     }
     
-    /** Guess the language/type of model data. Updated by Chris, hived off the
-     * model-suffix part to FileUtils as part of unifying it with similar code in FileGraph.
+    /** Guess the language/type of model data.
      * 
      * <ul>
-     * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
      * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
-     * <li> If the URI end .nt, it is assumed to be N-Triples</li>
-     * <li> If the URI end .bdb, it is assumed to be BerkeleyDB model [suppressed at present]</li>
+     * <li> If the URI ends ".nt", it is assumed to be N-Triples</li>
+     * <li> If the URI ends ".ttl", it is assumed to be Turtle</li>
+     * <li> If the URI ends ".owl", it is assumed to be RDF/XML</li>
      * </ul>
      * @param name    URL to base the guess on
      * @param otherwise Default guess
@@ -102,9 +98,6 @@ public class FileUtils
 
     public static String guessLang( String name, String otherwise )
     {
-        if ( name.startsWith("jdbc:") || name.startsWith("JDBC:") )
-            return langSQL ;
-        
         String suffix = getFilenameExt( name );
         if (suffix.equals( "n3" ))   return langN3;
         if (suffix.equals( "nt" ))   return langNTriple;
@@ -118,11 +111,10 @@ public class FileUtils
     /** Guess the language/type of model data
      * 
      * <ul>
-     * <li> If the URI of the model starts jdbc: it is assumed to be an RDB model</li>
-     * <li> If the URI ends .rdf, it is assumed to be RDF/XML</li>
-     * <li> If the URI ends .n3, it is assumed to be N3</li>
-     * <li> If the URI ends .nt, it is assumed to be N-Triples</li>
-     * <li> If the URI ends .bdb, it is assumed to be BerkeleyDB model</li>
+     * <li> If the URI ends ".rdf", it is assumed to be RDF/XML</li>
+     * <li> If the URI ends ".nt", it is assumed to be N-Triples</li>
+     * <li> If the URI ends ".ttl", it is assumed to be Turtle</li>
+     * <li> If the URI ends ".owl", it is assumed to be RDF/XML</li>
      * </ul>
      * @param urlStr    URL to base the guess on
      * @return String   Guessed syntax - default is RDF/XML

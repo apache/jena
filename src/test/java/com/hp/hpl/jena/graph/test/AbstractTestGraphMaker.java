@@ -142,8 +142,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
             
     /**
         Test that we can find a graph once its been created. We need to know
-        if two graphs are "the same" here, which is tricky, because the RDB
-        factory produces non-== graphs that are "the same": we have a temporary
+        if two graphs are "the same" here: we have a temporary
         work-around but it is not sound.
      *
      */
@@ -161,7 +160,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     /**
         Weak test for "same graph": adding this to one is visible in t'other.
         Stopgap for use in testCanFindCreatedGraph.
-        TODO: clean that test up (need help from DB group)
+        TODO: clean that test up (left over from RDB days)
     */
     private boolean sameGraph( Graph g1, Graph g2 )
         {

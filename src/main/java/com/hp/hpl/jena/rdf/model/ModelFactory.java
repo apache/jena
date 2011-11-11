@@ -18,20 +18,28 @@
 
 package com.hp.hpl.jena.rdf.model;
 
-import java.util.Set;
+import java.util.Set ;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.GraphRDBMaker;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.graph.impl.FileGraphMaker;
-import com.hp.hpl.jena.graph.impl.SimpleGraphMaker;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.impl.OntModelImpl;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.AssemblerHelp ;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.compose.Union ;
+import com.hp.hpl.jena.graph.impl.FileGraphMaker ;
+import com.hp.hpl.jena.graph.impl.SimpleGraphMaker ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.ontology.OntModelSpec ;
+import com.hp.hpl.jena.ontology.ProfileRegistry ;
+import com.hp.hpl.jena.ontology.impl.OntModelImpl ;
+import com.hp.hpl.jena.rdf.model.impl.InfModelImpl ;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl ;
+import com.hp.hpl.jena.rdf.model.impl.ModelReifier ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
 
 /**
     ModelFactory provides methods for creating standard kinds of Model.
@@ -201,69 +209,6 @@ public class ModelFactory extends ModelFactoryBase
     */
       public static ModelMaker createMemModelMaker( ReificationStyle style )
         { return new ModelMakerImpl( new SimpleGraphMaker( style ) ); }
-
-    /**
-        Answer a ModelMaker that accesses database-backed Models on
-        the database at the other end of the connection c with the usual
-        Standard reification style.
-
-        @param c a connection to the database holding the models
-        @return a ModelMaker whose Models are held in the database at c
-    */
-    public static ModelMaker createModelRDBMaker( IDBConnection c )
-        { return createModelRDBMaker( c, Standard ); }
-
-    /**
-        Answer a ModelMaker that accesses database-backed Models on
-        the database at the other end of the connection c with the given
-        reification style.
-
-        @param c a connection to the database holding the models
-        @param style the desired reification style
-        @return a ModelMaker whose Models are held in the database at c
-    */
-    public static ModelMaker createModelRDBMaker
-        ( IDBConnection c, ReificationStyle style )
-        { return new ModelRDBMaker( new GraphRDBMaker( c, style ) ); }
-
-    static class ModelRDBMaker extends ModelMakerImpl implements ModelMaker
-        {
-        public ModelRDBMaker( GraphRDBMaker gm ) { super( gm ); }
-
-        @Override public Model makeModel( Graph graphRDB )
-            { return new ModelRDB( (GraphRDB) graphRDB ); }
-        }
-
-    /**
-        Answer a plain IDBConnection to a database with the given URL, with
-        the given user having the given password. For more complex ways of
-        forming a connection, see the DBConnection documentation.
-
-        @param url the URL of the database
-        @param user the user name to use to access the database
-        @param password the password to use. WARNING: open text.
-        @param dbType the databate type: currently, "Oracle" or "MySQL".
-        @return the connection
-        @exception quite possibly
-    */
-    public static IDBConnection createSimpleRDBConnection
-        ( String url, String user, String password, String dbType )
-        { return new DBConnection( url, user, password, dbType ); }
-
-    /**
-        Answer a plain IDBConnection to a database, with the arguments implicitly
-        supplied by system properties:
-    <p>
-        The database URL - jena.db.url
-        <br>The user - jena.db.user, or fails back to "test"
-        <br>The password - jena.db.password, or fails back to ""
-        <br>The db type - jena.db.type, or guessed from the URL
-    */
-    public static IDBConnection createSimpleRDBConnection()
-        {
-        return createSimpleRDBConnection
-            ( guessDBURL(), guessDBUser(), guessDBPassword(), guessDBType() );
-        }
 
     /**
      * Return a Model through which all the RDFS entailments

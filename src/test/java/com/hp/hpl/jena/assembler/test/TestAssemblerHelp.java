@@ -55,10 +55,8 @@ public class TestAssemblerHelp extends AssemblerTestBase
       
     public void testSpecificType()
         {
-        testSpecificType( "ja:Connectable", "x ja:connection _C" );
         testSpecificType( "ja:NamedModel", "x ja:modelName 'name'" );
         testSpecificType( "ja:NamedModel", "x ja:modelName 'name'; x rdf:type irrelevant" );
-        testSpecificType( "ja:RDBModel", "x rdf:type ja:RDBModel; x rdf:type ja:Model" );
         }
     
     public void testFindSpecificTypes()

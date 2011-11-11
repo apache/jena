@@ -45,12 +45,10 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertLocalname( "InfModel", JA.InfModel );
         assertLocalname( "OntModel", JA.OntModel );
         assertLocalname( "NamedModel", JA.NamedModel );
-        assertLocalname( "RDBModel", JA.RDBModel );
         assertLocalname( "FileModel", JA.FileModel );
         assertLocalname( "OntModel", JA.OntModel );
         assertLocalname( "OntModelSpec", JA.OntModelSpec );
     //
-        assertLocalname( "Connection", JA.Connection );
         assertLocalname( "PrefixMapping", JA.PrefixMapping );
         assertLocalname( "SinglePrefixMapping", JA.SinglePrefixMapping );
         assertLocalname( "ReasonerFactory", JA.ReasonerFactory );
@@ -94,7 +92,6 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertSubclassOf( JA.PrefixMapping, JA.Object );
         assertSubclassOf( JA.SinglePrefixMapping, JA.PrefixMapping );
         assertSubclassOf( JA.Content, JA.Object );
-        assertSubclassOf( JA.Connection, JA.Object );
         assertSubclassOf( JA.OntModelSpec, JA.Object );
         assertSubclassOf( JA.ReasonerFactory, JA.Object );
         }
@@ -106,7 +103,6 @@ public class TestAssemblerVocabulary extends AssemblerTestBase
         assertSubclassOf( JA.InfModel, JA.Model );
         assertSubclassOf( JA.OntModel, JA.InfModel );
         assertSubclassOf( JA.NamedModel, JA.Model );
-        assertSubclassOf( JA.RDBModel, JA.NamedModel );
         assertSubclassOf( JA.FileModel, JA.NamedModel );
         // assertSubclassOf( JA.OntModelSpec, JA.ReasonerFactory );
         assertSubclassOf( JA.ModelSource, JA.Connectable );

@@ -18,13 +18,11 @@
 
 package com.hp.hpl.jena.assembler.test;
 
-import java.util.*;
-
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.assemblers.ModelSourceAssembler;
-import com.hp.hpl.jena.assembler.exceptions.PropertyRequiredException;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.MemoryModelGetter;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.assemblers.ModelSourceAssembler ;
+import com.hp.hpl.jena.rdf.model.ModelGetter ;
+import com.hp.hpl.jena.rdf.model.impl.MemoryModelGetter ;
 
 public class TestModelSourceAssembler extends AssemblerTestBase
     {
@@ -39,24 +37,7 @@ public class TestModelSourceAssembler extends AssemblerTestBase
    
     public void testModelSourceVocabulary()
         {
-        assertDomain( JA.Connectable, JA.connection );
-        assertRange( JA.Connection, JA.connection );
         assertSubclassOf( JA.Connectable, JA.Object );
-        assertSubclassOf( JA.RDBModelSource, JA.Connectable );
-        assertSubclassOf( JA.RDBModelSource, JA.ModelSource );
-        }
-    
-    public void testDBSourceDemandsConnection()
-        {
-        Resource root = resourceInModel( "x rdf:type ja:ModelSource; x rdf:type ja:RDBModelSource" );
-        Assembler a = new ModelSourceAssembler();
-        try 
-            { a.open( root ); fail( "should catch missing connection" ); }
-        catch (PropertyRequiredException e) 
-            {
-            assertEquals( resource( "x" ), e.getRoot() );
-            assertEquals( JA.connection, e.getProperty() );
-            }
         }
     
     public void testMemModelMakerSource()
@@ -66,23 +47,4 @@ public class TestModelSourceAssembler extends AssemblerTestBase
         assertInstanceOf( MemoryModelGetter.class, g );
         }
     
-    public void testRDBModelMakerSource()
-        {
-        final ConnectionDescription c = new ConnectionDescription( "eh:/subject", "url", "user", "password", "type" );
-        final List<String> history = new ArrayList<String>();
-        Assembler a = new ModelSourceAssembler() 
-            {
-            @Override
-            protected ModelGetter createRDBGetter( ConnectionDescription cGiven )
-                {
-                assertSame( c, cGiven );
-                history.add( "created" );
-                return ModelFactory.createMemModelMaker();
-                }
-            };
-        Assembler mock = new NamedObjectAssembler( resource( "C" ), c );
-        Resource root = resourceInModel( "mg rdf:type ja:RDBModelSource; mg rdf:type ja:ModelSource; mg ja:connection C" );
-        assertInstanceOf( ModelGetter.class, a.open( mock, root ) );
-        assertEquals( listOfOne( "created" ), history );
-        }
     }

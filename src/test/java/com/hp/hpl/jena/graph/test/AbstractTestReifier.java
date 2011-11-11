@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.test;
 
 import java.util.Collections;
 
-import com.hp.hpl.jena.db.impl.DBReifier;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.shared.*;
@@ -194,14 +193,8 @@ public abstract class AbstractTestReifier extends GraphTestBase
             Reifier r = g.getReifier();
             graphAdd( g, "x rdf:subject A; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
             assertEquals( triple( "A P O" ), r.getTriple( node( "x" ) ) );
-            try 
-                { graphAdd( g, "x rdf:subject BOOM" ); 
-                assertEquals( null, r.getTriple( node( "x" ) ) ); }
-            catch (AlreadyReifiedException e) 
-                {
-                if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
-                else throw e;
-                }
+            graphAdd( g, "x rdf:subject BOOM" ); 
+            assertEquals( null, r.getTriple( node( "x" ) ) );
             }
         }
     
@@ -228,18 +221,10 @@ public abstract class AbstractTestReifier extends GraphTestBase
             Triple SPO = NodeCreateUtils.createTriple( "S P O" );
             g.getReifier().reifyAs( node( "x" ), SPO );
             assertTrue( g.getReifier().hasTriple( SPO ) );
-            try
-                {
-                graphAdd( g,  clashingStatement );
-                assertEquals( null, g.getReifier().getTriple( node( "x" ) ) );
-                // System.err.println( ">> tRC: clashing = " + clashingStatement );
-                assertFalse( g.getReifier().hasTriple( SPO ) );
-                }
-            catch (AlreadyReifiedException e)
-                {
-                if (g.getReifier() instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
-                else throw e;
-                }
+            graphAdd( g,  clashingStatement );
+            assertEquals( null, g.getReifier().getTriple( node( "x" ) ) );
+            // System.err.println( ">> tRC: clashing = " + clashingStatement );
+            assertFalse( g.getReifier().hasTriple( SPO ) );
             }
         }
 
@@ -515,17 +500,10 @@ public abstract class AbstractTestReifier extends GraphTestBase
         String spec = "rs rdf:type rdf:Statement; foo rdf:value rs; rs rdf:subject X; rs rdf:predicate P; rs rdf:object O1; rs rdf:object O2";
         Graph g = getGraph( Standard );
         Reifier r = g.getReifier();
-        try {
         graphAdd( g, spec );
         Graph wanted = getGraph( Minimal );
         graphAdd( wanted, spec );
         assertIsomorphic( wanted, g );
-        }
-        catch (AlreadyReifiedException e) 
-        {
-        if (r instanceof DBReifier) { /* System.err.println( "! Db reifier must fix over-specification problem" ); */ }
-        else throw e;
-        }
         }
     
     public void testBulkClearReificationTriples()

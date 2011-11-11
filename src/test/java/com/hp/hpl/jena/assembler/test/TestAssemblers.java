@@ -43,8 +43,6 @@ public class TestAssemblers extends AssemblerTestBase
         result.addTestSuite( TestReasonerFactoryAssembler.class );
         result.addTestSuite( TestContentAssembler.class );
         result.addTestSuite( TestModelContent.class );
-        result.addTestSuite( TestConnectionAssembler.class );
-        result.addTestSuite( TestRDBModelAssembler.class );
         result.addTestSuite( TestFileModelAssembler.class );
         result.addTestSuite( TestUnionModelAssembler.class );
         result.addTestSuite( TestPrefixMappingAssembler.class );

@@ -18,18 +18,19 @@
 
 package com.hp.hpl.jena.assembler.acceptance;
 
-import java.io.*;
+import java.io.File ;
+import java.io.FileOutputStream ;
+import java.io.IOException ;
 
-import junit.extensions.TestSetup;
-import junit.framework.*;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.test.AssemblerTestBase;
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.test.TestConnection;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.test.AssemblerTestBase ;
+import com.hp.hpl.jena.rdf.model.InfModel ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class AllAccept extends AssemblerTestBase
     {
@@ -40,30 +41,7 @@ public class AllAccept extends AssemblerTestBase
         {
         TestSuite result = new TestSuite();
         result.addTestSuite( AllAccept.class );
-        result.addTest( new SetupDatabase( new TestSuite( TestDatabaseModes.class ) ) );
         return result;
-        }
-    
-    public static class SetupDatabase extends TestSetup
-        {
-        public SetupDatabase( Test tests )
-            { super( tests ); }
-    
-        @Override
-        public void setUp() throws Exception
-            {
-            super.setUp();
-            IDBConnection conn = TestConnection.makeAndCleanTestConnection();
-            ModelRDB.createModel( conn, "square" );
-            ModelRDB.createModel( conn, "circle" );
-            ModelRDB.createModel( conn, "triangle" );
-            ModelRDB.createModel( conn, "hex" );
-            conn.close();
-            IDBConnection x = ModelFactory.createSimpleRDBConnection();
-            assertEquals( true, x.containsModel( "square" ) );
-            assertEquals( false, x.containsModel( "line" ) );
-            x.close();
-            }
         }
     
     public void testUnadornedInferenceModel()

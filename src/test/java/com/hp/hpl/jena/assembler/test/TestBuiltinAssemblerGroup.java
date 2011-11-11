@@ -39,8 +39,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.FileModel, FileModelAssembler.class );       
         assertAssemblerClass( JA.OntModel, OntModelAssembler.class );       
         assertAssemblerClass( JA.OntModelSpec, OntModelSpecAssembler.class );     
-        assertAssemblerClass( JA.RDBModel, RDBModelAssembler.class );       
-        assertAssemblerClass( JA.Connection, ConnectionAssembler.class );       
         assertAssemblerClass( JA.Content, ContentAssembler.class );         
         assertAssemblerClass( JA.ContentItem, ContentAssembler.class );       
         assertAssemblerClass( JA.ReasonerFactory, ReasonerFactoryAssembler.class );  
@@ -52,7 +50,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertAssemblerClass( JA.DocumentManager, DocumentManagerAssembler.class );
         assertAssemblerClass( JA.UnionModel, UnionModelAssembler.class );
         assertAssemblerClass( JA.ModelSource, ModelSourceAssembler.class );
-        assertAssemblerClass( JA.RDBModelSource, ModelSourceAssembler.class );
         }
     
     public void testVariables()
@@ -62,8 +59,6 @@ public class TestBuiltinAssemblerGroup extends AssemblerTestBase
         assertInstanceOf( FileModelAssembler.class, Assembler.fileModel );
         assertInstanceOf( OntModelAssembler.class, Assembler.ontModel );
         assertInstanceOf( OntModelSpecAssembler.class, Assembler.ontModelSpec );
-        assertInstanceOf( RDBModelAssembler.class, Assembler.rdbModel );
-        assertInstanceOf( ConnectionAssembler.class, Assembler.connection );
         assertInstanceOf( ContentAssembler.class, Assembler.content );
         assertInstanceOf( ReasonerFactoryAssembler.class, Assembler.reasonerFactory );
         assertInstanceOf( InfModelAssembler.class, Assembler.infModel );

@@ -73,8 +73,8 @@ public interface Capabilities
 
     /**
         Answer true iff this graph compares literals for equality by value
-        rather than by lexical form (the memory-based graphs do; at present
-        the RDB-graphs do not).
+        rather than by lexical form (the memory-based graphs do; 
+        TDB model do mostly (because of canonicalization), SDB models don't).
     */
     boolean handlesLiteralTyping();
     }

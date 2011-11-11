@@ -51,8 +51,6 @@ public class JA
 
     public static final Property literalContent = property( "literalContent" );
     
-    public static final Property connection = property( "connection" );
-
     public static final Property rules = property( "rules" );
 
     public static final Resource Model = resource( "Model" );
@@ -63,8 +61,6 @@ public class JA
 
     public static final Resource FileModel = resource( "FileModel" );
 
-    public static final Resource RDBModel = resource( "RDBModel" );
-
     public static final Resource PrefixMapping = resource( "PrefixMapping" );
 
     public static final Resource ReasonerFactory = resource( "ReasonerFactory" );
@@ -73,8 +69,6 @@ public class JA
 
     public static final Resource Content = resource( "Content" );
 
-    public static final Resource Connection = resource( "Connection" );
-
     public static final Resource Connectable = resource( "Connectable" );
 
     public static final Resource LiteralContent = resource( "LiteralContent" );
@@ -82,8 +76,6 @@ public class JA
     public static final Resource OntModelSpec = resource( "OntModelSpec" );
 
     public static final Resource ModelSource = resource( "ModelSource" );
-
-    public static final Resource RDBModelSource = resource( "RDBModelSource" );
 
     public static final Property content = property( "content" );
 
@@ -139,8 +131,6 @@ public class JA
 
     public static final Resource ContentItem = resource( "ContentItem" );
 
-    public static final Property dbClass = property( "dbClass" );
-
     public static final Resource LocationMapper = resource( "LocationMapper" );
 
     public static final Property locationMapper = property( "locationMapper" );
@@ -170,24 +160,6 @@ public class JA
     public static final Resource ReificationMode = resource( "ReificationMode" );
 
     public static final Property fileEncoding = property( "fileEncoding" );
-
-    public static final Property dbUser = property( "dbUser" );
-
-    public static final Property dbUserProperty = property( "dbUserProperty" );
-
-    public static final Property dbPassword = property( "dbPassword" );
-
-    public static final Property dbPasswordProperty = property( "dbPasswordProperty" );
-
-    public static final Property dbURL = property( "dbURL" );
-
-    public static final Property dbURLProperty = property( "dbURLProperty" );
-
-    public static final Property dbType = property( "dbType" );
-
-    public static final Property dbTypeProperty = property( "dbTypeProperty" );
-
-    public static final Property dbClassProperty = property( "dbClassProperty" );
 
     public static final Property assembler = property( "assembler" );
     
