@@ -28,15 +28,9 @@ import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
@@ -339,7 +333,8 @@ public class TestDynamicDataset extends BaseTest
         // Do it externally to the TDB query engine.
         String qs = prefix + "SELECT * FROM :g1 FROM :g2 { ?s :p1+ ?x }" ;
         Query query = QueryFactory.create(qs) ;
-        Dataset ds = DatasetFactory.create(DynamicDatasets.dynamicDataset(query, dataset2.asDatasetGraph(), false)) ;
+        DatasetDescription dsDesc = DatasetDescription.create(query) ;
+        Dataset ds = DynamicDatasets.dynamicDataset(dsDesc, dataset2, false) ;
         testCount(qs, 3, ds) ; 
     }
 

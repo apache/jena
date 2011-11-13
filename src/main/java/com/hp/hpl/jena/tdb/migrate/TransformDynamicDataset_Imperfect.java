@@ -53,6 +53,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 /**
  * Transform to restrict a query to subset of the named graphs in a datasets,
@@ -78,8 +79,8 @@ public class TransformDynamicDataset_Imperfect extends TransformCopy
     {
         if ( ! query.hasDatasetDescription() )
             return op ;
-        Set<Node> defaultGraphs = NodeUtils2.convertToNodes(query.getGraphURIs()) ; 
-        Set<Node> namedGraphs = NodeUtils2.convertToNodes(query.getNamedGraphURIs()) ;
+        Set<Node> defaultGraphs = NodeUtils.convertToNodes(query.getGraphURIs()) ; 
+        Set<Node> namedGraphs = NodeUtils.convertToNodes(query.getNamedGraphURIs()) ;
         Transform t = new TransformDynamicDataset_Imperfect(defaultGraphs, namedGraphs, false) ; // false??
         Op op2 = Transformer.transform(t, op) ;
         return op2 ;
