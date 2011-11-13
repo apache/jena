@@ -22,8 +22,8 @@
         <br/>
 
         Output: <select name="output">
-          <option value="xml">XML</option>
           <option value="json">JSON</option>
+          <option value="xml">XML</option>
           <option value="text">Text</option>
           <option value="csv">CSV</option>
           <option value="tsv">TSV</option>
