@@ -38,6 +38,7 @@ import org.openjena.fuseki.HttpNames ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
@@ -69,7 +70,9 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected void validateQuery(HttpActionQuery action, Query query)
     {
-        if ( query.hasDatasetDescription() )
+        // TEMP
+        // Push checking whether a dataset description is acceptable down to a TDB dataset.
+        if ( ! (action.dsg instanceof DatasetGraphTDB) && query.hasDatasetDescription() )
             errorBadRequest("Query may not include a dataset description (FROM/FROM NAMED)") ;
     }
    
