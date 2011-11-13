@@ -24,9 +24,13 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 
-// TODO Integrate this
+// TODO Integrate this further
 //   use in FROM/FROM NAMED and change Query class.
 //   use in DatasetUtils
 //   use in tests
@@ -35,6 +39,40 @@ public class DatasetDescription
 {
     private List<String> defaultGraphURIs = new ArrayList<String>() ;
     private List<String> namedGraphURIs = new ArrayList<String>() ;
+ 
+    /** Create a dataset description, given a query.
+     * If the query does not have a dataset description, return null.
+     */
+    public static DatasetDescription create(Query query) { return create(query, null) ; }
+    
+    /** Create a dataset description, given a context.
+     * If the context does not have a dataset description, return null.
+     * The context uses the key {@link ARQConstants#sysDatasetDescription}.
+     */
+    public static DatasetDescription create(Context context) { return create(null, context) ; }
+
+    /** Create a dataset description, given a query and context.
+     * The context overrides the query FROM/FROM NAMED.
+     * If neither the context nor query has a dataset description, return null.
+     * The context uses the key {@link ARQConstants#sysDatasetDescription}.
+     */
+    public static DatasetDescription create(Query query, Context context)
+    {
+        if ( context != null && context.isDefined(ARQConstants.sysDatasetDescription) )
+        {
+            try {
+             return (DatasetDescription)context.get(ARQConstants.sysDatasetDescription) ;
+            } catch (ClassCastException ex)
+            {
+                throw new ARQException("Unexpected type (expected DatasetDescription): "+ex.getMessage()) ;
+            }
+        }
+        
+        if ( query != null && query.hasDatasetDescription() )
+            return query.getDatasetDescription() ;
+        
+        return null ;
+    }
     
     public DatasetDescription() {}
     public boolean isEmpty()    { return defaultGraphURIs.isEmpty() && namedGraphURIs.isEmpty() ; }
@@ -52,7 +90,7 @@ public class DatasetDescription
     public Iterator<String> eachNamedGraphURI()                 { return namedGraphURIs.iterator() ; }
     
     /** Create a dataset from the description - reads URLs into an in-memory dataset */ 
-    public Dataset create() { return DatasetUtils.createDataset(this) ; }
+    public Dataset createDataset() { return DatasetUtils.createDataset(this) ; }
 
     /** Create a DatasetGraph from the description - reads URLs into an in-memory DatasetGraph */ 
     public DatasetGraph createDatasetGraph() { return DatasetUtils.createDatasetGraph(this) ; }

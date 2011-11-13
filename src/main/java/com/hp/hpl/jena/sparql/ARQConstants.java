@@ -209,6 +209,7 @@ public class ARQConstants
      *  <li>Dataset of the service</li>
      *  </ol>
      *  Use in other situations should reflect this design. 
+     *  The value of this key in a Context must be an object of type DatasetDescription. 
      */  
     public static final Symbol sysDatasetDescription    = Symbol.create(systemVarNS+"datasetDescription") ;
 
