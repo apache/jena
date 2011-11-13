@@ -28,13 +28,7 @@ import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
-import org.apache.http.client.methods.HttpDelete ;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase ;
-import org.apache.http.client.methods.HttpGet ;
-import org.apache.http.client.methods.HttpHead ;
-import org.apache.http.client.methods.HttpPost ;
-import org.apache.http.client.methods.HttpPut ;
-import org.apache.http.client.methods.HttpUriRequest ;
+import org.apache.http.client.methods.* ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.impl.client.DefaultHttpClient ;
 import org.apache.http.params.BasicHttpParams ;
@@ -45,12 +39,7 @@ import org.apache.http.protocol.HTTP ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.logging.Log ;
-import org.openjena.fuseki.Fuseki ;
-import org.openjena.fuseki.FusekiException ;
-import org.openjena.fuseki.FusekiLib ;
-import org.openjena.fuseki.FusekiNotFoundException ;
-import org.openjena.fuseki.FusekiRequestException ;
-import org.openjena.fuseki.HttpNames ;
+import org.openjena.fuseki.* ;
 import org.openjena.fuseki.conneg.TypedInputStream ;
 import org.openjena.fuseki.migrate.UnmodifiableGraph ;
 import org.openjena.riot.Lang ;
@@ -65,7 +54,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {

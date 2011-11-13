@@ -22,7 +22,7 @@ import org.junit.Test ;
 import org.openjena.fuseki.BaseServerTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
 {
