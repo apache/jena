@@ -24,11 +24,13 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.SDBException ;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.compiler.SDBCompile;
 import com.hp.hpl.jena.sdb.compiler.OpSQL;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Algebra;
 import com.hp.hpl.jena.sparql.algebra.Op;
 import com.hp.hpl.jena.sparql.algebra.Transformer;
@@ -83,7 +85,16 @@ public class QueryEngineSDB extends QueryEngineBase
     private void init(DatasetStoreGraph dsg, Query query, Binding initialBinding, Context context)
     {
         if ( context == null )
-            context = ARQ.getContext() ;
+            context = ARQ.getContext().copy() ;
+        // See "DynamicDatasets" -- this could be enabled.
+        if ( query != null )
+        {
+            if ( query.hasDatasetDescription() )
+                throw new SDBException("Queries with dataset descriptions (FROM/FROM NAMED) not supported" ) ;   
+        }
+        if ( context.isDefined(ARQConstants.sysDatasetDescription) )
+            throw new SDBException("Queries with dataset descriptions set in the context not supported" ) ;
+        
         this.store = dsg.getStore() ;
         this.request = new SDBRequest(store, query, context) ;
         this.originalOp = getOp() ;

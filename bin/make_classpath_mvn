@@ -1,0 +1,24 @@
+#!/bin/bash
+
+DIRROOT="$1"
+
+if [ "$DIRROOT" = "" ]
+then
+    echo "No directory given" 1>&2
+    exit 1
+    fi
+
+M2_REPO="${M2_REPO:-$HOME/.m2/repository}" ;
+X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
+
+CP=
+for x in $X
+do
+   CP="$CP:$M2_REPO$x"
+done
+
+[ -e "classes" ] && CP="$DIRROOT/classes$CP"
+[ -e "target/classes" ] && CP="$DIRROOT/target/classes$CP"
+
+echo "$CP"
+

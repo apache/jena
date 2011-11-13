@@ -1,26 +1,8 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX acm: <http://example/acm>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-
-# DESCRIBE ?s WHERE {
-SELECT ?s WHERE
+SELECT ?s 
+FROM <http://example/>
+WHERE
 {
-GRAPH ?g {
-?s rdf:type <http://m3t4.com/ont/ACM#Account>.
-?s acm:lastActivityDate   '2010-09-01T05:00:00Z'^^xsd:dateTime.
-?s acm:sicCode ?v2. ?s acm:closeDate   '2010-09-07T05:00:00Z'^^xsd:dateTime.
-?s acm:merchantNumber   '234567123'^^xsd:string.
-?s acm:taxOrGovtId ?v5.
-?s acm:openDate   '2010-09-07T05:00:00Z'^^xsd:dateTime.
-?s acm:doingBusinessAsName ?v7.
-?s acm:accountNumber ?v8.
-FILTER (?v1 < '2010-09-01T05:00:00Z'^^xsd:dateTime)
-FILTER regex(?v2, "4000", "i" )
-FILTER (?v3 < '2010-09-07T05:00:00Z'^^xsd:dateTime)
-FILTER regex(?v5, "500", "i" )
-FILTER (?v6 < '2010-09-07T05:00:00Z'^^xsd:dateTime)
-FILTER regex(?v7, "Doing_Business_01", "i" )
-FILTER regex(?v8, "23432245756", "i" )
-}   
 }

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 if [ "$SDBROOT" = "" ]
 then
     echo "SDBROOT not set" 1>&2
@@ -7,4 +9,12 @@ then
     fi
 
 export CP="$SDB_CP"
-exec "$SDBROOT/bin/make_classpath" "$SDBROOT"
+
+if [ ! -e "$SDBROOT/lib/jena-sdb*" ]
+then
+    CP="$($SDBROOT/bin/make_classpath_mvn "$SDBROOT")"
+else
+    CP="$($SDBROOT/bin/make_classpath "$SDBROOT")"
+fi
+
+echo $CP
