@@ -36,11 +36,11 @@ import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterPath ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class TestPath
 {

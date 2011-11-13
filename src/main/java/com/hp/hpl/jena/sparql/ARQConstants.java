@@ -195,10 +195,22 @@ public class ARQConstants
     /** Context key for the optimizer used in this execution */
     public static final Symbol sysOptimizer             = Symbol.create(systemVarNS+"optimizer") ;
 
-    /** Context key for the dataset for the current query execution 
-     * May be null if was not created from a query string.
-     */
+    /** Context key for the dataset for the current query execution. */
     public static final Symbol sysCurrentDataset        = Symbol.create(systemVarNS+"dataset") ;
+
+    /** Context key for the dataset description (if any).
+     *  See the <a href="http://www.w3.org/TR/sparql11-protocol">SPARQL protocol</a>.
+     *  <p> 
+     *  A dataset description specified outside the query should override a dataset description
+     *  in query and also the implicit dataset of a service. The order is:
+     *  <ol>
+     *  <li>Dataset description from the protocol</li>
+     *  <li>Dataset description from the query (FROM/FROM NAMED)</li>
+     *  <li>Dataset of the service</li>
+     *  </ol>
+     *  Use in other situations should reflect this design. 
+     */  
+    public static final Symbol sysDatasetDescription    = Symbol.create(systemVarNS+"datasetDescription") ;
 
     /** Context key for the algebra expression of the query execution after optimization */
     public static final Symbol sysCurrentAlgebra        = Symbol.create(systemVarNS+"algebra") ;

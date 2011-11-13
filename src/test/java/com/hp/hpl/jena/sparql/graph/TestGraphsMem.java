@@ -25,7 +25,6 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** Test the test for datasets and graphs */
 public class TestGraphsMem extends GraphsTests

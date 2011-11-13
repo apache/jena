@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.util.graph;
+package com.hp.hpl.jena.sparql.graph;
 
 import org.openjena.atlas.data.ThresholdPolicy ;
 
@@ -26,9 +26,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.graph.GraphDistinctDataBag ;
-import com.hp.hpl.jena.sparql.graph.GraphMemSimple2 ;
 import com.hp.hpl.jena.sparql.util.RefBoolean ;
+import com.hp.hpl.jena.sparql.util.graph.GraphSink ;
 
 /** Ways to make graphs and models */
 public class GraphFactory

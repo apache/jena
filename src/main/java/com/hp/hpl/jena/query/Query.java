@@ -34,12 +34,7 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.QueryCompare ;
-import com.hp.hpl.jena.sparql.core.QueryHashCode ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarAlloc ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
@@ -339,6 +334,18 @@ public class Query extends Prologue implements Cloneable, Printable
         if ( getNamedGraphURIs() != null && getNamedGraphURIs().size() > 0 )
             return true ;
         return false ;
+    }
+    
+    /** Return a dataset description (FROM/FROM NAMED clauses) for the query. */  
+    public DatasetDescription getDatasetDescription()
+    {
+        DatasetDescription description = new DatasetDescription() ;
+        if ( ! hasDatasetDescription() )
+            return description ;
+        
+        description.addAllDefaultGraphURI(getGraphURIs()) ;
+        description.addAllNamedGraphURI(getNamedGraphURIs()) ;
+        return description ;
     }
     
     // ---- SELECT

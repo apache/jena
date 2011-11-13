@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 

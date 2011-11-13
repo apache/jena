@@ -18,7 +18,10 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Collection ;
+import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Set ;
 
 import org.openjena.atlas.lib.StrUtils ;
 
@@ -93,6 +96,14 @@ public class NodeUtils
         ExtendedIterator<Node> eIter = WrappedIterator.create(iter) ;
         Iterator<String> conv = new MapFilterIterator<Node, String>(mapper, eIter) ;
         return conv ;
+    }
+    
+    public static Set<Node> convertToNodes(Collection<String> uris)
+    {
+        Set<Node> nodes = new HashSet<Node>() ;
+        for ( String x : uris )
+            nodes.add(Node.createURI(x)) ;
+        return nodes ;
     }
     
     

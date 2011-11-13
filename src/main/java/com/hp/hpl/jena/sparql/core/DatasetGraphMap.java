@@ -34,9 +34,6 @@ public class DatasetGraphMap extends DatasetGraphCollection
 
     private Graph defaultGraph ;
 
-    public DatasetGraphMap()
-    { }
-
     public DatasetGraphMap(Graph defaultGraph)
     { this.defaultGraph = defaultGraph ; }
     

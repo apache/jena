@@ -56,13 +56,13 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorWrapper ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** All the SPARQL query result forms made from a graph-level execution object */ 

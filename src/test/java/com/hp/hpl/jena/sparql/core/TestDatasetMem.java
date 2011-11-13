@@ -23,13 +23,13 @@ import junit.framework.JUnit4TestAdapter ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
-public class TestDatasetDataSource extends TestDataset 
+public class TestDatasetMem extends TestDataset 
 {
     public static junit.framework.Test suite()
     {
-        return new JUnit4TestAdapter(TestDatasetDataSource.class) ;
+        return new JUnit4TestAdapter(TestDatasetMem.class) ;
     }
     
     @Override
-    protected Dataset create() { return DatasetFactory.createMem() ; }
+    protected Dataset createFixed() { return DatasetFactory.createMemFixed() ; }
 }

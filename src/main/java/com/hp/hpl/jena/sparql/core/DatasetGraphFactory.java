@@ -22,7 +22,7 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class DatasetGraphFactory
 {
@@ -51,22 +51,34 @@ public class DatasetGraphFactory
 
     /**
      * Create a DatasetGraph starting with a single graph.
+     * New graphs must be explicitly added.
      */
     public static DatasetGraph create(Graph graph)
     {
-        // Fixed - requires explicit "add graph"
-        return new DatasetGraphMap(graph) ; 
-//        DatasetGraph dsg2 = createMem() ;
-//        dsg2.setDefaultGraph(graph) ;
-//        return dsg2 ;
+        DatasetGraph dsg2 = createMemFixed() ;
+        dsg2.setDefaultGraph(graph) ;
+        return dsg2 ;
     }
     
     /**
      * Create a DatasetGraph which only ever has a single default graph.
      */
-    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; } 
+    public static DatasetGraph createOneGraph(Graph graph) { return new DatasetGraphOne(graph) ; }
+
+    /** Interface for makign graphs when a dataset needs to add a new graph.
+     *  Return null for no graph created.
+     */ 
+    public interface GraphMaker { public Graph create() ; }
+
+    /** A graph maker that doesn't make graphs */
+    public static GraphMaker graphMakerNull = new GraphMaker() {
+        @Override
+        public Graph create()
+        {
+            return null ;
+        } } ;
     
-    private static DatasetGraphMaker.GraphMaker memGraphMaker = new DatasetGraphMaker.GraphMaker()
+    private static GraphMaker memGraphMaker = new GraphMaker()
     {
         @Override
         public Graph create()
@@ -81,5 +93,5 @@ public class DatasetGraphFactory
 
     public static DatasetGraph createMem() { return new DatasetGraphMaker(memGraphMaker) ; }
     
-    public static DatasetGraph createMemFixed() { return new DatasetGraphMap() ; }
+    public static DatasetGraph createMemFixed() { return new DatasetGraphMap(GraphFactory.createDefaultGraph()) ; }
 }

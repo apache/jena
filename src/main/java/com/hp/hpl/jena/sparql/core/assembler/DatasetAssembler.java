@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
 public class DatasetAssembler extends AssemblerBase implements Assembler

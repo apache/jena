@@ -44,7 +44,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 public class TestQueryExecutionTimeout extends BaseTest
 {
     static Graph                g   = SSE.parseGraph("(graph (<s> <p> <o1>) (<s> <p> <o2>) (<s> <p> <o3>))") ;
-    static DatasetGraph         dsg = DatasetGraphFactory.create(g) ;
+    static DatasetGraph         dsg = DatasetGraphFactory.createOneGraph(g) ;
     static Dataset              ds  = DatasetFactory.create(dsg) ;
 
     private static final String ns  = "http://example/ns#" ;

@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.core;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory.GraphMaker ;
 
 /** Implementation of a DatasetGraph as an open set of graphs where all graphs "exist".
  *  New graphs are created (via the policy of a GraphMaker) when a getGraph call is 
@@ -26,15 +27,6 @@ import com.hp.hpl.jena.graph.Graph ;
  */
 public class DatasetGraphMaker extends DatasetGraphMap
 {
-    public interface GraphMaker { public Graph create() ; }
-
-    private static GraphMaker graphMakerNull = new GraphMaker() {
-        @Override
-        public Graph create()
-        {
-            return null ;
-        } } ;
-
     private GraphMaker graphMaker ;
 
     public DatasetGraphMaker(GraphMaker graphMaker)
@@ -46,7 +38,7 @@ public class DatasetGraphMaker extends DatasetGraphMap
     public DatasetGraphMaker(Graph graph)
     {
         super(graph) ;
-        this.graphMaker = graphMakerNull ;
+        this.graphMaker = DatasetGraphFactory.graphMakerNull ;
     }
 
     @Override

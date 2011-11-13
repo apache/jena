@@ -88,7 +88,6 @@ public class DatasetImpl implements Dataset, DataSource
     public DatasetImpl(Model model)
     {
         addToCache(model) ;
-        // TODO Is this right? this sort of DatasetGraph can't auto-add graphs.
         this.dsg = DatasetGraphFactory.create(model.getGraph()) ;
     }
 

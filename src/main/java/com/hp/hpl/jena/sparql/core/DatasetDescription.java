@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList ;
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -30,22 +31,29 @@ import com.hp.hpl.jena.sparql.util.DatasetUtils ;
 //   use in DatasetUtils
 //   use in tests
 
-public class DatasetDesc
+public class DatasetDescription
 {
     private List<String> defaultGraphURIs = new ArrayList<String>() ;
     private List<String> namedGraphURIs = new ArrayList<String>() ;
     
-    public DatasetDesc() {}
-    public void addDefaultGraphURI(String uri) { defaultGraphURIs.add(uri) ; }
-    public void addNamedGraphURI(String uri) { namedGraphURIs.add(uri) ; }
+    public DatasetDescription() {}
+    public boolean isEmpty()    { return defaultGraphURIs.isEmpty() && namedGraphURIs.isEmpty() ; }
     
-    public List<String> getDefaultGraphURIs() { return defaultGraphURIs ; }
-    public List<String> getNamedGraphURIs() { return namedGraphURIs ; }
+    public void addDefaultGraphURI(String uri)                  { defaultGraphURIs.add(uri) ; }
+    public void addAllDefaultGraphURI(Collection<String> uris)  { defaultGraphURIs.addAll(uris) ; }
     
-    public Iterator<String> eachDefaultGraphURI() { return defaultGraphURIs.iterator() ; }
-    public Iterator<String> eachNamedGraphURI() { return namedGraphURIs.iterator() ; }
+    public void addNamedGraphURI(String uri)                    { namedGraphURIs.add(uri) ; }
+    public void addAllNamedGraphURI(Collection<String> uris)    { namedGraphURIs.addAll(uris) ; }
     
+    public List<String> getDefaultGraphURIs()                   { return defaultGraphURIs ; }
+    public List<String> getNamedGraphURIs()                     { return namedGraphURIs ; }
+    
+    public Iterator<String> eachDefaultGraphURI()               { return defaultGraphURIs.iterator() ; }
+    public Iterator<String> eachNamedGraphURI()                 { return namedGraphURIs.iterator() ; }
+    
+    /** Create a dataset from the description - reads URLs into an in-memory dataset */ 
     public Dataset create() { return DatasetUtils.createDataset(this) ; }
+
+    /** Create a DatasetGraph from the description - reads URLs into an in-memory DatasetGraph */ 
     public DatasetGraph createDatasetGraph() { return DatasetUtils.createDatasetGraph(this) ; }
-    
 }

@@ -37,8 +37,8 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** A collection of handlers for response handling.
  * @see HttpOp#execHttpGet(String, String, java.util.Map)

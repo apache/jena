@@ -24,18 +24,19 @@ import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.sparql.core.DatasetDesc ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 
-public class DatasetDescAssembler extends AssemblerBase implements Assembler
+public class DatasetDescriptionAssembler extends AssemblerBase implements Assembler
 {
-
-    public static Resource getType() { return DatasetAssemblerVocab.tDataset ; }
+    public DatasetDescriptionAssembler()       {}
+    
+    public static Resource getType()    { return DatasetAssemblerVocab.tDataset ; }
     
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        DatasetDesc ds = new DatasetDesc() ;
+        DatasetDescription ds = new DatasetDescription() ;
 
         // -------- Default graph
         // Can use ja:graph or ja:defaultGraph

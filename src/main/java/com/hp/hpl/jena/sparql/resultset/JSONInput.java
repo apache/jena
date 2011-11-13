@@ -40,9 +40,9 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 public class JSONInput extends SPARQLResult
 {

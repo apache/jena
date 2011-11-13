@@ -21,9 +21,9 @@ package com.hp.hpl.jena.sparql.modify;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateAction ;

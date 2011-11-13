@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
 import com.hp.hpl.jena.rdf.model.StmtIterator ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class Closure
 {

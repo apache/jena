@@ -27,10 +27,10 @@ import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DatasetDesc ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** Internal Dataset/DataSource factory + graph equivalents. */
@@ -59,17 +59,18 @@ public class DatasetUtils
     public static Dataset createDataset(List<String> uriList, List<String> namedSourceList,
                                         FileManager fileManager, String baseURI)
     {
-        Dataset ds = DatasetFactory.createMem() ;
+        // Fixed dataset - any GRAPH <notThere> in a query must return no match.
+        Dataset ds = DatasetFactory.createMemFixed() ;
         addInGraphs(ds, uriList, namedSourceList, fileManager, baseURI) ;
         return ds ;
     }
 
-    public static Dataset createDataset(DatasetDesc datasetDesc)
+    public static Dataset createDataset(DatasetDescription datasetDesc)
     {
         return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), null, null) ;
     }
 
-    public static Dataset createDataset(DatasetDesc datasetDesc,  
+    public static Dataset createDataset(DatasetDescription datasetDesc,  
                                         FileManager fileManager, String baseURI)
     {
         return createDataset(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), fileManager, baseURI) ;
@@ -127,12 +128,12 @@ public class DatasetUtils
     
     // ---- DatasetGraph level.
     
-    public static DatasetGraph createDatasetGraph(DatasetDesc datasetDesc)
+    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc)
     {
         return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), null, null) ;
     }
 
-    public static DatasetGraph createDatasetGraph(DatasetDesc datasetDesc,  
+    public static DatasetGraph createDatasetGraph(DatasetDescription datasetDesc,  
                                                   FileManager fileManager, String baseURI)
     {
         return createDatasetGraph(datasetDesc.getDefaultGraphURIs(), datasetDesc.getNamedGraphURIs(), fileManager, baseURI) ;

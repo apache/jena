@@ -37,7 +37,8 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 
 public abstract class TestDataset
 {
-    protected abstract Dataset create() ;
+    // Assumes a dadatset which need explicit add graph 
+    protected abstract Dataset createFixed() ;
     
     static Model model1 = ModelFactory.createDefaultModel() ;
     static Model model2 = ModelFactory.createDefaultModel() ;
@@ -56,38 +57,23 @@ public abstract class TestDataset
         model2.add(s2, p2, o2) ;
     }
     
-    /*
-    public Model getDefaultModel() ;
-    public Model getNamedModel(String uri) ;
-    public boolean containsNamedModel(String uri) ;
-    public Iterator<String> listNames() ;
-    public Lock getLock() ;
-    public DatasetGraph asDatasetGraph() ; 
-    public void close() ;
-
-    public void  setDefaultModel(Model model) ;
-    public void  addNamedModel(String uri, Model model) throws LabelExistsException ;
-    public void  removeNamedModel(String uri) ;
-    public void  replaceNamedModel(String uri, Model model) ;
-     */
-    
     @Test public void dataset_01()
     {
-        Dataset ds = create() ;
+        Dataset ds = createFixed() ;
         assertNotNull(ds.getDefaultModel()) ;
         assertNotNull(ds.asDatasetGraph()) ;
     }
     
     @Test public void dataset_02()
     {
-        Dataset ds = create() ;
+        Dataset ds = createFixed() ;
         ds.getDefaultModel().add(s1,p1,o1) ;
         assertTrue(model1.isIsomorphicWith(ds.getDefaultModel())) ;
     }
 
     @Test public void datasource_01()
     {
-        Dataset ds = create() ;
+        Dataset ds = createFixed() ;
         ds.setDefaultModel(model2) ;
         assertTrue(model2.isIsomorphicWith(ds.getDefaultModel())) ;
     }
@@ -95,7 +81,7 @@ public abstract class TestDataset
     @Test public void datasource_02()
     {
         String graphName = "http://example/" ;
-        Dataset ds = create() ;
+        Dataset ds = createFixed() ;
         ds.addNamedModel(graphName, model1) ;
         assertTrue(ds.containsNamedModel(graphName)) ;
         
@@ -117,7 +103,7 @@ public abstract class TestDataset
     @Test public void datasource_03()
     {
         String graphName = "http://example/" ;
-        Dataset ds = create() ;
+        Dataset ds = createFixed() ;
         ds.addNamedModel(graphName, model1) ;
         ds.replaceNamedModel(graphName, model2) ;
         assertTrue(ds.containsNamedModel(graphName)) ;

@@ -24,11 +24,7 @@ import java.util.List ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Capabilities ;
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.impl.AllCapabilities ;
 import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -68,9 +64,10 @@ public class GraphSPARQL extends GraphBase implements Graph
         this(dataset, Node.createURI(uri)) ;
     }
 
-    public GraphSPARQL(DatasetGraph dataset, Node gn)
+    public GraphSPARQL(DatasetGraph dsg, Node gn)
     { 
-        this.dataset = toDSG(dataset, gn) ;
+        this.dataset = DatasetGraphFactory.create(dsg) ;
+        dataset.setDefaultGraph(dsg.getGraph(gn)) ; 
         factory = null ;
     }
 
@@ -80,7 +77,7 @@ public class GraphSPARQL extends GraphBase implements Graph
     
     public GraphSPARQL(Graph graph, QueryEngineFactory factory)
     {
-        this.dataset = DatasetGraphFactory.create(graph) ;
+        this.dataset = DatasetGraphFactory.createOneGraph(graph) ;
         this.factory = factory ;
     }
     

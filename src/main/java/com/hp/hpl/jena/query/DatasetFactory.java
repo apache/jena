@@ -26,10 +26,11 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssembler ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.DatasetUtils ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.graph.GraphUtils ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -37,9 +38,14 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class DatasetFactory
 {
-    /** Create an in-memory, modifable Dataset */
-    public static Dataset createMem() { return create() ; }
+    /** Create an in-memory, modifiable Dataset */
+    public static Dataset createMem() { return create(DatasetGraphFactory.createMem()) ; }
     
+    /** Create an in-memory, modifiable Dataset.
+     * New graphs must be explicitly added using .addGraph.
+     */
+    public static Dataset createMemFixed() { return create(DatasetGraphFactory.createMemFixed()) ; }
+
     /** Create an in-memory, modifable Dataset
      * @deprecated Use createMem
      */

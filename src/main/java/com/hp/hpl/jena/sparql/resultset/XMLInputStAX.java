@@ -48,8 +48,8 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
-import com.hp.hpl.jena.sparql.util.graph.GraphFactory ;
 
 /** Code that reads an XML Results format and builds the ARQ structure for the same.
  *  Can read result set and boolean result forms.
