@@ -39,6 +39,8 @@ import org.openjena.fuseki.server.DatasetRegistry ;
 import org.openjena.fuseki.server.DatasetRef ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.query.ARQ;
+import com.hp.hpl.jena.query.QueryCancelledException;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
@@ -94,11 +96,16 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             }
             perform(id, dsg, request, response) ;
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
+        } catch (QueryCancelledException ex)
+        {
+        	String message = String.format("The query timed out after %sms.", ARQ.getContext().get(ARQ.queryTimeout));
+        	responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+            // Log message done by printResponse in a moment.
         } catch (ActionErrorException ex)
         {
             if ( ex.exception != null )
                 ex.exception.printStackTrace(System.err) ;
-            // Log mesage done by printResponse in a moment.
+            // Log message done by printResponse in a moment.
             if ( ex.message != null )
                 responseSendError(response, ex.rc, ex.message) ;
             else
