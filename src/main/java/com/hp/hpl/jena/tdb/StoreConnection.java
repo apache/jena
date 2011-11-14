@@ -21,6 +21,7 @@ package com.hp.hpl.jena.tdb;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;

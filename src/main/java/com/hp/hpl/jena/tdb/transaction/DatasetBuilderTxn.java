@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.transaction ;
 
 import java.util.Map ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
-import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrLogger ;

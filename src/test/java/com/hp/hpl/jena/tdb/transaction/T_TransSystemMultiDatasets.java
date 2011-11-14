@@ -40,19 +40,19 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.shared.Lock;
-import com.hp.hpl.jena.sparql.core.DatasetGraph;
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.shared.Lock ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
-import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** System testing using multiple datasets of the transactions. */
 public class T_TransSystemMultiDatasets

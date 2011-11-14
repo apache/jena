@@ -18,13 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import static com.hp.hpl.jena.tdb.ReadWrite.* ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
-
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.transaction.ObjectFileTrans ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
 import org.junit.After ;
 import org.junit.Before ;
@@ -32,6 +27,9 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.lib.StrUtils ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
 public abstract class AbstractTestObjectFileTrans extends BaseTest
 {
@@ -49,7 +47,7 @@ public abstract class AbstractTestObjectFileTrans extends BaseTest
     @Before
     public void setup()
     {
-        txn = new Transaction(null, WRITE, ++count, null, tm) ;
+        txn = new Transaction(null, ReadWrite.WRITE, ++count, null, tm) ;
         file1 = createFile("base") ;
         file2 = createFile("log") ;
     }

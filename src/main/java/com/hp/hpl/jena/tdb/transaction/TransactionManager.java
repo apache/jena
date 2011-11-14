@@ -18,10 +18,9 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import static com.hp.hpl.jena.tdb.ReadWrite.READ ;
-import static com.hp.hpl.jena.tdb.transaction.TransactionManager.TxnPoint.* ;
-import static com.hp.hpl.jena.tdb.ReadWrite.WRITE ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.syslog ;
+import static com.hp.hpl.jena.tdb.transaction.TransactionManager.TxnPoint.BEGIN ;
+import static com.hp.hpl.jena.tdb.transaction.TransactionManager.TxnPoint.CLOSE ;
 import static java.lang.String.format ;
 
 import java.util.ArrayList ;
@@ -38,9 +37,9 @@ import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
-import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
@@ -313,7 +312,7 @@ public class TransactionManager
 //            //   create new transaction 
 //        }
         
-        if ( mode == WRITE && activeWriters.get() > 0 )    // Guard
+        if ( mode == ReadWrite.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
         // Even flush queue here.
@@ -410,7 +409,7 @@ public class TransactionManager
             
             try {
                 Transaction txn2 = queue.take() ;
-                if ( txn2.getMode() == READ )
+                if ( txn2.getMode() == ReadWrite.READ )
                     continue ;
                 log("Flush delayed commit", txn2) ;
                 // This takes a Write lock on the  DSG - this is where it blocks.

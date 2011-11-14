@@ -17,7 +17,6 @@
  */
 
 package com.hp.hpl.jena.tdb.transaction;
-import static com.hp.hpl.jena.tdb.ReadWrite.* ;
 import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.Iterator ;
@@ -25,8 +24,8 @@ import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
-import com.hp.hpl.jena.tdb.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -70,7 +69,7 @@ public class Transaction
         activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;
-        changesPending = (mode == WRITE) ;
+        changesPending = (mode == ReadWrite.WRITE) ;
     }
 
     /* Commit is a 4 step process

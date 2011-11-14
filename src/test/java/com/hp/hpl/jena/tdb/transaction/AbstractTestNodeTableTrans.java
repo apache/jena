@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import static com.hp.hpl.jena.tdb.ReadWrite.WRITE ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -71,7 +71,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     Transaction createTxn(long id) 
     {
-        return new Transaction(null, WRITE, id, null, null) ; 
+        return new Transaction(null, ReadWrite.WRITE, id, null, null) ; 
     }
     
     @Test public void nodetrans_01()
