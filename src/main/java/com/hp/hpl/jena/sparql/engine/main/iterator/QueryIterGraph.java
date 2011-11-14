@@ -151,17 +151,10 @@ public class QueryIterGraph extends QueryIterRepeatApply
                 return null ;
             Node gn = graphNames.next() ;
 
-//            Binding b = parentBinding ;
-//            if ( Var.isVar(opGraph.getNode()) )
-//                // (graph ?g (...))
-//                b = BindingFactory.binding(b, Var.alloc(opGraph.getNode()), gn) ;
-//            QueryIterator qIter = buildIterator(b, gn, opGraph, getExecContext()) ;
-            
-            
             QueryIterator qIter = buildIterator(parentBinding, gn, opGraph, getExecContext()) ;
             if ( Var.isVar(opGraph.getNode()) )
             {
-                // This is the join.
+                // This is the join of the graph node variable to the sub-pattern solution.
                 // Do after the subpattern so that the variable is not visible to the
                 // subpattern.
                 Var v = Var.alloc(opGraph.getNode()) ;
@@ -181,9 +174,14 @@ public class QueryIterGraph extends QueryIterRepeatApply
             // Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = QC.substitute(opGraph.getSubOp(), binding) ;
+            if ( ! outerCxt.getDataset().containsGraph(graphNode) )
+                return null ;
+
             Graph g = outerCxt.getDataset().getGraph(graphNode) ;
+            // And the contains was true??!!!!!!
             if ( g == null )
                 return null ;
+                //throw new ARQInternalErrorException(".containsGraph was true but .getGraph is null") ;
             
             ExecutionContext cxt2 = new ExecutionContext(outerCxt, g) ;
             QueryIterator subInput = QueryIterSingleton.create(binding, cxt2) ;

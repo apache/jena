@@ -31,5 +31,5 @@ public class TestDatasetMem extends TestDataset
     }
     
     @Override
-    protected Dataset createFixed() { return DatasetFactory.createMemFixed() ; }
+    protected Dataset createFixed() { return DatasetFactory.createMem() ; }
 }

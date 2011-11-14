@@ -44,7 +44,7 @@ public class DatasetFactory
     /** Create an in-memory, modifiable Dataset.
      * New graphs must be explicitly added using .addGraph.
      */
-    public static Dataset createMemFixed() { return create(DatasetGraphFactory.createMemFixed()) ; }
+    public static Dataset createMemFixed() { return create(DatasetGraphFactory.createMem()) ; }
 
     /** Create an in-memory, modifable Dataset
      * @deprecated Use createMem

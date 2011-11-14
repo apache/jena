@@ -18,16 +18,11 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import static junit.framework.Assert.assertEquals ;
-import static junit.framework.Assert.assertFalse ;
-import static junit.framework.Assert.assertNotNull ;
-import static junit.framework.Assert.assertNull ;
-import static junit.framework.Assert.assertTrue ;
-
 import java.util.List ;
 
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -35,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-public abstract class TestDataset
+public abstract class TestDataset extends BaseTest
 {
     // Assumes a dadatset which need explicit add graph 
     protected abstract Dataset createFixed() ;
@@ -71,14 +66,14 @@ public abstract class TestDataset
         assertTrue(model1.isIsomorphicWith(ds.getDefaultModel())) ;
     }
 
-    @Test public void datasource_01()
+    @Test public void dataset_03()
     {
         Dataset ds = createFixed() ;
         ds.setDefaultModel(model2) ;
         assertTrue(model2.isIsomorphicWith(ds.getDefaultModel())) ;
     }
 
-    @Test public void datasource_02()
+    @Test public void dataset_04()
     {
         String graphName = "http://example/" ;
         Dataset ds = createFixed() ;
@@ -96,11 +91,11 @@ public abstract class TestDataset
         assertTrue(model1.isIsomorphicWith(m)) ;
         
         ds.removeNamedModel(graphName) ;
-        Model m2 = ds.getNamedModel(graphName) ;
-        assertNull(m2) ;
+        // Not getNamedModel and test for null as some dadasets are "auto graph creating"
+        assertFalse(ds.containsNamedModel(graphName)) ;
     }
 
-    @Test public void datasource_03()
+    @Test public void dataset_05()
     {
         String graphName = "http://example/" ;
         Dataset ds = createFixed() ;
