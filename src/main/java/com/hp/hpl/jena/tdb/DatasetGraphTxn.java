@@ -21,6 +21,9 @@ package com.hp.hpl.jena.tdb;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
+/** A DatasetGraph that is a singe transaction.
+ * It does not support transactions, it is a transaction (single use).
+ */
 public class DatasetGraphTxn extends DatasetGraphTDB
 {
     private final Transaction transaction ;

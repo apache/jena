@@ -283,7 +283,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public void finishRequest()     { this.sync() ; } 
 
     @Override
-    public Dataset toDataset()      { return new DatasetImpl(this) ; }
+    public Dataset toDataset()      { return DatasetImpl.wrap(this) ; }
 
     // ---- DataSourceGraph
     

@@ -45,7 +45,7 @@ public class TestBulkUpdateTDB extends BaseTest
     
     private static Graph create()
     {
-        Graph g = TDBFactory.createGraph() ;
+        Graph g = TDBFactory.createDatasetGraph().getDefaultGraph() ;
         return g ;
     }
     

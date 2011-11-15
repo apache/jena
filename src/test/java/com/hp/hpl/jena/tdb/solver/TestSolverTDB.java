@@ -59,7 +59,7 @@ public class TestSolverTDB extends BaseTest
 
     @BeforeClass static public void beforeClass()
     { 
-        graph = TDBFactory.createGraph() ;
+        graph = TDBFactory.createDatasetGraph().getDefaultGraph() ;
         Model m = ModelFactory.createModelForGraph(graph) ;
         FileManager.get().readModel(m, graphData) ;
 

@@ -21,9 +21,9 @@ package com.hp.hpl.jena.tdb;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -58,28 +58,43 @@ public class TDBFactory
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
     }
     
-    /** Create a model, at the given location */
+    /** Create a model, at the given location.
+     *  It is better to create a dataset and get the default model from that.
+     */
+    @Deprecated
     public static Model createModel(Location loc)
     {
         return ModelFactory.createModelForGraph(createGraph(loc)) ;
     }
 
-    /** Create a model, at the given location */
+    /** Create a model, at the given location 
+     *  It is better to create a dataset and get the default model from that.
+     */
+    @Deprecated
+
     public static Model createModel(String dir)
     {
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
     }
 
-    /** Create a TDB model backed by an in-memory block manager. For testing. */  
+    /** Create a TDB model backed by an in-memory block manager. For testing. */
+    @Deprecated
+
     public static Model createModel()
     { return ModelFactory.createModelForGraph(createGraph()) ; }
 
     
-    /** Create a TDB model for named model */  
+    /** Create a TDB model for named model
+     * It is better to create a dataset and get the named model from that.
+     */
+    @Deprecated
     public static Model createNamedModel(String name, String location)
     { return createDataset(location).getNamedModel(name) ; }
     
-    /** Create a TDB model for named model */  
+    /** Create a TDB model for named model.
+     * It is better to create a dataset and get the named model from that.
+     */  
+    @Deprecated
     public static Model createNamedModel(String name, Location location)
     { return createDataset(location).getNamedModel(name) ; }
 
@@ -102,12 +117,18 @@ public class TDBFactory
 
     /** Create a dataset around a DatasetGraphTDB */ 
     public static Dataset createDataset(DatasetGraphTDB datasetGraph)
-    { return new DatasetImpl(datasetGraph) ; }
+    { return DatasetFactory.create(datasetGraph) ; }
     
-    /** Create a graph, at the given location */
+    /** Create a graph, at the given location 
+     * @deprecated Create a DatasetGraph and use the default graph.
+     */
+    @Deprecated
     public static Graph createGraph(Location loc)       { return TDBMaker._createGraph(loc) ; }
 
-    /** Create a graph, at the given location */
+    /** Create a graph, at the given location 
+     * @deprecated Create a DatasetGraph and use the default graph.
+     */
+    @Deprecated
     public static Graph createGraph(String dir)
     {
         Location loc = new Location(dir) ;
@@ -115,13 +136,20 @@ public class TDBFactory
     }
     
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
+    @Deprecated
     public static Graph createGraph()   { return TDBMaker._createGraph() ; }
 
-    /** Create a TDB graph for named graph */  
+    /** Create a TDB graph for named graph
+     * @deprecated Create a DatasetGraph and get the name graph from that.
+     */  
+    @Deprecated
     public static Graph createNamedGraph(String name, String location)
     { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
     
-    /** Create a TDB graph for named graph */  
+    /** Create a TDB graph for named graph
+     * @deprecated Create a DatasetGraph and get the name graph from that.
+     */  
+    @Deprecated
     public static Graph createNamedGraph(String name, Location location)
     { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
 

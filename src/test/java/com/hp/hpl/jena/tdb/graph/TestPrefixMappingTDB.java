@@ -116,7 +116,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
         FileOps.clearDirectory(DB) ;
         {
             // Create new DB (assuming it's empty now)
-            Graph graph = TDBFactory.createGraph(DB);
+            Graph graph = TDBFactory.createDatasetGraph(DB).getDefaultGraph() ;
             PrefixMapping pm = graph.getPrefixMapping();
             pm.setNsPrefix("test", "http://test");
             graph.close();
@@ -124,7 +124,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 
         {
             // Reconnect to the same DB
-            Graph graph = TDBFactory.createGraph(DB);
+            Graph graph = TDBFactory.createDatasetGraph(DB).getDefaultGraph() ;
             PrefixMapping pm = graph.getPrefixMapping();
             Map<String, String> map = pm.getNsPrefixMap();
             assertEquals(1, map.size()) ;

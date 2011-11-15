@@ -29,9 +29,9 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -58,7 +58,7 @@ public class GraphLocation
     public Dataset getDataset()
     { 
         if ( dsg == null ) return null ;
-        return new DatasetImpl(dsg) ;
+        return DatasetFactory.create(dsg) ;
     }
 
     public Dataset createDataset() 
@@ -66,14 +66,14 @@ public class GraphLocation
         if ( dsg != null )
             throw new TDBTestException("dataset already in use") ;
         dsg = TDBFactory.createDatasetGraph(loc) ;
-        return new DatasetImpl(dsg) ;
+        return DatasetFactory.create(dsg) ;
     }
     
     public Graph createGraph()
     {
         if ( graph != null )
             throw new TDBTestException("Graph already in use") ;
-        graph = TDBFactory.createGraph(loc) ;
+        graph = TDBFactory.createDatasetGraph(loc).getDefaultGraph() ;
         model = ModelFactory.createModelForGraph(graph) ;
         return graph ;
     }
