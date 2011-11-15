@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
-/** Public factory for creating objects (graphs, datasest) associated with TDB */
+/** Public factory for creating objects datasets backed by TDB storage */
 public class TDBFactory
 {
     private TDBFactory() {} 

@@ -72,11 +72,12 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     @Override
     public void close()
     {
+        // close() does not mean close the dadaset - it means close the transaction, if any.  
         _close() ;
         inTransaction = false ;
-        // Can call close repeatedly 
-        if (get() != null)
-            get().close() ;
+        // DO NOT CALL get().close() ;
+//        if (get() != null)
+//            get().close() ;
     }
 
     @Override
