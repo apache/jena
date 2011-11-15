@@ -21,12 +21,15 @@ package dev;
 public class DevFuseki
 {
     // SPARQL_QueryDataset.vialidate query -- but FROM etc is important for TDB. 
+    // DatasetDescription from protocol
+    //   createDataset from the ARQ.
+    //   SPARQL_QueryGeneral.datasetFromDescription
     
     // Config:
     //   fuseki:name ==> fuseki:serviceName of fuseki:endpointBase 
     //   rdfs:label for log files.
     
-    // sparql.jsp needs to switc on presence and name of service endpoints.
+    // sparql.jsp needs to switch on presence and name of service endpoints.
     // --accept for to soh for construct queries (check can get CONSTRUCT in TTL).
     
     // application/json for application/sparql-results+json. 
