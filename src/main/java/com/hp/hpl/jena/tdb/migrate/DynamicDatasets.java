@@ -125,6 +125,14 @@ public class DynamicDatasets
 
         private Graph unionGraph = null ;
         
+        @Override
+        public boolean containsGraph(Node graphNode)
+        {
+            if ( Quad.isUnionGraph(graphNode) ) return true ;
+            if ( Quad.isDefaultGraphExplicit(graphNode)) return true ;
+            return super.containsGraph(graphNode) ;
+        }
+        
         // See also the GraphOps
         @Override
         public Graph getGraph(Node graphNode)
