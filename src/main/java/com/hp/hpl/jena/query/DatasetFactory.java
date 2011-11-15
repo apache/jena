@@ -79,7 +79,7 @@ public class DatasetFactory
      */ 
     @SuppressWarnings("deprecation")
     public static DataSource create(DatasetGraph dataset)
-    { return new DatasetImpl(dataset) ; }
+    { return (DataSource)DatasetImpl.wrap(dataset) ; }
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 

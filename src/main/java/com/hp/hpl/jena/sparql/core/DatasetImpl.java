@@ -52,22 +52,23 @@ public class DatasetImpl implements Dataset, DataSource
      */
 
     protected DatasetGraph dsg = null ;
+    private Transactional transactional = null ;
     // Cache of graph -> model so that we don't churn model creation.
     private Cache<Graph, Model> cache = CacheFactory.createCache(0.75f, 20) ;
     private Object internalLock = new Object() ;
 
-    protected DatasetImpl()
-    {}
+    //private DatasetImpl() {}
     
-    public DatasetImpl(DatasetGraph dsg)
+    protected DatasetImpl(DatasetGraph dsg)
     {
         this.dsg = dsg ;
+        if ( dsg instanceof Transactional )
+            this.transactional = (Transactional)dsg ; 
     }
     /** Wrap an existing DatasetGraph */
     public static Dataset wrap(DatasetGraph datasetGraph)
     {
-        DatasetImpl ds = new DatasetImpl() ;
-        ds.dsg = datasetGraph ; 
+        DatasetImpl ds = new DatasetImpl(datasetGraph) ;
         return ds ;
     }
     
@@ -77,9 +78,7 @@ public class DatasetImpl implements Dataset, DataSource
      */
     public static Dataset cloneStructure(DatasetGraph datasetGraph)
     { 
-        DatasetImpl ds = new DatasetImpl() ;
-        ds.dsg = new DatasetGraphMap(datasetGraph) ;
-        return ds ;
+        return new DatasetImpl(new DatasetGraphMap(datasetGraph)) ;
     }
 
     /** Create a Dataset with the model as default model.
@@ -108,11 +107,35 @@ public class DatasetImpl implements Dataset, DataSource
     @Override
     public Lock getLock() { return dsg.getLock() ; }
     
-    @Override public boolean supportsTransactions() { return false ; }
-    @Override public void begin(ReadWrite mode)     { throw new UnsupportedOperationException("Transactions not supported") ; }
-    @Override public void commit()                  { throw new UnsupportedOperationException("Transactions not supported") ; }
-    @Override public void abort()                   { throw new UnsupportedOperationException("Transactions not supported") ; }
-  
+    @Override
+    public boolean supportsTransactions()
+    {
+        return (transactional != null) ;
+    }
+
+    @Override public void begin(ReadWrite mode)     
+    {
+        if ( transactional == null )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+        transactional.begin(mode) ;
+    }
+
+    @Override
+    public void commit()
+    {
+        if ( transactional == null )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+        transactional.commit() ;
+    }
+
+    @Override
+    public void abort()
+    {
+        if ( transactional == null )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+        transactional.abort() ;
+    }
+
     @Override
     public DatasetGraph asDatasetGraph() { return dsg ; }
 
