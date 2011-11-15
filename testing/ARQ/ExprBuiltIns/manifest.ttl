@@ -61,6 +61,13 @@
               qt:data   <data-builtin-2.ttl> ] ;
         mf:result  <result-datatype-3.srx>
       ]
+      [
+         mf:name "datatype-4 : Literals with a datatype of rdf:langString" ;
+         mf:action
+            [ qt:query  <q-datatype-4.rq> ;
+              qt:data   <data-builtin-2.ttl> ] ;
+        mf:result  <result-datatype-4.srx>
+      ]
 
       [
          mf:name "lang-1 : Literals with a lang tag of some kind" ;

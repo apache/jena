@@ -4,6 +4,7 @@ ChangeLog for ARQ
 ==== ARQ 2.8.9
 ** Java 6 is now required for running ARQ.
 
++ SPARQL 1.1 / RDF 1.1 : DATATYPE(literal-with-lang) is now rdf:langString, not an error.
 + DatasetFactory: perferred methods for an in-memory dataset are:
      create() -- will automatically add in-memory named graphs  
      createFixed() -- needs explicitly added extra graph  

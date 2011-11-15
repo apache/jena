@@ -11,7 +11,10 @@
     rdfs:comment  "DAWG Expression tests: Built-ins" ;
     mf:entries
     ( :dawg-str-1 :dawg-str-2 :dawg-str-3 :dawg-str-4
-      :dawg-isBlank-1 :dawg-isLiteral-1 :dawg-datatype-1 :dawg-datatype-2 :dawg-datatype-3
+      :dawg-isBlank-1 :dawg-isLiteral-1 :dawg-datatype-1 
+      ## remove test - chnages for SPARQL 1.1 and RDF 1.1 (rdf:langString)
+      ##:dawg-datatype-2 
+      :dawg-datatype-3
       :dawg-lang-1 :dawg-lang-2 :dawg-lang-3 :dawg-isURI-1
       :dawg-isIRI-1 :dawg-langMatches-1 :dawg-langMatches-2 
       :dawg-langMatches-3 :dawg-langMatches-4 :dawg-langMatches-basic

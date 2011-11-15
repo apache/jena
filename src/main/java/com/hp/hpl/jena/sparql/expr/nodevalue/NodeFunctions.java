@@ -30,6 +30,7 @@ import com.hp.hpl.jena.iri.Violation ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
@@ -39,7 +40,6 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 public class NodeFunctions
 {
     private static final NodeValue xsdString = NodeValue.makeNode(XSD.xstring.asNode()) ;
-    
 
     // Helper functions
     /** check and get a string (may be a simple literal, literal with language tag or an XSD string). */
@@ -175,7 +175,7 @@ public class NodeFunctions
         {
             boolean simpleLiteral = (node.getLiteralLanguage() == null || node.getLiteralLanguage().equals("") ) ;
             if ( ! simpleLiteral )
-                NodeValue.raise(new ExprTypeException("datatype: Literal has language tag: "+node) );
+                return NodeConst.dtRDFlangString ;
             return XSD.xstring.asNode() ;
         }
         return Node.createURI(s) ;

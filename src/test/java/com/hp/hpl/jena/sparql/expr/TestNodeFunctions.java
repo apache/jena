@@ -25,6 +25,7 @@ import org.junit.Test ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public class TestNodeFunctions extends TestCase
@@ -171,11 +172,16 @@ public class TestNodeFunctions extends TestCase
     @Test public void testDatatype4()
     {
         NodeValue nv = NodeValue.makeNode("abc", "fr", (String)null) ;
-        try {
-            NodeValue r = NodeFunctions.datatype(nv) ;
-            fail("Expect a type exception but call succeeded") ;
-        }
-        catch (ExprTypeException ex) {} 
+        // SPARQL 1.0
+//        try {
+//            NodeValue r = NodeFunctions.datatype(nv) ;
+//            fail("Expect a type exception but call succeeded") ;
+//        }
+//        catch (ExprTypeException ex) {}
+        // SPARQL 1.1 / RDF 1.1
+        NodeValue r = NodeFunctions.datatype(nv) ;
+        NodeValue e = NodeValue.makeNode(NodeConst.dtRDFlangString) ;
+        assertEquals(e, r) ;
     }
 
     @Test public void testDatatype5()
