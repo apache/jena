@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -174,7 +175,12 @@ public class QueryIterGraph extends QueryIterRepeatApply
             // Think about avoiding substitution.
             // If the subpattern does not involve the vars from the binding, avoid the substitute.  
             Op op = QC.substitute(opGraph.getSubOp(), binding) ;
-            if ( ! outerCxt.getDataset().containsGraph(graphNode) )
+            
+            // We can't just use DatasetGraph.getGraph because it may "auto-create" graphs.
+            // Use the containsGraph function.
+            
+            boolean syntheticGraph = ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode) ) ;
+            if ( ! syntheticGraph && ! outerCxt.getDataset().containsGraph(graphNode) )
                 return null ;
 
             Graph g = outerCxt.getDataset().getGraph(graphNode) ;

@@ -37,15 +37,15 @@ public class Quad
     /** Name of the default for explict use in GRAPH */
     public static final Node defaultGraphIRI        =  Node.createURI("urn:x-arq:DefaultGraph") ;
 
+    /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
+    public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
+
     /** Name of the non-graph when a quad is really a triple - also parsing of triples formats 
      *  (and the default graph when parsing N-Quads or TriG) 
      *  Not for access to the default graph by name - use Quad.defaultGraphIRI.
      */
     public static final Node tripleInQuad           =  null ;
     
-    /** Name of the merge of all named graphs (use this for the graph of all named graphs) */
-    public static final Node unionGraph           =  Node.createURI("urn:x-arq:UnionGraph") ;
-
     private final Node graph, subject, predicate, object ;
     
     public Quad(Node graph, Triple triple)

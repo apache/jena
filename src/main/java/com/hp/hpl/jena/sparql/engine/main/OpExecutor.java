@@ -305,6 +305,9 @@ public class OpExecutor
     
     private QueryIterator specialcase(Node gn, Op subOp, QueryIterator input)
     {
+        // This is a placeholder fro code to specially handle explicitly named 
+        // default graph and union graph.
+        
         if ( true ) return null ;
         
         if ( gn == Quad.defaultGraphIRI || gn == Quad.defaultGraphNodeGenerated )
