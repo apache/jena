@@ -150,13 +150,13 @@
               <goal>jar</goal>
             </goals>
           </execution>
-	  <execution>
+          <execution>
             <id>attach-sources-test</id>
             <goals>
               <goal>test-jar</goal>
             </goals>
-	  </execution>
-	</executions>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -252,7 +252,7 @@ build.time.xsd=${build.time.xsd}
 build.time.txt=${build.time.txt}
 #end
                 </echo>
-		<echo message="version=${project.version}"/>
+                <echo message="version=${project.version}"/>
                 <echo message="build.time=${build.time.txt}"/>
               </target>
             </configuration>
@@ -265,13 +265,13 @@ build.time.txt=${build.time.txt}
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-dependency-plugin</artifactId>
-	<configuration>
-	  <overWriteReleases>false</overWriteReleases>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <configuration>
+          <overWriteReleases>false</overWriteReleases>
           <overWriteSnapshots>false</overWriteSnapshots>
-	  <overWriteIfNewer>true</overWriteIfNewer>
-	</configuration>
+          <overWriteIfNewer>true</overWriteIfNewer>
+        </configuration>
       </plugin>
 
     </plugins>
