@@ -51,7 +51,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
-    @SuppressWarnings("hiding")
     private final QueryHandlerTDB queryHandler = new QueryHandlerTDB(this) ;
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
