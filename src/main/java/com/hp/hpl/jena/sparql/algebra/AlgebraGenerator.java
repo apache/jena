@@ -27,6 +27,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
@@ -628,7 +629,19 @@ public class AlgebraGenerator
         
         // ---- ORDER BY
         if ( query.getOrderBy() != null )
-            op = new OpOrder(op, query.getOrderBy()) ;
+        {
+            List<SortCondition> scList = new ArrayList<SortCondition>() ;
+
+            // Aggregates in ORDER BY
+            for ( SortCondition sc : query.getOrderBy() )
+            {
+                Expr e = sc.getExpression() ;
+                e = ExprLib.replaceAggregateByVariable(e) ;
+                scList.add(new SortCondition(e, sc.getDirection())) ;
+                
+            }
+            op = new OpOrder(op, scList) ;
+        }
         
         // ---- PROJECT
         // No projection => initial variables are exposed.
