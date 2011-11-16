@@ -75,11 +75,11 @@
       <version>${ver.http-client}</version>
       <scope>compile</scope>
       <exclusions>
-	<!-- Replace with slf4j adapter -->
-	<exclusion>
-	  <groupId>commons-logging</groupId>
-	  <artifactId>commons-logging</artifactId>
-	</exclusion>
+        <!-- Replace with slf4j adapter -->
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -102,7 +102,7 @@
       <resource>
         <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <filtering>true</filtering>
-	<!-- FIXME -->
+	    <!-- FIXME -->
         <directory>resources</directory>
       </resource>
     </resources>
@@ -110,13 +110,13 @@
     <plugins>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-resources-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -152,15 +152,15 @@
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-jar-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <goals>
-	      <goal>test-jar</goal>
-	    </goals>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -173,9 +173,9 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-	  <excludePackageNames>arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
-	  <groups>
-	    <group>
+          <excludePackageNames>arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
+          <groups>
+            <group>
               <title>SPARQL Query and Update</title>
               <packages>com.hp.hpl.jena.query:com.hp.hpl.jena.update</packages>
             </group>
@@ -183,7 +183,7 @@
               <title>RIOT</title>
               <packages>org.openjena.riot</packages>
             </group>
-	  </groups>
+          </groups>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
@@ -234,22 +234,22 @@ build.time.txt=${build.time.txt}
         hence two executions configured -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>create-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <!--
-	      <finalName>${assembly.root.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      -->
-	      <descriptors>
-		<descriptor>assembly.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-	</executions>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+            <configuration>
+            <!--
+            <finalName>${assembly.root.name}</finalName>
+            <appendAssemblyId>false</appendAssemblyId>
+            -->
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
@@ -258,6 +258,5 @@ build.time.txt=${build.time.txt}
   <reporting>
     <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
   </reporting>
-
 
 </project>
