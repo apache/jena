@@ -23,20 +23,19 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
     <version>0-incubating-SNAPSHOT</version>
-    <relativePath>../JenaTop/pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>0.2.2-incubating-SNAPSHOT</version>
+  <version>1.0.0-incubating-SNAPSHOT</version>
 
   <description>LARQ - Free Text Indexing for SPARQL</description>
   <url>http://incubator.apache.org/jena/documentation/larq/</url>
 
   <properties>
-    <ver.lucene>3.1.0</ver.lucene>
+    <ver.lucene>3.4.0</ver.lucene>
   </properties>
 
   <developers>
@@ -188,39 +187,6 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
-
-  <mailingLists>
-    <mailingList>
-      <name>Users</name>
-      <post>jena-users@incubator.apache.org</post>
-      <subscribe>jena-users-subscribe@incubator.apache.org</subscribe>
-      <unsubscribe>jena-users-unsubscribe@incubator.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-users/</archive>
-      <otherArchives>
-        <otherArchive>http://incubator.apache.org/mail/jena-users/</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Development</name>
-      <post>jena-dev@incubator.apache.org</post>
-      <subscribe>jena-dev-subscribe@incubator.apache.org</subscribe>
-      <unsubscribe>jena-dev-unsubscribe@incubator.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-dev/</archive>
-      <otherArchives>
-        <otherArchive>http://incubator.apache.org/mail/jena-dev/</otherArchive>
-      </otherArchives>
-    </mailingList>
-    <mailingList>
-      <name>Commits</name>
-      <post>jena-commits@incubator.apache.org</post>
-      <subscribe>jena-commits-subscribe@incubator.apache.org</subscribe>
-      <unsubscribe>jena-commits-unsubscribe@incubator.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-commits/</archive>
-      <otherArchives>
-        <otherArchive>http://incubator.apache.org/mail/jena-commits/</otherArchive>
-      </otherArchives>
-    </mailingList>
-  </mailingLists>
 
   <reporting>
 
