@@ -72,17 +72,17 @@
 
     <resources>
       <resource>
-	<targetPath>com/hp/hpl/jena/tdb/</targetPath>
-	<filtering>true</filtering>
-	<!-- FIXME -->
-	<directory>resources</directory>
+        <targetPath>com/hp/hpl/jena/tdb/</targetPath>
+        <filtering>true</filtering>
+        <!-- FIXME -->
+        <directory>resources</directory>
       </resource>
     </resources>
-    
+
     <plugins>
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-compiler-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
 
       <plugin>
@@ -117,16 +117,16 @@
       
       </plugin>
 
-      	<plugin>
-	  <groupId>org.apache.maven.plugins</groupId>
-	  <artifactId>maven-jar-plugin</artifactId>
-	  <executions>
-	    <execution>
-	      <goals>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
               <goal>test-jar</goal>
-	      </goals>
-	    </execution>
-	  </executions>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -139,8 +139,8 @@
           <encoding>UTF-8</encoding>
           <windowtitle>${project.name} ${project.version}</windowtitle>
           <doctitle>${project.name} ${project.version}</doctitle>
-	  <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
-	  <bottom>Licenced under the Apache License, Version 2.0</bottom>
+          <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
@@ -190,22 +190,22 @@ build.time.txt=${build.time.txt}
         hence two executions configured -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>create-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <!--
-	      <finalName>${assembly.root.name}</finalName>
-	      <appendAssemblyId>false</appendAssemblyId>
-	      -->
-	      <descriptors>
-		<descriptor>assembly.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-	</executions>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+            <configuration>
+              <!--
+              <finalName>${assembly.root.name}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              -->
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
     </plugins>
@@ -214,6 +214,5 @@ build.time.txt=${build.time.txt}
   <reporting>
     <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
   </reporting>
-
 
 </project>
