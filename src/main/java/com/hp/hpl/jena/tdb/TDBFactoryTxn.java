@@ -20,11 +20,16 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Public factory for creating objects datasets backed by TDB storage which support transactions */
 public class TDBFactoryTxn
 {
+    // This is TDBFactory with a different maker.??
+    
     // Assembler versions
     
     /** Create a Dataset that supports transactions */  
@@ -45,7 +50,25 @@ public class TDBFactoryTxn
         return createDataset(Location.mem()) ;
     }
     
-
+    /** Read the assembler file and create a dataset with transctional capabilities.
+     * Assumes the file contains exactly one definition of a TDB dataset.  
+     */ 
+    public static Dataset assembleDataset(String assemblerFile)
+    {
+        // A bit of a kludge for now but it does mean we can reuse the same 
+        // (original) assembler definitions.  
+        // Downside is opening files, then reopening them.
+        // Eventually, we will combine old and new worlds.
+        // Maybe:
+        // 1 - StoreConnection that takes over a DatasetGraphTDB
+        // 2 - reuse the assembler machinery to directly create a StoreConenction.
+        // 3 - Flip: Make as a transactional and downgrade to old style. 
+        Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
+        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        Location location = dsg.getLocation() ;
+        return createDataset(location) ;
+    }
+    
     /** Create a DatasetGraph that supports transactions */  
     public static DatasetGraphTransaction createDatasetGraph(String location)
     {
