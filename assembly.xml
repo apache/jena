@@ -24,7 +24,7 @@
   <fileSets>
     <fileSet>
       <includes>
-	<include>DISCLAIMER*</include>
+        <include>DISCLAIMER*</include>
         <include>LICENSE*</include>
         <include>NOTICE*</include>
         <include>README*</include>
@@ -32,12 +32,13 @@
         <include>pom.xml</include>
       </includes>
     </fileSet>
-    
+
     <!-- Put sources at the top level -->
     <fileSet>
       <directory>${project.build.directory}</directory>
       <outputDirectory></outputDirectory>
       <includes>
+        <include>${this.root}-sources.jar</include>
         <include>${this.root}-test-sources.jar</include>
       </includes>
     </fileSet>
