@@ -19,10 +19,10 @@
 package com.hp.hpl.jena.sdb.store;
 
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 
 public class DatasetStore
 {
@@ -31,7 +31,7 @@ public class DatasetStore
     public static Dataset create(Store store)
     { 
         DatasetGraph dsg = createDatasetGraph(store) ;
-        return new DatasetImpl(dsg) ;
+        return DatasetFactory.create(dsg) ;
     }
     
     public static DatasetGraph createDatasetGraph(Store store)

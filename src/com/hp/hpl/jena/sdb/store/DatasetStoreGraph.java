@@ -25,6 +25,7 @@ import org.openjena.atlas.lib.Closeable ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.graph.GraphSDB ;
 import com.hp.hpl.jena.sdb.util.StoreUtils ;
@@ -32,7 +33,6 @@ import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.shared.LockMRSW ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
-import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -76,7 +76,7 @@ public class DatasetStoreGraph extends DatasetGraphCaching
 
     @Override
     public Dataset toDataset()
-    { return new DatasetImpl(this) ; }
+    { return DatasetFactory.create(this) ; }
     
     @Override
     protected boolean _containsGraph(Node graphNode)
