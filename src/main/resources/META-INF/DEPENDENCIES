@@ -22,10 +22,6 @@ From: 'Codehaus' (http://www.codehaus.org/)
   - Woodstox (http://woodstox.codehaus.org) org.codehaus.woodstox:wstx-asl:jar:3.2.9
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-From: 'Hewlett-Packard' (http://www.hp.com/)
-  - Jena IRI (http://jena.sf.net/iri) com.hp.hpl.jena:iri:jar:0.8
-    License: BSD-style license  (http://jena.sourceforge.net/iri/license.html)
-
 From: 'QOS.ch' (http://www.qos.ch)
   - SLF4J API Module (http://www.slf4j.org) org.slf4j:slf4j-api:jar:1.6.1
     License: MIT License  (http://www.opensource.org/licenses/mit-license.php)
@@ -43,9 +39,9 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Jena Core (http://incubator.apache.org/jena/jena-core) org.apache.jena:jena-core:jar:2.6.5-incubating-SNAPSHOT
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - IRI (http://jena.sf.net/iri) org.apache.jena:jena-iri:jar:0.9.0-incubating-SNAPSHOT
+  - IRI (http://incubator.apache.org/jena/jena-iri) org.apache.jena:jena-iri:jar:0.9.0-incubating-SNAPSHOT
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.1.0
+  - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.4.0
     License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 
