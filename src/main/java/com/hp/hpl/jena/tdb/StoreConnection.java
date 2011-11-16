@@ -19,7 +19,9 @@
 package com.hp.hpl.jena.tdb;
 
 import java.util.HashMap ;
+import java.util.HashSet ;
 import java.util.Map ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -31,8 +33,8 @@ import com.hp.hpl.jena.tdb.transaction.JournalControl ;
 import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 import com.hp.hpl.jena.tdb.transaction.Transaction ;
-import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 import com.hp.hpl.jena.tdb.transaction.TransactionInfo ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 
 /** Interface to the TDB transaction mechanism. */ 
@@ -92,7 +94,9 @@ public class StoreConnection
     /** Stop managing all locations. */  
     public static synchronized void reset() 
     {
-        for ( Location loc : cache.keySet() )
+        // Copy to avoid potential CME.
+        Set<Location> x = new HashSet<Location>(cache.keySet()) ;
+        for ( Location loc : x )
             expel(loc, true) ;
         cache.clear() ;
     }
