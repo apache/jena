@@ -383,7 +383,7 @@ public class TransactionManager
         transaction.signalEnacted() ;
     }
 
-    void processDelayedReplayQueue(Transaction txn)
+    private void processDelayedReplayQueue(Transaction txn)
     {
         // Sync'ed by notifyCommit.
         // If we knew which version of the DB each was looking at, we could reduce more often here.
