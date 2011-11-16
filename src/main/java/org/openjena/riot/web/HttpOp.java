@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
 /** Simplified HTTP operations; simplification means only supporting certain needed uses of HTTP.
- * The expectation is that the simpifed operations in this class can be used by other code to
+ * The expectation is that the simplified operations in this class can be used by other code to
  * generate more application specific HTTP interactions (e.g. SPARQL queries).        
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a 
