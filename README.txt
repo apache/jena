@@ -9,7 +9,7 @@ While incubation status is not necessarily a reflection of the completeness or s
 of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
 
 
-Website: http://incubator.apache.org/jena/ARQ
+Website: http://incubator.apache.org/jena/documentation/query/
 Old ARQ website: http://openjena.org/ARQ
 
 ARQ is a complete implementation of SPARQL that can query any Jena model
@@ -22,7 +22,7 @@ Old Releases : SourceForge, Project Jena : Package ARQ
 http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
 
 Also available via SVN:
-https://svn.apache.org/repos/asf/incubator/jena/
+https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/
 
 Maven:
 GroupId: com.hp.hpl.jena
@@ -31,7 +31,8 @@ ArtifactId: arq
 (migrating to Aapche)
 Release repository: http://openjena.org/repo
   Mirrored to http://repo1.maven.org/
-Development repo: http://openjena.org/repo-dev
+Development repo: http://openjena.org/repo-dev (old)
+  https://repository.apache.org/content/repositories/snapshots/org/apache/jena/ (new)
 
 See below of maven repository contents.
 
@@ -149,5 +150,5 @@ General questions and comments on SPARQL to jena-dev or
     public-sparql-dev@w3.org
     
 Formal comments specific to the SPARQL query language,
-protocol or result set docuemnts to:
+protocol or result set documents to:
 	public-rdf-dawg-comments@w3.org
