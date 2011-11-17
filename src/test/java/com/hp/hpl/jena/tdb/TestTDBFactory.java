@@ -49,8 +49,8 @@ public class TestTDBFactory extends BaseTest
     
     @Test public void factory1()
     {
-        DatasetGraphTDB dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        DatasetGraphTDB dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg1 = TDBMaker._createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg2 = TDBMaker._createDatasetGraph(Location.mem()) ;
         assertSame(dg1, dg2) ;
     }
     
@@ -59,17 +59,17 @@ public class TestTDBFactory extends BaseTest
         DatasetGraphMakerTDB f = TDBMaker.getImplFactory() ;
 
         TDBMaker.clearDatasetCache() ;
-        DatasetGraphTDB dg0 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg0 = TDBMaker._createDatasetGraph(Location.mem()) ;
 
         // Uncached.
         TDBMaker.setImplFactory(TDBMaker.uncachedFactory) ;
-        DatasetGraphTDB dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
-        DatasetGraphTDB dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg1 = TDBMaker._createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg2 = TDBMaker._createDatasetGraph(Location.mem()) ;
         assertNotSame(dg1, dg2) ;
         
         // Switch back to cached.
         TDBMaker.setImplFactory(f) ;
-        DatasetGraphTDB dg3 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraphTDB dg3 = TDBMaker._createDatasetGraph(Location.mem()) ;
         assertNotSame(dg3, dg1) ;
         assertNotSame(dg3, dg2) ;
         assertSame(dg3, dg0) ;

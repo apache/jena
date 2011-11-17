@@ -36,7 +36,6 @@ import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -78,7 +77,7 @@ public class TestTransRestart extends BaseTest {
     
     private void setupPlain() {
         // Make without transactions.
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
         dsg.add(quad1) ; 
         dsg.close() ;
         // Normally done via close() but be explicit. 
@@ -124,7 +123,7 @@ public class TestTransRestart extends BaseTest {
     @Test
     public void testPlain() {
         assertEquals (3, countRDFNodes()) ;
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(location) ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ;
         assertTrue(dsg.contains(quad2)) ;

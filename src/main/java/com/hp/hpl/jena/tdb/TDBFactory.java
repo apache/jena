@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -58,45 +59,7 @@ public class TDBFactory
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
     }
     
-    /** Create a model, at the given location.
-     *  It is better to create a dataset and get the default model from that.
-     */
-    @Deprecated
-    public static Model createModel(Location loc)
-    {
-        return ModelFactory.createModelForGraph(createGraph(loc)) ;
-    }
-
-    /** Create a model, at the given location 
-     *  It is better to create a dataset and get the default model from that.
-     */
-    @Deprecated
-
-    public static Model createModel(String dir)
-    {
-        return ModelFactory.createModelForGraph(createGraph(dir)) ;
-    }
-
-    /** Create a TDB model backed by an in-memory block manager. For testing. */
-    @Deprecated
-
-    public static Model createModel()
-    { return ModelFactory.createModelForGraph(createGraph()) ; }
-
     
-    /** Create a TDB model for named model
-     * It is better to create a dataset and get the named model from that.
-     */
-    @Deprecated
-    public static Model createNamedModel(String name, String location)
-    { return createDataset(location).getNamedModel(name) ; }
-    
-    /** Create a TDB model for named model.
-     * It is better to create a dataset and get the named model from that.
-     */  
-    @Deprecated
-    public static Model createNamedModel(String name, Location location)
-    { return createDataset(location).getNamedModel(name) ; }
 
     // Meaningless unless there is only one in-memeory dataset */
 //    /** Create a TDB model for named model for an in-memory */  
@@ -116,14 +79,99 @@ public class TDBFactory
     { return createDataset(createDatasetGraph()) ; }
 
     /** Create a dataset around a DatasetGraphTDB */ 
-    public static Dataset createDataset(DatasetGraphTDB datasetGraph)
+    public static Dataset createDataset(DatasetGraph datasetGraph)
     { return DatasetFactory.create(datasetGraph) ; }
     
+    // Meaningless unless there is only one in-memory dataset */
+    //    /** Create a TDB model for named model for an in-memory */  
+    //    public static Graph createNamedGraph(String name)
+    //    { return createDataset().getNamedModel(name) ; }
+
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraph createDatasetGraph(String directory)
+    { return createDatasetGraph(new Location(directory)) ; }
+
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraph createDatasetGraph(Location location)
+    { return _createDatasetGraph(location) ; }
+
+    /** Create or connect to a TDB-backed dataset (graph-level) */
+    public static DatasetGraph createDatasetGraph()
+    {
+        return _createDatasetGraph() ;
+    }
+    
+    private static DatasetGraphTDB _createDatasetGraph(Location location)
+    { return TDBMaker._createDatasetGraph(location) ; }
+    
+    private static DatasetGraphTDB _createDatasetGraph()
+    {
+     // Make silent by setting the optimizer to the no-opt
+        ReorderTransformation rt = SystemTDB.defaultOptimizer ;
+        if ( rt == null )
+            SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        SystemTDB.defaultOptimizer  = rt ;
+        return dsg ;
+    }
+    
+
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static Location location(Dataset dataset)
+    {
+        return TDBFactoryTxn.location(dataset) ;
+    }
+
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static Location location(DatasetGraph dataset)
+    {
+        return TDBFactoryTxn.location(dataset) ;
+    }
+
+    /** Create a model, at the given location.
+     *  It is better to create a dataset and get the default model from that.
+     */
+    @Deprecated
+    public static Model createModel(Location loc)
+    {
+        return ModelFactory.createModelForGraph(createGraph(loc)) ;
+    }
+
+    /** Create a model, at the given location 
+     *  It is better to create a dataset and get the default model from that.
+     */
+    @Deprecated
+    
+    public static Model createModel(String dir)
+    {
+        return ModelFactory.createModelForGraph(createGraph(dir)) ;
+    }
+
+    /** Create a TDB model backed by an in-memory block manager. For testing. */
+    @Deprecated
+    
+    public static Model createModel()
+    { return ModelFactory.createModelForGraph(createGraph()) ; }
+
+    /** Create a TDB model for named model
+     * It is better to create a dataset and get the named model from that.
+     */
+    @Deprecated
+    public static Model createNamedModel(String name, String location)
+    { return createDataset(location).getNamedModel(name) ; }
+
+    /** Create a TDB model for named model.
+     * It is better to create a dataset and get the named model from that.
+     */  
+    @Deprecated
+    public static Model createNamedModel(String name, Location location)
+    { return createDataset(location).getNamedModel(name) ; }
+
     /** Create a graph, at the given location 
      * @deprecated Create a DatasetGraph and use the default graph.
      */
     @Deprecated
-    public static Graph createGraph(Location loc)       { return TDBMaker._createGraph(loc) ; }
+    public static Graph createGraph(Location loc)       { return createDatasetGraph(loc).getDefaultGraph() ; }
 
     /** Create a graph, at the given location 
      * @deprecated Create a DatasetGraph and use the default graph.
@@ -137,7 +185,7 @@ public class TDBFactory
     
     /** Create a TDB graph backed by an in-memory block manager. For testing. */  
     @Deprecated
-    public static Graph createGraph()   { return TDBMaker._createGraph() ; }
+    public static Graph createGraph()   { return createDatasetGraph().getDefaultGraph() ; }
 
     /** Create a TDB graph for named graph
      * @deprecated Create a DatasetGraph and get the name graph from that.
@@ -157,24 +205,5 @@ public class TDBFactory
 //    /** Create a TDB model for named model for an in-memory */  
 //    public static Graph createNamedGraph(String name)
 //    { return createDataset().getNamedModel(name) ; }
-    
-    /** Create or connect to a TDB-backed dataset (graph-level) */
-    public static DatasetGraphTDB createDatasetGraph(String directory)
-    { return TDBMaker._createDatasetGraph(new Location(directory)) ; }
-    
-    /** Create or connect to a TDB-backed dataset (graph-level) */
-    public static DatasetGraphTDB createDatasetGraph(Location location)
-    { return TDBMaker._createDatasetGraph(location) ; }
 
-    /** Create or connect to a TDB-backed dataset (graph-level) */
-    public static DatasetGraphTDB createDatasetGraph()
-    {
-        // Make silent by setting the optimizer to the no-opt
-        ReorderTransformation rt = SystemTDB.defaultOptimizer ;
-        if ( rt == null )
-            SystemTDB.defaultOptimizer = ReorderLib.identity() ;
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
-        SystemTDB.defaultOptimizer  = rt ;
-        return dsg ;
-    }
 }

@@ -34,5 +34,4 @@ public interface DatasetGraphMakerTDB
     
     /** Release a TDB-backed dataset which is already closed */
     public void releaseLocation(Location location) ;
-
 }

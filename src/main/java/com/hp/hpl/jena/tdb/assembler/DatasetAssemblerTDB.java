@@ -36,6 +36,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class DatasetAssemblerTDB extends DatasetAssembler
 {
@@ -55,7 +56,7 @@ public class DatasetAssemblerTDB extends DatasetAssembler
 
         String dir = getStringValue(root, pLocation) ;
         Location loc = new Location(dir) ;
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(loc) ;
         
         if ( root.hasProperty(pUnionDefaultGraph) )
         {

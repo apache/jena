@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -69,6 +70,23 @@ public class TDBFactoryTxn
         return createDataset(location) ;
     }
     
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static Location location(Dataset dataset)
+    {
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return location(dsg) ;
+    }
+        
+    /** Return the location of a DatasetGraph if it is backed by TDB, else null */ 
+    public static Location location(DatasetGraph datasetGraph)
+    {
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            return ((DatasetGraphTDB)datasetGraph).getLocation() ;
+        if ( datasetGraph instanceof DatasetGraphTransaction )
+            return ((DatasetGraphTransaction)datasetGraph).getLocation() ;
+        return null ;
+    }
+
     /** Create a DatasetGraph that supports transactions */  
     public static DatasetGraphTransaction createDatasetGraph(String location)
     {

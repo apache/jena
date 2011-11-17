@@ -29,7 +29,7 @@ import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
  * For multiple read transactions, create multiple DatasetGraphTX objects.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive 
+public class DatasetGraphTransaction extends DatasetGraphTrackActive
 {
     // This is analogous to a "connection" in JDBC.
     
@@ -52,6 +52,8 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         sConn = StoreConnection.make(location) ;
     }
 
+    public Location getLocation()       { return location ; }
+    
     @Override
     protected DatasetGraph get()
     {

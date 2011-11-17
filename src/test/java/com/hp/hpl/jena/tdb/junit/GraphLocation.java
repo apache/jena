@@ -32,9 +32,9 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Manage a graph at a fixed location */
 public class GraphLocation
@@ -42,7 +42,7 @@ public class GraphLocation
     private Location loc = null ;
     private Graph graph = null ;
     private Model model = null ;
-    private DatasetGraphTDB dsg = null ;
+    private DatasetGraph dsg = null ;
     
     public GraphLocation(Location loc)
     {

@@ -34,8 +34,8 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class TestLoader extends BaseTest
 {
@@ -50,7 +50,7 @@ public class TestLoader extends BaseTest
     
     @Test public void load_dataset_01()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         TDBLoader.load(dsg, DIR+"data-1.nq", false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;
@@ -58,7 +58,7 @@ public class TestLoader extends BaseTest
 
     @Test public void load_dataset_02()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         InputStream in = IO.openFile(DIR+"data-1.nq") ;
         TDBLoader.load(dsg, in, false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
@@ -67,21 +67,21 @@ public class TestLoader extends BaseTest
 
     @Test public void load_graph_01()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         TDBLoader.load(dsg, DIR+"data-2.nt", false) ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
     }
 
     @Test public void load_graph_02()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         TDBLoader.load(dsg.getDefaultGraphTDB(), DIR+"data-2.nt", false) ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
     }
 
     @Test public void load_graph_03()
     {
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph() ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         TDBLoader.load(dsg.getGraphTDB(g), DIR+"data-2.nt", false) ;
         assertEquals(0, dsg.getDefaultGraph().size()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;

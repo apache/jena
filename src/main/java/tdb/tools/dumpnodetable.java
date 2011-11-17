@@ -33,7 +33,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.sparql.util.Utils ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -41,6 +40,7 @@ import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class dumpnodetable extends CmdGeneral
 {
@@ -59,7 +59,7 @@ public class dumpnodetable extends CmdGeneral
         List<String> quadIndexes = Arrays.asList(Names.quadIndexes) ;
         Location loc = modLocation.getLocation() ;
         
-        DatasetGraphTDB dsg = TDBFactory.createDatasetGraph(loc) ;
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(loc) ;
         NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         dump(System.out, nodeTable) ;
     }

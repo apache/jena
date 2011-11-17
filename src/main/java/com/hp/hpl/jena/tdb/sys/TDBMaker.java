@@ -18,11 +18,8 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
-
-
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** The workhorse for TDB Factory - hides the internal operations from
  * the public interface (and javadoc) of TDBFactory for clarity.  
@@ -78,20 +75,23 @@ public class TDBMaker
     public static void releaseLocation(Location location)
     { factory.releaseLocation(location) ; }
     
-    public static Graph _createGraph()
-    { return factory.createDatasetGraph().getDefaultGraph() ; }
-
-    public static Graph _createGraph(Location loc)
-    {
-        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
-        return factory.createDatasetGraph(loc).getDefaultGraph() ;
-    }
+//    public static Graph _createGraph()
+//    { return factory.createDatasetGraph().getDefaultGraph() ; }
+//
+//    public static Graph _createGraph(Location loc)
+//    {
+//        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
+//        return factory.createDatasetGraph(loc).getDefaultGraph() ;
+//    }
 
     public static DatasetGraphTDB _createDatasetGraph()
     { return factory.createDatasetGraph() ; }
 
     public static DatasetGraphTDB _createDatasetGraph(Location loc)
     { return factory.createDatasetGraph(loc) ; }
+    
+    public static DatasetGraphTDB _createDatasetGraph(String loc)
+    { return _createDatasetGraph(new Location(loc)) ; }
 
     /** Set the implementation factory.  Not normally needed - only systems that wish
      * to create unusually combinations of indexes and node tables need to use this call.
