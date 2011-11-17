@@ -47,11 +47,11 @@ import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class SPARQL_Update extends SPARQL_ServletBase
+public class SPARQL_Update extends SPARQL_Protocol
 {
     private static String updateParseBase = "http://example/base/" ;
     
-    private class HttpActionUpdate extends HttpAction {
+    private class HttpActionUpdate extends HttpActionProtocol {
         public HttpActionUpdate(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, dsg, request, response, verbose) ;
@@ -228,7 +228,7 @@ public class SPARQL_Update extends SPARQL_ServletBase
             req = UpdateFactory.create(requestStr, updateParseBase) ;
         }
         catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
-        catch (QueryParseException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
+        catch (QueryParseException ex) { errorBadRequest(messageForQPE(ex)) ; req = null ; }
         execute(action, req) ;
         successPage(action,"Update succeeded") ;
     }

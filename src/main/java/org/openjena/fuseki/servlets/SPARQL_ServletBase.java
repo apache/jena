@@ -31,24 +31,22 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.openjena.atlas.lib.Lib ;
 import org.openjena.fuseki.Fuseki ;
 import org.openjena.fuseki.HttpNames ;
 import org.openjena.fuseki.http.HttpSC ;
-import org.openjena.fuseki.server.DatasetRegistry ;
 import org.openjena.fuseki.server.DatasetRef ;
+import org.openjena.fuseki.server.DatasetRegistry ;
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryCancelledException;
-import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public abstract class SPARQL_ServletBase extends HttpServlet
 {
     protected static final Logger log = Fuseki.requestLog ;
     protected static AtomicLong requestIdAlloc = new AtomicLong(0) ;
-    private final PlainRequestFlag noQueryString ;
+    private final PlainRequestFlag queryStringHandling ;
     protected final boolean verbose_debug ;
 
     // Flag for whether a request (no query string) is handled as a regular operation or
@@ -57,7 +55,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     
     protected SPARQL_ServletBase(PlainRequestFlag noQueryStringIsOK, boolean verbose_debug)
     {
-        this.noQueryString = noQueryStringIsOK ;
+        this.queryStringHandling = noQueryStringIsOK ;
         this.verbose_debug = verbose_debug ;
     }
     
@@ -75,7 +73,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         setCommonHeaders(response) ;
         
         try {
-            if ( request.getQueryString() == null && noQueryString == PlainRequestFlag.DIFFERENT )
+            if ( request.getQueryString() == null && queryStringHandling == PlainRequestFlag.DIFFERENT )
             {
                 boolean requestContinue = requestNoQueryString(request, response) ;
                 if ( ! requestContinue ) 
@@ -333,16 +331,7 @@ public abstract class SPARQL_ServletBase extends HttpServlet
         return string ; 
     }
     
-    protected static String messageForQPE(QueryParseException ex)
-    {
-        if ( ex.getMessage() != null )
-            return ex.getMessage() ;
-        if ( ex.getCause() != null )
-            return Lib.classShortName(ex.getCause().getClass()) ;
-        return null ;
-    }
-
-    public static void setCommonHeaders(HttpServletResponse httpResponse)
+   public static void setCommonHeaders(HttpServletResponse httpResponse)
     {
         httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;

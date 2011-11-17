@@ -19,24 +19,12 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.HttpNames.paramAccept ;
-import static org.openjena.fuseki.HttpNames.paramCallback ;
-import static org.openjena.fuseki.HttpNames.paramDefaultGraphURI ;
-import static org.openjena.fuseki.HttpNames.paramForceAccept ;
-import static org.openjena.fuseki.HttpNames.paramNamedGraphURI ;
-import static org.openjena.fuseki.HttpNames.paramOutput1 ;
-import static org.openjena.fuseki.HttpNames.paramOutput2 ;
-import static org.openjena.fuseki.HttpNames.paramQuery ;
-import static org.openjena.fuseki.HttpNames.paramQueryRef ;
-import static org.openjena.fuseki.HttpNames.paramStyleSheet ;
 
-import java.util.* ;
+import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.fuseki.migrate.GraphLoadUtils ;
 import org.openjena.riot.RiotException ;
@@ -46,10 +34,11 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 
 public class SPARQL_QueryGeneral extends SPARQL_Query
 {
-    final int MaxTriples = 100*1000 ; 
+    final static int MaxTriples = 100*1000 ; 
     
     public SPARQL_QueryGeneral(boolean verbose)
     { 
@@ -59,21 +48,10 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     public SPARQL_QueryGeneral()
     { this(false) ; }
 
-    // All the params we support
-    private static String[] params_ = { paramQuery, 
-                                        paramDefaultGraphURI, paramNamedGraphURI,
-                                        paramQueryRef,
-                                        paramStyleSheet,
-                                        paramAccept,
-                                        paramOutput1, paramOutput2, 
-                                        paramCallback, 
-                                        paramForceAccept } ;
-    private static Set<String> params = new HashSet<String>(Arrays.asList(params_)) ;
-    
     @Override
     protected void validate(HttpServletRequest request)
     {
-        validate(request, params) ;
+        validate(request, allParams) ;
     }
 
     @Override
@@ -87,12 +65,15 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     {
-        Dataset ds = datasetFromProtocol(action) ;
-        if ( ds == null )
-            ds = datasetFromQuery(action, query) ;
-        if ( ds == null )
+        action.datasetDesc = getDatasetDescription(action) ;
+        // To the context.
+        DatasetDescription datasetDesc = action.datasetDesc ;
+        if ( datasetDesc == null )
+            datasetDesc = getDatasetDescription(query) ;
+        if ( datasetDesc == null )
             errorBadRequest("No dataset description in protocol request or in the query string") ;
-        return ds ;
+
+        return datasetFromDescription(action, datasetDesc) ;
     }
     
     @Override
@@ -102,45 +83,23 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
         return false ;
     }
 
-    private boolean datasetInProtocol(HttpServletRequest request)
-    {
-        String d = request.getParameter(paramDefaultGraphURI) ;
-        if ( d != null && !d.equals("") )
-            return true ;
-        
-        List<String> n = toStrList(request.getParameterValues(paramNamedGraphURI)) ;
-        if ( n != null && n.size() > 0 )
-            return true ;
-        return false ;
-    }
-    
-    protected Dataset datasetFromProtocol(HttpActionQuery action)
-    {
-        List<String> graphURLs = toStrList(action.request.getParameterValues(paramDefaultGraphURI)) ;
-        List<String> namedGraphs = toStrList(action.request.getParameterValues(paramNamedGraphURI)) ;
-        return datasetFromDescription(action, graphURLs, namedGraphs) ;
-    }
-    
-    protected Dataset datasetFromQuery(HttpActionQuery action, Query query)
-    {
-        List<String> graphURLs = query.getGraphURIs() ;
-        List<String> namedGraphs = query.getNamedGraphURIs() ;
-        return datasetFromDescription(action, graphURLs, namedGraphs) ;
-    }
-    
     /**
-     * Construct a Dataset based on a list of IRIs for the default graph
-     * and list of IRI s for he named graphs 
+     * Construct a Dataset based on a dadaset description.
      */
     
-    protected Dataset datasetFromDescription(HttpActionQuery action, List<String> graphURLs, List<String> namedGraphs)
+    protected static Dataset datasetFromDescription(HttpActionQuery action, DatasetDescription datasetDesc)
     {
         try {
-            graphURLs = removeEmptyValues(graphURLs) ;
-            namedGraphs = removeEmptyValues(namedGraphs) ;
+            if ( datasetDesc == null )
+                return null ;
+            if ( datasetDesc.isEmpty() )
+                return null ;
+            
+            List<String> graphURLs = datasetDesc.getDefaultGraphURIs() ;
+            List<String> namedGraphs = datasetDesc.getNamedGraphURIs() ;
             
             if ( graphURLs.size() == 0 && namedGraphs.size() == 0 )
-                return null ;
+                    return null ;
             
             Dataset dataset = DatasetFactory.createMem() ;
             // Look in cache for loaded graphs!!
@@ -202,26 +161,5 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
             errorBadRequest("Parameter error: "+ex.getMessage());
             return null ;
         }
-        
     }
-
-    private List<String> toStrList(String[] array)
-    {
-        if ( array == null )
-            return Collections.emptyList() ;
-        return Arrays.asList(array) ;
-    }
-
-    private  List<String> removeEmptyValues(List<String> list)
-    {
-        return Iter.iter(list).filter(acceptNonEmpty).toList() ;
-    }
-    
-    private static Filter<String> acceptNonEmpty = new Filter<String>(){ 
-        @Override
-        public boolean accept(String item)
-        {
-            return item != null && item.length() != 0 ;
-        }
-    } ;
 }

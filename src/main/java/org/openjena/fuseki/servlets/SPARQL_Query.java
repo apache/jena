@@ -19,11 +19,13 @@
 package org.openjena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.openjena.fuseki.HttpNames.paramQuery ;
+import static org.openjena.fuseki.HttpNames.* ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.Arrays ;
 import java.util.Enumeration ;
+import java.util.HashSet ;
 import java.util.Set ;
 
 import javax.servlet.http.HttpServletRequest ;
@@ -38,22 +40,14 @@ import org.openjena.fuseki.migrate.WebIO ;
 import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
-public abstract class SPARQL_Query extends SPARQL_ServletBase
+public abstract class SPARQL_Query extends SPARQL_Protocol
 {
-    protected class HttpActionQuery extends HttpAction {
+    protected class HttpActionQuery extends HttpActionProtocol {
         public HttpActionQuery(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, dsg, request, response, verbose) ;
@@ -92,20 +86,23 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
     {
         validate(request) ;
         HttpActionQuery action = new HttpActionQuery(id, dsg, request, response, verbose_debug) ;
+        // GET
         if ( request.getMethod().equals(HttpNames.METHOD_GET) )
         {
             executeWithParameter(action) ;
             return ;
         }
 
-        // POST
         ContentType ct = FusekiLib.contentType(request) ;
         String incoming = ct.getContentType() ;
+        
+        // POST application/sparql-query
         if (WebContent.contentTypeSPARQLQuery.equals(incoming))
         {
             executeBody(action) ;
             return ;
         }
+        // POST application/x-www-form-url
         if (WebContent.contentTypeForm.equals(incoming))
         {
             executeWithParameter(action) ;
@@ -115,16 +112,15 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: "+incoming) ;
     }
 
-//    // All the params we support
-//    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
-//                                        paramQueryRef,
-//                                        paramStyleSheet,
-//                                        paramAccept,
-//                                        paramOutput1, paramOutput2, 
-//                                        paramCallback, 
-//                                        paramForceAccept } ;
-//    private static Set<String> params = new HashSet<String>(Arrays.asList(params_)) ;
-//    
+    // All the params we support
+    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
+                                        paramQueryRef,
+                                        paramStyleSheet,
+                                        paramAccept,
+                                        paramOutput1, paramOutput2, 
+                                        paramCallback, 
+                                        paramForceAccept } ;
+    protected static Set<String> allParams = new HashSet<String>(Arrays.asList(params_)) ;
     /** Called to validate arguments */
     protected abstract void validate(HttpServletRequest request) ;
     
@@ -232,11 +228,11 @@ public abstract class SPARQL_Query extends SPARQL_ServletBase
             
             // Force some query execution now.
             // Do this to force the query to do something that should touch any underlying database,
-            // and hence ensure the communications layer is working.  MySQL can time out after  
-            // 8 hours of an idle connection
+            // and hence ensure the communications layer is working.
+            // MySQL can time out after 8 hours of an idle connection
             rs.hasNext() ;
 
-//            // Not necessary if we are inside readlock under end of sending results. 
+//            // Not necessary if we are inside a read lock until the end of sending results. 
 //            rs = ResultSetFactory.copyResults(rs) ;
 
             log.info(format("[%d] OK/select", action.id)) ;

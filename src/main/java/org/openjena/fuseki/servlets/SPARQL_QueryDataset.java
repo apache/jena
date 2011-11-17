@@ -18,18 +18,6 @@
 
 package org.openjena.fuseki.servlets;
 
-import static org.openjena.fuseki.HttpNames.paramAccept ;
-import static org.openjena.fuseki.HttpNames.paramCallback ;
-import static org.openjena.fuseki.HttpNames.paramForceAccept ;
-import static org.openjena.fuseki.HttpNames.paramOutput1 ;
-import static org.openjena.fuseki.HttpNames.paramOutput2 ;
-import static org.openjena.fuseki.HttpNames.paramQuery ;
-import static org.openjena.fuseki.HttpNames.paramStyleSheet ;
-
-import java.util.Arrays ;
-import java.util.HashSet ;
-import java.util.Set ;
-
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -38,7 +26,6 @@ import org.openjena.fuseki.HttpNames ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
@@ -50,31 +37,15 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     
     static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
     
-    // All the params we support
-    private static String[] params_ = { paramQuery, 
-                                        //paramDefaultGraphURI, paramNamedGraphURI, -- only a fixed dataset 
-                                        //paramQueryRef,
-                                        paramStyleSheet,
-                                        paramAccept,
-                                        paramOutput1, paramOutput2, 
-                                        paramCallback, 
-                                        paramForceAccept } ;
-    private static Set<String> params = new HashSet<String>(Arrays.asList(params_)) ;
-    
     @Override
     protected void validate(HttpServletRequest request)
     {
-        validate(request, params) ;
+        validate(request, allParams) ;
     }
 
     @Override
     protected void validateQuery(HttpActionQuery action, Query query)
-    {
-        // TEMP
-        // Push checking whether a dataset description is acceptable down to a TDB dataset.
-        if ( ! (action.dsg instanceof DatasetGraphTDB) && query.hasDatasetDescription() )
-            errorBadRequest("Query may not include a dataset description (FROM/FROM NAMED)") ;
-    }
+    { }
    
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
