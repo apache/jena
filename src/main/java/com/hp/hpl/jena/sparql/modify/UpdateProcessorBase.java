@@ -22,7 +22,6 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -34,7 +33,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateProcessorBase implements UpdateProcessor
 {
-    protected BindingMap initialBinding = BindingFactory.create() ;
+    protected Binding initialBinding = BindingFactory.root() ;
     protected final UpdateRequest request ;
     protected final GraphStore graphStore ;
     protected final UpdateEngineFactory factory ;
@@ -48,7 +47,7 @@ public class UpdateProcessorBase implements UpdateProcessor
         this.request = request ;
         this.graphStore = graphStore ;
         if ( context == null )
-            context = ARQ.getContext() ;
+            context = ARQ.getContext().copy() ;
         
         this.context = context ;
         this.factory = factory ;
@@ -70,12 +69,12 @@ public class UpdateProcessorBase implements UpdateProcessor
     @Override
     public void setInitialBinding(QuerySolution binding)
     {
-        BindingUtils.addToBinding(initialBinding, binding) ;
+        setInitialBinding(BindingUtils.asBinding(binding)) ;
     }
 
     public void setInitialBinding(Binding binding)
     {
-        initialBinding.addAll(binding) ;
+        initialBinding = binding ;
     }
 
     public Context getContext()

@@ -66,6 +66,7 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -76,11 +77,13 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected final GraphStore graphStore ;
     protected final Binding initialBinding ;
     protected final boolean alwaysSilent = true ;
+    protected final Context context ;
 
-    public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding)
+    public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding, Context context)
     {
         this.graphStore = graphStore ;
         this.initialBinding = initialBinding ;
+        this.context = context ;
     }
 
     @Override
@@ -331,7 +334,8 @@ public class UpdateEngineWorker implements UpdateVisitor
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
-            Iterator<Binding> bindings = evalBindings(query, dsg, initialBinding) ;
+            Iterator<Binding> bindings = evalBindings(query, dsg, initialBinding, context) ;
+            
             db.addAll(bindings) ;
             Iter.close(bindings) ;
             
@@ -512,17 +516,19 @@ public class UpdateEngineWorker implements UpdateVisitor
             }
         }
         
-        return evalBindings(query, dsg, initialBinding) ;
+        return evalBindings(query, dsg, initialBinding, context) ;
         
     }
     
-    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding)
+    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding, Context context)
     {
+        // SET UP CONTEXT
+        
         Iterator<Binding> toReturn ;
         
         if ( query != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding) ;
+            Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding, context) ;
             toReturn = plan.iterator();
         }
         else

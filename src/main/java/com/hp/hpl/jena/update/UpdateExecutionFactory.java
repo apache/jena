@@ -101,11 +101,11 @@ public class UpdateExecutionFactory
         if ( context == null )
             context = ARQ.getContext().copy();
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(updateRequest, graphStore, ARQ.getContext()) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(updateRequest, graphStore, context) ;
         if ( f == null )
             return null ;
         
-        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, ARQ.getContext(), f) ;
+        UpdateProcessorBase uProc = new UpdateProcessorBase(updateRequest, graphStore, context, f) ;
         if ( initialBinding != null )
             uProc.setInitialBinding(initialBinding) ;
         return uProc ;

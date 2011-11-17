@@ -126,4 +126,7 @@ public class DatasetGraphWrapper implements DatasetGraph
     @Override
     public void close()
     { dsg.close() ; }
+    
+    @Override
+    public String toString() { return dsg.toString() ; }
 }
