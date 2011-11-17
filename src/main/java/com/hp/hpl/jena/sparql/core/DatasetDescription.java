@@ -40,6 +40,11 @@ public class DatasetDescription
     private List<String> defaultGraphURIs = new ArrayList<String>() ;
     private List<String> namedGraphURIs = new ArrayList<String>() ;
  
+    public static DatasetDescription create(List<String> defaultGraphURIs ,  List<String> namedGraphURIs) 
+    {
+        return new DatasetDescription(defaultGraphURIs, namedGraphURIs) ;
+    }
+
     /** Create a dataset description, given a query.
      * If the query does not have a dataset description, return null.
      */
@@ -75,13 +80,20 @@ public class DatasetDescription
     }
     
     public DatasetDescription() {}
+    public DatasetDescription(List<String> defaultGraphURIs ,  List<String> namedGraphURIs) 
+    {
+        this() ;
+        addAllDefaultGraphURIs(defaultGraphURIs) ;
+        addAllNamedGraphURIs(namedGraphURIs) ;
+    }
+    
     public boolean isEmpty()    { return defaultGraphURIs.isEmpty() && namedGraphURIs.isEmpty() ; }
     
     public void addDefaultGraphURI(String uri)                  { defaultGraphURIs.add(uri) ; }
-    public void addAllDefaultGraphURI(Collection<String> uris)  { defaultGraphURIs.addAll(uris) ; }
+    public void addAllDefaultGraphURIs(Collection<String> uris)  { defaultGraphURIs.addAll(uris) ; }
     
     public void addNamedGraphURI(String uri)                    { namedGraphURIs.add(uri) ; }
-    public void addAllNamedGraphURI(Collection<String> uris)    { namedGraphURIs.addAll(uris) ; }
+    public void addAllNamedGraphURIs(Collection<String> uris)    { namedGraphURIs.addAll(uris) ; }
     
     public List<String> getDefaultGraphURIs()                   { return defaultGraphURIs ; }
     public List<String> getNamedGraphURIs()                     { return namedGraphURIs ; }

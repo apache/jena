@@ -343,8 +343,8 @@ public class Query extends Prologue implements Cloneable, Printable
         if ( ! hasDatasetDescription() )
             return description ;
         
-        description.addAllDefaultGraphURI(getGraphURIs()) ;
-        description.addAllNamedGraphURI(getNamedGraphURIs()) ;
+        description.addAllDefaultGraphURIs(getGraphURIs()) ;
+        description.addAllNamedGraphURIs(getNamedGraphURIs()) ;
         return description ;
     }
     
