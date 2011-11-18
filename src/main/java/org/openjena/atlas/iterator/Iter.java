@@ -459,6 +459,13 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return action.getCount() ;
     }
 
+    // --- Consume the iterator.
+    /** Consume the iterable */
+    public static <T> void consume(Iterable<T> iterator)    { count(iterator) ; }
+
+    /** Consume the iterator */
+    public static <T> void consume(Iterator<T> iterator)    { count(iterator) ; } 
+    
     // ---- String related helpers
     
     public static <T> String asString(Iterable<T> stream)
