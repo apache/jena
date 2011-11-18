@@ -190,7 +190,7 @@ public class SystemTDB
 //    /** Number of adds/deletes between calls to sync (-ve to disable) */
 //    public static final int SyncTick                = intValue("SyncTick", -1) ;
 
-    // SystemTDB.chooseOptimizer
+    // SetupTDB.chooseOptimizer
     public static ReorderTransformation defaultOptimizer = ReorderLib.fixed() ;
 
     public static final ByteOrder NetworkOrder      = ByteOrder.BIG_ENDIAN ;

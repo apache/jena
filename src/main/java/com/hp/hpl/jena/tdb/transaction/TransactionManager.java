@@ -399,8 +399,7 @@ public class TransactionManager
             }
             return ;
         }
-//        if ( queue.size() > 1 )
-//            System.out.println("\nQuery length: "+queue.size()) ;
+
         while ( queue.size() > 0 )
         {
             // Currently, replay is replay everything
@@ -413,7 +412,6 @@ public class TransactionManager
                     continue ;
                 log("Flush delayed commit", txn2) ;
                 // This takes a Write lock on the  DSG - this is where it blocks.
-                // **** Related NodeFileTrans: writes at "prepare" 
                 checkReplaySafe() ;
                 enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
