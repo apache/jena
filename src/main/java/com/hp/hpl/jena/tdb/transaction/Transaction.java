@@ -72,30 +72,42 @@ public class Transaction
         changesPending = (mode == ReadWrite.WRITE) ;
     }
 
-    /* Commit is a 4 step process
-     * 1/ commitPrepare - call all the components to tell them we are going to commit.
+    /*
+     * Commit is a 4 step process:
+     * 
+     * 1/ commitPrepare - call all the components to tell them we are going to
+     * commit.
+     * 
      * 2/ Actually commit - write the commit point to the journal
+     * 
      * 3/ commitEnact -- make the changes to the original data
-     * 4/ commitClearup -- release resources
-     * The transaction manager is the place which knows all the components in a transaction. 
+     * 
+     * 4/ commitClearup -- release resources The transaction manager is the
+     * place which knows all the components in a transaction.
+     * 
+     * Synchronization note: The transaction manager can call back into a
+     * transaction so make sure that the lock for this object is released before
+     * calling into the transaction manager
      */
     
-    synchronized
     public void commit()
     {
-        // Do prepare, write the COMMIT record.
-        // Enacting is left to the TransactionManager.
-        if ( mode == ReadWrite.WRITE )
+        synchronized (this)
         {
-            if ( state != TxnState.ACTIVE )
-                throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-            prepare() ;
-            journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-            journal.sync() ;        // Commit point.
-        }
+            // Do prepare, write the COMMIT record.
+            // Enacting is left to the TransactionManager.
+            if ( mode == ReadWrite.WRITE )
+            {
+                if ( state != TxnState.ACTIVE )
+                    throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+                prepare() ;
+                journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
+                journal.sync() ;        // Commit point.
+            }
 
-        state = TxnState.COMMITED ;
-        // The transaction manager does the enact and clearup calls 
+            state = TxnState.COMMITED ;
+            // The transaction manager does the enact and clearup calls
+        }
         txnMgr.notifyCommit(this) ;
     }
     
@@ -108,30 +120,32 @@ public class Transaction
             x.commitPrepare(this) ;
     }
 
-    synchronized
     public void abort()
     { 
-        if ( mode == ReadWrite.READ )
+        synchronized (this)
         {
+            if ( mode == ReadWrite.READ )
+            {
+                state = TxnState.ABORTED ;
+                return ;
+            }
+
+            if ( state != TxnState.ACTIVE )
+                throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+
+            // Clearup.
+            for ( BlockMgrJournal x : blkMgrs )
+                x.abort(this) ;
+
+            for ( NodeTableTrans x : nodeTableTrans )
+                x.abort(this) ;
+
+            // [TxTDB:TODO]
+            // journal.truncate to last commit 
+            // Not need currently as the journal is only written in prepare. 
+
             state = TxnState.ABORTED ;
-            return ;
         }
-        
-        if ( state != TxnState.ACTIVE )
-            throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-        
-        // Clearup.
-        for ( BlockMgrJournal x : blkMgrs )
-            x.abort(this) ;
-        
-        for ( NodeTableTrans x : nodeTableTrans )
-            x.abort(this) ;
-
-        // [TxTDB:TODO]
-        // journal.truncate to last commit 
-        // Not need currently as the journal is only written in prepare. 
-
-        state = TxnState.ABORTED ;
         txnMgr.notifyAbort(this) ;
     }
 
@@ -139,98 +153,97 @@ public class Transaction
      *  read transactions "auto commit" on close().
      *  write transactions must call abort or commit.
      */
-    synchronized
     public void close()
     {
-        switch(state)
+        synchronized (this)
         {
-            case CLOSED:    return ;    // Can call close() repeatedly.
-            case ACTIVE:
-                if ( mode == ReadWrite.READ )
-                    commit() ;
-                else
-                {
-                    SystemTDB.errlog.warn("Transaction not commited or aborted: "+this) ;
-                    abort() ;
-                }
-                break ;
-            default:
+            switch(state)
+            {
+                case CLOSED:    return ;    // Can call close() repeatedly.
+                case ACTIVE:
+                    if ( mode == ReadWrite.READ )
+                        commit() ;
+                    else
+                    {
+                        SystemTDB.errlog.warn("Transaction not commited or aborted: "+this) ;
+                        abort() ;
+                    }
+                    break ;
+                default:
+            }
+
+            state = TxnState.CLOSED ;
         }
-        
-        state = TxnState.CLOSED ;
         txnMgr.notifyClose(this) ;
         
         // Imperfect : too many higher level iterators build on unclosables
-        // (e.g. anoniterators in Iter) 
+        // (e.g. anon iterators in Iter) 
         // so close does not get passed to the base.   
 //        for ( Iterator<?> iter : iterators )
 //            Log.info(this, "Active iterator: "+iter) ;
         
-        // Clear per-transaction temnporary state. 
+        // Clear per-transaction temporary state. 
         iterators.clear() ;
     }
     
     /** A write transaction has been processed and all chanages propageted back to the database */  
-    synchronized
     /*package*/ void signalEnacted()
     {
+        synchronized (this)
+        {
         if ( ! changesPending )
             Log.warn(this, "Transaction was a read transaction or a write transaction that has already been flushed") ; 
        changesPending = false ;
+        }
     }
 
     public ReadWrite getMode()                      { return mode ; }
     public TxnState getState()                      { return state ; }
     
     public long getTxnId()                          { return id ; }
-    public TransactionManager getTxnMgr()                  { return txnMgr ; }
+    public TransactionManager getTxnMgr()           { return txnMgr ; }
     
-    public DatasetGraphTxn getActiveDataset()
-    {
-        return activedsg ;
-    }
+    public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
 
     public void setActiveDataset(DatasetGraphTxn activedsg)
-    {
-        this.activedsg = activedsg ;
-    }
+    { this.activedsg = activedsg ; }
 
-    public Journal getJournal()    { return journal ; }
+    public Journal getJournal()                     { return journal ; }
 
     public List<Iterator<?>> iterators()            { return Collections.unmodifiableList(iterators) ; }
-//    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
-//    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
+    
+    public void addIterator(Iterator<?> iter)       { iterators.add(iter) ; }
+    public void removeIterator(Iterator<?> iter)    { iterators.remove(iter) ; }
     
     // Debugging versions - concurrency problems show up because concurrent access
     // to iterators.contains can miss entries when removed by abother thread.
-    // (At least on Oracle JRE - the underlying array is shuffled down by .remove).
-    // See also JENA-131.
-    // After TDB 0.9 release, remove debug versions and leave code above.
+    // See JENA-131.
+    // After TDB 0.9 release, remove debug code.
 
-    private static final boolean DEBUG = false ;     // Don't check-in to SVN trunk with this set to true.
-
-    public void addIterator(Iterator<?> iter)
-    {
-        if ( ! DEBUG )
-            iterators.add(iter) ;
-        else
-        {
-            if ( iterators.contains(iter) )
-                System.err.println("Already added") ;
-            iterators.add(iter) ;
-        }
-    }
-
-    public void removeIterator(Iterator<? > iter)
-    {
-        if ( ! DEBUG )
-            iterators.remove(iter) ;
-        else
-        {
-            if ( ! iterators.contains(iter) )
-                System.err.println("Already closed or not tracked: "+iter) ;
-        }
-    }
+//    private static final boolean DEBUG = false ;     // Don't check-in to SVN trunk with this set to true.
+//
+//    public void addIterator(Iterator<?> iter)
+//    {
+//        if ( ! DEBUG )
+//            iterators.add(iter) ;
+//        else
+//        {
+//            if ( iterators.contains(iter) )
+//                System.err.println("Already added") ;
+//            iterators.add(iter) ;
+//        }
+//    }
+//
+//    public void removeIterator(Iterator<? > iter)
+//    {
+//        if ( ! DEBUG )
+//            iterators.remove(iter) ;
+//        else
+//        {
+//            if ( ! iterators.contains(iter) )
+//                System.err.println("Already closed or not tracked: "+iter) ;
+//        }
+//    }
     
     public List<TransactionLifecycle> components()
     {

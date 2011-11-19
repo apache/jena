@@ -88,9 +88,10 @@ public class T_TransSystem
     static final int writerCommitSeqRepeats = 4 ;
     static final int writerMaxPause         = 20 ;
 
-    private ExecutorService execService = Executors.newCachedThreadPool() ;
+    static final int numTreadsInPool        = 8 ;           // If <= 0 then use an unbounded thread pool.   
+    private static ExecutorService execService = null ;
     
-    public static void main(String...args)
+    public static void main(String...args) throws InterruptedException
     {
         String x = (MEM?"memory":"disk["+SystemTDB.fileMode()+"]") ;
         
@@ -106,6 +107,10 @@ public class T_TransSystem
         for ( i = 0 ; i < Iterations ; i++ )
         {
             clean() ;
+
+            execService = ( numTreadsInPool > 0 ) 
+                ? Executors.newFixedThreadPool(numTreadsInPool)
+                : Executors.newCachedThreadPool() ;
             
             if (!inlineProgress && logging)
                 log.info(format("Iteration: %d\n", i)) ;
@@ -118,6 +123,10 @@ public class T_TransSystem
                     println() ;
             }
             new T_TransSystem().manyReaderAndOneWriter() ;
+            execService.shutdown() ;
+            if ( ! execService.awaitTermination(10, TimeUnit.SECONDS) )
+                System.err.println("Shutdown didn;'t complete in time") ;
+
         }
         if ( inlineProgress )
         {

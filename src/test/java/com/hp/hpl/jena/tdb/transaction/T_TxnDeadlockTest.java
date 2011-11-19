@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package dev;
+package com.hp.hpl.jena.tdb.transaction;
 
 import java.security.SecureRandom ;
 import java.util.Iterator ;
@@ -25,8 +25,6 @@ import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
-import junit.framework.Assert ;
-import org.junit.Test ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -37,12 +35,12 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
-public class TDBTxnDeadlockTest {
+public class T_TxnDeadlockTest {
 
     static { 
         Log.setLog4j() ; 
         //Log.enable("TDB") ;
-        Log.enable(TransactionManager.class) ;
+        if ( false ) Log.enable(TransactionManager.class) ;
         //Log.enable(LockMRSW.class) ;
     }
     
@@ -50,7 +48,16 @@ public class TDBTxnDeadlockTest {
 
     private static final SecureRandom numberGenerator = new SecureRandom();
 
-    @Test
+    public static void main(String ... argv)
+    {
+        for(int i = 0 ; i < 1000 ; i++ )
+        {
+            System.out.println("Loop = "+i) ;
+            new T_TxnDeadlockTest().test() ;
+        }
+    }
+    
+    //@Test
     public void test() {
         final StoreConnection storeConnection =
                 StoreConnection.make(Location.mem());
@@ -58,7 +65,7 @@ public class TDBTxnDeadlockTest {
         //ExecutorService executor = Executors.newCachedThreadPool()  ;     // Not seen blocking. 
         // 4 blocks maybe 1 in 4 times
         // 8 blocks (quad core) 2 in 3 times.
-        ExecutorService executor = Executors.newFixedThreadPool(2) ;
+        ExecutorService executor = Executors.newFixedThreadPool(8) ;
 
         final AtomicInteger nbQuadruplesAdded = new AtomicInteger();
 
@@ -124,12 +131,12 @@ public class TDBTxnDeadlockTest {
         
         StoreConnection.release(storeConnection.getLocation());
 
-        System.out.println() ;
+//        System.out.println() ;
         System.out.println() ;
         System.out.println("FINISHED") ;
         
-        // This is unsafe - the quad adds may generate duplicates (ity's unlikly 4 random number reoccur but it's possible). 
-        Assert.assertEquals(count, nbQuadruplesAdded.get());
+//        // This is unsafe - the quad adds may generate duplicates (ity's unlikly 4 random number reoccur but it's possible). 
+//        Assert.assertEquals(count, nbQuadruplesAdded.get());
     }
     
 }
