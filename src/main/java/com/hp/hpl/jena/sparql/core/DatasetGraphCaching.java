@@ -121,16 +121,19 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     }
 
     @Override
-    public synchronized void close()
+    public void close()
     {
-        if ( closed )
-            return ;
-        closed = true ;
-        
-        defaultGraph = null ;
-        namedGraphs.clear() ;
-        _close() ;
-        super.close() ;
+        synchronized(this)
+        {
+            if ( closed )
+                return ;
+            closed = true ;
+
+            defaultGraph = null ;
+            namedGraphs.clear() ;
+            _close() ;
+            super.close() ;
+        }
     }
     
     // Helper implementations of operations.

@@ -18,23 +18,29 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.openjena.atlas.lib.Closeable ;
-
 import com.hp.hpl.jena.query.ReadWrite ;
 
 /** Interface that encapulsated begin/abort|commit/close.
  * <p>The read lifcycle is:
- * <pre>  begin(READ) ... close()</pre>
+ * <pre>  begin(READ) ... end()</pre>
  * <p>The write lifcycle is:
- * <pre>  begin(WRITE) ... abort() or commit() ... close</pre>
+ * <pre>  begin(WRITE) ... abort() or commit() [end()is optional]</pre>
  * 
  */
-public interface Transactional extends Closeable 
+public interface Transactional 
 {
+    /** Start either a READ or WRITE transaction */ 
     public void begin(ReadWrite readWrite) ;
+    
+    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;
+    
+    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
     public void abort() ;
+
+    /** Say whether a transaction is active */ 
     public boolean isInTransaction() ;
-    @Override
-    public void close() ;
+    
+    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
+    public void end() ;
 }

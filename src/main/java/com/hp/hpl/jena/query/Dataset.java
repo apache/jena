@@ -28,8 +28,9 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
  *  and a background graph (also called the default
  *  graph or unnamed graph). */
 
-public interface Dataset
+public interface Dataset // extends Transactional
 {
+    // Rather than pull in the internal "Tranactional" interface, we duplicate it here. 
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
 
@@ -59,19 +60,26 @@ public interface Dataset
     
     /** Does this dataset support transactions?
      *  Supporting transactions mean that the dataset implementation
-     *  provides {@link #begin}, {@link #commit}, {@link #abort},
+     *  provides {@link #begin}, {@link #commit}, {@link #abort}, {@link #end}
      *  which otherwise may throw {@link UnsupportedOperationException}
      */
     public boolean supportsTransactions() ;
-
     
-    /** Start a transaction */
-    public void begin(ReadWrite mode) ;
+    /** Start either a READ or WRITE transaction */ 
+    public void begin(ReadWrite readWrite) ;
+    
+    /** Commit a transaction - finish the transaction and make any changes permanent (if a "write" transaction) */  
     public void commit() ;
+    
+    /** Abort a transaction - finish the transaction and undo any changes (if a "write" transaction) */  
     public void abort() ;
+
+    /** Say whether a transaction is active */ 
+    public boolean isInTransaction() ;
     
-    
-    
+    /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
+    public void end() ;
+
     
     /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 

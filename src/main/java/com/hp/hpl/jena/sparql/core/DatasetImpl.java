@@ -119,6 +119,15 @@ public class DatasetImpl implements Dataset, DataSource
             throw new UnsupportedOperationException("Transactions not supported") ;
         transactional.begin(mode) ;
     }
+    
+    /** Say whether a transaction is active */ 
+    @Override
+    public boolean isInTransaction()
+    {
+        if ( transactional == null )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+        return transactional.isInTransaction() ;
+    }
 
     @Override
     public void commit()
@@ -134,6 +143,14 @@ public class DatasetImpl implements Dataset, DataSource
         if ( transactional == null )
             throw new UnsupportedOperationException("Transactions not supported") ;
         transactional.abort() ;
+    }
+
+    @Override
+    public void end()
+    {
+        if ( transactional == null )
+            throw new UnsupportedOperationException("Transactions not supported") ;
+        transactional.end() ;
     }
 
     @Override
