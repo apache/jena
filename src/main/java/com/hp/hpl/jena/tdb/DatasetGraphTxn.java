@@ -50,15 +50,19 @@ public class DatasetGraphTxn extends DatasetGraphTDB
     public String toString()
     { return "Txn:"+super.toString() ; }
     
-    @Override
-    synchronized
-    public void close()
+    public void end()
     {
         if ( transaction != null )
             transaction.close() ;
-        //transaction = null ;
-        //Don't really close.  Might close the core resources which are shared.
-        //super.close() ;
+    }
+
+    /** Do not end a transaction this way - use .end() - compatiblity only 
+     * @Deprecated Strongly deprecated -- use {@link #end}*/
+    @Override
+    @Deprecated
+    public void close()
+    {
+        end() ;
     }
     
 }

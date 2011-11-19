@@ -104,8 +104,16 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     }
 
     @Override
+    protected void _end()
+    {
+        dsgTxn.end() ;
+    }
+    
+    @Override
     protected void _close()
     {
-        dsgTxn.close() ;
+        // Don't close the base dataset.
+//        if (get() != null)
+//            get().close() ;
     }
 }

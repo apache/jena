@@ -18,27 +18,23 @@
 
 package dev;
 
-import java.security.SecureRandom;
-import java.util.Iterator;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.security.SecureRandom ;
+import java.util.Iterator ;
+import java.util.concurrent.CountDownLatch ;
+import java.util.concurrent.ExecutorService ;
+import java.util.concurrent.Executors ;
+import java.util.concurrent.atomic.AtomicInteger ;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Lib ;
+import junit.framework.Assert ;
+import org.junit.Test ;
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.ReadWrite;
-import com.hp.hpl.jena.shared.LockMRSW ;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.tdb.DatasetGraphTxn;
-import com.hp.hpl.jena.tdb.StoreConnection;
-import com.hp.hpl.jena.tdb.base.file.Location;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class TDBTxnDeadlockTest {
@@ -87,7 +83,7 @@ public class TDBTxnDeadlockTest {
                                     Node.createURI("http://openjena.org/"
                                             + numberGenerator.nextInt())));
                             txnGraph.commit();
-                            txnGraph.close();
+                            txnGraph.end();
                             nbQuadruplesAdded.incrementAndGet();
                         } else {
                             DatasetGraphTxn txnGraph =
@@ -95,7 +91,7 @@ public class TDBTxnDeadlockTest {
                             txnGraph.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
                             //Iterator<Quad> iter = txnGraph.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY);
                             //Iter.count(iter) ; // Consume
-                            txnGraph.close();
+                            txnGraph.end();
                         }
                     } finally {
                         doneSignal.countDown();
@@ -124,7 +120,7 @@ public class TDBTxnDeadlockTest {
             count++;
         }
         
-        txnGraph.close();
+        txnGraph.end();
         
         StoreConnection.release(storeConnection.getLocation());
 

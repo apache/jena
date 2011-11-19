@@ -91,7 +91,7 @@ public class TestTransRestart extends BaseTest {
         dsg.add(quad1) ; 
         dsg.commit() ; 
         TDB.sync(dsg) ; 
-        dsg.close() ; 
+        dsg.end() ; 
         StoreConnection.release(location) ; 
     }
         
@@ -115,7 +115,7 @@ public class TestTransRestart extends BaseTest {
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ; 
         dsg.commit() ; 
-        dsg.close() ; 
+        dsg.end() ; 
         StoreConnection.release(location) ;
         assertEquals (4, countRDFNodes()) ;
     }

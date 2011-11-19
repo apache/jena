@@ -179,7 +179,7 @@ public class T_TransSystemMultiDatasets
                     if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
                                                   dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
                     log.debug("reader finish " + id + "/" + i) ;
-                    dsg.close() ;
+                    dsg.end() ;
                     dsg = null ;
                 }
                 return null ;
@@ -189,7 +189,7 @@ public class T_TransSystemMultiDatasets
                 if ( dsg != null )
                 {
                     dsg.abort() ;
-                    dsg.close() ;
+                    dsg.end() ;
                     dsg = null ;
                 }
                 return null ;
@@ -236,7 +236,7 @@ public class T_TransSystemMultiDatasets
                         log.warn(format("WRITER: %s Change seen: %d + %d != %d : id=%d: i=%d", label, x1, z, x2, id, i)) ;
                         log.warn(state.toString()) ;
                         dsg.abort() ;
-                        dsg.close() ;
+                        dsg.end() ;
                         dsg = null ;
                         return null ;
                     }
@@ -247,7 +247,7 @@ public class T_TransSystemMultiDatasets
                     SysTxnState state = sConn.getTransMgrState() ;
                     log.debug(state.toString()) ;
                     log.debug("writer finish "+id+"/"+i) ;                
-                    dsg.close() ;
+                    dsg.end() ;
                     dsg = null ;
                 }
                 return null ;
@@ -258,7 +258,7 @@ public class T_TransSystemMultiDatasets
                 if ( dsg != null )
                 {
                     dsg.abort() ;
-                    dsg.close() ;
+                    dsg.end() ;
                     dsg = null ;
                 }
                 return null ;

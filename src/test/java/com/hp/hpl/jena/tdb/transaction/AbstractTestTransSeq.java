@@ -57,7 +57,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
     {
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ) ;
-        dsg.close() ;
+        dsg.end() ;
     }
     
 
@@ -69,7 +69,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
             dsg.add(q) ;
             assertTrue(dsg.contains(q)) ;
             dsg.commit() ;
-        } finally { dsg.close() ; }
+        } finally { dsg.end() ; }
     }
     
     @Test public void trans_03()
@@ -81,11 +81,11 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgW.add(q) ;
         assertTrue(dsgW.contains(q)) ;
         dsgW.commit() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsg2.contains(q)) ;
-        dsg2.close() ;
+        dsg2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
@@ -101,11 +101,11 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgW.add(q) ;
         assertTrue(dsgW.contains(q)) ;
         dsgW.abort() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         DatasetGraphTxn dsg2 = sConn.begin(ReadWrite.READ) ;
         assertFalse(dsg2.contains(q)) ;
-        dsg2.close() ;
+        dsg2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertFalse(dsg.contains(q)) ;
@@ -118,17 +118,17 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
 
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q1)) ;
         assertTrue(dsgR2.contains(q2)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
@@ -143,13 +143,13 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertFalse(dsgR2.contains(q1)) ;
         assertFalse(dsgR2.contains(q2)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.add(q2) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
 
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
@@ -168,10 +168,10 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         dsgW.add(q) ;
         dsgW.commit() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         assertFalse(dsgR1.contains(q)) ;
-        dsgR1.close() ;
+        dsgR1.end() ;
 
         //**** Not hitting the queue ****
         // Order of tweaking counters?
@@ -179,7 +179,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
@@ -196,14 +196,14 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         dsgW.add(q) ;
         dsgW.abort() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         assertFalse(dsgR1.contains(q)) ;
-        dsgR1.close() ;
+        dsgR1.end() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertFalse(dsgR2.contains(q)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertFalse(dsg.contains(q)) ;
@@ -218,24 +218,24 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
 
         assertFalse(dsgR1.contains(q1)) ;
         
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
 
         assertFalse(dsgR1.contains(q1)) ;
         assertFalse(dsgR1.contains(q2)) ;
 
-        dsgR1.close() ;
+        dsgR1.end() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q1)) ;
         assertTrue(dsgR2.contains(q2)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
@@ -252,7 +252,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.abort() ; // ABORT
-        dsgW2.close() ;
+        dsgW2.end() ;
         assertFalse(dsgR1.contains(q2)) ;
 
         DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
@@ -260,10 +260,10 @@ public abstract class AbstractTestTransSeq extends BaseTest
         // Can see W1
         assertFalse(dsgW3.contains(q2)) ;
         dsgW3.commit() ;
-        dsgW3.close() ;
+        dsgW3.end() ;
         assertFalse(dsgR1.contains(q3)) ;
         
-        dsgR1.close() ;
+        dsgR1.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertFalse(dsg.contains(q2)) ;
@@ -281,13 +281,13 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
         assertFalse(dsgR1.contains(q1)) ;
         
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.abort() ; // ABORT
-        dsgW2.close() ;
+        dsgW2.end() ;
         assertFalse(dsgR1.contains(q2)) ;
 
         DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
@@ -296,10 +296,10 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgW3.contains(q1)) ;
         assertFalse(dsgW3.contains(q2)) ;
         dsgW3.commit() ;
-        dsgW3.close() ;
+        dsgW3.end() ;
         assertFalse(dsgR1.contains(q3)) ;
         
-        dsgR1.close() ;
+        dsgR1.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
@@ -318,10 +318,10 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         dsgW.add(q) ;
         dsgW.commit() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         assertFalse(dsgR.contains(q)) ;
-        dsgR.close() ;
+        dsgR.end() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q)) ;
@@ -341,14 +341,14 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
         DatasetGraphTxn dsgR = sConn.begin(ReadWrite.READ) ;
         dsgW.commit() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         assertFalse(dsgR.contains(q)) ;
-        dsgR.close() ;
+        dsgR.end() ;
         
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q)) ;
-        dsgR2.close() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
@@ -365,14 +365,14 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertFalse(dsgR1.contains(q)) ;  
         
         dsgW.commit() ;
-        dsgW.close() ;
+        dsgW.end() ;
         
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         
         assertFalse(dsgR1.contains(q)) ;    // Before view
         assertTrue(dsgR2.contains(q)) ;     // After view
-        dsgR1.close() ;
-        dsgR2.close() ;
+        dsgR1.end() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
@@ -385,13 +385,13 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
 
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR1.contains(q1)) ;
@@ -400,8 +400,8 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgR2.contains(q1)) ;
         assertTrue(dsgR2.contains(q2)) ;
         
-        dsgR1.close() ;
-        dsgR2.close() ;
+        dsgR1.end() ;
+        dsgR2.end() ;
         
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
@@ -417,14 +417,14 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
         
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
-        dsgR1.close() ;
+        dsgR1.end() ;
 
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
 
         DatasetGraphTDB dsg = sConn.getBaseDataset() ; 
         assertTrue(dsg.contains(q1)) ;
@@ -441,19 +441,19 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
         
         DatasetGraphTxn dsgW2 = sConn.begin(ReadWrite.WRITE) ;
         dsgW2.add(q2) ;
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
 
         DatasetGraphTxn dsgW3 = sConn.begin(ReadWrite.WRITE) ;
         dsgW3.add(q3) ;
         dsgW3.commit() ;
-        dsgW3.close() ;
+        dsgW3.end() ;
 
-        dsgR1.close() ;
+        dsgR1.end() ;
         
         DatasetGraphTDB dsg = sConn.getBaseDataset() ; 
         assertTrue(dsg.contains(q1)) ;
@@ -488,7 +488,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.WRITE) ;
         dsg.add(q) ;
-        dsg.close() ;
+        dsg.end() ;
     }
     
     //@Test 
@@ -503,7 +503,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
             dsg.add(q) ;
         }
         dsg.commit() ;
-        dsg.close() ;
+        dsg.end() ;
     }
     
     @Test public void trans_50()
@@ -512,7 +512,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
+        dsgW1.end() ;
         StoreConnection.release(sConn.getLocation()) ;
         StoreConnection sConn2 = getStoreConnection() ;
     }
@@ -526,8 +526,8 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
         dsgW1.add(q1) ;
         dsgW1.commit() ;
-        dsgW1.close() ;
-        dsgR1.close();
+        dsgW1.end() ;
+        dsgR1.end();
         
         StoreConnection.release(sConn.getLocation()) ;
         sConn = null ;
@@ -536,7 +536,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         DatasetGraphTxn dsgW2 = sConn2.begin(ReadWrite.WRITE) ;
         dsgW2.add(q1) ;
         dsgW2.commit() ;
-        dsgW2.close() ;
+        dsgW2.end() ;
     }
     
     @Test(expected=TDBTransactionException.class)
