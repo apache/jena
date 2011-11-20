@@ -175,8 +175,36 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
-                throw new TDBException(String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2)) ; 
+            {
+                String msg = String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2) ;
+                System.err.println() ;
+                System.err.println() ;
+                System.err.println(msg) ;
+                dump() ;   
+                System.err.println() ;
+                throw new TDBException(msg) ;
+            }
         }
+    }
+    
+    private void dump()
+    {
+        System.err.println("label = "+label) ;
+        System.err.println("txn = "+txn) ;
+        System.err.println("offset = "+offset) ;
+        
+        Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Pair<NodeId, Node> x = iter.next() ;
+            NodeId nodeId = x.getLeft() ;
+            Node node = x.getRight() ;
+            NodeId mapped = mapFromJournal(nodeId) ;
+            //debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
+            // This does the write.
+            NodeId nodeId2 = base.getAllocateNodeId(node) ;
+            System.err.println(x + "  mapped=" + mapped + " getAlloc="+nodeId2) ;
+        }                
     }
     
     @Override
