@@ -390,11 +390,13 @@ public class OpAsQuery
              */
             if (opAssign.getSubOp() instanceof OpGroup) {
                 Map<Var, Var> subs = new HashMap<Var, Var>();
-                Expr exp;
-                for (Var v: opAssign.getVarExprList().getVars()) {
-                    exp = opAssign.getVarExprList().getExpr(v);
-                    if (exp.isVariable()) subs.put(exp.asVar(), v);
-                    else throw new ARQNotImplemented("Expected simple assignment for group");
+                for (Var v: opAssign.getVarExprList().getVars())
+                {
+                    Expr exp = opAssign.getVarExprList().getExpr(v);
+                    if (exp.isVariable()) 
+                        subs.put(exp.asVar(), v) ;
+                    else
+                        throw new ARQNotImplemented("Expected simple assignment for group (OpAssign): "+exp) ;
                 }
                 visit((OpGroup) opAssign.getSubOp(), subs);
                 return;
@@ -419,11 +421,13 @@ public class OpAsQuery
              */
             if (opExtend.getSubOp() instanceof OpGroup) {
                 Map<Var, Var> subs = new HashMap<Var, Var>();
-                Expr exp;
-                for (Var v: opExtend.getVarExprList().getVars()) {
-                    exp = opExtend.getVarExprList().getExpr(v);
-                    if (exp.isVariable()) subs.put(exp.asVar(), v);
-                    else throw new ARQNotImplemented("Expected simple assignment for group");
+                for (Var v: opExtend.getVarExprList().getVars()) 
+                {
+                    Expr exp = opExtend.getVarExprList().getExpr(v);
+                    if (exp.isVariable()) 
+                        subs.put(exp.asVar(), v) ;
+                    else
+                        throw new ARQNotImplemented("Expected simple assignment for group (OpExtend): "+exp) ;
                 }
                 visit((OpGroup) opExtend.getSubOp(), subs);
                 return;
@@ -432,7 +436,7 @@ public class OpAsQuery
             opExtend.getSubOp().visit(this) ;
             for ( Var v : opExtend.getVarExprList().getVars() )
             {
-                Element elt = new ElementAssign(v, opExtend.getVarExprList().getExpr(v)) ;
+                Element elt = new ElementBind(v, opExtend.getVarExprList().getExpr(v)) ;
                 ElementGroup g = currentGroup() ;
                 g.addElement(elt) ;
             }
@@ -492,7 +496,7 @@ public class OpAsQuery
         }
 
         // Specialised to cope with the preceeding assigns
-        public void visit(OpGroup opGroup, Map<Var, Var> subs) {            
+        private void visit(OpGroup opGroup, Map<Var, Var> subs) {            
             List<ExprAggregator> a = opGroup.getAggregators();
 
             for (ExprAggregator ea : a) {

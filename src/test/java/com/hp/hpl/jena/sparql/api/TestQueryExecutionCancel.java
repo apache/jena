@@ -33,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
+import com.hp.hpl.jena.sparql.function.library.wait ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class TestQueryExecutionCancel extends BaseTest {

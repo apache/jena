@@ -39,6 +39,7 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry ;
+import com.hp.hpl.jena.sparql.function.library.wait ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestQueryExecutionTimeout extends BaseTest

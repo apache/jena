@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.api;
+package com.hp.hpl.jena.sparql.function.library;
 
 import org.openjena.atlas.lib.Lib ;
 
@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
+/** Function that pauses for N milliseconds whenever it is called (for testing) */
 public class wait extends FunctionBase1 {
 
     @Override
