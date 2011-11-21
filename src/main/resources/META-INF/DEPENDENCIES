@@ -11,7 +11,7 @@ From: 'an unknown organization'
     License: ICU License  (http://www-306.ibm.com/software/globalization/icu/license.jsp)
   - StAX API (http://stax.codehaus.org/) stax:stax-api:jar:1.0.1
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Unnamed - xerces:xercesImpl:jar:2.7.1  xerces:xercesImpl:jar:2.7.1
+  - xercesImpl  xerces:xercesImpl:jar:2.7.1
 
 
 From: 'Apache Software Foundation' (http://www.apache.org)
