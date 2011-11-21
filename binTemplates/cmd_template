@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This is the template for putting in any command path directory.
-# It redirects to the comannd of the same name in $ARQROOT/bin
+# It redirects to the command of the same name in $ARQROOT/bin
  
 CMD="$(basename $0)"
 [ "$ARQROOT" = "" ] && { echo "ARQROOT not set" 1>&2 ; exit 1 ; } 
