@@ -155,7 +155,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         journalStartOffset = journal.length() ;
         if ( journalStartOffset != 0 )
             System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalStartOffset, journalStartOffset) ;
-        
+//        journalStartOffset = 0 ;    // TEMP
+//        journal.truncate(0) ;       // TEMP
         offset += journalStartOffset ;
         
         //debug("begin: %s %s", txn.getLabel(), label) ;
@@ -200,6 +201,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println("txn = "+txn) ;
         System.err.println("offset = "+offset) ;
         System.err.println("journalStartOffset = "+journalStartOffset) ;
+        System.err.println("journal = "+journal.getLabel()) ;
         
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )
