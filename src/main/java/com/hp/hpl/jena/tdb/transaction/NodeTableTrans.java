@@ -149,11 +149,18 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         
         offset = base.allocOffset().getId() ;
         // Any outstanding transactions
-        long journalOffset = journal.length() ;
+        //long journalOffset = journal.length() ;
+        //offset += journalOffset ;
+        
+        journalStartOffset = journal.length() ;
+        if ( journalStartOffset != 0 )
+            System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalStartOffset, journalStartOffset) ;
+        
+        offset += journalStartOffset ;
+        
         //debug("begin: %s %s", txn.getLabel(), label) ;
         //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
         
-        offset += journalOffset ;
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
         // Do not add the inline NodeTable here - don't convert it's values by the offset!  
@@ -192,6 +199,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println("label = "+label) ;
         System.err.println("txn = "+txn) ;
         System.err.println("offset = "+offset) ;
+        System.err.println("journalStartOffset = "+journalStartOffset) ;
         
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )
