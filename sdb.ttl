@@ -10,21 +10,21 @@
     sdb:store <#store> .
 
 <#store> rdf:type sdb:Store ;
-    sdb:layout         "layout2/index" ;
-##    sdb:layout         "layout2/hash" ;
+##    sdb:layout         "layout2/index" ;
+    sdb:layout         "layout2/hash" ;
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;
 
-    sdb:sdbType        "h2:mem" ;
-    sdb:sdbName        "mem" ;
+##     sdb:sdbType        "h2:mem" ;
+##     sdb:sdbName        "mem" ;
 
 ##     sdb:sdbType        "h2:file" ;
 ##     sdb:sdbName        "DB/H2" ;
 
-##      sdb:sdbHost        "localhost" ;
-##      sdb:sdbType        "derby" ;
-##      sdb:sdbName        "DB/derby" ;
+     sdb:sdbHost        "localhost" ;
+     sdb:sdbType        "derby" ;
+     sdb:sdbName        "DB/derby" ;
 
 ##     ##    sdb:jdbcURL       "jdbc:mysql://localhost/test2-hash?useUnicode=true&characterEncoding=UTF-8" ;
 ##     sdb:sdbType       "MySQL" ;
