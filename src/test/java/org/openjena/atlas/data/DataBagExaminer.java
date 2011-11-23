@@ -28,7 +28,7 @@ public class DataBagExaminer
     public static int countTemporaryFiles(AbstractDataBag<?> bag)
     {
         int count = 0;
-        for (File tempFile : bag.spillFiles)
+        for (File tempFile : bag.getSpillFiles())
         {
             if (tempFile.exists())
             {

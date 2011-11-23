@@ -112,7 +112,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         // a prolonged period of time.
         try
         {
-            out = getSpillFile();
+            out = getSpillStream();
         }
         catch (IOException e)
         {
@@ -161,7 +161,7 @@ public class DefaultDataBag<E> extends AbstractDataBag<E>
         // Create a new reader
         if (policy.isThresholdExceeded())
         {
-            File spillFile = spillFiles.get(0);
+            File spillFile = getSpillFiles().get(0);
             
             InputStream in;
             try

@@ -108,12 +108,15 @@ public class TestSortedDataBag extends TestCase
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 comparator);
+        
+        List<File> spillFiles = new ArrayList<File>();
         try
         {
             db.addAll(unsorted);
+            spillFiles.addAll(db.getSpillFiles());
             
             int count = 0;
-            for (File file : db.spillFiles)
+            for (File file : spillFiles)
             {
                 if (file.exists())
                 {
@@ -136,7 +139,7 @@ public class TestSortedDataBag extends TestCase
         }
         
         int count = 0;
-        for (File file : db.spillFiles)
+        for (File file : spillFiles)
         {
             if (file.exists())
             {

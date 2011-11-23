@@ -29,6 +29,7 @@ import org.junit.runners.Suite.SuiteClasses ;
 { 
     TestSortedDataBag.class, 
     TestDistinctDataBag.class,
+    TestDistinctDataNet.class,
     TestThresholdPolicyCount.class
 })
 

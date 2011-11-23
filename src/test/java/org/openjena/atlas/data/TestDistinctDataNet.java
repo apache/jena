@@ -20,6 +20,7 @@ package org.openjena.atlas.data;
 
 import java.io.File ;
 import java.util.ArrayList ;
+import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Random ;
@@ -44,7 +45,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBinding ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
-public class TestDistinctDataBag extends TestCase
+public class TestDistinctDataNet extends TestCase
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     Random random = new Random();
@@ -57,7 +58,8 @@ public class TestDistinctDataBag extends TestCase
     static Binding bb1 = build("(?a _:XYZ) (?b 1)");
     static Binding x10 = build("(?x <http://example/abc>)") ;
     
-    @Test public void testDistinct()
+    @Test
+    public void testDistinct()
     {
         List<Binding> undistinct = new ArrayList<Binding>();
         undistinct.add(b12);
@@ -73,7 +75,7 @@ public class TestDistinctDataBag extends TestCase
         List<Binding> distinct = new ArrayList<Binding>();
         
         
-        DistinctDataBag<Binding> db = new DistinctDataBag<Binding>(
+        DistinctDataNet<Binding> db = new DistinctDataNet<Binding>(
                 new ThresholdPolicyCount<Binding>(2),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>())); 
@@ -97,7 +99,55 @@ public class TestDistinctDataBag extends TestCase
         assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
     }
     
-    @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
+    @Test
+    public void testDistinct2()
+    {
+        List<Binding> undistinct = new ArrayList<Binding>();
+        undistinct.add(b12);
+        undistinct.add(b19);
+        undistinct.add(b02);
+        undistinct.add(b12);
+        undistinct.add(b19);
+        undistinct.add(b12);
+        undistinct.add(b02);
+        undistinct.add(x10);
+        
+        List<Binding> control = Iter.toList(Iter.distinct(undistinct.iterator()));
+        List<Binding> distinct = new ArrayList<Binding>();
+        
+        
+        DistinctDataNet<Binding> db = new DistinctDataNet<Binding>(
+                new ThresholdPolicyCount<Binding>(2),
+                SerializationFactoryFinder.bindingSerializationFactory(),
+                new BindingComparator(new ArrayList<SortCondition>())); 
+        try
+        {
+            for (Binding b : undistinct)
+            {
+                if (db.netAdd(b))
+                {
+                    distinct.add(b);
+                }
+            }
+            
+            Iterator<Binding> iter = db.netIterator(); 
+            while (iter.hasNext())
+            {
+                distinct.add(iter.next());
+            }
+            Iter.close(iter);
+        }
+        finally
+        {
+            db.close();
+        }
+        
+        assertEquals(control.size(), distinct.size());
+        assertTrue(ResultSetCompare.equalsByTest(control, distinct, NodeUtils.sameTerm));
+    }
+    
+    @Test
+    public void testTemporaryFilesAreCleanedUpAfterCompletion()
     {
         List<Binding> undistinct = new ArrayList<Binding>();
         random = new Random();
@@ -110,7 +160,7 @@ public class TestDistinctDataBag extends TestCase
             undistinct.add(randomBinding(vars));
         }
         
-        DistinctDataBag<Binding> db = new DistinctDataBag<Binding>(
+        DistinctDataNet<Binding> db = new DistinctDataNet<Binding>(
                 new ThresholdPolicyCount<Binding>(10),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 new BindingComparator(new ArrayList<SortCondition>()));
@@ -154,6 +204,60 @@ public class TestDistinctDataBag extends TestCase
         }
         assertEquals(0, count);
     }
+    
+    private void testDiff(String first, String second, String expected)
+    {
+        DistinctDataNet.SortedDiffIterator<String> sdi = DistinctDataNet.SortedDiffIterator.create(
+                Arrays.asList(first.split(" ")).iterator(),
+                Arrays.asList(second.split(" ")).iterator());
+        
+    }
+    
+    private void testDiff(String[] first, String[] second, String expected)
+    {
+        DistinctDataNet.SortedDiffIterator<String> sdi = DistinctDataNet.SortedDiffIterator.create(
+                Arrays.asList(first).iterator(),
+                Arrays.asList(second).iterator());
+        
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        while (sdi.hasNext())
+        {
+            if (!firstTime)
+            {
+                sb.append(" ");
+            }
+            firstTime = false;
+            
+            String s = sdi.next();            
+            if (null == s)
+            {
+                s = "null";
+            }
+            sb.append(s);
+        }
+        
+        assertEquals(expected, sb.toString());
+    }
+    
+    @Test
+    public void testSortedDiffIterator()
+    {
+        testDiff("a b e g i j", "b g h", "a e i j");
+        testDiff("a b e g i j", "", "a b e g i j");
+        testDiff("", "b g h", "");
+        testDiff("", "", "");
+        testDiff("a", "a", "");
+        testDiff("a", "b", "a");
+        testDiff("b", "a", "b");
+        testDiff("a b e g i j", "b g h z", "a e i j");
+        testDiff("a b c", "a b c", "");
+        
+        testDiff(new String[] {null, "a", "b", "e", "g", "i", "j", }, new String[] { "b", "g", "h", }, "null a e i j");
+        testDiff(new String[] {"a", "b", "e", "g", "i", "j", }, new String[] { null, "b", "g", "h", }, "a e i j");
+        testDiff(new String[] {null, "a", "b", "e", "g", "i", "j", }, new String[] { null, "b", "g", "h", }, "a e i j");
+    }
+    
 
     private static Binding build(String string)
     {

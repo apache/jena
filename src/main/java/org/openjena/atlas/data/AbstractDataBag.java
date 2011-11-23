@@ -18,10 +18,14 @@
 
 package org.openjena.atlas.data;
 
+import java.io.BufferedInputStream ;
 import java.io.BufferedOutputStream ;
 import java.io.File ;
+import java.io.FileInputStream ;
+import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
 import java.io.IOException ;
+import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.lang.ref.WeakReference ;
 import java.util.ArrayList ;
@@ -38,7 +42,7 @@ import org.openjena.atlas.lib.FileOps ;
  */
 public abstract class AbstractDataBag<E> implements DataBag<E>
 {
-    protected final List<File> spillFiles = new ArrayList<File>();
+    private final List<File> spillFiles = new ArrayList<File>();
     protected Collection<E> memory = new ArrayList<E>();
     
     private final List<WeakReference<Closeable>> closeableIterators = new ArrayList<WeakReference<Closeable>>();
@@ -92,15 +96,33 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
         return tmpFile ;
     }
     
+    /**
+     * Register the spill file handle for use later in the iterator.
+     */
+    protected void registerSpillFile(File spillFile)
+    {
+        spillFiles.add(spillFile);
+    }
+    
+    protected static OutputStream getOutputStream(File file) throws FileNotFoundException
+    {
+        return new BufferedOutputStream(new FileOutputStream(file));
+    }
+    
+    protected static InputStream getInputStream(File file) throws FileNotFoundException
+    {
+        return new BufferedInputStream(new FileInputStream(file));
+    }
+    
     /** 
-     * Get a file to spill contents to.  The file will be registered in the spillFiles array.
+     * Get a stream to spill contents to.  The file that backs this stream will be registered in the spillFiles array.
      * @return stream to write tuples to
      */
-    protected OutputStream getSpillFile() throws IOException
+    protected OutputStream getSpillStream() throws IOException
     {
         File outputFile = getNewTemporaryFile();
-        OutputStream toReturn = new BufferedOutputStream(new FileOutputStream(outputFile));
-        spillFiles.add(outputFile);
+        OutputStream toReturn = getOutputStream(outputFile);
+        registerSpillFile(outputFile);
         
         return toReturn;
     }
@@ -131,6 +153,11 @@ public abstract class AbstractDataBag<E> implements DataBag<E>
                 c.close();
             }
         }
+    }
+    
+    protected List<File> getSpillFiles()
+    {
+        return spillFiles;
     }
     
     protected void deleteSpillFiles()

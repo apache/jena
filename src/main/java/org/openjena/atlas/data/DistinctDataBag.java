@@ -95,7 +95,7 @@ public class DistinctDataBag<E> extends SortedDataBag<E>
         }
     }
     
-    private class DistinctReducedIterator<T> extends PeekIterator<T> implements Closeable
+    protected static class DistinctReducedIterator<T> extends PeekIterator<T> implements Closeable
     {
         private Iterator<T> iter;
         

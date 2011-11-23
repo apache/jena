@@ -18,9 +18,7 @@
 
 package org.openjena.atlas.data;
 
-import java.io.BufferedInputStream ;
 import java.io.File ;
-import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -64,9 +62,9 @@ import org.openjena.atlas.lib.Sink ;
  */
 public class SortedDataBag<E> extends AbstractDataBag<E>
 {
-    private final ThresholdPolicy<E> policy;
-    private final SerializationFactory<E> serializationFactory;
-    private final Comparator<? super E> comparator;
+    protected final ThresholdPolicy<E> policy;
+    protected final SerializationFactory<E> serializationFactory;
+    protected final Comparator<? super E> comparator;
     
     protected boolean finishedAdding = false;
     protected boolean spilled = false;
@@ -116,7 +114,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private void spill()
+    protected void spill()
     {
         // Make sure we have something to spill.
         if (memory.size() > 0)
@@ -124,7 +122,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
             OutputStream out;
             try
             {
-                out = getSpillFile();
+                out = getSpillStream();
             }
             catch (IOException e)
             {
@@ -163,6 +161,13 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     {
         spill();
     }
+    
+    protected Iterator<E> getInputIterator(File spillFile) throws FileNotFoundException
+    {
+        InputStream in = getInputStream(spillFile);
+        Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
+        return new IteratorResourceClosing<E>(deserializer, in);
+    }
 
     /**
      * Returns an iterator over a set of elements of type E.  If you do not exhaust
@@ -192,21 +197,18 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         
         if (spilled)
         {
-            List<Iterator<E>> inputs = new ArrayList<Iterator<E>>(spillFiles.size() + (memSize > 0 ? 1 : 0));
+            List<Iterator<E>> inputs = new ArrayList<Iterator<E>>();
                         
             if (memSize > 0)
             {
                 inputs.add(memory.iterator());
             }
             
-            for (File spillFile : spillFiles)
+            for (File spillFile : getSpillFiles())
             {
                 try
                 {
-                    InputStream in = new BufferedInputStream(new FileInputStream(spillFile));
-                    
-                    Iterator<E> deserializer = serializationFactory.createDeserializer(in) ;
-                    IteratorResourceClosing<E> irc = new IteratorResourceClosing<E>(deserializer, in);
+                    Iterator<E> irc = getInputIterator(spillFile);
                     inputs.add(irc);
                 }
                 catch (FileNotFoundException e)
@@ -255,7 +257,7 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
     /**
      * An iterator that handles getting the next tuple from the bag.
      */
-    private class SpillSortIterator<T> implements Iterator<T>, Closeable
+    protected static class SpillSortIterator<T> implements Iterator<T>, Closeable
     {
         private final List<Iterator<T>> inputs;
         private final Comparator<? super T> comp;
