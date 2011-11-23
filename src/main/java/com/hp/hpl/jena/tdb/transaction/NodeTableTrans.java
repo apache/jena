@@ -154,9 +154,17 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         
         journalStartOffset = journal.length() ;
         if ( journalStartOffset != 0 )
+        {
             System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalStartOffset, journalStartOffset) ;
-//        journalStartOffset = 0 ;    // TEMP
-//        journal.truncate(0) ;       // TEMP
+            if ( false )
+            {
+                // TEMP : if you see this code active in SVN, set it to false immediately.
+                // The question is how come the journal position was non-zero in the first place. 
+                System.err.printf("journalStartOffset reset to zero") ;
+                journalStartOffset = 0 ;
+                journal.truncate(0) ;
+            }
+        }
         offset += journalStartOffset ;
         
         //debug("begin: %s %s", txn.getLabel(), label) ;
