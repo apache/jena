@@ -47,6 +47,11 @@ public class Transaction
     private final List<Iterator<?>> iterators ;     // Tracking iterators 
     private DatasetGraphTxn         activedsg ;
     private TxnState state ;
+    
+    // How this transaction ended.
+    enum TxnOutcome { UNFINISHED, W_ABORTED, W_COMMITED, R_CLOSED, R_ABORTED, R_COMMITED }
+    private TxnOutcome outcome ;
+    
     private boolean changesPending ;
 
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
@@ -69,6 +74,7 @@ public class Transaction
         activedsg = null ;      // Don't know yet.
         this.iterators = new ArrayList<Iterator<?>>() ;
         state = TxnState.ACTIVE ;
+        outcome = TxnOutcome.UNFINISHED ;
         changesPending = (mode == ReadWrite.WRITE) ;
     }
 
@@ -96,13 +102,19 @@ public class Transaction
         {
             // Do prepare, write the COMMIT record.
             // Enacting is left to the TransactionManager.
-            if ( mode == ReadWrite.WRITE )
+            switch(mode)
             {
-                if ( state != TxnState.ACTIVE )
-                    throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-                prepare() ;
-                journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-                journal.sync() ;        // Commit point.
+                case READ:
+                    outcome = TxnOutcome.R_COMMITED ;
+                    break ;
+                case WRITE:
+                    if ( state != TxnState.ACTIVE )
+                        throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+                    prepare() ;
+                    journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
+                    journal.sync() ;        // Commit point.
+                    outcome = TxnOutcome.W_COMMITED ;
+                    break ;
             }
 
             state = TxnState.COMMITED ;
@@ -124,27 +136,29 @@ public class Transaction
     { 
         synchronized (this)
         {
-            if ( mode == ReadWrite.READ )
+            switch(mode)
             {
-                state = TxnState.ABORTED ;
-                return ;
+                case READ:
+                    state = TxnState.ABORTED ;
+                    outcome = TxnOutcome.R_ABORTED ;
+                    break ;
+                case WRITE:
+                    if ( state != TxnState.ACTIVE )
+                        throw new TDBTransactionException("Transaction has already committed or aborted") ; 
+
+                    // Clearup.
+                    for ( BlockMgrJournal x : blkMgrs )
+                        x.abort(this) ;
+
+                    for ( NodeTableTrans x : nodeTableTrans )
+                        x.abort(this) ;
+                    state = TxnState.ABORTED ;
+                    outcome = TxnOutcome.W_ABORTED ;
+                    // [TxTDB:TODO]
+                    // journal.truncate to last commit 
+                    // Not need currently as the journal is only written in prepare. 
+                    break ;
             }
-
-            if ( state != TxnState.ACTIVE )
-                throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-
-            // Clearup.
-            for ( BlockMgrJournal x : blkMgrs )
-                x.abort(this) ;
-
-            for ( NodeTableTrans x : nodeTableTrans )
-                x.abort(this) ;
-
-            // [TxTDB:TODO]
-            // journal.truncate to last commit 
-            // Not need currently as the journal is only written in prepare. 
-
-            state = TxnState.ABORTED ;
         }
         txnMgr.notifyAbort(this) ;
     }
@@ -162,7 +176,10 @@ public class Transaction
                 case CLOSED:    return ;    // Can call close() repeatedly.
                 case ACTIVE:
                     if ( mode == ReadWrite.READ )
+                    {    
                         commit() ;
+                        outcome = TxnOutcome.R_CLOSED ;
+                    }
                     else
                     {
                         SystemTDB.errlog.warn("Transaction not commited or aborted: "+this) ;
@@ -171,19 +188,18 @@ public class Transaction
                     break ;
                 default:
             }
-
             state = TxnState.CLOSED ;
+            // Imperfect : too many higher level iterators build on unclosables
+            // (e.g. anon iterators in Iter) 
+            // so close does not get passed to the base.   
+//            for ( Iterator<?> iter : iterators )
+//                Log.info(this, "Active iterator: "+iter) ;
+            
+            // Clear per-transaction temporary state. 
+            iterators.clear() ;
         }
+        // Called once.
         txnMgr.notifyClose(this) ;
-        
-        // Imperfect : too many higher level iterators build on unclosables
-        // (e.g. anon iterators in Iter) 
-        // so close does not get passed to the base.   
-//        for ( Iterator<?> iter : iterators )
-//            Log.info(this, "Active iterator: "+iter) ;
-        
-        // Clear per-transaction temporary state. 
-        iterators.clear() ;
     }
     
     /** A write transaction has been processed and all chanages propageted back to the database */  
@@ -191,9 +207,9 @@ public class Transaction
     {
         synchronized (this)
         {
-        if ( ! changesPending )
-            Log.warn(this, "Transaction was a read transaction or a write transaction that has already been flushed") ; 
-       changesPending = false ;
+            if ( ! changesPending )
+                Log.warn(this, "Transaction was a read transaction or a write transaction that has already been flushed") ; 
+            changesPending = false ;
         }
     }
 
