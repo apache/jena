@@ -39,11 +39,11 @@ public class BuildViolationCodes {
     public static void main(String[] args) throws TransformerException, TransformerFactoryConfigurationError {
         Transformer xsl =
         TransformerFactory.newInstance().newTransformer(
-                new StreamSource(new File("src/com/hp/hpl/jena/iri/impl/viol2java.xsl"))
+                new StreamSource(new File("src/main/java/com/hp/hpl/jena/iri/impl/viol2java.xsl"))
                 );
         xsl.transform(
-                new StreamSource(new File("src/com/hp/hpl/jena/iri/impl/violations.xml")),
-                new StreamResult(new File("src/com/hp/hpl/jena/iri/ViolationCodes.java"))
+                new StreamSource(new File("src/main/java/com/hp/hpl/jena/iri/impl/violations.xml")),
+                new StreamResult(new File("src/main/java/com/hp/hpl/jena/iri/ViolationCodes.java"))
                         
         );
         

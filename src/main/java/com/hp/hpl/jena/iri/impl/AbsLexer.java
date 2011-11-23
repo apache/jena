@@ -235,8 +235,8 @@ abstract class AbsLexer implements ViolationCodes {
     static private long start;   
     static public void main(String args[]) throws IOException {
         start = System.currentTimeMillis();
-        // out = new FileWriter("src/com/hp/hpl/jena/iri/impl/iri2.jflex");
-        // copy("src/com/hp/hpl/jena/iri/impl/iri.jflex");
+        // out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex");
+        // copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
         outRules("scheme");
         outRules("userinfo");
         outRules("xhost");
@@ -247,7 +247,7 @@ abstract class AbsLexer implements ViolationCodes {
         // out.close();
         //        
         // JFlex.Main.main(new
-        // String[]{"src/com/hp/hpl/jena/iri/impl/iri2.jflex"});
+        // String[]{"src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex"});
         System.out.println(System.currentTimeMillis() - start);
     }
 
@@ -268,7 +268,7 @@ abstract class AbsLexer implements ViolationCodes {
 
     static private void outRules(String name) throws IOException {
 //        count = 0;
-        String jflexFile = "src/com/hp/hpl/jena/iri/impl/"+name+".jflex";
+        String jflexFile = "src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex";
         
         if (name.equals("scheme")|| name.equals("port")) {
             
@@ -276,13 +276,10 @@ abstract class AbsLexer implements ViolationCodes {
             out = new FileWriter("tmp.jflex");
             copy(jflexFile);
             jflexFile = "tmp.jflex";
-            copy("src/com/hp/hpl/jena/iri/impl/xchar.jflex");
+            copy("src/main/java/com/hp/hpl/jena/iri/impl/xchar.jflex");
             out.close();
         }
-        runJFlex(
-//        JFlex.Main
-//                .main(
-                		new String[] { "-d", "src/com/hp/hpl/jena/iri/impl", jflexFile });
+        runJFlex(new String[] { "-d", "src/main/java/com/hp/hpl/jena/iri/impl", jflexFile });
         System.out.println(System.currentTimeMillis() - start);
 
     }

@@ -397,8 +397,8 @@ static VarPattern unreservedDNSLabel[] = {
 
     static public void main(String args[]) throws IOException {
         start = System.currentTimeMillis();
-        // out = new FileWriter("src/com/hp/hpl/jena/iri/impl/iri2.jflex");
-        // copy("src/com/hp/hpl/jena/iri/impl/iri.jflex");
+        // out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex");
+        // copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
 //        outRules("scheme");
 //        outRules("userinfo");
         outRules("host");
@@ -409,7 +409,7 @@ static VarPattern unreservedDNSLabel[] = {
         // out.close();
         //        
         // JFlex.Main.main(new
-        // String[]{"src/com/hp/hpl/jena/iri/impl/iri2.jflex"});
+        // String[]{"src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex"});
         System.out.println(System.currentTimeMillis() - start);
     }
 
@@ -485,8 +485,8 @@ static VarPattern unreservedDNSLabel[] = {
     static private void outRules(String name) throws IOException {
         count = 0;
         // if (true) throw new RuntimeException();
-        out = new FileWriter("src/com/hp/hpl/jena/iri/impl/"+name+".jflex");
-        copy("src/com/hp/hpl/jena/iri/impl/iri.jflex");
+        out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex");
+        copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
         out.write("%class Lexer");
         out.write(name.substring(0, 1).toUpperCase());
         out.write(name.substring(1));
@@ -508,7 +508,7 @@ static VarPattern unreservedDNSLabel[] = {
         System.out.println(name + ": " + count + " expansions");
         out.close();
 
-        AbsLexer.runJFlex(new String[] { "src/com/hp/hpl/jena/iri/impl/"+name+".jflex" });
+        AbsLexer.runJFlex(new String[] { "src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex" });
         System.out.println(System.currentTimeMillis() - start);
 
     }
