@@ -65,4 +65,20 @@ public class BagFactory
     {
         return new DistinctDataBag<T>(policy, serializerFactory, comparator);
     }
+    
+    /**
+     * Get a distinct data net.
+     */
+    public static <T extends Comparable<? super T>> DistinctDataNet<T> newDistinctNet(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory)
+    {
+        return newDistinctNet(policy, serializerFactory, null);
+    }
+
+    /**
+     * Get a distinct data net.
+     */
+    public static <T> DistinctDataNet<T> newDistinctNet(ThresholdPolicy<T> policy, SerializationFactory<T> serializerFactory, Comparator<T> comparator)
+    {
+        return new DistinctDataNet<T>(policy, serializerFactory, comparator);
+    }
 }

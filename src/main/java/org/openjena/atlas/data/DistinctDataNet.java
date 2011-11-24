@@ -77,8 +77,11 @@ public class DistinctDataNet<E> extends DistinctDataBag<E>
     protected void deleteSpillFiles()
     {
         super.deleteSpillFiles();
-        FileOps.delete(firstSpillFile, false);
-        firstSpillFile = null;
+        if (null != firstSpillFile)
+        {
+            FileOps.delete(firstSpillFile, false);
+            firstSpillFile = null;
+        }
     }
     
     // Used by the .iterator() method
