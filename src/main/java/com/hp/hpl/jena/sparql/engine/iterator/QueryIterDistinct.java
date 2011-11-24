@@ -93,7 +93,7 @@ public class QueryIterDistinct extends QueryIter
         {
             dbIter = db.netIterator() ;
         }
-        while ( dbIter.hasNext() )
+        if ( dbIter.hasNext() )
         {
             slot = dbIter.next() ;
             return ;
