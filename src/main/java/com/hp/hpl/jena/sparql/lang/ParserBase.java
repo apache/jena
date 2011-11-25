@@ -249,6 +249,16 @@ public class ParserBase
     
     protected String resolvePName(String qname, int line, int column)
     {
+        // It's legal.
+        int idx = qname.indexOf(':') ;
+        
+        // -- Escapes in local name
+        String prefix = qname.substring(0, idx) ;
+        String local = qname.substring(idx+1) ;
+        local = unescapePName(local, line, column) ;
+        qname = prefix+":"+local ;
+        // --
+        
         String s = getPrologue().expandPrefixedName(qname) ;
         if ( s == null )
             throwParseException("Unresolved prefixed name: "+qname, line, column) ;
@@ -397,7 +407,7 @@ public class ParserBase
         return ExprUtils.nodeToExpr(n) ;
     }
 
-    // Utilities to remove escapes
+    // Utilities to remove escapes in strings.
     
     public static String unescapeStr(String s)
     { return unescape(s, '\\', false, 1, 1) ; }
@@ -547,6 +557,78 @@ public class ParserBase
            x = (x<<4)+k ;
         }
         return x ;
+    }
+    
+    public static String  unescapePName(String s, int line, int column)
+    {
+        char escape = '\\' ;
+        int idx = s.indexOf(escape) ;
+        
+        if ( idx == -1 )
+            return s ;
+        
+        int len = s.length() ;
+        StringBuilder sb = new StringBuilder() ;
+        
+        for ( int i = 0 ; i < len ; i++ )
+        {
+            // Copied form unescape abobve - share!
+            char ch = s.charAt(i) ;
+            // Keep line and column numbers.
+            switch (ch)
+            {
+                case '\n': 
+                case '\r':
+                    line++ ;
+                    column = 1 ;
+                    break ;
+                default:
+                    column++ ;
+                    break ;
+            }
+
+            if ( ch != escape )
+            {
+                sb.append(ch) ;
+                continue ;
+            }
+
+            // Escape
+            if ( i >= s.length()-1 )
+                throwParseException("Illegal escape at end of string", line, column) ;
+            char ch2 = s.charAt(i+1) ;
+            column = column+1 ;
+            i = i + 1 ;
+
+           switch (ch2)
+           {
+               case '~' :
+               case '.' : 
+               case '-' : 
+               case '!' : 
+               case '$' : 
+               case '&' : 
+               case '\'' : 
+               case '(' :
+               case ')' : 
+               case '*' : 
+               case '+' : 
+               case ',' : 
+               case ';' : 
+               case '=' : 
+               case ':' :
+               case '/' : 
+               case '?' : 
+               case '#' : 
+               case '@' : 
+               case '%' :
+                   sb.append(ch2) ;
+                   break ;
+               default:
+                   throwParseException("Illegal prefix name escape: "+ch2, line, column) ;
+           }
+        }
+        return sb.toString() ;
     }
     
     public static void throwParseException(String msg, int line, int column)

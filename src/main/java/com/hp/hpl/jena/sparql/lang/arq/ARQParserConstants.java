@@ -406,19 +406,27 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int QMARK = 194;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 195;
+  int HEX = 195;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 196;
+  int PERCENT = 196;
   /** RegularExpression Id. */
-  int PN_CHARS = 197;
+  int PLNE = 197;
   /** RegularExpression Id. */
-  int PN_PREFIX = 198;
+  int PN_CHARS_BASE = 198;
   /** RegularExpression Id. */
-  int PN_LOCAL = 199;
+  int PN_CHARS_U = 199;
   /** RegularExpression Id. */
-  int VARNAME = 200;
+  int PN_CHARS = 200;
   /** RegularExpression Id. */
-  int UNKNOWN = 201;
+  int PN_PREFIX = 201;
+  /** RegularExpression Id. */
+  int PLX = 202;
+  /** RegularExpression Id. */
+  int PN_LOCAL = 203;
+  /** RegularExpression Id. */
+  int VARNAME = 204;
+  /** RegularExpression Id. */
+  int UNKNOWN = 205;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -620,10 +628,14 @@ public interface ARQParserConstants {
     "\"->\"",
     "\"<-\"",
     "\"?\"",
+    "<HEX>",
+    "<PERCENT>",
+    "<PLNE>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",
     "<PN_PREFIX>",
+    "<PLX>",
     "<PN_LOCAL>",
     "<VARNAME>",
     "<UNKNOWN>",

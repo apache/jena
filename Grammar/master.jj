@@ -48,7 +48,6 @@
 #define ARQ_UPDATE
 #endif
 
-
 options
 {
    JAVA_UNICODE_ESCAPE   = true ;
@@ -2291,8 +2290,26 @@ TOKEN :
 
 // See XML chars.txt for notes
 
+#ifdef ARQ
+#define PNL_EXTRA    1
+#endif
+
 TOKEN:
 {
+  // ARQ extensions to the PN_LOCAL token.
+#ifdef PNL_EXTRA
+  < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+|
+  < #PERCENT: "%" <HEX> <HEX> >
+|
+  // Prefixed Name, Local Par, Escape
+  / Align with QueryParseBase unescapePName.
+  < #PLNE: "\\" 
+          ("~" | "." | "-" | "!" | "$" | "&" | "'" | 
+           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
+           ":" | "/" | "?" | "#" | "@" | "%" ) >
+|
+#endif
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
@@ -2312,8 +2329,19 @@ TOKEN:
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
+#ifdef SPARQL_11
   // With a leading "_", no dot at end of local name.
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
+#endif
+#ifdef ARQ
+  //<#PLX:  <PERCENT> | <PLNE> >
+  <#PLX:  <PERCENT> >
+|
+  // If goes ahead, consolidate
+  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> ) 
+              ( (<PN_CHARS>|"."| <PLX> )* 
+                (<PN_CHARS>|<PLX>) ) ?  >
+#endif
 |
   // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )

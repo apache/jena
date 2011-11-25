@@ -1802,6 +1802,16 @@ TOKEN :
 // See XML chars.txt for notes
 TOKEN:
 {
+  < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+|
+  < #PERCENT: "%" <HEX> <HEX> >
+|
+  // Prefixed Name, Local Par, Escape
+  < #PLNE: "\\"
+          ("~" | "." | "-" | "!" | "$" | "&" | "'" |
+           "(" | ")" | "*" | "+" | "," | ";" | "=" |
+           ":" | "/" | "?" | "#" | "@" | "%" ) >
+|
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
@@ -1821,8 +1831,12 @@ TOKEN:
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)? >
 |
-  // With a leading "_", no dot at end of local name.
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)? >
+  <#PLX: <PERCENT> | <PLNE> >
+|
+  // If goes ahead, consolidate
+  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> )
+              ( (<PN_CHARS>|"."| <PLX> )*
+                (<PN_CHARS>|<PLX>) ) ? >
 |
   // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
