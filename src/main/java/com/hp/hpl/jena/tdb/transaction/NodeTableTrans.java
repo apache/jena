@@ -18,9 +18,11 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.ByteBufferLib ;
 import org.openjena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -28,6 +30,7 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
@@ -205,12 +208,14 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     
     private void dump()
     {
+        System.err.println(">>>>>>>>>>") ;
         System.err.println("label = "+label) ;
         System.err.println("txn = "+txn) ;
         System.err.println("offset = "+offset) ;
         System.err.println("journalStartOffset = "+journalStartOffset) ;
         System.err.println("journal = "+journal.getLabel()) ;
         
+        System.err.println("nodeTableJournal >>>") ;
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )
         {
@@ -222,7 +227,25 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             System.err.println(x + "  mapped=" + mapped + " getAlloc="+nodeId2) ;
-        }                
+        }
+        
+        System.err.println("journal >>>") ;
+        Iterator<Pair<Long, ByteBuffer>> iter1 = this.journal.all() ;
+        for ( ; iter1.hasNext() ; )
+        {
+            Pair<Long, ByteBuffer> p = iter1.next() ;
+            System.err.println(p.getLeft()+" : "+p.getRight()) ;
+            ByteBufferLib.print(System.err, p.getRight()) ;
+        }
+        
+        System.err.println("nodeIndex >>>") ;
+        Iterator<Record> iter2 = this.nodeIndex.iterator() ;
+        for ( ; iter2.hasNext() ; )
+        {
+            Record r = iter2.next() ;
+            System.err.println(r) ;
+        }
+        System.err.println("<<<<<<<<<<") ;
     }
     
     @Override
