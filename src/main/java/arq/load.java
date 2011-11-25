@@ -98,7 +98,6 @@ public class load extends CmdUpdate
             }
         }
         
-        
         UpdateExecutionFactory.create(req, graphStore).execute() ;
         
         if ( dump )
