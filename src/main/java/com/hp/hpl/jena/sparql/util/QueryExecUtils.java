@@ -271,7 +271,7 @@ public class QueryExecUtils
 
         if ( outputFormat.equals(ResultsFormat.FMT_RDF_NT) )
         {
-            model.write(System.out, "N_TRIPLES", null) ;
+            model.write(System.out, "N-TRIPLES", null) ;
             return ;
         }
 
