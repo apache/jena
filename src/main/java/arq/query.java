@@ -148,7 +148,7 @@ public class query extends CmdARQ
         {
             long avg = totalTime/repeatCount ;
             String avgStr = modTime.timeStr(avg) ;
-            System.out.println("Total time: "+modTime.timeStr(totalTime)+" sec for repeat count of "+repeatCount+ " : average: "+avgStr) ;
+            System.err.println("Total time: "+modTime.timeStr(totalTime)+" sec for repeat count of "+repeatCount+ " : average: "+avgStr) ;
         }
     }
 
@@ -188,7 +188,7 @@ public class query extends CmdARQ
             if ( timed )
             {
                 totalTime += time ;
-                System.out.println("Time: "+modTime.timeStr(time)+" sec") ;
+                System.err.println("Time: "+modTime.timeStr(time)+" sec") ;
             }
             qe.close() ;
         }
