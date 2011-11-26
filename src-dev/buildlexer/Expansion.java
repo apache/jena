@@ -16,10 +16,13 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.iri.impl;
+package buildlexer;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.hp.hpl.jena.iri.impl.PatternCompiler ;
+import com.hp.hpl.jena.iri.impl.VarPattern ;
 
 abstract public class Expansion {
 
@@ -34,9 +37,9 @@ abstract public class Expansion {
 
     Map<String, String> doing = new HashMap<String, String>();
 
-    abstract void doIt(String regex, int eCount, int eCodes[], int cCount, String coms[]);
+    abstract public void doIt(String regex, int eCount, int eCodes[], int cCount, String coms[]);
 
-    void expand(String data) {
+    public void expand(String data) {
         int at;
 
         at = data.indexOf("@{labelI");

@@ -19,9 +19,8 @@
 package com.hp.hpl.jena.iri.impl;
 
 public class VarPattern {
-
-    final String pattern;
-    final int[] errors;
+    public final String pattern;
+    public final int[] errors;
 
     public VarPattern(String string) {
         pattern = string;

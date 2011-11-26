@@ -18,18 +18,11 @@
 
 package com.hp.hpl.jena.iri.impl;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.lang.reflect.*;
-
-import com.hp.hpl.jena.iri.ViolationCodes;
-import com.ibm.icu.lang.UCharacter;
-import com.ibm.icu.lang.UCharacterCategory;
-import com.ibm.icu.lang.UProperty;
-import com.ibm.icu.text.Normalizer;
+import com.hp.hpl.jena.iri.ViolationCodes ;
+import com.ibm.icu.lang.UCharacter ;
+import com.ibm.icu.lang.UCharacterCategory ;
+import com.ibm.icu.lang.UProperty ;
+import com.ibm.icu.text.Normalizer ;
 
 abstract class AbsLexer implements ViolationCodes {
 
@@ -184,7 +177,6 @@ abstract class AbsLexer implements ViolationCodes {
         
     }
 
-
     private boolean isCompatibilityChar(int codePoint) {
         switch (UCharacter.getIntPropertyValue(codePoint,UProperty.DECOMPOSITION_TYPE)) {
         case UCharacter.DecompositionType.CANONICAL:
@@ -228,82 +220,7 @@ abstract class AbsLexer implements ViolationCodes {
        
     }
 
-
     protected void difficultChar() {
         difficultCodePoint(yytext().charAt(0),yytext());
     }
-    static private long start;   
-    static public void main(String args[]) throws IOException {
-        start = System.currentTimeMillis();
-        // out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex");
-        // copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
-        outRules("scheme");
-        outRules("userinfo");
-        outRules("xhost");
-        outRules("port");
-        outRules("path");
-        outRules("query");
-//        outRules("fragment");
-        // out.close();
-        //        
-        // JFlex.Main.main(new
-        // String[]{"src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex"});
-        System.out.println(System.currentTimeMillis() - start);
-    }
-
-    private static void copy(String fname) throws IOException {
-        Reader in = new FileReader(fname);
-        char buf[] = new char[2048];
-        while (true) {
-            int sz = in.read(buf);
-            if (sz == -1)
-                break;
-            out.write(buf, 0, sz);
-        }
-        in.close();
-    }
-//    static int count;
-
-    static Writer out;
-
-    static private void outRules(String name) throws IOException {
-//        count = 0;
-        String jflexFile = "src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex";
-        
-        if (name.equals("scheme")|| name.equals("port")) {
-            
-        } else {
-            out = new FileWriter("tmp.jflex");
-            copy(jflexFile);
-            jflexFile = "tmp.jflex";
-            copy("src/main/java/com/hp/hpl/jena/iri/impl/xchar.jflex");
-            out.close();
-        }
-        runJFlex(new String[] { "-d", "src/main/java/com/hp/hpl/jena/iri/impl", jflexFile });
-        System.out.println(System.currentTimeMillis() - start);
-
-    }
-	static void runJFlex(String[] strings) {
-		Method main = null;
-		try {
-			Class<?> jflex = Class.forName("JFlex.Main");
-			main = jflex.getMethod("main", new Class[]{
-					strings.getClass()});
-		} catch (Exception e) {
-			System.err.println("Please include JFlex.jar on the classpath.");
-			System.exit(1);
-		} 
-		try {
-			main.invoke(null, new Object[]{strings});
-		} catch (Exception e) {
-			System.err.println("Problem interacting with JFlex");
-			e.printStackTrace();
-			System.exit(2);
-		} 
-		
-	}
-
-
-
-
 }

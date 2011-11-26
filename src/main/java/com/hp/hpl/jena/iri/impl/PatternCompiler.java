@@ -22,12 +22,8 @@
 
 package com.hp.hpl.jena.iri.impl;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.lang.reflect.Field;
+
 
 import com.hp.hpl.jena.iri.ViolationCodes;
 
@@ -208,71 +204,6 @@ public class PatternCompiler implements ViolationCodes {
             new VarPattern("[^]*", ILLEGAL_CHARACTER), };
 */
 
-
-    private static final class ExpandAndOutput extends Expansion {
-        int exc[];
-        int sub[];
-        boolean incExc;
-        /**
-         * output those for which no errors in exclude,
-         * and all errors in sub[] occur
-         * or the inverse: at least one error in exclude
-         * occurs, and at least one error in sub doesn't
-         * @param exclude
-         */
-        ExpandAndOutput(int exclude[], int subset[], boolean incExc ) {
-           exc = exclude;
-           sub = subset;
-           this.incExc = incExc;
-        }
-        int ruleCount = 1;
-
-        @Override
-        void doIt(String regex, int eCount, int[] eCodes, int cCount,
-                String c[]) {
-            
-            if (incExc == 
-                ( (!overlap(exc,eCount, eCodes)) &&
-                  subset(sub,eCount, eCodes) ) )
-            try {
-                out.write("/*\n");
-                for (int j = 0; j < cCount; j++) {
-                    out.write(c[j]);
-                    out.write('\n');
-                }
-                out.write("*/\n");
-        
-                out.write(regex);
-                out.write(" {\n");
-                count++;
-                out.write("rule("+count+"); ");
-                for (int i = 0; i < eCount; i++)
-                    out.write("error(" + errorCodeName(eCodes[i]) + ");");
-                out.write("}\n");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        private boolean subset(int ee[], int el, int[]eCodes) {
-            for (int i=0;i<ee.length;i++)
-                if (!in(ee[i],el,eCodes))
-                    return false;
-            return true;
-        }
-        private boolean overlap(int ee[], int el, int[]eCodes) {
-            for (int i=0;i<ee.length;i++)
-                if (in(ee[i],el,eCodes))
-                    return true;
-            return false;
-        }
-        private boolean in(int e0, int eCount, int[] eCodes) {
-            for (int i=0; i<eCount; i++)
-                if (eCodes[i]==e0)
-                     return true;
-            return false;
-        }
-    }
-
     static VarPattern ipLiteral[] = { 
         new VarPattern("\\[@{ipVFuture}\\]"),
         new VarPattern("\\[@{ipV6Address}\\]"),
@@ -393,39 +324,7 @@ static VarPattern unreservedDNSLabel[] = {
                 NON_URI_CHARACTER)
 };
 
-        static long start;
-
-    static public void main(String args[]) throws IOException {
-        start = System.currentTimeMillis();
-        // out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex");
-        // copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
-//        outRules("scheme");
-//        outRules("userinfo");
-        outRules("host");
-//        outRules("port");
-//        outRules("path");
-//        outRules("query");
-//        outRules("fragment");
-        // out.close();
-        //        
-        // JFlex.Main.main(new
-        // String[]{"src/main/java/com/hp/hpl/jena/iri/impl/iri2.jflex"});
-        System.out.println(System.currentTimeMillis() - start);
-    }
-
-    private static void copy(String fname) throws IOException {
-        Reader in = new FileReader(fname);
-        char buf[] = new char[2048];
-        while (true) {
-            int sz = in.read(buf);
-            if (sz == -1)
-                break;
-            out.write(buf, 0, sz);
-        }
-        in.close();
-    }
-
-    static VarPattern[] lookup(String name) {
+   public static VarPattern[] lookup(String name) {
         try {
             Field f = PatternCompiler.class.getDeclaredField(name);
             return (VarPattern[]) f.get(null);
@@ -438,7 +337,7 @@ static VarPattern unreservedDNSLabel[] = {
 
     static String eCodeNames[];
 
-    static String errorCodeName(int j) {
+    public static String errorCodeName(int j) {
 		if (eCodeNames == null) {
             eCodeNames = constantsFromClass(ViolationCodes.class, 200);
         }
@@ -476,41 +375,6 @@ static VarPattern unreservedDNSLabel[] = {
             throw new RuntimeException(e);
         }
         
-    }
-
-    static int count;
-
-    static Writer out;
-
-    static private void outRules(String name) throws IOException {
-        count = 0;
-        // if (true) throw new RuntimeException();
-        out = new FileWriter("src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex");
-        copy("src/main/java/com/hp/hpl/jena/iri/impl/iri.jflex");
-        out.write("%class Lexer");
-        out.write(name.substring(0, 1).toUpperCase());
-        out.write(name.substring(1));
-        out.write("\n%%\n");
-        int exc1[]=
-            new int[]{DOUBLE_DASH_IN_REG_NAME,NOT_DNS_NAME};
-        int empty[]= new int[0];
-        int sub1[] = new int[]{ACE_PREFIX};
-        //        int sub2[] = new int[]{DOUBLE_DASH_IN_REG_NAME,ACE_PREFIX};
-        int sub4[] = new int[]{DOUBLE_DASH_IN_REG_NAME};
-        int sub3[] = new int[]{NOT_DNS_NAME};
-        
-        new ExpandAndOutput(exc1,empty,true).expand("@{" + name + "}");
-        //   new ExpandAndOutput(empty,sub2,true).expand("@{" + name + "}");
-        new ExpandAndOutput(sub1,sub4,true).expand("@{" + name + "}");
-        new ExpandAndOutput(empty,sub3,true).expand("@{" + name + "}");
-
-        out.write("\n");
-        System.out.println(name + ": " + count + " expansions");
-        out.close();
-
-        AbsLexer.runJFlex(new String[] { "src/main/java/com/hp/hpl/jena/iri/impl/"+name+".jflex" });
-        System.out.println(System.currentTimeMillis() - start);
-
     }
     /*
      * 
