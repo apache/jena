@@ -53,7 +53,7 @@ public class Transaction
     private TxnOutcome outcome ;
     
     private boolean changesPending ;
-
+    
     public Transaction(DatasetGraphTDB dsg, ReadWrite mode, long id, String label, TransactionManager txnMgr)
     {
         this.id = id ;
@@ -122,7 +122,7 @@ public class Transaction
         }
         txnMgr.notifyCommit(this) ;
     }
-    
+
     private void prepare()
     {
         state = TxnState.PREPARING ;
@@ -202,7 +202,7 @@ public class Transaction
         txnMgr.notifyClose(this) ;
     }
     
-    /** A write transaction has been processed and all chanages propageted back to the database */  
+    /** A write transaction has been processed and all chanages propagated back to the database */  
     /*package*/ void signalEnacted()
     {
         synchronized (this)

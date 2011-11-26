@@ -49,19 +49,19 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private boolean passthrough = false ;
     
     private final Index nodeIndex ;
-    private ObjectFile journal ;
+    private ObjectFile journalObjFile ;
     // Start of the journal file for this transaction.
     // Always zero currently but allows for future  
-    private long journalStartOffset ; 
+    private long journalObjFileStartOffset ; 
     private final String label ;
     private final Transaction txn ;     // Can be null (during recovery).
     
-    public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile journal)
+    public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile objFile)
     {
         this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
-        this.journal = journal ;
+        this.journalObjFile = objFile ;
         this.label = label ; 
         // Show the way tables are wired up
         //debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
@@ -155,25 +155,25 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         //long journalOffset = journal.length() ;
         //offset += journalOffset ;
         
-        journalStartOffset = journal.length() ;
-        if ( journalStartOffset != 0 )
+        journalObjFileStartOffset = journalObjFile.length() ;
+        if ( journalObjFileStartOffset != 0 )
         {
-            System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalStartOffset, journalStartOffset) ;
+            System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalObjFileStartOffset, journalObjFileStartOffset) ;
             if ( false )
             {
                 // TEMP : if you see this code active in SVN, set it to false immediately.
                 // The question is how come the journal position was non-zero in the first place. 
                 System.err.printf("journalStartOffset reset to zero") ;
-                journalStartOffset = 0 ;
-                journal.truncate(0) ;
+                journalObjFileStartOffset = 0 ;
+                journalObjFile.truncate(0) ;
             }
         }
-        offset += journalStartOffset ;
+        offset += journalObjFileStartOffset ;
         
         //debug("begin: %s %s", txn.getLabel(), label) ;
         //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
         
-        this.nodeTableJournal = new NodeTableNative(nodeIndex, journal) ;
+        this.nodeTableJournal = new NodeTableNative(nodeIndex, journalObjFile) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
         // Do not add the inline NodeTable here - don't convert it's values by the offset!  
     }
@@ -212,8 +212,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println("label = "+label) ;
         System.err.println("txn = "+txn) ;
         System.err.println("offset = "+offset) ;
-        System.err.println("journalStartOffset = "+journalStartOffset) ;
-        System.err.println("journal = "+journal.getLabel()) ;
+        System.err.println("journalStartOffset = "+journalObjFileStartOffset) ;
+        System.err.println("journal = "+journalObjFile.getLabel()) ;
         
         System.err.println("nodeTableJournal >>>") ;
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
@@ -230,7 +230,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         }
         
         System.err.println("journal >>>") ;
-        Iterator<Pair<Long, ByteBuffer>> iter1 = this.journal.all() ;
+        Iterator<Pair<Long, ByteBuffer>> iter1 = this.journalObjFile.all() ;
         for ( ; iter1.hasNext() ; )
         {
             Pair<Long, ByteBuffer> p = iter1.next() ;
@@ -283,8 +283,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // Reset (in case we use this again)
         nodeIndex.clear() ;
         // Fixes nodeTableJournal
-        journal.truncate(journalStartOffset) ;
-        journal.sync() ;
+        journalObjFile.truncate(journalObjFileStartOffset) ;
+        journalObjFile.sync() ;
         base.sync() ;
         offset = -99 ; // base.allocOffset().getId() ; // Wil be invalid as we may write through to the base table later.
         passthrough = true ;
@@ -305,7 +305,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // Ensure the cache does not flush.
         nodeTableJournal = null ;
         // then make sure the journal file is empty.
-        journal.truncate(journalStartOffset) ;
+        journalObjFile.truncate(journalObjFileStartOffset) ;
         finish() ;
     }
     
@@ -337,9 +337,9 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     public void close()
     {
         // Closing the journal flushes it; i.e. disk IO. 
-        if ( journal != null )
-            journal.close() ;
-        journal = null ;
+        if ( journalObjFile != null )
+            journalObjFile.close() ;
+        journalObjFile = null ;
     }
 
     @Override

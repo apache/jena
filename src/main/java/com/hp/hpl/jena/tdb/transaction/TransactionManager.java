@@ -373,7 +373,6 @@ public class TransactionManager
     /** The stage in a commit after committing - make the changes permanent in the base data */ 
     private void enactTransaction(Transaction transaction)
     {
-        // Flush the queue first.  Happens in Transaction.commit
         // Really, really do it!
         for ( TransactionLifecycle x : transaction.components() )
         {
