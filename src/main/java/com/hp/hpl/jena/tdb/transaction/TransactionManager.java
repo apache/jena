@@ -299,6 +299,8 @@ public class TransactionManager
         // entry synchronized part
         return begin$(mode, label) ;
     }
+    
+    public static boolean tmpDebugNoteBegin = false ; 
         
     synchronized
     private DatasetGraphTxn begin$(ReadWrite mode, String label)
@@ -315,13 +317,25 @@ public class TransactionManager
         if ( mode == ReadWrite.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
+        if ( tmpDebugNoteBegin ) 
+            switch ( mode )
+            {
+                case READ : System.out.print("r") ; break ;
+                case WRITE : System.out.print("w") ; break ;
+            }
+        
         // Even flush queue here.
         
         DatasetGraphTDB dsg = baseDataset ;
         // *** But, if there are pending, committed transactions, use latest.
         if ( ! commitedAwaitingFlush.isEmpty() )
+        {  if ( tmpDebugNoteBegin ) System.out.print('x') ;
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
-        
+        }
+        else 
+        {
+            if ( tmpDebugNoteBegin ) System.out.print('_') ;
+        }
         Transaction txn = createTransaction(dsg, mode, label) ;
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
