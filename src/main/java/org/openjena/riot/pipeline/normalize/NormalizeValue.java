@@ -38,6 +38,9 @@ import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 
 class NormalizeValue
 {
+    // What about whitespace for 
+    //   hexBinary, base64Binary.
+    
     // Auxillary class of datatype handers, placed here to avoid static initialization
     // ordering problems (if in CanonicalizeLiteral, all this low-level machinary would
     // need to be in the file before the external API, which I consider bad style).  It
