@@ -27,22 +27,6 @@
     <url>http://www.apache.org/</url>
   </organization>
 
-  <!-- Do people want this? -->
-  <developers>
-    <developer>
-      <id>andy</id>
-      <name>Andy Seaborne</name>
-    </developer>
-    <developer>
-      <id>castagna</id>
-      <name>Paolo Castagna</name>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
-
   <!-- Modules set scm -->
 
   <properties>
@@ -57,10 +41,6 @@
     <ver.sdb>1.3.4-incubating-SNAPSHOT</ver.sdb>
 
     <!-- Versions of other things -->
-    <!--
-    <ver.http-client>4.1.2</ver.http-client>
-    <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
-    -->
     <ver.junit>4.9</ver.junit>
     <ver.icu4j>3.4.4</ver.icu4j>
     <ver.slf4j>1.6.1</ver.slf4j>
@@ -94,34 +74,6 @@
        <version>${ver.junit}</version>
        <scope>test</scope>
      </dependency>
-
-     <!--
-     <dependency>
-       <groupId>org.apache.httpcomponents</groupId>
-       <artifactId>httpclient</artifactId>
-       <version>${ver.http-client}</version>
-       <exclusions>
-	 <!- - Replace with slf4j adapter - ->
-	 <exclusion>
-	   <groupId>commons-logging</groupId>
-	   <artifactId>commons-logging</artifactId>
-	 </exclusion>
-      </exclusions>
-     </dependency>
-     -->
-     <!--
-     <dependency>
-       <groupId>commons-fileupload</groupId>
-       <artifactId>commons-fileupload</artifactId>
-       <version>${ver.commons-fileupload}</version>
-     </dependency>
-    
-     <dependency>
-       <groupId>commons-codec</groupId>
-       <artifactId>commons-codec</artifactId>
-       <version>${ver.commonscodec}</version>
-     </dependency>
-     -->
 
      <dependency>
        <groupId>org.slf4j</groupId>
@@ -267,11 +219,6 @@
 	  </configuration>
 	</plugin>
       
-	<!-- Assembly plugin : lead to module-->
-	<!-- This must be the last plug-in attached to the package phase 
-             because it replies on the packaging of the jar to happen first.
-        -->
-
       </plugins>
     </pluginManagement>
   </build>
@@ -385,6 +332,7 @@
   
   <!-- Temporary for testing : file:REPO-->
 
+  <!--
   <distributionManagement>
     <repository>
       <id>jena-repo</id>
@@ -392,14 +340,13 @@
       <url>file:REPO</url>
       <layout>default</layout>
     </repository> 
-    <!--
     <snapshotRepository>
       <id>jena-repo-dev</id>
       <name>Jena development repo</name>
       <url>file:REPO</url>
       <layout>default</layout>
     </snapshotRepository>
-    -->
   </distributionManagement>
+  -->
 
 </project>
