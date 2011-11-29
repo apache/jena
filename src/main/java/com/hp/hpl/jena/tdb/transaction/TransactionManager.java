@@ -329,7 +329,7 @@ public class TransactionManager
         DatasetGraphTDB dsg = baseDataset ;
         // *** But, if there are pending, committed transactions, use latest.
         if ( ! commitedAwaitingFlush.isEmpty() )
-        {  if ( tmpDebugNoteBegin ) System.out.print('x') ;
+        {  if ( tmpDebugNoteBegin ) System.out.print(commitedAwaitingFlush.size()) ;
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         }
         else 
