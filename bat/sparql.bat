@@ -1,12 +1,14 @@
 @echo off
-@REM Script to run a command
 
 if NOT "%JENAROOT%" == "" goto :okRoot
 echo JENAROOT not set
 exit /B
 
 :okRoot
-call %JENAROOT%\bat\make_classpath.bat %JENAROOT%
 
-java %SOCKS% -cp %CP% arq.sparql %*
+set JVM_ARGS=--Xmx1024M
+set JENA_CP=%JENAROOT\lib\*
+set LOGGING=-Dlog4j.configuration=file:%JENAROOT%/log4j.properties
+
+java %JVM_ARGS% %LOGGING% -cp %$JENA_CP% arq.sparql %*
 exit /B
