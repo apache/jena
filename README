@@ -1,0 +1,85 @@
+@@@@@@@@
+
+
+bin/
+bin2/
+bat/
+
+
+                                  Apache Jena
+                                  ===========
+
+  Jena is a Java framework for building semantic web applications. It provides 
+  tools and Java libraries to help you to develop semantic web and linked-data 
+  apps, tools and servers.
+
+  This distribution includes the following Apache Jena modules: 
+
+  - jena-core ..... https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/
+    this module provides the Jena RDF APIs, Ontology APIs and Infrence APIs. 
+  - jena-iri ....... https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/
+    this module provides an implementation of RFC 3987 (IRI) and RFC 3986 (URI)
+  - jena-arq ....... https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/
+    this module provides the SPARQL query engine used by Jena
+
+  Installing Jena
+  ---------------
+
+  Jena is a Java library for RDF and OWL. To use Jena in your application, 
+  ensure all the .jar files in the lib/ directory are on the classpath or 
+  available to your web application. Jena is tested with these .jar files,
+  it includes a copy of Apache Xerces and it relies on specific features 
+  that change between versions.
+
+  Scripts
+  -------
+
+@@@
+bin/
+bin2/
+bat/
+@@@
+
+  To use the Jena tools from the command line you need to set the JENAROOT
+  and ARQROOT environment variables pointing to the location where you have 
+  unzipped the Jena distribution:
+
+    export JENAROOT=/path/to/apache-jena-2.6.5-incubating
+    export ARQROOT=/path/to/apache-jena-2.6.5-incubating
+
+
+  Website
+  -------
+
+  The Apache Jena website is available here:
+  http://incubator.apache.org/jena/
+
+
+  Documentation
+  -------------
+
+  Getting started: http://incubator.apache.org/jena/getting_started/
+  Tutorials: http://incubator.apache.org/jena/tutorials/
+  Documentation: http://incubator.apache.org/jena/documentation/
+
+  Support is provided via jena-users@incubator.apache.org mailing list.
+  See also: http://incubator.apache.org/jena/help_and_support/
+
+  Sources and Getting Involved
+  ----------------------------
+
+  The Apache Jena source code repository is here:
+  http://svn.apache.org/repos/asf/incubator/jena/Jena2/
+
+  If you are interested in getting involved with Apache Jena development: 
+  http://incubator.apache.org/jena/getting_involved/
+
+
+  Licensing
+  ---------
+
+  Jena is provided under the Apache License v2.0
+  See LICENSE for the full text.
+
+
+

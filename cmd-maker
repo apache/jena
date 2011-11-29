@@ -1,0 +1,42 @@
+#!/bin/bash
+
+CMDS=$(cat <<EOF
+jena.rdfcat
+jena.rdfcompare
+jena.rdfcopy
+jena.rdfparse
+arq.sparql
+arq.arq
+arq.iri
+arq.juuid
+arq.rsparql
+arq.rset
+arq.qparse
+arq.uparse
+arq.update
+arq.wwwdec
+arq.wwwenc
+riotcmd.riot
+riotcmd.ntriples
+riotcmd.nquads
+riotcmd.turtle
+riotcmd.trig
+riotcmd.infer
+riotcmd.utf8
+EOF
+)
+
+
+function make()
+{
+    local C=$1
+    # Filename.
+    CMD=bin/${C#*.}
+    sed -e "s!JENA_CMD!$C!" < template.cmd > $CMD
+}
+
+for cmd in $CMDS
+do
+    ## echo $cmd
+    make $cmd
+done
