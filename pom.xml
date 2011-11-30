@@ -45,10 +45,6 @@
     <ver.wstx-asl>3.2.9</ver.wstx-asl>
     <ver.http-client>4.1.2</ver.http-client>
     <ver.commons-codec>1.5</ver.commons-codec>
-    <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
-	 or else the name is changed on install
-    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
-    -->
   </properties>
 
   <dependencies>
@@ -242,9 +238,6 @@ build.time.txt=${build.time.txt}
 
       <!--
       <plugin>
-        ! - - This must be the last plug-in attached to the package phase
-             because it replies on the packaging of the jar to happen first.
-        - -
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
