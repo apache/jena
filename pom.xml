@@ -26,7 +26,7 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>IRI</name>
-  <version>0.9.0-incubating-SNAPSHOT</version>
+  <version>${ver.iri}</version>
   <description/>
 
   <parent>
@@ -42,10 +42,6 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
-	 or else the name is changed on install
-    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
-    -->
   </properties>
 
   <dependencies>
@@ -141,6 +137,7 @@
       </plugin>
       -->
 
+      <!--
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
@@ -161,7 +158,7 @@
           </execution>
         </executions>
       </plugin>
-      
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
