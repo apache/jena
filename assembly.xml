@@ -43,6 +43,7 @@
         <include>DISCLAIMER*</include>
         <include>LICENSE*</include>
         <include>NOTICE*</include>
+        <include>DEPENDENCIES*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
       </includes>
