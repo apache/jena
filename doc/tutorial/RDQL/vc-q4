@@ -1,3 +1,0 @@
-SELECT ?resource, ?givenName
-WHERE (?resource, <http://www.w3.org/2001/vcard-rdf/3.0#N>, ?z) ,
-      (?z, <http://www.w3.org/2001/vcard-rdf/3.0#Given>, ?givenName)

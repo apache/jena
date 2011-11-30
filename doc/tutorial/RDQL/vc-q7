@@ -1,3 +1,0 @@
-SELECT ?prop
-WHERE (<http://somewhere/JohnSmith/> , ?prop, "John Smith")
-USING vCard FOR <http://www.w3.org/2001/vcard-rdf/3.0#>
