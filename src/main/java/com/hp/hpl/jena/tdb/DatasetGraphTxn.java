@@ -57,7 +57,7 @@ public class DatasetGraphTxn extends DatasetGraphTDB
     }
 
     /** Do not end a transaction this way - use .end() - compatiblity only 
-     * @Deprecated Strongly deprecated -- use {@link #end}*/
+     * @deprecated Strongly deprecated -- use {@link #end}*/
     @Override
     @Deprecated
     public void close()
