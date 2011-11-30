@@ -2305,7 +2305,8 @@ TOKEN:
   // Prefixed Name, Local Par, Escape
   // Align with QueryParseBase unescapePName.
   < #PLNE: "\\" 
-          ("~" | "." | "-" | "!" | "$" | "&" | "'" | 
+          ( "_" | 
+            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
            "(" | ")" | "*" | "+" | "," | ";" | "=" | 
            ":" | "/" | "?" | "#" | "@" | "%" ) >
 |

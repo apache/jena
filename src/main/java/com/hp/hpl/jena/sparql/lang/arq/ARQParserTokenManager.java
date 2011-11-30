@@ -3110,7 +3110,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      jjAddStates(123, 124);
                   break;
                case 13:
-                  if ((0x4000000000000001L & l) != 0L)
+                  if ((0x4000000080000001L & l) != 0L)
                      jjCheckNAddStates(35, 38);
                   break;
                case 15:
@@ -3130,7 +3130,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      kind = 12;
                   break;
                case 19:
-                  if ((0x4000000000000001L & l) != 0L && kind > 12)
+                  if ((0x4000000080000001L & l) != 0L && kind > 12)
                      kind = 12;
                   break;
                case 20:
@@ -3138,7 +3138,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 21;
                   break;
                case 21:
-                  if ((0x4000000000000001L & l) == 0L)
+                  if ((0x4000000080000001L & l) == 0L)
                      break;
                   if (kind > 12)
                      kind = 12;
@@ -3346,7 +3346,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      jjAddStates(125, 126);
                   break;
                case 113:
-                  if ((0x4000000000000001L & l) != 0L)
+                  if ((0x4000000080000001L & l) != 0L)
                      jjCheckNAddStates(81, 84);
                   break;
                case 115:
@@ -3366,7 +3366,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      kind = 11;
                   break;
                case 119:
-                  if ((0x4000000000000001L & l) != 0L && kind > 11)
+                  if ((0x4000000080000001L & l) != 0L && kind > 11)
                      kind = 11;
                   break;
                case 120:
@@ -3374,7 +3374,7 @@ private int jjMoveNfa_0(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 121;
                   break;
                case 121:
-                  if ((0x4000000000000001L & l) == 0L)
+                  if ((0x4000000080000001L & l) == 0L)
                      break;
                   if (kind > 11)
                      kind = 11;
