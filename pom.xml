@@ -24,8 +24,8 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>Jena Core</name>
-  <!--<version>${ver.jena}</version>-->
-  <version>2.6.5-incubating-SNAPSHOT</version>
+  <version>${ver.jena}</version>
+  <!-- <version>2.6.5-incubating-SNAPSHOT</version> -->
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -48,7 +48,7 @@
     <dependency>
        <groupId>org.apache.jena</groupId>
        <artifactId>jena-iri</artifactId>
-       <version>0.9.0-incubating-SNAPSHOT</version>
+       <version>${ver.iri}</version>
     </dependency>
   </dependencies>
 
