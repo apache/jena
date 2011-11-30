@@ -1700,6 +1700,7 @@ TOKEN :
 // See XML chars.txt for notes
 TOKEN:
 {
+  // ARQ extensions to the PN_LOCAL token.
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |

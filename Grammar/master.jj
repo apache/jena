@@ -2303,7 +2303,7 @@ TOKEN:
   < #PERCENT: "%" <HEX> <HEX> >
 |
   // Prefixed Name, Local Par, Escape
-  / Align with QueryParseBase unescapePName.
+  // Align with QueryParseBase unescapePName.
   < #PLNE: "\\" 
           ("~" | "." | "-" | "!" | "$" | "&" | "'" | 
            "(" | ")" | "*" | "+" | "," | ";" | "=" | 
@@ -2334,8 +2334,8 @@ TOKEN:
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 #endif
 #ifdef ARQ
-  //<#PLX:  <PERCENT> | <PLNE> >
-  <#PLX:  <PERCENT> >
+  <#PLX:  <PERCENT> | <PLNE> >
+  //<#PLX:  <PERCENT> >
 |
   // If goes ahead, consolidate
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> ) 
