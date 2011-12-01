@@ -752,7 +752,11 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Must align with .equals */
     private int hashcode = -1 ;
     
-    /** Perform some check on the query */ 
+    /** Perform some check on the query
+     * @deprecated This call does do anything. 
+     */
+    
+    @Deprecated
     public void validate()
     {
         // This is mostly done now as part of parsing.
