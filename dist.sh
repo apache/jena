@@ -54,6 +54,8 @@ inc=incubating
 ## Step 1 : top level
 echo "## Top level"
 $CPCMD KEYS dist
+$CPCMD HEADER.html dist
+
 cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.zip" "."
 cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.tar.gz" "."
 
