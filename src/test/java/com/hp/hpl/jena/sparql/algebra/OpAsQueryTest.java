@@ -57,11 +57,57 @@ public class OpAsQueryTest {
         assertEquals(result[0], result[1]);
     }
     
+    /* JENA-166 */
+    @Test
+    public void testGroupWithExpression() {
+        Object[] result = checkQuery("SELECT (sample(?a) + 1 AS ?c) {} GROUP BY ?x");
+        assertEquals(result[0], result[1]);
+    }
+    
+    // The next two tests represent an loss of information
+    // I suspect the best solution is to let this pass and the other fail
+    @Test
+    public void testProject() {
+        Object[] result = checkQuery("SELECT (?x + 1 AS ?c) {}");
+        assertEquals(result[0], result[1]);
+    }
+    
+    // Ambiguous, don't bother
+    public void testBind() {
+        Object[] result = checkQuery("SELECT ?c { BIND(?x + 1 AS ?c) }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    // This BIND is distinguisable, however
+    @Test
+    public void testNestedBind() {
+        Object[] result = checkQuery("SELECT ?c { { } UNION { BIND(?x + 1 AS ?c) } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testNestedProject() {
+        Object[] result = checkQuery("SELECT (?x + 1 AS ?c) { { } UNION { } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testGroupExpression() {
+        Object[] result = checkQuery("SELECT ?z { } GROUP BY (?x + ?y AS ?z)");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testNestedProjectWithGroup() {
+        Object[] result = checkQuery("SELECT (SAMPLE(?c) as ?s) { {} UNION {BIND(?x + 1 AS ?c)} } GROUP BY ?x");
+        assertEquals(result[0], result[1]);
+    }
+    
     public Object[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
-        Op a = Algebra.compile(orig);
-        Query got = OpAsQuery.asQuery(a);
-        Object[] r = { a, Algebra.compile(got) };
+        Op toReconstruct = Algebra.compile(orig);
+        Query got = OpAsQuery.asQuery(toReconstruct);
+        Object[] r = { orig, got };
         return r;
     }
 }

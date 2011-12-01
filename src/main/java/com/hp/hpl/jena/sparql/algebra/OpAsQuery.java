@@ -40,6 +40,9 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
+import com.hp.hpl.jena.sparql.expr.ExprTransformCopy;
+import com.hp.hpl.jena.sparql.expr.ExprTransformer;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
@@ -383,62 +386,53 @@ public class OpAsQuery
         @Override
         public void visit(OpAssign opAssign)
         {
-	        /**
-             * Special case: group involves and internal assignment
-             * e.g.  (assign ((?.1 ?.0)) (group () ((?.0 (count)))
-             * We attempt to intercept that here.
-             */
-            if (opAssign.getSubOp() instanceof OpGroup) {
-                Map<Var, Var> subs = new HashMap<Var, Var>();
-                for (Var v: opAssign.getVarExprList().getVars())
-                {
-                    Expr exp = opAssign.getVarExprList().getExpr(v);
-                    if (exp.isVariable()) 
-                        subs.put(exp.asVar(), v) ;
-                    else
-                        throw new ARQNotImplemented("Expected simple assignment for group (OpAssign): "+exp) ;
-                }
-                visit((OpGroup) opAssign.getSubOp(), subs);
-                return;
-            }
-
-            opAssign.getSubOp().visit(this) ;
+	    opAssign.getSubOp().visit(this) ;
+            
+            // Go through each var and get the assigned expression
             for ( Var v : opAssign.getVarExprList().getVars() )
             {
-                Element elt = new ElementAssign(v, opAssign.getVarExprList().getExpr(v)) ;
-                ElementGroup g = currentGroup() ;
-                g.addElement(elt) ;
+                Expr e = opAssign.getVarExprList().getExpr(v);
+                
+                // Substitute group aggregate expressions in for generated vars
+                SubExprForVar sefr = new SubExprForVar(varExpression);
+                Expr tr = ExprTransformer.transform(sefr, e);
+                
+                // If in top level we defer assignment to SELECT section
+                // This also covers the GROUP recombine
+                // NOTE: this means we can't round trip top-level BINDs
+                if (inTopLevel()) {
+                    varExpression.put(v, tr);
+                } else {
+                    Element elt = new ElementAssign(v, e) ;
+                    ElementGroup g = currentGroup() ;
+                    g.addElement(elt) ;
+                }
             }
         }
 
         @Override
         public void visit(OpExtend opExtend)
         { 
-            /**
-             * Special case: group involves and internal assignment
-             * e.g.  (assign ((?.1 ?.0)) (group () ((?.0 (count)))
-             * We attempt to intercept that here.
-             */
-            if (opExtend.getSubOp() instanceof OpGroup) {
-                Map<Var, Var> subs = new HashMap<Var, Var>();
-                for (Var v: opExtend.getVarExprList().getVars()) 
-                {
-                    Expr exp = opExtend.getVarExprList().getExpr(v);
-                    if (exp.isVariable()) 
-                        subs.put(exp.asVar(), v) ;
-                    else
-                        throw new ARQNotImplemented("Expected simple assignment for group (OpExtend): "+exp) ;
-                }
-                visit((OpGroup) opExtend.getSubOp(), subs);
-                return;
-            }
-
             opExtend.getSubOp().visit(this) ;
+            
+            // Go through each var and get the assigned expression
             for ( Var v : opExtend.getVarExprList().getVars() )
             {
-                Element elt = new ElementBind(v, opExtend.getVarExprList().getExpr(v)) ;
-                ElementGroup g = currentGroup() ;
-                g.addElement(elt) ;
+                Expr e = opExtend.getVarExprList().getExpr(v);
+                
+                // Substitute group aggregate expressions in for generated vars
+                Expr tr = ExprTransformer.transform(new SubExprForVar(varExpression), e);
+                
+                // If in top level we defer assignment to SELECT section
+                // This also covers the GROUP recombine
+                // NOTE: this means we can't round trip top-level BINDs
+                if (inTopLevel()) {
+                    varExpression.put(v, tr);
+                } else {
+                    Element elt = new ElementBind(v, tr) ;
+                    ElementGroup g = currentGroup() ;
+                    g.addElement(elt) ;
+                }
             }
         }
 
@@ -490,25 +484,18 @@ public class OpAsQuery
         }
 
         @Override
-        @SuppressWarnings("unchecked")
-        public void visit(OpGroup opGroup) {
-            visit(opGroup, Collections.EMPTY_MAP);
-        }
-
-        // Specialised to cope with the preceeding assigns
-        private void visit(OpGroup opGroup, Map<Var, Var> subs) {            
+        public void visit(OpGroup opGroup) {            
             List<ExprAggregator> a = opGroup.getAggregators();
-
+            
+            // Aggregators are broken up in the algebra, split between a
+            // group and an assignment (extend or assign) using a generated var.
+            // We record them here and insert later.
             for (ExprAggregator ea : a) {
                 // Substitute generated var for actual
                 Var givenVar = ea.getAggVar().asVar();
-                Var realVar = (subs.containsKey(givenVar))
-                ? subs.get(givenVar)
-                : givenVar;
                 // Copy aggregator across (?)
                 Expr myAggr = query.allocAggregate(ea.getAggregator());
-                varExpression.put(realVar, myAggr);
-                //query.addResultVar(realVar, myAggr);
+                varExpression.put(givenVar, myAggr);
             }
 
             VarExprList b = opGroup.getGroupVars();
@@ -575,5 +562,30 @@ public class OpAsQuery
         }
         private ElementGroup pop() { return stack.pop(); }
         private void push(ElementGroup el) { stack.push(el); }
+        private boolean inTopLevel() { return stack.size() == 0; }
+    }
+    
+    /**
+     * This class is used to take substitute an expressions for variables
+     * in another expression. It is used to stick grouping expressions back
+     * together.
+     */
+    public static class SubExprForVar extends ExprTransformCopy {
+        private final Map<Var, Expr> varExpr;
+        private boolean subOccurred = false;
+        public SubExprForVar(Map<Var, Expr> varExpr) {
+            this.varExpr = varExpr;
+        }
+        
+        public boolean didChange() { return subOccurred; }
+        
+        @Override
+        public Expr transform(ExprVar var) {
+            if (varExpr.containsKey(var.asVar())) {
+                subOccurred = true;
+                return varExpr.get(var.asVar()).deepCopy();
+            }
+            else return var.deepCopy();
+        }
     }
 }
