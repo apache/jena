@@ -39,7 +39,7 @@ $mtSparqlResultsTSV = 'application/sparql-results+tsv'
 $mtSparqlResultsCSV = 'application/sparql-results+csv'
 $mtSparqlUpdate     = 'application/sparql-update'
 $mtWWWForm          = 'application/x-www-form-urlencoded'
-# $mtSparqlQuery      = "application/sparql-query" ;
+$mtSparqlQuery      = "application/sparql-query" ;
 
 # Global media type table.
 $fileMediaTypes = {}
@@ -400,10 +400,9 @@ def string_or_file(arg)
   open(a, 'rb'){|f| f.read}
 end
 
-## -------- SPARQL query
+## -------- SPARQL Query
 
-## By GET
-
+## Choose method
 def SPARQL_query(service, query, query_file, args2={})
    if ! query_file.nil?
     query = open(query_file, 'rb'){|f| f.read}
@@ -414,6 +413,8 @@ def SPARQL_query(service, query, query_file, args2={})
     SPARQL_query_GET(service, query, args2)
   end
 end
+
+## By GET
 
 def SPARQL_query_GET(service, query, args2)
   args = { "query" => query }
