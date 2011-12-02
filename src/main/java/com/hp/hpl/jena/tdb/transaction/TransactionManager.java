@@ -192,11 +192,16 @@ public class TransactionManager
         {
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
 
+            // This is so important, it shouldn't be in a TSM.
             if ( activeReaders.get() == 0 )
             {
                 // Can commit immediately.
                 // Ensure the queue is empty though.
                 // Could simply add txn to the commit queue and do it that way.  
+                if ( log() ) log("Commit immediately", txn) ; 
+                
+                // Right after reply?
+                
                 processDelayedReplayQueue(txn) ;
                 enactTransaction(txn) ;
                 JournalControl.replay(txn) ;
@@ -206,7 +211,7 @@ public class TransactionManager
                 // Can't write back to the base database at the moment.
                 commitedAwaitingFlush.add(txn) ;
                 maxQueue = Math.max(commitedAwaitingFlush.size(), maxQueue) ;
-                log("Queue commit flush", txn) ; 
+                if ( log() ) log("Add to pending queue", txn) ; 
                 queue.add(txn) ;
             }
         }
@@ -248,7 +253,7 @@ public class TransactionManager
         new TSM_Counters() ,           // Must be first.
         new TSM_Logger() ,
         (recordHistory ? new TSM_Record() : null ) ,
-        new TSM_WriteBackEndTxn()        // Write back policy.
+        new TSM_WriteBackEndTxn()        // Write back policy. Must be last.
     } ;
     
     public TransactionManager(DatasetGraphTDB dsg)
@@ -404,17 +409,17 @@ public class TransactionManager
         if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
         {
             if ( queue.size() > 0 && log() )
-            {
-                if ( txn != null )
-                    log(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters), txn) ;
-                else
-                    logger().debug(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters)) ;
-            }
+                log(format("Pending transactions: R=%s / W=%s", activeReaders, activeWriters), txn) ;
             return ;
         }
 
         if ( tmpDebugNoteActions &&  queue.size() > 0 ) 
             System.out.print("!"+queue.size()+"!") ;
+        
+        if ( log() )
+        {
+            log("Start flush delayed commits", txn) ;
+        }
         
         while ( queue.size() > 0 )
         {
@@ -426,7 +431,8 @@ public class TransactionManager
                 Transaction txn2 = queue.take() ;
                 if ( txn2.getMode() == ReadWrite.READ )
                     continue ;
-                log("Flush delayed commit", txn2) ;
+                if ( log() )
+                    log("Flush delayed commit of "+txn.getLabel(), txn) ;
                 // This takes a Write lock on the  DSG - this is where it blocks.
                 checkReplaySafe() ;
                 enactTransaction(txn2) ;
@@ -443,6 +449,8 @@ public class TransactionManager
         JournalControl.replay(journal, baseDataset) ;
         
         checkReplaySafe() ;
+        if ( log() )
+            log("End flush delayed commits", txn) ;
     }
 
     private void checkReplaySafe()
@@ -543,7 +551,10 @@ public class TransactionManager
     {
         if ( ! log() )
             return ;
-        logger().debug(txn.getLabel()+": "+msg) ;
+        if ( txn == null )
+            logger().debug("<No txn>: "+msg) ;
+        else
+            logger().debug(txn.getLabel()+": "+msg) ;
     }
 
     private Logger logger()

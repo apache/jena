@@ -192,7 +192,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     /** Copy from the journal file to the real file */
     /*package*/ void append()
     {
-        //debug("append: %s",label) ;
+        //debug(">> append: %s",label) ;
         
         // Assumes all() is in order from low to high.
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
@@ -215,6 +215,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
                 throw new TDBException(msg) ;
             }
         }
+        //debug("<< append: %s",label) ;
     }
     
     private void dump()
@@ -225,6 +226,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println("offset = "+offset) ;
         System.err.println("journalStartOffset = "+journalObjFileStartOffset) ;
         System.err.println("journal = "+journalObjFile.getLabel()) ;
+        if ( true )
+            return ;
         
         System.err.println("nodeTableJournal >>>") ;
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
@@ -262,7 +265,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
-        //debug("commitPrepare: %s", label) ;
+        debug(">> commitPrepare: %s", label) ;
         // The node table is append-only so it can be written during prepare.
         // The index isn't written (via the transaction journal) until enact.
         if ( nodeTableJournal == null )
@@ -274,7 +277,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             long x = journalObjFile.length() ;
             throw new TDBTransactionException("journalObjFile not cleared ("+x+")") ;
         }
-        
+        debug("<< commitPrepare: %s", label) ;
     }
     
     @Override
