@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Expect: environment contains M2_REPO
-REPO=public_html/jena-R1-repo/org/apache/jena
+#REPO=public_html/jena-R1-repo/org/apache/jena
+REPO=REPO/org/apache/jena/
+
 OUT="dist"
 
 # This script collects everything for the incubator/dist/jena area
@@ -44,11 +46,13 @@ function cpfile
 
 ## ToDo: automate
 
+V_TOP=0
 V_IRI=0.9.0
 V_CORE=2.7.0
 V_DIST=2.7.0
 V_ARQ=2.9.0
 V_LARQ=1.0.0
+V_ZIP=$V_CORE
 inc=incubating
 
 ## Step 1 : top level
@@ -59,31 +63,47 @@ $CPCMD HEADER.html dist
 cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.zip" "."
 cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.tar.gz" "."
 
+function cpallfiles
+{
+    local M="$1"
+    local V="$2"
+    local D="$M-$V-$inc"
+    $MKDIR $OUT/$D
+    cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
+    cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
+    if [ -e "$M/$V-$inc/$M-$V-$inc-javadoc.jar" ]
+    then
+	 cpfile "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
+    fi
+    cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D
+}
+
+
 ## Step 2: modules
 
+echo "## JenaTop"
+M=jena-top
+V=${V_TOP}
+D="$M-$V-$inc"
+$MKDIR $OUT/$D
+cpfile "$M/$V-$inc/$M-$V-$inc.pom" $D
+cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D
+
 echo "## IRI"
-D="jena-iri-${V_IRI}-$inc"
-$MKDIR "$OUT/$D"
-cpfile "jena-iri/${V_IRI}-$inc/jena-iri-${V_IRI}-$inc.jar"  $D
-cpfile "jena-iri/${V_IRI}-$inc/jena-iri-${V_IRI}-$inc-sources.jar" $D
+cpallfiles jena-iri "${V_IRI}"
 
 echo "## Core"
-D="jena-core-${V_CORE}-$inc"
-$MKDIR "$OUT/$D"
-cpfile "jena-core/${V_CORE}-$inc/jena-core-${V_CORE}-$inc.jar"  $D
-cpfile "jena-core/${V_CORE}-$inc/jena-core-${V_CORE}-$inc-sources.jar" $D
-cpfile "jena-core/${V_CORE}-$inc/jena-core-${V_CORE}-$inc-javadoc.jar" $D
+cpallfiles jena-core ${V_CORE}
 
 echo "## ARQ"
-D="jena-arq-${V_ARQ}-$inc"
-$MKDIR "$OUT/$D"
-cpfile "jena-arq/${V_ARQ}-$inc/jena-arq-${V_ARQ}-$inc.jar"  $D
-cpfile "jena-arq/${V_ARQ}-$inc/jena-arq-${V_ARQ}-$inc-sources.jar" $D
-cpfile "jena-arq/${V_ARQ}-$inc/jena-arq-${V_ARQ}-$inc-javadoc.jar" $D
+cpallfiles jena-arq ${V_ARQ}
 
-echo "## LARQ"
-D="jena-larq-${V_LARQ}-$inc"
-$MKDIR "$OUT/$D"
-cpfile "jena-larq/${V_LARQ}-$inc/jena-larq-${V_LARQ}-$inc.jar"  $D
-cpfile "jena-larq/${V_LARQ}-$inc/jena-larq-${V_LARQ}-$inc-sources.jar" $D
-cpfile "jena-larq/${V_LARQ}-$inc/jena-larq-${V_LARQ}-$inc-javadoc.jar" $D
+## echo "## LARQ"
+## cpallfiles jena-larq ${V_LARQ}
+
+echo "## Download"
+M=apache-jena
+V=${V_ZIP}
+D="$M-$V-$inc"
+$MKDIR $OUT/$D
+cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D

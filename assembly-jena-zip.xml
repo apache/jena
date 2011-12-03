@@ -114,18 +114,13 @@
     </fileSet>
   </fileSets>
 
-  <files>
-    <file>
-      <source>../ARQ/ChangeLog.txt</source>
-      <destName>ReleaseNotes-ARQ.txt</destName>
-      <fileMode>0622</fileMode>
-    </file>
-    <file>
-      <source>../Jena2/ReleaseNotes.txt</source>
-      <destName>ReleaseNotes-Jena.txt</destName>
-      <fileMode>0622</fileMode>
-    </file>
-    
-  </files>
+  <fileSet>
+    <outputDirectory>/</outputDirectory>
+    <includes>
+      <include>ReleaseNotes-Jena.txt</include>
+      <include>ReleaseNotes-ARQ.txt</include>
+    </includes> 
+    <fileMode>0622</fileMode>
+  </fileSet>
 
 </assembly>

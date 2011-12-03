@@ -1,0 +1,454 @@
+ChangeLog for ARQ
+=================
+
+==== ARQ 2.8.9
+** Java 6 is now required for running ARQ.
+
++ ARQ: Provides \-escapes for characters ~.-!$&'()*+,;=:/?#@% in local part of prefix names 
++ ARQ: Allow %xx in the local part of prefix names
++ SPARQL 1.1 / RDF 1.1 : DATATYPE(literal-with-lang) is now rdf:langString, not an error.
++ DatasetFactory: perferred methods for an in-memory dataset are:
+     create() -- will automatically add in-memory named graphs  
+     createFixed() -- needs explicitly added extra graph  
++ BUG FIX: Mis-execution of GRAPH ?g { .. } where ?g used inside { .. } (JENA-154)
++ Bug fix: ResourceUtils.renameResource() no longer uses Iterator.remove() (JENA-76)
++ Bug fix: Query objects with aggregators cannot be reused (JENA-120)
++ REGEX now accepts xsd:string and literals with language tags in the first argument. 
++ Add function STRBEFORE, STRAFTER and REPLACE for SPARQL 1.1
++ Add function UUID  [ARQ language only]  
++ Remove LARQ from ARQ.  LARQ is now a separate Jena module.
++ Fix reuse of query objects (aggregation used shared state) (JENA-121)
++ Spill to disk update (enable with ARQ.spillToDiskThreshold) (JENA-45)
++ External sort (enable with ARQ.spillToDiskThreshold) (JENA-44) 
++ Remove RDQL from ARQ (code in Archive/ in SVN -- will not be updated) 
++ ResultSetUtils.union(ResultSet ... sets)
++ Add optimization for DISTINCT/ORDER BY/LIMIT N (JENA-108)
++ Add optimization for DISTINCT/ORDER BY (JENA-90)
++ Add optimization for ORDER BY/LIMIT N (JENA-89)
++ General upgrade of dependent systems (not Lucene - see LARQ module for use with Lucene 3)
++ Introduce "bindings IO", a subsystem for efficient reading and writing of result bindings. 
++ Make CONCAT follow the SPARQL 1.1 spec properly. 
++ Bug fix: ORDER BY and FILTERs in sub-selects didn't work if ordering by non-SELECT variables.
++ Bug fix: Equality of algebra operator (order) wasn't checkign all aspects of the op.
++ Bug fix: SUM and AVG over errors didn't generate an error as they should do.
++ Add TSVInput processor (JENA-69 / Laurent Pellegrino) 
++ Added DatasetGraph.add(g,s,p,o) and .delete(g,s,p,o) (JENA-65)
++ Aggregates COUNT(?x) and COUNT(DISTINCT ?x) now skips errors in their expressions
+  rather than evaluating to an error (SPARQL 1.1 Query Last Call compliance).   
+
+==== ARQ 2.8.8
+
++ Added QueryExecution.setTimeout that uses the abort mechanism below to stop queries after
+  a preset period of time.
+
++ Query cancellation: method for QueryExecution.abort() can now be called by any thread at any time.
+  The effect is to stop the query execution as soon as possible.
+  After calling .abort(), at some time. .hasNext() and .next() will throw an exception if called.
+  Exactly when this happens is not defined - it may be immediately.
+
++ "arq.update --dump" : Output is now N-quads.
+
++ riot command: Output now abbreviates bNode labels.
+
++ SPARQL 1.1: Behaviour change: aggregates where the accumulation cause an error now cause the 
+  AVG of 1,"two", 3 is now an error, was "two" is skipped
+  (and most likely, the error causes unbound in the SELECT expression) 
+
++ Bug fix: Handling of UNDEF in BINDINGS
+
++ RIOT: Better handling of file names with spaces in them for base URI. 
+
++ Notice: A separate LARQ module is under development - this will use Lucene 3.x.y 
+
++ Bug fix: RIOT: Cope with UTF-8 files with a BOM.
+
++ Add scope checking rules as required by SPARQL 1.1
+  Illegal in SPARQL 1.1:
+     Reuse of variables in assignments (i.e. "AS ?x" and ?x potentially bound)
+     SELECT * {} GROUP BY (reamins legal in ARQ language)
+
++ Bug fix: FILTERs did not always get moved to the end of groups properly 
+           (sometimes only to end of BGPs). 
+           This effects some FILTER the LET combinations using the same variable.  
+
+==== ARQ 2.8.7
+
+SPARQL 1.1 Function library:
+ + Added MD5, SHA1, SHA224, SHA256 SHA384, SHA512 functions for SPARQL 1.1
+ + Added YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS to SPARQL 1.1
+   TIMEZONE awaiting WG discussions.
+ + Added NOW() to SPARQL 1.1 - filter function like afn:now().
+
+==== ARQ 2.8.6
+
+** Update is now two languages: 
+     strict SPARQL 1.1 Update (the default)
+     enhanced language (ARQ query extensions, compatibility extensions for previous update language)
+   Set Syntx.syntaxARQ_Update to access the extensions. 
+
++ Complete implementation of SPARQL 1.1 Query and Update (as per current draft) 
+  Default query and updates languages are now SPARQL 1.1
+
++ Syntax extensions for W3C submission "SPARQL Update"
+  http://seaborne.blogspot.com/2010/08/migrating-from-sparql-update-submission.html
+
++ RIOT commands (ntrig, nquads, turtle, ntriples, infer) now in package 'riotcmd'
+
++ Expand update API to support multiple languages
+  See src-examples/arq.update.* for examples of API.
+
++ UpdateException now used for errors during update execution (potentially visible change)   
+
++ Bug fix: compound expressions involving aggregates in SELECT clause
+
++ Remove use of code from org.json to clarify legal position. 
+
++ Property path evaluation now aligns with SPARQL 1.1 
+	cardinality of results for arbitary length paths may change.   
+
++ Bug fix: N-Triples, and N-Quads now expect ASCII input as per specs.  
+
++ Bug fix: Property functions in FILTER NOT EXISTS
+
+==== ARQ 2.8.5
+
++ RIOT: New parsers covering N-triples, N-Quads, Turtle and TriG
+  URI and literal checking in Trutle amd TriG. 
+  New command line tools:
+    arq.riot (parse based on file ext), arq.ntriple, arq.nquads, arq.turtle, arq.trig
+    Parse files to N-Triples/N-Quads.
+    By default, checking turned on for N-triples and N_quads when useNd at command line.  
+
++ Import all of atlas and riot subsystems from TDB
+  These will become submodules of ARQ sometime.
+  Atlas contains all non-RDF related library code.
+
++ SPARQL 1.1 status:
+    SPARQL 1.1 Query: implemented except for corner cases of property paths
+      Use Syntax.syntaxSPARQL_11
+    SPARQL 1.1 Update: Only W3C submission supported for execution.
+      Someparsing of WG design for SPARQL 1.1. Update but (at time or release) language not agreed. 
+
++ Bug fixes:
+  Parsing of UNION in non-SPARQL 1.0 queries.
+  False optimization of GRAPH when mixed with extra {} and FILTERs.
+
+==== ARQ 2.8.4
+
++ Internal reorganisation of graph-level DatasetGraph (no chnages to the application API)
+  There is now hanlding of quads,
+  The difference bewteen DatasetGraph and DataSourceGraph is removed.
+  New classes to help with DatasetGraphs which are collections of graphs and 
+  ones that are colelctions of quads and triples.  
+  This does not affect Dataset or DataSource, the API interfaces.     
++ Add BNODE() function to generate fresh bnodes
+
+==== ARQ 2.8.3
+
++ Added commands arq.larq and arq.larqbuilder to query and build Lucense indexes for ARQ.
++ Added IN and NOT IN operators
++ Added IF and COALESCE operators
++ Add built-in function STRLANG(string, string) to make a literal with a language tag.
++ Add built-in function STRDT(string, iri) to make a literal with datatype
++ Add built-in function IRI(string) to make an IRI.
++ Add value support for xsd:gYear/gYearMonth/gMonth/gMonthDay/gDay 
++ Results output in CSV and TSV.
++ Add "negative property classed" (experimental)
+  !rdf:type matches anything except rdf:type
+  !(rdf:type|rdfs:label) matches some thing that isn't rdf:type or rdfs:label
++ Bug fix: some multiply nested OPTIONALs could result in only naive, unoptimized execution. 
++ Bug fix: SERVICE body for complex query patterns.
++ Bug fix: XML literals in SPARQL XML Results had the end of lines mangled. 
+
+==== ARQ 2.8.2
+
++ SPARQL v1.1 as an defined language and parser, separate from ARQ 
++ Results output in CSV
++ Optimization of disjunction FILTERs 
+    with care to get same effects if value-based
+    URIs are always safe to optimize. 
++ Bug fix in filter placement (in code used by TDB only) 
++ Bug fix in filter equality transformation if involving unused an variable.
+
+==== ARQ 2.8.1
+
++ Bug fixes
+   + substitution in NOT EXISTS
+   + substitution in assignment
+   + constant folding and logical special forms
+   + bad lock allocation (only occurs under very high load)
+
++ Speed up processing of nested optionals.  Greatly speeds up BSBM with TDB.
+
++ Some JMX management exposed: Object names start "com.hp.hpl.jena.sparql". 
+  Details include: system and version information, query execution count, 
+    last query and the time execution started.
+
+==== ARQ 2.8.0
+
++ Build is now done by maven
+** JAR changes: the ARQ jars are now called "arq.jar" and "arq-tests.jar".
+   Only "arq.jar is needed at runtime unless running ARQ test code. 
+** There is only one maven artifact "arq".  "arq-extra" is no more.
+  See README for deatils of files produced.
+
++ Negation-as-failure: NOT EXISTS {pattern}
+  see http://jena.sf.net/ARQ/negation.html for details.
+
++ Bug fix: Reverse paths of length 3 or more were not being parsed correctly.
+
++ Upgrade to stax 1.0.1 and wstx-asl-3.2.9
+
++ Remove json.jar (jena compiled code from org.json).  Replace with source code, renamed, in ARQ itself. 
+  package com.hp.hpl.jena.sparql.lib.org.json;
+  Cleaned up for Java generics.
+
+==== ARQ 2.7.0
+
++ New build system.
+
++ Clearing up.
+    junit used is now v4.5
+    internal logging API is SLF4J (Jena uses SLF4J as of v 2.6.0 as well)
+    Jars needed:  slf4j-api-1.5.6.jar and (for log4j) slf4j-log4j12-1.5.6.jar
+    
++ Optimizer framework rewritten (inc support for hooks used by TDB).
+  New general purpose StateGenerator and memory-graphs statistics    
+
++ Fix parsing of very large INSERT DATA requests (stack could overflow).
+
++ The IndexBuilder constructors taking a directory name as a string would 
+  clear the Lucene index.  Changed so they do not do so - and behave like
+  the other constructors which reuse an existing index.   
+
++ Uses the Java5 version of Jena2. 
+
++ Property function afp:versionARQ does not now split version numbers into major and minor parts
+  ARQ has a 3-part version number now.
+
+==== ARQ 2.6.0
+
++ Added .close() to Dataset and GraphStore for those implementations that
+  need to make changes permanent or release system resources.  
+
++ Clean internal extensions points for TDB
+
++ Put misc support code in for TDB
+
++ Fix bug in SPARQL grammar (!) : expressions like "1+2*3" did not parse.  
+  This is a fix to the grammar as published by the working group.  
+   It does not invalidate or chnage any query that works - it makes some
+   illegal syntax work that should work.
+
+==== ARQ 2.5
+
++ Redesign of quad support. 
+  AlgebraGeneratorQuad retired
+  Use Algebra.toQuadForm(Op) to turn an algebra expression into quads.   
+
++ fn:string-join was misnamed - was actually renamed as fn:concat
+  And now takes arbitrary number of arguments
+
++ Add afn:strjoin(str, string...) 
+
++ Bug fix: path parsing when "a" (for rdf:type) 
+           is used in a property list (using ;) 
+
++ Bug fix: LET expressions did not eliminate solutions when
+    assigned a new, different value.
+
++ Internal renaming to make the class names better reflect their role
+  particularly not using the term "compile" for things now considered
+  to happen during query execution.  
+
++ Internal utilities updated for TDB
+
++ Signal start/end of updates using the graph-level events mechanism.
+
+==== ARQ 2.4
+
++ Change to interface for query compilation : Algebra.compile and Algebra.optimize 
+
++ Property paths added.  See documentation.
+  
++ Simplify the interface between ARQ and data sources.
+  StageGenerator example updated.   
+
+==== ARQ 2.3
+
++ HAVING / ORDER BY variable, where variable is SELECT as an aggregate or computed value now works. 
+  (current restriction: can't have the expression directly in the ORDER BY - need to project the variable)  
+
++ Upgrade to Lucene 2.3.1
+
++ Change return type of ResultFactor.copyResults to ResultSetRewinable (a sub interface of ResultSet).
+
++ Allow inital bindings for Updates (ignored unless a Modify operation)
+
++ Added SUM(?x) aggregate
+
++ Added { SELECT } (nested SELECT) and LET (assignment) to ARQ extended SPARQL.
+
++ Added optimization rewrite of algebra expressions for FILTER(?x = :x) and FILTER(sameTerm(?x, :x))
+  so that the required term is substituted into the pattern before execution.
+  Cautiously applied to basic graph patterns and quad patterns.
+ 
++ Bug fix: ARQ 2.2 broke property functions in many nested structures. 
+
++ src-examples: example of SPARQL/Update
+
++ Fix bug: OpUnion flattening was not happening (Main query engine, OpCompiler) 
+
++ Fix bug: HttQueryEngine(in HttpQuery) generated bad POST requests with a trailing &.
+
++ New command arq.load, which loads files into graphs.  Special case of arq.update
+
+==== ARQ 2.2
+
++ Added command line tool, arq.update, for applying SPARQL/Update requests
+  to a graph store or dataset described by an assembler file.
+
++ LARQ: 
+  Remove restriction that indexes have to be closed for writing before reading
+  Becare: in Lucene, reader indexes (like LARQIndexes) see the index as at the point
+  in time when the index was created.  Must get a new reader to see later updates.
+
++ QueryEngineHTTP
+  + Can be created via QueryExecutionFactory
+  + Operations for adding HTTP parameters and also for basic authentication of HTTP.  
+
++ Added ParserRegistry (courtesy of Olaf Hartig)
+
++ Reworked property functions so they formally in the algebra.
+
++ Jar change: commons-logging-1.1.1.jar
+
++ Bug fix: text output of result sets sometimes gave full bNode label - revert to
+  old design where a short label is used always.  
+
++ Bug fix: handling of empty patterns and COUNT could give no count,
+  instead of a count of zero.  
+
++ Use base URI for realtive URI printing (i.e <foobar>)
+
++ Track DAWG:
+  Effect of OPTIONAL {{ ... FILTER }} (must be 2 or more {{}}) changes.
+  Inner {} now protects the FILTER from becoming part of the LeftJoin.  
+
++ Upgrade lucene-core-2.0.0.jar to lucene-2.2.0.jar
+  Lucene change means that users can't mix ARQ 2.1, and before,
+  with Lucene 2.1.0 or later.
+
+==== ARQ 2.1
+
++ (experimental for this release - permanent in next)
+  GROUP BY, HAVING
+  Aggregates: count(*), count(?x), count(distinct *), count(distinct ?x)
+
++ (experimental for this release - permanent in next) 
+  Expressions in SELECT clause
+  Expression in brackets, optionally named with "AS ?var"
+  Adding an explict namne is strongly encouraged especially if you use
+  the SPARQL results format because internal variables variable names
+  are not portable. 
+    SELECT (?x+?y AS ?z) ?y ?x
+    SELECT ?x ?y (?x+?y AS ?sum)  # Print a table of sums
+  OpProject can have additional expressions that get added into the
+    table from 'project'
+  
++ removed old-style (and out-of-date) writers for internal forms: prefix,
+  plain and XML forms of a SPARQL query.  The XML form was incomplete
+  anyway.  (This does not affect algebra output which is what replaces
+  these syntax-based forms).
+  
++ Added examples of using Lisp (SISC - A Java-based scheme interpreter). 
+  See the directory Lisp/. 
+  
++ NodeVar renamed ExprVar (more consistent naming)
+  Deprecated tombstones left for next release 
+
+==== ARQ 2.1 beta
+
++ Cost-based optimizer for basic graph patterns on in-memory graphs. 
+  ** Uses the version of jena shipped with this release, can't use an earlier one.   
+
++ Convert algebra expressions back into a SPARQL query (see OpToSyntax).
+
++ Old "NodeToLabelMap" => "NodeIsomorphismMap"
+  Affects Element and Op ".equalTo" operation signature.
+
++ Added extension : a graph pattern SERVICE <serviceEndPoint> { pattern }
+  ARQ syntax only.
+  New algebra operation: OpService
+
++ Added SSE to the main codebase : http://jena.hpl.hp.com/wiki/SSE
+
++ Internal changes: the core engines are now Graph/DatasetGraph/Algebra-centric 
+  and there are classes to map betwen that and the Model/Dataset.
+  QueryEngine construction and extension need not know about
+  the upper layers now.
+
++ Algebra operator implment .hashCode() and .equals() based on structure/value equality
+
++ Legacy query engine1 removed.
+
++ Add new algebra operations
+  OpGroupAgg, OpNull
+  
++ VarsMentionedVisitor removed - convert to an algebra expression and use OpVars.allVars instead.
+
+==== ARQ 2.0
+
+This version uses the SPARQL algebra directly,
+then produces an execution scheme that uses streaming
+execution where possible.
+
++ SPARQL changes
+  + Prefixed names can now start with a digit.  ex:123 is now a legal prefix name.
+  + The working group has removed attributes "ordered" and "distinct" from the
+    XML Results format. These have been removed in this release.  ARQ will read
+    old style XML files (and ignore the attributes).
+    JSON result format also updated.
+
++ Multiple query engines:
+  + Main query engine for optimization and efficient execution
+  + Reference engine for checking functionality
+    (implements the SPARQL evaluation semantics very simply for clarity and validation)
+  + Remote access engine for querying SPARQL endpoints over HTTP.
+  + Engine1, for exact ARQ1 semantics and enhancements
+    (deprecated for new applications (and will be removed sometime))
+  + RDQL engine
+  + See also SDB - an ARQ query engine that for RDF stored in SQL databases 
+
++ Access and extension points:
+   + Filter functions
+   + Property functions
+   + The parsed syntax
+   + Generation of the SPARQL algebra expression
+     + Modification of SPARQL algebra expression before executin plan generation
+     + Custom algebra operations 
+   + Basic graph pattern replacement or modification
+     for access to other data sources
+   + Modular query engine class hierarchy for reuse of machinary,
+     resulting in less extra coding for extensions.
+ 
+ + Internal changes
+   + Package reorganisation
+     Implemnentation in com.hp.hpl.jena.sparql
+   + Filter functions now take a Context, not an ExecutionContext.
+   + Deprecate "EXT" form from ARQ.
+     (Property functions are better)
+     
+ + Experimental SPARQL/Update API
+   See http://jena.hpl.hp.com/~afs/SPARQL-Update.html
+
+Post ARQ-2.0-beta: 
++ Added REDUCED as per DAWG decision 2007-03-20
++ OpDistinct and OpReduce no longer take a variable list
++ Removed ElementExtension/PlanExtension and extension package
+  The ARQ(beyond SPARQL feature) of "EXT" has been removed.
+  Element visitors may be affected.
++ Added an update API
++ LARQ
+	+ added access to the match score
+	+ added limits on score or number of results as part of Lucene search
