@@ -76,6 +76,7 @@
   </dependencySets>
 
   <fileSets>
+
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
@@ -112,15 +113,16 @@
       <lineEnding>dos</lineEnding>
       <fileMode>0755</fileMode>
     </fileSet>
-  </fileSets>
 
-  <fileSet>
-    <outputDirectory>/</outputDirectory>
-    <includes>
-      <include>ReleaseNotes-Jena.txt</include>
-      <include>ReleaseNotes-ARQ.txt</include>
-    </includes> 
-    <fileMode>0622</fileMode>
-  </fileSet>
+    <fileSet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+	<include>ReleaseNotes-Jena.txt</include>
+	<include>ReleaseNotes-ARQ.txt</include>
+      </includes> 
+      <fileMode>0622</fileMode>
+    </fileSet>
+    
+  </fileSets>
 
 </assembly>
