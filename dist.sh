@@ -2,7 +2,7 @@
 
 # Expect: environment contains M2_REPO
 #REPO=public_html/jena-R1-repo/org/apache/jena
-REPO=REPO/org/apache/jena/
+REPO=REPO/org/apache/jena
 
 OUT="dist"
 
