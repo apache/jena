@@ -1,9 +1,3 @@
-@@@@@@@@
-
-
-bin/
-bin2/
-bat/
 
 
                                   Apache Jena
@@ -15,37 +9,35 @@ bat/
 
   This distribution includes the following Apache Jena modules: 
 
-  - jena-core ..... https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/
-    this module provides the Jena RDF APIs, Ontology APIs and Infrence APIs. 
-  - jena-iri ....... https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/
-    this module provides an implementation of RFC 3987 (IRI) and RFC 3986 (URI)
-  - jena-arq ....... https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/
-    this module provides the SPARQL query engine used by Jena
+  - jena-core: provides the Jena RDF APIs, Ontology APIs and Inference APIs. 
+  - jena-arq: SPARQL 1.1, query and update.
+  - jena-iri: provides an implementation of RFC 3987 (IRI) and RFC 3986 (URI)
 
   Installing Jena
   ---------------
 
-  Jena is a Java library for RDF and OWL. To use Jena in your application, 
-  ensure all the .jar files in the lib/ directory are on the classpath or 
-  available to your web application. Jena is tested with these .jar files,
-  it includes a copy of Apache Xerces and it relies on specific features 
-  that change between versions.
+   To use Jena in your application, ensure all the .jar files in the lib/
+   directory are on the classpath or available to your web application. Jena
+   is built and test with these .jar files.
 
   Scripts
   -------
 
-@@@
-bin/
-bin2/
-bat/
-@@@
+  The directories bat/ and bin/ provide script wrappers to run Jena command
+  line tools.  The scripts can be coppied to a convenient place on the
+  command path.
 
   To use the Jena tools from the command line you need to set the JENAROOT
-  and ARQROOT environment variables pointing to the location where you have 
+  environment variable to point to the location where you have 
   unzipped the Jena distribution:
 
-    export JENAROOT=/path/to/apache-jena-2.6.5-incubating
-    export ARQROOT=/path/to/apache-jena-2.6.5-incubating
+  Windows:
+    set JENAROOT \path\to\apache-jena-2.7.0-incubating
+    bat\sparql.bat --version    
+
+  Linux
+    export JENAROOT=/path/to/apache-jena-2.7.0-incubating
+    bin/sparql --version    
 
 
   Website
