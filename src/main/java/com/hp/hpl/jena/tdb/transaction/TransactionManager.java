@@ -23,6 +23,7 @@ import static com.hp.hpl.jena.tdb.transaction.TransactionManager.TxnPoint.BEGIN 
 import static com.hp.hpl.jena.tdb.transaction.TransactionManager.TxnPoint.CLOSE ;
 import static java.lang.String.format ;
 
+import java.io.File ;
 import java.util.ArrayList ;
 import java.util.HashSet ;
 import java.util.List ;
@@ -305,7 +306,7 @@ public class TransactionManager
         return begin$(mode, label) ;
     }
     
-    public static boolean tmpDebugNoteActions = false ; 
+    public static boolean DEBUG = false ; 
         
     synchronized
     private DatasetGraphTxn begin$(ReadWrite mode, String label)
@@ -322,7 +323,7 @@ public class TransactionManager
         if ( mode == ReadWrite.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
-        if ( tmpDebugNoteActions ) 
+        if ( DEBUG ) 
             switch ( mode )
             {
                 case READ : System.out.print("r") ; break ;
@@ -334,12 +335,12 @@ public class TransactionManager
         DatasetGraphTDB dsg = baseDataset ;
         // *** But, if there are pending, committed transactions, use latest.
         if ( ! commitedAwaitingFlush.isEmpty() )
-        {  if ( tmpDebugNoteActions ) System.out.print(commitedAwaitingFlush.size()) ;
+        {  if ( DEBUG ) System.out.print(commitedAwaitingFlush.size()) ;
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         }
         else 
         {
-            if ( tmpDebugNoteActions ) System.out.print('_') ;
+            if ( DEBUG ) System.out.print('_') ;
         }
         Transaction txn = createTransaction(dsg, mode, label) ;
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
@@ -413,13 +414,21 @@ public class TransactionManager
             return ;
         }
 
-        if ( tmpDebugNoteActions &&  queue.size() > 0 ) 
-            System.out.print("!"+queue.size()+"!") ;
+        if ( DEBUG )
+        {
+            if ( queue.size() > 0 ) 
+                System.out.print("!"+queue.size()+"!") ;
+            
+        }
         
         if ( log() )
-        {
             log("Start flush delayed commits", txn) ;
-        }
+        
+        if ( DEBUG ) checkNodesDatJrnl(txn) ;
+        
+        if ( queue.size() == 0 && txn != null )
+            // Nothing to do - journal should be empty. 
+            return ;
         
         while ( queue.size() > 0 )
         {
@@ -432,27 +441,46 @@ public class TransactionManager
                 if ( txn2.getMode() == ReadWrite.READ )
                     continue ;
                 if ( log() )
-                    log("Flush delayed commit of "+txn.getLabel(), txn) ;
-                // This takes a Write lock on the  DSG - this is where it blocks.
+                    log("Flush delayed commit of "+txn2.getLabel(), txn) ;
+                if ( DEBUG ) checkNodesDatJrnl(txn) ;
                 checkReplaySafe() ;
                 enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
-                
-                // Drain queue - in fact, everything is done by one "enactTransaction"
-                
             } catch (InterruptedException ex)
             { Log.fatal(this, "Interruped!", ex) ; }
         }
+
         checkReplaySafe() ;
+        if ( DEBUG ) checkNodesDatJrnl(txn) ;
 
         // Whole journal to base database
         JournalControl.replay(journal, baseDataset) ;
+
+        if ( DEBUG ) checkNodesDatJrnl(txn) ;
         
         checkReplaySafe() ;
         if ( log() )
             log("End flush delayed commits", txn) ;
+        
+        
+        
     }
 
+    private static void checkNodesDatJrnl(Transaction txn)
+    {
+        if (txn != null)
+        {
+            String x = txn.getBaseDataset().getLocation().getPath("nodes.dat-jrnl") ;
+            long len = new File(x).length() ;
+            if (len != 0)
+            {
+                System.out.flush() ;
+                System.err.println("Not zero 1") ;
+                System.err.println("Not zero 2") ;
+            }
+        }   
+    }
+    
     private void checkReplaySafe()
     {
         if ( ! checking ) return ;

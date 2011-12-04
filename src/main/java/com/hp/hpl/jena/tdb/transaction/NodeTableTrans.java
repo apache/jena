@@ -163,7 +163,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         journalObjFileStartOffset = journalObjFile.length() ;
         if ( journalObjFileStartOffset != 0 )
         {
-            System.err.printf("\njournalStartOffset not zero: %d/0x%02X\n",journalObjFileStartOffset, journalObjFileStartOffset) ;
+            System.out.flush() ;
+            System.err.printf("\n%s journalStartOffset not zero: %d/0x%02X\n",txn.getLabel(), journalObjFileStartOffset, journalObjFileStartOffset) ;
             
             // repeat for debugging.
             journalObjFile.length() ;
@@ -265,19 +266,19 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
-        debug(">> commitPrepare: %s", label) ;
+        debug("%s >> commitPrepare: %s", txn.getLabel(), label) ;
         // The node table is append-only so it can be written during prepare.
         // The index isn't written (via the transaction journal) until enact.
         if ( nodeTableJournal == null )
-            throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
+            throw new TDBTransactionException(txn.getLabel()+": Not in a transaction for a commit to happen") ;
         writeNodeJournal() ;
         
         if ( journalObjFile.length() != 0 )
         {
             long x = journalObjFile.length() ;
-            throw new TDBTransactionException("journalObjFile not cleared ("+x+")") ;
+            throw new TDBTransactionException(txn.getLabel()+": journalObjFile not cleared ("+x+")") ;
         }
-        debug("<< commitPrepare: %s", label) ;
+        debug("%s << commitPrepare: %s", txn.getLabel(), label) ;
     }
     
     @Override
@@ -306,7 +307,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         nodeIndex.clear() ;
         // Fixes nodeTableJournal
         journalObjFile.truncate(journalObjFileStartOffset) ;
-        // No need to sync - it's going to be closed.
+        journalObjFile.sync() ;
         base.sync() ;
         offset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
         passthrough = true ;
@@ -315,7 +316,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitClearup(Transaction txn)
     {
-        //debug("commitClearup") ;
+        debug("commitClearup") ;
         finish() ;
     }
 
@@ -323,11 +324,12 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     public void abort(Transaction txn)
     {
         if ( nodeTableJournal == null )
-            throw new TDBTransactionException("Not in a transaction for a commit to happen") ;
+            throw new TDBTransactionException(txn.getLabel()+": Not in a transaction for a commit to happen") ;
         // Ensure the cache does not flush.
         nodeTableJournal = null ;
         // then make sure the journal file is empty.
         journalObjFile.truncate(journalObjFileStartOffset) ;
+        journalObjFile.sync() ;
         finish() ;
     }
     

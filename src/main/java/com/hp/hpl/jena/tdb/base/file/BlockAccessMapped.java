@@ -23,7 +23,7 @@ import static java.lang.String.format;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
+import static java.nio.channels.FileChannel.MapMode ;
 import java.util.Arrays;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
@@ -217,7 +217,7 @@ public class BlockAccessMapped extends BlockAccessBase
         if ( segBuffer == null )
         {
             try {
-                segBuffer = channel.map(FileChannel.MapMode.READ_WRITE, offset, SegmentSize) ;
+                segBuffer = channel.map(MapMode.READ_WRITE, offset, SegmentSize) ;
                 if ( getLog().isDebugEnabled() )
                     getLog().debug(format("Segment: %d", seg)) ;
                 segments[seg] = segBuffer ;
