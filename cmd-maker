@@ -32,7 +32,7 @@ function make-bin()
     local C=$1
     # Filename.
     CMD=bin/${C#*.}
-    sed -e "s!JENA_CMD!$C!" < template.cmd > $CMD
+    sed -e "s!JENA_CMD!$C!" < template.bin > $CMD
 }
 
 function make-bat()

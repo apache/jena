@@ -44,25 +44,6 @@ function cpfile
     done
 }
 
-## ToDo: automate
-
-V_TOP=0
-V_IRI=0.9.0
-V_CORE=2.7.0
-V_DIST=2.7.0
-V_ARQ=2.9.0
-V_LARQ=1.0.0
-V_ZIP=$V_CORE
-inc=incubating
-
-## Step 1 : top level
-echo "## Top level"
-$CPCMD KEYS dist
-$CPCMD HEADER.html dist
-
-cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.zip" "."
-cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.tar.gz" "."
-
 function cpallfiles
 {
     local M="$1"
@@ -79,7 +60,30 @@ function cpallfiles
 }
 
 
-## Step 2: modules
+
+## ToDo: automate
+
+V_TOP=0
+V_IRI=0.9.0
+V_CORE=2.7.0
+V_DIST=2.7.0
+V_ARQ=2.9.0
+V_LARQ=1.0.0
+V_ZIP=$V_CORE
+inc=incubating
+
+## Top level directory
+
+echo "## Top level"
+$CPCMD KEYS dist
+$CPCMD HEADER.html dist
+
+echo "## Download"
+cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.zip" "."
+cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.tar.gz" "."
+cpfile "apache-jena/${V_DIST}-$inc/apache-jena-${V_DIST}-$inc.tar.bz2" "."
+
+## Modules
 
 echo "## JenaTop"
 M=jena-top
@@ -101,7 +105,7 @@ cpallfiles jena-arq ${V_ARQ}
 ## echo "## LARQ"
 ## cpallfiles jena-larq ${V_LARQ}
 
-echo "## Download"
+echo "## zip"
 M=apache-jena
 V=${V_ZIP}
 D="$M-$V-$inc"
