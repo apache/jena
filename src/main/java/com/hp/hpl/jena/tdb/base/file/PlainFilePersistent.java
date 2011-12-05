@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.IOException ;
-import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
@@ -32,9 +31,7 @@ public class PlainFilePersistent extends PlainFile
 {
     private static Logger log = LoggerFactory.getLogger(PlainFilePersistent.class) ;
     
-    private FileChannel channel ;
-    private RandomAccessFile out ;
-    private String filename ;
+    private FileBase file ;
 
     // Plain file over mmapped ByteBuffer 
     PlainFilePersistent(Location loc, String filename)
@@ -44,50 +41,28 @@ public class PlainFilePersistent extends PlainFile
     
     PlainFilePersistent(String filename)
     {
-        try {
-            this.filename = filename ;
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
-            
-            out = new RandomAccessFile(filename, "rw") ;
-            long filesize = out.length() ;
-            channel = out.getChannel() ;
-            byteBuffer = allocateBuffer(filesize) ;
-            //if ( channel.size() == 0 ) {}
-        } catch (IOException ex) { throw new FileException("Failed to create BlockMgrFile", ex) ; }
+        file = new FileBase(filename) ;
+        //long filesize = file.out.length() ;
+        //if ( channel.size() == 0 ) {}
+        byteBuffer = allocateBuffer(filesize) ;
     }
-    
-    protected PlainFilePersistent() 
-    {
-        channel = null ;
-        out = null ;
-    }
-    
     
     @Override
     public void sync()
     { 
-        try { channel.force(true) ; } 
-        catch (IOException ex) { IO.exception(ex) ; }
+        file.sync() ; 
     }
     
     @Override
     public void close()
     {
-        try {
-            sync() ;
-            out.close();        // Closes the channel.
-            channel = null ;
-            out = null ;
-        } catch (IOException ex) { IO.exception(ex) ; }
-
+        file.close() ;
     }
 
     @Override
     protected ByteBuffer allocateBuffer(long size)
     {
-        try { return channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
+        try { return file.channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
         catch (IOException ex)  { IO.exception(ex) ; return null ; }
     }
 }

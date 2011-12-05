@@ -47,7 +47,7 @@ public class ObjectFileStorage implements ObjectFile
     private void log(String fmt, Object... args)
     { 
         if ( ! logging ) return ;
-        log.info(state()+" "+String.format(fmt, args)) ;
+        log.debug(state()+" "+String.format(fmt, args)) ;
     }
     
     /* 
@@ -231,20 +231,21 @@ public class ObjectFileStorage implements ObjectFile
     }
 
     @Override
-    public void reposition(long id)
+    public void reposition(long posn)
     {
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;
-        if ( id < 0 || id > length() )
-            throw new IllegalArgumentException("reposition: Bad location: "+id) ;
+        if ( posn < 0 || posn > length() )
+            throw new IllegalArgumentException("reposition: Bad location: "+posn) ;
         flushOutputBuffer() ;
-        file.truncate(id) ;
-        filesize = id ;
+        file.truncate(posn) ;
+        filesize = posn ;
     }
 
     @Override
     public void truncate(long size)
     {
+        //System.out.println("truncate: "+size+" ("+filesize+","+writeBuffer.position()+")") ;
         reposition(size) ;
     }
 
@@ -256,14 +257,14 @@ public class ObjectFileStorage implements ObjectFile
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;
         if ( loc < 0 )
-            throw new IllegalArgumentException("ObjectFile.read: Bad read: "+loc) ;
+            throw new IllegalArgumentException("ObjectFile.read["+file.getLabel()+"]: Bad read: "+loc) ;
         
         // Maybe it's in the in the write buffer.
         // Maybe the write buffer should keep more structure? 
         if ( loc >= filesize )
         {
             if ( loc >= filesize+writeBuffer.position() )
-                throw new IllegalArgumentException("ObjectFile.read: Bad read: location="+loc+" >= max="+(filesize+writeBuffer.position())) ;
+                throw new IllegalArgumentException("ObjectFile.read["+file.getLabel()+"]: Bad read: location="+loc+" >= max="+(filesize+writeBuffer.position())) ;
             
             int x = writeBuffer.position() ;
             int y = writeBuffer.limit() ;
@@ -284,12 +285,12 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
-            throw new FileException("ObjectFile.read("+loc+")["+filesize+"]["+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
+            throw new FileException("ObjectFile.read["+file.getLabel()+"]("+loc+")["+filesize+"]["+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
         // Sanity check. 
         if ( len > filesize-(loc+SizeOfInt) )
         {
-            String msg = "ObjectFile.read("+loc+")["+filesize+"]["+file.size()+"]: Impossibly large object : "+len+" bytes" ;
+            String msg = "ObjectFile.read["+file.getLabel()+"]("+loc+")["+filesize+"]["+file.size()+"]: Impossibly large object : "+len+" bytes" ;
             SystemTDB.errlog.error(msg) ;
             throw new FileException(msg) ;
         }

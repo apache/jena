@@ -20,10 +20,7 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import static java.lang.String.format ;
 
-import java.io.IOException ;
-import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
-import java.nio.channels.FileChannel ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.openjena.atlas.lib.FileOps ;
@@ -36,43 +33,33 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** Support for a disk file backed FileAccess */
 public abstract class BlockAccessBase implements BlockAccess 
 {
-    final protected int blockSize ;
-    protected final String filename ;
+    protected final int blockSize ;
+    protected final FileBase file ; 
+    
     protected final String label ;
-    protected FileChannel channel ;
-//    protected RandomAccessFile out ;
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
     protected final AtomicLong seq ;   // Id (future)
     protected boolean isEmpty = false ;
 
     public BlockAccessBase(String filename, int blockSize)
     {
+        file = new FileBase(filename) ;
         this.blockSize = blockSize ;
-        this.filename = filename ;
         this.label = FileOps.basename(filename) ;
-        try {
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
+        long filesize = file.size() ;
+        long longBlockSize = blockSize ;
+            
+        numFileBlocks = filesize/longBlockSize ;
+        seq = new AtomicLong(numFileBlocks) ;
 
-            RandomAccessFile out = new RandomAccessFile(filename, "rw") ;
-            channel = out.getChannel() ;
-            
-            long filesize = channel.size() ;
-            long longBlockSize = blockSize ;
-            
-            numFileBlocks = filesize/longBlockSize ;
-            seq = new AtomicLong(numFileBlocks) ;
-            
-            if ( numFileBlocks > Integer.MAX_VALUE )
-                getLog().warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
-            
-            if ( filesize%longBlockSize != 0 )
-                throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
+        if ( numFileBlocks > Integer.MAX_VALUE )
+            getLog().warn(format("File size (%d) exceeds tested block number limits (%d)", filesize, blockSize)) ;
 
-            if ( channel.size() == 0 )
-                isEmpty = true ;
-        } catch (IOException ex) { throw new BlockException("Failed to create BlockMgrFile", ex) ; }    
+        if ( filesize%longBlockSize != 0 )
+            throw new BlockException(format("File size (%d) not a multiple of blocksize (%d)", filesize, blockSize)) ;
+
+        if ( filesize == 0 )
+            isEmpty = true ;
     }
 
     protected abstract Logger getLog()  ;
@@ -117,7 +104,7 @@ public abstract class BlockAccessBase implements BlockAccess
             synchronized(this)
             {
                 if ( id < 0 || id >= numFileBlocks )
-                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", filename, id,numFileBlocks)) ;
+                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", file.filename, id,numFileBlocks)) ;
             }
         }
     }
@@ -134,15 +121,11 @@ public abstract class BlockAccessBase implements BlockAccess
 
     protected void force()
     {
-        try
-        {
-            channel.force(false) ;  // Don't flush metadata 
-        } catch (IOException ex)
-        { throw new FileException("Channel.force failed", ex) ; }
+        file.sync() ;
     }
     
     //@Override
-    final public boolean isClosed() { return channel == null ; }  
+    final public boolean isClosed() { return file.channel == null ; }  
     
     protected final void checkIfClosed() 
     { 
@@ -156,15 +139,7 @@ public abstract class BlockAccessBase implements BlockAccess
     final public void close()
     {
         _close() ;
-        if ( channel != null )
-        {
-            try {
-                force() ;
-                channel.close();
-                channel = null ;
-            } catch (IOException ex)
-            { throw new BlockException(ex) ; }
-        }
+        file.close() ;
     }
     
     @Override

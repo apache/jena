@@ -67,7 +67,7 @@ public class BlockAccessDirect extends BlockAccessBase
     private void readByteBuffer(long id, ByteBuffer dst)
     {
         try {
-            int len = channel.read(dst, filePosition(id)) ;
+            int len = file.channel.read(dst, filePosition(id)) ;
             if ( len != blockSize )
                 throw new FileException(format("get: short read (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
@@ -90,7 +90,7 @@ public class BlockAccessDirect extends BlockAccessBase
         bb.limit(bb.capacity()) ;   // It shouldn't have been changed.
         bb.rewind() ;
         try {
-            int len = channel.write(bb, filePosition(block.getId())) ;
+            int len = file.channel.write(bb, filePosition(block.getId())) ;
             if ( len != blockSize )
                 throw new FileException(format("write: short write (%d, not %d)", len, blockSize)) ;   
         } catch (IOException ex)
@@ -121,5 +121,5 @@ public class BlockAccessDirect extends BlockAccessBase
     }
     
     @Override
-    public String toString() { return "Direct:"+FileOps.basename(filename) ; }
+    public String toString() { return "Direct:"+FileOps.basename(file.filename) ; }
 }

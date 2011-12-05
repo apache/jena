@@ -109,16 +109,6 @@ public class FileSet
         return location.isMem() ;
     }
 
-//    public RandomAccessFile openReadOnly(String ext)
-//    {
-//        return open(ext, "r") ;
-//    }
-//    
-//    public RandomAccessFile open(String ext)
-//    {
-//        return open(ext, "rw") ;
-//    }
-//        
     public boolean exists(String ext)
     {
         if ( location.isMem() )
@@ -140,21 +130,4 @@ public class FileSet
     {
         return location.getPath(basename, ext) ;
     }
-    
-//    public RandomAccessFile open(String ext, String mode)
-//    {
-//        // "rwd" - Syncs only the file contents
-//        // "rws" - Syncs the file contents and metadata
-//        // "rw" -
-//        try {
-//            RandomAccessFile out = new RandomAccessFile(filename(ext), mode) ;
-//            return out ;
-//        } catch (IOException ex) { throw new FileException("Failed to open file", ex) ; } 
-//    }
-//    
-//    public FileChannel openChannel(String ext)
-//    {
-//        RandomAccessFile out = open(ext, "rw") ;
-//        return out.getChannel() ;
-//    }
 }

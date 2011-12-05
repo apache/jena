@@ -105,15 +105,13 @@ public class BufferChannelFile implements BufferChannel
     @Override
     public void sync()
     { 
-        try { file.channel.force(true) ; }
-        catch (IOException e) { IO.exception(e) ; }
+        file.sync() ;
     }
 
     @Override
     public void close()
     {
-        try { file.channel.close() ; }
-        catch (IOException e) { IO.exception(e) ; }
+        file.close() ;
     }
 
     @Override

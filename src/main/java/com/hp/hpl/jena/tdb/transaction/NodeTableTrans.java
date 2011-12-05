@@ -57,6 +57,9 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private final String label ;
     private final Transaction txn ;     // Can be null (during recovery).
     
+    // *** TEMPORARY!
+    public static boolean FIXUP = false ;  
+    
     public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile objFile)
     {
         this.txn = txn ;
@@ -169,7 +172,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             // repeat for debugging.
             journalObjFile.length() ;
             
-            if ( false )
+            if ( FIXUP )
             {
                 // TEMP : if you see this code active in SVN, set it to false immediately.
                 // The question is how come the journal position was non-zero in the first place. 
@@ -316,7 +319,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitClearup(Transaction txn)
     {
-        debug("commitClearup") ;
+        debug("%s ** commitClearup: %s",  txn.getLabel(), label) ;
         finish() ;
     }
 
