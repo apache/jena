@@ -150,6 +150,11 @@ public class IO
         throw new AtlasException(ex) ;
     }
 
+    public static void exception(String msg, IOException ex)
+    {
+        throw new AtlasException(msg, ex) ;
+    }
+    
     public static void flush(OutputStream out)
     { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
     
