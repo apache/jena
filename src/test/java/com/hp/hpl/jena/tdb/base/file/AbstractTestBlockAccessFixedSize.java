@@ -19,6 +19,8 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import static com.hp.hpl.jena.tdb.base.BufferTestLib.sameValue ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
@@ -44,22 +46,23 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
         return b ;
     }
 
+    private BlockAccess file ;
+    @Before public void before() { file = make() ; }
+    @After  public void after()  { file.close() ; }
+
     @Test public void fileaccess_01()
     {
-        BlockAccess file = make() ;
         assertTrue(file.isEmpty()) ;
     }
     
     @Test public void fileaccess_02()
     {
-        BlockAccess file = make() ;
         Block b = data(file, blkSize) ;
         file.write(b) ;
     }
 
     @Test public void fileaccess_03()
     {
-        BlockAccess file = make() ;
         Block b1 = data(file, blkSize) ;
         file.write(b1) ;
         long x = b1.getId() ;
@@ -73,7 +76,6 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
     
     @Test public void fileaccess_04()
     {
-        BlockAccess file = make() ;
         Block b1 = data(file, blkSize) ;
         Block b2 = data(file, blkSize) ;
         file.write(b1) ;
@@ -89,7 +91,6 @@ public abstract class AbstractTestBlockAccessFixedSize extends BaseTest
     @Test(expected=FileException.class)
     public void fileaccess_05()
     {
-        BlockAccess file = make() ;
         Block b1 = data(file, 10) ;
         Block b2 = data(file, 20) ;
         file.write(b1) ;

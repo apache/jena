@@ -32,7 +32,7 @@ public class TestChannelFile extends AbstractTestChannel
     @AfterClass public static void cleanup() { FileOps.deleteSilent(filename) ; } 
     
     @Override
-    protected BufferChannel make()
+    protected BufferChannel open()
     {
         FileOps.deleteSilent(filename) ;
         return new BufferChannelFile(filename) ;

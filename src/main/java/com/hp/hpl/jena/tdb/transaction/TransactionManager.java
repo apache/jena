@@ -343,6 +343,9 @@ public class TransactionManager
             if ( DEBUG ) System.out.print('_') ;
         }
         Transaction txn = createTransaction(dsg, mode, label) ;
+        
+        log("begin$", txn) ;
+        
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
 
@@ -424,7 +427,7 @@ public class TransactionManager
         if ( log() )
             log("Start flush delayed commits", txn) ;
         
-        if ( DEBUG ) checkNodesDatJrnl(txn) ;
+        if ( DEBUG ) checkNodesDatJrnl("1", txn) ;
         
         if ( queue.size() == 0 && txn != null )
             // Nothing to do - journal should be empty. 
@@ -442,7 +445,7 @@ public class TransactionManager
                     continue ;
                 if ( log() )
                     log("Flush delayed commit of "+txn2.getLabel(), txn) ;
-                if ( DEBUG ) checkNodesDatJrnl(txn) ;
+                if ( DEBUG ) checkNodesDatJrnl("2", txn) ;
                 checkReplaySafe() ;
                 enactTransaction(txn2) ;
                 commitedAwaitingFlush.remove(txn2) ;
@@ -451,12 +454,12 @@ public class TransactionManager
         }
 
         checkReplaySafe() ;
-        if ( DEBUG ) checkNodesDatJrnl(txn) ;
+        if ( DEBUG ) checkNodesDatJrnl("3", txn) ;
 
         // Whole journal to base database
         JournalControl.replay(journal, baseDataset) ;
 
-        if ( DEBUG ) checkNodesDatJrnl(txn) ;
+        if ( DEBUG ) checkNodesDatJrnl("4", txn) ;
         
         checkReplaySafe() ;
         if ( log() )
@@ -466,18 +469,14 @@ public class TransactionManager
         
     }
 
-    private static void checkNodesDatJrnl(Transaction txn)
+    private static void checkNodesDatJrnl(String label, Transaction txn)
     {
         if (txn != null)
         {
-            String x = txn.getBaseDataset().getLocation().getPath("nodes.dat-jrnl") ;
+            String x = txn.getBaseDataset().getLocation().getPath(label+": nodes.dat-jrnl") ;
             long len = new File(x).length() ;
             if (len != 0)
-            {
-                System.out.flush() ;
-                System.err.println("Not zero 1") ;
-                System.err.println("Not zero 2") ;
-            }
+                log("nodes.dat-jrnl: not empty", txn) ;
         }   
     }
     
@@ -570,12 +569,12 @@ public class TransactionManager
         return journal ;
     }
 
-    private boolean log()
+    private static boolean log()
     {
         return syslog.isDebugEnabled() || log.isDebugEnabled() ;
     }
     
-    private void log(String msg, Transaction txn)
+    private static void log(String msg, Transaction txn)
     {
         if ( ! log() )
             return ;
@@ -585,7 +584,7 @@ public class TransactionManager
             logger().debug(txn.getLabel()+": "+msg) ;
     }
 
-    private Logger logger()
+    private static Logger logger()
     {
         if ( syslog.isDebugEnabled() )
             return syslog ;

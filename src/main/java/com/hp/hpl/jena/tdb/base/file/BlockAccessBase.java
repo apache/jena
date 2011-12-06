@@ -43,7 +43,7 @@ public abstract class BlockAccessBase implements BlockAccess
 
     public BlockAccessBase(String filename, int blockSize)
     {
-        file = new FileBase(filename) ;
+        file = FileBase.create(filename) ;
         this.blockSize = blockSize ;
         this.label = FileOps.basename(filename) ;
         long filesize = file.size() ;
@@ -125,7 +125,7 @@ public abstract class BlockAccessBase implements BlockAccess
     }
     
     //@Override
-    final public boolean isClosed() { return file.channel == null ; }  
+    final public boolean isClosed() { return file.channel() == null ; }  
     
     protected final void checkIfClosed() 
     { 

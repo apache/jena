@@ -31,7 +31,7 @@ public class BufferChannelFile implements BufferChannel
 
     public BufferChannelFile(String filename)
     {
-        file = new FileBase(filename) ;
+        file = FileBase.create(filename) ;
     }
     
     @Override
@@ -43,14 +43,14 @@ public class BufferChannelFile implements BufferChannel
     @Override
     public long position()
     {
-        try { return file.channel.position() ; } 
+        try { return file.channel().position() ; } 
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 
     @Override
     public void position(long pos)
     {
-        try { file.channel.position(pos) ; } 
+        try { file.channel().position(pos) ; } 
         catch (IOException e) { IO.exception(e) ; }
     }
 
@@ -59,9 +59,9 @@ public class BufferChannelFile implements BufferChannel
     {
         try { 
             // http://bugs.sun.com/view_bug.do?bug_id=6191269
-            if ( length < file.channel.position() )
-                file.channel.position(length) ;
-            file.channel.truncate(length) ;
+            if ( length < file.channel().position() )
+                file.channel().position(length) ;
+            file.channel().truncate(length) ;
         }
         catch (IOException e) { IO.exception(e) ; }
     }
@@ -69,7 +69,7 @@ public class BufferChannelFile implements BufferChannel
     @Override
     public int read(ByteBuffer buffer)
     {
-        try { return file.channel.read(buffer) ; } 
+        try { return file.channel().read(buffer) ; } 
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
     
@@ -77,28 +77,28 @@ public class BufferChannelFile implements BufferChannel
     @Override
     public int read(ByteBuffer buffer, long loc)
     {
-        try { return file.channel.read(buffer, loc) ; } 
+        try { return file.channel().read(buffer, loc) ; } 
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 
     @Override
     public int write(ByteBuffer buffer)
     {
-        try { return file.channel.write(buffer) ; } 
+        try { return file.channel().write(buffer) ; } 
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 
     @Override
     public int write(ByteBuffer buffer, long loc)
     {
-        try { return file.channel.write(buffer, loc) ; } 
+        try { return file.channel().write(buffer, loc) ; } 
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 
     @Override
     public long size()
     {
-        try { return file.channel.size() ; }
+        try { return file.channel().size() ; }
         catch (IOException e) { IO.exception(e) ; return -1 ; }
     }
 

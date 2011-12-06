@@ -41,7 +41,7 @@ public class PlainFilePersistent extends PlainFile
     
     PlainFilePersistent(String filename)
     {
-        file = new FileBase(filename) ;
+        file = FileBase.create(filename) ;
         //long filesize = file.out.length() ;
         //if ( channel.size() == 0 ) {}
         byteBuffer = allocateBuffer(filesize) ;
@@ -62,7 +62,7 @@ public class PlainFilePersistent extends PlainFile
     @Override
     protected ByteBuffer allocateBuffer(long size)
     {
-        try { return file.channel.map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
+        try { return file.channel().map(FileChannel.MapMode.READ_WRITE, 0, size) ; }
         catch (IOException ex)  { IO.exception(ex) ; return null ; }
     }
 }

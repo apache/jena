@@ -27,7 +27,7 @@ public class TestChannelMem extends AbstractTestChannel
     static int counter = 0 ;
     
     @Override
-    protected BufferChannel make()
+    protected BufferChannel open()
     {
         return BufferChannelMem.create("Test-"+(counter++)) ;
     }

@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.IOException ;
-import java.io.RandomAccessFile ;
 import java.nio.channels.FileChannel ;
 
 import org.openjena.atlas.io.IO ;
@@ -28,26 +27,26 @@ import org.openjena.atlas.lib.Sync ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.base.block.BlockException ;
-
-public class FileBase implements Sync, Closeable
+public final class FileBase implements Sync, Closeable
 {
     static private Logger log = LoggerFactory.getLogger(FileBase.class) ; 
-    // Usually used as a mixin, which java does not support very well.
+    // A mixin, which java does not support very well.
     public final String filename ;
-    public FileChannel channel ;
-    public RandomAccessFile out ;
+    private FileChannel channel ;
     public static boolean DEBUG = false ;
     private final boolean DebugThis  ;
     private static long counter = 0 ;
     private final long id ;
 
-    public FileBase(String filename)
+    static FileBase create(String filename) { return new FileBase(filename) ; }
+    static FileBase create(String filename, String mode) { return new FileBase(filename, mode) ; }
+    
+    private /*public*/ FileBase(String filename)
     {
         this(filename, "rw") ;
     }
     
-    public FileBase(String filename, String mode)
+    private /*public*/ FileBase(String filename, String mode)
     {
         DebugThis = DEBUG && filename.contains("nodes.dat-jrnl") ;
         id  = (counter++) ;
@@ -55,15 +54,19 @@ public class FileBase implements Sync, Closeable
         if ( DebugThis )
             log.debug("open: ["+id+"]"+filename) ;
         this.filename = filename ;
-        try {
-            // "rwd" - Syncs only the file contents
-            // "rws" - Syncs the file contents and metadata
-            // "rw" - cached?
-            out = new RandomAccessFile(filename, mode) ;
-            channel = out.getChannel() ;
-        } catch (IOException ex) { throw new BlockException("Failed to create FileBase", ex) ; }
+        channel = ChannelManager.open(filename, mode) ;
+//        try {
+//            // "rwd" - Syncs only the file contents
+//            // "rws" - Syncs the file contents and metadata
+//            // "rw"  - OS write behind possible
+//            // "r"   - read only
+//            RandomAccessFile out = new RandomAccessFile(filename, mode) ;
+//            channel = out.getChannel() ;
+//        } catch (IOException ex) { throw new BlockException("Failed to create FileBase", ex) ; }
     }
-
+    
+    public final FileChannel channel() { return channel ; }
+    
     public long size()
     {
         try {
@@ -71,19 +74,25 @@ public class FileBase implements Sync, Closeable
         } catch (IOException ex)
         { IO.exception(ex) ; return -1L ; }
     }
+
+    public boolean isClosed()
+    {
+        return channel == null ;
+    }
+
     
     @Override
     public void close()
     {
         if ( DebugThis )
             log.debug("close: ["+id+"]: "+filename) ;
-        try {
-            channel.close() ;
-            channel = null ;
-            out = null ;
-        } catch (IOException ex)
-        { throw new FileException("FileBase.close", ex) ; }
-
+        ChannelManager.close(channel) ;
+        channel = null ;
+//        try {
+//            channel.close() ;
+//            channel = null ;
+//        } catch (IOException ex)
+//        { throw new FileException("FileBase.close", ex) ; }
     }
 
     @Override

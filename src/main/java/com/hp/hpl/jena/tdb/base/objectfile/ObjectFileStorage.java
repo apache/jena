@@ -285,12 +285,12 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
-            throw new FileException("ObjectFile.read["+file.getLabel()+"]("+loc+")["+filesize+"]["+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
+            throw new FileException("ObjectFile.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"]filesize="+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
         // Sanity check. 
         if ( len > filesize-(loc+SizeOfInt) )
         {
-            String msg = "ObjectFile.read["+file.getLabel()+"]("+loc+")["+filesize+"]["+file.size()+"]: Impossibly large object : "+len+" bytes" ;
+            String msg = "ObjectFile.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][filesize="+file.size()+"]: Impossibly large object : "+len+" bytes > filesize-(loc+SizeOfInt)="+(filesize-(loc+SizeOfInt)) ;
             SystemTDB.errlog.error(msg) ;
             throw new FileException(msg) ;
         }

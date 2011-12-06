@@ -22,19 +22,20 @@ import java.nio.ByteBuffer ;
 
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestChannel extends BaseTest
 {
-    protected abstract BufferChannel make() ;
-    static final int blkSize = 100 ;
+    protected abstract BufferChannel open() ;
     
-    @Test public void storage_01() 
-    {
-        BufferChannel store = make() ;
-        assertEquals(0, store.size()) ;
-    }
+    private BufferChannel store ;
+    @Before public void before() { store = open() ; }
+    @After  public void after()  { store.close() ; }
+    
+    static final int blkSize = 100 ;
     
     protected static ByteBuffer data(int len)
     {
@@ -47,7 +48,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     protected static boolean same(ByteBuffer bb1, ByteBuffer bb2)
     {
-        
         if ( bb1.capacity() != bb2.capacity() ) return false ;
         bb1.clear() ;
         bb2.clear() ;
@@ -56,9 +56,13 @@ public abstract class AbstractTestChannel extends BaseTest
         return true ;
     }
 
+    @Test public void storage_01() 
+    {
+        assertEquals(0, store.size()) ;
+    }
+    
     @Test public void storage_02()
     {
-        BufferChannel store = make() ;
         ByteBuffer b = data(blkSize) ;
         store.write(b) ;
         long x = store.size() ;
@@ -67,7 +71,6 @@ public abstract class AbstractTestChannel extends BaseTest
 
     @Test public void storage_03()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         long posn = store.position() ; 
         store.write(b1) ;
@@ -79,7 +82,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_04()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b2 = data(blkSize/2) ;
 
@@ -94,7 +96,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_05()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b1a = ByteBuffer.allocate(blkSize) ;
         ByteBuffer b2 = data(blkSize/2) ;
@@ -110,7 +111,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_06()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         store.write(b1) ;
         store.truncate(0) ;
@@ -122,7 +122,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_07()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         store.write(b1) ;
         store.position(10) ;
@@ -134,7 +133,6 @@ public abstract class AbstractTestChannel extends BaseTest
     
     @Test public void storage_08()
     {
-        BufferChannel store = make() ;
         ByteBuffer b1 = data(blkSize) ;
         ByteBuffer b2 = data(blkSize) ;
         store.write(b1) ;

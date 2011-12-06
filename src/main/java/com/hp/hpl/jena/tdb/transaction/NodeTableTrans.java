@@ -179,6 +179,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
                 System.err.printf("journalStartOffset reset to zero") ;
                 journalObjFileStartOffset = 0 ;
                 journalObjFile.truncate(0) ;
+                journalObjFile.sync() ;
             }
         }
         offset += journalObjFileStartOffset ;
@@ -276,7 +277,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             throw new TDBTransactionException(txn.getLabel()+": Not in a transaction for a commit to happen") ;
         writeNodeJournal() ;
         
-        if ( journalObjFile.length() != 0 )
+        if ( journalObjFile != null && journalObjFile.length() != 0 )
         {
             long x = journalObjFile.length() ;
             throw new TDBTransactionException(txn.getLabel()+": journalObjFile not cleared ("+x+")") ;
@@ -310,7 +311,9 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         nodeIndex.clear() ;
         // Fixes nodeTableJournal
         journalObjFile.truncate(journalObjFileStartOffset) ;
-        journalObjFile.sync() ;
+        //journalObjFile.sync() ;
+        journalObjFile.close() ;
+        journalObjFile = null ;
         base.sync() ;
         offset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
         passthrough = true ;
