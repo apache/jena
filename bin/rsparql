@@ -10,4 +10,4 @@ CP=$($ARQROOT/bin/arq_path)
 
 #echo $CP
 
-java -Xmx1024M $SOCKS -cp "$CP" arq.remote "$@"
+java -Xmx1024M $SOCKS -cp "$CP" arq.rsparql "$@"

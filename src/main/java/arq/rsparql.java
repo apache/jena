@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.engine.http.HttpQuery ;
 import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP ;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils ;
 
-public class remote extends CmdARQ
+public class rsparql extends CmdARQ
 {
     protected ModQueryIn    modQuery =      new ModQueryIn() ;
     protected ModRemote     modRemote =     new ModRemote() ;
@@ -41,11 +41,11 @@ public class remote extends CmdARQ
 
     public static void main (String... argv)
     {
-        new remote(argv).mainRun() ;
+        new rsparql(argv).mainRun() ;
     }
 
 
-    public remote(String[] argv)
+    public rsparql(String[] argv)
     {
         super(argv) ;
         super.addModule(modRemote) ;
