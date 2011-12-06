@@ -12,12 +12,64 @@ assumes that dependences are already built so if you want to build from
 scratc, you need to build the dependencies first.  This can be done from
 the Apache "source-release" artifacts or from subversion.
 
+
 == Modules
 
 JenaTop - the parent POM
 IRI     - The IRI library
 jena    - the main RDF and OWL APIs, and memory storage subsystem.
 ARQ     - SPARQL query engine
+
+
+== Source from the Apache release
+
+The current release is available at:
+
+http://www.apache.org/dist/incubator/jena/
+
+Older Apache releases ara available at:
+
+http://archive.apache.org/dist/incubator/jena/
+
+Download all the "source-release" artifacts and unpack these.
+
+Download and unzip:
+
+http://archive.apache.org/dist/incubator/jena/jena-top-0-incubating/jena-top-0-incubating-source-release.zip
+(directory will be jena-top-0-incubating/)
+
+http://archive.apache.org/dist/incubator/jena/jena-iri-0.9.0-incubating/jena-iri-0.9.0-incubating-source-release.zip
+(directory will be jena-iri-0.9.0-incubating)
+
+http://archive.apache.org/dist/incubator/jena/jena-core-2.7.0-incubating/jena-core-2.7.0-incubating-source-release.zip
+(directory will be jena-core-2.7.0-incubating)
+
+http://archive.apache.org/dist/incubator/jena/jena-arq-2.9.0-incubating/jena-arq-2.9.0-incubating-source-release.zip
+(directory will be jena-arq-2.9.0-incubating)
+
+http://archive.apache.org/dist/incubator/jena/apache-jena-2.7.0-incubating/apache-jena-2.7.0-incubating-source-release.zip
+(directory will be apache-jena-2.7.0-incubating)
+
+
+== Build
+
+(if building from a specific set of source-release files, directory names
+will have version numbers in them).
+
+# Build modules.
+for module in jena-top* jena-iri* jena-core* jena-arq* apache-jena*
+do
+  cd $module
+  mvn clean install
+  cd ..
+  done
+
+# Build download.
+cd apache-jena*
+mvn clean package
+
+
+The download will be in apache-jena-2.7.0-incubating/target/
 
 
 == Sources from subversion
@@ -36,37 +88,6 @@ svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/trunk jena-arq
 svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaZip/trunk apache-jena
 
 
-== Source from the Apache release
-
-The current release is available at:
-
-http://www.apache.org/dist/incubator/jena/
-
-Older Apache releases ara available at:
-
-http://archive.apache.org/dist/incubator/jena/
-
-Download all the "source-release" artifacts and unpack these.
-
-
-== Build
-
-(if building from a specific set of source-release files, directory names
-will have version numbers in them).
-
-# Build modules.
-for module in jena-top* jena-iri* jena-core* jena-arq* apache-jena*
-do
-  cd $module
-  mvn clean install
-  cd ..
-  done
-
-# Build download.
-cd jena-zip*
-mvn clean package
-
-The download will be in jena-zip*/target/
 
 -------------------------------------------------------
 Please do hestiate in contacting the Jena developers:

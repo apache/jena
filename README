@@ -24,7 +24,7 @@
   -------
 
   The directories bat/ and bin/ provide script wrappers to run Jena command
-  line tools.  The scripts can be coppied to a convenient place on the
+  line tools.  The scripts can be copied to a convenient place on the
   command path.
 
   To use the Jena tools from the command line you need to set the JENAROOT
