@@ -410,7 +410,7 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int PERCENT = 196;
   /** RegularExpression Id. */
-  int PLNE = 197;
+  int PN_LOCAL_ESC = 197;
   /** RegularExpression Id. */
   int PN_CHARS_BASE = 198;
   /** RegularExpression Id. */
@@ -630,7 +630,7 @@ public interface ARQParserConstants {
     "\"?\"",
     "<HEX>",
     "<PERCENT>",
-    "<PLNE>",
+    "<PN_LOCAL_ESC>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",

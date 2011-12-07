@@ -390,19 +390,27 @@ public interface SPARQLParser11Constants {
   /** RegularExpression Id. */
   int QMARK = 186;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 187;
+  int HEX = 187;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 188;
+  int PERCENT = 188;
   /** RegularExpression Id. */
-  int PN_CHARS = 189;
+  int PN_LOCAL_ESC = 189;
   /** RegularExpression Id. */
-  int PN_PREFIX = 190;
+  int PN_CHARS_BASE = 190;
   /** RegularExpression Id. */
-  int PN_LOCAL = 191;
+  int PN_CHARS_U = 191;
   /** RegularExpression Id. */
-  int VARNAME = 192;
+  int PN_CHARS = 192;
   /** RegularExpression Id. */
-  int UNKNOWN = 193;
+  int PN_PREFIX = 193;
+  /** RegularExpression Id. */
+  int PLX = 194;
+  /** RegularExpression Id. */
+  int PN_LOCAL = 195;
+  /** RegularExpression Id. */
+  int VARNAME = 196;
+  /** RegularExpression Id. */
+  int UNKNOWN = 197;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -596,10 +604,14 @@ public interface SPARQLParser11Constants {
     "\"->\"",
     "\"<-\"",
     "\"?\"",
+    "<HEX>",
+    "<PERCENT>",
+    "<PN_LOCAL_ESC>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",
     "<PN_PREFIX>",
+    "<PLX>",
     "<PN_LOCAL>",
     "<VARNAME>",
     "<UNKNOWN>",

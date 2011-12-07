@@ -50,8 +50,15 @@
 
 options
 {
-   JAVA_UNICODE_ESCAPE   = true ;
-   UNICODE_INPUT         = false ;
+      // \ u processed in the input stream
+      // SPARQL 1.0
+    JAVA_UNICODE_ESCAPE   = true ;
+    UNICODE_INPUT         = false ;
+
+//       // \ u processed after parsing.
+//       // strings, prefix names, IRIs
+//       JAVA_UNICODE_ESCAPE   = false ;
+//       UNICODE_INPUT         = true ;
 
   STATIC                = false ;
 //  DEBUG_PARSER          = true ;
@@ -185,8 +192,7 @@ void SelectClause() : {  Var v ; Expr expr ; Node n ; }
 #if ARQ
       // Expressions without ()
       ( LOOKAHEAD(2)
-        expr = Aggregate()          { getQuery().addResultVar((Var)null, expr) ; }
-      | expr = BuiltInCall()        { getQuery().addResultVar((Var)null, expr) ; }
+        expr = BuiltInCall()        { getQuery().addResultVar((Var)null, expr) ; }
       | expr = FunctionCall()       { getQuery().addResultVar((Var)null, expr) ; }
       | n = RDFLiteral()            { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
       | n = NumericLiteral()        { getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ; }
@@ -367,13 +373,15 @@ void HavingClause() : { }
 
 void HavingCondition() : { Expr c ; }
 {
-   c = Constraint()
-   { getQuery().addHavingCondition(c) ; }
+  c = Constraint()
+  { getQuery().addHavingCondition(c) ; }
 }
 
 void OrderClause() : { }
 {
+  { allowAggregatesInExpressions = true ; }
   <ORDER> <BY> ( OrderCondition() )+
+  { allowAggregatesInExpressions = false ; }
 }
 
 void OrderCondition() :
@@ -1567,7 +1575,6 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
-  | expr = Aggregate() { return expr ; }
   )
 }
 
@@ -1579,6 +1586,8 @@ Expr BrackettedExpression() : { Expr expr ; }
 Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
                        Node gn ; Token t ; ExprList a ; }
 {
+    expr = Aggregate() { return expr ; }
+  |
     <STR> <LPAREN> expr = Expression() <RPAREN>
     { return new E_Str(expr) ; }
   | <LANG> <LPAREN> expr = Expression() <RPAREN>
@@ -2000,7 +2009,7 @@ TOKEN:
                       "\u0000"-"\u0020"])* ">" >
 |  <PNAME_NS: (<PN_PREFIX>)? ":" >
 |  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >
-|  <BLANK_NODE_LABEL: "_:" <PN_LOCAL> >
+|  <BLANK_NODE_LABEL: "_:" (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |  <VAR1: "?" <VARNAME> >
 |  <VAR2: "$" <VARNAME> >
 |  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
@@ -2290,27 +2299,21 @@ TOKEN :
 
 // See XML chars.txt for notes
 
-#ifdef ARQ
-#define PNL_EXTRA    1
-#endif
-
 TOKEN:
 {
   // ARQ extensions to the PN_LOCAL token.
-#ifdef PNL_EXTRA
   < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
 |
   < #PERCENT: "%" <HEX> <HEX> >
 |
-  // Prefixed Name, Local Par, Escape
+  // Prefixed Name, Local Part, charcater escape sequences
   // Align with QueryParseBase unescapePName.
-  < #PLNE: "\\" 
+  < #PN_LOCAL_ESC: "\\" 
           ( "_" | 
             "~" | "." | "-" | "!" | "$" | "&" | "'" | 
            "(" | ")" | "*" | "+" | "," | ";" | "=" | 
            ":" | "/" | "?" | "#" | "@" | "%" ) >
 |
-#endif
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
@@ -2330,19 +2333,12 @@ TOKEN:
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
-#ifdef SPARQL_11
-  // With a leading "_", no dot at end of local name.
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"]) ((<PN_CHARS>|".")* <PN_CHARS>)?  >
-#endif
-#ifdef ARQ
-  <#PLX:  <PERCENT> | <PLNE> >
-  //<#PLX:  <PERCENT> >
+  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
 |
   // If goes ahead, consolidate
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> ) 
               ( (<PN_CHARS>|"."| <PLX> )* 
                 (<PN_CHARS>|<PLX>) ) ?  >
-#endif
 |
   // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
