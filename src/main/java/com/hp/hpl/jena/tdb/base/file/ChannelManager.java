@@ -20,29 +20,31 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.IOException ;
 import java.io.RandomAccessFile ;
-import java.nio.channels.Channel ;
 import java.nio.channels.FileChannel ;
+import java.util.ArrayList ;
 import java.util.HashMap ;
+import java.util.List ;
 import java.util.Map ;
 
 import org.openjena.atlas.io.IO ;
 
 public class ChannelManager
 {
+    // Make per "location"?
+    
     // Because "FileManager" is already in use
     // ChannelManager
     
-    // Filebase ==> OpenFileRef
-    // ChannelRef
+    // FileBase ==> OpenFileRef, ChannelRef
     
-    public static FileChannel open(String filename)
+    public static FileChannel acquire(String filename)
     {
-        return open(filename, "rw") ;
+        return acquire(filename, "rw") ;
     }
     
-    public static FileChannel open(String filename, String mode)
+    public static FileChannel acquire(String filename, String mode)
     {
-        return openref$(filename, "rw") ;
+        return openref$(filename, mode) ;
     }
     
     static private Map<String, FileChannel> name2channel = new HashMap<String, FileChannel>() ;
@@ -50,13 +52,17 @@ public class ChannelManager
     
     private static FileChannel openref$(String filename, String mode)
     {
+        // Temp - for now, only journal files are tracked.
+        if ( ! filename.endsWith(".jrnl") )
+        {
+            return open$(filename, mode) ;
+        }
+        
         FileChannel chan = name2channel.get(filename) ;
         if ( chan != null )
         {
-            // Temp - for now, only journal files.
-            if ( filename.endsWith(".jrnl") )
-                // Scream - it's currently open.
-                throw new FileException("Already open: "+filename) ;
+            // Scream - it's currently open.
+            throw new FileException("Already open: "+filename) ;
         }
         chan = open$(filename, mode) ;
         name2channel.put(filename, chan) ;
@@ -77,11 +83,32 @@ public class ChannelManager
         } catch (IOException ex) { throw new FileException("Failed to open: "+filename+" (mode="+mode+")", ex) ; }
     }
     
-    public static void close(Channel chan)
+    public static void release(FileChannel chan)
     {
+        // Always close even if not managed.
         IO.close(chan) ;
         String name = channel2name.remove(chan) ;
-        name2channel.remove(name) ;
+        if ( name != null )
+            name2channel.remove(name) ;
+    }
+    
+    /** Shutdown all the files matching the prefix (typically a directory) */  
+    public static void shutdown(String prefix)
+    {
+        // Use an iterator explicitly so we can remove from the map.
+        List<FileChannel> x = new ArrayList<FileChannel>() ;
+        for ( String fn : name2channel.keySet() )
+        {
+            if ( fn.startsWith(prefix) )
+            {
+                x.add(name2channel.get(fn)) ;
+                // Don't call release here - potential CME problems.
+                // Could use an explicit iterator on teh keySet and .remove from that but
+                // then we nearly duplicate the code in release.
+            }
+        }
+        for ( FileChannel chan : x )
+            release(chan) ;
     }
 }
 

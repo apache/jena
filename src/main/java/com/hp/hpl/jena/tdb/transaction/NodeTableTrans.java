@@ -159,10 +159,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         passthrough = false ;
         
         offset = base.allocOffset().getId() ;
-        // Any outstanding transactions
-        //long journalOffset = journal.length() ;
-        //offset += journalOffset ;
-        
+
         journalObjFileStartOffset = journalObjFile.length() ;
         if ( journalObjFileStartOffset != 0 )
         {
@@ -176,7 +173,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             {
                 // TEMP : if you see this code active in SVN, set it to false immediately.
                 // The question is how come the journal position was non-zero in the first place. 
-                System.err.printf("journalStartOffset reset to zero") ;
+                System.err.println("journalStartOffset reset to zero") ;
                 journalObjFileStartOffset = 0 ;
                 journalObjFile.truncate(0) ;
                 journalObjFile.sync() ;

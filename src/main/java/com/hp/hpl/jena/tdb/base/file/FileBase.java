@@ -54,15 +54,7 @@ public final class FileBase implements Sync, Closeable
         if ( DebugThis )
             log.debug("open: ["+id+"]"+filename) ;
         this.filename = filename ;
-        channel = ChannelManager.open(filename, mode) ;
-//        try {
-//            // "rwd" - Syncs only the file contents
-//            // "rws" - Syncs the file contents and metadata
-//            // "rw"  - OS write behind possible
-//            // "r"   - read only
-//            RandomAccessFile out = new RandomAccessFile(filename, mode) ;
-//            channel = out.getChannel() ;
-//        } catch (IOException ex) { throw new BlockException("Failed to create FileBase", ex) ; }
+        channel = ChannelManager.acquire(filename, mode) ;
     }
     
     public final FileChannel channel() { return channel ; }
@@ -86,7 +78,7 @@ public final class FileBase implements Sync, Closeable
     {
         if ( DebugThis )
             log.debug("close: ["+id+"]: "+filename) ;
-        ChannelManager.close(channel) ;
+        ChannelManager.release(channel) ;
         channel = null ;
 //        try {
 //            channel.close() ;
