@@ -65,7 +65,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
         for ( Node n : nodes)
         {
             NodeId nodeId = nt.getNodeIdForNode(n) ;
-            assertFalse(NodeId.doesNotExist(nodeId)) ;
+            assertFalse(NodeId.isDoesNotExist(nodeId)) ;
         }
     }
     

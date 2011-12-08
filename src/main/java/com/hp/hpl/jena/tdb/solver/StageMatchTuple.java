@@ -77,7 +77,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
             // Substitution and turning into NodeIds
             // Variables unsubstituted are null NodeIds
             NodeId nId = idFor(nodeTable, input, n) ;
-            if ( NodeId.doesNotExist(nId) )
+            if ( NodeId.isDoesNotExist(nId) )
                 new NullIterator<BindingNodeId>() ;
             ids[i] = nId ;
             if ( nId == null )

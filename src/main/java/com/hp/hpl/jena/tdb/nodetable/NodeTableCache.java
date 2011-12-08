@@ -83,7 +83,7 @@ public class NodeTableCache implements NodeTable
     // NodeId ==> Node
     private Node _retrieveNodeByNodeId(NodeId id)
     {
-        if ( NodeId.doesNotExist(id) )
+        if ( NodeId.isDoesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
@@ -154,7 +154,7 @@ public class NodeTableCache implements NodeTable
         // The "notPresent" cache is used to note whether a node
         // is known not to exist.
         // This must be specially handled later if the node is added. 
-        if ( NodeId.doesNotExist(id) )
+        if ( NodeId.isDoesNotExist(id) )
         {
             notPresent.add(node) ;
             return ;

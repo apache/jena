@@ -331,8 +331,18 @@ public class NodeId
         }
     }
     
+    public final boolean isConcrete() { return !isAny(this) && !isDoesNotExist(this) ; }
+    
+    public static final boolean isConcrete(NodeId nodeId)
+    { 
+        if ( nodeId == null ) return false ;
+        if ( nodeId == NodeIdAny ) return false ;
+        if ( nodeId == NodeDoesNotExist ) return false ;
+        return true ;
+    }
+    
     public static final boolean isAny(NodeId nodeId) { return nodeId == NodeIdAny || nodeId == null ; }
-    public static final boolean doesNotExist(NodeId nodeId) { return nodeId == NodeDoesNotExist ; }
+    public static final boolean isDoesNotExist(NodeId nodeId) { return nodeId == NodeDoesNotExist ; }
     
     //public reset(long value) { this.value = value ; }
 }

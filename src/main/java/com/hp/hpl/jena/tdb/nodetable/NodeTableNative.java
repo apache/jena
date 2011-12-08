@@ -92,7 +92,7 @@ public class NodeTableNative implements NodeTable
     // NodeId to Node worker.
     private Node _retrieveNodeByNodeId(NodeId id)
     {
-        if ( NodeId.doesNotExist(id) )
+        if ( NodeId.isDoesNotExist(id) )
             return null ;
         if ( NodeId.isAny(id) )
             return null ;
