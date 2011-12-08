@@ -264,7 +264,7 @@ public class ObjectFileStorage implements ObjectFile
         if ( loc >= filesize )
         {
             if ( loc >= filesize+writeBuffer.position() )
-                throw new IllegalArgumentException("ObjectFile.read["+file.getLabel()+"]: Bad read: location="+loc+" >= max="+(filesize+writeBuffer.position())) ;
+                throw new IllegalArgumentException("ObjectFileStorage.read["+file.getLabel()+"]: Bad read: location="+loc+" >= max="+(filesize+writeBuffer.position())) ;
             
             int x = writeBuffer.position() ;
             int y = writeBuffer.limit() ;
@@ -285,12 +285,12 @@ public class ObjectFileStorage implements ObjectFile
         lengthBuffer.clear() ;
         int x = file.read(lengthBuffer, loc) ;
         if ( x != 4 )
-            throw new FileException("ObjectFile.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"]filesize="+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
+            throw new FileException("ObjectFileStorage.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][file.size()="+file.size()+"]: Failed to read the length : got "+x+" bytes") ;
         int len = lengthBuffer.getInt(0) ;
         // Sanity check. 
         if ( len > filesize-(loc+SizeOfInt) )
         {
-            String msg = "ObjectFile.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][filesize="+file.size()+"]: Impossibly large object : "+len+" bytes > filesize-(loc+SizeOfInt)="+(filesize-(loc+SizeOfInt)) ;
+            String msg = "ObjectFileStorage.read["+file.getLabel()+"]("+loc+")[filesize="+filesize+"][file.size()="+file.size()+"]: Impossibly large object : "+len+" bytes > filesize-(loc+SizeOfInt)="+(filesize-(loc+SizeOfInt)) ;
             SystemTDB.errlog.error(msg) ;
             throw new FileException(msg) ;
         }
@@ -302,7 +302,7 @@ public class ObjectFileStorage implements ObjectFile
         x = file.read(bb, loc+SizeOfInt) ;
         bb.flip() ;
         if ( x != len )
-            throw new FileException("ObjectFile.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
+            throw new FileException("ObjectFileStorage.read: Failed to read the object ("+len+" bytes) : got "+x+" bytes") ;
         return bb ;
     }
     
