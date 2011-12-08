@@ -26,6 +26,7 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.lib.ColumnMap ;
+import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.atlas.lib.Tuple ;
 
 
@@ -117,10 +118,31 @@ public class TupleLib
 
     private static Triple triple(NodeTable nodeTable, NodeId s, NodeId p, NodeId o) 
     {
+        if ( ! NodeId.isConcrete(s) )
+            throw new InternalErrorException("Invalid id for subject: "+fmt(s,p,o)) ;
+        if ( ! NodeId.isConcrete(p) )
+            throw new InternalErrorException("Invalid id for predicate: "+fmt(s,p,o)) ;
+        if ( ! NodeId.isConcrete(o) )
+            throw new InternalErrorException("Invalid id for object: "+fmt(s,p,o)) ;
+        
         Node sNode = nodeTable.getNodeForNodeId(s) ;
+        if ( sNode == null )
+            throw new InternalErrorException("Invalid id node for subject (null node): "+fmt(s,p,o)) ;
+
         Node pNode = nodeTable.getNodeForNodeId(p) ;
+        if ( pNode == null )
+            throw new InternalErrorException("Invalid id node for predicate (null node): "+fmt(s,p,o)) ;
+        
         Node oNode = nodeTable.getNodeForNodeId(o) ;
+        if ( oNode == null )
+            throw new InternalErrorException("Invalid id node for object (null node): "+fmt(s,p,o)) ;
+        
         return new Triple(sNode, pNode, oNode) ;
+    }
+    
+    private static String fmt(NodeId s, NodeId p, NodeId o)
+    {
+        return "("+s+", "+p+", "+o+")" ;
     }
     
     private static Quad quad(NodeTable nodeTable, Tuple<NodeId> tuple) 

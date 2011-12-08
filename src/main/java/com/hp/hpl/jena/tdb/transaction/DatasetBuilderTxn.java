@@ -124,10 +124,14 @@ public class DatasetBuilderTxn
             Index idx = new IndexMap(recordFactory) ;
             String objFilename = fsObjectFile.filename(Names.extNodeData+"-"+Names.extJournal) ;
             ObjectFile objectFile ;
-            if ( fsObjectFile.isMem() )
-                objectFile = FileFactory.createObjectFileMem(objFilename) ;
-            else
-                objectFile = FileFactory.createObjectFileDisk(objFilename) ;
+            
+            
+//            if ( fsObjectFile.isMem() )
+//                objectFile = FileFactory.createObjectFileMem(objFilename) ;
+//            else
+//                objectFile = FileFactory.createObjectFileDisk(objFilename) ;
+            // EXPERIMENT
+            objectFile = FileFactory.createObjectFileMem(objFilename) ;
 
             NodeTableTrans ntt = new NodeTableTrans(txn ,fsObjectFile.getBasename(), ntBase, idx, objectFile) ;
             txn.addComponent(ntt) ;

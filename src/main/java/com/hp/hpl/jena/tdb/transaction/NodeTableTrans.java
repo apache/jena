@@ -65,7 +65,9 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
+        //objFile.truncate(0) ;
         this.journalObjFile = objFile ;
+        
         this.label = label ; 
         // Show the way tables are wired up
         //debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
@@ -81,7 +83,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         if ( passthrough ) return base.getAllocateNodeId(node) ;
         NodeId nodeId = getNodeIdForNode(node) ;
-        if ( ! NodeId.doesNotExist(nodeId) )
+        if ( ! NodeId.isDoesNotExist(nodeId) )
             return nodeId ;
         // add to journal
         nodeId = allocate(node) ;
@@ -93,7 +95,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         if ( passthrough ) return base.getNodeIdForNode(node) ;
         NodeId nodeId = nodeTableJournal.getNodeIdForNode(node) ;
-        if ( ! NodeId.doesNotExist(nodeId) )
+        if ( ! NodeId.isDoesNotExist(nodeId) )
             return mapFromJournal(nodeId) ;
         nodeId = base.getNodeIdForNode(node) ;
         return nodeId ;
@@ -152,6 +154,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void begin(Transaction txn)
     {
+        debug("%s begin", txn.getLabel()) ;
+        
         if ( this.txn.getTxnId() != txn.getTxnId() )
             throw new TDBException(String.format("Different transactions: %s %s", this.txn.getLabel(), txn.getLabel())) ;
         if ( passthrough )
@@ -176,7 +180,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
                 System.err.println("journalStartOffset reset to zero") ;
                 journalObjFileStartOffset = 0 ;
                 journalObjFile.truncate(0) ;
-                journalObjFile.sync() ;
+                //journalObjFile.sync() ;
             }
         }
         offset += journalObjFileStartOffset ;
