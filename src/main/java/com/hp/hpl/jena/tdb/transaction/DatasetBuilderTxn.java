@@ -125,7 +125,6 @@ public class DatasetBuilderTxn
             String objFilename = fsObjectFile.filename(Names.extNodeData+"-"+Names.extJournal) ;
             ObjectFile objectFile ;
             
-            
             if ( fsObjectFile.isMem() )
                 objectFile = FileFactory.createObjectFileMem(objFilename) ;
             else
