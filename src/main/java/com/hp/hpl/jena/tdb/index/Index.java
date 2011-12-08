@@ -54,8 +54,7 @@ public interface Index extends Iterable<Record>, Sync, Closeable
     @Override
     public void close() ;
     
-    /** Answer whether the index is empty or not.  May return false for unknown or meaningless
-     * (e.g. transactional index)  */
+    /** Answer whether the index is empty or not.  May return false for unknown or meaningless */
     public boolean isEmpty() ;
     
     /** Clear the index */

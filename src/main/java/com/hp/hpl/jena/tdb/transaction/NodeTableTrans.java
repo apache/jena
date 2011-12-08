@@ -65,7 +65,6 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
-        //objFile.truncate(0) ;
         this.journalObjFile = objFile ;
         
         this.label = label ; 
@@ -190,16 +189,15 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journalObjFile) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
-        // map to/from Journal knows about unmappable inline values. 
+
+        // This class knows about non-mappable inline values.   mapToJournal(NodeId)/mapFromJournal. 
         this.nodeTableJournal = NodeTableInline.create(nodeTableJournal) ;
-        
     }
     
     /** Copy from the journal file to the real file */
     /*package*/ void append()
     {
         //debug(">> append: %s",label) ;
-        
         // Assumes all() is in order from low to high.
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         for ( ; iter.hasNext() ; )

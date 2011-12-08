@@ -161,7 +161,7 @@ public class NodeTableNative implements NodeTable
     private final NodeId writeNodeToTable(Node node)
     {
         syncNeeded = true ;
-        // Synchroized in accessIndex
+        // Synchronized in accessIndex
         long x = NodeLib.encodeStore(node, getObjects()) ;
         return NodeId.create(x);
     }

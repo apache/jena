@@ -215,6 +215,7 @@ public class ObjectFileStorage implements ObjectFile
         int newLen = idx+actualLength+4 ;
         writeBuffer.position(newLen);
         writeBuffer.limit(writeBuffer.capacity()) ;
+        allocLocation = -1 ;
     }
 
     private void flushOutputBuffer()
