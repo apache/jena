@@ -171,13 +171,13 @@ public class SystemTDB
      *  Used to map from Node to NodeId spaces.
      *  Used for loading and for query preparation.
      */
-    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", 100*1000) ;
+    public static final int Node2NodeIdCacheSize    = intValue("Node2NodeIdCacheSize", ( is64bitSystem ? 100*1000 : 50*1000 )) ;
 
     /** Size of NodeId to Node cache.
      *  Used to map from NodeId to Node spaces.
      *  Used for retriveing results.
      */
-    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 100*1000 ) ) ;
+    public static final int NodeId2NodeCacheSize    = intValue("NodeId2NodeCacheSize", ( is64bitSystem ? 500*1000 : 50*1000 ) ) ;
 
     /** Size of the delayed-write block cache (32 bit systems only) (per file) */
     public static final int BlockWriteCacheSize     = intValue("BlockWriteCacheSize", 2*1000) ;
