@@ -18,21 +18,22 @@ or graph, including ones stored in databases.
 Download
 --------
 
-Old Releases : SourceForge, Project Jena : Package ARQ
-http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
-
 Also available via SVN:
 https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/
 
 Maven:
-GroupId: com.hp.hpl.jena
-ArtifactId: arq
+GroupId: org.apache.jena
+ArtifactId: jena-arq
 
-(migrating to Aapche)
-Release repository: http://openjena.org/repo
+Development repository:
+  https://repository.apache.org/content/repositories/snapshots/org/apache/jena/ 
+
+
+Old releases:
   Mirrored to http://repo1.maven.org/
-Development repo: http://openjena.org/repo-dev (old)
-  https://repository.apache.org/content/repositories/snapshots/org/apache/jena/ (new)
+http://openjena.org/repo
+http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
+
 
 See below of maven repository contents.
 
@@ -47,55 +48,60 @@ http://www.sparql.org/validator.html
 Documentation
 -------------
 
-Included in the download in doc/index.html and online at http://openjena.org/ARQ
+http://incubator.apache.org/jena/documentation/query/index.html
 
 Installation
 ------------
 
+
+
+The apache-jena distribution includes ARQ and all it's dependencies.  It
+also includes scripts to run the command line tools.
+
+www.apache.org/dist/incubator/jena
+
 Unpack zip : it unpacks into a directory, including the version number.
-Set environment variable ARQROOT to the path of this direrctory.
 
-ARQ includes all the libraries necessary in lib/
-ARQ includes a copy of Jena, the one it is tested against.
-
-Put each and every the jar file in lib/ on your classpath.
+Set environment variable ARQROOT (or JENAROOT) to the path of this direrctory.
 
 Maven Distribution
 ------------------
 The maven repository contains the following files (for version VER)
 
-arq-VER.jar                 ARQ jar
-arq-VER-javadoc.jar         Javadoc
-arq-VER-sources.jar         Sources
+jena-arq-VER.jar                 ARQ jar
+jena-arq-VER-javadoc.jar         Javadoc
+jena-arq-VER-sources.jar         Sources
 
-arq-VER-tests.jar           ARQ testing code
-arq-VER-test-sources.jar    Sourecs for test code
-arq-VER-tests.zip           Datafiles for tests, and test scripts.
+jena-arq-VER-tests.jar           ARQ testing code
+jena-arq-VER-test-sources.jar    Sourecs for test code
+jena-arq-VER-tests.zip           Datafiles for tests, and test scripts.
 
-arq-VER.pom                 ARQ POM
+jena-arq-VER.pom                 ARQ POM
 
-arq-VER.zip                 The complete distribution file
+jena-arq-VER.zip                 The complete distribution file (if available)
+jena-arq-VER-source-release.zip  Complete copy of the codebase at the release.
 
-To run tests, you will need 'arq-VER.jar', 'arq-VER-tests.jar' and all
-dependences and to unpack 'arq-VER-tests.zip' to get the "testing" data
+To run tests, you will need 'jena-arq-VER.jar', 'jena-arq-VER-tests.jar' and all
+dependences and to unpack 'jena-arq-VER-tests.zip' to get the "testing" data
 directory and test scripts.
 
-Or download the distribution 'arq-VER.zip'. 
+Or download the distribution 'jena-arq-VER.zip'. 
 
 Running from the command line
 -----------------------------
 
-Some bash and bat scripts are provided to try out SPARQL queries:
+Some bash and bat scripts are provided to try out SPARQL queries.
 
-First, set environment variable ARQROOT to the root of the unzipped distibution.
+In the apache-jena distribution, set JENAROOT.
 
-    export ARQROOT=$PWD
+    export JENAROOT=$PWD
 
 Second, ensure all scripts are executable
 
-    chmod u+x $ARQROOT/bin/*
+    chmod u+x $JENAROOT/bin/*
 
 Command line applications:
+
 sparql   -- Run a SPARQL query.  A wrapper around 'query'.
 arq      -- Run an ARQ query.  A wrapper around 'query'.
 query    -- Run a query. 
@@ -115,19 +121,13 @@ DESCRIBE and CONSTRUCT.
 
 Run the script with no argument to get a usage message.
 
-See doc/cmds.html for details.  Check the suitablity of scripts before running them.
-
 Running commands as Java
 ------------------------
 
-Put all the jars files in lib/ on your classpath.  All of them, including
-the version of jena.jar included.
+Set the classpath to "$JENAROOT/lib/*" (Linux) or "$JENAROOT\lib\*;" (Windows).
 
 The arq command line application is:
-java -cp ... arq.query "$@"
-
-Running the test suite:
-java -cp ... arq.qtest --all
+java -cp ... arq.query ....
 
 ARQ.Net
 -------
