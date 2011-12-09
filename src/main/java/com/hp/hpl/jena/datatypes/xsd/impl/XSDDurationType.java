@@ -27,8 +27,9 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * avoid this proliferation of trivial types by use of reflection but
  * since that causes allergic reactions in some we use brute force.
  * <p>
- * This class includees code derived from Xerces 2.6.0 Copyright (c) 1999-2002 The Apache Software Foundation.  All rights
- * reserved.
+ * This class includees code derived from Xerces 2.6.0 
+ * Copyright (c) 1999-2002 The Apache Software Foundation.
+ * All rights reserved.
  * </p>
  *            
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
