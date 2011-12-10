@@ -205,7 +205,7 @@
         <executions>
           <execution>
             <id>ant-timestamp</id>
-            <phase>generate-resources</phase>
+            <phase>initialize</phase>
             <configuration>
               <target>
                 <mkdir dir="${project.basedir}/target"/>
