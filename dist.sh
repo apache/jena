@@ -111,3 +111,7 @@ V=${V_ZIP}
 D="$M-$V-$inc"
 $MKDIR $OUT/$D
 cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D
+# Second copies of the products in the per-version directory
+cpfile "$M/$V-$inc/$M-$V-$inc.zip" $D
+cpfile "$M/$V-$inc/$M-$V-$inc.tar.gz" $D
+cpfile "$M/$V-$inc/$M-$V-$inc.tar.bz2" $D
