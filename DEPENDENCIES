@@ -1,7 +1,6 @@
 This file lists the dependences for ARQ.
   Version numbers are given in the POM file for a particular distribution. 
 
-
 Apache Projects:   Apache Software License
   Apache Jena, including the Jena IRI library
   Apache Xerces-J
