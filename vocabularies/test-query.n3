@@ -13,7 +13,6 @@
 <>  rdfs:comment     "Vocabulary for query test cases" ;
     dc:creator       "Andy Seaborne" ;
     dc:subject       "" ;
-    dc:publisher     "Hewlett-Packard Laboratories" ;
     dc:title         "Query test case vocabulary" ;
     dc:description   "" ;
     dc:date          "2003-03" ;

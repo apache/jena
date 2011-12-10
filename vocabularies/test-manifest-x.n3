@@ -9,7 +9,6 @@
 :   rdfs:comment     "Manifest vocabulary for test cases (additions)" ;
     dc:creator       "Andy Seaborne" ;
     dc:subject       "" ;
-    dc:publisher     "Hewlett-Packard Laboratories" ;
     dc:title         "Test case manifest vocabulary (extra)" ;
     dc:description   "Test case manifest vocabulary (extra)" ;
     dc:date          "2005-04" ;
