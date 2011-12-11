@@ -41,6 +41,12 @@ public interface TDBSystemInfoMBean
     *  Used for retriveing results.
     */
    public int getNodeId2NodeCacheSize() ;
+   
+   /** Size of NodeTable lookup miss cache
+    */
+   public int getNodeMissCacheSize() ;
+   
+   
     
    /** Size of the delayed-write block cache (32 bit systems only) (per file) */
    public int getBlockWriteCacheSize() ;

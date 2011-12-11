@@ -28,6 +28,6 @@ public class TestNodeTable extends TestNodeTableBase
     @Override
     protected NodeTable createEmptyNodeTable()
     {
-        return SetupTDB.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10) ;
+        return SetupTDB.makeNodeTable(Location.mem(), Names.indexNode2Id, 10, Names.indexId2Node, 10, 10) ;
     }
 }

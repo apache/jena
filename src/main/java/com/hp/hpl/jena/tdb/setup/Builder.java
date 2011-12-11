@@ -79,13 +79,13 @@ public class Builder
         }
         
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCacheSize)
         {
             RecordFactory recordFactory = new RecordFactory(SystemTDB.LenNodeHash, SystemTDB.SizeOfNodeId) ;
             Index idx = indexBuilder.buildIndex(fsIndex, recordFactory) ;
             ObjectFile objectFile = objectFileBuilder.buildObjectFile(fsObjectFile, Names.extNodeData) ;
             NodeTable nodeTable = new NodeTableNative(idx, objectFile) ;
-            nodeTable = NodeTableCache.create(nodeTable, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+            nodeTable = NodeTableCache.create(nodeTable, sizeNode2NodeIdCache, sizeNodeId2NodeCache, sizeNodeMissCacheSize) ;
             nodeTable = NodeTableInline.create(nodeTable) ;
             return nodeTable ;
         }

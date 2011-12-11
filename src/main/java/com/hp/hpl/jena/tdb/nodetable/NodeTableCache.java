@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Cache ;
 import org.openjena.atlas.lib.CacheFactory ;
 import org.openjena.atlas.lib.CacheSet ;
@@ -28,6 +29,7 @@ import org.openjena.atlas.logging.Log ;
 
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 
 /** Cache wrapper around a NodeTable.  
@@ -43,25 +45,26 @@ public class NodeTableCache implements NodeTable
     
     // A small cache of "known unknowns" to speed up searching for impossible things.   
     // Cache update needed on NodeTable changes because a node may become "known"
-    private CacheSet<Node> notPresent ;
+    private CacheSet<Node> notPresent = null ;
     private NodeTable baseTable ;
     private Object lock = new Object() ;
 
-    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize)
+    public static NodeTable create(NodeTable nodeTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize)
     {
         if ( nodeToIdCacheSize <= 0 && idToNodeCacheSize <= 0 )
             return nodeTable ;
-        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ;
+        return new NodeTableCache(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissesCacheSize) ;
     }
 
-    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize)
+    private NodeTableCache(NodeTable baseTable, int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissesCacheSize)
     {
         this.baseTable = baseTable ;
         if ( nodeToIdCacheSize > 0) 
             node2id_Cache = CacheFactory.createCache(nodeToIdCacheSize) ;
         if ( idToNodeCacheSize > 0)
             id2node_Cache = CacheFactory.createCache(idToNodeCacheSize) ;
-        notPresent = CacheFactory.createCacheSet(100) ;
+        if ( nodeMissesCacheSize > 0 )
+            notPresent = CacheFactory.createCacheSet(nodeMissesCacheSize) ;
     }
 
     /** Get the Node for this NodeId, or null if none */
@@ -140,9 +143,11 @@ public class NodeTableCache implements NodeTable
     /** Check caches to see if we can map a Node to a NodeId. Returns null on no cache entry. */ 
     private NodeId cacheLookup(Node node)
     {
-        // Remember things known (currently) not to exist 
-        if ( notPresent.contains(node) ) return null ;
-        if ( node2id_Cache == null ) return null ;
+        // Remember things known (currently) not to exist
+        if ( notPresent != null && notPresent.contains(node) ) 
+            return null ;
+        if ( node2id_Cache == null )
+            return null ;
         return node2id_Cache.get(node) ; 
     }
 
@@ -155,7 +160,8 @@ public class NodeTableCache implements NodeTable
         // This must be specially handled later if the node is added. 
         if ( NodeId.isDoesNotExist(id) )
         {
-            notPresent.add(node) ;
+            if ( notPresent != null ) 
+                notPresent.add(node) ;
             return ;
         }
         
@@ -170,7 +176,7 @@ public class NodeTableCache implements NodeTable
         if ( id2node_Cache != null )
             id2node_Cache.put(id, node) ;
         // Remove if previously marked "not present"
-        if ( notPresent.contains(node) )
+        if ( notPresent != null && notPresent.contains(node) )
             notPresent.remove(node) ;
     }
     // ----
@@ -215,7 +221,37 @@ public class NodeTableCache implements NodeTable
     @Override
     public Iterator<Pair<NodeId, Node>> all()
     {
+        if ( false )
+            testForConsistency() ;
         return baseTable.all() ;
+    }
+    
+    private void testForConsistency()
+    {
+        Iterator<Node> iter1 = Iter.toList(node2id_Cache.keys()).iterator() ;
+        
+        for ( ; iter1.hasNext() ; )
+        {
+            Node n = iter1.next() ;
+            
+            NodeId nId = node2id_Cache.get(n) ; 
+            if ( !id2node_Cache.containsKey(nId) )
+                throw new TDBException("Inconsistent: "+n+" => "+nId) ;
+            if ( notPresent.contains(n) )
+                throw new TDBException("Inconsistent: "+n+" in notPresent cache (1)") ;
+        }
+        Iterator<NodeId> iter2 = Iter.toList(id2node_Cache.keys()).iterator() ; ;
+        for ( ; iter2.hasNext() ; )
+        {
+            NodeId nId = iter2.next() ;
+            Node n =  id2node_Cache.get(nId) ; 
+            if ( !node2id_Cache.containsKey(n) )
+                throw new TDBException("Inconsistent: "+nId+" => "+n) ;
+            if ( notPresent.contains(n) )
+                throw new TDBException("Inconsistent: "+n+" in notPresent cache (2)") ;
+        }
+        
+        
     }
     
     @Override

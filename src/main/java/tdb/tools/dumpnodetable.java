@@ -72,22 +72,24 @@ public class dumpnodetable extends CmdGeneral
 
     public static void dumpNodes(OutputStream w, String location)
     {
-        dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
+        dump(w, location, Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize, Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize, SystemTDB.NodeMissCacheSize) ;
     }
 
     public static void dumpPrefixes(OutputStream w, String location)
     {
-        dump(w, location, Names.prefixNode2Id, 100, Names.prefixId2Node, 100) ;
+        dump(w, location, Names.prefixNode2Id, 100, Names.prefixId2Node, 100, 10) ;
     }
 
     
     public static void dump(OutputStream w, String location, 
                             String indexNode2Id, int node2NodeIdCacheSize, 
-                            String indexId2Node, int nodeId2NodeCacheSize)
+                            String indexId2Node, int nodeId2NodeCacheSize, 
+                            int sizeNodeMissCacheSize)
     {
         NodeTable nodeTable = SetupTDB.makeNodeTable(new Location(location), 
                                                      indexNode2Id, node2NodeIdCacheSize,
-                                                     indexId2Node, nodeId2NodeCacheSize) ;
+                                                     indexId2Node, nodeId2NodeCacheSize,
+                                                     sizeNodeMissCacheSize) ;
     }
     
     

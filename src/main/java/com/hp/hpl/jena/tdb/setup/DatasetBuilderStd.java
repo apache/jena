@@ -183,7 +183,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         NodeTable nodeTable = makeNodeTable(location, 
                                             params.indexNode2Id, params.indexId2Node,
-                                            params.Node2NodeIdCacheSize, params.NodeId2NodeCacheSize) ;
+                                            params.Node2NodeIdCacheSize, params.NodeId2NodeCacheSize, params.NodeMissCacheSize) ;
         
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
@@ -297,7 +297,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", params.prefixId2Node) ;
         
         // No cache - the prefix mapping is a cache
-        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1)  ;
+        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1)  ;
         
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
         
@@ -355,7 +355,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ----
     
     protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
-                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache)
+                                      int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache)
     {
         /* Physical
          * ---- An object file
@@ -375,7 +375,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
         metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
         
-        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+        NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache, sizeNodeMissCache) ;
         fsNodeToId.getMetaFile().flush() ;
         fsId2Node.getMetaFile().flush() ;
         return nt ;
@@ -405,6 +405,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         final int      writeCacheSize       = SystemTDB.BlockWriteCacheSize ;
         final int      Node2NodeIdCacheSize = SystemTDB.Node2NodeIdCacheSize ;
         final int      NodeId2NodeCacheSize = SystemTDB.NodeId2NodeCacheSize ;
+        final int      NodeMissCacheSize    = SystemTDB.NodeMissCacheSize ;
 
         final String   indexNode2Id         = Names.indexNode2Id ;
         final String   indexId2Node         = Names.indexId2Node ;
@@ -443,9 +444,9 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
-                                        int sizeNodeId2NodeCache)
+                                        int sizeNodeId2NodeCache, int sizeNodeMissCacheSize)
         {
-            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache) ;
+            NodeTable nt = builder.buildNodeTable(fsIndex, fsObjectFile, sizeNode2NodeIdCache, sizeNodeId2NodeCache, sizeNodeMissCacheSize) ;
             // It just knows, right?
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             recorder.record(ref, nt) ;

@@ -26,6 +26,7 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenIndexTripleRecord ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.Node2NodeIdCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeId2NodeCacheSize ;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.NodeMissCacheSize ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
 
 import java.io.IOException ;
@@ -52,25 +53,12 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.file.MetaFile ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.Index ;
-import com.hp.hpl.jena.tdb.index.IndexBuilder ;
-import com.hp.hpl.jena.tdb.index.RangeIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndex ;
-import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
+import com.hp.hpl.jena.tdb.index.* ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.mgt.TDBSystemInfoMBean ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.StoreConfig ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
+import com.hp.hpl.jena.tdb.nodetable.* ;
+import com.hp.hpl.jena.tdb.store.* ;
 
 /** Makes things: datasets from locations, indexes */
 
@@ -111,6 +99,7 @@ public class SetupTDB
     static {
         globalConfig.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
         globalConfig.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
+        globalConfig.setProperty(Names.pNodeMissesCacheSize,   Integer.toString(NodeMissCacheSize)) ;
         globalConfig.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
         globalConfig.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
 //        globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
@@ -124,6 +113,8 @@ public class SetupTDB
         public int getNodeId2NodeCacheSize() { return getIntProperty(Names.pNodeId2NodeCacheSize); }
 		@Override
         public int getNode2NodeIdCacheSize() { return getIntProperty(Names.pNode2NodeIdCacheSize); }
+        @Override
+        public int getNodeMissCacheSize()     { return getIntProperty(Names.pNodeMissesCacheSize); }
 		@Override
         public int getBlockWriteCacheSize() { return getIntProperty(Names.pBlockWriteCacheSize); }
 		@Override
@@ -253,11 +244,13 @@ public class SetupTDB
         
         int n2idCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pNode2NodeIdCacheSize) ;
         int id2nCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pNodeId2NodeCacheSize) ;
+        int nodeMissCacheSize = PropertyUtils.getPropertyAsInteger(config, Names.pNodeMissesCacheSize) ;
         
         // Cache sizes should come from this.info.
         NodeTable nodeTable = makeNodeTable(location, 
                                             indexNode2Id, n2idCacheSize,
-                                            indexId2Node, id2nCacheSize) ;
+                                            indexId2Node, id2nCacheSize,
+                                            nodeMissCacheSize) ;
 
         DatasetControl policy = createConcurrencyPolicy() ;
         
@@ -383,7 +376,7 @@ public class SetupTDB
         String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
         
         // No cache - the prefix mapping is a cache
-        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1)  ;
+        NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, -1, pnId2Node, -1, -1)  ;
         
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
         
@@ -575,16 +568,18 @@ public class SetupTDB
     {
         return makeNodeTable(location,
                              Names.indexNode2Id, SystemTDB.Node2NodeIdCacheSize,
-                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize) ;
+                             Names.indexId2Node, SystemTDB.NodeId2NodeCacheSize,
+                             SystemTDB.NodeMissCacheSize) ;
     }
     
     /** Make a NodeTable with cache and inline wrappers */ 
     public static NodeTable makeNodeTable(Location location,
                                           String indexNode2Id, int nodeToIdCacheSize,
-                                          String indexId2Node, int idToNodeCacheSize)
+                                          String indexId2Node, int idToNodeCacheSize,
+                                          int nodeMissCacheSize)
     {
         NodeTable nodeTable = makeNodeTableBase(location, indexNode2Id, indexId2Node) ;
-        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ;
     }

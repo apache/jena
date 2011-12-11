@@ -132,6 +132,7 @@ public class Names
     
     public static final String pNode2NodeIdCacheSize       = "tdb.cache.node2nodeid.size" ;
     public static final String pNodeId2NodeCacheSize       = "tdb.cache.nodeid2node.size" ;
+    public static final String pNodeMissesCacheSize        = "tdb.cache.nodeMiss.size" ;
     public static final String pBlockWriteCacheSize        = "tdb.cache.blockwrite.size" ;
     public static final String pBlockReadCacheSize         = "tdb.cache.blockread.size" ;
     public static final String pSyncTick                   = "tdb.synctick" ;

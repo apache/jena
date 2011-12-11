@@ -61,13 +61,14 @@ public class NodeTableFactory
         
         return  create(indexBuilder, filesetNodeTable, filesetIdx,
                        SetupTDB.systemInfo.getNode2NodeIdCacheSize(),
-                       SetupTDB.systemInfo.getNodeId2NodeCacheSize()) ;
+                       SetupTDB.systemInfo.getNodeId2NodeCacheSize(),
+                       SetupTDB.systemInfo.getNodeMissCacheSize()) ;
     }
 
     /** Custom node table */
     public static NodeTable create(IndexBuilder indexBuilder, 
                                    FileSet fsIdToNode, FileSet fsNodeToId,
-                                   int nodeToIdCacheSize, int idToNodeCacheSize)
+                                   int nodeToIdCacheSize, int idToNodeCacheSize, int nodeMissCacheSize)
     {
         String filename = fsIdToNode.filename(Names.extNodeData) ;
         
@@ -77,7 +78,7 @@ public class NodeTableFactory
             ObjectFile objects = FileFactory.createObjectFileMem(filename) ;
             NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
             
-            nodeTable = NodeTableCache.create(nodeTable, 100, 100) ; 
+            nodeTable = NodeTableCache.create(nodeTable, 100, 100, 100) ; 
             nodeTable =  NodeTableInline.create(nodeTable) ;
             
             return nodeTable ;
@@ -89,7 +90,7 @@ public class NodeTableFactory
         // Node table.
         ObjectFile objects = FileFactory.createObjectFileDisk(filename);
         NodeTable nodeTable = new NodeTableNative(nodeToId, objects) ;
-        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize) ; 
+        nodeTable = NodeTableCache.create(nodeTable, nodeToIdCacheSize, idToNodeCacheSize, nodeMissCacheSize) ; 
         nodeTable = NodeTableInline.create(nodeTable) ;
         return nodeTable ;
         
@@ -97,7 +98,7 @@ public class NodeTableFactory
 
     public static NodeTable createMem(IndexBuilder indexBuilder)
     {
-        return create(indexBuilder, FileSet.mem(), FileSet.mem(), 100, 100) ;
+        return create(indexBuilder, FileSet.mem(), FileSet.mem(), 100, 100, 10) ;
     }
     
     public static NodeTable createSink(IndexBuilder indexBuilder, Location location)

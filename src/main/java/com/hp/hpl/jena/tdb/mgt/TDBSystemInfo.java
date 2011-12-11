@@ -37,4 +37,7 @@ public class TDBSystemInfo implements TDBSystemInfoMBean
     public int getNode2NodeIdCacheSize()     { return SystemTDB.Node2NodeIdCacheSize ; }
     @Override
     public int getNodeId2NodeCacheSize()     { return SystemTDB.NodeId2NodeCacheSize ; }
+    
+    @Override
+    public int getNodeMissCacheSize()       { return SystemTDB.NodeMissCacheSize ; }
 }

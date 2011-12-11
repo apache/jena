@@ -90,7 +90,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
         if ( location != null )
             filesetNodeTable = new FileSet(location, Names.prefixId2Node) ;
         
-        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1) ;
+        NodeTable nodes = NodeTableFactory.create(indexBuilder, filesetNodeTable, filesetNodeTableIdx, -1, -1, -1) ;
         nodeTupleTable = new NodeTupleTableConcrete(3, indexes, nodes, policy) ;
     }
 

@@ -113,7 +113,7 @@ public class DatasetBuilderTxn
     {
         @Override
         public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
-                                        int sizeNodeId2NodeCache)
+                                        int sizeNodeId2NodeCache, int sizeNodeMissCacheSize)
         {
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             NodeTable ntBase = nodeTables.get(ref) ;
@@ -175,8 +175,8 @@ public class DatasetBuilderTxn
     {
 
         @Override
-        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, int sizeNode2NodeIdCache,
-                                        int sizeNodeId2NodeCache)
+        public NodeTable buildNodeTable(FileSet fsIndex, FileSet fsObjectFile, 
+                                        int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCacheSize)
         {
             FileRef ref = FileRef.create(fsObjectFile.filename(Names.extNodeData)) ;
             NodeTable nt = nodeTables.get(ref) ;

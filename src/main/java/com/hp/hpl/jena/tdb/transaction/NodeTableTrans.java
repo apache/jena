@@ -188,7 +188,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
         
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journalObjFile) ;
-        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize) ;
+        this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize, 100) ;
 
         // This class knows about non-mappable inline values.   mapToJournal(NodeId)/mapFromJournal. 
         this.nodeTableJournal = NodeTableInline.create(nodeTableJournal) ;
