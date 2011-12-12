@@ -131,7 +131,10 @@ public class TupleLib
 
         Node pNode = nodeTable.getNodeForNodeId(p) ;
         if ( pNode == null )
+        {
+            nodeTable.getNodeForNodeId(p) ;
             throw new InternalErrorException("Invalid id node for predicate (null node): "+fmt(s,p,o)) ;
+        }
         
         Node oNode = nodeTable.getNodeForNodeId(o) ;
         if ( oNode == null )

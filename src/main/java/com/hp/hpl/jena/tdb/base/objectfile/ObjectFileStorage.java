@@ -113,20 +113,23 @@ public class ObjectFileStorage implements ObjectFile
         if ( writeBuffer.position()+spaceNeeded > writeBuffer.capacity() )
         {
             long x = rawWrite(bb) ;
-            log("W -> 0x%X", x);
+            if ( logging ) 
+                log("W -> 0x%X", x);
             return x ;
         }
         
         long loc = writeBuffer.position()+filesize ;
         writeBuffer.putInt(len) ;
         writeBuffer.put(bb) ;
-        log("W -> 0x%X", loc);
+        if ( logging ) 
+            log("W -> 0x%X", loc);
         return loc ;
     }
     
     private long rawWrite(ByteBuffer bb)
     {
-        log("RW %s", bb) ;
+        if ( logging ) 
+            log("RW %s", bb) ;
         int len = bb.limit() - bb.position() ;
         lengthBuffer.rewind() ;
         lengthBuffer.putInt(len) ;
@@ -139,8 +142,10 @@ public class ObjectFileStorage implements ObjectFile
         filesize = filesize+x+SizeOfInt ;
         
         if ( logging )
+        {
             log("Posn: %d", file.position());
-        log("RW ->0x%X",location) ;
+            log("RW ->0x%X",location) ;
+        }
         return location ;
     }
     
@@ -182,14 +187,17 @@ public class ObjectFileStorage implements ObjectFile
         ByteBuffer bb = writeBuffer.slice() ;
 
         allocBlock = new Block(allocLocation, bb) ;
-        //log.info("AW:"+state()+"->0x"+Long.toHexString(allocLocation)) ;
+
+        if ( logging )
+            log("AW: %s->0x%X", state(), allocLocation) ;
         return allocBlock ;
     }
 
     @Override
     public void completeWrite(Block block)
     {
-        log("CW: %s @0x%X",block, allocLocation) ;
+        if ( logging ) 
+            log("CW: %s @0x%X",block, allocLocation) ;
         if ( ! inAllocWrite )
             throw new FileException("Not in the process of an allocated write operation pair") ;
         if ( allocBlock != null && ( allocBlock.getByteBuffer() != block.getByteBuffer() ) )
@@ -220,15 +228,29 @@ public class ObjectFileStorage implements ObjectFile
 
     private void flushOutputBuffer()
     {
-        log("Flush") ;
+        if ( logging )
+            log("Flush") ;
+        
         if ( writeBuffer == null ) return ;
         if ( writeBuffer.position() == 0 ) return ;
+
+        if ( false )
+        {
+            String x = getLabel() ;
+            if ( x.contains("nodes") ) 
+            {
+                long x1 = filesize ;
+                long x2 = writeBuffer.position() ;
+                long x3 = x1 + x2 ;
+                System.out.printf("Flush(%s) : %d/0x%04X (%d/0x%04X) %d/0x%04X\n", getLabel(), x1, x1, x2, x2, x3, x3) ;
+            }
+        }
+        
         long location = filesize ;
         writeBuffer.flip();
         int x = file.write(writeBuffer) ;
         filesize += x ;
         writeBuffer.clear() ;
-        log("Flush") ;
     }
 
     @Override
@@ -253,7 +275,8 @@ public class ObjectFileStorage implements ObjectFile
     @Override
     public ByteBuffer read(long loc)
     {
-        log("R(0x%X)", loc) ;
+        if ( logging ) 
+            log("R(0x%X)", loc) ;
         
         if ( inAllocWrite )
             throw new FileException("In the middle of an alloc-write") ;

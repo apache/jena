@@ -93,7 +93,7 @@ public class NodeTableCache implements NodeTable
 
         synchronized (lock)
         {
-            Node n = cacheLookup(id) ;   // Includes known to not exist
+            Node n = cacheLookup(id) ;
             if ( n != null )
                 return n ; 
 

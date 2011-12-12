@@ -100,6 +100,18 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         return nodeId ;
     }
 
+    @Override
+    public Node getNodeForNodeId(NodeId id)
+    {
+        if ( passthrough ) return base.getNodeForNodeId(id) ;
+        long x = id.getId() ;
+        if ( x < offset )
+            return base.getNodeForNodeId(id) ;
+        id = mapToJournal(id) ;
+        Node node = nodeTableJournal.getNodeForNodeId(id) ;
+        return node ;
+    }
+
     /** Convert from a id to the id in the "journal" file */ 
     private NodeId mapToJournal(NodeId id)
     { 
@@ -120,18 +132,6 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         return NodeId.create(id.getId()+offset) ; 
     }
     
-    @Override
-    public Node getNodeForNodeId(NodeId id)
-    {
-        if ( passthrough ) return base.getNodeForNodeId(id) ;
-        long x = id.getId() ;
-        if ( x < offset )
-            return base.getNodeForNodeId(id) ;
-        id = mapToJournal(id) ;
-        Node node = nodeTableJournal.getNodeForNodeId(id) ;
-        return node ;
-    }
-
     private NodeId allocate(Node node)
     {
         NodeId nodeId = nodeTableJournal.getAllocateNodeId(node) ;
@@ -194,15 +194,30 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.nodeTableJournal = NodeTableInline.create(nodeTableJournal) ;
     }
     
+    static final boolean APPEND_LOG = false ; 
+    
     /** Copy from the journal file to the real file */
     /*package*/ void append()
     {
         //debug(">> append: %s",label) ;
         // Assumes all() is in order from low to high.
+        
+        if ( APPEND_LOG ) 
+            System.out.printf(">> append: %s %s %d/0x%04X\n",label, base.allocOffset(), journalObjFile.length(), journalObjFile.length()) ;
+        
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
+        Pair<NodeId, Node> firstPair = null ;
+        Pair<NodeId, Node> lastPair = null ;
+        
+        
         for ( ; iter.hasNext() ; )
         {
             Pair<NodeId, Node> x = iter.next() ;
+            
+            if ( firstPair == null )
+                firstPair = x ;
+            lastPair = x ;
+            
             NodeId nodeId = x.getLeft() ;
             Node node = x.getRight() ;
             //debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
@@ -219,6 +234,14 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
                 throw new TDBException(msg) ;
             }
         }
+        
+        if ( APPEND_LOG )
+        {
+            System.out.printf("+ First: %s -> %s\n", firstPair.car(), mapFromJournal(firstPair.car())) ;
+            System.out.printf("+ Last: %s -> %s\n", lastPair.car(), mapFromJournal(lastPair.car())) ;
+            System.out.printf("+ New base: %s\n", base.allocOffset()) ;
+        }
+        
         //debug("<< append: %s",label) ;
     }
     
@@ -302,16 +325,16 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             return ;
         
         //debug("writeNodeJournal: (base alloc before) %s", base.allocOffset()) ;
-        append() ;
+        append() ;      // Calls all() which does a buffer flish. 
         //debug("writeNodeJournal: (base alloc after) %s",  base.allocOffset()) ;
         //debug("writeNodeJournal: (nodeTableJournal) %s", nodeTableJournal.allocOffset()) ;
         
         // Reset (in case we use this again)
         nodeIndex.clear() ;
         // Fixes nodeTableJournal
-        journalObjFile.truncate(journalObjFileStartOffset) ;
+        journalObjFile.truncate(journalObjFileStartOffset) ;    // Side effect is a buffer flush.
         //journalObjFile.sync() ;
-        journalObjFile.close() ;
+        journalObjFile.close() ;                                // Side effect is a buffer flush.
         journalObjFile = null ;
         base.sync() ;
         offset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
