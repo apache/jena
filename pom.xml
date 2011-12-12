@@ -41,9 +41,10 @@
     <ver.sdb>1.3.4-incubating-SNAPSHOT</ver.sdb>
 
     <!-- Versions of other things -->
-    <ver.junit>4.9</ver.junit>
+    <ver.xerces>2.10.0</ver.xerces>
     <ver.icu4j>3.4.4</ver.icu4j>
-    <ver.slf4j>1.6.1</ver.slf4j>
+    <ver.junit>4.9</ver.junit>
+    <ver.slf4j>1.6.4</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
 
     <!-- Other properties -->
@@ -59,13 +60,13 @@
      <dependency>
        <groupId>com.ibm.icu</groupId>
        <artifactId>icu4j</artifactId>
-       <version>3.4.4</version>
+       <version>${ver.icu4j}</version>
      </dependency>
 
      <dependency>
        <groupId>xerces</groupId>
        <artifactId>xercesImpl</artifactId>
-       <version>2.7.1</version>
+       <version>${ver.xerces}</version>
      </dependency>
 
      <dependency>
