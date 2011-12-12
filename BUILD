@@ -112,6 +112,6 @@ svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaZip/trunk apach
 
 
 -------------------------------------------------------
-Please do hestiate in contacting the Jena developers:
+If you have any questions, please do not hesitate in contacting the Jena project:
   jena-users@incubator.apache.org
   jena-dev@incubator.apache.org
