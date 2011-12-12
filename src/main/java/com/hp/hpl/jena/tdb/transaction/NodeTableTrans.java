@@ -194,7 +194,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.nodeTableJournal = NodeTableInline.create(nodeTableJournal) ;
     }
     
-    static final boolean APPEND_LOG = false ; 
+    static public boolean APPEND_LOG = false ; 
     
     /** Copy from the journal file to the real file */
     /*package*/ void append()
@@ -240,6 +240,13 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             System.out.printf("+ First: %s -> %s\n", firstPair.car(), mapFromJournal(firstPair.car())) ;
             System.out.printf("+ Last: %s -> %s\n", lastPair.car(), mapFromJournal(lastPair.car())) ;
             System.out.printf("+ New base: %s\n", base.allocOffset()) ;
+            Node n1 = firstPair.cdr() ;
+            Node n2 = lastPair.cdr() ;
+            
+            if ( base.getNodeIdForNode(n1) == null )
+                throw new TDBException("1") ;
+            if ( base.getNodeIdForNode(n2) == null )
+                throw new TDBException("2") ;
         }
         
         //debug("<< append: %s",label) ;
