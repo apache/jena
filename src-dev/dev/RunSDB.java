@@ -79,7 +79,7 @@ public class RunSDB
     
     public static void main(String ... argv) throws SQLException
     {
-        sdb.sdbprint.main("--sdb=Store/sdb-pgsql.ttl", 
+        sdb.sdbprint.main("--sdb=sdb.ttl", 
                          //"--sdb=Store/sdb-mssql-express.ttl",
                          "--print=op",
                          "--print=sql",

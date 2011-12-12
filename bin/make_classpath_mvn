@@ -22,4 +22,3 @@ done
 [ -e "$DIRROOT/target/classes" ] && CP="$DIRROOT/target/classes:$CP"
 
 echo "$CP"
-
