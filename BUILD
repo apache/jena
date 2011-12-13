@@ -73,6 +73,6 @@ or to make them available to other projscts on the local machine:
     mvn clean install
 
 -------------------------------------------------------
-Please do hestiate in contacting the Jena developers:
+If you have any questions, please do not hesitiate in contacting the Jena project:
   jena-users@incubator.apache.org
   jena-dev@incubator.apache.org
