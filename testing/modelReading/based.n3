@@ -1,7 +1,3 @@
-# (c) Copyright 2004, Hewlett-Packard Development Company, LP
-# All rights reserved.
-# $Id: based.n3,v 1.2 2009-01-13 14:07:25 chris-dollin Exp $
-
 # based.n3: a test file for a "based" model
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
