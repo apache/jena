@@ -22,14 +22,15 @@
   <artifactId>apache-jena</artifactId>
   <packaging>pom</packaging>
   <name>Apache Jena Zip</name>
-  <version>${ver.jena}</version>
+  <!--<version>${ver.jena}</version>-->
+  <version>2.7.0-incubating-SNAPSHOT</version>-->
   <description/>
   <url>http://incubator.apache.org/jena</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent> 
 
   <organization>
@@ -45,9 +46,17 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/</connection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaZip/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaZip/trunk</developerConnection>
     <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/</url>
   </scm>
+
+  <properties>
+    <ver.jena>2.7.0-incubating</ver.jena>
+    <ver.arq>2.9.0-incubating</ver.arq>
+    <ver.iri>0.9.0-incubating</ver.iri>
+  </properties>
+    
 
   <dependencies>
 
