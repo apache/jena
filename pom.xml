@@ -41,7 +41,7 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.iri>0.9.0-incubating</ver.iri>
+    <ver.iri>0.9.1-incubating-SNAPSHOT</ver.iri>
   </properties>
 
   <dependencies>
