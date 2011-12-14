@@ -43,7 +43,10 @@
     <url>http://www.apache.org/</url>
   </organization>
 
-  <!-- Modules set scm -->
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</connection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</url>
+  </scm>
 
   <properties>
     <!-- Versions of Jena modules -->
