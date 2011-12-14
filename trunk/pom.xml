@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>jena-top</name>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-top</artifactId>
+  <version>0-incubating</version>
+  <packaging>pom</packaging>
+  <url>http://incubator.apache.org/jena</url>
+
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>10</version>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <organization>
+    <name>The Apache Software Foundation</name>
+    <url>http://www.apache.org/</url>
+  </organization>
+
+  <scm>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</url>
+  </scm>
+
+  <properties>
+    <!-- Versions of other things -->
+    <ver.xerces>2.10.0</ver.xerces>
+    <ver.icu4j>3.4.4</ver.icu4j>
+    <ver.junit>4.9</ver.junit>
+    <ver.slf4j>1.6.4</ver.slf4j>
+    <ver.log4j>1.2.16</ver.log4j>
+
+    <!-- Other properties -->
+    <jdk.version>1.6</jdk.version>
+    <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+  </properties>
+
+  <!-- General dependencies for all systems -->
+
+  <dependencies>
+     <dependency>
+       <groupId>com.ibm.icu</groupId>
+       <artifactId>icu4j</artifactId>
+       <version>${ver.icu4j}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>${ver.xerces}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>junit</groupId>
+       <artifactId>junit</artifactId>
+       <version>${ver.junit}</version>
+       <scope>test</scope>
+     </dependency>
+
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-api</artifactId>
+       <version>${ver.slf4j}</version>
+     </dependency>
+     
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${ver.slf4j}</version>
+     </dependency>
+
+     <!-- Needed because of the logging helper code -->
+     <dependency>
+       <groupId>log4j</groupId>
+       <artifactId>log4j</artifactId>
+       <version>${ver.log4j}</version>
+       <exclusions>
+	 <!-- Exclude things that don't resolve in some versions of log4j -->
+	 <exclusion>
+	   <groupId>javax.jms</groupId>
+	   <artifactId>jms</artifactId>
+	 </exclusion>
+	 <exclusion>
+	   <groupId>com.sun.jdmk</groupId>
+	   <artifactId>jmxtools</artifactId>
+        </exclusion>
+	<exclusion>
+	  <groupId>com.sun.jmx</groupId>
+	  <artifactId>jmxri</artifactId>
+        </exclusion>
+	<exclusion>
+	  <groupId>javax.mail</groupId>
+	  <artifactId>mail</artifactId>
+	</exclusion>
+      </exclusions> 
+     </dependency>
+     
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-compiler-plugin</artifactId>
+	  <version>2.3.2</version>
+	  <configuration>
+	    <encoding>UTF-8</encoding>
+	    <debug>true</debug>
+	    <debuglevel>source,lines,vars</debuglevel>
+	    <optimize>true</optimize>
+	    <source>${jdk.version}</source>
+	    <target>${jdk.version}</target>
+	  </configuration>
+	</plugin>
+
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-surefire-plugin</artifactId>
+	  <version>2.9</version>
+	</plugin>
+	
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-jar-plugin</artifactId>
+	  <version>2.3.2</version>
+	</plugin>
+
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-source-plugin</artifactId>
+	  <version>2.1.2</version>
+	  <executions> 
+	    <execution>
+	      <id>attach-sources</id>
+	      <goals>
+		<goal>jar-no-fork</goal> 
+	      </goals>
+	    </execution>
+	    <!-- Only material in the main jar
+	    <execution>
+	      <id>attach-sources-test</id>
+	      <goals>
+		<goal>test-jar-no-fork</goal>
+	      </goals>
+	    </execution>
+	    -->
+	  </executions>
+	</plugin>
+	
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-javadoc-plugin</artifactId>
+	  <version>2.8</version>
+	  <executions>
+	    <execution>
+	      <id>attach-javadocs</id>
+	      <goals>
+		<goal>jar</goal>
+	      </goals>
+	    </execution>
+	  </executions>
+	  <configuration>
+	    <version>true</version>
+	    <show>public</show>
+	    <quiet>true</quiet>
+	    <encoding>UTF-8</encoding>
+	    <windowtitle>${project.name} ${project.version}</windowtitle>
+	    <doctitle>${project.name} ${project.version}</doctitle>
+	    <bottom>Licenced under the Apache License, Version 2.0</bottom>
+	  </configuration>
+	</plugin>
+	
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-resources-plugin</artifactId>
+	  <version>2.5</version>
+	  <configuration>
+	    <encoding>UTF-8</encoding>
+	  </configuration>
+	</plugin>
+
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-dependency-plugin</artifactId>
+	  <configuration>
+	    <overWriteReleases>false</overWriteReleases>
+	    <overWriteIfNewer>true</overWriteIfNewer>
+	  </configuration>
+	</plugin>
+	
+	<plugin>
+	  <groupId>org.apache.maven.plugins</groupId>
+	  <artifactId>maven-eclipse-plugin</artifactId>
+	  <version>2.8</version>
+	  <configuration>
+	    <!-- By default, have separate Eclipse and maven build areas -->
+	    <buildOutputDirectory>${project.build.directory}/classes-eclipse</buildOutputDirectory>
+	    <downloadSources>true</downloadSources>
+	    <downloadJavadocs>false</downloadJavadocs>
+	  </configuration>
+	</plugin>
+      
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <reporting>
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+
+    <plugins>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-surefire-report-plugin</artifactId>
+	<version>2.9</version>
+	<configuration>
+	  <outputDirectory>${project.basedir}/target/surefire-reports-html</outputDirectory>
+	</configuration>
+      </plugin> 
+
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>cobertura-maven-plugin</artifactId>
+	<version>2.5.1</version>
+	<configuration>
+	  <instrumentation>
+	    <ignores>
+	      <ignore>org.slf4j.*</ignore>
+	    </ignores>
+	  </instrumentation>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-checkstyle-plugin</artifactId>
+	<version>2.7</version>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jxr-plugin</artifactId>
+	<version>2.3</version>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-pmd-plugin</artifactId>
+	<version>2.5</version>
+	<configuration>
+	  <linkXref>true</linkXref>
+	  <sourceEncoding>utf-8</sourceEncoding>
+	  <minimumTokens>100</minimumTokens>
+	  <targetJdk>1.6</targetJdk>
+	</configuration>
+      </plugin>
+
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>findbugs-maven-plugin</artifactId>
+	<version>2.3.2</version>
+      </plugin>
+
+    </plugins>
+
+  </reporting>
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+  
+  <mailingLists>
+
+    <mailingList>
+      <name>Users</name>
+      <post>jena-users@incubator.apache.org</post>
+      <subscribe>jena-users-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-users-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-users/</archive>
+      <otherArchives>
+	<otherArchive>http://www.mail-archive.com/jena-users@incubator.apache.org/</otherArchive>
+	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.incubator.jena-users</otherArchive>
+	<otherArchive>http://incubator.apache.org/mail/jena-users/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Development</name>
+      <post>jena-dev@incubator.apache.org</post>
+      <subscribe>jena-dev-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-dev-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-dev/</archive>
+      <otherArchives>
+	<otherArchive>http://www.mail-archive.com/jena-dev@incubator.apache.org/</otherArchive>
+	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.incubator.jena-dev</otherArchive>
+	<otherArchive>http://incubator.apache.org/mail/jena-dev/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+    <mailingList>
+      <name>Commits</name>
+      <post>jena-commits@incubator.apache.org</post>
+      <subscribe>jena-commits-subscribe@incubator.apache.org</subscribe>
+      <unsubscribe>jena-commits-unsubscribe@incubator.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/incubator-jena-commits/</archive>
+      <otherArchives>
+        <otherArchive>http://incubator.apache.org/mail/jena-commits/</otherArchive>
+      </otherArchives>
+    </mailingList>
+
+  </mailingLists>
+  
+  <!-- Temporary for testing : file:REPO-->
+
+  <!--
+  <distributionManagement>
+    <repository>
+      <id>jena-repo</id>
+      <name>Jena repo</name>
+      <url>file:REPO</url>
+      <layout>default</layout>
+    </repository> 
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>file:REPO</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+  -->
+
+</project>
