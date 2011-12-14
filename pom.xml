@@ -24,13 +24,12 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>${ver.tdb}</version>
-  <!-- <version>0.9.0-incubating-SNAPSHOT</version> -->
+  <version>0.9.0-incubating-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent> 
 
   <description>TDB is a storage subsystem for Jena and ARQ</description>
@@ -46,7 +45,22 @@
 	 or else the name is changed on install
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
     -->
+
+    <ver.jena>2.7.0-incubating</ver.jena>
+    <ver.arq>2.9.0-incubating</ver.arq>
+
   </properties>
+
+  <repositories>
+    <repository>
+      <id>apache.jena.staging</id>
+      <name>Apache jena Staging Repository</name>
+      <url>https://repository.apache.org/content/repositories/orgapachejena-334/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <dependencies>
 
@@ -230,5 +244,7 @@ build.time.txt=${build.time.txt}
   <reporting>
     <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
   </reporting>
+
+
 
 </project>
