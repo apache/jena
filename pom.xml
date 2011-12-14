@@ -21,7 +21,7 @@
   <name>jena-top</name>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-top</artifactId>
-  <version>0-incubating</version>
+  <version>1-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://incubator.apache.org/jena</url>
 
@@ -44,9 +44,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</developerConnection>
-    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/tags/jena-top-0-incubating-RC-1</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</url>
   </scm>
 
   <properties>
