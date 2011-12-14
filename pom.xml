@@ -66,9 +66,9 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <ver.jena>2.6.5-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.8.9-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
+    <ver.tdb>0.9.1-incubating-SNAPSHOT</ver.tdb>
 
     <!-- These two go together -->
     <ver.jetty>7.2.1.v20101111</ver.jetty>
