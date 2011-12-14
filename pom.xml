@@ -25,7 +25,7 @@
   <packaging>jar</packaging>
   <name>IRI</name>
   <!--<version>${ver.iri}</version>-->
-  <version>0.9.0-incubating</version>
+  <version>0.9.1-incubating-SNAPSHOT</version>
   <description />
 
   <parent>
@@ -35,9 +35,9 @@
   </parent> 
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/tags/jena-iri-0.9.0-incubating-RC-1</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/tags/jena-iri-0.9.0-incubating-RC-1</developerConnection>
-    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/tags/jena-iri-0.9.0-incubating-RC-1</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/trunk</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/</url>
   </scm>
 
   <properties>
