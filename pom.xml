@@ -44,8 +44,8 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</developerConnection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/trunk</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop</url>
   </scm>
 
