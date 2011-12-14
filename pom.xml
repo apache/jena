@@ -24,8 +24,8 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>Jena Core</name>
-  <version>${ver.jena}</version>
-  <!-- <version>2.6.5-incubating-SNAPSHOT</version> -->
+  <!--<version>${ver.jena}</version>-->
+  <version>2.7.0-incubating-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -36,7 +36,8 @@
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/</connection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/jena</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/</url>
   </scm>
 
