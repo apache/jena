@@ -21,7 +21,7 @@
   <name>jena-top</name>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-top</artifactId>
-  <version>1-incubating-SNAPSHOT</version>
+  <version>0-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://incubator.apache.org/jena</url>
 
@@ -50,16 +50,6 @@
   </scm>
 
   <properties>
-    <!-- Versions of Jena modules -->
-    <!-- managing version here is an attempt to manage in one place
-	 It's not ideal.
-    -->
-    <ver.jena>2.7.0-incubating-SNAPSHOT</ver.jena>
-    <ver.iri>0.9.0-incubating-SNAPSHOT</ver.iri>
-    <ver.arq>2.8.0-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
-    <ver.sdb>1.3.4-incubating-SNAPSHOT</ver.sdb>
-
     <!-- Versions of other things -->
     <ver.xerces>2.10.0</ver.xerces>
     <ver.icu4j>3.4.4</ver.icu4j>
