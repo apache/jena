@@ -30,14 +30,14 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent>
 
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/jena</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena</developerConnection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/trunk</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/</url>
   </scm>
 
