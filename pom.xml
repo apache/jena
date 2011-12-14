@@ -43,6 +43,7 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
+    <ver.iri>0.9.0</ver.iri>
   </properties>
 
   <dependencies>
