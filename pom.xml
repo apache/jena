@@ -43,7 +43,7 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.7.0</ver.jena>
+    <ver.jena>2.7.0-incubating</ver.jena>
     <ver.httpclient>4.1.2</ver.httpclient>
     <ver.httpcore>4.1.3</ver.httpcore>
     <ver.commons-codec>1.5</ver.commons-codec>
