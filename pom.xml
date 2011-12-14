@@ -26,17 +26,19 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>IRI</name>
-  <version>${ver.iri}</version>
+  <!--<version>${ver.iri}</version>-->
+  <version>0.9.0-incubating-SNAPSHOT</version>
   <description/>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent> 
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/</connection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/trunk</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/</url>
   </scm>
 
