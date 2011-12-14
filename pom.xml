@@ -21,7 +21,7 @@
   <name>jena-top</name>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-top</artifactId>
-  <version>1-incubating-SNAPSHOT</version>
+  <version>0-incubating-SNAPSHOT</version>
   <packaging>pom</packaging>
   <url>http://incubator.apache.org/jena</url>
 
