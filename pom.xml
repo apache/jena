@@ -23,7 +23,7 @@
   <packaging>pom</packaging>
   <name>Apache Jena Zip</name>
   <!--<version>${ver.jena}</version>-->
-  <version>2.7.0-incubating</version>
+  <version>2.7.0-incubating-SNAPSHOT</version>
   <description />
   <url>http://incubator.apache.org/jena</url>
 
