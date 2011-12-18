@@ -149,8 +149,9 @@ public abstract class DatasetGraphTests
      * removeGraph(Node)
      * listGraphNodes()
      */
+    
     // Graph centric operations
-    @Test public void graph_01()
+    @Test public void graph_00()
     {
         DatasetGraph dsg = emptyDataset() ;
         assertNotNull(dsg) ;
@@ -159,6 +160,15 @@ public abstract class DatasetGraphTests
         // Assumes an empty graph is detectable
         dsg.addGraph(g, GraphFactory.createDefaultGraph());
         assertTrue(dsg.containsGraph(g)) ;
+    }
+    
+    // Graph centric operations
+    @Test public void graph_01()
+    {
+        DatasetGraph dsg = emptyDataset() ;
+        assertNotNull(dsg) ;
+        Node g = Node.createURI("g") ;
+        
         Triple t = SSE.parseTriple("(<s> <p> <o>)") ;
         
         dsg.getGraph(g).add(t) ;
