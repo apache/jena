@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>1-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent> 
 
   <organization>
@@ -45,15 +45,26 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/</connection>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</developerConnection>
     <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
-  <!-- Problems with additional artifacts:
-       Any names set here are lost on installation.
-         Solution: use install:install-file.
-	 Solution: separate artifacts (heavyweight)
-  -->
+
+  <!-- Testing against staged artifacts -->
+  <repositories>
+    <repository>
+      <id>apache.jena.staging</id>
+      <name>Apache jena Staging Repository</name>
+      <url>https://repository.apache.org/content/repositories/orgapachejena-334</url>
+      <releases>
+	<enabled>true</enabled>
+      </releases>
+      <snapshots>
+	<enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
@@ -66,9 +77,9 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.1-incubating-SNAPSHOT</ver.tdb>
+    <ver.jena>2.7.0-incubating</ver.jena>
+    <ver.arq>2.9.0-incubating</ver.arq>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
 
     <!-- These two go together -->
     <ver.jetty>7.2.1.v20101111</ver.jetty>
