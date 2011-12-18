@@ -35,7 +35,7 @@ The file with extension .asc contains the
 
 For the zip file of the zzz module:
 
-    gpg --verify jena-zzz-VER-incubator-source-release.zip.asc
+    gpg --verify jena-zzz-VER-incubating-source-release.zip.asc
 
 == Verify a checksum
 
@@ -44,16 +44,16 @@ respectively.  Calculate the checksum on the downloaded file
 
 Exampale (linux):
 
-    md5sum jena-zzz-VER-incubator-source-release.zip
+    md5sum jena-zzz-VER-incubating-source-release.zip
 
 == Unpack the file.
 
-   unzip -q jena-zzz-VER-incubator-source-release.zip
+   unzip -q jena-zzz-VER-incubating-source-release.zip
 
-will create a directory "jena-zzz-VER-incubator" with the files needed to
+will create a directory "jena-zzz-VER-incubating" with the files needed to
 recreate the distribution.
 
-   cd jena-zzz-VER-incubator
+   cd jena-zzz-VER-incubating
 
 == Ensure the dependecies are available
 
