@@ -186,7 +186,7 @@ public class DSG_Mem extends DatasetGraphCaching
         {
             List<Triple> results = new ArrayList<Triple>() ;
             
-            Iterator<Quad> iter = DSG_Mem.this.find(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+            Iterator<Quad> iter = findNG(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
             for ( ; iter.hasNext() ; )
                 results.add(iter.next().asTriple()) ;
             

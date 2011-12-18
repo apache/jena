@@ -163,7 +163,6 @@ public abstract class DatasetGraphTests
         
         dsg.getGraph(g).add(t) ;
         assertTrue(dsg.getGraph(g).contains(t)) ;
-
         
         Quad quad = SSE.parseQuad("(quad <g> <s> <p> <o>)") ;
         Iterator<Quad> iter = dsg.find(null, null, null, null) ;
