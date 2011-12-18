@@ -32,7 +32,6 @@
   <dependencySets>
     <dependencySet>
       <unpack>false</unpack>
-      <scope>test</scope>
       <outputDirectory>lib</outputDirectory>
     </dependencySet>
   </dependencySets>
