@@ -62,7 +62,7 @@ www.apache.org/dist/incubator/jena
 
 Unpack zip : it unpacks into a directory, including the version number.
 
-Set environment variable ARQROOT (or JENAROOT) to the path of this direrctory.
+Set environment variable ARQROOT to the path of this direrctory.
 
 Maven Distribution
 ------------------

@@ -1,7 +1,9 @@
 ChangeLog for ARQ
 =================
 
-==== ARQ 2.8.9
+==== ARQ 2.9.1
+
+==== ARQ 2.8.9 / 2.9.0
 ** Java 6 is now required for running ARQ.
 
 + ARQ: Provides \-escapes for characters ~.-!$&'()*+,;=:/?#@% in local part of prefix names 
