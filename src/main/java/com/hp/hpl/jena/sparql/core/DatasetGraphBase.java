@@ -104,7 +104,6 @@ abstract public class DatasetGraphBase implements DatasetGraph
     @Override
     public Iterator<Quad> find()
     { return find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ; }
-
     
     @Override
     public Iterator<Quad> find(Quad quad)

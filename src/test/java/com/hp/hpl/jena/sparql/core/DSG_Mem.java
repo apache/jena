@@ -40,6 +40,8 @@ public class DSG_Mem extends DatasetGraphCaching
     List<Triple> triples = new ArrayList<Triple>() ;
     List<Quad> quads = new ArrayList<Quad>() ;
 
+    public DSG_Mem() {}
+    
     private int indexTriple(Triple triple)
     {
         for ( int i = 0 ; i < triples.size() ; i++ )
@@ -183,11 +185,16 @@ public class DSG_Mem extends DatasetGraphCaching
         protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
         {
             List<Triple> results = new ArrayList<Triple>() ;
-            for ( Quad q : quads )
-            {
-                if ( matches(q, graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) )
-                    results.add(q.asTriple()) ;
-            }
+            
+            Iterator<Quad> iter = DSG_Mem.this.find(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+            for ( ; iter.hasNext() ; )
+                results.add(iter.next().asTriple()) ;
+            
+//            for ( Quad q : quads )
+//            {
+//                if ( matches(q, graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) )
+//                    results.add(q.asTriple()) ;
+//            }
             return WrappedIterator.create(results.iterator()) ;
         }
     }
