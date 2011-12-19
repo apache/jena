@@ -27,12 +27,14 @@ import com.hp.hpl.jena.graph.Node ;
 public abstract class DatasetGraphTriplesQuads extends DatasetGraphBaseFind
 {
     @Override
+    final
     public void add(Quad quad)
     {
         add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());
     }
 
     @Override
+    final
     public void delete(Quad quad)
     {
         delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject());

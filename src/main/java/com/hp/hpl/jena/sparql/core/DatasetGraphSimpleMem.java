@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.core;
 
 import java.util.ArrayList ;
+import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.List ;
@@ -32,38 +33,47 @@ import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
-/** Very simple, non-scalable DatasetGraph implementation of a triples+quads
- * style for testing the upper levels of the class hierarchy.
+/** Very simple, non-scalable DatasetGraph implementation 
+ * of a triples+quads style for testing.
  */
-public class DSG_Mem extends DatasetGraphCaching
+public class DatasetGraphSimpleMem extends DatasetGraphCaching
 {
-    List<Triple> triples = new ArrayList<Triple>() ;
-    List<Quad> quads = new ArrayList<Quad>() ;
-
-    public DSG_Mem() {}
+    private MiniSet<Triple> triples = new MiniSet<Triple>() ;
+    private MiniSet<Quad> quads = new MiniSet<Quad>() ;
     
-    private int indexTriple(Triple triple)
+    /** Simpel abstraction of a Set */
+    private static class MiniSet<T> implements Iterable<T>
     {
-        for ( int i = 0 ; i < triples.size() ; i++ )
+        final Collection<T> store ; 
+        MiniSet(Collection<T> store) { this.store = store ; }
+        
+        MiniSet() { this.store = new ArrayList<T>() ; }
+        
+        void add(T t)
         {
-            Triple t = triples.get(i) ;
-            if ( t.equals(triple) )
-                return i ;
+            if ( !store.contains(t) ) 
+                store.add(t) ;
         }
-        return -1 ;
-    }
+        
+        void remove(T t)
+        {
+            store.remove(t) ; 
+        }
 
-    private int indexQuad(Quad quad)
-    {
-        for ( int i = 0 ; i < triples.size() ; i++ )
+        @Override
+        public Iterator<T> iterator()
         {
-            Quad q = quads.get(i) ;
-            if ( q.equals(quad) )
-                return i ;
+            return store.iterator() ;
         }
-        return -1 ;
+        
+        boolean isEmpty() { return store.isEmpty() ; }
+        
+        int size() { return store.size() ; }
     }
     
+    public DatasetGraphSimpleMem() {}
+
+
     @Override
     public Iterator<Quad> findInDftGraph(Node s, Node p , Node o) 
     {
@@ -117,16 +127,14 @@ public class DSG_Mem extends DatasetGraphCaching
     protected void addToDftGraph(Node s, Node p, Node o)
     {
         Triple t = new Triple(s, p, o) ;
-        if ( ! triples.contains(t) )
-            triples.add(t) ;
+        triples.add(t) ;
     }
 
     @Override
     protected void addToNamedGraph(Node g, Node s, Node p, Node o)
     {
         Quad q = new Quad(g, s, p, o) ;
-        if ( ! quads.contains(q) )
-            quads.add(q) ;
+        quads.add(q) ;
     }
 
     @Override
@@ -146,8 +154,7 @@ public class DSG_Mem extends DatasetGraphCaching
         @Override
         public void performAdd(Triple t)
         {
-            if ( ! triples.contains(t) )
-                triples.add(t) ;
+            triples.add(t) ;
         }
 
         @Override
@@ -174,8 +181,7 @@ public class DSG_Mem extends DatasetGraphCaching
         public void performAdd(Triple t)
         {
             Quad q = new Quad(graphName, t) ;
-            if ( ! quads.contains(q) )
-                quads.add(q) ;
+            quads.add(q) ;
         }
 
         @Override
@@ -189,12 +195,6 @@ public class DSG_Mem extends DatasetGraphCaching
             Iterator<Quad> iter = findNG(graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
             for ( ; iter.hasNext() ; )
                 results.add(iter.next().asTriple()) ;
-            
-//            for ( Quad q : quads )
-//            {
-//                if ( matches(q, graphName, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) )
-//                    results.add(q.asTriple()) ;
-//            }
             return WrappedIterator.create(results.iterator()) ;
         }
     }
