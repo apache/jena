@@ -50,7 +50,6 @@
     <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
-
   <!-- Testing against staged artifacts -->
   <repositories>
     <repository>
