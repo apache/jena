@@ -33,7 +33,7 @@ import org.openjena.fuseki.FusekiRequestException ;
 public class WebIO
 {
     /** Simple GET */
-    public static  String exec_get(String url)
+    public static String exec_get(String url)
     {
         HttpUriRequest httpGet = new HttpGet(url) ;
         HttpClient httpclient = new DefaultHttpClient() ;
