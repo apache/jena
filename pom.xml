@@ -56,7 +56,7 @@
     <repository>
       <id>apache.jena.staging</id>
       <name>Apache jena Staging Repository</name>
-      <url>https://repository.apache.org/content/repositories/orgapachejena-334</url>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
       <releases>
         <enabled>true</enabled>
       </releases>
