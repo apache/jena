@@ -114,10 +114,15 @@ public class ObjectFileLogger implements ObjectFile
     @Override
     public long length()
     {
-        info("") ;
         return other.length() ;
     }
     
+    @Override
+    public boolean isEmpty()
+    {
+        return other.isEmpty() ;
+    }
+
     private void info(String string)
     {
         if ( label != null )

@@ -149,6 +149,17 @@ public class TransactionManager
         @Override public void writerCommits(Transaction txn)        { log("commit", txn) ; }
         @Override public void writerAborts(Transaction txn)         { log("abort", txn) ; }
     }
+
+    /** More detailed */
+    class TSM_LoggerDebug extends TSM_Base
+    {
+        @Override public void readerStarts(Transaction txn)         { logInternal("start",  txn) ; }
+        @Override public void readerFinishes(Transaction txn)       { logInternal("finish", txn) ; }
+        @Override public void writerStarts(Transaction txn)         { logInternal("begin",  txn) ; }
+        @Override public void writerCommits(Transaction txn)        { logInternal("commit", txn) ; }
+        @Override public void writerAborts(Transaction txn)         { logInternal("abort",  txn) ; }
+    }
+
     
     class TSM_Counters implements TSM
     {
@@ -252,6 +263,7 @@ public class TransactionManager
     
     private TSM[] actions = new TSM[] { 
         new TSM_Counters() ,           // Must be first.
+        //new TSM_LoggerDebug() ,
         new TSM_Logger() ,
         (recordHistory ? new TSM_Record() : null ) ,
         new TSM_WriteBackEndTxn()        // Write back policy. Must be last.
@@ -345,7 +357,7 @@ public class TransactionManager
         Transaction txn = createTransaction(dsg, mode, label) ;
         
         log("begin$", txn) ;
-        
+
         DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         txn.setActiveDataset(dsgTxn) ;
 
@@ -582,6 +594,14 @@ public class TransactionManager
             logger().debug("<No txn>: "+msg) ;
         else
             logger().debug(txn.getLabel()+": "+msg) ;
+    }
+    
+    private void logInternal(String action, Transaction txn)
+    {
+        if ( ! log() )
+            return ;
+        String txnStr = ( txn == null ) ? "<null>" : txn.getLabel() ;
+        System.err.printf(format("%6s %s -- %s", action, txnStr, state())) ;
     }
 
     private static Logger logger()

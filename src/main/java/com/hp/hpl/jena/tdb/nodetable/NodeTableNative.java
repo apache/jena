@@ -262,6 +262,6 @@ public class NodeTableNative implements NodeTable
     @Override
     public boolean isEmpty()
     {
-        return false ;
+        return getObjects().isEmpty() ;
     }
 }

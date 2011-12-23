@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import static org.openjena.atlas.logging.Log.warn ;
+
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
@@ -43,7 +45,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private static Logger log = LoggerFactory.getLogger(NodeTableTrans.class) ;
     // TODO flag to note is any work is needed on commit.
     private final NodeTable base ;
-    private long offset ;
+    private long allocOffset ;
     
     private NodeTable nodeTableJournal = null ;
     private static int CacheSize = 10000 ;      // [TxTDB:TODO] Make configurable 
@@ -57,19 +59,13 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     private final String label ;
     private final Transaction txn ;     // Can be null (during recovery).
     
-    // *** TEMPORARY!
-    public static boolean FIXUP = false ;  
-    
     public NodeTableTrans(Transaction txn, String label, NodeTable sub, Index nodeIndex, ObjectFile objFile)
     {
         this.txn = txn ;
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
         this.journalObjFile = objFile ;
-        
         this.label = label ; 
-        // Show the way tables are wired up
-        //debug("NTT[%s #%s] %s", label, Integer.toHexString(hashCode()), sub) ;
     }
 
     public void setPassthrough(boolean v)   { passthrough = v ; }
@@ -105,7 +101,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     {
         if ( passthrough ) return base.getNodeForNodeId(id) ;
         long x = id.getId() ;
-        if ( x < offset )
+        if ( x < allocOffset )
             return base.getNodeForNodeId(id) ;
         id = mapToJournal(id) ;
         Node node = nodeTableJournal.getNodeForNodeId(id) ;
@@ -119,7 +115,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
            throw new TDBTransactionException("Not in an active transaction") ;
         if ( NodeId.isInline(id) )
             return id ; 
-        return NodeId.create(id.getId()-offset) ;
+        return NodeId.create(id.getId()-allocOffset) ;
     }
     
     /** Convert from a id in other to an external id  */ 
@@ -129,7 +125,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             throw new TDBTransactionException("Not in an active transaction") ;
         if ( NodeId.isInline(id) )
             return id ; 
-        return NodeId.create(id.getId()+offset) ; 
+        return NodeId.create(id.getId()+allocOffset) ; 
     }
     
     private NodeId allocate(Node node)
@@ -153,7 +149,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void begin(Transaction txn)
     {
-        debug("%s begin", txn.getLabel()) ;
+        //debug("%s begin", txn.getLabel()) ;
         
         if ( this.txn.getTxnId() != txn.getTxnId() )
             throw new TDBException(String.format("Different transactions: %s %s", this.txn.getLabel(), txn.getLabel())) ;
@@ -161,35 +157,19 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             throw new TDBException("Already active") ;
         passthrough = false ;
         
-        offset = base.allocOffset().getId() ;
-
+        allocOffset = base.allocOffset().getId() ;
+        // base node table empty e.g. first use.
         journalObjFileStartOffset = journalObjFile.length() ;
         if ( journalObjFileStartOffset != 0 )
         {
-            System.out.flush() ;
-            System.err.printf("\n%s journalStartOffset not zero: %d/0x%02X\n",txn.getLabel(), journalObjFileStartOffset, journalObjFileStartOffset) ;
-            
+            warn(log, "%s journalStartOffset not zero: %d/0x%02X",txn.getLabel(), journalObjFileStartOffset, journalObjFileStartOffset) ;
             // repeat for debugging.
             journalObjFile.length() ;
-            
-            if ( FIXUP )
-            {
-                // TEMP : if you see this code active in SVN, set it to false immediately.
-                // The question is how come the journal position was non-zero in the first place. 
-                System.err.println("journalStartOffset reset to zero") ;
-                journalObjFileStartOffset = 0 ;
-                journalObjFile.truncate(0) ;
-                //journalObjFile.sync() ;
-            }
         }
-        offset += journalObjFileStartOffset ;
-        
-        //debug("begin: %s %s", txn.getLabel(), label) ;
-        //debug("begin: base=%s  offset=0x%X journalOffset=0x%X", base, offset, journalOffset) ;
+        allocOffset += journalObjFileStartOffset ;
         
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journalObjFile) ;
         this.nodeTableJournal = NodeTableCache.create(nodeTableJournal, CacheSize, CacheSize, 100) ;
-
         // This class knows about non-mappable inline values.   mapToJournal(NodeId)/mapFromJournal. 
         this.nodeTableJournal = NodeTableInline.create(nodeTableJournal) ;
     }
@@ -199,16 +179,9 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     /** Copy from the journal file to the real file */
     /*package*/ void append()
     {
-        //debug(">> append: %s",label) ;
-        // Assumes all() is in order from low to high.
-        
-        if ( APPEND_LOG ) 
-            System.out.printf(">> append: %s %s %d/0x%04X\n",label, base.allocOffset(), journalObjFile.length(), journalObjFile.length()) ;
-        
         Iterator<Pair<NodeId, Node>> iter = nodeTableJournal.all() ;
         Pair<NodeId, Node> firstPair = null ;
         Pair<NodeId, Node> lastPair = null ;
-        
         
         for ( ; iter.hasNext() ; )
         {
@@ -224,32 +197,19 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
-            {
-                String msg = String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2) ;
-                System.err.println() ;
-                System.err.println() ;
-                System.err.println(msg) ;
-                dump() ;   
-                System.err.println() ;
-                throw new TDBException(msg) ;
-            }
+                inconsistent(node, nodeId, nodeId2) ;
         }
-        
-        if ( APPEND_LOG )
-        {
-            System.out.printf("+ First: %s -> %s\n", firstPair.car(), mapFromJournal(firstPair.car())) ;
-            System.out.printf("+ Last: %s -> %s\n", lastPair.car(), mapFromJournal(lastPair.car())) ;
-            System.out.printf("+ New base: %s\n", base.allocOffset()) ;
-            Node n1 = firstPair.cdr() ;
-            Node n2 = lastPair.cdr() ;
-            
-            if ( base.getNodeIdForNode(n1) == null )
-                throw new TDBException("1") ;
-            if ( base.getNodeIdForNode(n2) == null )
-                throw new TDBException("2") ;
-        }
-        
-        //debug("<< append: %s",label) ;
+    }
+    
+    private void inconsistent(Node node , NodeId nodeId , NodeId nodeId2 )
+    {
+        String msg = String.format("Different ids for %s: allocated: expected %s, got %s", node, mapFromJournal(nodeId), nodeId2) ;
+        System.err.println() ;
+        System.err.println() ;
+        System.err.println(msg) ;
+        dump() ;   
+        System.err.println() ;
+        throw new TDBException(msg) ;
     }
     
     private void dump()
@@ -257,7 +217,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         System.err.println(">>>>>>>>>>") ;
         System.err.println("label = "+label) ;
         System.err.println("txn = "+txn) ;
-        System.err.println("offset = "+offset) ;
+        System.err.println("offset = "+allocOffset) ;
         System.err.println("journalStartOffset = "+journalObjFileStartOffset) ;
         System.err.println("journal = "+journalObjFile.getLabel()) ;
         if ( true )
@@ -299,7 +259,6 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
-        debug("%s >> commitPrepare: %s", txn.getLabel(), label) ;
         // The node table is append-only so it can be written during prepare.
         // The index isn't written (via the transaction journal) until enact.
         if ( nodeTableJournal == null )
@@ -311,7 +270,6 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             long x = journalObjFile.length() ;
             throw new TDBTransactionException(txn.getLabel()+": journalObjFile not cleared ("+x+")") ;
         }
-        debug("%s << commitPrepare: %s", txn.getLabel(), label) ;
     }
     
     @Override
@@ -321,37 +279,45 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // is append only.  Until here, pointers to the extra data aren't available
         // until the index is written.
         // The index is written via the transaction journal.
-        
-        //debug("commitEnact: %s", label) ;
         //writeJournal() ;
     }
 
     private void writeNodeJournal()
     {
-        if ( nodeTableJournal.isEmpty() )
+        //*****
+        //if ( false && nodeTableJournal.isEmpty() )
+        //if ( nodeIndex.isEmpty() )
+        if ( false && journalObjFile.isEmpty() )
+        {
+            journalObjFile.close() ;                                // Side effect is a buffer flush.
+            journalObjFile = null ;
+            base.sync() ;
+            allocOffset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
+            passthrough = true ;
             return ;
+        }
+
+        long expected = base.allocOffset().getId() ;
+        long len = journalObjFile.length() ;
+        if ( expected != allocOffset )
+            System.err.println("************* UNEXPECTED [1]") ;
         
-        //debug("writeNodeJournal: (base alloc before) %s", base.allocOffset()) ;
-        append() ;      // Calls all() which does a buffer flish. 
-        //debug("writeNodeJournal: (base alloc after) %s",  base.allocOffset()) ;
-        //debug("writeNodeJournal: (nodeTableJournal) %s", nodeTableJournal.allocOffset()) ;
-        
+        long newbase = -1 ; 
+        append() ;      // Calls all() which does a buffer flish.
         // Reset (in case we use this again)
         nodeIndex.clear() ;
-        // Fixes nodeTableJournal
         journalObjFile.truncate(journalObjFileStartOffset) ;    // Side effect is a buffer flush.
         //journalObjFile.sync() ;
         journalObjFile.close() ;                                // Side effect is a buffer flush.
         journalObjFile = null ;
         base.sync() ;
-        offset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
+        allocOffset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
         passthrough = true ;
     }
 
     @Override
     public void commitClearup(Transaction txn)
     {
-        debug("%s ** commitClearup: %s",  txn.getLabel(), label) ;
         finish() ;
     }
 

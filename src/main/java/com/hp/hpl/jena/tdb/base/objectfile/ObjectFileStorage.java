@@ -336,6 +336,14 @@ public class ObjectFileStorage implements ObjectFile
         if ( writeBuffer == null ) return filesize ; 
         return filesize+writeBuffer.position() ;
     }
+    
+    @Override
+    public boolean isEmpty()
+    {
+        if ( writeBuffer == null ) return filesize == 0  ;
+        return writeBuffer.position() == 0 &&  filesize == 0 ; 
+    }
+
 
     @Override
     public void close()                 { flushOutputBuffer() ; file.close() ; }

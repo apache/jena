@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.tdb.transaction ;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
+import static java.lang.Math.max ;
+import static java.lang.Math.min ;
 import static java.lang.String.format ;
 
-import java.util.concurrent.Callable ;
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
-import java.util.concurrent.TimeUnit ;
+import java.util.Iterator ;
+import java.util.concurrent.* ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
 import org.junit.AfterClass ;
@@ -32,20 +32,27 @@ import org.junit.BeforeClass ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.RandomLib ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** System testing of the transactions. */
 public class T_TransSystem
@@ -59,6 +66,11 @@ public class T_TransSystem
      * Therefore, this test program this does not run on MS Windows 64 bit mode.
      */
     
+    static boolean MEM                  = true ;
+    static String location              = true ? "/mnt/ssd1/tmp/DB163" : ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
+    //static String location              = ConfigTest.getTestingDirDB() ;     // Using an SSD here is very helpful
+    static final Location LOC           = MEM ? Location.mem() : new Location(location) ;
+    
     static { 
         //SystemTDB.isWindows
         if ( true )
@@ -66,90 +78,110 @@ public class T_TransSystem
         
         if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )
             log.error("**** Running with file mapped mode on MS Windows - expected test failure") ;
+        
+        FileOps.ensureDir(location) ;
+    }
+
+    private static boolean inlineProgress       = false ;   // Set true so that every transaction print a letter for what it does.
+    private static boolean silent               = false ;   // No progress output 
+    
+    static {
+        TransactionManager.DEBUG = inlineProgress ;     // This cause one character details to be printed. 
+
+        // Various flags (may not still exist)
+        //ObjectFileStorage.logging = true ;
+        // FileBase.DEBUG = inlineProgress ;
+        //NodeTableTrans.FIXUP = true ;
+        //NodeTableTrans.APPEND_LOG = true ;
+        // See also log4j.properties.
     }
     
-    static boolean MEM = true ;
-    
-    static final Location LOC = MEM ? Location.mem() : new Location(ConfigTest.getTestingDirDB()) ;
-
-    static final int Iterations             = MEM ? 1000 : 100 ;
+    static final int Iterations                 = MEM ? 10000 : 10000 ;
     // Output style.
-    static boolean inlineProgress           = true ; // (! log.isDebugEnabled()) && Iterations > 20 ;
-    static boolean logging                  = ! inlineProgress ; // (! log.isDebugEnabled()) && Iterations > 20 ;
+    static boolean logging                      = false ;
     
-    static final int numReaderTasks         = 5 ;
-    static final int numWriterTasksA        = 2 ; 
-    static final int numWriterTasksC        = 5 ;
+    // XXX Switch to threads choosing a mix of actions. 
+    // Jena-163 - good number choice?
+    // 1/0/2  8/10  3/3/10  4
+    
+    static final int numReaderTasks             = 5 ;   // 5
+    static final int numWriterTasksA            = 3 ;   // 3
+    static final int numWriterTasksC            = 5 ;   // 5
 
-    static final int readerSeqRepeats       = 8 ;
-    static final int readerMaxPause         = 25 ;
+    static final int readerSeqRepeats           = 4 ;   // 8
+    static final int readerMaxPause             = 20 ;  // 20
 
-    static final int writerAbortSeqRepeats  = 4 ;
-    static final int writerCommitSeqRepeats = 4 ;
-    static final int writerMaxPause         = 20 ;
+    static final int writerAbortSeqRepeats      = 4 ;   // 4
+    static final int writerCommitSeqRepeats     = 4 ;   // 4
+    static final int writerMaxPause             = 20 ;  // 20
 
-    static final int numTreadsInPool        = 8 ;           // If <= 0 then use an unbounded thread pool.   
-    private static ExecutorService execService = null ;
+    static final int numThreadsInPool           = 4 ;           // If <= 0 then use an unbounded thread pool.   
+    private static ExecutorService execService  = null ;
+    
+    private static int iteration                = 0 ;
+    private static int numIterationsPerBlock    = 100 ;
+    private static int colCount                 = 0 ;
+    private static int colMax                   = 200 ;
+    
+    // Queue treads starting
+    private static Semaphore startPoint ;
+    // Queue threads finishing.
+    private static CountDownLatch doneSignal ;
+
+    /** TODO
+     * Ideally: better mixes of R, C and A.
+     * One thread, processes a list of RCA choices.
+     * Different mixes to different threads.
+     * 
+     * Random data
+     */
     
     public static void main(String...args) throws InterruptedException
     {
         String x = (MEM?"memory":"disk["+SystemTDB.fileMode()+"]") ;
+        
+        // Make colMax >= numIterationsPerBlock in detailEveryTransaction = false mode
+        if ( !inlineProgress )
+            colMax = numIterationsPerBlock ;
         
         if ( logging )
             log.info("START ({}, {} iterations)", x, Iterations) ;
         else
             printf("START (%s, %d iterations)\n", x, Iterations) ;
         
-        int N = (Iterations < 10) ? 1 : Iterations / 10 ;
-        N = Math.min(N, 100) ;
-        int i ;
-        
-        for ( i = 0 ; i < Iterations ; i++ )
+        for ( iteration = 0 ; iteration < Iterations ; iteration++ )
         {
             clean() ;
 
-            execService = ( numTreadsInPool > 0 ) 
-                ? Executors.newFixedThreadPool(numTreadsInPool)
+            execService = ( numThreadsInPool > 0 ) 
+                ? Executors.newFixedThreadPool(numThreadsInPool)
                 : Executors.newCachedThreadPool() ;
             
-            if (!inlineProgress && logging)
-                log.info(format("Iteration: %d\n", i)) ;
-            if ( inlineProgress )
+            startTestIteration() ;         
+            
+            try {
+                new T_TransSystem().manyReaderAndOneWriter() ;
+            } catch (TDBException ex)
             {
-                if ( i%N == 0 )
-                    printf("%03d: ",i) ;
-                printf(".") ;
-                if ( i%N == (N-1) )
-                    println() ;
+                System.err.println() ;
+                ex.printStackTrace(System.err) ;
+                System.err.println() ;
             }
-            new T_TransSystem().manyReaderAndOneWriter() ;
+            
+            // Should already be shutdown.
             execService.shutdown() ;
-            if ( ! execService.awaitTermination(10, TimeUnit.SECONDS) )
-                System.err.println("Shutdown didn;'t complete in time") ;
-
+            if ( ! execService.awaitTermination(30, TimeUnit.SECONDS) )
+                System.err.println("Shutdown didn't complete in time") ;
+            endTestIteration() ;
         }
-        if ( inlineProgress )
-        {
-            if ( i%N != 0 )
-                System.out.println() ;
-            println() ;
-            printf("DONE (%03d)\n",i) ;
-        }
+        
+        endTest() ;
         if (logging)
-            log.info("FINISH ({})", i) ;
+            log.info("FINISH ({})", iteration) ;
         else
-            printf("FINISH") ;
+            println("FINISH") ;
     }
     
-    private static void clean()
-    {
-        if ( ! LOC.isMem() )
-        {
-            StoreConnection.release(LOC) ;
-            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
-        }
-    }
-
     static class Reader implements Callable<Object>
     {
         private final int repeats ;
@@ -166,6 +198,7 @@ public class T_TransSystem
         @Override
         public Object call()
         {
+            start() ;
             DatasetGraphTxn dsg = null ;
             try
             {
@@ -175,31 +208,90 @@ public class T_TransSystem
                     dsg = sConn.begin(ReadWrite.READ) ;
                     log.debug("reader start " + id + "/" + i) ;
 
+                    // Original T_TransSystem code
+//                    int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
+//                    pause(maxpause) ;
+//                    int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
+//                    if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
+//                                                  dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
+                    
+                    // Add in an abort. 
+                    long start = System.currentTimeMillis();
                     int x1 = count("SELECT * { ?s ?p ?o }", dsg) ;
                     pause(maxpause) ;
-                    int x2 = count("SELECT * { ?s ?p ?o }", dsg) ;
-                    if (x1 != x2) log.warn(format("READER: %s Change seen: %d/%d : id=%d: i=%d",
-                                                  dsg.getTransaction().getLabel(), x1, x2, id, i)) ;
+
+                    String qs1 = StrUtils.strjoinNL("PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>",
+                        "SELECT * { {FILTER(afn:wait(10))} UNION {?s ?p ?o }}") ;
+                    String qs2 = StrUtils.strjoinNL("DESCRIBE ?s { ?s ?p ?o }") ;
+                    try {
+                        //countWithAbort(qs1, dsg, 5) ;
+                        describeWithAbort(qs2, dsg, -1) ;
+                    } catch (QueryCancelledException e) 
+                    { 
+                        txn("X", dsg);
+                    }
+
                     log.debug("reader finish " + id + "/" + i) ;
                     dsg.end() ;
+                    txn("R", dsg) ;
                     dsg = null ;
                 }
                 return null ;
             } catch (RuntimeException ex)
             {
+                System.out.flush() ;
+                System.err.println() ;
                 ex.printStackTrace(System.err) ;
                 if ( dsg != null )
                 {
                     dsg.abort() ;
                     dsg.end() ;
+                    txn("E", dsg) ;
                     dsg = null ;
                 }
+                System.exit(2) ;
                 return null ;
             }
+            finally { doneSignal.countDown(); }
         }
     }
 
-    static abstract class Writer implements Callable<Object>
+    public static int countWithAbort(String queryStr, DatasetGraph dsg, long abortTime)
+    {
+        int counter = 0 ;
+        Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
+        try {
+            qExec.setTimeout(abortTime);
+            ResultSet rs = qExec.execSelect() ;
+            for (; rs.hasNext() ; )
+            {
+                rs.nextBinding() ;
+                counter++ ;
+            }
+            return counter ;
+        } finally { qExec.close() ; }
+    }
+
+    public static int describeWithAbort(String queryStr, DatasetGraph dsg, long abortTime)
+    {
+        int counter = 0 ;
+        Query query = QueryFactory.create(queryStr, Syntax.syntaxARQ) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, DatasetFactory.create(dsg)) ;
+        try {
+            qExec.setTimeout(abortTime);
+            Model model = qExec.execDescribe();
+            //ResultSet rs = qExec.execSelect() ;
+            for(Iterator<Statement> stmIterator = model.listStatements(); stmIterator.hasNext();) {
+                stmIterator.next();
+                counter++;
+            }
+            return counter ;
+        } finally { qExec.close() ; }
+    }
+
+
+    static class Writer implements Callable<Object>
     {
         private final int repeats ;
         private final int maxpause ;
@@ -217,6 +309,8 @@ public class T_TransSystem
         @Override
         public Object call()
         {
+            start() ;
+
             DatasetGraphTxn dsg = null ;
             try { 
                 int id = gen.incrementAndGet() ;
@@ -242,12 +336,19 @@ public class T_TransSystem
                         return null ;
                     }
                     if (commit) 
+                    {
                         dsg.commit() ;
+                        txn("C", dsg) ;
+                    }
                     else
+                    {
                         dsg.abort() ;
+                        txn("A", dsg) ;
+                    }
                     SysTxnState state = sConn.getTransMgrState() ;
                     log.debug(state.toString()) ;
-                    log.debug("writer finish "+id+"/"+i) ;                
+                    log.debug("writer finish "+id+"/"+i) ;  
+                    Lib.sleep(20) ;
                     dsg.end() ;
                     dsg = null ;
                 }
@@ -255,6 +356,8 @@ public class T_TransSystem
             }
             catch (RuntimeException ex)
             { 
+                txn("E", dsg) ;
+                System.err.println() ;
                 ex.printStackTrace(System.err) ;
                 System.exit(1) ;
                 if ( dsg != null )
@@ -263,12 +366,27 @@ public class T_TransSystem
                     dsg.end() ;
                     dsg = null ;
                 }
+                
                 return null ;
             }
+            finally { doneSignal.countDown(); }
         }
     
         // return the delta.
-        protected abstract int change(DatasetGraphTxn dsg, int id, int i) ;
+        protected int change(DatasetGraphTxn dsg, int id, int i)
+        {  
+            return changeProc(dsg, id, i) ; 
+        }
+    }
+    
+    public static void start()
+    {
+        if ( startPoint != null )
+        {
+            try { startPoint.acquire() ; }
+            catch (InterruptedException e) { e.printStackTrace(); }
+        }
+        pause(10) ;
     }
 
     @BeforeClass 
@@ -289,9 +407,22 @@ public class T_TransSystem
     @AfterClass 
     public static void afterClass() {}
 
+    private static void clean()
+    {
+        StoreConnection.release(LOC) ;
+        if ( ! LOC.isMem() )
+        {
+            FileOps.clearDirectory(LOC.getDirectoryPath()) ;
+            // Clean because it's new.
+            //LOC = new Location(ConfigTest.getTestingDirUnique()) ;
+        }
+    }
+
     private StoreConnection sConn ;
     protected synchronized StoreConnection getStoreConnection()
     {
+        
+        
         StoreConnection sConn = StoreConnection.make(LOC) ;
         //sConn.getTransMgr().recording(true) ;
         return sConn ;
@@ -323,32 +454,55 @@ public class T_TransSystem
         final StoreConnection sConn = getStoreConnection() ;
         
         Callable<?> procR = new Reader(sConn, readerSeqRepeats, readerMaxPause) ;      // Number of repeats, max pause
-        Callable<?> procW_a = new Writer(sConn, writerAbortSeqRepeats, writerMaxPause, false)  // Number of repeats, max pause, commit. 
-        {
-            @Override
-            protected int change(DatasetGraphTxn dsg, int id, int i)
-            {  
-                return changeProc(dsg, id, i) ; 
-            }
-        } ;
-            
-        Callable<?> procW_c = new Writer(sConn, writerCommitSeqRepeats, writerMaxPause, true)  // Number of repeats, max pause, commit. 
-        {
-            @Override
-            protected int change(DatasetGraphTxn dsg, int id, int i)
-            { 
-                return changeProc(dsg, id, i) ;
-            }
-        } ;
+        Callable<?> procW_a = new Writer(sConn, writerAbortSeqRepeats, writerMaxPause, false)  ; // Number of repeats, max pause, commit. 
+        Callable<?> procW_c = new Writer(sConn, writerCommitSeqRepeats, writerMaxPause, true)  ; // Number of repeats, max pause, commit. 
 
-        submit(execService, procR,   numReaderTasks, "READ-") ;
-        submit(execService, procW_c, numWriterTasksC, "COMMIT-") ;
-        submit(execService, procW_a, numWriterTasksA, "ABORT-") ;
+        // All threads start and queue on this - otherwise the thread start up as the executeor is loaded.
+        // That can lead to uninterstin sequences of actions. 
+        startPoint = null ; //new Semaphore(0) ;
+
+        int RN1 = 1 ;
+        int RN2 = min(1, numReaderTasks) ;
+        int RN3 = max(numReaderTasks - RN1 - RN2,0);
+
+        int WC1 =  numWriterTasksC/2 ;
+        int WC2 =  2 ;
+        int WC3 =  numWriterTasksC - WC1 - WC2 ;
         
-        try
-        {
+        int WA1 =  numWriterTasksA/2 ;
+        int WA2 =  numWriterTasksA - WA1 ;
+        
+        //System.out.println(RN1 + " " + RN2 + " " + RN3 + " " + WC1 + " " + WC2 + " " + WA1 + " " + WA2) ;
+        int N = max(RN1,0) + max(RN2,0) + max(RN3,0) + max(WC1,0) + max(WC2,0) + max(WA1,0) + max(WA2,0) ;
+        //System.out.println(N) ;
+        doneSignal = new CountDownLatch(N) ;
+        
+        // Define the query mix.
+        submit(execService, procW_c, WC1, "COMMIT-") ;
+        submit(execService, procW_a, WA1, "ABORT-") ;
+        submit(execService, procR,   RN1, "READ-") ;
+        submit(execService, procW_c, WC2, "COMMIT-") ;
+        submit(execService, procR,   RN2, "READ-") ;
+        submit(execService, procW_a, WA2, "ABORT-") ;
+        submit(execService, procR,   RN3, "READ-") ;
+        submit(execService, procW_c, WC3, "COMMIT-") ;
+        
+        if ( startPoint != null )
+            // Let them all go.
+            startPoint.release(4000) ;
+
+        // Wait until all done.
+        try { doneSignal.await() ; }
+        catch (InterruptedException e) { e.printStackTrace(System.err) ; }
+        
+        try { 
+            // This is an orderly shutdown so followed by the awaitTermination
+            // shoudl wait for all threads, making the CountDownLatch unnecessary.
+            // CountDownLatch added as a precaution while searching for JENA-163
+            // which seems to see occasional uncleared out node journal files.
             execService.shutdown() ;
-            execService.awaitTermination(100, TimeUnit.SECONDS) ;
+            if ( ! execService.awaitTermination(100, TimeUnit.SECONDS) )
+                System.err.println("Bad shutdown") ;
         } catch (InterruptedException e)
         {
             e.printStackTrace(System.err) ;
@@ -402,23 +556,102 @@ public class T_TransSystem
     
     static Quad genQuad(int value)
     {
-        Quad q1 = SSE.parseQuad("(_ <s> <p> <o>)") ;
         Node g1 = q.getGraph() ;
+        int n1 = (int)Math.round(Math.random()*10000) ;
+        int n2 = (int)Math.round(Math.random()*10000) ;
         
         Node g = Quad.defaultGraphNodeGenerated ; // urn:x-arq:DefaultGraphNode
         Node s = Node.createURI("S") ;
-        Node p = Node.createURI("P") ;
+        Node p = Node.createURI("P"+value) ;
+        // Integer - that gets inlined.
         Node o = Node.createLiteral(Integer.toString(value), null, XSDDatatype.XSDinteger) ;
         return new Quad(g,s,p,o) ;
     }
 
+    static void txn(String label, DatasetGraphTxn dsg )
+    {
+        if ( ! inlineProgress )
+            return ;
+        checkCol() ;
+        print(label) ;
+        //print("["+dsg.getTransaction().getTxnId()+"]") ;
+        colCount += label.length() ;
+    }
+
+    private static void startTestIteration()
+    {
+        checkCol() ;
+        if ( iteration%numIterationsPerBlock == 0 )
+        {
+            if ( colCount != 0 )
+            {
+                println() ;
+                colCount = 0 ;
+            }
+                
+            printf("%03d: ", iteration) ;
+            if ( inlineProgress )
+                println() ;
+        }
+    }
+    
+    private static void endTestIteration()
+    {
+        if ( ! inlineProgress )
+        {
+            checkCol() ;
+            printf(".") ;
+            colCount += 1 ;
+        }
+        else
+        {
+            println() ;
+            colCount = 0 ;
+        }
+    }
+    
+    private static void checkCol()
+    {
+        if ( colCount == colMax )
+        {
+            println() ;
+            colCount = 0 ;
+        }
+    }
+
+    private static void endTest()
+    {
+        if ( colCount > 0 || iteration%numIterationsPerBlock != 0 )
+        {
+            println() ;
+            colCount = 0 ;
+        }
+        println() ;
+    }
+
+    private static void print(String str)
+    {
+        if ( silent ) return ;
+        System.out.print(str) ;
+    }
+
+    private static void println(String string)
+    {
+        if ( silent ) return ;
+        print(string) ;
+        println() ; 
+    }
+
     private static void println()
     {
-        printf("\n") ; System.out.flush() ;
+        if ( silent ) return ;
+        printf("\n") ; 
+        System.out.flush() ;
     }
 
     private static void printf(String string, Object...args)
     {
+        if ( silent ) return ;
         System.out.printf(string, args) ;
     }
 

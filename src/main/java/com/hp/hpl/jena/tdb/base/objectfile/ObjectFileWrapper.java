@@ -68,4 +68,7 @@ public class ObjectFileWrapper implements ObjectFile
 
     @Override
     public long length()                            { return other.length() ; }
+    
+    @Override
+    public boolean isEmpty()                        { return other.isEmpty() ; }
 }

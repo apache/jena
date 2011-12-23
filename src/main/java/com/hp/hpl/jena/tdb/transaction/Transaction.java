@@ -214,7 +214,8 @@ public class Transaction
     }
 
     public ReadWrite getMode()                      { return mode ; }
-    public TxnState getState()                      { return state ; }
+    public boolean   isRead()                       { return mode == ReadWrite.READ ; }
+    public TxnState  getState()                     { return state ; }
     
     public long getTxnId()                          { return id ; }
     public TransactionManager getTxnMgr()           { return txnMgr ; }

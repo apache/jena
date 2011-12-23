@@ -61,7 +61,16 @@ public class ObjectFileMem implements ObjectFile
             throw new IllegalStateException("Closed") ;
         return buffers.size() ;
     }
+    
+    @Override
+    public boolean isEmpty()
+    {
+        if ( closed )
+            throw new IllegalStateException("Closed") ;
+        return buffers.isEmpty() ;
+    }
 
+    
     @Override
     public ByteBuffer read(long id)
     {

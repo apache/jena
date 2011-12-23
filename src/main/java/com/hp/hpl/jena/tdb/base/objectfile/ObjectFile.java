@@ -54,6 +54,9 @@ public interface ObjectFile extends Sync, Closeable
     /** Length, in units used by read/write for ids */
     public long length() ;
     
+    /** Any objects in this file? */
+    public boolean isEmpty() ;
+
     /** Reset the "append" point; may only be moved earlier.
      * The new position must correspond to a position returned by
      * {@link #write(ByteBuffer)} or an id in a {@link Block Block} from {@link #completeWrite(Block)}

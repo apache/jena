@@ -32,7 +32,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 
 public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
 {
-    private final ObjectFile other ;
+    private final ObjectFile transObjects ;
     private long otherAllocOffset ;           // record where we start allocating
     private boolean passthrough = false ;
     private boolean inTransaction = false ;
@@ -42,9 +42,9 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     
     public ObjectFileTrans(Transaction txn, ObjectFile base, ObjectFile other)
     {
-        // The other object file must use the same allocation policy.
+        // The "other" object file must use the same allocation policy.
         this.base = base ;
-        this.other = other ;
+        this.transObjects = other ;
         inTransaction = false ;
 
         //  [TxTDB:PATCH-UP] Begin is not being called.
@@ -59,7 +59,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     {
         passthrough = false ;
         inTransaction = true ;
-        other.reposition(0) ;
+        transObjects.reposition(0) ;
         this.otherAllocOffset = base.length() ;
     }
     
@@ -68,7 +68,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     {
         if ( ! inTransaction )
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
-        other.sync() ;
+        transObjects.sync() ;
     }
 
     @Override
@@ -78,19 +78,19 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
             throw new TDBTransactionException("Not in a transaction for a commit to happen") ; 
         append() ;
         base.sync() ;
-        other.reposition(0) ;
+        transObjects.reposition(0) ;
     }
 
     @Override
     public void abort(Transaction txn)
     {
-        other.reposition(0) ;
+        transObjects.reposition(0) ;
     }
     
     @Override
     public void commitClearup(Transaction txn)
     {
-        other.truncate(0) ;
+        transObjects.truncate(0) ;
         passthrough = true ;
     }
 
@@ -106,7 +106,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         // Truncate/position the ObjectFile.
         base.reposition(otherAllocOffset) ;
         
-        Iterator<Pair<Long, ByteBuffer>> iter = other.all() ;
+        Iterator<Pair<Long, ByteBuffer>> iter = transObjects.all() ;
         for ( ; iter.hasNext() ; )
         {
             Pair<Long, ByteBuffer> p = iter.next() ;
@@ -127,13 +127,13 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         if ( passthrough ) { base.reposition(id) ; return ; }
         if ( id > otherAllocOffset )
         {
-            other.reposition(mapToOther(id)) ;
+            transObjects.reposition(mapToOther(id)) ;
             return ;
         }
         
         Log.warn(this, "Unexpected: Attempt to reposition over base file") ;
         base.reposition(id) ;
-        other.reposition(0) ;
+        transObjects.reposition(0) ;
         otherAllocOffset = base.length() ;
     }
     
@@ -143,11 +143,11 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         if ( passthrough ) { base.truncate(id) ; return ; }
         if ( id > otherAllocOffset )
         {
-            other.truncate(mapToOther(id)) ;
+            transObjects.truncate(mapToOther(id)) ;
             return ;
         }
         base.truncate(id) ;
-        other.truncate(0) ;
+        transObjects.truncate(0) ;
         otherAllocOffset = base.length() ;
     }
 
@@ -155,7 +155,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     public Block allocWrite(int maxBytes)
     {
         if ( passthrough ) return base.allocWrite(maxBytes) ;
-        Block block = other.allocWrite(maxBytes) ;
+        Block block = transObjects.allocWrite(maxBytes) ;
         block = new Block(block.getId()+otherAllocOffset, block.getByteBuffer()) ;
         return block ;
     }
@@ -165,7 +165,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     {
         if ( passthrough ) { base.completeWrite(block) ; return ; } 
         block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
-        other.completeWrite(block) ;
+        transObjects.completeWrite(block) ;
     }
 
     /** Convert from a id to the id in the "other" file */ 
@@ -178,7 +178,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     {
         if ( passthrough ) { return base.write(buffer) ; } 
         // Write to auxillary
-        long x = other.write(buffer) ;
+        long x = transObjects.write(buffer) ;
         return mapFromOther(x) ;
     }
 
@@ -189,21 +189,28 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         if ( id < otherAllocOffset )
             return base.read(id) ;
         long x = mapToOther(id) ; 
-        return other.read(id-otherAllocOffset) ;
+        return transObjects.read(id-otherAllocOffset) ;
     }
 
     @Override
     public long length()
     {
         if ( passthrough ) { return base.length() ; } 
-        return otherAllocOffset+other.length() ;
+        return otherAllocOffset+transObjects.length() ;
+    }
+    
+    @Override
+    public boolean isEmpty()
+    {
+        if ( passthrough ) { return base.isEmpty() ; } 
+        return transObjects.isEmpty() && base.isEmpty() ;
     }
 
     @Override
     public Iterator<Pair<Long, ByteBuffer>> all()
     {
         if ( passthrough ) { return base.all() ; } 
-        return Iter.concat(base.all(), other.all()) ;
+        return Iter.concat(base.all(), transObjects.all()) ;
     }
 
     @Override
@@ -221,6 +228,6 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     @Override
     public String getLabel()
     {
-        return "("+base.getLabel()+":"+other.getLabel()+")" ;
+        return "("+base.getLabel()+":"+transObjects.getLabel()+")" ;
     }
 }
