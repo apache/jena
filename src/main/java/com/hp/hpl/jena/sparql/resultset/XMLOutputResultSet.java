@@ -221,16 +221,33 @@ public class XMLOutputResultSet
             out.println("<"+dfURI+">"+xml_escape(r.getURI())+"</"+dfURI+">") ;
         }
     }
-
+    
     private static String xml_escape(String string)
     {
-        String s = string ;
-        s = s.replaceAll("&", "&amp;") ;
-        s = s.replaceAll("<", "&lt;") ;
-        s = s.replaceAll(">", "&gt;") ;
-        s = s.replaceAll("\r", "&#x0D;") ;
-        s = s.replaceAll("\n", "&#x0A;") ;  // Safe - excessively safe
-        return s ;
+        final StringBuilder sb = new StringBuilder(string);
+        
+        int offset = 0;
+        String replacement;
+        char found;
+        for (int i = 0; i < string.length(); i++) {
+            found = string.charAt(i);
+            
+            switch (found) {
+                case '&' : replacement = "&amp;"; break;
+                case '<' : replacement = "&lt;"; break;
+                case '>' : replacement = "&gt;"; break;
+                case '\r': replacement = "&#x0D;"; break;
+                case '\n': replacement = "&#x0A;"; break;
+                default  : replacement = null;
+            }
+            
+            if (replacement != null) {
+                sb.replace(offset + i, offset + i + 1, replacement);
+                offset += replacement.length() - 1; // account for added chars
+            }
+        }
+        
+        return sb.toString();
     }
 
     /** @return Returns the stylesheetURL. */

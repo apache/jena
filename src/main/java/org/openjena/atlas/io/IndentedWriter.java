@@ -54,6 +54,7 @@ public class IndentedWriter
     private String padString = null ;
     
     protected boolean flatMode = false ;
+    private boolean flushOnNewline = false ;
     
     private IndentedWriter() { this(System.out, false) ; }
     
@@ -160,7 +161,7 @@ public class IndentedWriter
         column = 0 ;
         // Note that PrintWriters do not autoflush by default
         // so if layered over a PrintWirter, need to flush that as well.  
-        flush() ;
+        if (flushOnNewline) flush() ;
     }
     
     private boolean atStartOfLine() { return column <= currentIndent ; }
@@ -259,6 +260,10 @@ public class IndentedWriter
     /** Flat mode - print without NL, for a more compact representation - depends on caller */  
     public boolean inFlatMode()                 { return flatMode ; }
     public void setFlatMode(boolean flatMode)   { this.flatMode = flatMode ; }
+    
+    /** Flush on newline **/
+    public boolean getFlushOnNewline()      { return flushOnNewline; }
+    public void setFlushOnNewline(boolean flushOnNewline) { this.flushOnNewline = flushOnNewline; } 
     
     public char getPadChar()                { return padChar ; }
     public void setPadChar(char ch)         { this.padChar  = ch ; }

@@ -25,8 +25,10 @@ import java.nio.ByteBuffer ;
 import java.nio.CharBuffer ;
 import java.nio.channels.WritableByteChannel ;
 
+import java.nio.charset.CharsetEncoder;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.Bytes ;
+import org.openjena.atlas.lib.Chars;
 import org.openjena.atlas.lib.Sink ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -76,6 +78,9 @@ public final class BufferingWriter extends Writer
     private ByteBuffer buffer = ByteBuffer.allocate(SIZE) ;
     private Sink<ByteBuffer> out ;
     private char[] oneChar = new char[1] ;
+    
+    // We use the same encoder for the life of this writer
+    final private CharsetEncoder encoder;
 
     /** Convenience operation to output to a WritableByteChannel */
     public static BufferingWriter create(WritableByteChannel out)
@@ -111,6 +116,7 @@ public final class BufferingWriter extends Writer
         this.out = sink ;
         this.blockSize = size ;
         this.blobSize = blobSize ;
+        this.encoder = Chars.allocEncoder();
     }
     
     /** Output characters (The String class implements CharSequence)*/
@@ -128,7 +134,7 @@ public final class BufferingWriter extends Writer
         if ( largeBlob /* too big */ )
         {
             ByteBuffer bb = ByteBuffer.allocate(space) ;
-            Bytes.toByteBuffer(string, bb) ;
+            Bytes.toByteBuffer(string, bb, encoder) ;
             send(out, bb) ;
             return ;
         }
@@ -136,7 +142,7 @@ public final class BufferingWriter extends Writer
         // This always sets "end of input" in the encoder which is
         // fine if we assume no spanning char sequnces across strings or other
         // units written to this writer.
-        Bytes.toByteBuffer(string, buffer) ;
+        Bytes.toByteBuffer(string, buffer, encoder) ;
     }
 
     private int bufferSize()
@@ -199,6 +205,7 @@ public final class BufferingWriter extends Writer
     public void close()
     {
         flush() ;
+        Chars.deallocEncoder(encoder); // return to the pool
         out.close() ;
     }
 
