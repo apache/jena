@@ -18,9 +18,10 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.util.ArrayDeque ;
 import java.util.ArrayList ;
+import java.util.Deque ;
 import java.util.List ;
-import java.util.Stack ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 /** Class that has all the parse event operations and other query/update specific things */  
 public class ParserQueryBase extends ParserBase 
 {
-    private Stack<Query> stack = new Stack<Query>() ;
+    private Deque<Query> stack = new ArrayDeque<Query>() ;
     protected Query query ;
 
     public void setQuery(Query q)

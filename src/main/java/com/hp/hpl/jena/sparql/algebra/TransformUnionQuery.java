@@ -18,7 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -40,11 +41,7 @@ public class TransformUnionQuery extends TransformCopy
     }
 
     // ** SEE AlgebraQuad : Pusher and Popper :share.
-
-    // General (unquadified) rewrite to make the default graph the
-    
-    //Deque in Java 6.
-    Stack<Node> currentGraph = new Stack<Node>() ;
+    Deque<Node> currentGraph = new ArrayDeque<Node>() ;
 
     public TransformUnionQuery()
     {
@@ -98,8 +95,8 @@ public class TransformUnionQuery extends TransformCopy
 
     static class Pusher extends OpVisitorBase
     {
-        private Stack<Node> stack ;
-        Pusher(Stack<Node> stack) { this.stack = stack ; }
+        private Deque<Node> stack ;
+        Pusher(Deque<Node> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph) 
         {
@@ -109,8 +106,8 @@ public class TransformUnionQuery extends TransformCopy
 
     static class Popper extends OpVisitorBase
     {
-        private Stack<Node> stack ;
-        Popper(Stack<Node> stack) { this.stack = stack ; }
+        private Deque<Node> stack ;
+        Popper(Deque<Node> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph) 
         {

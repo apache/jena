@@ -18,15 +18,10 @@
 
 package org.openjena.atlas.json.io;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
-import org.openjena.atlas.json.JsonArray ;
-import org.openjena.atlas.json.JsonBoolean ;
-import org.openjena.atlas.json.JsonNull ;
-import org.openjena.atlas.json.JsonNumber ;
-import org.openjena.atlas.json.JsonObject ;
-import org.openjena.atlas.json.JsonString ;
-import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.json.* ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.atlas.logging.Log ;
 
@@ -38,12 +33,11 @@ public class JSONMaker implements JSONHandler
     
     private JsonValue value = null ;
     
-    // java6: s/Stack/ArrayDeque
-    private Stack<JsonArray> arrays = new Stack<JsonArray>(); 
-    private Stack<JsonObject> objects = new Stack<JsonObject>();
+    private Deque<JsonArray> arrays = new ArrayDeque<JsonArray>(); 
+    private Deque<JsonObject> objects = new ArrayDeque<JsonObject>();
 
     // The depth of this stack is the object depth.
-    private Stack<String> keys = new Stack<String>();
+    private Deque<String> keys = new ArrayDeque<String>();
 
     public JsonValue jsonValue()
     {

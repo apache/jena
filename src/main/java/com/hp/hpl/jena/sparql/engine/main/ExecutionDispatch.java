@@ -18,19 +18,21 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import org.openjena.atlas.logging.Log ;
 
 /**  Class to provide type-safe execution dispatch using the visitor support of Op */ 
 
 class ExecutionDispatch implements OpVisitor
 {
-    private Stack<QueryIterator> stack = new Stack<QueryIterator>() ;
+    private Deque<QueryIterator> stack = new ArrayDeque<QueryIterator>() ;
     private OpExecutor opExecutor ;
     
     ExecutionDispatch(OpExecutor exec)

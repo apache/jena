@@ -19,6 +19,7 @@
 package org.openjena.atlas.lib;
 
 import java.lang.reflect.Array ;
+import java.util.Arrays ;
 
 /** Collection of array-related operations */
 public class ArrayUtils
@@ -49,16 +50,15 @@ public class ArrayUtils
     /** Allocation space and copy */ 
     public static <T> T[] copy(T[] array, int start, int finish)
     {    
-        // *** Java6.
-        //return Arrays.copyOfRange(array, start, finish) ;
+        return Arrays.copyOfRange(array, start, finish) ;
 
-        // Java5.
-        // Fails for arrays of length 0;
-        if ( array.length <= start )
-            throw new IllegalArgumentException("Zero length array not supported") ;
-        @SuppressWarnings("unchecked")
-        T[] array2 = (T[])Array.newInstance(array[start].getClass(), finish-start) ;
-        System.arraycopy(array, start, array2, 0, finish-start) ;
-        return array2 ;
+//        // Java5.
+//        // Fails for arrays of length 0;
+//        if ( array.length <= start )
+//            throw new IllegalArgumentException("Zero length array not supported") ;
+//        @SuppressWarnings("unchecked")
+//        T[] array2 = (T[])Array.newInstance(array[start].getClass(), finish-start) ;
+//        System.arraycopy(array, start, array2, 0, finish-start) ;
+//        return array2 ;
     }
 }

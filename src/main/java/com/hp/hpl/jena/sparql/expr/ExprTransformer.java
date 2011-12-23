@@ -18,14 +18,12 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList ;
-import java.util.EmptyStackException ;
-import java.util.List ;
-import java.util.Stack ;
+import java.util.* ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
-import org.openjena.atlas.logging.Log ;
 
 public class ExprTransformer
 {
@@ -71,7 +69,7 @@ public class ExprTransformer
     class ApplyExprTransformVisitor implements ExprVisitor
     {
         private ExprTransform transform ;
-        private final Stack<Expr> stack = new Stack<Expr>() ;
+        private final Deque<Expr> stack = new ArrayDeque<Expr>() ;
         
         final Expr result()
         { 
@@ -183,12 +181,12 @@ public class ExprTransformer
             push(stack, e) ;
         }
         
-        private static void push(Stack<Expr> stack, Expr value)
+        private static void push(Deque<Expr> stack, Expr value)
         {
             stack.push(value) ;
         }
         
-        private static Expr pop(Stack<Expr> stack)
+        private static Expr pop(Deque<Expr> stack)
         {
             try {
             Expr e = stack.pop();

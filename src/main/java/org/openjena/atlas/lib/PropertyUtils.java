@@ -18,9 +18,7 @@
 
 package org.openjena.atlas.lib;
 
-import java.io.ByteArrayInputStream ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
+import java.io.* ;
 import java.util.Properties ;
 
 import org.openjena.atlas.AtlasException ;
@@ -52,11 +50,9 @@ public class PropertyUtils
         if ( str == null )
             str = filename ;
         FileOutputStream fos = new FileOutputStream(filename) ;
-//        Writer w = FileUtils.asUTF8(fos) ;
-//        w = new BufferedWriter(w) ;
-//        //properties.store(w, "Metadata: "+str) ;   // Java6.
-        // Warning - not UTF-8 safe.
-        properties.store(fos, str) ;
+        Writer w = FileUtils.asUTF8(fos) ;
+        w = new BufferedWriter(w) ;
+        properties.store(w, "Metadata: "+str) ;   // Java6.
         fos.close() ;
     }
     

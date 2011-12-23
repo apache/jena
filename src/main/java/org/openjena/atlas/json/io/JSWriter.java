@@ -19,12 +19,13 @@
 package org.openjena.atlas.json.io;
 
 
-import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
 import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
+import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
 import static org.openjena.atlas.lib.Chars.CH_ZERO ;
 
 import java.io.OutputStream ;
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.io.IndentedWriter ;
@@ -60,7 +61,7 @@ public class JSWriter
     private static String ObjectPairSep     = " : " ;
     
     // Remember whether we are in the first element of a compound (object or array). 
-    Stack<Ref<Boolean>> stack = new Stack<Ref<Boolean>>() ;
+    Deque<Ref<Boolean>> stack = new ArrayDeque<Ref<Boolean>>() ;
     
     public void startObject()
     {

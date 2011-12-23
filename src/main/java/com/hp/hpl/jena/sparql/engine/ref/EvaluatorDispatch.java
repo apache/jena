@@ -18,8 +18,11 @@
 
 package com.hp.hpl.jena.sparql.engine.ref;
 
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 import java.util.Iterator ;
-import java.util.Stack ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -30,7 +33,6 @@ import com.hp.hpl.jena.sparql.algebra.TableFactory ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.http.Service ;
-import org.openjena.atlas.logging.Log ;
 
 /**  Class to provide type-safe eval() dispatch using the visitor support of Op */
 
@@ -38,7 +40,7 @@ public class EvaluatorDispatch implements OpVisitor
 {
     // TODO Clean up: OpGraph, OpDatasetNames (needed?)
     
-    private Stack<Table> stack = new Stack<Table>() ;
+    private Deque<Table> stack = new ArrayDeque<Table>() ;
     protected Evaluator evaluator ;
     
     public EvaluatorDispatch(Evaluator evaluator)

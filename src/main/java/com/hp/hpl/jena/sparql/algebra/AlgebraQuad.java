@@ -18,8 +18,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.ArrayDeque ;
 import java.util.Collection ;
-import java.util.Stack ;
+import java.util.Deque ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -44,7 +45,7 @@ public class AlgebraQuad extends TransformCopy
 
     public static Op quadize(Op op)
     {
-        final Stack<QuadSlot> stack = new Stack<QuadSlot>() ;
+        final Deque<QuadSlot> stack = new ArrayDeque<QuadSlot>() ;
         QuadSlot qSlot = new QuadSlot(Quad.defaultGraphNodeGenerated, Quad.defaultGraphNodeGenerated) ;  
         stack.push(qSlot) ;             // Starting condition
         
@@ -75,9 +76,9 @@ public class AlgebraQuad extends TransformCopy
     
     private static class Pusher extends OpVisitorBase
     {
-        Stack<QuadSlot> stack ;
+        Deque<QuadSlot> stack ;
         VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarQuad) ;
-        Pusher(Stack<QuadSlot> stack) { this.stack = stack ; }
+        Pusher(Deque<QuadSlot> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph)
         {
@@ -98,8 +99,8 @@ public class AlgebraQuad extends TransformCopy
     
     private static class Popper extends OpVisitorBase
     {
-        Stack<QuadSlot> stack ;
-        Popper(Stack<QuadSlot> stack) { this.stack = stack ; }
+        Deque<QuadSlot> stack ;
+        Popper(Deque<QuadSlot> stack) { this.stack = stack ; }
         @Override
         public void visit(OpGraph opGraph)
         {
@@ -112,9 +113,9 @@ public class AlgebraQuad extends TransformCopy
 
     private static class TransformQuadGraph extends TransformCopy
     {
-        private Stack<QuadSlot> tracker ;
+        private Deque<QuadSlot> tracker ;
 
-        public TransformQuadGraph(Stack<QuadSlot> tracker) { this.tracker = tracker ; }
+        public TransformQuadGraph(Deque<QuadSlot> tracker) { this.tracker = tracker ; }
         
         private Node getNode() { return tracker.peek().rewriteGraphName ; }
 

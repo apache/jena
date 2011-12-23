@@ -18,57 +18,35 @@
 
 package org.openjena.atlas.lib;
 
-public class PoolFiniteBlocking<T> implements Pool<T> 
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
+import com.hp.hpl.jena.sparql.ARQException;
+
+/** Finite capacity pool - capacity is fixed at create time */ 
+public class PoolFiniteBlocking<T> implements Pool<T>
 {
-    private PoolFiniteBlocking(int size) { throw new NotImplemented() ; }
+    BlockingDeque<T> pool  ;
+    
+    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
     
     @Override
-    public T get()
+    public final void put(T item)
     {
-        return null ;
+        pool.addLast(item) ;
     }
-
+    
     @Override
-    public boolean isEmpty()
-    {
-        return false ;
+    public T get()              
+    { 
+        try
+        { 
+            return pool.takeFirst() ;
+        } catch (InterruptedException ex)
+        {
+            throw new ARQException("Failed to get an item from the pool (InterruptedException): "+ex.getMessage()) ;
+        }
     }
-
+    
     @Override
-    public void put(T item)
-    {}
+    public boolean isEmpty()    { return pool.isEmpty() ; } 
 }
-
-// **** Java6
-//import java.util.concurrent.BlockingDeque;
-//import java.util.concurrent.LinkedBlockingDeque;
-//import com.hp.hpl.jena.sparql.ARQException;
-//
-///** Finite capacity pool - capacity is fixed at create time */ 
-//public class PoolFiniteBlocking<T> implements Pool<T>
-//{
-//    BlockingDeque<T> pool  ;
-//    
-//    public PoolFiniteBlocking(int size) { pool = new LinkedBlockingDeque<T>(size) ; }
-//    
-//    @Override
-//    public final void put(T item)
-//    {
-//        pool.addLast(item) ;
-//    }
-//    
-//    @Override
-//    public T get()              
-//    { 
-//        try
-//        { 
-//            return pool.takeFirst() ;
-//        } catch (InterruptedException ex)
-//        {
-//            throw new ARQException("Failed to get an item from the pool (InterruptedException): "+ex.getMessage()) ;
-//        }
-//    }
-//    
-//    @Override
-//    public boolean isEmpty()    { return pool.isEmpty() ; } 
-//}

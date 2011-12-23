@@ -18,10 +18,9 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Stack ;
+import java.util.* ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;
@@ -29,12 +28,11 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.optimize.ExprTransformApplyTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
-import org.openjena.atlas.logging.Log ;
 
 /** A botton-top application of a transformation of SPARQl algebra */  
 public class Transformer
@@ -121,7 +119,7 @@ public class Transformer
         protected final Transform transform ;
         private final ExprTransformApplyTransform exprTransform ;
 
-        private final Stack<Op> stack = new Stack<Op>() ;
+        private final Deque<Op> stack = new ArrayDeque<Op>() ;
         protected final Op pop() { return stack.pop(); }
         
         protected final void push(Op op)

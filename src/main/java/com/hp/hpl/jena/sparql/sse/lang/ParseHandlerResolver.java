@@ -18,8 +18,9 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 import java.util.Iterator ;
-import java.util.Stack ;
 
 import org.openjena.atlas.lib.StrUtils ;
 
@@ -51,7 +52,7 @@ public class ParseHandlerResolver extends ParseHandlerForm
     private String              topBase         = null ;
     private Prologue            prologue        = null ; 
     private ItemList            declList        = null ;
-    private Stack<Prologue>               state           = new Stack<Prologue>() ; // Previous prologues (not the current one)
+    private Deque<Prologue>     state           = new ArrayDeque<Prologue>() ; // Previous prologues (not the current one)
     
     public ParseHandlerResolver(Prologue p)
     {

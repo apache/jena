@@ -18,15 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.Collections ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Stack ;
+import java.util.* ;
 
-import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
@@ -38,11 +31,8 @@ import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprTransformCopy;
-import com.hp.hpl.jena.sparql.expr.ExprTransformer;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
@@ -83,7 +73,7 @@ public class OpAsQuery
         private Query query ;
         private Element element = null ;
         private ElementGroup currentGroup = null ;
-        private Stack<ElementGroup> stack = new Stack<ElementGroup>() ;
+        private Deque<ElementGroup> stack = new ArrayDeque<ElementGroup>() ;
         private List<Var> projectVars = Collections.emptyList() ;
         private Map<Var, Expr> varExpression = new HashMap<Var, Expr>() ;
         

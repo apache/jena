@@ -18,7 +18,10 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
+
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -30,7 +33,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.ItemLocation ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 
 public class ParseHandlerPlain implements ParseHandler 
@@ -183,7 +185,7 @@ public class ParseHandlerPlain implements ParseHandler
     
     protected static class ListStack
     {
-        private Stack<ItemList> stack    = new Stack<ItemList>() ;
+        private Deque<ItemList> stack    = new ArrayDeque<ItemList>() ;
         
         boolean isEmpty() { return stack.size() == 0 ; }
         

@@ -18,7 +18,8 @@
 
 package com.hp.hpl.jena.sparql.sse.lang;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -171,7 +172,7 @@ public abstract class ParseHandlerForm extends ParseHandlerPlain
     
     private static class FrameStack
     {
-        private Stack<Frame> frames    = new Stack<Frame>() ;
+        private Deque<Frame> frames    = new ArrayDeque<Frame>() ;
     
         boolean isCurrent(ItemList list)
         {

@@ -18,7 +18,8 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 
 import com.hp.hpl.jena.graph.Node ;
 
@@ -36,7 +37,7 @@ public class ItemTransformer
     // Why not directly dispatch - and make the "visit" operation return a result
     static class TransformerApply implements ItemVisitor
     {
-        Stack<Item> stack = new Stack<Item>() ;
+        Deque<Item> stack = new ArrayDeque<Item>() ;
         private void push(Item item) { stack.push(item) ; }
         private Item pop() { return stack.pop() ; }
        

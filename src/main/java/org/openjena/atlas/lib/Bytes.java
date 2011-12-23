@@ -80,11 +80,7 @@ public class Bytes
     
     public static byte[] copyOf(byte[] bytes)
     {
-        // Java6: Arrays.copyOf(bytes, bytes.length)
         return copyOf(bytes, 0, bytes.length) ;
-//        byte[] newByteArray = new byte[bytes.length] ;
-//        System.arraycopy(bytes, 0, newByteArray, 0, bytes.length) ;
-//        return newByteArray ;
     }
     
     public static byte[] copyOf(byte[] bytes, int start)

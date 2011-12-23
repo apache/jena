@@ -509,7 +509,7 @@ public class PathEval
         private void doZeroOrMore(Path path)
         {
             if ( trace ) System.out.printf("\nZeroOrMore: %s\n", node) ;
-            //Stack<Node> visited = new Stack<Node>() ;
+            //Deque<Node> visited = new ArrayDeque<Node>() ;
             Set<Node> visited = new HashSet<Node>() ;
             ALP(node, path, visited) ;
         }
@@ -517,7 +517,7 @@ public class PathEval
         private void doOneOrMore(Path path)
         {
             if ( trace ) System.out.printf("\nOneOrMore: %s\n", node) ;
-            //Stack<Node> visited = new Stack<Node>() ;
+            //Deque<Node> visited = new ArrayDeque<Node>() ;
             
             Set<Node> visited = new HashSet<Node>() ;
             // Do one step without including.

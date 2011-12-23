@@ -18,13 +18,13 @@
 
 package org.openjena.atlas.iterator;
 
+import java.util.ArrayDeque ;
+import java.util.Deque ;
 import java.util.Iterator ;
-import java.util.Stack ;
 
 public class PushbackIterator<T> implements Iterator<T>
 {
-    // Java6 : Deque<T> items = new ArrayDeque<Integer>();
-    private Stack<T> items = new Stack<T>() ;
+    private Deque<T> items = new ArrayDeque<T>() ;
     private Iterator<T> iter ;
 
     public PushbackIterator(Iterator <T> iter)
@@ -41,14 +41,14 @@ public class PushbackIterator<T> implements Iterator<T>
     @Override
     public boolean hasNext()
     {
-        if ( !items.empty() ) return true ;
+        if ( !items.isEmpty() ) return true ;
         return iter.hasNext() ;
     }
 
     @Override
     public T next()
     {
-        if ( !items.empty() ) 
+        if ( !items.isEmpty() ) 
             return items.pop() ;
         return iter.next() ;
     }
