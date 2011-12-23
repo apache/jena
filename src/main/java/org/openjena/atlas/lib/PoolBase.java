@@ -18,7 +18,7 @@
 
 package org.openjena.atlas.lib;
 
-import java.util.Stack ;
+import java.util.ArrayDeque ;
 
 /** A Pool of objects. Base implements a non-blocking pool (returns null on no entry)
  * with infinite upper bound.  Set effective size by creating the right number of
@@ -29,8 +29,7 @@ public class PoolBase<T> implements Pool<T>
     // For convenience we operate a LIFO policy.
     // This not part of the extenal contract of a "pool"
     
-    //Deque<T> pool = new ArrayDeque<T>(); Better but Java6
-    Stack<T> pool = new Stack<T>() ;
+    ArrayDeque<T> pool = new ArrayDeque<T>();
     int maxSize = -1 ;  // Unbounded
     
     public PoolBase() {} 
