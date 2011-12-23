@@ -50,21 +50,6 @@
     <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
-  <!-- Testing against staged artifacts -->
-  <repositories>
-    <repository>
-      <id>apache.jena.staging</id>
-      <name>Apache jena Staging Repository</name>
-      <url>https://repository.apache.org/content/repositories/orgapachejena-334</url>
-      <releases>
-	<enabled>true</enabled>
-      </releases>
-      <snapshots>
-	<enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <!-- and the classifier is added using the id -->
