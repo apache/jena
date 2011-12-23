@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>1-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent>
 
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
