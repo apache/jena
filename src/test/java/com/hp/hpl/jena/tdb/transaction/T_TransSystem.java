@@ -73,7 +73,7 @@ public class T_TransSystem
     
     static { 
         //SystemTDB.isWindows
-        if ( true )
+        if ( false )
             SystemTDB.setFileMode(FileMode.direct) ;
         
         if ( SystemTDB.isWindows && SystemTDB.fileMode() == FileMode.mapped )

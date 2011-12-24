@@ -131,8 +131,7 @@ public class T_TxnDeadlockTest {
         
         StoreConnection.release(storeConnection.getLocation());
 
-//        System.out.println() ;
-        System.out.println() ;
+        //System.out.println() ;
         System.out.println("FINISHED") ;
         
 //        // This is unsafe - the quad adds may generate duplicates (ity's unlikly 4 random number reoccur but it's possible). 
