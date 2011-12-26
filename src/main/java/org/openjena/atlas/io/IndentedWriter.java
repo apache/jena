@@ -175,6 +175,7 @@ public class IndentedWriter
     public void close() { try { out.close(); } catch (IOException ex) {} }
     public void flush() { try { out.flush(); } catch (IOException ex) {} }
     
+    /** Pad to the indent (if we are before it) */
     public void pad()
     {
         if ( startingNewLine && currentIndent > 0 )
