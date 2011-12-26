@@ -67,12 +67,18 @@ public class XMLOutputResultSet
             out.println("<?xml version=\"1.0\"?>") ;
         
         if ( stylesheetURL != null )
-            out.println("<?xml-stylesheet type=\"text/xsl\" href=\""+stylesheetURL+"\"?>") ;
+        {
+            out.print("<?xml-stylesheet type=\"text/xsl\" href=\"") ;
+            out.print(stylesheetURL) ;
+            out.println("\"?>") ;
+        }
         
         // ---- Root
-        out.print("<"+dfRootTag) ;
-        out.print(" ") ;
-        out.println("xmlns=\""+dfNamespace+"\">") ;
+        out.print("<") ;
+        out.print(dfRootTag) ;
+        out.print(" xmlns=\"") ;
+        out.print(dfNamespace) ;
+        out.println("\">") ;
 
         // Remove this next you see it.
 //       out.incIndent(INDENT) ;
@@ -85,12 +91,16 @@ public class XMLOutputResultSet
         // ---- Header
 
         out.incIndent(INDENT) ;
-        out.println("<"+dfHead+">") ;
+        out.print("<") ;
+        out.print(dfHead) ;
+        out.println(">") ;
         
         if ( false )
         {
             String link = "UNSET" ;
-            out.println("<link href=\""+link+"\"/>") ;
+            out.print("<link href=\"") ;
+            out.print(link) ;
+            out.println("\"/>") ;
         }
         
         for (String n : rs.getResultVars())
@@ -98,16 +108,24 @@ public class XMLOutputResultSet
             out.incIndent(INDENT) ;
             out.print("<") ;
             out.print(dfVariable) ;
-            out.print(" "+dfAttrVarName+"=\""+n+"\"") ;
+            out.print(" ") ;
+            out.print(dfAttrVarName) ;
+            out.print("=\"") ;
+            out.print(n) ;
+            out.print("\"") ;
             out.println("/>") ;
             out.decIndent(INDENT) ;
         }
-        out.println("</"+dfHead+">") ;
+        out.print("</") ;
+        out.print(dfHead) ;
+        out.println(">") ;
         out.decIndent(INDENT) ;
         
         // Start results proper
         out.incIndent(INDENT) ;
-        out.println("<"+dfResults+">") ;
+        out.print("<") ;
+        out.print(dfResults) ;
+        out.println(">") ;
         out.incIndent(INDENT) ;
     }
 
@@ -115,16 +133,22 @@ public class XMLOutputResultSet
     public void finish(ResultSet rs)
     {
         out.decIndent(INDENT) ;
-        out.println("</"+dfResults+">") ;
+        out.print("</") ;
+        out.print(dfResults) ;
+        out.println(">") ;
         out.decIndent(INDENT) ;
-        out.println("</"+dfRootTag+">") ;
+        out.print("</") ;
+        out.print(dfRootTag) ;
+        out.println(">") ;
         out.flush() ;
     }
 
     @Override
     public void start(QuerySolution qs)
     {
-        out.println("<"+dfSolution+">") ;
+        out.print("<") ;
+        out.print(dfSolution) ;
+        out.println(">") ;
         index ++ ;
         out.incIndent(INDENT) ;
     }
@@ -133,7 +157,9 @@ public class XMLOutputResultSet
     public void finish(QuerySolution qs)
     {
         out.decIndent(INDENT) ;
-        out.println("</"+dfSolution+">") ;
+        out.print("</") ;
+        out.print(dfSolution) ;
+        out.println(">") ;
     }
 
     @Override
@@ -144,11 +170,15 @@ public class XMLOutputResultSet
         
         out.print("<") ; 
         out.print(dfBinding) ;
-        out.println(" name=\""+varName+"\">") ;
+        out.print(" name=\"") ;
+        out.print(varName) ;
+        out.println("\">") ;
         out.incIndent(INDENT) ;
         printBindingValue(node) ;
         out.decIndent(INDENT) ;
-        out.println("</"+dfBinding+">") ;
+        out.print("</") ;
+        out.print(dfBinding) ;
+        out.println(">") ;
     }
         
     void printBindingValue(RDFNode node)
@@ -156,7 +186,9 @@ public class XMLOutputResultSet
         if ( node == null )
         {
             // Unbound
-            out.println("<"+dfUnbound+"/>") ;
+            out.print("<") ;
+            out.print(dfUnbound) ;
+            out.println("/>") ;
             return ;
         }
         
@@ -180,10 +212,15 @@ public class XMLOutputResultSet
         String datatype = literal.getDatatypeURI() ;
         String lang = literal.getLanguage() ;
         
-        out.print("<"+dfLiteral) ;
+        out.print("<") ;
+        out.print(dfLiteral) ;
         
         if ( lang != null && !(lang.length()==0) )
-            out.print(" xml:lang=\""+lang+"\"") ;
+        {
+            out.print(" xml:lang=\"") ;
+            out.print(lang) ;
+            out.print("\"") ;
+        }
             
         if ( datatype != null && ! datatype.equals(""))
         {
@@ -192,12 +229,18 @@ public class XMLOutputResultSet
 //                String r = datatype.substring(xsBaseURI.length()) ;
 //                out.print(" xsi:type=\"xsi:"+r+"\"") ;
 //            }
-            out.print(" "+dfAttrDatatype+"=\""+datatype+"\"") ;
+            out.print(" ") ;
+            out.print(dfAttrDatatype) ;
+            out.print("=\"") ;
+            out.print(datatype) ;
+            out.print("\"") ;
         }
             
         out.print(">") ;
         out.print(xml_escape(literal.getLexicalForm())) ;
-        out.println("</"+dfLiteral+">") ;
+        out.print("</") ;
+        out.print(dfLiteral) ;
+        out.println(">") ;
     }
     
     void printResource(Resource r)
@@ -214,11 +257,23 @@ public class XMLOutputResultSet
                     bNodeMap.put(r, "b"+(bNodeCounter++)) ;
                 label = bNodeMap.get(r) ;
             }
-            out.println("<"+dfBNode+">"+label+"</"+dfBNode+">") ;
+            out.print("<") ;
+            out.print(dfBNode) ;
+            out.print(">") ;
+            out.print(label) ;
+            out.print("</") ;
+            out.print(dfBNode) ;
+            out.println(">") ;
         }
         else
         {
-            out.println("<"+dfURI+">"+xml_escape(r.getURI())+"</"+dfURI+">") ;
+            out.print("<") ;
+            out.print(dfURI) ;
+            out.print(">") ;
+            out.print(xml_escape(r.getURI())) ;
+            out.print("</") ;
+            out.print(dfURI) ;
+            out.println(">") ;
         }
     }
     
