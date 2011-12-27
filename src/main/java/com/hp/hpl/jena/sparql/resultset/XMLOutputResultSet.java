@@ -80,14 +80,6 @@ public class XMLOutputResultSet
         out.print(dfNamespace) ;
         out.println("\">") ;
 
-        // Remove this next you see it.
-//       out.incIndent(INDENT) ;
-//       out.incIndent(INDENT) ;
-//       out.println("xmlns:rdf=\""+ARQConstants.rdfPrefix+"\"") ;
-//       out.println("xmlns:xs=\""+ARQConstants.XML_SCHEMA_NS+"\"") ;
-//       out.println("xmlns=\""+dfNamespace+"\" >") ;
-//       out.decIndent(INDENT) ;
-//       out.decIndent(INDENT) ;
         // ---- Header
 
         out.incIndent(INDENT) ;

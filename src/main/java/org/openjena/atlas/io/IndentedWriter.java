@@ -19,11 +19,10 @@
 package org.openjena.atlas.io;
 import static java.lang.String.format ;
 
-import java.io.IOException ;
-import java.io.OutputStream ;
-import java.io.Writer ;
+import java.io.* ;
 
 import org.openjena.atlas.AtlasException ;
+import org.openjena.atlas.lib.Chars ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
@@ -64,8 +63,15 @@ public class IndentedWriter
     /** Construct a UTF8 IndentedWriter around an OutputStream */
     public IndentedWriter(OutputStream outStream, boolean withLineNumbers)
     {
-        //this(FileUtils.asPrintWriterUTF8(outStream), withLineNumbers) ;
-        this(BufferingWriter.create(outStream), withLineNumbers) ;
+        this(makeWriter(outStream), withLineNumbers) ;
+    }
+    
+    private static Writer makeWriter(OutputStream out)
+    {
+        // Create a writer for the output.
+        Writer w = new OutputStreamWriter(out, Chars.createEncoder()) ;
+        w =  new BufferedWriter(w, 8*1024) ;
+        return w ;
     }
     
     /** Using Writers directly is discouraged */
@@ -78,16 +84,18 @@ public class IndentedWriter
         lineNumbers = withLineNumbers ;
         startingNewLine = true ;
     }
-    
-    // Internally, use \n for newline.
-    // On output, we use the platform PrintWriter.println()
-    // public void print(String s) { lineStart() ; out.print(s) ; column += s.length() ; }
-    
+
     public void print(Object obj) 
     {
         String s = "null" ;
         if ( obj != null )
             s = obj.toString() ;
+        if ( false )
+        {
+            // Don't check for embedded newlines.
+            write(s) ;
+            return ;
+        }
         for ( int i = 0 ; i < s.length() ; i++ )
             printOneChar(s.charAt(i)) ;
     }
