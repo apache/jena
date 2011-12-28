@@ -32,7 +32,8 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 class HttpAction
 {
     final long id ;
-    final DatasetGraph dsg ;
+    private final DatasetGraph dsg ;
+    private DatasetGraph activeDSG ;
     final Lock lock ;
     final HttpServletRequest request;
     final HttpServletResponse response ;
@@ -68,18 +69,21 @@ class HttpAction
     {
         enter(dsg, lock, Lock.READ) ;
         getConcurrencyPolicy(lock).startRead() ;
+        activeDSG = dsg ;
     }
 
     public final void endRead()
     {
         getConcurrencyPolicy(lock).finishRead() ;
         leave(dsg, lock, Lock.READ) ;
+        activeDSG = null ;
     }
 
     public final void beginWrite()
     {
         enter(dsg, lock, Lock.WRITE) ;
         getConcurrencyPolicy(lock).startUpdate() ;
+        activeDSG = dsg ;
     }
 
     public final void endWrite()
@@ -87,8 +91,14 @@ class HttpAction
         sync() ;
         getConcurrencyPolicy(lock).finishUpdate() ;
         leave(dsg, lock, Lock.WRITE) ;
+        activeDSG = null ;
     }
 
+    public final DatasetGraph getActiveDSG()
+    {
+        return activeDSG ;
+    }
+    
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {
         if ( lock == null && dsg == null )

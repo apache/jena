@@ -65,12 +65,18 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    class HttpActionREST extends HttpAction {
-        final Target target ; 
-        public HttpActionREST(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+    protected class HttpActionREST extends HttpAction {
+        private Target _target = null ; 
+        protected HttpActionREST(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, dsg, request, response, verbose) ;
-            this.target = targetGraph(request, dsg) ;
+        }
+        
+        protected final Target getTarget() 
+        {
+            if ( _target == null )
+                _target = targetGraph(request, super.getActiveDSG() ) ;
+            return _target ;
         }
     }
     
@@ -266,10 +272,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static void deleteGraph(HttpActionREST action)
     {
-        if ( action.target.isDefault )
-            action.target.graph().getBulkUpdateHandler().removeAll() ;
+        if ( action.getTarget().isDefault )
+            action.getTarget().graph().getBulkUpdateHandler().removeAll() ;
         else
-            action.dsg.removeGraph(action.target.graphName) ;
+            action.getActiveDSG().removeGraph(action.getTarget().graphName) ;
     }
 
     protected static void clearGraph(Target target)
@@ -283,7 +289,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     protected static void addDataInto(Graph data, HttpActionREST action)
     {   
-        Target dest = action.target ;
+        Target dest = action.getTarget() ;
         Graph g = dest.graph() ;
         if ( g == null )
         {

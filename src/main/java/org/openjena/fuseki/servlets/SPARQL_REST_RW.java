@@ -44,9 +44,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     {
         action.beginWrite() ;
         try {
-            boolean existedBefore = action.target.exists() ; 
+            boolean existedBefore = action.getTarget().exists() ; 
             if ( ! existedBefore)
-                errorNotFound("No such graph: "+action.target.name) ;
+                errorNotFound("No such graph: "+action.getTarget().name) ;
             deleteGraph(action) ;
         } finally { action.endWrite() ; }
         SPARQL_ServletBase.successNoContent(action) ;
@@ -59,9 +59,9 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         boolean existedBefore ;
         try {
-            existedBefore = action.target.exists() ; 
+            existedBefore = action.getTarget().exists() ; 
             if ( existedBefore )
-                clearGraph(action.target) ;
+                clearGraph(action.getTarget()) ;
             addDataInto(body.getDefaultGraph(), action) ;
         } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
@@ -78,7 +78,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         boolean existedBefore ; 
         try {
-            existedBefore = action.target.exists() ; 
+            existedBefore = action.getTarget().exists() ; 
             addDataInto(body.getDefaultGraph(), action) ;
         } finally { action.endWrite() ; }
         if ( existedBefore )

@@ -63,15 +63,15 @@ public class SPARQL_REST_R extends SPARQL_REST
 
         action.beginRead() ;
         try {
-            boolean exists = action.target.exists() ;
+            boolean exists = action.getTarget().exists() ;
             if ( ! exists )
-                errorNotFound("No such graph: <"+action.target.name+">") ;
+                errorNotFound("No such graph: <"+action.getTarget().name+">") ;
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
             RDFWriter writer = FusekiLib.chooseWriter(lang) ;
             //action.response.setContentType(getServletInfo())
             
-            Model model = ModelFactory.createModelForGraph(action.target.graph()) ;
+            Model model = ModelFactory.createModelForGraph(action.getTarget().graph()) ;
             writer.write(model, out, null) ;
             success(action) ;
         } finally { action.endRead() ; }
@@ -90,7 +90,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     {
         action.beginRead() ;
         try { 
-            if ( ! action.target.exists() )
+            if ( ! action.getTarget().exists() )
             {
                 successNotFound(action) ;
                 return ;

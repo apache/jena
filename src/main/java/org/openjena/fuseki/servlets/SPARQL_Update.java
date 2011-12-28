@@ -238,7 +238,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         //GraphStore graphStore = GraphStoreFactory.create(action.dsg) ;
         action.beginWrite() ;
         try {
-            UpdateAction.execute(updateRequest, action.dsg) ;
+            UpdateAction.execute(updateRequest, action.getActiveDSG()) ;
             // Sync done by endWrite.
         }
         catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }

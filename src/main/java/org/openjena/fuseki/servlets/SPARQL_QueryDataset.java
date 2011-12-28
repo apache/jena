@@ -50,7 +50,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
-        return DatasetFactory.create(action.dsg) ;
+        return DatasetFactory.create(action.getActiveDSG()) ;
     }
 
     @Override
