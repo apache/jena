@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import java.util.Collection ;
 import java.util.LinkedHashSet ;
-import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
@@ -31,8 +31,7 @@ public abstract class Element
 {
     /** @deprecated Use {@link PatternVars#vars} */
     @Deprecated
-    
-    public Set<Var> varsMentioned()
+    public Collection<Var> varsMentioned()
     {
         // Binding variables -- in patterns, not in filters and not in EXISTS
         LinkedHashSet<Var> s = new LinkedHashSet<Var>() ;

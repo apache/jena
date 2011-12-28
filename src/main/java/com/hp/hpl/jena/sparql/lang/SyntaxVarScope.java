@@ -32,6 +32,9 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 public class SyntaxVarScope
 {
     /* SPARQL 1.1 "in scope" rules
+       These define the variables from a pattern that are in-scope
+       These are not the usage rules.
+         
     Syntax Form                                     In-scope variables
     
     Basic Graph Pattern (BGP)                       v occurs in the BGP
@@ -45,16 +48,6 @@ public class SyntaxVarScope
     SELECT ..v .. { P }                             v is in-scope if v is mentioned as a project variable
     SELECT * { P }                                  v is in-scope in P
     BINDINGS varlist (values)                       v is in-scope if v is in varlist
-     */
-    
-    /*
-     * Check for non-group-keys vars
-     * Check for unused vars (warning?)
-     * Check for out of scope
-     *   two cases: BIND and SubQuery
-     *    BIND done during variable accumulation.
-     *    SubQuery done as a separate pass.
-     * Combine finalization with findAndAddNamedVars/setResultVars
      */
     
     // Weakness : EXISTS inside FILTERs?
@@ -78,8 +71,8 @@ public class SyntaxVarScope
     // Check BIND by accumulating variables and making sure BIND does not attempt to reuse one  
     private static void checkBind(Query query)
     {
-        HashSet<Var> queryVars = new HashSet<Var>() ;
-        scopeVars(queryVars, query.getQueryPattern()) ;
+        ScopeChecker v = new ScopeChecker() ;
+        ElementWalker.walk(query.getQueryPattern(), v) ;
     }
     
     // Check subquery by finding subquries and recurisively checking.
@@ -237,122 +230,69 @@ public class SyntaxVarScope
         }
     }
 
-    // Special version of walker for scoping rules.
-
-    private static void scopeVars(Collection<Var> acc, Element e)
-    {
-        PatternVarsVisitor pvv = new PatternVarsVisitor(acc) ;
-        ScopeWalker sw = new ScopeWalker(pvv) ;
-        e.visit(sw) ;
-    }
+    // Applies scope rules at each point it matters.
+    // Does some recalculation in nested structures.
     
-    // Applies scope rules and does the structure walk.
-    
-    public static class ScopeWalker extends ElementWalker.Walker
+    public static class ScopeChecker extends ElementVisitorBase
     {
-        PatternVarsVisitor pvVisitor ;
-        
-        protected ScopeWalker(PatternVarsVisitor visitor)
-        {
-            super(visitor) ;
-            pvVisitor = visitor ;
-        }
-        
-        @Override
-        public void visit(ElementMinus el)
-        {
-            // Don't go down the RHS of MINUS
-            proc.visit(el) ;
-        }
-        
-        // Isolate elements of UNION
-        @Override
-        public void visit(ElementUnion el)
-        {
-            Collection<Var> accGroup = pvVisitor.acc ; 
-            for ( Element e : el.getElements() )
-                nestedScope(accGroup, e) ;
-            proc.visit(el) ;
-        }
-        
-        // There are different kinds of elements in a GROUP:
-        // BGPs (ElementTriplesBlock ElementPathBlock)
-        //   Rolling accumulation
-        // GRAPH ?g { ?s ?p ?o }
-        // BIND applies to BGP 
-        // FILTER end of group
-        // All other elements (SERVICE?) outcome is only to the overall results.
+        private Collection<Var> accScope = new HashSet<Var>() ;
+        public ScopeChecker() {}
         
         @Override
         public void visit(ElementGroup el)
         {
-            // Ther are two kinds of elements: ones that accumulate variables
+            // There are two kinds of elements: ones that accumulate variables
             // across the group and ones that isolate a subexpression to be joined
-            // with other and the group itself.
-            // Scoped: UNION, Group, OPTIONAL, (MINUS), SERVICE, SubSELECT
-            // Acumulating: BGPs, paths, BIND, LET
+            // Scoped: UNION, Group, (MINUS), SERVICE, SubSELECT
+            // Accumulating: BGPs, paths, BIND, LET, OPTIONAL.
+            // FILTER: may involve an EXISTS (not checked currently) 
             
-            Collection<Var> accGroup = pvVisitor.acc ;         // Accumulate as we go. 
+            // Accumulate:
+            //   This BGP - used by EleemntBind.
+            //   All elements of this group - total aggregation.
+
+            accScope.clear() ;
             
             for ( Element e : el.getElements() )
             {
-                if ( scoped(e) )
-                    nestedScope(accGroup, e) ;
-                else
-                    scopeVars(accGroup, e) ;
+                // Tests.
+                if ( e instanceof ElementBind )
+                    check(accScope, (ElementBind)e) ;
+                else if ( e instanceof ElementService )
+                    check(accScope, (ElementService)e) ;
+                // if joined in, the scope protects 
+                if ( ! joinedInGroup(e) )
+                    PatternVars.vars(accScope, e) ;
             }
-            proc.visit(el) ;
-        }
-        
-        private void nestedScope(Collection<Var> accGroup , Element e )
-        {
-            // New scope accumulator. 
-            Collection<Var> x = new HashSet<Var>() ;
-            scopeVars(x, e) ;
-            accGroup.addAll(x) ;
         }
 
-        private static boolean scoped(Element e)
+        private static boolean joinedInGroup(Element e)
         {
             return e instanceof ElementGroup ||
                 e instanceof ElementUnion ||
-                e instanceof ElementOptional ||
+                //e instanceof ElementOptional ||
                 e instanceof ElementService ||
                 e instanceof ElementSubQuery ;
         }
         
         // Inside filters.
         
-        @Override
-        public void visit(ElementBind el)
+        private static void check(Collection<Var> scope, ElementBind el)
         {
             Var var = el.getVar() ;
-            
-            if ( pvVisitor.acc.contains(var) ) 
+            if ( scope.contains(var) ) 
                 throw new QueryParseException("BIND: Variable used when already in-scope: "+var+" in "+el, -1 , -1) ;
-            checkAssignment(pvVisitor.acc, el.getExpr(), var) ;
+            checkAssignment(scope, el.getExpr(), var) ;
         }
         
-        
-        
-        @Override
-        public void visit(ElementService el)
+        private static void check(Collection<Var> scope, ElementService el)
         {
             if ( el.getServiceNode().isVariable() )
             {
                 Var var = Var.alloc(el.getServiceNode()) ;
-                if ( ! pvVisitor.acc.contains(var) ) 
+                if ( ! scope.contains(var) ) 
                     throw new QueryParseException("SERVICE: Variable not already in-scope: "+var+" in "+el, -1 , -1) ;
             }
         }
-        
     }
-
-    
-//    public static void varsWalk(Element element, PatternVarsVisitor visitor)
-//    {
-//        ElementWalker.Walker walker = new ScopeWalker(visitor) ;
-//        ElementWalker.walk(element, walker) ;
-//    }
-//    
 }

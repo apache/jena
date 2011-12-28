@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import java.util.Collection ;
 import java.util.LinkedHashSet ;
-import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
@@ -29,9 +29,9 @@ import com.hp.hpl.jena.sparql.core.Var ;
  */
 public class PatternVars
 {
-    public static Set<Var> vars(Element element) { return vars(new LinkedHashSet<Var>(), element) ; }
+    public static Collection<Var> vars(Element element) { return vars(new LinkedHashSet<Var>(), element) ; }
 
-    public static Set<Var> vars(Set<Var> s, Element element)
+    public static Collection<Var> vars(Collection<Var> s, Element element)
     {
         PatternVarsVisitor v = new PatternVarsVisitor(s) ;
         vars(element, v) ;
