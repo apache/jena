@@ -22,16 +22,14 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.sparql.lang.SyntaxVarScope ;
+import com.hp.hpl.jena.query.QueryFactory ;
 
 public class TestVarScope extends BaseTest
 {
     private static void scope(String queryStr)
     {
         Query query = QueryFactory.create(queryStr) ;
-        SyntaxVarScope.check(query) ;
     }
     
     @Test public void scope_01() { scope("SELECT ?x { ?s ?p ?o }") ; }
@@ -62,25 +60,37 @@ public class TestVarScope extends BaseTest
     
     @Test (expected=QueryException.class)
     public void scope_21() { scope("SELECT ?o { ?x ?p ?o } GROUP BY ?x") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_22() { scope("SELECT * { ?s ?p ?o BIND(5 AS ?o) }") ; }
     
-    @Test public void scope_22() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ; }
-
+    @Test public void scope_23() { scope("SELECT * { ?s ?p ?o { BIND(5 AS ?o) } }") ; }
+ 
     @Test(expected=QueryException.class)
-    public void scope_23() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o2) }") ; }
-
-    @Test(expected=QueryException.class)
-    public void scope_24() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o+5 AS ?o2) }") ; }
-
-    @Test(expected=QueryException.class)
-    public void scope_25() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
+    public void scope_24() { scope("SELECT * { { ?s ?p ?o } BIND(5 AS ?o) }") ; }
     
+    @Test public void scope_25() { scope("SELECT * { { ?s ?p ?o } { BIND(5 AS ?o) } }") ; }
+    
+    @Test public void scope_26() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_27() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o2) }") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_28() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o+5 AS ?o2) }") ; }
+
+    @Test(expected=QueryException.class)
+    public void scope_29() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
+    
+    @Test(expected=QueryException.class)
+    public void scope_31() { scope("SELECT * { { ?s ?p ?o } UNION {?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
     // Subqueries
     
     @Test(expected=QueryException.class)
-    public void scope_30() { scope("SELECT * { SELECT (?o+1 AS ?o) { ?s ?p ?o }}") ; }
+    public void scope_50() { scope("SELECT * { SELECT (?o+1 AS ?o) { ?s ?p ?o }}") ; }
     
     @Test
-    public void scope_31()
+    public void scope_51()
     {
         scope("SELECT ?y { " +
         		"{ { SELECT (?x AS ?y) { ?s ?p ?x } } } UNION { { SELECT (?x AS ?y) { ?s ?p ?x } } }" +
@@ -88,7 +98,7 @@ public class TestVarScope extends BaseTest
     }
     
     @Test(expected=QueryException.class)
-    public void scope_32()
+    public void scope_52()
     {
         scope("SELECT ?y { " +
                 "{ { SELECT (?o+1 AS ?x) (?o+1 AS ?x) { ?s ?p ?o } } UNION { ?s ?p ?x } }" +

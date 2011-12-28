@@ -3,11 +3,16 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.1
 
++ SPARQL 1.1: Complete scope tracking of variables (JENA-142)
++ Faster writing of XML and JSON results formats (JENA-178)
+
+
 ==== ARQ 2.8.9 / 2.9.0
 ** Java 6 is now required for running ARQ.
 
-+ ARQ: Provides \-escapes for characters ~.-!$&'()*+,;=:/?#@% in local part of prefix names 
-+ ARQ: Allow %xx in the local part of prefix names
++ SPARQL 1.1: Provides \-escapes for characters ~.-!$&'()*+,;=:/?#@% 
+              in local part of prefix names 
++ SPARQl 1.1: Allow %xx in the local part of prefix names
 + SPARQL 1.1 / RDF 1.1 : DATATYPE(literal-with-lang) is now rdf:langString, not an error.
 + DatasetFactory: perferred methods for an in-memory dataset are:
      create() -- will automatically add in-memory named graphs  

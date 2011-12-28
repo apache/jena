@@ -56,6 +56,8 @@ public class SyntaxVarScope
      *    SubQuery done as a separate pass.
      * Combine finalization with findAndAddNamedVars/setResultVars
      */
+    
+    // Weakness : EXISTS inside FILTERs?
 
     public static void check(Query query)
     {
@@ -76,12 +78,8 @@ public class SyntaxVarScope
     // Check BIND by accumulating variables and making sure BIND does not attempt to reuse one  
     private static void checkBind(Query query)
     {
-        LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
-        BindScopeChecker visitor = new BindScopeChecker(queryVars) ;
-        //PatternVars.vars(query.getQueryPattern(), visitor) ;
-        
-        ElementWalker.Walker walker = new ScopeWalker(visitor) ;
-        ElementWalker.walk(query.getQueryPattern(), walker) ;
+        HashSet<Var> queryVars = new HashSet<Var>() ;
+        scopeVars(queryVars, query.getQueryPattern()) ;
     }
     
     // Check subquery by finding subquries and recurisively checking.
@@ -239,26 +237,16 @@ public class SyntaxVarScope
         }
     }
 
-    /** Accumulate pattern variables but include some checking (BIND) as well */
-    private static class BindScopeChecker extends PatternVarsVisitor
-    {
-        public BindScopeChecker(Set<Var> s)
-        {
-            super(s) ;
-        }
-        
-        @Override
-        public void visit(ElementBind el)
-        {
-            Var var = el.getVar() ;
-            
-            if ( acc.contains(var) ) 
-                throw new QueryParseException("BIND: Variable used when already in-scope: "+var+" in "+el, -1 , -1) ;
-            checkAssignment(acc, el.getExpr(), var) ;
-        }
-    }
-
     // Special version of walker for scoping rules.
+
+    private static void scopeVars(Collection<Var> acc, Element e)
+    {
+        PatternVarsVisitor pvv = new PatternVarsVisitor(acc) ;
+        ScopeWalker sw = new ScopeWalker(pvv) ;
+        e.visit(sw) ;
+    }
+    
+    // Applies scope rules and does the structure walk.
     
     public static class ScopeWalker extends ElementWalker.Walker
     {
@@ -274,21 +262,16 @@ public class SyntaxVarScope
         public void visit(ElementMinus el)
         {
             // Don't go down the RHS of MINUS
-            //if ( el.getMinusElement() != null )
-            //    el.getMinusElement().visit(this) ;
             proc.visit(el) ;
         }
         
-        // It is a top-down walk, so on enter an element of group or UNION,
-        // then the entry set is 
-
         // Isolate elements of UNION
         @Override
         public void visit(ElementUnion el)
         {
-            Set<Var> accState = new HashSet<Var>(pvVisitor.acc) ;
-            doMultipleIndependent(accState, el.getElements()) ;
-            pvVisitor.acc = accState ;
+            Collection<Var> accGroup = pvVisitor.acc ; 
+            for ( Element e : el.getElements() )
+                nestedScope(accGroup, e) ;
             proc.visit(el) ;
         }
         
@@ -300,28 +283,66 @@ public class SyntaxVarScope
         // FILTER end of group
         // All other elements (SERVICE?) outcome is only to the overall results.
         
-//        @Override
-//        public void visit(ElementGroup el)
-//        {
-//            // But BIND needs to be does over end of group.
-//            // Ditto FILTER tests.
-//            Set<Var> accState = new HashSet<Var>(pvVisitor.acc) ;
-//            doMultipleIndependent(accState, el.getElements()) ;
-//            pvVisitor.acc = accState ;
-//            proc.visit(el) ;
-//        }
-        
-
-        private void doMultipleIndependent(Set<Var> agg, List<Element> elements)
+        @Override
+        public void visit(ElementGroup el)
         {
-            // agg is empty?
-            for ( Element e : elements )
+            // Ther are two kinds of elements: ones that accumulate variables
+            // across the group and ones that isolate a subexpression to be joined
+            // with other and the group itself.
+            // Scoped: UNION, Group, OPTIONAL, (MINUS), SERVICE, SubSELECT
+            // Acumulating: BGPs, paths, BIND, LET
+            
+            Collection<Var> accGroup = pvVisitor.acc ;         // Accumulate as we go. 
+            
+            for ( Element e : el.getElements() )
             {
-                pvVisitor.acc.clear() ;
-                // Do subelement.
-                e.visit(this) ;
-                // Accumulate for final result.
-                agg.addAll(pvVisitor.acc) ;
+                if ( scoped(e) )
+                    nestedScope(accGroup, e) ;
+                else
+                    scopeVars(accGroup, e) ;
+            }
+            proc.visit(el) ;
+        }
+        
+        private void nestedScope(Collection<Var> accGroup , Element e )
+        {
+            // New scope accumulator. 
+            Collection<Var> x = new HashSet<Var>() ;
+            scopeVars(x, e) ;
+            accGroup.addAll(x) ;
+        }
+
+        private static boolean scoped(Element e)
+        {
+            return e instanceof ElementGroup ||
+                e instanceof ElementUnion ||
+                e instanceof ElementOptional ||
+                e instanceof ElementService ||
+                e instanceof ElementSubQuery ;
+        }
+        
+        // Inside filters.
+        
+        @Override
+        public void visit(ElementBind el)
+        {
+            Var var = el.getVar() ;
+            
+            if ( pvVisitor.acc.contains(var) ) 
+                throw new QueryParseException("BIND: Variable used when already in-scope: "+var+" in "+el, -1 , -1) ;
+            checkAssignment(pvVisitor.acc, el.getExpr(), var) ;
+        }
+        
+        
+        
+        @Override
+        public void visit(ElementService el)
+        {
+            if ( el.getServiceNode().isVariable() )
+            {
+                Var var = Var.alloc(el.getServiceNode()) ;
+                if ( ! pvVisitor.acc.contains(var) ) 
+                    throw new QueryParseException("SERVICE: Variable not already in-scope: "+var+" in "+el, -1 , -1) ;
             }
         }
         

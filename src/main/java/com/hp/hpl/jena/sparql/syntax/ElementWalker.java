@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 
-
 /** An element visitor that walks the graph pattern tree, 
  *  applying a visitor at each Element traversed.
- *  Only walks one level of the query (not subqueries -- sub SELECT, (NOT)EXISTS
- *  these will need to call down themselves if it is meaningful for the visitor.  
- *  Bottom-up walk - apply to subelements before applying to current element. */
+ *  Does not (NOT)EXISTS in filters.
+ *    These will need to call down themselves if it is meaningful for the visitor.  
+ *  Bottom-up walk - apply to subelements before applying to current element.
+ */
 
 public class ElementWalker 
 {
@@ -49,7 +49,10 @@ public class ElementWalker
     static public class Walker implements ElementVisitor
     {
         protected ElementVisitor proc ;
-        protected Walker(ElementVisitor visitor) { proc = visitor ; }
+        protected Walker(ElementVisitor visitor)
+        { 
+            proc = visitor ;
+        }
         
         @Override
         public void visit(ElementTriplesBlock el)
@@ -129,22 +132,17 @@ public class ElementWalker
             proc.visit(el) ;
         }
 
-        // EXISTs, NOT EXISTs are really subqueries so don't automatically walk down them.
-        // NB They also occur in FILTERs via expressions.
+        // EXISTs, NOT EXISTs also occur in FILTERs via expressions.
         
         @Override
         public void visit(ElementExists el)
         {
-//            if ( el.getElement() != null )
-//                el.getElement().visit(this) ;
             proc.visit(el) ;
         }
 
         @Override
         public void visit(ElementNotExists el)
         {
-//            if ( el.getElement() != null )
-//                el.getElement().visit(this) ;
             proc.visit(el) ;
         }
 
@@ -159,10 +157,6 @@ public class ElementWalker
         @Override
         public void visit(ElementSubQuery el)
         {
-            // Only walk this level.
-//            Element el2 = el.getQuery().getQueryPattern() ;
-//            if ( el2 != null )
-//                el2.visit(this) ;
             proc.visit(el) ;
         }
 

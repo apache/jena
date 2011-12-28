@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Collection ;
 import java.util.HashSet ;
 import java.util.Set ;
 
@@ -35,20 +36,20 @@ public class VarUtils
         return x ;
     }
     
-    public static void addVarsFromTriple(Set<Var> acc, Triple t)
+    public static void addVarsFromTriple(Collection<Var> acc, Triple t)
     {
         addVar(acc, t.getSubject()) ;
         addVar(acc, t.getPredicate()) ;
         addVar(acc, t.getObject()) ;
     }
     
-    public static void addVarsFromTriplePath(Set<Var> acc, TriplePath tpath)
+    public static void addVarsFromTriplePath(Collection<Var> acc, TriplePath tpath)
     {
         addVar(acc, tpath.getSubject()) ;
         addVar(acc, tpath.getObject()) ;
     }
     
-    public static void addVar(Set<Var> acc, Node n)
+    public static void addVar(Collection<Var> acc, Node n)
     {
         if ( n == null )
             return ;

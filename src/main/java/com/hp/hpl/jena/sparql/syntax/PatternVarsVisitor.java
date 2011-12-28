@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.syntax;
 
+import java.util.Collection ;
 import java.util.Iterator ;
-import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
@@ -29,8 +29,8 @@ import com.hp.hpl.jena.sparql.util.VarUtils ;
 
 public class PatternVarsVisitor extends ElementVisitorBase
 {
-    public Set<Var> acc ;
-    public PatternVarsVisitor(Set<Var> s) { acc = s ; } 
+    public Collection<Var> acc ;
+    public PatternVarsVisitor(Collection<Var> s) { acc = s ; } 
     
     @Override
     public void visit(ElementTriplesBlock el)

@@ -26,9 +26,9 @@ package com.hp.hpl.jena.sparql.syntax;
  * calling points:
  * <ul>
  * <li>start of element</li>
- * <li>end of element</li>
  * <li>start each sub element</li>
  * <li>end of each sub element</li>
+ * <li>end of element</li>
  * </ul>
  * </p>
  * 
