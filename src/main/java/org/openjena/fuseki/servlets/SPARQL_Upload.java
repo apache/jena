@@ -197,6 +197,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     dsg.getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
                 else
                     dsg.getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
+                action.commit() ;
             } finally { action.endWrite() ; }
                     
             response.setContentType("text/plain") ;

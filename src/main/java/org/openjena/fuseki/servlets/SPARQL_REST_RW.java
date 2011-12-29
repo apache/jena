@@ -22,7 +22,7 @@ import org.openjena.fuseki.HttpNames ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** The WRITE operations added to the READ oeprations */
+/** The WRITE operations added to the READ operations */
 public class SPARQL_REST_RW extends SPARQL_REST_R
 {
     public SPARQL_REST_RW(boolean verbose)
@@ -46,9 +46,15 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         try {
             boolean existedBefore = action.getTarget().exists() ; 
             if ( ! existedBefore)
+            {
+                // commit, not abort, because locking "transactions" don't support abort. 
+                action.commit() ;
                 errorNotFound("No such graph: "+action.getTarget().name) ;
+            }
             deleteGraph(action) ;
-        } finally { action.endWrite() ; }
+            action.commit() ;
+        }
+        finally { action.endWrite() ; }
         SPARQL_ServletBase.successNoContent(action) ;
     }
 
@@ -63,6 +69,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
             if ( existedBefore )
                 clearGraph(action.getTarget()) ;
             addDataInto(body.getDefaultGraph(), action) ;
+            action.commit() ;
         } finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
         if ( existedBefore )
@@ -80,6 +87,7 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         try {
             existedBefore = action.getTarget().exists() ; 
             addDataInto(body.getDefaultGraph(), action) ;
+            action.commit() ;
         } finally { action.endWrite() ; }
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;

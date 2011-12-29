@@ -25,14 +25,20 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
+import com.hp.hpl.jena.tdb.migrate.DatasetGraphWithLock ;
 
 class HttpAction
 {
     final long id ;
     private final DatasetGraph dsg ;
+    private final Transactional transactional ;
     private DatasetGraph activeDSG ;
     final Lock lock ;
     final HttpServletRequest request;
@@ -60,45 +66,113 @@ class HttpAction
         this.id = id ;
         this.dsg = dsg ;
         this.lock = ( dsg != null ) ? dsg.getLock() : null ;
+        if ( dsg instanceof Transactional )
+            transactional = (Transactional)dsg ;
+        else
+        {
+            DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ; 
+            transactional = dsglock ;
+            dsg = dsglock ;
+        }
         this.request = request ;
         this.response = response ;
         this.verbose = verbose ;
     }
     
-    public final void beginRead()
+    public void beginRead()
     {
-        enter(dsg, lock, Lock.READ) ;
-        getConcurrencyPolicy(lock).startRead() ;
+        transactional.begin(ReadWrite.READ) ;
         activeDSG = dsg ;
     }
 
-    public final void endRead()
+    public void endRead()
     {
-        getConcurrencyPolicy(lock).finishRead() ;
-        leave(dsg, lock, Lock.READ) ;
+        transactional.end() ;
         activeDSG = null ;
     }
 
-    public final void beginWrite()
+    public void beginWrite()
     {
-        enter(dsg, lock, Lock.WRITE) ;
-        getConcurrencyPolicy(lock).startUpdate() ;
+        transactional.begin(ReadWrite.WRITE) ;
         activeDSG = dsg ;
     }
 
-    public final void endWrite()
+    public void commit()
     {
-        sync() ;
-        getConcurrencyPolicy(lock).finishUpdate() ;
-        leave(dsg, lock, Lock.WRITE) ;
+        transactional.commit() ;
         activeDSG = null ;
     }
+
+    public void abort()
+    {
+        transactional.abort() ;
+        activeDSG = null ;
+    }
+
+    public void endWrite()
+    {
+        if (transactional.isInTransaction())
+        {
+            Log.warn(this, "Transaction still active in endWriter - aborted") ;
+            transactional.abort() ;
+        }
+        activeDSG = null ;
+    }
+
+//    public boolean isInTransaction()
+//    { return transactional.isInTransaction() ; }
+
+//    public final void beginRead()
+//    {
+//        transactional.begin(ReadWrite.READ) ;
+//        
+//        enter(dsg, lock, Lock.READ) ;               // ????
+//        getConcurrencyPolicy(lock).startRead() ;    // ????
+//        activeDSG = dsg ;
+//    }
+//
+//    public final void endRead()
+//    {
+//        transactional.end() ;
+//        leave(dsg, lock, Lock.READ) ;               // ????
+//        getConcurrencyPolicy(lock).finishRead() ;   // ????
+//        activeDSG = null ;
+//    }
+//
+//    public final void beginWrite()
+//    {
+//        if ( transactional != null )
+//            transactional.begin(ReadWrite.WRITE) ;
+//        else
+//        {
+//            enter(dsg, lock, Lock.WRITE) ;
+//            getConcurrencyPolicy(lock).startUpdate() ;
+//        }
+//        activeDSG = dsg ;
+//    }
+//
+//    public final void endWrite()
+//    {
+//        if ( transactional != null )
+//        {
+//            //XXX Wrong - what about abort?
+//            transactional.commit() ;
+//        }
+//        else
+//        {
+//            sync() ;
+//            getConcurrencyPolicy(lock).finishUpdate() ;
+//            leave(dsg, lock, Lock.WRITE) ;
+//        }
+//        activeDSG = null ;
+//    }
 
     public final DatasetGraph getActiveDSG()
     {
         return activeDSG ;
     }
     
+    // External, additional lock.
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {
         if ( lock == null && dsg == null )

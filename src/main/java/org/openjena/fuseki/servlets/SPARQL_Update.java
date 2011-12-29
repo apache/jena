@@ -239,9 +239,9 @@ public class SPARQL_Update extends SPARQL_Protocol
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.getActiveDSG()) ;
-            // Sync done by endWrite.
+            action.commit() ;
         }
-        catch ( UpdateException ex) { errorBadRequest(ex.getMessage()) ; }
+        catch ( UpdateException ex) { action.abort() ; errorBadRequest(ex.getMessage()) ; }
         finally { action.endWrite() ; }
     }
 }
