@@ -18,12 +18,14 @@
 
 package org.openjena.riot.system;
 
+import java.io.BufferedWriter ;
 import java.io.OutputStream ;
+import java.io.OutputStreamWriter ;
 import java.io.Writer ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.BufferingWriter ;
+import org.openjena.atlas.lib.Chars ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -77,9 +79,10 @@ public abstract class JenaWriterBase implements RDFWriter
     @Override
     public void write(Model model, OutputStream out, String base)
     {
-        BufferingWriter buff = BufferingWriter.create(out, 1023) ;
-        write(model.getGraph(), buff, base) ;
-        buff.flush() ;
+        Writer w = new OutputStreamWriter(out, Chars.createEncoder()) ;
+        w =  new BufferedWriter(w, 8*1024) ;
+        write(model.getGraph(), w, base) ;
+        try { w.flush() ; } catch (Exception e) {}
     }
 
     protected abstract void write(Graph graph, Writer out, String base) ;  

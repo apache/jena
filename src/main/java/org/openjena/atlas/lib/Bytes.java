@@ -264,12 +264,14 @@ public class Bytes
     }
 
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
-    public static int toByteBuffer(CharSequence s, ByteBuffer bb)
+    public static void toByteBuffer(CharSequence s, ByteBuffer bb)
     {
+        //BlockUTF8.fromChars(s, bb) ;
+        // To be removed (Dec 2011)
         CharsetEncoder enc = Chars.allocEncoder();
         int x = toByteBuffer(s, bb, enc) ;
         Chars.deallocEncoder(enc) ;
-        return x ;
+        //return x ;
     }
     
     /** Encode a string into a ByteBuffer : on return position is the end of the encoding */
@@ -293,6 +295,8 @@ public class Bytes
     /** Decode a string into a ByteBuffer */
     public static String fromByteBuffer(ByteBuffer bb)
     {
+        //return BlockUTF8.toString(bb) ;
+        // To be removed (Dec 2011)
         CharsetDecoder dec = Chars.allocDecoder();
         String x = fromByteBuffer(bb, dec) ;
         Chars.deallocDecoder(dec) ;

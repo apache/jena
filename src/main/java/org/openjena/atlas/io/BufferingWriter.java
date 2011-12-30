@@ -52,6 +52,8 @@ import org.openjena.atlas.logging.Log ;
 
 public final class BufferingWriter extends Writer
 {
+    // ***** Suspiciously slow.
+    
     private static Logger log = LoggerFactory.getLogger(BufferingWriter.class) ;
     
     // Opposite of PeekReader. 
@@ -142,7 +144,8 @@ public final class BufferingWriter extends Writer
         // This always sets "end of input" in the encoder which is
         // fine if we assume no spanning char sequnces across strings or other
         // units written to this writer.
-        Bytes.toByteBuffer(string, buffer, encoder) ;
+        BlockUTF8.fromChars(string, buffer) ;
+        //Bytes.toByteBuffer(string, buffer, encoder) ;
     }
 
     private int bufferSize()

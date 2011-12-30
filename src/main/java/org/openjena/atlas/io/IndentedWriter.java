@@ -68,6 +68,7 @@ public class IndentedWriter
     
     private static Writer makeWriter(OutputStream out)
     {
+        // return BufferingWriter.create(out) ; 
         // Create a writer for the output.
         Writer w = new OutputStreamWriter(out, Chars.createEncoder()) ;
         w =  new BufferedWriter(w, 8*1024) ;
