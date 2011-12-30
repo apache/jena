@@ -28,6 +28,7 @@ import org.junit.runners.Suite ;
     TestIndentedWriter.class
     , TestBufferingWriter.class
     , TestStreamUTF8.class
+    , TestBlockUTF8.class
     , TestInputStreamBuffered.class
 
     // Peek readers.
