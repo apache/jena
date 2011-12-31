@@ -18,19 +18,7 @@
 
 package org.openjena.atlas.io;
 
-import java.io.BufferedReader ;
-import java.io.ByteArrayOutputStream ;
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.InputStreamReader ;
-import java.io.OutputStream ;
-import java.io.OutputStreamWriter ;
-import java.io.PrintWriter ;
-import java.io.Reader ;
-import java.io.StringWriter ;
-import java.io.Writer ;
+import java.io.* ;
 import java.nio.charset.Charset ;
 import java.util.zip.GZIPInputStream ;
 
@@ -134,6 +122,12 @@ public class IO
         return new OutputStreamWriter(out, utf8.newEncoder());
     }
 
+    /** Create a writer that uses UTF-8 encoding and is buffered. */ 
+    static public Writer asBufferedUTF8(OutputStream out) {
+        Writer w =  new OutputStreamWriter(out, utf8.newEncoder());
+        return new BufferedWriter(w) ;
+    }
+
     /** Create a print writer that uses UTF-8 encoding */ 
 
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
@@ -145,6 +139,16 @@ public class IO
         try { resource.close(); } catch (IOException ex) { exception(ex) ; }
     }
     
+    public static void flish(OutputStream out)
+    {
+        try { out.flush(); } catch (IOException ex) { exception(ex) ; }
+    }
+    
+    public static void flish(Writer out)
+    {
+        try { out.flush(); } catch (IOException ex) { exception(ex) ; }
+    }
+
     public static void exception(IOException ex)
     {
         throw new AtlasException(ex) ;

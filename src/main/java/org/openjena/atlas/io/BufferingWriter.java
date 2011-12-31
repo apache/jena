@@ -53,6 +53,13 @@ import org.openjena.atlas.logging.Log ;
 public final class BufferingWriter extends Writer
 {
     // ***** Suspiciously slow.
+    // ***** DO NOT USE
+    // Better to buffer in character space the convert in larger blocks.
+    // Standard java I/O is preeety good for that.
+    // Split:
+    // 1/ A buffering writer that wraps a writer  
+    //   (Use BufferedWriter or maybe own version without the hidden synchronize's)  
+    // 2/ Writer to do the conversion, output to Sink<ByteBuffer> 
     
     private static Logger log = LoggerFactory.getLogger(BufferingWriter.class) ;
     
@@ -103,17 +110,17 @@ public final class BufferingWriter extends Writer
     }
 
 
-    /** Convenience operation to output to a Writer */
-    public static BufferingWriter create(OutputStream out, int size)
-    {
-        return new BufferingWriter(new SinkOutputStream(out), size, size/2) ;
-    }
+//    /** Convenience operation to output to an OutputStream */
+//    public static BufferingWriter create(OutputStream out, int size)
+//    {
+//        return new BufferingWriter(new SinkOutputStream(out), size, size/2) ;
+//    }
 
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
     public BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
     
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
-    public BufferingWriter(Sink<ByteBuffer> sink, int size, int blobSize)
+    /*package*/ BufferingWriter(Sink<ByteBuffer> sink, int size, int blobSize)
     {
         this.out = sink ;
         this.blockSize = size ;
@@ -174,8 +181,6 @@ public final class BufferingWriter extends Writer
     /** Output a single character */
     public void output(int ch)
     {
-        // TODO It might be worth recoding this to directly put UTF-8 bytes
-        // into the output buffer, rather than use oneChar.  
         oneChar[0] = (char)ch ;
         output(oneChar) ;
         oneChar[0] = 0;

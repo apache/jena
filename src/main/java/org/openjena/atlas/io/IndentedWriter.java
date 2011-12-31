@@ -19,10 +19,11 @@
 package org.openjena.atlas.io;
 import static java.lang.String.format ;
 
-import java.io.* ;
+import java.io.IOException ;
+import java.io.OutputStream ;
+import java.io.Writer ;
 
 import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.lib.Chars ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
@@ -68,11 +69,8 @@ public class IndentedWriter
     
     private static Writer makeWriter(OutputStream out)
     {
-        // return BufferingWriter.create(out) ; 
-        // Create a writer for the output.
-        Writer w = new OutputStreamWriter(out, Chars.createEncoder()) ;
-        w =  new BufferedWriter(w, 8*1024) ;
-        return w ;
+        // return BufferingWriter.create(out) ;
+        return IO.asBufferedUTF8(out) ;
     }
     
     /** Using Writers directly is discouraged */

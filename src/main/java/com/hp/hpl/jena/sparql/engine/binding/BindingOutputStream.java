@@ -18,12 +18,11 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.io.IOException ;
-import java.io.OutputStream ;
+import java.io.* ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.BufferingWriter ;
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotException ;
@@ -38,7 +37,7 @@ import com.hp.hpl.jena.sparql.core.Var ;
 /** Parser for the RDF Tuples language */
 public class BindingOutputStream implements Sink<Binding>
 {
-    private final BufferingWriter bw ;
+    private final Writer bw ;
     private Binding lastBinding = null ;
     private List<Var> vars = null ;
     private PrefixMap pmap ;
@@ -63,10 +62,11 @@ public class BindingOutputStream implements Sink<Binding>
 
     public BindingOutputStream(OutputStream out, List<Var> vars, PrefixMap prefixMapping)
     {
-        this( BufferingWriter.create(out) , vars, prefixMapping) ;
+        //this( BufferingWriter.create(out) , vars, prefixMapping) ;
+        this( IO.asBufferedUTF8(out), vars, prefixMapping) ;
     }
     
-    private BindingOutputStream(BufferingWriter out, List<Var> variables, PrefixMap prefixMapping)
+    private BindingOutputStream(Writer out, List<Var> variables, PrefixMap prefixMapping)
     {
         bw = out ;
         vars = variables ;
@@ -160,13 +160,13 @@ public class BindingOutputStream implements Sink<Binding>
     @Override
     public void flush()
     {
-        bw.flush() ;
+        IO.flush(bw) ;
     }
     
     @Override
     public void close()
     {
-        bw.close() ;
+        IO.close(bw) ;
     }
 
     public List<Var> getVars()
