@@ -352,6 +352,33 @@ public class Bytes
         return sw.toString() ;
     }
     
+    /** Return a hex string representing the bytes, zero padded to length of byte array. */
+    public static String asHex(byte b)
+    {
+        return asHexUC(b) ; 
+    }
+
+    public static String asHexUC(byte b)
+    {
+        return asHex(b, Chars.hexDigitsUC) ; 
+    }
+
+    public static String asHexLC(byte b)
+    {
+        return asHex(b, Chars.hexDigitsLC) ; 
+    }
+    
+    private static String asHex(byte b, char[] hexDigits)
+    {
+        int hi = (b & 0xF0) >> 4 ;
+        int lo = b & 0xF ;
+        char[] chars = new char[2] ;
+        chars[0] = hexDigits[hi] ;
+        chars[1] = hexDigits[lo] ;
+        return new String(chars) ;
+    }
+
+    
     public static int hexCharToInt(char c)
     {
         if ( '0' <= c && c <= '9' )   
