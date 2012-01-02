@@ -25,7 +25,7 @@ public class RandomLib
 {
     private RandomLib() {}
     
-    /** Single instance, pure random geenrator */
+    /** Single instance, pure random generator */
     public static final Random random = new SecureRandom() ;
     
     /** Random numbers, good seed, cheaper allocation */
