@@ -12,24 +12,24 @@
   <classpathentry kind="lib" path="jdbc/postgresql-8.2dev-500.jdbc3.jar"/>
 
   <classpathentry kind="var" 
-		  path="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT-sources.jar"/>
+		  path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-sources.jar"/>
 
   <classpathentry kind="var"
-		  path="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT-tests.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT-test-sources.jar"/>
+		  path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-tests.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-test-sources.jar"/>
 
   <classpathentry kind="var" 
-		  path="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT.jar"
-		  sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT-sources.jar"/>
+		  path="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating.jar"
+		  sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating-sources.jar"/>
 
   <classpathentry kind="var" 
-		  path="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-tests.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-test-sources.jar"/>
+		  path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-tests.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-test-sources.jar"/>
 
   <classpathentry kind="var" 
-		  path="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-sources.jar"/>
+		  path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-sources.jar"/>
 
   <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
 
