@@ -22,6 +22,8 @@ import java.util.Date ;
 import java.util.logging.Formatter ;
 import java.util.logging.LogRecord ;
 
+import com.ibm.icu.text.MessageFormat ;
+
 /** A pattern-like log formatter */
 public class TextFormatter extends Formatter
 {
@@ -35,14 +37,18 @@ public class TextFormatter extends Formatter
         int i = loggerName.lastIndexOf('.') ; 
         String loggerNameShort = loggerName.substring(i+1) ;
             
+        String formatted$ = record.getMessage() ;
+        if ( record.getParameters() != null )
+            formatted$ = MessageFormat.format(formatted$, record.getParameters()) ;
+        
         // %tT (%5$tT) is %5$tH:%5$tM:%5$tS
         // %tF is 2008-11-22 "%tY-%tm-%td"
-        return String.format("%5$tT %3$-5s %2$-10s :: %6$s\n", 
+        return String.format("%5$tT %3$-5s %2$-25s :: %6$s\n", 
                              loggerName,                        // 1
                              loggerNameShort,                   // 2
                              record.getLevel(),                 // 3
                              Thread.currentThread().getName(),  // 4
                              new Date(record.getMillis()),      // 5
-                             record.getMessage()) ;             // 6
+                             formatted$) ;                      // 6
     }
 }

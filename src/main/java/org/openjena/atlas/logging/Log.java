@@ -323,20 +323,17 @@ public class Log
         StrUtils.strjoinNL(
                            // Handlers - output
                            // All (comma separated)
-                           //"handlers=java.util.logging.ConsoleHandler,atlas.logging.java.ConsoleHandlerStdout",
+                           //"handlers=java.util.logging.ConsoleHandler,org.openjena.atlas.logging.java.ConsoleHandlerStdout",
 
                            // Atlas.
-                           //"handlers=atlas.logging.java.ConsoleHandlerStdout" ,
+                           "handlers=org.openjena.atlas.logging.java.ConsoleHandlerStdout"
+                           , "org.openjena.atlas.logging.java.ConsoleHandlerStdout.level=INFO"
+                           , "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
 
                            // Provided by the JRE
-                           "handlers=java.util.logging.ConsoleHandler" ,
+                           //"handlers=java.util.logging.ConsoleHandler" ,
+                           //, "java.util.logging.ConsoleHandler.level=INFO",
 
-                           // Formatting and levels
-                           //"atlas.logging.java.ConsoleHandlerStdout.level=ALL",
-                           //"atlas.logging.java.ConsoleHandlerStdout.formatter=atlas.logging.java.TextFormatter",
-
-                           "java.util.logging.ConsoleHandler.level=INFO"
-                           //, "java.util.logging.ConsoleHandler.formatter=atlas.logging.java.TextFormatter"
         ) ;   
         
     
@@ -355,7 +352,7 @@ public class Log
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
     }
     
-    static void setJavaLoggingDft()
+    public static void setJavaLoggingDft()
     {
         try
         {
