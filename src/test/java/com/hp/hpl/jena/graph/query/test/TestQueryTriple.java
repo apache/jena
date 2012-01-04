@@ -24,8 +24,8 @@ import java.util.Set;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-import com.ibm.icu.util.StringTokenizer;
 
+import java.util.StringTokenizer;
 import junit.framework.TestSuite;
 
 public class TestQueryTriple extends QueryTestBase

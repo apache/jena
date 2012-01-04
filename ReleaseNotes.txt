@@ -3,6 +3,8 @@ Release Notes
 
 ==== Jena 2.7.1
 
++ icu4j dependency removed
+
 ==== Jena 2.6.5 / 2.7.0
 
 ** Java 6 is now required for running Jena.
