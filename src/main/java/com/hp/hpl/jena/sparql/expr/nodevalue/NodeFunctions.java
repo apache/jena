@@ -27,6 +27,9 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
+import com.hp.hpl.jena.shared.uuid.JenaUUID ;
+import com.hp.hpl.jena.shared.uuid.UUIDFactory ;
+import com.hp.hpl.jena.shared.uuid.UUID_V4_Gen ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -354,6 +357,15 @@ public class NodeFunctions
             Log.warn(NodeFunctions.class, "Bad IRI: "+msg+": "+iri) ;
         }
         return Node.createURI(iri.toString()) ;
+    }
+    
+    private static UUIDFactory factory = new UUID_V4_Gen() ;
+    public static NodeValue uuid()
+    {
+        JenaUUID uuid = factory.generate() ;
+        // uuid.asUUID()
+        Node n = Node.createURI(uuid.asURI()) ;
+        return NodeValue.makeNode(n) ;
     }
 
     private static String simpleLiteralOrXSDString(Node n)

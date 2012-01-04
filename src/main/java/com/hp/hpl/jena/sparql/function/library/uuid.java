@@ -16,30 +16,23 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package com.hp.hpl.jena.sparql.function.library;
 
+//import org.apache.commons.logging.*;
+
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
-import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.function.FunctionBase0 ;
 
-public class E_UUID extends ExprFunction0
+/** Function that returns a UUID */
+
+public class uuid extends FunctionBase0
 {
-    static private String fName = Tags.tagUUID ;
-    
-    public E_UUID()
-    {
-        super(fName) ;
-    }
+    public uuid() {}
 
     @Override
-    public Expr copy()
+    public NodeValue exec()
     {
-        return new E_UUID() ;
-    }
-
-    @Override
-    public NodeValue eval(FunctionEnv env)
-    {
-        return NodeFunctions.uuid();
+        return NodeFunctions.uuid() ;
     }
 }
