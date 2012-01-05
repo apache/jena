@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-top</artifactId>
-    <version>0-incubating-SNAPSHOT</version>
+    <version>0-incubating</version>
   </parent>
 
   <groupId>org.apache.jena</groupId>
@@ -36,6 +36,8 @@
 
   <properties>
     <ver.lucene>3.4.0</ver.lucene>
+    <ver.arq>2.9.0-incubating</ver.arq>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
   </properties>
 
   <developers>
@@ -174,12 +176,12 @@
   <repositories>
     <!-- This is here so that Maven can retrieve jena-top parent pom snapshots -->
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
       <id>apache.snapshots</id>
       <name>Apache Snapshot Repository</name>
       <url>http://repository.apache.org/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
   </repositories>
 

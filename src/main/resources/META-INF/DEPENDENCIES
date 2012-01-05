@@ -35,11 +35,11 @@ From: 'The Apache Software Foundation' (http://www.apache.org/)
     License: Apache License  (LICENSE.txt)
   - HttpCore (http://hc.apache.org/httpcomponents-core-ga) org.apache.httpcomponents:httpcore:jar:4.1.2
     License: Apache License  (LICENSE.txt)
-  - ARQ (http://incubator.apache.org/jena/jena-arq) org.apache.jena:jena-arq:jar:2.8.9-incubating-SNAPSHOT
+  - ARQ (http://incubator.apache.org/jena/jena-arq) org.apache.jena:jena-arq:jar:2.9.0-incubating
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - Jena Core (http://incubator.apache.org/jena/jena-core) org.apache.jena:jena-core:jar:2.6.5-incubating-SNAPSHOT
+  - Jena Core (http://incubator.apache.org/jena/jena-core) org.apache.jena:jena-core:jar:2.7.0-incubating
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
-  - IRI (http://incubator.apache.org/jena/jena-iri) org.apache.jena:jena-iri:jar:0.9.0-incubating-SNAPSHOT
+  - IRI (http://incubator.apache.org/jena/jena-iri) org.apache.jena:jena-iri:jar:0.9.0-incubating
     License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
   - Lucene Core (http://lucene.apache.org/java/lucene-parent/lucene-core) org.apache.lucene:lucene-core:jar:3.4.0
     License: Apache 2  (http://www.apache.org/licenses/LICENSE-2.0.txt)
