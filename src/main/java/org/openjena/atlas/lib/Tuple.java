@@ -42,7 +42,7 @@ public final class Tuple<T> implements Iterable<T>
 //        return Tuple.create(tuple) ;
 //    }
     
-    public static <X> Tuple<X> create(X ... elements)
+    public static <X> Tuple<X> create(/*@SuppressWarnings("unchecked")*/ X ... elements)
     { return new Tuple<X>(elements) ; }
     
     
@@ -75,9 +75,9 @@ public final class Tuple<T> implements Iterable<T>
     // Alternative : Object[] (+ cast on access)
     final T[] tuple ;
     
-    private Tuple(T...tuple)
+    private Tuple(/*@SuppressWarnings("unchecked")*/ T...tuple)
     {
-        this.tuple = tuple ;
+        this.tuple = ArrayUtils.copy(tuple) ;   // Take copy to stop 'tuple' being referenced after the call.
     }
     
     public T get(int idx) { return tuple[idx] ; }
