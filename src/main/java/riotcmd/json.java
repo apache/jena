@@ -20,6 +20,7 @@ package riotcmd;
 
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonParseException ;
 import org.openjena.atlas.json.JsonValue ;
 
 /** Command to read and print JSON */
@@ -33,7 +34,15 @@ public class json
         try {
             for ( String fn : args )
             {
-                JsonValue json = JSON.readAny(fn) ;
+                JsonValue json =null ;
+                try {
+                 json = JSON.readAny(fn) ;
+                } catch (JsonParseException ex)
+                {
+                    String name = fn.equals("-") ? "<stdin>" : fn ; 
+                    System.err.println(name+": "+JsonParseException.formatMessage(ex.getMessage(), ex.getLine(), ex.getColumn())) ;
+                    continue ;
+                }
                 JSON.write(IndentedWriter.stdout, json) ;
                 IndentedWriter.stdout.ensureStartOfLine() ;
             }
