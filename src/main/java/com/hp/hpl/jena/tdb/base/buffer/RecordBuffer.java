@@ -111,11 +111,6 @@ public class RecordBuffer extends BufferBase
     void _set(int idx, Record rec)
     {
         factory.insertInto(rec, bb, idx) ;
-//        byte[] data = rec.getKey() ; 
-//        if ( data.length != slotLen )
-//            throw new RecordException(format("Wrong length: actual=%d, expected=%d", data.length, slotLen)) ;
-//        bb.position(idx*slotLen) ;
-//        bb.put(data, 0, slotLen) ;
     }
     
     // Linear search for testing.
