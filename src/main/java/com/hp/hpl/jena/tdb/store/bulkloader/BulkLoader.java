@@ -260,6 +260,8 @@ public class BulkLoader
         Destination<Quad> sink = new Destination<Quad>() {
             long count = 0 ;
             private StatsCollector stats ;
+            private boolean startedEmpty = dsg.isEmpty() ;
+            
             @Override
             final public void start()
             {
@@ -304,7 +306,7 @@ public class BulkLoader
 
                 loaderTriples.loadFinish() ;
                 loaderQuads.loadFinish() ;
-                if ( ! dsg.getLocation().isMem() )
+                if ( ! dsg.getLocation().isMem() && startedEmpty )
                 {
                     String filename = dsg.getLocation().getPath(Names.optStats) ;
                     Stats.write(filename, stats) ;

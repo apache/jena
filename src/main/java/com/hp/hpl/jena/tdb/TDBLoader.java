@@ -76,8 +76,7 @@ public class TDBLoader
     }
     
     /** Load the contents of URL into a dataset.  Input is NQUADS.
-     *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
-     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
+     *  To load a triples format, use {@link #loadGraph} 
     */
     public static void load(DatasetGraphTDB dataset, InputStream input, boolean showProgress)
     {

@@ -42,7 +42,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
 {
     private LoadMonitor monitor          = null ;
     private boolean doIncremental   = false ;
-    private boolean generateStats   = false ;
 
     private int          numIndexes ; 
     private TupleIndex   primaryIndex ;
@@ -62,7 +61,6 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         this.nodeTupleTable = nodeTupleTable ;
         this.monitor = monitor ;
         this.doIncremental = false ;        // Until we know it's safe.
-        this.generateStats = false ;
         this.itemsName = itemsName ;          // "triples", "quads", "tuples" (plural)
     }
 
@@ -83,25 +81,15 @@ public class LoaderNodeTupleTable implements Closeable, Sync
         else
         {
             monitor.print("** Load into %s table with existing data", itemsName) ;
-            generateStats = false ;
         }
-
-        if ( generateStats )
-            statsPrepare() ;
     }
         
     protected void loadSecondaryIndexes()
     {
-        if ( generateStats )
-            statsFinalize() ;
-
         if ( dropAndRebuildIndexes )
             // Now do secondary indexes.
             createSecondaryIndexes() ;
     }
-
-    protected void statsPrepare() {}
-    protected void statsFinalize() {}
 
     public void loadStart()     { monitor.startLoad() ; }
     public void loadFinish()    { monitor.finishLoad() ; }
@@ -122,7 +110,7 @@ public class LoaderNodeTupleTable implements Closeable, Sync
             nodeTupleTable.addRow(nodes) ;
 
 //            // Flush every so often.
-//            // Seems to improve performance:maybe because a bunch of blcoks are
+//            // Seems to improve performance:maybe because a bunch of blocks are
 //            // flushed together meaning better disk access pattern 
 //            if ( LoadFlushTickPrimary > 0 &&  count % LoadFlushTickPrimary == 0 )
 //            {
