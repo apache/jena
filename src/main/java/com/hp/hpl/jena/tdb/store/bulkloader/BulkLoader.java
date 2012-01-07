@@ -197,6 +197,7 @@ public class BulkLoader
         Destination<Triple> sink = new Destination<Triple>() {
             long count = 0 ;
             private StatsCollector stats ;
+            private boolean startedEmpty = dsg.isEmpty() ;
             
             @Override
             final public void start()
@@ -232,7 +233,7 @@ public class BulkLoader
                 loaderTriples.loadIndexFinish() ;
                 loaderTriples.loadFinish() ;
                 
-                if ( ! dsg.getLocation().isMem() )
+                if ( ! dsg.getLocation().isMem() && startedEmpty )
                 {
                     String filename = dsg.getLocation().getPath(Names.optStats) ;
                     Stats.write(filename, stats) ;
