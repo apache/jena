@@ -47,21 +47,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateBinaryOp ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDropClear ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateMove ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
+import com.hp.hpl.jena.sparql.modify.request.* ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
@@ -160,6 +146,18 @@ public class UpdateEngineWorker implements UpdateVisitor
         String source = update.getSource() ;
         Node dest = update.getDest() ;
         try {
+//            // Experimental ; quads reading.  Needs redoing.  No conneg. 
+//            if ( dest == null )
+//            {
+//                // Quads?
+//                Lang guess = Lang.guess(source, Lang.NTRIPLES) ;
+//                if ( guess.isQuads() )
+//                {
+//                   RiotLoader.read(source, graphStore, guess) ;
+//                    return ;
+//                }
+//            }
+            
             // Read into temporary model to protect against parse errors.
             Model model = FileManager.get().loadModel(source) ;
             Graph g = graph(graphStore, dest) ;
