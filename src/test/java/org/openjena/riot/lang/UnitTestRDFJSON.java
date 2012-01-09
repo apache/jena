@@ -26,6 +26,7 @@ import java.io.Reader ;
 
 import junit.framework.TestCase ;
 import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.json.JSON;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
@@ -102,6 +103,9 @@ public class UnitTestRDFJSON extends TestCase
         ByteArrayOutputStream baos = new ByteArrayOutputStream() ;
         writer.write(results, baos, baseIRI) ;
 
+        // Parse the JSON back to make sure we always write valid JSON
+        JSON.parse(new ByteArrayInputStream(baos.toByteArray())) ;
+
         InputStream in = new ByteArrayInputStream(baos.toByteArray()) ;
         Model model = ModelFactory.createDefaultModel() ;
         RDFReader reader = new JenaReaderRdfJson() ;
@@ -130,7 +134,7 @@ public class UnitTestRDFJSON extends TestCase
             assertTrue("Models not isomorphic", b) ;
         } catch (RiotParseException ex)
         {
-            // Catch and retrhow - debugging.
+            // Catch and rethrow - debugging.
             throw ex ;    
         }
         catch (RuntimeException ex) 
