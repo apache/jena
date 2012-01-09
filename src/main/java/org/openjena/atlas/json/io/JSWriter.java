@@ -150,10 +150,19 @@ public class JSWriter
         arrayElementProcess() ;
         value(b) ;
     }
+
     public void arrayElement(long integer)
     {
         arrayElementProcess() ;
         value(integer) ;
+    }
+    
+    /**
+     * Useful if you are manually creating arrays and so need to print array separators yourself
+     */
+    public void arraySep()
+    {
+    	out.print(ArraySep);
     }
     
     public static String outputQuotedString(String string)

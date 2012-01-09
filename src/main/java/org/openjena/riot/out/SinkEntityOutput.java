@@ -95,6 +95,7 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
 			out.key(p.getURI()) ;
 			out.startArray() ;
 			Set<Node> objects = predicates.get(p) ;
+			int i = 0;
 			for ( Node o : objects ) {
 				out.startObject() ;
 				if ( o.isBlank() ) {
@@ -115,6 +116,11 @@ public class SinkEntityOutput implements Sink<Pair<Node, Map<Node, Set<Node>>>> 
 			        	out.pair("lang", lang) ;
 				}
 				out.finishObject() ;
+				if (i < objects.size() - 1)
+				{
+					out.arraySep();
+				}
+				i++;
 			}
 			out.finishArray() ;
 		}

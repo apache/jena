@@ -18,39 +18,66 @@
 
 package org.openjena.riot.out;
 
-import java.io.ByteArrayInputStream ;
-import java.io.ByteArrayOutputStream ;
-import java.io.InputStream ;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.RiotWriter ;
+import org.junit.Test;
+import org.openjena.atlas.json.JSON;
+import org.openjena.atlas.json.JsonObject;
+import org.openjena.atlas.junit.BaseTest;
+import org.openjena.atlas.lib.Sink;
+import org.openjena.riot.RiotReader;
+import org.openjena.riot.lang.LangRIOT;
+import org.openjena.riot.lang.SinkTriplesToGraph;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.graph.GraphFactory;
+import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class TestOutputRDFJSON extends BaseTest
 {
-    // Read a file, write it to a string, read it again.  Test for same. 
-    
-    Triple t1 = SSE.parseTriple("(<foo:x> <foo:p> 123)") ;
-    
+
     @Test public void rdfjson_01()
     {
-        Model m = ModelFactory.createDefaultModel() ;
-        m.getGraph().add(t1) ;
-        ByteArrayOutputStream out = new ByteArrayOutputStream() ;
-        RiotWriter.writeRDFJSON(out, m.getGraph()) ;
-        
-        Model m2 = ModelFactory.createDefaultModel() ;
-        InputStream in = new ByteArrayInputStream(out.toByteArray()) ;
-        RiotLoader.read(in, m2.getGraph(), Lang.RDFJSON, null) ;
-        
-        assertTrue (m.isIsomorphicWith(m2)) ;
+    	test ("(base <http://example/> (graph (<s> <p> 1)))") ;
+    }
+
+    @Test public void rdfjson_02()
+    {
+    	test ("(base <http://example/> (graph (<s> <p> 1)(<s> <p> 2)))") ;
+    }
+
+    private void test (String str) 
+    {
+        Graph g = SSE.parseGraph(str) ;
+        ByteArrayOutputStream bout = serializeAsJSON(g) ;
+        parseAsJSON(bout) ; // make sure valid JSON
+        Graph g2 = parseAsRDFJSON(bout) ; 
+
+        assertTrue(g.isIsomorphicWith(g2)) ;    	
+    }
+
+    private ByteArrayOutputStream serializeAsJSON (Graph graph) 
+    {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream() ;
+        RDFJSONWriter.write(bout, graph) ;
+        return bout ;
+    }
+
+    private Graph parseAsRDFJSON (ByteArrayOutputStream bout) 
+    {
+        ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray()) ;
+        Graph graph = GraphFactory.createGraphMem() ;
+        Sink<Triple> sink = new SinkTriplesToGraph(graph) ; 
+        LangRIOT parser = RiotReader.createParserRdfJson(bin, sink) ;
+        parser.parse() ;
+        return graph ;
+    }
+
+    private JsonObject parseAsJSON (ByteArrayOutputStream bout) 
+    {
+    	return JSON.parse(new ByteArrayInputStream(bout.toByteArray())) ;
     }
 
 }

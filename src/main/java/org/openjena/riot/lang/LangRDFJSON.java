@@ -233,6 +233,11 @@ public class LangRDFJSON extends LangBase<Triple>
 			{
 				if (lookingAt(TokenType.LBRACE))
 				{
+					if (!objectExpected)
+					{
+						exception(peekToken(), "Expected the end of the JSON Array for the Object List as no comma was seen after the preceding } but got %s", peekToken());
+					}
+
 					first = false;
 					objectExpected = false;
 
