@@ -129,7 +129,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-	
         <executions> 
           <execution>
             <id>attach-sources</id>
@@ -138,16 +137,19 @@
               <goal>jar-no-fork</goal> 
             </goals>
           </execution>
+	  <!-- Don't release test support code
           <execution>
             <id>attach-sources-test</id>
             <goals>
               <goal>test-jar-no-fork</goal>
             </goals>
           </execution>
+	  -->
         </executions>
       
       </plugin>
 
+       <!-- Don't release test code
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -159,6 +161,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -214,29 +217,23 @@ build.time.txt=${build.time.txt}
       </plugin>
 
       <plugin>
-        <!-- This must be the last plug-in attached to the package phase 
-             because it replies on the packaging of the jar to happen first.
-        -->
-        <!-- We want one with appendAssemblyId=false and one with it defaulting to true.
-        hence two executions configured -->
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>create-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-              <!--
-              <finalName>${assembly.root.name}</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              -->
-              <descriptors>
-                <descriptor>assembly.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
+	<!-- This must be the last plug-in attached to the package phase 
+	     because it replies on the packaging of the jar to happen first.
+	-->
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-assembly-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>create-assembly</id>
+	    <phase>package</phase>
+	    <goals><goal>single</goal></goals>
+	    <configuration>
+	      <descriptors>
+		<descriptor>assembly.xml</descriptor>
+	      </descriptors>
+	    </configuration>
+	  </execution>
+	</executions>
       </plugin>
 
     </plugins>
@@ -245,7 +242,5 @@ build.time.txt=${build.time.txt}
   <reporting>
     <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
   </reporting>
-
-
 
 </project>

@@ -1,5 +1,0 @@
-@prefix : <http://example/> .
-
-:z1 a :foo .
-:z2 a :foo .
-:z2 :p "x" .
