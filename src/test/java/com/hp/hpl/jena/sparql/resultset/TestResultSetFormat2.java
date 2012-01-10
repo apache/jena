@@ -18,18 +18,20 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.ByteArrayInputStream;
+import java.io.ByteArrayInputStream ;
 
-import org.junit.Test;
-import org.openjena.atlas.lib.StrUtils;
+import org.junit.Test ;
+import org.openjena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.query.ResultSetFactory;
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 public class TestResultSetFormat2
 {
-    @Test (expected=ARQException.class) public void resultset_10()
+    @Test (expected=QueryException.class) 
+    public void resultset_10()
     {
         // This is illegal
         // Two vars, row of 3 values.
@@ -37,9 +39,16 @@ public class TestResultSetFormat2
         byte[] b = StrUtils.asUTF8bytes(x) ;
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
+        
+        while (rs2.hasNext())
+        {
+        	Binding binding = rs2.nextBinding();
+        	System.out.println(binding);
+        }
     }
 
-    @Test (expected=ARQException.class) public void resultset_11()
+    @Test (expected=QueryException.class) 
+    public void resultset_11()
     {
         // This is illegal
         // Two vars, row of 1 value only.
@@ -47,6 +56,12 @@ public class TestResultSetFormat2
         byte[] b = StrUtils.asUTF8bytes(x) ;
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
+        
+        while (rs2.hasNext())
+        {
+        	Binding binding = rs2.nextBinding();
+        	System.out.println(binding);
+        }
     }    
     
 }

@@ -136,19 +136,11 @@ public class IO
     
     public static void close(java.io.Closeable resource)
     {
+        if ( resource == null )
+            return ;
         try { resource.close(); } catch (IOException ex) { exception(ex) ; }
     }
     
-    public static void flish(OutputStream out)
-    {
-        try { out.flush(); } catch (IOException ex) { exception(ex) ; }
-    }
-    
-    public static void flish(Writer out)
-    {
-        try { out.flush(); } catch (IOException ex) { exception(ex) ; }
-    }
-
     public static void exception(IOException ex)
     {
         throw new AtlasException(ex) ;
@@ -160,10 +152,18 @@ public class IO
     }
     
     public static void flush(OutputStream out)
-    { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
+    { 
+        if ( out == null )
+            return ;
+        try { out.flush(); } catch (IOException ex) { exception(ex) ; }
+    }
     
     public static void flush(Writer out)
-    { try { out.flush(); } catch (IOException ex) { exception(ex) ; } }
+    {
+        if ( out == null )
+            return ;
+        try { out.flush(); } catch (IOException ex) { exception(ex) ; } 
+    }
 
     private static final int BUFFER_SIZE = 8*1024 ; 
     

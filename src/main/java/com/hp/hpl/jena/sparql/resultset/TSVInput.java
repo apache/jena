@@ -26,72 +26,52 @@ import java.util.List ;
 import java.util.regex.Pattern ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 /**
  * Input reader associated to {@link TSVOutput}.
- * 
- * @author Laurent Pellegrino
  */
 public class TSVInput {
 
 	static Pattern pattern = Pattern.compile("\t");
 	
-    public static ResultSet fromTSV(InputStream in) {
+	/**
+	 * Reads SPARQL Results from TSV format into a {@link ResultSet} instance
+	 */
+    public static ResultSet fromTSV(InputStream in)
+    {
     	BufferedReader reader = IO.asBufferedUTF8(in);
         List<Var> vars = new ArrayList<Var>();
         List<String> varNames = new ArrayList<String>();
-        List<Binding> bindings = new ArrayList<Binding>();
 
         boolean first = true;
     	String str = null;
-    	int line = 0;
-        try {
-        	while ( ( str = reader.readLine() ) != null ) {
-        		line++;
-        		String[] tokens = pattern.split(str,-1);
-        		if ( first ) {
-        			for ( String token : tokens ) {
-                		if ( token.startsWith("?") ) 
-                			token = token.substring(1);
-                		Var var = Var.alloc(token);
-                		vars.add(var);
-                		varNames.add(var.getName());
-                	}
-                	first = false;
-        		} else {
-        			int num_tokens = tokens.length;
-        	        if ( num_tokens != vars.size() ) {
-        	        	 throw new ARQException(String.format("Line %d has %d values instead of %d.", line, num_tokens, vars.size()));
-        	        }
-        	        BindingMap binding = BindingFactory.create();
-        	        for ( int i = 0; i < tokens.length; i++ ) {
-        	        	String token = tokens[i];
-                		Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(token);
-                		if ( tokenizer.hasNext() && token.length() > 0 ) {
-                			Node node = tokenizer.next().asNode();
-                			binding.add(vars.get(i), node);
-                		}
-                	}
-                	bindings.add(binding);
-        		}
+        try 
+        {
+        	//Here we try to parse only the Header Row
+        	str = reader.readLine();
+        	String[] tokens = pattern.split(str,-1);
+        	for ( String token : tokens ) 
+        	{
+        		if (token.startsWith("?")) token = token.substring(1);
+        		Var var = Var.alloc(token);
+        		vars.add(var);
+        		varNames.add(var.getName());
         	}
-        } catch ( IOException ex ) {
+        } 
+        catch ( IOException ex )
+        {
         	throw new ARQException(ex) ;
         }
 
-        return new ResultSetStream(varNames, null, new QueryIterPlainWrapper(bindings.iterator()));
+        //Generate an instance of ResultSetStream using TSVInputIterator
+        //This will parse actual result rows as needed thus minimising memory usage
+        return new ResultSetStream(varNames, null, new TSVInputIterator(reader, vars));
     }
+ 
 
 }

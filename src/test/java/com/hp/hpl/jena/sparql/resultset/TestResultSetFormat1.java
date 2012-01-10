@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
+import org.junit.Assert;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
@@ -32,6 +33,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
@@ -79,7 +81,7 @@ public class TestResultSetFormat1
         
         String x = StrUtils.strjoinNL(strings) ;
         Item item = SSE.parse(x) ;
-        return BuilderResultSet.build(item) ;
+        return ResultSetFactory.makeRewindable(BuilderResultSet.build(item));
     }
     
     @Test public void resultset_01()           
@@ -95,6 +97,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsXML(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromXML(in) ;
+        areIsomorphic(rs, rs2);
     }
 
     @Test public void resultset_03()           
@@ -104,6 +107,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsJSON(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromJSON(in) ;
+        areIsomorphic(rs, rs2);
     }
     
     @Test public void resultset_04()           
@@ -113,6 +117,7 @@ public class TestResultSetFormat1
         ResultSetFormatter.outputAsTSV(out, rs) ;
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
+        areIsomorphic(rs, rs2);
     }
 
     @Test public void resultset_05()           
@@ -121,4 +126,17 @@ public class TestResultSetFormat1
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         ResultSetFormatter.outputAsCSV(out, rs) ;
     }
+    
+    private static void areIsomorphic(ResultSet x, ResultSet y)
+    {
+        ResultSetRewindable rs1 = ResultSetFactory.makeRewindable(x) ;
+        ResultSetRewindable rs2 = ResultSetFactory.makeRewindable(y) ;
+//        System.out.println(ResultSetFormatter.asText(rs1));
+//        System.out.println();
+//        System.out.println(ResultSetFormatter.asText(rs2));
+//        rs1.reset();
+//        rs2.reset();
+        Assert.assertTrue(ResultSetCompare.isomorphic(rs1, rs2)) ;
+    }
+
 }
