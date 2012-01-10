@@ -62,7 +62,7 @@ import com.hp.hpl.jena.tdb.store.* ;
 
 /** Makes things: datasets from locations, indexes */
 
-// Future - this become a colection of tstaics making things in standard ways. Does not build adataset. 
+// Future - this become a colection of statics making things in standard ways. Does not build a dataset. 
 
 public class SetupTDB
 {
