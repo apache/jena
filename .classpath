@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
-  <classpathentry excluding="**/*.java" kind="src" path="resources"/>
-  <classpathentry excluding="**/*.java" kind="src" path="resources2"/>
-
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating.jar" sourcepath="M2_REPO/org/apache/jena/jena-arq/2.8.9-incubating/jena-arq-2.8.9-incubating-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-tests.jar" sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-test-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating.jar" sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-tests.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-test-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar" sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar" sourcepath="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4-sources.jar"/>
-
-  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar"/>
- 
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-  <classpathentry kind="output" path="classes"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src-dev"/>
+	<classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
+	<classpathentry excluding="**/*.java" kind="src" path="resources"/>
+	<classpathentry excluding="**/*.java" kind="src" path="resources2"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating.jar" sourcepath="/M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-tests.jar" sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-test-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating.jar" sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.0-incubating/jena-iri-0.9.0-incubating-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-tests.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-test-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar" sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar" sourcepath="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar"/>
+	<classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="classes"/>
 </classpath>
