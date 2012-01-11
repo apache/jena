@@ -2,7 +2,9 @@
 
 == Version 1.0
 
-== 0.2.2
+== 0.2.1
+
++ Rename packages to be org.apache.jena.fuseki.
 
 + --jetty-config= Use a file to configure the jetty server (connector type, parms of connector like "host").  
   Replaces --host.  See Jetty configuration documentation.
@@ -10,8 +12,6 @@
 + General purpose SPARQL processor servlet written (not enabled)  
 
 + XSLT style sheet for SPARQL XML results now puts clickable links in the results - query goes back to the server.
-
-== 0.2.1
 
 + JENA-74 (from Brian McBride): --host= to select the interface to listen on.  Use with --host=localhost if using Apache as a front-end. 
 

@@ -12,4 +12,4 @@ CP="classes$CP"
 JVM_ARGS="-Xmx1200M"
 JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize:1G"
 
-exec java -cp "$CP" -Xmx1200M org.openjena.fuseki.FusekiCmd "$@"
+exec java -cp "$CP" -Xmx1200M org.apache.jena.fuseki.FusekiCmd "$@"

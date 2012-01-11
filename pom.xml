@@ -217,9 +217,6 @@
   <build>
     <resources>
       <resource>
-	<!--
-        <targetPath>org/openjena/fuseki</targetPath>
-	-->
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
       </resource>
@@ -325,7 +322,7 @@
 	    <configuration>
 	      <archive>
 		<manifest>
-		  <mainClass>org.openjena.fuseki.FusekiCmd</mainClass>
+		  <mainClass>org.apache.jena.fuseki.FusekiCmd</mainClass>
 		</manifest>
 	      </archive>
 	      <!--

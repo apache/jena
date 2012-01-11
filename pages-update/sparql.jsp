@@ -1,4 +1,4 @@
-<%@ page import="org.openjena.fuseki.mgt.*"%>
+<%@ page import="org.apache.jena.fuseki.mgt.*"%>
 <%@ page import="java.util.*"%>
 <%@ page contentType="text/html ; charset=UTF-8"%>
 <%@ page isThreadSafe="true"%>
