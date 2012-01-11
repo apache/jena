@@ -18,14 +18,6 @@
 		  path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating.jar" 
 		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-sources.jar"/>
 
-  <classpathentry kind="var"
-		  path="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-tests.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.0-incubating/jena-arq-2.9.0-incubating-test-sources.jar"/>
-
-  <classpathentry kind="var" 
-		  path="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-tests.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.0-incubating/jena-core-2.7.0-incubating-test-sources.jar"/>
-
   <classpathentry kind="var" 
 		  path="M2_REPO/org/apache/jena/jena-tdb/0.9.0-incubating-SNAPSHOT/jena-tdb-0.9.0-incubating-SNAPSHOT.jar" 
 		  sourcepath="M2_REPO/org/apache/jena/jena-tdb/0.9.0-incubating-SNAPSHOT/jena-tdb-0.9.0-incubating-SNAPSHOT-sources.jar"/>

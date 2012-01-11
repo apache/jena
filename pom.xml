@@ -87,24 +87,8 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
-      <artifactId>jena-arq</artifactId>
-      <version>${ver.arq}</version>
-      <classifier>tests</classifier>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <version>${ver.jena}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-core</artifactId>
-      <classifier>tests</classifier>
-      <version>${ver.jena}</version>
-      <scope>test</scope>
     </dependency>
 
     <dependency>

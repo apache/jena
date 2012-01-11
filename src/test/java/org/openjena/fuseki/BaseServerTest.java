@@ -18,8 +18,6 @@
 
 package org.openjena.fuseki;
 
-import org.openjena.atlas.junit.BaseTest ;
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;

@@ -19,7 +19,6 @@
 package org.openjena.fuseki;
 
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.fuseki.conneg.AcceptList ;
 import org.openjena.fuseki.conneg.MediaType ;
 
