@@ -65,8 +65,7 @@
     <ver.arq>2.9.0-incubating</ver.arq>
     <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
 
-    <!-- These two go together -->
-    <ver.jetty>7.2.1.v20101111</ver.jetty>
+    <ver.jetty>7.5.4.v20111024</ver.jetty>
     <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
 
     <ver.httpclient>4.1.2</ver.httpclient>
@@ -155,13 +154,20 @@
       <artifactId>jsp-2.1-glassfish</artifactId>
       <version>${ver.servlet-jsp}</version>
     </dependency>
-
+    
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${ver.jetty}</version>
     </dependency>    
 
+   <!--
+   <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-jsp-2.1</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency>
+    -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
