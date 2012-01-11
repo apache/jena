@@ -18,6 +18,7 @@
 
 package org.openjena.fuseki;
 
+import org.openjena.fuseki.server.SPARQLServer ;
 import org.openjena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.util.FileManager ;
 public class Fuseki
 {
     // External log : operations, etc.
-    static public String PATH = "org.openjena.fuseki" ;
+    static public String PATH = "org.apache.jena.fuseki" ;
     static public String FusekiIRI = "http://jena.apache.org/Fuseki" ;
     static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
     
@@ -42,7 +43,7 @@ public class Fuseki
     static public String PagesAll =     "pages-update" ;
     
     //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
-    static private String metadataLocation = "org/openjena/fuseki/fuseki-properties.xml" ;
+    static private String metadataLocation = "org/apache/jena/fuseki/fuseki-properties.xml" ;
     static private Metadata metadata = initMetadata() ;
     private static Metadata initMetadata()
     {
@@ -91,6 +92,11 @@ public class Fuseki
     {
         return ARQ.getContext() ;
     }
+    
+    // Temporary ...
+    private static SPARQLServer server ;
+    public static void setServer(SPARQLServer _server)      { server = _server ; }
+    public static SPARQLServer getServer()                  { return server ; }
 
     // Force a call to init.
     static { init() ; }

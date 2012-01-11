@@ -287,6 +287,9 @@ public class FusekiCmd extends CmdARQ
             DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
             server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc) ) ;
         }
+        // Temporary
+        Fuseki.setServer(server) ;
+
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
     }

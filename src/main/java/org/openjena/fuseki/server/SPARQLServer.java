@@ -44,6 +44,7 @@ import org.openjena.fuseki.servlets.SPARQL_REST_R ;
 import org.openjena.fuseki.servlets.SPARQL_REST_RW ;
 import org.openjena.fuseki.servlets.SPARQL_Update ;
 import org.openjena.fuseki.servlets.SPARQL_Upload ;
+import org.openjena.fuseki.servlets.ServerServlet ;
 import org.openjena.fuseki.validation.DataValidator ;
 import org.openjena.fuseki.validation.IRIValidator ;
 import org.openjena.fuseki.validation.QueryValidator ;
@@ -58,12 +59,14 @@ public class SPARQLServer
     private String datasetPath ;
     private int port ;
     private boolean verbose = false ;
+    private List<DatasetRef> datasetRefs ;
     
     //private static int ThreadPoolSize = 100 ;
     
     public SPARQLServer(String jettyConfig, int port, List<DatasetRef> services)
     {
         this.port = port ; 
+        this.datasetRefs = services ;
         ServletContextHandler context = buildServer(jettyConfig) ;
         // Build them all.
         for ( DatasetRef sDesc : services )
@@ -100,6 +103,7 @@ public class SPARQLServer
     }
     
     public Server getServer() { return server ; }
+    public List<DatasetRef> getDatasets() { return datasetRefs ; }
     
     // Later : private and in constructor.
     private ServletContextHandler buildServer(String jettyConfig)
@@ -158,6 +162,10 @@ public class SPARQLServer
             // Action when control panel selects a dataset.
             HttpServlet datasetChooser = new ActionDataset() ;
             addServlet(context, datasetChooser, "/dataset") ;
+            
+            // Development : server control panel.
+            addServlet(context, new ServerServlet(), "/server") ;
+            
         }
         
         if ( installServices )
