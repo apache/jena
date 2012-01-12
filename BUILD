@@ -68,11 +68,11 @@ To build the artifacts for this module:
 
     mvn clean package
 
-or to make them available to other projscts on the local machine:
+or to make them available to other projects on the local machine:
 
     mvn clean install
 
 -------------------------------------------------------
-If you have any questions, please do not hesitiate in contacting the Jena project:
+If you have any questions, please do not hesitate in contacting the Jena project:
   jena-users@incubator.apache.org
   jena-dev@incubator.apache.org
