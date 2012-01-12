@@ -1,6 +1,10 @@
 LARQ Change Log
 
-LARQ 0.1-SNAPSHOT
+LARQ 1.0.0-incubating-SNAPSHOT (unreleased)
+
+ - Upgraded Apache Lucene from 3.4.0 to 3.5.0
+
+LARQ 0.1-SNAPSHOT (unreleased)
 
  - Initial import from ARQ, minimal changes to point to the new location 
    of test files. Lucene version is still 2.3.1.
