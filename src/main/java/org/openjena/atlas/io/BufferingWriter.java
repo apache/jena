@@ -92,23 +92,24 @@ public final class BufferingWriter extends Writer
     // We use the same encoder for the life of this writer
     final private CharsetEncoder encoder;
 
-    /** Convenience operation to output to a WritableByteChannel */
-    public static BufferingWriter create(WritableByteChannel out)
-    {
-        return create(out, SIZE) ;
-    }
-    
-    /** Convenience operation to output to a WritableByteChannel */
-    public static BufferingWriter create(WritableByteChannel out, int size)
-    {
-        return new BufferingWriter(new SinkChannel(out), size, size/2) ;
-    }
-    
-    /** Writer(chars) over OutputStream (bytes) -- heavily buffered -- flushing may be needed */
-    public static BufferingWriter create(OutputStream out)
-    {
-        return new BufferingWriter(new SinkOutputStream(out), SIZE, BLOB_SIZE) ;
-    }
+//    /** Convenience operation to output to a WritableByteChannel */
+//    public static BufferingWriter create(WritableByteChannel out)
+//    {
+//        return create(out, SIZE) ;
+//    }
+//    
+//    /** Convenience operation to output to a WritableByteChannel */
+//    public static BufferingWriter create(WritableByteChannel out, int size)
+//    {
+//        return new BufferingWriter(new SinkChannel(out), size, size/2) ;
+//    }
+
+    // See IO.asBufferedUTF8
+//    /** Writer(chars) over OutputStream (bytes) -- heavily buffered -- flushing may be needed */
+//    public static BufferingWriter create(OutputStream out)
+//    {
+//        return new BufferingWriter(new SinkOutputStream(out), SIZE, BLOB_SIZE) ;
+//    }
 
 
 //    /** Convenience operation to output to an OutputStream */
@@ -118,7 +119,7 @@ public final class BufferingWriter extends Writer
 //    }
 
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
-    public BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
+    /*public*/private BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
     
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
     /*package*/ BufferingWriter(Sink<ByteBuffer> sink, int size, int blobSize)
