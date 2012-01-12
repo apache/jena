@@ -1,6 +1,6 @@
 <projectDescription>
   <name>jena-larq</name>
-  <comment>LARQ - Free Text Indexing for SPARQL. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <comment>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

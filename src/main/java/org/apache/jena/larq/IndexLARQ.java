@@ -201,10 +201,12 @@ public class IndexLARQ
     
     private synchronized IndexSearcher getIndexSearcher() throws IOException {
         if ( !reader.isCurrent() ) {
-            IndexReader newReader = reader.reopen(true) ;
-            reader.close();
-            reader = newReader;
-            searcher = new IndexSearcher(reader);
+            IndexReader newReader = IndexReader.openIfChanged(reader, true) ;
+            if ( newReader != null ) {
+                reader.close();
+                reader = newReader;
+                searcher = new IndexSearcher(reader);
+            }
         }
         
         return searcher ;

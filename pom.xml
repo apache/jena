@@ -31,44 +31,20 @@
   <name>LARQ</name>
   <version>1.0.0-incubating-SNAPSHOT</version>
 
-  <description>LARQ - Free Text Indexing for SPARQL</description>
+  <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
   <url>http://incubator.apache.org/jena/documentation/larq/</url>
-
-  <properties>
-    <ver.lucene>3.4.0</ver.lucene>
-    <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
-  </properties>
-
-  <developers>
-    <developer>
-      <id>andy_seaborne</id>
-      <name>Andy Seaborne</name>
-      <organization>Epimorphics Ltd.</organization>
-      <organizationUrl>http://www.epimorphics.com/</organizationUrl>
-      <roles>
-        <role>architect</role>
-        <role>developer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-    <developer>
-      <id>castagna</id>
-      <name>Paolo Castagna</name>
-      <organization>Talis Systems Ltd.</organization>
-      <organizationUrl>http://www.talis.com/</organizationUrl>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>0</timezone>
-    </developer>
-  </developers>
 
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</developerConnection>
     <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</url>
   </scm>
+
+  <properties>
+    <ver.lucene>3.5.0</ver.lucene>
+    <ver.arq>2.9.0-incubating</ver.arq>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+  </properties>
 
   <dependencies>
 
@@ -132,7 +108,14 @@
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
           <includePackageNames>org.apache.jena.larq</includePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
       </plugin>
 
@@ -148,25 +131,6 @@
 
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.rat</groupId>
-        <artifactId>apache-rat-plugin</artifactId>
-        <version>0.7</version>
-        <configuration>
-          <excludes>
-            <exclude>**/CHANGES.txt</exclude>
-            <exclude>**/DISCLAIMER.txt</exclude>
-            <exclude>**/TODO.txt</exclude>
-            <exclude>**/.svn/**</exclude>
-            <exclude>.git/**</exclude>
-            <exclude>.gitignore</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/target/**</exclude>
-            <exclude>src/test/resources/**</exclude>
-          </excludes>
-        </configuration>
       </plugin>
 
     </plugins>

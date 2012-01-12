@@ -128,7 +128,7 @@ public class TestLuceneNRT {
         assertEquals(0, reader.maxDoc());
         assertEquals(0, count(reader, term));
         
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertTrue(reader.isCurrent());
         assertEquals(1, count(reader, term));
         
@@ -136,15 +136,15 @@ public class TestLuceneNRT {
         assertEquals(2, writer.maxDoc());
         assertEquals(1, count(reader, term));
 
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(1, count(reader, term));
         
         writer.commit();
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(2, writer.maxDoc());
         assertEquals(0, count(reader, term));
 
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(0, count(reader, term));
         
         writer.expungeDeletes();
@@ -159,7 +159,7 @@ public class TestLuceneNRT {
 
         assertFalse(reader.isCurrent());
         assertEquals(0, reader.maxDoc());
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertTrue(reader.isCurrent());
         assertEquals(1, reader.maxDoc());
 
@@ -215,7 +215,7 @@ public class TestLuceneNRT {
 
         assertFalse(reader.isCurrent());
         assertEquals(0, reader.maxDoc());
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertTrue(reader.isCurrent());
         assertEquals(1, reader.maxDoc());
     }
@@ -244,7 +244,7 @@ public class TestLuceneNRT {
         assertEquals(0, reader.maxDoc());
         assertEquals(0, count(reader, term));
         
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertTrue(reader.isCurrent());
         assertEquals(1, count(reader, term));
         
@@ -252,15 +252,15 @@ public class TestLuceneNRT {
         assertEquals(2, writer.maxDoc());
         assertEquals(1, count(reader, term));
 
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(1, count(reader, term));
         
         writer.commit();
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(2, writer.maxDoc());
         assertEquals(0, count(reader, term));
 
-        reader = reader.reopen();
+        reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(0, count(reader, term));
         
         writer.expungeDeletes();

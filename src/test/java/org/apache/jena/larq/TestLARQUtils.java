@@ -18,11 +18,13 @@
 
 package org.apache.jena.larq;
 
+import java.io.IOException;
 import java.util.Iterator ;
 
 import org.apache.jena.larq.IndexBuilderModel;
 import org.apache.jena.larq.IndexLARQ;
 import org.apache.jena.larq.LARQ;
+import org.apache.lucene.index.IndexReader;
 import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
@@ -75,7 +77,9 @@ public class TestLARQUtils
     }
     
     public static IndexLARQ createIndex(String datafile, IndexBuilderModel indexBuilder)
-    { return createIndex(ModelFactory.createDefaultModel(), datafile, indexBuilder) ; }
+    { 
+        return createIndex(ModelFactory.createDefaultModel(), datafile, indexBuilder) ; 
+    }
     
     public static IndexLARQ createIndex(Model model, String datafile, IndexBuilderModel indexBuilder)
     {
@@ -86,4 +90,10 @@ public class TestLARQUtils
         return indexBuilder.getIndex() ;
     }
 
+    public static IndexReader openIfChanged (IndexReader reader) throws IOException
+    {
+        IndexReader newIndexReader = IndexReader.openIfChanged(reader) ;
+        return newIndexReader != null ? newIndexReader : reader ;
+    }
+    
 }
