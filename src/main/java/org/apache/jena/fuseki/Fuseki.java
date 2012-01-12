@@ -75,7 +75,7 @@ public class Fuseki
     }
     
     private static boolean initialized = false ;
-    public static void init()
+    public synchronized static void init()
     {
         if ( initialized )
             return ;

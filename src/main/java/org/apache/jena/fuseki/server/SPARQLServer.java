@@ -50,6 +50,8 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class SPARQLServer
 {
+    static { Fuseki.init() ; }
+    
     private Server server = null ;
     private String datasetPath ;
     private int port ;
