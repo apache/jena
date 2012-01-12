@@ -18,11 +18,11 @@
 
 package org.openjena.riot.out;
 
+import java.io.IOException ;
 import java.io.OutputStream ;
-import java.nio.charset.CharsetEncoder ;
+import java.io.Writer ;
 
-import org.openjena.atlas.io.BufferingWriter ;
-import org.openjena.atlas.lib.Chars ;
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
@@ -33,9 +33,8 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 /** A class that print quads, N-Quads style */ 
 public class SinkQuadOutput implements Sink<Quad>
 {
-    private CharsetEncoder encoder ;
     private Prologue prologue = null ;
-    private BufferingWriter out ;
+    private Writer out ;
     private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
@@ -46,8 +45,7 @@ public class SinkQuadOutput implements Sink<Quad>
     
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
-        encoder = Chars.charsetUTF8.newEncoder() ;
-        out = BufferingWriter.create(outs) ;
+        out = IO.asBufferedUTF8(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
@@ -63,34 +61,29 @@ public class SinkQuadOutput implements Sink<Quad>
         this.labelPolicy = labels ;
     }
 
-
-    @Override
-    public void flush()
-    {
-        out.flush() ;
-    }
-
     @Override
     public void send(Quad quad)
     {
-        Node s = quad.getSubject() ;
-        Node p = quad.getPredicate() ;
-        Node o = quad.getObject() ;
-        Node g = quad.getGraph() ;
-        
-        nodeFmt.format(out, s) ;
-        out.output(" ") ;
-        nodeFmt.format(out, p) ;
-        out.output(" ") ;
-        nodeFmt.format(out, o) ;
-        
-        if ( outputGraphSlot(g) ) 
-        {
-            out.output(" ") ;
-            nodeFmt.format(out, g) ;
-        }
-            
-        out.output(" .\n") ;
+        try {
+            Node s = quad.getSubject() ;
+            Node p = quad.getPredicate() ;
+            Node o = quad.getObject() ;
+            Node g = quad.getGraph() ;
+
+            nodeFmt.format(out, s) ;
+            out.write(" ") ;
+            nodeFmt.format(out, p) ;
+            out.write(" ") ;
+            nodeFmt.format(out, o) ;
+
+            if ( outputGraphSlot(g) ) 
+            {
+                out.write(" ") ;
+                nodeFmt.format(out, g) ;
+            }
+
+            out.write(" .\n") ;
+        } catch (IOException ex) { IO.exception(ex) ; }
     }
     
     private static boolean outputGraphSlot(Node g)
@@ -99,8 +92,14 @@ public class SinkQuadOutput implements Sink<Quad>
     }
 
     @Override
+    public void flush()
+    {
+        try { out.flush() ; } catch (IOException ex) { IO.exception(ex) ; }
+    }
+
+    @Override
     public void close()
     {
-        flush();
+        try { out.close() ; } catch (IOException ex) { IO.exception(ex) ; }
     }
 }

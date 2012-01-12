@@ -52,6 +52,7 @@ import org.openjena.atlas.logging.Log ;
 
 public final class BufferingWriter extends Writer
 {
+    
     // ***** Suspiciously slow.
     // ***** DO NOT USE
     // Better to buffer in character space the convert in larger blocks.
