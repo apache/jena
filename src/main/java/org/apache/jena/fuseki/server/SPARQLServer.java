@@ -28,7 +28,9 @@ import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.mgt.ActionBackup ;
 import org.apache.jena.fuseki.mgt.ActionDataset ;
+import org.apache.jena.fuseki.mgt.ServerServlet ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
@@ -138,6 +140,8 @@ public class SPARQLServer
         String validationRoot = "/validate" ;
         String sparqlProcessor = "/sparql" ;
         
+        // Should all services be /_/.... or some such?
+        
         if ( installManager || installServices)
         {
             server.setHandler(context);
@@ -156,9 +160,9 @@ public class SPARQLServer
             HttpServlet datasetChooser = new ActionDataset() ;
             addServlet(context, datasetChooser, "/dataset") ;
             
-            // Development : server control panel.
-            addServlet(context, new ServerServlet(), "/server") ;
-            
+//            // Development : server control panel.
+//            addServlet(context, new ServerServlet(), "/server") ;
+//            addServlet(context, new ActionBackup(), "/backup") ;
         }
         
         if ( installServices )

@@ -21,33 +21,25 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format ;
 
 import java.io.IOException ;
-import java.io.PrintWriter ;
 import java.util.Enumeration ;
 import java.util.Map ;
-import java.util.concurrent.atomic.AtomicLong ;
 
 import javax.servlet.ServletException ;
-import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-public abstract class SPARQL_ServletBase extends HttpServlet
+public abstract class SPARQL_ServletBase extends ServletBase
 {
-    protected static final Logger log = Fuseki.requestLog ;
-    protected static AtomicLong requestIdAlloc = new AtomicLong(0) ;
     private final PlainRequestFlag queryStringHandling ;
-    protected final boolean verbose_debug ;
 
     // Flag for whether a request (no query string) is handled as a regular operation or
     // routed to special handler.
@@ -55,8 +47,8 @@ public abstract class SPARQL_ServletBase extends HttpServlet
     
     protected SPARQL_ServletBase(PlainRequestFlag noQueryStringIsOK, boolean verbose_debug)
     {
+        super(verbose_debug) ;
         this.queryStringHandling = noQueryStringIsOK ;
-        this.verbose_debug = verbose_debug ;
     }
     
     // Common framework for handling HTTP requests
@@ -152,7 +144,6 @@ public abstract class SPARQL_ServletBase extends HttpServlet
             }
         }
     }
-
     
     private void printResponse(long id, HttpServletResponseTracker response)
     {
@@ -205,135 +196,4 @@ public abstract class SPARQL_ServletBase extends HttpServlet
      *  Or: (2) return true for continue.
      */
     protected abstract boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response) ;
-    
-    protected static String wholeRequestURL(HttpServletRequest request)
-    {
-        StringBuffer sb = request.getRequestURL() ;
-        String queryString = request.getQueryString() ;
-        if ( queryString != null )
-        {
-            sb.append("?") ;
-            sb.append(queryString) ;
-        }
-        return sb.toString() ;
-    }
-    
-    protected static void successNoContent(HttpAction action)
-    {
-        success(action, HttpSC.NO_CONTENT_204);
-    }
-    
-    protected static void success(HttpAction action)
-    {
-        success(action, HttpSC.OK_200);
-    }
-
-    protected static void successCreated(HttpAction action)
-    {
-        success(action, HttpSC.CREATED_201);
-    }
-    
-    // When 404 is no big deal e.g. HEAD
-    protected static void successNotFound(HttpAction action) 
-    {
-        success(action, HttpSC.NOT_FOUND_404) ;
-    }
-
-    //
-    protected static void success(HttpAction action, int httpStatusCode)
-    {
-        action.response.setStatus(httpStatusCode);
-    }
-    
-    protected static void successPage(HttpAction action, String message)
-    {
-        try {
-            action.response.setContentType("text/html");
-            action.response.setStatus(HttpSC.OK_200);
-            PrintWriter out = action.response.getWriter() ;
-            out.println("<html>") ;
-            out.println("<head>") ;
-            out.println("</head>") ;
-            out.println("<body>") ;
-            out.println("<h1>Success</h1>");
-            if ( message != null )
-            {
-                out.println("<p>") ;
-                out.println(message) ;
-                out.println("</p>") ;
-            }
-            out.println("</body>") ;
-            out.println("</html>") ;
-            out.flush() ;
-        } catch (IOException ex) { errorOccurred(ex) ; }
-    }
-
-    protected static void warning(String string)
-    {
-        log.warn(string) ;
-    }
-    
-    protected static void warning(String string, Throwable thorwable)
-    {
-        log.warn(string, thorwable) ;
-    }
-    
-    protected static void errorBadRequest(String string)
-    {
-        error(HttpSC.BAD_REQUEST_400, string) ;
-    }
-
-    protected static void errorNotFound(String string)
-    {
-        error(HttpSC.NOT_FOUND_404, string) ;
-    }
-
-    protected static void errorNotImplemented(String msg)
-    {
-        error(HttpSC.NOT_IMPLEMENTED_501, msg) ;
-    }
-    
-    protected static void errorMethodNotAllowed(String method)
-    {
-        error(HttpSC.METHOD_NOT_ALLOWED_405, "HTTP method not allowed: "+method) ;
-    }
-
-    protected static void error(int statusCode)
-    {
-        throw new ActionErrorException(null, null, statusCode) ;
-    }
-    
-
-    protected static void error(int statusCode, String string)
-    {
-        throw new ActionErrorException(null, string, statusCode) ;
-    }
-    
-    protected static void errorOccurred(String message)
-    {
-        errorOccurred(message, null) ;
-    }
-
-    protected static void errorOccurred(Throwable ex)
-    {
-        errorOccurred(null, ex) ;
-    }
-
-    protected static void errorOccurred(String message, Throwable ex)
-    {
-        throw new ActionErrorException(ex, message, HttpSC.INTERNAL_SERVER_ERROR_500) ;
-    }
-    
-    protected static String formatForLog(String string)
-    {
-        string = string.replace('\n', ' ') ;
-        string = string.replace('\r', ' ') ;
-        return string ; 
-    }
-    
-   public static void setCommonHeaders(HttpServletResponse httpResponse)
-    {
-        httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
-        httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;
-    }
 }

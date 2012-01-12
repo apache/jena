@@ -20,7 +20,7 @@
  */
 
 // Could be neater - much, much neater!
-package org.apache.jena.fuseki.servlets;
+package org.apache.jena.fuseki.mgt;
 
 import java.io.IOException ;
 import java.io.PrintWriter ;

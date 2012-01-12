@@ -19,9 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 
-import java.util.HashMap ;
-import java.util.Map ;
-
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -34,32 +31,33 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphWithLock ;
 
-class HttpAction
+public class HttpAction
 {
-    final long id ;
+    public final long id ;
     private final DatasetGraph dsg ;
     private final Transactional transactional ;
     private DatasetGraph activeDSG ;
-    final Lock lock ;
-    final HttpServletRequest request;
-    final HttpServletResponse response ;
-    final boolean verbose ;
     
-    // ---- Concurrency checking.
-    private static Map<Lock, ConcurrencyPolicyMRSW> lockCounters = new HashMap<Lock, ConcurrencyPolicyMRSW>() ;
-    private static ConcurrencyPolicyMRSW getConcurrencyPolicy(Lock lock)
-    {
-        synchronized(lockCounters)
-        {
-            ConcurrencyPolicyMRSW x = lockCounters.get(lock) ;
-            if ( x == null )
-            {
-                x = new ConcurrencyPolicyMRSW() ;
-                lockCounters.put(lock, x) ;
-            }
-            return x ;
-        }
-    }
+    public final Lock lock ;
+    public final HttpServletRequest request;
+    public final HttpServletResponse response ;
+    public final boolean verbose ;
+    
+//    // ---- Concurrency checking.
+//    private static Map<Lock, ConcurrencyPolicyMRSW> lockCounters = new HashMap<Lock, ConcurrencyPolicyMRSW>() ;
+//    private static ConcurrencyPolicyMRSW getConcurrencyPolicy(Lock lock)
+//    {
+//        synchronized(lockCounters)
+//        {
+//            ConcurrencyPolicyMRSW x = lockCounters.get(lock) ;
+//            if ( x == null )
+//            {
+//                x = new ConcurrencyPolicyMRSW() ;
+//                lockCounters.put(lock, x) ;
+//            }
+//            return x ;
+//        }
+//    }
 
     public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
     {

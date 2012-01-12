@@ -80,7 +80,7 @@ public class ActionDataset extends HttpServlet
             out.println("<p><a href=\"info\">Next</a></p>") ;
         }
         
-//        Cookie cookie = new Cookie("org.openjena.fuseki.session", dataset) ;
+//        Cookie cookie = new Cookie("org.apache.jena.fuseki.session", dataset) ;
 //        // 24 hours.
 //        cookie.setMaxAge(24*60*60) ;
         
