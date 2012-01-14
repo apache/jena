@@ -47,8 +47,11 @@ public class ExTDB_Txn1
         try
         {
             // Do some queries
-            String sparqlQueryString = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
-            execQuery(sparqlQueryString, dataset) ;
+            String sparqlQueryString1 = "SELECT (count(*) AS ?count) { ?s ?p ?o }" ;
+            execQuery(sparqlQueryString1, dataset) ;
+            
+            String sparqlQueryString2 = "SELECT * { ?s ?p ?o }" ;
+            execQuery(sparqlQueryString2, dataset) ;
             
             // Can also call dataset.abort() or dataset.commit() here 
         } finally

@@ -20,6 +20,8 @@ package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Map ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps ;
 
@@ -37,6 +39,9 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
 {
     static DatasetPrefixesTDB last = null ;
+    
+    @BeforeClass public static void beforeClass() {}
+    @AfterClass public static void afterClass()   { ConfigTest.deleteTestingDir() ; }
     
     @Override
     protected PrefixMapping create()
@@ -134,5 +139,7 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
             assertEquals("http://test", ns) ;
             graph.close();
         }
+        ConfigTest.deleteTestingDirDB() ;
+
     }
 }

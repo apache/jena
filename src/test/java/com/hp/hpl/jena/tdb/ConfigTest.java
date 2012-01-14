@@ -60,4 +60,22 @@ public class ConfigTest
         init() ;
         return testingDirDB ;
     }
+    
+    public static final void deleteTestingDirDB()
+    {
+        if ( ! FileOps.exists(testingDirDB) )
+            return ;
+        FileOps.clearDirectory(testingDirDB) ;
+        FileOps.deleteSilent(testingDirDB) ;
+    }
+
+    public static final void deleteTestingDir()
+    {
+        if ( ! FileOps.exists(testingDir) )
+            return ;
+        deleteTestingDirDB() ;
+        FileOps.clearDirectory(testingDir) ;
+        FileOps.deleteSilent(testingDir) ;
+    }
+
 }

@@ -49,6 +49,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     { 
         graphLocation.release() ;
         graphLocation.clearDirectory() ;
+        ConfigTest.deleteTestingDirDB() ;
     }
     
 

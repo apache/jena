@@ -64,11 +64,6 @@
     </fileSet>
 
     <fileSet>
-      <directory>${project.build.directory}/apidocs</directory>
-      <outputDirectory>javadoc</outputDirectory>
-    </fileSet>
-
-    <fileSet>
       <directory>src-examples</directory>
     </fileSet>
 
