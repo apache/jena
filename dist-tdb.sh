@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# You need a copy of the staging repo to get the checksum files.
+# wget -e robots=off --wait 1 --mirror -np \
+#     https://repository.apache.org/content/repositories/orgapachejena-NNN/org/apache/jena
+
 # Expect: environment contains M2_REPO
 #REPO=public_html/jena-R1-repo/org/apache/jena
 REPO=REPO/org/apache/jena

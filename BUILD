@@ -2,19 +2,9 @@ Apache Jena - single module instructions
 ========================================
 
 This file contain the instructions for building this module from the
-source-release artifact.  The build instructions to create the whole of
-this Jena release are in the apache-jena-VER.zip file.
+source-release artifact.  
 
-The build process assumes the dependencies of this module are available in
-the local maven repository.
-
-jena-top -> jena-iri -> jena-core -> jena-arq -> apache-jena (the download).
-
-jena-sdb and jena-tdb depend on jena-arq.
-
-The instructions are the same for each jena-* module.
-
-We assume you are building "jena-zzz" in these instructions.
+VER is the version number for the rlease to be built.
 
 == Download
 
@@ -35,9 +25,9 @@ imported once.  You can check the signatures at http://pgp.mit.edu/
 
 The file with extension .asc contains the 
 
-For the zip file of the zzz module:
+For the zip file of the tdb module:
 
-    gpg --verify jena-zzz-VER-incubating-source-release.zip.asc
+    gpg --verify jena-tdb-VER-incubating-source-release.zip.asc
 
 == Verify a checksum
 
@@ -46,16 +36,16 @@ respectively.  Calculate the checksum on the downloaded file
 
 Exampale (linux):
 
-    md5sum jena-zzz-VER-incubating-source-release.zip
+    md5sum jena-tdb-VER-incubating-source-release.zip
 
 == Unpack the file.
 
-   unzip -q jena-zzz-VER-incubating-source-release.zip
+   unzip -q jena-tdb-VER-incubating-source-release.zip
 
-will create a directory "jena-zzz-VER-incubating" with the files needed to
+will create a directory "jena-tdb-VER-incubating" with the files needed to
 recreate the distribution.
 
-   cd jena-zzz-VER-incubating
+   cd jena-tdb-VER-incubating
 
 == Ensure the dependecies are available
 
@@ -70,7 +60,7 @@ To build the artifacts for this module:
 
     mvn clean package
 
-or to make them available to other projscts on the local machine:
+or to make them available to other projects on the local machine:
 
     mvn clean install
 
