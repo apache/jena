@@ -55,7 +55,7 @@ public class TestLangRdfJson extends BaseTest
 		assertTrue(m.isIsomorphicWith(m2)) ;
 	}
 
-	public void rdfjson_valid_traling_comment()
+	public void rdfjson_valid_trailing_comment()
 	{
 		String s = "{}//Comment" ;
 

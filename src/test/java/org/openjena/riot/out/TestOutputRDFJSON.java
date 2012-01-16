@@ -26,6 +26,7 @@ import org.openjena.atlas.json.JSON;
 import org.openjena.atlas.json.JsonObject;
 import org.openjena.atlas.junit.BaseTest;
 import org.openjena.atlas.lib.Sink;
+import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotReader;
 import org.openjena.riot.lang.LangRIOT;
 import org.openjena.riot.lang.SinkTriplesToGraph;
@@ -37,7 +38,12 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 
 public class TestOutputRDFJSON extends BaseTest
 {
-
+    @Test public void rdfjson_00()
+    {
+        // Empty graph
+        test ("(base <http://example/> (graph))") ;
+    }
+    
     @Test public void rdfjson_01()
     {
     	test ("(base <http://example/> (graph (<s> <p> 1)))") ;
@@ -45,11 +51,87 @@ public class TestOutputRDFJSON extends BaseTest
 
     @Test public void rdfjson_02()
     {
-    	test ("(base <http://example/> (graph (<s> <p> 1)(<s> <p> 2)))") ;
+        // Different subjects
+    	test ("(base <http://example/> (graph (<s1> <p> 1)(<s> <p> 2)))") ;
     }
 
-    private void test (String str) 
+    @Test public void rdfjson_03()
     {
+        // Same subject, different predicates
+        test ("(base <http://example/> (graph (<s> <p> 1)(<s> <q> 2)))") ;
+    }
+
+    @Test public void rdfjson_04()
+    {
+        // Same subject, same predicates
+        test ("(base <http://example/> (graph (<s> <p> 1)(<s> <p> 2)))") ;
+    }
+
+    @Test public void rdfjson_05()
+    {
+        // Multiple subjects
+        test ("(base <http://example/> (graph ",
+              "(<s> <p> 1)" ,
+              "(<s> <p> 2)" ,
+              "(<s1> <p> 2)" ,
+              "))") ;
+    }
+
+    @Test public void rdfjson_06()
+    {
+        // Blank nodes / subjects
+        test ("(base <http://example/> (graph ",
+              "(_:a <p> 1)" ,
+              "(_:a <p> 2)" ,
+              "(_:b <p> 3)" ,
+              "))") ;
+    }
+    
+    @Test public void rdfjson_07()
+    {
+        // Shared blank node objects
+        test ("(base <http://example/> (graph ",
+              "(<s> <p> _:abc)" ,
+              "(<s> <p> 2)" ,
+              "(<s1> <p> _:abc)" ,
+              "))") ;
+    }
+    
+    @Test public void rdfjson_08()
+    {
+        // Shared IRI objects
+        test ("(base <http://example/> (graph ",
+              "(<s> <p> <http://example.org/abc>)" ,
+              "(<s> <p> 2)" ,
+              "(<s1> <p> <http://example.org/abc>)" ,
+              "))") ;
+    }
+    
+    
+    @Test public void rdfjson_09()
+    {
+        // Shared ...
+        test ("(base <http://example/> (graph ",
+              "(_:s <p> <http://example.org/abc>)" ,
+              "(<http://example.org/abc> <p> _:s)" ,
+              "))") ;
+    }
+    @Test public void rdfjson_literals()
+    {
+        // Literals, various
+        test ("(base <http://example/> (graph ",
+             "(<s> <p> 'abc')",
+             "(<s> <p> 'abc'@en)",
+             "(<s> <p> 'abc'^^xsd:string)",
+             "(<s> <p> '1'^^xsd:integer)",
+             "(<s> <p> '1e+100'^^xsd:double)",
+             "(<s> <p> '1.05'^^xsd:decimal)",
+            "))") ;
+    }    
+
+    private void test (String... strings) 
+    {
+        String str = StrUtils.strjoinNL(strings) ;
         Graph g = SSE.parseGraph(str) ;
         ByteArrayOutputStream bout = serializeAsJSON(g) ;
         parseAsJSON(bout) ; // make sure valid JSON
