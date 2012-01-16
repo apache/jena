@@ -27,20 +27,16 @@ import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 /** Transactional DatasetGraph that allows one active transaction.
  * For multiple read transactions, create multiple DatasetGraphTX objects.
+ * This is analogous to a "connection" in JDBC.
  */
 
 public class DatasetGraphTransaction extends DatasetGraphTrackActive
 {
-    // This is analogous to a "connection" in JDBC.
-    
     /* Initially, the app can use this DatasetGraph non-transactionally.
      * But as soon as it starts a transaction, the dataset can only be used
      * inside transactions. 
      */
 
-    // TODO Concurrency
-    // TODO tests
-    
     private DatasetGraphTxn dsgTxn = null ;
     private boolean haveUsedInTransaction = false ;
     private final Location location ;
@@ -67,7 +63,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         if ( haveUsedInTransaction )
             throw new TDBTransactionException("Not in a transaction") ;
 
-        // Never used in a transaction - return underlying dadabase for old style (non-transactional) usage.  
+        // Never used in a transaction - return underlying database for old style (non-transactional) usage.  
         return sConn.getBaseDataset() ;
     }
 

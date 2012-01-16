@@ -59,13 +59,6 @@ public class TDBFactory
         return (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
     }
     
-    
-
-    // Meaningless unless there is only one in-memeory dataset */
-//    /** Create a TDB model for named model for an in-memory */  
-//    public static Model createNamedModel(String name)
-//    { return createDataset().getNamedModel(name) ; }
-    
     /** Create or connect to a TDB-backed dataset */ 
     public static Dataset createDataset(String dir)
     { return createDataset(new Location(dir)) ; }
@@ -101,12 +94,12 @@ public class TDBFactory
         return _createDatasetGraph() ;
     }
     
-    private static DatasetGraphTDB _createDatasetGraph(Location location)
+    private static DatasetGraph _createDatasetGraph(Location location)
     { return TDBMaker._createDatasetGraph(location) ; }
     
-    private static DatasetGraphTDB _createDatasetGraph()
+    private static DatasetGraph _createDatasetGraph()
     {
-     // Make silent by setting the optimizer to the no-opt
+        // Make silent by setting the optimizer to the no-opt
         ReorderTransformation rt = SystemTDB.defaultOptimizer ;
         if ( rt == null )
             SystemTDB.defaultOptimizer = ReorderLib.identity() ;
@@ -130,6 +123,8 @@ public class TDBFactory
 
     /** Create a model, at the given location.
      *  It is better to create a dataset and get the default model from that.
+     *  This Model is not connected to the TDB transaction system.
+     *  @deprecated Create a Dataset and use the default model.
      */
     @Deprecated
     public static Model createModel(Location loc)
@@ -139,9 +134,10 @@ public class TDBFactory
 
     /** Create a model, at the given location 
      *  It is better to create a dataset and get the default model from that.
+     *  This Model is not connected to the TDB transaction system. 
+     *  @deprecated Create a Dataset and get the default model.
      */
     @Deprecated
-    
     public static Model createModel(String dir)
     {
         return ModelFactory.createModelForGraph(createGraph(dir)) ;
@@ -155,6 +151,8 @@ public class TDBFactory
 
     /** Create a TDB model for named model
      * It is better to create a dataset and get the named model from that.
+     * This Model is not connected to the TDB transaction system.
+     *  @deprecated Create a Dataset and get the name model.
      */
     @Deprecated
     public static Model createNamedModel(String name, String location)
@@ -162,6 +160,8 @@ public class TDBFactory
 
     /** Create a TDB model for named model.
      * It is better to create a dataset and get the named model from that.
+     * This Model is not connected to the TDB transaction system.
+     *  @deprecated Create a Dataset and get the name model.
      */  
     @Deprecated
     public static Model createNamedModel(String name, Location location)
@@ -200,10 +200,4 @@ public class TDBFactory
     @Deprecated
     public static Graph createNamedGraph(String name, Location location)
     { return createDatasetGraph(location).getGraph(Node.createURI(name)) ; }
-
-    // Meaningless unless there is only one in-memory dataset */
-//    /** Create a TDB model for named model for an in-memory */  
-//    public static Graph createNamedGraph(String name)
-//    { return createDataset().getNamedModel(name) ; }
-
 }
