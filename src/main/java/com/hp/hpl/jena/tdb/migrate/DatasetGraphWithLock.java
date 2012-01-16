@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb.migrate;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** A DatasetGraph that uses the dataset lock to give wek transactional behaviour.
@@ -36,14 +37,16 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive
         public JenaLockException(String message, Throwable cause)   { super(message, cause) ; }
     }
     
-    private DatasetGraph dsg = null ;
+    private DatasetGraph dsg ;
     private boolean locked ;
+    private ReadWrite readWrite ;
     
 
     public DatasetGraphWithLock(DatasetGraph dsg)
     {
         this.dsg = dsg ;
         this.locked = false ;
+        this.readWrite = null ;
     }
 
     @Override
@@ -69,6 +72,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive
     @Override
     protected void _begin(ReadWrite readWrite)
     {
+        this.readWrite = readWrite ;
         boolean b = ( readWrite == ReadWrite.READ ) ;
         dsg.getLock().enterCriticalSection(b) ;
         locked = true ;
@@ -77,6 +81,8 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive
     @Override
     protected void _commit()
     {
+        if ( readWrite ==  ReadWrite.WRITE )
+            SystemARQ.sync(dsg) ;
         locked = false ;
         dsg.getLock().leaveCriticalSection() ;
     }
