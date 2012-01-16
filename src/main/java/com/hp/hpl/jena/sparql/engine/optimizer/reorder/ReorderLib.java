@@ -54,9 +54,11 @@ public class ReorderLib
     } ;
     private static ReorderTransformation _identity = new ReorderTransformationIdentity() ;
 
+    /** Return a  ReorderProc that does no reordering  (leaving the query writer in-control)*/
     public static ReorderProc identityProc()
     { return _identityProc ; }
 
+    /** Return a ReorderTransformation that maps directly to the original (leaving the query writer in-control) */
     public static ReorderTransformation identity()
     { return _identity ; }
 

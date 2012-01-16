@@ -43,7 +43,7 @@ public abstract class ReorderTransformationBase implements ReorderTransformation
     protected static final boolean DEBUG = false ;  
     static public final Logger log = LoggerFactory.getLogger(ReorderTransformationBase.class) ;
     
-    @Override // Java5-ism
+    @Override
     public BasicPattern reorder(BasicPattern pattern)
     {
         return reorderIndexes(pattern).reorder(pattern) ;
