@@ -106,7 +106,7 @@ public class IO
         return new InputStreamReader(in, utf8.newDecoder());
     }
     
-    /** Create a reader that uses ASCII encoding */ 
+    /** Create a unbuffered reader that uses ASCII encoding */ 
     static public Reader asASCII(InputStream in)
     {
         return new InputStreamReader(in, ascii.newDecoder());

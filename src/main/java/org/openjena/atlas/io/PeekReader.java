@@ -115,8 +115,6 @@ public final class PeekReader extends Reader
     /** Make PeekReader where the input is ASCII */ 
     public static PeekReader makeASCII(InputStream in) 
     {
-//      InputStreamBuffered in2 = new InputStreamBuffered(in) ;
-//      CharStream r = new StreamASCII(in2) ;
         Reader r = IO.asASCII(in) ;
         return make(r) ;
     }
