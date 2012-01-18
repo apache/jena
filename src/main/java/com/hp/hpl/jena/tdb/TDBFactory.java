@@ -39,20 +39,6 @@ public class TDBFactory
 {
     private TDBFactory() {} 
     
-    /** Read the file and assembler a model, of type TDB persistent graph */ 
-    public static Model assembleModel(String assemblerFile)
-    {
-        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
-    }
-    
-    /** Read the file and assembler a graph, of type TDB persistent graph */ 
-    public static Graph assembleGraph(String assemblerFile)
-    {
-        Model m = assembleModel(assemblerFile) ;
-        Graph g = m.getGraph() ;
-        return g ;
-    }
-
     /** Read the file and assembler a dataset */ 
     public static Dataset assembleDataset(String assemblerFile)
     {
@@ -95,7 +81,7 @@ public class TDBFactory
     }
     
     private static DatasetGraph _createDatasetGraph(Location location)
-    { return TDBMaker._createDatasetGraph(location) ; }
+    { return asTransactional(TDBMaker._createDatasetGraph(location)) ; }
     
     private static DatasetGraph _createDatasetGraph()
     {
@@ -105,9 +91,14 @@ public class TDBFactory
             SystemTDB.defaultOptimizer = ReorderLib.identity() ;
         DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
         SystemTDB.defaultOptimizer  = rt ;
-        return dsg ;
+        return asTransactional(dsg) ;
     }
     
+    private static DatasetGraph asTransactional(DatasetGraphTDB dsg)
+    {
+        return dsg ;
+        //return new DatasetGraphTransaction(dsg) ;
+    }
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 
     public static Location location(Dataset dataset)
@@ -119,6 +110,26 @@ public class TDBFactory
     public static Location location(DatasetGraph dataset)
     {
         return TDBFactoryTxn.location(dataset) ;
+    }
+
+    /** Read the file and assembler a graph, of type TDB persistent graph
+     *  @deprecated Assemble a Dataset and use the default graph.
+     */
+    @Deprecated 
+    public static Graph assembleGraph(String assemblerFile)
+    {
+        Model m = assembleModel(assemblerFile) ;
+        Graph g = m.getGraph() ;
+        return g ;
+    }
+
+    /** Read the file and assembler a model, of type TDB persistent graph
+     *  @deprecated Assemble a Dataset and use the default model.
+     */
+    @Deprecated 
+    public static Model assembleModel(String assemblerFile)
+    {
+        return (Model)AssemblerUtils.build(assemblerFile, VocabTDB.tGraphTDB) ;
     }
 
     /** Create a model, at the given location.
