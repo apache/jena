@@ -100,10 +100,7 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
 
     @Override
     public boolean containsGraph(Node graphNode)
-    { 
-        checkActive() ;
-        return get().containsGraph(graphNode) ;
-    }
+    { return get().containsGraph(graphNode) ; }
 
     @Override
     public Graph getDefaultGraph()

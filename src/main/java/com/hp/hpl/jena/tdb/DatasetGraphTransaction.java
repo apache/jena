@@ -74,14 +74,14 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void checkActive()
     {
-        if ( ! isInTransaction() )
+        if ( haveUsedInTransaction && ! isInTransaction() )
             throw new JenaTransactionException("Not in a transaction ("+getLocation()+")") ;
     }
 
     @Override
     protected void checkNotActive()
     {
-        if ( isInTransaction() )
+        if ( haveUsedInTransaction && isInTransaction() )
             throw new JenaTransactionException("Currently in a transaction ("+getLocation()+")") ;
     }
 
