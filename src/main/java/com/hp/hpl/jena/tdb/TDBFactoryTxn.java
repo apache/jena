@@ -56,18 +56,9 @@ class TDBFactoryTxn
      */ 
     public static Dataset assembleDataset(String assemblerFile)
     {
-        // A bit of a kludge for now but it does mean we can reuse the same 
-        // (original) assembler definitions.  
-        // Downside is opening files, then reopening them.
-        // Eventually, we will combine old and new worlds.
-        // Maybe:
-        // 1 - StoreConnection that takes over a DatasetGraphTDB
-        // 2 - reuse the assembler machinery to directly create a StoreConenction.
-        // 3 - Flip: Make as a transactional and downgrade to old style. 
         Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
-        Location location = dsg.getLocation() ;
-        return createDataset(location) ;
+        return DatasetFactory.create(_create(dsg)) ;
     }
     
     /** Return the location of a dataset if it is backed by TDB, else null */ 
@@ -110,6 +101,12 @@ class TDBFactoryTxn
     {
         // No need to cache StoreConnection does all that.
         return new DatasetGraphTransaction(location) ;
+    }
+    
+    private static DatasetGraphTransaction _create(DatasetGraphTDB dsg)
+    {
+        // No need to cache StoreConnection does all that.
+        return new DatasetGraphTransaction(dsg) ;
     }
     
 //    // NEW

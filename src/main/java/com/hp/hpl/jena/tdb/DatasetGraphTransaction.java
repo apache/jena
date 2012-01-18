@@ -23,6 +23,7 @@ import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphTrackActive ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 /** Transactional DatasetGraph that allows one active transaction.
@@ -39,16 +40,19 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
 
     private DatasetGraphTxn dsgTxn = null ;
     private boolean haveUsedInTransaction = false ;
-    private final Location location ;
     private final StoreConnection sConn ;
 
     public DatasetGraphTransaction(Location location)
     {
-        this.location = location ;
         sConn = StoreConnection.make(location) ;
     }
 
-    public Location getLocation()       { return location ; }
+    public DatasetGraphTransaction(DatasetGraphTDB dsg)
+    {
+        sConn = StoreConnection.make(dsg) ;
+    }
+
+    public Location getLocation()       { return sConn.getLocation() ; }
     
     @Override
     protected DatasetGraph get()
@@ -71,14 +75,14 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     protected void checkActive()
     {
         if ( ! isInTransaction() )
-            throw new JenaTransactionException("Not in a transaction ("+location+")") ;
+            throw new JenaTransactionException("Not in a transaction ("+getLocation()+")") ;
     }
 
     @Override
     protected void checkNotActive()
     {
         if ( isInTransaction() )
-            throw new JenaTransactionException("Currently in a transaction ("+location+")") ;
+            throw new JenaTransactionException("Currently in a transaction ("+getLocation()+")") ;
     }
 
     @Override

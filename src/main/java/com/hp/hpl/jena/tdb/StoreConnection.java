@@ -53,6 +53,12 @@ public class StoreConnection
         transactionManager = new TransactionManager(baseDSG) ;
     }
     
+    private StoreConnection(DatasetGraphTDB dsg)
+    {
+        baseDSG = dsg ;
+        transactionManager = new TransactionManager(baseDSG) ;
+    }
+    
     public Location getLocation() { return baseDSG.getLocation() ; }
     /** Return the associated transaction manager - do NOT use to manipulate transactions */  
     public TransactionManager getTransMgr() { return transactionManager ; }
@@ -129,6 +135,27 @@ public class StoreConnection
         if ( sConn == null )
         {
             sConn = new StoreConnection(location) ;
+            JournalControl.recovery(sConn.baseDSG) ;
+            cache.put(location, sConn) ;
+
+            String NS = TDB.PATH ;
+            TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;
+            ARQMgt.register(NS+".system:type=Transactions", txInfo) ;
+        }
+        return sConn ; 
+    }
+    
+    /** Return a StoreConnection for a particular connection.  
+     * This is used to create transactions for the database at the location.
+     */ 
+    public static synchronized StoreConnection make(DatasetGraphTDB dsg)
+    {
+        Location location = dsg.getLocation() ;
+        TDBMaker.releaseLocation(dsg.getLocation()) ;
+        StoreConnection sConn = cache.get(location) ;
+        if ( sConn == null )
+        {
+            sConn = new StoreConnection(dsg) ;
             JournalControl.recovery(sConn.baseDSG) ;
             cache.put(location, sConn) ;
 
