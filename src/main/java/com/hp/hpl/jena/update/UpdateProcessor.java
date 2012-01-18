@@ -36,8 +36,7 @@ public interface UpdateProcessor
 
     /**
      * The dataset against which the query will execute.
-     * May be null, implying it is expected that the query itself
-     * has a dataset description. 
+     * May be null, implying the there isn't a local GraphStore target for this UpdateProcessor.
      */
     public GraphStore getGraphStore() ;
     
