@@ -44,9 +44,8 @@ public class TDBMaker
     public final static DatasetGraphMakerTDB stdFactory = CACHING ? cachedFactory :
                                                            uncachedFactory ;
 
-    /** In-memory datasets */
-    //public final static DatasetGraphMakerTDB memFactory = new TDBMakerFactoryGraphMem() ;
-    public final static DatasetGraphMakerTDB memFactory = new DatasetGraphSetupMem() ;
+//    /** In-memory datasets */
+//    public final static DatasetGraphMakerTDB memFactory = new DatasetGraphSetupMem() ;
 
     // ----
     
