@@ -53,6 +53,7 @@ import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TDB
 {

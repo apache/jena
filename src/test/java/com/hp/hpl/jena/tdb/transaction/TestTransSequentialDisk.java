@@ -25,7 +25,6 @@ import org.openjena.atlas.lib.FileOps;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 

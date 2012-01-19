@@ -16,10 +16,9 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.transaction;
 
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.Transaction ;
 
 /** A DatasetGraph that is a singe transaction.
  * It does not support transactions, it is a transaction (single use).

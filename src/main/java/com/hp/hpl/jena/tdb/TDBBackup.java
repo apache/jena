@@ -31,6 +31,7 @@ import org.openjena.riot.out.NQuadsWriter ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 
 /**
  * Backup a database.

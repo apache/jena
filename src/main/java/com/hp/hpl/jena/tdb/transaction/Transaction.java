@@ -25,7 +25,6 @@ import java.util.List ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;

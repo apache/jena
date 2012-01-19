@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb;
+package com.hp.hpl.jena.tdb.transaction;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphTrackActive ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 /** Transactional DatasetGraph that allows one active transaction.
  * For multiple read transactions, create multiple DatasetGraphTX objects.

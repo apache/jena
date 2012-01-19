@@ -25,6 +25,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** factory for creating objects datasets backed by TDB storage which support transactions */
 public class TDBFactoryTxn

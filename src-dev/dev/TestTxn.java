@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.* ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TestTxn extends BaseTest
 {

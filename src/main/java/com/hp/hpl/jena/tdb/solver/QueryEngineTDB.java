@@ -43,6 +43,7 @@ import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 // This exists to intercept the query execution setup.
 //  e.g choose the transformation optimizations
@@ -60,7 +61,7 @@ public class QueryEngineTDB extends QueryEngineMain
     private Binding initialInput ;
 
     // ---- Object
-    protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
+    protected QueryEngineTDB(Op op, DatasetGraph dataset, Binding input, Context context)
     {
         super(op, dataset, input, context) ;
         this.initialInput = input ;
@@ -76,7 +77,7 @@ public class QueryEngineTDB extends QueryEngineMain
     private static final boolean DynamicDatasetByRewrite = false ;
     private boolean doingDynamicDatasetBySpecialDataset = false ;
     
-    protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
+    protected QueryEngineTDB(Query query, DatasetGraph dataset, Binding input, Context cxt)
     { 
         super(query, dataset, input, cxt) ; 
         // [[DynDS]]
@@ -160,14 +161,21 @@ public class QueryEngineTDB extends QueryEngineMain
         
     private static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
+        private static boolean isHandledByTDB(DatasetGraph dataset)
+        {
+            if (dataset instanceof DatasetGraphTDB) return true ;
+            if (dataset instanceof DatasetGraphTransaction ) return true ;
+            return false ;
+        }
+        
         @Override
         public boolean accept(Query query, DatasetGraph dataset, Context context) 
-        { return (dataset instanceof DatasetGraphTDB) ; }
+        { return isHandledByTDB(dataset) ; }
 
         @Override
-        public Plan create(Query query, DatasetGraph ds, Binding input, Context context)
+        public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
-            DatasetGraphTDB dataset = (DatasetGraphTDB)ds ;
+            //DatasetGraphTDB ds = (DatasetGraphTDB)dataset ;
             dynamicDatasetQE(query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
             return engine.getPlan() ;
@@ -175,7 +183,7 @@ public class QueryEngineTDB extends QueryEngineMain
         
         @Override
         public boolean accept(Op op, DatasetGraph dataset, Context context) 
-        { return (dataset instanceof DatasetGraphTDB) ; }
+        { return isHandledByTDB(dataset) ; }
 
         @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)

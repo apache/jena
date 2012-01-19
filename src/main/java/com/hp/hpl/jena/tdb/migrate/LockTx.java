@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.migrate;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.tdb.DatasetGraphTransaction ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 import static com.hp.hpl.jena.tdb.migrate.LockTx.LockTxState.* ;

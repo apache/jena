@@ -31,7 +31,6 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 
 public class TransTestLib
 {
