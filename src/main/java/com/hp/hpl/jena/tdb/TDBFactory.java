@@ -96,7 +96,6 @@ public class TDBFactory
         return DatasetFactory.create(TDBMaker._createDatasetGraph()) ;
     }
 
-
     private static DatasetGraph _createDatasetGraph(Location location)
     { 
         DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
@@ -120,10 +119,20 @@ public class TDBFactory
         return asTransactional(dsg) ;
     }
     
+    /** By default, TDBFcatory returns Datasets and DatasetGraphs that can be used in
+     *  transactions.  To force a return to TDB 0.8.x behaviour of returning 
+     *  Datasets and DatasetGraphs attached directly to the storage, set this
+     *  to false.  Warning: it's global. 
+     */
+    
+    public static boolean MAKE_TRANSACTIONAL_DATASETS = true ; 
+    
     private static DatasetGraph asTransactional(DatasetGraphTDB dsg)
     {
-        return dsg ;
-        //return new DatasetGraphTransaction(dsg) ;
+        if ( MAKE_TRANSACTIONAL_DATASETS )
+            return new DatasetGraphTransaction(dsg) ;
+        else
+            return dsg ;
     }
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 

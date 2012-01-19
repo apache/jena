@@ -43,7 +43,7 @@ import com.hp.hpl.jena.tdb.sys.Session ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-/** TDB Dataset, updateable with SPARQL/Update */
+/** TDB Dataset - directly over the basic storage. */
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements DatasetGraph, Sync, Closeable, GraphStore, Session
 {
@@ -60,8 +60,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
                            ReorderTransformation transform, StoreConfig config)
     {
-        // ?? Change to 3 nodetables and add TripleTable/QuadTable/PrefixTable wrappers.
-        
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
         this.prefixes = prefixes ;

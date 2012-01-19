@@ -52,8 +52,8 @@ public class TestTxn extends BaseTest
     
     protected Dataset create()
     { 
-        //DatasetGraph dsg = TDBFactory.createDatasetGraph(DIR) ;
-        DatasetGraph dsg = TDBFactoryTxn.XcreateDatasetGraph(Location.mem(DIR)) ;
+        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        //DatasetGraph dsg = TDBFactoryTxn.XcreateDatasetGraph(Location.mem(DIR)) ;
         
         if ( dsg instanceof DatasetGraphTDB )
             dsg = new DatasetGraphTransaction((DatasetGraphTDB)dsg) ;    

@@ -20,6 +20,8 @@ package com.hp.hpl.jena.tdb.solver;
 
 import java.util.Set ;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
@@ -38,6 +40,7 @@ import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
 import com.hp.hpl.jena.tdb.migrate.DynamicDatasets ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -61,7 +64,7 @@ public class QueryEngineTDB extends QueryEngineMain
     private Binding initialInput ;
 
     // ---- Object
-    protected QueryEngineTDB(Op op, DatasetGraph dataset, Binding input, Context context)
+    protected QueryEngineTDB(Op op, DatasetGraphTDB dataset, Binding input, Context context)
     {
         super(op, dataset, input, context) ;
         this.initialInput = input ;
@@ -77,7 +80,7 @@ public class QueryEngineTDB extends QueryEngineMain
     private static final boolean DynamicDatasetByRewrite = false ;
     private boolean doingDynamicDatasetBySpecialDataset = false ;
     
-    protected QueryEngineTDB(Query query, DatasetGraph dataset, Binding input, Context cxt)
+    protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
     { 
         super(query, dataset, input, cxt) ; 
         // [[DynDS]]
@@ -161,11 +164,21 @@ public class QueryEngineTDB extends QueryEngineMain
         
     private static class QueryEngineFactoryTDB implements QueryEngineFactory
     {
+        // If a DatasetGraphTransaction is passed in, we are outside a transaction.
+        
         private static boolean isHandledByTDB(DatasetGraph dataset)
         {
             if (dataset instanceof DatasetGraphTDB) return true ;
             if (dataset instanceof DatasetGraphTransaction ) return true ;
             return false ;
+        }
+        
+        private DatasetGraphTDB dsgToQuery(DatasetGraph dataset)
+        {
+            if (dataset instanceof DatasetGraphTDB) return (DatasetGraphTDB)dataset ;
+            if (dataset instanceof DatasetGraphTransaction) 
+                return ((DatasetGraphTransaction)dataset).getDatasetGraphToQuery() ;
+            throw new TDBException("Internal inconsistency: trying to execute query on unrecognized kind of DatasetGraph: "+Lib.className(dataset)) ;
         }
         
         @Override
@@ -177,7 +190,7 @@ public class QueryEngineTDB extends QueryEngineMain
         {
             //DatasetGraphTDB ds = (DatasetGraphTDB)dataset ;
             dynamicDatasetQE(query, context) ;
-            QueryEngineTDB engine = new QueryEngineTDB(query, dataset, input, context) ;
+            QueryEngineTDB engine = new QueryEngineTDB(query, dsgToQuery(dataset), input, context) ;
             return engine.getPlan() ;
         }
         

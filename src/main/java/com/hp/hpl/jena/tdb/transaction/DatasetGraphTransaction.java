@@ -53,14 +53,18 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     }
 
     public Location getLocation()       { return sConn.getLocation() ; }
+    public DatasetGraphTDB getDatasetGraphToQuery()
+    {
+        return get() ;
+    }
     
     @Override
-    protected DatasetGraph get()
+    protected DatasetGraphTDB get()
     {
         if ( isInTransaction() )
         {
             if ( dsgTxn == null )
-                throw new TDBTransactionException("In a transaction but no translational DatasetGraph") ;
+                throw new TDBTransactionException("In a transaction but no transactional DatasetGraph") ;
             return dsgTxn ;
         }
         
