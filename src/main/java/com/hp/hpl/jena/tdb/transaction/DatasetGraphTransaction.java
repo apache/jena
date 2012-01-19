@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphTrackActive ;

@@ -28,7 +28,6 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.TDBFactoryTxn ;
 import com.hp.hpl.jena.tdb.migrate.AbstractTestTransaction ;
 
