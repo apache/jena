@@ -18,8 +18,11 @@
 
 package dev;
 
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -27,15 +30,14 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.DatasetGraphTransaction ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.TDBFactoryTxn ;
+import com.hp.hpl.jena.tdb.* ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class TestTxn extends BaseTest
 {
-// static final String DIR = ConfigTest.getTestingDirDB() ; 
-//    
+    static final String DIR = ConfigTest.getTestingDirDB() ; 
+    
 //    @Before public void before()
 //    {
 //        FileOps.clearDirectory(DIR) ; 
@@ -43,13 +45,14 @@ public class TestTxn extends BaseTest
 //    
 //    @After public void after()
 //    {
+//        StoreConnection.reset() ;
 //        FileOps.clearDirectory(DIR) ; 
 //    }
-//    
+    
     protected Dataset create()
     { 
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
-        dsg = TDBFactoryTxn.XcreateDatasetGraph() ;
+        //DatasetGraph dsg = TDBFactory.createDatasetGraph(DIR) ;
+        DatasetGraph dsg = TDBFactoryTxn.XcreateDatasetGraph(Location.mem(DIR)) ;
         
         if ( dsg instanceof DatasetGraphTDB )
             dsg = new DatasetGraphTransaction((DatasetGraphTDB)dsg) ;    
@@ -112,6 +115,7 @@ public class TestTxn extends BaseTest
     {
         Dataset ds1 = create() ;
         Dataset ds2 = create() ;
+        DatasetGraph dsg1 = ds2.asDatasetGraph() ;
         
         ds1.begin(ReadWrite.WRITE) ;
         ds1.getDefaultModel().getGraph().add(triple1) ; 
@@ -121,7 +125,9 @@ public class TestTxn extends BaseTest
         ds2.commit() ;
         
         ds1.commit() ;
-
+        
+        ds1.end() ;
+        ds2.end() ;
         ds2.begin(ReadWrite.READ) ;
         assertFalse(ds2.getDefaultModel().isEmpty()) ;
         assertEquals(1, ds2.getDefaultModel().size()) ;
@@ -129,5 +135,9 @@ public class TestTxn extends BaseTest
 
     }
 
+    // Non-Txn then Txn.
+    
+    
+    
 }
 

@@ -161,8 +161,8 @@ public class StoreConnection
         {
             sConn = new StoreConnection(dsg) ;
             JournalControl.recovery(sConn.baseDSG) ;
-            if ( ! location.isMem() )
-                // Don't cache in-memory datasets.
+            if ( ! location.isMemUnique() )
+                // Don't cache use-once in-memory datasets.
                 cache.put(location, sConn) ;
             String NS = TDB.PATH ;
             TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;

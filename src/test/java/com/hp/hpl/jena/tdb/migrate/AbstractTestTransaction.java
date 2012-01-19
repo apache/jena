@@ -31,8 +31,6 @@ public abstract class AbstractTestTransaction extends BaseTest
     //MIGRATE
     protected abstract Dataset create() ;
     
-    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
-
     @Test public void factoryTxn0()
     {
         Dataset ds = create() ;
@@ -87,28 +85,5 @@ public abstract class AbstractTestTransaction extends BaseTest
         ds.end() ;
         assertFalse(ds.isInTransaction()) ; 
     }
-
-
-    @Test public void factoryTxn10()
-    {
-        Dataset ds1 = create() ;
-        Dataset ds2 = create() ;
-        
-        ds1.begin(ReadWrite.WRITE) ;
-        ds1.getDefaultModel().getGraph().add(triple1) ; 
-        
-        ds2.begin(ReadWrite.READ) ;
-        assertTrue(ds2.getDefaultModel().isEmpty()) ;
-        ds2.commit() ;
-        
-        ds1.commit() ;
-
-        ds2.begin(ReadWrite.READ) ;
-        assertFalse(ds2.getDefaultModel().isEmpty()) ;
-        assertEquals(1, ds2.getDefaultModel().size()) ;
-        ds2.commit() ;
-
-    }
-
 }
 

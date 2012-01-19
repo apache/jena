@@ -20,6 +20,8 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.io.File;
 
+import org.openjena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.tdb.sys.Names;
 
 /** 
@@ -32,46 +34,42 @@ public class Location
 {
     static String pathSeparator = File.separator ;  // Or just "/"
     
-//    // Filename bashing moved to FileOps.
-//    private static Location dirname(String filename)
-//    {
-//        filename = filename.replace('\'', '/') ;
-//        int i = filename.lastIndexOf('/') ;
-//        if ( i == filename.length()-1 )
-//            return new Location(filename) ;
-//        String dirname = filename.substring(0, i) ; // Exclude final /
-//        return new Location(dirname) ;
-//    }
-//    
-//    private static Location ensureDirectory(String dirname)
-//    {
-//        File file = new File(dirname) ;
-//        
-//        if ( ! file.exists() )
-//        {
-//            if ( ! file.mkdirs() )
-//                throw new FileException("Failed to create directory: "+file.getAbsolutePath()) ;
-//        }
-//        if ( ! file.isDirectory() )
-//            throw new FileException("Not a directory: "+file.getAbsolutePath()) ;
-//        Location loc = new Location() ;
-//        loc.setPathname(dirname) ;
-//        return loc ;
-//    }
-    
     private String pathname ;
     private MetaFile metafile = null ; 
     private boolean isMem = false ;
+    private boolean isMemUnique = false ;
     
-    static Location mem = new Location() ;
-    // Every mem()is a fresh location and importantly fresh metadata.
-    static public Location mem() { return new Location(); } 
+    static int memoryCount = 0 ; 
+    
+    /** Return a fresh memory location : always unique, never .equals to another location. */  
+    static public Location mem() { return mem(null) ; }
+    
+    /** Return a memory location with a name */  
+    static public Location mem(String name)
+    { 
+        Location loc = new Location();
+        memInit(loc, name) ;
+        return loc ;
+    }
+    
     
     private Location()
+    { }
+    
+    private static void memInit(Location location, String name)
     {
-        pathname = Names.memName+pathSeparator ;
-        isMem = true ;
-        metafile = new MetaFile(Names.memName, Names.memName) ;
+        location.pathname = Names.memName ;
+        if ( name != null )
+        {
+            name = name.replace('\\', '/') ;
+            location.pathname = location.pathname+pathSeparator+name ;
+        }
+        else
+            location.isMemUnique = true ;
+        if ( ! location.pathname.endsWith(pathSeparator) )
+            location.pathname = location.pathname+pathSeparator ;
+        location.isMem = true ;
+        location.metafile = new MetaFile(Names.memName, Names.memName) ;
     }
     
     public Location(String rootname)
@@ -79,9 +77,7 @@ public class Location
         super() ;
         if ( rootname.equals(Names.memName) )
         {
-            isMem = true ;
-            pathname = Names.memName + pathSeparator  ;
-            metafile = new MetaFile(Names.memName, Names.memName) ;
+            memInit(this, null) ;
             return ;
         }
         
@@ -109,7 +105,8 @@ public class Location
 
     public String getDirectoryPath()    { return pathname ; }
     public MetaFile getMetaFile()       { return metafile ; }
-    public boolean isMem()              { return isMem ; }
+    public boolean isMem()              { return isMem ; } 
+    public boolean isMemUnique()        { return isMemUnique ; }
     
     public Location getSubLocation(String dirname)
     {
@@ -193,10 +190,8 @@ public class Location
     @Override
     public int hashCode()
     {
-        if ( isMem )
-            return 37 ;
         final int prime = 31 ;
-        int result = 1 ;
+        int result = isMem ? 1 : 2 ;
         result = prime * result + ((pathname == null) ? 0 : pathname.hashCode()) ;
         return result ;
     }
@@ -207,17 +202,12 @@ public class Location
         if (this == obj) return true ;
         if (obj == null) return false ;
         if (getClass() != obj.getClass()) return false ;
+        
         Location other = (Location)obj ;
-        if ( isMem && other.isMem ) return true ;
         if ( isMem && ! other.isMem ) return false ; 
         if ( ! isMem && other.isMem ) return false ; 
-        
-        if (pathname == null)
-        {
-            if (other.pathname != null) return false ;
-        } else
-            if (!pathname.equals(other.pathname)) return false ;
-        return true ;
+
+        return Lib.equal(pathname, other.pathname) ;
     }
 
     @Override

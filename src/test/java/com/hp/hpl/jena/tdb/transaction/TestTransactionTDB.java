@@ -20,9 +20,13 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.After ;
 import org.junit.Before ;
+import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.TDBFactoryTxn ;
@@ -48,5 +52,34 @@ public class TestTransactionTDB extends AbstractTestTransaction
         //return TDBFactory.createDataset(DIR) ;
         return TDBFactoryTxn.XcreateDataset(DIR) ;
     }
+    
+    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
+
+    
+    @Test public void factoryTxn10()
+    {
+        // This assumes you have two datasets on the same location.
+        // That's not necessarily true for uncached memory datasets, 
+        // where you get two separate datasets so changes to one are
+        // not seen by the other at all.
+        
+        Dataset ds1 = create() ;
+        Dataset ds2 = create() ;
+        
+        ds1.begin(ReadWrite.WRITE) ;
+        ds1.getDefaultModel().getGraph().add(triple1) ; 
+        
+        ds2.begin(ReadWrite.READ) ;
+        assertTrue(ds2.getDefaultModel().isEmpty()) ;
+        ds2.commit() ;
+        
+        ds1.commit() ;
+
+        ds2.begin(ReadWrite.READ) ;
+        assertFalse(ds2.getDefaultModel().isEmpty()) ;
+        assertEquals(1, ds2.getDefaultModel().size()) ;
+        ds2.commit() ;
+    }
+
 }
 
