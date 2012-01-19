@@ -24,13 +24,25 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class NodeFactory
 {
+    /** Parse a node - with convenience prefix mapping */ 
     public static Node parseNode(String nodeString)
     {
         return SSE.parseNode(nodeString) ;
+    }
+
+    private static PrefixMapping pmapEmpty = new PrefixMappingImpl() ; 
+    /** Parse a string into a node. Pass null for the prefix mapping to indicate using no defined mappings */ 
+    public static Node parseNode(String nodeString, PrefixMapping pmap)
+    {
+        if ( pmap == null )
+            pmap = pmapEmpty ;
+        return SSE.parseNode(nodeString, pmap) ;
     }
     
     private static QueryParseException makeException(String msg, int line, int column)

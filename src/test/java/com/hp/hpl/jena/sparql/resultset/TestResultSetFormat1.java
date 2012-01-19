@@ -37,11 +37,14 @@ import com.hp.hpl.jena.query.ResultSetRewindable;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
+import com.hp.hpl.jena.vocabulary.OWL;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.XSD;
 
 @RunWith(Parameterized.class)
 public class TestResultSetFormat1
 {
-
     static String[] $rs1 = {
         "(resultset (?a ?b ?c)",
         "  (row (?a 1) (?b 2)       )",
@@ -59,12 +62,20 @@ public class TestResultSetFormat1
         "  (row (?a 1)        (?c 4))",
         "  (row (?a 1) (?b 2) (?c 3))",
         ")"} ;
+    
+    static String[] $rs4 = {
+    	"(resultset (?x)",
+    	" (row (?x <" + RDF.type.toString() + ">))",
+    	" (row (?x <" + RDFS.label.toString() + ">))",
+    	" (row (?x <" + XSD.integer.toString() + ">))",
+    	" (row (?x <" + OWL.sameAs.toString() + ">))",
+    	")" };
 
     
     @Parameters
     public static Collection<Object[]> data()
     {
-        return Arrays.asList(new Object[][] { {$rs1}, {$rs2}, {$rs3} } ) ;
+        return Arrays.asList(new Object[][] { {$rs1}, {$rs2}, {$rs3}, {$rs4} } ) ;
     }
 
     private final String[] $rs ;

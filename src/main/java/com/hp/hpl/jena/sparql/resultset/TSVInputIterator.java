@@ -18,24 +18,23 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.io.BufferedReader ;
+import java.io.IOException ;
+import java.util.List ;
+import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.io.IndentedWriter ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.query.QueryException;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
@@ -107,7 +106,7 @@ public class TSVInputIterator extends QueryIteratorBase
         	if (token.equals("")) continue; 
         	
         	//Bound value so parse it and add to the binding
-        	Node node = NodeFactory.parseNode(token);
+        	Node node = NodeFactory.parseNode(token, null);
         	this.binding.add(this.vars.get(i), node);
         }
         return true;
