@@ -20,6 +20,7 @@ package com.hp.hpl.jena.tdb;
 
 import java.util.Iterator ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sync ;
 import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
@@ -148,6 +149,7 @@ public class TDB
         {
             // May be a general purpose dataset with TDB objects in it.
             Iterator<Node> iter = dataset.listGraphNodes() ;
+            iter = Iter.toList(iter).iterator() ;   // Avoid iterator concurrency.
             for ( ; iter.hasNext() ; )
             {
                 Node n = iter.next();

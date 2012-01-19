@@ -36,15 +36,23 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 
+/**
+ * Test SPARQL on the raw storage dataset.
+ */
 public class Test_SPARQL_TDB extends BaseTest
 {
+    private static Dataset create() 
+    {
+        return TDBFactory.createDataset() ;
+    }
+    
     
     @Test public void sparql1()
     {
         // Test OpExecutor.execute(OpFilter)for a named graph used as a standalone model
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = create() ;
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
@@ -62,7 +70,7 @@ public class Test_SPARQL_TDB extends BaseTest
         // Test OpExecutor.execute(OpBGP) for a named graph used as a standalone model
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
-        Dataset ds = TDBFactory.createDataset() ;
+        Dataset ds = create() ;
         Graph g2 = ds.asDatasetGraph().getGraph(Node.createURI(graphName)) ;
         // Graphs only exists if they have a triple in them
         g2.add(triple) ;
@@ -78,7 +86,7 @@ public class Test_SPARQL_TDB extends BaseTest
     @Test public void sparql3()
     {
         // Requires OpDatasetNames 
-        Dataset dataset = TDBFactory.createDataset() ;
+        Dataset dataset = create() ;
         Query query = QueryFactory.create("SELECT ?g { GRAPH ?g {} }") ;
         QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
         ResultSet rs = qExec.execSelect() ;
@@ -89,7 +97,7 @@ public class Test_SPARQL_TDB extends BaseTest
     @Test public void sparql4()
     {
         // Requires OpDatasetNames 
-        Dataset dataset = TDBFactory.createDataset() ;
+        Dataset dataset = create() ;
         
         String graphName = "http://example/" ;
         Triple triple = SSE.parseTriple("(<x> <y> 123)") ;
@@ -103,5 +111,4 @@ public class Test_SPARQL_TDB extends BaseTest
         int n = ResultSetFormatter.consume(rs) ;
         assertEquals(1, n) ;
     }
-
 }

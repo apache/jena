@@ -20,9 +20,12 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test ;
 import org.openjena.atlas.lib.FileOps;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.StoreConnection;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
@@ -48,4 +51,25 @@ public class TestTransSequentialDisk extends AbstractTestTransSeq
     {
         return StoreConnection.make(DIR) ;
     }
+    
+    @Test(expected=TDBTransactionException.class)
+    public void trans_60()
+    {
+        // Expel.
+        // Only applies to non-memory.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        StoreConnection.release(sConn.getLocation()) ;
+    }
+
+    @Test(expected=TDBTransactionException.class)
+    public void trans_61()
+    {
+        // Expel.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.WRITE) ;
+        StoreConnection.release(sConn.getLocation()) ;
+    }
+    
+
 }

@@ -76,7 +76,7 @@ public class TestDatasetTDBPersist extends BaseTest
     @Test public void dataset1()
     {
         Dataset ds = graphLocation.getDataset() ;
-        assertTrue( ds.asDatasetGraph() instanceof DatasetGraphTDB ) ;
+        //assertTrue( ds.asDatasetGraph() instanceof DatasetGraphTDB ) ;
         assertTrue( ds.getDefaultModel().getGraph() instanceof GraphTriplesTDB ) ;
         assertTrue( ds.getNamedModel("http://example/").getGraph() instanceof GraphNamedTDB ) ;
     }

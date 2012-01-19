@@ -47,12 +47,12 @@ public class StoreConnection
     private final TransactionManager transactionManager ;
     private final DatasetGraphTDB baseDSG ;
 
-    private StoreConnection(Location location)
-    {
-        baseDSG = DatasetBuilderStd.build(location) ;
-        transactionManager = new TransactionManager(baseDSG) ;
-    }
-    
+//    private StoreConnection(Location location)
+//    {
+//        baseDSG = DatasetBuilderStd.build(location) ;
+//        transactionManager = new TransactionManager(baseDSG) ;
+//    }
+//    
     private StoreConnection(DatasetGraphTDB dsg)
     {
         baseDSG = dsg ;
@@ -130,18 +130,12 @@ public class StoreConnection
      */ 
     public static synchronized StoreConnection make(Location location)
     {
-        TDBMaker.releaseLocation(location) ;
         StoreConnection sConn = cache.get(location) ;
-        if ( sConn == null )
-        {
-            sConn = new StoreConnection(location) ;
-            JournalControl.recovery(sConn.baseDSG) ;
-            cache.put(location, sConn) ;
-
-            String NS = TDB.PATH ;
-            TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;
-            ARQMgt.register(NS+".system:type=Transactions", txInfo) ;
-        }
+        if ( sConn != null )
+            return sConn ;
+        
+        DatasetGraphTDB dsg = DatasetBuilderStd.build(location) ;
+        sConn = _makeAndCache(dsg) ;
         return sConn ; 
     }
     
@@ -151,14 +145,25 @@ public class StoreConnection
     public static synchronized StoreConnection make(DatasetGraphTDB dsg)
     {
         Location location = dsg.getLocation() ;
+        StoreConnection sConn = cache.get(location) ;
+        if ( sConn == null )
+            sConn = _makeAndCache(dsg) ;
+        return sConn ;
+    }
+    
+    
+    private static StoreConnection _makeAndCache(DatasetGraphTDB dsg)
+    {
+        Location location = dsg.getLocation() ;
         TDBMaker.releaseLocation(dsg.getLocation()) ;
         StoreConnection sConn = cache.get(location) ;
         if ( sConn == null )
         {
             sConn = new StoreConnection(dsg) ;
             JournalControl.recovery(sConn.baseDSG) ;
-            cache.put(location, sConn) ;
-
+            if ( ! location.isMem() )
+                // Don't cache in-memory datasets.
+                cache.put(location, sConn) ;
             String NS = TDB.PATH ;
             TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;
             ARQMgt.register(NS+".system:type=Transactions", txInfo) ;
@@ -170,7 +175,8 @@ public class StoreConnection
      */ 
     public static StoreConnection createMemUncached()
     {
-        return new StoreConnection(Location.mem()) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.build(Location.mem()) ;
+        return new StoreConnection(dsg) ;
     }
     
 }

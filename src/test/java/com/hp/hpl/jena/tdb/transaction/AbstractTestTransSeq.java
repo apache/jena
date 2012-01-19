@@ -538,15 +538,5 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgW2.commit() ;
         dsgW2.end() ;
     }
-    
-    @Test(expected=TDBTransactionException.class)
-    public void trans_52()
-    {
-        // Expel.
-        StoreConnection sConn = getStoreConnection() ;
-        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
-        StoreConnection.release(sConn.getLocation()) ;
-    }
-
-    
+   
 }

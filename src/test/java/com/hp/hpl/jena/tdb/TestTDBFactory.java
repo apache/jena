@@ -74,13 +74,14 @@ public class TestTDBFactory extends BaseTest
         assertNotSame(dg3, dg2) ;
         assertSame(dg3, dg0) ;
     }
-    
-    @Test public void factoryTxn1()
-    {
-        DatasetGraphTransaction dg1 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
-        DatasetGraphTransaction dg2 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
-        assertSame(dg1.get(), dg2.get()) ;
-    }
+
+    // StoreConnection no longer applies caching to in-memory datasets.  
+//    @Test public void factoryTxn1()
+//    {
+//        DatasetGraphTransaction dg1 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
+//        DatasetGraphTransaction dg2 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
+//        assertSame(dg1.get(), dg2.get()) ;
+//    }
     
     private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
     

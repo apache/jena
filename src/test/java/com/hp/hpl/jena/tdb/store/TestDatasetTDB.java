@@ -27,6 +27,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -170,6 +171,17 @@ public class TestDatasetTDB extends BaseTest
         QueryExecution qExec = QueryExecutionFactory.create(q, ds) ;
         qExec.getContext().set(TDB.symUnionDefaultGraph, true) ;
         Model m2 = qExec.execConstruct() ;
+        if ( ! m.isIsomorphicWith(m2) )
+        {
+            System.out.println("---- ----") ;
+            SSE.write(ds.asDatasetGraph()) ;
+            System.out.println("-- Expected") ;
+            m.write(System.out, "TTL") ;
+            System.out.println("-- Actual") ;
+            m2.write(System.out, "TTL") ;
+            System.out.println("---- ----") ;
+
+        }
         assertTrue(m.isIsomorphicWith(m2)) ;
     }
     

@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -25,6 +27,7 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
@@ -74,14 +77,36 @@ public class TDBFactory
     public static DatasetGraph createDatasetGraph(Location location)
     { return _createDatasetGraph(location) ; }
 
-    /** Create or connect to a TDB-backed dataset (graph-level) */
+    /** Create a TDB-backed dataset (graph-level) in memory (for testing) */
     public static DatasetGraph createDatasetGraph()
     {
         return _createDatasetGraph() ;
     }
     
+    /** Create a TDB-backed DatasetGraph directly over the storage in memory (not transactional) (testing only) */  
+    public static DatasetGraphTDB createDatasetGraphBase()
+    {
+        return TDBMaker._createDatasetGraph() ;
+    }
+
+    /** Create a TDB-backed Dataset directly over the storage in memory (not transactional) (testing only) */  
+    public static Dataset createDatasetBase()
+    {
+        return DatasetFactory.create(TDBMaker._createDatasetGraph()) ;
+    }
+
+
     private static DatasetGraph _createDatasetGraph(Location location)
-    { return asTransactional(TDBMaker._createDatasetGraph(location)) ; }
+    { 
+        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
+        if ( dsg instanceof Transactional)
+        {
+            Log.info(TDBFactory.class, "TDBMaker returns a transactional DatasetGraphs") ; 
+            // v0.9.0 - doesn't happen but this prepares for a possible future.
+            return dsg ;
+        }
+        // Not transactional - add the switching wrapper.
+        return asTransactional(TDBMaker._createDatasetGraph(location)) ; }
     
     private static DatasetGraph _createDatasetGraph()
     {
