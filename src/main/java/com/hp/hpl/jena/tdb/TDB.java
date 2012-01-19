@@ -144,18 +144,24 @@ public class TDB
     { 
         // Should be: SystemARQ.sync(dataset) ;
         if ( dataset instanceof DatasetGraphTDB )
-            syncObject(dataset) ;
-        else
         {
-            // May be a general purpose dataset with TDB objects in it.
-            Iterator<Node> iter = dataset.listGraphNodes() ;
-            iter = Iter.toList(iter).iterator() ;   // Avoid iterator concurrency.
-            for ( ; iter.hasNext() ; )
-            {
-                Node n = iter.next();
-                Graph g = dataset.getGraph(n) ;
-                sync(g) ;
-            }
+            syncObject(dataset) ;
+            return ;
+        }
+        if ( dataset instanceof DatasetGraphTransaction )
+        {
+            // Can't sync transactional dataset graphs.
+            return ;
+        }
+        
+        // May be a general purpose dataset with TDB objects in it.
+        Iterator<Node> iter = dataset.listGraphNodes() ;
+        iter = Iter.toList(iter).iterator() ;   // Avoid iterator concurrency.
+        for ( ; iter.hasNext() ; )
+        {
+            Node n = iter.next();
+            Graph g = dataset.getGraph(n) ;
+            sync(g) ;
         }
     }
     

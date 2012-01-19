@@ -26,35 +26,35 @@ import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-/** Public factory for creating objects datasets backed by TDB storage which support transactions */
-class TDBFactoryTxn
+/** factory for creating objects datasets backed by TDB storage which support transactions */
+public class TDBFactoryTxn
 {
     // This is TDBFactory with a different maker.??
     
     // Assembler versions
     
     /** Create a Dataset that supports transactions */  
-    public static Dataset createDataset(Location location)
+    public static Dataset XcreateDataset(Location location)
     {
-        return DatasetFactory.create(createDatasetGraph(location)) ;
+        return DatasetFactory.create(XcreateDatasetGraph(location)) ;
     }
 
     /** Create a Dataset that supports transactions */  
-    public static Dataset createDataset(String location)
+    public static Dataset XcreateDataset(String location)
     {
-        return DatasetFactory.create(createDatasetGraph(location)) ;
+        return DatasetFactory.create(XcreateDatasetGraph(location)) ;
     }
     
     /** Create a Dataset that supports transactions but runs in-memory (for creating test cases)*/  
-    public static Dataset createDataset()
+    public static Dataset XcreateDataset()
     {
-        return createDataset(Location.mem()) ;
+        return XcreateDataset(Location.mem()) ;
     }
     
     /** Read the assembler file and create a dataset with transctional capabilities.
      * Assumes the file contains exactly one definition of a TDB dataset.  
      */ 
-    public static Dataset assembleDataset(String assemblerFile)
+    public static Dataset XassembleDataset(String assemblerFile)
     {
         Dataset ds = (Dataset)AssemblerUtils.build(assemblerFile, VocabTDB.tDatasetTDB) ;
         DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
@@ -79,24 +79,23 @@ class TDBFactoryTxn
     }
 
     /** Create a DatasetGraph that supports transactions */  
-    public static DatasetGraphTransaction createDatasetGraph(String location)
+    public static DatasetGraphTransaction XcreateDatasetGraph(String location)
     {
-        return createDatasetGraph(new Location(location)) ;
+        return XcreateDatasetGraph(new Location(location)) ;
     }
     
     /** Create a Dataset that supports transactions */  
-    public static DatasetGraphTransaction createDatasetGraph(Location location)
+    public static DatasetGraphTransaction XcreateDatasetGraph(Location location)
     {
         return _create(location) ;
     }
     
     /** Create a Dataset that supports transactions but runs in-memory (for creating test cases)*/  
-    public static DatasetGraphTransaction createDatasetGraph()
+    public static DatasetGraphTransaction XcreateDatasetGraph()
     {
-        return createDatasetGraph(Location.mem()) ;
+        return XcreateDatasetGraph(Location.mem()) ;
     }
 
-    // OLD
     private static DatasetGraphTransaction _create(Location location)
     {
         // No need to cache StoreConnection does all that.
@@ -108,32 +107,5 @@ class TDBFactoryTxn
         // No need to cache StoreConnection does all that.
         return new DatasetGraphTransaction(dsg) ;
     }
-    
-//    // NEW
-//    static class TDBMakerTxn implements DatasetGraphMakerTDB
-//    {
-//
-//        @Override
-//        public DatasetGraphTDB createDatasetGraph()
-//        {
-//            //return new DatasetGraphTransaction(Location.mem()) ;
-//            return null ;
-//        }
-//
-//        @Override
-//        public DatasetGraphTDB createDatasetGraph(Location location)
-//        {
-//            return null ;
-//        }
-//
-//        @Override
-//        public void releaseDatasetGraph(DatasetGraphTDB dataset)
-//        {}
-//
-//        @Override
-//        public void releaseLocation(Location location)
-//        {}
-//    }
-
 }
 

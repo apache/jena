@@ -20,18 +20,14 @@ package com.hp.hpl.jena.tdb;
 
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.junit.Test;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class TestTDBFactory extends BaseTest
 {
@@ -73,36 +69,5 @@ public class TestTDBFactory extends BaseTest
         assertNotSame(dg3, dg1) ;
         assertNotSame(dg3, dg2) ;
         assertSame(dg3, dg0) ;
-    }
-
-    // StoreConnection no longer applies caching to in-memory datasets.  
-//    @Test public void factoryTxn1()
-//    {
-//        DatasetGraphTransaction dg1 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
-//        DatasetGraphTransaction dg2 = TDBFactoryTxn.createDatasetGraph(Location.mem()) ;
-//        assertSame(dg1.get(), dg2.get()) ;
-//    }
-    
-    private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
-    
-    @Test public void factoryTxn2()
-    {
-        Dataset ds1 = TDBFactoryTxn.createDataset(DIR) ;
-        Dataset ds2 = TDBFactoryTxn.createDataset(DIR) ;
-        
-        ds1.begin(ReadWrite.WRITE) ;
-        ds1.getDefaultModel().getGraph().add(triple1) ; 
-        
-        ds2.begin(ReadWrite.READ) ;
-        assertTrue(ds2.getDefaultModel().isEmpty()) ;
-        ds2.commit() ;
-        
-        ds1.commit() ;
-
-        ds2.begin(ReadWrite.READ) ;
-        assertFalse(ds2.getDefaultModel().isEmpty()) ;
-        assertEquals(1, ds2.getDefaultModel().size()) ;
-        ds2.commit() ;
-
     }
 }

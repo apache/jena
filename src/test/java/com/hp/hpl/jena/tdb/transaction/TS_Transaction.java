@@ -36,6 +36,7 @@ import org.junit.runners.Suite ;
     , TestTransSequentialMem.class
     , TestTransSequentialDisk.class
     , TestTransRestart.class
+    //, TestTransactionTDB.class
 })
 public class TS_Transaction
 {
