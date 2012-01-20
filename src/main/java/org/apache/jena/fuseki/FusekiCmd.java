@@ -278,8 +278,13 @@ public class FusekiCmd extends CmdARQ
     protected void exec()
     {
         SPARQLServer server ;
+        
+        if ( jettyConfigFile != null )
+            Fuseki.configLog.info("Jetty configuration: "+jettyConfigFile) ;
+        
         if ( fusekiConfigFile != null )
         {
+            Fuseki.configLog.info("Configuration file: "+fusekiConfigFile) ;
             List<DatasetRef> services = FusekiConfig.configure(fusekiConfigFile) ;
             server =  new SPARQLServer(jettyConfigFile, port, services) ;
         }

@@ -38,7 +38,6 @@ public class HttpAction
     private final Transactional transactional ;
     private DatasetGraph activeDSG ;
     
-    public final Lock lock ;
     public final HttpServletRequest request;
     public final HttpServletResponse response ;
     public final boolean verbose ;
@@ -63,11 +62,13 @@ public class HttpAction
     {
         this.id = id ;
         this.dsg = dsg ;
-        this.lock = ( dsg != null ) ? dsg.getLock() : null ;
+
         if ( dsg instanceof Transactional )
             transactional = (Transactional)dsg ;
         else
         {
+            // Non-trsanctional - wrap in something that does locking to give the same 
+            // functionality in the absense of errors, with less concurrency.
             DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ; 
             transactional = dsglock ;
             dsg = dsglock ;
@@ -116,54 +117,6 @@ public class HttpAction
         }
         activeDSG = null ;
     }
-
-//    public boolean isInTransaction()
-//    { return transactional.isInTransaction() ; }
-
-//    public final void beginRead()
-//    {
-//        transactional.begin(ReadWrite.READ) ;
-//        
-//        enter(dsg, lock, Lock.READ) ;               // ????
-//        getConcurrencyPolicy(lock).startRead() ;    // ????
-//        activeDSG = dsg ;
-//    }
-//
-//    public final void endRead()
-//    {
-//        transactional.end() ;
-//        leave(dsg, lock, Lock.READ) ;               // ????
-//        getConcurrencyPolicy(lock).finishRead() ;   // ????
-//        activeDSG = null ;
-//    }
-//
-//    public final void beginWrite()
-//    {
-//        if ( transactional != null )
-//            transactional.begin(ReadWrite.WRITE) ;
-//        else
-//        {
-//            enter(dsg, lock, Lock.WRITE) ;
-//            getConcurrencyPolicy(lock).startUpdate() ;
-//        }
-//        activeDSG = dsg ;
-//    }
-//
-//    public final void endWrite()
-//    {
-//        if ( transactional != null )
-//        {
-//            //XXX Wrong - what about abort?
-//            transactional.commit() ;
-//        }
-//        else
-//        {
-//            sync() ;
-//            getConcurrencyPolicy(lock).finishUpdate() ;
-//            leave(dsg, lock, Lock.WRITE) ;
-//        }
-//        activeDSG = null ;
-//    }
 
     public final DatasetGraph getActiveDSG()
     {
