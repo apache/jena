@@ -11,27 +11,22 @@
    # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
    # See java doc for ARQ.queryTimeout
    # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
-
    # ja:loadClass "your.code.Class" ;
 
    fuseki:services (
-     <#service1>
-     <#service2>
-     <#service3>
+     <#service_tdb_all>
    ) .
 
-# Custom code.
-# For each declaration, static "Class.init()" will be called.
-[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
-
 # TDB
+[] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
 tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 ## ---------------------------------------------------------------
-## Updatable in-memory dataset.
+## Updatable TDB dataset with all servcies enabled.
 
-<#service1> rdf:type fuseki:Service ;
+<#service_tdb_all> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service" ;
     fuseki:name                     "ds" ;       # http://host:port/ds
     fuseki:serviceQuery             "query" ;    # SPARQL query service
     fuseki:serviceQuery             "sparql" ;   # SPARQL query service
@@ -40,42 +35,15 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceReadWriteGraphStore      "data" ;     # SPARQL Graph store protocol (read and write)
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;   # SPARQL Graph store protocol (read only)
-    fuseki:dataset           <#books> ;
-    .
-
-<#emptyDataset> rdf:type ja:RDFDataset .
-
-## ---------------------------------------------------------------
-## Read-only access to a small books database.
-
-<#service2> rdf:type fuseki:Service ;
-    fuseki:name                     "books" ;    # http://host:port/books
-    fuseki:serviceQuery             "query" ;    # SPARQL query service
-    fuseki:serviceReadGraphStore    "get" ;      # SPARQL Graph store protocol (read only)
-    fuseki:dataset           <#books> ;
-    # Configuration
-    .
-    
-<#books>    rdf:type ja:RDFDataset ;
-    rdfs:label "Books" ;
-    ja:defaultGraph 
-      [ rdfs:label "books.ttl" ;
-        a ja:MemoryModel ;
-        ja:content [ja:externalContent <file:Data/books.ttl> ] ;
-      ] ;
+    fuseki:dataset           <#tdb_dataset> ;
     .
 ## ---------------------------------------------------------------
-## TDB dataset with only SPARQL query.
+## TDB dataset with all 
 
-<#service3>  rdf:type fuseki:Service ;
-    fuseki:name              "tdb" ;             # http://host/tdb
-    fuseki:serviceQuery      "sparql" ;          # SPARQL query service
-    fuseki:dataset           <#dataset> ;
-    .
-
-<#dataset> rdf:type      tdb:DatasetTDB ;
+<#tdb_dataset> rdf:type      tdb:DatasetTDB ;
     tdb:location "DB" ;
-    # Query timeout on this dataset (milliseconds)
-    ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
-##      tdb:unionDefaultGraph true ;
+##     # Query timeout on this dataset (milliseconds)
+##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
+##     # Default graph for query is the (read-only) union of all named graphs.
+##     tdb:unionDefaultGraph true ;
      .
