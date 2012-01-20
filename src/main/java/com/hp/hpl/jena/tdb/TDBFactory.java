@@ -62,7 +62,7 @@ public class TDBFactory
     { return createDataset(createDatasetGraph()) ; }
 
     /** Create a dataset around a DatasetGraphTDB */ 
-    public static Dataset createDataset(DatasetGraph datasetGraph)
+    private static Dataset createDataset(DatasetGraph datasetGraph)
     { return DatasetFactory.create(datasetGraph) ; }
     
     // Meaningless unless there is only one in-memory dataset */

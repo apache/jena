@@ -18,27 +18,25 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.AfterClass ;
+import org.junit.Before ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.assembler.JA;
+import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphNamedTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDB;
-import com.hp.hpl.jena.tdb.store.GraphTDBBase;
-import com.hp.hpl.jena.tdb.store.GraphTriplesTDB;
+import com.hp.hpl.jena.tdb.store.* ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TestTDBAssembler extends BaseTest
 {
@@ -64,23 +62,23 @@ public class TestTDBAssembler extends BaseTest
     
     @Test public void createDatasetDirect()
     {
-        String f = dirAssem+"/tdb-dataset.ttl" ;
-        Object thing = AssemblerUtils.build( f, VocabTDB.tDatasetTDB) ;
-        assertTrue(thing instanceof Dataset) ;
-        Dataset ds = (Dataset)thing ;
-        ds.asDatasetGraph() ;
-        assertTrue(((Dataset)thing).asDatasetGraph() instanceof DatasetGraphTDB) ;
-        ds.close() ;
+        createTest(dirAssem+"/tdb-dataset.ttl", VocabTDB.tDatasetTDB) ;
     }
     
     @Test public void createDatasetEmbed()
     {
-        String f = dirAssem+"/tdb-dataset-embed.ttl" ;
-        Object thing = AssemblerUtils.build( f, DatasetAssemblerVocab.tDataset) ;
+        createTest(dirAssem+"/tdb-dataset-embed.ttl", DatasetAssemblerVocab.tDataset) ;
+    }
+    
+    private void createTest(String filename, Resource type)
+    {
+        Object thing = AssemblerUtils.build( filename, type) ; 
         assertTrue(thing instanceof Dataset) ;
         Dataset ds = (Dataset)thing ;
-        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTDB) ;
+        assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTransaction) ;
+        assertTrue(ds.supportsTransactions()) ;
         ds.close();
+        
     }
 
     @Test public void createGraphDirect()
