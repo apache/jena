@@ -33,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 /** A implementation of a Dataset.
@@ -107,6 +108,11 @@ public class DatasetImpl implements Dataset, DataSource
     @Override
     public Lock getLock() { return dsg.getLock() ; }
     
+    @Override
+    public Context getContext()
+    {
+        return dsg.getContext() ;
+    }
     @Override
     public boolean supportsTransactions()
     {

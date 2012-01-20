@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Query is over a Dataset, a collection of named graphs
  *  and a background graph (also called the default
@@ -33,7 +34,7 @@ public interface Dataset // extends Transactional
     // Rather than pull in the internal "Tranactional" interface, we duplicate it here. 
     /** Get the default graph as a Jena Model */
     public Model getDefaultModel() ;
-
+    
     /** Set the background graph.  Can be set to null for none.  */
     public void  setDefaultModel(Model model) ;
 
@@ -58,6 +59,9 @@ public interface Dataset // extends Transactional
     /** Get the lock for this dataset */
     public Lock getLock() ;
     
+    /** Get the context associated with this dataset */
+    public Context getContext() ;
+
     /** Does this dataset support transactions?
      *  Supporting transactions mean that the dataset implementation
      *  provides {@link #begin}, {@link #commit}, {@link #abort}, {@link #end}
