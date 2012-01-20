@@ -27,6 +27,7 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location;
 import com.hp.hpl.jena.tdb.junit.GraphLocation;
 
@@ -37,6 +38,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     
     @BeforeClass public static void beforeClass()
     {
+        StoreConnection.reset() ;
         graphLocation = new GraphLocation(new Location(ConfigTest.getTestingDirDB())) ;
         graphLocation.release() ;
         graphLocation.clearDirectory() ;

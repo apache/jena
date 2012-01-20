@@ -19,28 +19,27 @@
 package com.hp.hpl.jena.tdb.store;
 
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Arrays ;
+import java.util.List ;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openjena.atlas.iterator.Iter;
-import org.openjena.atlas.junit.BaseTest;
-import org.openjena.atlas.lib.FileOps;
+import org.junit.After ;
+import org.junit.Before ;
+import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.sparql.sse.SSE;
-import com.hp.hpl.jena.sparql.util.NodeFactory;
-import com.hp.hpl.jena.tdb.ConfigTest;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.junit.GraphLocation;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.junit.GraphLocation ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
@@ -129,9 +128,8 @@ public class TestDatasetTDBPersist extends BaseTest
         // Graphs only exists if they have a triple in them
         assertFalse(ds.containsNamedModel(graphName)) ;
         
-        Iterator<String> iter = ds.listNames() ;
-        assertFalse(iter.hasNext()) ;
-        
+        List<String> names = Iter.toList(ds.listNames()) ;
+        assertEquals(0, names.size()) ;
         assertEquals(0, ds.asDatasetGraph().size()) ;
     }
     
@@ -145,8 +143,7 @@ public class TestDatasetTDBPersist extends BaseTest
         g2.add(triple) ;
         
         assertTrue(ds.containsNamedModel(graphName)) ;
-        Iterator<String> iter = ds.listNames() ;
-        List<String> x = Iter.toList(iter) ;
+        List<String> x = Iter.toList(ds.listNames()) ;
         List<String> y = Arrays.asList(graphName) ;
         assertEquals(x,y) ;
         

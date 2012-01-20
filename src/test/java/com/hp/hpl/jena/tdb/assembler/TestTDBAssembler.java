@@ -33,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
 import com.hp.hpl.jena.tdb.ConfigTest;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.GraphNamedTDB;
 import com.hp.hpl.jena.tdb.store.GraphTDB;
@@ -57,6 +58,7 @@ public class TestTDBAssembler extends BaseTest
     
     @AfterClass static public void afterClass()
     {
+        StoreConnection.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     

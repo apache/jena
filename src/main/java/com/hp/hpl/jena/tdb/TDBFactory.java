@@ -106,7 +106,7 @@ public class TDBFactory
             return dsg ;
         }
         // Not transactional - add the switching wrapper.
-        return asTransactional(TDBMaker._createDatasetGraph(location)) ; }
+        return asTransactional(dsg) ; }
     
     private static DatasetGraph _createDatasetGraph()
     {
