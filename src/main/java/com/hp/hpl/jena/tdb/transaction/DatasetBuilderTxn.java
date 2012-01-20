@@ -44,6 +44,12 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderTxn
 {
+    // Duplicate context.
+    // Don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
+    // And fails to copy context.
+    // XXX 1/ DatasetGraphTDB clone constructor needs to handle context. 
+    // XXX 2/ DatasetBuilderTxn needs to build a  DatasetGraphTxn directly, not via 
+    
     // Context for the build.
     private TransactionManager txnMgr ;
     private Map<FileRef, BlockMgr> blockMgrs ; 
@@ -59,22 +65,28 @@ public class DatasetBuilderTxn
         this.nodeTables = dsg.getConfig().nodeTables ;
         this.txn = transaction ;
         this.dsg = dsg ;
+        
+        DatasetGraphTDB dsgTxn ;
             
         switch(mode)
         {
-            case READ : return buildReadonly() ;
-            case WRITE : return buildWritable() ;
-            default: return null ;  // Silly Java.
+            case READ : dsgTxn = buildReadonly() ; break ;
+            case WRITE : dsgTxn = buildWritable() ;  break ;
+            default: dsgTxn = null ;  // Silly Java.
         }
+        
+        dsgTxn = new DatasetGraphTxn(dsgTxn, txn) ;
+        dsgTxn.getContext().putAll(dsg.getContext()) ;
+        return dsgTxn ;
     }
     
-    private DatasetGraphTxn buildReadonly()
+    private DatasetGraphTDB buildReadonly()
     {
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().params) ;
-        return new DatasetGraphTxn(dsg2, txn) ;
+        return dsg2 ;
     }
 
     private DatasetGraphTDB buildWritable()
@@ -83,7 +95,7 @@ public class DatasetBuilderTxn
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x.build(dsg.getLocation(), dsg.getConfig().params) ;
-        return new DatasetGraphTxn(dsg2, txn) ;
+        return dsg2 ;
     }
 
     // ---- Add logging to a BlockMgr when built.
