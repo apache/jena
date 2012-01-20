@@ -24,6 +24,8 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 /** Interface to maker of the actual implementations of TDB graphs and datasets */ 
 public interface DatasetGraphMakerTDB 
 {
+    // Needed?
+    
     /** Create an in-memory dataset */
     public DatasetGraphTDB createDatasetGraph() ;
     /** Create a TDB-backed dataset at a given location */

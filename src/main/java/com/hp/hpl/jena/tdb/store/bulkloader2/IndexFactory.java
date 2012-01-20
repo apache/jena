@@ -25,7 +25,7 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.index.RangeIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
 
 public class IndexFactory
 {
@@ -44,7 +44,7 @@ public class IndexFactory
     public static RangeIndex openBPT(Location location, String indexName, int readCacheSize, int writeCacheSize, int dftKeyLength, int dftValueLength)
     {
         FileSet fileset = new FileSet(location, indexName) ;
-        return SetupTDB.makeBPlusTree(fileset, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
+        return SetupTDB_Y.makeBPlusTree(fileset, readCacheSize, writeCacheSize, dftKeyLength, dftValueLength) ;
     }
 
 }

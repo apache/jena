@@ -31,7 +31,7 @@ import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class AbstractTestNodeTableTrans extends BaseTest
@@ -41,7 +41,7 @@ public abstract class AbstractTestNodeTableTrans extends BaseTest
     
     private NodeTableTrans create(Transaction txn, Node...nodes)
     {
-        NodeTable base = SetupTDB.makeNodeTable(getLocation()) ;
+        NodeTable base = SetupTDB_Y.makeNodeTable(getLocation()) ;
         for ( Node n : nodes )
             base.getAllocateNodeId(n) ;
         return create(txn, base) ;

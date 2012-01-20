@@ -33,7 +33,7 @@ import com.hp.hpl.jena.tdb.index.RangeIndex;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
 import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SetupTDB;
+import com.hp.hpl.jena.tdb.sys.SetupTDB_X ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
@@ -76,7 +76,7 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         
         String fnNodes = fileset.filename(filename) ;
         return BlockMgrFactory.createFile(fnNodes, blockSize, 
-                                          SetupTDB.systemInfo.getBlockReadCacheSize(), //SystemTDB.BlockReadCacheSize,
-                                          SetupTDB.systemInfo.getBlockWriteCacheSize()) ; //SystemTDB.BlockWriteCacheSize) ;
+                                          SetupTDB_X.systemInfo.getBlockReadCacheSize(), //SystemTDB.BlockReadCacheSize,
+                                          SetupTDB_X.systemInfo.getBlockWriteCacheSize()) ; //SystemTDB.BlockWriteCacheSize) ;
     }
 }

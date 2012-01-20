@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 
 public class TestTripleTable extends BaseTest
 {
@@ -127,7 +127,7 @@ public class TestTripleTable extends BaseTest
     
     private TripleTable createTripleTableMem()
     {
-        DatasetGraphTDB ds = SetupTDB.buildDataset(Location.mem()) ; 
+        DatasetGraphTDB ds = DatasetBuilderStd.build(Location.mem()) ; 
         return ds.getTripleTable() ;
     }
 }

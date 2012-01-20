@@ -34,8 +34,8 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -103,7 +103,7 @@ public abstract class CmdTDB extends CmdARQ
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
         try { p.load(in) ; } catch (IOException ex) {}
         PropertyConfigurator.configure(p) ;
-        SetupTDB.setOptimizerWarningFlag(false) ;
+        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
         System.setProperty("log4j.configuration", "set") ;
     }
 

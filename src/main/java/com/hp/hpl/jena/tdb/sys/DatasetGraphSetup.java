@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.tdb.sys;
 
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetGraphSetup implements DatasetGraphMakerTDB
@@ -26,13 +27,13 @@ public class DatasetGraphSetup implements DatasetGraphMakerTDB
     @Override
     public DatasetGraphTDB createDatasetGraph()
     {
-        return SetupTDB.buildDataset(Location.mem()) ;
+        return DatasetBuilderStd.build(Location.mem()) ;
     }
 
     @Override
     public DatasetGraphTDB createDatasetGraph(Location location)
     {
-        return SetupTDB.buildDataset(location) ;
+        return DatasetBuilderStd.build(location) ;
     }
 
     @Override

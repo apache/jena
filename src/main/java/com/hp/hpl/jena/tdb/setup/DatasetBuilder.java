@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import java.util.Properties ;
-
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
@@ -31,5 +29,5 @@ public interface DatasetBuilder
      * Build a new Java object for a dataset.
      * Location may already contains files for the state, or may need initializing.  
      */
-    public DatasetGraphTDB build(Location location, Properties config) ;
+    public DatasetGraphTDB build(Location location, SystemParams config) ;
 }

@@ -29,15 +29,23 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.GraphStoreFactory ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
- * Test SPARQL on the raw storage dataset.
+ * Test SPARQL
  */
 public class Test_SPARQL_TDB extends BaseTest
 {
@@ -46,6 +54,11 @@ public class Test_SPARQL_TDB extends BaseTest
         return TDBFactory.createDataset() ;
     }
     
+    private static Dataset create(Location location) 
+    {
+        return TDBFactory.createDataset(location) ;
+    }
+
     
     @Test public void sparql1()
     {
@@ -110,5 +123,73 @@ public class Test_SPARQL_TDB extends BaseTest
         ResultSet rs = qExec.execSelect() ;
         int n = ResultSetFormatter.consume(rs) ;
         assertEquals(1, n) ;
+    }
+    
+    // Test transactions effective.
+    
+    @Test public void sparql_txn_1()
+    {
+        Dataset dataset = create() ;
+        update(dataset, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
+
+        dataset.begin(ReadWrite.READ) ;
+        try {
+            int n = count(dataset) ;
+            assertEquals(1, n) ;
+            n = count(dataset, "SELECT * { <x:s> <x:p> <x:o>}") ;
+            assertEquals(1, n) ;
+        } finally { dataset.end() ; }
+    }
+
+    @Test public void sparql_txn_2()
+    {
+        Dataset dataset1 = create(Location.mem("foo")) ;
+        Dataset dataset2 = create(Location.mem("foo")) ;
+        
+        // Test the test setup.
+        update(dataset1, "INSERT DATA { <x:s> <x:p> <x:o> }") ;
+        //TDB.sync(dataset1) ;
+        assertEquals(1, count(dataset2)) ;
+        
+        dataset1.begin(ReadWrite.READ) ;
+        
+        dataset2.begin(ReadWrite.WRITE) ;
+        update(dataset2, "INSERT DATA { <x:s> <x:p> <x:o2> }") ;
+        
+        assertEquals(1, count(dataset1)) ;
+        assertEquals(2, count(dataset2)) ;
+        dataset2.commit();
+        dataset2.end() ;
+        
+        // This is 2 if dataset1 is not in a transaction
+        // but that replies on dataset2 commit doing the write back.
+        assertEquals(1, count(dataset1)) ;  
+        
+        dataset1.end() ;
+        
+        dataset1.begin(ReadWrite.READ) ;
+        assertEquals(2, count(dataset1)) ;
+        dataset1.end() ;
+    }
+
+    private int count(Dataset dataset)
+    { return count(dataset, "SELECT * { ?s ?p ?o }") ; }
+    
+    private int count(Dataset dataset, String queryString)
+    
+    {
+        Query query = QueryFactory.create(queryString) ;
+        QueryExecution qExec = QueryExecutionFactory.create(query, dataset) ;
+        ResultSet rs = qExec.execSelect() ;
+        return ResultSetFormatter.consume(rs) ;
+    }
+
+
+    private void update(Dataset dataset, String string)
+    {
+        UpdateRequest req = UpdateFactory.create(string) ;
+        GraphStore gs = GraphStoreFactory.create(dataset) ;
+        UpdateProcessor proc = UpdateExecutionFactory.create(req, gs) ;
+        proc.execute() ;
     }
 }

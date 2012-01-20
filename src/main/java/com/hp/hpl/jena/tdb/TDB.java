@@ -45,12 +45,12 @@ import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.tdb.assembler.AssemblerTDB ;
 import com.hp.hpl.jena.tdb.modify.UpdateEngineTDB ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.solver.OpExecutorTDB ;
 import com.hp.hpl.jena.tdb.solver.QueryEngineTDB ;
 import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.EnvTDB ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
@@ -117,7 +117,7 @@ public class TDB
      * Set to false to silence the warning
      */
     public static void setOptimizerWarningFlag(boolean b)
-    { SetupTDB.setOptimizerWarningFlag(b) ; }
+    { DatasetBuilderStd.setOptimizerWarningFlag(b) ; }
     
     // ** Call SystemARQ.sync 
     

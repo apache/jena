@@ -50,12 +50,12 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
 import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
@@ -75,7 +75,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     public static void main(String...argv)
     {
         CmdTDB.setLogging() ;
-        SetupTDB.setOptimizerWarningFlag(false) ;
+        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
         new CmdNodeTableBuilder(argv).mainRun() ;
     }
     
@@ -133,7 +133,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     {
         // This formats the location correctly.
         // But we're not really interested in it all.
-        DatasetGraphTDB dsg = SetupTDB.buildDataset(location) ;
+        DatasetGraphTDB dsg = DatasetBuilderStd.build(location) ;
         
         // so close indexes and the prefix table.
         dsg.getTripleTable().getNodeTupleTable().getTupleTable().close();

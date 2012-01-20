@@ -18,15 +18,15 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.Before;
+import org.junit.Before ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
 {
@@ -45,7 +45,7 @@ public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
     protected ObjectFile createObjectFile()
     {
         FileSet fs = new FileSet(loc, "data") ;
-        return SetupTDB.makeObjectFile(fs) ;
+        return SetupTDB_Y.makeObjectFile(fs) ;
     }
 
     @Override

@@ -19,29 +19,29 @@
 package com.hp.hpl.jena.tdb.store;
 
 import java.util.Map ;
-import java.util.Properties ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 
 public class StoreConfig
 {
-    public Properties properties ;
+    public SystemParams params ;
     public Map<FileRef, BlockMgr> blockMgrs ;
     public Map<FileRef, BufferChannel> bufferChannels ;
     public Map<FileRef, NodeTable> nodeTables ;
     public Location location ; 
 
-    public StoreConfig(Location location, Properties properties, 
+    public StoreConfig(Location location, SystemParams params, 
                        Map<FileRef, BlockMgr> blockMgrs, 
                        Map<FileRef, BufferChannel> bufferChannels,
                        Map<FileRef, NodeTable> nodeTables)
     {
         this.location = location ;
-        this.properties = properties ;
+        this.params = params ;
         this.blockMgrs = blockMgrs ;
         this.bufferChannels = bufferChannels ;
         this.nodeTables = nodeTables ;

@@ -30,33 +30,33 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.tdb.* ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class TestTxn extends BaseTest
 {
     static final String DIR = ConfigTest.getTestingDirDB() ; 
     
-//    @Before public void before()
-//    {
-//        FileOps.clearDirectory(DIR) ; 
-//    }
-//    
-//    @After public void after()
-//    {
-//        StoreConnection.reset() ;
-//        FileOps.clearDirectory(DIR) ; 
-//    }
+    @Before public void before()
+    {
+        FileOps.clearDirectory(DIR) ; 
+    }
+    
+    @After public void after()
+    {
+        StoreConnection.reset() ;
+        FileOps.clearDirectory(DIR) ; 
+    }
     
     protected Dataset create()
     { 
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        //TDBFactory.MAKE_TRANSACTIONAL_DATASETS = false ;
+        DatasetGraph dsg = TDBFactory.createDatasetGraph(DIR) ;
         //DatasetGraph dsg = TDBFactoryTxn.XcreateDatasetGraph(Location.mem(DIR)) ;
         
-        if ( dsg instanceof DatasetGraphTDB )
-            dsg = new DatasetGraphTransaction((DatasetGraphTDB)dsg) ;    
+//        if ( dsg instanceof DatasetGraphTDB )
+//            dsg = new DatasetGraphTransaction((DatasetGraphTDB)dsg) ;    
         return DatasetFactory.create(dsg) ;
     }
 

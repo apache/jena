@@ -24,7 +24,6 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.PropertyUtils ;
 import org.openjena.atlas.lib.Sync ;
 import org.openjena.atlas.lib.Tuple ;
 
@@ -41,9 +40,19 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-/** TDB Dataset - directly over the basic storage. */
+/** TDB Dataset - this is the class that creates a dataset over the storage via
+ *  TripleTable, QuadTable and prefixes.  Any transactions
+ *  
+ *  See also:
+ *  <ul>
+ *  <li>{@link DatasetGraphTxn} &ndash; the sublcass that provides a single tranasaction</li>
+ *  <li>{@link DatasetGraphTransaction} &ndash; class that provides the application with the right DatasetGraphTDB (base or transaction).</li>
+ *  </ul>
+ */
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements DatasetGraph, Sync, Closeable, GraphStore, Session
 {
@@ -213,20 +222,20 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public StoreConfig getConfig()                       { return config ; }
     
-    public String getConfigValue(String key)
-    {
-        if ( config == null )
-            return null ;
-        return config.properties.getProperty(key) ;
-    }
-    
-    public int getConfigValueAsInt(String key, int dftValue)
-    {
-        if ( config == null )
-            return dftValue ;
-        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
-    }
-
+//    public String getConfigValue(String key)
+//    {
+//        if ( config == null )
+//            return null ;
+//        return config.properties.getProperty(key) ;
+//    }
+//    
+//    public int getConfigValueAsInt(String key, int dftValue)
+//    {
+//        if ( config == null )
+//            return dftValue ;
+//        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
+//    }
+//
     public ReorderTransformation getTransform()     { return transform ; }
     
     public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }

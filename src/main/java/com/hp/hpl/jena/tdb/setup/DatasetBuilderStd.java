@@ -20,13 +20,15 @@ package com.hp.hpl.jena.tdb.setup;
 
 import java.util.HashMap ;
 import java.util.Map ;
-import java.util.Properties ;
 
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
+import com.hp.hpl.jena.sparql.sse.SSEParseException ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
@@ -47,7 +49,6 @@ import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** This class is the process of building a dataset. */ 
@@ -66,7 +67,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     private TupleIndexBuilder tupleIndexBuilder ;
     
-    private Properties config ;
+    private SystemParams params ;
+
     
     private Map<FileRef, BlockMgr> blockMgrs = new HashMap<FileRef, BlockMgr>() ;
     private Map<FileRef, BufferChannel> bufferChannels = new HashMap<FileRef, BufferChannel>() ;
@@ -86,10 +88,14 @@ public class DatasetBuilderStd implements DatasetBuilder
         return x.build(Location.mem(), null) ;
     }
     
-    
-    protected DatasetBuilderStd()
+    public static DatasetBuilderStd stdBuilder()
     {
+        DatasetBuilderStd x = new DatasetBuilderStd() ;
+        x.setStd() ;
+        return x ; 
     }
+    
+    protected DatasetBuilderStd() {}
     
     public DatasetBuilderStd(BlockMgrBuilder blockMgrBuilder,
                              NodeTableBuilder nodeTableBuilder)
@@ -97,12 +103,13 @@ public class DatasetBuilderStd implements DatasetBuilder
         set(blockMgrBuilder, nodeTableBuilder) ;
     }
     
+    // Dalayed initialization
     protected void setAll(NodeTableBuilder nodeTableBuilder,
-                       TupleIndexBuilder tupleIndexBuilder,
-                       IndexBuilder indexBuilder,
-                       RangeIndexBuilder rangeIndexBuilder,
-                       BlockMgrBuilder blockMgrBuilder,
-                       ObjectFileBuilder objectFileBuilder)
+                          TupleIndexBuilder tupleIndexBuilder,
+                          IndexBuilder indexBuilder,
+                          RangeIndexBuilder rangeIndexBuilder,
+                          BlockMgrBuilder blockMgrBuilder,
+                          ObjectFileBuilder objectFileBuilder)
     {
         this.nodeTableBuilder = nodeTableBuilder ;
         this.tupleIndexBuilder = tupleIndexBuilder ;
@@ -164,21 +171,22 @@ public class DatasetBuilderStd implements DatasetBuilder
     }
 
     @Override
-    synchronized final
-    public DatasetGraphTDB build(Location location, Properties config)
+    public DatasetGraphTDB build(Location location, SystemParams params)
     {
+        if ( params == null )
+            params = SystemParams.getStdSystemParams() ;
+        
         // Ensure that there is global synchronization
         synchronized(DatasetBuilderStd.class)
         {
-            return _build(location, config) ;
+            return _build(location, params) ;
         }
     }
     
-    protected DatasetGraphTDB _build(Location location, Properties config)
+    protected DatasetGraphTDB _build(Location location, SystemParams _params)
     {
-        this.config = config ;
+        params = _params ;
         init(location) ;
-        
         DatasetControl policy = createConcurrencyPolicy() ;
         
         NodeTable nodeTable = makeNodeTable(location, 
@@ -190,7 +198,7 @@ public class DatasetBuilderStd implements DatasetBuilder
         DatasetPrefixesTDB prefixes = makePrefixTable(location, policy) ;
         ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
-        StoreConfig storeConfig = new StoreConfig(location, config, blockMgrs, bufferChannels, nodeTables) ;
+        StoreConfig storeConfig = new StoreConfig(location, params, blockMgrs, bufferChannels, nodeTables) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storeConfig) ;
         return dsg ;
     }
@@ -309,7 +317,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     protected ReorderTransformation chooseReorderTransformation(Location location)
     {    
-        return SetupTDB.chooseOptimizer(location) ;
+        return chooseOptimizer(location) ;
     }
 
     // ======== Components level
@@ -333,7 +341,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     private TupleIndex[] makeTupleIndexes(Location location, String primary, String[] indexNames, String[] filenames)
     {
         if ( primary.length() != 3 && primary.length() != 4 )
-            SetupTDB.error(log, "Bad primary key length: "+primary.length()) ;
+            error(log, "Bad primary key length: "+primary.length()) ;
     
         int indexRecordLen = primary.length()*NodeId.SIZE ;
         TupleIndex indexes[] = new TupleIndex[indexNames.length] ;
@@ -394,33 +402,53 @@ public class DatasetBuilderStd implements DatasetBuilder
         catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
     }
     
-    private static Params params = new Params() ;
-    
-    // The standard setting
-    private static class Params
+
+    /** Set the global flag that control the "No BGP optimizer" warning.
+     * Set to false to silence the warning
+     */
+    public static void setOptimizerWarningFlag(boolean b) { warnAboutOptimizer = b ; }
+    private static boolean warnAboutOptimizer = true ;
+
+    public static ReorderTransformation chooseOptimizer(Location location)
     {
-        final int      blockSize            = SystemTDB.BlockSize ;
-        final int      memBlockSize         = SystemTDB.BlockSizeTestMem ;
-        final int      readCacheSize        = SystemTDB.BlockReadCacheSize ;
-        final int      writeCacheSize       = SystemTDB.BlockWriteCacheSize ;
-        final int      Node2NodeIdCacheSize = SystemTDB.Node2NodeIdCacheSize ;
-        final int      NodeId2NodeCacheSize = SystemTDB.NodeId2NodeCacheSize ;
-        final int      NodeMissCacheSize    = SystemTDB.NodeMissCacheSize ;
+        if ( location == null )
+            return ReorderLib.identity() ;
 
-        final String   indexNode2Id         = Names.indexNode2Id ;
-        final String   indexId2Node         = Names.indexId2Node ;
-        final String   primaryIndexTriples  = Names.primaryIndexTriples ;
-        final String[] tripleIndexes        = Names.tripleIndexes ;
-        final String   primaryIndexQuads    = Names.primaryIndexQuads ;
-        final String[] quadIndexes          = Names.quadIndexes ;
-        final String   primaryIndexPrefix   = Names.primaryIndexPrefix ;
-        final String[] prefixIndexes        = Names.prefixIndexes ;
-        final String   indexPrefix          = Names.indexPrefix ;
+        ReorderTransformation reorder = null ;
+        if ( location.exists(Names.optStats) )
+        {
+            try {
+                reorder = ReorderLib.weighted(location.getPath(Names.optStats)) ;
+                log.debug("Statistics-based BGP optimizer") ;  
+            } catch (SSEParseException ex) { 
+                log.warn("Error in stats file: "+ex.getMessage()) ;
+                reorder = null ;
+            }
+        }
 
-        final String   prefixNode2Id        = Names.prefixNode2Id ;
-        final String   prefixId2Node        = Names.prefixId2Node ;
+        if ( reorder == null && location.exists(Names.optFixed) )
+        {
+            // Not as good but better than nothing.
+            reorder = ReorderLib.fixed() ;
+            log.debug("Fixed pattern BGP optimizer") ;  
+        }
+
+        if ( location.exists(Names.optNone) )
+        {
+            reorder = ReorderLib.identity() ;
+            log.debug("Optimizer explicitly turned off") ;
+        }
+
+        if ( reorder == null )
+            reorder = SystemTDB.defaultOptimizer ;
+
+        if ( reorder == null && warnAboutOptimizer )
+            ARQ.getExecLogger().warn("No BGP optimizer") ;
+
+        return reorder ; 
     }
-    
+
+
     interface RecordBlockMgr 
     {
         void record(FileRef fileRef, BlockMgr blockMgr) ;
