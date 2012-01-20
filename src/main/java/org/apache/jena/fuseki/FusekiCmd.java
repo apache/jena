@@ -87,7 +87,8 @@ public class FusekiCmd extends CmdARQ
     static public void main(String...argv)
     {
         // Just to make sure ...
-        ARQ.init();
+        ARQ.init() ;
+        TDB.init() ;
         Fuseki.init() ;
         new FusekiCmd(argv).mainRun() ;
     }

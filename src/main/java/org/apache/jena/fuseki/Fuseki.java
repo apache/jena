@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
 public class Fuseki
@@ -85,6 +86,7 @@ public class Fuseki
         ARQMgt.register(PATH+".system:type=SystemInfo", sysInfo) ;
         SystemARQ.registerSubSystem(sysInfo) ;
         RIOT.init() ;
+        TDB.init() ;
         MappingRegistry.addPrefixMapping("fuseki", FusekiSymbolIRI) ;
     }
   
