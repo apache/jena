@@ -65,7 +65,7 @@ public class FusekiErrorHandler extends ErrorHandler
         {
             writer.write("\n") ;
             writer.write("\n") ;
-            writer.write(format("Fuseki - version %s (Date: %s)", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
+            writer.write(format("Fuseki - version %s (Date: %s)\n", Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
         }
         writer.flush();
         response.setContentLength(bytes.size()) ;
