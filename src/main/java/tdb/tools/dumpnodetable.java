@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
@@ -87,7 +87,7 @@ public class dumpnodetable extends CmdGeneral
 
                             int sizeNodeMissCacheSize)
     {
-        NodeTable nodeTable = SetupTDB_Y.makeNodeTable(new Location(location), 
+        NodeTable nodeTable = SetupTDB.makeNodeTable(new Location(location), 
                                                      indexNode2Id, node2NodeIdCacheSize,
                                                      indexId2Node, nodeId2NodeCacheSize,
                                                      sizeNodeMissCacheSize) ;

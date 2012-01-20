@@ -18,18 +18,17 @@
 
 package com.hp.hpl.jena.tdb.index.factories;
 
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.PlainFile;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.ext.ExtHash;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SetupTDB_X;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.PlainFile ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexFactory ;
+import com.hp.hpl.jena.tdb.index.ext.ExtHash ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Index factory for extendible hash tables.
  *  Only an index, not a range index
@@ -62,7 +61,7 @@ public class IndexFactoryExtHash implements IndexFactory
     protected BlockMgr createBlockMgr(String filename, int blockSize)
     {
         return BlockMgrFactory.createFile(filename, blockSize, 
-                                          SetupTDB_X.systemInfo.getBlockReadCacheSize(), //SystemTDB.BlockReadCacheSize,
-                                          SetupTDB_X.systemInfo.getBlockWriteCacheSize()) ; //SystemTDB.BlockWriteCacheSize) ;
+                                          SystemTDB.BlockReadCacheSize,
+                                          SystemTDB.BlockWriteCacheSize) ;
     }
 }

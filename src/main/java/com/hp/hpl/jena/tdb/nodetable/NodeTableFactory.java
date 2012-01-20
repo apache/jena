@@ -24,27 +24,12 @@ import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.Index ;
 import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class NodeTableFactory
 {
-//    private class NodeTableBuilderStd implements NodeTableBuilder 
-//    {
-//        private IndexBuilder indexBuilder ;
-//
-//        NodeTableBuilderStd(IndexBuilder indexBuilder)
-//        {
-//            this.indexBuilder = indexBuilder ; 
-//        }
-//        
-//        public NodeTable create(FileSet id2Node, FileSet node2Id)
-//        {
-//            return new NodeTableIndex(indexBuilder, id2Node, node2Id, SystemTDB.Node2NodeIdCacheSize, SystemTDB.NodeId2NodeCacheSize) ;
-//        }
-//    }
-    
     /** Regular node table */
     @Deprecated
     public static NodeTable create(IndexBuilder indexBuilder, Location location)
@@ -59,10 +44,12 @@ public class NodeTableFactory
         if ( location != null )
             filesetIdx = new FileSet(location, Names.indexNode2Id) ;
         
+        SystemParams params = SystemParams.getStdSystemParams() ;
+        
         return  create(indexBuilder, filesetNodeTable, filesetIdx,
-                       SetupTDB_Y.systemInfo.getNode2NodeIdCacheSize(),
-                       SetupTDB_Y.systemInfo.getNodeId2NodeCacheSize(),
-                       SetupTDB_Y.systemInfo.getNodeMissCacheSize()) ;
+                       params.Node2NodeIdCacheSize ,
+                       params.NodeId2NodeCacheSize ,
+                       params.NodeMissCacheSize ) ;
     }
 
     /** Custom node table */

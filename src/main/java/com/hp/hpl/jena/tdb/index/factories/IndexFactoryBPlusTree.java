@@ -18,23 +18,22 @@
 
 package com.hp.hpl.jena.tdb.index.factories;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.TDBException;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.Index;
-import com.hp.hpl.jena.tdb.index.IndexFactory;
-import com.hp.hpl.jena.tdb.index.IndexRangeFactory;
-import com.hp.hpl.jena.tdb.index.RangeIndex;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SetupTDB_X ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexFactory ;
+import com.hp.hpl.jena.tdb.index.IndexRangeFactory ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
 {
@@ -76,7 +75,7 @@ public class IndexFactoryBPlusTree implements IndexFactory, IndexRangeFactory
         
         String fnNodes = fileset.filename(filename) ;
         return BlockMgrFactory.createFile(fnNodes, blockSize, 
-                                          SetupTDB_X.systemInfo.getBlockReadCacheSize(), //SystemTDB.BlockReadCacheSize,
-                                          SetupTDB_X.systemInfo.getBlockWriteCacheSize()) ; //SystemTDB.BlockWriteCacheSize) ;
+                                          SystemTDB.BlockReadCacheSize,
+                                          SystemTDB.BlockWriteCacheSize) ;
     }
 }

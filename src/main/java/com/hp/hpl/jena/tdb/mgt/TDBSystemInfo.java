@@ -18,26 +18,25 @@
 
 package com.hp.hpl.jena.tdb.mgt;
 
+import com.hp.hpl.jena.tdb.setup.SystemParams ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TDBSystemInfo implements TDBSystemInfoMBean
 {
-    @Override
-    public int getBlockSize()               { return SystemTDB.BlockSize ; }
-    @Override
-    public int getSegmentSize()             { return SystemTDB.SegmentSize ; }
-//    public int getSyncTick()                { return SystemTDB.SyncTick ; }
+    private static SystemParams params = SystemParams.getStdSystemParams() ;
 
     @Override
-    public int getBlockReadCacheSize()      { return SystemTDB.BlockReadCacheSize ; }
+    public int getSegmentSize()             { return SystemTDB.SegmentSize; }
     @Override
-    public int getBlockWriteCacheSize()     { return SystemTDB.BlockWriteCacheSize ; }
-
+    public int getNodeId2NodeCacheSize()    { return params.NodeId2NodeCacheSize ; }
     @Override
-    public int getNode2NodeIdCacheSize()     { return SystemTDB.Node2NodeIdCacheSize ; }
+    public int getNode2NodeIdCacheSize()    { return params.Node2NodeIdCacheSize ; }
     @Override
-    public int getNodeId2NodeCacheSize()     { return SystemTDB.NodeId2NodeCacheSize ; }
-    
+    public int getNodeMissCacheSize()       { return params.NodeMissCacheSize ; }
     @Override
-    public int getNodeMissCacheSize()       { return SystemTDB.NodeMissCacheSize ; }
+    public int getBlockSize()               { return params.blockSize ; }
+    @Override
+    public int getBlockReadCacheSize()      { return params.readCacheSize ; }
+    @Override
+    public int getBlockWriteCacheSize()     { return params.writeCacheSize ; }
 }

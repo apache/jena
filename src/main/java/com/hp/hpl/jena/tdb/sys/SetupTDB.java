@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.sys ;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
@@ -34,60 +33,32 @@ import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
-import com.hp.hpl.jena.tdb.index.* ;
+import com.hp.hpl.jena.tdb.index.Index ;
+import com.hp.hpl.jena.tdb.index.IndexBuilder ;
+import com.hp.hpl.jena.tdb.index.RangeIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndex ;
+import com.hp.hpl.jena.tdb.index.TupleIndexRecord ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
-import com.hp.hpl.jena.tdb.mgt.TDBSystemInfoMBean ;
-import com.hp.hpl.jena.tdb.nodetable.* ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableCache ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableFactory ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableInline ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTableNative ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.setup.SystemParams ;
-import com.hp.hpl.jena.tdb.store.* ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.store.QuadTable ;
+import com.hp.hpl.jena.tdb.store.TripleTable ;
 
-/** Makes things: datasets from locations, indexes */
+/** Makes things : datasets from locations, indexes, etc etc. */
 
-// Future - this become a collection of statics making things in standard ways. Does not build a dataset. 
-
-public class SetupTDB_Y
+public class SetupTDB
 {
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     static final Logger log = TDB.logInfo ;
-    
-    /* Logical information goes in the location metafile. This includes
-     * dataset type, NodeTable type and indexes expected.  But it does
-     * not include how the particular files are realised.
-     * 
-     * A NodeTable is a pair of id->Node and Node->id mappings. 
-     * 
-     * An index file has it's own .meta file saying that it is a B+tree and
-     * the record size - everything needed to access it to build a RangeIndex.
-     * The individual node table files are the same.  This means we can
-     * open a single index or object file (e.g to dump) and it allows
-     * for changes both in implementation technology and in overall design. 
-     */
-    
-    // Naming of statics: Maker at a place: X makeX(FileSet, MetaFile?, defaultBlockSize, defaultRecordFactory,
-    
-    // IndexBuilder for metadata files. 
-    
-    // Old code:
-    // IndexBuilders.  Or add a new IndexBuilder that can make from meta files.
-    
-    static public final String NodeTableType   = "dat" ; 
-    static public final String NodeTableLayout = "1" ;
-    
-    
-    /**  The JVM-wide parameters (these can change without a change to on-disk structure) */ 
-//    public final static Properties globalConfig = new Properties() ;
-//
-//    static {
-//        globalConfig.setProperty(Names.pNode2NodeIdCacheSize,  Integer.toString(Node2NodeIdCacheSize)) ;
-//        globalConfig.setProperty(Names.pNodeId2NodeCacheSize,  Integer.toString(NodeId2NodeCacheSize)) ;
-//        globalConfig.setProperty(Names.pNodeMissesCacheSize,   Integer.toString(NodeMissCacheSize)) ;
-//        globalConfig.setProperty(Names.pBlockWriteCacheSize,   Integer.toString(BlockWriteCacheSize)) ;
-//        globalConfig.setProperty(Names.pBlockReadCacheSize,    Integer.toString(BlockReadCacheSize)) ;
-////        globalConfig.setProperty(Names.pSyncTick,              Integer.toString(SyncTick)) ;
-//    }
-    
     public static void error(Logger log, String msg)
     {
         if ( log != null )
@@ -95,33 +66,8 @@ public class SetupTDB_Y
         throw new TDBException(msg) ;
     }
 
-    public static int parseInt(String str, String messageBase)
-    {
-        try { return Integer.parseInt(str) ; }
-        catch (NumberFormatException ex) { error(log, messageBase+": "+str) ; return -1 ; }
-    }
-    
-    
     private static SystemParams params = SystemParams.getStdSystemParams() ;
 
-    
-    public final static TDBSystemInfoMBean systemInfo = new TDBSystemInfoMBean() {
-		@Override
-        public int getSegmentSize()             { return SystemTDB.SegmentSize; }
-		@Override
-        public int getNodeId2NodeCacheSize()    { return params.NodeId2NodeCacheSize ; }
-		@Override
-        public int getNode2NodeIdCacheSize()    { return params.Node2NodeIdCacheSize ; }
-        @Override
-        public int getNodeMissCacheSize()       { return params.NodeMissCacheSize ; }
-		@Override
-        public int getBlockSize()               { return params.blockSize ; }
-		@Override
-        public int getBlockReadCacheSize()      { return params.readCacheSize ; }
-        @Override
-        public int getBlockWriteCacheSize()     { return params.writeCacheSize ; }
-	};
-	
     // And here we make datasets ... 
     public static DatasetGraphTDB buildDataset(Location location)
     {
@@ -256,33 +202,8 @@ public class SetupTDB_Y
         if (location.isMem()) 
             return NodeTableFactory.createMem(IndexBuilder.mem()) ;
 
-        /* Logical:
-         * # Node table.
-         * tdb.nodetable.mapping.node2id=node2id
-         * tdb.nodetable.mapping.id2node=id2node
-         * 
-         * Physical:
-         * 1- Index file for node2id
-         * 2- Cached direct lookup object file for id2node
-         *    Encoding. 
-         */   
-        
-        String nodeTableType = location.getMetaFile().getProperty(Names.kNodeTableType) ;
-
-        if (nodeTableType != null)
-        {
-            if ( ! nodeTableType.equals(NodeTableType))
-                log.debug("Explicit node table type: " + nodeTableType + " (ignored)") ;
-        }
-        else
-        {
-            location.getMetaFile().setProperty(Names.kNodeTableType, NodeTableType) ;
-            location.getMetaFile().setProperty(Names.kNodeTableLayout, NodeTableLayout) ;
-        }
-        
         // -- make id to node mapping -- Names.indexId2Node
         FileSet fsIdToNode = new FileSet(location, indexId2Node) ;
-        //checkMetadata(fsIdToNode.getMetaFile(), /*Names.kNodeTableType,*/ NodeTable.type) ; 
         
         ObjectFile stringFile = makeObjectFile(fsIdToNode) ;
         
@@ -325,103 +246,6 @@ public class SetupTDB_Y
         return objFile ;
     }
 
-    //    /** Check and set default for the dataset design */
-//    public static MetaFile locationMetadata(Location location)
-//    {
-//        boolean newDataset = location.isMem() || ! FileOps.existsAnyFiles(location.getDirectoryPath()) ; 
-//
-//        MetaFile metafile = location.getMetaFile() ;
-//        boolean isPreMetadata = false ;
-//        
-//        if (!newDataset && metafile.existsMetaData())
-//        {
-//            // Existing metadata
-//            String verString = metafile.getProperty("tdb.create.version", "unknown") ;
-//            TDB.logInfo.debug("Location: " + location.toString()) ;
-//            TDB.logInfo.debug("Version:  " + verString) ;
-//        }
-//        else
-//        {
-//            // Not new ?, no metadata
-//            // Either it's brand new (so set the defaults)
-//            // or it's a pre-0.9 dataset (files exists)
-//
-//            if ( ! newDataset )
-//            {
-//                // Well-known name of the primary triples index.
-//                isPreMetadata = FileOps.exists(location.getPath("SPO.idn")) ;
-//                // PROBLEM.
-////                boolean b = FileOps.exists(location.getPath("SPO.idn")) ;
-////                if ( !b )
-////                {
-////                    log.error("Existing files but no metadata and not old-style fixed layout: "+location.getDirectoryPath()) ;
-////                    File d = new File(location.getDirectoryPath()) ;
-////                    File[] entries = d.listFiles() ;
-////                    for ( File f : d.listFiles()  )
-////                        log.error("File: "+f.getName()) ;
-////                    throw new TDBException("Can't build dataset: "+location) ;
-////                }
-////                isPreMetadata = true ;
-//            }
-//        }
-//            
-//        // Ensure defaults.
-//        
-//        if ( newDataset )
-//        {
-//            metafile.ensurePropertySet("tdb.create.version", TDB.VERSION) ;
-//            metafile.ensurePropertySet("tdb.created", Utils.nowAsXSDDateTimeString()) ;
-//        }
-//        
-//        if ( isPreMetadata )
-//        {
-//            // Existing location (has some files in it) but no metadata.
-//            // Fake it as TDB 0.8.1 (which did not have metafiles)
-//            // If it's the wrong file format, things do badly wrong later.
-//            metafile.ensurePropertySet("tdb.create.version", "0.8") ;
-//            metafile.setProperty(Names.kCreatedDate, Utils.nowAsXSDDateTimeString()) ;
-//        }
-//            
-//        metafile.ensurePropertySet("tdb.layout", "v1") ;
-//        metafile.ensurePropertySet("tdb.type", "standalone") ;
-//        
-//        String layout = metafile.getProperty("tdb.layout") ;
-//        
-//        if ( layout.equals("v1") )
-//        {
-//            metafile.ensurePropertySet("tdb.indexes.triples.primary", Names.primaryIndexTriples) ;
-//            metafile.ensurePropertySet("tdb.indexes.triples", StrUtils.strjoin(",", Names.tripleIndexes)) ;
-//
-//            metafile.ensurePropertySet("tdb.indexes.quads.primary", Names.primaryIndexQuads) ;
-//            metafile.ensurePropertySet("tdb.indexes.quads", StrUtils.strjoin(",", Names.quadIndexes)) ;
-//            
-//            metafile.ensurePropertySet("tdb.nodetable.mapping.node2id", Names.indexNode2Id) ;
-//            metafile.ensurePropertySet("tdb.nodetable.mapping.id2node", Names.indexId2Node) ;
-//            
-//            metafile.ensurePropertySet("tdb.prefixes.index.file", Names.indexPrefix) ;
-//            metafile.ensurePropertySet("tdb.prefixes.nodetable.mapping.node2id", Names.prefixNode2Id) ;
-//            metafile.ensurePropertySet("tdb.prefixes.nodetable.mapping.id2node", Names.prefixId2Node) ;
-//            
-//        }
-//        else
-//            SetupTDB_Y.error(log, "tdb.layout: expected v1") ;
-//            
-//        
-//        metafile.flush() ;
-//        return metafile ; 
-//    }
-//
-////    public static Index createIndex(FileSet fileset, RecordFactory recordFactory)
-////    {
-////        return chooseIndexBuilder(fileset).newIndex(fileset, recordFactory) ;
-////    }
-////    
-////    public static RangeIndex createRangeIndex(FileSet fileset, RecordFactory recordFactory)
-////    {
-////        // Block size control?
-////        return chooseIndexBuilder(fileset).newRangeIndex(fileset, recordFactory) ;
-////    }
-//    
     /** Create a B+Tree using defaults */
     public static RangeIndex createBPTree(FileSet fileset,
                                           RecordFactory factory)

@@ -34,7 +34,7 @@ import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
 import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
 import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB_Y ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** Rewrite one index */
@@ -108,7 +108,7 @@ public class CmdRewriteIndex
         int blockSize = SystemTDB.BlockSize ;
         Iterator<Record> iterator ;
         
-        RangeIndex rangeIndex = SetupTDB_Y.makeRangeIndex(srcLoc, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
+        RangeIndex rangeIndex = SetupTDB.makeRangeIndex(srcLoc, indexName, dftKeyLength, dftValueLength, readCacheSize, writeCacheSize) ;
         BPlusTree bpt = (BPlusTree)rangeIndex ;
         bptParams = bpt.getParams() ;
         recordFactory = bpt.getRecordFactory() ;
