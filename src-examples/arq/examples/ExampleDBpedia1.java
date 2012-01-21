@@ -26,7 +26,7 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.sparql.engine.http.QueryEngineHTTP ;
 
-public class ExampleDBpedia
+public class ExampleDBpedia1
 {
     static public void main(String...argv)
     {
