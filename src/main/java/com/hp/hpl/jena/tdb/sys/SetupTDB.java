@@ -57,6 +57,8 @@ import com.hp.hpl.jena.tdb.store.TripleTable ;
 
 public class SetupTDB
 {
+    // Replaced/merge with DatasetBuilderStd mechanisms.
+    
     //private static final Logger log = LoggerFactory.getLogger(NewSetup.class) ;
     static final Logger log = TDB.logInfo ;
     public static void error(Logger log, String msg)

@@ -35,21 +35,10 @@ import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.file.MetaFile ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.index.TupleIndex ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.store.DatasetPrefixesTDB ;
-import com.hp.hpl.jena.tdb.store.NodeId ;
-import com.hp.hpl.jena.tdb.store.QuadTable ;
-import com.hp.hpl.jena.tdb.store.StoreConfig ;
-import com.hp.hpl.jena.tdb.store.TripleTable ;
-import com.hp.hpl.jena.tdb.sys.DatasetControl ;
-import com.hp.hpl.jena.tdb.sys.DatasetControlMRSW ;
-import com.hp.hpl.jena.tdb.sys.FileRef ;
-import com.hp.hpl.jena.tdb.sys.Names ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.store.* ;
+import com.hp.hpl.jena.tdb.sys.* ;
 
 /** This class is the process of building a dataset. */ 
 
@@ -154,20 +143,6 @@ public class DatasetBuilderStd implements DatasetBuilder
           NodeTableBuilder nodeTableBuilder       = new Builder.NodeTableBuilderStd(indexBuilderNT, objectFileBuilder) ;
           
           set(blockMgrBuilder, nodeTableBuilder) ;
-//        ObjectFileBuilder objectFileBuilder     = new Builder.ObjectFileBuilderStd() ;
-//        // Depends on memory/file?
-//        BlockMgrBuilder blockMgrBuilder         = new Builder.BlockMgrBuilderStd() ;
-//        
-//        IndexBuilder indexBuilder               = new Builder.IndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-//        RangeIndexBuilder rangeIndexBuilder     = new Builder.RangeIndexBuilderStd(blockMgrBuilder, blockMgrBuilder) ;
-//        
-//        NodeTableBuilder nodeTableBuilder       = new Builder.NodeTableBuilderStd(indexBuilder, objectFileBuilder) ;
-//        TupleIndexBuilder tupleIndexBuilder     = new Builder.TupleIndexBuilderStd(rangeIndexBuilder) ;
-//        
-//        set(nodeTableBuilder, tupleIndexBuilder, 
-//            indexBuilder, rangeIndexBuilder, 
-//            blockMgrBuilder, objectFileBuilder) ;
-        
     }
 
     @Override
@@ -215,13 +190,8 @@ public class DatasetBuilderStd implements DatasetBuilder
     // ======== Dataset level
     protected TripleTable makeTripleTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
-        MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = params.primaryIndexTriples ;
-        String[] dftIndexes = params.tripleIndexes ;
-        
-        String primary = metafile.getOrSetDefault("tdb.indexes.triples.primary", dftPrimary) ;
-        String x = metafile.getOrSetDefault("tdb.indexes.triples", StrUtils.strjoin(",",dftIndexes)) ;
-        String indexes[] = x.split(",") ;
+        String primary = params.primaryIndexTriples ;
+        String[] indexes = params.tripleIndexes ;
         
         if ( indexes.length != 3 )
             error(log, "Wrong number of triple table indexes: "+StrUtils.strjoin(",", indexes)) ;
@@ -232,20 +202,14 @@ public class DatasetBuilderStd implements DatasetBuilder
         if ( tripleIndexes.length != indexes.length )
             error(log, "Wrong number of triple table tuples indexes: "+tripleIndexes.length) ;
         TripleTable tripleTable = new TripleTable(tripleIndexes, nodeTable, policy) ;
-        metafile.flush() ;
         return tripleTable ;
     }
     
     protected QuadTable makeQuadTable(Location location, NodeTable nodeTable, DatasetControl policy)
     {    
-        MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = params.primaryIndexQuads ;
-        String[] dftIndexes = params.quadIndexes ;
+        String primary = params.primaryIndexQuads ;
+        String[] indexes = params.quadIndexes ;
         
-        String primary = metafile.getOrSetDefault("tdb.indexes.quads.primary", dftPrimary) ;
-        String x = metafile.getOrSetDefault("tdb.indexes.quads", StrUtils.strjoin(",",dftIndexes)) ;
-        String indexes[] = x.split(",") ;
-
         if ( indexes.length != 6 )
             error(log, "Wrong number of quad table indexes: "+StrUtils.strjoin(",", indexes)) ;
         
@@ -255,61 +219,27 @@ public class DatasetBuilderStd implements DatasetBuilder
         if ( quadIndexes.length != indexes.length )
             error(log, "Wrong number of quad table tuples indexes: "+quadIndexes.length) ;
         QuadTable quadTable = new QuadTable(quadIndexes, nodeTable, policy) ;
-        metafile.flush() ;
         return quadTable ;
     }
 
     protected DatasetPrefixesTDB makePrefixTable(Location location, DatasetControl policy)
     {    
-        /*
-         * tdb.prefixes.index.file=prefixIdx
-         * tdb.prefixes.indexes=GPU
-         * tdb.prefixes.primary=GPU
-         * 
-         * tdb.prefixes.nodetable.mapping.node2id=prefixes
-         * tdb.prefixes.nodetable.mapping.id2node=id2prefix
-    
-         * 
-         * Logical:
-         * 
-         * tdb.prefixes.index.file=prefixIdx
-         * tdb.prefixes.index=GPU
-         * tdb.prefixes.nodetable.mapping.node2id=prefixes
-         * tdb.prefixes.nodetable.mapping.id2node=id2prefix
-    
-         * 
-         * Physical:
-         * 
-         * It's a node table and an index (rangeindex)
-         * 
-         */
-
-        // Some of this is also in locationMetadata.
+        String primary = params.primaryIndexPrefix ;
+        String[] indexes = params.prefixIndexes ;
         
-        MetaFile metafile = location.getMetaFile() ;
-        String dftPrimary = params.primaryIndexPrefix ;
-        String[] dftIndexes = params.prefixIndexes ;
-        
-        // The index using for Graph+Prefix => URI
-        String indexPrefixes = metafile.getOrSetDefault("tdb.prefixes.index.file", params.indexPrefix) ;
-        String primary = metafile.getOrSetDefault("tdb.prefixes.primary", dftPrimary) ;
-        String x = metafile.getOrSetDefault("tdb.prefixes.indexes", StrUtils.strjoin(",",dftIndexes)) ;
-        String indexes[] = x.split(",") ;
-        
-        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{indexPrefixes}) ;
-        if ( prefixIndexes.length != indexes.length )
+        TupleIndex prefixIndexes[] = makeTupleIndexes(location, primary, indexes, new String[]{params.indexPrefix}) ;
+        if ( prefixIndexes.length != 1 )
             error(log, "Wrong number of triple table tuples indexes: "+prefixIndexes.length) ;
         
-        // The nodetable.
-        String pnNode2Id = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.node2id", params.prefixNode2Id) ;
-        String pnId2Node = metafile.getOrSetDefault("tdb.prefixes.nodetable.mapping.id2node", params.prefixId2Node) ;
+        String pnNode2Id = params.prefixNode2Id ;
+        String pnId2Node = params.prefixId2Node ;
         
         // No cache - the prefix mapping is a cache
         NodeTable prefixNodes = makeNodeTable(location, pnNode2Id, pnId2Node, -1, -1, -1)  ;
         
         DatasetPrefixesTDB prefixes = new DatasetPrefixesTDB(prefixIndexes, prefixNodes, policy) ; 
         
-        log.debug("Prefixes: "+x) ;
+        log.debug("Prefixes: "+primary+" :: "+StrUtils.strjoin(",", indexes)) ;
         
         return prefixes ;
     }
@@ -365,27 +295,9 @@ public class DatasetBuilderStd implements DatasetBuilder
     protected NodeTable makeNodeTable(Location location, String indexNode2Id, String indexId2Node, 
                                       int sizeNode2NodeIdCache, int sizeNodeId2NodeCache, int sizeNodeMissCache)
     {
-        /* Physical
-         * ---- An object file
-         * tdb.file.type=object
-         * tdb.file.impl=dat
-         * tdb.file.impl.version=dat-v1
-         *
-         * tdb.object.encoding=sse 
-         */
-        
         FileSet fsNodeToId = new FileSet(location, indexNode2Id) ;
         FileSet fsId2Node = new FileSet(location, indexId2Node) ;
-    
-        MetaFile metafile = fsId2Node.getMetaFile() ;
-        metafile.checkOrSetMetadata("tdb.file.type", ObjectFile.type) ;
-        metafile.checkOrSetMetadata("tdb.file.impl", "dat") ;
-        metafile.checkOrSetMetadata("tdb.file.impl.version", "dat-v1") ;
-        metafile.checkOrSetMetadata("tdb.object.encoding", "sse") ;
-        
         NodeTable nt = nodeTableBuilder.buildNodeTable(fsNodeToId, fsId2Node, sizeNode2NodeIdCache, sizeNodeId2NodeCache, sizeNodeMissCache) ;
-        fsNodeToId.getMetaFile().flush() ;
-        fsId2Node.getMetaFile().flush() ;
         return nt ;
     }
 

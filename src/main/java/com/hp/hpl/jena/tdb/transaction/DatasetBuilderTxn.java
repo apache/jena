@@ -44,8 +44,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class DatasetBuilderTxn
 {
-    // Duplicate context.
-    // Don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
+    // Ideally, don't make a DatasetGraphTDB to pass to new DatasetGraphTxn as it rips it apart.
     // And fails to copy context.
     // XXX 1/ DatasetGraphTDB clone constructor needs to handle context. 
     // XXX 2/ DatasetBuilderTxn needs to build a  DatasetGraphTxn directly, not via 
@@ -76,6 +75,7 @@ public class DatasetBuilderTxn
         }
         
         dsgTxn = new DatasetGraphTxn(dsgTxn, txn) ;
+        // Copy context. Changes not propagated back to the base dataset. 
         dsgTxn.getContext().putAll(dsg.getContext()) ;
         return dsgTxn ;
     }
