@@ -521,6 +521,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding, Context context)
     {
         // SET UP CONTEXT
+        // The UpdateProcessorBase already copied the context and made it safe ... but that's going to happen again :-(
         
         Iterator<Binding> toReturn ;
         

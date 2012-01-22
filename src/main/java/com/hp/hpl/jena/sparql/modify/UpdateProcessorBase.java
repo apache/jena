@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
@@ -46,10 +45,7 @@ public class UpdateProcessorBase implements UpdateProcessor
     {
         this.request = request ;
         this.graphStore = graphStore ;
-        if ( context == null )
-            context = ARQ.getContext().copy() ;
-        
-        this.context = context ;
+        this.context = Context.setupContext(context, graphStore) ;
         this.factory = factory ;
     }
 

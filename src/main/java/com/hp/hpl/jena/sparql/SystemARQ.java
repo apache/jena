@@ -22,6 +22,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -62,7 +63,7 @@ public class SystemARQ
         else
         {
             // Go through each graph.
-            Iterator<Node> iter = dataset.listGraphNodes() ;
+            Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
             for ( ; iter.hasNext() ; )
             {
                 Node n = iter.next();

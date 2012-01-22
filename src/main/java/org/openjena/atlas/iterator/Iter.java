@@ -78,6 +78,14 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return reduce(stream, action) ;
     }
 
+    /** Create another iterator without risk of concurrent modification exceptions.
+     *  This materializes the input iterator.  
+     */
+    public static <T> Iterator<T> iterator(Iterator<? extends T> iterator)
+    {
+        return Iter.toList(iterator).iterator() ;
+    }
+    
     public interface Folder<X,Y> { Y eval(Y acc, X arg) ; }
     
     public static <T, R> R foldLeft(Iterable<? extends T> stream, Folder<T, R> function, R value)
