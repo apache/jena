@@ -55,7 +55,7 @@ public class tdbnode extends CmdTDB
     @Override
     protected void exec()
     {
-        DatasetGraphTDB dsg = getDatasetGraph() ;
+        DatasetGraphTDB dsg = getDatasetGraphTDB() ;
         NodeTable nodeTable = dsg.getTripleTable().getNodeTupleTable().getNodeTable() ;
         Iterator<String> iter = super.getPositional().iterator() ;
         if ( ! iter.hasNext() )

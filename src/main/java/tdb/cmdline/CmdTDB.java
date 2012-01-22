@@ -31,11 +31,13 @@ import arq.cmdline.CmdARQ ;
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -118,9 +120,15 @@ public abstract class CmdTDB extends CmdARQ
         return tdbDatasetAssembler.getLocation() ;
     }
     
-    protected DatasetGraphTDB getDatasetGraph()
+    protected DatasetGraph getDatasetGraph()
     {
-        return (DatasetGraphTDB)getDataset().asDatasetGraph() ;
+        return getDataset().asDatasetGraph() ;
+    }
+    
+    protected DatasetGraphTDB getDatasetGraphTDB()
+    {
+        DatasetGraph dsg = getDatasetGraph() ;
+        return SystemTDB.getBaseDatasetGraphTDB(dsg) ;
     }
 
     protected Dataset getDataset()

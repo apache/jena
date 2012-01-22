@@ -119,7 +119,7 @@ public class TDB
     public static void setOptimizerWarningFlag(boolean b)
     { DatasetBuilderStd.setOptimizerWarningFlag(b) ; }
     
-    // ** Call SystemARQ.sync 
+    // XXX Switch to SystemARQ.sync at ARQ 2.7.1 
     
     /** Sync a TDB-backed Model. Do nothing if not TDB-backed. */
     public static void sync(Model model)

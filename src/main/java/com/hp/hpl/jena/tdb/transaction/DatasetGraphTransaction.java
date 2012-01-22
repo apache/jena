@@ -52,11 +52,17 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     }
 
     public Location getLocation()       { return sConn.getLocation() ; }
+    
     public DatasetGraphTDB getDatasetGraphToQuery()
     {
         return get() ;
     }
     
+    public DatasetGraphTDB getBaseDatasetGraph()
+    {
+        return sConn.getBaseDataset() ;
+    }
+
     @Override
     protected DatasetGraphTDB get()
     {

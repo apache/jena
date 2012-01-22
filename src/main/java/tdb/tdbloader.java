@@ -158,7 +158,7 @@ public class tdbloader extends CmdTDBGraph
 
     void loadQuads(List<String> urls)
     {
-        TDBLoader.load(getDatasetGraph(), urls, showProgress) ;
+        TDBLoader.load(getDatasetGraphTDB(), urls, showProgress) ;
         return ;
     }
 }

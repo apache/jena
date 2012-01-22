@@ -48,7 +48,7 @@ public class tdbrecovery extends CmdTDB
     @Override
     protected void exec()
     {
-        DatasetGraphTDB dsg = super.getDatasetGraph() ;
+        DatasetGraphTDB dsg = super.getDatasetGraphTDB() ;
         JournalControl.recovery(dsg) ;
     }
 }

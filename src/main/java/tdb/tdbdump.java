@@ -46,7 +46,7 @@ public class tdbdump extends CmdTDB
     @Override
     protected void exec()
     {
-        DatasetGraph dsg = super.getDatasetGraph() ;
+        DatasetGraph dsg = super.getDatasetGraphTDB() ;
         RiotWriter.writeNQuads(System.out, dsg) ;
     }
 }

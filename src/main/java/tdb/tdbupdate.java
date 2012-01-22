@@ -40,6 +40,14 @@ public class tdbupdate extends arq.update
         super.modVersion.addClass(TDB.class) ;
     }
 
+
+    // transactionalize
+//    @Override
+//    protected void execUpdate(GraphStore graphStore)
+//    {
+//     
+//    }
+    
     @Override
     protected void processModulesAndArgs()
     {
