@@ -235,20 +235,20 @@ public class TDB
     // ---- Static constants read by modVersion
     // ---- Must be after initialization.
     
-    static private String metadataLocation = "com/hp/hpl/jena/tdb/tdb-properties.xml" ;
+    static private String metadataLocation = "org/apache/jena/tdb/tdb-properties.xml" ;
     static private Metadata metadata = new Metadata(metadataLocation) ;
     
     /** The root package name for TDB */   
-    public static final String PATH = "com.hp.hpl.jena.tdb";
+    public static final String PATH = "org.apache.jena.tdb";
 
     // The names known to ModVersion : "NAME", "VERSION", "BUILD_DATE"
     
     public static final String NAME = "TDB" ;
     
-    /** The full name of the current TDB version */   
+    /** The full name of the current TDB version */
     public static final String VERSION = metadata.get(PATH+".version", "DEV") ;
 
-    /** The date and time at which this release was built */   
+    /** The date and time at which this release was built */
     public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
     
     // Final initialization (in case any statics in this file are important). 

@@ -96,19 +96,16 @@
   </dependencies>
 
   <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <!-- The filter file is written by antrun -->
     <filters>
       <filter>${project.basedir}/target/filter.properties</filter>
     </filters>
-
-    <resources>
-      <resource>
-        <targetPath>com/hp/hpl/jena/tdb/</targetPath>
-        <filtering>true</filtering>
-        <!-- FIXME -->
-        <directory>resources</directory>
-      </resource>
-    </resources>
 
     <plugins>
       <plugin>
