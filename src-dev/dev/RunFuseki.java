@@ -45,6 +45,7 @@ public class RunFuseki
                     //"--timeout=1000,5000",
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
+                    //"--mgtPort=3031",
                     //"--host=localhost",
                     "--mem",
                     //"--loc=DB",

@@ -18,15 +18,19 @@
 
 package org.apache.jena.fuseki;
 
+import static org.apache.jena.fuseki.Fuseki.serverLog ;
+
 import java.io.InputStream ;
 import java.net.InetAddress ;
 import java.net.UnknownHostException ;
 import java.util.Arrays ;
 import java.util.List ;
 
+import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.eclipse.jetty.server.Server ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
@@ -68,6 +72,7 @@ public class FusekiCmd extends CmdARQ
     // pages/control/
     // pages/query/ or /pages/sparql/
     
+    private static ArgDecl argMgtPort       = new ArgDecl(ArgDecl.HasValue, "mgtPort", "mgtport") ;
     private static ArgDecl argMem           = new ArgDecl(ArgDecl.NoValue,  "mem") ;
     private static ArgDecl argAllowUpdate   = new ArgDecl(ArgDecl.NoValue,  "update", "allowUpdate") ;
     private static ArgDecl argFile          = new ArgDecl(ArgDecl.HasValue, "file") ;
@@ -93,8 +98,9 @@ public class FusekiCmd extends CmdARQ
         new FusekiCmd(argv).mainRun() ;
     }
     
-    private int port = 3030 ;
-    private String clientHost = null;
+    private int port            = 3030 ;
+    private int mgtPort         = -1 ;
+    private String clientHost   = null;
 
     private DatasetGraph dsg ;
     private String datasetPath ;
@@ -119,6 +125,7 @@ public class FusekiCmd extends CmdARQ
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
+        add(argMgtPort, "--mgt=port",  "Enable the management commands on the given port") ; 
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
@@ -234,6 +241,17 @@ public class FusekiCmd extends CmdARQ
             }
         }
         
+        if ( contains(argMgtPort) )
+        {
+            String mgtPortStr = getValue(argMgtPort) ;
+            try {
+                mgtPort = Integer.parseInt(mgtPortStr) ;
+            } catch (NumberFormatException ex)
+            {
+                throw new CmdException(argMgtPort.getKeyName()+" : bad port number: "+mgtPortStr) ;
+            }
+        }
+
         if ( contains(argHost) )
         {
         	clientHost = getValue(argHost);
@@ -295,9 +313,28 @@ public class FusekiCmd extends CmdARQ
         }
         // Temporary
         Fuseki.setServer(server) ;
+        
+        Server mgtServer = null ;
+        
+        if ( mgtPort > 0 )
+        {
+            mgtServer = ManagementServer.createManagementServer(mgtPort) ;
+            try { mgtServer.start() ; }
+            catch (java.net.BindException ex)
+            { serverLog.error("SPARQLServer: Failed to start management server: " + ex.getMessage()) ; System.exit(1) ; }
+            catch (Exception ex)
+            { serverLog.error("SPARQLServer: Failed to start management server: " + ex.getMessage(), ex) ; System.exit(1) ; }
+        }
 
         server.start() ;
         try { server.getServer().join() ; } catch (Exception ex) {}
+
+        if ( mgtServer != null )
+        {
+            try { mgtServer.stop() ; } 
+            catch (Exception e) { serverLog.warn("Failed to cleanly stop the management server", e) ; }
+        }
+        System.exit(0) ;
     }
     
 

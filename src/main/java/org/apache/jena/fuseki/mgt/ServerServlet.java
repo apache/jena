@@ -31,8 +31,10 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -42,6 +44,8 @@ import com.hp.hpl.jena.tdb.TDB ;
 
 public class ServerServlet extends HttpServlet
 {
+    private static Logger log = Fuseki.serverLog ;
+    
     public ServerServlet()
     {
 
@@ -51,6 +55,51 @@ public class ServerServlet extends HttpServlet
     public void init()
     {
         return ;
+    }
+    
+    public static String paramCmd       = "cmd" ;
+    public static String cmdBackup      = "backup" ;
+    public static String cmdRestart     = "restart" ;
+    public static String cmdShutdown    = "shutdown" ;
+    
+    ActionBackup actionBackup = new ActionBackup() ;
+    
+    @Override
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
+    {
+        //Commands: 
+        //  ?cmd=backup
+        
+        String[] args = req.getParameterValues(paramCmd) ;
+        if ( args == null )
+        {
+            resp.setContentType("text/plain") ;
+            resp.setStatus(HttpSC.BAD_REQUEST_400) ;
+            
+            return ;
+        }
+        for ( String cmd : args )
+        {
+            if ( log.isInfoEnabled() )
+                log.info("Management command: "+cmd) ;
+            
+            if ( cmd.equalsIgnoreCase(cmdBackup))
+            {
+                actionBackup.doPost(req, resp) ;
+                continue ;
+            }
+            if ( cmd.equalsIgnoreCase(cmdRestart))
+            {
+                continue ;
+            }
+            if ( cmd.equalsIgnoreCase(cmdShutdown))
+            {
+                Fuseki.getServer().stop() ;
+                continue ;
+            }
+            log.warn("Unrecognized command : "+cmd) ;
+            
+        }
     }
 
     @Override

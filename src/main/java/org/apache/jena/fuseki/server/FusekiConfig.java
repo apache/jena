@@ -27,7 +27,6 @@ import org.apache.jena.fuseki.FusekiConfigException ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
@@ -59,8 +58,17 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class FusekiConfig
 {
-    static { Log.setLog4j() ; }
+    static { Fuseki.init(); }
 
+    // The datastructure that captures a servers configuration.
+    
+    // Server port
+    int port ;
+    // Management command port - -1 for none.
+    int mgtPort ;           
+    List<DatasetRef> datasets = null ;
+    
+    
     private static Logger log = Fuseki.configLog ;
     
     private static String prefixes = StrUtils.strjoinNL(

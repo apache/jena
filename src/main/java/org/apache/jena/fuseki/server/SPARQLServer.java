@@ -28,10 +28,14 @@ import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.mgt.ActionBackup ;
 import org.apache.jena.fuseki.mgt.ActionDataset ;
-import org.apache.jena.fuseki.mgt.ServerServlet ;
-import org.apache.jena.fuseki.servlets.* ;
+import org.apache.jena.fuseki.servlets.DumpServlet ;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset ;
+import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
+import org.apache.jena.fuseki.servlets.SPARQL_REST_R ;
+import org.apache.jena.fuseki.servlets.SPARQL_REST_RW ;
+import org.apache.jena.fuseki.servlets.SPARQL_Update ;
+import org.apache.jena.fuseki.servlets.SPARQL_Upload ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
@@ -115,7 +119,6 @@ public class SPARQLServer
             server = defaultServerConfig(port) ; 
         // Keep the server to a maximum number of threads.
         //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
-
         
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setErrorHandler(new FusekiErrorHandler()) ;
@@ -161,10 +164,6 @@ public class SPARQLServer
             // Action when control panel selects a dataset.
             HttpServlet datasetChooser = new ActionDataset() ;
             addServlet(context, datasetChooser, "/dataset") ;
-            
-//            // Development : server control panel.
-//            addServlet(context, new ServerServlet(), "/server") ;
-//            addServlet(context, new ActionBackup(), "/backup") ;
         }
         
         if ( installServices )
@@ -240,7 +239,7 @@ public class SPARQLServer
             throw new FusekiException("Failed to configure a server using configuration file '"+jettyConfig+"'") ; 
         }
     }
-
+    
     private static Server defaultServerConfig(int port)
     {
         // Server, with one NIO-based connector, large input buffer size (for long URLs, POSTed forms (queries, updates)).
@@ -279,6 +278,7 @@ public class SPARQLServer
         addServlet(context, staticContent, pathSpec) ;
     }
 
+    // SHARE
     private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
     {
         for ( String pathSpec : pathSpecs )
