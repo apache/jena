@@ -11,7 +11,7 @@ then
 M2_REPO="${M2_REPO:-$HOME/.m2/repository}" ;
 X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
 
-CP=
+CP="${CP:-}"
 SEP=':'
 for x in $X
 do
