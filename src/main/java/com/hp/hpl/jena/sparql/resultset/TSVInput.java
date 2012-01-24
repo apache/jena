@@ -54,13 +54,18 @@ public class TSVInput {
         {
         	//Here we try to parse only the Header Row
         	str = reader.readLine();
-        	String[] tokens = pattern.split(str,-1);
-        	for ( String token : tokens ) 
+        	if (str == null ) 
+        	    throw new ARQException("TSV Results malformed - input is empty (no header row)") ;
+        	if ( ! str.isEmpty() )
         	{
-        		if (token.startsWith("?")) token = token.substring(1);
-        		Var var = Var.alloc(token);
-        		vars.add(var);
-        		varNames.add(var.getName());
+            	String[] tokens = pattern.split(str,-1);
+            	for ( String token : tokens ) 
+            	{
+            		if (token.startsWith("?")) token = token.substring(1);
+            		Var var = Var.alloc(token);
+            		vars.add(var);
+            		varNames.add(var.getName());
+            	}
         	}
         } 
         catch ( IOException ex )

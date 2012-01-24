@@ -26,33 +26,92 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 public class TestResultSetFormat2
 {
-    @Test (expected=QueryException.class) 
-    public void resultset_10()
+    @Test
+    public void resultset_tsv_01()
     {
-        // This is illegal
+        // Empty Header Row (no variables), no rows.
+        parseTSV("\n");
+    }
+    
+    @Test 
+    public void resultset_tsv_02()
+    {
+        // No vars, one row.
+        String x = "\n\n" ;
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_03()
+    {
+        // One var, one row empty (unbound)
+        String x = "?x\n\n";
+        parseTSV(x);
+    }
+
+    @Test 
+    public void resultset_tsv_04()
+    {
+        // One var, no rows.
+        String x = "?x\n" ;
+        parseTSV(x);
+    }
+
+    @Test 
+    public void resultset_tsv_05()
+    {
+        // One var, one rows.
+        String x = "?x\n'a'\n" ;
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_06()
+    {
+    	// Two vars, one row empty other than the tab separator which is required
+    	// when two or more variables are present
+    	String x = "?x\t?y\n\t\n";
+    	parseTSV(x);
+    }
+    
+    @Test (expected=QueryException.class) 
+    public void resultset_bad_tsv_01()
+    {
         // Two vars, row of 3 values.
         String x = "?x\t?y\n'a'\t'b'\t'c'" ;
-        byte[] b = StrUtils.asUTF8bytes(x) ;
-        ByteArrayInputStream in = new ByteArrayInputStream(b) ;
-        ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
-        
-        while (rs2.hasNext())
-        {
-        	Binding binding = rs2.nextBinding();
-        	System.out.println(binding);
-        }
+        parseTSV(x);
     }
 
     @Test (expected=QueryException.class) 
-    public void resultset_11()
+    public void resultset_bad_tsv_02()
     {
-        // This is illegal
         // Two vars, row of 1 value only.
         String x = "?x\t?y\n'a'" ;
+        parseTSV(x);
+    }
+
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_03()
+    {
+    	// No input
+    	parseTSV("");
+    }
+    
+    @Test (expected=QueryException.class)
+    public void resultset_bad_tsv_04()
+    {
+    	//Two vars but a completely empty row (should contain a tab)
+    	String x = "?x\t?y\n\n";
+    	parseTSV(x);
+    }
+    
+    public void parseTSV(String x)
+    {
         byte[] b = StrUtils.asUTF8bytes(x) ;
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
         ResultSet rs2 = ResultSetFactory.fromTSV(in) ;
@@ -60,8 +119,7 @@ public class TestResultSetFormat2
         while (rs2.hasNext())
         {
         	Binding binding = rs2.nextBinding();
-        	System.out.println(binding);
         }
-    }    
+    }
     
 }

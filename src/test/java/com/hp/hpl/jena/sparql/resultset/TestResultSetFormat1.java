@@ -45,37 +45,52 @@ import com.hp.hpl.jena.vocabulary.XSD;
 @RunWith(Parameterized.class)
 public class TestResultSetFormat1
 {
-    static String[] $rs1 = {
-        "(resultset (?a ?b ?c)",
-        "  (row (?a 1) (?b 2)       )",
-        "  (row (?a 1) (?b 4) (?c 3))",
-        ")"} ;
+    // A result set of no variables and no rows.
+    static String[] $rs0 = { "(resultset ())" } ;
+    
+    // A result set of no variables and one row (e.g SELECT * {})
+    static String[] $rs1 = { "(resultset () (row))" } ;
 
     static String[] $rs2 = {
         "(resultset (?a ?b ?c)",
+        "  (row (?a 1) (?b 2)       )",
+        "  (row (?a 1) (?b 4) (?c 3))",
+        ")"} ;
+
+    static String[] $rs3 = {
+        "(resultset (?a ?b ?c)",
         "  (row (?a 1) (?b 4) (?c 3))",
         "  (row (?a 1) (?b 2)       )",
         ")"} ;
 
-    static String[] $rs3 = {
+    static String[] $rs4 = {
         "(resultset (?a ?b ?c)", 
         "  (row (?a 1)        (?c 4))",
         "  (row (?a 1) (?b 2) (?c 3))",
         ")"} ;
     
-    static String[] $rs4 = {
+    static String[] $rs5 = {
+    	"(resultset (?a ?b)",
+    	" (row (?a 1)       )",
+    	" (row        (?b 2))",
+    	")" };
+    
+    static String[] $rs6 = {
     	"(resultset (?x)",
     	" (row (?x <" + RDF.type.toString() + ">))",
     	" (row (?x <" + RDFS.label.toString() + ">))",
     	" (row (?x <" + XSD.integer.toString() + ">))",
     	" (row (?x <" + OWL.sameAs.toString() + ">))",
+    	" (row )",
     	")" };
-
+    
+    static String[] $rs7 = {
+        "(resultset (?x) (row))" } ;
     
     @Parameters
     public static Collection<Object[]> data()
     {
-        return Arrays.asList(new Object[][] { {$rs1}, {$rs2}, {$rs3}, {$rs4} } ) ;
+        return Arrays.asList(new Object[][] { {$rs0}, {$rs1}, {$rs2}, {$rs3}, {$rs4}, {$rs5}, {$rs6} , {$rs7} } ) ;
     }
 
     private final String[] $rs ;
