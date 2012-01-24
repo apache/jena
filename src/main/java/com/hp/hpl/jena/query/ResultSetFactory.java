@@ -21,6 +21,8 @@ package com.hp.hpl.jena.query;
 import java.io.InputStream ;
 import java.util.List ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.shared.NotFoundException ;
@@ -31,7 +33,6 @@ import com.hp.hpl.jena.sparql.resultset.* ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
-import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.util.FileManager ;
 
 /** ResultSetFactory - make result sets from places other than a query. */
@@ -97,6 +98,9 @@ public class ResultSetFactory
         if ( format.equals(ResultsFormat.FMT_RS_TSV) )
             return TSVInput.fromTSV(input) ;
         
+        if ( format.equals(ResultsFormat.FMT_RS_CSV) )
+            return CSVInput.fromCSV(input) ;
+        
         if ( format.equals(ResultsFormat.FMT_RS_BIO) )
             return BIOInput.fromBIO(input) ;
         
@@ -108,7 +112,6 @@ public class ResultSetFactory
             Log.warn(ResultSet.class, "Can't read a text result set") ;
             throw new ResultSetException("Can't read a text result set") ;
         }
-        
         
         if ( format.equals(ResultsFormat.FMT_RDF_XML) )
         {
@@ -263,7 +266,8 @@ public class ResultSetFactory
             throw new ResultSetException("Can't read a text result set") ;
         }
         
-        if ( format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON) || format.equals(ResultsFormat.FMT_RS_TSV) )
+        if ( format.equals(ResultsFormat.FMT_RS_XML) || format.equals(ResultsFormat.FMT_RS_JSON) ||
+             format.equals(ResultsFormat.FMT_RS_TSV) || format.equals(ResultsFormat.FMT_RS_CSV) )
         {
             InputStream in = null ;
             try { 
@@ -282,6 +286,11 @@ public class ResultSetFactory
             else if ( format.equals(ResultsFormat.FMT_RS_TSV) )
             {
                 ResultSet rs = TSVInput.fromTSV(in) ;
+                return new SPARQLResult(rs) ;
+            }
+            else if ( format.equals(ResultsFormat.FMT_RS_CSV) )
+            {
+                ResultSet rs = CSVInput.fromCSV(in) ;
                 return new SPARQLResult(rs) ;
             }
             else if ( format.equals(ResultsFormat.FMT_RS_BIO) )

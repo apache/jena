@@ -70,6 +70,7 @@ public class ParserQueryBase extends ParserBase
     public void setUpdateRequest(UpdateRequest request)
     { 
         this.request = request ;
+        this.query = new Query() ; 
         setPrologue(request) ;
     }
     
@@ -137,6 +138,8 @@ public class ParserQueryBase extends ParserBase
     
     protected void startSubSelect(int line, int col)
     {
+        if ( query == null )
+            System.out.println("Null") ;
         // Query is null in an update.
         stack.push(query) ;
         Query subQuery = new Query(getPrologue()) ;
