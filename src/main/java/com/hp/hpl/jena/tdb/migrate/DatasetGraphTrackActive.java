@@ -72,7 +72,7 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     @Override
     public void end()
     {
-        checkActive() ;
+        // Don't check if active.  We may have committed or aborted already.
         _end() ;
         inTransaction = false ; 
     }
