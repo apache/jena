@@ -56,7 +56,7 @@ public class ManagementServer
         server.setHandler(context);
         
         // Add the server control servlet
-        addServlet(context, new ServerServlet(), "/mgt") ;
+        addServlet(context, new MgtCmdServlet(), "/mgt") ;
         
         return server ; 
         // Old plan

@@ -42,11 +42,11 @@ import com.hp.hpl.jena.tdb.TDB ;
 
 /** Control functions for a Fuskei server */
 
-public class ServerServlet extends HttpServlet
+public class MgtCmdServlet extends HttpServlet
 {
     private static Logger log = Fuseki.serverLog ;
     
-    public ServerServlet()
+    public MgtCmdServlet()
     {
 
     }
@@ -58,17 +58,17 @@ public class ServerServlet extends HttpServlet
     }
     
     public static String paramCmd       = "cmd" ;
-    public static String cmdBackup      = "backup" ;
-    public static String cmdRestart     = "restart" ;
-    public static String cmdShutdown    = "shutdown" ;
+    public static String cmdBackup      = "backup" ;        // &dataset=/datasetname
+    public static String cmdRestart     = "restart" ;       // Not implemented.
+    public static String cmdShutdown    = "shutdown" ;      // Server stops, no questions asked.
     
     ActionBackup actionBackup = new ActionBackup() ;
     
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException
     {
-        //Commands: 
-        //  ?cmd=backup
+        //Commands format: 
+        //  ?cmd=backup&<other args per command>
         
         String[] args = req.getParameterValues(paramCmd) ;
         if ( args == null )
@@ -90,6 +90,7 @@ public class ServerServlet extends HttpServlet
             }
             if ( cmd.equalsIgnoreCase(cmdRestart))
             {
+                
                 continue ;
             }
             if ( cmd.equalsIgnoreCase(cmdShutdown))
