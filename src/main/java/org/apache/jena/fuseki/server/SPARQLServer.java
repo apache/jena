@@ -77,7 +77,8 @@ public class SPARQLServer
     public void start()
     {
         String now = Utils.nowAsString() ;
-        serverLog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
+        //serverLog.info(format("%s %s", Fuseki.NAME, Fuseki.VERSION)) ;
+        serverLog.info(format("%s %s %s", Fuseki.NAME, Fuseki.VERSION, Fuseki.BUILD_DATE)) ;
         String jettyVersion = org.eclipse.jetty.server.Server.getVersion() ;
         serverLog.info(format("Jetty %s",jettyVersion)) ;
         String host = server.getConnectors()[0].getHost();
