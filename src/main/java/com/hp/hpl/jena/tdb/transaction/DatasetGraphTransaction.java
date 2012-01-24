@@ -26,7 +26,7 @@ import com.hp.hpl.jena.tdb.migrate.DatasetGraphTrackActive ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Transactional DatasetGraph that allows one active transaction.
- * For multiple read transactions, create multiple DatasetGraphTX objects.
+ * For multiple read transactions, create multiple DatasetGraphTransaction objects.
  * This is analogous to a "connection" in JDBC.
  */
 
