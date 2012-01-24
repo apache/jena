@@ -58,4 +58,30 @@ public class Target
         else    
             return decl.toString() ;
     }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31 ;
+        int result = 1 ;
+        result = prime * result + ((decl == null) ? 0 : decl.hashCode()) ;
+        result = prime * result + ((graphIRI == null) ? 0 : graphIRI.hashCode()) ;
+        return result ;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true ;
+        if (obj == null) return false ;
+        if (getClass() != obj.getClass()) return false ;
+        Target other = (Target)obj ;
+        if (decl != other.decl) return false ;
+        if (graphIRI == null)
+        {
+            if (other.graphIRI != null) return false ;
+        } else
+            if (!graphIRI.equals(other.graphIRI)) return false ;
+        return true ;
+    }
 }

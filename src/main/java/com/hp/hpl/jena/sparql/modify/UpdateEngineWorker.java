@@ -173,7 +173,10 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateAdd update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
-        //  ADD (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
+        if ( update.getSrc().equals(update.getDest()) )
+            return ;
+        //  ADD (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
+        // Different source and destination.
         gsCopyTriples(graphStore, update.getSrc(), update.getDest()) ;
     }
 
@@ -181,6 +184,8 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateCopy update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
+        if ( update.getSrc().equals(update.getDest()) )
+            return ;
         // COPY (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
         gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
     }
@@ -189,7 +194,10 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateMove update)
     { 
         if ( ! validBinaryGraphOp(update) ) return ;
-        // MOVE (DEFAULT or GRAPH) TO (DEFAULT or GRAPH) 
+        if ( update.getSrc().equals(update.getDest()) )
+            return ;
+        // MOVE (DEFAULT or GRAPH) TO (DEFAULT or GRAPH)
+        // Difefrent source and destination.
         gsCopy(graphStore, update.getSrc(), update.getDest(), update.getSilent()) ;
         gsDrop(graphStore, update.getSrc(), true) ;
     }
@@ -208,6 +216,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                     error("No such graph: "+gn) ;
                 return false ;
             }
+            return true ;
         }
         error("Invalid source target for oepration; "+update.getSrc()) ;
         return false ;
@@ -218,6 +227,8 @@ public class UpdateEngineWorker implements UpdateVisitor
     
     protected static void gsCopy(GraphStore gStore, Target src, Target dest, boolean isSilent)
     {
+        if ( dest.equals(src) ) 
+            return ;
         gsClear(gStore, dest, true) ;
         gsCopyTriples(gStore, src, dest) ;
     }
