@@ -63,6 +63,7 @@ public class JournalControl
         }
     }
 
+    /** Recover a base storage DatasetGraph */
     public static void recovery(DatasetGraphTDB dsg)
     {
         if ( dsg instanceof DatasetGraphTxn )
@@ -76,13 +77,13 @@ public class JournalControl
         
         // Do we need to recover?
         Journal journal = findJournal(dsg) ;
-        if ( journal == null )
+        if ( journal == null || journal.isEmpty() )
             return ;
         
         for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
             recoverNodeDat(dsg, fileRef) ;
-        recoverSystemJournal(journal, dsg) ;
-        
+        recoverFromJournal(dsg, journal) ;
+        journal.close() ;
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
         if ( journal.getFilename() != null )
         {
@@ -97,6 +98,7 @@ public class JournalControl
         String journalFilename = loc.absolute(Names.journalFile) ;
         File f = new File(journalFilename) ;
         //if ( FileOps.exists(journalFilename)
+        
         if ( f.exists() && f.isFile() && f.length() > 0 )
             return Journal.create(loc) ;
         else
@@ -105,12 +107,18 @@ public class JournalControl
 
     // New recovery - scan to commit, enact, scan, ....
     
-    /** Recovery from the system journal.
+    /** Recovery from a journal.
      *  Find if there is a commit record; if so, reply the journal to that point.
      *  Try to see if there is another commit record ...
      */
-    private static void recoverSystemJournal(Journal jrnl, DatasetGraphTDB dsg)
+    public static void recoverFromJournal(DatasetGraphTDB dsg, Journal jrnl )
     {
+        if ( dsg instanceof DatasetGraphTxn )
+            throw new TDBTransactionException("Recovery works on the base dataset, not a transactional one") ;
+
+        if ( jrnl.isEmpty() )
+            return ;
+        
         long posn = 0 ;
         for ( ;; )
         {
@@ -122,7 +130,6 @@ public class JournalControl
 
         // We have replayed the journals - clean up.
         jrnl.truncate(0) ;
-        jrnl.close();
         dsg.sync() ;
     }
 
@@ -169,47 +176,47 @@ public class JournalControl
         } finally { Iter.close(iter) ; }
     }
     
-    /** Recovery from the system journal.
-     *  Find is there is a commit record; if so, reply the journal.
-     */
-    private static void recoverSystemJournal_0(DatasetGraphTDB dsg)
-    {
-        Location loc = dsg.getLocation() ;
-        String journalFilename = loc.absolute(Names.journalFile) ;
-        File f = new File(journalFilename) ;
-        //if ( FileOps.exists(journalFilename)
-        if ( f.exists() && f.isFile() && f.length() > 0 )
-        {
-            Journal jrnl = Journal.create(loc) ;
-            // Scan for commit.
-            boolean committed = false ;
-            for ( JournalEntry e : jrnl )
-            {
-                if ( e.getType() == JournalEntryType.Commit )
-                    committed = true ;
-                else
-                {
-                    if ( committed )
-                    {
-                        errlog.warn("Extra journal entries ("+loc+")") ;
-                        break ;
-                    }
-                }
-            }
-            if ( committed )
-            {
-                syslog.info("Recovering committed transaction") ;
-                // The NodeTable Journal has already been done!
-                JournalControl.replay(jrnl, dsg) ;
-            }
-            jrnl.truncate(0) ;
-            jrnl.close();
-            dsg.sync() ;
-        }
-        
-        if ( f.exists() )
-            FileOps.delete(journalFilename) ;
-    }
+//    /** Recovery from the system journal.
+//     *  Find is there is a commit record; if so, reply the journal.
+//     */
+//    private static void recoverSystemJournal_0(DatasetGraphTDB dsg)
+//    {
+//        Location loc = dsg.getLocation() ;
+//        String journalFilename = loc.absolute(Names.journalFile) ;
+//        File f = new File(journalFilename) ;
+//        //if ( FileOps.exists(journalFilename)
+//        if ( f.exists() && f.isFile() && f.length() > 0 )
+//        {
+//            Journal jrnl = Journal.create(loc) ;
+//            // Scan for commit.
+//            boolean committed = false ;
+//            for ( JournalEntry e : jrnl )
+//            {
+//                if ( e.getType() == JournalEntryType.Commit )
+//                    committed = true ;
+//                else
+//                {
+//                    if ( committed )
+//                    {
+//                        errlog.warn("Extra journal entries ("+loc+")") ;
+//                        break ;
+//                    }
+//                }
+//            }
+//            if ( committed )
+//            {
+//                syslog.info("Recovering committed transaction") ;
+//                // The NodeTable Journal has already been done!
+//                JournalControl.replay(jrnl, dsg) ;
+//            }
+//            jrnl.truncate(0) ;
+//            jrnl.close();
+//            dsg.sync() ;
+//        }
+//        
+//        if ( f.exists() )
+//            FileOps.delete(journalFilename) ;
+//    }
     
     /** Recover a node data file (".dat").
      *  Node data files are append-only so recovering, then not using the data is safe.

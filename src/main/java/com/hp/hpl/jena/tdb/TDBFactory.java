@@ -119,7 +119,7 @@ public class TDBFactory
         return asTransactional(dsg) ;
     }
     
-    /** By default, TDBFcatory returns Datasets and DatasetGraphs that can be used in
+    /** By default, TDBFactory returns Datasets and DatasetGraphs that can be used in
      *  transactions.  To force a return to TDB 0.8.x behaviour of returning 
      *  Datasets and DatasetGraphs attached directly to the storage, set this
      *  to false.  Warning: it's global. 

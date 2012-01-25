@@ -28,7 +28,7 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** factory for creating objects datasets backed by TDB storage which support transactions */
-public class TDBFactoryTxn
+class TDBFactoryTxn
 {
     // This is TDBFactory with a different maker.??
     

@@ -139,13 +139,24 @@ public class StoreConnection
      */ 
     public static synchronized StoreConnection make(DatasetGraphTDB dsg)
     {
+        if ( dsg instanceof DatasetGraphTxn )
+        {
+            //((DatasetGraphTxn)dsg).getTransaction().getBaseDataset() ;
+            throw new TDBTransactionException("Can't make a StoreConnection from a transaction instance - need the base storage DatasetGraphTDB") ;
+        }
         Location location = dsg.getLocation() ;
+        
         StoreConnection sConn = cache.get(location) ;
         if ( sConn == null )
             sConn = _makeAndCache(dsg) ;
         return sConn ;
     }
     
+    /** Return the StoreConnection if one already exists for this location, else return null */
+    public static synchronized StoreConnection getExisting(Location location)
+    {
+        return cache.get(location) ;
+    }
     
     private static StoreConnection _makeAndCache(DatasetGraphTDB dsg)
     {
@@ -155,7 +166,7 @@ public class StoreConnection
         if ( sConn == null )
         {
             sConn = new StoreConnection(dsg) ;
-            JournalControl.recovery(sConn.baseDSG) ;
+            JournalControl.recoverFromJournal(dsg, sConn.transactionManager.getJournal()) ;
             if ( ! location.isMemUnique() )
                 // Don't cache use-once in-memory datasets.
                 cache.put(location, sConn) ;

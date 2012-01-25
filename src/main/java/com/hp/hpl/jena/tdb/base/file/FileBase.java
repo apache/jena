@@ -48,10 +48,10 @@ public final class FileBase implements Sync, Closeable
     
     private /*public*/ FileBase(String filename, String mode)
     {
-        DebugThis = DEBUG && filename.contains("nodes.dat-jrnl") ;
+        DebugThis = false ;
         id  = (counter++) ;
         
-        if ( DebugThis )
+        if ( DebugThis && log.isDebugEnabled() )
             log.debug("open: ["+id+"]"+filename) ;
         this.filename = filename ;
         channel = ChannelManager.acquire(filename, mode) ;

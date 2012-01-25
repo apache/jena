@@ -103,6 +103,13 @@ public class BufferChannelFile implements BufferChannel
     }
 
     @Override
+    public boolean isEmpty()
+    {
+        try { return file.channel().size() == 0 ; }
+        catch (IOException e) { IO.exception(e) ; return false ; }
+    }
+
+    @Override
     public void sync()
     { 
         file.sync() ;

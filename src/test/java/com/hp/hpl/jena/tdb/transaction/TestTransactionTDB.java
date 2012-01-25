@@ -28,7 +28,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.TDBFactoryTxn ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.migrate.AbstractTestTransaction ;
 
 public class TestTransactionTDB extends AbstractTestTransaction
@@ -48,8 +48,7 @@ public class TestTransactionTDB extends AbstractTestTransaction
     @Override
     protected Dataset create()
     { 
-        //return TDBFactory.createDataset(DIR) ;
-        return TDBFactoryTxn.XcreateDataset(DIR) ;
+        return TDBFactory.createDataset(DIR) ;
     }
     
     private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  

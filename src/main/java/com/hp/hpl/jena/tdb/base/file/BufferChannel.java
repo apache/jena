@@ -84,6 +84,9 @@ public interface BufferChannel extends Sync, Closeable
     /** Length of storage, in bytes.*/
     public long size() ;
     
+    /** Is it empty? */
+    public boolean isEmpty() ;
+
     /** useful display string */ 
     public String getLabel() ; 
     

@@ -573,9 +573,7 @@ public class TransactionManager
             transactionStateTransition = new ArrayList<Pair<Transaction, TxnPoint>>() ;
     }
 
-    // ---- Recording
-    
-    Journal getJournal()
+    public Journal getJournal()
     {
         return journal ;
     }

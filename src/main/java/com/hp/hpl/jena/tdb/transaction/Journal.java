@@ -300,6 +300,8 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
 
     public long size()  { return channel.size() ; }
     
+    public boolean isEmpty()  { return channel.size() == 0 ; }
+
     public void truncate(long size) { channel.truncate(size) ; }
     
     public void append()    { position(size()) ; }

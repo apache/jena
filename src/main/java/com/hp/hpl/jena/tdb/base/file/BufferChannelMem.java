@@ -183,6 +183,14 @@ public class BufferChannelMem implements BufferChannel
     
     @Override
     synchronized
+    public boolean isEmpty()
+    {
+        checkIfClosed() ;
+        return size() == 0 ;
+    }
+    
+    @Override
+    synchronized
     public void sync()
     { 
         checkIfClosed() ;
