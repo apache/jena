@@ -196,9 +196,9 @@ public class qtest extends CmdARQ
     static void oneManifestEarl(String testManifest)
     {
         String name =  "ARQ" ;
-        String releaseName =  "ARQ2" ;
-        String version = "ARQ-2.2-dev" ; //ARQ.VERSION ;
-        String homepage = "http://jena.sf.net/ARQ" ;
+        String releaseName =  "ARQ" ;
+        String version = "2.9.1-incubating" ;
+        String homepage = "http://incubator.apache.org/jena" ;
         
         // Include information later.
         EarlReport report = new EarlReport(name, version, homepage) ;
@@ -209,7 +209,7 @@ public class qtest extends CmdARQ
         
         // Update the EARL report. 
         Resource jena = model.createResource()
-                    .addProperty(FOAF.homepage, model.createResource("http://jena.sf.net/")) ;
+                    .addProperty(FOAF.homepage, model.createResource("http://incubator.apache.org/jena")) ;
         
         // ARQ is part fo Jena.
         Resource arq = report.getSystem()
@@ -219,7 +219,7 @@ public class qtest extends CmdARQ
         Resource who = model.createResource(FOAF.Person)
                                 .addProperty(FOAF.name, "Andy Seaborne")
                                 .addProperty(FOAF.homepage, 
-                                             model.createResource("http://www.hpl.hp.com/people/afs")) ;
+                                             model.createResource("http://people.apache.org/~andy")) ;
         
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;

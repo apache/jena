@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.lang;
 
 import java.util.* ;
 
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
@@ -287,7 +288,7 @@ public class SyntaxVarScope
         
         private static void check(Collection<Var> scope, ElementService el)
         {
-            if ( el.getServiceNode().isVariable() )
+            if ( ARQ.isStrictMode() && el.getServiceNode().isVariable() )
             {
                 Var var = Var.alloc(el.getServiceNode()) ;
                 if ( ! scope.contains(var) ) 

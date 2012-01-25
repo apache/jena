@@ -34,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 public class EarlReport
 {
     // Ref: http://www.w3.org/TR/EARL10-Schema/
-    
+    // NB: This vocabulary has changed over time!
     /* An entry looks like:
      * [ rdf:type earl:Assertion;
          earl:assertedBy [ ...] 

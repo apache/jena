@@ -25,11 +25,9 @@ import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.http.Service ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterCommonParent ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterNullIterator ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterRepeatApply ;
+import com.hp.hpl.jena.sparql.engine.iterator.* ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
 
 
@@ -56,7 +54,7 @@ public class QueryIterService extends QueryIterRepeatApply
             if ( silent )
             {
                 Log.warn(this, "SERVICE: "+ex.getMessage()) ;
-                return new QueryIterNullIterator(getExecContext()) ; 
+                return QueryIterSingleton.create(BindingFactory.binding(), getExecContext()) ; 
             }
             throw ex ;
         }
