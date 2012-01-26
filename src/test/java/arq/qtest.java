@@ -199,9 +199,10 @@ public class qtest extends CmdARQ
         String releaseName =  "ARQ" ;
         String version = "2.9.1-incubating" ;
         String homepage = "http://incubator.apache.org/jena" ;
+        String systemURI = "http://jena.apache.org/#arq" ;  // Null for bNode.
         
         // Include information later.
-        EarlReport report = new EarlReport(name, version, homepage) ;
+        EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
         ScriptTestSuiteFactory.results = report ;
         
         Model model = report.getModel() ;

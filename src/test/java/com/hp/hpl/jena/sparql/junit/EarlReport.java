@@ -55,7 +55,7 @@ public class EarlReport
      * Optional: dc:hasVersion, dc:description, homepage
      */
     
-    public EarlReport(String name, String version, String homepage)
+    public EarlReport(String systemURI, String name, String version, String homepage)
     {
         earl = ModelFactory.createDefaultModel() ;
         
@@ -74,7 +74,10 @@ public class EarlReport
         */
         
         // Utils.
-        system = earl.createResource(EARL.Software);
+        system = (systemURI == null ) ? 
+                earl.createResource(EARL.Software) :
+                earl.createResource(systemURI, EARL.Software) ;
+                                                               
         if ( name != null )
             system.addProperty(DC.title, name);
         if ( version != null )
