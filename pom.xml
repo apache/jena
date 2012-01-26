@@ -51,7 +51,7 @@
 
   </properties>
 
-  <!-- Testing against staged artifacts -->
+  <!-- Testing against staged artifacts - ->
   <repositories>
     <repository>
       <id>apache.jena.staging</id>
@@ -62,6 +62,7 @@
       </releases>
     </repository>
   </repositories>
+  -->
 
   <dependencies>
 
