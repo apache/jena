@@ -24,6 +24,8 @@ import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 public class DatasetGraphSetup implements DatasetGraphMakerTDB
 {
+    public DatasetGraphSetup() {}
+    
     @Override
     public DatasetGraphTDB createDatasetGraph()
     {

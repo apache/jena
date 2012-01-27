@@ -38,7 +38,7 @@ public class TDBMaker
     private final static boolean CACHING = true ;
 
     /** The default implementation factory for TDB datasets. 
-     *  Caching of daatsets for sharing purposes.  
+     *  Caching of datasets for sharing purposes.  
      */
 
     public final static DatasetGraphMakerTDB stdFactory = CACHING ? cachedFactory :
