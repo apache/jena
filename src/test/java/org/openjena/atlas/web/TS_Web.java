@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,29 +16,17 @@
  * limitations under the License.
  */
 
-package org.openjena.atlas;
+package org.openjena.atlas.web;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.atlas.data.TS_Data ;
-import org.openjena.atlas.event.TS_Event ;
-import org.openjena.atlas.io.TS_IO ;
-import org.openjena.atlas.iterator.TS_Iterator ;
-import org.openjena.atlas.json.TS_JSON ;
-import org.openjena.atlas.lib.TS_Lib ;
-import org.openjena.atlas.web.TS_Web ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    // Library
-      TS_Lib.class
-    , TS_Iterator.class
-    , TS_Event.class
-    , TS_IO.class
-    , TS_JSON.class
-    , TS_Data.class
-    , TS_Web.class
-}) 
+    TestContentNegotiation.class
+} )
+public class TS_Web
+{
 
-public class TC_Atlas
-{}
+}
+

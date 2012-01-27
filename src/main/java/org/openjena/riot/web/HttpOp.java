@@ -271,31 +271,6 @@ public class HttpOp
         } finally { closeEntity(response.getEntity()) ; }
     }
     
-//    // Jena 2.6.4 bug.
-//    
-//    public static String readWholeFileAsUTF8(InputStream in) throws IOException
-//    {
-//        Reader r = new BufferedReader(FileUtils.asUTF8(in),1024) ;
-//        return readWholeFileAsUTF8(r) ;
-//    }
-//    
-//    
-//    // Private worker as we are trying to force UTF-8. 
-//    private static String readWholeFileAsUTF8(Reader r) throws IOException
-//    {
-//        StringWriter sw = new StringWriter(1024);
-//        char buff[] = new char[1024];
-//        int l ;
-//        while ( (l = r.read(buff)) != -1 ) {
-//            if (l <= 0)
-//                break;
-//            sw.write(buff, 0, l);
-//        }
-//        r.close();
-//        sw.close();
-//        return sw.toString();  
-//    }
-//    
 //    public static void main2(String...argv) throws Exception
 //    {
 //        String queryString =  "SELECT * { ?s ?p ?o } LIMIT 1" ;
@@ -324,7 +299,7 @@ public class HttpOp
 //        InputStream instream = entity.getContent() ;
 //        try {
 //            //entity = new BufferedHttpEntity(entity) ;
-//            String x = readWholeFileAsUTF8(instream) ;
+//            String x = FileUtils.readWholeFileAsUTF8(instream) ;
 //            System.out.print(x) ;  
 //        } finally {
 //            instream.close();

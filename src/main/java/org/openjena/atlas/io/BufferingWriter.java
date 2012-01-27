@@ -119,7 +119,7 @@ public final class BufferingWriter extends Writer
 //    }
 
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
-    /*public*/private BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
+    public BufferingWriter(Sink<ByteBuffer> sink) { this(sink, SIZE, BLOB_SIZE) ; }
     
     /** Create a buffering output stream of charcaters to a {@link org.openjena.atlas.lib.Sink} */
     /*package*/ BufferingWriter(Sink<ByteBuffer> sink, int size, int blobSize)
