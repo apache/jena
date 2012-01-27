@@ -21,7 +21,9 @@ package com.hp.hpl.jena.tdb.sys;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-/** The workhorse for TDB Factory - hides the internal operations from
+/** 
+ * Non-transactions dataaset creation.
+ * The workhorse for TDB Factory - hides the internal operations from
  * the public interface (and javadoc) of TDBFactory for clarity.  
  */
 public class TDBMaker
@@ -33,7 +35,7 @@ public class TDBMaker
     
     /** Implementation factory for cached creation of datasets */ 
     public final static DatasetGraphMakerTDB cachedFactory = new CachingTDBMaker(uncachedFactory) ;
-
+    
     // Caching by location.
     private final static boolean CACHING = true ;
 
@@ -53,7 +55,7 @@ public class TDBMaker
     private static DatasetGraphMakerTDB factory = stdFactory ;
 
     /** Clear any TDB dataset cache */
-    public static void clearDatasetCache()
+    public static void reset()
     {
         if ( factory instanceof CachingTDBMaker )
             ((CachingTDBMaker)factory).flush();

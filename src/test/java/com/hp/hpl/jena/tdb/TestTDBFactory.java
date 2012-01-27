@@ -24,14 +24,22 @@ import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.sys.TDBMakerTxn ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TestTDBFactory extends BaseTest
 {
     static final String DIR = ConfigTest.getTestingDirDB() ; 
+    
+    static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
+    static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
     
     @BeforeClass public static void beforeClass()
     {
@@ -43,18 +51,72 @@ public class TestTDBFactory extends BaseTest
         FileOps.clearDirectory(DIR) ; 
     }
     
-    @Test public void factory1()
+    @Test public void testTDBFactory1()
     {
-        DatasetGraphTDB dg1 = TDBMaker._createDatasetGraph(Location.mem()) ;
-        DatasetGraphTDB dg2 = TDBMaker._createDatasetGraph(Location.mem()) ;
+        TDBFactory.reset() ;
+        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem("FOO")) ;
+        dg1.add(quad1) ;
+        assertTrue(dg2.contains(quad1)) ;
+    }
+    
+    @Test public void testTDBFactory2()
+    {
+        TDBFactory.reset() ;
+        // The unnamed location is unique each time.
+        DatasetGraph dg1 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        DatasetGraph dg2 = TDBFactory.createDatasetGraph(Location.mem()) ;
+        dg1.add(quad1) ;
+        assertFalse(dg2.contains(quad1)) ;
+    }
+
+    @Test public void testTDBMakerTxn1()
+    {
+        TDBMakerTxn.reset() ;
+        DatasetGraph dg1 = TDBMakerTxn.createDatasetGraph(DIR) ;
+        DatasetGraph dg2 = TDBMakerTxn.createDatasetGraph(DIR) ;
+        
+        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
+        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;
+        
+        assertSame(dgBase1, dgBase2) ;
+    }
+    
+    @Test public void testTDBMakerTxn2()
+    {
+        TDBMakerTxn.reset() ;
+        DatasetGraph dg1 = TDBMakerTxn.createDatasetGraph(Location.mem("FOO")) ;
+        DatasetGraph dg2 = TDBMakerTxn.createDatasetGraph(Location.mem("FOO")) ;
+        
+        DatasetGraph dgBase1 = ((DatasetGraphTransaction)dg1).getBaseDatasetGraph() ;
+        DatasetGraph dgBase2 = ((DatasetGraphTransaction)dg2).getBaseDatasetGraph() ;
+        
+        assertSame(dgBase1, dgBase2) ;
+    }
+    
+    @Test public void testTDBMaker1()
+    {
+        TDBMaker.reset() ;
+        DatasetGraph dg1 = TDBMaker._createDatasetGraph(Location.mem()) ;
+        DatasetGraph dg2 = TDBMaker._createDatasetGraph(Location.mem()) ;
         assertSame(dg1, dg2) ;
     }
     
-    @Test public void factory2()
+    @Test public void testTDBMaker2()
     {
+        TDBMaker.reset() ;
+        DatasetGraph dg1 = TDBMaker._createDatasetGraph(DIR) ;
+        DatasetGraph dg2 = TDBMaker._createDatasetGraph(DIR) ;
+        assertSame(dg1, dg2) ;
+    }
+    
+    @Test public void testTDBMaker3()
+    {
+        TDBMaker.reset() ;
+        
         DatasetGraphMakerTDB f = TDBMaker.getImplFactory() ;
 
-        TDBMaker.clearDatasetCache() ;
+        
         DatasetGraphTDB dg0 = TDBMaker._createDatasetGraph(Location.mem()) ;
 
         // Uncached.

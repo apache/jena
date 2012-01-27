@@ -66,7 +66,7 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @After public void after()
     {
-    	TDBMaker.clearDatasetCache() ;
+    	TDBMaker.reset() ;
     	if ( graphLocation != null )
     		graphLocation.release() ;
     	graphLocation.clearDirectory() ;	// Does nto have the desired effect on Windows.

@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.tdb;
 
-import org.openjena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -27,15 +25,12 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.sys.TDBMakerTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Public factory for creating objects datasets backed by TDB storage */
@@ -96,55 +91,131 @@ public class TDBFactory
         return DatasetFactory.create(TDBMaker._createDatasetGraph()) ;
     }
 
+    /** Create a TDB-backed Dataset directly over the storage in memory (not transactional) (testing only) */  
+    public static void release(Dataset dataset)
+    {
+        _release(location(dataset)) ;
+    }
+    
+    /** Create a TDB-backed Dataset directly over the storage in memory (not transactional) (testing only) */  
+    public static void release(DatasetGraph dataset)
+    {
+        _release(location(dataset)) ;
+    }
+    
+    /** Reset internal state, releasing all datasets.
+     *  No checking done, do not call while TDB is execution queries or updates.
+     *  Mainly for the tests to have a known clean state. 
+     */
+    public static void reset()
+    {
+        //TDBMaker.reset() ;
+        TDBMakerTxn.reset() ;
+    }
+
+    // >>>>--------------------------------------
+    // Chocie of actual making process.
+    
+//    // TDB 0.8.x version
+//    
+//    private static DatasetGraph _createDatasetGraphNonTxn(Location location)
+//    { 
+//        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
+//        if ( dsg instanceof Transactional)
+//        {
+//            Log.info(TDBFactory.class, "TDBMaker returns a transactional DatasetGraphs") ; 
+//            // v0.9.0 - doesn't happen but this prepares for a possible future.
+//            return dsg ;
+//        }
+//        // Not transactional - add the switching wrapper.
+//        return asTransactional(dsg) ; }
+//    
+//    private static DatasetGraph _createDatasetGraphNonTxn()
+//    {
+//        // Make silent by setting the optimizer to the no-opt
+//        ReorderTransformation rt = SystemTDB.defaultOptimizer ;
+//        if ( rt == null )
+//            SystemTDB.defaultOptimizer = ReorderLib.identity() ;
+//        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+//        SystemTDB.defaultOptimizer  = rt ;
+//        return asTransactional(dsg) ;
+//    }
+//    
+//    private static boolean MAKE_TRANSACTIONAL_DATASETS = true ; 
+//    
+//    private static DatasetGraph asTransactional(DatasetGraphTDB dsg)
+//    {
+//        if ( dsg instanceof DatasetGraphTxn )
+//            throw new TDBException("DatasetGraphTDB is a transaction") ;
+//        
+//        if ( MAKE_TRANSACTIONAL_DATASETS )
+//            return new DatasetGraphTransaction(dsg) ;
+//        else
+//            return dsg ;
+//    }
+//
+//    private static void _release(Location location)
+//    {
+//        if ( location == null )
+//           return ;
+//        TDBMaker.releaseLocation(location) ;
+//    }
+
     private static DatasetGraph _createDatasetGraph(Location location)
-    { 
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph(location) ;
-        if ( dsg instanceof Transactional)
-        {
-            Log.info(TDBFactory.class, "TDBMaker returns a transactional DatasetGraphs") ; 
-            // v0.9.0 - doesn't happen but this prepares for a possible future.
-            return dsg ;
-        }
-        // Not transactional - add the switching wrapper.
-        return asTransactional(dsg) ; }
+    {
+        return TDBMakerTxn.createDatasetGraph(location) ;
+    }
     
     private static DatasetGraph _createDatasetGraph()
     {
-        // Make silent by setting the optimizer to the no-opt
-        ReorderTransformation rt = SystemTDB.defaultOptimizer ;
-        if ( rt == null )
-            SystemTDB.defaultOptimizer = ReorderLib.identity() ;
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
-        SystemTDB.defaultOptimizer  = rt ;
-        return asTransactional(dsg) ;
+        return TDBMakerTxn.createDatasetGraph() ;
     }
     
-    /** By default, TDBFactory returns Datasets and DatasetGraphs that can be used in
-     *  transactions.  To force a return to TDB 0.8.x behaviour of returning 
-     *  Datasets and DatasetGraphs attached directly to the storage, set this
-     *  to false.  Warning: it's global. 
-     */
-    
-    public static boolean MAKE_TRANSACTIONAL_DATASETS = true ; 
-    
-    private static DatasetGraph asTransactional(DatasetGraphTDB dsg)
+    private static void _release(Location location)
     {
-        if ( MAKE_TRANSACTIONAL_DATASETS )
-            return new DatasetGraphTransaction(dsg) ;
-        else
-            return dsg ;
+        if ( location == null )
+            return ;
+        TDBMakerTxn.releaseLocation(location) ;
     }
+
+    // <<<<--------------------------------------
+    
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static boolean isBackedByTDB(Dataset dataset)
+    {
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return isBackedByTDB(dsg) ;
+    }
+    
+    /** Return the location of a dataset if it is backed by TDB, else null */ 
+    public static boolean isBackedByTDB(DatasetGraph datasetGraph)
+    {
+        if ( datasetGraph instanceof DatasetGraphTransaction )
+            // The swicthing "connection" for TDB 
+            return true ;
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            // A transaction or the base storage.
+            return true ;
+        return false ;
+    }
+    
+        
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 
     public static Location location(Dataset dataset)
     {
-        return TDBFactoryTxn.location(dataset) ;
+        DatasetGraph dsg = dataset.asDatasetGraph() ;
+        return location(dsg) ;
     }
 
-    /** Return the location of a dataset if it is backed by TDB, else null */ 
-    public static Location location(DatasetGraph dataset)
+    /** Return the location of a DatasetGraph if it is backed by TDB, else null */ 
+    public static Location location(DatasetGraph datasetGraph)
     {
-        return TDBFactoryTxn.location(dataset) ;
+        if ( datasetGraph instanceof DatasetGraphTDB )
+            return ((DatasetGraphTDB)datasetGraph).getLocation() ;
+        if ( datasetGraph instanceof DatasetGraphTransaction )
+            return ((DatasetGraphTransaction)datasetGraph).getLocation() ;
+        return null ;
     }
 
     /** Read the file and assembler a graph, of type TDB persistent graph

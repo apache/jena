@@ -22,6 +22,7 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.logging.Log ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -43,7 +44,7 @@ public class Jena202_TDBDatasetSetChurn
         int i ;
         int Chunk = 1000 ;
         int tock = 100 ;
-        for ( i = 0 ; i < 10000 ; i ++ )
+        for ( i = 0 ; i < 1000 ; i ++ )
         {
             if ( i != 0 && i%tock == 0 )
                 System.out.println() ;
@@ -52,7 +53,7 @@ public class Jena202_TDBDatasetSetChurn
             Dataset ds = TDBFactory.createDataset(DB) ;
             ds.begin(ReadWrite.WRITE) ;
             for ( int j = i*Chunk; j < (i+1)*Chunk ; j++ )
-                ds.getDefaultModel().getGraph().add(SSE.parseTriple("(<s> <p> 'X"+j+"')")) ;
+                ds.getDefaultModel().getGraph().add(triple(j)) ;
             ds.commit();
             ds.end() ;
             
@@ -67,5 +68,13 @@ public class Jena202_TDBDatasetSetChurn
         System.out.println() ;
         System.out.println("DONE") ;
         System.exit(0) ;
+    }
+    
+    static Node s = Node.createURI("s") ;
+    static Node p = Node.createURI("s") ;
+    static Triple triple(int i)
+    {
+        Node o = Node.createLiteral("X"+i) ;
+        return new Triple(s,p,o) ;
     }
 }

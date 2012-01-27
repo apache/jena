@@ -110,7 +110,8 @@ public class TDB
      */
     public static void closedown()
     {
-        TDBMaker.clearDatasetCache() ;
+        TDBMaker.reset() ;
+        StoreConnection.reset() ;
     }
     
     /** Set the global flag that control the "No BGP optimizer" warning.
