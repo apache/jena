@@ -97,7 +97,11 @@ public class QueryTestTDB extends EarlTestCase
     
     @Override public void tearDown()
     { 
-        if ( dataset != null ) dataset.close() ; 
+        if ( dataset != null )
+        {
+            dataset.close() ;
+            dataset = null ;
+        }
     }
     
     public void setupData()
