@@ -19,10 +19,10 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.conneg.AcceptList ;
-import org.apache.jena.fuseki.conneg.MediaType ;
 import org.junit.Test ;
+import org.openjena.atlas.web.MediaType ;
 
-
+// Moved to ARQ 2.9.1
 public class TestContentNegotiation extends BaseTest
 {
     static final String ctFirefox = "text/xml,application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5" ;

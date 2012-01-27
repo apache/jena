@@ -26,8 +26,8 @@ import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.conneg.MediaType ;
-import org.apache.jena.fuseki.conneg.TypedOutputStream ;
+import org.openjena.atlas.web.MediaType ;
+import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.rdf.model.Model ;

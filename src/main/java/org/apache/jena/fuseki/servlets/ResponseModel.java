@@ -25,10 +25,10 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.conneg.MediaType ;
-import org.apache.jena.fuseki.conneg.TypedInputStream ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.openjena.atlas.web.MediaType ;
+import org.openjena.atlas.web.TypedInputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 
