@@ -1,15 +1,35 @@
 #!/bin/bash
 
-M2_REPO="/home/afs/.m2/repo" ;
-X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
+## Run in development area.
+##Look for file names and make absolute before doing a cd.
+## Or use --fuseki_home= to find the HTML files
 
-CP=
-for x in $X
-do
-   CP="$CP:$M2_REPO$x"
-done
-CP="classes$CP"
+FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
+
+cd $FUSEKI_HOME
+
+## M2_REPO="/home/afs/.m2/repo" ;
+## X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
+## 
+## CP=
+## for x in $X
+## do
+##    CP="$CP:$M2_REPO$x"
+## done
+## CP="classes$CP"
+
+CP="$(. $FUSEKI_HOME/run_cp)"
+if [ -e "$FUSEKI_HOME/target/classes" ]
+then
+    CP="$FUSEKI_HOME/target/classes:$CP"
+    fi
+if [ -e "$FUSEKI_HOME/classes" ]
+then
+    CP="$FUSEKI_HOME/classes:$CP"
+    fi
+
 JVM_ARGS="-Xmx1200M"
-JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize:1G"
+#JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
 
-exec java -cp "$CP" -Xmx1200M org.apache.jena.fuseki.FusekiCmd "$@"
+# Cope with the 
+exec java -cp "$CP" $JVM_ARGS org.apache.jena.fuseki.FusekiCmd "$@"
