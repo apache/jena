@@ -104,9 +104,9 @@ public class WebContent
     static {
         // Or is code preferrable?
         mapContentTypeToLang.put(contentTypeRDFXML,         Lang.RDFXML) ;
-        mapContentTypeToLang.put(contentTypeTurtle1,        Lang.TURTLE) ;
-        mapContentTypeToLang.put(contentTypeTurtle2,        Lang.TURTLE) ;
-        mapContentTypeToLang.put(contentTypeTurtle3,        Lang.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeTurtle,         Lang.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeTurtleAlt1,     Lang.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeTurtleAlt2,     Lang.TURTLE) ;
         mapContentTypeToLang.put(contentTypeNTriples,       Lang.NTRIPLES) ;   // text/plain
         mapContentTypeToLang.put(contentTypeNTriplesAlt,    Lang.NTRIPLES) ;
         mapContentTypeToLang.put(contentTypeRdfJson,		Lang.RDFJSON) ;
@@ -122,7 +122,7 @@ public class WebContent
     private static Map<Lang, String> mapLangToContentType =  new HashMap<Lang, String>() ;
     static {
         mapLangToContentType.put(Lang.N3,           contentTypeN3) ;
-        mapLangToContentType.put(Lang.TURTLE,       contentTypeTurtle2) ;
+        mapLangToContentType.put(Lang.TURTLE,       contentTypeTurtle) ;
         mapLangToContentType.put(Lang.NTRIPLES,     contentTypeNTriples) ;
         mapLangToContentType.put(Lang.RDFXML,       contentTypeRDFXML) ;
         mapLangToContentType.put(Lang.RDFJSON,		contentTypeRdfJson) ;

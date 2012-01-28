@@ -20,6 +20,7 @@ package org.openjena.atlas.web;
 
 import java.io.InputStream;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.riot.ContentType ;
 
 public class TypedStream
@@ -45,4 +46,6 @@ public class TypedStream
     public String getContentType()          { return mediaType.getContentType() ; }
     public String getCharset()              { return mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
+    
+    public void close()                     { IO.close(input) ; }
 }

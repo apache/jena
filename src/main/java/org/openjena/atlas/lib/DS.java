@@ -30,7 +30,7 @@ import java.util.Set ;
 import org.openjena.atlas.iterator.NullIterator ;
 
 
-/** Datastructure factory - allows indirecly to other implementations */ 
+/** Datastructure factory - allows indirecting to other implementations */ 
 
 public class DS
 {
