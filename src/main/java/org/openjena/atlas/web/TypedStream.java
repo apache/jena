@@ -43,8 +43,8 @@ public class TypedStream
     }
     
     public InputStream getInput()           { return input ; }
-    public String getContentType()          { return mediaType.getContentType() ; }
-    public String getCharset()              { return mediaType.getCharset() ; }
+    public String getContentType()          { return mediaType == null ? null : mediaType.getContentType() ; }
+    public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
     public ContentType getMediaType()       { return mediaType ; }
     
     public void close()                     { IO.close(input) ; }

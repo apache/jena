@@ -43,6 +43,7 @@ public class WebContent
     public static final String contentTypeTurtle3           = "application/x-turtle" ;
     
     public static final String contentTypeRDFXML            = "application/rdf+xml" ;
+    public static final String contentTypeRDFJSON            = "application/rdf+json" ;
     
     // MIME type for N-triple is text/plain (!!!)
     public static final String contentTypeTextPlain         = "text/plain" ;
@@ -117,8 +118,21 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeTriGAlt,        Lang.TRIG) ;
         
     }
+    
+    /** Return our "canonical" name for a Content Type.
+     * This should be the standard one, no X-* 
+     */
+    public static String contentTypeCanonical(String contentType)
+    { 
+        Lang lang = contentTypeToLang(contentType) ;
+        if ( lang == null )
+            return null ;
+        return mapLangToContentType.get(lang) ;
+    }
+    
     public static Lang contentTypeToLang(String contentType) { return mapContentTypeToLang.get(contentType) ; }
 
+    /** Canonical names */
     private static Map<Lang, String> mapLangToContentType =  new HashMap<Lang, String>() ;
     static {
         mapLangToContentType.put(Lang.N3,           contentTypeN3) ;
