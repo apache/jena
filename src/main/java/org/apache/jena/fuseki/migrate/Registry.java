@@ -24,7 +24,9 @@ import java.util.Map ;
 
 public class Registry<T>
 {
-    Map<String, T> registry = new HashMap<String, T>() ;
+    protected Map<String, T> registry = new HashMap<String, T>() ;
+    
+    public Registry() {}
     
     public void put(String key, T value) { registry.put(key, value) ; }
     
