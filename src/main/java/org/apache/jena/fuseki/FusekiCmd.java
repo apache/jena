@@ -84,6 +84,8 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     
+    private static ArgDecl argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
+    
     //private static ModLocation          modLocation =  new ModLocation() ;
     private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
     
@@ -108,6 +110,7 @@ public class FusekiCmd extends CmdARQ
     
     private String fusekiConfigFile = null ;
     private String jettyConfigFile = null ;
+    private String homeDir = null ;
     
     public FusekiCmd(String...argv)
     {
@@ -125,7 +128,9 @@ public class FusekiCmd extends CmdARQ
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
-        add(argMgtPort, "--mgt=port",  "Enable the management commands on the given port") ; 
+        add(argMgtPort, "--mgt=port",           "Enable the management commands on the given port") ; 
+        add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
+        
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
     }
@@ -290,12 +295,40 @@ public class FusekiCmd extends CmdARQ
             if ( !FileOps.exists(jettyConfigFile) )
                 throw new CmdException("No such file: : "+jettyConfigFile) ;
         }
+        
+        if ( contains(argHome) )
+        {
+           List<String> args = super.getValues(argHome) ;
+           homeDir = args.get(args.size()-1) ;
+        }
     }
 
+    private static String sort_out_dir(String path)
+    {
+        path.replace('\\', '/') ;
+        if ( ! path.endsWith("/"))
+            path = path +"/" ;
+        return path ;
+    }
+    
     @Override
     protected void exec()
     {
+        if ( homeDir == null )
+        {
+            if ( System.getenv(Fuseki.FusekiHomeEnv) != null )
+                 homeDir = System.getenv(Fuseki.FusekiHomeEnv) ;
+            else
+                 homeDir = "." ;
+        }
+        
         SPARQLServer server ;
+
+        homeDir = sort_out_dir(homeDir) ;
+        
+        String pagesDir = homeDir+Fuseki.PagesAll ;
+        if ( ! FileOps.exists(pagesDir) )
+            Fuseki.configLog.warn("No such directory for static content: "+pagesDir) ;
         
         if ( jettyConfigFile != null )
             Fuseki.configLog.info("Jetty configuration: "+jettyConfigFile) ;
@@ -304,12 +337,12 @@ public class FusekiCmd extends CmdARQ
         {
             Fuseki.configLog.info("Configuration file: "+fusekiConfigFile) ;
             List<DatasetRef> services = FusekiConfig.configure(fusekiConfigFile) ;
-            server =  new SPARQLServer(jettyConfigFile, port, services) ;
+            server =  new SPARQLServer(jettyConfigFile, port, services, pagesDir) ;
         }
         else
         {
             DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
-            server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc) ) ;
+            server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc), pagesDir ) ;
         }
         // Temporary
         Fuseki.setServer(server) ;

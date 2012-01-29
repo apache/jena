@@ -75,7 +75,7 @@ public class ServerTest extends BaseServerTest
 //        public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
 //        public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
         
-        server = new SPARQLServer(null, port, Arrays.asList(sDesc) ) ;
+        server = new SPARQLServer(null, port, Arrays.asList(sDesc), Fuseki.PagesAll ) ;
         server.start() ;
     }
     

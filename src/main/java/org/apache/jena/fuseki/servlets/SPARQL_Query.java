@@ -152,6 +152,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             
             if ( queryStr == null )
                 errorBadRequest("SPARQL Query: No query specified (no 'query=' found)") ;
+            if ( queryStr.isEmpty() )
+                errorBadRequest("SPARQL Query: Empty query string") ;
         }
 
         if ( params != null )

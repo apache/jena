@@ -4,9 +4,17 @@
 ##Look for file names and make absolute before doing a cd.
 ## Or use --fuseki_home= to find the HTML files
 
-FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
-
-cd $FUSEKI_HOME
+export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
+if [ ! -e $FUSEKI_HOME ]
+then
+     echo "$FUSEKI_HOME does not exist" 1>&2
+    exit 1
+    fi
+if [ ! -d $FUSEKI_HOME ]
+then
+    echo "$FUSEKI_HOME exists but is not a directory" 1>&2
+    exit 1
+    fi
 
 ## M2_REPO="/home/afs/.m2/repo" ;
 ## X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
@@ -32,4 +40,4 @@ JVM_ARGS="-Xmx1200M"
 #JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
 
 # Cope with the 
-exec java -cp "$CP" $JVM_ARGS org.apache.jena.fuseki.FusekiCmd "$@"
+exec java -cp "$CP" $JVM_ARGS org.apache.jena.fuseki.FusekiCmd --home="$FUSEKI_HOME" "$@"

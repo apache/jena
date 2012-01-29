@@ -38,6 +38,7 @@ public class Fuseki
     // External log : operations, etc.
     static public String PATH = "org.apache.jena.fuseki" ;
     static public String FusekiIRI = "http://jena.apache.org/Fuseki" ;
+    static public String FusekiHomeEnv = "FUSEKI_HOME" ;
     static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
     
     static public String PagesPublish = "pages-publish" ;

@@ -61,13 +61,15 @@ public class SPARQLServer
     private int port ;
     private boolean verbose = false ;
     private List<DatasetRef> datasetRefs ;
+    private String pagesDir ;
     
     //private static int ThreadPoolSize = 100 ;
     
-    public SPARQLServer(String jettyConfig, int port, List<DatasetRef> services)
+    public SPARQLServer(String jettyConfig, int port, List<DatasetRef> services, String pages)
     {
         this.port = port ; 
         this.datasetRefs = services ;
+        this.pagesDir = pages ;
         ServletContextHandler context = buildServer(jettyConfig) ;
         // Build them all.
         for ( DatasetRef sDesc : services )
@@ -136,9 +138,7 @@ public class SPARQLServer
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
         context.setMimeTypes(mt) ;
         
-        // Fixed for now.
-        String pages = true ? Fuseki.PagesAll : Fuseki.PagesPublish ; 
-        serverLog.debug("Pages = "+pages) ;
+        serverLog.debug("Pages = "+pagesDir) ;
         
         boolean installManager = true ;
         boolean installServices = true ;
@@ -155,7 +155,7 @@ public class SPARQLServer
             HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
             ServletHolder jspContent = new ServletHolder(jspServlet) ;
             //?? Need separate context for admin stuff??
-            context.setResourceBase(pages) ;
+            context.setResourceBase(pagesDir) ;
             addServlet(context, jspContent, "*.jsp") ;
         }
         
@@ -192,7 +192,7 @@ public class SPARQLServer
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
             //  if this is /* then don't see *.jsp. Why?
-            addContent(context, "/", pages) ;
+            addContent(context, "/", pagesDir) ;
         }
         
         return context ; 
