@@ -4,7 +4,7 @@ Apache Jena - single module instructions
 This file contain the instructions for building this module from the
 source-release artifact.  
 
-VER is the version number for the rlease to be built.
+VER is the version number for the release to be built.
 
 == Download
 
@@ -34,7 +34,7 @@ For the zip file of the tdb module:
 The .md5 and .sha1 files contain the MD5 and SHA1 checksum of the file
 respectively.  Calculate the checksum on the downloaded file 
 
-Exampale (linux):
+Example (linux):
 
     md5sum jena-tdb-VER-incubating-source-release.zip
 
@@ -49,8 +49,7 @@ recreate the distribution.
 
 == Ensure the dependecies are available
 
-Either build the previous modules in the dependency chain or get them from
-a public maven repository:
+Get dependencues from a public maven repository:
 
     mvn dependency:resolve
 
