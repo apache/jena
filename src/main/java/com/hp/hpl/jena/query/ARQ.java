@@ -211,6 +211,17 @@ public class ARQ
     /** Symbol to name the Xerces-J regular expression engine */ 
     public static final Symbol xercesRegex =  ARQConstants.allocSymbol("xercesRegex") ;
 
+    /** 
+     * Use this Symbol to allow passing additional query parameters to a 
+     * SERVICE <IRI> call.
+     * Parameters need to be grouped by SERVICE <IRI>,  
+     * a Map<String, Map<String,List<String>>> is assumed.
+     * The key of the first map is the SERVICE IRI, the value is a Map 
+     * which maps the name of a query string parameters to its values.
+     * 
+     * @see Service
+     */
+    public static final Symbol serviceParams = ARQConstants.allocSymbol("serviceParams") ;
     
     /**
      * A Long value that specifies the number of bindings (or triples for CONSTRUCT queries) to be stored in memory by sort

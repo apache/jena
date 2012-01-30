@@ -29,12 +29,14 @@ import java.net.URL ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
+import java.util.regex.Pattern ;
 
 import org.apache.commons.codec.binary.Base64 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.util.Convert ;
@@ -68,6 +70,8 @@ public class HttpQuery extends Params
     String responseMessage = null ;
     boolean forcePOST = false ;
     String queryString = null ;
+    boolean serviceParams = false ;
+    private final Pattern queryParamPattern = Pattern.compile(".+[&|\\?]query=.*") ;
     
     //static final String ENC_UTF8 = "UTF-8" ;
     
@@ -97,8 +101,11 @@ public class HttpQuery extends Params
             log.trace("URL: "+serviceURL) ;
  
         if ( serviceURL.indexOf('?') >= 0 )
-            throw new QueryExceptionHTTP(-1, "URL already has a query string ("+serviceURL+")") ;
-        
+            serviceParams = true ;
+
+        if ( queryParamPattern.matcher(serviceURL).matches() )
+            throw new QueryExecException("SERVICE URL overrides the 'query' SPARQL protocol parameter") ;
+
         this.serviceURL = serviceURL ;
     }
     
@@ -178,7 +185,7 @@ public class HttpQuery extends Params
             if ( count() == 0 )
                 target = new URL(serviceURL) ; 
             else
-                target = new URL(serviceURL+"?"+qs) ;
+                target = new URL(serviceURL+(serviceParams ? "&" : "?")+qs) ;
         }
         catch (MalformedURLException malEx)
         { throw new QueryExceptionHTTP(0, "Malformed URL: "+malEx) ; }

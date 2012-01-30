@@ -64,9 +64,11 @@ public class Service
 //        else
             query = OpAsQuery.asQuery(opRemote) ;
             
-        Explain.explain("HTTP", query, context) ;            
-        HttpQuery httpQuery = new HttpQuery(op.getService().getURI()) ;
-        httpQuery.addParam(HttpParams.pQuery, query.toString() );
+        Explain.explain("HTTP", query, context) ;
+        String uri = op.getService().getURI() ;
+        HttpQuery httpQuery = new HttpQuery(uri) ;
+        httpQuery.merge( QueryEngineHTTP.getServiceParams(uri, context) ) ;
+        httpQuery.addParam(HttpParams.pQuery, query.toString() ) ;
         httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
         InputStream in = httpQuery.exec() ;
         ResultSet rs = ResultSetFactory.fromXML(in) ;
