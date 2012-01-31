@@ -87,17 +87,6 @@ public class TemplateLib
         return quads;
     }
     
-//    /** Take a template, as a list of quad patterns, but only on one graph,  
-//     *  a default graph, and a list of bindings,
-//     *  and produce a lists of triples.
-//     */
-//    public static List<Triple> templateTriples(List<Quad> quads, List<Binding> bindings)
-//    {
-//        if ( quads == null || quads.isEmpty() ) return null ; 
-//        MultiMap<Node, Triple> acc = calcTriples(quads, bindings) ;
-//        return acc ;
-//    }
-
     /** Substitute into quad patterns, and build a map of graph name to lists of triples */
     public static MultiMap<Node, Triple> calcTriples(List<Quad> quads, List<Binding> bindings)
     {
@@ -154,23 +143,6 @@ public class TemplateLib
                     quadList.add(q);
                 }
                 return quadList.iterator();
-                
-                // Alternative implementation (doesn't need to create a new arraylist)
-//                Iterator<Quad> it = Iter.map(quads.iterator(), new Transform<Quad, Quad>()
-//                {
-//                    public Quad convert(Quad quad)
-//                    {
-//                        Quad q = subst(quad, b, bNodeMap) ;
-//                        if ( ! q.isConcrete() )
-//                        {
-//                            Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
-//                            return null;
-//                        }
-//                        return q;
-//                    }
-//                });
-//                // Filter out any of the nulls that were introduced above
-//                return Iter.removeNulls(it);
             }
         });
     }
