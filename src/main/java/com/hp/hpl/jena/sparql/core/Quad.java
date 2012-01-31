@@ -148,6 +148,29 @@ public class Quad
     /** Is it really a triple? */  
     public boolean isTriple()               { return equal(graph, tripleInQuad) ; } 
 
+    /** Is this quad a legal data quad (legal data triple, IRI for graph) */   
+    public boolean isLegalAsData()
+    {
+        Node sNode = getSubject() ;
+        Node pNode = getPredicate() ;
+        Node oNode = getObject() ;
+        Node gNode = getGraph() ;
+        
+        if ( sNode.isLiteral() || sNode.isVariable() )
+            return false ;
+        
+        if ( ! pNode.isURI() )  // Not variable, literal or blank.
+            return false ;
+
+        if ( oNode.isVariable() )
+            return false ;
+        
+        if ( gNode != null && ! gNode.isURI() )
+            return false ;
+        
+        return true ;
+    }
+    
     @Override
     public int hashCode() 
     { 
@@ -161,6 +184,8 @@ public class Quad
             x++ ;
         return x ;
     }
+    
+    
     
     @Override
     public boolean equals(Object other) 

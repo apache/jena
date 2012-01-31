@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.modify;
 
 
 import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
@@ -27,28 +28,17 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
-import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
-import com.hp.hpl.jena.sparql.modify.request.Target ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
+import com.hp.hpl.jena.sparql.modify.request.* ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.* ;
 
 public abstract class TestUpdateGraph extends TestUpdateBase
 {
@@ -344,52 +334,66 @@ public abstract class TestUpdateGraph extends TestUpdateBase
                                  new Triple(s,p,o2))) ;
     }
     
+    @Test public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
+    @Test public void testUpdateBad2()      { testBad("bad-2.ru", 1) ; }
+    @Test public void testUpdateBad3()      { testBad("bad-3.ru", 0) ; }
+
+    private void testBad(String file, int expectedSize)
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        script(gStore, file) ;
+        assertEquals(expectedSize, countQuads(gStore)) ;
+    }
     
-//    private Graph testUpdateInitialBindingWorker(Var v, Node n)
-//    {
-//        GraphStore gStore = getEmptyGraphStore() ;
-//        UpdateRequest req = UpdateFactory.create() ;
-//
-//        UpdateInsert ins = new UpdateInsert() ;
-//        TemplateGroup template = new TemplateGroup() ;
-//        template.addTriple(triple1) ;
-//        template.addTriple(triple2) ;
-//        ins.setInsertTemplate(template) ;
-//        req.add(ins) ;
-//
-//        UpdateDelete delete = new UpdateDelete() ;
-//        delete.setPattern("{ ?s <http://example/p> ?o } ") ;
-//        delete.setDeleteTemplate("{ ?s <http://example/p> ?o}") ;
-//        req.add(delete) ;
-//        
-//        Binding b = BindingFactory.binding(null, v, n) ;
-//        UpdateAction.execute(req, gStore, b) ;
-//        
-//        return gStore.getDefaultGraph() ;
-//    }
-//    
-//    @Test public void testUpdateInitialBinding1()
-//    {
-//        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o1) ;
-//        assertEquals(graph.size(), 1) ;
-//        assertFalse(graphContains(graph, triple1)) ;
-//        assertTrue(graphContains(graph, triple2)) ;
-//    }
-//    
-//    @Test public void testUpdateInitialBinding2()
-//    {
-//        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o2) ;
-//        assertEquals(graph.size(), 1) ;
-//        assertTrue(graphContains(graph, triple1)) ;
-//        assertFalse(graphContains(graph, triple2)) ;
-//    }
-//
-//    @Test public void testUpdateInitialBinding3()
-//    {
-//        // Does not affect the delete
-//        Graph graph = testUpdateInitialBindingWorker(Var.alloc("FF"), o1) ;
-//        assertTrue(graphEmpty(graph)) ;
-//    }
+    private static long countQuads(DatasetGraph dsg) { return Iter.count(dsg.find()); }
+
+    
+    private Graph testUpdateInitialBindingWorker(Var v, Node n)
+    {
+        GraphStore gStore = getEmptyGraphStore() ;
+        
+        UpdateRequest req = UpdateFactory.create() ;
+
+        {
+            QuadDataAcc acc = new QuadDataAcc() ;
+            acc.addTriple(triple1) ;
+            acc.addTriple(triple2) ;
+            UpdateDataInsert ins = new UpdateDataInsert(acc) ;
+            req.add(ins) ;
+        }
+        {
+            UpdateModify mod = new UpdateModify() ;
+            mod.getDeleteAcc().addTriple(new Triple(s,p, Var.alloc("o"))) ;
+            req.add(mod) ;
+        }
+        Binding b = BindingFactory.binding(null, v, n) ;
+        UpdateAction.execute(req, gStore, b) ;
+        
+        return gStore.getDefaultGraph() ;
+    }
+    
+    @Test public void testUpdateInitialBinding1()
+    {
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o1) ;
+        assertEquals(graph.size(), 1) ;
+        assertFalse(graphContains(graph, triple1)) ;
+        assertTrue(graphContains(graph, triple2)) ;
+    }
+    
+    @Test public void testUpdateInitialBinding2()
+    {
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o2) ;
+        assertEquals(graph.size(), 1) ;
+        assertTrue(graphContains(graph, triple1)) ;
+        assertFalse(graphContains(graph, triple2)) ;
+    }
+
+    @Test public void testUpdateInitialBinding3()
+    {
+        // Does not affect the delete
+        Graph graph = testUpdateInitialBindingWorker(Var.alloc("FF"), o1) ;
+        assertEquals(2, graph.size()) ;
+    }
     
     @Test public void testUpdateInitialBinding4()
     {

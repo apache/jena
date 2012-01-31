@@ -278,14 +278,14 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateDataInsert update)
     {
         for ( Quad quad : update.getQuads() )
-            graphStore.add(quad) ;
+            addToGraphStore(graphStore, quad) ;
     }
 
     @Override
     public void visit(UpdateDataDelete update)
     {
         for ( Quad quad : update.getQuads() )
-            graphStore.delete(quad) ;
+            deleteFromGraphStore(graphStore, quad) ;
     }
 
     @Override
@@ -367,10 +367,6 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null ;
-        
-//        if ( update.getUsing().size() > 0 || update.getUsingNamed().size() > 0 )
-//            Log.warn(this, "Graph selection from the dataset not supported very well") ;
-//        //return null ;
         
         DatasetGraphMap dsg = new DatasetGraphMap(graphStore) ;
         if ( update.getUsing().size() > 0  )
@@ -476,8 +472,23 @@ public class UpdateEngineWorker implements UpdateVisitor
         while (it.hasNext())
         {
             Quad q = it.next();
-            graphStore.add(q);
+            addToGraphStore(graphStore, q);
         }
+    }
+    
+    // Catch all individual adds of quads (and deletes - mainly for symmetry). 
+    private static void addToGraphStore(GraphStore graphStore, Quad quad) 
+    {
+        // Check legal triple.
+        if ( quad.isLegalAsData() )
+            graphStore.add(quad);
+        // Else drop.
+        //Log.warn(UpdateEngineWorker.class, "Bad quad as data: "+quad) ;
+    }
+
+    private static void deleteFromGraphStore(GraphStore graphStore, Quad quad)
+    {
+        graphStore.delete(quad) ;
     }
 
     protected Query elementToQuery(Element pattern)
