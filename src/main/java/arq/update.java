@@ -26,7 +26,10 @@ import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.core.TransactionalNull ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateExecutionFactory ;
@@ -73,20 +76,34 @@ public class update extends CmdUpdate
     {
         if ( requestFiles.size() == 0 && getPositional().size() == 0 )
             throw new CmdException("Nothing to do") ;
+     
+        Transactional transactional = (graphStore instanceof Transactional ) ? (Transactional)graphStore : new TransactionalNull() ;
         
         for ( Iterator<String> iter = requestFiles.iterator() ; iter.hasNext() ; )
         {
             String filename = iter.next();
-            execOneFile(filename, graphStore) ;
+            try { 
+                transactional.begin(ReadWrite.WRITE) ;
+                execOneFile(filename, graphStore) ;
+                transactional.commit() ;
+            } finally { transactional.end() ; }
         }
         
         for ( Iterator<String> iter = super.getPositional().iterator() ; iter.hasNext() ; )
         {
             String requestString = iter.next();
             requestString = indirect(requestString) ;
-            execOne(requestString, graphStore) ;
+            
+            try { 
+                transactional.begin(ReadWrite.WRITE) ;
+                execOne(requestString, graphStore) ;
+                transactional.commit() ;
+            } finally { transactional.end() ; }
+            
+            
         }
         SystemARQ.sync(graphStore) ;
+
         if ( dump )
             //SSE.write(graphStore) ;
             NQuadsWriter.write(System.out, graphStore) ;

@@ -56,6 +56,7 @@ public abstract class CmdUpdate extends CmdARQ
         GraphStore graphStore = modGraphStore.getGraphStore() ;
         if ( graphStore.getDefaultGraph() == null )
             graphStore.setDefaultGraph(ModelFactory.createDefaultModel().getGraph()); 
+        // Migrate trasnaction flag to DatsetGraph ... sometime 
         
         execUpdate(graphStore) ;
     }
