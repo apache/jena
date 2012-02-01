@@ -32,16 +32,20 @@ public class QuadDataAcc extends QuadAcc
         if ( Var.isVar(getGraph()) )
             throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
         if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
+            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;  
+        if ( t.getSubject().isLiteral() )
+            throw new QueryParseException("Literals not allowed as subjects in data", -1, -1) ;
     }
     
     @Override
-    protected void check(Quad t)
+    protected void check(Quad quad)
     {
-        if ( Var.isVar(t.getGraph()) || 
-             Var.isVar(t.getSubject()) || 
-             Var.isVar(t.getPredicate()) || 
-             Var.isVar(t.getObject())) 
+        if ( Var.isVar(quad.getGraph()) || 
+             Var.isVar(quad.getSubject()) || 
+             Var.isVar(quad.getPredicate()) || 
+             Var.isVar(quad.getObject())) 
             throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
+        if ( quad.getSubject().isLiteral() )
+            throw new QueryParseException("Literals not allowed as subjects in quad data", -1, -1) ;
     }
 }

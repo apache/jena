@@ -28,6 +28,7 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -334,7 +335,8 @@ public abstract class TestUpdateGraph extends TestUpdateBase
                                  new Triple(s,p,o2))) ;
     }
     
-    @Test public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
+    @Test(expected=QueryParseException.class) public void testUpdateBad1()      { testBad("bad-1.ru", 1) ; }
+    
     @Test public void testUpdateBad2()      { testBad("bad-2.ru", 1) ; }
     @Test public void testUpdateBad3()      { testBad("bad-3.ru", 0) ; }
 
@@ -389,13 +391,6 @@ public abstract class TestUpdateGraph extends TestUpdateBase
     }
 
     @Test public void testUpdateInitialBinding3()
-    {
-        // Does not affect the delete
-        Graph graph = testUpdateInitialBindingWorker(Var.alloc("FF"), o1) ;
-        assertEquals(2, graph.size()) ;
-    }
-    
-    @Test public void testUpdateInitialBinding4()
     {
         GraphStore gStore = getEmptyGraphStore() ;
         defaultGraphData(gStore, graph1) ;

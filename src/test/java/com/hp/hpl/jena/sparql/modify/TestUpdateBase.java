@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import junit.framework.TestCase ;
+import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;
 
-public abstract class TestUpdateBase extends TestCase
+public abstract class TestUpdateBase extends BaseTest
 {
     protected abstract GraphStore getEmptyGraphStore() ; 
     
