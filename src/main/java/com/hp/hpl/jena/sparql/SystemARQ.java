@@ -62,6 +62,7 @@ public class SystemARQ
         }
         else
         {
+            sync(dataset.getDefaultGraph()) ;
             // Go through each graph.
             Iterator<Node> iter = Iter.iterator(dataset.listGraphNodes()) ;
             for ( ; iter.hasNext() ; )
