@@ -42,7 +42,7 @@ For the zip file of the zzz module:
 The .md5 and .sha1 files contain the MD5 and SHA1 checksum of the file
 respectively.  Calculate the checksum on the downloaded file 
 
-Exampale (linux):
+Example (linux):
 
     md5sum jena-zzz-VER-incubating-source-release.zip
 
