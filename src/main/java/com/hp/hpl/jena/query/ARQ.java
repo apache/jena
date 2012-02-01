@@ -219,7 +219,7 @@ public class ARQ
      * The key of the first map is the SERVICE IRI, the value is a Map 
      * which maps the name of a query string parameters to its values.
      * 
-     * @see Service
+     * @see com.hp.hpl.jena.sparql.engine.http.Service
      */
     public static final Symbol serviceParams = ARQConstants.allocSymbol("serviceParams") ;
     
