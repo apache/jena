@@ -35,7 +35,8 @@
   <description>TDB is a storage subsystem for Jena and ARQ</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</connection>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</developerConnection>
     <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
   </scm>
   
