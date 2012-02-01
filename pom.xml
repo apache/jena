@@ -22,7 +22,7 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.9.1-incubating-SNAPSHOT</version>
+  <version>0.9.0-incubating-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -213,27 +213,6 @@ build.time.txt=${build.time.txt}
         </executions>
       </plugin>
 
-      <!--
-      <plugin>
-	<!- - This must be the last plug-in attached to the package phase 
-	     because it replies on the packaging of the jar to happen first.
-	- ->
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-assembly-plugin</artifactId>
-	<executions>
-	  <execution>
-	    <id>create-assembly</id>
-	    <phase>package</phase>
-	    <goals><goal>single</goal></goals>
-	    <configuration>
-	      <descriptors>
-		<descriptor>assembly.xml</descriptor>
-	      </descriptors>
-	    </configuration>
-	  </execution>
-	</executions>
-      </plugin>
-      -->
     </plugins>
   </build>
 
