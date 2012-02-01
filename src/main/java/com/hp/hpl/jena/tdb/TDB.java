@@ -156,7 +156,10 @@ public class TDB
             return ;
         }
         
+        // ARQ 2.7.1 and later - replace with SystenARQ.sync()
+
         // May be a general purpose dataset with TDB objects in it.
+        sync(dataset.getDefaultGraph()) ;
         Iterator<Node> iter = dataset.listGraphNodes() ;
         iter = Iter.toList(iter).iterator() ;   // Avoid iterator concurrency.
         for ( ; iter.hasNext() ; )

@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.migrate;
 
+import org.openjena.atlas.lib.Sync ;
+
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -27,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
  *  Only supports multiple-reader OR single-writer, and no transction abort.
  *  Transactions are not durable. 
  */
-public class DatasetGraphWithLock extends DatasetGraphTrackActive 
+public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Sync
 {
     static class JenaLockException extends JenaException
     {
@@ -82,7 +84,7 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive
     protected void _commit()
     {
         if ( readWrite ==  ReadWrite.WRITE )
-            SystemARQ.sync(dsg) ;
+            sync() ;
         locked = false ;
         dsg.getLock().leaveCriticalSection() ;
     }
@@ -109,5 +111,15 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive
         if ( dsg != null )
             dsg.close() ;
         dsg = null ;
+    }
+
+    @Override
+    public void sync()
+    {
+        SystemARQ.sync(dsg) ;
+        // ARQ 2.7.0 bug - fails to sync the default graph.
+        // When moving to 2.7.1 or later, remove the code line below. 
+        // And these comments. 
+        SystemARQ.sync(dsg.getDefaultGraph()) ;
     }
 }
