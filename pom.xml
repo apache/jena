@@ -16,14 +16,14 @@
    limitations under the License.
 -->
 
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.2.1-incubating-SNAPSHOT</version>
-  <description/>
+  <version>0.2.1-incubating</version>
+  <description />
   <url>http://incubator.apache.org/jena</url>
 
   <parent>
@@ -45,9 +45,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</developerConnection>
-    <url>https://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating-RC-1</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating-RC-1</developerConnection>
+    <url>https://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating-RC-1</url>
   </scm>
 
   <properties>
@@ -239,10 +239,10 @@
             <phase>generate-resources</phase>
             <configuration>
               <target>
-                <mkdir dir="${project.basedir}/target"/>
+                <mkdir dir="${project.basedir}/target" />
                 <tstamp>
-                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
+                  <format property="build.time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ" />
+                  <format property="build.time.txt" pattern="yyyy-MM-dd HH:mm Z" />
                 </tstamp>
                 <echo file="${project.basedir}/target/filter.properties">
                   #begin
@@ -250,8 +250,8 @@
                   build.time.txt=${build.time.txt}
                   #end
                 </echo>
-                <echo message="Version = ${project.version}"/>
-                <echo message="build.time=${build.time.txt}"/>
+                <echo message="Version = ${project.version}" />
+                <echo message="build.time=${build.time.txt}" />
               </target>
             </configuration>
             <goals>
