@@ -47,7 +47,7 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</developerConnection>
-    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
+    <url>https://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
   <properties>
@@ -63,7 +63,7 @@
 
     <ver.jena>2.7.0-incubating</ver.jena>
     <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+    <ver.tdb>0.9.0-incubating</ver.tdb>
 
     <ver.jetty>7.5.4.v20111024</ver.jetty>
     <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
