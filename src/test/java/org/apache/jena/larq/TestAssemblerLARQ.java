@@ -44,7 +44,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction;
 
 public class TestAssemblerLARQ {
 
@@ -80,7 +80,7 @@ public class TestAssemblerLARQ {
         assertTrue(thing instanceof Dataset) ;
         Dataset ds = (Dataset)thing ;
         ds.asDatasetGraph() ;
-        assertTrue(((Dataset)thing).asDatasetGraph() instanceof DatasetGraphTDB) ;
+        assertTrue(((Dataset)thing).asDatasetGraph() instanceof DatasetGraphTransaction) ;
         
         assertNotNull(LARQ.getDefaultIndex()) ;
         
