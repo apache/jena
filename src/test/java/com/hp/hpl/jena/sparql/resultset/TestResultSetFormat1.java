@@ -87,10 +87,15 @@ public class TestResultSetFormat1
     static String[] $rs7 = {
         "(resultset (?x) (row))" } ;
     
+    static String[] $rs8 = {
+    	"(resultset (?x)",
+    	" (row (?x \"has \t tab character\"))",
+    	")" } ;
+        
     @Parameters
     public static Collection<Object[]> data()
     {
-        return Arrays.asList(new Object[][] { {$rs0}, {$rs1}, {$rs2}, {$rs3}, {$rs4}, {$rs5}, {$rs6} , {$rs7} } ) ;
+        return Arrays.asList(new Object[][] { {$rs0}, {$rs1}, {$rs2}, {$rs3}, {$rs4}, {$rs5}, {$rs6}, {$rs7}, {$rs8} } ) ;
     }
 
     private final String[] $rs ;

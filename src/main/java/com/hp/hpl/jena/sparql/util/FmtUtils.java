@@ -528,7 +528,7 @@ public class FmtUtils
 //            }    
 
             // Whitespace
-            if ( singleLineString && ( c == '\n' || c == '\r' || c == '\f' ) )
+            if ( singleLineString && ( c == '\n' || c == '\r' || c == '\f' || c == '\t' ) )
             {
                 if (c == '\n') sbuff.append("\\n");
                 if (c == '\t') sbuff.append("\\t");
