@@ -22,8 +22,8 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.2.2-incubating-SNAPSHOT</version>
-  <description />
+  <version>0.2.1-incubating-SNAPSHOT</version>
+  <description>Jena SPARQL Server</description>
   <url>http://incubator.apache.org/jena</url>
 
   <parent>
