@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openjena.atlas.lib.FileOps;
+import org.openjena.atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
@@ -110,6 +111,7 @@ public class TestAssemblerLARQ {
     }
     
     @Test public void testMake3() throws CorruptIndexException, IOException {
+    	Log.disable(AssemblerLARQ.class) ;
         IndexLARQ indexLARQ1 = null ;
         IndexLARQ indexLARQ2 = null ;
         try {
