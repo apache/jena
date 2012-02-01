@@ -18,23 +18,24 @@
 
 package org.openjena.riot.out;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream ;
+import java.io.ByteArrayOutputStream ;
 
-import org.junit.Test;
-import org.openjena.atlas.json.JSON;
-import org.openjena.atlas.json.JsonObject;
-import org.openjena.atlas.junit.BaseTest;
-import org.openjena.atlas.lib.Sink;
+import org.junit.Test ;
+import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.RiotReader;
-import org.openjena.riot.lang.LangRIOT;
-import org.openjena.riot.lang.SinkTriplesToGraph;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.graph.GraphFactory;
-import com.hp.hpl.jena.sparql.sse.SSE;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestOutputRDFJSON extends BaseTest
 {
@@ -116,6 +117,7 @@ public class TestOutputRDFJSON extends BaseTest
               "(<http://example.org/abc> <p> _:s)" ,
               "))") ;
     }
+    
     @Test public void rdfjson_literals()
     {
         // Literals, various
@@ -128,16 +130,32 @@ public class TestOutputRDFJSON extends BaseTest
              "(<s> <p> '1.05'^^xsd:decimal)",
             "))") ;
     }    
+    
+    @Test public void rdfjson_escapes()
+    {
+    	Graph g = GraphFactory.createGraphMem();
+    	Node s = Node.createAnon();
+    	Node p = Node.createURI("http://predicate");
+    	g.add(new Triple(s, p, Node.createLiteral("quote \" character")));
+    	g.add(new Triple(s, p, Node.createLiteral("new \n\r lines")));
+    	g.add(new Triple(s, p, Node.createLiteral("tab \t character")));
+    	test(g);
+    }
 
     private void test (String... strings) 
     {
         String str = StrUtils.strjoinNL(strings) ;
         Graph g = SSE.parseGraph(str) ;
+        test(g);
+    }
+    
+    private void test (Graph g)
+    {
         ByteArrayOutputStream bout = serializeAsJSON(g) ;
         parseAsJSON(bout) ; // make sure valid JSON
         Graph g2 = parseAsRDFJSON(bout) ; 
 
-        assertTrue(g.isIsomorphicWith(g2)) ;    	
+        assertTrue(g.isIsomorphicWith(g2)) ;  
     }
 
     private ByteArrayOutputStream serializeAsJSON (Graph graph) 

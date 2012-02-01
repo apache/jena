@@ -277,7 +277,7 @@ public class JSWriter
     private void setNotFirst()      { stack.peek().setValue(false) ; }
     
     // Can only write a value in some context.
-    private void value(String x) { out.print("\"") ; out.print(x) ; out.print("\"") ; }
+    private void value(String x) { out.print(outputQuotedString(x)); }
     
     private void value(boolean b) { out.print(Boolean.toString(b)) ; }
     
