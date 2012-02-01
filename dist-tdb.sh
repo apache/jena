@@ -1,6 +1,12 @@
 #!/bin/bash
 
 # You need a copy of the staging repo to get the checksum files.
+
+# NB This fails unless this first:
+#
+# mkdir -p https://repository.apache.org/content/repositories/orgapachejena-NNN/org/apache/jena
+#   otherwise it creates a file in this location then can't mirror below it.
+#
 # wget -e robots=off --wait 1 --mirror -np \
 #     https://repository.apache.org/content/repositories/orgapachejena-NNN/org/apache/jena
 
@@ -68,10 +74,9 @@ inc=incubating
 echo "## TDB"
 cpallfiles jena-tdb "${V_TDB}"
 
-echo "## zip"
-M=jena-tdb
-V=${V_TDB}
-D="$M-$V-$inc"
-cpfile jena-tdb-$D-distribution.zip      .
-cpfile jena-tdb-$D-distribution.tar.gz   .
-
+## echo "## zip"
+## M=jena-tdb
+## V=${V_TDB}
+## D="$M-$V-$inc"
+## cpfile $D/$D-distribution.zip      .
+## cpfile $D/$D-distribution.tar.gz   .
