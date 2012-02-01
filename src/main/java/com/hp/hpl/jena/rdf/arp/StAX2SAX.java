@@ -73,19 +73,16 @@ public class StAX2SAX {
         parse(xef.createXMLEventReader(xmlReader));
     }
     
+    /**
+     * Consumes all StAX events and passes them on to the content handler
+     */
     public void parse(XMLEventReader xmlReader) throws XMLStreamException, SAXException {
-        // We permit nesting, so keep at track of where we are
-        int level = 0;
         while (xmlReader.hasNext()) {
             XMLEvent e = xmlReader.nextEvent();
             if (e.isStartDocument()) handler.startDocument();
             else if (e.isEndDocument()) handler.endDocument();
-            else if (e.isStartElement()) { emitSE(e.asStartElement()); level++; }
-            else if (e.isEndElement()) { 
-                emitEE(e.asEndElement()); 
-                level--;
-                if (level == 0) break;
-            }
+            else if (e.isStartElement()) emitSE(e.asStartElement());
+            else if (e.isEndElement()) emitEE(e.asEndElement()); 
             else if (e.isProcessingInstruction()) emitPi((ProcessingInstruction) e);
             else if (e.isCharacters()) emitChars(e.asCharacters());
             else if (e.isAttribute()) emitAttr((Attribute) e);
