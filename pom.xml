@@ -213,10 +213,11 @@ build.time.txt=${build.time.txt}
         </executions>
       </plugin>
 
+      <!--
       <plugin>
-	<!-- This must be the last plug-in attached to the package phase 
+	<!- - This must be the last plug-in attached to the package phase 
 	     because it replies on the packaging of the jar to happen first.
-	-->
+	- ->
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-assembly-plugin</artifactId>
 	<executions>
@@ -232,7 +233,7 @@ build.time.txt=${build.time.txt}
 	  </execution>
 	</executions>
       </plugin>
-
+      -->
     </plugins>
   </build>
 
