@@ -43,7 +43,7 @@
   <properties>
     <ver.lucene>3.5.0</ver.lucene>
     <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+    <ver.tdb>0.9.0-incubating</ver.tdb>
   </properties>
 
   <dependencies>
@@ -146,6 +146,11 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+    </repository>
+    <repository>
+      <id>apache.staging</id>
+      <name>Apache Staging Repository</name>
+      <url>https://repository.apache.org/content/repositories/staging/</url>
     </repository>
   </repositories>
 
