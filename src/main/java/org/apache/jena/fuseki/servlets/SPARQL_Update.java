@@ -181,7 +181,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             return ;
         }
         
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm) ;
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
     }
 
     private void executeBody(HttpActionUpdate action)
