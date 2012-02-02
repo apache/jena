@@ -145,6 +145,7 @@ public class HttpOp
         try
         {
             e = new StringEntity(content, "UTF-8") ;
+            e.setContentType(contentType) ;
             execHttpPost(url, e, acceptType, handlers) ;
         } catch (UnsupportedEncodingException e1)
         {
@@ -254,20 +255,36 @@ public class HttpOp
                 throw new HttpException(statusLine.getStatusCode()+" "+statusLine.getReasonPhrase()) ;
             }
 
-            String contentType = response.getFirstHeader(HttpNames.hContentType).getValue() ;
-            MediaType mt = new MediaType(contentType) ;
-            String ct = mt.getContentType() ;
-            if ( log.isDebugEnabled() )
-                log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
-
-            HttpResponseHandler handler = handlers.get(ct) ;
-            if ( handler == null )
-                // backstop
-                handler = handlers.get("*") ;
-            if ( handler != null )
-                handler.handle(ct, baseIRI, response) ;
+            String ct = "*" ;
+            MediaType mt = null ;
+            if ( statusLine.getStatusCode() == 200 )
+            {
+                String contentType = response.getFirstHeader(HttpNames.hContentType).getValue() ;
+                if ( contentType != null )
+                {
+                    mt = new MediaType(contentType) ;
+                    if ( log.isDebugEnabled() )
+                        log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
+                }
+                else
+                {
+                    if ( log.isDebugEnabled() )
+                        log.debug(format("[%d] %d %s :: (no content type)",id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
+                }
+                HttpResponseHandler handler = handlers.get(ct) ;
+                if ( handler == null )
+                    // backstop
+                    handler = handlers.get("*") ;
+                if ( handler != null )
+                    handler.handle(ct, baseIRI, response) ;
+                else
+                    log.warn(format("[%d] No handler found for %s", id, ct));
+            }
             else
-                log.warn(format("[%d] No handler found for %s", id, mt));
+            {
+                if( handlers != null )
+                    log.warn(format("[%d] No content returned but handlers provided"));
+            }
         } finally { closeEntity(response.getEntity()) ; }
     }
     

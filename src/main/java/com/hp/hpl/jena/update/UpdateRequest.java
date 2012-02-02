@@ -30,7 +30,9 @@ import org.openjena.atlas.io.Printable ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 
-
+/** A SPARQL Update consists of a number of operations (e.g. INSERT, CLEAR).
+ *  A request is the unit of execution.
+ */
 public class UpdateRequest extends Prologue implements Printable, Iterable<Update>
 {
     private List<Update> operations = new ArrayList<Update>() ;

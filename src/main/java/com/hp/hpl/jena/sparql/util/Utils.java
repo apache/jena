@@ -95,7 +95,7 @@ public class Utils
     
     public static String calendarToXSDDateTimeString(Calendar cal)
     {
-        return calendarToXSDString(cal, "yyyy-MM-dd'T'HH:mm:ss.S") ;
+        return calendarToXSDString(cal, "yyyy-MM-dd'T'HH:mm:sss.S") ;
     }
     
     public static String calendarToXSDDateString(Calendar cal)
