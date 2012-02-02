@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateProcessRemote ;
 import com.hp.hpl.jena.sparql.modify.UpdateProcessorBase ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
@@ -31,7 +32,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 public class UpdateExecutionFactory
 {
 
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param update
      * @param graphStore
      * @return UpdateProcessor or null
@@ -41,7 +42,7 @@ public class UpdateExecutionFactory
         return create(update, graphStore, (Binding)null) ;
     }
 
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param update
      * @param graphStore
      * @param initialSolution
@@ -52,7 +53,7 @@ public class UpdateExecutionFactory
         return create(new UpdateRequest(update), graphStore, initialSolution) ;
     }
 
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param update
      * @param graphStore
      * @param initialBinding
@@ -63,7 +64,7 @@ public class UpdateExecutionFactory
         return create(new UpdateRequest(update), graphStore, initialBinding) ;
     }
 
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
      * @return UpdateProcessor or null
@@ -73,7 +74,7 @@ public class UpdateExecutionFactory
         return create(updateRequest, graphStore, (Binding)null) ;
     }
 
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
      * @param initialSolution
@@ -84,7 +85,7 @@ public class UpdateExecutionFactory
         return create(updateRequest, graphStore, BindingUtils.asBinding(initialSolution)) ;
     }
     
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
      * @param graphStore
      * @param initialBinding
@@ -109,5 +110,23 @@ public class UpdateExecutionFactory
         if ( initialBinding != null )
             uProc.setInitialBinding(initialBinding) ;
         return uProc ;
+    }
+    
+    /** Create an UpdateProcessor that send the update to a remote SPARQL Update service.
+     * @param update
+     * @param remoteEndpoint
+     */
+    public static UpdateProcessor createRemote(Update update, String remoteEndpoint)
+    {
+        return createRemote(new UpdateRequest(update), remoteEndpoint) ;
+    }
+
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service.
+     * @param updateRequest
+     * @param remoteEndpoint
+     */
+    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint)
+    {
+        return new UpdateProcessRemote(updateRequest, remoteEndpoint) ;
     }
 }
