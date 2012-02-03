@@ -1,12 +1,16 @@
 ChangeLog for ARQ
 =================
+(the list covers new features and refinements.  Seee ASF JIRA for detaisl of all bugs fixed) 
 
 ==== ARQ 2.9.1
 
++ Add UpdateExecutionFactory.createRemote(...) for remote execution of SPARQL Update (JENA-197) 
++ Allow users to specify query parameters in SERVICE
+  Allow the context to include a set of parameters add to SERVICE requests  
+  (JENA-195)
 + SPARQL 1.1: Complete scope tracking of variables (JENA-142)
 + Faster writing of XML and JSON results formats (JENA-178)
 + Support for SERVICE with additional parameters (JENA-195)  
-
 
 ==== ARQ 2.8.9 / 2.9.0
 ** Java 6 is now required for running ARQ.
