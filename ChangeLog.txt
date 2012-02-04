@@ -19,7 +19,7 @@ ChangeLog for ARQ
               in local part of prefix names 
 + SPARQl 1.1: Allow %xx in the local part of prefix names
 + SPARQL 1.1 / RDF 1.1 : DATATYPE(literal-with-lang) is now rdf:langString, not an error.
-+ DatasetFactory: perferred methods for an in-memory dataset are:
++ DatasetFactory: preferred methods for an in-memory dataset are:
      create() -- will automatically add in-memory named graphs  
      createFixed() -- needs explicitly added extra graph  
 + BUG FIX: Mis-execution of GRAPH ?g { .. } where ?g used inside { .. } (JENA-154)
