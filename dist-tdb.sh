@@ -3,7 +3,7 @@
 # You need a copy of the staging repo to get the checksum files.
 
 # NB This fails unless this first:
-#
+# cd somewhere_clean
 # NNN=....
 # mkdir -p repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
 #   otherwise it creates a file in this location then can't mirror below it.
@@ -11,6 +11,7 @@
 # wget -e robots=off --wait 1 --mirror -np \
 #     https://repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
 # mv repository.apache.org/content/repositories/orgapachejena-${NNN} REPO
+# rm -rf  repository.apache.org/
 
 REPO=REPO/org/apache/jena
 OUT="dist"
@@ -55,14 +56,14 @@ function cpallfiles
     $MKDIR $OUT/$D
     cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
     cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
-    if [ -e "$M/$V-$inc/$M-$V-$inc-javadoc.jar" ]
+    if [ -e "$REPO/$M/$V-$inc/$M-$V-$inc-javadoc.jar" ]
     then
 	 cpfile "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
+    else
+	$ECHO echo "No javadoc: $REPO/$M/$V-$inc/$M-$V-$inc-javadoc.jar"
     fi
     cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D
 }
-
-
 
 ## ToDo: automate
 
@@ -84,8 +85,7 @@ cpfile $M/$V-$inc/$D-distribution.zip      .
 cpfile $M/$V-$inc/$D-distribution.tar.gz   .
 
 # Fix the name.
-for f in $REPO/$M/$V-$inc/$D-distribution.{zip,tar.gz}{,.asc,.md5,.sha1}
+for ext in {zip,tar.gz}{,.asc,.md5,.sha1}
 do
-    B=$(basename $f)
-    $ECHO cp $f $DIST/apache-$B
+    $ECHO mv $OUT/$M-$V-$inc-distribution.$ext $OUT/apache-$M.$ext
 done
