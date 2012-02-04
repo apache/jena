@@ -95,13 +95,6 @@ public class SPARQL_Update extends SPARQL_Protocol
     }
 
     @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        String uri2 = mapRequestToDataset(uri, HttpNames.ServiceUpdate) ;
-        return (uri2 != null) ? uri2 : uri ; 
-    }
-
-    @Override
     protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
     {
         // validate -> action.

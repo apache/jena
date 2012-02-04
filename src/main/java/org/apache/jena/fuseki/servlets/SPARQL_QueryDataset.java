@@ -35,8 +35,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     public SPARQL_QueryDataset()
     { this(false) ; }
     
-    static String[] tails = { HttpNames.ServiceQuery, HttpNames.ServiceQueryAlt } ;
-    
     @Override
     protected void validate(HttpServletRequest request)
     {
@@ -51,18 +49,6 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
         return DatasetFactory.create(action.getActiveDSG()) ;
-    }
-
-    @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        for ( String tail : tails )
-        {
-            String x = mapRequestToDataset(uri, tail) ;
-            if ( x != null )
-                return x ;
-        }
-        return uri ; 
     }
 
     @Override

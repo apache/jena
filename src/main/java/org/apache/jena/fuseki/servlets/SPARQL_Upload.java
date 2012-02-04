@@ -34,7 +34,6 @@ import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
-import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRIOT ;
@@ -62,19 +61,6 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     public SPARQL_Upload(boolean verbose_debug)
     {
         super(PlainRequestFlag.REGULAR, verbose_debug) ;
-    }
-
-    @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        // MgtServlet
-        String uri2 = mapRequestToDataset(uri, HttpNames.ServiceUpload) ;
-        if ( uri2 != null && ! "".equals(uri2) )
-            return uri2 ;
-        if ( DatasetRegistry.get().size() == 1 )
-            // Managing a single dataset.
-            return DatasetRegistry.get().keys().next();
-        return null ;
     }
 
     // Methods to respond to.

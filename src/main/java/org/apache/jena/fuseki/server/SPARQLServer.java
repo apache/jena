@@ -300,7 +300,8 @@ public class SPARQLServer
     
     private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
     {
-        serverLog.debug("Add servlet @ "+pathSpec) ;
+        if ( serverLog.isDebugEnabled() )
+            serverLog.debug("Add servlet @ "+pathSpec) ;
         context.addServlet(holder, pathSpec) ;
     }
 

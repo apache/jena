@@ -178,14 +178,26 @@ public abstract class SPARQL_ServletBase extends ServletBase
     /** Map request to uri in the registry.
      *  null means no mapping done (passthrough). 
      */
-    protected abstract String mapRequestToDataset(String uri) ;
-    
-    /** A possible implementation for mapRequestToDataset(String) */
-    protected String mapRequestToDataset(String uri, String tail)
+    protected String mapRequestToDataset(String uri) 
     {
-        if ( uri.endsWith(tail) )
-            return uri.substring(0, uri.length()-tail.length()) ;
-        return null ;
+        return mapRequestToDataset$(uri) ;
+    }
+    
+    /** A possible implementation for mapRequestToDataset(String)
+     *  that assums the form /dataset/service 
+     */
+    protected String mapRequestToDataset$(String uri)
+    {
+        // Chop off trailing part - the service selector
+        // e.f. /dataset/sparql => /dataset 
+        int i = uri.lastIndexOf('/') ;
+        if ( i == 0 )
+        {
+            // started with '/' - leave.
+            return uri ;
+        }
+        
+        return uri.substring(0, i) ;
     }
 
     protected abstract void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response) ;

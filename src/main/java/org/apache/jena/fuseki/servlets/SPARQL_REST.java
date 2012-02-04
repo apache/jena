@@ -221,13 +221,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected abstract void doOptions(HttpActionREST action) ;
 
     @Override
-    protected String mapRequestToDataset(String uri)
-    {
-        String uri2 = mapRequestToDataset(uri, HttpNames.ServiceData) ;
-        return (uri2 != null) ? uri2 : uri ; 
-    }
-
-    @Override
     protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
         errorBadRequest("No query string") ;
@@ -383,10 +376,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         String d = request.getParameter(HttpNames.paramGraphDefault) ;
         
         if ( g != null && d !=null )
-            errorBadRequest("Both ?default and ?graph in request") ;
+            errorBadRequest("Both ?default and ?graph in the query string of the request") ;
         
         if ( g == null && d == null )
-            errorBadRequest("Neither ?default and ?graph in request") ;
+            errorBadRequest("Neither ?default nor ?graph in the query string of the request") ;
         
         @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames() ;

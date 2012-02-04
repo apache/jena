@@ -31,7 +31,7 @@ public class RunFuseki
         
     private static void main2()
     {
-        FusekiCmd.main("--config=config_tdb.ttl") ;
+        FusekiCmd.main("--config=config.ttl") ;
         System.exit(0) ;
     }
 
