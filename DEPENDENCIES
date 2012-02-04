@@ -2,11 +2,12 @@ This file lists the dependences for LARQ.
   Version numbers are given in the POM file for a particular distribution. 
 
 Apache Projects:   Apache Software License
-  Apache Jena, including the Jena IRI library
+  Apache Jena, including the Jena IRI library, ARQ and TDB for testing
   Apache Xerces-J
   Apache log4j
   Apache HttpComponents (HTTP Client)
   Apache Commons Codec
+  Apache Lucene
 
 ICU4J : http://icu-project.org/
    IBM X License (to version ICU4J 3.4.4)

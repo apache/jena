@@ -43,7 +43,7 @@
   <properties>
     <ver.lucene>3.5.0</ver.lucene>
     <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating</ver.tdb>
+    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
   </properties>
 
   <dependencies>
@@ -120,16 +120,6 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
-        <version>1.2.1</version>
-        <configuration>
-          <outputDirectory>src/main/resources</outputDirectory>
-          <attached>false</attached>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
       </plugin>
 
@@ -138,15 +128,6 @@
   </build>
 
   <repositories>
-    <!-- This is here so that Maven can retrieve jena-top parent pom snapshots -->
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
     <repository>
       <id>apache.staging</id>
       <name>Apache Staging Repository</name>

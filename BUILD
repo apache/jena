@@ -1,18 +1,8 @@
-Apache Jena - single module instructions
-========================================
+Apache Jena - jena-larq
+=======================
 
 This file contain the instructions for building this module from the
-source-release artifact.  The build instructions to create the whole of
-this Jena release are in the apache-jena-VER.zip file.
-
-The build process assumes the dependencies of this module are available in
-the local maven repository.
-
-jena-top -> jena-iri -> jena-core -> jena-arq -> apache-jena (the download).
-
-The instructions are the same for each jena-* module.
-
-We assume you are building "jena-zzz" in these instructions.
+source-release artifact.
 
 == Download
 
@@ -42,7 +32,7 @@ For the zip file of the zzz module:
 The .md5 and .sha1 files contain the MD5 and SHA1 checksum of the file
 respectively.  Calculate the checksum on the downloaded file 
 
-Exampale (linux):
+Example (linux):
 
     md5sum jena-zzz-VER-incubating-source-release.zip
 
@@ -54,13 +44,6 @@ will create a directory "jena-zzz-VER-incubating" with the files needed to
 recreate the distribution.
 
    cd jena-zzz-VER-incubating
-
-== Ensure the dependecies are available
-
-Either build the previous modules in the dependency chain or get them from
-a public maven repository:
-
-    mvn dependency:resolve
 
 == Build
 
