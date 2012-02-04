@@ -4,20 +4,22 @@
 
 # NB This fails unless this first:
 #
-# mkdir -p https://repository.apache.org/content/repositories/orgapachejena-NNN/org/apache/jena
+# NNN=....
+# mkdir -p repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
 #   otherwise it creates a file in this location then can't mirror below it.
 #
 # wget -e robots=off --wait 1 --mirror -np \
-#     https://repository.apache.org/content/repositories/orgapachejena-NNN/org/apache/jena
+#     https://repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
+# mv repository.apache.org/content/repositories/orgapachejena-${NNN} REPO
 
-# Expect: environment contains M2_REPO
-#REPO=public_html/jena-R1-repo/org/apache/jena
 REPO=REPO/org/apache/jena
-
 OUT="dist"
 
 # This script collects everything for the incubator/dist/jena area
-# for a TDB release.  Copy to dist/jena to add to the last jena release.
+# for a TDB release. 
+# It write a script that will build dist/ from rpo copy.
+# Copy to dist/jena to add to the last jena release.
+
 
 ECHO=echo
 CPCMD="$ECHO cp"
@@ -78,11 +80,12 @@ echo "## zip"
 M=jena-tdb
 V=${V_TDB}
 D="$M-$V-$inc"
-cpfile $D/$D-distribution.zip      .
-cpfile $D/$D-distribution.tar.gz   .
+cpfile $M/$V-$inc/$D-distribution.zip      .
+cpfile $M/$V-$inc/$D-distribution.tar.gz   .
 
-# Fake the name.
-for f in $D-distibution.*
+# Fix the name.
+for f in $REPO/$M/$V-$inc/$D-distribution.{zip,tar.gz}{,.asc,.md5,.sha1}
 do
-    mv $f apache-$f 
+    B=$(basename $f)
+    $ECHO cp $f apache-$B
 done
