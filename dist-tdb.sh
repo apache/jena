@@ -87,5 +87,5 @@ cpfile $M/$V-$inc/$D-distribution.tar.gz   .
 for f in $REPO/$M/$V-$inc/$D-distribution.{zip,tar.gz}{,.asc,.md5,.sha1}
 do
     B=$(basename $f)
-    $ECHO cp $f apache-$B
+    $ECHO cp $f $DIST/apache-$B
 done
