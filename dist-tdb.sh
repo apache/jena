@@ -74,9 +74,15 @@ inc=incubating
 echo "## TDB"
 cpallfiles jena-tdb "${V_TDB}"
 
-## echo "## zip"
-## M=jena-tdb
-## V=${V_TDB}
-## D="$M-$V-$inc"
-## cpfile $D/$D-distribution.zip      .
-## cpfile $D/$D-distribution.tar.gz   .
+echo "## zip"
+M=jena-tdb
+V=${V_TDB}
+D="$M-$V-$inc"
+cpfile $D/$D-distribution.zip      .
+cpfile $D/$D-distribution.tar.gz   .
+
+# Fake the name.
+for f in $D-distibution.*
+do
+    mv $f apache-$f 
+done
