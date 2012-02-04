@@ -87,5 +87,5 @@ cpfile $M/$V-$inc/$D-distribution.tar.gz   .
 # Fix the name.
 for ext in {zip,tar.gz}{,.asc,.md5,.sha1}
 do
-    $ECHO mv $OUT/$M-$V-$inc-distribution.$ext $OUT/apache-$M.$ext
+    $ECHO mv $OUT/$M-$V-$inc-distribution.$ext $OUT/apache-$M-$V-$inc.$ext
 done
