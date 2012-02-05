@@ -22,7 +22,6 @@ package com.hp.hpl.jena.sparql.util;
 
 public class Symbol
 {
-    // Need a intern table for symbols??
     private final static String nilSymbolName = "nil" ;
     String symbol ;
     
