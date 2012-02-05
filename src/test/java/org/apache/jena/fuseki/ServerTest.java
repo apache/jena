@@ -18,13 +18,10 @@
 
 package org.apache.jena.fuseki;
 
-import java.util.Arrays ;
-
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.http.UpdateRemote ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.openjena.atlas.logging.Log ;
@@ -70,12 +67,14 @@ public class ServerTest extends BaseServerTest
         
         DatasetGraph dsg = DatasetGraphFactory.createMem() ;
         // This must agree with BaseServerTest
-        DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
+        ServerConfig conf = FusekiConfig.defaultConfiguration(datasetPath, dsg, true) ;
+        conf.port = BaseServerTest.port ;
+        conf.pagesPort = BaseServerTest.port ;
 //        public static final String serviceUpdate = "http://localhost:"+ServerTest.port+datasetPath+"/update" ; 
 //        public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
 //        public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
         
-        server = new SPARQLServer(null, port, Arrays.asList(sDesc), Fuseki.PagesAll ) ;
+        server = new SPARQLServer(conf) ;
         server.start() ;
     }
     
