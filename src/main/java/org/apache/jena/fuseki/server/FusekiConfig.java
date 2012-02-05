@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import java.lang.reflect.Method ;
 import java.util.ArrayList ;
+import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.fuseki.Fuseki ;
@@ -83,7 +84,7 @@ public class FusekiConfig
     "PREFIX afn:     <http://jena.hpl.hp.com/ARQ/function#>" ,
     "") ;
     
-    public static DatasetRef defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
+    public static ServerConfig defaultConfiguration(String datasetPath, DatasetGraph dsg, boolean allowUpdate)
     {
         DatasetRef sDesc = new DatasetRef() ;
         sDesc.name = datasetPath ;
@@ -99,10 +100,18 @@ public class FusekiConfig
         }
         else
             sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
-        return sDesc ;
+        
+        ServerConfig config = new ServerConfig() ;
+        config.services = Arrays.asList(sDesc) ;
+        config.port = 3030 ;
+        config.mgtPort = 3031 ;
+        config.pagesPort = config.port ;
+        config.jettyConfigFile = null ;
+        config.pages = "Pages-Update" ;
+        return config ;
     }
     
-    public static List<DatasetRef> configure(String filename)
+    public static ServerConfig configure(String filename)
     {
         // Be absolutely sure everything has initaialized.
         // Some initialization registers assemblers and sets abbreviation vocabulary. 
@@ -137,7 +146,15 @@ public class FusekiConfig
             services.add(sd) ;
         }
         
-        return services ;
+        // TODO Properties for the other fields.
+        ServerConfig config = new ServerConfig() ;
+        config.services = services ;
+        config.port = 3030 ;
+        config.mgtPort = 3031 ;
+        config.pagesPort = config.port ;
+        config.jettyConfigFile = null ;
+        config.pages = "Pages-Update" ;
+        return config ;
     }
 
     private static void processServer(Resource server)

@@ -23,13 +23,12 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 import java.io.InputStream ;
 import java.net.InetAddress ;
 import java.net.UnknownHostException ;
-import java.util.Arrays ;
 import java.util.List ;
 
 import org.apache.jena.fuseki.mgt.ManagementServer ;
-import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.fuseki.server.ServerConfig ;
 import org.eclipse.jetty.server.Server ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
@@ -322,8 +321,6 @@ public class FusekiCmd extends CmdARQ
                  homeDir = "." ;
         }
         
-        SPARQLServer server ;
-
         homeDir = sort_out_dir(homeDir) ;
         
         String pagesDir = homeDir+Fuseki.PagesAll ;
@@ -333,17 +330,25 @@ public class FusekiCmd extends CmdARQ
         if ( jettyConfigFile != null )
             Fuseki.configLog.info("Jetty configuration: "+jettyConfigFile) ;
         
+        ServerConfig serverConfig ;
+        
         if ( fusekiConfigFile != null )
         {
             Fuseki.configLog.info("Configuration file: "+fusekiConfigFile) ;
-            List<DatasetRef> services = FusekiConfig.configure(fusekiConfigFile) ;
-            server =  new SPARQLServer(jettyConfigFile, port, services, pagesDir) ;
+            serverConfig = FusekiConfig.configure(fusekiConfigFile) ;
         }
         else
-        {
-            DatasetRef sDesc = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
-            server = new SPARQLServer(jettyConfigFile, port, Arrays.asList(sDesc), pagesDir ) ;
-        }
+            serverConfig = FusekiConfig.defaultConfiguration(datasetPath, dsg, allowUpdate) ;
+        
+        // TODO Get from parsing config file.
+        serverConfig.port = port ;
+        serverConfig.pages = pagesDir ;
+        serverConfig.mgtPort = mgtPort ;
+        serverConfig.pagesPort = port ;
+        serverConfig.jettyConfigFile = jettyConfigFile ;
+        
+        SPARQLServer server = new SPARQLServer(serverConfig) ;
+        
         // Temporary
         Fuseki.setServer(server) ;
         

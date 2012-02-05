@@ -56,23 +56,22 @@ public class SPARQLServer
 {
     static { Fuseki.init() ; }
     
+    private ServerConfig serverConfig ;
+    
     private Server server = null ;
-    private String datasetPath ;
-    private int port ;
+//    private int port ;
     private boolean verbose = false ;
-    private List<DatasetRef> datasetRefs ;
-    private String pagesDir ;
+//    private List<DatasetRef> datasetRefs ;
+//    private String pagesDir ;
     
     //private static int ThreadPoolSize = 100 ;
     
-    public SPARQLServer(String jettyConfig, int port, List<DatasetRef> services, String pages)
+    public SPARQLServer(ServerConfig config)
     {
-        this.port = port ; 
-        this.datasetRefs = services ;
-        this.pagesDir = pages ;
-        ServletContextHandler context = buildServer(jettyConfig) ;
+        this.serverConfig = config ;  
+        ServletContextHandler context = buildServer(serverConfig.jettyConfigFile) ;
         // Build them all.
-        for ( DatasetRef sDesc : services )
+        for ( DatasetRef sDesc : serverConfig.services )
             configureOneDataset(context, sDesc) ;
     }
     
@@ -107,7 +106,7 @@ public class SPARQLServer
     }
     
     public Server getServer() { return server ; }
-    public List<DatasetRef> getDatasets() { return datasetRefs ; }
+    public List<DatasetRef> getDatasets() { return serverConfig.services ; }
     
     // Later : private and in constructor.
     private ServletContextHandler buildServer(String jettyConfig)
@@ -119,7 +118,7 @@ public class SPARQLServer
             server = configServer(jettyConfig) ;
         }
         else 
-            server = defaultServerConfig(port) ; 
+            server = defaultServerConfig(serverConfig.port) ; 
         // Keep the server to a maximum number of threads.
         //server.setThreadPool(new QueuedThreadPool(ThreadPoolSize)) ;
         
@@ -138,7 +137,7 @@ public class SPARQLServer
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
         context.setMimeTypes(mt) ;
         
-        serverLog.debug("Pages = "+pagesDir) ;
+        serverLog.debug("Pages = "+serverConfig.pages) ;
         
         boolean installManager = true ;
         boolean installServices = true ;
@@ -150,12 +149,16 @@ public class SPARQLServer
         
         if ( installManager || installServices)
         {
+            // TODO Respect port.
+            if ( serverConfig.pagesPort != serverConfig.port )
+                serverLog.warn("Not supported yet - pages on a different port to services") ;
+            
             server.setHandler(context);
 
             HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
             ServletHolder jspContent = new ServletHolder(jspServlet) ;
             //?? Need separate context for admin stuff??
-            context.setResourceBase(pagesDir) ;
+            context.setResourceBase(serverConfig.pages) ;
             addServlet(context, jspContent, "*.jsp") ;
         }
         
@@ -192,7 +195,7 @@ public class SPARQLServer
             String [] files = { "fuseki.html" } ;
             context.setWelcomeFiles(files) ;
             //  if this is /* then don't see *.jsp. Why?
-            addContent(context, "/", pagesDir) ;
+            addContent(context, "/", serverConfig.pages) ;
         }
         
         return context ; 
