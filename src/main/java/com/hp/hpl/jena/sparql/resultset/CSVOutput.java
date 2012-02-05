@@ -124,6 +124,9 @@ public class CSVOutput extends OutputBase
             || str.contains("\r")
             || str.contains("\n") )
             str = "\"" + str.replaceAll("\"", "\"\"") + "\"";
+        else if ( str.isEmpty() )
+            // Return the quoted empty string. 
+            str = "\"\"" ;
         return str;
     }
 
