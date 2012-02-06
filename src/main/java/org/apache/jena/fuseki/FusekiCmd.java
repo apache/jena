@@ -356,6 +356,7 @@ public class FusekiCmd extends CmdARQ
         
         if ( mgtPort > 0 )
         {
+            Fuseki.configLog.info("Management services on port "+mgtPort) ;
             mgtServer = ManagementServer.createManagementServer(mgtPort) ;
             try { mgtServer.start() ; }
             catch (java.net.BindException ex)
