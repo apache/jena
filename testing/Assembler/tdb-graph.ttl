@@ -24,6 +24,5 @@
     . 
 
 <#graph> rdf:type tdb:GraphTDB ;
-    tdb:location "tmp/testing/DB" ;
-#    tdb:location "--mem--" ;
+    tdb:location "target/tdb-testing/DB" ;
     .

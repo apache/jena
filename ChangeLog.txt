@@ -1,7 +1,13 @@
 ChangeLog for TDB
 =================
 
+==== TDB 0.9.1
+
 ==== TDB 0.9.0
 
-+ Transactions and tranactional datasets.
+TDB 0.9.0 introduces ACID transactions for TDB.  This is based on write-ahead logging.
+
++ Transactions and transactional datasets.
   http://incubator.apache.org/jena/documentation/tdb/tdb_transactions.html
++ Maven group id is now "org.apache.jena" and artifact name is "jena-tdb". 
++ Java 6 is required to run TDB.

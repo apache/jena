@@ -72,7 +72,7 @@ public class TestTDBAssembler extends BaseTest
     
     private void createTest(String filename, Resource type)
     {
-        Object thing = AssemblerUtils.build( filename, type) ; 
+        Object thing = AssemblerUtils.build(filename, type) ; 
         assertTrue(thing instanceof Dataset) ;
         Dataset ds = (Dataset)thing ;
         assertTrue(ds.asDatasetGraph() instanceof DatasetGraphTransaction) ;

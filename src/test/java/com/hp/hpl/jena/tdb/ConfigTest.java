@@ -22,8 +22,10 @@ import org.openjena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {
-    private static final String testingDir = "tmp/testing" ;
-    private static final String testingDirDB = "tmp/testing/DB" ;
+    // Place under target - it wil not be included in Apache source-release.
+    private static final String testingDir = "target/tdb-testing" ;
+    private static final String testingDirDB = "target/tdb-testing/DB" ;
+    // See also "testing/Assembler/*.ttl" that uses the temp area for testing   
     
     static boolean initialized = false ; 
     
@@ -77,5 +79,4 @@ public class ConfigTest
         FileOps.clearDirectory(testingDir) ;
         FileOps.deleteSilent(testingDir) ;
     }
-
 }

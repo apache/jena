@@ -21,5 +21,5 @@
 
 <#dataset> rdf:type      tdb:DatasetTDB ;
     # Do at least one the long way.
-    tdb:location "tmp/testing/DB" ;
+    tdb:location "target/tdb-testing/DB" ;
     .

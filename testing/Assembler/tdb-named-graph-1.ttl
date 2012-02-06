@@ -25,6 +25,5 @@
 
 <#graph> rdf:type tdb:GraphTDB ;
     tdb:location "--mem--" ;
-    #tdb:location "tmp/testing/DB" ;
     tdb:graphName "http://example.com/graph" ;
     .
