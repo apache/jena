@@ -33,7 +33,7 @@ public class ConfigTest
     {
         if ( ! initialized )
         {
-            FileOps.ensureDir("tmp") ;
+            FileOps.ensureDir("target") ;
             FileOps.ensureDir(testingDir) ;
             FileOps.ensureDir(testingDirDB) ;
         }
