@@ -18,7 +18,6 @@
 
 package tdb;
 
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.TDB ;
@@ -29,8 +28,8 @@ public class tdbrecovery extends CmdTDB
 {
     static public void main(String... argv)
     { 
+        CmdTDB.init() ;
         TDB.setOptimizerWarningFlag(false) ;
-        Log.setLog4j() ;
         new tdbrecovery(argv).mainRun() ;
     }
 

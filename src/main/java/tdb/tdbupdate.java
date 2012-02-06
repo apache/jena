@@ -29,6 +29,7 @@ public class tdbupdate extends arq.update
     // Inherits from arq.update so is not a CmdTDB.  Mixins for Java!
     public static void main(String...argv)
     {
+        CmdTDB.init() ;
         new tdbupdate(argv).mainRun() ;
     }
     

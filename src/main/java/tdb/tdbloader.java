@@ -21,6 +21,7 @@ package tdb;
 import java.util.List ;
 
 import org.openjena.riot.Lang ;
+import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 import tdb.cmdline.ModModel ;
 
@@ -47,6 +48,7 @@ public class tdbloader extends CmdTDBGraph
     
     static public void main(String... argv)
     { 
+        CmdTDB.init() ;
         TDB.setOptimizerWarningFlag(false) ;
         new tdbloader(argv).mainRun() ;
     }

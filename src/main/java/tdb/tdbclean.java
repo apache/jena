@@ -19,14 +19,13 @@
 package tdb;
 
 import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB;
 
 public class tdbclean extends CmdTDB
 {
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        CmdTDB.init() ;
         new tdbclean(argv).mainRun() ;
     }
 

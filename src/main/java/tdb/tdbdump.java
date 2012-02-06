@@ -18,7 +18,6 @@
 
 package tdb;
 
-import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.RiotWriter ;
 import tdb.cmdline.CmdTDB ;
 
@@ -28,7 +27,7 @@ public class tdbdump extends CmdTDB
 {
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        CmdTDB.init() ;
         new tdbdump(argv).mainRun() ;
     }
 

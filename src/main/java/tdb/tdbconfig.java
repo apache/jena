@@ -54,6 +54,7 @@ public class tdbconfig extends CmdSub
     
     static public void main(String... argv)
     {
+        CmdTDB.init() ;
         new tdbconfig(argv).exec();
     }
 

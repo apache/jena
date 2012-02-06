@@ -21,7 +21,6 @@ package tdb;
 import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -37,7 +36,7 @@ public class tdbnode extends CmdTDB
     // Debugging tool.
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        CmdTDB.init() ;
         new tdbnode(argv).mainRun() ;
     }
 

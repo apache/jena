@@ -18,17 +18,15 @@
 
 package tdb;
 
-import org.openjena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.TDBBackup ;
 
 public class tdbbackup extends CmdTDB
 {
-
     static public void main(String... argv)
     { 
-        Log.setLog4j() ;
+        CmdTDB.init() ;
         new tdbdump(argv).mainRun() ;
     }
 
