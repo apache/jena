@@ -129,8 +129,16 @@ public class IRILib
         cwdURL = plainFilenameToURL(cwd) ;
     }
     
-    // See also IRIResolver     
-    /** Encode using the rules for a path (e.g. ':' and'/' do not get encoded) */
+    // See also IRIResolver
+    /** Return a string that is a IRI for the filename.*/
+    public static String fileToIRI(File f)
+    {
+        return filenameToIRI(f.getAbsolutePath()) ;
+    }
+    
+    /** Create a string that is a IRI for the filename.
+     *  Encode using the rules for a path (e.g. ':' and'/' do not get encoded)
+     */
     public static String filenameToIRI(String fn)
     {
         if ( fn == null ) return cwdURL ;
@@ -144,6 +152,7 @@ public class IRILib
         // Also: String fn2 = "file://" + new File(fn).toURI().toString().substring(5);
     }
     
+    /** Convert an IRI to a filename */
     public static String IRIToFilename(String iri)
     {
         if ( ! iri.startsWith("file:") )

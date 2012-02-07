@@ -63,6 +63,13 @@ public abstract class MultiMap<K, V>
     
     public Collection<V> get(K key) { 
         return map.get(key) ; } 
+    
+    public void putAll(K key, V ... values)
+    {
+        for ( V v : values)
+            put(key, v) ;
+    }
+    
     public void put(K key, V value)
     { 
         Collection<V> x = map.get(key) ;
