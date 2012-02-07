@@ -158,6 +158,7 @@ public class Tags
     
     public static final String tagNow           = "now" ;
     public static final String tagUUID          = "uuid" ;
+    public static final String tagStrUUID       = "struuid" ;
     public static final String tagVersion       = "version" ;
 
     public static final String tagMD5           = "md5" ;

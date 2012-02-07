@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.1
 
++ Add function "StrUUID" which returns a UUID str8ing (c.f. "UUID" for a UUID as a URI of form <urn:uuid:....>)
+  Also available as afn:struuid() and afn:uuid() for strict syntax. 
 + Add UpdateExecutionFactory.createRemote(...) for remote execution of SPARQL Update (JENA-197) 
 + Allow users to specify query parameters in SERVICE
   Allow the context to include a set of parameters add to SERVICE requests  

@@ -22,15 +22,15 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions ;
 import com.hp.hpl.jena.sparql.function.FunctionBase0 ;
 
-/** Function that returns a UUID */
+/** Function that returns a UUID as a string*/
 
-public class uuid extends FunctionBase0
+public class struuid extends FunctionBase0
 {
-    public uuid() {}
+    public struuid() {}
 
     @Override
     public NodeValue exec()
     {
-        return NodeFunctions.uuid() ;
+        return NodeFunctions.struuid() ;
     }
 }

@@ -1322,6 +1322,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
   | <NOW> <NIL> { return new E_Now() ; }
   | <UUID> <NIL> { return new E_UUID() ; }
+  | <STRUUID> <NIL> { return new E_StrUUID() ; }
   | <MD5> <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
   | <SHA1> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA1(expr1) ; }
   | <SHA256> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA256(expr1) ; }
@@ -1684,6 +1685,7 @@ TOKEN [IGNORE_CASE] :
 | < TZ: "TZ" >
 | < NOW: "NOW" >
 | < UUID: "UUID" >
+| < STRUUID: "STRUUID" >
 | < VERSION: "VERSION" >
 | < MD5: "MD5" >
 | < SHA1: "SHA1" >

@@ -229,6 +229,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -317,6 +318,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case TZ:
         case NOW:
         case UUID:
+        case STRUUID:
         case VERSION:
         case MD5:
         case SHA1:
@@ -463,6 +465,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case TZ:
         case NOW:
         case UUID:
+        case STRUUID:
         case VERSION:
         case MD5:
         case SHA1:
@@ -834,6 +837,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case TZ:
       case NOW:
       case UUID:
+      case STRUUID:
       case VERSION:
       case MD5:
       case SHA1:
@@ -908,6 +912,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -1015,6 +1020,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case TZ:
       case NOW:
       case UUID:
+      case STRUUID:
       case VERSION:
       case MD5:
       case SHA1:
@@ -1108,6 +1114,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case TZ:
       case NOW:
       case UUID:
+      case STRUUID:
       case VERSION:
       case MD5:
       case SHA1:
@@ -1207,6 +1214,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -1273,6 +1281,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case TZ:
       case NOW:
       case UUID:
+      case STRUUID:
       case VERSION:
       case MD5:
       case SHA1:
@@ -2605,6 +2614,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -3995,6 +4005,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -4090,6 +4101,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case TZ:
     case NOW:
     case UUID:
+    case STRUUID:
     case VERSION:
     case MD5:
     case SHA1:
@@ -4420,6 +4432,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(NIL);
                    {if (true) return new E_UUID() ;}
       break;
+    case STRUUID:
+      jj_consume_token(STRUUID);
+      jj_consume_token(NIL);
+                      {if (true) return new E_StrUUID() ;}
+      break;
     case MD5:
       jj_consume_token(MD5);
       jj_consume_token(LPAREN);
@@ -4725,6 +4742,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case TZ:
       case NOW:
       case UUID:
+      case STRUUID:
       case VERSION:
       case MD5:
       case SHA1:
@@ -5201,74 +5219,90 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_79() {
-    if (jj_scan_token(COALESCE)) return true;
-    if (jj_3R_97()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_78() {
     if (jj_scan_token(VERSION)) return true;
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
-  private boolean jj_3R_77() {
+  private boolean jj_3R_78() {
     if (jj_scan_token(SHA512)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_148() {
+  private boolean jj_3R_149() {
     if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
   }
 
-  private boolean jj_3R_76() {
+  private boolean jj_3R_77() {
     if (jj_scan_token(SHA384)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_147() {
+  private boolean jj_3R_148() {
     if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
     return false;
   }
 
-  private boolean jj_3R_75() {
+  private boolean jj_3R_76() {
     if (jj_scan_token(SHA256)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_146() {
+  private boolean jj_3R_147() {
     if (jj_scan_token(STRING_LITERAL2)) return true;
     return false;
   }
 
-  private boolean jj_3R_127() {
-    if (jj_scan_token(NIL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_74() {
+  private boolean jj_3R_75() {
     if (jj_scan_token(SHA1)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_145() {
+  private boolean jj_3R_146() {
     if (jj_scan_token(STRING_LITERAL1)) return true;
     return false;
   }
 
-  private boolean jj_3R_73() {
+  private boolean jj_3R_128() {
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_74() {
     if (jj_scan_token(MD5)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_126() {
-    if (jj_3R_132()) return true;
+  private boolean jj_3R_73() {
+    if (jj_scan_token(STRUUID)) return true;
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_136() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_146()) {
+    jj_scanpos = xsp;
+    if (jj_3R_147()) {
+    jj_scanpos = xsp;
+    if (jj_3R_148()) {
+    jj_scanpos = xsp;
+    if (jj_3R_149()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_127() {
+    if (jj_3R_133()) return true;
     return false;
   }
 
@@ -5278,24 +5312,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_135() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_145()) {
-    jj_scanpos = xsp;
-    if (jj_3R_146()) {
-    jj_scanpos = xsp;
-    if (jj_3R_147()) {
-    jj_scanpos = xsp;
-    if (jj_3R_148()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_125() {
-    if (jj_3R_131()) return true;
+  private boolean jj_3R_126() {
+    if (jj_3R_132()) return true;
     return false;
   }
 
@@ -5305,8 +5323,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_124() {
-    if (jj_3R_130()) return true;
+  private boolean jj_3R_125() {
+    if (jj_3R_131()) return true;
     return false;
   }
 
@@ -5316,8 +5334,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_123() {
-    if (jj_3R_129()) return true;
+  private boolean jj_3R_124() {
+    if (jj_3R_130()) return true;
     return false;
   }
 
@@ -5327,16 +5345,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_122() {
-    if (jj_3R_128()) return true;
+  private boolean jj_3R_141() {
+    if (jj_scan_token(FALSE)) return true;
     return false;
   }
 
-  private boolean jj_3R_119() {
+  private boolean jj_3R_123() {
+    if (jj_3R_129()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_120() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_122()) {
-    jj_scanpos = xsp;
     if (jj_3R_123()) {
     jj_scanpos = xsp;
     if (jj_3R_124()) {
@@ -5345,7 +5366,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_126()) {
     jj_scanpos = xsp;
-    if (jj_3R_127()) return true;
+    if (jj_3R_127()) {
+    jj_scanpos = xsp;
+    if (jj_3R_128()) return true;
     }
     }
     }
@@ -5360,19 +5383,29 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_140() {
-    if (jj_scan_token(FALSE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_67() {
     if (jj_scan_token(MINUTES)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_115() {
-    if (jj_3R_119()) return true;
+  private boolean jj_3R_140() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_132() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_140()) {
+    jj_scanpos = xsp;
+    if (jj_3R_141()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_116() {
+    if (jj_3R_120()) return true;
     return false;
   }
 
@@ -5382,22 +5415,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_139() {
-    if (jj_scan_token(TRUE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_131() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_139()) {
-    jj_scanpos = xsp;
-    if (jj_3R_140()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_118() {
+  private boolean jj_3R_119() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(13)) {
@@ -5425,8 +5443,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_162() {
+  private boolean jj_3R_163() {
     if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_162() {
+    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
     return false;
   }
 
@@ -5437,23 +5460,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_161() {
-    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_160() {
     if (jj_scan_token(INTEGER_NEGATIVE)) return true;
     return false;
   }
 
-  private boolean jj_3R_151() {
+  private boolean jj_3R_152() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_160()) {
-    jj_scanpos = xsp;
     if (jj_3R_161()) {
     jj_scanpos = xsp;
-    if (jj_3R_162()) return true;
+    if (jj_3R_162()) {
+    jj_scanpos = xsp;
+    if (jj_3R_163()) return true;
     }
     }
     return false;
@@ -5471,8 +5489,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_159() {
+  private boolean jj_3R_160() {
     if (jj_scan_token(DOUBLE_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_159() {
+    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
     return false;
   }
 
@@ -5483,30 +5506,25 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_158() {
-    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_114() {
-    if (jj_3R_118()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_157() {
     if (jj_scan_token(INTEGER_POSITIVE)) return true;
     return false;
   }
 
-  private boolean jj_3R_150() {
+  private boolean jj_3R_151() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_157()) {
-    jj_scanpos = xsp;
     if (jj_3R_158()) {
     jj_scanpos = xsp;
-    if (jj_3R_159()) return true;
+    if (jj_3R_159()) {
+    jj_scanpos = xsp;
+    if (jj_3R_160()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_115() {
+    if (jj_3R_119()) return true;
     return false;
   }
 
@@ -5516,12 +5534,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_103() {
+  private boolean jj_3R_104() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_114()) {
+    if (jj_3R_115()) {
     jj_scanpos = xsp;
-    if (jj_3R_115()) return true;
+    if (jj_3R_116()) return true;
     }
     return false;
   }
@@ -5538,6 +5556,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_157() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_55() {
     if (jj_scan_token(UCASE)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -5545,17 +5568,30 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_156() {
-    if (jj_scan_token(DOUBLE)) return true;
+    if (jj_scan_token(DECIMAL)) return true;
     return false;
   }
 
   private boolean jj_3R_54() {
-    if (jj_3R_99()) return true;
+    if (jj_3R_100()) return true;
     return false;
   }
 
   private boolean jj_3R_155() {
-    if (jj_scan_token(DECIMAL)) return true;
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_150() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_155()) {
+    jj_scanpos = xsp;
+    if (jj_3R_156()) {
+    jj_scanpos = xsp;
+    if (jj_3R_157()) return true;
+    }
+    }
     return false;
   }
 
@@ -5565,38 +5601,25 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_154() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_149() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_154()) {
-    jj_scanpos = xsp;
-    if (jj_3R_155()) {
-    jj_scanpos = xsp;
-    if (jj_3R_156()) return true;
-    }
-    }
-    return false;
-  }
-
   private boolean jj_3R_52() {
-    if (jj_3R_98()) return true;
+    if (jj_3R_99()) return true;
     return false;
   }
 
   private boolean jj_3R_51() {
     if (jj_scan_token(CONCAT)) return true;
-    if (jj_3R_97()) return true;
+    if (jj_3R_98()) return true;
     return false;
   }
 
   private boolean jj_3R_50() {
     if (jj_scan_token(ROUND)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_139() {
+    if (jj_3R_152()) return true;
     return false;
   }
 
@@ -5628,19 +5651,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_136() {
-    if (jj_3R_149()) return true;
-    return false;
-  }
-
   private boolean jj_3R_46() {
     if (jj_scan_token(RAND)) return true;
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
-  private boolean jj_3R_96() {
+  private boolean jj_3R_97() {
     if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_131() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_137()) {
+    jj_scanpos = xsp;
+    if (jj_3R_138()) {
+    jj_scanpos = xsp;
+    if (jj_3R_139()) return true;
+    }
+    }
     return false;
   }
 
@@ -5649,20 +5680,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_130() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_136()) {
-    jj_scanpos = xsp;
-    if (jj_3R_137()) {
-    jj_scanpos = xsp;
-    if (jj_3R_138()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_95() {
+  private boolean jj_3R_96() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -5671,9 +5689,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     if (jj_scan_token(BNODE)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_95()) {
+    if (jj_3R_96()) {
     jj_scanpos = xsp;
-    if (jj_3R_96()) return true;
+    if (jj_3R_97()) return true;
     }
     return false;
   }
@@ -5696,14 +5714,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_41() {
-    if (jj_scan_token(DTYPE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
+  private boolean jj_3R_130() {
+    if (jj_3R_136()) return true;
     return false;
   }
 
-  private boolean jj_3R_129() {
-    if (jj_3R_135()) return true;
+  private boolean jj_3R_41() {
+    if (jj_scan_token(DTYPE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -5713,7 +5731,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_120() {
+  private boolean jj_3R_121() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -5731,7 +5749,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   private boolean jj_3R_37() {
-    if (jj_3R_94()) return true;
+    if (jj_3R_95()) return true;
     return false;
   }
 
@@ -5846,7 +5864,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_90()) {
     jj_scanpos = xsp;
-    if (jj_3R_91()) return true;
+    if (jj_3R_91()) {
+    jj_scanpos = xsp;
+    if (jj_3R_92()) return true;
+    }
     }
     }
     }
@@ -5904,8 +5925,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_121() {
+  private boolean jj_3R_122() {
     if (jj_scan_token(LBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_118() {
+    if (jj_3R_122()) return true;
     return false;
   }
 
@@ -5914,17 +5940,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_116() {
-    if (jj_3R_120()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_104() {
+  private boolean jj_3R_105() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_116()) {
+    if (jj_3R_117()) {
     jj_scanpos = xsp;
-    if (jj_3R_117()) return true;
+    if (jj_3R_118()) return true;
     }
     return false;
   }
@@ -5935,12 +5956,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_93() {
-    if (jj_3R_104()) return true;
+  private boolean jj_3R_94() {
+    if (jj_3R_105()) return true;
     return false;
   }
 
-  private boolean jj_3R_111() {
+  private boolean jj_3R_112() {
     if (jj_scan_token(GROUP_CONCAT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -5949,25 +5970,25 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_36() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_92()) {
+    if (jj_3R_93()) {
     jj_scanpos = xsp;
-    if (jj_3R_93()) return true;
+    if (jj_3R_94()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_92() {
-    if (jj_3R_103()) return true;
+  private boolean jj_3R_93() {
+    if (jj_3R_104()) return true;
     return false;
   }
 
-  private boolean jj_3R_110() {
+  private boolean jj_3R_111() {
     if (jj_scan_token(SAMPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_109() {
+  private boolean jj_3R_110() {
     if (jj_scan_token(AVG)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -5979,35 +6000,33 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_108() {
+  private boolean jj_3R_109() {
     if (jj_scan_token(MAX)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_107() {
+  private boolean jj_3R_108() {
     if (jj_scan_token(MIN)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_106() {
+  private boolean jj_3R_107() {
     if (jj_scan_token(SUM)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_105() {
+  private boolean jj_3R_106() {
     if (jj_scan_token(COUNT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_94() {
+  private boolean jj_3R_95() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_105()) {
-    jj_scanpos = xsp;
     if (jj_3R_106()) {
     jj_scanpos = xsp;
     if (jj_3R_107()) {
@@ -6018,7 +6037,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_110()) {
     jj_scanpos = xsp;
-    if (jj_3R_111()) return true;
+    if (jj_3R_111()) {
+    jj_scanpos = xsp;
+    if (jj_3R_112()) return true;
     }
     }
     }
@@ -6028,45 +6049,45 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_112() {
+  private boolean jj_3R_113() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_102() {
+  private boolean jj_3R_103() {
     if (jj_scan_token(NOT)) return true;
     if (jj_scan_token(EXISTS)) return true;
     return false;
   }
 
-  private boolean jj_3R_97() {
+  private boolean jj_3R_98() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(163)) {
+    if (jj_scan_token(164)) {
     jj_scanpos = xsp;
-    if (jj_3R_112()) return true;
+    if (jj_3R_113()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_101() {
+  private boolean jj_3R_102() {
     if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_113()) return true;
+    if (jj_3R_114()) return true;
     return false;
   }
 
-  private boolean jj_3R_99() {
+  private boolean jj_3R_100() {
     if (jj_scan_token(REPLACE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_113() {
+  private boolean jj_3R_114() {
     if (jj_scan_token(LBRACE)) return true;
     return false;
   }
 
-  private boolean jj_3R_98() {
+  private boolean jj_3R_99() {
     if (jj_scan_token(SUBSTR)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -6078,14 +6099,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_100() {
+  private boolean jj_3R_101() {
     if (jj_scan_token(REGEX)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_143() {
+  private boolean jj_3R_144() {
     if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_92() {
+    if (jj_3R_103()) return true;
     return false;
   }
 
@@ -6094,94 +6120,100 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_143() {
+    if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
   private boolean jj_3R_90() {
     if (jj_3R_101()) return true;
     return false;
   }
 
-  private boolean jj_3R_142() {
-    if (jj_scan_token(ANON)) return true;
-    return false;
-  }
-
   private boolean jj_3R_89() {
-    if (jj_3R_100()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
     if (jj_scan_token(IS_NUMERIC)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_141() {
+  private boolean jj_3R_142() {
     if (jj_scan_token(BLANK_NODE_LABEL)) return true;
     return false;
   }
 
-  private boolean jj_3R_132() {
+  private boolean jj_3R_133() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_141()) {
+    if (jj_3R_142()) {
     jj_scanpos = xsp;
-    if (jj_3R_142()) return true;
+    if (jj_3R_143()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_87() {
+  private boolean jj_3R_88() {
     if (jj_scan_token(IS_LITERAL)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_86() {
+  private boolean jj_3R_87() {
     if (jj_scan_token(IS_BLANK)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_153() {
+  private boolean jj_3R_154() {
     if (jj_scan_token(PNAME_NS)) return true;
     return false;
   }
 
-  private boolean jj_3R_85() {
+  private boolean jj_3R_86() {
     if (jj_scan_token(IS_URI)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_152() {
+  private boolean jj_3R_153() {
     if (jj_scan_token(PNAME_LN)) return true;
     return false;
   }
 
-  private boolean jj_3R_84() {
+  private boolean jj_3R_85() {
     if (jj_scan_token(IS_IRI)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_144() {
+  private boolean jj_3R_145() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_152()) {
+    if (jj_3R_153()) {
     jj_scanpos = xsp;
-    if (jj_3R_153()) return true;
+    if (jj_3R_154()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_83() {
+  private boolean jj_3R_84() {
     if (jj_scan_token(SAME_TERM)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_82() {
+  private boolean jj_3R_83() {
     if (jj_scan_token(STRDT)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_135() {
+    if (jj_3R_145()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
+    if (jj_scan_token(STRLANG)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -6191,30 +6223,25 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_81() {
-    if (jj_scan_token(STRLANG)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_133() {
-    if (jj_3R_143()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_128() {
+  private boolean jj_3R_129() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_133()) {
+    if (jj_3R_134()) {
     jj_scanpos = xsp;
-    if (jj_3R_134()) return true;
+    if (jj_3R_135()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_80() {
+  private boolean jj_3R_81() {
     if (jj_scan_token(IF)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_80() {
+    if (jj_scan_token(COALESCE)) return true;
+    if (jj_3R_98()) return true;
     return false;
   }
 
@@ -6256,16 +6283,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1_2 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffff3d,0xffffff3d,0xffffff3d,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffff3d,0x0,0xffffff3d,0xffffff3d,0xffffff3d,0x0,0xffffff3d,0xffffff3d,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffff3d,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xffffff3d,0xffffff3d,0x0,0xffffff3d,0x0,0x0,0x0,0x0,0xffffff3d,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x1f7ffff,0x1f7ffff,0x1f7ffff,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x77ffff,0x0,0x77ffff,0x77ffff,0x77ffff,0x0,0x77ffff,0x77ffff,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x1800000,0x0,0xfc000000,0xfc000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4000000,0xc000000,0x0,0x0,0x8000000,0x4000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x1800000,0x1800000,0x0,0x0,0x1800000,0x0,0x0,0x1800000,0x1800000,0x0,0x0,0x0,0x0,0x77ffff,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x1800000,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800000,0x1800000,0x1800000,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1f7ffff,0x1f7ffff,0x0,0x77ffff,0x0,0x0,0x0,0x0,0x1f7ffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1800000,0x0,0x0,0x0,0x0,};
+      jj_la1_3 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x3efffff,0x3efffff,0x3efffff,0x0,0x0,0x3000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xefffff,0x0,0xefffff,0xefffff,0xefffff,0x0,0xefffff,0xefffff,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x0,0x3000000,0x0,0xf8000000,0xf8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x8000000,0x18000000,0x0,0x0,0x10000000,0x8000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x0,0x3000000,0x3000000,0x0,0x0,0x3000000,0x0,0x0,0x3000000,0x3000000,0x0,0x0,0x0,0x0,0xefffff,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x3000000,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3000000,0x3000000,0x3000000,0x0,0x0,0x3000000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3efffff,0x3efffff,0x0,0xefffff,0x0,0x0,0x0,0x0,0x3efffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3000000,0x0,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0x0,0xe1ff0000,0xe1ff0000,0xe1ff0000,0x0,0x0,0xe1ff0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0x0,0x0,0xe1ff0000,0x0,0x213f,0x213f,0x80,0x0,0x200,0x80,0x80,0x80,0x80,0x80,0x80,0x2000,0x0,0x0,0x4000,0x0,0x0,0x0,0x200,0x200,0x0,0x0,0x0,0x0,0x800,0x1800,0x1800,0xe1ff0000,0x0,0x0,0xe1ff0000,0xe1ff0000,0x0,0x0,0xe1ff0000,0x0,0x0,0xe1ff0000,0xe1ff0000,0x0,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0x0,0xe1ff0000,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x0,0x10000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0xe1ff0000,0xe1ff0000,0x0,0x0,0xe1ff0000,0x0,0x0,0x0,0x0,0x1f80000,0x1f80000,0x0,0x0,0x1f80000,0x0,0x0,0xe1ff0000,0xe1ff0000,0x0,0x0,0x0,0x0,0x0,0x0,0xe1ff0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1ff0000,0x70000,0x380000,0x1c00000,0x0,0xe0000000,0x0,0x0,0x0,};
+      jj_la1_4 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0x0,0xc3fe0000,0xc3fe0000,0xc3fe0000,0x0,0x0,0xc3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0x0,0x0,0xc3fe0000,0x0,0x427f,0x427f,0x100,0x0,0x400,0x100,0x100,0x100,0x100,0x100,0x100,0x4000,0x0,0x0,0x8000,0x0,0x0,0x0,0x400,0x400,0x0,0x0,0x0,0x0,0x1000,0x3000,0x3000,0xc3fe0000,0x0,0x0,0xc3fe0000,0xc3fe0000,0x0,0x0,0xc3fe0000,0x0,0x0,0xc3fe0000,0xc3fe0000,0x0,0x0,0x100,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0x0,0xc3fe0000,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20000,0x0,0x20000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0xc3fe0000,0xc3fe0000,0x0,0x0,0xc3fe0000,0x0,0x0,0x0,0x0,0x3f00000,0x3f00000,0x0,0x0,0x3f00000,0x0,0x0,0xc3fe0000,0xc3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0xc3fe0000,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x3fe0000,0xe0000,0x700000,0x3800000,0x0,0xc0000000,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_5() {
-      jj_la1_5 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x3,0x3,0x2000003,0x0,0x0,0x14b,0x10,0x0,0x2000000,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x2,0x2,0x2,0x0,0x2,0x2,0x0,0x0,0x0,0x0,0xa,0x1,0xa,0x0,0x1,0x200,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x14b,0x0,0x800,0x14b,0x14b,0x800,0x0,0x14b,0x10,0x800,0x14b,0x14b,0x800,0x10,0x0,0x0,0x2,0x0,0x400,0xa,0x400,0xa,0x14b,0x800,0x14b,0x200,0x0,0x0,0x400,0x0,0x14b,0x80040002,0x200,0x80040002,0x80040002,0x0,0x40000000,0x84000000,0x84000000,0x2800010,0x80040002,0x20,0x420,0x400,0x2800010,0x40002,0x40000000,0x80000000,0x80000002,0x0,0x80000000,0x42,0x14b,0x14b,0x109,0x0,0x0,0x109,0x200000,0x400000,0x3f000,0x3f000,0x1800000,0x0,0x6000000,0x6000000,0x1800000,0x6000000,0x6000000,0x1840003,0x3,0xa,0x0,0x400,0x400,0x400,0x0,0x3840003,0x0,0x0,0x0,0x0,0x0,0x0,0x200,0x200,0x200,0x0,0xa,0x8000000,0x8000000,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x0,0x100,};
+      jj_la1_5 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x7,0x7,0x4000007,0x0,0x0,0x297,0x20,0x0,0x4000000,0x0,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x4,0x4,0x4,0x0,0x4,0x4,0x0,0x0,0x0,0x0,0x14,0x3,0x14,0x0,0x3,0x400,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x297,0x0,0x1000,0x297,0x297,0x1000,0x0,0x297,0x20,0x1000,0x297,0x297,0x1000,0x20,0x0,0x0,0x4,0x0,0x800,0x14,0x800,0x14,0x297,0x1000,0x297,0x400,0x0,0x0,0x800,0x0,0x297,0x80004,0x400,0x80004,0x80004,0x0,0x80000000,0x8000000,0x8000000,0x5000020,0x80004,0x40,0x840,0x800,0x5000020,0x80004,0x80000000,0x0,0x4,0x0,0x0,0x84,0x297,0x297,0x213,0x0,0x0,0x213,0x400000,0x800000,0x7e000,0x7e000,0x3000000,0x0,0xc000000,0xc000000,0x3000000,0xc000000,0xc000000,0x3080007,0x7,0x14,0x0,0x800,0x800,0x800,0x0,0x7080007,0x0,0x0,0x0,0x0,0x0,0x0,0x400,0x400,0x400,0x0,0x14,0x10000000,0x10000000,0x0,0x0,0x0,0x0,0x0,0x3,0x0,0x0,0x200,};
    }
    private static void jj_la1_init_6() {
-      jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x4,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
+      jj_la1_6 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x1,0x0,0x1,0x1,0x0,0x0,0x1,0x1,0x8,0x1,0x0,0x0,0x0,0x8,0x0,0x0,0x1,0x1,0x0,0x1,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
@@ -6451,7 +6478,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[206];
+    boolean[] la1tokens = new boolean[207];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -6483,7 +6510,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         }
       }
     }
-    for (int i = 0; i < 206; i++) {
+    for (int i = 0; i < 207; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

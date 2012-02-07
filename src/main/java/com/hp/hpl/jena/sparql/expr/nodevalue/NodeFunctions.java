@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 import java.util.Iterator ;
+import java.util.UUID ;
 
 import org.openjena.atlas.logging.Log ;
 
@@ -27,9 +28,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.iri.Violation ;
-import com.hp.hpl.jena.shared.uuid.JenaUUID ;
-import com.hp.hpl.jena.shared.uuid.UUIDFactory ;
-import com.hp.hpl.jena.shared.uuid.UUID_V4_Gen ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalException ;
 import com.hp.hpl.jena.sparql.expr.ExprTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -359,15 +357,40 @@ public class NodeFunctions
         return Node.createURI(iri.toString()) ;
     }
     
-    private static UUIDFactory factory = new UUID_V4_Gen() ;
+    // The Jena version can vbe slow to inityailise (but is pure java)
+    
+    //private static UUIDFactory factory = new UUID_V4_Gen() ;
+//    private static UUIDFactory factory = new UUID_V1_Gen() ;
+//    public static NodeValue uuid()
+//    {
+//        JenaUUID uuid = factory.generate() ;
+//        Node n = Node.createURI(uuid.asURN()) ;
+//        return NodeValue.makeNode(n) ;
+//    }
+//    
+//    public static NodeValue struuid()
+//    {
+//        JenaUUID uuid = factory.generate() ;
+//        return NodeValue.makeString(uuid.asString()) ;
+//    }
+
+    public static NodeValue struuid()
+    {
+        return NodeValue.makeString(uuidString()) ;
+    }
+    
     public static NodeValue uuid()
     {
-        JenaUUID uuid = factory.generate() ;
-        // uuid.asUUID()
-        Node n = Node.createURI(uuid.asURI()) ;
+        String str = "urn:uuid:"+uuidString() ;
+        Node n = Node.createURI(str) ;
         return NodeValue.makeNode(n) ;
     }
 
+    private static String uuidString()
+    {
+        return UUID.randomUUID().toString() ;
+    }
+    
     private static String simpleLiteralOrXSDString(Node n)
     {
         if ( ! n.isLiteral() ) return null ;

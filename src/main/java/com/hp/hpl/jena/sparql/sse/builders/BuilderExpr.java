@@ -247,6 +247,7 @@ public class BuilderExpr
         
         dispatch.put(Tags.tagNow, buildNow) ;
         dispatch.put(Tags.tagUUID, buildUUID) ;
+        dispatch.put(Tags.tagStrUUID, buildStrUUID) ;
         dispatch.put(Tags.tagVersion, buildVersion) ;
         
         dispatch.put(Tags.tagMD5, buildMD5) ;
@@ -691,6 +692,16 @@ public class BuilderExpr
         {
             BuilderLib.checkLength(1, list, "uuid: wanted 0 arguments: got: "+numArgs(list)) ;
             return new E_UUID() ; 
+        }
+    } ;
+    
+    final protected Build buildStrUUID = new Build()
+    {
+        @Override
+        public Expr make(ItemList list)
+        {
+            BuilderLib.checkLength(1, list, "struuid: wanted 0 arguments: got: "+numArgs(list)) ;
+            return new E_StrUUID() ; 
         }
     } ;
     
