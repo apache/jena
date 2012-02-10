@@ -75,7 +75,7 @@ public class ContentType
 
     private ContentType(String contentType, String charset, String dftCharset)
     {
-        this.contentType = contentType ;
+        this.contentType = contentType.toLowerCase() ;
         this.charset = charset ;
         this.dftCharset = dftCharset ;
     }
