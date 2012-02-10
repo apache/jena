@@ -1994,6 +1994,20 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
 
+#ifdef 0
+// DSSABLED
+// C-style comments (they don't nest /* /*...*/ */ is a syntax error)
+// When a /* is seen in the DEFAULT state, skip it and switch to the IN_COMMENT state
+SKIP : { "/*": IN_COMMENT }
+      
+// When any other character is seen in the IN_COMMENT state, skip it.
+< IN_COMMENT > SKIP : { < ~[] > }
+      
+// When a */ is seen in the IN_COMMENT state, skip it and switch back to the DEFAULT state
+< IN_COMMENT > SKIP : { "*/": DEFAULT } 
+#endif
+
+
 TOKEN: { 
   <#WS: " " | "\t" | "\n" | "\r" | "\f">
 |
