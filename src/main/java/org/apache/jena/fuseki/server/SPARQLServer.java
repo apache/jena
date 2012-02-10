@@ -22,6 +22,7 @@ import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
+import java.util.EnumSet ;
 import java.util.List ;
 
 import javax.servlet.http.HttpServlet ;
@@ -50,6 +51,10 @@ import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 import org.openjena.riot.WebContent ;
 
+import org.eclipse.jetty.server.DispatcherType;
+import org.eclipse.jetty.servlets.GzipFilter;
+
+
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class SPARQLServer
@@ -69,10 +74,15 @@ public class SPARQLServer
     public SPARQLServer(ServerConfig config)
     {
         this.serverConfig = config ;  
-        ServletContextHandler context = buildServer(serverConfig.jettyConfigFile) ;
+        
+        // GZip compression
+        // Note that regardless of this setting we'll always leave it turned off for the servlets
+        // where it makes no sense to have it turned on e.g. update and upload
+        
+        ServletContextHandler context = buildServer(serverConfig.jettyConfigFile, config.enableCompression) ;
         // Build them all.
         for ( DatasetRef sDesc : serverConfig.services )
-            configureOneDataset(context, sDesc) ;
+            configureOneDataset(context, sDesc,  config.enableCompression) ;
     }
     
     public void start()
@@ -109,7 +119,7 @@ public class SPARQLServer
     public List<DatasetRef> getDatasets() { return serverConfig.services ; }
     
     // Later : private and in constructor.
-    private ServletContextHandler buildServer(String jettyConfig)
+    private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression)
     {
         if ( jettyConfig != null )
         {
@@ -159,7 +169,7 @@ public class SPARQLServer
             ServletHolder jspContent = new ServletHolder(jspServlet) ;
             //?? Need separate context for admin stuff??
             context.setResourceBase(serverConfig.pages) ;
-            addServlet(context, jspContent, "*.jsp") ;
+            addServlet(context, jspContent, "*.jsp", false) ;
         }
         
         
@@ -167,7 +177,7 @@ public class SPARQLServer
         {
             // Action when control panel selects a dataset.
             HttpServlet datasetChooser = new ActionDataset() ;
-            addServlet(context, datasetChooser, "/dataset") ;
+            addServlet(context, datasetChooser, "/dataset", false) ;
         }
         
         if ( installServices )
@@ -181,13 +191,13 @@ public class SPARQLServer
             HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
             
-            addServlet(context, validateQuery, validationRoot+"/query") ;
-            addServlet(context, validateUpdate, validationRoot+"/update") ;
-            addServlet(context, validateData, validationRoot+"/data") ;
-            addServlet(context, validateIRI, validationRoot+"/iri") ;
-            addServlet(context, dumpService, "/dump") ;
+            addServlet(context, validateQuery, validationRoot+"/query", false) ;
+            addServlet(context, validateUpdate, validationRoot+"/update", false) ;
+            addServlet(context, validateData, validationRoot+"/data", false) ;
+            addServlet(context, validateIRI, validationRoot+"/iri", false) ;
+            addServlet(context, dumpService, "/dump", false) ;
             // general query processor.
-            addServlet(context, generalQueryService, sparqlProcessor) ;
+            addServlet(context, generalQueryService, sparqlProcessor, enableCompression) ;
         }
         
         if ( installManager || installServices )
@@ -202,7 +212,7 @@ public class SPARQLServer
         
     }
     
-    private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc)
+    private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc, boolean enableCompression)
     {
         String datasetPath = sDesc.name ;
         if ( datasetPath.equals("/") )
@@ -222,11 +232,11 @@ public class SPARQLServer
         HttpServlet sparqlHttpR = new SPARQL_REST_R(verbose) ;  
         HttpServlet sparqlHttpRW = new SPARQL_REST_RW(verbose) ;
         
-        addServlet(context, datasetPath, sparqlQuery, sDesc.queryEP) ;
-        addServlet(context, datasetPath, sparqlUpdate, sDesc.updateEP) ;
-        addServlet(context, datasetPath, sparqlUpload, sDesc.uploadEP) ;
-        addServlet(context, datasetPath, sparqlHttpR, sDesc.readGraphStoreEP) ;
-        addServlet(context, datasetPath, sparqlHttpRW, sDesc.readWriteGraphStoreEP) ;
+        addServlet(context, datasetPath, sparqlQuery, sDesc.queryEP, enableCompression) ;
+        addServlet(context, datasetPath, sparqlUpdate, sDesc.updateEP, false) ; // No point - no results of any size.
+        addServlet(context, datasetPath, sparqlUpload, sDesc.uploadEP, false) ;
+        addServlet(context, datasetPath, sparqlHttpR, sDesc.readGraphStoreEP, enableCompression) ;
+        addServlet(context, datasetPath, sparqlHttpRW, sDesc.readWriteGraphStoreEP, enableCompression) ;
     }
     
     private static Server configServer(String jettyConfig)
@@ -279,11 +289,15 @@ public class SPARQLServer
         DefaultServlet staticServlet = new DefaultServlet() ;
         ServletHolder staticContent = new ServletHolder(staticServlet) ;
         staticContent.setInitParameter("resourceBase", pages) ;
-        addServlet(context, staticContent, pathSpec) ;
+        
+        //Note we set GZip to false for static content because the Jetty DefaultServlet has
+        //a built-in GZip capability that is better for static content than the mechanism the
+        //GzipFilter uses for dynamic content
+        addServlet(context, staticContent, pathSpec, false) ;
     }
 
     // SHARE
-    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs)
+    private static void addServlet(ServletContextHandler context, String datasetPath, HttpServlet servlet, List<String> pathSpecs, boolean enableCompression)
     {
         for ( String pathSpec : pathSpecs )
         {
@@ -291,21 +305,29 @@ public class SPARQLServer
                 pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
             if ( pathSpec.startsWith("/") )
                 pathSpec = pathSpec.substring(1, pathSpec.length()) ;
-            addServlet(context, servlet, datasetPath+"/"+pathSpec) ;
+            addServlet(context, servlet, datasetPath+"/"+pathSpec, enableCompression) ;
         }
     }
 
-    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec)
+    private static void addServlet(ServletContextHandler context, HttpServlet servlet, String pathSpec, boolean enableCompression)
     {
         ServletHolder holder = new ServletHolder(servlet) ;
-        addServlet(context, holder, pathSpec) ;
+        addServlet(context, holder, pathSpec, enableCompression) ;
     }
     
-    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec)
+    private static void addServlet(ServletContextHandler context, ServletHolder holder, String pathSpec, boolean enableCompression)
     {
         if ( serverLog.isDebugEnabled() )
-            serverLog.debug("Add servlet @ "+pathSpec) ;
+        {
+            if ( enableCompression )
+                serverLog.debug("Add servlet @ "+pathSpec+" (with gzip)") ;
+            else
+                serverLog.debug("Add servlet @ "+pathSpec) ;
+        }
         context.addServlet(holder, pathSpec) ;
+
+        if (enableCompression)
+            context.addFilter(GzipFilter.class, pathSpec, EnumSet.allOf(DispatcherType.class));
     }
 
 }

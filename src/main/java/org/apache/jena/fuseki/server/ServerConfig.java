@@ -27,6 +27,8 @@ import java.util.List ;
 
 public class ServerConfig
 {
+    public ServerConfig() {}
+    
     /** Port to run the server service on */
     public int port ;
     /** Port for the management interface : -1 for no mamangement interface */ 
@@ -39,5 +41,7 @@ public class ServerConfig
     public String pages ;
     /** The list of services */
     public List<DatasetRef> services ;
+    /** Enable Content-Encoding compression */
+    public boolean enableCompression = false ;
 }
 

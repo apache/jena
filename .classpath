@@ -30,6 +30,7 @@
 	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-xml/7.5.4.v20111024/jetty-xml-7.5.4.v20111024.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-xml/7.5.4.v20111024/jetty-xml-7.5.4.v20111024-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jsp-2.1-glassfish/2.1.v20100127/jsp-2.1-glassfish-2.1.v20100127.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/mortbay/jetty/jsp-api-2.1-glassfish/2.1.v20100127/jsp-api-2.1-glassfish-2.1.v20100127.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-servlets/7.5.4.v20111024/jetty-servlets-7.5.4.v20111024.jar"/>
 	<classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar" sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar" sourcepath="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16-sources.jar"/>
 	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4-sources.jar"/>

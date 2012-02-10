@@ -131,6 +131,8 @@
       <version>${ver.commons-fileupload}</version>
     </dependency>
 
+    <!-- ?? Use one of the combined artifacts for Jetty -->
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -160,6 +162,12 @@
       <artifactId>jetty-webapp</artifactId>
       <version>${ver.jetty}</version>
     </dependency>    
+
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlets</artifactId>
+      <version>${ver.jetty}</version>
+    </dependency> 
 
    <!--
    <dependency>

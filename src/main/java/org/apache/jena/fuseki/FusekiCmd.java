@@ -82,6 +82,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argTimeout       = new ArgDecl(ArgDecl.HasValue, "timeout") ;
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
+    private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
     
     private static ArgDecl argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
     
@@ -129,6 +130,7 @@ public class FusekiCmd extends CmdARQ
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
         add(argMgtPort, "--mgt=port",           "Enable the management commands on the given port") ; 
         add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
+        add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Content-encoding) if request header set") ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -299,6 +301,15 @@ public class FusekiCmd extends CmdARQ
         {
            List<String> args = super.getValues(argHome) ;
            homeDir = args.get(args.size()-1) ;
+        }
+        
+        if ( contains(argGZip) )
+        {
+            if ( ! hasValueOfTrue(argGZip) || ! hasValueOfFalse(argGZip) )
+                throw new CmdException(argGZip.getNames().get(0)+": Not understood: "+getValue(argGZip)) ;
+            
+            boolean b = super.hasValueOfTrue(argGZip) ;
+            Fuseki.getContext().set(Fuseki.FusekiEnableGZipCompression, b);
         }
     }
 
