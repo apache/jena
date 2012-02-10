@@ -217,6 +217,15 @@ public class WriterPath
             writeOneLiner(path.getSubPath()) ;
             out.print(")") ;
         }
+        
+
+        @Override
+        public void visit(P_Distinct pathDistinct)
+        {
+            out.print("(distinct ") ;
+            output(pathDistinct.getSubPath()) ;
+            out.print(")") ;
+        }
 
         @Override
         public void visit(P_ZeroOrOne path)

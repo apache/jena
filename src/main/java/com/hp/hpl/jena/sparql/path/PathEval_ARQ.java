@@ -270,6 +270,14 @@ public class PathEval_ARQ
         }
 
         @Override
+        public void visit(P_Distinct pathDistinct)
+        {
+            // CRUDE - No optimization.
+            Iterator<Node> iter = eval(graph, node, pathDistinct.getSubPath(), forwardMode) ;
+            fill(Iter.distinct(iter)) ; 
+        }
+
+        @Override
         public void visit(P_ZeroOrOne path)
         { 
             doZero(path.getSubPath()) ;

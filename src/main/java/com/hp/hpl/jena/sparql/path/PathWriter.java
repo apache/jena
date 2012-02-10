@@ -242,6 +242,15 @@ public class PathWriter
         }
 
         @Override
+        public void visit(P_Distinct pathDistinct)
+        {
+            out.print("DISTINCT(") ;
+            pathDistinct.getSubPath().visit(this) ;
+            out.print(")") ;
+        }
+        
+
+        @Override
         public void visit(P_ZeroOrOne path)
         { printPathMod("?", path.getSubPath()) ; }
 

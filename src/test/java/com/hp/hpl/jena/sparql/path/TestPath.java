@@ -21,13 +21,12 @@ package com.hp.hpl.jena.sparql.path;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail ;
 
-import java.util.Arrays ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Set ;
+import java.util.* ;
 
 import junit.framework.JUnit4TestAdapter ;
+import org.junit.Assert ;
 import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -54,6 +53,7 @@ public class TestPath
 
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Graph graph2 = GraphFactory.createDefaultGraph() ;
+    static Graph graph3 = GraphFactory.createDefaultGraph() ;
     
     static Node n1 = Node.createURI("n1") ;
     static Node n2 = Node.createURI("n2") ;
@@ -77,6 +77,13 @@ public class TestPath
         graph2.add(new Triple(n1, p, n3)) ;
         graph2.add(new Triple(n2, q, n4)) ;
         graph2.add(new Triple(n3, q, n4)) ;
+        
+        // A DAG, one property
+        graph3.add(new Triple(n1, p, n2)) ;
+        graph3.add(new Triple(n1, p, n3)) ;
+        graph3.add(new Triple(n2, p, n4)) ;
+        graph3.add(new Triple(n3, p, n4)) ;
+
     }
     
     // ----
@@ -112,7 +119,7 @@ public class TestPath
     @Test public void parsePathErr_02()        { parse("()", false) ; }
     @Test public void parsePathErr_03()        { parse(":p :q", false) ; }
     
-    // Check we get the form on the right for the expression on the right.
+    // Check we get the form on the right for the expression on the left.
     @Test public void parseEquals_1()         {  parse("(:p)",        ":p") ; }
     @Test public void parseEquals_2()         {  parse(":p/:q/:r",    "(:p/:q)/:r") ; }
     @Test public void parseEquals_3()         {  parse("^:p^:q^:r",   "(^:p^:q)^:r") ; }
@@ -122,6 +129,12 @@ public class TestPath
     @Test public void parseEquals_7()         {  parse("^:p/:q",      "(^:p)/:q") ; }
     @Test public void parseEquals_8()         {  parse("!:q/:r",      "(!:q)/:r") ; }
     @Test public void parseEquals_9()         {  parse("!:q/:r",      "(!:q)/:r") ; }
+
+    @Test public void parsePathDistinct1()    {  parse("distinct(:p)", "distinct(:p)") ; }
+    @Test public void parsePathDistinct2()    {  parse("distinct(:p*)", "distinct(:p*)") ; }
+    @Test public void parsePathDistinct3()    {  parse("distinct((:p)*)", "distinct(:p*)") ; }
+    @Test public void parsePathDistinct4()    {  parse(":p/distinct(:p*)/:q", ":p/distinct(:p*)/:q") ; }
+    @Test public void parsePathDistinct5()    {  parse(":p/distinct(:p)*/:q", ":p/distinct(:p)*/:q") ; }
 
     // ----
     
@@ -184,12 +197,19 @@ public class TestPath
     
 
     @Test public void path_20()   { test(graph2, n1,   ":p",          n2,n3) ; }
-    @Test public void path_21()   { test(graph2, n1,   ":p/:q",       n4) ; }
+    @Test public void path_21()   { test(graph2, n1,   ":p/:q",       n4, n4) ; }
     @Test public void path_22()   { test(graph2, n2,   "^:p|:q",      n1,n4) ; }
     @Test public void path_23()   { test(graph2, n2,   "^(:p|^:q)*",  n1,n2,n4) ; }
 
     @Test public void path_24()   { testReverse(graph1, n2,   ":p",          n1) ; }
     @Test public void path_25()   { testReverse(graph1, n3,   ":p/:p",       n1) ; }
+
+    @Test public void path_30()   { test(graph1, n1,   ":p*",       n1,n2,n3,n4) ; }
+    @Test public void path_31()   { test(graph2, n1,   ":p*",       n1,n2,n3) ; }
+    @Test public void path_32()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4,n4) ; }
+    @Test public void path_33()   { test(graph3, n1,   "distinct(:p*)",       n1,n2,n3,n4) ; }
+    @Test public void path_34()   { test(graph3, n1,   "distinct(:p+)",       n2,n3,n4) ; }
+
     // ----
     private static void test(Graph graph, Node start, String string, Node... expectedNodes)
     {
@@ -206,11 +226,22 @@ public class TestPath
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
             directionForward ? PathEval.eval(graph, start, p) : PathEval.evalInverse(graph, start, p) ; 
-        Set<Node> results = new HashSet<Node>() ;
-        for ( ; resultsIter.hasNext() ; )
-            results.add( resultsIter.next() ) ;
-
-        Set<Node> expected = new HashSet<Node>(Arrays.asList(expectedNodes)) ;
-        assertEquals(expected, results) ;
+        List<Node> results = Iter.toList(resultsIter) ;
+        List<Node> expected = Arrays.asList(expectedNodes) ;
+        // Unordered by counting equality.
+        Assert.assertTrue("expected:"+expected+", got:"+results, sameUnorder(expected, results)) ;
+    }
+    
+    private static boolean sameUnorder(List<Node> expected, List<Node> results)
+    {
+        // Copy - this is modified.
+        List<Node> x = new ArrayList<Node>(results) ;
+        for ( Node n : expected )
+        {
+            if ( ! x.contains(n) )
+                return false ;
+            x.remove(n) ;
+        }
+        return x.isEmpty() ;
     }
 }

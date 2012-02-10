@@ -117,20 +117,22 @@ public class PathEval
     // ---- Worker ??
     static private void eval$(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
     {
-        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, forward) ;
+        PathEvaluatorN evaluator = new PathEvaluatorN(graph, node, acc, forward) ;
         p.visit(evaluator) ;
     }
     // ----
-    
-    private static class PathEvaluator implements PathVisitor
+    /** Path evaluator that produces duplicates.
+     *  This is the algorithm in the SPARQL 1.1 spec.  
+     * 
+     */
+    private static class PathEvaluatorN implements PathVisitor
     {
-
         private final Graph graph ;
         private final Node node ;
         private final Collection<Node> output ;
         private boolean forwardMode ; 
 
-        public PathEvaluator(Graph g, Node n, Collection<Node> output, boolean forward)
+        public PathEvaluatorN(Graph g, Node n, Collection<Node> output, boolean forward)
         {
             this.graph = g ; 
             this.node = n ;
@@ -309,14 +311,25 @@ public class PathEval
             // P_Mod(path, count, count)
             // One step.
             Iterator<Node> iter = eval(graph, node, pFixedLength.getSubPath(), forwardMode) ;
+            // Build a path for all remainign steps.
             long count2 = dec(pFixedLength.getCount()) ;
             P_FixedLength nextPath = new P_FixedLength(pFixedLength.getSubPath(), count2) ;
+            // For each element in the first step, do remaining step
+            // Accumulate across everything from first step.  
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = iter.next() ;
                 Iterator<Node> iter2 = eval(graph, n2, nextPath, forwardMode) ;
                 fill(iter2) ;
             }
+        }
+
+        @Override
+        public void visit(P_Distinct pathDistinct)
+        {
+            // CRUDE - No optimization.
+            Iterator<Node> iter = eval(graph, node, pathDistinct.getSubPath(), forwardMode) ;
+            fill(Iter.distinct(iter)) ; 
         }
 
         @Override

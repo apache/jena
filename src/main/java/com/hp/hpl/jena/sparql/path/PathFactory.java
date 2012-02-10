@@ -29,6 +29,7 @@ public class PathFactory
     public static Path pathInverse(Path path)           { return new P_Inverse(path) ; }
     public static Path pathMod(Path path, long min, long max)   { return new P_Mod(path, min, max) ; }
     public static Path pathFixedLength(Path path, long count)   { return new P_FixedLength(path, count) ; }
+    public static Path pathDistinct(Path path)          { return new P_Distinct(path) ; }
     
 
     public static Path pathAlt(Path path1, Path path2)  { return new P_Alt(path1, path2) ; }

@@ -18,21 +18,34 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-public interface PathVisitor
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
+
+/** A path element that, on evalution, returns only unique nodes for the path ends. */  
+public class P_Distinct extends P_Path1
 {
-    public void visit(P_Link pathNode) ;
-    public void visit(P_ReverseLink pathNode) ;
+    public P_Distinct(Path p)
+    {
+         super(p) ;
+    }
     
-    public void visit(P_NegPropSet pathNotOneOf) ;
+    @Override
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
+    
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
+    {
+        if ( ! ( path2 instanceof P_Distinct ) ) return false ;
+        P_Distinct other = (P_Distinct)path2 ;
+        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
+    }
 
-    public void visit(P_Inverse inversePath) ;
-    public void visit(P_Mod pathMod) ;
-    public void visit(P_FixedLength pFixedLength) ;
-    public void visit(P_Distinct pathDistinct) ;
-    public void visit(P_ZeroOrOne path) ;
-    public void visit(P_ZeroOrMore path) ;
-    public void visit(P_OneOrMore path) ;
+    @Override
+    public int hashCode()
+    {
+        return getSubPath().hashCode() ^ hashDistinct ;
+    }
 
-    public void visit(P_Alt pathAlt) ;
-    public void visit(P_Seq pathSeq) ;
+   
+
 }

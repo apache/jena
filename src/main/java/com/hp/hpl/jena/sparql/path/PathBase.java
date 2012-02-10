@@ -34,6 +34,8 @@ public abstract class PathBase implements Path
     protected static final int hashOneOrMore    = 0x198 ;
     protected static final int hashZeroOrOne    = 0x199 ;
     protected static final int hashFixedLength  = 0x200 ;
+    protected static final int hashDistinct     = 0x201 ;
+
     
     @Override
     public abstract int hashCode() ;

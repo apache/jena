@@ -64,6 +64,7 @@ public class BuilderPath
         dispatch.put(Tags.tagPathMod, buildMod) ;
         
         dispatch.put(Tags.tagPathFixedLength, buildFixedLength) ;
+        dispatch.put(Tags.tagDistinct, buildDistinct) ;
         dispatch.put(Tags.tagPathZeroOrMore, buildZeroOrMore) ;
         dispatch.put(Tags.tagPathZeroOrOne, buildZeroOrOne) ;
         dispatch.put(Tags.tagPathOneOrMore, buildOneOrMore) ;
@@ -194,6 +195,17 @@ public class BuilderPath
             long count = modInt(list.get(1)) ;
             Path path  = build(list, 2) ;
             return new P_FixedLength(path, count) ;
+        }
+    } ;
+
+    final protected Build buildDistinct = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path distinct repeat: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_Distinct(path) ;
         }
     } ;
 

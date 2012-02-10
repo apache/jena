@@ -2852,7 +2852,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_consume_token(-1);
       throw new ParseException();
     }
-      {if (true) return p ;}
+   {if (true) return p ;}
     throw new Error("Missing return statement in function");
   }
 

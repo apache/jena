@@ -1201,7 +1201,7 @@ Path PathUnit() : { Path p ; }
 
 // Weakest outermost
 Path Path() : { Path p ; }
-{ 
+{
   p = PathAlternative() { return p ; }
 }
 
@@ -1286,8 +1286,15 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      { p = PathFactory.pathLink(nRDFtype) ; }
   | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
+#ifdef ARQ
+  |
+     <DISTINCT><LPAREN> 
+     p = Path()
+     { p = PathFactory.pathDistinct(p) ; }
+     <RPAREN>
+#endif
   )
-    { return p ; }
+ { return p ; }
 }
 
 Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
@@ -1994,8 +2001,8 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
 
-#ifdef 0
-// DSSABLED
+#if 0
+// DISABLED
 // C-style comments (they don't nest /* /*...*/ */ is a syntax error)
 // When a /* is seen in the DEFAULT state, skip it and switch to the IN_COMMENT state
 SKIP : { "/*": IN_COMMENT }

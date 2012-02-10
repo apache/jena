@@ -945,7 +945,7 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
   | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
   )
-    { return p ; }
+ { return p ; }
 }
 Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
 {
