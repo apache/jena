@@ -130,7 +130,7 @@ public class FusekiCmd extends CmdARQ
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
         add(argMgtPort, "--mgt=port",           "Enable the management commands on the given port") ; 
         add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
-        add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Content-encoding) if request header set") ;
+        add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;

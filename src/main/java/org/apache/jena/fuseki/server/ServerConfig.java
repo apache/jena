@@ -41,7 +41,7 @@ public class ServerConfig
     public String pages ;
     /** The list of services */
     public List<DatasetRef> services ;
-    /** Enable Content-Encoding compression */
+    /** Enable Accept-Encoding compression */
     public boolean enableCompression = false ;
 }
 
