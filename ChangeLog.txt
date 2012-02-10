@@ -4,6 +4,11 @@
 
 == 0.2.1
 
++ Service by configuration file, command line argument --config=
+
++ Add a servlet filter that processes Accept-Encoding 
+  Result are now compressed if the client request asks for that (JENA-209)
+
 + Rename packages to be org.apache.jena.fuseki.
 
 + --jetty-config= Use a file to configure the jetty server (connector type, parms of connector like "host").  
