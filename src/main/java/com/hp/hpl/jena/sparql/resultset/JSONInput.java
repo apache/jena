@@ -64,6 +64,17 @@ public class JSONInput extends SPARQLResult
         return r.getResultSet() ; 
     }
     
+    public static boolean booleanFromJSON(InputStream input)
+    {
+        SPARQLResult r = new JSONInput().process(input, null) ;
+        return r.getBooleanResult() ; 
+    }
+    
+    public static SPARQLResult make(InputStream input)
+    {
+        return make(input, null) ;
+    }
+    
     public static SPARQLResult make(InputStream input, Model model)
     {
         return new JSONInput().process(input, model) ;
@@ -93,6 +104,8 @@ public class JSONInput extends SPARQLResult
     private SPARQLResult process(InputStream in, Model model)
     {
         parse(in) ;
+        if ( model == null )
+            model = GraphFactory.makeJenaDefaultModel() ;
         if ( rows != null )
         {
             QueryIterator qIter = new QueryIterPlainWrapper(rows.iterator()) ;

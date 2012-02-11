@@ -18,12 +18,17 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import java.io.ByteArrayInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
+
+import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.RefBoolean ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** Code that reads an XML Result Set and builds the ARQ structure for the same. */
 
@@ -68,6 +73,12 @@ public class XMLInput
     
     public static SPARQLResult make(InputStream in, Model model)
     {
+        try {
+            String x = FileUtils.readWholeFileAsUTF8(in) ;
+            System.out.println(x) ;
+            in = new ByteArrayInputStream(x.getBytes("utf-8")) ; 
+        } catch (IOException ex) { IO.exception(ex) ; }
+        
         if ( useSAX.getValue() )
             return new XMLInputSAX(in, model) ;
         return new XMLInputStAX(in, model) ;
