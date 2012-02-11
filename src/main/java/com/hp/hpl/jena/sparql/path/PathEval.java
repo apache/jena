@@ -567,4 +567,77 @@ public class PathEval
             visited.remove(node) ;
         }
     }
+    
+    /** Path evaluation visitor that provide distinct nodes visited, */ 
+    static class PathEvaluator1 implements PathVisitor
+    {
+        private final Graph graph ;
+        private final Node node ;
+        private final Collection<Node> output ;
+        private boolean forwardMode ; 
+
+        public PathEvaluator1(Graph g, Node n, Collection<Node> output, boolean forward)
+        {
+            this.graph = g ; 
+            this.node = n ;
+            this.output = output ;
+            this.forwardMode = forward ;
+        }
+        
+        @Override
+        public void visit(P_Link pathNode)
+        {
+            Iterator<Node> nodes = doOne(pathNode.getNode()) ;
+        }
+
+        private Iterator<Node> doOne(Node node)
+        {
+            return null ;
+        }
+
+        @Override
+        public void visit(P_ReverseLink pathNode)
+        {}
+
+        @Override
+        public void visit(P_NegPropSet pathNotOneOf)
+        {}
+
+        @Override
+        public void visit(P_Inverse inversePath)
+        {}
+
+        @Override
+        public void visit(P_Mod pathMod)
+        {}
+
+        @Override
+        public void visit(P_FixedLength pFixedLength)
+        {}
+
+        @Override
+        public void visit(P_Distinct pathDistinct)
+        {}
+
+        @Override
+        public void visit(P_ZeroOrOne path)
+        {}
+
+        @Override
+        public void visit(P_ZeroOrMore path)
+        {}
+
+        @Override
+        public void visit(P_OneOrMore path)
+        {}
+
+        @Override
+        public void visit(P_Alt pathAlt)
+        {}
+
+        @Override
+        public void visit(P_Seq pathSeq)
+        {}
+        
+    }
 }

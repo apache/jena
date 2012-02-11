@@ -79,7 +79,6 @@ public class PathCompiler
         return x ;
     }
     
-    
     private static void reduce(PathBlock x, VarAlloc varAlloc, Node startNode, Path path, Node endNode)
     {
         // V-i-s-i-t-o-r!
@@ -151,6 +150,10 @@ public class PathCompiler
             // This is the rewrite of 
             //    "x {N,} y" to "x :p{N} ?V . ?V :p* y"
             //    "x {N,M} y" to "x :p{N} ?V . ?V {0,M} y"
+            // The spec defines {n,m} to be 
+            //   {n} union {n+1} union ... union {m}
+            // which leads to a lot of repeated work.
+            
             if ( pMod.getMin() > 0 )
             {
                 Path p1 = PathFactory.pathFixedLength(pMod.getSubPath(), pMod.getMin()) ;

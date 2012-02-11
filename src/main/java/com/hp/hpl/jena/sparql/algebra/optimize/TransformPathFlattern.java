@@ -25,9 +25,13 @@ import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.path.PathCompiler ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
 
+/** Perform the equivalent of the trasnactions in the SPARQL 1.1 spec.
+ *  ARQ regards path transformation as an optimization.
+ *  ARQ does not execute the exact transformation as per spec as there are betetr ways to do it.
+ */
+
 public class TransformPathFlattern extends TransformCopy
 {
-    // *** THE algebra generator does this ***
     // This transform is also used so programmtically built queries also get converted.  
     // Need previous BGP for merging?  Do as a separate pass (sequence, BGP collapse)
     
