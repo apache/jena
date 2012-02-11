@@ -27,22 +27,17 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.NotImplemented ;
+import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.resultset.CSVInput ;
+import com.hp.hpl.jena.sparql.resultset.JSONInput ;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -68,6 +63,33 @@ public class QueryEngineHTTP implements QueryExecution
     private char[] password = null ;
     
     private boolean finished = false ;
+    
+    //Timeouts
+    private long connectTimeout = 0;
+    private TimeUnit connectTimeoutUnit = TimeUnit.MILLISECONDS;
+    private long readTimeout = 0;
+    private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
+    
+    //Compression Support
+    private boolean allowGZip = true ;
+    private boolean	allowDeflate = true;
+    
+    //Content Types
+    private String selectContentType = WebContent.contentTypeResultsXML;
+    private String askContentType = WebContent.contentTypeResultsXML;
+    private String modelContentType = WebContent.contentTypeRDFXML;
+    public static String[] supportedSelectContentTypes = new String []
+    		{
+    			WebContent.contentTypeResultsXML,
+    			WebContent.contentTypeResultsJSON,
+    			WebContent.contentTypeTextTSV,
+    			WebContent.contentTypeTextCSV
+    		};
+    public static String[] supportedAskContentTypes = new String []
+    		{
+    			WebContent.contentTypeResultsXML,
+    			WebContent.contentTypeJSON
+    		};
     
     // Releasing HTTP input streams is important. We remember this for SELECT,
     // and will close when the engine is closed
@@ -118,6 +140,22 @@ public class QueryEngineHTTP implements QueryExecution
     {
         this.namedGraphURIs = namedGraphURIs ;
     }
+    
+    /**
+     * Sets whether the HTTP request will specify Accept-Encoding: gzip
+     */
+    public void setAllowGZip(boolean allowed)
+    {
+    	allowGZip = allowed;
+    }
+    
+    /**
+     * Sets whether the HTTP requests will specify Accept-Encoding: deflate
+     */
+    public void setAllowDeflate(boolean allowed)
+    {
+    	allowDeflate = allowed;
+    }
 
     public void addParam(String field, String value)
     {
@@ -159,7 +197,7 @@ public class QueryEngineHTTP implements QueryExecution
     {
         HttpQuery httpQuery = makeHttpQuery() ;
         // TODO Allow other content types.
-        httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
+        httpQuery.setAccept(selectContentType) ;
         InputStream in = httpQuery.exec() ;
         
         if ( false )
@@ -170,9 +208,17 @@ public class QueryEngineHTTP implements QueryExecution
             in = new ByteArrayInputStream(b) ; 
         }
         
-        ResultSet rs = ResultSetFactory.fromXML(in) ;
         retainedConnection = in; // This will be closed on close()
-        return rs ;
+        //TODO: Find a way to auto-detect how to create the ResultSet based on the content type in use
+        if (selectContentType.equals(WebContent.contentTypeResultsXML))
+            return ResultSetFactory.fromXML(in);
+        if (selectContentType.equals(WebContent.contentTypeResultsJSON))
+            return  ResultSetFactory.fromJSON(in);
+        if (selectContentType.equals(WebContent.contentTypeTextTSV))
+            return ResultSetFactory.fromTSV(in);
+        if (selectContentType.equals(WebContent.contentTypeTextCSV))
+            return CSVInput.fromCSV(in);
+        throw new QueryException("SELECT Content-Type is not yet supported by this query engine");
     }
 
     @Override
@@ -190,9 +236,14 @@ public class QueryEngineHTTP implements QueryExecution
     private Model execModel(Model model)
     {
         HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(HttpParams.contentTypeRDFXML) ;
+        httpQuery.setAccept(modelContentType) ;
         InputStream in = httpQuery.exec() ;
-        model.read(in, null) ;
+        
+        //Try to select language appropriately here based on the model content type
+        Lang lang = WebContent.contentTypeToLang(modelContentType);
+        if (!lang.isTriples()) throw new QueryException("Content Type returned is not a valid RDF Graph syntax");
+        model.read(in, null, lang.getName()) ; 
+        
         return model ;
     }
     
@@ -200,13 +251,21 @@ public class QueryEngineHTTP implements QueryExecution
     public boolean execAsk()
     {
         HttpQuery httpQuery = makeHttpQuery() ;
-        httpQuery.setAccept(HttpParams.contentTypeResultsXML) ;
+        httpQuery.setAccept(askContentType) ;
         InputStream in = httpQuery.exec() ;
-        boolean result = XMLInput.booleanFromXML(in) ;
-        // Ensure connection is released
-        try { in.close(); }
-        catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
-        return result;
+
+        try {
+            //Parse the result appropriately depending on the selected content type
+            if (askContentType.equals(WebContent.contentTypeResultsXML))
+                return XMLInput.booleanFromXML(in) ;
+            if (askContentType.equals(WebContent.contentTypeResultsJSON))
+                return JSONInput.booleanFromJSON(in) ;
+            throw new QueryException("ASK Content-Type is not yet supported by this query engine");
+        } finally {
+            // Ensure connection is released
+            try { in.close(); }
+            catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
+        }
     }
 
     @Override
@@ -220,31 +279,37 @@ public class QueryEngineHTTP implements QueryExecution
     @Override public Query getQuery()       { return query ; }
     
     @Override
-    public void setTimeout(long timeout)
+    public void setTimeout(long readTimeout)
     {
-        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+        this.readTimeout = readTimeout;
+        this.readTimeoutUnit = TimeUnit.MILLISECONDS;
     }
 
     @Override
-    public void setTimeout(long timeout1, long timeout2)
+    public void setTimeout(long readTimeout, long connectTimeout)
     {
-        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+        this.readTimeout = readTimeout;
+        this.readTimeoutUnit = TimeUnit.MILLISECONDS;
+        this.connectTimeout = connectTimeout;
+        this.connectTimeoutUnit = TimeUnit.MILLISECONDS;
     }
 
 
     @Override
-    public void setTimeout(long timeout, TimeUnit timeoutUnits)
+    public void setTimeout(long readTimeout, TimeUnit timeoutUnits)
     {
-        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+        this.readTimeout = readTimeout;
+        this.readTimeoutUnit = timeoutUnits;
     }
 
     @Override
     public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2)
     {
-        throw new NotImplemented("Not implemented yet - please send a patch to the Apache Jena project : https://issues.apache.org/jira/browse/JENA-56") ;
+        this.readTimeout = timeout1;
+        this.readTimeoutUnit = timeUnit1;
+        this.connectTimeout = timeout2;
+        this.connectTimeoutUnit = timeUnit2;
     }
-
-
     
     private HttpQuery makeHttpQuery()
     {
@@ -270,9 +335,27 @@ public class QueryEngineHTTP implements QueryExecution
         if ( params != null )
             httpQuery.merge(params) ;
         
+        if (allowGZip)
+        	httpQuery.setAllowGZip(true);
+
+        if (allowDeflate)
+        	httpQuery.setAllowDeflate(true);
+        
         httpQuery.setBasicAuthentication(user, password) ;
+        
+        //Apply timeouts
+        if (connectTimeout > 0)
+        {
+        	httpQuery.setConnectTimeout((int)connectTimeoutUnit.toMillis(connectTimeout));
+        }
+        if (readTimeout > 0)
+        {
+        	httpQuery.setReadTimeout((int)readTimeoutUnit.toMillis(readTimeout));
+        }
+        
         return httpQuery ;
     }
+
     
     // This is to allow setting additional/optional query parameters on a per SERVICE level, see: JENA-195
     protected static Params getServiceParams(String serviceURI, Context context) throws QueryExecException
@@ -321,5 +404,57 @@ public class QueryEngineHTTP implements QueryExecution
     {
         HttpQuery httpQuery = makeHttpQuery() ;
         return "GET "+httpQuery.toString() ;
+    }
+    
+    /**
+     * Sets the Content Type for SELECT queries provided that the format is supported
+     * @param contentType
+     */
+    public void setSelectContentType(String contentType)
+    {
+    	boolean ok = false;
+    	for (String supportedType : supportedSelectContentTypes)
+    	{
+    		if (supportedType.equals(contentType))
+    		{
+    			ok = true;
+    			break;
+    		}
+    	}
+    	if (!ok) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a supported SELECT results format");
+    	selectContentType = contentType;
+    }
+    
+    /**
+     * Sets the Content Type for ASK queries provided that the format is supported
+     * @param contentType
+     */
+    public void setAskContentType(String contentType)
+    {
+    	boolean ok = false;
+    	for (String supportedType : supportedAskContentTypes)
+    	{
+    		if (supportedType.equals(contentType))
+    		{
+    			ok = true;
+    			break;
+    		}
+    	}
+    	if (!ok) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not a supported ASK results format");
+    	askContentType = contentType;
+    }
+    
+    /**
+     * Sets the Content Type for CONSTRUCT/DESCRIBE queries provided that the format is supported
+     * @param contentType
+     */
+    public void setModelContentType(String contentType)
+    {
+    	//Check that this is a valid setting
+    	Lang lang = WebContent.contentTypeToLang(contentType);
+    	if (lang == null) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT");
+    	if (!lang.isTriples()) throw new IllegalArgumentException("Given Content Type '" + contentType + " is not a RDF Graph format");
+    	
+    	modelContentType = contentType;
     }
 }

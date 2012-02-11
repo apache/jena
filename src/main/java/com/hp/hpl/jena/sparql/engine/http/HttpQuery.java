@@ -18,20 +18,21 @@
 
 package com.hp.hpl.jena.sparql.engine.http;
 
-import java.io.ByteArrayInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.io.UnsupportedEncodingException ;
+import java.io.* ;
 import java.net.HttpURLConnection ;
 import java.net.MalformedURLException ;
+import java.net.SocketTimeoutException ;
 import java.net.URL ;
+import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.regex.Pattern ;
+import java.util.zip.DeflaterInputStream ;
+import java.util.zip.GZIPInputStream ;
 
 import org.apache.commons.codec.binary.Base64 ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -72,6 +73,12 @@ public class HttpQuery extends Params
     String queryString = null ;
     boolean serviceParams = false ;
     private final Pattern queryParamPattern = Pattern.compile(".+[&|\\?]query=.*") ;
+    
+    int connectTimeout = 0;
+    int readTimeout = 0;
+    
+    private boolean allowGZip = false ;
+    private boolean allowDeflate = false;
     
     //static final String ENC_UTF8 = "UTF-8" ;
     
@@ -126,6 +133,16 @@ public class HttpQuery extends Params
         contentTypeResult = contentType ;
     }
     
+    public void setAllowGZip(boolean allow)
+    {
+    	allowGZip = allow;
+    }
+    
+    public void setAllowDeflate(boolean allow)
+    {
+    	allowDeflate = allow;
+    }
+    
     public void setBasicAuthentication(String user, char[] password)
     {
         this.user = user ;
@@ -150,6 +167,38 @@ public class HttpQuery extends Params
     public void setForcePOST()
     {
         forcePOST = true ;
+    }
+    
+    /**
+     * Sets HTTP Connection timeout, any value <= 0 is taken to mean no timeout
+     */
+    public void setConnectTimeout(int timeout)
+    {
+    	connectTimeout = timeout;
+    }
+    
+    /**
+     * Gets the HTTP Connection timeout
+     */
+    public int getConnectTimeout()
+    {
+    	return connectTimeout;
+    }
+    
+    /**
+     * Sets HTTP Read timeout, any value <= 0 is taken to mean no timeout
+     */
+    public void setReadTimeout(int timeout)
+    {
+    	readTimeout = timeout;
+    }
+    
+    /**
+     * Gets the HTTP Read timeout
+     */
+    public int getReadTimeout()
+    {
+    	return readTimeout;
     }
 
     /** Execute the operation
@@ -201,6 +250,8 @@ public class HttpQuery extends Params
             // By default, following 3xx redirects is true
             //conn.setFollowRedirects(true) ;
             basicAuthentication(httpConnection) ;
+            applyTimeouts(httpConnection);
+            applyEncodings(httpConnection);
             
             httpConnection.setDoInput(true);
             httpConnection.connect();
@@ -240,6 +291,8 @@ public class HttpQuery extends Params
             httpConnection.setRequestProperty("Accept", contentTypeResult) ;
             httpConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded") ;
             basicAuthentication(httpConnection) ;
+            applyTimeouts(httpConnection);
+            applyEncodings(httpConnection);
             httpConnection.setDoOutput(true) ;
             
             boolean first = true ;
@@ -263,6 +316,8 @@ public class HttpQuery extends Params
         }
         catch (java.net.ConnectException connEx)
         { throw new QueryExceptionHTTP(-1, "Failed to connect to remote server"); }
+        catch (SocketTimeoutException timeoutEx)
+        { throw new QueryExceptionHTTP(-1, "Failed to connect to remove server within specified timeout"); }
         catch (IOException ioEx)
         { throw new QueryExceptionHTTP(ioEx); }
     }
@@ -297,6 +352,29 @@ public class HttpQuery extends Params
         }
     }
 
+    private void applyTimeouts(HttpURLConnection conn)
+    {
+    	if (connectTimeout > 0)
+    	{
+    		conn.setConnectTimeout(connectTimeout);
+    	}
+    	if (readTimeout > 0)
+    	{
+    		conn.setReadTimeout(readTimeout);
+    	}
+    }
+    
+    private void applyEncodings(HttpURLConnection conn)
+    {
+    	List<String> encodings = new ArrayList<String>();
+    	if (allowGZip) encodings.add("gzip");
+    	if (allowDeflate) encodings.add("deflate");
+    	if (encodings.size() > 0)
+    	{
+    		//Apply the Accept-Encoding header if at least one encoding has been selected
+    		conn.setRequestProperty("Accept-Encoding", StrUtils.strjoin(", ", encodings));
+    	}
+    }
 
     private InputStream execCommon() throws QueryExceptionHTTP
     {
@@ -330,9 +408,36 @@ public class HttpQuery extends Params
                     throw new QueryExceptionHTTP(responseCode, responseMessage) ;
             }
             
-            // Request suceeded
+            // Request succeeded
             //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
+
+            String x$ = httpConnection.getContentType() ;
+            String y$ = httpConnection.getContentEncoding() ;
+            
+            //If compression was enabled and we got a compressed response as indicated by the presence of
+            //a Transfer-Encoding header we need to ensure the input stream is appropriately wrapped in
+            //the relevant stream type but checking that the JVM hasn't been clever enough to do
+            //this for us already
+            String contentEnc = httpConnection.getContentEncoding() ;
+            
+            if (contentEnc != null)
+            {
+            	if (contentEnc.equalsIgnoreCase("gzip"))
+            	{
+            		if (!(in instanceof GZIPInputStream))
+            		{
+            			in = new GZIPInputStream(in);
+            		}
+            	}
+            	else if (contentEnc.equalsIgnoreCase("deflate"))
+            	{
+            		if (!(in instanceof DeflaterInputStream))
+            		{
+            			in = new DeflaterInputStream(in);
+            		}
+            	}
+            }
             
             if ( false )
             {
