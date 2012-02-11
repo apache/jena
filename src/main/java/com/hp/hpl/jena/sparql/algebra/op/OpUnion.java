@@ -30,6 +30,8 @@ public class OpUnion extends Op2
     {
         if ( left == null )
             return right ;
+        if ( right == null )
+            return left ;
 
         return new OpUnion(left, right) ;
     }

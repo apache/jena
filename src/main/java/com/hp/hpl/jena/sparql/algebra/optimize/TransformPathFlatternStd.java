@@ -18,6 +18,9 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.ArrayList ;
+import java.util.List ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
@@ -58,14 +61,17 @@ public class TransformPathFlatternStd extends TransformCopy
         if ( r == null )
         {
             if ( op == null )
-            {
-                TriplePath tp = new TriplePath(subject, path, object) ;
-                op = new OpPath(tp) ;
-            }
+                op = make(subject, path, object) ;
             return op ;
         }
             
         return r ;
+    }
+    
+    static OpPath make(Node subject, Path path, Node object)
+    {
+        TriplePath tp = new TriplePath(subject, path, object) ;
+        return new OpPath(tp) ;
     }
     
     static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"Q") ;
@@ -77,6 +83,16 @@ public class TransformPathFlatternStd extends TransformCopy
         if ( op2 == null )
             return op1 ;
         return OpJoin.create(op1, op2) ;
+    }
+    
+    static Op union(Op left, Op right)
+    {
+        if ( left == null )
+            return right ;
+        if ( right == null )
+            return left ;
+
+        return new OpUnion(left, right) ;
     }
     
     static class PathTransform implements PathVisitor
@@ -109,10 +125,52 @@ public class TransformPathFlatternStd extends TransformCopy
             result = op  ;
         }
         
+        /*
+         * Reverse transformations.
+         * X !(^:uri1|...|^:urin)Y                      ==>  ^(X !(:uri1|...|:urin) Y)
+         * Split into forward and reverse.
+         * X !(:uri1|...|:urii|^:urii+1|...|^:urim) Y   ==>  { X !(:uri1|...|:urii|)Y } UNION { X !(^:urii+1|...|^:urim) Y } 
+         */
         @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
-            // No change.
+            Op opFwd = null ;
+            Op opBwd = null ;
+            List<P_Path0> forwards = new ArrayList<P_Path0>() ;
+            List<P_Path0> backwards = new ArrayList<P_Path0>() ;
+            
+            for ( P_Path0 p :  pathNotOneOf.getNodes() )
+            {
+                if ( p.isForward() )
+                    forwards.add(p) ;
+                else
+                    backwards.add(p) ;
+            }
+                
+            if ( ! forwards.isEmpty() )
+            {
+                P_NegPropSet pFwd = new P_NegPropSet() ;
+                for ( P_Path0 p : forwards )
+                    pFwd.add(p) ;
+                opFwd = make(subject, pFwd, object) ;
+            }
+            
+            if ( ! backwards.isEmpty() )
+            {
+                // Could reverse here.
+                P_NegPropSet pBwd = new P_NegPropSet() ;
+                for ( P_Path0 p : backwards )
+                    pBwd.add(p) ;
+                opBwd = make(subject, pBwd, object) ;
+            }
+            
+            if ( opFwd == null && opBwd == null )
+            {
+                result = make(subject, pathNotOneOf, object) ;
+                return ; 
+            }
+            
+            result = union(opFwd, opBwd) ;
         }
         
         @Override
@@ -134,7 +192,7 @@ public class TransformPathFlatternStd extends TransformCopy
             {
                 Path p = PathFactory.pathFixedLength(pathMod.getSubPath(), i) ;
                 Op sub = transformPath(null, subject, p, object) ;
-                op = OpUnion.create(op, sub) ;
+                op = union(op, sub) ;
             }
             result = op ;
         }
@@ -189,7 +247,7 @@ public class TransformPathFlatternStd extends TransformCopy
         {
             Op op1 = transformPath(null, subject, pathAlt.getLeft() , object) ;
             Op op2 = transformPath(null, subject, pathAlt.getRight() , object) ;
-            result = OpUnion.create(op1, op2) ;
+            result = union(op1, op2) ;
         }
         
         @Override
