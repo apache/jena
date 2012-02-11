@@ -24,8 +24,8 @@ public class RunFuseki
 {
     public static void main(String[] args) throws Exception
     {
-        //main1() ;
-        main2() ;
+        main1() ;
+        //main2() ;
     }
     
         
@@ -41,15 +41,16 @@ public class RunFuseki
         FusekiCmd.main(
                     //"-v", 
                     //"--debug",
-                    "--update",
+                    //"--update",
                     //"--timeout=1000,5000",
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
                     //"--mgtPort=3031",
                     //"--host=localhost",
-                    "--mem",
+                    //"--mem",
                     //"--loc=DB",
-                    //"--file=/home/afs/Datasets/MusicBrainz/tracks-1k.nt",
+                    "--file=D.ttl",
+                    "--gzip=no",
                     //"--desc=desc.ttl", 
                     "/ds"
                     ) ;

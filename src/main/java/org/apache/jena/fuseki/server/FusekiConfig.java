@@ -155,7 +155,7 @@ public class FusekiConfig
         config.pagesPort = config.port ;
         config.jettyConfigFile = null ;
         config.pages = "Pages-Update" ;
-        config.enableCompression = Fuseki.getContext().isTrueOrUndef(Fuseki.FusekiEnableGZipCompression) ;
+        config.enableCompression = true ;
         return config ;
     }
 

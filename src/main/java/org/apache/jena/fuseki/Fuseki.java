@@ -42,7 +42,7 @@ public class Fuseki
     static public String FusekiHomeEnv = "FUSEKI_HOME" ;
     static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
     
-    public static final Symbol FusekiEnableGZipCompression = Symbol.create(FusekiSymbolIRI + "enableGZipCompression");
+    public static final Symbol xFusekiEnableGZipCompression = Symbol.create(FusekiSymbolIRI + "enableGZipCompression");
     
     static public String PagesPublish = "pages-publish" ;
     static public String PagesAll =     "pages-update" ;

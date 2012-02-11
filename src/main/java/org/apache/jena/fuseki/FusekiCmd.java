@@ -109,6 +109,7 @@ public class FusekiCmd extends CmdARQ
     private boolean allowUpdate = false ;
     
     private String fusekiConfigFile = null ;
+    private boolean enableCompression = true ;
     private String jettyConfigFile = null ;
     private String homeDir = null ;
     
@@ -305,11 +306,9 @@ public class FusekiCmd extends CmdARQ
         
         if ( contains(argGZip) )
         {
-            if ( ! hasValueOfTrue(argGZip) || ! hasValueOfFalse(argGZip) )
+            if ( ! hasValueOfTrue(argGZip) && ! hasValueOfFalse(argGZip) )
                 throw new CmdException(argGZip.getNames().get(0)+": Not understood: "+getValue(argGZip)) ;
-            
-            boolean b = super.hasValueOfTrue(argGZip) ;
-            Fuseki.getContext().set(Fuseki.FusekiEnableGZipCompression, b);
+            enableCompression = super.hasValueOfTrue(argGZip) ;
         }
     }
 
@@ -356,6 +355,7 @@ public class FusekiCmd extends CmdARQ
         serverConfig.pages = pagesDir ;
         serverConfig.mgtPort = mgtPort ;
         serverConfig.pagesPort = port ;
+        serverConfig.enableCompression = enableCompression ;
         serverConfig.jettyConfigFile = jettyConfigFile ;
         
         SPARQLServer server = new SPARQLServer(serverConfig) ;
