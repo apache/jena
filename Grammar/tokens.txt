@@ -133,7 +133,12 @@
 [<TZ>]          ::= 'TZ'
 [<NOW>]         ::= 'NOW'
 [<UUID>]        ::= 'UUID'
+[<STRUUID>]     ::= 'StrUUID'
 [<VERSION>]     ::= 'VERSION'
+[<CAST>         ::= 'CAST'
+[<CALL>         ::= 'CALL'
+[<MULTI>        ::= 'MULTI'
+
 [<MD5>]         ::= 'MD5'
 [<SHA1>]        ::= 'SHA1'
 [<SHA224>]      ::= 'SHA224'

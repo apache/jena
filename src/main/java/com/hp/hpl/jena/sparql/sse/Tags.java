@@ -95,10 +95,12 @@ public class Tags
     public static final String tagPathOneOrMore     = "path+" ;
     public static final String tagPathZeroOrOne     = "path?" ;
     public static final String tagPathFixedLength   = "pathN" ;
+    public static final String tagPathDistinct      = "distinct" ;
+    public static final String tagPathMulti         = "multi" ;
     
-    public static final String tagPathReverse   = "reverse" ;
-    public static final String tagPathRev       = "rev" ;
-    public static final String pathNotOneOf     = "notoneof" ;
+    public static final String tagPathReverse       = "reverse" ;
+    public static final String tagPathRev           = "rev" ;
+    public static final String tagPathNotOneOf      = "notoneof" ;
 
     // Not used - nowadays extensions are not explicitly flagged in the algebra.
     // But needed to override existing operations.

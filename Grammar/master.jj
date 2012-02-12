@@ -1292,6 +1292,11 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      p = Path()
      { p = PathFactory.pathDistinct(p) ; }
      <RPAREN>
+  |
+     <MULTI><LPAREN> 
+     p = Path()
+     { p = PathFactory.pathMulti(p) ; }
+     <RPAREN>
 #endif
   )
  { return p ; }
@@ -2119,6 +2124,8 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < CAST:        "cast" >
 |  < CALL:        "call" >
+|  < MULTI:       "multi" >
+
 #endif
 
 |  < STR:         "str" >

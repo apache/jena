@@ -222,6 +222,13 @@ public class TransformPathFlatternStd extends TransformCopy
         }
         
         @Override
+        public void visit(P_Multi pathMulti)
+        {
+            // No change.
+            result = null ;
+        }
+
+        @Override
         public void visit(P_ZeroOrOne path)
         {
             // No change.

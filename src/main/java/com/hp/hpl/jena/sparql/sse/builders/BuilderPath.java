@@ -63,15 +63,16 @@ public class BuilderPath
         dispatch.put(Tags.tagPathAlt, buildAlt) ;
         dispatch.put(Tags.tagPathMod, buildMod) ;
         
-        dispatch.put(Tags.tagPathFixedLength, buildFixedLength) ;
-        dispatch.put(Tags.tagDistinct, buildDistinct) ;
-        dispatch.put(Tags.tagPathZeroOrMore, buildZeroOrMore) ;
-        dispatch.put(Tags.tagPathZeroOrOne, buildZeroOrOne) ;
-        dispatch.put(Tags.tagPathOneOrMore, buildOneOrMore) ;
+        dispatch.put(Tags.tagPathFixedLength,   buildFixedLength) ;
+        dispatch.put(Tags.tagPathDistinct,      buildDistinct) ;
+        dispatch.put(Tags.tagPathMulti,         buildMulti) ;
+        dispatch.put(Tags.tagPathZeroOrMore,    buildZeroOrMore) ;
+        dispatch.put(Tags.tagPathZeroOrOne,     buildZeroOrOne) ;
+        dispatch.put(Tags.tagPathOneOrMore,     buildOneOrMore) ;
         
         dispatch.put(Tags.tagPathReverse, buildReverse) ;
         dispatch.put(Tags.tagPathRev, buildRev) ;
-        dispatch.put(Tags.pathNotOneOf, buildNotOneOf) ;
+        dispatch.put(Tags.tagPathNotOneOf, buildNotOneOf) ;
     }
     
     private Path build(Item item)
@@ -203,9 +204,20 @@ public class BuilderPath
         @Override
         public Path make(ItemList list)
         {
-            BuilderLib.checkLength(2, 2, list, "path distinct repeat: wanted 1 argument") ;
+            BuilderLib.checkLength(2, 2, list, "path distinct: wanted 1 argument") ;
             Path path  = build(list, 1) ;
             return new P_Distinct(path) ;
+        }
+    } ;
+
+    final protected Build buildMulti = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path multi : wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_Multi(path) ;
         }
     } ;
 

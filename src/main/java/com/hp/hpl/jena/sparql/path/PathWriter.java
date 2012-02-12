@@ -248,7 +248,14 @@ public class PathWriter
             pathDistinct.getSubPath().visit(this) ;
             out.print(")") ;
         }
-        
+
+        @Override
+        public void visit(P_Multi pathMulti)
+        {
+            out.print("MULTI(") ;
+            pathMulti.getSubPath().visit(this) ;
+            out.print(")") ;
+        }
 
         @Override
         public void visit(P_ZeroOrOne path)

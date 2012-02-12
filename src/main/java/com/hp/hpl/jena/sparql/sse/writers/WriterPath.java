@@ -151,7 +151,7 @@ public class WriterPath
         public void visit(P_NegPropSet pathNotOneOf)
         {
             out.print("(") ;
-            out.print(Tags.pathNotOneOf) ;
+            out.print(Tags.tagPathNotOneOf) ;
 
             for ( P_Path0 p : pathNotOneOf.getNodes() )
             {
@@ -218,31 +218,34 @@ public class WriterPath
             out.print(")") ;
         }
         
-
         @Override
         public void visit(P_Distinct pathDistinct)
         {
-            out.print("(distinct ") ;
-            output(pathDistinct.getSubPath()) ;
-            out.print(")") ;
+            writePath(Tags.tagPathDistinct, pathDistinct.getSubPath()) ;
+        }
+
+        @Override
+        public void visit(P_Multi pathMulti)
+        {
+            writePath(Tags.tagPathMulti, pathMulti.getSubPath()) ;
         }
 
         @Override
         public void visit(P_ZeroOrOne path)
         { 
-            writeStarPlusQuery(Tags.tagPathZeroOrOne, path.getSubPath()) ;
+            writePath(Tags.tagPathZeroOrOne, path.getSubPath()) ;
         }
 
         @Override
         public void visit(P_ZeroOrMore path)
         { 
-            writeStarPlusQuery(Tags.tagPathZeroOrMore, path.getSubPath()) ;
+            writePath(Tags.tagPathZeroOrMore, path.getSubPath()) ;
         }
 
         @Override
         public void visit(P_OneOrMore path)
         { 
-            writeStarPlusQuery(Tags.tagPathOneOrMore, path.getSubPath()) ;
+            writePath(Tags.tagPathOneOrMore, path.getSubPath()) ;
         }
         
         private void writeOneLiner(Path path)
@@ -256,7 +259,7 @@ public class WriterPath
             out.decIndent() ;
         }
         
-        private void writeStarPlusQuery(String tag, Path subPath)
+        private void writePath(String tag, Path subPath)
         {
             out.print("(") ;
             out.print(tag) ;

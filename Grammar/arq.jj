@@ -1034,6 +1034,11 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      p = Path()
      { p = PathFactory.pathDistinct(p) ; }
      <RPAREN>
+  |
+     <MULTI><LPAREN>
+     p = Path()
+     { p = PathFactory.pathMulti(p) ; }
+     <RPAREN>
   )
  { return p ; }
 }
@@ -1650,6 +1655,7 @@ TOKEN [IGNORE_CASE] :
 | < URI: "uri" >
 | < CAST: "cast" >
 | < CALL: "call" >
+| < MULTI: "multi" >
 | < STR: "str" >
 | < STRLANG: "strlang" >
 | < STRDT: "strdt" >

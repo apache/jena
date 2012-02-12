@@ -27,6 +27,7 @@ import java.util.Set ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -275,6 +276,12 @@ public class PathEval_ARQ
             // CRUDE - No optimization.
             Iterator<Node> iter = eval(graph, node, pathDistinct.getSubPath(), forwardMode) ;
             fill(Iter.distinct(iter)) ; 
+        }
+
+        @Override
+        public void visit(P_Multi pathMulti)
+        {
+            throw new NotImplemented() ; 
         }
 
         @Override
