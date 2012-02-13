@@ -4,10 +4,10 @@
 
 XSLT script to format SPARQL Query Results XML Format into xhtml
 
-Copyright © 2004, 2005 World Wide Web Consortium, (Massachusetts
+Copyright Â© 2004, 2005 World Wide Web Consortium, (Massachusetts
 Institute of Technology, European Research Consortium for
 Informatics and Mathematics, Keio University). All Rights
-Reserved. This work is distributed under the W3C® Software
+Reserved. This work is distributed under the W3CÂ® Software
 License [1] in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.
@@ -49,15 +49,20 @@ Fix:
    doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
    omit-xml-declaration="no" />
 
+    <xsl:template match="res:link">
+      <p>Link to <xsl:value-of select="@href"/></p>
+    </xsl:template>
 
-  <xsl:template name="header">
-    <div>
-      <h2>Header</h2>
-      <xsl:for-each select="res:head/res:link"> 
-	<p>Link to <xsl:value-of select="@href"/></p>
-      </xsl:for-each>
-    </div>
-  </xsl:template>
+    <xsl:template name="header">
+      <div>
+        <h2>Header</h2>
+        <!-- replaced by Bob D with the following line and the preceding template rule     
+             <xsl:for-each select="res:head/res:link"> 
+             <p>Link to <xsl:value-of select="@href"/></p>
+             </xsl:for-each> -->
+        <xsl:apply-templates select="res:head/res:link"/>
+      </div>
+    </xsl:template>
 
   <xsl:template name="boolean-result">
     <div>
@@ -120,30 +125,23 @@ Fix:
   </xsl:template>
 
   <xsl:template match="res:uri">
-    <xsl:variable name="uri" select="text()"/>
-    <xsl:text>&lt;</xsl:text>
     <!-- Roughly: SELECT ($uri AS ?subject) ?predicate ?object { $uri ?predicate ?object } -->
-    <a href="?query=SELECT%20%28%3C{$uri}%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C{$uri}%3E%20%3Fpredicate%20%3Fobject%20%7D&amp;output=xml&amp;stylesheet=%2Fxml-to-html-2.xsl">
-    <xsl:value-of select="$uri"/>
+    <xsl:variable name="query">SELECT%20%28%3C<xsl:value-of select="."/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="."/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
+    <xsl:text>&lt;</xsl:text>
+    <a href="?query={$query}&amp;output=xml&amp;stylesheet=%2Fxml-to-html-2.xsl">
+    <xsl:value-of select="."/>
     </a>
     <xsl:text>&gt;</xsl:text>
   </xsl:template>
 
-  <xsl:template match="res:literal">
-    <xsl:text>"</xsl:text>
-    <xsl:value-of select="text()"/>
-    <xsl:text>"</xsl:text>
-
-    <xsl:choose>
-      <xsl:when test="@datatype">
+  <xsl:template match="res:literal[@datatype]">
 	<!-- datatyped literal value -->
-	^^&lt;<xsl:value-of select="@datatype"/>&gt;
-      </xsl:when>
-      <xsl:when test="@xml:lang">
-	<!-- lang-string -->
-	@<xsl:value-of select="@xml:lang"/>
-      </xsl:when>
-    </xsl:choose>
+    "<xsl:value-of select="."/>"^^&lt;<xsl:value-of select="@datatype"/>&gt;
+  </xsl:template>
+
+  <xsl:template match="res:literal[@lang]">
+	<!-- datatyped literal value -->
+    "<xsl:value-of select="."/>"<xsl:value-of select="@xml:lang"/>
   </xsl:template>
 
   <xsl:template match="res:sparql">
