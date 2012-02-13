@@ -40,10 +40,7 @@
   
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <!-- Must use maven name of ${project.artifactId}-${project.version}-$id
-	 or else the name is changed on install
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
-    -->
 
     <ver.jena>2.7.0-incubating</ver.jena>
     <ver.arq>2.9.0-incubating</ver.arq>
@@ -98,8 +95,15 @@
   <build>
     <resources>
       <resource>
+	<filtering>false</filtering>
+	 <directory>src/main/resources</directory>
+      </resource>
+      <resource>
         <filtering>true</filtering>
         <directory>src/main/resources</directory>
+	<includes>
+	  <include>org/apache/jena/tdb/tdb-properties.xml</include>
+	</includes>
       </resource>
     </resources>
     <!-- The filter file is written by antrun -->
@@ -226,6 +230,11 @@ build.time.txt=${build.time.txt}
 	    <phase>package</phase>
 	    <goals><goal>single</goal></goals>
 	    <configuration>
+	      <!-- DO NOT place in target/ directly - it will be 
+		   uploaded with its name change to the group-artifact name
+	      -->
+	      <finalName>dist/${assembly.root.name}</finalName>
+	      <appendAssemblyId>false</appendAssemblyId>
 	      <descriptors>
 		<descriptor>assembly.xml</descriptor>
 	      </descriptors>

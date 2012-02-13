@@ -34,13 +34,22 @@
     </dependencySet>
   </dependencySets>
 
+  <files>
+    <file>
+      <source>LICENSE-dist</source>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>LICENSE-dist</source>
+      <destName>LICENSE</destName>
+    </file>
+  </files>
+
   <fileSets>
     <fileSet>
       <includes>
         <include>DISCLAIMER*</include>
-        <include>LICENSE*</include>
-        <include>NOTICE*</include>
-        <include>README*</include>
+	<include>README*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
       </includes>
