@@ -84,7 +84,8 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
     
-    private static ArgDecl argHome         = new ArgDecl(ArgDecl.HasValue, "home") ;
+    private static ArgDecl argHome          = new ArgDecl(ArgDecl.HasValue, "home") ;
+    private static ArgDecl argPages         = new ArgDecl(ArgDecl.HasValue, "pages") ;
     
     //private static ModLocation          modLocation =  new ModLocation() ;
     private static ModDatasetAssembler  modDataset = new ModDatasetAssembler() ;
@@ -112,6 +113,7 @@ public class FusekiCmd extends CmdARQ
     private boolean enableCompression = true ;
     private String jettyConfigFile = null ;
     private String homeDir = null ;
+    private String pagesDir ;
     
     public FusekiCmd(String...argv)
     {
@@ -123,6 +125,7 @@ public class FusekiCmd extends CmdARQ
         add(argTDB,     "--loc=DIR",            "Use an existing TDB database (or create if does not exist)") ;
         add(argMemTDB,  "--memTDB",             "Create an in-memory, non-persistent dataset using TDB (testing only)") ;
         add(argPort,    "--port",               "Listen on this port number") ;
+        add(argPages,   "--pages=DIR",          "Set of pages to serve as static content") ; 
         // Set via jetty config file.
         //add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
         add(argTimeout, "--timeout",            "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
@@ -304,6 +307,12 @@ public class FusekiCmd extends CmdARQ
            homeDir = args.get(args.size()-1) ;
         }
         
+        if ( contains(argPages) )
+        {
+           List<String> args = super.getValues(argPages) ;
+           pagesDir = args.get(args.size()-1) ;
+        }
+
         if ( contains(argGZip) )
         {
             if ( ! hasValueOfTrue(argGZip) && ! hasValueOfFalse(argGZip) )
@@ -333,9 +342,12 @@ public class FusekiCmd extends CmdARQ
         
         homeDir = sort_out_dir(homeDir) ;
         
-        String pagesDir = homeDir+Fuseki.PagesAll ;
-        if ( ! FileOps.exists(pagesDir) )
-            Fuseki.configLog.warn("No such directory for static content: "+pagesDir) ;
+        String staticContentDir = pagesDir ;
+        if ( staticContentDir == null )
+            staticContentDir = homeDir+Fuseki.PagesAll ;
+
+        if ( ! FileOps.exists(staticContentDir) )
+            Fuseki.configLog.warn("No such directory for static content: "+staticContentDir) ;
         
         if ( jettyConfigFile != null )
             Fuseki.configLog.info("Jetty configuration: "+jettyConfigFile) ;
@@ -352,7 +364,7 @@ public class FusekiCmd extends CmdARQ
         
         // TODO Get from parsing config file.
         serverConfig.port = port ;
-        serverConfig.pages = pagesDir ;
+        serverConfig.pages = staticContentDir ;
         serverConfig.mgtPort = mgtPort ;
         serverConfig.pagesPort = port ;
         serverConfig.enableCompression = enableCompression ;

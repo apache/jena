@@ -1,0 +1,41 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+[] rdf:type fuseki:Server ;
+   # Timeout - server-wide default: 10s,60s
+   ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000,60000" ] ;
+
+   fuseki:services (
+     <#service1>
+   ) .
+
+# Custom code.
+
+## ---------------------------------------------------------------
+
+<#service1> rdf:type fuseki:Service ;
+    fuseki:name                     "books" ;    # http://host:port/books
+    fuseki:serviceQuery             "query" ;    # SPARQL query service
+    fuseki:serviceQuery             "sparql" ;   # SPARQL query service
+    fuseki:serviceReadGraphStore    "data" ;     
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;   
+    fuseki:dataset           <#books> ;
+    .
+
+<#emptyDataset> rdf:type ja:RDFDataset .
+
+## ---------------------------------------------------------------
+    
+<#books>    rdf:type ja:RDFDataset ;
+    rdfs:label "Books" ;
+    ja:defaultGraph 
+      [ rdfs:label "books.ttl" ;
+        a ja:MemoryModel ;
+        ja:content [ja:externalContent <file:Data/books.ttl> ] ;
+      ] ;
+    .

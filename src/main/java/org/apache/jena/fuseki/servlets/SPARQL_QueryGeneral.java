@@ -56,7 +56,9 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
 
     @Override
     protected void validateQuery(HttpActionQuery action, Query query)
-    { }
+    {
+        // One or the other,
+    }
     
     @Override
     protected String mapRequestToDataset(String uri)

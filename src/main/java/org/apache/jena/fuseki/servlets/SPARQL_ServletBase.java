@@ -36,11 +36,13 @@ import org.apache.jena.fuseki.server.DatasetRegistry ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.tdb.migrate.DatasetGraphReadOnly ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {
     private final PlainRequestFlag queryStringHandling ;
-
+    private static DatasetGraph dummyDSG = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     // Flag for whether a request (no query string) is handled as a regular operation or
     // routed to special handler.
     protected enum PlainRequestFlag { REGULAR, DIFFERENT }
@@ -84,6 +86,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 }
                 dsg = desc.dataset ;
             }
+            else
+                // Dummy dsg.
+                dsg = dummyDSG ;
             perform(id, dsg, request, response) ;
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (QueryCancelledException ex)
@@ -104,7 +109,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         catch (Throwable ex)
         {   // This should not happen.
             //ex.printStackTrace(System.err) ;
-            log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage(), ex)) ;
+            log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
             responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
         }
         

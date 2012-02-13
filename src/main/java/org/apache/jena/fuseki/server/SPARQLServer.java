@@ -202,9 +202,8 @@ public class SPARQLServer
         
         if ( installManager || installServices )
         {
-            String [] files = { "fuseki.html" } ;
+            String [] files = { "fuseki.html", "index.html" } ;
             context.setWelcomeFiles(files) ;
-            //  if this is /* then don't see *.jsp. Why?
             addContent(context, "/", serverConfig.pages) ;
         }
         

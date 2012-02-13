@@ -24,18 +24,10 @@ public class RunFuseki
 {
     public static void main(String[] args) throws Exception
     {
+        FusekiCmd.main("--config=config.ttl") ; System.exit(0) ;
         main1() ;
-        //main2() ;
     }
     
-        
-    private static void main2()
-    {
-        FusekiCmd.main("--config=config.ttl") ;
-        System.exit(0) ;
-    }
-
-
     private static void main1() throws Exception
     {
         FusekiCmd.main(
@@ -50,8 +42,9 @@ public class RunFuseki
                     //"--mem",
                     //"--loc=DB",
                     "--file=D.ttl",
-                    "--gzip=no",
-                    //"--desc=desc.ttl", 
+                    //"--gzip=no",
+                    //"--desc=desc.ttl",
+                    //--pages=
                     "/ds"
                     ) ;
         System.exit(0) ;

@@ -1,0 +1,6 @@
+Run:
+runserver
+
+[
+fuseki --pages demo-pages --config config.ttl
+]
