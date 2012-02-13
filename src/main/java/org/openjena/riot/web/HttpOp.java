@@ -59,6 +59,11 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
  */
 public class HttpOp
 {
+    
+    // See also:
+    //   Fluent API in HttpClient from v4.2
+    
+    
     static private Logger log = LoggerFactory.getLogger(HttpOp.class) ;
     
     static private AtomicLong counter = new AtomicLong(0) ;
