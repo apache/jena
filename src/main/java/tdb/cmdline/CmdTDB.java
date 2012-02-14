@@ -87,7 +87,7 @@ public abstract class CmdTDB extends CmdARQ
         initialized = true ;
         // We are a command - ignore any log4j setting.
         String log4jProperty =  System.getProperty("log4j.configuration") ;
-        //if ( log4jProperty == null || log4jProperty.equals("cmdsettings") )
+        if ( log4jProperty == null || log4jProperty.equals("cmdsettings") )
             setLogging() ;
         
         // This sets context based on system properties.
@@ -101,7 +101,6 @@ public abstract class CmdTDB extends CmdARQ
         // Turn off optimizer warning.
         // Use a plain logger for output. 
         Properties p = new Properties() ;
-
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
         try { p.load(in) ; } catch (IOException ex) {}
         PropertyConfigurator.configure(p) ;
