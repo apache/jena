@@ -22,9 +22,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class P_OneOrMore extends P_Path1
 {
-    // Not strictly - it's the same as {1,} - but useful as it directly
-    // reflects the syntax so preserving {1,} and +
-    
     public P_OneOrMore(Path path)
     {
         super(path) ;

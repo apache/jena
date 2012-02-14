@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** Reverse link - used in P_NotOneOf */
 public class P_ReverseLink extends P_Path0
 {
     public P_ReverseLink(Node n)

@@ -26,7 +26,6 @@ public class P_Seq extends P_Path2
     public P_Seq(Path p1, Path p2)
     {
         super(p1, p2) ;
-        
     }
 
     @Override

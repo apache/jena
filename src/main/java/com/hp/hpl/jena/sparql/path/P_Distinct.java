@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.path;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-/** A path element that, on evalution, returns only unique nodes for the path ends. */  
 public class P_Distinct extends P_Path1
 {
     public P_Distinct(Path p)

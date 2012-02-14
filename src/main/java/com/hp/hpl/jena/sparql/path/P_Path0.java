@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.path;
 
 import com.hp.hpl.jena.graph.Node ;
 
-
 public abstract class P_Path0 extends PathBase
 {
     protected Node node ;

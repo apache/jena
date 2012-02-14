@@ -22,9 +22,6 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class P_ZeroOrOne extends P_Path1
 {
-    // Not strictly - it's the same as {0,1} - but useful as it directly
-    // reflects the syntax so preserving {0,1} and ?
-    
     public P_ZeroOrOne(Path path)
     {
         super(path) ;
