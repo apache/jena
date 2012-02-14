@@ -1,7 +1,15 @@
 #!/bin/bash
 
-JAR1="fuseki-server.jar"
-JAR2="target/jena-fuseki-*-server.jar"
+export FUSEKI_HOME=${FUSEKI_HOME:-$PWD}
+
+if [ ! -e $FUSEKI_HOME ]
+then
+    echo "$FUSEKI_HOME does not exist" 1>&2
+    exit 1
+    fi
+
+JAR1="$FUSEKI_HOME/fuseki-server.jar"
+JAR2="$FUSEKI_HOME/jena-fuseki-*-server.jar"
 JAR=""
 
 for J in "$JAR1" "$JAR2"
@@ -21,4 +29,6 @@ then
     exit 1
     fi
 
-exec java -Xmx1200M -jar "$JAR" "$@"
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+exec java  $JVM_ARGS -jar "$JAR" "$@"

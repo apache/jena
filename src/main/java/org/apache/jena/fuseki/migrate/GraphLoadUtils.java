@@ -75,12 +75,12 @@ public class GraphLoadUtils
     // ** Worker.
     private static void readUtil(Graph graph, String uri, int limit)
     {
-        Lang lang = Lang.guess(uri) ;
+        Lang lang = Lang.guess(uri, Lang.RDFXML) ;
         
         Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
         sink = new SinkLimited<Triple>(sink, limit) ;
         
-        // TODO Conneg
+        // TODO Conneg - awiting RIOT code upgrade.
         // WebReader.
         InputStream input = Fuseki.webFileManager.open(uri) ;
         

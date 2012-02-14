@@ -1,4 +1,10 @@
 Run:
+
+export FUSEKI_HOME=installation directory
+cd Demo directory
+
+Setup fuseki.
+cd to this directory.
 runserver
 
 [

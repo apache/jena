@@ -22,13 +22,35 @@ import org.apache.jena.fuseki.FusekiCmd ;
 
 public class RunFuseki
 {
-    public static void main(String[] args) throws Exception
+    public static void main(String[] args)
     {
+        demo() ;
         FusekiCmd.main("--config=config.ttl") ; System.exit(0) ;
         main1() ;
     }
     
-    private static void main1() throws Exception
+    public static void demo()
+    {
+        String DIR="DemoServer" ;
+        FusekiCmd.main("--config="+name(DIR,"config.ttl"), "--pages="+name(DIR, "demo-pages")) ;
+        System.exit(0) ;
+    }
+    
+    public static String name(String DIR, String filename)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        if ( ! filename.startsWith("/") )
+        {
+            sb.append(DIR) ;
+            if ( ! DIR.endsWith("/") )
+                sb.append("/") ;
+        }
+        sb.append(filename) ;
+        return sb.toString() ;
+    }
+    
+    
+    private static void main1()
     {
         FusekiCmd.main(
                     //"-v", 

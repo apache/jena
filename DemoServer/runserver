@@ -1,6 +1,32 @@
 #!/bin/bash
 
-export FUSEKIROOT="$PWD"
+[ "$FUSEKI_HOME" = "" ] && { echo "\$FUSEKI_HOME not set" 1>&2 ; exit 1 ; }
+
+if [ ! -d "$FUSEKI_HOME" ]
+then 
+    echo "$FUSEKI_HOME: Not a directory" 1>&2
+    exit 1 
+    fi
+
+CMD1="$FUSEKI_HOME/fuseki-server"
+CMD2="$FUSEKI_HOME/fuseki"
+FUSEKI_CMD=
+
+if [ -e "$CMD1" ]
+then
+    FUSEKI_CMD="$CMD1"
+fi
+
+if [ -e "$FUSEKI_HOME/classes" ]
+then
+    FUSEKI_CMD="$CMD2"
+fi
+
+if [ ! -e "$FUSEKI_CMD" ]
+then
+    echo "Can't find a server script to run" 1>&2
+    exit 1 
+fi
 
 BACKGROUND=${BACKGROUND:-1}
 if [ "$BACKGROUND" = 0 ]
@@ -11,18 +37,22 @@ else
 fi
 
 LOG1="-Dlog4j.configuration=${LOGCONFIG}"
-LOG2="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"
-export FUSEKI_LOG="$LOG1 $LOG2"
+
+#LOG2="-Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.Log4JLogger"
+#export FUSEKI_LOG="$LOG1 $LOG2"
+
+export FUSEKI_LOG="$LOG1"
+export JVM_ARGS="-Xmx1200M $FUSEKI_LOG"
 
 if [ "$BACKGROUND" = 0 ]
 then
     # Run in the foreground
-    exec fuseki --pages=demo-pages --config config.ttl
+    exec $FUSEKI_CMD --pages=demo-pages --config config.ttl
 else
     # Run in the background
     # Linux / nohup
-    nohup fuseki --pages=demo-pages --config config.ttl > nohup.log 2>&1 &
+    nohup $FUSEKI_CMD --pages=demo-pages --config config.ttl > nohup.log 2>&1 &
     # Process ID ... of the script.
-    ## PROC=$!
-    ## echo "Server process = $PROC"
+    PROC=$!
+    echo "Server process = $PROC"
 fi
