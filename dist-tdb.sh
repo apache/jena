@@ -21,6 +21,8 @@ OUT="dist"
 # It write a script that will build dist/ from rpo copy.
 # Copy to dist/jena to add to the last jena release.
 
+## To manaually sign:
+# sha1sum -b FILE | cut -f1 -d' '
 
 ECHO=echo
 CPCMD="$ECHO cp"
