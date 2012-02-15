@@ -1,4 +1,4 @@
-This file lists the dependences for LARQ.
+This file lists the dependences for Apache Jena LARQ.
   Version numbers are given in the POM file for a particular distribution. 
 
 Apache Projects:   Apache Software License
