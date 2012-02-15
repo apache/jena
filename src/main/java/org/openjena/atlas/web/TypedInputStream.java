@@ -19,11 +19,14 @@
 package org.openjena.atlas.web;
 
 import java.io.FilterInputStream ;
+import java.io.IOException ;
 import java.io.InputStream;
+
+import org.openjena.atlas.io.IO ;
 
 public class TypedInputStream extends FilterInputStream
 { 
-    private MediaType mediaType = null ;
+    private final MediaType mediaType ;
     
     public TypedInputStream(InputStream in)
     { this(in, null, null) ; }
@@ -36,11 +39,15 @@ public class TypedInputStream extends FilterInputStream
     
     public TypedInputStream(InputStream in, String mediaType, String charset)
     {
-        super(in) ;
-        
-        this.mediaType = MediaType.create(mediaType, charset) ;
+        this(in, MediaType.create(mediaType, charset)) ;
     }
     
     public String getMediaType()                { return mediaType.getContentType() ; }
     public String getCharset()                  { return mediaType.getCharset() ; }
+    
+    @Override
+    public void close()
+    {
+        try { super.close() ; } catch (IOException ex) { IO.exception(ex) ; }
+    }
 }
