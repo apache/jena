@@ -32,6 +32,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -357,7 +358,7 @@ public class ResultSetFormatter
             outputAsRDF(outStream, "N-TRIPLES", resultSet) ;
             return ;
         }
-        Log.warn(ResultSetFormatter.class, "Unknown ResultSetFormat: "+rFmt);
+        throw new ARQException("Unknown ResultSet format: "+rFmt);
     }
     
     /** Write out an RDF model that encodes the result set
