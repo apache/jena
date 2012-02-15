@@ -70,8 +70,9 @@ public class BuilderPath
         dispatch.put(Tags.tagPathZeroOrOne,     buildZeroOrOne) ;
         dispatch.put(Tags.tagPathOneOrMore,     buildOneOrMore) ;
         
-        dispatch.put(Tags.tagPathReverse, buildReverse) ;
-        dispatch.put(Tags.tagPathRev, buildRev) ;
+        dispatch.put(Tags.tagPathReverse,  buildReverse) ;
+        dispatch.put(Tags.tagPathRev,      buildRev) ;
+        dispatch.put(Tags.tagPathLink,     buildTriple) ;   // Completeness.
         dispatch.put(Tags.tagPathNotOneOf, buildNotOneOf) ;
     }
     
@@ -265,6 +266,16 @@ public class BuilderPath
         }
     };
     
+    final protected Build buildTriple = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path link: wanted 1 argument") ;
+            return new P_Link(list.get(1).getNode()) ;
+        }
+    };
+
     final protected Build buildRev = new Build()
     {
         @Override

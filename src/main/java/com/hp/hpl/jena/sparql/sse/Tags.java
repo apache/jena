@@ -100,6 +100,7 @@ public class Tags
     
     public static final String tagPathReverse       = "reverse" ;
     public static final String tagPathRev           = "rev" ;
+    public static final String tagPathLink          = "link" ;
     public static final String tagPathNotOneOf      = "notoneof" ;
 
     // Not used - nowadays extensions are not explicitly flagged in the algebra.
