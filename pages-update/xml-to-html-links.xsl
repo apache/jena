@@ -17,7 +17,7 @@ FITNESS FOR A PARTICULAR PURPOSE.
 Version 1 : Dave Beckett (DAWG)
 Version 2 : Jeen Broekstra (DAWG)
 Customization for SPARQler: Andy Seaborne
-Fix:
+URIs as hrefs in results : Bob DuCharme & Andy Seaborne
 
 > -    <xsl:for-each select="//res:head/res:variable">
 > +    <xsl:for-each select="/res:sparql/res:head/res:variable">
@@ -28,6 +28,7 @@ Fix:
 		xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 		xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:res="http://www.w3.org/2005/sparql-results#"
+		xmlns:fn="http://www.w3.org/2005/xpath-functions"
 		exclude-result-prefixes="res xsl">
 
   <!--
@@ -56,19 +57,12 @@ Fix:
     <xsl:template name="header">
       <div>
         <h2>Header</h2>
-        <!-- replaced by Bob D with the following line and the preceding template rule     
-             <xsl:for-each select="res:head/res:link"> 
-             <p>Link to <xsl:value-of select="@href"/></p>
-             </xsl:for-each> -->
         <xsl:apply-templates select="res:head/res:link"/>
       </div>
     </xsl:template>
 
   <xsl:template name="boolean-result">
     <div>
-      <!--      
-	<h2>Boolean Result</h2>
-      -->      
       <p>ASK => <xsl:value-of select="res:boolean"/></p>
     </div>
   </xsl:template>
@@ -76,12 +70,6 @@ Fix:
 
   <xsl:template name="vb-result">
     <div>
-      <!--
-	<h2>Variable Bindings Result</h2>
-	<p>Ordered: <xsl:value-of select="res:results/@ordered"/></p>
-	<p>Distinct: <xsl:value-of select="res:results/@distinct"/></p>
-      -->
-
       <table>
 	<xsl:text>
 	</xsl:text>
@@ -126,7 +114,14 @@ Fix:
 
   <xsl:template match="res:uri">
     <!-- Roughly: SELECT ($uri AS ?subject) ?predicate ?object { $uri ?predicate ?object } -->
+    <!-- XSLT 2.0
+    <xsl:variable name="x"><xsl:value-of select="fn:encode-for-uri(.)"/></xsl:variable>
+    -->
+    <xsl:variable name="x"><xsl:value-of select="."/></xsl:variable>
+    <!--
     <xsl:variable name="query">SELECT%20%28%3C<xsl:value-of select="."/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="."/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
+    -->
+     <xsl:variable name="query">SELECT%20%28%3C<xsl:value-of select="$x"/>%3E%20AS%20%3Fsubject%29%20%3Fpredicate%20%3Fobject%20%7B%3C<xsl:value-of select="$x"/>%3E%20%3Fpredicate%20%3Fobject%20%7D</xsl:variable>
     <xsl:text>&lt;</xsl:text>
     <a href="?query={$query}&amp;output=xml&amp;stylesheet=%2Fxml-to-html.xsl">
     <xsl:value-of select="."/>
