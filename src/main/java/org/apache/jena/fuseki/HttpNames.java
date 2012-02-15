@@ -71,10 +71,12 @@ public class HttpNames
     public static final String HEADER_IFMODSINCE    = "If-Modified-Since";
     public static final String HEADER_LASTMOD       = "Last-Modified";
     
+    // Names for services in the default configuration
     public static final String ServiceQuery     = "/query" ;
     public static final String ServiceQueryAlt  = "/sparql" ;
     public static final String ServiceUpdate    = "/update" ;
     public static final String ServiceData      = "/data" ;
+    public static final String ServiceData1     = "" ;
     public static final String ServiceUpload    = "/upload" ;
     
     // Posisble values of fields.

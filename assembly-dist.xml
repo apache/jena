@@ -59,7 +59,7 @@ Assumes jar made and onejar has been assembled.
       <includes>
 	<include>log4j.properties</include>
 	<include>fuseki-server</include>
-	<include>tdb.ttl</include>
+	<include>config*.ttl</include>
 	<include>s-*</include>
 	<include>pages-update/*</include>
 	<include>pages-publish/*</include>

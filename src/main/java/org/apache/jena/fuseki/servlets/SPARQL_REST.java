@@ -406,6 +406,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             return Target.createDefault(dsg) ;
         
         // Named graph
+        if ( uri.equals(HttpNames.valueDefault ) )
+            // But "named" default
+            return Target.createDefault(dsg) ;
         
         // Strictly, a bit naughthy on the URI resolution.  But more sensible. 
         // Base is dataset.

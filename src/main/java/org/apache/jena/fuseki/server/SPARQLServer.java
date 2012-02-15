@@ -300,6 +300,14 @@ public class SPARQLServer
     {
         for ( String pathSpec : pathSpecs )
         {
+            if ( pathSpec.equals("") )
+            {
+                // "" is special -- add as "base" and "base/" 
+                addServlet(context, servlet, datasetPath+"/", enableCompression) ;
+                addServlet(context, servlet, datasetPath,     enableCompression) ;
+                continue ;
+            }
+            
             if ( pathSpec.endsWith("/") )
                 pathSpec = pathSpec.substring(0, pathSpec.length()-1) ;
             if ( pathSpec.startsWith("/") )

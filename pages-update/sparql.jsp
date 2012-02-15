@@ -17,7 +17,7 @@
 
     <p><b>SPARQL Query</b></p>
     <div class="moreindent">
-      <form action="<%= ds%>/query" method="post"  accept-charset="UTF-8">
+      <form action="<%= ds%>/sparql" method="post"  accept-charset="UTF-8">
         <textarea  style="background-color: #F0F0F0;" name="query" cols="70" rows="10"></textarea>
         <br/>
 

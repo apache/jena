@@ -109,7 +109,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 if (item.isFormField())
                 {
                     // Graph name.
-                    String value = Streams.asString(stream) ;
+                    String value = Streams.asString(stream, "UTF-8") ;
                     if ( fieldName.equals(HttpNames.paramGraph) )
                     {
                         graphName = value ;
@@ -133,13 +133,12 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                             gn = Node.createURI(graphName) ;
                         }
                     }
-                    // Add file type?
+                    else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
+                        graphName = null ;
                     else
+                        // Add file type?
                         log.info(format("[%d] Upload: Field="+fieldName+" - ignored")) ;
-                    //System.out.println("Form field " + fieldName + " with value " + Streams.asString(stream) + " detected.");
                 } else {
-//                    System.out.println("File field " + fieldName + " with file name "
-//                                       + item.getName() + " detected.");
                     // Process the input stream
                     name = item.getName() ; 
                     if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") ) 
@@ -152,11 +151,12 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     if ( lang == null )
                         lang = Lang.guess(name) ;
                     if ( lang == null )
-                        // Desparate.
+                        // Desperate.
                         lang = Lang.RDFXML ;
                     
                     String base = "http://example/upload-base/" ;
                     // We read into a in-memory graph, then (if successful) update the dataset.
+                    // This isolates errors.
                     Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
                     LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, sink) ;
                     parser.getProfile().setHandler(errorHandler) ;

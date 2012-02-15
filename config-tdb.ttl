@@ -1,3 +1,5 @@
+## Example of a TDB dataset published using Fuseki
+
 @prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -27,14 +29,14 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 <#service_tdb_all> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service" ;
-    fuseki:name                     "ds" ;       # http://host:port/ds
-    fuseki:serviceQuery             "query" ;    # SPARQL query service
-    fuseki:serviceQuery             "sparql" ;   # SPARQL query service
-    fuseki:serviceUpdate            "update" ;   # SPARQL query service
-    fuseki:serviceUpload            "upload" ;   # Non-SPARQL upload service
-    fuseki:serviceReadWriteGraphStore      "data" ;     # SPARQL Graph store protocol (read and write)
+    fuseki:name                     "ds" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
     # A separate read-only graph store endpoint:
-    fuseki:serviceReadGraphStore       "get" ;   # SPARQL Graph store protocol (read only)
+    fuseki:serviceReadGraphStore       "get" ;
     fuseki:dataset           <#tdb_dataset> ;
     .
 ## ---------------------------------------------------------------
