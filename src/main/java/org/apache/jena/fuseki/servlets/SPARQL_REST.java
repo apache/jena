@@ -71,6 +71,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             super(id, dsg, request, response, verbose) ;
         }
+
+        protected final boolean hasTarget()
+        {
+            return 
+                request.getParameter(HttpNames.paramGraphDefault) == null &&
+                request.getParameter(HttpNames.paramGraph) == null ;
+        }
         
         protected final Target getTarget() 
         {
@@ -256,9 +263,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         return mt ;
     }
     
-    protected static MediaType contentNegotationQuads(HttpServletRequest request)
+    protected static MediaType contentNegotationQuads(HttpActionREST action)
     {
-        return ConNeg.chooseContentType(request, DEF.quadsOffer, DEF.acceptTriG) ;
+        return ConNeg.chooseContentType(action.request, DEF.quadsOffer, DEF.acceptTriG) ;
     }
 
     // Auxilliary functionality.

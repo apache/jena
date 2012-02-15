@@ -116,8 +116,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         printResponse(id, responseTracked) ;
     }
 
-    //@Override
-    @SuppressWarnings("unused")
+    @SuppressWarnings("unused") // ServletException
     protected void doPatch(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
     {
