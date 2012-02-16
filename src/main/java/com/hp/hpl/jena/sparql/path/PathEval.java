@@ -61,18 +61,18 @@ public class PathEval
         return new NodeIteratorImpl(iterRDF, null) ;
     }
     
-    // Possible API usages.
-    static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
-    {
-        Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
-        return convertGraphNodeToRDFNode(model, iter) ;
-    }
-    
-    static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
-    {
-        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
-        return convertGraphNodeToRDFNode(model, iter) ;
-    }
+//    // Possible API usages.
+//    static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
+//    {
+//        Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
+//        return convertGraphNodeToRDFNode(model, iter) ;
+//    }
+//    
+//    static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
+//    {
+//        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
+//        return convertGraphNodeToRDFNode(model, iter) ;
+//    }
     
     // LinkedHashSet for predictable order - remove later??
     
