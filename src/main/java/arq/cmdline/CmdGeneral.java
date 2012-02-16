@@ -43,6 +43,7 @@ public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//,
     protected CmdGeneral(String[] argv)
     {
         super(argv) ;
+        Log.setLoggingCmd() ;
         addModule(modGeneral) ;
         addModule(modVersion) ;
     }

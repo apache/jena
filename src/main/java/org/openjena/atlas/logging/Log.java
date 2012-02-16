@@ -21,12 +21,15 @@ package org.openjena.atlas.logging;
 import java.io.ByteArrayInputStream ;
 import java.io.File ;
 import java.io.FileInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.Properties ;
 
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.xml.DOMConfigurator ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -295,7 +298,14 @@ public class Log
         java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.INFO) ;
     }
     
-    /** Set log4j - try to find a file "log4j.properties" if nothing already set.  Return true if we think Log4J is not initialized. */
+    /** Set logging
+     * <ol>
+     * <li>Check for -Dlog4j.configuration.</li>
+     * <li>Looks for log4j.properties file in current directory.</li>
+     * </ol>
+     * Return true if we think Log4J is not initialized.
+     */
+    
     public static boolean setLog4j()
     {
         if ( System.getProperty("log4j.configuration") == null )
@@ -316,6 +326,46 @@ public class Log
             DOMConfigurator.configure(filename) ;
         else
             PropertyConfigurator.configure(filename) ;
+    }
+    
+    private static final String log4Jsetup = StrUtils.strjoinNL(
+        "## Plain output to stdout"
+        , "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender"
+        , "log4j.appender.jena.plain.target=System.out"
+        , "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout"
+        , "log4j.appender.jena.plain.layout.ConversionPattern=%m%n"
+        
+        , "## Plain output with level, to stderr"
+        , "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender"
+        , "log4j.appender.jena.plainlevel.target=System.err"
+        , "log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout"
+        , "log4j.appender.jena.plainlevel.layout.ConversionPattern=%-5p %m%n"
+        
+        , "## Everything"
+        , "log4j.rootLogger=INFO, jena.plainlevel"
+        
+        , "## Parser output"
+        , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
+        , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, jena.plainlevel "
+        ) ;
+
+    /** Set logging, suitable for a command line application.
+     * <ol>
+     * <li>Check for -Dlog4j.configuration.</li>
+     * <li>Looks for log4j.properties file in current directory.</li>
+     * <li>Sets log4j using an internal configuration.</li>
+     * </ol>
+     */
+    public static void setLoggingCmd()
+    {
+        if ( !setLog4j() )
+        {
+            Properties p = new Properties() ;
+            InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
+            try { p.load(in) ; } catch (IOException ex) {}
+            PropertyConfigurator.configure(p) ;
+            System.setProperty("log4j.configuration", "set") ;
+        }
     }
     
     //---- java.util.logging - because that's always present.
