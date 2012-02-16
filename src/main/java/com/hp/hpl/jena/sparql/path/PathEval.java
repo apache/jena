@@ -312,7 +312,7 @@ public class PathEval
             // P_Mod(path, count, count)
             // One step.
             Iterator<Node> iter = eval(graph, node, pFixedLength.getSubPath(), forwardMode) ;
-            // Build a path for all remainign steps.
+            // Build a path for all remaining steps.
             long count2 = dec(pFixedLength.getCount()) ;
             P_FixedLength nextPath = new P_FixedLength(pFixedLength.getSubPath(), count2) ;
             // For each element in the first step, do remaining step

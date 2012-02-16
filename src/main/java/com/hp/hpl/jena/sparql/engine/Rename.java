@@ -138,7 +138,7 @@ public class Rename
             Var var2 = aliases.get(var) ;
             if ( var2 != null )
                 return var2 ;
-            // TODO The new name is the old name with a "/" - clashes?
+            // The new name is the old name with a "/" - clashes?
             // Provided the old name isn't a constant as well, this is safe 
             // if renaming is bottom up and done once. 
             // Really safe - use the global allocator.
