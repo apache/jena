@@ -59,6 +59,7 @@ public class BuilderPath
     
     private BuilderPath()
     {
+        dispatch.put(Tags.tagPath,    buildPath) ;
         dispatch.put(Tags.tagPathSeq, buildSeq) ;
         dispatch.put(Tags.tagPathAlt, buildAlt) ;
         dispatch.put(Tags.tagPathMod, buildMod) ;
@@ -122,6 +123,17 @@ public class BuilderPath
     {
         return build(list.get(idx)) ;
     }
+    
+    final protected Build buildPath = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, list, "path: Exactly one element") ;
+            Item item = list.get(1) ;
+            return build(item) ;
+        }
+    } ;
     
     final protected Build buildNotOneOf = new Build()
     {
