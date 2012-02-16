@@ -98,6 +98,8 @@ public abstract class CmdTDB extends CmdARQ
     /** Reset the logging to be good for command line tools */
     public static void setLogging()
     {
+        // See also ARQ Log.setCmdLogging()
+        
         // Turn off optimizer warning.
         // Use a plain logger for output. 
         Properties p = new Properties() ;
