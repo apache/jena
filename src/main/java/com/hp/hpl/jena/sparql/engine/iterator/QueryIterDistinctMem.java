@@ -16,38 +16,35 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.engine.iterator;
+package com.hp.hpl.jena.sparql.engine.iterator ;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.HashSet ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-public class QueryIterReduced extends QueryIterDistinctReduced
+/** Memory limited QueryIterDistinct */
+public class QueryIterDistinctMem extends QueryIterDistinctReduced
 {
-    List<Binding> window = new ArrayList<Binding>() ;
-    int N = 1 ;
+    private Set<Binding> seen = new HashSet<Binding>() ;
     
-    public QueryIterReduced(QueryIterator iter, ExecutionContext context)
-    { super(iter, context)  ; }
+    public QueryIterDistinctMem(QueryIterator iter, ExecutionContext context)
+    {
+        super(iter, context)  ;
+    }
 
     @Override
     protected void closeSubIterator()
     {
-        window = null ;
+        seen = null ;
         super.closeSubIterator() ;
     }
 
     @Override
-    protected boolean isFreshSighting(Binding b)
+    protected boolean isFreshSighting(Binding binding)
     {
-        if ( window.contains(b) )
-            return false ;
-        if ( window.size() >= N )
-            window.remove(window.size()-1) ;
-        window.add(0, b) ;
-        return true ;
+        return seen.contains(binding) ;
     }
 }

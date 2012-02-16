@@ -33,6 +33,16 @@
       <#distinct-4>
       <#no-distinct-9>
       <#distinct-9>
+
+      <#no-distinct-multi-1>
+      <#no-distinct-multi-2>
+      <#no-distinct-multi-3>
+      <#distinct-multi-1>
+      <#distinct-multi-2>
+      <#distinct-multi-3>
+      <#reduced-multi-1>
+      <#reduced-multi-2>
+      <#reduced-multi-3>
     ) .
 
 
@@ -117,3 +127,84 @@
             [ qt:query  <distinct-1.rq> ;
               qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> ] ;
     mf:result  <distinct-all.srx> .
+
+<#distinct-path-1>
+    mf:name    "Multipath / bnode variables" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-all.srx> .
+
+<#no-distinct-multi-1>
+    mf:name    "Multipath / bnode variables / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-1.srj> .
+
+<#no-distinct-multi-2>
+    mf:name    "Multipath / path{2} / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-2.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-2.srj> .
+
+
+<#no-distinct-multi-3>
+    mf:name    "Multipath / sequence / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-3.srj> .
+
+<#distinct-multi-1>
+    mf:name    "Multipath / bnode variables / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-1.srj> .
+
+<#distinct-multi-2>
+    mf:name    "Multipath / path{2} / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-2.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-2.srj> .
+
+<#distinct-multi-3>
+    mf:name    "Multipath / seq path / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-3.srj> .
+
+<#reduced-multi-1>
+    mf:name    "Multipath / bnode variables / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-1.srj> .
+
+<#reduced-multi-2>
+    mf:name    "Multipath / path{2} / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-2.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-2.srj> .
+
+<#reduced-multi-3>
+    mf:name    "Multipath / seq path / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-3.srj> .

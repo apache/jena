@@ -21,12 +21,13 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingProjectNamed ;
 
 /** Implementation skeleton for DISTINCT and REDUCED. */
 
 public abstract class QueryIterDistinctReduced extends QueryIter1
 {
-    Binding slot = null ;       // ready to go.
+    private Binding slot = null ;       // ready to go.
     
     public QueryIterDistinctReduced(QueryIterator iter, ExecutionContext context)
     { super(iter, context)  ; }
@@ -36,10 +37,10 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
     protected void closeSubIterator()
     { slot = null ; }
 
-    // Subclasses will want to implement this as well. 
+    // Subclasses may want to implement this as well. 
     @Override
     protected void requestSubCancel()
-    { }
+    { closeSubIterator() ; }
     
     @Override
     final
@@ -53,10 +54,12 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
         for ( ; getInput().hasNext() ; )
         {
             Binding b = getInput().nextBinding() ;
-            if ( ! isDuplicate(b) )
+            // Hide unnamed and internal variables.
+            // Don't need to worry about rename scope vars 
+            // (they are projected away in sub-SELECT ?var { ... }  
+            b = new BindingProjectNamed(b) ;
+            if ( isFreshSighting(b) )
             {
-                // new - remember and return
-                remember(b) ;
                 slot = b ;
                 return true ;
             }
@@ -73,7 +76,5 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
         return r ;
     }
     
-    protected abstract boolean isDuplicate(Binding binding) ;
-    
-    protected abstract void remember(Binding binding) ;
+    protected abstract boolean isFreshSighting(Binding binding) ;
 }

@@ -39,7 +39,7 @@ public class Var extends Node_Variable
     
     // Legal SPARQL variable name but note it must be exactly this
     // object, not just the same name, to be anonymous.
-    public static Var ANON = new Var("_") ; 
+    public static Var ANON = new Var("?_") ; 
     
     public static Var alloc(String varName)
     {
@@ -143,6 +143,12 @@ public class Var extends Node_Variable
             throw new NotAVariableException("Node_variable (not a Var) found") ;
         return false ;
     }
+    
+    public static boolean isRenamedVar(Node node)
+    { return node.isVariable() && isRenamedVar(node.getName()) ; }
+    
+    public static boolean isRenamedVar(String x)
+    { return x.startsWith(ARQConstants.allocVarScopeHiding) ; }
     
     public static boolean isNamedVar(Node node)
     { return node.isVariable() && isNamedVarName(node.getName()) ; }
