@@ -2,6 +2,25 @@
 
 # You need a copy of the staging repo to get the checksum files.
 
+
+# Or use command line tools.
+# sha1sum $F > $F.sha1
+# md5sum $F > $F.md5
+# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
+
+# Layout:
+# /source-release/MOD-VER/
+# or
+# /source-release/
+#   The offical release file: MOD-VER-source-release.{zip,tar.gz}{,.asc,.md5,.sha1}
+# 
+# /downloads/
+#   Files
+# of
+#   MOD-XXX/files
+#     jar and sources?
+
+
 # NB This fails unless this first:
 # cd somewhere_clean
 # NNN=....
@@ -15,6 +34,8 @@
 
 REPO=REPO/org/apache/jena
 OUT="dist"
+DOWNLOAD="download"
+SRC_REL="source-release"
 
 # This script collects everything for the incubator/dist/jena area
 # for a TDB release. 
@@ -33,7 +54,12 @@ DELDIR="$ECHO rm -rf"
 echo "## Initalize"
 $DELDIR $OUT
 $MKDIR $OUT
+$MKDIR $OUT/$DOWNLOAD
+$MKDIR $OUT/$SRC_REL
 
+
+# Copy a file , and its associated asc md5 sha1, to a directory.
+#  cpfile FILE DIR
 function cpfile
 {
     local FILE="$1"
@@ -41,6 +67,9 @@ function cpfile
 
     local SRC="$REPO/$FILE"
     local DEST="$OUT/$DIR"
+
+    #[ -e "$SRC" ]  || { echo "No such file: $SRC" 2>&1 ; exit 1 ; }
+    #[ -d "$DEST" ] || { echo "Not a directory: $DEST" 2>&1 ; exit 1 ; }
 
     $CPCMD "$SRC" "$DEST"
     #for ext in asc asc.md5 asc.sha1 md5 sha1
@@ -50,11 +79,38 @@ function cpfile
     done
 }
 
-function cpallfiles
+# Copy source-release files.
+# cp_release MODULE VERSION
+ 
+function cp_release
 {
     local M="$1"
     local V="$2"
     local D="$M-$V-$inc"
+
+    local SRC="$M/$V-$inc/$M-$V-$inc-source-release"
+    local DEST=$SRC_REL/$M-$V-$inc
+
+    $MKDIR $DEST
+    for ext in zip tar.gz tar.bz2
+    do
+	#[ ! -e "$REPO/$SRC.ext" ] && { echo "No such file: $SRC.$ext" ; exit 1 ; }
+	cpfile "$SRC.$ext" $DEST
+    done
+}
+
+# Copy all the maven files 
+# jar, sources.jar, javadoc?, 
+# cpallfiles MODULE VERSION
+function cpallfiles
+{
+    # /download?
+
+    local M="$1"
+    local V="$2"
+    local D="$DOWNLOAD/$M-$V-$inc"
+    #[ ! -e "$OUT/$D" ] || { echo "Directory exists: $OUT/$D" 2>&1 ; exit 1 ; }
+
     $MKDIR $OUT/$D
     cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
     cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
@@ -64,7 +120,6 @@ function cpallfiles
     else
 	$ECHO echo "No javadoc: $REPO/$M/$V-$inc/$M-$V-$inc-javadoc.jar"
     fi
-    cpfile "$M/$V-$inc/$M-$V-$inc-source-release.zip" $D
 }
 
 ## ToDo: automate
@@ -72,9 +127,10 @@ function cpallfiles
 V_TDB=0.9.0
 inc=incubating
 
-## Top level directory
+## source-release
+cp_release jena-tdb "${V_TDB}"
 
-## Modules
+## Module
 
 echo "## TDB"
 cpallfiles jena-tdb "${V_TDB}"
@@ -83,11 +139,13 @@ echo "## zip"
 M=jena-tdb
 V=${V_TDB}
 D="$M-$V-$inc"
-cpfile $M/$V-$inc/$D-distribution.zip      .
-cpfile $M/$V-$inc/$D-distribution.tar.gz   .
+cpfile $M/$V-$inc/$D-distribution.zip      $DOWNLOAD
+cpfile $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+
+# Distribution
 
 # Fix the name.
 for ext in {zip,tar.gz}{,.asc,.md5,.sha1}
 do
-    $ECHO mv $OUT/$M-$V-$inc-distribution.$ext $OUT/apache-$M-$V-$inc.$ext
+    $ECHO mv $OUT/$DOWNLOAD/$M-$V-$inc-distribution.$ext $OUT/$DOWNLOAD/apache-$M-$V-$inc.$ext
 done
