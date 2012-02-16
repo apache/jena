@@ -42,6 +42,9 @@ public class REST_Quads extends SPARQL_REST
 {
     // This is nearly SPARQL_REST_R
     
+    // Have a "serve quads", "serve triples" library.
+    // ResponseQuads, ResponseTriples 
+    
     @Override
     protected void doGet(HttpActionREST action)
     {
