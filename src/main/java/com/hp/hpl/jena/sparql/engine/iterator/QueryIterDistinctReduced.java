@@ -56,7 +56,7 @@ public abstract class QueryIterDistinctReduced extends QueryIter1
             Binding b = getInput().nextBinding() ;
             // Hide unnamed and internal variables.
             // Don't need to worry about rename scope vars 
-            // (they are projected away in sub-SELECT ?var { ... }  
+            // (they are projected away in sub-SELECT ?var { ... }) 
             b = new BindingProjectNamed(b) ;
             if ( isFreshSighting(b) )
             {

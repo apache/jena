@@ -1,10 +1,18 @@
 ChangeLog for ARQ
 =================
-(the list covers new features and refinements.  Seee ASF JIRA for detaisl of all bugs fixed) 
+(the list covers new features and refinements.  Seee ASF JIRA for details of all bugs fixed) 
 
 ==== ARQ 2.9.1
 
-+ Add function "StrUUID" which returns a UUID str8ing (c.f. "UUID" for a UUID as a URI of form <urn:uuid:....>)
++ Experiemntal feature: DISTINCT() for property paths. e.g. ?x DISTINCT(foaf:knows*) ?y
+  Any part of a property path can be DISTINCT()
+  Evaluation more efficient at scale.
+  Cardinality is mixture of multi-match part, distinct parts of path, and rest of the BGP.
++ New property path evaluation engine.
++ Bug fix: DISTINCT + paths might not be distinct (JENA-211)
++ Bug fix: DISTINCT + paths might not be distinct (JENA-211)
++ QueryEngineHttp has configuration options (JENA-210)
++ Add function "StrUUID" which returns a UUID string (c.f. "UUID()" for a UUID as a URI of form <urn:uuid:....>)
   Also available as afn:struuid() and afn:uuid() for strict syntax. 
 + Add UpdateExecutionFactory.createRemote(...) for remote execution of SPARQL Update (JENA-197) 
 + Allow users to specify query parameters in SERVICE

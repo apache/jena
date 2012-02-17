@@ -41,6 +41,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterConcat ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterYieldN ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
+import com.hp.hpl.jena.sparql.path.eval.PathEval ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunction ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionFactory ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
@@ -145,7 +146,7 @@ public class PathLib
         if ( Var.isVar(s) )
         {
             // Var subject, concrete object - do backwards.
-            iter = PathEval.evalInverse(graph, o, path) ;
+            iter = PathEval.evalReverse(graph, o, path) ;
             endNode = s ;
         } 
         else

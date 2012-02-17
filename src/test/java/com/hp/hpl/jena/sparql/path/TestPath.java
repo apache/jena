@@ -21,9 +21,11 @@ package com.hp.hpl.jena.sparql.path;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.fail ;
 
-import java.util.* ;
+import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import junit.framework.JUnit4TestAdapter ;
 import org.junit.Assert ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
@@ -36,6 +38,7 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.path.eval.PathEval ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
@@ -43,14 +46,6 @@ import com.hp.hpl.jena.sparql.sse.writers.WriterPath ;
 
 public class TestPath
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestPath.class) ;
-//        TestSuite ts = new TestSuite(TestPath.class) ;
-//        ts.setName(Utils.classShortName(TestPath.class)) ;
-//        return ts ;
-    }
-
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Graph graph2 = GraphFactory.createDefaultGraph() ;
     static Graph graph3 = GraphFactory.createDefaultGraph() ;
@@ -192,9 +187,14 @@ public class TestPath
     @Test public void path_14()   { test(graph1, n2,   "^:p",         n1) ; }
     @Test public void path_15()   { test(graph1, n2,   "^:p^:p"       ) ; }
     @Test public void path_16()   { test(graph1, n4,   "^:p^:p",      n2) ; }
-    @Test public void path_17()   { test(graph1, n4,   "^(:p/:p)",    n2) ; }
-    @Test public void path_18()   { test(graph1, n2,   "^:p/:p",      n2) ; }
     
+    
+    
+    
+    @Test public void path_17()   { test(graph1, n4,   "^(:p/:p)",    n2) ; }
+    
+    
+    @Test public void path_18()   { test(graph1, n2,   "^:p/:p",      n2) ; }
 
     @Test public void path_20()   { test(graph2, n1,   ":p",          n2,n3) ; }
     @Test public void path_21()   { test(graph2, n1,   ":p/:q",       n4, n4) ; }
@@ -225,7 +225,7 @@ public class TestPath
     {
         Path p = PathParser.parse(string, pmap) ;
         Iterator<Node> resultsIter = 
-            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalInverse(graph, start, p) ; 
+            directionForward ? PathEval.eval(graph, start, p) : PathEval.evalReverse(graph, start, p) ; 
         List<Node> results = Iter.toList(resultsIter) ;
         List<Node> expected = Arrays.asList(expectedNodes) ;
         // Unordered by counting equality.

@@ -16,16 +16,14 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.path;
+package com.hp.hpl.jena.sparql.path.eval;
 
-import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.LinkedHashSet ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
@@ -41,14 +39,38 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.NodeIterator ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.path.P_Alt ;
+import com.hp.hpl.jena.sparql.path.P_Distinct ;
+import com.hp.hpl.jena.sparql.path.P_FixedLength ;
+import com.hp.hpl.jena.sparql.path.P_Inverse ;
+import com.hp.hpl.jena.sparql.path.P_Link ;
+import com.hp.hpl.jena.sparql.path.P_Mod ;
+import com.hp.hpl.jena.sparql.path.P_Multi ;
+import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
+import com.hp.hpl.jena.sparql.path.P_OneOrMore ;
+import com.hp.hpl.jena.sparql.path.P_ReverseLink ;
+import com.hp.hpl.jena.sparql.path.P_Seq ;
+import com.hp.hpl.jena.sparql.path.P_ZeroOrMore ;
+import com.hp.hpl.jena.sparql.path.P_ZeroOrOne ;
+import com.hp.hpl.jena.sparql.path.Path ;
+import com.hp.hpl.jena.sparql.path.PathVisitor ;
 import com.hp.hpl.jena.sparql.util.ModelUtils ;
 
-public class PathEval
+/** The original path evaluator from ARQ
+ *  Differs from SPARQL 1.1 in some cases (cardinality of *,+) 
+ */
+
+// OLD
+
+public class PathEval_ARQ
 {
-    static private Logger log = LoggerFactory.getLogger(PathEval.class) ; 
+    static private Logger log = LoggerFactory.getLogger(PathEval_ARQ.class) ; 
     
     // Graph to Model.
-    static NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
+    //static 
+    static private 
+    NodeIterator convertGraphNodeToRDFNode(final Model model, Iterator<Node> iter)
     {
         Transform<Node, RDFNode> conv = new Transform<Node, RDFNode>(){
             @Override
@@ -61,79 +83,75 @@ public class PathEval
         return new NodeIteratorImpl(iterRDF, null) ;
     }
     
-//    // Possible API usages.
-//    static public NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
-//    {
-//        Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
-//        return convertGraphNodeToRDFNode(model, iter) ;
-//    }
-//    
-//    static public NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
-//    {
-//        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
-//        return convertGraphNodeToRDFNode(model, iter) ;
-//    }
+    // Possible API usages.
+    //static public 
+    static private NodeIterator walkForwards(final Model model, RDFNode rdfNode, Path path)
+    {
+        Iterator<Node> iter = eval(model.getGraph(), rdfNode.asNode(), path) ;
+        return convertGraphNodeToRDFNode(model, iter) ;
+    }
+    
+    //static public 
+    static private NodeIterator walkBackwards(final Model model, RDFNode rdfNode, Path path)
+    {
+        Iterator<Node> iter = evalInverse(model.getGraph(), rdfNode.asNode(), path) ;
+        return convertGraphNodeToRDFNode(model, iter) ;
+    }
     
     // LinkedHashSet for predictable order - remove later??
     
     /** Evaluate a path in the forward direction */ 
-    static public Iterator<Node> eval(Graph graph, Node node, Path path)
+    //static public 
+    static private Iterator<Node> eval(Graph graph, Node node, Path path)
     { 
         if ( node == null  )
-            Log.fatal(PathEval.class, "PathEval.eval applied to a null node") ;
+            Log.fatal(PathEval_ARQ.class, "PathEval.eval applied to a null node") ;
         if ( node.isVariable() )
-            Log.warn(PathEval.class, "PathEval.eval applied to a variable: "+node) ;
+            Log.warn(PathEval_ARQ.class, "PathEval.eval applied to a variable: "+node) ;
         return eval(graph, node, path, true) ;
     }
     
     /** Evaluate a path starting at the end of the path */ 
-    static public Iterator<Node> evalInverse(Graph g, Node node, Path path) 
-    { 
-        if ( node == null  )
-            Log.fatal(PathEval.class, "PathEval.eval applied to a null node") ;
-        if ( node.isVariable() )
-            Log.warn(PathEval.class, "PathEval.eval applied to a variable: "+node) ;
-        return eval(g, node, path, false) ; 
-    }
+    //static public 
+    static private Iterator<Node> evalInverse(Graph g, Node node, Path path) 
+    { return eval(g, node, path, false) ; }
 
     static private Iterator<Node> eval(Graph graph, Node node, Path path, boolean forward)
     {
-        Collection<Node> acc = new ArrayList<Node>() ;
-        eval$(graph, node, path, forward, acc);
+        Set<Node> acc = new LinkedHashSet<Node>() ;
+        eval(graph, node, path, forward, acc);
         return acc.iterator() ;
     }
     
     static private Iterator<Node> eval(Graph graph, Iterator<Node> input, Path path, boolean forward) 
     {
-        Collection<Node> acc = new ArrayList<Node>() ;
+        Set<Node> acc = new LinkedHashSet<Node>() ;
         
         for ( ; input.hasNext() ; )
         {
             Node node = input.next() ;
-            eval$(graph, node, path, forward, acc) ;
+            eval(graph, node, path, forward, acc) ;
         }
         return acc.iterator() ;
     }
     
     // ---- Worker ??
-    static private void eval$(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
+    static private void eval(Graph graph, Node node, Path p, boolean forward, Collection<Node> acc)
     {
-        PathEvaluatorN evaluator = new PathEvaluatorN(graph, node, acc, forward) ;
+        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, forward) ;
         p.visit(evaluator) ;
     }
     // ----
-    /** Path evaluator that produces duplicates.
-     *  This is the algorithm in the SPARQL 1.1 spec.  
-     * 
-     */
-    private static class PathEvaluatorN implements PathVisitor
+    
+    private static class PathEvaluator implements PathVisitor
     {
+
         private final Graph graph ;
         private final Node node ;
         private final Collection<Node> output ;
         private boolean forwardMode ; 
 
-        public PathEvaluatorN(Graph g, Node n, Collection<Node> output, boolean forward)
+        public PathEvaluator(Graph g, Node n, Collection<Node> output, boolean forward)
         {
             this.graph = g ; 
             this.node = n ;
@@ -160,17 +178,17 @@ public class PathEval
         @Override
         public void visit(P_NegPropSet pathNotOneOf)
         {
-            // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X }
-            if ( pathNotOneOf.getFwdNodes().size() > 0 )
-            {
-                Iterator<Node> nodes1 = doOneExcludeForwards(pathNotOneOf.getFwdNodes()) ;
-                fill(nodes1) ;
-            }
             if ( pathNotOneOf.getBwdNodes().size() > 0 )
-            {
-                Iterator<Node> nodes2 = doOneExcludeBackwards(pathNotOneOf.getBwdNodes()) ;
-                fill(nodes2) ;
-            }
+                Log.warn(this, "Only forward negated property sets implemented") ;
+            
+            // X !(:a|:b|^:c|^:d) Y = { X !(:a|:b) Y } UNION { Y !(:c|:d) X } 
+            
+            List<Node> props = pathNotOneOf.getFwdNodes() ;
+            if ( props.size() == 0 )
+                throw new ARQException("Bad path element: Negative property set found with no elements") ;
+            //Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes(), pathNotOneOf.getBwdNodes()) ;
+            Iterator<Node> nodes = doOneExclude(pathNotOneOf.getFwdNodes()) ;
+            fill(nodes) ;
         }
         
         @Override
@@ -205,118 +223,60 @@ public class PathEval
             fill(iter) ;
         }
 
-        static boolean DEBUG = false ;
-        
         @Override
         public void visit(P_Mod pathMod)
         {
-            if ( DEBUG ) IndentedWriter.stdout.println("Eval: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+")") ;
-            
-            // :p{0,} Y is :p*
-            // :p{n,} Y where n > 0  is :p{N}/:p*
-            
-            // This is the main line code here:
-            // :p{,n} is :p{0,n}
-            // :p{n,m} is the iteration count down on n and m. 
-            
             if ( pathMod.isZeroOrMore() )
             {
-                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore") ;
-                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore: "+output) ;
-                // :p{0,}
                 doZeroOrMore(pathMod.getSubPath()) ;
-                if ( DEBUG ) IndentedWriter.stdout.println("ZeroOrMore: "+output) ;
                 return ;
             }
-
-            long min1 = pathMod.getMin() ;
-            long max1 = pathMod.getMax() ;
-
-            // Why not always reduce {N,M} to {N} and {0,M-N}
-            // Why not iterate, not recurse, for {N,} 
-            // -- optimizer wil have expanded this so only in unoptimized mode.
             
-            if ( min1 == P_Mod.UNSET )
-                // {,N}
-                min1 = 0 ;
+            if ( pathMod.isOneOrMore() )
+            {
+                doOneOrMore(pathMod.getSubPath()) ;
+                return ;
+            }
             
-            // ----------------
-            // This code is for p{n,m} and :p{,n} inc :p{0,n}
-            // and for :p{N,}
-            
-            //if ( max1 == P_Mod.UNSET ) max1 = 0 ;
-            
-            if ( min1 == 0 )
+            if ( pathMod.getMin() == 0 )
                 output.add(node) ;
 
-            if ( max1 == 0 )
+            if ( pathMod.getMax() == 0 )
                 return ;
             
-            // The next step
-            long min2 = dec(min1) ;
-            long max2 = dec(max1) ;
-
-            Path p1 = pathMod.getSubPath() ;   
-            Path p2 = new P_Mod(pathMod.getSubPath(), min2, max2) ;
-            
-            if ( !forwardMode )
-            {
-                // Reverse order.  Do the second bit first.
-                Path tmp = p1 ; 
-                p1 = p2 ; p2 = tmp ;
-                // This forces execution to be in the order that it's written, when working backwards.
-                // {N,*} is  {*} then {N} backwards != do {N} then do {*} as cardinality of the 
-                // two operations is different.
-            }
-            // ****
-
             // One step.
-            Iterator<Node> iter = eval(graph, node, p1, forwardMode) ;
+            Iterator<Node> iter = eval(graph, node, pathMod.getSubPath(), forwardMode) ;
 
-            if ( DEBUG )
-            {
-                // Debug.
-                List<Node> x = Iter.toList(iter) ;
-                IndentedWriter.stdout.println("** One step: "+pathMod+" "+node+"("+(forwardMode?"fwd":"bkd")+") ==> "+x) ;
-                iter = x.iterator() ;
-            }
+            // The next step
+            long min2 = dec(pathMod.getMin()) ;
+            long max2 = dec(pathMod.getMax()) ;
+            P_Mod nextPath = new P_Mod(pathMod.getSubPath(), min2, max2) ;
             
-            // Moved on one step
+//            // Debug.
+//            Listx = Iter.toList(iter) ;
+//            System.out.println(x) ;
+//            iter = x.iterator() ;
+            
+            // Moved on one step - now go and do it again on a new path
+            //  Need to do the visited thing?  No.  Exact {N,M}
+            
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = iter.next() ;
-                if ( DEBUG ) IndentedWriter.stdout.incIndent(4) ;
-                Iterator<Node> iter2 = eval(graph, n2, p2, forwardMode) ;
-                if ( DEBUG ) IndentedWriter.stdout.decIndent(4) ;
-                if ( DEBUG )
-                {
-                    List<Node> x = Iter.toList(iter2) ;
-                    IndentedWriter.stdout.println("** Recursive step: "+n2+" "+pathMod+" => "+x) ;
-                    iter2 = x.iterator() ;
-                }
+                Iterator<Node> iter2 = eval(graph, n2, nextPath, forwardMode) ;
                 fill(iter2) ;
             }
-            
-            if ( DEBUG ) IndentedWriter.stdout.println("** Output: "+pathMod+" => "+output) ;
             // If no matches, will not call eval and we drop out.
         }
         
         @Override
         public void visit(P_FixedLength pFixedLength)
         {
-            if ( pFixedLength.getCount() == 0 )
-            {
-                output.add(node) ;
-                return ;
-            }
             // P_Mod(path, count, count)
             // One step.
             Iterator<Node> iter = eval(graph, node, pFixedLength.getSubPath(), forwardMode) ;
-            // Build a path for all remaining steps.
             long count2 = dec(pFixedLength.getCount()) ;
             P_FixedLength nextPath = new P_FixedLength(pFixedLength.getSubPath(), count2) ;
-            // For each element in the first step, do remaining step
-            // Accumulate across everything from first step.  
             for ( ; iter.hasNext() ; )
             {
                 Node n2 = iter.next() ;
@@ -348,9 +308,7 @@ public class PathEval
 
         @Override
         public void visit(P_ZeroOrMore path)
-        { 
-            doZeroOrMore(path.getSubPath()) ;
-        }
+        { doZeroOrMore(path.getSubPath()) ; }
 
         @Override
         public void visit(P_OneOrMore path)
@@ -372,22 +330,8 @@ public class PathEval
 
         private void fill(Iterator<Node> iter)
         {
-            if ( false )
-            {
-                // Debug.
-                List<Node> x = Iter.toList(iter) ;
-                System.out.println("Fill: ==> "+x) ;
-                iter = x.iterator() ;
-            }
-            
             for ( ; iter.hasNext() ; )
                 output.add(iter.next()) ;
-            
-            if ( false )
-            {
-                // Debug.
-                System.out.println("Output: ==> "+output) ;
-            }
         }
 
         private static Transform<Triple, Node> selectSubject = new Transform<Triple, Node>()
@@ -440,27 +384,67 @@ public class PathEval
             }
         }
         
-        private final Iterator<Node> doOneExcludeForwards(List<Node> excludedNodes)
+        private final Iterator<Node> doOneExclude(List<Node> excludedNodes)
         {
+            // Forward mode only
             Iter<Triple> iter1 = forwardLinks(node, excludedNodes) ;
+
+            if ( false )
+            {
+                System.out.println("Node: "+node) ;
+                List<Triple> x = iter1.toList() ;
+                for ( Triple _t : x )
+                    System.out.println("    "+_t) ;
+                iter1 = Iter.iter(x) ;
+            }
+
             Iter<Node> r1 = iter1.map(selectObject) ;
             return r1 ;
         }
         
-        private final Iterator<Node> doOneExcludeBackwards(List<Node> excludedNodes)
-        {
-            Iter<Triple> iter1 = backwardLinks(node, excludedNodes) ;
-            Iter<Node> r1 = iter1.map(selectSubject) ;
-            return r1 ;
-        }
-        
-//        private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
+//        private final Iterator<Node> doOneExclude(List<Node> fwdNodes, List<Node> bwdNodes)
 //        {
-//            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
-//            if ( excludeProperties != null )
-//                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
-//            return iter1.hasNext() ;
+////            if ( forwardMode )
+////            { }
+////            else
+////            {}
+//            
+//            // FORWARD MODE
+//            Iter<Triple> iter1 = forwardLinks(node, fwdNodes) ;
+//
+//            if ( false )
+//            {
+//                System.out.println("Node: "+node) ;
+//                List<Triple> x = iter1.toList() ;
+//                for ( Triple _t : x )
+//                    System.out.println("    "+_t) ;
+//                iter1 = Iter.iter(x) ;
+//            }
+//
+//            Iter<Node> r1 = iter1.map(selectObject) ; 
+//            
+//            if ( bwdNodes.size() == 0 )
+//                return r1 ;
+//            
+//            if ( true )
+//            {
+//                if ( bwdNodes.size() > 0 )
+//                    throw new ARQNotImplemented() ;
+//            }
+//            
+//            Iter<Triple> iter2 = backwardLinks(node, bwdNodes) ;
+//            Iter<Node> r2 = iter1.map(selectSubject) ;
+//            
+//            return Iter.concat(r1, r2) ;
 //        }
+    
+        private boolean testConnected(Node x, Node z, List<Node> excludeProperties)
+        {
+            Iter<Triple> iter1 = Iter.iter(graph.find(x, Node.ANY, z)) ;
+            if ( excludeProperties != null )
+                iter1 = iter1.filter(new FilterExclude(excludeProperties)) ;
+            return iter1.hasNext() ;
+        }
 
         private Iter<Triple> between(Node x, Node z)
         {
@@ -486,92 +470,37 @@ public class PathEval
 
         private static long dec(long x) { return (x<=0) ? x : x-1 ; }
 
-//        // OLD
-//        private void doOneOrMore_OLD(Path path)
-//        {
-//            // This is the visited node collection - a set is OK
-//            Set<Node> visited = new HashSet<Node>() ;
-//            doOneOrMore(node, path, visited) ;
-//        }
-//
-//        private void doOneOrMore(Node node, Path path, Set<Node> visited)
-//        {
-//            if ( visited.contains(node) ) return ;
-//            
-//            visited.add(node) ;
-//            // Do one step.
-//            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-//            
-//            // For each step, add to results and recurse.
-//            for ( ; iter1.hasNext() ; )
-//            {
-//                Node n1 = iter1.next();
-//                output.add(n1) ;
-////System.out.println("Add : "+n1+ " (" + output.size()+")") ; System.out.flush() ;                
-//                
-//                doOneOrMore(n1, path, visited) ;
-//            }
-//            visited.remove(node) ;
-//            
-//        }
-//        
-//        private void doZeroOrMore_OLD(Path path)
-//        {
-//            doZero(path) ;
-//            doOneOrMore(path) ;
-//        }
-//        // OLD
-        
-        // NEW
-        
-        static final boolean trace = false ;
-        
-        private void doZeroOrMore(Path path)
-        {
-            if ( trace ) System.out.printf("\nZeroOrMore: %s\n", node) ;
-            //Deque<Node> visited = new ArrayDeque<Node>() ;
-            Set<Node> visited = new HashSet<Node>() ;
-            ALP(node, path, visited) ;
-        }
-        
         private void doOneOrMore(Path path)
         {
-            if ( trace ) System.out.printf("\nOneOrMore: %s\n", node) ;
-            //Deque<Node> visited = new ArrayDeque<Node>() ;
-            
-            Set<Node> visited = new HashSet<Node>() ;
-            // Do one step without including.
-            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
+            // Do one, then do zero or more for each result.
+            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;  // ORDER
+            // Do zero or more.
+            Set<Node> visited = new LinkedHashSet<Node>() ;
             for ( ; iter1.hasNext() ; )
             {
                 Node n1 = iter1.next();
-                if ( trace ) System.out.printf("One from %s\n   visited=%s\n   output=%s\n", n1, visited, output) ;
-                ALP(n1, path, visited) ;
+                closure(graph, n1, path, visited, forwardMode) ;
             }
+            output.addAll(visited) ;
         }
-        
-        // This is the worker function for path*
-        private void ALP(Node node, Path path, Collection<Node> visited)
+
+        private void doZeroOrMore(Path path)
         {
-            if ( trace ) System.out.printf("ALP node=%s\n   visited=%s\n   output=%s\n", node, visited, output) ;
+            Set<Node> visited = new LinkedHashSet<Node>() ;
+            closure(graph, node, path, visited, forwardMode) ;
+            output.addAll(visited) ;
+        }
+
+        private static void closure(Graph graph, Node node, Path path, Collection<Node> visited, boolean forward)
+        {
             if ( visited.contains(node) ) return ;
-            
-            // If output is a set, then no point going on if node has been added to the results.
-            // If output includes duplicates, more solutions are generated
-            // "visited" is nodes on this path (see the matching .remove).
-            if ( ! output.add(node) )
-                return ;
-            
             visited.add(node) ;
-            
-            Iterator<Node> iter1 = eval(graph, node, path, forwardMode) ;
-            // For each step, add to results and recurse.
-            for ( ; iter1.hasNext() ; )
+            Iterator<Node> iter = eval(graph, node, path, forward) ;
+            for ( ; iter.hasNext() ; )
             {
-                Node n1 = iter1.next();
-                ALP(n1, path, visited) ;
+                Node n2 = iter.next() ;
+                closure(graph, n2, path, visited, forward) ;
             }
-            visited.remove(node) ;
         }
     }
 }

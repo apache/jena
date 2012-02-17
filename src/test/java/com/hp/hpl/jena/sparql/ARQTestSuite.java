@@ -39,6 +39,7 @@ import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.lang.TS_Lang ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
+import com.hp.hpl.jena.sparql.path.TS_Path ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
 import com.hp.hpl.jena.sparql.syntax.TS_SSE ;
@@ -89,17 +90,20 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
 
-        // Binding I/O
-        ts.addTest(TestBindingStreams.suite()) ;
-
-        
-        // Algebra
-        ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
-
         // Syntax
         ts.addTest(TS_Syntax.suite()) ;
         // Serialization
         ts.addTest(TS_Serialization.suite()) ;
+        
+
+        // Binding I/O
+        ts.addTest(TestBindingStreams.suite()) ;
+        
+        // Algebra
+        ts.addTest(new JUnit4TestAdapter(TC_Algebra.class)) ;
+
+        // Property paths 
+        ts.addTest(new JUnit4TestAdapter(TS_Path.class)) ;
         
         // Scripted tests for SPARQL
         ts.addTest(ScriptTestSuiteFactory.make(testDirARQ+"/manifest-arq.ttl")) ;
