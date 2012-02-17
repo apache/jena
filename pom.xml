@@ -22,7 +22,7 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.9.0-incubating</version>
+  <version>0.9.0-incubating-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
