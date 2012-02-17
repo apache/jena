@@ -23,7 +23,7 @@
 
 # NB This fails unless this first:
 # cd somewhere_clean
-# NNN=....
+# export NNN=....
 # mkdir -p repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
 #   otherwise it creates a file in this location then can't mirror below it.
 #
@@ -89,10 +89,10 @@ function cp_release
     local D="$M-$V-$inc"
 
     local SRC="$M/$V-$inc/$M-$V-$inc-source-release"
-    local DEST=$SRC_REL/$M-$V-$inc
+    local DEST="$SRC_REL/$M-$V-$inc"
 
-    $MKDIR $DEST
-    for ext in zip tar.gz tar.bz2
+    $MKDIR "$OUT/$DEST"
+    for ext in zip # tar.gz tar.bz2
     do
 	#[ ! -e "$REPO/$SRC.ext" ] && { echo "No such file: $SRC.$ext" ; exit 1 ; }
 	cpfile "$SRC.$ext" $DEST
