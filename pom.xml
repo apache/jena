@@ -230,11 +230,15 @@ build.time.txt=${build.time.txt}
 	    <phase>package</phase>
 	    <goals><goal>single</goal></goals>
 	    <configuration>
-	      <!-- DO NOT place in target/ directly - it will be 
-		   uploaded with its name change to the group-artifact name
+	      <!-- If you place this in target/ directly - it will be 
+		   uploaded to the repo AND its name is changed
+		   to the group-artifact name (this can overwrite, silently,
+		   other files.
 	      -->
+	      <!--
 	      <finalName>dist/${assembly.root.name}</finalName>
 	      <appendAssemblyId>false</appendAssemblyId>
+	      -->
 	      <descriptors>
 		<descriptor>assembly.xml</descriptor>
 	      </descriptors>
