@@ -40,8 +40,8 @@
       <destName>LICENSE</destName>
     </file>
     <file>
-      <source>LICENSE-dist</source>
-      <destName>LICENSE</destName>
+      <source>NOTICE-dist</source>
+      <destName>NOTICE</destName>
     </file>
   </files>
 
