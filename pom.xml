@@ -22,7 +22,7 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>TDB</name>
-  <version>0.9.0-incubating</version>
+  <version>0.9.0-incubating-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -33,9 +33,9 @@
   <description>TDB is a storage subsystem for Jena and ARQ</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/tags/jena-tdb-0.9.0-incubating-RC-3</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/tags/jena-tdb-0.9.0-incubating-RC-3</developerConnection>
-    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/tags/jena-tdb-0.9.0-incubating-RC-3</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
   </scm>
   
   <properties>
