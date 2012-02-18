@@ -49,9 +49,9 @@
     <fileSet>
       <includes>
         <include>DISCLAIMER*</include>
+        <include>DEPENDENCIES*</include>
 	<include>README*</include>
         <include>ChangeLog.txt</include>
-        <include>pom.xml</include>
       </includes>
     </fileSet>
 
