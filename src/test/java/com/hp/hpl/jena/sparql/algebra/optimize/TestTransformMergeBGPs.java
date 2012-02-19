@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestTransformCollapseBGPs extends BaseTest
+public class TestTransformMergeBGPs extends BaseTest
 {
     
     String pre = "(prefix ((: <http://example/>))" ;
@@ -97,7 +97,7 @@ public class TestTransformCollapseBGPs extends BaseTest
         
         Op op1 = SSE.parseOp(input) ;
         //op1 = Transformer.transform(new TransformPathFlattern(), op1) ;
-        Op op3 = Transformer.transform(new TransformCollapseBGPs(), op1) ;
+        Op op3 = Transformer.transform(new TransformMergeBGPs(), op1) ;
         Op expected = SSE.parseOp(output) ;
         assertEquals(expected, op3) ;
     }

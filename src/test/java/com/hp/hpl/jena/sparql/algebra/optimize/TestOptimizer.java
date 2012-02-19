@@ -60,9 +60,15 @@ public class TestOptimizer extends BaseTest
             "    (bgp (triple ?s ?p ?o))\n" + 
             "    (slice _ 50\n" + 
             "      (project (?v)\n" + 
-            "        (sequence\n" + 
-            "          (bgp (triple ?/x ?/y ?v))\n" + 
-            "          (bgp (triple ?/a ?/y ?/w)))))))" ; 
+
+//            // Old - no BGP merge
+//            "        (sequence\n" + 
+//            "          (bgp (triple ?/x ?/y ?v))\n" + 
+//            "          (bgp (triple ?/a ?/y ?/w)))" +
+            // Merged BGP
+            "(bgp (triple ?/x ?/y ?v) (triple ?/a ?/y ?/w))" +
+
+            "))))" ; 
         check(queryString, opExpectedString) ;
     }
 

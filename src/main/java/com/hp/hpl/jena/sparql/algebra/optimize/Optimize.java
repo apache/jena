@@ -198,6 +198,8 @@ public class Optimize implements Rewrite
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
         op = apply("Join strategy", new TransformJoinStrategy(), op) ;
         
+        op = apply("Merge BGPs", new TransformMergeBGPs(), op) ;
+        
         // Mark
         if ( false )
             op = OpLabel.create("Transformed", op) ;

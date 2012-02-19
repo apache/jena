@@ -20,49 +20,16 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import java.util.List ;
 
-import org.openjena.atlas.lib.StrUtils ;
-
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
 import com.hp.hpl.jena.sparql.algebra.op.OpJoin ;
 import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.sse.SSE ;
 
 /** Merge adjacent BGPsTransformCollapseBGPs */
-public class TransformCollapseBGPs extends TransformCopy
+public class TransformMergeBGPs extends TransformCopy
 {
-    public static void main(String ...argv)
-    {
-        String x = StrUtils.strjoinNL(
-        "(prefix ((: <http://example/>))",
-        "    (sequence",
-        "      (bgp", 
-        "        (triple ??0 :p 1)", 
-        "        (triple ??0 :q 2)", 
-        "      )", 
-        "    (path ??1 (seq :p :r) 1)", 
-        "    (bgp",
-        "      (triple ??1 :q 2)", 
-        "      (triple ??2 :p 1)", 
-        "    )",
-        "    (path ??2 (seq :q :r) 2)))" 
-        ) ;
-        Op op = SSE.parseOp(x) ;
-        
-        //BUGS:
-        //  NON BGP -> crash
-        // Not dropping merged BGPs.
-        
-        Op op2 = Transformer.transform(new TransformPathFlattern(), op) ;
-        op2 = Transformer.transform(new TransformCollapseBGPs(), op2) ;
-        //op2 = Transformer.transform(new TransformJoinStrategy(), op) ;
-        System.out.println(op2) ;
-        
-    }
-    
     @Override
     public Op transform(OpJoin opJoin, Op left, Op right)
     {
@@ -77,7 +44,6 @@ public class TransformCollapseBGPs extends TransformCopy
         return super.transform(opJoin, left, right) ;
     }
     
-    // Worth it?
     @Override
     public Op transform(OpSequence opSequence, List<Op> elts)
     {
