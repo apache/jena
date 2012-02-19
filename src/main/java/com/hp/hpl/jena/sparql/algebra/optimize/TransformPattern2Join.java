@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.QuadPattern ;
 
+/** Expand BGPs to joins of triples. */ 
 public class TransformPattern2Join extends TransformCopy
 {
     @Override

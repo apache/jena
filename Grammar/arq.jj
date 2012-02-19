@@ -649,19 +649,6 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { endGroup(elg) ; }
       { return elg ; }
 }
-// -- TriplesBlock
-// Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
-// #ifdef SPARQL_10
-// Element TriplesBlock(ElementTriplesBlock acc) : { }
-// {
-//   { if ( acc == null )
-//         acc = new ElementTriplesBlock() ;
-//   }
-//   TriplesSameSubject(acc)
-//   ( <DOT> (TriplesBlock(acc))? )?
-//     { return acc ; }
-// }
-// #endif
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
   { if ( acc == null )
@@ -904,13 +891,13 @@ Node Verb() : { Node p ;}
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
 {
   s = VarOrTerm()
-  PropertyListNotEmptyPath(s, acc)
+  PropertyListPathNotEmpty(s, acc)
 |
   // Any of the triple generating syntax elements
-  s = TriplesNode(acc)
+  s = TriplesNodePath(acc)
   PropertyListPath(s, acc)
 }
-void PropertyListNotEmptyPath(Node s, TripleCollector acc) :
+void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
     { Path path = null ; Node p = null ; }
 {
   ( path = VerbPath()
@@ -929,7 +916,7 @@ void PropertyListNotEmptyPath(Node s, TripleCollector acc) :
 }
 void PropertyListPath(Node s, TripleCollector acc) : { }
 {
-  ( PropertyListNotEmpty(s, acc) ) ?
+  ( PropertyListPathNotEmpty(s, acc) ) ?
 }
 Path VerbPath() : {Node p ; Path path ; }
 {
@@ -1085,6 +1072,20 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
   t = <LBRACKET>
     { Node n = createBNode( t.beginLine, t.beginColumn) ; }
   PropertyListNotEmpty(n, acc)
+  <RBRACKET>
+    { return n ; }
+}
+Node TriplesNodePath(TripleCollector acc) : { Node n ; }
+{
+  n = Collection(acc) { return n ; }
+ |
+  n = BlankNodePropertyListPath(acc) { return n ; }
+}
+Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
+{
+  t = <LBRACKET>
+    { Node n = createBNode( t.beginLine, t.beginColumn) ; }
+  PropertyListPathNotEmpty(n, acc)
   <RBRACKET>
     { return n ; }
 }

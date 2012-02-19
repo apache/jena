@@ -821,6 +821,21 @@ Element GroupGraphPatternSub() : { Element el = null ; }
       { return elg ; }
 }
 
+// -- TriplesBlock
+// Two versions - for SPARQL 1.0 and SPARQL 1.1 (with paths)
+
+// #ifdef SPARQL_10
+// Element TriplesBlock(ElementTriplesBlock acc) : { }
+// {
+//   { if ( acc == null )
+//         acc = new ElementTriplesBlock() ;
+//   }
+//   TriplesSameSubject(acc)
+//   ( <DOT> (TriplesBlock(acc))? )?
+//     { return acc ; }
+// }
+// #endif
+
 Element TriplesBlock(ElementPathBlock acc) : { }
 {
   { if ( acc == null )
@@ -1037,8 +1052,6 @@ ExprList ExpressionList() : { Expr expr = null ; ExprList args = new ExprList() 
   { return args ; }
 }
 
-
-
 // -------- Construct patterns
 
 Template ConstructTemplate() : { TripleCollectorBGP acc = new TripleCollectorBGP(); 
@@ -1125,14 +1138,14 @@ Node Verb() : { Node p ;}
 void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; } 
 {
   s = VarOrTerm()
-  PropertyListPathNotEmpty(s, acc) 
+  PropertyListNotEmptyPath(s, acc) 
 |
   // Any of the triple generating syntax elements
-  s = TriplesNodePath(acc)
+  s = TriplesNode(acc)
   PropertyListPath(s, acc)
 }
 
-void PropertyListPathNotEmpty(Node s, TripleCollector acc) : 
+void PropertyListNotEmptyPath(Node s, TripleCollector acc) : 
     { Path path = null ; Node p = null ; }
 {
   ( path = VerbPath()
@@ -1157,7 +1170,7 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
 
 void PropertyListPath(Node s, TripleCollector acc) : { }
 {
-  ( PropertyListPathNotEmpty(s, acc) ) ?
+  ( PropertyListNotEmpty(s, acc) ) ?
 }
 
 
@@ -1188,7 +1201,7 @@ Path PathUnit() : { Path p ; }
 
 // Weakest outermost
 Path Path() : { Path p ; }
-{
+{ 
   p = PathAlternative() { return p ; }
 }
 
@@ -1273,20 +1286,8 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      { p = PathFactory.pathLink(nRDFtype) ; }
   | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
-#ifdef ARQ
-  |
-     <DISTINCT><LPAREN> 
-     p = Path()
-     { p = PathFactory.pathDistinct(p) ; }
-     <RPAREN>
-  |
-     <MULTI><LPAREN> 
-     p = Path()
-     { p = PathFactory.pathMulti(p) ; }
-     <RPAREN>
-#endif
   )
- { return p ; }
+    { return p ; }
 }
 
 Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
@@ -1315,6 +1316,7 @@ P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
     )
   )
 }
+
 
 long Integer() : {Token t ;}
 {
@@ -1346,27 +1348,6 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
   <RBRACKET>
     { return n ; }
 }
-
-Node TriplesNodePath(TripleCollector acc) : { Node n ; }
-{
-  n = Collection(acc) { return n ; }
- |
-  n = BlankNodePropertyListPath(acc) { return n ; }
-#if 0
- |
-  n = Reification(null, acc) { return n ; }
-#endif
-}
-
-Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
-{
-  t = <LBRACKET> 
-    { Node n = createBNode( t.beginLine, t.beginColumn) ; }
-  PropertyListPathNotEmpty(n, acc)
-  <RBRACKET>
-    { return n ; }
-}
-
 #if 0
 Node Reification(Node id, TripleCollector acc) : 
     { Node s , p , o ; int mark ; Token t ; }
@@ -1692,7 +1673,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <NOW> <NIL>   { return new E_Now() ; }
 #ifdef ARQ
   | <UUID> <NIL>  { return new E_UUID() ; }
-  | <STRUUID> <NIL>  { return new E_StrUUID() ; }
 #endif
   | <MD5>         <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
 
@@ -2013,20 +1993,6 @@ SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
 SPECIAL_TOKEN :
 { <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
 
-#if 0
-// DISABLED
-// C-style comments (they don't nest /* /*...*/ */ is a syntax error)
-// When a /* is seen in the DEFAULT state, skip it and switch to the IN_COMMENT state
-SKIP : { "/*": IN_COMMENT }
-      
-// When any other character is seen in the IN_COMMENT state, skip it.
-< IN_COMMENT > SKIP : { < ~[] > }
-      
-// When a */ is seen in the IN_COMMENT state, skip it and switch back to the DEFAULT state
-< IN_COMMENT > SKIP : { "*/": DEFAULT } 
-#endif
-
-
 TOKEN: { 
   <#WS: " " | "\t" | "\n" | "\r" | "\f">
 |
@@ -2131,8 +2097,6 @@ TOKEN [IGNORE_CASE] :
 #ifdef ARQ
 |  < CAST:        "cast" >
 |  < CALL:        "call" >
-|  < MULTI:       "multi" >
-
 #endif
 
 |  < STR:         "str" >
@@ -2177,7 +2141,6 @@ TOKEN [IGNORE_CASE] :
 |  < NOW:         "NOW" >
 #ifdef ARQ
 |  < UUID:        "UUID" >
-|  < STRUUID:     "STRUUID" >
 |  < VERSION:     "VERSION" >
 #endif
 

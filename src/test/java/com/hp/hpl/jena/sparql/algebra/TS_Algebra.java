@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestPattern2Join ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformCollapseBGPs ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
 
 import junit.framework.TestSuite ;
@@ -32,10 +33,12 @@ import org.junit.runners.Suite ;
     TestVarFinder.class
     , TestClassify.class
     , TestFilterTransform.class
+    , TestTransformQuads.class
+
     , TestVarRename.class
     , TestOptimizer.class
+    , TestTransformCollapseBGPs.class
     , TestPattern2Join.class
-    , TestTransformQuads.class
     
 //    , TestUnionGraph.class
 //    , TestUnionTransformTriples.class

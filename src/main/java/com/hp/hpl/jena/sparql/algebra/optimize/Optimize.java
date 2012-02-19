@@ -196,7 +196,7 @@ public class Optimize implements Rewrite
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
-        op = apply("Join strategy", new TransformJoinStrategy(context), op) ;
+        op = apply("Join strategy", new TransformJoinStrategy(), op) ;
         
         // Mark
         if ( false )
