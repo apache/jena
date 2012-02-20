@@ -40,9 +40,6 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <destName>fuseki-server.jar</destName>
     </file>
-  </files>
-
-    <files>
     <file>
       <source>dist/LICENSE-dist</source>
       <destName>LICENSE</destName>
