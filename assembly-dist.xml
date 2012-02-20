@@ -29,6 +29,7 @@ Assumes jar made and onejar has been assembled.
 
   <formats>
     <format>zip</format>
+    <format>tar.gz</format>
   </formats>
 
   <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
@@ -41,16 +42,25 @@ Assumes jar made and onejar has been assembled.
     </file>
   </files>
 
+    <files>
+    <file>
+      <source>dist/LICENSE-dist</source>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>dist/NOTICE-dist</source>
+      <destName>NOTICE</destName>
+    </file>
+  </files>
+
   <fileSets>
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
 	<include>README*</include>
+	<include>DEPENDENCIES*</include>
 	<include>DISCLAIMER*</include>
-	<include>LICENSE*</include>
-	<include>NOTICE*</include>
 	<include>ChangeLog.txt</include>
-	<include>pom.xml</include>
       </includes>
     </fileSet>
 
