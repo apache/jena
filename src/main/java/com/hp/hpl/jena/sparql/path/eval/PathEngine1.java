@@ -249,7 +249,7 @@ final class PathEngine1 extends PathEngine
         eval(graph, pathStepLeft, node, nodes) ;
         Collection<Node> nodes2 = new HashSet<Node>() ;
         for ( Node n : nodes )
-            eval(graph, pathStepLeft, n, nodes2) ;
+            eval(graph, pathStepRight, n, nodes2) ;
         output.addAll(nodes2) ;
     }
 }
