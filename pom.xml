@@ -96,11 +96,11 @@
     <resources>
       <resource>
 	<filtering>false</filtering>
-	 <directory>src/main/resources</directory>
+	<directory>src/main/resources</directory>
       </resource>
       <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
+	<filtering>true</filtering>
+	<directory>src/main/resources</directory>
 	<includes>
 	  <include>org/apache/jena/tdb/tdb-properties.xml</include>
 	</includes>
