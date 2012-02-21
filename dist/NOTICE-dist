@@ -37,10 +37,16 @@ PluggedIn Software under a BSD license.
 
 under the Apache 2.0 License. 
 
-The Jetty Web Container includes 
+The Jetty Web Container includes:
 
 UnixCrypt.java
 Copyright 1996 Aki Yoshida,
 modified April 2001  by Iris Van den Broeke, Daniel Deville.
+
+- - - - - - - - - - - - - - - - - - - - - - -
+
+FreeMarker:(http://freemarker.org/).
+
+Copyright (c) 2003 The Visigoth Software Society. All rights reserved.
 
 - - - - - - - - - - - - - - - - - - - - - - -

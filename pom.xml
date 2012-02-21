@@ -66,7 +66,7 @@
     <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
 
     <ver.jetty>7.5.4.v20111024</ver.jetty>
-    <ver.servlet-jsp>2.1.v20100127</ver.servlet-jsp>
+    <ver.freemarker>2.3.18</ver.freemarker>
 
     <ver.httpclient>4.1.2</ver.httpclient>
     <ver.httpcore>4.1.3</ver.httpcore>
@@ -145,23 +145,13 @@
       <version>${ver.jetty}</version>
     </dependency>    
 
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jsp-2.1</artifactId>
-      <version>${ver.jetty}</version>
-    </dependency>    
-
-    <dependency>
-      <groupId>org.mortbay.jetty</groupId>
-      <artifactId>jsp-2.1-glassfish</artifactId>
-      <version>${ver.servlet-jsp}</version>
-    </dependency>
-    
+    <!-- used ? - ->
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>${ver.jetty}</version>
     </dependency>    
+    -->
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -169,13 +159,19 @@
       <version>${ver.jetty}</version>
     </dependency> 
 
-   <!--
-   <dependency>
+     <dependency>
       <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-jsp-2.1</artifactId>
+      <artifactId>jetty-xml</artifactId>
       <version>${ver.jetty}</version>
+    </dependency> 
+
+    <dependency>
+      <groupId>org.freemarker</groupId>
+      <artifactId>freemarker</artifactId>
+      <!-- Latest 2.3.x (not 2.4.x), at least 2.3.18 -->
+      <version>${ver.freemarker}</version>
     </dependency>
-    -->
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>

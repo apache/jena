@@ -23,20 +23,17 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
 import java.util.EnumSet ;
+import java.util.HashMap ;
 import java.util.List ;
+import java.util.Map ;
 
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.ActionDataset ;
-import org.apache.jena.fuseki.servlets.DumpServlet ;
-import org.apache.jena.fuseki.servlets.SPARQL_QueryDataset ;
-import org.apache.jena.fuseki.servlets.SPARQL_QueryGeneral ;
-import org.apache.jena.fuseki.servlets.SPARQL_REST_R ;
-import org.apache.jena.fuseki.servlets.SPARQL_REST_RW ;
-import org.apache.jena.fuseki.servlets.SPARQL_Update ;
-import org.apache.jena.fuseki.servlets.SPARQL_Upload ;
+import org.apache.jena.fuseki.mgt.MgtFunctions ;
+import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
@@ -64,11 +61,7 @@ public class SPARQLServer
     private ServerConfig serverConfig ;
     
     private Server server = null ;
-//    private int port ;
     private boolean verbose = false ;
-//    private List<DatasetRef> datasetRefs ;
-//    private String pagesDir ;
-    
     //private static int ThreadPoolSize = 100 ;
     
     public SPARQLServer(ServerConfig config)
@@ -146,7 +139,8 @@ public class SPARQLServer
         mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
         context.setMimeTypes(mt) ;
-        
+        server.setHandler(context);
+
         serverLog.debug("Pages = "+serverConfig.pages) ;
         
         boolean installManager = true ;
@@ -163,15 +157,12 @@ public class SPARQLServer
             if ( serverConfig.pagesPort != serverConfig.port )
                 serverLog.warn("Not supported yet - pages on a different port to services") ;
             
-            server.setHandler(context);
-
-            HttpServlet jspServlet = new org.apache.jasper.servlet.JspServlet() ;
-            ServletHolder jspContent = new ServletHolder(jspServlet) ;
-            //?? Need separate context for admin stuff??
-            context.setResourceBase(serverConfig.pages) ;
-            addServlet(context, jspContent, "*.jsp", false) ;
+            String base = serverConfig.pages ;
+            Map<String, Object> data = new HashMap<String, Object>() ;
+            data.put("mgt", new MgtFunctions()) ;
+            SimpleFreeMarkerServlet templateEngine = new SimpleFreeMarkerServlet(base, data) ;
+            addServlet(context, templateEngine, "*.tpl", false) ;
         }
-        
         
         if ( installManager )
         {

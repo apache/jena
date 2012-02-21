@@ -21,6 +21,6 @@ package org.apache.jena.fuseki.mgt;
 public class PageNames
 {
     static final String pageDataset = "dataset.html" ;
-    static final String pageControlPanel = "control-panel.jsp" ;
-    static final String pageAfterLogin = "sparql.jsp" ;
+    static final String pageControlPanel = "control-panel.tpl" ;
+    static final String pageAfterLogin = "sparql.tpl" ;
 }

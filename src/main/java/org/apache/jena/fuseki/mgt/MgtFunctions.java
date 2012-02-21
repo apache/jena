@@ -34,7 +34,7 @@ import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
 /** Avoid code in JSPs */
-public class Functions
+public class MgtFunctions
 {
     /** Return the name of the current dataset */ 
     public static String dataset(HttpServletRequest request, String dftValue)

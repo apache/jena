@@ -1,6 +1,3 @@
-<%@ page import="org.apache.jena.fuseki.mgt.*"%>
-<%@ page contentType="text/html ; charset=UTF-8"%>
-<%@ page isThreadSafe="true"%>
 <html>
   <head>
     <title>Fuseki - A SPARQL 1.1 Server</title>
@@ -13,7 +10,7 @@
     <div class="moreindent">
     <form action="dataset" method="post">
       Dataset: <select name="dataset">
-        <%= Functions.datasetsAsSelectOptions(request) %>
+        ${mgt.datasetsAsSelectOptions(request)}
       <div>
         <input type="submit" value="Select">
       </div>
