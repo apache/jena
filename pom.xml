@@ -212,7 +212,6 @@
     </plugins>
 
     <resources>
-
       <resource>
         <directory>etc</directory>
         <targetPath>etc</targetPath>
@@ -235,6 +234,7 @@
         </includes>
         <filtering>false</filtering>
       </resource>
+
     </resources>
 
   </build>
