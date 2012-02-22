@@ -109,9 +109,13 @@
 
     <resources>
       <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
         <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <filtering>true</filtering>
-	    <!-- FIXME -->
+        <!-- FIXME -->
         <directory>resources</directory>
       </resource>
     </resources>
