@@ -160,7 +160,7 @@ public class SPARQLServer
             String base = serverConfig.pages ;
             Map<String, Object> data = new HashMap<String, Object>() ;
             data.put("mgt", new MgtFunctions()) ;
-            SimpleFreeMarkerServlet templateEngine = new SimpleFreeMarkerServlet(base, data) ;
+            SimpleVelocityServlet templateEngine = new SimpleVelocityServlet(base, data) ;
             addServlet(context, templateEngine, "*.tpl", false) ;
         }
         

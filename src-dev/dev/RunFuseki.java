@@ -67,7 +67,7 @@ public class RunFuseki
                     //"--gzip=no",
                     //"--desc=desc.ttl",
                     //--pages=
-                    "--jetty-config=jetty-fuseki.xml",
+                    //"--jetty-config=jetty-fuseki.xml",
                     "/ds"
                     ) ;
         System.exit(0) ;

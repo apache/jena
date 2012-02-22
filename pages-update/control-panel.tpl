@@ -10,7 +10,7 @@
     <div class="moreindent">
     <form action="dataset" method="post">
       Dataset: <select name="dataset">
-        ${mgt.datasetsAsSelectOptions(request)}
+        ${mgt.datasetsAsSelectOptions($request)}
       <div>
         <input type="submit" value="Select">
       </div>

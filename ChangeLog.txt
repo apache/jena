@@ -4,6 +4,9 @@
 
 == 0.2.1
 
++ Switch from JSPs to Velocity.
+  This means the standalone jar does not contain a JSP engine anymore.  
+
 + Service by configuration file, command line argument --config=
 
 + Add a servlet filter that processes Accept-Encoding 

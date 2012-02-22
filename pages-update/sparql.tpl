@@ -4,11 +4,12 @@
     <link rel="stylesheet" type="text/css" href="fuseki.css" />
   </head>
   <body>
-    <h1>Fuseki Query</h1>
-    Dataset: ${mgt.dataset(request, "No Session")}
-    <hr/>
+#set( $ds = $mgt.dataset($request, "") )
+<!-- error case ... -->
 
-    <#assign ds = mgt.dataset(request) >
+    <h1>Fuseki Query</h1>
+    Dataset: ${ds}
+    <hr/>
 
     <p><b>SPARQL Query</b></p>
     <div class="moreindent">
