@@ -219,14 +219,16 @@
 
   <build>
     <resources>
-      <!-- Order of resource elements matters -->
       <resource>
-        <filtering>false</filtering>
-        <directory>src/main/resources</directory>
+	<filtering>false</filtering>
+	<directory>src/main/resources</directory>
+	<excludes>
+	  <exclude>org/apache/jena/fuseki/fuseki-properties.xml</exclude>
+	</excludes>
       </resource>
       <resource>
-        <filtering>true</filtering>
-        <directory>src/main/resources</directory>
+	<filtering>true</filtering>
+	<directory>src/main/resources</directory>
 	<includes>
 	  <include>org/apache/jena/fuseki/fuseki-properties.xml</include>
 	</includes>
