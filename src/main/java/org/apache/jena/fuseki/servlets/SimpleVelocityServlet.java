@@ -36,8 +36,7 @@ import org.slf4j.LoggerFactory ;
 
 
 /** Simple servlet that uses <a href="http://velocity.apache.org/">Velocity</a>
- *  to format pages.  It isolate the use of velocity 
- *  by taking a conifuration map and 
+ *  to format pages.  It isolates the use of velocity by taking a configuration map. 
  *  Use with a servlet mapping of "*.vm" or some such extension.
  */
 public class SimpleVelocityServlet extends HttpServlet
