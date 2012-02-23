@@ -341,10 +341,14 @@ public class FusekiCmd extends CmdARQ
         }
         
         homeDir = sort_out_dir(homeDir) ;
+        if ( ! FileOps.exists(homeDir) )
+            Fuseki.configLog.warn("No such directory for Fuseki home: "+homeDir) ;
         
         String staticContentDir = pagesDir ;
         if ( staticContentDir == null )
             staticContentDir = homeDir+Fuseki.PagesStatic ;
+        
+        Fuseki.configLog.debug("Static content: "+staticContentDir) ;
 
         if ( ! FileOps.exists(staticContentDir) )
             Fuseki.configLog.warn("No such directory for static content: "+staticContentDir) ;

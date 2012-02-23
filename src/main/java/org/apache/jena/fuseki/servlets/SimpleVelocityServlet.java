@@ -51,11 +51,15 @@ public class SimpleVelocityServlet extends HttpServlet
     
     public SimpleVelocityServlet(String base, Map<String, Object> datamodel)
     {
-        setDocBase(base) ;
+        this.docbase = base ;
         this.datamodel = datamodel ;
         velocity = new VelocityEngine();
         // Just plain set the logger.  No initialize phaff around reflection calls and newInstance() 
         velocity.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new SimpleSLF4JLogChute(log)) ;
+        velocity.setProperty( RuntimeConstants.INPUT_ENCODING, "UTF-8" ) ;
+        
+        velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, base) ;
+//        velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true") ;
 //        velocity.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
 //          SimpleSLF4JLogChute.class.getName() );
 //        velocity.setProperty("runtime.log.logsystem.log4j.logger",
@@ -68,15 +72,17 @@ public class SimpleVelocityServlet extends HttpServlet
         return functions ;
     }
 
-    public String getDocBase()
-    {
-        return docbase ;
-    }
-
-    public void setDocBase(String docbase)
-    {
-        this.docbase = docbase ;
-    }
+    // Don't allow it to chnage after we're started.
+//    public String getDocBase()
+//    {
+//        return docbase ;
+//    }
+//
+//    public void setDocBase(String docbase)
+//    {
+//        velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, docbase) ;
+//        this.docbase = docbase ;
+//    }
     
     // See also 
     @Override
@@ -95,9 +101,7 @@ public class SimpleVelocityServlet extends HttpServlet
     { 
         try {
             VelocityContext context = new VelocityContext(datamodel) ;
-            // TODO - better?
             String path = path(req) ;
-            path = docbase+path ;
             Template temp = velocity.getTemplate(path) ;
             context.put("request", req) ;
             resp.setCharacterEncoding("UTF-8") ;

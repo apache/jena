@@ -68,8 +68,7 @@ Assumes jar made and onejar has been assembled.
 	<include>fuseki-server</include>
 	<include>config*.ttl</include>
 	<include>s-*</include>
-	<include>pages-update/*</include>
-	<include>pages-publish/*</include>
+	<include>pages/*</include>
       </includes>
     </fileSet>
   </fileSets>

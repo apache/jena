@@ -1,6 +1,6 @@
 #!/bin/bash
 
-## Run Fuseki, include development code if it looks liek it's available.
+## Run Fuseki, include development code if it looks like it's available.
 ## Or --pages=
 
 export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
