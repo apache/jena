@@ -41,8 +41,7 @@ public class Fuseki
     static public String FusekiHomeEnv = "FUSEKI_HOME" ;
     static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
     
-    static public String PagesPublish = "pages-publish" ;
-    static public String PagesAll =     "pages-update" ;
+    static public String PagesStatic = "pages" ;
     
     //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
     static private String metadataLocation = "org/apache/jena/fuseki/fuseki-properties.xml" ;

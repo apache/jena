@@ -344,7 +344,7 @@ public class FusekiCmd extends CmdARQ
         
         String staticContentDir = pagesDir ;
         if ( staticContentDir == null )
-            staticContentDir = homeDir+Fuseki.PagesAll ;
+            staticContentDir = homeDir+Fuseki.PagesStatic ;
 
         if ( ! FileOps.exists(staticContentDir) )
             Fuseki.configLog.warn("No such directory for static content: "+staticContentDir) ;

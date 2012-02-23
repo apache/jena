@@ -110,7 +110,7 @@ public class FusekiConfig
         config.mgtPort = 3031 ;
         config.pagesPort = config.port ;
         config.jettyConfigFile = null ;
-        config.pages = "Pages-Update" ;
+        config.pages = Fuseki.PagesStatic ;
         config.enableCompression = true ;
         return config ;
     }
