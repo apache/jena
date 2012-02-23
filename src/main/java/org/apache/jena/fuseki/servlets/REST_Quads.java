@@ -58,7 +58,6 @@ public class REST_Quads extends SPARQL_REST
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
-        
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 

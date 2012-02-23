@@ -64,7 +64,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         response = responseTracked ;
         
         String uri = request.getRequestURI() ;
-        setCommonHeaders(response) ;
+        initResponse(request, response) ;
         
         try {
             if ( request.getQueryString() == null && queryStringHandling == PlainRequestFlag.DIFFERENT )
@@ -147,6 +147,15 @@ public abstract class SPARQL_ServletBase extends ServletBase
                 }
             }
         }
+    }
+    
+    private void initResponse(HttpServletRequest request, HttpServletResponse response)
+    {
+        setCommonHeaders(response) ;
+        String method = request.getMethod().toUpperCase() ;
+        // All GET and HEAD operations are sensitive to conneg so ...
+        if ( HttpNames.METHOD_GET.equals(method) || HttpNames.METHOD_HEAD.equals(method) )
+            setVaryHeader(response) ;
     }
     
     private void printResponse(long id, HttpServletResponseTracker response)

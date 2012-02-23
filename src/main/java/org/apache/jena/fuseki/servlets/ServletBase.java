@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 public abstract class ServletBase extends HttpServlet
@@ -178,8 +179,20 @@ public abstract class ServletBase extends HttpServlet
         string = string.replace('\r', ' ') ;
         return string ; 
     }
+
+    static String varyHeaderSetting = 
+        StrUtils.strjoin(",", 
+                         HttpNames.hAccept, 
+                         HttpNames.hAcceptEncoding, 
+                         HttpNames.hAcceptCharset ) ;
     
-   public static void setCommonHeaders(HttpServletResponse httpResponse)
+    public static void setVaryHeader(HttpServletResponse httpResponse)
+    {
+        httpResponse.setHeader(HttpNames.hVary, varyHeaderSetting) ;
+    }
+
+    
+    public static void setCommonHeaders(HttpServletResponse httpResponse)
     {
         httpResponse.setHeader(HttpNames.hAccessControlAllowOrigin, "*") ;
         httpResponse.setHeader(HttpNames.hServer, Fuseki.serverHttpName) ;

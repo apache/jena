@@ -30,7 +30,6 @@ import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
-import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -41,8 +40,6 @@ public class Fuseki
     static public String FusekiIRI = "http://jena.apache.org/Fuseki" ;
     static public String FusekiHomeEnv = "FUSEKI_HOME" ;
     static public String FusekiSymbolIRI = "http://jena.apache.org/fuseki#" ;
-    
-    public static final Symbol xFusekiEnableGZipCompression = Symbol.create(FusekiSymbolIRI + "enableGZipCompression");
     
     static public String PagesPublish = "pages-publish" ;
     static public String PagesAll =     "pages-update" ;

@@ -20,12 +20,15 @@ package org.apache.jena.fuseki;
 
 public class HttpNames
 {
+    // Request
     public static final String hAccept              = "Accept" ;
-    public static final String hAllow               = "Allow" ;
     public static final String hAcceptEncoding      = "Accept-Encoding" ;
     public static final String hAcceptCharset       = "Accept-Charset" ;
-    public static final String hAcceptRanges        = "Accept-Ranges" ;
-    
+    //public static final String hAcceptLanguage      = "Accept-Language" ;
+
+    // Response
+    public static final String xhAcceptRanges        = "Accept-Ranges" ;
+    public static final String hAllow               = "Allow" ;
     public static final String hContentEncoding     = "Content-Encoding" ;
     public static final String hContentLengh        = "Content-Length" ;
     public static final String hContentLocation     = "Content-Location" ;
@@ -33,6 +36,7 @@ public class HttpNames
     public static final String hContentType         = "Content-Type" ;
     public static final String hServer              = "Server" ;
     public static final String hLocation            = "Location" ; 
+    public static final String hVary                = "Vary" ;
     public static final String charset              = "charset" ;
     
     // CORS: 
