@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
 ## distributed with this work for additional information
@@ -15,53 +15,33 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-# You need a copy of the staging repo to get the checksum files.
-
-# Or use command line tools.
+# You need a copy of the maven-built-artifacts, toegther with the .asc files.
+# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
 # sha1sum $F > $F.sha1
 # md5sum $F > $F.md5
-# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
 
 # Layout:
 # /source-release/MOD-VER/
-# or
-# /source-release/
 #   The offical release file: MOD-VER-source-release.{zip,tar.gz}{,.asc,.md5,.sha1}
+# /binaries/MOD-VER/
+#   The jars, jaavdoc, java sources and distribution files.
 # 
-# /downloads/
-#   Files
-# of
-#   MOD-XXX/files
-#     jar and sources?
+# /downloads or /.
+#   Easier to find distribution files.
 
-
-# NB This fails unless this first:
-# cd somewhere_clean
-# export NNN=....
-# mkdir -p repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
-#   otherwise it creates a file in this location then can't mirror below it.
-#
-# wget -e robots=off --wait 1 --mirror -np \
-#     https://repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
-# mv repository.apache.org/content/repositories/orgapachejena-${NNN} REPO
-# rm -rf  repository.apache.org/
-
-REPO=REPO/org/apache/jena
+REPO=~/.m2/repo/org/apache/jena
 OUT="dist"
-DOWNLOAD="download"
+#DOWNLOAD="download"
+DOWNLOAD="."
+BINARIES="binaries"
 SRC_REL="source-release"
 
 # This script collects everything for the incubator/dist/jena area
-# for a TDB release. 
-# It write a script that will build dist/ from rpo copy.
-# Copy to dist/jena to add to the last jena release.
-
-## To manaually sign:
-# sha1sum -b FILE | cut -f1 -d' '
+# for a TDB release. It write a script that will build dist/.
 
 ECHO=echo
 CPCMD="$ECHO cp"
-MKDIR="$ECHO mkdir"
+MKDIR="$ECHO mkdir -p"
 DELDIR="$ECHO rm -rf"
 
 ## 
@@ -69,12 +49,14 @@ echo "## Initalize"
 $DELDIR $OUT
 $MKDIR $OUT
 $MKDIR $OUT/$DOWNLOAD
+$MKDIR $OUT/$BINARIES
 $MKDIR $OUT/$SRC_REL
 
 
-# Copy a file , and its associated asc md5 sha1, to a directory.
-#  cpfile FILE DIR
-function cpfile
+# Copy a file, and its associated asc, to a directory.
+# Create .md5 and .sha1 files.
+# cpfile FILE DIR
+cpfile()
 {
     local FILE="$1"
     local DIR="$2"
@@ -82,21 +64,37 @@ function cpfile
     local SRC="$REPO/$FILE"
     local DEST="$OUT/$DIR"
 
-    #[ -e "$SRC" ]  || { echo "No such file: $SRC" 2>&1 ; exit 1 ; }
+    [ -e "$SRC" ]  || { echo "No such file: $SRC" 2>&1 ; exit 1 ; }
     #[ -d "$DEST" ] || { echo "Not a directory: $DEST" 2>&1 ; exit 1 ; }
 
     $CPCMD "$SRC" "$DEST"
-    #for ext in asc asc.md5 asc.sha1 md5 sha1
-    for ext in  asc md5 sha1
-    do
-	$CPCMD "$SRC.$ext" "$DEST"
-    done
+    $CPCMD "${SRC}.asc" "$DEST"
+    local BASE="$(basename $FILE)"
+    $ECHO "sha1sum $SRC > $DEST/${BASE}.sha1"
+    $ECHO "md5sum  $SRC > $DEST/${BASE}.md5"
+}
+
+# Copy a file if it exists else add a comment
+cpfilemaybe()
+{
+    local FILE="$1"
+    local DIR="$2" 
+    local SRC="$REPO/$FILE"
+
+
+    if [ -e "$SRC" ]
+    then
+	cpfile "$FILE" "$DIR"
+    else
+	echo "# ** Skipped: $FILE" 2>&1
+    fi
+
 }
 
 # Copy source-release files.
 # cp_release MODULE VERSION
  
-function cp_release
+cp_release()
 {
     local M="$1"
     local V="$2"
@@ -108,7 +106,7 @@ function cp_release
     $MKDIR "$OUT/$DEST"
     for ext in zip # tar.gz tar.bz2
     do
-	#[ ! -e "$REPO/$SRC.ext" ] && { echo "No such file: $SRC.$ext" ; exit 1 ; }
+	#[ ! -e "$REPO/$SRC.ext" ] && { echo "No such file: $SRC.$ext" 2>&1 ; exit 1 ; }
 	cpfile "$SRC.$ext" $DEST
     done
 }
@@ -116,24 +114,25 @@ function cp_release
 # Copy all the maven files 
 # jar, sources.jar, javadoc?, 
 # cpallfiles MODULE VERSION
-function cpallfiles
+cpallfiles()
 {
     # /download?
 
     local M="$1"
     local V="$2"
-    local D="$DOWNLOAD/$M-$V-$inc"
+    local D="$BINARIES/$M-$V-$inc"
     #[ ! -e "$OUT/$D" ] || { echo "Directory exists: $OUT/$D" 2>&1 ; exit 1 ; }
 
     $MKDIR $OUT/$D
     cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
     cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
-    if [ -e "$REPO/$M/$V-$inc/$M-$V-$inc-javadoc.jar" ]
-    then
-	 cpfile "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
-    else
-	$ECHO echo "No javadoc: $REPO/$M/$V-$inc/$M-$V-$inc-javadoc.jar"
-    fi
+
+    for ext in zip tar.gz tar.bz2
+    do
+	cpfilemaybe "$M/$V-$inc/$M-$V-$inc-distribution.${ext}" $D
+    done
+
+    cpfilemaybe "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
 }
 
 ## ToDo: automate
@@ -142,24 +141,36 @@ V_TDB=0.9.0
 inc=incubating
 
 ## source-release
+echo
+echo "# source-release"
 cp_release jena-tdb "${V_TDB}"
 
 ## Module
 
+echo
 echo "## TDB"
 cpallfiles jena-tdb "${V_TDB}"
 
+echo
 echo "## zip"
 M=jena-tdb
 V=${V_TDB}
 D="$M-$V-$inc"
-cpfile $M/$V-$inc/$D-distribution.zip      $DOWNLOAD
-cpfile $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
+cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
 
 # Distribution
-
+echo
+echo "# Distribution"
 # Fix the name.
-for ext in {zip,tar.gz}{,.asc,.md5,.sha1}
+
+for ext1 in zip tar.gz # tar.bz2
 do
-    $ECHO mv $OUT/$DOWNLOAD/$M-$V-$inc-distribution.$ext $OUT/$DOWNLOAD/apache-$M-$V-$inc.$ext
+    for ext2 in "" .asc .md5 .sha1
+    do
+	ext="$ext1$ext2"
+	F=$OUT/$DOWNLOAD/$D-distribution.$ext
+	$ECHO mv $F $OUT/$DOWNLOAD/apache-$D-distribution.$ext
+    done
 done
