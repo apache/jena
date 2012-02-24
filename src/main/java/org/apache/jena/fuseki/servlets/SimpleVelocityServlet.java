@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.io.IOException ;
 import java.io.Writer ;
 import java.util.Map ;
 
@@ -28,9 +29,13 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.velocity.Template ;
 import org.apache.velocity.VelocityContext ;
 import org.apache.velocity.app.VelocityEngine ;
+import org.apache.velocity.exception.MethodInvocationException ;
+import org.apache.velocity.exception.ParseErrorException ;
+import org.apache.velocity.exception.ResourceNotFoundException ;
 import org.apache.velocity.runtime.RuntimeConstants ;
 import org.apache.velocity.runtime.RuntimeServices ;
 import org.apache.velocity.runtime.log.LogChute ;
+import org.apache.velocity.runtime.log.NullLogChute ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -41,11 +46,19 @@ import org.slf4j.LoggerFactory ;
  */
 public class SimpleVelocityServlet extends HttpServlet
 {
-    private static Logger log = LoggerFactory.getLogger(SimpleVelocityServlet.class) ;
+    //private static Logger log = LoggerFactory.getLogger(SimpleVelocityServlet.class) ;
+    /* Velocity logging
+     * Instead of internal velocity logging, we catch the exceptions, 
+     * log the message ourselves. This gives a celaner log file without
+     * loosing information that the application could use.  
+     */
+    
+    private static Logger vlog = LoggerFactory.getLogger("Velocity") ;
+    private static LogChute velocityLog = new NullLogChute() ;
+    //private static LogChute velocityLog = new SimpleSLF4JLogChute(vlog) ;
+    
     private String docbase ;
     private VelocityEngine velocity ;
-    
-    private Object functions = null ;
     private String functionsName = null ;
     private final Map<String, Object> datamodel ;
     
@@ -54,35 +67,12 @@ public class SimpleVelocityServlet extends HttpServlet
         this.docbase = base ;
         this.datamodel = datamodel ;
         velocity = new VelocityEngine();
-        // Just plain set the logger.  No initialize phaff around reflection calls and newInstance() 
-        velocity.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new SimpleSLF4JLogChute(log)) ;
+        // Turn off logging - catch exceptions and log ourselves
+        velocity.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, velocityLog) ;
         velocity.setProperty( RuntimeConstants.INPUT_ENCODING, "UTF-8" ) ;
-        
         velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, base) ;
-//        velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_CACHE, "true") ;
-//        velocity.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-//          SimpleSLF4JLogChute.class.getName() );
-//        velocity.setProperty("runtime.log.logsystem.log4j.logger",
-//            "FOO");
         velocity.init();
     }
-    
-    public Object getFunctions()
-    {
-        return functions ;
-    }
-
-    // Don't allow it to chnage after we're started.
-//    public String getDocBase()
-//    {
-//        return docbase ;
-//    }
-//
-//    public void setDocBase(String docbase)
-//    {
-//        velocity.setProperty( RuntimeConstants.FILE_RESOURCE_LOADER_PATH, docbase) ;
-//        this.docbase = docbase ;
-//    }
     
     // See also 
     @Override
@@ -99,19 +89,21 @@ public class SimpleVelocityServlet extends HttpServlet
 
     private void process(HttpServletRequest req, HttpServletResponse resp)
     { 
-        try {
-            VelocityContext context = new VelocityContext(datamodel) ;
-            String path = path(req) ;
-            Template temp = velocity.getTemplate(path) ;
+        VelocityContext context = new VelocityContext(datamodel) ;
+        String path = path(req) ;
+        try
+        {
+            Template temp = velocity.getTemplate(path) ;        // ResourceNotFoundException, ParseErrorException
             context.put("request", req) ;
             resp.setCharacterEncoding("UTF-8") ;
             Writer out = resp.getWriter() ;
-            temp.merge(context, out);
+            temp.merge(context, out);                           // ResourceNotFoundException, ParseErrorException, MethodInvocationException
             out.flush();
-        } catch (Exception ex)
-        {
-            ex.printStackTrace(System.err) ;
         }
+        catch (ResourceNotFoundException ex)    { vlog.error("Resource not found: "+ex.getMessage()) ; }
+        catch (ParseErrorException ex)          { vlog.error("Parse error ("+path+") : "+ex.getMessage()) ; }
+        catch (MethodInvocationException ex)    { vlog.error("Method invocation exception ("+path+") : "+ex.getMessage()) ; }
+        catch (IOException ex)                  { vlog.warn ("IOException", ex) ; }
     }
     
     private String path(HttpServletRequest request)
@@ -132,10 +124,10 @@ public class SimpleVelocityServlet extends HttpServlet
     /** Velocity logger to SLF4J */ 
     static class SimpleSLF4JLogChute implements LogChute
     {
-
+        // Uusally for debugging only.
         private Logger logger ;
 
-        SimpleSLF4JLogChute(Logger log )
+        SimpleSLF4JLogChute( Logger log )
         {
             this.logger = log ; 
         }
@@ -147,20 +139,23 @@ public class SimpleVelocityServlet extends HttpServlet
         @Override
         public void log(int level, String message)
         {
-            log(level, message, null) ;
-//            switch(level)
-//            {
-//                case LogChute.TRACE_ID:
-//                case LogChute.DEBUG_ID:
-//                case LogChute.INFO_ID:
-//                case LogChute.WARN_ID:
-//                case LogChute.ERROR_ID:
-//            }
+            if ( logger == null ) return ;
+            switch(level)
+            {
+                case LogChute.TRACE_ID : logger.trace(message) ; return ;
+                case LogChute.DEBUG_ID : logger.debug(message) ; return ;
+                case LogChute.INFO_ID :  logger.info(message) ;  return ;
+                case LogChute.WARN_ID :  logger.warn(message) ;  return ;
+                case LogChute.ERROR_ID : logger.error(message) ; return ;
+            }
         }
 
         @Override
         public void log(int level, String message, Throwable t)
         {
+            if ( logger == null ) return ;
+            // Forget the stack trace - velcoity internal - long - unhelpful to application. 
+            t = null ;
             switch (level)
             {
                 case LogChute.TRACE_ID : logger.trace(message, t) ; return ;
@@ -184,7 +179,6 @@ public class SimpleVelocityServlet extends HttpServlet
             }
             return true ;
         }
-
     }
 }
 
