@@ -1,7 +1,9 @@
-#!/bin/bash 
+#!/bin/sh 
 #  -- hint to emacs
-# Source this file, not execute it.
 
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Source this file, not execute it.
 ## Environment variable usage:
 ## TDBROOT         :: The root of the TDB installation (required)
 ## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
@@ -20,13 +22,6 @@ if [ "$TDBROOT" = "" ]
 then
     echo "TDBROOT is not set" 1>&2
     exit 1
-    fi
-
-## ---- Set class path separator 
-SEP=':'
-if [ "$OSTYPE" = "cygwin" ]
-then
-    SEP=';'
     fi
 
 ## ---- who am I?

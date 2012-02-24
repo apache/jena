@@ -1,25 +1,11 @@
 #!/bin/bash
-
-echo "tdbverify - not operational"
-exit 1
-
-if ! [ -e "testing" ] 
-then
-    echo "Not in the root of a TDB installation" 1>&2
-    exit 1
-    fi
-export TDBROOT=$PWD
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 source "$TDBROOT/bin/tdb_init"
 
-if true 
-then
-    echo "JAVA_HOME =  $JAVA_HOME"
-    echo "TDBROOT   =  $TDBROOT"
-    echo "JVM_ARGS  =  $JVM_ARGS"
-    echo "SOCKS     =  $SOCKS"
-    echo "TDB_CP    =  $TDB_CP"
-    echo "TDB_CMD   =  $TDB_CMD"
-    fi
-
-exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.$TDB_CMD" "$@"
+echo "JAVA_HOME =  $JAVA_HOME"
+echo "TDBROOT   =  $TDBROOT"
+echo "JVM_ARGS  =  $JVM_ARGS"
+echo "SOCKS     =  $SOCKS"
+echo "TDB_CMD   =  $TDB_CMD"
+echo "TDB_CP    =  $TDB_CP"
