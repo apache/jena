@@ -7,14 +7,10 @@
 ## Environment variable usage:
 ## TDBROOT         :: The root of the TDB installation (required)
 ## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
-## 
-##   Default store description 
-##   is the file sdb.ttl in the
-##   current directory
 
 ## Source this file to set:
+##  JVM_ARGS
 ##  TDB_CP         :: Classpath
-##  TDB_SPEC       :: Default store specification
 ##  TDB_CMD        :: The TDB command to call.
 
 ## ---- Check root
