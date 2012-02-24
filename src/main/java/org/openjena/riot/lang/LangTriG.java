@@ -50,11 +50,9 @@ public class LangTriG extends LangTurtleBase<Quad>
           (i.e. raw inline nquads except with preifx names.
         
      */
-    public LangTriG(String baseURI, Tokenizer tokens, 
-                    ParserProfile profile, 
-                    Sink<Quad> sink) 
+    public LangTriG(Tokenizer tokens, ParserProfile profile, Sink<Quad> sink) 
     {
-        super(baseURI, tokens, profile, sink) ;
+        super(tokens, profile, sink) ;
     }
     
     @Override

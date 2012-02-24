@@ -29,11 +29,11 @@ import com.hp.hpl.jena.graph.Triple ;
 /** Turtle language */
 public class LangTurtle extends LangTurtleBase<Triple>
 {
-    public LangTurtle(String baseURI, Tokenizer tokens, 
+    public LangTurtle(Tokenizer tokens, 
                       ParserProfile profile, 
                       Sink<Triple> sink) 
     {
-        super(baseURI, tokens, profile, sink) ;
+        super(tokens, profile, sink) ;
         setCurrentGraph(null) ;
     }
 

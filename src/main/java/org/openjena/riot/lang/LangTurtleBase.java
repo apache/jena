@@ -124,8 +124,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
 //     */
 //    public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    protected LangTurtleBase(String baseURI, Tokenizer tokens,
-                             ParserProfile profile, Sink<X> sink)
+    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, Sink<X> sink)
     { 
         super(tokens, profile, sink) ;
     }

@@ -20,8 +20,8 @@ package org.openjena.riot;
 
 import static org.openjena.riot.Lang.NQUADS ;
 import static org.openjena.riot.Lang.NTRIPLES ;
-import static org.openjena.riot.Lang.RDFXML ;
 import static org.openjena.riot.Lang.RDFJSON ;
+import static org.openjena.riot.Lang.RDFXML ;
 
 import java.io.InputStream ;
 
@@ -30,13 +30,7 @@ import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.io.parser.TokenizerJSON ;
 import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.lang.LangNQuads ;
-import org.openjena.riot.lang.LangNTriples ;
-import org.openjena.riot.lang.LangRDFJSON ;
-import org.openjena.riot.lang.LangRDFXML ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.LangTriG ;
-import org.openjena.riot.lang.LangTurtle ;
+import org.openjena.riot.lang.* ;
 import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.RiotLib ;
 import org.openjena.riot.system.SinkExtendTriplesToQuads ;
@@ -144,10 +138,13 @@ public class RiotReader
     public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, Sink<Triple> sink)
     {
         if ( lang == RDFXML )
+        {
+            baseIRI = IRIResolver.resolveString(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
-        if ( lang == RDFJSON )
-            return createParserRdfJson(input, sink) ;
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
+        }
+        Tokenizer tokenizer = ( lang == RDFJSON ) ?
+            new TokenizerJSON(PeekReader.makeUTF8(input)) :
+                TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriples(tokenizer, lang, baseIRI ,sink) ;
     }
     
@@ -162,6 +159,7 @@ public class RiotReader
             case NTRIPLES :
                 return createParserNTriples(tokenizer, sink) ;
             case RDFJSON :
+                // But it must be a JSON tokenizer ...
             	return createParserRdfJson(tokenizer, sink) ;
             case RDFXML :
                 throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
@@ -181,7 +179,7 @@ public class RiotReader
             return createParserTriples(input, lang, baseIRI, converter) ;
         }
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParserQuads(tokenizer, lang, baseIRI ,sink) ;
+        return createParserQuads(tokenizer, lang, baseIRI, sink) ;
     }
     
     /** Create a parser for a quads language */  
@@ -215,7 +213,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, Sink<Triple> sink)
     {
-        LangTurtle parser = new LangTurtle(baseIRI, tokenizer, RiotLib.profile(Lang.TURTLE, baseIRI), sink) ;
+        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(Lang.TURTLE, baseIRI), sink) ;
         return parser ;
     }
 
@@ -253,7 +251,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = chooseBaseIRI() ;
-        LangTriG parser = new LangTriG(baseIRI, tokenizer, RiotLib.profile(Lang.TRIG, baseIRI), sink) ;
+        LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(Lang.TRIG, baseIRI), sink) ;
         return parser ;
     }
 
