@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki.mgt;
 
 import java.util.Iterator ;
+import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpSession ;
@@ -26,6 +27,7 @@ import javax.servlet.http.HttpSession ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -64,8 +66,16 @@ public class MgtFunctions
         String ds = (String)session.getAttribute("dataset") ;
         return DatasetRegistry.get().get(ds) ;
     }
-    
+
     /** Return lists of datasets */ 
+    public static List<String> datasets(HttpServletRequest request)
+    {
+        return Iter.toList(DatasetRegistry.get().keys()) ;
+    }
+
+    
+    /* remove soon - simply for backwards compatibility with Fuseki+JSP */
+    @Deprecated
     public static String datasetsAsSelectOptions(HttpServletRequest request)
     {
         StringBuilder buff = new StringBuilder() ;
@@ -78,7 +88,9 @@ public class MgtFunctions
         }
         return buff.toString() ;
     }
-    /** Return lists of datasets */ 
+    
+    /* remove soon - simply for backwards compatibility with Fuseki+JSP */
+    @Deprecated
     public static String datasetsAsListItems(HttpServletRequest request)
     {
         StringBuilder buff = new StringBuilder() ;
