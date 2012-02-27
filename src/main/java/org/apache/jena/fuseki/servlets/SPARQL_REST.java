@@ -319,7 +319,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         Lang lang = FusekiLib.langFromContentType(ct.getContentType()) ;
         if ( lang == null )
         {
-            errorBadRequest("Unknown: "+contentTypeHeader) ;
+            errorBadRequest("Unknown content type for triples: "+contentTypeHeader) ;
             return null ;
         }
 
