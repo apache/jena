@@ -22,10 +22,14 @@ import java.io.IOException ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.io.IndentedLineBuffer ;
+
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.update.UpdateFactory ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -98,9 +102,42 @@ public class uparse extends CmdARQ
     
     private void execOne(String updateString)
     {
-        UpdateRequest req = UpdateFactory.create(updateString, updateSyntax) ;
+        UpdateRequest req ; 
+        try {
+            req = UpdateFactory.create(updateString, updateSyntax) ;
+        } catch (QueryParseException ex)
+        {
+            System.err.print("Parse error: ") ;
+            System.err.println(ex.getMessage()) ;
+            return ; 
+        }
         //req.output(IndentedWriter.stderr) ;
         System.out.print(req) ;
+        
+        // And some checking.
+        IndentedLineBuffer w = new IndentedLineBuffer() ;
+        UpdateWriter.output(req, w) ;
+        String updateString2 = w.asString() ;
+        UpdateRequest req2 = null ;
+        try {
+            req2 = UpdateFactory.create(updateString2, updateSyntax) ;
+        } catch (QueryParseException ex)
+        {
+            System.err.println("Can not reparse update after serialization") ;
+            System.err.println(updateString2) ; 
+        }
+        // Currently, UpdateRequest do not implement value-based .equals
+//        if ( req.hashCode() != req2.hashCode() )
+//        {
+//            System.err.println("Reparsed update hash code does not equal original parsed request hash code") ;
+//        }
+//        else
+//        {
+//            if ( ! req.equals(req2) )
+//                System.err.println("Reparsed update does not .equals original parsed request") ;
+//        }
+        
+        
     }
     
     static final String divider = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" ;

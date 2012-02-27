@@ -151,7 +151,8 @@ public class UpdateWriter
             out.print(" ") ;
             if ( update.isSilent() )
                 out.print("SILENT ") ;
-            
+            out.print("GRAPH") ;
+            out.print(" ") ;
             String s = FmtUtils.stringForNode(update.getGraph(), sCxt) ;
             out.print(s) ;
         }
