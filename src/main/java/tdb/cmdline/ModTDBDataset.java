@@ -18,33 +18,27 @@
 
 package tdb.cmdline;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdArgModule ;
+import arq.cmdline.CmdGeneral ;
+import arq.cmdline.ModDataset ;
 
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdArgModule;
-import arq.cmdline.CmdGeneral;
-import arq.cmdline.ModDataset;
-
-import com.hp.hpl.jena.query.Dataset;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils;
-import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab;
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.assembler.VocabTDB;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
+import com.hp.hpl.jena.sparql.core.assembler.DatasetAssemblerVocab ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class ModTDBDataset extends ModDataset
 {
@@ -80,7 +74,7 @@ public class ModTDBDataset extends ModDataset
             // Two variants: plain dataset with a TDB graph or a TDB dataset.
             try {
                 thing = (Dataset)AssemblerUtils.build( modAssembler.getAssemblerFile(), VocabTDB.tDatasetTDB) ;
-                if ( thing != null && ! ( thing.asDatasetGraph() instanceof DatasetGraphTDB ) )
+                if ( thing != null && ! ( thing.asDatasetGraph() instanceof DatasetGraphTransaction ) )
                         Log.warn(this, "Unexpected: Not a TDB dataset for type DatasetTDB");
                 
                 if ( thing == null )
