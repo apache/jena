@@ -16,47 +16,57 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.graph.query;
+package com.hp.hpl.jena.graph.query ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.QueryNode.*;
-import com.hp.hpl.jena.graph.query.QueryNode.Bind;
-import com.hp.hpl.jena.graph.query.QueryNode.Bound;
-import com.hp.hpl.jena.graph.query.QueryNode.Fixed;
+import com.hp.hpl.jena.graph.Node ;
 
 /**
-    A base-level implementation of the QueryNodeFactory that uses the
-    QueryNode/QueryTriple classes directly.
-    
-    @author kers
-*/
+ * A base-level implementation of the QueryNodeFactory that uses the
+ * QueryNode/QueryTriple classes directly.
+ * 
+ * @author kers
+ */
 public class QueryNodeFactoryBase implements QueryNodeFactory
-    {
+{
     @Override
     public QueryNode createAny()
-        { return new Any(); }
-    
-    @Override
-    public QueryNode createFixed( Node n )
-        { return new Fixed( n ); }
-    
-    @Override
-    public QueryNode createBind( Node node, int i )
-        { return new Bind( node, i ); }
-    
-    @Override
-    public QueryNode createJustBound( Node node, int i )
-        { return new JustBound( node, i ); }
-    
-    @Override
-    public QueryNode createBound( Node node, int i )
-        { return new Bound( node, i ); }
-    
-    @Override
-    public QueryTriple createTriple( QueryNode S, QueryNode P, QueryNode O )
-        { return new QueryTriple( S, P, O ); }
-    
-    @Override
-    public QueryTriple [] createArray( int size )
-        { return new QueryTriple [size]; }
+    {
+        return new QueryNode.Any() ;
     }
+
+    @Override
+    public QueryNode createFixed(Node n)
+    {
+        return new QueryNode.Fixed(n) ;
+    }
+
+    @Override
+    public QueryNode createBind(Node node, int i)
+    {
+        return new QueryNode.Bind(node, i) ;
+    }
+
+    @Override
+    public QueryNode createJustBound(Node node, int i)
+    {
+        return new QueryNode.JustBound(node, i) ;
+    }
+
+    @Override
+    public QueryNode createBound(Node node, int i)
+    {
+        return new QueryNode.Bound(node, i) ;
+    }
+
+    @Override
+    public QueryTriple createTriple(QueryNode S, QueryNode P, QueryNode O)
+    {
+        return new QueryTriple(S, P, O) ;
+    }
+
+    @Override
+    public QueryTriple[] createArray(int size)
+    {
+        return new QueryTriple[size] ;
+    }
+}
