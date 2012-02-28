@@ -66,7 +66,16 @@ public class ActionBackup extends ServletBase
         // request.getRemoteUser() ;
         // request.getUserPrincipal() ;
 
-        final String dataset = request.getParameter("dataset") ;
+        String dataset = request.getParameter("dataset") ;
+        if ( dataset == null )
+        {
+            response.sendError(HttpSC.BAD_REQUEST_400, "Required parameter missing: ?dataset=") ;
+            return ;
+        }
+        
+        if ( ! dataset.startsWith("/") )
+            dataset="/"+dataset ;
+        
         // HttpSession session = request.getSession(true) ;
         // session.setAttribute("dataset", dataset) ;
         // session.setMaxInactiveInterval(15*60) ; // 10 mins
@@ -80,7 +89,7 @@ public class ActionBackup extends ServletBase
 
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
         DatasetGraph dsg = ref.dataset ;
-        final HttpAction action = new HttpAction(requestIdAlloc.incrementAndGet(), dsg, request, response, false) ;
+        HttpAction action = new HttpAction(requestIdAlloc.incrementAndGet(), dsg, request, response, false) ;
         scheduleBackup(action, dataset) ;
     }
 

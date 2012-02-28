@@ -44,7 +44,7 @@ $mtSparqlQuery      = "application/sparql-query" ;
 # Global media type table.
 $fileMediaTypes = {}
 $fileMediaTypes['ttl']   = $mtTurtle
-$fileMediaTypes['n3']    = 'text/rdf+n3application/rdf+n3'
+$fileMediaTypes['n3']    = 'text/n3; charset=utf-8'
 $fileMediaTypes['nt']    = $mtText
 $fileMediaTypes['rdf']   = $mtRDF
 $fileMediaTypes['owl']   = $mtRDF
