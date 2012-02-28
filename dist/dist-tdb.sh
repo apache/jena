@@ -29,12 +29,28 @@
 # /downloads or /.
 #   Easier to find distribution files.
 
-REPO=~/.m2/repo/org/apache/jena
+# Set the REPO, down to the 
+# e.g. ~/.m2/repository
+REPO=${REPO:-}
+if [ -z "$REPO" ]
+then
+    echo "REPO not set" 1>&2
+    exit 1
+    fi
+REPO="$REPO/org/apache/jena"
 OUT="dist"
-#DOWNLOAD="download"
-DOWNLOAD="."
+
+# IF there is a download area ...
+DOWNLOAD="download"
+#DOWNLOAD="."
 BINARIES="binaries"
-SRC_REL="source-release"
+#SRC_REL="source-release"
+SRC_REL="sources"
+
+# Whether to include the useful stuff ...
+MAVEN_ARTIFACTS=0
+# Whether to put some copies in a more obvious place.
+DOWNLOAD_COPY=0
 
 # This script collects everything for the incubator/dist/jena area
 # for a TDB release. It write a script that will build dist/.
@@ -48,7 +64,7 @@ DELDIR="$ECHO rm -rf"
 echo "## Initalize"
 $DELDIR $OUT
 $MKDIR $OUT
-$MKDIR $OUT/$DOWNLOAD
+[ $DOWNLOAD_COPY = 1 ] && $MKDIR $OUT/$DOWNLOAD
 $MKDIR $OUT/$BINARIES
 $MKDIR $OUT/$SRC_REL
 
@@ -124,15 +140,19 @@ cpallfiles()
     #[ ! -e "$OUT/$D" ] || { echo "Directory exists: $OUT/$D" 2>&1 ; exit 1 ; }
 
     $MKDIR $OUT/$D
-    cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
-    cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
+    # Maven artifacts
+    if [ "$MAVEN_ARTIFACTS" = 1 ] 
+    then
+	cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
+	cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
+	cpfilemaybe "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
+    fi
 
     for ext in zip tar.gz tar.bz2
     do
 	cpfilemaybe "$M/$V-$inc/$M-$V-$inc-distribution.${ext}" $D
     done
 
-    cpfilemaybe "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
 }
 
 ## ToDo: automate
@@ -151,26 +171,29 @@ echo
 echo "## TDB"
 cpallfiles jena-tdb "${V_TDB}"
 
-echo
-echo "## zip"
-M=jena-tdb
-V=${V_TDB}
-D="$M-$V-$inc"
-cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
-cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
-cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
+if [ "$DOWNLOAD_COPY" = 1 ]
+then
+    # Distribution
+    echo
+    echo "## zip"
+    M=jena-tdb
+    V=${V_TDB}
+    D="$M-$V-$inc"
+    cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
+    cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+    cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
 
-# Distribution
-echo
-echo "# Distribution"
-# Fix the name.
+    echo
+    echo "# Distribution"
+    # Fix the name.
 
-for ext1 in zip tar.gz # tar.bz2
-do
-    for ext2 in "" .asc .md5 .sha1
+    for ext1 in zip tar.gz # tar.bz2
     do
-	ext="$ext1$ext2"
-	F=$OUT/$DOWNLOAD/$D-distribution.$ext
-	$ECHO mv $F $OUT/$DOWNLOAD/apache-$D-distribution.$ext
+	for ext2 in "" .asc .md5 .sha1
+	do
+	    ext="$ext1$ext2"
+	    F=$OUT/$DOWNLOAD/$D-distribution.$ext
+	    $ECHO mv $F $OUT/$DOWNLOAD/apache-$D-distribution.$ext
+	done
     done
-done
+fi
