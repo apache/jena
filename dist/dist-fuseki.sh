@@ -1,62 +1,33 @@
 #!/bin/bash
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
 
-# You need a copy of the staging repo to get the checksum files.
+# Layout: simple:
+# /MOD-VER/
 
-
-# Or use command line tools.
-# sha1sum $F > $F.sha1
-# md5sum $F > $F.md5
-# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
-
-# Layout:
-# /source-release/MOD-VER/
-# or
-# /source-release/
-#   The offical release file: MOD-VER-source-release.{zip,tar.gz}{,.asc,.md5,.sha1}
-# 
-# /downloads/
-#   Files
-# of
-#   MOD-XXX/files
-#     jar and sources?
-
-
-# NB This fails unless this first:
-# cd somewhere_clean
-# export NNN=....
-# mkdir -p repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
-#   otherwise it creates a file in this location then can't mirror below it.
-#
-# wget -e robots=off --wait 1 --mirror -np \
-#     https://repository.apache.org/content/repositories/orgapachejena-${NNN}/org/apache/jena
-# mv repository.apache.org/content/repositories/orgapachejena-${NNN} REPO
-# rm -rf  repository.apache.org/
-
-REPO=REPO/org/apache/jena
+# Set the REPO, down to the 
+# e.g. ~/.m2/repository
+REPO=${REPO:-}
+if [ -z "$REPO" ]
+then
+    echo "REPO not set" 1>&2
+    exit 1
+    fi
+REPO="$REPO/org/apache/jena"
 OUT="dist"
-DOWNLOAD="download"
-SRC_REL="source-release"
-
-# This script collects everything for the incubator/dist/jena area
-# for a TDB release. 
-# It write a script that will build dist/ from rpo copy.
-# Copy to dist/jena to add to the last jena release.
-
-## To manaually sign:
-# sha1sum -b FILE | cut -f1 -d' '
-
-ECHO=echo
-CPCMD="$ECHO cp"
-MKDIR="$ECHO mkdir"
-DELDIR="$ECHO rm -rf"
-
-## 
-echo "## Initalize"
-$DELDIR $OUT
-$MKDIR $OUT
-$MKDIR $OUT/$DOWNLOAD
-$MKDIR $OUT/$SRC_REL
-
 
 # Copy a file , and its associated asc md5 sha1, to a directory.
 #  cpfile FILE DIR
@@ -127,25 +98,16 @@ function cpallfiles
 V_FUSEKI=0.2.1
 inc=incubating
 
-## source-release
-cp_release jena-tdb "${V_FUSEKI}"
+## ToDo: automate
 
-## Module
+V_TDB=0.9.0
+inc=incubating
 
-echo "## Fuseki"
-cpallfiles jena-tdb "${V_FUSEKI}"
-
-echo "## zip"
 M=jena-tdb
-V=${V_FUSEKI}
-D="$M-$V-$inc"
-cpfile $M/$V-$inc/$D-distribution.zip      $DOWNLOAD
-cpfile $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+V="${V_TDB}-$inc"
+D="$M-$V"
 
-# Distribution
-
-# Fix the name.
-for ext in {zip,tar.gz}{,.asc,.md5,.sha1}
-do
-    $ECHO mv $OUT/$DOWNLOAD/$M-$V-$inc-distribution.$ext $OUT/$DOWNLOAD/apache-$M-$V-$inc.$ext
-done
+$MKDIR "$OUT/$M-$V"
+cpfile "$M/$V/$M-$V-source-release.zip"   $D
+cpfile "$M/$V/$M-$V-distribution.zip"     $D
+cpfile "$M/$V/$M-$V-distribution.tar.gz"  $D
