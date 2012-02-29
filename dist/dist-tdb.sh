@@ -15,59 +15,37 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
-# You need a copy of the maven-built-artifacts, toegther with the .asc files.
-# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
-# sha1sum $F > $F.sha1
-# md5sum $F > $F.md5
+# This script collects everything for the 
+# incubator/dist/jena area for a TDB release.
 
-# Layout:
-# /source-release/MOD-VER/
-#   The offical release file: MOD-VER-source-release.{zip,tar.gz}{,.asc,.md5,.sha1}
-# /binaries/MOD-VER/
-#   The jars, jaavdoc, java sources and distribution files.
-# 
-# /downloads or /.
-#   Easier to find distribution files.
+# You need a copy of the maven-built-artifacts, toegther with the .asc files.
+# The .asc files should be created when the artifacts were created.
+# In emergencies, create the .asc 
+# gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
+
+# Layout: simple:
+# /MOD-VER/
 
 # Set the REPO, down to the 
 # e.g. ~/.m2/repository
 REPO=${REPO:-}
 if [ -z "$REPO" ]
 then
-    echo "REPO not set" 1>&2
+    echo "Environment variable REPO not set" 1>&2
+    echo "(set to the root of your maven local repository e.g. /home/user/.m2/repository )" 1>&2
     exit 1
     fi
 REPO="$REPO/org/apache/jena"
 OUT="dist"
-
-# IF there is a download area ...
-DOWNLOAD="download"
-#DOWNLOAD="."
-BINARIES="binaries"
-#SRC_REL="source-release"
-SRC_REL="sources"
-
-# Whether to include the useful stuff ...
-MAVEN_ARTIFACTS=0
-# Whether to put some copies in a more obvious place.
-DOWNLOAD_COPY=0
-
-# This script collects everything for the incubator/dist/jena area
-# for a TDB release. It write a script that will build dist/.
 
 ECHO=echo
 CPCMD="$ECHO cp"
 MKDIR="$ECHO mkdir -p"
 DELDIR="$ECHO rm -rf"
 
-## 
 echo "## Initalize"
 $DELDIR $OUT
 $MKDIR $OUT
-[ $DOWNLOAD_COPY = 1 ] && $MKDIR $OUT/$DOWNLOAD
-$MKDIR $OUT/$BINARIES
-$MKDIR $OUT/$SRC_REL
-
 
 # Copy a file, and its associated asc, to a directory.
 # Create .md5 and .sha1 files.
@@ -86,8 +64,18 @@ cpfile()
     $CPCMD "$SRC" "$DEST"
     $CPCMD "${SRC}.asc" "$DEST"
     local BASE="$(basename $FILE)"
-    $ECHO "sha1sum $SRC > $DEST/${BASE}.sha1"
-    $ECHO "md5sum  $SRC > $DEST/${BASE}.md5"
+    chksum "$DEST" "$BASE"
+}
+
+chksum() # dir file
+{
+    local DIR="$1"
+    local FILE="$2"
+    $ECHO "("
+    $ECHO "  cd $DIR > /dev/null" 
+    $ECHO "  md5sum $FILE > $FILE.md5"
+    $ECHO "  sha1sum $FILE > $FILE.sha1"
+    $ECHO ")"
 }
 
 # Copy a file if it exists else add a comment
@@ -116,8 +104,8 @@ cp_release()
     local V="$2"
     local D="$M-$V-$inc"
 
-    local SRC="$M/$V-$inc/$M-$V-$inc-source-release"
-    local DEST="$SRC_REL/$M-$V-$inc"
+    local SRC="$D/$M-$V-$inc-source-release"
+    local DEST="$M-$V-$inc"
 
     $MKDIR "$OUT/$DEST"
     for ext in zip # tar.gz tar.bz2
@@ -140,13 +128,6 @@ cpallfiles()
     #[ ! -e "$OUT/$D" ] || { echo "Directory exists: $OUT/$D" 2>&1 ; exit 1 ; }
 
     $MKDIR $OUT/$D
-    # Maven artifacts
-    if [ "$MAVEN_ARTIFACTS" = 1 ] 
-    then
-	cpfile "$M/$V-$inc/$M-$V-$inc.jar" $D
-	cpfile "$M/$V-$inc/$M-$V-$inc-sources.jar" $D
-	cpfilemaybe "$M/$V-$inc/$M-$V-$inc-javadoc.jar" $D
-    fi
 
     for ext in zip tar.gz tar.bz2
     do
@@ -163,37 +144,51 @@ inc=incubating
 ## source-release
 echo
 echo "# source-release"
-cp_release jena-tdb "${V_TDB}"
 
-## Module
+M=jena-tdb
+V="${V_TDB}-$inc"
+D="$M-$V"
 
-echo
-echo "## TDB"
-cpallfiles jena-tdb "${V_TDB}"
+## Just the distribution and source-release
+$MKDIR "$OUT/$M-$V"
+cpfile "$M/$V/$M-$V-source-release.zip"   $D
+cpfile "$M/$V/$M-$V-distribution.zip"     $D
+cpfile "$M/$V/$M-$V-distribution.tar.gz"  $D
 
-if [ "$DOWNLOAD_COPY" = 1 ]
-then
-    # Distribution
-    echo
-    echo "## zip"
-    M=jena-tdb
-    V=${V_TDB}
-    D="$M-$V-$inc"
-    cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
-    cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
-    cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
 
-    echo
-    echo "# Distribution"
-    # Fix the name.
 
-    for ext1 in zip tar.gz # tar.bz2
-    do
-	for ext2 in "" .asc .md5 .sha1
-	do
-	    ext="$ext1$ext2"
-	    F=$OUT/$DOWNLOAD/$D-distribution.$ext
-	    $ECHO mv $F $OUT/$DOWNLOAD/apache-$D-distribution.$ext
-	done
-    done
-fi
+## ## If include maven artifacts and distribution.
+## echo
+## echo "## TDB"
+## cpallfiles jena-tdb "${V_TDB}"
+
+
+## ## If include a separate different copy of the distribution for easy finding.
+## if [ "$DOWNLOAD_COPY" = 1 ]
+## then
+##     # Distribution
+##     echo
+##     echo "## zip"
+##     M=jena-tdb
+##     V=${V_TDB}
+##     D="$M-$V-$inc"
+##     cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
+##     cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
+##     cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
+## 
+##     echo
+##     echo "# Distribution"
+##     # Fix the name.
+## 
+##     for ext1 in zip tar.gz # tar.bz2
+##     do
+## 	for ext2 in "" .asc .md5 .sha1
+## 	do
+## 	    ext="$ext1$ext2"
+## 	    F=$OUT/$DOWNLOAD/$D-distribution.$ext
+## 	    $ECHO mv $F $OUT/$DOWNLOAD/apache-$D-distribution.$ext
+## 	done
+##     done
+## fi
+
+
