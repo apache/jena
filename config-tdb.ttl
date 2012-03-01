@@ -1,3 +1,5 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 ## Example of a TDB dataset published using Fuseki
 
 @prefix :        <#> .
@@ -16,6 +18,7 @@
    # ja:loadClass "your.code.Class" ;
 
    fuseki:services (
+     <#service_tdb_read_only>
      <#service_tdb_all>
    ) .
 
@@ -28,7 +31,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 ## Updatable TDB dataset with all servcies enabled.
 
 <#service_tdb_all> rdf:type fuseki:Service ;
-    rdfs:label                      "TDB Service" ;
+    rdfs:label                      "TDB Service (R)" ;
     fuseki:name                     "ds" ;
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
@@ -37,15 +40,33 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceReadWriteGraphStore      "data" ;
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:dataset           <#tdb_dataset> ;
+    fuseki:dataset           <#tdb_dataset_read> ;
     .
-## ---------------------------------------------------------------
-## TDB dataset with all 
 
-<#tdb_dataset> rdf:type      tdb:DatasetTDB ;
-    tdb:location "DB" ;
+<#tdb_dataset_read> rdf:type      tdb:DatasetTDB ;
+    tdb:location "DB1" ;
+    tdb:unionDefaultGraph true ;
+    .
+
+## ---------------------------------------------------------------
+## Updatable TDB dataset with all servcies enabled.
+
+<#service_tdb_all> rdf:type fuseki:Service ;
+    rdfs:label                      "TDB Service (RW)" ;
+    fuseki:name                     "data" ;
+    fuseki:serviceQuery             "query" ;
+    fuseki:serviceQuery             "sparql" ;
+    fuseki:serviceUpdate            "update" ;
+    fuseki:serviceUpload            "upload" ;
+    fuseki:serviceReadWriteGraphStore      "data" ;
+    # A separate read-only graph store endpoint:
+    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:dataset           <#tdb_dataset_readwrite> ;
+    .
+
+<#tdb_dataset_readwrite> rdf:type      tdb:DatasetTDB ;
+    tdb:location "DB2" ;
 ##     # Query timeout on this dataset (milliseconds)
 ##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
 ##     # Default graph for query is the (read-only) union of all named graphs.
-    tdb:unionDefaultGraph true ;
      .

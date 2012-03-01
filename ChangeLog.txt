@@ -1,7 +1,5 @@
 ==== Fuseki
 
-== Version 1.0
-
 == 0.2.1
 
 + Switch from JSPs to Velocity.

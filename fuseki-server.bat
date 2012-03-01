@@ -1,2 +1,3 @@
 @echo off
-java -Xmx1200M -jar fuseki-sys.jar %*
+@REM modify this to name the server jar
+java -Xmx1200M -jar jena-fuseki-*-server.jar %*

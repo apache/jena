@@ -1,7 +1,10 @@
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+## A collection of example configurations for Fuseki
+
 @prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
 @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-## A collection of example configurations
 
 @prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
