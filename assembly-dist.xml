@@ -32,7 +32,7 @@ Assumes jar made and onejar has been assembled.
     <format>tar.gz</format>
   </formats>
 
-  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
+  <baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
 
   <files>
     <file>
@@ -54,21 +54,21 @@ Assumes jar made and onejar has been assembled.
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-	<include>README*</include>
-	<include>DEPENDENCIES*</include>
-	<include>DISCLAIMER*</include>
-	<include>ChangeLog.txt</include>
+        <include>README*</include>
+        <include>DEPENDENCIES*</include>
+        <include>DISCLAIMER*</include>
+        <include>ChangeLog.txt</include>
       </includes>
     </fileSet>
 
     <fileSet>
       <outputDirectory></outputDirectory>
       <includes>
-	<include>log4j.properties</include>
-	<include>fuseki-server</include>
-	<include>config*.ttl</include>
-	<include>s-*</include>
-	<include>pages/*</include>
+        <include>log4j.properties</include>
+        <include>fuseki-server</include>
+        <include>config*.ttl</include>
+        <include>s-*</include>
+        <include>pages/*</include>
       </includes>
     </fileSet>
   </fileSets>

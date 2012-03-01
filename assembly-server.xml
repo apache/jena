@@ -29,15 +29,33 @@ just want -jar-with-dependences to by replaced by -sys as  classifier
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  
   <dependencySets>
     <dependencySet>
+      <useProjectArtifact>true</useProjectArtifact>
       <unpack>true</unpack>
       <scope>runtime</scope>
+      <unpackOptions>
+        <excludes>
+          <exclude>**/NOTICE*</exclude>
+          <exclude>**/LICENSE*</exclude>
+          <exclude>**/DEPENDENCIES*</exclude>
+        </excludes>
+    </unpackOptions>
     </dependencySet>
   </dependencySets>
-  <fileSets>
-    <fileSet>
-      <directory>${project.build.outputDirectory}</directory>
-    </fileSet>
-  </fileSets>
+  
+  <!-- put our (rolled up) LICNESE and NOTICE.  We have no DEPENDENCIES --> 
+  <files>
+    <file>
+      <source>dist/LICENSE-dist</source>
+      <outputDirectory>META-INF</outputDirectory>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>dist/NOTICE-dist</source>
+      <outputDirectory>META-INF</outputDirectory>
+      <destName>NOTICE</destName>
+    </file>
+  </files>
 </assembly>
