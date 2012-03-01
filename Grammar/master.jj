@@ -1260,6 +1260,12 @@ Path PathMod(Path p) : { long i1 ; long i2 ; }
          i2 = Integer()
          <RBRACE>
            { return PathFactory.pathMod(p, PathFactory.UNSET, i2) ; } 
+#if 0
+       |   // {*}
+         ( <STAR> <RBRACE> { return null ; } )
+       |   // {+}
+         ( <PLUS> <RBRACE> { return null ; } )
+#endif
        )
    )
 }
