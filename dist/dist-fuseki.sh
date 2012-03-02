@@ -16,15 +16,24 @@
 ## limitations under the License.
 
 # This script collects everything for the 
-# incubator/dist/jena area for a TDB release.
-
+# incubator/dist/jena area for a release.
+#
+# Layout:
+# /NAME-VERSION/NAME-VERSION-source-release.zip
+# /NAME-VERSION/NAME-VERSION-distribution.zip
+# /NAME-VERSION/NAME-VERSION-distribution.tar.gz
+# and asc, md5 and sh1 files.
+#
 # You need a copy of the maven-built-artifacts, toegther with the .asc files.
-# The .asc files should be created when the artifacts were created.
+# The .asc files should be created when the artifacts were created
+# with -Papache-release or mvn gpg:sign
+#
 # In emergencies, create the .asc 
 # gpg --batch --armour --detach-sign F (creates $F.asc or use -o)
 
-# Layout: simple:
-# /MOD-VER/
+## This system
+VERSION=0.2.1
+NAME=jena-fuseki
 
 # Set the REPO, down to the 
 # e.g. ~/.m2/repository
@@ -136,17 +145,13 @@ cpallfiles()
 
 }
 
-## ToDo: automate
-
-VER=0.2.1
-inc=incubating
-
 ## source-release
 echo
 echo "# source-release"
 
-M=jena-fuseki
-V="${VER}-$inc"
+inc=incubating
+M="$NAME"
+V="${VERSION}-$inc"
 D="$M-$V"
 
 ## Just the distribution and source-release
@@ -189,5 +194,3 @@ cpfile "$M/$V/$M-$V-distribution.tar.gz"  $D
 ## 	done
 ##     done
 ## fi
-
-
