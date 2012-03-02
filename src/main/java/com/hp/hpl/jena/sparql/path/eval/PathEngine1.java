@@ -135,7 +135,10 @@ final class PathEngine1 extends PathEngine
         Collection<Node> visited = collector() ;
         
         if ( fixedLength == 0 )
-        {}
+        {
+            doZero(pathStep, node, output) ;
+            return ;
+        }
         if ( fixedLength == 1 )
         {
             Iter<Node> iter = eval(graph, pathStep, node) ;
@@ -245,11 +248,14 @@ final class PathEngine1 extends PathEngine
     @Override
     protected void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
     {
+        Path part1 = forwardMode ? pathStepLeft : pathStepRight ;
+        Path part2 = forwardMode ? pathStepRight : pathStepLeft ;
+        
         Collection<Node> nodes = collector() ;
-        eval(graph, pathStepLeft, node, nodes) ;
+        eval(graph, part1, node, nodes) ;
         Collection<Node> nodes2 = new HashSet<Node>() ;
         for ( Node n : nodes )
-            eval(graph, pathStepRight, n, nodes2) ;
+            eval(graph, part2, n, nodes2) ;
         output.addAll(nodes2) ;
     }
 }
