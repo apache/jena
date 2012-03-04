@@ -25,8 +25,8 @@ import java.util.Map.Entry ;
 
 import org.openjena.atlas.lib.Pair ;
 
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIFactory ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
 
 /** Lightweight, prefix mapping for parsers.  No XML rules, no reverse lookup. */
 public class PrefixMap

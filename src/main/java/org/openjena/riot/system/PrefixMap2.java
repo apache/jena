@@ -20,7 +20,7 @@ package org.openjena.riot.system;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 
 // UNUSED
 /** Extend a PrefixMap - never alters the partent PrefixMap */

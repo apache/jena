@@ -28,7 +28,7 @@ import org.openjena.riot.checker.NodeChecker ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 
 /** A checker validates RDF terms. */
 public final class Checker

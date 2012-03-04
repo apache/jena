@@ -21,7 +21,7 @@ package org.openjena.riot.system;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 
 

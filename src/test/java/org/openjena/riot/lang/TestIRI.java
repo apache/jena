@@ -25,8 +25,8 @@ import static org.openjena.riot.ErrorHandlerTestLib.* ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.system.Checker ;
 
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIFactory ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
 
 public class TestIRI
 {

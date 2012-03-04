@@ -21,7 +21,7 @@ package arq.cmdline;
 import org.openjena.riot.system.IRIResolver ;
 import arq.cmd.CmdException ;
 
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.util.FileManager ;
 

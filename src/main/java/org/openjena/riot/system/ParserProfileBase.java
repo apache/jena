@@ -28,7 +28,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Basic profile of things, with key operations based on a simple

@@ -24,10 +24,10 @@ import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.cache.Getter ;
 import org.openjena.riot.RiotException ;
 
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIException ;
-import com.hp.hpl.jena.iri.IRIFactory ;
-import com.hp.hpl.jena.iri.ViolationCodes ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIException ;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.iri.ViolationCodes ;
 
 /** Package up IRI reolver functionality. 
  */

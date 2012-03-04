@@ -25,7 +25,7 @@ import org.openjena.riot.tokens.Token ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.iri.IRI ;
+import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 public interface ParserProfile

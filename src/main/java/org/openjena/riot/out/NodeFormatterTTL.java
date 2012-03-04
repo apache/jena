@@ -28,9 +28,9 @@ import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIFactory ;
-import com.hp.hpl.jena.iri.IRIRelativize ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.iri.IRIRelativize ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
 {
