@@ -22,10 +22,10 @@ import java.util.Iterator;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIComponents;
-import com.hp.hpl.jena.iri.Violation;
-import com.hp.hpl.jena.iri.ViolationCodes;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIComponents;
+import org.apache.jena.iri.Violation;
+import org.apache.jena.iri.ViolationCodes;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTag;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;

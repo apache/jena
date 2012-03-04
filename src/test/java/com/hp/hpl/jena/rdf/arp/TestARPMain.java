@@ -21,7 +21,7 @@ package com.hp.hpl.jena.rdf.arp ;
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.iri.IRIFactory ;
+import org.apache.jena.iri.IRIFactory ;
 import com.hp.hpl.jena.shared.wg.TestInputStreamFactory ;
 
 public class TestARPMain

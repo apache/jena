@@ -20,7 +20,7 @@ package com.hp.hpl.jena.rdf.arp.impl;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.IRI;
+import org.apache.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 
 /**

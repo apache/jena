@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import com.hp.hpl.jena.iri.IRIFactory;
+import org.apache.jena.iri.IRIFactory;
 
 
 /**

@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.ZipFile;
 
-import com.hp.hpl.jena.iri.*;
+import org.apache.jena.iri.*;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**

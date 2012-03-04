@@ -17,7 +17,7 @@
  */
 
 package com.hp.hpl.jena.rdf.arp;
-import com.hp.hpl.jena.iri.*;
+import org.apache.jena.iri.*;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -19,9 +19,9 @@
 package com.hp.hpl.jena.n3;
 
 
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIException;
-import com.hp.hpl.jena.iri.IRIFactory;
+import org.apache.jena.iri.IRI;
+import org.apache.jena.iri.IRIException;
+import org.apache.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
 /** A simple class to access IRI resolution 

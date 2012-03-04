@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.iri.*;
+import org.apache.jena.iri.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.Util;

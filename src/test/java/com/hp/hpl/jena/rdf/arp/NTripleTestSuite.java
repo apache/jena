@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.iri.IRI;
+import org.apache.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPEventHandler;
 import com.hp.hpl.jena.rdf.arp.AResource;

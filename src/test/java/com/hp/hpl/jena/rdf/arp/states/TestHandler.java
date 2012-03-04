@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.arp.impl.Location;
 import com.hp.hpl.jena.rdf.arp.impl.Taint;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
-import com.hp.hpl.jena.iri.IRI;
+import org.apache.jena.iri.IRI;
 
 class TestHandler extends XMLHandler {
     public void wrong(String msg) {
