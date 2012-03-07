@@ -21,12 +21,12 @@ package com.hp.hpl.jena.query;
 import java.util.Calendar;
 import java.util.TimeZone;
 
+import org.apache.jena.iri.IRIFactory;
 import org.junit.Test;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.iri.IRI;
-import com.hp.hpl.jena.iri.IRIFactory;
+
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
@@ -40,11 +40,11 @@ public class TestParameterizedSparqlString {
 	
 	private void test(ParameterizedSparqlString query, String[] expected, String[] notExpected)
 	{
-		System.out.println("Raw Command:");
-		System.out.println(query.getCommandText());
+		//System.out.println("Raw Command:");
+		//System.out.println(query.getCommandText());
 		String command = query.toString();
-		System.out.println("Injected Command:");
-		System.out.println(command);
+		//System.out.println("Injected Command:");
+		//System.out.println(command);
 		for (String x : expected)
 		{
 			Assert.assertTrue(command.contains(x));
