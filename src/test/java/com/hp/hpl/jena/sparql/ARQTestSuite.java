@@ -26,6 +26,7 @@ import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.TS_ParamString ;
 import com.hp.hpl.jena.sparql.algebra.TC_Algebra ;
 import com.hp.hpl.jena.sparql.api.TS_API ;
 import com.hp.hpl.jena.sparql.engine.TS_Engine ;
@@ -89,12 +90,11 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_Util.suite()) ;
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_ResultSet.class)) ;
-
+        
         // Syntax
         ts.addTest(TS_Syntax.suite()) ;
         // Serialization
         ts.addTest(TS_Serialization.suite()) ;
-        
 
         // Binding I/O
         ts.addTest(TestBindingStreams.suite()) ;
@@ -128,6 +128,9 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Solver.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Engine.class)) ; 
+
+        // API
+        ts.addTest(new JUnit4TestAdapter(TS_ParamString.class)) ;
         
         return ts ;
     }

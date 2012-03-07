@@ -392,7 +392,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param n Value
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setParam(String var, Node n)
@@ -414,7 +414,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param n Value
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setParam(String var, RDFNode n)
@@ -427,7 +427,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param iri IRI 
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setIri(String var, String iri) {
@@ -439,7 +439,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param iri IRI 
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setIri(String var, IRI iri) {
@@ -449,9 +449,9 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	/**
 	 * Sets a Parameter to an IRI
 	 * @param var Variable
-	 * @param iri IRI 
+	 * @param url URL used as IRI 
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setIri(String var, URL url) {
@@ -463,7 +463,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param lit Value
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setLiteral(String var, Literal lit) {
@@ -475,7 +475,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param var Variable
 	 * @param value Lexical Value
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setLiteral(String var, String value) {
@@ -488,7 +488,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param value Lexical Value
 	 * @param lang Language
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setLiteral(String var, String value, String lang) {
@@ -501,7 +501,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	 * @param value Lexical Value
 	 * @param datatype Datatype
 	 * <p>
-	 * Setting a parameter to null is equivalent to calling {@link #clearParam()} for the given variable
+	 * Setting a parameter to null is equivalent to calling {@link #clearParam(String)} for the given variable
 	 * </p>
 	 */
 	public void setLiteral(String var, String value, RDFDatatype datatype) {
@@ -510,11 +510,11 @@ public class ParameterizedSparqlString implements PrefixMapping {
 	
 	/**
 	 * Sets a Parameter to a boolean literal
-	 * @param var Variable
-	 * @param Boolean Value
+	 * @param var a variable, by name.
+	 * @param value boolean
 	 */
-	public void setLiteral(String var, boolean b) {
-		this.setParam(var, this.model.createTypedLiteral(b));
+	public void setLiteral(String var, boolean value) {
+		this.setParam(var, this.model.createTypedLiteral(value));
 	}
 	
 	/**
