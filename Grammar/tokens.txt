@@ -138,6 +138,7 @@
 [<CAST>         ::= 'CAST'
 [<CALL>         ::= 'CALL'
 [<MULTI>        ::= 'MULTI'
+[<SHORTEST>     ::= 'SHORTEST'
 
 [<MD5>]         ::= 'MD5'
 [<SHA1>]        ::= 'SHA1'

@@ -981,11 +981,15 @@ Path PathEltOrInverse() : { String str ; Node n ; Path p ; }
 }
 Path PathMod(Path p) : { long i1 ; long i2 ; }
 {
-   ( <STAR> { return PathFactory.pathZeroOrMore(p) ; }
-   | <QMARK> { return PathFactory.pathZeroOrOne(p) ; }
-   | <PLUS> { return PathFactory.pathOneOrMore(p) ; }
+   ( <QMARK> { return PathFactory.pathZeroOrOne(p) ; }
+   | <STAR> { return PathFactory.pathZeroOrMore1(p) ; }
+   | <PLUS> { return PathFactory.pathOneOrMore1(p) ; }
    | <LBRACE>
-       ( // {N} {N,M} {N,}
+         //{*}
+       ( <STAR> <RBRACE> { return PathFactory.pathZeroOrMoreN(p) ; }
+         // {+}
+       | <PLUS> <RBRACE> { return PathFactory.pathOneOrMoreN(p) ; }
+       | // {N} {N,M} {N,}
           i1 = Integer()
           ( <COMMA>
             ( // case {N,}
@@ -1020,6 +1024,11 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      <DISTINCT><LPAREN>
      p = Path()
      { p = PathFactory.pathDistinct(p) ; }
+     <RPAREN>
+  |
+     <SHORTEST> <LPAREN>
+     p = Path()
+     { p = PathFactory.pathShortest(p) ; }
      <RPAREN>
   |
      <MULTI><LPAREN>
@@ -1657,6 +1666,7 @@ TOKEN [IGNORE_CASE] :
 | < CAST: "cast" >
 | < CALL: "call" >
 | < MULTI: "multi" >
+| < SHORTEST: "shortest" >
 | < STR: "str" >
 | < STRLANG: "strlang" >
 | < STRDT: "strdt" >
