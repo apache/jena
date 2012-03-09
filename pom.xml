@@ -63,7 +63,7 @@
 
     <ver.jena>2.7.0-incubating</ver.jena>
     <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.1-incubating-SNAPSHOT</ver.tdb><!-- 0.9.0 is mirroring .... -->
+    <ver.tdb>0.9.0-incubating</ver.tdb>
 
     <ver.jetty>7.5.4.v20111024</ver.jetty>
     <ver.velocity>1.7</ver.velocity>

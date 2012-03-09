@@ -30,7 +30,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 ## ---------------------------------------------------------------
 ## Updatable TDB dataset with all servcies enabled.
 
-<#service_tdb_all> rdf:type fuseki:Service ;
+<#service_tdb_read_only> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service (R)" ;
     fuseki:name                     "ds" ;
     fuseki:serviceQuery             "query" ;
