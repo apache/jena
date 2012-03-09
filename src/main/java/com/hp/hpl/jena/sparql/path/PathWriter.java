@@ -258,16 +258,32 @@ public class PathWriter
         }
 
         @Override
+        public void visit(P_Shortest path)
+        {
+            out.print("SHORTEST(") ;
+            path.getSubPath().visit(this) ;
+            out.print(")") ;
+        }
+
+        @Override
         public void visit(P_ZeroOrOne path)
         { printPathMod("?", path.getSubPath()) ; }
 
         @Override
-        public void visit(P_ZeroOrMore path)
+        public void visit(P_ZeroOrMore1 path)
         { printPathMod("*", path.getSubPath()) ; }
 
         @Override
-        public void visit(P_OneOrMore path)
+        public void visit(P_ZeroOrMoreN path)
+        { printPathMod("{*}", path.getSubPath()) ; }
+
+        @Override
+        public void visit(P_OneOrMore1 path)
         { printPathMod("+", path.getSubPath()) ; }
+
+        @Override
+        public void visit(P_OneOrMoreN path)
+        { printPathMod("{+}", path.getSubPath()) ; }
 
         private void printPathMod(String mod, Path path)
         {

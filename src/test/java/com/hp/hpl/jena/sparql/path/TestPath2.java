@@ -30,10 +30,7 @@ import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.path.PathFactory ;
 import com.hp.hpl.jena.sparql.path.eval.PathEval ;
-import com.hp.hpl.jena.sparql.path.eval.PathEval_OLD ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestPath2 extends BaseTest
@@ -88,21 +85,24 @@ public class TestPath2 extends BaseTest
 	@Test public void path_10() { test(x, "(notoneof (rev :Z))",  ":z") ; } 
 	@Test public void path_11() { test(x, "(notoneof :q (rev :p))",      ":y2", ":y1", ":a", ":y") ; } 
 	@Test public void path_12() { test(x, "(notoneof :q (rev :Z))",      ":y2", ":y1", ":a", ":y", ":z") ; } 
-	@Test public void path_13() { test(x, "(path* :p)",           ":x", ":a", ":y", ":z") ; } 
-	@Test public void path_14() { test(x, "(path+ :p)",           ":a", ":y", ":z", ":x", ":a") ; } 
-	@Test public void path_15() { test(x, "(mod 0 2 :q)",         ":x", ":y2", ":z", ":y1", ":z") ; } 
-	@Test public void path_16() { test(x, "(mod 0 1 :q)",         ":x", ":y2", ":y1") ; } 
-	@Test public void path_17() { test(x, "(mod 0 1 :r)",         ":x", ":y2", ":y1") ; } 
-	@Test public void path_18() { test(x, "(mod 0 3 :r)",         ":x", ":y2", ":z", ":a2", ":a1", ":y1", ":z", ":a2", ":a1") ; } 
-	@Test public void path_19() { test(x, "(mod 0 99 :r)",        ":x", ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
-	@Test public void path_20() { test(x, "(path+ :r)",           ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
-	@Test public void path_21() { test(x, "(mod 0 2 :q)",         ":x", ":y2", ":z", ":y1", ":z") ; } 
-	@Test public void path_22() { test(x, "(pathN 2 :p)",         ":z") ; } 
-	@Test public void path_23() { test(x, "(pathN 2 :q)",         ":z", ":z") ; } 
-	@Test public void path_24() { test(x, "(path* :p)",           ":x", ":a", ":y", ":z") ; } 
-	@Test public void path_25() { test(x, "(path+ :p)",           ":a", ":y", ":z", ":x", ":a") ; } 
-	@Test public void path_26() { test(x, "(path* :r)",           ":x", ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
-	@Test public void path_27() { test(x, "(path+ :r)",           ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
+	@Test public void path_13() { test(x, "(mod 0 2 :q)",         ":x", ":y2", ":z", ":y1", ":z") ; } 
+	@Test public void path_14() { test(x, "(mod 0 1 :q)",         ":x", ":y2", ":y1") ; } 
+	@Test public void path_15() { test(x, "(mod 0 1 :r)",         ":x", ":y2", ":y1") ; } 
+	@Test public void path_16() { test(x, "(mod 0 3 :r)",         ":x", ":y2", ":z", ":a2", ":a1", ":y1", ":z", ":a2", ":a1") ; } 
+	@Test public void path_17() { test(x, "(mod 0 99 :r)",        ":x", ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
+    @Test public void path_18() { test(x, "(mod 0 2 :q)",         ":x", ":y2", ":z", ":y1", ":z") ; } 
+	@Test public void path_19() { test(x, "(pathN 2 :p)",         ":z") ; } 
+	@Test public void path_20() { test(x, "(pathN 2 :q)",         ":z", ":z") ; } 
+    @Test public void path_21() { test(x, "(distinct(pathN 2 :q))",         ":z") ; } 
+
+	@Test public void path_30() { test(x, "(path* :p)",           ":x", ":a", ":y", ":z") ; }
+    @Test public void path_31() { test(x, "(pathN* :p)",          ":x", ":a", ":y", ":z") ; } 
+    @Test public void path_32() { test(x, "(path+ :p)",           ":a", ":y", ":z", ":x") ; } 
+    @Test public void path_33() { test(x, "(pathN+ :p)",          ":a", ":y", ":z", ":x", ":a") ; } 
+    @Test public void path_34() { test(x, "(path+ :r)",           ":y2", ":z", ":a2", ":b", ":a1", ":y1") ; } 
+    @Test public void path_35() { test(x, "(pathN+ :r)",          ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
+	@Test public void path_36() { test(x, "(path* :r)",           ":x", ":y2", ":z", ":a2", ":b", ":a1", ":y1") ; } 
+	@Test public void path_37() { test(x, "(pathN* :r)",          ":x", ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
 	
 //	static int i = 0 ;
 	
@@ -118,7 +118,6 @@ public class TestPath2 extends BaseTest
         for ( String n : results )
             expected.add(parse(n)) ;
         List<Node> expected1 = Iter.iter(expected).distinct().toList() ;
-        
 
         // Generate the tests!
 //        i++ ;
@@ -138,13 +137,6 @@ public class TestPath2 extends BaseTest
         
         assertSameArray(expected, nodes2) ;
         assertSameArray(expected1, nodes1) ;
-
-        // Check against old code.
-        List<Node> nodes3 = Iter.toList(PathEval_OLD.eval(graph, start, path)) ;
-        List<Node> nodes4 = Iter.iter(nodes3).distinct().toList() ;
-
-        assertSameArray(expected, nodes3) ;
-        assertSameArray(expected1, nodes4) ;
     }
         
 	private static void assertSameArray(List<Node> expected, List<Node> actual)

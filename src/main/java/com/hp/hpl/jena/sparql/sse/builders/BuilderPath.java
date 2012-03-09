@@ -67,9 +67,12 @@ public class BuilderPath
         dispatch.put(Tags.tagPathFixedLength,   buildFixedLength) ;
         dispatch.put(Tags.tagPathDistinct,      buildDistinct) ;
         dispatch.put(Tags.tagPathMulti,         buildMulti) ;
-        dispatch.put(Tags.tagPathZeroOrMore,    buildZeroOrMore) ;
+        dispatch.put(Tags.tagPathShortest,      buildShortest) ;
         dispatch.put(Tags.tagPathZeroOrOne,     buildZeroOrOne) ;
-        dispatch.put(Tags.tagPathOneOrMore,     buildOneOrMore) ;
+        dispatch.put(Tags.tagPathZeroOrMore1,   buildZeroOrMore1) ;
+        dispatch.put(Tags.tagPathZeroOrMoreN,   buildZeroOrMoreN) ;
+        dispatch.put(Tags.tagPathOneOrMore1,    buildOneOrMore1) ;
+        dispatch.put(Tags.tagPathOneOrMoreN,    buildOneOrMoreN) ;
         
         dispatch.put(Tags.tagPathReverse,  buildReverse) ;
         dispatch.put(Tags.tagPathRev,      buildRev) ;
@@ -234,17 +237,40 @@ public class BuilderPath
         }
     } ;
 
-    final protected Build buildZeroOrMore = new Build()
+    final protected Build buildShortest = new Build()
     {
         @Override
         public Path make(ItemList list)
         {
-            BuilderLib.checkLength(2, 2, list, "path ZeroOrMore: wanted 1 argument") ;
+            BuilderLib.checkLength(2, 2, list, "path shortest : wanted 1 argument") ;
             Path path  = build(list, 1) ;
-            return new P_ZeroOrMore(path) ;
+            return new P_Shortest(path) ;
+        }
+    } ;
+
+    final protected Build buildZeroOrMore1 = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path ZeroOrMore1: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_ZeroOrMore1(path) ;
         }
     } ;
     
+    final protected Build buildZeroOrMoreN = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path ZeroOrMoreN: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_ZeroOrMoreN(path) ;
+        }
+    } ;
+    
+
     final protected Build buildZeroOrOne = new Build()
     {
         @Override
@@ -256,14 +282,25 @@ public class BuilderPath
         }
     } ;
     
-    final protected Build buildOneOrMore = new Build()
+    final protected Build buildOneOrMore1 = new Build()
     {
         @Override
         public Path make(ItemList list)
         {
             BuilderLib.checkLength(2, 2, list, "path OneOrMore: wanted 1 argument") ;
             Path path  = build(list, 1) ;
-            return new P_OneOrMore(path) ;
+            return new P_OneOrMore1(path) ;
+        }
+    } ;
+    
+    final protected Build buildOneOrMoreN = new Build()
+    {
+        @Override
+        public Path make(ItemList list)
+        {
+            BuilderLib.checkLength(2, 2, list, "path OneOrMore: wanted 1 argument") ;
+            Path path  = build(list, 1) ;
+            return new P_OneOrMoreN(path) ;
         }
     } ;
     

@@ -30,9 +30,14 @@ public interface PathVisitor
     public void visit(P_FixedLength pFixedLength) ;
     public void visit(P_Distinct pathDistinct) ;
     public void visit(P_Multi pathMulti) ;
+    public void visit(P_Shortest pathShortest) ;
     public void visit(P_ZeroOrOne path) ;
-    public void visit(P_ZeroOrMore path) ;
-    public void visit(P_OneOrMore path) ;
+    
+    public void visit(P_ZeroOrMore1 path) ;
+    public void visit(P_ZeroOrMoreN path) ;
+    
+    public void visit(P_OneOrMore1 path) ;
+    public void visit(P_OneOrMoreN path) ;
 
     public void visit(P_Alt pathAlt) ;
     public void visit(P_Seq pathSeq) ;

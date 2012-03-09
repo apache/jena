@@ -206,9 +206,10 @@ public class TestPath
 
     @Test public void path_30()   { test(graph1, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_31()   { test(graph2, n1,   ":p*",       n1,n2,n3) ; }
-    @Test public void path_32()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4,n4) ; }
-    @Test public void path_33()   { test(graph3, n1,   "distinct(:p*)",       n1,n2,n3,n4) ; }
-    @Test public void path_34()   { test(graph3, n1,   "distinct(:p+)",       n2,n3,n4) ; }
+    @Test public void path_32()   { test(graph3, n1,   ":p{*}",       n1,n2,n3,n4,n4) ; }
+    @Test public void path_33()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4) ; }
+    @Test public void path_34()   { test(graph3, n1,   ":p+",       n2,n3,n4) ; }
+    @Test public void path_35()   { test(graph3, n1,   ":p{+}",       n2,n3,n4,n4) ; }
 
     // ----
     private static void test(Graph graph, Node start, String string, Node... expectedNodes)

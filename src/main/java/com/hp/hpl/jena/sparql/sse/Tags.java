@@ -91,12 +91,15 @@ public class Tags
     public static final String tagPathAlt       = "alt" ;
     public static final String tagPathMod       = "mod" ;
     
-    public static final String tagPathZeroOrMore    = "path*" ;
-    public static final String tagPathOneOrMore     = "path+" ;
+    public static final String tagPathZeroOrMore1   = "path*" ;
+    public static final String tagPathZeroOrMoreN   = "pathN*" ;
+    public static final String tagPathOneOrMore1    = "path+" ;
+    public static final String tagPathOneOrMoreN    = "pathN+" ;
     public static final String tagPathZeroOrOne     = "path?" ;
     public static final String tagPathFixedLength   = "pathN" ;
     public static final String tagPathDistinct      = "distinct" ;
     public static final String tagPathMulti         = "multi" ;
+    public static final String tagPathShortest      = "shortest" ;
     
     public static final String tagPathReverse       = "reverse" ;
     public static final String tagPathRev           = "rev" ;

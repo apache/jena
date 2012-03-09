@@ -160,7 +160,7 @@ public class PathCompiler
                 Path p2 ;
                 
                 if ( pMod.getMax() < 0 )
-                    p2 = PathFactory.pathZeroOrMore(pMod.getSubPath()) ;
+                    p2 = PathFactory.pathZeroOrMoreN(pMod.getSubPath()) ;
                 else
                 {
                     long len2 = pMod.getMax()-pMod.getMin() ;

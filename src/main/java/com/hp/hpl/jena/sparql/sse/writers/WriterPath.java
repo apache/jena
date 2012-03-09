@@ -231,21 +231,39 @@ public class WriterPath
         }
 
         @Override
+        public void visit(P_Shortest path)
+        {
+            writePath(Tags.tagPathShortest, path.getSubPath()) ;
+        }
+
+        @Override
         public void visit(P_ZeroOrOne path)
         { 
             writePath(Tags.tagPathZeroOrOne, path.getSubPath()) ;
         }
 
         @Override
-        public void visit(P_ZeroOrMore path)
+        public void visit(P_ZeroOrMore1 path)
         { 
-            writePath(Tags.tagPathZeroOrMore, path.getSubPath()) ;
+            writePath(Tags.tagPathZeroOrMore1, path.getSubPath()) ;
         }
 
         @Override
-        public void visit(P_OneOrMore path)
+        public void visit(P_ZeroOrMoreN path)
         { 
-            writePath(Tags.tagPathOneOrMore, path.getSubPath()) ;
+            writePath(Tags.tagPathZeroOrMoreN, path.getSubPath()) ;
+        }
+
+        @Override
+        public void visit(P_OneOrMore1 path)
+        { 
+            writePath(Tags.tagPathOneOrMore1, path.getSubPath()) ;
+        }
+        
+        @Override
+        public void visit(P_OneOrMoreN path)
+        { 
+            writePath(Tags.tagPathOneOrMoreN, path.getSubPath()) ;
         }
         
         private void writeOneLiner(Path path)

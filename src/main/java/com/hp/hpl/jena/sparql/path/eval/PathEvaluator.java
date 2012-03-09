@@ -28,21 +28,9 @@ import org.openjena.atlas.iterator.Iter ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.path.P_Alt ;
-import com.hp.hpl.jena.sparql.path.P_Distinct ;
-import com.hp.hpl.jena.sparql.path.P_FixedLength ;
-import com.hp.hpl.jena.sparql.path.P_Inverse ;
-import com.hp.hpl.jena.sparql.path.P_Link ;
-import com.hp.hpl.jena.sparql.path.P_Mod ;
-import com.hp.hpl.jena.sparql.path.P_Multi ;
-import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
-import com.hp.hpl.jena.sparql.path.P_OneOrMore ;
-import com.hp.hpl.jena.sparql.path.P_ReverseLink ;
-import com.hp.hpl.jena.sparql.path.P_Seq ;
-import com.hp.hpl.jena.sparql.path.P_ZeroOrMore ;
-import com.hp.hpl.jena.sparql.path.P_ZeroOrOne ;
-import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.path.PathVisitor ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
+import com.hp.hpl.jena.sparql.path.* ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterPath ;
 
 final class PathEvaluator implements PathVisitor
 {
@@ -165,17 +153,41 @@ final class PathEvaluator implements PathVisitor
     }
     
     @Override
-    public void visit(P_ZeroOrMore path)
+    public void visit(P_ZeroOrMore1 path)
     {
+        // Regardless of engine, do distinct. 
+        PathEngine engine2 = engine ;
+        if ( engine instanceof PathEngineN )
+            engine = new PathEngine1(graph, engine.direction()) ;
         engine.doZeroOrMore(path.getSubPath(), node, output) ;
+        engine = engine2 ;
     }
     
     @Override
-    public void visit(P_OneOrMore path)
+    public void visit(P_ZeroOrMoreN path)
     {
-        engine.doOneOrMore(path.getSubPath(), node, output) ;
+        // Do as per engine.
+        engine.doZeroOrMore(path.getSubPath(), node, output) ;
     }
     
+
+    @Override
+    public void visit(P_OneOrMore1 path)
+    {
+        // Regardless of engine, do distinct. 
+        PathEngine engine2 = engine ;
+        if ( engine instanceof PathEngineN )
+            engine = new PathEngine1(graph, engine.direction()) ;
+        engine.doOneOrMore(path.getSubPath(), node, output) ;
+        engine = engine2 ;
+    }
+    
+    @Override
+    public void visit(P_OneOrMoreN path)
+    {
+        // Do as per engine.
+        engine.doOneOrMore(path.getSubPath(), node, output) ;
+    }
     
     
 //    protected abstract void doZero(Path pathStep, Node node, Collection<Node> output) ;
@@ -191,9 +203,15 @@ final class PathEvaluator implements PathVisitor
     @Override
     public void visit(P_Distinct pathDistinct)
     {
+        doDistinct(pathDistinct.getSubPath()) ;
+    }
+    
+    protected void doDistinct(Path path)
+    {
         PathEngine engine2 = engine ;
-        engine = new PathEngine1(graph, engine.direction()) ;
-        engine.eval(graph, pathDistinct.getSubPath(), node, output) ;
+        if ( engine instanceof PathEngineN )
+            engine = new PathEngine1(graph, engine.direction()) ;
+        engine.eval(graph, path, node, output) ;
         engine = engine2 ;
     }
 
@@ -201,9 +219,16 @@ final class PathEvaluator implements PathVisitor
     public void visit(P_Multi pathMulti)
     {
         PathEngine engine2 = engine ;
-        engine = new PathEngineN(graph, engine.direction() ) ;
+        if ( engine instanceof PathEngine1 )
+            engine = new PathEngineN(graph, engine.direction()) ;
         engine.eval(graph, pathMulti.getSubPath(), node, output) ;
         engine = engine2 ;
+    }
+
+    @Override
+    public void visit(P_Shortest path)
+    {
+        throw new ARQNotImplemented(WriterPath.asString(path)) ;
     }
 
     @Override

@@ -23,13 +23,11 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.path.Path ;
-import com.hp.hpl.jena.sparql.path.PathFactory ;
 
 /** Path evaluation - public interface */
 
 public class PathEval
 {
-
     /** Evaluate a path */ 
     static public Iterator<Node> eval(Graph graph, Node node, Path path)
     {
@@ -39,8 +37,7 @@ public class PathEval
     /** Evaluate a path : unique results */ 
     static public Iterator<Node> eval1(Graph graph, Node node, Path path)
     {
-        path = PathFactory.pathDistinct(path) ;
-        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, true)) ;
+        return PathEvaluator.eval(graph, node, path, new PathEngine1(graph, true)) ;
     }
 
     /** Evaluate a path */ 
@@ -52,7 +49,6 @@ public class PathEval
     /** Evaluate a path : unique results */ 
     static public Iterator<Node> evalReverse1(Graph graph, Node node, Path path)
     {
-        path = PathFactory.pathDistinct(path) ;
-        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, false)) ;
+        return PathEvaluator.eval(graph, node, path, new PathEngine1(graph, false)) ;
     }
 }

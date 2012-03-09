@@ -95,20 +95,18 @@ public class TransformPathFlatternStd extends TransformCopy
         return new OpUnion(left, right) ;
     }
     
-    static class PathTransform implements PathVisitor
+    static class PathTransform extends PathVisitorBase
     {
         private final Node subject ;
         private final Node object ;
-        private Op result ;
-        Op getResult()
-        {
-            return result ;
-        }
+        private Op result = null ;
+        Op getResult() { return result ; }
         
         public PathTransform(Node subject, Node object)
         {
             this.subject = subject ;
             this.object = object ;
+            this.result = null ;
         }
         
         @Override
@@ -212,41 +210,6 @@ public class TransformPathFlatternStd extends TransformCopy
                 v1 = v2 ;
             }
             result = op ;
-        }
-        
-        @Override
-        public void visit(P_Distinct pathDistinct)
-        {
-            // No change.
-            result = null ;
-        }
-        
-        @Override
-        public void visit(P_Multi pathMulti)
-        {
-            // No change.
-            result = null ;
-        }
-
-        @Override
-        public void visit(P_ZeroOrOne path)
-        {
-            // No change.
-            result = null ;
-        }
-        
-        @Override
-        public void visit(P_ZeroOrMore path)
-        {
-            // No change.
-            result = null ;
-        }
-        
-        @Override
-        public void visit(P_OneOrMore path)
-        {
-            // No change.
-            result = null ;
         }
         
         @Override

@@ -20,9 +20,9 @@ package com.hp.hpl.jena.sparql.path;
 
 import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-public class P_ZeroOrMore extends P_Path1
+public class P_OneOrMore1 extends P_Path1
 {
-    public P_ZeroOrMore(Path path)
+    public P_OneOrMore1(Path path)
     {
         super(path) ;
     }
@@ -30,15 +30,15 @@ public class P_ZeroOrMore extends P_Path1
     @Override
     public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        if ( ! ( path2 instanceof P_ZeroOrMore ) ) return false ;
-        P_ZeroOrMore other = (P_ZeroOrMore)path2 ;
+        if ( ! ( path2 instanceof P_OneOrMore1 ) ) return false ;
+        P_OneOrMore1 other = (P_OneOrMore1)path2 ;
         return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
 
     @Override
     public int hashCode()
     {
-        return hashZeroOrMore ^ getSubPath().hashCode() ;
+        return hashOneOrMore1 ^ getSubPath().hashCode() ;
     }
 
     @Override

@@ -40,7 +40,16 @@ public abstract class PathVisitorByType implements PathVisitor
 
     @Override
     public void visit(P_Mod pathMod)                { visit1(pathMod) ; }
-
+    
+    @Override
+    public void visit(P_Distinct path)              { visit1(path) ; }
+    
+    @Override
+    public void visit(P_Multi pathMod)              { visit1(pathMod) ; }
+    
+    @Override
+    public void visit(P_Shortest pathMod)           { visit1(pathMod) ; }
+    
     @Override
     public void visit(P_FixedLength pFixedLength)   { visit1(pFixedLength) ; }
 
@@ -48,10 +57,16 @@ public abstract class PathVisitorByType implements PathVisitor
     public void visit(P_ZeroOrOne path)             { visit1(path) ; }
 
     @Override
-    public void visit(P_ZeroOrMore path)            { visit1(path) ; }
+    public void visit(P_ZeroOrMore1 path)           { visit1(path) ; }
 
     @Override
-    public void visit(P_OneOrMore path)             { visit1(path) ; }
+    public void visit(P_ZeroOrMoreN path)           { visit1(path) ; }
+
+    @Override
+    public void visit(P_OneOrMore1 path)            { visit1(path) ; }
+
+    @Override
+    public void visit(P_OneOrMoreN path)            { visit1(path) ; }
 
     @Override
     public void visit(P_Alt pathAlt)                { visit2(pathAlt) ; }

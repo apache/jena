@@ -16,24 +16,35 @@
  * limitations under the License.
  */
 
-/** Hopefully, you won't see this! */
+package com.hp.hpl.jena.sparql.path;
 
-package com.hp.hpl.jena.sparql;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
-import com.hp.hpl.jena.query.QueryFatalException ;
-
-public class ARQNotImplemented extends QueryFatalException
+public class P_Shortest extends P_Path1
 {
-    public ARQNotImplemented(Throwable cause) { super(cause) ; }
-    public ARQNotImplemented() { super() ; }
-    public ARQNotImplemented (String msg) { super(msg) ; }
-    public ARQNotImplemented (String msg, Throwable cause) { super(msg, cause) ; }
+    public P_Shortest(Path p)
+    {
+         super(p) ;
+    }
     
     @Override
-    public String toString()
+    public void visit(PathVisitor visitor)
+    { visitor.visit(this) ; }
+    
+    @Override
+    public boolean equalTo(Path path2, NodeIsomorphismMap isoMap)
     {
-        if ( super.getMessage() != null ) 
-            return "Not implemented: "+super.getMessage() ;
-        return "Not implemented" ;
+        if ( ! ( path2 instanceof P_Shortest ) ) return false ;
+        P_Shortest other = (P_Shortest)path2 ;
+        return getSubPath().equalTo(other.getSubPath(), isoMap)  ;
     }
+
+    @Override
+    public int hashCode()
+    {
+        return getSubPath().hashCode() ^ hashShortest ;
+    }
+
+   
+
 }

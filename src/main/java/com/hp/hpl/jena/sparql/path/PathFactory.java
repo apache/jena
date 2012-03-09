@@ -37,15 +37,12 @@ public class PathFactory
     public static Path pathSeq(Path path1, Path path2)  { return new P_Seq(path1, path2) ; }
     
     public static Path pathZeroOrOne(Path path)         { return new P_ZeroOrOne(path) ; }
-    public static Path pathZeroOrMore(Path path)        { return new P_ZeroOrMore(path) ; }
-    public static Path pathOneOrMore(Path path)         { return new P_OneOrMore(path) ; }
+
+    public static Path pathZeroOrMore1(Path path)        { return new P_ZeroOrMore1(path) ; }
+    public static Path pathOneOrMore1(Path path)         { return new P_OneOrMore1(path) ; }
+    public static Path pathZeroOrMoreN(Path path)        { return new P_ZeroOrMoreN(path) ; }
+    public static Path pathOneOrMoreN(Path path)         { return new P_OneOrMoreN(path) ; }
     
     // UNFINISHED
-    public static Path pathZeroOrMore1(Path path)        { return new P_ZeroOrMore(path) ; }
-    public static Path pathOneOrMore1(Path path)         { return new P_OneOrMore(path) ; }
-    public static Path pathZeroOrMoreN(Path path)        { return new P_ZeroOrMore(path) ; }
-    public static Path pathOneOrMoreN(Path path)         { return new P_OneOrMore(path) ; }
-    
-    // VERY UNFINISHED
     public static Path pathShortest(Path path)           { throw new ARQNotImplemented("Not implemented: SHORTEST") ; }
 }
