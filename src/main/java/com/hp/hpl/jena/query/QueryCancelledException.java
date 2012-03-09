@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.query;
 
-/** Indicate that a query execution has been cancelled and thje operation can't be called */
+/** Indicate that a query execution has been cancelled and the operation can't be called */
 public class QueryCancelledException extends QueryExecException
 {
     public QueryCancelledException() {}
