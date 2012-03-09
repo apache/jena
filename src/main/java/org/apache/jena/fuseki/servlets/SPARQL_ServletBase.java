@@ -93,8 +93,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (QueryCancelledException ex)
         {
-        	String message = String.format("The query timed out after %sms.", ARQ.getContext().get(ARQ.queryTimeout));
-        	responseSendError(response, HttpSC.SERVICE_UNAVAILABLE_503, message);
+        	String message = String.format("The query timed out (restricted to %s ms).", ARQ.getContext().get(ARQ.queryTimeout));
+        	responseSendError(response, HttpSC.REQUEST_TIMEOUT_408, message);
             // Log message done by printResponse in a moment.
         } catch (ActionErrorException ex)
         {
