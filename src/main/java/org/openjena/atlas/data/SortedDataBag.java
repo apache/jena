@@ -62,6 +62,8 @@ import org.openjena.atlas.lib.Sink ;
  */
 public class SortedDataBag<E> extends AbstractDataBag<E>
 {
+    private static final int MAX_SPILL_FILES = 100 ; // this is the maximum number of files to merge at the same time
+
     protected final ThresholdPolicy<E> policy;
     protected final SerializationFactory<E> serializationFactory;
     protected final Comparator<? super E> comparator;
@@ -177,8 +179,15 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
      * @return an Iterator
      */
     @Override
+	public Iterator<E> iterator()
+    {
+        preMerge();
+
+        return iterator(getSpillFiles().size());
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Iterator<E> iterator()
+    private Iterator<E> iterator(int size)
     {
         checkClosed();
         
@@ -197,15 +206,16 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         
         if (spilled)
         {
-            List<Iterator<E>> inputs = new ArrayList<Iterator<E>>();
+            List<Iterator<E>> inputs = new ArrayList<Iterator<E>>(size + (memSize > 0 ? 1 : 0));
                         
             if (memSize > 0)
             {
                 inputs.add(memory.iterator());
             }
             
-            for (File spillFile : getSpillFiles())
+            for ( int i = 0; i < size; i++ )
             {
+                File spillFile = getSpillFiles().get(i);
                 try
                 {
                     Iterator<E> irc = getInputIterator(spillFile);
@@ -241,6 +251,38 @@ public class SortedDataBag<E> extends AbstractDataBag<E>
         }
     }
     
+    private void preMerge() {
+        if (getSpillFiles() == null || getSpillFiles().size() <= MAX_SPILL_FILES) { return; }
+
+        try {
+            while ( getSpillFiles().size() > MAX_SPILL_FILES ) {
+                Sink<E> sink = serializationFactory.createSerializer(getSpillStream()) ;
+                Iterator<E> ssi = iterator(MAX_SPILL_FILES) ;
+                try {
+                    while ( ssi.hasNext() ) {
+                        sink.send( ssi.next() );
+                    }
+                } finally {
+                    Iter.close(ssi) ;
+                    sink.close() ;
+                }
+                
+                List<File> toRemove = new ArrayList<File>(MAX_SPILL_FILES) ;
+                for ( int i = 0; i < MAX_SPILL_FILES; i++ ) {
+                    File file = getSpillFiles().get(i) ;
+                    file.delete() ;
+                    toRemove.add(file) ;
+                }
+
+                getSpillFiles().removeAll(toRemove) ;
+
+                memory = new ArrayList<E>() ;
+            }            
+        } catch (IOException e) {
+            throw new AtlasException(e) ;
+        }
+    }
+
     @Override
     public void close()
     {
