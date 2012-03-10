@@ -73,6 +73,47 @@ public class MgtFunctions
         return Iter.toList(DatasetRegistry.get().keys()) ;
     }
 
+    // Service name getters ...
+    
+    /** Return a SPARQL query service name for the dataset */
+    public static String serviceQuery(String dataset)
+    {
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        return serviceNameOrDefault(ref.queryEP, "sparql") ;
+    }
+    
+    /** Return a SPARQL update service name for the dataset */
+    public static String serviceUpdate(String dataset)
+    {
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        return serviceNameOrDefault(ref.updateEP, "update") ;
+    }
+    
+    /** Return a SPARQL upload service name for the dataset */
+    public static String serviceUpload(String dataset)
+    {
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        return serviceNameOrDefault(ref.uploadEP, "upload") ;
+    }
+
+    /** Return a SPARQL Graph Store Protocol (Read) service name for the dataset */
+    public static String serviceGraphRead(String dataset)
+    {
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        return serviceNameOrDefault(ref.readGraphStoreEP, "get") ;
+    }
+
+    /** Return a SPARQL Graph Store Protocol (Read-Write) service name for the dataset */
+    public static String serviceGraphReadWrite(String dataset)
+    {
+        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
+        return serviceNameOrDefault(ref.readWriteGraphStoreEP, "data") ;
+    }
+
+    private static String serviceNameOrDefault(List<String> services, String defaultValue)
+    {
+        return ( services.isEmpty() ) ? defaultValue : services.get(0) ;
+    }
     
     /* remove soon - simply for backwards compatibility with Fuseki+JSP */
     @Deprecated

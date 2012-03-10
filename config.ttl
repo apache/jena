@@ -33,12 +33,12 @@
 <#service1> rdf:type fuseki:Service ;
     # URI of the dataset -- http://host:port/ds
     fuseki:name                        "ds" ; 
-    fuseki:serviceQuery                "sparql" ;
-    fuseki:serviceQuery                "query" ;
-    fuseki:serviceUpdate               "update" ;
-    fuseki:serviceUpload               "upload" ;
-    fuseki:serviceReadWriteGraphStore  "data" ;     
-    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:serviceQuery                "ABC" ; # "sparql" ;
+    fuseki:serviceQuery                "DEF" ; # "query" ;
+    fuseki:serviceUpdate               "GHI" ; # "update" ;
+    fuseki:serviceUpload               "JKL" ; # "upload" ;
+    fuseki:serviceReadWriteGraphStore  "GRW" ; # "data" ;     
+    fuseki:serviceReadGraphStore       "GR" ;  # "get" ;
     fuseki:serviceReadGraphStore       "" ;      
     fuseki:dataset                     <#emptyDataset> ;
     .

@@ -22,6 +22,12 @@
   </head>
   <body>
 #set( $ds = $mgt.dataset($request, "") )
+#set( $srvQuery = $mgt.serviceQuery($ds) )
+#set( $srvUpdate = $mgt.serviceQuery($ds) )
+#set( $srvUpload= $mgt.serviceQuery($ds) )
+#set( $srvGraphR = $mgt.serviceQuery($ds) )
+#set( $srvGraphRW = $mgt.serviceQuery($ds) )
+
 <!-- error case ... -->
 
     <h1>Fuseki Query</h1>
@@ -30,7 +36,7 @@
 
     <p><b>SPARQL Query</b></p>
     <div class="moreindent">
-      <form action="${ds}/sparql" method="post"  accept-charset="UTF-8">
+      <form action="${ds}/${srvQuery}" method="post"  accept-charset="UTF-8">
         <textarea  style="background-color: #F0F0F0;" name="query" cols="70" rows="10"></textarea>
         <br/>
 
@@ -55,7 +61,7 @@
 
     <p><b>SPARQL Update</b></p>
     <div class="moreindent">
-      <form action="${ds}/update" method="post" accept-charset="UTF-8">
+      <form action="${ds}/${srvUpdate}" method="post" accept-charset="UTF-8">
         <textarea style="background-color: #F0F0F0;" name="update" cols="70" rows="10"></textarea>
 	    <br/>
         <input type="submit" value="Perform update" />
@@ -64,7 +70,7 @@
     <hr/>
     <p><b>File upload</b></p>
     <div class="moreindent">
-      <form action="${ds}/upload" enctype="multipart/form-data" method="post">
+      <form action="${ds}/${srvUpload}" enctype="multipart/form-data" method="post">
         File: <input type="file" name="UNSET FILE NAME" size="40"><br/>
         Graph: <input name="graph" size="20" value="default"/><br/>
         <input type="submit" value="Upload">
@@ -73,4 +79,3 @@
     <hr/>
       </body>
 </html>   
-
