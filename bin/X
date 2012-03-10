@@ -1,4 +1,5 @@
-#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -14,29 +15,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-DIRROOT="$1"
-
-if [ "$DIRROOT" = "" ]
-then
-    echo "No directory given" 1>&2
-    exit 1
-    fi
-
-M2_REPO="${M2_REPO:-$HOME/.m2/repository}" ;
-X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/s ; print "$1","\n"' $DIRROOT/.classpath)
-
-SEP=':'
-CP=${CP:-}
-[ "$CP" != "" ] && CP="${SEP}${CP}"
-CP="$DIRROOT/classes${CP}"
-
-for x in $X
-do
-    [ "$CP" != "" ] && CP="${CP}${SEP}"
-    CP="$CP$M2_REPO$x"
-done
-
-CP="$DIRROOT/classes${SEP}${CP}"
-echo "$CP"
-

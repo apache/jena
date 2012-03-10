@@ -29,4 +29,7 @@ exit /B
 
 :theEnd
 REM echo %CP%
+
+echo "Set the classpath in make_classpath.bat"
+
 exit /B

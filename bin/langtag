@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 if [ "$ARQROOT" = "" ]
     then 
@@ -14,5 +15,5 @@ if [ ! -r "$INIT" ]
     exit 1
 fi
 
-source "$INIT"
+. "$INIT"
 exec java $JVM_ARGS $SOCKS -cp "$ARQ_CP" org.openjena.riot.LangTag "$@"
