@@ -27,7 +27,6 @@ import java.util.Random ;
 
 import junit.framework.TestCase ;
 
-import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.riot.SerializationFactoryFinder ;
@@ -49,34 +48,26 @@ public class TestSortedDataBag extends TestCase
 {
     private static final String LETTERS = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
     private Random random;
-    private List<Binding> unsorted;
-
-    @Before @Override public void setUp() 
-    {
-        random = new Random();
-        Var[] vars = new Var[]{
-            Var.alloc("1"), Var.alloc("2"), Var.alloc("3"),
-            Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
-            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
-        };
-        unsorted = new ArrayList<Binding>();
-        for(int i = 0; i < 500; i++){
-            unsorted.add(randomBinding(vars));
-        }
-    }
-
+    
     @Test public void testSorting() 
     {
+        testSorting(500, 10);
+    }
+    
+    private void testSorting(int numBindings, int threshold)
+    {
+        List<Binding> unsorted = randomBindings(numBindings);
+        
         List<SortCondition> conditions = new ArrayList<SortCondition>(); 
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         conditions.add(new SortCondition(new ExprVar("1"), Query.ORDER_ASCENDING));
         conditions.add(new SortCondition(new ExprVar("0"), Query.ORDER_DESCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
-        
+
         List<Binding> sorted = new ArrayList<Binding>();
         
         SortedDataBag<Binding> db = new SortedDataBag<Binding>(
-                new ThresholdPolicyCount<Binding>(10),
+                new ThresholdPolicyCount<Binding>(threshold),
                 SerializationFactoryFinder.bindingSerializationFactory(),
                 comparator);
         try
@@ -98,8 +89,34 @@ public class TestSortedDataBag extends TestCase
         assertEquals(unsorted, sorted);
     }
     
+    @Test public void testSortingWithPreMerge() 
+    {
+        // Save the original value...
+        int origMaxSpillFiles = SortedDataBag.MAX_SPILL_FILES;
+        try
+        {
+            // Vary the number of spill files and bindings so we get a variable number of premerge rounds
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(1, 1);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(2, 1);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(3, 1);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(4, 1);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(5, 1);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(1, 10);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(1000, 10);
+            SortedDataBag.MAX_SPILL_FILES = 100;  testSorting(1000, 10);
+            SortedDataBag.MAX_SPILL_FILES = 2;    testSorting(10, 10);
+            SortedDataBag.MAX_SPILL_FILES = 5;    testSorting(10, 10);
+        }
+        finally
+        {
+            SortedDataBag.MAX_SPILL_FILES = origMaxSpillFiles;
+        }
+    }
+    
     @Test public void testTemporaryFilesAreCleanedUpAfterCompletion()
     {
+        List<Binding> unsorted = randomBindings(500);
+        
         List<SortCondition> conditions = new ArrayList<SortCondition>(); 
         conditions.add(new SortCondition(new ExprVar("8"), Query.ORDER_ASCENDING));
         BindingComparator comparator = new BindingComparator(conditions);
@@ -149,6 +166,22 @@ public class TestSortedDataBag extends TestCase
         assertEquals(0, count);
     }
     
+    private List<Binding> randomBindings(int numBindings) 
+    {
+        random = new Random();
+        Var[] vars = new Var[]{
+            Var.alloc("1"), Var.alloc("2"), Var.alloc("3"),
+            Var.alloc("4"), Var.alloc("5"), Var.alloc("6"),
+            Var.alloc("7"), Var.alloc("8"), Var.alloc("9"), Var.alloc("0")
+        };
+        List<Binding> toReturn = new ArrayList<Binding>();
+        for(int i = 0; i < numBindings; i++){
+            toReturn.add(randomBinding(vars));
+        }
+        
+        return toReturn;
+    }
+    
     private Binding randomBinding(Var[] vars)
     {
         BindingMap binding = BindingFactory.create();
@@ -165,12 +198,12 @@ public class TestSortedDataBag extends TestCase
         return binding;
     }
 
-    public String randomURI() 
+    private String randomURI() 
     {
         return String.format("http://%s.example.com/%s", randomString(10), randomString(10));
     }
     
-    public String randomString(int length)
+    private String randomString(int length)
     {
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < length; i++){
