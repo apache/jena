@@ -29,7 +29,7 @@
   <artifactId>jena-larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>1.0.1-incubating-SNAPSHOT</version>
+  <version>1.0-incubating-SNAPSHOT</version>
 
   <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
   <url>http://incubator.apache.org/jena/documentation/larq/</url>
@@ -43,7 +43,7 @@
   <properties>
     <ver.lucene>3.5.0</ver.lucene>
     <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating-SNAPSHOT</ver.tdb>
+    <ver.tdb>0.9.0-incubating</ver.tdb>
   </properties>
 
   <dependencies>
@@ -126,14 +126,6 @@
     </plugins>
 
   </build>
-
-  <repositories>
-    <repository>
-      <id>apache.staging</id>
-      <name>Apache Staging Repository</name>
-      <url>https://repository.apache.org/content/repositories/staging/</url>
-    </repository>
-  </repositories>
 
   <issueManagement>
     <system>JIRA</system>
