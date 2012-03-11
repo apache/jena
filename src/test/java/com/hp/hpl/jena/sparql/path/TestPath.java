@@ -27,6 +27,7 @@ import java.util.Iterator ;
 import java.util.List ;
 
 import org.junit.Assert ;
+import org.junit.Ignore ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
 
@@ -49,11 +50,15 @@ public class TestPath
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Graph graph2 = GraphFactory.createDefaultGraph() ;
     static Graph graph3 = GraphFactory.createDefaultGraph() ;
+    static Graph graph4 = GraphFactory.createDefaultGraph() ;
+    static Graph graph5 = GraphFactory.createDefaultGraph() ;
     
     static Node n1 = Node.createURI("n1") ;
     static Node n2 = Node.createURI("n2") ;
     static Node n3 = Node.createURI("n3") ;
     static Node n4 = Node.createURI("n4") ;
+    static Node n5 = Node.createURI("n5") ;
+    static Node n6 = Node.createURI("n6") ;
     static Node p = Node.createURI("http://example/p") ;
     static Node q = Node.createURI("http://example/q") ;
     static PrefixMapping pmap  = new PrefixMappingImpl() ;
@@ -79,6 +84,18 @@ public class TestPath
         graph3.add(new Triple(n2, p, n4)) ;
         graph3.add(new Triple(n3, p, n4)) ;
 
+        // Linear path with spurs
+        graph4.add(new Triple(n1, p, n2)) ;
+        graph4.add(new Triple(n2, p, n3)) ;
+        graph4.add(new Triple(n3, p, n4)) ;
+        graph4.add(new Triple(n2, q, n5)) ;
+        graph4.add(new Triple(n4, q, n6)) ;
+        
+        //
+        graph5.add(new Triple(n1, p, n2)) ;
+        graph5.add(new Triple(n1, p, n3)) ;
+        graph5.add(new Triple(n2, q, n4)) ;
+        graph5.add(new Triple(n3, q, n5)) ;
     }
     
     // ----
@@ -130,6 +147,13 @@ public class TestPath
     @Test public void parsePathDistinct3()    {  parse("distinct((:p)*)", "distinct(:p*)") ; }
     @Test public void parsePathDistinct4()    {  parse(":p/distinct(:p*)/:q", ":p/distinct(:p*)/:q") ; }
     @Test public void parsePathDistinct5()    {  parse(":p/distinct(:p)*/:q", ":p/distinct(:p)*/:q") ; }
+    
+    @Test public void parsePathShortest1()    {  parse("shortest(:p)", "shortest(:p)") ; }
+    @Test public void parsePathShortest2()    {  parse("shortest(:p*)", "shortest(:p*)") ; }
+    @Test public void parsePathShortest3()    {  parse("shortest(:p+)", "shortest(:p+)") ; }
+    @Test public void parsePathShortest4()    {  parse("shortest((:p)*)", "shortest(:p*)") ; }
+    @Test public void parsePathShortest5()    {  parse(":p/shortest(:p*)/:q", ":p/shortest(:p*)/:q") ; }
+    @Test public void parsePathShortest6()    {  parse(":p/shortest(:p)*/:q", ":p/shortest(:p)*/:q") ; }
 
     // ----
     
@@ -210,6 +234,17 @@ public class TestPath
     @Test public void path_33()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_34()   { test(graph3, n1,   ":p+",       n2,n3,n4) ; }
     @Test public void path_35()   { test(graph3, n1,   ":p{+}",       n2,n3,n4,n4) ; }
+    
+    
+    // TODO Shortest path is not implemented yet.  These also need to be verified that they are correct.
+    @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
+    @Ignore @Test public void path_41()   { test(graph1, n1,   "shortest(:p+)",       n2) ; }
+    @Ignore @Test public void path_42()   { test(graph2, n1,   "shortest(:p*/:q)",    n4) ; }
+    @Ignore @Test public void path_43()   { test(graph2, n1,   "shortest(:p{*}/:q)",  n4, n4) ; }
+    @Ignore @Test public void path_44()   { test(graph4, n1,   "shortest(:p*/:q)",    n5) ; }
+    @Ignore @Test public void path_45()   { test(graph4, n1,   "shortest(:p{2,}/:q)", n6) ; }
+    @Ignore @Test public void path_46()   { test(graph5, n1,   "shortest(:p*/:q)",    n4, n5) ; }
+    
 
     // ----
     private static void test(Graph graph, Node start, String string, Node... expectedNodes)
