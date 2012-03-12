@@ -55,15 +55,40 @@ public class Chars
     public static final Charset charsetUTF8 = Charset.forName(encodingUTF8) ;
     public static final Charset charsetASCII = Charset.forName(encodingASCII) ;
     
-    // Pools for encoders/decoder.  Paolo says that creating an encopder or decoder is not that cheap.
+    // Pools for encoders/decoder.
+    // Better? use a ThreadLocal.
     // Initial pool size. Any additional encoder/decoder are later
     // placed in the pool - it's an infinite, reusing, growing pool.
     
+    // Better?  If so, use these!
+    
+    private static final ThreadLocal<CharsetEncoder> threadCharsetEncoder =
+        new ThreadLocal<CharsetEncoder>() {
+        @Override protected CharsetEncoder initialValue() {
+            return createEncoder() ;
+        }
+    };
+
+    private static final ThreadLocal<CharsetDecoder> threadCharsetDecoder =
+        new ThreadLocal<CharsetDecoder>() {
+        @Override protected CharsetDecoder initialValue() {
+            return createDecoder() ;
+        }
+    };
+
+    /** Return a per-thread CharsetEncoder */ 
+    public static CharsetEncoder getThreadEncoder() { return threadCharsetEncoder.get() ; }
+
+    /** Return a per-thread CharsetDecoder */ 
+    public static CharsetDecoder getThreadDecoder() { return threadCharsetDecoder.get() ; }
+
     private static final int PoolSize = 2 ;
     private static Pool<CharsetEncoder> encoders = PoolSync.create(new PoolBase<CharsetEncoder>()) ;
     private static Pool<CharsetDecoder> decoders = PoolSync.create(new PoolBase<CharsetDecoder>()) ;
-    
+
     static {
+        ThreadLocal<CharsetEncoder> t ;
+        
         // Fill the pool.
         for ( int i = 0 ; i < PoolSize ; i++ )
         {
