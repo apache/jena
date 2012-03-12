@@ -25,8 +25,8 @@ import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
-    A bunch of triples - a strippled-down set with specialised methods. A
-    bunch is expected tos tore triples that share some useful property 
+    A bunch of triples - a stripped-down set with specialized methods. A
+    bunch is expected to store triples that share some useful property 
     (such as having the same subject or predicate).
     
     @author kers
