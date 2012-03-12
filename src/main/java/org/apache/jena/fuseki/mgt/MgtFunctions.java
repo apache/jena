@@ -112,7 +112,12 @@ public class MgtFunctions
 
     private static String serviceNameOrDefault(List<String> services, String defaultValue)
     {
-        return ( services.isEmpty() ) ? defaultValue : services.get(0) ;
+        if ( services.isEmpty() )
+            return defaultValue ;
+        String x = services.get(0) ;
+        if ( x.startsWith("/") )
+            x = x.substring(1) ;
+        return x ;
     }
     
     /* remove soon - simply for backwards compatibility with Fuseki+JSP */

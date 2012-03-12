@@ -23,12 +23,22 @@
   <body>
 #set( $ds = $mgt.dataset($request, "") )
 #set( $srvQuery = $mgt.serviceQuery($ds) )
-#set( $srvUpdate = $mgt.serviceQuery($ds) )
-#set( $srvUpload= $mgt.serviceQuery($ds) )
-#set( $srvGraphR = $mgt.serviceQuery($ds) )
-#set( $srvGraphRW = $mgt.serviceQuery($ds) )
+#set( $srvUpdate = $mgt.serviceUpdate($ds) )
+#set( $srvUpload= $mgt.serviceUpload($ds) )
+#set( $srvGraphR = $mgt.serviceGraphRead($ds) )
+#set( $srvGraphRW = $mgt.serviceGraphReadWrite($ds) )
 
 <!-- error case ... -->
+<!-- Debug
+<ul>
+  <li>${ds}</li>
+  <li>$srvQuery</li>
+  <li>$srvUpdate</li>
+  <li>$srvUpload</li>
+  <li>$srvGraphR</li>
+  <li>$srvGraphRW</li>
+</ul>
+-->
 
     <h1>Fuseki Query</h1>
     Dataset: ${ds}
@@ -36,7 +46,7 @@
 
     <p><b>SPARQL Query</b></p>
     <div class="moreindent">
-      <form action="${ds}/${srvQuery}" method="post"  accept-charset="UTF-8">
+      <form action="${ds}/${srvQuery}" method="GET"  accept-charset="UTF-8">
         <textarea  style="background-color: #F0F0F0;" name="query" cols="70" rows="10"></textarea>
         <br/>
 

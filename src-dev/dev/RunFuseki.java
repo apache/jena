@@ -61,10 +61,10 @@ public class RunFuseki
                     //"--port=3030",
                     //"--mgtPort=3031",
                     //"--host=localhost",
-                    "--mem",
+                    //"--mem",
                     //"--home=/home/afs/Projects/Fuseki",
                     //"--loc=DB",
-                    //"--file=D.ttl",
+                    "--file=D.nt",
                     //"--gzip=no",
                     //"--desc=desc.ttl",
                     //--pages=
