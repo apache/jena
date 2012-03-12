@@ -166,7 +166,6 @@ cpfile "$M/$V/$M-$V-distribution.tar.gz"  $D
 ## echo "## TDB"
 ## cpallfiles jena-tdb "${V_TDB}"
 
-
 ## ## If include a separate different copy of the distribution for easy finding.
 ## if [ "$DOWNLOAD_COPY" = 1 ]
 ## then
@@ -175,10 +174,10 @@ cpfile "$M/$V/$M-$V-distribution.tar.gz"  $D
 ##     echo "## zip"
 ##     M=jena-tdb
 ##     V=${V_TDB}
-##     D="$M-$V-$inc"
-##     cpfile $M/$V-$inc/$D-distribution.zip           $DOWNLOAD
-##     cpfilemaybe $M/$V-$inc/$D-distribution.tar.gz   $DOWNLOAD
-##     cpfilemaybe $M/$V-$inc/$D-distribution.tar.bz2  $DOWNLOAD
+##     D="$M-$V"
+##     cpfile $M/$V/$D-distribution.zip           $DOWNLOAD
+##     cpfilemaybe $M/$V/$D-distribution.tar.gz   $DOWNLOAD
+##     cpfilemaybe $M/$V/$D-distribution.tar.bz2  $DOWNLOAD
 ## 
 ##     echo
 ##     echo "# Distribution"
