@@ -47,7 +47,7 @@
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</developerConnection>
-    <url>https://svn.apache.org/viewvc/incubator/jena/Jena2/Fuseki/</url>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/</url>
   </scm>
 
   <properties>
