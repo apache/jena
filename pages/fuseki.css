@@ -32,6 +32,8 @@ p { margin-left: 2% ; margin-right: 2% ; }
 li { line-height: 14pt ; }
 */
 
+textarea { background-color: #F0F0F0 ; }
+
 table {
   font-family: Verdana, Arial, sans-serif ;
   font-size: 10pt ;

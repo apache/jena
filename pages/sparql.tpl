@@ -47,7 +47,7 @@
     <p><b>SPARQL Query</b></p>
     <div class="moreindent">
       <form action="${ds}/${srvQuery}" method="GET"  accept-charset="UTF-8">
-        <textarea  style="background-color: #F0F0F0;" name="query" cols="70" rows="10"></textarea>
+        <textarea name="query" cols="70" rows="10"></textarea>
         <br/>
 
         Output: <select name="output">
@@ -72,7 +72,7 @@
     <p><b>SPARQL Update</b></p>
     <div class="moreindent">
       <form action="${ds}/${srvUpdate}" method="post" accept-charset="UTF-8">
-        <textarea style="background-color: #F0F0F0;" name="update" cols="70" rows="10"></textarea>
+        <textarea name="update" cols="70" rows="10"></textarea>
 	    <br/>
         <input type="submit" value="Perform update" />
       </form>
