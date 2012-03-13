@@ -41,8 +41,6 @@ import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
 public class ResultSetCompare
 {
-    // ----
-    
     /* This is from the DAWG test suite.
      * Result set 1: 
      *   ---------------
@@ -61,31 +59,31 @@ public class ResultSetCompare
      *   | _:b2 | _:b3 |
      *   ---------------
      */
-    
-    private static String[] rs1$ = {
-        "(resultset (?x ?y)",
-        "   (row (?x _:b0) (?y _:b1))",
-        "   (row (?x _:b2) (?y _:b3))",
-        "   (row (?x _:b1) (?y _:b0))",
-        ")"} ;
-    private static String[] rs2$ = {
-        "(resultset (?x ?y)",
-        "   (row (?x _:c1) (?y _:c0))",
-        "   (row (?x _:c3) (?y _:c2))",
-        "   (row (?x _:c2) (?y _:c3))",
-        ")"} ;
-   
-    // nasty result set.
+
+//    private static String[] rs1$ = {
+//        "(resultset (?x ?y)",
+//        "   (row (?x _:b0) (?y _:b1))",
+//        "   (row (?x _:b2) (?y _:b3))",
+//        "   (row (?x _:b1) (?y _:b0))",
+//        ")"} ;
+//    private static String[] rs2$ = {
+//        "(resultset (?x ?y)",
+//        "   (row (?x _:c1) (?y _:c0))",
+//        "   (row (?x _:c3) (?y _:c2))",
+//        "   (row (?x _:c2) (?y _:c3))",
+//        ")"} ;
+//   
+    // Nasty result set to test.
     // These are the same but the first row of rs2$ throws in a wrong mapping of b0/c1
 
     // Right mapping is:
     // b0->c3, b1->c2, b2->c1, b3->c0
-    // Currently we get, workign simply top to bottom, no backtracking:
+    // Currently we get, working simply top to bottom, no backtracking:
     // b0->c1, b1->c0, b2->c3, b3->c2, then last row fails as _:b1 is mapped to c0, b0 to c1 not (c2, c3) 
     
     // ----
     
-    // Limiations:
+    // Limitations:
     // This code does not do compare/isomorphism combined with value testing.
     // It drops to graph isomorphism, which is term based.
     
