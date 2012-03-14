@@ -182,7 +182,6 @@
 [<SILENT>]      ::= 'SILENT' 
 [<DROP>]        ::= 'DROP' 
 [<TO>]          ::= 'TO' 
-[<INTO>]        ::= 'INTO' 
 [<BEGIN>]       ::= 'BEGIN'
 [<COMMIT>]      ::= 'COMMIT'
 [<ABORT>]       ::= 'ABORT'

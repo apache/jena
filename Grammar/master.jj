@@ -148,13 +148,13 @@ void Prologue() : {}
 
 void BaseDecl() : { String iri ; }
 {
-  <BASE> iri = IRI_REF()
+  <BASE> iri = IRIREF()
   { getPrologue().setBaseURI(iri) ; }
 }
 
 void PrefixDecl() : { Token t ; String iri ; }
 {
-    <PREFIX> t = <PNAME_NS> iri = IRI_REF()
+    <PREFIX> t = <PNAME_NS> iri = IRIREF()
       { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
         getPrologue().setPrefix(s, iri) ; }
 }
@@ -279,7 +279,7 @@ void DescribeQuery() : { Node n ; }
   <DESCRIBE>
     { getQuery().setQueryDescribeType() ; }
   (
-    ( n = VarOrIRIref() { getQuery().addDescribeNode(n) ; } )+
+    ( n = VarOrIri() { getQuery().addDescribeNode(n) ; } )+
     { getQuery().setQueryResultStar(false) ; }
   |
     <STAR>
@@ -327,7 +327,7 @@ void NamedGraphClause() : { String iri ; }
 
 String SourceSelector() : { String iri ; }
 {
-  iri = IRIref() { return iri ; }
+  iri = iri() { return iri ; }
 }
 
 
@@ -457,7 +457,7 @@ void BindingsClause() : { Var v ; Node n ; Token t ; }
 
 Node BindingValue() : { Node n ; String iri ; }
 {
-  iri = IRIref()        { return createNode(iri) ; }
+  iri = iri()        { return createNode(iri) ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
@@ -512,13 +512,13 @@ void Update1() : { Update up ; }
 Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
     // Should be +?
-    //    <LOAD> ( IRIref() )+
-    <LOAD>  (<SILENT> { silent = true ; })? url = IRIref()
+    //    <LOAD> ( iri() )+
+    <LOAD>  (<SILENT> { silent = true ; })? url = iri()
 #ifndef ARQ_UPDATE
     (<INTO> dest = GraphRef() )?
 #else
     { String iri ; }
-    (<INTO> (<GRAPH>)? iri = IRIref() { dest = createNode(iri) ; })?
+    (<INTO> (<GRAPH>)? iri = iri() { dest = createNode(iri) ; })?
 #endif
     { return new UpdateLoad(url, dest, silent) ; }
 }
@@ -611,7 +611,7 @@ Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ;  Token t ; }
 Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
-  ( <WITH> iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
+  ( <WITH> iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
   ( DeleteClause(up) ( InsertClause(up) )?
   | InsertClause(up)
   )
@@ -626,7 +626,7 @@ Update ModifyOld() :
        { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
 {
     <MODIFY>
-    ( iri = IRIref() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
+    ( iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
     (DeleteClause(up))?
     (InsertClause(up))?
     <WHERE>
@@ -667,7 +667,7 @@ void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t 
 void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<INTO>)? 
-     iri = IRIref()
+     iri = iri()
      { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
    )?
 }
@@ -675,7 +675,7 @@ void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
 void OptionalFromTarget(QuadAcc qp) : { String iri ; }
 {
   ( (<FROM>)? 
-     iri = IRIref()
+     iri = iri()
      { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
    )?
 }
@@ -684,9 +684,9 @@ void OptionalFromTarget(QuadAcc qp) : { String iri ; }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {
   <USING> 
-  ( iri = IRIref() 
+  ( iri = iri() 
     { n = createNode(iri) ; update.addUsing(n) ; }
-  | <NAMED> iri = IRIref()
+  | <NAMED> iri = iri()
     { n = createNode(iri) ; update.addUsingNamed(n) ; }
   )
 }
@@ -695,14 +695,14 @@ Target GraphOrDefault() : { String iri ; }
 {
   ( <DFT> { return Target.DEFAULT ; }
   |  (<GRAPH>)? 
-     iri = IRIref()
+     iri = iri()
      {  return Target.create(createNode(iri)) ; }
   )
 }
 
 Node GraphRef() : { String iri ; }
 {
-    <GRAPH> iri = IRIref()
+    <GRAPH> iri = iri()
     { return createNode(iri) ; }
 }
 
@@ -747,7 +747,7 @@ void Quads(QuadAcc acc) : { }
 
 void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
-    <GRAPH> gn = VarOrIRIref()
+    <GRAPH> gn = VarOrIri()
     { setAccGraph(acc, gn) ; }
     <LBRACE> 
     (TriplesTemplate(acc))?
@@ -878,7 +878,7 @@ Element OptionalGraphPattern() : { Element el ; }
 
 Element GraphGraphPattern() : { Element el ; Node n ;}
 {
-  <GRAPH> n = VarOrIRIref() el = GroupGraphPattern()
+  <GRAPH> n = VarOrIri() el = GroupGraphPattern()
     { return new ElementNamedGraph(n, el) ; }
 }
 
@@ -889,7 +889,7 @@ Element ServiceGraphPattern() : { Element el ; Node n ; boolean silent = false ;
   (<SILENT>
    { silent=true; }
   )?
-  n = VarOrIRIref()
+  n = VarOrIri()
   el = GroupGraphPattern()
     { return new ElementService(n, el, silent) ; }
 }
@@ -922,7 +922,7 @@ Element Assignment() : { Var v ; Expr expr ; }
 Element FetchGraph() : { Node n ; }
 {
   <FETCH>
-  n = VarOrIRIref() 
+  n = VarOrIri() 
   { return new ElementFetch(n) ; }
 }
 #endif
@@ -998,7 +998,7 @@ Expr Constraint() : { Expr c ; }
 
 Expr FunctionCall() : { String fname ; ExprList a ; }
 {
-  fname = IRIref()
+  fname = iri()
   a = ArgList()
   { return new E_Function(fname, a) ; }
 }
@@ -1114,8 +1114,8 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 Node Verb() : { Node p ;}
 {
 // Blank nodes as predicates
-//   ( p = VarOrBlankNodeOrIRIref() | <KW_A> { p = nRDFtype ; } )
-  ( p = VarOrIRIref() | <KW_A> { p = nRDFtype ; } )
+//   ( p = VarOrBlankNodeOriri() | <KW_A> { p = nRDFtype ; } )
+  ( p = VarOrIri() | <KW_A> { p = nRDFtype ; } )
   { return p ; }
 }
 
@@ -1271,7 +1271,7 @@ Path PathMod(Path p) : { long i1 ; long i2 ; }
 Path PathPrimary() : { String str ; Path p ; Node n ; }
 {
   ( 
-    str = IRIref()
+    str = iri()
      { n = createNode(str) ; p = PathFactory.pathLink(n) ; }
   | <KW_A> 
      { p = PathFactory.pathLink(nRDFtype) ; }
@@ -1315,11 +1315,11 @@ Path PathNegatedPropertySet() : { P_Path0 p ; P_NegPropSet pNegSet ; }
 
 P_Path0 PathOneInPropertySet() : { String str ; Node n ; }
 {
-  ( str = IRIref() { n = createNode(str) ; return new P_Link(n) ; } 
+  ( str = iri() { n = createNode(str) ; return new P_Link(n) ; } 
   | <KW_A>         { return new P_Link(nRDFtype) ; }
   // This is the !(^:property) form.
   | <CARAT>  
-    ( str = IRIref() { n = createNode(str) ; return new P_ReverseLink(n) ; } 
+    ( str = iri() { n = createNode(str) ; return new P_ReverseLink(n) ; } 
     | <KW_A> { return new P_ReverseLink(nRDFtype) ; } 
     )
   )
@@ -1444,9 +1444,9 @@ Node VarOrTerm() : {Node n = null ; }
 }
 
 // Property (if no bNodes) + DESCRIBE
-Node VarOrIRIref() : {Node n = null ; String iri ; }
+Node VarOrIri() : {Node n = null ; String iri ; }
 {
-  ( n = Var() | iri = IRIref() { n = createNode(iri) ; } )
+  ( n = Var() | iri = iri() { n = createNode(iri) ; } )
   { return n ; }
 }
 
@@ -1458,7 +1458,7 @@ Var Var() : { Token t ;}
 
 Node GraphTerm() : { Node n ; String iri ; }
 {
-  iri = IRIref()        { return createNode(iri) ; }
+  iri = iri()        { return createNode(iri) ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
@@ -1595,10 +1595,10 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
 {
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }  
-  | expr = IRIrefOrFunction()  { return expr ; }
+  | expr = iriOrFunction()  { return expr ; }
 
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
-// Because of IRIrefOrFunction 
+// Because of iriOrFunction 
   | gn = RDFLiteral()      { return asExpr(gn) ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
@@ -1886,11 +1886,11 @@ Expr Aggregate() : { Aggregator agg = null ; String sep = null ;
 // The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
 
-Expr IRIrefOrFunction() : { String iri ; ExprList a = null ; 
-                            ExprList params = null ; 
-                            boolean distinct = false ; }
+Expr iriOrFunction() : { String iri ; ExprList a = null ; 
+                         ExprList params = null ; 
+                         boolean distinct = false ; }
 {
-  iri = IRIref()
+  iri = iri()
   (a = ArgList())?
   { if ( a == null ) 
        return asExpr(createNode(iri)) ;
@@ -1920,7 +1920,7 @@ Node RDFLiteral() : { Token t ; String lex = null ; }
   (
     ( t = <LANGTAG>  { lang = stripChars(t.image, 1) ; } )
   |
-    ( <DATATYPE> uri = IRIref() )
+    ( <DATATYPE> uri = iri() )
   )?
     { return createLiteral(lex, lang, uri) ; }
 } 
@@ -1979,9 +1979,9 @@ String String() : { Token t ; String lex ; }
     }
 }
 
-String IRIref() : { String iri ; }
+String iri() : { String iri ; }
 {
-  iri = IRI_REF() { return iri ; }
+  iri = IRIREF() { return iri ; }
 |
   iri = PrefixedName() { return iri ; }
 }
@@ -2006,7 +2006,7 @@ Node BlankNode() :  { Token t = null ; }
 
 }
 
-String IRI_REF() : { Token t ; }
+String IRIREF() : { Token t ; }
 {
   t = <IRIref>
   { return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ; }
@@ -2048,7 +2048,7 @@ TOKEN: {
 TOKEN:
 {
    // Includes # for relative URIs
-   <IRIref: "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", 
+   <IRIref:       "<" (~[ ">","<", "\"", "{", "}", "^", "\\", "|", "`", 
                       "\u0000"-"\u0020"])* ">" >
 |  <PNAME_NS: (<PN_PREFIX>)? ":" >
 |  <PNAME_LN: <PNAME_NS> <PN_LOCAL> >

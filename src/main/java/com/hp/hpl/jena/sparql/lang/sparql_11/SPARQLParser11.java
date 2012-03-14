@@ -103,7 +103,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public void BaseDecl() throws ParseException {
                     String iri ;
     jj_consume_token(BASE);
-    iri = IRI_REF();
+    iri = IRIREF();
     getPrologue().setBaseURI(iri) ;
   }
 
@@ -111,7 +111,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
                       Token t ; String iri ;
     jj_consume_token(PREFIX);
     t = jj_consume_token(PNAME_NS);
-    iri = IRI_REF();
+    iri = IRIREF();
         String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
         getPrologue().setPrefix(s, iri) ;
   }
@@ -321,8 +321,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case VAR2:
       label_6:
       while (true) {
-        n = VarOrIRIref();
-                          getQuery().addDescribeNode(n) ;
+        n = VarOrIri();
+                       getQuery().addDescribeNode(n) ;
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IRIref:
         case PNAME_NS:
@@ -426,8 +426,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public String SourceSelector() throws ParseException {
                             String iri ;
-    iri = IRIref();
-                   {if (true) return iri ;}
+    iri = iri();
+                {if (true) return iri ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -1147,8 +1147,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      iri = IRIref();
-                   {if (true) return createNode(iri) ;}
+      iri = iri();
+                {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -1282,7 +1282,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_la1[44] = jj_gen;
       ;
     }
-    url = IRIref();
+    url = iri();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTO:
       jj_consume_token(INTO);
@@ -1447,8 +1447,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WITH:
       jj_consume_token(WITH);
-      iri = IRIref();
-                            Node n = createNode(iri) ; up.setWithIRI(n) ;
+      iri = iri();
+                         Node n = createNode(iri) ; up.setWithIRI(n) ;
       break;
     default:
       jj_la1[52] = jj_gen;
@@ -1518,12 +1518,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      iri = IRIref();
+      iri = iri();
       n = createNode(iri) ; update.addUsing(n) ;
       break;
     case NAMED:
       jj_consume_token(NAMED);
-      iri = IRIref();
+      iri = iri();
       n = createNode(iri) ; update.addUsingNamed(n) ;
       break;
     default:
@@ -1552,7 +1552,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         jj_la1[57] = jj_gen;
         ;
       }
-      iri = IRIref();
+      iri = iri();
        {if (true) return Target.create(createNode(iri)) ;}
       break;
     default:
@@ -1566,7 +1566,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Node GraphRef() throws ParseException {
                     String iri ;
     jj_consume_token(GRAPH);
-    iri = IRIref();
+    iri = iri();
       {if (true) return createNode(iri) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1701,7 +1701,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public void QuadsNotTriples(QuadAcc acc) throws ParseException {
                                      Node gn ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
-    gn = VarOrIRIref();
+    gn = VarOrIri();
       setAccGraph(acc, gn) ;
     jj_consume_token(LBRACE);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2008,7 +2008,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Element GraphGraphPattern() throws ParseException {
                                 Element el ; Node n ;
     jj_consume_token(GRAPH);
-    n = VarOrIRIref();
+    n = VarOrIri();
     el = GroupGraphPattern();
       {if (true) return new ElementNamedGraph(n, el) ;}
     throw new Error("Missing return statement in function");
@@ -2026,7 +2026,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_la1[75] = jj_gen;
       ;
     }
-    n = VarOrIRIref();
+    n = VarOrIri();
     el = GroupGraphPattern();
       {if (true) return new ElementService(n, el, silent) ;}
     throw new Error("Missing return statement in function");
@@ -2179,7 +2179,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public Expr FunctionCall() throws ParseException {
                         String fname ; ExprList a ;
-    fname = IRIref();
+    fname = iri();
     a = ArgList();
     {if (true) return new E_Function(fname, a) ;}
     throw new Error("Missing return statement in function");
@@ -2481,11 +2481,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case PNAME_LN:
     case VAR1:
     case VAR2:
-      p = VarOrIRIref();
+      p = VarOrIri();
       break;
     case KW_A:
       jj_consume_token(KW_A);
-                                 p = nRDFtype ;
+                              p = nRDFtype ;
       break;
     default:
       jj_la1[91] = jj_gen;
@@ -2836,7 +2836,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      str = IRIref();
+      str = iri();
        n = createNode(str) ; p = PathFactory.pathLink(n) ;
       break;
     case KW_A:
@@ -2926,8 +2926,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      str = IRIref();
-                     n = createNode(str) ; {if (true) return new P_Link(n) ;}
+      str = iri();
+                  n = createNode(str) ; {if (true) return new P_Link(n) ;}
       break;
     case KW_A:
       jj_consume_token(KW_A);
@@ -2939,8 +2939,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case IRIref:
       case PNAME_NS:
       case PNAME_LN:
-        str = IRIref();
-                       n = createNode(str) ; {if (true) return new P_ReverseLink(n) ;}
+        str = iri();
+                    n = createNode(str) ; {if (true) return new P_ReverseLink(n) ;}
         break;
       case KW_A:
         jj_consume_token(KW_A);
@@ -3166,8 +3166,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // Property (if no bNodes) + DESCRIBE
-  final public Node VarOrIRIref() throws ParseException {
-                      Node n = null ; String iri ;
+  final public Node VarOrIri() throws ParseException {
+                   Node n = null ; String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case VAR1:
     case VAR2:
@@ -3176,8 +3176,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      iri = IRIref();
-                                 n = createNode(iri) ;
+      iri = iri();
+                              n = createNode(iri) ;
       break;
     default:
       jj_la1[117] = jj_gen;
@@ -3212,8 +3212,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      iri = IRIref();
-                   {if (true) return createNode(iri) ;}
+      iri = iri();
+                {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -3702,8 +3702,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
-      expr = IRIrefOrFunction();
-                                {if (true) return expr ;}
+      expr = iriOrFunction();
+                             {if (true) return expr ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
@@ -4473,11 +4473,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 // See also FunctionCall.
 // The case of "q:name()" or "q:agg()" or just "q:name"
 // by expanding out FunctionCall()
-  final public Expr IRIrefOrFunction() throws ParseException {
-                            String iri ; ExprList a = null ;
-                            ExprList params = null ;
-                            boolean distinct = false ;
-    iri = IRIref();
+  final public Expr iriOrFunction() throws ParseException {
+                         String iri ; ExprList a = null ;
+                         ExprList params = null ;
+                         boolean distinct = false ;
+    iri = iri();
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
     case NIL:
@@ -4507,7 +4507,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         break;
       case DATATYPE:
         jj_consume_token(DATATYPE);
-        uri = IRIref();
+        uri = iri();
         break;
       default:
         jj_la1[149] = jj_gen;
@@ -4666,12 +4666,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public String IRIref() throws ParseException {
-                    String iri ;
+  final public String iri() throws ParseException {
+                 String iri ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
-      iri = IRI_REF();
-                    {if (true) return iri ;}
+      iri = IRIREF();
+                   {if (true) return iri ;}
       break;
     case PNAME_NS:
     case PNAME_LN:
@@ -4725,8 +4725,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public String IRI_REF() throws ParseException {
-                     Token t ;
+  final public String IRIREF() throws ParseException {
+                    Token t ;
     t = jj_consume_token(IRIref);
     {if (true) return resolveQuotedIRI(t.image, t.beginLine, t.beginColumn) ;}
     throw new Error("Missing return statement in function");

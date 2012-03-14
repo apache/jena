@@ -13,8 +13,6 @@ if ( $#ARGV != 1 )
     exit 1 ;
 }
 
-
-
 $/ = undef ;
 # Just table or full page.
 $TABLE = 1 ;
@@ -263,7 +261,7 @@ for $r (@rules)
     $rn = anchor("r-".$rulename, $rulename) ;
     $rn = fixupHead($rn) ;
 
-    if($rulename eq 'IRI_REF') 
+    if($rulename eq 'IRIREF') 
     {
 	print "  </tbody></table>\n" ;
 	print "</div>\n" ;
