@@ -124,10 +124,10 @@ public class QueryEngineHTTP implements QueryExecution
 
     @Override
     public void setInitialBinding(QuerySolution binding)
-    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
+    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution") ; }
     
     public void setInitialBindings(ResultSet table)
-    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries") ; }
+    { throw new UnsupportedOperationException("Initial bindings not supported for remote queries, consider using a ParameterizedSparqlString to prepare a query for remote execution") ; }
     
     /**  @param defaultGraphURIs The defaultGraphURIs to set. */
     public void setDefaultGraphURIs(List<String> defaultGraphURIs)
@@ -196,7 +196,6 @@ public class QueryEngineHTTP implements QueryExecution
     public ResultSet execSelect()
     {
         HttpQuery httpQuery = makeHttpQuery() ;
-        // TODO Allow other content types.
         httpQuery.setAccept(selectContentType) ;
         InputStream in = httpQuery.exec() ;
         
@@ -209,16 +208,28 @@ public class QueryEngineHTTP implements QueryExecution
         }
         
         retainedConnection = in; // This will be closed on close()
+        
         //TODO: Find a way to auto-detect how to create the ResultSet based on the content type in use
-        if (selectContentType.equals(WebContent.contentTypeResultsXML))
+        
+        //Don't assume the endpoint actually gives back the content type we asked for
+        String actualContentType = httpQuery.getContentType();
+        
+        //If the server fails to return a Content-Type then we will assume
+        //the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals(""))
+        {
+        	actualContentType = selectContentType;
+        }
+        
+        if (actualContentType.equals(WebContent.contentTypeResultsXML))
             return ResultSetFactory.fromXML(in);
-        if (selectContentType.equals(WebContent.contentTypeResultsJSON))
-            return  ResultSetFactory.fromJSON(in);
-        if (selectContentType.equals(WebContent.contentTypeTextTSV))
+        if (actualContentType.equals(WebContent.contentTypeResultsJSON))
+            return ResultSetFactory.fromJSON(in); 
+        if (actualContentType.equals(WebContent.contentTypeTextTSV))
             return ResultSetFactory.fromTSV(in);
-        if (selectContentType.equals(WebContent.contentTypeTextCSV))
+        if (actualContentType.equals(WebContent.contentTypeTextCSV))
             return CSVInput.fromCSV(in);
-        throw new QueryException("SELECT Content-Type is not yet supported by this query engine");
+        throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not currently supported for SELECT queries");
     }
 
     @Override
@@ -239,9 +250,19 @@ public class QueryEngineHTTP implements QueryExecution
         httpQuery.setAccept(modelContentType) ;
         InputStream in = httpQuery.exec() ;
         
+        //Don't assume the endpoint actually gives back the content type we asked for
+        String actualContentType = httpQuery.getContentType();
+        
+        //If the server fails to return a Content-Type then we will assume
+        //the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals(""))
+        {
+        	actualContentType = modelContentType;
+        }
+        
         //Try to select language appropriately here based on the model content type
-        Lang lang = WebContent.contentTypeToLang(modelContentType);
-        if (!lang.isTriples()) throw new QueryException("Content Type returned is not a valid RDF Graph syntax");
+        Lang lang = WebContent.contentTypeToLang(actualContentType);
+        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " is not a valid RDF Graph syntax");
         model.read(in, null, lang.getName()) ; 
         
         return model ;
@@ -255,12 +276,22 @@ public class QueryEngineHTTP implements QueryExecution
         InputStream in = httpQuery.exec() ;
 
         try {
+            //Don't assume the endpoint actually gives back the content type we asked for
+            String actualContentType = httpQuery.getContentType();
+            
+            //If the server fails to return a Content-Type then we will assume
+            //the server returned the type we asked for
+            if (actualContentType == null || actualContentType.equals(""))
+            {
+            	actualContentType = askContentType;
+            }
+        	
             //Parse the result appropriately depending on the selected content type
             if (askContentType.equals(WebContent.contentTypeResultsXML))
                 return XMLInput.booleanFromXML(in) ;
             if (askContentType.equals(WebContent.contentTypeResultsJSON))
                 return JSONInput.booleanFromJSON(in) ;
-            throw new QueryException("ASK Content-Type is not yet supported by this query engine");
+            throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not currently supported for ASK queries");
         } finally {
             // Ensure connection is released
             try { in.close(); }

@@ -127,22 +127,40 @@ public class HttpQuery extends Params
     
     /** Set the content type (Accept header) for the results
      */
-    
     public void setAccept(String contentType)
     {
         contentTypeResult = contentType ;
     }
     
+    /**
+     * Gets the Content Type, if the query has been made this reflects the Content-Type header returns, if it has not been made this reflects only the Accept header that will be sent (as set via the {@link #setAccept(String)} method)
+     */
+    public String getContentType()
+    {
+    	return contentTypeResult;
+    }
+    
+    /**
+     * Sets whether the HTTP request will include a Accept-Encoding: gzip header
+     */
     public void setAllowGZip(boolean allow)
     {
     	allowGZip = allow;
     }
     
+    /**
+     * Sets whether the HTTP request will include a Accept-Encoding: deflate header
+     */
     public void setAllowDeflate(boolean allow)
     {
     	allowDeflate = allow;
     }
     
+    /**
+     * Sets basic authentication
+     * @param user Username
+     * @param password Password
+     */
     public void setBasicAuthentication(String user, char[] password)
     {
         this.user = user ;
@@ -412,11 +430,18 @@ public class HttpQuery extends Params
             //httpConnection.setReadTimeout(10) ;
             InputStream in = httpConnection.getInputStream() ;
 
-            String x$ = httpConnection.getContentType() ;
-            String y$ = httpConnection.getContentEncoding() ;
+            //Get the returned content type so we can expose this later via the getContentType() method
+            //We strip any parameters off the returned content type e.g. ;charset=UTF-8 since code that
+            //consumes our getContentType() method will expect a bare MIME type
+            contentTypeResult = httpConnection.getContentType() ;
+            if (contentTypeResult.contains(";"))
+            {
+            	contentTypeResult = contentTypeResult.substring(0, contentTypeResult.indexOf(';'));
+            }
+            
             
             //If compression was enabled and we got a compressed response as indicated by the presence of
-            //a Transfer-Encoding header we need to ensure the input stream is appropriately wrapped in
+            //a Content-Encoding header we need to ensure the input stream is appropriately wrapped in
             //the relevant stream type but checking that the JVM hasn't been clever enough to do
             //this for us already
             String contentEnc = httpConnection.getContentEncoding() ;
