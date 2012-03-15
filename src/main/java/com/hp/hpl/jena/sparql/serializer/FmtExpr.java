@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.serializer;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.* ;
@@ -186,8 +187,16 @@ public class FmtExpr
         @Override
         public void visit(ExprFunctionOp funcOp)
         {
+            String fn = funcOp.getFunctionName(context) ;
+            if ( funcOp instanceof E_NotExists )
+                fn = "NOT EXISTS" ;
+            else if ( funcOp instanceof E_Exists )
+                fn = "EXISTS" ;
+            else
+                throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: "+fn) ;
+            
             FormatterElement fmtElt = new FormatterElement(out, context) ;
-            out.print(funcOp.getFunctionName(context)) ;
+            out.print(fn) ;
             out.print(" ") ;
             Element el = funcOp.getElement() ; 
             if ( el == null )
