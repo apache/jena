@@ -39,8 +39,8 @@ public class ActionDataset extends HttpServlet
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        request.getRemoteUser() ;
-        request.getUserPrincipal() ;
+//        request.getRemoteUser() ;
+//        request.getUserPrincipal() ;
         
         String dataset = request.getParameter("dataset") ;
         HttpSession session = request.getSession(true) ;

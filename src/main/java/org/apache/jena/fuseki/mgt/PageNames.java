@@ -20,7 +20,14 @@ package org.apache.jena.fuseki.mgt;
 
 public class PageNames
 {
-    static final String pageDataset = "dataset.html" ;
-    static final String pageControlPanel = "control-panel.tpl" ;
-    static final String pageAfterLogin = "sparql.tpl" ;
+    //public static final String pageControlPanel     = "/control-panel.tpl" ;
+    
+    /** The dispatch URL for the place to go after login (0.2.1 - login = choose dataset) */
+    public static final String pageAfterLogin      = "/sparql.tpl" ;
+    
+    /** This is the full web dispatch URL: control-panel.tpl knowns 
+     * the name indirectly because it gets it via velocity
+     * calling mgt.actionDataset.
+     */
+    public static final String actionDatasetNames   = "/$/datasets" ;
 }

@@ -24,9 +24,10 @@
     <h1>Fuseki Control Panel</h1>
 
 #set( $datasets = $mgt.datasets($request) )
+#set( $action   = $mgt.actionDataset($request) )
 
     <div class="moreindent">
-    <form action="dataset" method="post">
+    <form action="${action}" method="post">
       Dataset: <select name="dataset">
 #foreach($ds in $datasets)
         <option value="${ds}">${ds}</option>

@@ -33,6 +33,7 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.mgt.ActionDataset ;
 import org.apache.jena.fuseki.mgt.MgtFunctions ;
+import org.apache.jena.fuseki.mgt.PageNames ;
 import org.apache.jena.fuseki.servlets.* ;
 import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
@@ -168,7 +169,7 @@ public class SPARQLServer
         {
             // Action when control panel selects a dataset.
             HttpServlet datasetChooser = new ActionDataset() ;
-            addServlet(context, datasetChooser, "/dataset", false) ;
+            addServlet(context, datasetChooser, PageNames.actionDatasetNames, false) ;
         }
         
         if ( installServices )
@@ -181,7 +182,7 @@ public class SPARQLServer
             
             HttpServlet dumpService = new DumpServlet() ;
             HttpServlet generalQueryService = new SPARQL_QueryGeneral() ;
-            
+            // TODO Name management 
             addServlet(context, validateQuery, validationRoot+"/query", false) ;
             addServlet(context, validateUpdate, validationRoot+"/update", false) ;
             addServlet(context, validateData, validationRoot+"/data", false) ;

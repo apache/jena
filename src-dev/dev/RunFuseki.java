@@ -69,7 +69,8 @@ public class RunFuseki
                     //"--desc=desc.ttl",
                     //--pages=
                     //"--jetty-config=jetty-fuseki.xml",
-                    "/ds"
+                    // "/ds"
+                    "/dataset"
                     ) ;
         System.exit(0) ;
     }
