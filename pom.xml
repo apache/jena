@@ -22,7 +22,7 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Fuseki</name>
-  <version>0.2.1-incubating-SNAPSHOT</version>
+  <version>0.2.1-incubating</version>
   <description>Jena SPARQL Server</description>
   <url>http://incubator.apache.org/jena</url>
 
@@ -45,9 +45,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/trunk</developerConnection>
-    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/Fuseki/tags/jena-fuseki-0.2.1-incubating</url>
   </scm>
 
   <properties>
