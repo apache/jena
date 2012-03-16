@@ -124,6 +124,13 @@ public class E_Function extends ExprFunctionN
     }
 
     @Override
+    public String getFunctionName(SerializationContext cxt)
+    {
+        return FmtUtils.stringForURI(functionIRI, cxt) ;
+    }
+
+
+    @Override
     protected Expr copy(ExprList newArgs)
     {
         return new E_Function(getFunctionIRI(), newArgs) ;

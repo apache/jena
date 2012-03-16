@@ -151,14 +151,14 @@ public class Serializer
         
         serializeARQ(query, writer, 
                      new FormatterElement(writer, cxt1),
-                     new FmtExpr(writer, cxt1),
+                     new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
     }
     
     static private void serializeARQ(Query query, 
                                      IndentedWriter writer, 
                                      FormatterElement eltFmt,
-                                     FmtExpr    exprFmt,
+                                     FmtExprSPARQL    exprFmt,
                                      FormatterTemplate templateFmt)
     {
         QuerySerializer serilizer = new QuerySerializer(writer, eltFmt, exprFmt, templateFmt) ;

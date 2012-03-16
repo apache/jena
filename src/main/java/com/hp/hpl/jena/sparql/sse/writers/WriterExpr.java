@@ -119,7 +119,7 @@ public class WriterExpr
                 n = func.getOpName() ;
 
             if ( n == null )
-                n = func.getFunctionPrintName(context) ;
+                n = func.getFunctionName(context) ;
 
             out.print(n) ;
 

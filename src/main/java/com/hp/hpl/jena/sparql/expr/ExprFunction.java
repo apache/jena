@@ -105,24 +105,26 @@ public abstract class ExprFunction extends ExprNode
         return true ;
     }
     
-    /** Name used for output:
-     *    SPARQL format: just the extension functions
-     *    Prefix format: the function name, dafaulting to the symbol string
-     *  Overrided in ExprFunctionN 
+    /** Name used for output in SPARQL format needing functional form (no specific keyword).
+     *  e.g. regexp(), custom functions, ...
      */
     
     public String getFunctionPrintName(SerializationContext cxt)
     { return funcSymbol.getSymbol() ; }
 
-    /** Name as a simple name or "function" */
+    /** Name used in a functional form (i.e. SPARQL algebra).
+     *  getOpName() is used in preference as a short, symbol name.
+     */
     public String getFunctionName(SerializationContext cxt)
     { return funcSymbol.getSymbol() ; }
-
+    
     public FunctionLabel getFunctionSymbol()
     { return funcSymbol ; }
 
+    /** URI for this function, whether custom or specification defined URI (these are keywords in the language) */  
     public String getFunctionIRI() { return null ; }
 
+    /** Get the symbol name (+, ! etc) for this function -- Maybe null for none */
     public String getOpName()
     { return opSign ; }
 }

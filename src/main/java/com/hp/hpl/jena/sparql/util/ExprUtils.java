@@ -46,7 +46,7 @@ import com.hp.hpl.jena.sparql.lang.arq.ARQParserTokenManager ;
 import com.hp.hpl.jena.sparql.lang.arq.ParseException ;
 import com.hp.hpl.jena.sparql.lang.arq.Token ;
 import com.hp.hpl.jena.sparql.lang.arq.TokenMgrError ;
-import com.hp.hpl.jena.sparql.serializer.FmtExpr ;
+import com.hp.hpl.jena.sparql.serializer.FmtExprSPARQL ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.SSEParseException ;
@@ -150,7 +150,7 @@ public class ExprUtils
     
     public static void fmtSPARQL(IndentedWriter iOut, Expr expr, SerializationContext sCxt)
     {
-        FmtExpr v = new FmtExpr(iOut, sCxt) ;
+        FmtExprSPARQL v = new FmtExprSPARQL(iOut, sCxt) ;
         v.format(expr) ;
     }
     
@@ -170,7 +170,7 @@ public class ExprUtils
     
     public static void fmtSPARQL(IndentedWriter iOut, ExprList exprs, SerializationContext pmap)
     {
-        FmtExpr fmt = new FmtExpr(iOut, pmap) ;
+        FmtExprSPARQL fmt = new FmtExprSPARQL(iOut, pmap) ;
         String sep = "" ;
         for (Expr expr : exprs)
         {

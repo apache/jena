@@ -27,20 +27,15 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 
-/** Output expressions in the syntax that ARQ expects them */
+/** Output expressions in SPARQL syntax */
 
-public class FmtExpr
+public class FmtExprSPARQL
 {
     static final int INDENT = 2 ;
     
     FmtExprARQVisitor visitor ; 
 
-//    public FmtExprARQ(IndentedWriter writer, PrefixMapping pmap)
-//    {
-//        visitor = new FmtExprARQVisitor(writer, pmap) ;
-//    }
-
-    public FmtExpr(IndentedWriter writer, SerializationContext cxt)
+    public FmtExprSPARQL(IndentedWriter writer, SerializationContext cxt)
     {
         visitor = new FmtExprARQVisitor(writer, cxt) ;
     }
@@ -54,14 +49,10 @@ public class FmtExpr
     
     public static void format(IndentedWriter out, Expr expr, SerializationContext cxt)
     {
-        FmtExpr fmt = new FmtExpr(out, cxt) ;
+        FmtExprSPARQL fmt = new FmtExprSPARQL(out, cxt) ;
         fmt.format(expr) ;
     }
 
-//    
-//    // temporary workaround - need to rationalise FmtExpr
-//    public ExprVisitor getVisitor() { return visitor ; }
-    
     private static class FmtExprARQVisitor implements ExprVisitor
     {
         IndentedWriter out ;
@@ -80,7 +71,6 @@ public class FmtExpr
                 context = new SerializationContext() ;
         }
 
-
         @Override
         public void startVisit() { }
 
@@ -92,7 +82,9 @@ public class FmtExpr
                 printInFunctionForm(expr) ;
                 return ;
             }
-            out.print("()") ;
+            out.print("( ") ;
+            out.print( expr.getOpName() ) ;
+            out.print(" ") ;
         }
 
         
@@ -187,7 +179,7 @@ public class FmtExpr
         @Override
         public void visit(ExprFunctionOp funcOp)
         {
-            String fn = funcOp.getFunctionName(context) ;
+            String fn = funcOp.getFunctionPrintName(context) ;
             if ( funcOp instanceof E_NotExists )
                 fn = "NOT EXISTS" ;
             else if ( funcOp instanceof E_Exists )

@@ -184,7 +184,7 @@ public class FormatterElement extends FormatterBase
     {
         out.print("FILTER ") ;
         Expr expr = el.getExpr() ;
-        FmtExpr v = new FmtExpr(out, context) ;
+        FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
         
         // This assumes that complex expressions are bracketted
         // (parens) as necessary except for some cases:
@@ -209,7 +209,7 @@ public class FormatterElement extends FormatterBase
         out.print("LET (") ;
         out.print("?"+el.getVar().getVarName()) ;
         out.print(" := ") ;
-        FmtExpr v = new FmtExpr(out, context) ;
+        FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
         v.format(el.getExpr()) ;
         out.print(")") ;
     }
@@ -218,7 +218,7 @@ public class FormatterElement extends FormatterBase
     public void visit(ElementBind el)
     {
         out.print("BIND(") ;
-        FmtExpr v = new FmtExpr(out, context) ;
+        FmtExprSPARQL v = new FmtExprSPARQL(out, context) ;
         v.format(el.getExpr()) ;
         out.print(" AS ") ;
         out.print("?"+el.getVar().getVarName()) ;

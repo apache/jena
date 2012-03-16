@@ -43,12 +43,12 @@ public class QuerySerializer implements QueryVisitor
     static final int BLOCK_INDENT = 2 ;
     protected FormatterTemplate fmtTemplate ;
     protected FormatterElement fmtElement ;
-    protected FmtExpr fmtExpr ;
+    protected FmtExprSPARQL fmtExpr ;
     protected IndentedWriter out = null ;
 
     QuerySerializer(OutputStream _out,
                     FormatterElement   formatterElement, 
-                    FmtExpr            formatterExpr,
+                    FmtExprSPARQL            formatterExpr,
                     FormatterTemplate  formatterTemplate)
     {
         this(new IndentedWriter(_out),
@@ -57,7 +57,7 @@ public class QuerySerializer implements QueryVisitor
 
     QuerySerializer(IndentedWriter iwriter,
                     FormatterElement   formatterElement, 
-                    FmtExpr            formatterExpr,
+                    FmtExprSPARQL            formatterExpr,
                     FormatterTemplate  formatterTemplate)
     {
         out = iwriter ;

@@ -22,8 +22,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
-/** An expression that is constant (does not depend on evaluating a sub expression).
- */
+/** An expression that is constant (does not depend on evaluating a sub expression). */
 
 public abstract class ExprFunction0 extends ExprFunction
 {
