@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki.mgt;
 
-import java.util.Iterator ;
 import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpSession ;
 
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
@@ -84,36 +84,66 @@ public class MgtFunctions
     /** Return a SPARQL query service name for the dataset */
     public static String serviceQuery(String dataset)
     {
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        return serviceNameOrDefault(ref.queryEP, "sparql") ;
+        String dft = "sparql" ; 
+        DatasetRef ref = getFromRegistry(dataset) ;
+        if ( ref == null )
+            return dft ;
+        return serviceNameOrDefault(ref.queryEP, dft) ;
     }
     
     /** Return a SPARQL update service name for the dataset */
     public static String serviceUpdate(String dataset)
     {
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        return serviceNameOrDefault(ref.updateEP, "update") ;
+        String dft = "update" ; 
+        DatasetRef ref = getFromRegistry(dataset) ;
+        if ( ref == null )
+            return dft ;
+        return serviceNameOrDefault(ref.updateEP, dft) ;
     }
     
     /** Return a SPARQL upload service name for the dataset */
     public static String serviceUpload(String dataset)
     {
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        return serviceNameOrDefault(ref.uploadEP, "upload") ;
+        String dft = "upload" ;
+        DatasetRef ref = getFromRegistry(dataset) ;
+        if ( ref == null )
+            return dft ;
+        return serviceNameOrDefault(ref.uploadEP, dft) ;
     }
 
     /** Return a SPARQL Graph Store Protocol (Read) service name for the dataset */
     public static String serviceGraphRead(String dataset)
     {
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        return serviceNameOrDefault(ref.readGraphStoreEP, "get") ;
+        String dft = "get" ;
+        DatasetRef ref = getFromRegistry(dataset) ;
+        if ( ref == null )
+            return dft ;
+        return serviceNameOrDefault(ref.readGraphStoreEP, dft) ;
     }
 
     /** Return a SPARQL Graph Store Protocol (Read-Write) service name for the dataset */
     public static String serviceGraphReadWrite(String dataset)
     {
-        DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        return serviceNameOrDefault(ref.readWriteGraphStoreEP, "data") ;
+        String dft = "data" ;
+        DatasetRef ref = getFromRegistry(dataset) ;
+        if ( ref == null )
+            return dft ;
+        return serviceNameOrDefault(ref.readWriteGraphStoreEP, dft) ;
+    }
+
+    private static DatasetRef getFromRegistry(String dataset)
+    {
+        DatasetRegistry registry = DatasetRegistry.get() ;
+        if ( registry == null )
+        {
+            Fuseki.serverLog.warn("No dataset registry") ;
+            return null ;
+        }
+        
+        DatasetRef ref = registry.get(dataset) ;
+        if ( ref == null )
+            Fuseki.serverLog.warn("Dataset not found: "+dataset) ;
+        return ref ;
     }
 
     private static String serviceNameOrDefault(List<String> services, String defaultValue)
@@ -126,41 +156,11 @@ public class MgtFunctions
         return x ;
     }
     
-    /* remove soon - simply for backwards compatibility with Fuseki+JSP */
-    @Deprecated
-    public static String datasetsAsSelectOptions(HttpServletRequest request)
-    {
-        StringBuilder buff = new StringBuilder() ;
-        
-        Iterator<String> iter = DatasetRegistry.get().keys() ;
-        for ( ; iter.hasNext() ; )
-        {
-            String name = iter.next() ;
-            buff.append("<option value=\""+name+"\">"+name+"</option>") ;
-        }
-        return buff.toString() ;
-    }
-    
-    /* remove soon - simply for backwards compatibility with Fuseki+JSP */
-    @Deprecated
-    public static String datasetsAsListItems(HttpServletRequest request)
-    {
-        StringBuilder buff = new StringBuilder() ;
-        
-        Iterator<String> iter = DatasetRegistry.get().keys() ;
-        for ( ; iter.hasNext() ; )
-        {
-            String name = iter.next() ;
-            buff.append("  <li>"+name+"</li>") ;
-        }
-        return buff.toString() ;
-    }
-
     /** Return prefixes for the datasets, SPARQL syntax. */ 
     public static String prefixes(HttpServletRequest request)
     {
         String dsName = dataset(request) ;
-        DatasetRef desc = DatasetRegistry.get().get(dsName) ;
+        DatasetRef desc = getFromRegistry(dsName) ;
         if ( desc == null )
             return "<not found>" ;
         DatasetGraph dsg = desc.dataset ; 
@@ -176,6 +176,4 @@ public class MgtFunctions
         }
         return "" ;
     }
-
-    
 }
