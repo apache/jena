@@ -1143,7 +1143,7 @@ Expr AdditiveExpression() : { Expr expr1, expr2, expr3 ; boolean addition ; Node
       ( <STAR> expr3 = UnaryExpression() { expr2 = new E_Multiply(expr2, expr3) ; } )
     |
       ( <SLASH> expr3 = UnaryExpression() { expr2 = new E_Divide(expr2, expr3) ; } )
-    )?
+    )*
     { if ( addition )
          expr1 = new E_Add(expr1, expr2) ;
       else

@@ -3447,9 +3447,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
           jj_consume_token(-1);
           throw new ParseException();
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case STAR:
-        case SLASH:
+        label_31:
+        while (true) {
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case STAR:
+          case SLASH:
+            ;
+            break;
+          default:
+            jj_la1[126] = jj_gen;
+            break label_31;
+          }
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
           case STAR:
             jj_consume_token(STAR);
@@ -3462,14 +3470,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
                                             expr2 = new E_Divide(expr2, expr3) ;
             break;
           default:
-            jj_la1[126] = jj_gen;
+            jj_la1[127] = jj_gen;
             jj_consume_token(-1);
             throw new ParseException();
           }
-          break;
-        default:
-          jj_la1[127] = jj_gen;
-          ;
         }
       if ( addition )
          expr1 = new E_Add(expr1, expr2) ;
@@ -3489,7 +3493,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Expr MultiplicativeExpression() throws ParseException {
                                     Expr expr1, expr2 ;
     expr1 = UnaryExpression();
-    label_31:
+    label_32:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
@@ -3498,7 +3502,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         break;
       default:
         jj_la1[129] = jj_gen;
-        break label_31;
+        break label_32;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
