@@ -90,12 +90,14 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
 //            return ;
         }
         
+        genPrefix(sqlSelectBlock) ;
         out.print("SELECT ") ;
         if ( sqlSelectBlock.getDistinct() )
             out.print("DISTINCT ") ;
         if ( annotate(sqlSelectBlock) ) 
             out.ensureStartOfLine() ;
         out.incIndent() ;
+        genColumnPrefix(sqlSelectBlock) ;
         print(sqlSelectBlock.getCols()) ;
         out.decIndent() ;
         out.ensureStartOfLine() ;
@@ -119,8 +121,33 @@ public class GenerateSQLVisitor implements SqlNodeVisitor
         // LIMIT/OFFSET
         out.ensureStartOfLine() ;
         genLimitOffset(sqlSelectBlock) ;
+        genSuffix(sqlSelectBlock) ;
         levelSelectBlock-- ;
 
+    }
+
+    /**
+     * Generate anything that needs to appear before the core SELECT.
+     */
+    protected void genPrefix(SqlSelectBlock sqlSelectBlock)
+    {
+        // By default, NOP.
+    }
+
+    /**
+     * Generate any additional columns.
+     */
+    protected void genColumnPrefix(SqlSelectBlock sqlSelectBlock)
+    {
+        // By default, NOP.
+    }
+
+    /**
+     * Generate anything that needs to appear after the core SELECT.
+     */
+    protected void genSuffix(SqlSelectBlock sqlSelectBlock)
+    {
+        // By default, NOP.
     }
 
     protected void genLimitOffset(SqlSelectBlock sqlSelectBlock)
