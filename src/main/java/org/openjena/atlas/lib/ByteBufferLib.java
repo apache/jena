@@ -26,7 +26,7 @@ import java.util.Arrays ;
 
 public class ByteBufferLib
 {
-    public static boolean allowArray  = false ;
+    public static boolean allowArray  = true ;
 
     private ByteBufferLib() {}
     
@@ -97,6 +97,20 @@ public class ByteBufferLib
         return bb2 ;
     }
     
+    /** Copy from a byte buffer */
+    final public static byte[] bb2array(ByteBuffer bb, int start, int finish)
+    {
+        byte[] b = new byte[finish-start] ;
+        bb2array(bb, start, finish, b) ;
+        return b ;
+    }
+    
+    private static void bb2array(ByteBuffer bb, int start, int finish, byte[] b)
+    {
+        for ( int j = 0 , i = start; i < finish ; i++ )
+            b[j] = bb.get(i) ;
+    }
+
     // For non-array versions : beware of overlaps.
     final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
@@ -115,7 +129,7 @@ public class ByteBufferLib
             bbcopy2(bb, src, dst, length, slotLen) ;
     }
 
-    public final static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    private final static void bbcopy1(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
         int bDst = dst*slotLen ;
         int bSrc = src*slotLen ;
@@ -125,7 +139,7 @@ public class ByteBufferLib
             bb.put(bDst+i, bb.get(bSrc+i)) ;
     }
 
-    public final static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen)
+    private final static void bbcopy2(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
         int bDst = dst*slotLen ;
         int bSrc = src*slotLen ;
