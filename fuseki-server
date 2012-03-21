@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bassh
 
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-export FUSEKI_HOME=${FUSEKI_HOME:-$PWD}
+export FUSEKI_HOME="${FUSEKI_HOME:-$PWD}"
 
-if [ ! -e $FUSEKI_HOME ]
+if [ ! -e "$FUSEKI_HOME" ]
 then
     echo "$FUSEKI_HOME does not exist" 1>&2
     exit 1
