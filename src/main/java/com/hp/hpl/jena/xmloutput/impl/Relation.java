@@ -33,8 +33,6 @@ import com.hp.hpl.jena.util.iterator.Map1Iterator;
  * A sparse 2 dimensional array of boolean indexed by Object.
  *
  * Complete with transitive closure algorithm.
- * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:51 $'
  */
 class Relation<T> {
     final private Map<T, Set<T>> rows;

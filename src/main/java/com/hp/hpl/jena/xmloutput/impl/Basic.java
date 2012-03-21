@@ -32,9 +32,6 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
 /** Writes out an XML serialization of a model.
- *
- * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:51 $'
  */
 public class Basic extends BaseXMLWriter 
     {

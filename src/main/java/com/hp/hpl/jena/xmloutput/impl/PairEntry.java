@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-/*
- * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-08-08 11:25:32 $'
- */
 class PairEntry<K,V>  implements java.util.Map.Entry<K,V>  {
     K a;
     V b;

@@ -37,17 +37,31 @@ package com.hp.hpl.jena.xmloutput.impl;
  * 6.8
  * 
  * 
- * [6.1] RDF ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>'] [6.2] obj ::= description |
- * container [6.3] description ::= '<rdf:Description' idAboutAttr? bagIdAttr?
- * propAttr* '/>' | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>'
- * propertyElt* '</rdf:Description>' | typedNode [6.4] container ::= sequence |
- * bag | alternative [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr
- * [6.6] idAttr ::= ' ID="' IDsymbol '"' [6.7] aboutAttr ::= ' about="'
- * URI-reference '"' [6.8] aboutEachAttr ::= ' aboutEach="' URI-reference '"' | '
- * aboutEachPrefix="' string '"' [6.9] bagIdAttr ::= ' bagID="' IDsymbol '"'
- * [6.10] propAttr ::= typeAttr | propName '="' string '"' (with embedded quotes
- * escaped) [6.11] typeAttr ::= ' type="' URI-reference '"' [6.12] propertyElt
- * ::= '<' propName idAttr? '>' value '</' propName '>' | '<' propName
+ * [6.1] RDF ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>']
+ * 
+ * [6.2] obj ::= description | container 
+ * 
+ * [6.3] description ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>' |
+ *                       '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</rdf:Description>' |
+ *                       typedNode 
+ * 
+ * [6.4] container ::= sequence | bag | alternative
+ * 
+ * [6.5] idAboutAttr ::= idAttr | aboutAttr | aboutEachAttr
+ * 
+ * [6.6] idAttr ::= ' ID="' IDsymbol '"' 
+ * 
+ * [6.7] aboutAttr ::= ' about="' URI-reference '"'
+ *  
+ * [6.8] aboutEachAttr ::= ' aboutEach="' URI-reference '"' | 'aboutEachPrefix="' string '"'
+ *  
+ * [6.9] bagIdAttr ::= ' bagID="' IDsymbol '"'
+ * 
+ * [6.10] propAttr ::= typeAttr | propName '="' string '"' (with embedded quotes escaped) 
+ *
+ * [6.11] typeAttr ::= ' type="' URI-reference '"'
+ *  
+ * [6.12] propertyElt  ::= '<' propName idAttr? '>' value '</' propName '>' | '<' propName
  * idAttr? parseLiteral '>' literal '</' propName '>' | '<' propName idAttr?
  * parseResource '>' propertyElt* '</' propName '>' | '<' propName idRefAttr?
  * bagIdAttr? propAttr* '/>'
@@ -56,26 +70,49 @@ package com.hp.hpl.jena.xmloutput.impl;
  * propName '>' [daml.2] parseDamlCollection ::= ' parseType="daml:collection"'
  * 
  * [6.13] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>' | '<'
- * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName
- * '>' [6.14] propName ::= Qname [6.15] typeName ::= Qname [6.16] idRefAttr ::=
- * idAttr | resourceAttr [6.17] value ::= obj | string [6.18] resourceAttr ::= '
- * resource="' URI-reference '"' [6.19] Qname ::= [ NSprefix ':' ] name [6.20]
- * URI-reference ::= string, interpreted per [URI] [6.21] IDsymbol ::= (any
- * legal XML name symbol) [6.22] name ::= (any legal XML name symbol) [6.23]
- * NSprefix ::= (any legal XML namespace prefix) [6.24] string ::= (any XML
- * text, with "<", ">", and "&" escaped) [6.25] sequence ::= '<rdf:Seq'
- * idAttr? '>' member* '</rdf:Seq>' | '<rdf:Seq' idAttr? memberAttr* '/>'
- * [6.26] bag ::= '<rdf:Bag' idAttr? '>' member* '</rdf:Bag>' | '<rdf:Bag'
- * idAttr? memberAttr* '/>' [6.27] alternative ::= '<rdf:Alt' idAttr? '>'
- * member+ '</rdf:Alt>' | '<rdf:Alt' idAttr? memberAttr? '/>' [6.28] member
- * ::= referencedItem | inlineItem [6.29] referencedItem ::= '<rdf:li'
- * resourceAttr '/>' [6.30] inlineItem ::= '<rdf:li' '>' value </rdf:li>' | '<rdf:li'
- * parseLiteral '>' literal </rdf:li>' | '<rdf:li' parseResource '>'
- * propertyElt* </rdf:li>' [6.31] memberAttr ::= ' rdf:_n="' string '"' (where n
- * is an integer) [6.32] parseLiteral ::= ' parseType="Literal"' [6.33]
- * parseResource ::= ' parseType="Resource"' [6.34] literal ::= (any well-formed
- * XML)
+ * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName * '>'
+ *  
+ * [6.14] propName ::= Qname
+ *  
+ * [6.15] typeName ::= Qname
  * 
+ * [6.16] idRefAttr ::= idAttr | resourceAttr
+ *  
+ * [6.17] value ::= obj | string
+ *  
+ * [6.18] resourceAttr ::= 'resource="' URI-reference '"'
+ *  
+ * [6.19] Qname ::= [ NSprefix ':' ] name
+ *  
+ * [6.20] URI-reference ::= string, interpreted per [URI]
+ *  
+ * [6.21] IDsymbol ::= (any legal XML name symbol)
+ * 
+ * [6.22] name ::= (any legal XML name symbol)
+ * 
+ * [6.23] NSprefix ::= (any legal XML namespace prefix)
+ * 
+ * [6.24] string ::= (any XML text, with "<", ">", and "&" escaped)
+ * 
+ * [6.25] sequence ::= '<rdf:Seq' idAttr? '>' member* '</rdf:Seq>' | '<rdf:Seq' idAttr? memberAttr* '/>'
+ * 
+ * [6.26] bag ::= '<rdf:Bag' idAttr? '>' member* '</rdf:Bag>' | '<rdf:Bag' idAttr? memberAttr* '/>'
+ * 
+ * [6.27] alternative ::= '<rdf:Alt' idAttr? '>' member+ '</rdf:Alt>' | '<rdf:Alt' idAttr? memberAttr? '/>'
+ * 
+ * [6.28] member ::= referencedItem | inlineItem
+ * 
+ * [6.29] referencedItem ::= '<rdf:li' resourceAttr '/>'
+ * 
+ * [6.30] inlineItem ::= '<rdf:li' '>' value </rdf:li>' | '<rdf:li' parseLiteral '>' literal </rdf:li>' | '<rdf:li' parseResource '>' propertyElt* </rdf:li>'
+ * 
+ * [6.31] memberAttr ::= ' rdf:_n="' string '"' (where n is an integer)
+ * 
+ * [6.32] parseLiteral ::= ' parseType="Literal"'
+ * 
+ * [6.33] parseResource ::= ' parseType="Resource"'
+ * 
+ * [6.34] literal ::= (any well-formed XML)
  */
 import java.io.PrintWriter;
 import java.util.*;

@@ -84,9 +84,6 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
  * <li>anonymous node presentational
  * <li>errorHandler
  * </ul>
- *
- * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-07-04 16:27:42 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
     

@@ -41,8 +41,6 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * For best results it is necessary to set the property 
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter(String)
- * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:51 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 

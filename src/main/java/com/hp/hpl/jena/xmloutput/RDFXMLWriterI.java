@@ -27,8 +27,6 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax;
  * This interface only adds documentation to {@link RDFWriter}.
  * The documentation identifies the properties that can be
  * set on RDF/XML and RDF/XML-ABBREV writers.
- * @author jjc
- *
  */
 public interface RDFXMLWriterI extends RDFWriter {
     /** Suppress a compiler warning. */
