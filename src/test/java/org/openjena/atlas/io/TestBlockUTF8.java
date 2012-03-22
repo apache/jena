@@ -52,9 +52,9 @@ public class TestBlockUTF8 extends BaseTest
         static private final String symbolsBase           = "☺☻♪♫" ;
         static private final String chineseBase           = "孫子兵法" ; // The Art of War 
         static private final String japaneseBase          = "日本" ;    // Japanese
-        static private final String binary1               = "abc\uD800xyz" ;    // A single surrogate, without it's pair. 
-        static private final String binary2               = "\uD800" ;          // A single surrogate, without it's pair. 
-        static private final String binary3               = "\u0000" ;          // A zero character  
+        static private final String binaryStr1            = "abc\uD800xyz" ;    // A single surrogate, without it's pair. 
+        static private final String binaryStr2            = "\uD800" ;          // A single surrogate, without it's pair. 
+        static private final String binaryStr3            = "\u0000" ;          // A zero character  
         
         static private final byte[] binaryBytes1 = {} ;         
         static private final byte[] binaryBytes2 = { (byte)0x00 } ;             // Java encoding of 0 codepoint is 0         
@@ -70,9 +70,9 @@ public class TestBlockUTF8 extends BaseTest
         @Test public void convert_in_07() { testIn(symbolsBase) ; }
         @Test public void convert_in_08() { testIn(chineseBase) ; }
         @Test public void convert_in_09() { testIn(japaneseBase) ; }
-        @Test public void convert_in_10() { testInOutBinary(binary1) ; }  
-        @Test public void convert_in_11() { testInOutBinary(binary2) ; }  
-        @Test public void convert_in_12() { testInOutBinary(binary3) ; }  
+        @Test public void convert_in_10() { testInOutBinary(binaryStr1) ; }  
+        @Test public void convert_in_11() { testInOutBinary(binaryStr2) ; }  
+        @Test public void convert_in_12() { testInOutBinary(binaryStr3) ; }  
         
         @Test public void convert_out_00() { testOut("") ; }
         @Test public void convert_out_01() { testOut(asciiBase) ; }
@@ -84,16 +84,17 @@ public class TestBlockUTF8 extends BaseTest
         @Test public void convert_out_07() { testOut(symbolsBase) ; }
         @Test public void convert_out_08() { testOut(chineseBase) ; }
         @Test public void convert_out_09() { testOut(japaneseBase) ; }
-        @Test public void convert_out_10() { testOut(binary1) ; }
-        @Test public void convert_out_11() { testOut(binary2) ; }
-        @Test public void convert_out_12() { testOut(binary3) ; }
+        @Test public void convert_out_10() { testOut(binaryStr1) ; }
+        @Test public void convert_out_11() { testOut(binaryStr2) ; }
+        @Test public void convert_out_12() { testOut(binaryStr3) ; }
         
+        // While it is key is chars->bytes-chars, we also test bytes->bytes 
         @Test public void binary_01() { testBinary(binaryBytes1) ; }
         @Test public void binary_02() { testBinary(binaryBytes2) ; }
         @Test public void binary_03() { testBinary(binaryBytes3, binaryBytes2) ; }
         
-        @Test public void binary_10() { testBinary(binaryBytes2, CharBuffer.wrap(binary3)) ; }
-        @Test public void binary_11() { testBinary(binaryBytes3, CharBuffer.wrap(binary3)) ; }
+        @Test public void binary_10() { testBinary(binaryBytes2, CharBuffer.wrap(binaryStr3)) ; }
+        @Test public void binary_11() { testBinary(binaryBytes3, CharBuffer.wrap(binaryStr3)) ; }
         
         static void testIn(String x)
         {

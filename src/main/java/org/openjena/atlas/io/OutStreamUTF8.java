@@ -44,7 +44,6 @@ public final class OutStreamUTF8 extends Writer
     {
         for ( int i = 0 ; i < len; i++ )
             write(cbuf[off+i]) ;
-        
     }
     
     @Override
