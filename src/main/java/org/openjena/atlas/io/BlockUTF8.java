@@ -27,7 +27,13 @@ import org.openjena.atlas.AtlasException ;
 /**
  * Convert between bytes and chars, UTF-8 only.
  * 
- * The usual Charset encoders/decoders are expensive to start up - they are also
+ * This code is just the UTF-8 encoding rules - it does not check for legality
+ * of the Unicode data.  The standard codec do, so do not round-trip with binary
+ * compatibility. (Example: a single element of a surrogate pair will
+ * be encoded/decoded without lost.
+ *  
+ * 
+ * The usual Charset encoders/decoders can be expensive to start up - they are also
  * not thread safe. Sometimes we want to convert 10's of chars and UTF-8 can be
  * done in code with no lookup tables (which, if used, are cache-unfriendly).
  * 
@@ -37,8 +43,16 @@ import org.openjena.atlas.AtlasException ;
 
 public class BlockUTF8
 {
+    // TODO If src and dst have arrays, use the arrays.
+    // TODO Flatten the loops - no function call in the loop.
+    
+    // Looking in java.lang.StringCoding (Sun RT) is illuminating.
+    // The actual encode/decode code is in sun.nio.cs.UTF_8.(Decoder|Encoder)
+    // which has special cases for ByteBuffer, ByteBuffer with array (needs offsets)
+    // and byte[] <-> char[]
+
     // It seems that chars -> bytes (on <100char strings) is faster with BlockUTF8
-    // but the conversion from bytes to string is faster with decoders. 
+    // but the conversion from bytes to string is faster with decoders (not by much though). 
     
     private static final Convert converter = new ConvertUTF8() ;
     private static final Convert asciiConvert = new ConvertAscii() ;
@@ -48,6 +62,9 @@ public class BlockUTF8
      */
     public static void toChars(ByteBuffer bb, CharBuffer cb)
     {
+        //if ( bb.hasArray() && cb.hasArray() )
+            
+        
         int len = bb.remaining() ;
 
         for (int i = 0; i < len; )
@@ -86,6 +103,8 @@ public class BlockUTF8
      */
     public static void fromChars(CharBuffer cb, ByteBuffer bb)
     {
+        //if ( bb.hasArray() && cb.hasArray() )
+
         // CharBuffers are CharSequences but charAt(i) adds a layer of work.
         int len = cb.remaining() ;
         for (int i = 0; i < len; i++)
@@ -150,6 +169,14 @@ public class BlockUTF8
             cb.put((char)x) ;
             return 1 ;
         }
+        
+        if ( x == 0 )
+        {
+            // Pass through a null byte as the nul character (illegal Unicode).
+            cb.put((char)x) ;
+            return 1 ;
+        }
+            
 
         // 10 => extension byte
         // 110..... => 2 bytes
@@ -226,10 +253,13 @@ public class BlockUTF8
 
         if ( ch == 0 )
         {
-            // Modified UTF-8.
-            bb.put((byte)0xC0) ;
-            bb.put((byte)0x80) ;
-            return 2 ;
+            // Java.
+            bb.put((byte)0x00) ;
+            return 1 ;
+//            // Modified UTF-8.
+//            bb.put((byte)0xC0) ;
+//            bb.put((byte)0x80) ;
+//            return 2 ;
         }
 
         if ( ch <= 0x07FF )
@@ -296,9 +326,12 @@ public class BlockUTF8
      * 26   U+3FFFFFF                         111110xx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
      * 31   U+7FFFFFFF                        1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx
      */
+    
+    /** Put bytes to the output ByteBuffer for charcater ch.
+     * The first byte is in x1 and already has the needed bits set. 
+     */
     private static void outputBytes(ByteBuffer bb, int x1, int byteLength, int ch)
     {
-        // ByteLength = 3 => 2 byteLenth => shift=6 and shift=0  
         bb.put((byte)x1) ;
         byteLength-- ; // remaining bytes
         for ( int i = 0 ; i < byteLength ; i++ )

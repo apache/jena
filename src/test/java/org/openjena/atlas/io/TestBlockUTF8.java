@@ -52,6 +52,13 @@ public class TestBlockUTF8 extends BaseTest
         static private final String symbolsBase           = "☺☻♪♫" ;
         static private final String chineseBase           = "孫子兵法" ; // The Art of War 
         static private final String japaneseBase          = "日本" ;    // Japanese
+        static private final String binary1               = "abc\uD800xyz" ;    // A single surrogate, without it's pair. 
+        static private final String binary2               = "\uD800" ;          // A single surrogate, without it's pair. 
+        static private final String binary3               = "\u0000" ;          // A zero character  
+        
+        static private final byte[] binaryBytes1 = {} ;         
+        static private final byte[] binaryBytes2 = { (byte)0x00 } ;             // Java encoding of 0 codepoint is 0         
+        static private final byte[] binaryBytes3 = { (byte)0xC0, (byte)0x80 } ;     // Modifed unicode zero codepoint.         
         
         @Test public void convert_in_00() { testIn("") ; }
         @Test public void convert_in_01() { testIn(asciiBase) ; }
@@ -63,6 +70,9 @@ public class TestBlockUTF8 extends BaseTest
         @Test public void convert_in_07() { testIn(symbolsBase) ; }
         @Test public void convert_in_08() { testIn(chineseBase) ; }
         @Test public void convert_in_09() { testIn(japaneseBase) ; }
+        @Test public void convert_in_10() { testInOutBinary(binary1) ; }  
+        @Test public void convert_in_11() { testInOutBinary(binary2) ; }  
+        @Test public void convert_in_12() { testInOutBinary(binary3) ; }  
         
         @Test public void convert_out_00() { testOut("") ; }
         @Test public void convert_out_01() { testOut(asciiBase) ; }
@@ -74,12 +84,26 @@ public class TestBlockUTF8 extends BaseTest
         @Test public void convert_out_07() { testOut(symbolsBase) ; }
         @Test public void convert_out_08() { testOut(chineseBase) ; }
         @Test public void convert_out_09() { testOut(japaneseBase) ; }
+        @Test public void convert_out_10() { testOut(binary1) ; }
+        @Test public void convert_out_11() { testOut(binary2) ; }
+        @Test public void convert_out_12() { testOut(binary3) ; }
+        
+        @Test public void binary_01() { testBinary(binaryBytes1) ; }
+        @Test public void binary_02() { testBinary(binaryBytes2) ; }
+        @Test public void binary_03() { testBinary(binaryBytes3, binaryBytes2) ; }
+        
+        @Test public void binary_10() { testBinary(binaryBytes2, CharBuffer.wrap(binary3)) ; }
+        @Test public void binary_11() { testBinary(binaryBytes3, CharBuffer.wrap(binary3)) ; }
         
         static void testIn(String x)
         {
+            // Test as binary.
+            testInOutBinary(x) ;
+            
+            // Now test, comparing to std Java.
             // Correct answer, in bytes
             ByteBuffer bytes = ByteBuffer.wrap(stringAsBytes(x)) ;
-            // To bytes.
+            // To bytes.stringAsBytes
             int N = x.length() ;
             CharBuffer cb = CharBuffer.wrap(x.toCharArray()) ;
             ByteBuffer bb = ByteBuffer.allocate(4*N) ;
@@ -97,6 +121,28 @@ public class TestBlockUTF8 extends BaseTest
             assertEquals(x, str) ;
         }
 
+        // Tesing, but not against what Java would do (it replaces bad chars, we want binary).
+        static void testInOutBinary(String x)
+        {
+            int N = x.length() ;
+            CharBuffer cb = CharBuffer.wrap(x.toCharArray()) ;
+            ByteBuffer bb = ByteBuffer.allocate(4*N) ;
+            BlockUTF8.fromChars(cb, bb) ;
+            bb.flip() ;
+            CharBuffer cb2 = CharBuffer.allocate(N) ;
+            BlockUTF8.toChars(bb, cb2) ;
+            // compare cb and cb2.
+            String str = new String(cb2.array(), 0, cb2.position()) ;
+            assertEquals(x, str) ;
+            
+            // And re-code as bytes.
+            CharBuffer cb3 = CharBuffer.wrap(x.toCharArray()) ;
+            ByteBuffer bb3 = ByteBuffer.allocate(4*N) ;
+            BlockUTF8.fromChars(cb3, bb3) ;
+            bb3.flip() ;
+            assertArrayEquals(bb.array(), bb3.array()) ;
+        }
+        
         // Does not move position.
         public static boolean sameBytes(ByteBuffer bb1, ByteBuffer bb2)
         {
@@ -107,8 +153,20 @@ public class TestBlockUTF8 extends BaseTest
             return true ;
         }
         
+        // Does not move position.
+        public static boolean sameChars(CharBuffer cb1, CharBuffer cb2)
+        {
+            if ( cb1.remaining() != cb2.remaining() ) return false ;
+            
+            for ( int i = 0 ; i < cb1.remaining() ; i++ )
+                if ( cb1.get(i+cb1.position()) != cb2.get(i+cb2.position()) ) return false ;
+            return true ;
+        }
+        
         static void testOut(String x)
         {
+            testBinary(stringAsBytes(x)) ;
+            
             int N = x.length() ;
             // First - get bytes the Java way.
             ByteBuffer bytes = ByteBuffer.wrap(stringAsBytes(x)) ;
@@ -123,7 +181,38 @@ public class TestBlockUTF8 extends BaseTest
             BlockUTF8.fromChars(cb, bytes2) ;
             bytes2.flip() ;
             
+            
             assertTrue("Chars", sameBytes(bytes, bytes2)) ;
+        }
+        
+        static void testBinary(byte[] binary, CharBuffer chars)
+        {
+            int N = binary.length ;
+            ByteBuffer bytes = ByteBuffer.wrap(binary) ;
+            CharBuffer cb = CharBuffer.allocate(N) ;
+            BlockUTF8.toChars(bytes, cb) ;
+            cb.flip() ;
+            assertTrue("Binary", sameChars(chars, cb));
+        }
+        
+        static void testBinary(byte[] binary)
+        {
+            testBinary(binary, binary) ;
+        }
+
+        static void testBinary(byte[] binary, byte[] expected)
+        {
+            int N = binary.length ;
+            ByteBuffer bytes = ByteBuffer.wrap(binary) ;
+            CharBuffer cb = CharBuffer.allocate(N) ;
+            BlockUTF8.toChars(bytes, cb) ;
+            cb.flip() ;
+            bytes.position(0) ;
+            ByteBuffer bytes2 = ByteBuffer.allocate(2*N) ;  // Null bytes get expanded.
+            BlockUTF8.fromChars(cb, bytes2) ;
+            bytes2.flip() ;
+            sameBytes(bytes, bytes2) ;
+            assertTrue("Binary", sameBytes(ByteBuffer.wrap(expected), bytes2)) ;
         }
 
         static byte[] stringAsBytes(String x)
