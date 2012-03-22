@@ -21,6 +21,7 @@ package org.openjena.atlas.lib;
 import java.nio.charset.Charset ;
 import java.nio.charset.CharsetDecoder ;
 import java.nio.charset.CharsetEncoder ;
+import java.nio.charset.CodingErrorAction ;
 
 public class Chars
 {
@@ -98,17 +99,17 @@ public class Chars
     }
     
     /** Create a UTF-8 encoder */
-    public static CharsetEncoder createEncoder() { return charsetUTF8.newEncoder() ; }
+    public static CharsetEncoder createEncoder()    { return charsetUTF8.newEncoder() ; }
     /** Create a UTF-8 decoder */
-    public static CharsetDecoder createDecoder() { return charsetUTF8.newDecoder() ; }
+    public static CharsetDecoder createDecoder()    { return charsetUTF8.newDecoder() ; }
 
     /** Get a UTF-8 encoder from the pool (null if pool empty) */ 
-    public static CharsetEncoder getEncoder() { return encoders.get() ; }
+    public static CharsetEncoder getEncoder()       { return encoders.get() ; }
     /** Add/return a UTF-8 encoder to the pool */
     public static void putEncoder(CharsetEncoder encoder) { encoders.put(encoder) ; }
 
     /** Get a UTF-8 decoder from the pool (null if pool empty) */ 
-    public static CharsetDecoder getDecoder() { return decoders.get() ; }
+    public static CharsetDecoder getDecoder()       { return decoders.get() ; }
     /** Add/return a UTF-8 decoder to the pool */
     public static void putDecoder(CharsetDecoder decoder) { decoders.put(decoder) ; }
     
@@ -120,6 +121,11 @@ public class Chars
         // Plain Pool (sync wrapped) - might - allocate an extra one. 
         if ( enc == null ) 
             enc = Chars.createEncoder() ;
+        enc
+          .onMalformedInput(CodingErrorAction.REPLACE)
+          .onUnmappableCharacter(CodingErrorAction.REPLACE)
+          .reset() ;
+        
         return enc ;
     }
     /** Deallocate a CharsetEncoder, may increase pool size */
@@ -133,6 +139,11 @@ public class Chars
         // Plain Pool (sync wrapped) - might - allocate an extra one. 
         if ( dec == null ) 
             dec = Chars.createDecoder() ;
+        dec
+          .onMalformedInput(CodingErrorAction.REPLACE)
+          .onUnmappableCharacter(CodingErrorAction.REPLACE)
+          .reset() ;
+        
         return dec ;
     }
     /** Deallocate a CharsetDecoder, may increase pool size */
