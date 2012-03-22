@@ -29,15 +29,15 @@
   <artifactId>jena-larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>1.0.0-incubating-SNAPSHOT</version>
+  <version>1.0.0-incubating</version>
 
   <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
   <url>http://incubator.apache.org/jena/documentation/larq/</url>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</developerConnection>
-    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</developerConnection>
+    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</url>
   </scm>
 
   <properties>
