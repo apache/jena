@@ -99,7 +99,14 @@ public class TestBlockUTF8 extends BaseTest
     @Test public void binary_10() { testBinary(binaryBytes2, CharBuffer.wrap(binaryStr3)) ; }
     @Test public void binary_11() { testBinary(binaryBytes3, CharBuffer.wrap(binaryStr3)) ; }
 
+    
     static void testIn(String x)
+    {
+        testIn(x, allocByteBufferArray, allocCharBufferArray) ;
+        testIn(x, allocByteBufferDirect, allocCharBufferDirect) ;
+
+    }
+    static void testIn(String x, Alloc<ByteBuffer> allocBB, Alloc<CharBuffer> allocCB)
     {
         // Test as binary.
         testInOutBinary(x) ;
@@ -110,18 +117,16 @@ public class TestBlockUTF8 extends BaseTest
         // To bytes.stringAsBytes
         int N = x.length() ;
         CharBuffer cb = CharBuffer.wrap(x.toCharArray()) ;
-        ByteBuffer bb = ByteBuffer.allocate(4*N) ;
+        ByteBuffer bb = allocBB.allocate(4*N) ;
         BlockUTF8.fromChars(cb, bb) ;
         bb.flip() ;
-        //            ByteBufferLib.print(bytes) ;
-        //            ByteBufferLib.print(bb) ;
 
         assertTrue("Bytes", sameBytes(bytes, bb)) ;
-
         // From bytes.
-        CharBuffer cb2 = CharBuffer.allocate(N) ;
+        CharBuffer cb2 = allocCB.allocate(N) ;
         BlockUTF8.toChars(bb, cb2) ;
-        String str = new String(cb2.array(), 0, cb2.position()) ;
+        cb2.flip() ;
+        String str = cb2.toString() ;
         assertEquals(x, str) ;
     }
 
@@ -151,7 +156,6 @@ public class TestBlockUTF8 extends BaseTest
     {
         testOut(x, allocByteBufferArray, allocCharBufferArray) ;
         testOut(x, allocByteBufferDirect, allocCharBufferDirect) ;
-        //testOutNotArray(x) ;
     }
     
     static interface Alloc<T extends Buffer> { T allocate(int len) ; } 
