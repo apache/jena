@@ -114,15 +114,15 @@ public class ByteBufferLib
     // For non-array versions : beware of overlaps.
     final public static void bbcopy(ByteBuffer bb, int src, int dst, int length, int slotLen)
     {
+        if ( src == dst )
+            return ;
+        
         if ( allowArray && bb.hasArray() )
         {
             acopyArray(bb, src, dst, length, slotLen) ;
             return ;
         }
-        
-        if ( src == dst )
-            return ;
-        
+
         if ( src < dst ) 
             bbcopy1(bb, src, dst, length, slotLen) ;
         else
@@ -134,7 +134,7 @@ public class ByteBufferLib
         int bDst = dst*slotLen ;
         int bSrc = src*slotLen ;
         int bLen = length*slotLen ;
-    
+        // src < dst so top dst is not in the overlap : work backwards 
         for ( int i = bLen-1 ; i >= 0 ; i-- )
             bb.put(bDst+i, bb.get(bSrc+i)) ;
     }
@@ -144,7 +144,6 @@ public class ByteBufferLib
         int bDst = dst*slotLen ;
         int bSrc = src*slotLen ;
         int bLen = length*slotLen ;
-        
         // src > dst so dst[0] is not in the overlap 
         for ( int i = 0 ; i < bLen ; i++ )
             bb.put(bDst+i, bb.get(bSrc+i)) ;
@@ -189,31 +188,34 @@ public class ByteBufferLib
     {
         byte[] b = bb.array();
         
-        int OFFSET = bb.arrayOffset() ;
+        int offset = bb.arrayOffset() ;
         
         int bSrc = src*slotLen ;
         int bDst = dst*slotLen ;
         int bLen = length*slotLen ;
         
-        arraycopy(b, OFFSET+bSrc, b, OFFSET+bDst, bLen) ;
+        arraycopy(b, offset+bSrc, b, offset+bDst, bLen) ;
     }
 
     final private static void acopyArray(ByteBuffer bb1, int src, ByteBuffer bb2, int dst, int length, int slotLen)
     {
         byte[] b1 = bb1.array();
         byte[] b2 = bb2.array();
-        int OFFSET1 = bb1.arrayOffset() ;
-        int OFFSET2 = bb2.arrayOffset() ;
+        int offset1 = bb1.arrayOffset() ;
+        int offset2 = bb2.arrayOffset() ;
         
         int bSrc = src*slotLen ;
         int bDst = dst*slotLen ;
         int bLen = length*slotLen ;
         
-        arraycopy(b1, OFFSET1+bSrc, b2, OFFSET2+bDst, bLen) ;
+        arraycopy(b1, offset1+bSrc, b2, offset2+bDst, bLen) ;
     }
 
     final private static void afillArray(ByteBuffer bb, int fromIdx, int toIdx, byte fillValue, int slotLen)
     {
-        Arrays.fill(bb.array(), fromIdx+bb.arrayOffset(), toIdx+bb.arrayOffset(), fillValue) ;
+        int offset = bb.arrayOffset() ;
+        int bStart = fromIdx*slotLen ;
+        int bFinish = toIdx*slotLen ;
+        Arrays.fill(bb.array(), bStart+offset, bFinish+offset, fillValue) ;
     }
 }

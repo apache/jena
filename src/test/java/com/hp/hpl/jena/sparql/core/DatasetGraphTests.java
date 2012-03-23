@@ -155,11 +155,11 @@ public abstract class DatasetGraphTests
     {
         DatasetGraph dsg = emptyDataset() ;
         assertNotNull(dsg) ;
-        Node g = Node.createURI("g") ;
-
-        // Assumes an empty graph is detectable
-        dsg.addGraph(g, GraphFactory.createDefaultGraph());
-        assertTrue(dsg.containsGraph(g)) ;
+        Node gn = Node.createURI("g") ;
+        Graph g = GraphFactory.createDefaultGraph() ;
+        g.add(SSE.parseTriple("(<s> <p> <o>)")) ;   // So the graph is not empty.
+        dsg.addGraph(gn, g);
+        assertTrue(dsg.containsGraph(gn)) ;
     }
     
     // Graph centric operations
