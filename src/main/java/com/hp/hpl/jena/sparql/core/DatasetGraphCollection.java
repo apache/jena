@@ -24,8 +24,11 @@ import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.shared.JenaException ;
 
 /** Base class for implementations of a DatasetGraph as a set of graphs.
+ * This can be a fixed collection or a changeable collection depending
+ * on the implementation of getDefaultGraph()/getGraph(Node)  
  */
 public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 {
@@ -34,8 +37,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     {
         Graph g = fetchGraph(quad.getGraph()) ;
         if ( g == null )
-            System.err.println("null graph") ;
-        
+            throw new JenaException("No such graph: "+quad.getGraph()) ;
         g.add(quad.asTriple()) ;
     }
 
@@ -43,6 +45,8 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
     public void delete(Quad quad)
     {
         Graph g = fetchGraph(quad.getGraph()) ;
+        if ( g == null )
+            throw new JenaException("No such graph: "+quad.getGraph()) ;
         g.delete(quad.asTriple()) ;
     }
     
@@ -77,7 +81,6 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
         }
         return iter ;
     }
-
     
     @Override
     public abstract Iterator<Node> listGraphNodes() ;

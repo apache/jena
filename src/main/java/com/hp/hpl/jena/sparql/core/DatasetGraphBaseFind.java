@@ -43,15 +43,7 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     public Iterator<Quad> find(Node g, Node s, Node p , Node o)
     {
         if ( ! isWildcard(g) )
-        {
-            if ( Quad.isDefaultGraph(g))
-                return findInDftGraph(s,p,o) ;
-            Iterator<Quad> qIter = findInSpecificNamedGraph(g, s, p, o) ;
-            if ( qIter == null )
-                return Iter.nullIterator() ;
-            return qIter ;
-        }
-
+            return findNG(g, s, p, o) ;
         return findAny(s, p, o) ;
     }
     
@@ -59,7 +51,9 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     public Iterator<Quad> findNG(Node g, Node s, Node p , Node o)
     {
         Iterator<Quad> qIter ;
-        if ( ! isWildcard(g) )
+        if ( Quad.isUnionGraph(g))
+            qIter = findInAnyNamedGraphs(s, p, o) ;
+        else if ( ! isWildcard(g) )
             qIter = findInSpecificNamedGraph(g, s, p, o) ;
         else
             qIter = findInAnyNamedGraphs(s, p, o) ;

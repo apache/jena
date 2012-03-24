@@ -41,7 +41,7 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
     private MiniSet<Triple> triples = new MiniSet<Triple>() ;
     private MiniSet<Quad> quads = new MiniSet<Quad>() ;
     
-    /** Simpel abstraction of a Set */
+    /** Simple abstraction of a Set */
     private static class MiniSet<T> implements Iterable<T>
     {
         final Collection<T> store ; 
@@ -106,20 +106,26 @@ public class DatasetGraphSimpleMem extends DatasetGraphCaching
         return results.iterator() ;
     }
 
+    /** Convert null to Node.ANY */
+    public static Node nullAsAny(Node x) { return nullAsDft(x, Node.ANY) ; }
+    
+    /** Convert null to some default Node */
+    public static Node nullAsDft(Node x, Node dft) { return x==null ? dft : x ; }
+    
     private boolean matches(Triple t, Node s, Node p, Node o)
     {
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
+        s = nullAsAny(s) ;
+        p = nullAsAny(p) ;
+        o = nullAsAny(o) ;
         return t.matches(s,p,o) ;
     }
 
     private boolean matches(Quad q, Node g, Node s, Node p, Node o)
     {
-        if ( g == null ) g = Node.ANY ;
-        if ( s == null ) s = Node.ANY ;
-        if ( p == null ) p = Node.ANY ;
-        if ( o == null ) o = Node.ANY ;
+        g = nullAsAny(g) ;
+        s = nullAsAny(s) ;
+        p = nullAsAny(p) ;
+        o = nullAsAny(o) ;
         return q.matches(g,s,p,o) ;
     }
 
