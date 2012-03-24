@@ -42,6 +42,8 @@ abstract public class DatasetGraphBaseFind extends DatasetGraphBase
     @Override
     public Iterator<Quad> find(Node g, Node s, Node p , Node o)
     {
+        if ( Quad.isDefaultGraph(g))
+            return findInDftGraph(s, p, o) ;
         if ( ! isWildcard(g) )
             return findNG(g, s, p, o) ;
         return findAny(s, p, o) ;
