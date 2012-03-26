@@ -128,6 +128,9 @@ void Query() : { }
 // #endif
   )
   BindingsClause()
+#ifdef ARQ
+  ValuesClause()
+#endif
 }
 
 #ifdef UPDATE
@@ -429,40 +432,56 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
-void BindingsClause() : { Var v ; Node n ; Token t ; }
+void BindingsClause() : { Token t ; }
 {
   (
-    // @@ Zero allowed?
-    t = <BINDINGS> 
+    t = <BINDINGS>  
     { startBinding(t.beginLine, t.beginColumn) ; }
-    ( v = Var() { emitBindingVariable(v, t.beginLine, t.beginColumn) ; }) *
-
-    t = <LBRACE>
-    (
-      t = <LPAREN> 
-        { startBindingValueRow(t.beginLine, t.beginColumn) ; }
-      (n = BindingValue() { emitBindingValue(n, t.beginLine, t.beginColumn) ; }) *
-      t = <RPAREN> 
-        { finishBindingValueRow(t.beginLine, t.beginColumn) ; }
-    |
-      t = <NIL>
-      { startBindingValueRow(t.beginLine, t.beginColumn) ; }
-      { finishBindingValueRow(t.beginLine, t.beginColumn) ; }
-    )*
-
-    t = <RBRACE>
+    DataBlock()
     { finishBinding(t.beginLine, t.beginColumn) ; }
   )?
 }
 
-Node BindingValue() : { Node n ; String iri ; }
+void DataBlock() : { Var v ; Node n ; Token t ; }
 {
-  iri = iri()        { return createNode(iri) ; }
+  ( v = Var() { emitDataBlockVariable(v) ; }) *
+  t = <LBRACE>
+  (
+    t = <LPAREN> 
+      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    (n = DataBlockValue() { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }) *
+    t = <RPAREN> 
+      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+  |
+    t = <NIL>
+    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+  )*
+  t = <RBRACE>
+}
+
+Node DataBlockValue() : { Node n ; String iri ; }
+{
+  iri = iri()           { return createNode(iri) ; }
 | n = RDFLiteral()      { return n ; }
 | n = NumericLiteral()  { return n ; }
 | n = BooleanLiteral()  { return n ; }
 | <UNDEF>               { return null ; }
 }
+
+#ifdef ARQ
+// Like BINDINGS, only with the work VALUES
+void ValuesClause() : { Token t ; }
+{
+ (
+    t = <VALUES>  
+    { startValuesBlock(t.beginLine, t.beginColumn) ; }
+    DataBlock()
+    { finishValuesBlock(t.beginLine, t.beginColumn) ; }
+  )?
+}
+
+#endif
 
 #ifdef UPDATE
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
@@ -2086,6 +2105,7 @@ TOKEN [IGNORE_CASE] :
 |  < ORDER:       "order" >
 |  < BY:          "by" >
 |  < BINDINGS:    "bindings" >
+|  < VALUES:      "values" >
 |  < UNDEF:       "undef" >
 
 |  < ASC:         "asc" >

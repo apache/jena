@@ -43,8 +43,14 @@ public class TableN extends TableBase
     {
         materialize(qIter) ;
     }
+    
+    protected TableN(List<Var> variables, List<Binding> rows)
+    {
+        this.vars = variables ;
+        this.rows = rows ;
+    }
 
-    public void materialize(QueryIterator qIter)
+    private void materialize(QueryIterator qIter)
     {
         while ( qIter.hasNext() )
         {

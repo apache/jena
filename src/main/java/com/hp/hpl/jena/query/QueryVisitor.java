@@ -42,6 +42,7 @@ public interface QueryVisitor
     public void visitLimit(Query query) ;
     public void visitOffset(Query query) ;
     public void visitBindings(Query query) ;
+    public void visitValues(Query query) ;
     
     public void finishVisit(Query query) ;
 }

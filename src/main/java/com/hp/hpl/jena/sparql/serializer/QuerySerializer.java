@@ -262,36 +262,52 @@ public class QuerySerializer implements QueryVisitor
         if ( query.hasBindings() )
         {
             out.print("BINDINGS") ;
-            for ( Var v : query.getBindingVariables() )
-            {
-                out.print(" ") ;
-                out.print(v) ;
-            }
-            out.println();
-            
-            out.print("{") ;
-            out.incIndent() ;
-            out.println() ;
-            for ( Binding valueRow : query.getBindingValues() )
-            {
-                // A value may be null for UNDEF
-                out.print("(") ;
-                for ( Var var : query.getBindingVariables() )
-                {
-                    out.print(" ") ;
-                    Node value = valueRow.get(var) ; 
-                    if ( value == null )
-                        out.print("UNDEF") ;
-                    else
-                        out.print(FmtUtils.stringForNode(value, query)) ;
-                }
-                out.println(" )") ;
-            }
-            out.decIndent() ;
-            out.print("}") ;
-            out.println() ;
+            outputDataBlock(out, query.getBindingsVariables(), query.getBindingsData(), query) ;
         }
     }
+
+    @Override
+    public void visitValues(Query query)
+    {
+        if ( query.hasValues() )
+        {
+            out.print("VALUES") ;
+            outputDataBlock(out, query.getValuesVariables(), query.getValuesData(),query) ;
+        }
+    }
+    
+    private static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, Query query)
+    {
+        for ( Var v : variables )
+        {
+            out.print(" ") ;
+            out.print(v) ;
+        }
+        out.println();
+
+        out.print("{") ;
+        out.incIndent() ;
+        out.println() ;
+        for ( Binding valueRow : values )
+        {
+            // A value may be null for UNDEF
+            out.print("(") ;
+            for ( Var var : variables )
+            {
+                out.print(" ") ;
+                Node value = valueRow.get(var) ; 
+                if ( value == null )
+                    out.print("UNDEF") ;
+                else
+                    out.print(FmtUtils.stringForNode(value, query)) ;
+            }
+            out.println(" )") ;
+        }
+        out.decIndent() ;
+        out.print("}") ;
+        out.println() ;
+    }
+    
 
     @Override
     public void finishVisit(Query query)

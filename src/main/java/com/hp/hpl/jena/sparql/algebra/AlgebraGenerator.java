@@ -22,6 +22,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -575,10 +576,20 @@ public class AlgebraGenerator
         if ( query.hasBindings() )
         {
             Table table = TableFactory.create() ;
-            for ( Binding binding : query.getBindingValues() )
+            for ( Binding binding : query.getBindingsData() )
                 table.addBinding(binding) ;
             OpTable opTable = OpTable.create(table) ;
             op = OpJoin.create(op, opTable) ;
+        }
+        
+        if ( query.hasValues() )
+        {
+            if ( true ) throw new NotImplemented("VALUES Not implemented yet") ;
+            Table table = TableFactory.create() ;
+            for ( Binding binding : query.getValuesData() )
+                table.addBinding(binding) ;
+            OpTable opTable = OpTable.create(table) ;
+            // NOT THIS op = OpJoin.create(op, opTable) ;
         }
         
         // ---- ToList

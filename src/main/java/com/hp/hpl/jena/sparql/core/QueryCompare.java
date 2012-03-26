@@ -172,10 +172,21 @@ public class QueryCompare implements QueryVisitor
     public void visitBindings(Query query1)
     {
         // Must be same order for now.
-        check("BINDINGS/variables", query1.getBindingVariables(), query2.getBindingVariables()) ;
-        check("BINDINGS/values", query1.getBindingValues(), query2.getBindingValues()) ;
+        check("BINDINGS/variables", query1.getBindingsVariables(), query2.getBindingsVariables()) ;
+        check("BINDINGS/values", query1.getBindingsData(), query2.getBindingsData()) ;
     }
 
+    @Override
+    public void visitValues(Query query1)
+    {
+        // Must be same order for now.
+        check("VALUES/variables", query1.getValuesVariables(), query2.getValuesVariables()) ;
+        check("VALUES/values", query1.getValuesData(), query2.getValuesData()) ;
+    }
+
+
+    
+    
     @Override
     public void finishVisit(Query query1)
     {}

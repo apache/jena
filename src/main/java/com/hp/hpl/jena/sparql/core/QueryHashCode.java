@@ -133,8 +133,18 @@ public class QueryHashCode
         {
             if ( query.hasBindings() )
             {
-                x ^= query.getBindingVariables().hashCode() ;
-                x ^= query.getBindingValues().hashCode() ;
+                x ^= query.getBindingsVariables().hashCode() ;
+                x ^= query.getBindingsData().hashCode() ;
+            }
+        }
+
+        @Override
+        public void visitValues(Query query)
+        {
+            if ( query.hasValues() )
+            {
+                x ^= query.getValuesVariables().hashCode() ;
+                x ^= query.getValuesData().hashCode() ;
             }
         }
 

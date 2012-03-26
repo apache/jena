@@ -34,6 +34,7 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.algebra.table.TableData ;
 import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
@@ -93,9 +94,18 @@ public class Query extends Prologue implements Cloneable, Printable
     public static final int ORDER_UNKNOW              = -3 ; 
 
     // BINDINGS
-    protected List<Var> bindingVariables = null ;
-    protected List<Binding> bindingValues = null ;
+    protected TableData bindingsDataBlock = null ;
+    // VALUES
+    protected TableData valuesDataBlock = null ;
     
+//    // BINDINGS
+//        protected List<Var> bindingVariables = null ;
+//    protected List<Binding> bindingValues = null ;
+//    
+//    // VALUES
+//    protected List<Var> dataVariables = null ;
+//    protected List<Binding> dataValues = null ;
+
     protected boolean strictQuery = true ;
     
     // SELECT * seen
@@ -566,18 +576,62 @@ public class Query extends Prologue implements Cloneable, Printable
     }
     
     // ---- BINDINGS
+    // TODO Make a DataBlock.
     
     /** Does the query have any BINDINGS? */
-    public boolean hasBindings()                { return bindingVariables != null ; }
+    public boolean hasBindings()                { return bindingsDataBlock != null ; }
     
+    /** Binding variables
+     * @deprecated Use getBindingsDataVariable() 
+     */ 
+    @Deprecated 
+    public List<Var> getBindingVariables()      { return getBindingsVariables() ; }
+
     /** Binding variables */
-    public List<Var> getBindingVariables()      { return bindingVariables ; }
+    public List<Var> getBindingsVariables()     { return bindingsDataBlock==null ? null : bindingsDataBlock.getVars() ; }
     
-    
+    /** Binding values - null for a Node means undef
+     * @deprecated Use getBindingsData() 
+     */ 
+    @Deprecated 
+    public List<Binding> getBindingValues()     { return getBindingsData() ; }
+
     /** Binding values - null for a Node means undef */ 
-    public List<Binding> getBindingValues()  { return bindingValues ; }
-    
+    public List<Binding> getBindingsData()      { return bindingsDataBlock==null ? null : bindingsDataBlock.getRows() ; }
+
+    /** @deprected Use setBindingsDataBlock */
+    @Deprecated
     public void setBindings(List<Var> variables, List<Binding> values)
+    { setBindingsDataBlock(variables, values) ; }
+    
+    //public TableData getBindingsDataBlock()          { return bindingsDataBlock ; }
+    
+    public void setBindingsDataBlock(List<Var> variables, List<Binding> values)
+    {
+        checkDataBlock(variables, values) ;
+        bindingsDataBlock = new TableData(variables, values) ;
+    }
+    
+    // ---- Values
+
+    /** Does the query have any BINDINGS? */
+    public boolean hasValues()                  { return valuesDataBlock != null ; }
+    
+    /** VALUES variables */
+    public List<Var> getValuesVariables()       { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
+    
+    /** VALUES - null for a Node means undef */ 
+    public List<Binding> getValuesData()        { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
+    
+    //public TableData getValuesDataBlock()          { return valuesDataBlock ; }
+    
+    public void setValuesDataBlock(List<Var> variables, List<Binding> values)
+    {
+        checkDataBlock(variables, values) ;
+        valuesDataBlock = new TableData(variables, values) ;
+    }
+    
+    private static void checkDataBlock(List<Var> variables, List<Binding> values)
     {
         // Check.
         int N = variables.size() ;
@@ -591,8 +645,6 @@ public class Query extends Prologue implements Cloneable, Printable
                     throw new QueryBuildException("Variable "+v+" not found in "+variables) ;
             }
         }
-        bindingVariables = variables ;
-        bindingValues = values ;
     }
     
     // ---- CONSTRUCT 
@@ -684,8 +736,9 @@ public class Query extends Prologue implements Cloneable, Printable
             LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
             PatternVars.vars(queryVars, this.getQueryPattern()) ;
             if ( this.hasBindings() )
-                queryVars.addAll(getBindingVariables()) ;
-            
+                queryVars.addAll(getBindingsVariables()) ;
+            if ( this.hasValues() )
+                queryVars.addAll(getValuesVariables()) ;
             varIter = queryVars.iterator() ;
         }
         
@@ -722,6 +775,7 @@ public class Query extends Prologue implements Cloneable, Printable
         visitor.visitOffset(this) ;
         visitor.visitLimit(this) ;
         visitor.visitBindings(this) ;
+        visitor.visitValues(this) ;
         visitor.finishVisit(this) ;
     }
 

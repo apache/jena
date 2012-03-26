@@ -165,17 +165,33 @@ public class ParserQueryBase extends ParserBase
         values = new ArrayList<Binding>() ;
     }
     
+    protected void finishBinding(int line, int col)
+    {
+        getQuery().setBindingsDataBlock(variables, values) ;
+    }
+
+    protected void startValuesBlock(int line, int col)               
+    { 
+        variables = new ArrayList<Var>() ;
+        values = new ArrayList<Binding>() ;
+    }
+    
+    protected void finishValuesBlock(int line, int col)
+    {
+        getQuery().setValuesDataBlock(variables, values) ;
+    }
+
     private BindingMap currentValueRow()                            { return (BindingMap)values.get(values.size()-1) ; }
     
-    protected void emitBindingVariable(Var v, int line, int col)    { variables.add(v) ; }
+    protected void emitDataBlockVariable(Var v)                     { variables.add(v) ; }
     
-    protected void startBindingValueRow(int line, int col)
+    protected void startDataBlockValueRow(int line, int col)
     { 
         values.add(BindingFactory.create()) ;
         currentColumn = -1 ;
     }
     
-    protected void emitBindingValue(Node n, int line, int col)      
+    protected void emitDataBlockValue(Node n, int line, int col)      
     { 
         currentColumn++ ;
         
@@ -189,7 +205,7 @@ public class ParserQueryBase extends ParserBase
         
     }
 
-    protected void finishBindingValueRow(int line, int col)      
+    protected void finishDataBlockValueRow(int line, int col)      
     {
         //if ( variables.size() != currentValueRow().size() )
         
@@ -199,10 +215,5 @@ public class ParserQueryBase extends ParserBase
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }
-    }
-    
-    protected void finishBinding(int line, int col)
-    {
-        getQuery().setBindings(variables, values) ;
     }
 }

@@ -53,6 +53,7 @@
 [<ORDER>]      ::= 'ORDER'
 [<BY>]         ::= 'BY'
 [<BINDINGS>]   ::= 'BINDINGS'
+[<VALUES>]     ::= 'VALUES'
 [<UNDEF>]      ::= 'UNDEF'
 
 [<FROM>]       ::= 'FROM'
