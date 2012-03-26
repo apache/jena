@@ -223,6 +223,14 @@ public class FusekiConfig
         addServiceEP("upload", sDesc.name, sDesc.uploadEP, svc, "fu:serviceUpload") ; 
         addServiceEP("graphStore(RW)", sDesc.name, sDesc.readWriteGraphStoreEP, svc, "fu:serviceReadWriteGraphStore") ;
         addServiceEP("graphStore(R)", sDesc.name, sDesc.readGraphStoreEP, svc, "fu:serviceReadGraphStore") ;
+
+        // Extract timeout overriding configuration if present.
+        if (svc.hasProperty(FusekiVocab.pAllowTimeoutOverride)) {
+            sDesc.allowTimeoutOverride = svc.getProperty(FusekiVocab.pAllowTimeoutOverride).getObject().asLiteral().getBoolean();
+            if (svc.hasProperty(FusekiVocab.pMaximumTimeoutOverride)) {
+                sDesc.maximumTimeoutOverride = (int) (svc.getProperty(FusekiVocab.pMaximumTimeoutOverride).getObject().asLiteral().getFloat() * 1000);
+            }
+        }
         
         Resource datasetDesc = ((Resource)getOne(svc, "fu:dataset")) ;
 

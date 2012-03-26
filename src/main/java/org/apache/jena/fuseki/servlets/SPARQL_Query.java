@@ -19,7 +19,17 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.* ;
+import static org.apache.jena.fuseki.HttpNames.paramAccept ;
+import static org.apache.jena.fuseki.HttpNames.paramCallback ;
+import static org.apache.jena.fuseki.HttpNames.paramDefaultGraphURI ;
+import static org.apache.jena.fuseki.HttpNames.paramForceAccept ;
+import static org.apache.jena.fuseki.HttpNames.paramNamedGraphURI ;
+import static org.apache.jena.fuseki.HttpNames.paramOutput1 ;
+import static org.apache.jena.fuseki.HttpNames.paramOutput2 ;
+import static org.apache.jena.fuseki.HttpNames.paramQuery ;
+import static org.apache.jena.fuseki.HttpNames.paramQueryRef ;
+import static org.apache.jena.fuseki.HttpNames.paramStyleSheet ;
+import static org.apache.jena.fuseki.HttpNames.paramTimeout ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -31,26 +41,37 @@ import java.util.Set ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.migrate.WebIO ;
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.riot.ContentType ;
 import org.openjena.riot.WebContent ;
 
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QueryExecutionFactory ;
+import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     protected class HttpActionQuery extends HttpActionProtocol {
-        public HttpActionQuery(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        DatasetRef desc;
+        public HttpActionQuery(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
-            super(id, dsg, request, response, verbose) ;
+            super(id, desc, request, response, verbose) ;
+            this.desc = desc;
         }
     }
     
@@ -82,10 +103,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
     
     @Override
-    protected final void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
+    protected final void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
-        HttpActionQuery action = new HttpActionQuery(id, dsg, request, response, verbose_debug) ;
+        HttpActionQuery action = new HttpActionQuery(id, desc, request, response, verbose_debug) ;
         // GET
         if ( request.getMethod().equals(HttpNames.METHOD_GET) )
         {
@@ -119,7 +140,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                         paramAccept,
                                         paramOutput1, paramOutput2, 
                                         paramCallback, 
-                                        paramForceAccept } ;
+                                        paramForceAccept,
+                                        paramTimeout } ;
     protected static Set<String> allParams = new HashSet<String>(Arrays.asList(params_)) ;
     /** Called to validate arguments */
     protected abstract void validate(HttpServletRequest request) ;
@@ -186,12 +208,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         execute(queryString, action) ;
     }
 
-    
     private void execute(String queryString, HttpActionQuery action)
     {
         String queryStringLog = formatForLog(queryString) ;
         log.info(format("[%d] Query = %s", action.id, queryStringLog));
-        
+
         Query query = null ;
         try {
             // NB syntax is ARQ (a superset of SPARQL)
@@ -223,6 +244,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     {
         Dataset dataset = decideDataset(action, query, queryStringLog) ; 
         QueryExecution qexec = createQueryExecution(query, dataset) ;
+        setAnyTimeouts(qexec, action);
 
         if ( query.isSelectType() )
         {
@@ -264,6 +286,32 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         errorBadRequest("Unknown query type - "+queryStringLog) ;
         return null ;
+    }
+
+    private void setAnyTimeouts(QueryExecution qexec, HttpActionQuery action) {
+        if (!(action.desc.allowTimeoutOverride))
+            return;
+
+        long desiredTimeout = Long.MAX_VALUE;
+        String timeoutHeader = action.request.getHeader("Timeout");
+        String timeoutParameter = action.request.getParameter("timeout");
+        if (timeoutHeader != null) {
+            try {
+                desiredTimeout = (int) Float.parseFloat(timeoutHeader) * 1000;
+            } catch (NumberFormatException e) {
+                throw new FusekiException("Timeout header must be a number", e);
+            }
+        } else if (timeoutParameter != null) {
+            try {
+                desiredTimeout = (int) Float.parseFloat(timeoutParameter) * 1000;
+            } catch (NumberFormatException e) {
+                throw new FusekiException("timeout parameter must be a number", e);
+            }
+        }
+
+        desiredTimeout = Math.min(action.desc.maximumTimeoutOverride, desiredTimeout);
+        if (desiredTimeout != Long.MAX_VALUE)
+            qexec.setTimeout(desiredTimeout);
     }
 
     protected abstract Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) ;

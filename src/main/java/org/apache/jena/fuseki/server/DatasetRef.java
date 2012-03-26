@@ -32,4 +32,7 @@ public class DatasetRef
     public List<String> readGraphStoreEP        = new ArrayList<String>() ;
     public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
     public DatasetGraph dataset                 = null ;
+
+    public boolean allowTimeoutOverride         = false;
+    public long maximumTimeoutOverride          = Long.MAX_VALUE;
 }

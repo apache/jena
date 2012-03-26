@@ -42,6 +42,7 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.* ;
@@ -67,9 +68,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     protected class HttpActionREST extends HttpAction {
         private Target _target = null ; 
-        protected HttpActionREST(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        protected HttpActionREST(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
-            super(id, dsg, request, response, verbose) ;
+            super(id, desc, request, response, verbose) ;
         }
 
         protected final boolean hasTarget()
@@ -182,10 +183,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     }
     
     @Override
-    protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
-        HttpActionREST action = new HttpActionREST(id, dsg, request, response, verbose_debug) ;
+        HttpActionREST action = new HttpActionREST(id, desc, request, response, verbose_debug) ;
         dispatch(action) ;
     }
 

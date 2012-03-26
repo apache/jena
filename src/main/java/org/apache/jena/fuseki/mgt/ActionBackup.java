@@ -88,8 +88,7 @@ public class ActionBackup extends ServletBase
         }
 
         DatasetRef ref = DatasetRegistry.get().get(dataset) ;
-        DatasetGraph dsg = ref.dataset ;
-        HttpAction action = new HttpAction(requestIdAlloc.incrementAndGet(), dsg, request, response, false) ;
+        HttpAction action = new HttpAction(requestIdAlloc.incrementAndGet(), ref, request, response, false) ;
         scheduleBackup(action, dataset) ;
     }
 

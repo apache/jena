@@ -41,6 +41,9 @@ public class FusekiVocab
     public static final Property pServiceReadWriteGraphStoreEP = property("serviceReadWriteGraphStore") ;
     public static final Property pServiceReadgraphStoreEP = property("serviceReadGraphStore") ;
 
+    public static final Property pAllowTimeoutOverride = property("allowTimeoutOverride");
+    public static final Property pMaximumTimeoutOverride = property("maximumTimeoutOverride");
+
     private static Resource resource(String localname) { return ResourceFactory.createResource(iri(localname)) ; }
     private static Property property(String localname) { return ResourceFactory.createProperty(iri(localname)) ; }
         

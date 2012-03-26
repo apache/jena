@@ -22,6 +22,7 @@ package org.apache.jena.fuseki.servlets;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -34,9 +35,10 @@ import com.hp.hpl.jena.tdb.migrate.DatasetGraphWithLock ;
 public class HttpAction
 {
     public final long id ;
-    private final DatasetGraph dsg ;
+    private DatasetGraph dsg ;                  // The data
     private final Transactional transactional ;
-    private DatasetGraph activeDSG ;
+    private DatasetRef desc ;
+    private DatasetGraph  activeDSG ;           // Set when inside begin/end.
     
     public final HttpServletRequest request;
     public final HttpServletResponse response ;
@@ -58,10 +60,12 @@ public class HttpAction
 //        }
 //    }
 
-    public HttpAction(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+    public HttpAction(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
     {
         this.id = id ;
-        this.dsg = dsg ;
+        this.desc = desc ;
+        this.dsg = desc.dataset ;
+        
 
         if ( dsg instanceof Transactional )
             transactional = (Transactional)dsg ;

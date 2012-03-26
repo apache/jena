@@ -75,21 +75,21 @@ public abstract class SPARQL_ServletBase extends ServletBase
             }
 
             uri = mapRequestToDataset(uri) ;
-            DatasetGraph dsg = null ;
+            DatasetRef desc = null ;
             if ( uri != null )
             {
-                DatasetRef desc = DatasetRegistry.get().get(uri) ;
+                desc = DatasetRegistry.get().get(uri) ;
                 if ( desc == null )
                 {
                     errorNotFound("No dataset for URI: "+uri) ;
                     return ;
                 }
-                dsg = desc.dataset ;
             }
-            else
-                // Dummy dsg.
-                dsg = dummyDSG ;
-            perform(id, dsg, request, response) ;
+            else {
+                desc = new DatasetRef();
+                desc.dataset = dummyDSG;
+            }
+            perform(id, desc, request, response) ;
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (QueryCancelledException ex)
         {
@@ -213,7 +213,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
         return uri.substring(0, i) ;
     }
 
-    protected abstract void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response) ;
+    protected abstract void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response) ;
 
     /** Request had no query string.
      *  Either: (1) handle the request in this opeation - throw an error or send response

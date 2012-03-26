@@ -34,8 +34,14 @@ import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.* ;
+import org.openjena.riot.ContentType ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.system.IRIResolver ;
@@ -44,7 +50,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
@@ -52,9 +57,9 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
     
     private class HttpActionUpload extends HttpAction {
-        public HttpActionUpload(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        public HttpActionUpload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
-            super(id, dsg, request, response, verbose) ;
+            super(id, desc, request, response, verbose) ;
         }
     }
     
@@ -79,12 +84,12 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     }
     
     @Override
-    protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         // Only allows one file in the upload.
         
         validate(request) ;
-        HttpActionUpload action = new HttpActionUpload(id, dsg, request, response, verbose_debug) ;
+        HttpActionUpload action = new HttpActionUpload(id, desc, request, response, verbose_debug) ;
         
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         if ( ! isMultipart )
@@ -180,9 +185,9 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             action.beginWrite() ;
             try {
                 if ( graphName.equals(HttpNames.valueDefault) ) 
-                    dsg.getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
+                    action.getActiveDSG().getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
                 else
-                    dsg.getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
+                    action.getActiveDSG().getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
                 action.commit() ;
             } finally { action.endWrite() ; }
                     

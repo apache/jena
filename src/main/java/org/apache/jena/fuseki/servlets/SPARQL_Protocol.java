@@ -28,6 +28,7 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.servlets.SPARQL_Query.HttpActionQuery ;
 import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.iterator.Iter ;
@@ -36,7 +37,6 @@ import org.openjena.atlas.lib.Lib ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.core.DatasetDescription ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Support for the SPARQL protocol (SPARQL Query, SPARQL Update)
  */
@@ -45,9 +45,9 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
     protected class HttpActionProtocol extends HttpAction {
         DatasetDescription datasetDesc = null ;
         
-        public HttpActionProtocol(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        public HttpActionProtocol(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
-            super(id, dsg, request, response, verbose) ;
+            super(id, desc, request, response, verbose) ;
         }
     }
     

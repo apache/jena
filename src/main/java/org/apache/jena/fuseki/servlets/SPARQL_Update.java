@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.riot.ContentType ;
@@ -41,7 +42,6 @@ import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
 import com.hp.hpl.jena.update.UpdateFactory ;
@@ -52,9 +52,9 @@ public class SPARQL_Update extends SPARQL_Protocol
     private static String updateParseBase = "http://example/base/" ;
     
     private class HttpActionUpdate extends HttpActionProtocol {
-        public HttpActionUpdate(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        public HttpActionUpdate(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
-            super(id, dsg, request, response, verbose) ;
+            super(id, desc, request, response, verbose) ;
         }
     }
     
@@ -95,11 +95,11 @@ public class SPARQL_Update extends SPARQL_Protocol
     }
 
     @Override
-    protected void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response)
+    protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         // validate -> action.
         validate(request) ;
-        HttpActionUpdate action = new HttpActionUpdate(id, dsg, request, response, verbose_debug) ;
+        HttpActionUpdate action = new HttpActionUpdate(id, desc, request, response, verbose_debug) ;
         
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
