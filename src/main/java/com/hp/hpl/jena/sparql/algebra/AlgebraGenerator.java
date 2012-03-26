@@ -582,6 +582,7 @@ public class AlgebraGenerator
             op = OpJoin.create(op, opTable) ;
         }
         
+        // ---- VALUES
         if ( query.hasValues() )
         {
             if ( true ) throw new NotImplemented("VALUES Not implemented yet") ;
