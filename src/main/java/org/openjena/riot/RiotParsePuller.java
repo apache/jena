@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit ;
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.SinkToQueue ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.system.ParserProfile ;
 
@@ -71,47 +72,8 @@ public abstract class RiotParsePuller<T> implements Iterator<T>, Closeable, Lang
         this.baseIRI = baseIRI;
         this.queue = new ArrayBlockingQueue<T>(QUEUE_CAPACITY);
         
-        Sink<T> sink = createSink();
+        Sink<T> sink = new SinkToQueue<T>(queue) ;
         this.parser = createParser(sink);
-    }
-    
-    private Sink<T> createSink()
-    {
-        // Executes within the context of the thread
-        Sink<T> sink = new Sink<T>()
-        {
-            @Override
-            public void send(T item)
-            {
-                try
-                {
-                    if (Thread.interrupted()) throw new InterruptedException();
-                    
-                    // Hopefully we'll never get passed null... but just in case
-                    if (null == item) return;
-                    
-                    queue.put(item);
-                }
-                catch (InterruptedException e)
-                {
-                    // Presumably throwing an exception is how the parsers expect you to cancel?
-                    throw new CancellationException();
-                }
-            }
-            
-            @Override
-            public void flush()
-            {
-                // do nothing
-            }
-            
-            @Override
-            public void close()
-            {
-                // do nothing
-            }
-        };
-        return sink;
     }
     
     @Override
