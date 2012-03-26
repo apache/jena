@@ -16,7 +16,7 @@
 [] rdf:type fuseki:Server ;
    # Timeout - server-wide default: milliseconds.
    # Format 1: "1000" -- 1 second timeout
-   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout to for rest of query.
+   # Format 2: "10000,60000" -- 10s timeout to first result, then 60s timeout for the rest of query.
    # See java doc for ARQ.queryTimeout
    # ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "10000" ] ;
 
