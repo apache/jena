@@ -35,6 +35,8 @@ public class TemplateLib
     // See also Substitute -- combine?
     // Or is this specifc enough to CONSTRUCT/Update template processing? 
     
+    // TODO We could eliminate some of the duplication in this class by writing generic methods and adding a shared super-interface to Triple and Quad
+    
     /**
      * Take a template, as a list of quad patterns, a default graph, and an iterator of bindings,
      * and produce an iterator of quads that results from applying the template to the bindings.
@@ -64,6 +66,34 @@ public class TemplateLib
             quads = Iter.map(quads, nt) ;
         }
         return quads;
+    }
+    
+    /** Substitute into triple patterns */
+    public static Iterator<Triple> calcTriples(final List<Triple> triples, Iterator<Binding> bindings)
+    {
+        return Iter.mapMany(bindings, new Transform<Binding, Iterator<Triple>>()
+        {
+            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
+            @Override
+            public Iterator<Triple> convert(final Binding b)
+            {
+                // Iteration is a new mapping of bnodes. 
+                bNodeMap.clear() ;
+
+                List<Triple> tripleList = new ArrayList<Triple>(triples.size());
+                for (Triple triple : triples)
+                {
+                    Triple q = subst(triple, b, bNodeMap) ;
+                    if ( ! q.isConcrete() )
+                    {
+                        //Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
+                        continue ;
+                    }
+                    tripleList.add(q);
+                }
+                return tripleList.iterator();
+            }
+        });
     }
     
     /** Substitute into quad patterns */

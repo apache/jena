@@ -18,8 +18,10 @@
 
 package com.hp.hpl.jena.query;
 
+import java.util.Iterator ;
 import java.util.concurrent.TimeUnit ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -76,6 +78,16 @@ public interface QueryExecution
      *  @return Model The model argument for casaded code.
      */
     public Model execConstruct(Model model);
+    
+    /**
+     * Execute a CONSTRUCT query, returning the results as an iterator of {@link Triple}.
+     * <b>Caution:</b> This method may return duplicate Triples.  This method may be useful if you only
+     * need the results for stream processing, as it can avoid having to place the results in a Model.
+     * 
+     * @return An iterator of Triple objects (possibly containing duplicates) generated
+     * by applying the CONSTRUCT template of the query to the bindings in the WHERE clause.
+     */
+    public Iterator<Triple> execConstructTriples();
 
     /** Execute a DESCRIBE query */
     public Model execDescribe();

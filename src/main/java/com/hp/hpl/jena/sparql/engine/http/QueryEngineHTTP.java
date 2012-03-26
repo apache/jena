@@ -27,12 +27,24 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.iterator.IteratorResourceClosing ;
 import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotReader ;
+import org.openjena.riot.RiotTripleParsePuller ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.query.QueryExecException ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -266,6 +278,41 @@ public class QueryEngineHTTP implements QueryExecution
         model.read(in, null, lang.getName()) ; 
         
         return model ;
+    }
+    
+    @Override
+    public Iterator<Triple> execConstructTriples()
+    {
+        HttpQuery httpQuery = makeHttpQuery() ;
+        httpQuery.setAccept(modelContentType) ;
+        InputStream in = httpQuery.exec() ;
+        
+        //Don't assume the endpoint actually gives back the content type we asked for
+        String actualContentType = httpQuery.getContentType();
+        
+        //If the server fails to return a Content-Type then we will assume
+        //the server returned the type we asked for
+        if (actualContentType == null || actualContentType.equals(""))
+        {
+            actualContentType = modelContentType;
+        }
+        
+        //Try to select language appropriately here based on the model content type
+        Lang lang = WebContent.contentTypeToLang(actualContentType);
+        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " is not a valid RDF Graph syntax");
+        
+        // Special case N-Triples, because the RIOT reader has a pull interface
+        if (lang == Lang.NTRIPLES)
+        {
+            return new IteratorResourceClosing<Triple>(RiotReader.createParserNTriples(in, null), in);
+        }
+        else
+        {
+            // Otherwise, we have to spin up a thread to deal with it
+            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(in, lang, null);
+            parsePuller.parse();
+            return parsePuller;
+        }
     }
     
     @Override

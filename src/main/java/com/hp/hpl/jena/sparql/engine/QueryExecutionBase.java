@@ -18,11 +18,9 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import java.util.HashMap ;
 import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.List ;
-import java.util.Map ;
 import java.util.Set ;
 import java.util.concurrent.TimeUnit ;
 
@@ -57,6 +55,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorWrapper ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.modify.TemplateLib ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -223,7 +222,6 @@ public class QueryExecutionBase implements QueryExecution
         return execConstruct(GraphFactory.makeJenaDefaultModel()) ;
     }
 
-//  TODO: enable this?
 //    /**
 //     * Executes as a construct query, placing the results into a newly constructed {@link com.hp.hpl.jena.sparql.graph.GraphDistinctDataBag}.
 //     * The threshold policy is set from the current context.
@@ -234,9 +232,34 @@ public class QueryExecutionBase implements QueryExecution
 //        ThresholdPolicy<Triple> thresholdPolicy = ThresholdPolicyFactory.policyFromContext(context);
 //        return execConstruct(GraphFactory.makeDataBagModel(thresholdPolicy)) ;
 //    }
-	
+    
     @Override
     public Model execConstruct(Model model)
+    {
+        try
+        {
+            Iterator<Triple> it = execConstructTriples();
+            
+            // Prefixes for result
+            insertPrefixesInto(model);
+            
+            while (it.hasNext())
+            {
+                Triple t = it.next();
+                Statement stmt = ModelUtils.tripleToStatement(model, t);
+                if ( stmt != null )
+                    model.add(stmt);
+            }
+        }
+        finally
+        {
+            this.close();
+        }
+        return model;
+    }
+    
+    @Override
+    public Iterator<Triple> execConstructTriples()
     {
         if ( ! query.isConstructType() )
             throw new QueryExecException("Attempt to get a CONSTRUCT model from a "+labelForQuery(query)+" query") ;
@@ -246,29 +269,9 @@ public class QueryExecutionBase implements QueryExecution
 
         startQueryIterator() ;
         
-        // Prefixes for result
-        insertPrefixesInto(model) ;
         Template template = query.getConstructTemplate() ;
-
-        // Build each template substitution as triples.
-        for ( ; queryIterator.hasNext() ; )
-        {
-            Set<Triple> set = new HashSet<Triple>() ;
-            Map<Node, Node> bNodeMap = new HashMap<Node, Node>() ;
-            Binding binding = queryIterator.nextBinding() ;
-            template.subst(set, bNodeMap, binding) ; 
-
-            // Convert and merge into Model.
-            for ( Iterator<Triple> iter = set.iterator() ; iter.hasNext() ; )
-            {
-                Triple t = iter.next() ;
-                Statement stmt = ModelUtils.tripleToStatement(model, t) ;
-                if ( stmt != null )
-                    model.add(stmt) ;
-            }
-        }
-        this.close() ;
-        return model ;
+        
+        return TemplateLib.calcTriples(template.getTriples(), queryIterator);
     }
 
     @Override
