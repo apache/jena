@@ -305,16 +305,16 @@ public class OpExecutor
     
     private QueryIterator specialcase(Node gn, Op subOp, QueryIterator input)
     {
-        // This is a placeholder fro code to specially handle explicitly named 
+        // This is a placeholder for code to specially handle explicitly named 
         // default graph and union graph.
         
-        if ( true ) return null ;
-        
-        if ( gn == Quad.defaultGraphIRI || gn == Quad.defaultGraphNodeGenerated )
+        if ( Quad.isDefaultGraph(gn) )
         {
             ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph()) ;
             return execute(subOp, cxt2) ;
         }
+        
+        if ( true ) return null ;
         
         if ( gn == Quad.unionGraph )
         {}

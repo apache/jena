@@ -179,7 +179,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             // We can't just use DatasetGraph.getGraph because it may "auto-create" graphs.
             // Use the containsGraph function.
             
-            boolean syntheticGraph = ( Quad.isDefaultGraphExplicit(graphNode) || Quad.isUnionGraph(graphNode) ) ;
+            boolean syntheticGraph = ( Quad.isDefaultGraph(graphNode) || Quad.isUnionGraph(graphNode) ) ;
             if ( ! syntheticGraph && ! outerCxt.getDataset().containsGraph(graphNode) )
                 return null ;
 
