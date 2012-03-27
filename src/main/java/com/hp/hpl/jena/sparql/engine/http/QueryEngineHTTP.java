@@ -274,7 +274,7 @@ public class QueryEngineHTTP implements QueryExecution
         
         //Try to select language appropriately here based on the model content type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " is not a valid RDF Graph syntax");
+        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
         model.read(in, null, lang.getName()) ; 
         
         return model ;
@@ -299,7 +299,7 @@ public class QueryEngineHTTP implements QueryExecution
         
         //Try to select language appropriately here based on the model content type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " is not a valid RDF Graph syntax");
+        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
         
         // Special case N-Triples, because the RIOT reader has a pull interface
         if (lang == Lang.NTRIPLES)

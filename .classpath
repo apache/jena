@@ -1,26 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/main/java"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/test/java"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/main/resources"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src/test/resources"/>
-  <classpathentry excluding="**/.svn/" kind="src" path="src-examples"/>
-
-  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.4/commons-codec-1.4-sources.jar"/>
+  <classpathentry kind="src" path="src/test/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/test/resources" excluding="**/*.java"/>
+  <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
+  <classpathentry kind="src" path="src/main/resources" excluding="META-INF/NOTICE|META-INF/LICENSE|META-INF/DEPENDENCIES|**/*.java"/>
+  <classpathentry kind="src" path="resources" excluding="**/*.java"/>
+  <classpathentry kind="src" path="target/maven-shared-archive-resources" excluding="**/*.java"/>
+  <classpathentry kind="output" path="target/classes-eclipse"/>
+  <classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.5/commons-codec-1.5.jar" sourcepath="M2_REPO/commons-codec/commons-codec/1.5/commons-codec-1.5-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" sourcepath="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.1.3/httpcore-4.1.3.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpcore/4.1.3/httpcore-4.1.3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT.jar" sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-tests.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-test-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT.jar" sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/junit/junit/4.8.2/junit-4.8.2.jar" sourcepath="M2_REPO/junit/junit/4.8.2/junit-4.8.2-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT.jar" sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/junit/junit/4.9/junit-4.9.jar" sourcepath="M2_REPO/junit/junit/4.9/junit-4.9-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16.jar" sourcepath="M2_REPO/log4j/log4j/1.2.16/log4j-1.2.16-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-api/1.6.4/slf4j-api-1.6.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/slf4j-log4j12/1.6.4/slf4j-log4j12-1.6.4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar"/>
-  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar"/>
-
-  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-  <classpathentry kind="output" path="classes"/>
+  <classpathentry kind="var" path="M2_REPO/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0.jar" sourcepath="M2_REPO/xerces/xercesImpl/2.10.0/xercesImpl-2.10.0-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01.jar" sourcepath="M2_REPO/xml-apis/xml-apis/1.4.01/xml-apis-1.4.01-sources.jar"/>
+  <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>
