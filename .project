@@ -1,26 +1,13 @@
 <projectDescription>
-  <name>jena-arq</name>
-  <comment>ARQ is a SPARQL 1.1 query engine for Jena. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <name>ARQ</name>
+  <comment>ARQ is a SPARQL 1.1 query engine for Jena</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
     </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-      <arguments>
-        <dictionary>
-          <key>LaunchConfigHandle</key>
-          <value>&lt;project&gt;/.externalToolBuilders/Maven_Ant_Builder.launch</value>
-        </dictionary>
-      </arguments>
-    </buildCommand>
-    <buildCommand>
-      <name>org.eclipse.m2e.core.maven2Builder</name>
-    </buildCommand>
   </buildSpec>
   <natures>
-    <nature>org.eclipse.m2e.core.maven2Nature</nature>
     <nature>org.eclipse.jdt.core.javanature</nature>
   </natures>
 </projectDescription>
