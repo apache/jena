@@ -28,7 +28,7 @@ tdb:DatasetTDB  rdfs:subClassOf  ja:RDFDataset .
 tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
 ## ---------------------------------------------------------------
-## Updatable TDB dataset with all servcies enabled.
+## Read-only TDB dataset (only read services enabled).
 
 <#service_tdb_read_only> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service (R)" ;
@@ -49,7 +49,7 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     .
 
 ## ---------------------------------------------------------------
-## Updatable TDB dataset with all servcies enabled.
+## Updatable TDB dataset with all services enabled.
 
 <#service_tdb_all> rdf:type fuseki:Service ;
     rdfs:label                      "TDB Service (RW)" ;
