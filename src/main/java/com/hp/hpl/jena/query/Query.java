@@ -599,7 +599,7 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Binding values - null for a Node means undef */ 
     public List<Binding> getBindingsData()      { return bindingsDataBlock==null ? null : bindingsDataBlock.getRows() ; }
 
-    /** @deprected Use setBindingsDataBlock */
+    /** @deprecated Use setBindingsDataBlock */
     @Deprecated
     public void setBindings(List<Var> variables, List<Binding> values)
     { setBindingsDataBlock(variables, values) ; }
