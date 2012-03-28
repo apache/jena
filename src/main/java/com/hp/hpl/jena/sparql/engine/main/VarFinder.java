@@ -18,14 +18,13 @@
 
 package com.hp.hpl.jena.sparql.engine.main;
 
+import static com.hp.hpl.jena.sparql.util.VarUtils.* ;
 import java.util.HashSet ;
 import java.util.List ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 import java.util.Set ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase ;
 import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
@@ -69,27 +68,6 @@ public class VarFinder
         return VarUsageVisitor.apply(op).filterMentions ;
     }
 
-    // See also VarUtils.
-    
-    private static void vars(Set<Var> vars, Triple triple)
-    {
-        slot(vars, triple.getSubject()) ;
-        slot(vars, triple.getPredicate()) ;
-        slot(vars, triple.getObject()) ;
-    }
-    
-    private static void vars(Set<Var> acc, BasicPattern pattern)
-    {
-        for ( Triple triple : pattern )
-            vars(acc, triple) ;
-    }
-
-    private static void slot(Set<Var> vars, Node node)
-    {
-        if ( Var.isVar(node) )
-            vars.add(Var.alloc(node)) ;
-    }
-
     VarUsageVisitor varUsageVisitor ;
     
     public VarFinder(Op op)
@@ -129,25 +107,16 @@ public class VarFinder
         @Override
         public void visit(OpQuadPattern quadPattern)
         {
-            slot(defines, quadPattern.getGraphNode()) ;
+            addVar(defines, quadPattern.getGraphNode()) ;
             BasicPattern triples = quadPattern.getBasicPattern() ;
-            vars(defines, triples) ;
-//            List quads = quadPattern.getQuads() ;
-//            for ( Iterator iter = quads.iterator() ; iter.hasNext(); )
-//            {
-//                Quad quad = (Quad)iter.next() ;
-//                //slot(quad.getGraph()) ;
-//                slot(defines, quad.getSubject()) ;
-//                slot(defines, quad.getPredicate()) ;
-//                slot(defines, quad.getObject()) ;
-//            }
+            addVars(defines, triples) ;
         }
 
         @Override
         public void visit(OpBGP opBGP)
         {
             BasicPattern triples = opBGP.getPattern() ;
-            vars(defines, triples) ;
+            addVars(defines, triples) ;
         }
         
         @Override
@@ -232,7 +201,7 @@ public class VarFinder
         @Override
         public void visit(OpGraph opGraph)
         {
-            slot(defines, opGraph.getNode()) ;
+            addVar(defines, opGraph.getNode()) ;
             opGraph.getSubOp().visit(this) ;
         }
         
