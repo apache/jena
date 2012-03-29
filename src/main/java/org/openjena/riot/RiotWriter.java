@@ -19,13 +19,16 @@
 package org.openjena.riot;
 
 import java.io.OutputStream ;
+import java.util.Iterator ;
 
 import org.openjena.riot.out.NQuadsWriter ;
 import org.openjena.riot.out.NTriplesWriter ;
 import org.openjena.riot.out.RDFJSONWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Output RDF in various formats (unfinished) */
 public class RiotWriter
@@ -38,9 +41,19 @@ public class RiotWriter
         NQuadsWriter.write(out, dsg) ;
     }
     
+    public static void writeNQuads(OutputStream out, Iterator<Quad> it)
+    {
+        NQuadsWriter.write(out, it) ;
+    }
+    
     public static void writeTriples(OutputStream out, Graph graph)
     {
         NTriplesWriter.write(out, graph) ;
+    }
+    
+    public static void writeTriples(OutputStream out, Iterator<Triple> it)
+    {
+        NTriplesWriter.write(out, it) ;
     }
 
     public static void writeRDFJSON(OutputStream out, Graph graph)

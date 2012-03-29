@@ -34,10 +34,14 @@ public class NQuadsWriter
 {
     public static void write(OutputStream out, DatasetGraph dsg)
     {
+        write(out, dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
+    }
+    
+    public static void write(OutputStream out, Iterator<Quad> iter)
+    {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         // Write prologue.
         Sink<Quad> sink = new SinkQuadOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-        Iterator<Quad> iter = dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;
     }
 }

@@ -34,12 +34,14 @@ public class NTriplesWriter
 {
     public static void write(OutputStream out, Graph graph)
     {
+        write(out, graph.find(Node.ANY, Node.ANY, Node.ANY)) ;
+    }
+    
+    public static void write(OutputStream out, Iterator<Triple> iter)
+    {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
         //NodeToLabel.createBNodeByLabelEncoded() ;
         Sink<Triple> sink = new SinkTripleOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
-        Iterator<Triple> iter = graph.find(Node.ANY, Node.ANY, Node.ANY) ;
         Iter.sendToSink(iter, sink) ;
     }
-    
-   
 }
