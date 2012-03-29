@@ -4,8 +4,8 @@
 <!-- Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 -->
 <properties version="1.0">
   <comment>Jena System Properties</comment>
-  <entry key="com.hp.hpl.jena.name">@NAME@</entry>
-  <entry key="com.hp.hpl.jena.website">@WEBSITE@</entry>
-  <entry key="com.hp.hpl.jena.version">@VERSION@</entry>
-  <entry key="com.hp.hpl.jena.build.datetime">@BUILD_TIME_XSD@</entry>
+  <entry key="com.hp.hpl.jena.name">${project.name}</entry>
+  <entry key="com.hp.hpl.jena.website">${project.url}</entry>
+  <entry key="com.hp.hpl.jena.version">${project.version}</entry>
+  <entry key="com.hp.hpl.jena.build.datetime">${build.time.xsd}</entry>
 </properties>

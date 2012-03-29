@@ -42,6 +42,8 @@
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.iri>0.9.1-incubating-SNAPSHOT</ver.iri>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <dependencies>
@@ -53,6 +55,46 @@
   </dependencies>
 
   <build>
+  
+    <resources>
+      <resource>
+        <directory>etc</directory>
+        <targetPath>etc</targetPath>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
+        <directory>vocabularies</directory>
+        <targetPath>vocabularies</targetPath>
+        <filtering>false</filtering>
+        <includes>
+          <include>assembler.n3</include>
+        </includes>
+      </resource>
+
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>jena-log4j.properties</include>
+        </includes>
+        <filtering>false</filtering>
+      </resource>
+
+  
+  <!-- <copy file="src/main/resources/jena-properties.xml" toFile="${project.basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
+   -->
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+      <resource>
+        <targetPath>com/hp/hpl/jena/</targetPath>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  
+  
     <plugins>
 
       <plugin>
@@ -133,37 +175,6 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>process-resources</phase>
-            <configuration>
-              <target>
-                <mkdir dir="${project.basedir}/target" />
-                <tstamp>
-                  <format property="build-time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ" />
-                  <format property="build-time.txt" pattern="yyyy-MM-dd HH:mm z" />
-                </tstamp>
-                <echo message="version=${project.version}" />
-                <echo message="build.time=${build-time.txt}" />
-                <copy file="src/main/resources/jena-properties.xml" toFile="${project.basedir}/target/classes/com/hp/hpl/jena/jena-properties.xml" overwrite="true">
-                  <filterset>
-                    <filter token="NAME" value="${project.name}" />
-                    <filter token="WEBSITE" value="${project.url}" />
-                    <filter token="VERSION" value="${project.version}" />
-                    <filter token="BUILD_TIME_XSD" value="${build-time.xsd}" />
-                  </filterset>
-                </copy>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
@@ -210,33 +221,6 @@
       -->
 
     </plugins>
-
-    <resources>
-      <resource>
-        <directory>etc</directory>
-        <targetPath>etc</targetPath>
-        <filtering>false</filtering>
-      </resource>
-
-      <resource>
-        <directory>vocabularies</directory>
-        <targetPath>vocabularies</targetPath>
-        <filtering>false</filtering>
-        <includes>
-          <include>assembler.n3</include>
-        </includes>
-      </resource>
-
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>jena-log4j.properties</include>
-        </includes>
-        <filtering>false</filtering>
-      </resource>
-
-    </resources>
-
   </build>
 
   <reporting>
