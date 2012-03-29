@@ -48,6 +48,8 @@
     <ver.httpclient>4.1.2</ver.httpclient>
     <ver.httpcore>4.1.3</ver.httpcore>
     <ver.commons-codec>1.5</ver.commons-codec>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <dependencies>
@@ -102,11 +104,6 @@
   </dependencies>
 
   <build>
-    <!-- The filter file is written by antrun -->
-    <filters>
-      <filter>${project.basedir}/target/filter.properties</filter>
-    </filters>
-
     <resources>
       <resource>
         <filtering>false</filtering>
@@ -199,39 +196,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>ant-timestamp</id>
-            <phase>initialize</phase>
-            <configuration>
-              <target>
-                <mkdir dir="${project.basedir}/target" />
-                <tstamp>
-                  <format property="build.time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ" />
-                  <format property="build.time.txt" pattern="yyyy-MM-dd HH:mm z" />
-                </tstamp>
-                <!-- Do not indent (it does not work) -->
-                <echo file="${project.basedir}/target/filter.properties">
-#begin
-build.time.xsd=${build.time.xsd}
-build.time.txt=${build.time.txt}
-#end
-                </echo>
-                <echo message="version=${project.version}" />
-                <echo message="build.time=${build.time.txt}" />
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <!-- Another task, another execution -->
-        </executions>
       </plugin>
 
       <!--
