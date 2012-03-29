@@ -43,6 +43,8 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <ver.jena>2.7.0-incubating</ver.jena>
     <ver.arq>2.9.0-incubating</ver.arq>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <dependencies>
@@ -116,11 +118,6 @@
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>src-test</testSourceDirectory>
     
-    <!-- The filter file is written by antrun -->
-    <filters>
-      <filter>${project.basedir}/target/filter.properties</filter>
-    </filters>
-
     <resources>
       <resource>
         <targetPath>com/hp/hpl/jena/sdb/</targetPath>
@@ -248,38 +245,6 @@
         </configuration>
       </plugin>
       
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>ant-timestamp</id>
-            <phase>generate-resources</phase>
-            <configuration>
-              <target>
-                <mkdir dir="${project.basedir}/target"/>
-                <tstamp>
-                  <format property="build.time.xsd"  pattern="yyyy-MM-dd'T'HH:mm:ssZ"/>
-                  <format property="build.time.txt"  pattern="yyyy-MM-dd HH:mm Z"/>
-                </tstamp>
-                <echo file="${project.basedir}/target/filter.properties">
-#begin
-build.time.xsd=${build.time.xsd}
-build.time.txt=${build.time.txt}
-#end
-                </echo>
-                <echo message="version=${project.version}"/>
-                <echo message="build.time=${build.time.txt}"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <!-- Another task, another execution -->
-        </executions>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
