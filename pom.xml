@@ -74,6 +74,9 @@
     <ver.commons-codec>1.5</ver.commons-codec>
     <ver.slf4j>1.6.4</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
+    
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <dependencies>
@@ -234,46 +237,8 @@
         </includes>
       </resource>
     </resources>
-    <filters>
-      <filter>${project.basedir}/target/filter.properties</filter>
-    </filters>
     
     <plugins>
-      <!-- This produce a java properties file 'filter.properties' with timestanps in
-           For use with fileritng resources.
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        
-        <executions>
-          <execution>
-            <id>ant-generate-resources</id>
-            <phase>generate-resources</phase>
-            <configuration>
-              <target>
-                <mkdir dir="${project.basedir}/target" />
-                <tstamp>
-                  <format property="build.time.xsd" pattern="yyyy-MM-dd'T'HH:mm:ssZ" />
-                  <format property="build.time.txt" pattern="yyyy-MM-dd HH:mm Z" />
-                </tstamp>
-                <echo file="${project.basedir}/target/filter.properties">
-                  #begin
-                  build.time.xsd=${build.time.xsd}
-                  build.time.txt=${build.time.txt}
-                  #end
-                </echo>
-                <echo message="Version = ${project.version}" />
-                <echo message="build.time=${build.time.txt}" />
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
