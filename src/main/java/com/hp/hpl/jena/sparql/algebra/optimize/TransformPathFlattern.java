@@ -27,7 +27,7 @@ import com.hp.hpl.jena.sparql.path.PathLib ;
 
 /** Perform the equivalent of the trasnactions in the SPARQL 1.1 spec.
  *  ARQ regards path transformation as an optimization.
- *  ARQ does not execute the exact transformation as per spec as there are betetr ways to do it.
+ *  ARQ does not execute the exact transformation as per spec as there are better ways to do it.
  */
 
 public class TransformPathFlattern extends TransformCopy
