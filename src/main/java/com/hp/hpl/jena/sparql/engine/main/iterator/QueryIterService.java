@@ -49,6 +49,9 @@ public class QueryIterService extends QueryIterRepeatApply
         QueryIterator qIter ;
         try {
             qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
+            if ( silent )
+                // Consume now in case of errors in receiving the results.
+                qIter = QueryIter.materialize(qIter, getExecContext()) ;
         } catch (RuntimeException ex)
         {
             if ( silent )
