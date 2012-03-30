@@ -311,7 +311,7 @@ public class OpExecutor
         if ( Quad.isDefaultGraph(gn) )
         {
             ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph()) ;
-            return execute(subOp, cxt2) ;
+            return execute(subOp, input, cxt2) ;
         }
         
         if ( true ) return null ;
