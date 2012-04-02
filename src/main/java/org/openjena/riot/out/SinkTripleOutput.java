@@ -91,6 +91,7 @@ public class SinkTripleOutput implements Sink<Triple>
     @Override
     public void close()
     { 
+        IO.flush(out) ;
         // Don't close the underlying OutputStream that was passed in.
     }
 

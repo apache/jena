@@ -100,6 +100,7 @@ public class SinkQuadOutput implements Sink<Quad>
     @Override
     public void close()
     { 
+        IO.flush(out) ;
         // Don't close the underlying OutputStream that was passed in.
     }
 }
