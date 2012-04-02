@@ -26,11 +26,10 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.iri.Violation ;
 import org.openjena.riot.system.IRIResolver ;
-
-import com.hp.hpl.jena.iri.IRI ;
-import com.hp.hpl.jena.iri.IRIFactory ;
-import com.hp.hpl.jena.iri.Violation ;
 
 public class IRIValidator extends ValidatorBase
 {
@@ -45,7 +44,6 @@ public class IRIValidator extends ValidatorBase
     protected void execute(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
         try {
-
             String[] args = httpRequest.getParameterValues(paramIRI) ;
             ServletOutputStream outStream = httpResponse.getOutputStream() ;
             PrintStream stdout = System.out ;

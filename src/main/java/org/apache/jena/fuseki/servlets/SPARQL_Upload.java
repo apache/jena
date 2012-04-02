@@ -35,13 +35,9 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.iri.IRI ;
 import org.openjena.atlas.lib.Sink ;
-import org.openjena.riot.ContentType ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
+import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.system.IRIResolver ;
@@ -49,7 +45,6 @@ import org.openjena.riot.system.IRIResolver ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 

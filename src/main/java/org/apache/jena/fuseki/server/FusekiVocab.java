@@ -19,9 +19,9 @@
 package org.apache.jena.fuseki.server;
 
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.iri.IRI ;
 import org.openjena.riot.system.IRIResolver ;
 
-import com.hp.hpl.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
