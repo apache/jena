@@ -21,6 +21,7 @@ package riotcmd;
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.OutputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Properties ;
@@ -170,7 +171,8 @@ public abstract class CmdLangParse extends CmdGeneral
     protected long totalMillis = 0 ; 
     protected long totalTuples = 0 ; 
     
-
+    OutputStream output = System.out ;
+    
     @Override
     protected void exec()
     {
@@ -182,7 +184,7 @@ public abstract class CmdLangParse extends CmdGeneral
         
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
-        
+     
         try {
             if ( super.getPositional().isEmpty() )
                 parseFile("-") ;
@@ -197,6 +199,7 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
                 output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
+//        IO.close(output) ;
     }
 
     public void parseFile(String filename)
@@ -284,11 +287,12 @@ public abstract class CmdLangParse extends CmdGeneral
         
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
         // That would change a lot (Triples came several years before Quads). 
+        
         if ( lang.isTriples() )
         {
             Sink<Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
-                s = new SinkTripleOutput(System.out, null, labels) ;
+                s = new SinkTripleOutput(output, null, labels) ;
             if ( setup != null )
                 s = InfFactory.infTriples(s, setup) ;
             
@@ -306,7 +310,7 @@ public abstract class CmdLangParse extends CmdGeneral
         {
             Sink <Quad> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
-                s = new SinkQuadOutput(System.out, null, labels) ;
+                s = new SinkQuadOutput(output, null, labels) ;
             if ( setup != null )
                 s = InfFactory.infQuads(s, setup) ;
             
@@ -347,11 +351,11 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         finally {
             IO.close(in) ;
-            sink.close() ;
+            // Not close - we may write again to the underlying ouytptu stream in another call to parse a file.  
+            sink.flush() ;
         }
         long x = modTime.endTimer() ;
         long n = sink.getCount() ;
-        
 
         if ( modTime.timingEnabled() )
             output(filename, n, x, handler) ;

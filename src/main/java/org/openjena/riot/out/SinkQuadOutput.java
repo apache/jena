@@ -99,7 +99,7 @@ public class SinkQuadOutput implements Sink<Quad>
 
     @Override
     public void close()
-    {
-        try { out.close() ; } catch (IOException ex) { IO.exception(ex) ; }
+    { 
+        // Don't close the underlying OutputStream that was passed in.
     }
 }
