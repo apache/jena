@@ -141,6 +141,14 @@ public class HttpQuery extends Params
     }
     
     /**
+     * Gets the HTTP Response Code returned by the request (returns 0 if request has yet to be made)
+     */
+    public int getResponseCode()
+    {
+    	return responseCode;
+    }
+    
+    /**
      * Sets whether the HTTP request will include a Accept-Encoding: gzip header
      */
     public void setAllowGZip(boolean allow)
@@ -507,6 +515,12 @@ public class HttpQuery extends Params
         {
             throw new QueryExceptionHTTP(ioEx) ;
         } 
+        catch (QueryExceptionHTTP httpEx)
+        {
+        	//We want to throw this upwards and not catch it in the next block and inadvertently rewrap it
+        	//since that can hide the real error details from the user
+        	throw httpEx;
+        }
         catch (JenaException rdfEx)
         {
             throw new QueryExceptionHTTP(rdfEx) ;
