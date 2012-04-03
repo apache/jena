@@ -9,8 +9,7 @@ ChangeLog for ARQ
   Evaluation more efficient at scale.
   Cardinality is mixture of multi-match part, distinct parts of path, and rest of the BGP.
 + New property path evaluation engine.
-+ Bug fix: DISTINCT + paths might not be distinct (JENA-211)
-+ Bug fix: DISTINCT + paths might not be distinct (JENA-211)
++ Bug fix: DISTINCT might not be distinct (JENA-211)
 + QueryEngineHttp has configuration options (JENA-210)
 + Add function "StrUUID" which returns a UUID string (c.f. "UUID()" for a UUID as a URI of form <urn:uuid:....>)
   Also available as afn:struuid() and afn:uuid() for strict syntax. 
