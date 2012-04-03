@@ -105,6 +105,9 @@ public class WebContent
     static {
         // Or is code preferrable?
         mapContentTypeToLang.put(contentTypeRDFXML,         Lang.RDFXML) ;
+        mapContentTypeToLang.put(contentTypeN3,             Lang.N3);
+        mapContentTypeToLang.put(contentTypeN3Alt1,         Lang.N3);
+        mapContentTypeToLang.put(contentTypeN3Alt2,         Lang.N3);
         mapContentTypeToLang.put(contentTypeTurtle,         Lang.TURTLE) ;
         mapContentTypeToLang.put(contentTypeTurtleAlt1,     Lang.TURTLE) ;
         mapContentTypeToLang.put(contentTypeTurtleAlt2,     Lang.TURTLE) ;
