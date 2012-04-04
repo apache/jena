@@ -37,7 +37,7 @@ public class TestExpressions2 extends Assert
     @Test public void gregorian_eq_02()         { eval("'1999'^^xsd:gYear != '1999'^^xsd:gYear", false) ; }
     
     @Test (expected=ExprEvalException.class)
-    public void gregorian_eq_03()               { evalErr("'1999'^^xsd:gYear = '1999Z'^^xsd:gYear") ; }
+    public void gregorian_eq_03()               { eval("'1999'^^xsd:gYear = '1999Z'^^xsd:gYear") ; }
 
     @Test  public void gregorian_eq_04()        { eval("'1999'^^xsd:gYear = '2001Z'^^xsd:gYear", false) ; }
     
@@ -54,12 +54,12 @@ public class TestExpressions2 extends Assert
     @Test public void gregorian_cmp_03()        { eval("'1999'^^xsd:gYear < '2000+01:00'^^xsd:gYear", true) ; }
 
     @Test (expected=ExprEvalException.class)
-    public void gregorian_cmp_04()              { evalErr("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear") ; }
+    public void gregorian_cmp_04()              { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear") ; }
     
     public void gregorian_cast_01()             { eval("xsd:gYear('2010-03-22'^^xsd:date) = '2010'^^xsd:gYear", true ) ; }
 
     @Test (expected=ExprEvalException.class)
-    public void coalesce_01()                   { evalErr("COALESCE()") ; } 
+    public void coalesce_01()                   { eval("COALESCE()") ; } 
     @Test public void coalesce_02()             { eval("COALESCE(1) = 1", true) ; } 
     @Test public void coalesce_03()             { eval("COALESCE(?x,1) = 1", true) ; } 
     @Test public void coalesce_04()             { eval("COALESCE(9,1) = 9", true) ; } 
@@ -69,7 +69,7 @@ public class TestExpressions2 extends Assert
     @Test public void if_02()                   { eval("IF(1+2=4, 'yes', 'no') = 'no'", true) ; }
     @Test public void if_03()                   { eval("IF(true, 'yes', 1/0) = 'yes'", true) ; }
     @Test (expected=ExprEvalException.class)
-    public void if_04()                         { evalErr("IF(true, 1/0, 'no') = 'no'") ; }
+    public void if_04()                         { eval("IF(true, 1/0, 'no') = 'no'") ; }
     
     // NOT IN, IN
     @Test public void in_01()                   { eval("1 IN(1,2,3)", true) ; }
@@ -86,7 +86,7 @@ public class TestExpressions2 extends Assert
     @Test public void term_constructor_iri_01()     { eval("IRI('http://example/') = <http://example/>", true) ; }
     
     @Test (expected=ExprEvalException.class)
-    public void term_constructor_iri_02()           { evalErr("IRI(123)") ; } 
+    public void term_constructor_iri_02()           { eval("IRI(123)") ; } 
     @Test public void term_constructor_iri_03()     { eval("IRI(<http://example/>) = <http://example/>", true) ; }
     @Test public void term_constructor_iri_04()     { eval("isIRI(IRI(BNODE()))", true) ; }            // SPARQL extension
     @Test public void term_constructor_iri_05()     { eval("regex(str(IRI(BNODE())), '^_:' )", true) ; } // SPARQL extension
@@ -100,23 +100,38 @@ public class TestExpressions2 extends Assert
     @Test public void term_constructor_strdt_01()   { eval("STRDT('123',xsd:integer) = 123", true) ; }
     @Test public void term_constructor_strdt_02()   { eval("STRDT('123',<http://example/DT>) = '123'^^<http://example/DT>", true) ; }
     @Test (expected=ExprEvalException.class)
-    public void term_constructor_strdt_03()         { evalErr("STRDT('123','abc') = '123'") ; }
+    public void term_constructor_strdt_03()         { eval("STRDT('123','abc') = '123'") ; }
     @Test (expected=ExprEvalException.class)
-    public void term_constructor_strdt_04()         { evalErr("STRDT('123'^^xsd:integer,<http://example/DT>) = '123'^^<http://example/DT>") ; }
+    public void term_constructor_strdt_04()         { eval("STRDT('123'^^xsd:integer,<http://example/DT>) = '123'^^<http://example/DT>") ; }
     
     @Test public void term_constructor_strlang_01() { eval("STRLANG('abc', 'en') = 'abc'@en", true) ; }
     @Test (expected=ExprEvalException.class)
-    public void term_constructor_strlang_02()       { evalErr("STRLANG(<http://example/>, 'en') = 'abc'@en") ; }
+    public void term_constructor_strlang_02()       { eval("STRLANG(<http://example/>, 'en') = 'abc'@en") ; }
 
     @Test (expected=ExprEvalException.class)
-    public void term_constructor_strlang_03()       { evalErr("STRLANG('abc'@en, 'en') = 'abc'@en") ; }
+    public void term_constructor_strlang_03()       { eval("STRLANG('abc'@en, 'en') = 'abc'@en") ; }
+    
+    // XSD casts
+    
+    @Test public void xsd_cast_01()                 { eval("xsd:integer('1') = 1", true) ; }
+    @Test public void xsd_cast_02()                 { eval("xsd:boolean('1') = true", true) ; }
+    @Test public void xsd_cast_03()                 { eval("sameTerm(xsd:double('1.0e0'),1.0e0)", true) ; }
+    @Test public void xsd_cast_04()                 { eval("xsd:double('1') = 1", true) ; }
+
+    @Test (expected=ExprEvalException.class)
+    public void xsd_cast_10()                       { eval("xsd:integer(' 1')") ; }
+    @Test (expected=ExprEvalException.class)
+    public void xsd_cast_11()                       { eval("xsd:boolean(' 1')") ; }
+    @Test (expected=ExprEvalException.class)
+    public void xsd_cast_12()                       { eval("xsd:double(' 1.0e0')") ; }
+    @Test (expected=ExprEvalException.class)
+    public void xsd_cast_13()                       { eval("xsd:double(' 1.0e0')") ; }
     
     // ---- Workers
     
-    private static void evalErr(String string)
+    private static void eval(String string)
     { 
         eval(string, true) ;
-        throw new RuntimeException() ; 
     }
     
     // It's easier to write tests that simple are expected to return true/false 
