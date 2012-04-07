@@ -511,18 +511,45 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
             ((Closeable)iter).close() ;
     }
 
+    /** Print an iterator to stdout, return a copy of the iterator.  Printing occurs when  */  
     public static <T> Iterator<T> debug(Iterator<T> stream)
-    { 
+    {
+        return debug(System.out, stream) ;
+    }
+    
+    /** Print an iterator to stdout, return a copy of the iterator.  Printing occurs when  the returned iterator is used */  
+    public static <T> Iterator<T> debug(final PrintStream out, Iterator<T> stream)
+    {
         Transform<T,T> x = new Transform<T, T>()
         {
             @Override
             public T convert(T item)
             { 
-                System.out.println(item) ;
+                out.println(item) ;
                 return item ;
             }
         } ;
         return map(stream, x) ;
+    }
+    
+    /** Print an iterator (destructive) */  
+    public static <T> void print(Iterator<T> stream)
+    {
+        print(System.out, stream) ;
+    }
+
+    
+    /** Print an iterator (destructive) */  
+    public static <T> void print(final PrintStream out, Iterator<T> stream)
+    { 
+        Action<T> x = new Action<T>()
+        {
+            @Override
+            public void apply(T item)
+            { out.println(item) ; }
+
+        } ;
+        apply(stream, x) ;
     }
     
     /** Send the elements of the iterator to a sink - consumes the iterator */ 
