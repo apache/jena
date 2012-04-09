@@ -65,6 +65,9 @@ public class Quad
         this.predicate = p ;
         this.object = o ;
     }
+    
+    public static Quad create(Node g, Node s, Node p, Node o)   { return new Quad(g,s,p,o) ; }
+    public static Quad create(Node g, Triple t)                 { return new Quad(g,t) ; }
 
     public final Node getGraph()      { return graph ; }
     public final Node getSubject()    { return subject ; }
