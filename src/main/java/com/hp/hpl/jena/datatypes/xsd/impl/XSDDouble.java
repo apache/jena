@@ -91,9 +91,9 @@ public class XSDDouble extends XSDDatatype {
     @Override
     public Object parseValidated(String lex) {
        if (lex.equals("INF")) {
-           return new Double(Double.NEGATIVE_INFINITY);
-       } else if (lex.equals("-INF")) {
            return new Double(Double.POSITIVE_INFINITY);
+       } else if (lex.equals("-INF")) {
+           return new Double(Double.NEGATIVE_INFINITY);
        } else if (lex.equals("NaN")) {
            return new Double(Double.NaN);
        } else {

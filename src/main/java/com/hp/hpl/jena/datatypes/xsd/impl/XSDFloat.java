@@ -91,9 +91,9 @@ public class XSDFloat extends XSDDatatype {
     @Override
     public Object parseValidated(String lex) {
         if (lex.equals("INF")) {
-            return new Float(Float.NEGATIVE_INFINITY);
-        } else if (lex.equals("-INF")) {
             return new Float(Float.POSITIVE_INFINITY);
+        } else if (lex.equals("-INF")) {
+            return new Float(Float.NEGATIVE_INFINITY);
         } else if (lex.equals("NaN")) {
             return new Float(Float.NaN);
         } else {
