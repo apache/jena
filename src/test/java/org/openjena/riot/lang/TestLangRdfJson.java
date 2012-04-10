@@ -21,6 +21,8 @@ package org.openjena.riot.lang;
 import java.io.ByteArrayInputStream ;
 import java.io.StringReader ;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.json.io.parser.TokenizerJSON ;
@@ -30,6 +32,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.openjena.riot.SysRIOT;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -42,6 +45,32 @@ import com.hp.hpl.jena.rdf.model.RDFReader ;
 
 public class TestLangRdfJson extends BaseTest
 {
+	@BeforeClass
+	public static void setup()
+	{
+		SysRIOT.wireIntoJena();
+	}
+	
+	@AfterClass
+	public static void teardown()
+	{
+		SysRIOT.resetJenaReaders();
+	}
+	
+	@Test
+	public void rdfjson_get_jena_reader()
+	{
+		Model m = ModelFactory.createDefaultModel();
+		m.getReader("RDF/JSON");
+	}
+	
+	@Test
+	public void rdfjson_get_jena_writer()
+	{
+		Model m = ModelFactory.createDefaultModel();
+		m.getWriter("RDF/JSON");
+	}
+	
 	@Test
 	public void rdfjson_read_empty_graph()
 	{

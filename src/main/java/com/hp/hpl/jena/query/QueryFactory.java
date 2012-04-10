@@ -61,7 +61,7 @@ public class QueryFactory
     
     static public Query create(String queryString, String baseURI)
     {
-        Query query = new Query() ;
+        Query query = new Query(queryString) ;
         parse(query, queryString, baseURI, Syntax.defaultQuerySyntax) ;
         return query ;
         
@@ -77,7 +77,7 @@ public class QueryFactory
    
    static public Query create(String queryString, String baseURI, Syntax syntax)
    {
-       Query query = new Query() ;
+       Query query = new Query(queryString) ;
        parse(query, queryString, baseURI, syntax) ;
        return query ;
        
@@ -109,6 +109,22 @@ public class QueryFactory
         return originalQuery.cloneQuery() ;
     }
     
+    /**
+     * Make a query from another one by deep copy (a clone).
+     * The returned query will be .equals to the original.
+     * The returned query can be mutated without changing the
+     * original (at which point it will stop being .equals)
+     * 
+     * @param originalQuery  The query to clone.
+     * @param useRawQuery Whether to clone from the raw query string the original query was created from (if it is available)
+     *   
+     */
+
+    static public Query create(Query originalQuery, boolean useRawQuery)
+    {
+        return originalQuery.cloneQuery(useRawQuery) ;
+    }
+    
 
     /** Parse a query from the given string by calling the parser.
      *
@@ -126,6 +142,7 @@ public class QueryFactory
         else
             query.setSyntax(syntaxURI) ;
 
+        query.setRawQuery(queryString);
         Parser parser = Parser.createParser(syntaxURI) ;
         
         if ( parser == null )

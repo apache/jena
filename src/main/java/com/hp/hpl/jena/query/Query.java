@@ -75,6 +75,9 @@ public class Query extends Prologue implements Cloneable, Printable
     private List<String> graphURIs = new ArrayList<String>() ;
     private List<String> namedGraphURIs = new ArrayList<String>() ;
     
+    // The Original Raw Query as provided to the API
+    private String rawQuery = null;
+    
     // The WHERE clause
     private Element queryPattern = null ;
     
@@ -122,15 +125,45 @@ public class Query extends Prologue implements Cloneable, Printable
     // Also uses resultVars
     protected List<Node> resultNodes               = new ArrayList<Node>() ;     // Type in list: Node
     
+    /**
+     * Creates a new empty query
+     */
     public Query()
     {
         syntax = Syntax.syntaxSPARQL ;
     }
     
+    /**
+     * Creates a new empty query with the given prologue
+     */
     public Query(Prologue prologue)
     {
         this() ;
         usePrologueFrom(prologue) ;
+    }
+    
+    /**
+     * Creates a new empty query with the given raw query string
+     * <p>
+     * <strong>Important:</strong> This constructor does not cause the query to be parsed, this only stores a reference to the original query string in the query which may be useful if you want to see the original unaltered syntax (including comments) at some later point.
+     * </p>
+     */
+    public Query(String queryString)
+    {
+    	this();
+    	rawQuery = queryString;
+    }
+    
+    /**
+     * Creates a new empty query with the given raw query string and prologue
+     * <p>
+     * <strong>Important:</strong> This constructor does not cause the query to be parsed, this only stores a reference to the original query string in the query which may be useful if you want to see the original unaltered syntax (including comments) at some later point.
+     * </p>
+     */
+    public Query(String queryString, Prologue prologue)
+    {
+    	this(prologue);
+    	rawQuery = queryString;
     }
     
     // Allocate variables that are unique to this query.
@@ -189,6 +222,22 @@ public class Query extends Prologue implements Cloneable, Printable
     
     public void setReduced(boolean b) { reduced = b ; }
     public boolean isReduced()        { return reduced ; }
+    
+    /**
+     * Sets the raw query string
+     */
+    protected void setRawQuery(String queryString)
+    {
+    	rawQuery = queryString;
+    }
+    
+    /**
+     * Gets the original raw query string from which this instance was populated, may be null depending on how the query was created
+     */
+    public String getRawQuery()
+    {
+    	return rawQuery;
+    }
 
     /** @return Returns the syntax. */
     public Syntax getSyntax()         { return syntax ; }
@@ -782,12 +831,36 @@ public class Query extends Prologue implements Cloneable, Printable
     @Override
     public Object clone() { return cloneQuery() ; }
     
+    /**
+     * Makes a copy of this query.  Copies by parsing a query from the serialized form of this query
+     * @return Copy of this query
+     */
     public Query cloneQuery()
     {
-        // A little crude.
-        IndentedLineBuffer buff = new IndentedLineBuffer() ;
-        serialize(buff, getSyntax()) ;
-        String qs = buff.toString() ;
+    	//By default clone from serialized form of this query
+    	return cloneQuery(false);
+    }
+    
+    /**
+     * Makes a copy of this query.  May specify whether is cloned by parsing from original raw query or by parsing from serialized form of this query
+     * @param useRawQuery Copy from raw query if present
+     * @return Copy of this query
+     */
+    public Query cloneQuery(boolean useRawQuery)
+    {
+    	String qs;
+    	if (useRawQuery && this.rawQuery != null && !this.rawQuery.equals(""))
+    	{
+    		//If specified (and is present) clone from raw query rather than the serialized query
+    		qs = this.rawQuery;
+    	}
+    	else
+    	{
+    		// A little crude.
+    		IndentedLineBuffer buff = new IndentedLineBuffer() ;
+    		serialize(buff, getSyntax()) ;
+    		qs = buff.toString() ;
+    	}
         return QueryFactory.create(qs, getSyntax()) ;
     }
     

@@ -103,8 +103,8 @@ public class SysRIOT
         RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
         RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
 
-        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", null) ;
-        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", null) ;
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
+        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", "") ;
     }
 
 }
