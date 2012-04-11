@@ -49,9 +49,10 @@ public class QueryIterService extends QueryIterRepeatApply
         QueryIterator qIter ;
         try {
             qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
-            if ( silent )
-                // Consume now in case of errors in receiving the results.
-                qIter = QueryIter.materialize(qIter, getExecContext()) ;
+            // Materialise, otherwise we may have outstanding incoming data.
+            // Allows the server to fulfil the request as soon as possible.
+            // In extremis, can cause a deadlock when SERVICE loops back to this server.
+            qIter = QueryIter.materialize(qIter, getExecContext()) ;
         } catch (RuntimeException ex)
         {
             if ( silent )
@@ -65,10 +66,6 @@ public class QueryIterService extends QueryIterRepeatApply
         // Need to put the outerBinding as parent to every binding of the service call.
         // There should be no variables in common because of the OpSubstitute.substitute 
         QueryIterator qIter2 = new QueryIterCommonParent(qIter, outerBinding, getExecContext()) ;
-
-        // Materialise, otherwise we may have outstanding incoming data.
-        // Allows the server to fulfil the request as soon as possible.
-        // In extremis, can cause a deadlock when SERVICE loops back to this server.
-        return QueryIter.materialize(qIter2, getExecContext()) ;
+        return qIter2 ;
     }
 }
