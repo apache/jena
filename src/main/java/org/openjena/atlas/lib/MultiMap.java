@@ -130,10 +130,15 @@ public abstract class MultiMap<K, V>
             firstKey = false ;
             sb.append(key) ;
             sb.append(" [") ;
+            boolean firstValue = true ; 
             for ( V value : values(key) )
             {
-                sb.append(" ") ;
+                if ( firstValue )
+                    sb.append(" ") ;
+                else
+                    sb.append(", ") ;
                 sb.append(value) ;
+                firstValue = false ;
             }
             sb.append(" ] ") ;
         }
