@@ -74,13 +74,10 @@ public class Quad
     public final Node getPredicate()  { return predicate ; }
     public final Node getObject()     { return object ; }
 
-    private Triple triple = null ;
     /** Get as a triple - useful because quads often come in blocks for the same graph */  
     public Triple asTriple()
     { 
-        if ( triple == null )
-            triple = new Triple(subject, predicate, object) ;
-        return triple ;
+        return new Triple(subject, predicate, object) ;
     }
     
     public boolean isConcrete()
