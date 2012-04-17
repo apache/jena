@@ -12,7 +12,6 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.update.UpdateException;
 
 /**
  * A class that print quads, SPARQL style (maybe good for Trig too?)
@@ -24,9 +23,8 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
     protected final IndentedWriter out;
     protected final SerializationContext sCxt;
     protected boolean opened = false;
-    protected boolean closed = false;
     
-    private Node currentGraph;
+    protected Node currentGraph;
     
     public SinkQuadBracedOutput(OutputStream out)
     {
@@ -65,7 +63,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
     {
         if (!opened)
         {
-            throw new UpdateException("SinkQuadBracedOutput is not opened.  Call open() first.");
+            throw new IllegalStateException("SinkQuadBracedOutput is not opened.  Call open() first.");
         }
     }
     
@@ -134,9 +132,8 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
     @Override
     public void close()
     {
-        if (!closed)
+        if (opened)
         {
-            checkOpen();
             if (null != currentGraph)
             {
                 out.decIndent(BLOCK_INDENT);
@@ -148,7 +145,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
             
             // Since we didn't create the OutputStream, we'll just flush it
             flush();
-            closed = true;
+            opened = false;
         }
     }
 }

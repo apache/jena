@@ -36,7 +36,6 @@ import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
 import com.hp.hpl.jena.update.Update;
-import com.hp.hpl.jena.update.UpdateException;
 import com.hp.hpl.jena.update.UpdateRequest;
 
 public class UpdateWriter implements Closeable
@@ -47,7 +46,6 @@ public class UpdateWriter implements Closeable
     private UpdateDataWriter udw;
     private boolean firstOp = true;
     private boolean opened = false;
-    private boolean closed = false;
     
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
@@ -68,7 +66,7 @@ public class UpdateWriter implements Closeable
     {
         if (!opened)
         {
-            throw new UpdateException("UpdateStreamWriter is not opened.  Call open() first.");
+            throw new IllegalStateException("UpdateStreamWriter is not opened.  Call open() first.");
         }
     }
     
@@ -161,7 +159,7 @@ public class UpdateWriter implements Closeable
     @Override
     public void close()
     {
-        if (!closed)
+        if (opened)
         {
             if (null != udw)
             {
@@ -172,7 +170,7 @@ public class UpdateWriter implements Closeable
             // Update requests always end in newline.
             out.ensureStartOfLine();
             flush();
-            closed = true;
+            opened = false;
         }
     }
     
