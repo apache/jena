@@ -18,82 +18,197 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import java.util.List ;
+import java.util.List;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.atlas.io.IndentedWriter;
+import org.openjena.atlas.iterator.Iter;
+import org.openjena.atlas.lib.Closeable;
+import org.openjena.riot.out.SinkQuadBracedOutput;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.syntax.Element ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.update.Update;
+import com.hp.hpl.jena.update.UpdateException;
+import com.hp.hpl.jena.update.UpdateRequest;
 
-public class UpdateWriter
+public class UpdateWriter implements Closeable
 {
+    private final IndentedWriter out;
+    private final SerializationContext sCxt;
+    
+    private UpdateDataWriter udw;
+    private boolean firstOp = true;
+    private boolean opened = false;
+    private boolean closed = false;
+    
+    public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
+    {
+        this.out = out;
+        this.sCxt = sCxt;
+    }
+    
+    public void open()
+    {
+        if (null != sCxt)
+        {
+            prologue();
+        }
+        opened = true;
+    }
+    
+    private void checkOpen()
+    {
+        if (!opened)
+        {
+            throw new UpdateException("UpdateStreamWriter is not opened.  Call open() first.");
+        }
+    }
+    
+    private void prologue()
+    {
+        int row1 = out.getRow() ;
+        PrologueSerializer.output(out, sCxt.getPrologue()) ;
+        int row2 = out.getRow() ;
+        if ( row1 != row2 )
+            out.newline() ;
+    }
+    
+    private void prepareForDataUpdate(UpdateMode mode)
+    {
+        if ((null != udw) && !udw.getMode().equals(mode))
+        {
+            udw.close();
+            udw = null;
+            firstOp = false;
+        }
+        
+        if (null == udw)
+        {
+            if (!firstOp)
+            {
+                out.println(" ;");
+            }
+            udw = new UpdateDataWriter(mode, out, sCxt);
+            udw.open();
+            firstOp = false;
+        }
+    }
+    
+    public void insert(Quad quad)
+    {
+        insert(quad.getGraph(), quad.asTriple());
+    }
+    
+    public void insert(Node graph, Triple triple)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.INSERT);
+        udw.send(graph, triple);
+    }
+    
+    public void delete(Quad quad)
+    {
+        delete(quad.getGraph(), quad.asTriple());
+    }
+    
+    public void delete(Node graph, Triple triple)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.DELETE);
+        udw.send(graph, triple);
+    }
+    
+    public void update(Update update)
+    {
+        checkOpen();
+        if (null != udw)
+        {
+            udw.close();
+            udw = null;
+        }
+        
+        if (!firstOp)
+        {
+            out.println(" ;");
+        }
+        Writer writer = new Writer(out, sCxt) ;
+        update.visit(writer) ; 
+        
+        firstOp = false;
+    }
+    
+    public void update(Iterable<Update> updates)
+    {
+        for (Update update : updates)
+        {
+            update(update);
+        }
+    }
+    
+    public void flush()
+    {
+        out.flush();
+    }
+    
+    @Override
+    public void close()
+    {
+        if (!closed)
+        {
+            if (null != udw)
+            {
+                udw.close();
+                udw = null;
+            }
+            
+            // Update requests always end in newline.
+            out.ensureStartOfLine();
+            flush();
+            closed = true;
+        }
+    }
+    
+    
+    // -- Convenience static methods -----------------------
+    
     public static void output(UpdateRequest request, IndentedWriter out)
     {
-        output(request, out, new SerializationContext(request)) ;
+        output(request, out, null);
     }
     
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
     {
         if ( sCxt == null )
-            sCxt = new SerializationContext(request) ;
-        prologue(out, sCxt.getPrologue()) ;
-        boolean addSeparator = (request.getOperations().size() > 1) ;
-        boolean first = true ;
+            sCxt = new SerializationContext(request);
         
-        for ( Update update : request.getOperations() )
-        {
-            out.ensureStartOfLine() ;
-            if ( ! first )
-                out.println() ;
-            first = false ;
-            outputUpdate(update, out, sCxt) ;
-            if ( addSeparator )
-                out.print(" ;") ;
-        }
-        
-        // Update requests always end in newline. 
-        out.ensureStartOfLine() ;
-        out.flush() ;
+        UpdateWriter uw = new UpdateWriter(out, sCxt);
+        uw.open();
+        uw.update(request.getOperations());
+        uw.close();
     }
     
     public static void output(Update update, IndentedWriter out, SerializationContext sCxt)
     {
         if ( sCxt == null )
-            sCxt = new SerializationContext() ;
-        prologue(out, sCxt.getPrologue()) ;
-        outputUpdate(update, out, sCxt) ;
-        // Update operations do not end in newline. 
-        out.flush() ;
+            sCxt = new SerializationContext();
+        
+        UpdateWriter uw = new UpdateWriter(out, sCxt);
+        uw.open();
+        uw.update(update);
+        uw.close();
     }
     
-    
-    private static void outputUpdate(Update update, IndentedWriter out, SerializationContext sCxt)
-    {
-        Writer writer = new Writer(out, sCxt) ;
-        update.visit(writer) ; 
-    }
-
-    private static void prologue(IndentedWriter out, Prologue prologue)
-    {
-        int row1 = out.getRow() ;
-        PrologueSerializer.output(out, prologue) ;
-        int row2 = out.getRow() ;
-        if ( row1 != row2 )
-            out.newline() ;
-    }
-
 
     // newline policy - don't add until needed.
-    public static class Writer implements UpdateVisitor
+    private static class Writer implements UpdateVisitor
     {
         private static final int BLOCK_INDENT = 2 ;
         private final IndentedWriter out ;
@@ -224,17 +339,17 @@ public class UpdateWriter
         @Override
         public void visit(UpdateDataInsert update)
         {
-            out.ensureStartOfLine() ;
-            out.print("INSERT DATA ") ;
-            outputQuadsBraced(update.getQuads()) ;
+            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
+            udw.open();
+            Iter.sendToSink(update.getQuads(), udw);  // udw.close() is called by Iter.sendToSink()
         }
 
         @Override
         public void visit(UpdateDataDelete update)
         {
-            out.ensureStartOfLine() ;
-            out.print("DELETE DATA ") ;
-            outputQuadsBraced(update.getQuads()) ;
+            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
+            udw.open();
+            Iter.sendToSink(update.getQuads(), udw);
         }
 
         // Prettier later.
@@ -246,55 +361,10 @@ public class UpdateWriter
                 out.print("{ }") ;
                 return ;
             }
-            out.println("{") ;
-            outputQuads(quads) ;
-            out.print("}") ;
-        }
-        
-        private void outputQuads(List<Quad> quads)
-        {
-            out.incIndent(BLOCK_INDENT) ;
-            Node g = Quad.tripleInQuad ;
-            boolean inBlock = false ;
-            for ( Quad q : quads )
-            {
-                if ( q.getGraph() != g )
-                {
-                    // New graph (default or named)
-                    if ( inBlock )
-                    {
-                        // In named - end it.
-                        out.decIndent(BLOCK_INDENT) ;
-                        out.println("}") ;
-                        inBlock = false ;
-                    }
-                    
-                    g = q.getGraph() ;
-                    
-                    // Start new block.
-                    // Two cases for no braces: 
-                    // Quad.tripleInQuad and Quad.defaultGraphNodeGenerated ;
-                    if ( ! q.isTriple() && ! q.isDefaultGraphGenerated() )
-                    {
-                        out.print("GRAPH ") ;
-                        output(g) ;
-                        out.println(" {") ;
-                        out.incIndent(BLOCK_INDENT) ;
-                        inBlock = true ;
-                    }
-                }
-                    
-                outputTripleOfQuad(q) ;
-                out.println(" .") ;
-            }
             
-            if ( inBlock )
-            {
-                out.decIndent(BLOCK_INDENT) ;
-                out.println("}") ;
-                inBlock = false ;
-            }
-            out.decIndent(BLOCK_INDENT) ;
+            SinkQuadBracedOutput sink = new SinkQuadBracedOutput(out, sCxt);
+            sink.open();
+            Iter.sendToSink(quads, sink);
         }
         
         private void output(Node node)
@@ -302,34 +372,6 @@ public class UpdateWriter
             String $ = FmtUtils.stringForNode(node, sCxt) ;
             out.print($) ;
         }
-
-        private void outputQuad(Quad quad)
-        {
-            String qs = FmtUtils.stringForQuad(quad, sCxt.getPrefixMapping()) ;
-            
-            if ( quad.getGraph() != null )
-            {
-                String g = FmtUtils.stringForNode(quad.getGraph(), sCxt) ;
-                out.print(g) ;
-                out.print(" ") ;    
-            }
-            outputTripleOfQuad(quad) ;
-            out.println(" .") ;
-        }
-
-        private void outputTripleOfQuad(Quad quad)
-        {
-            String s = FmtUtils.stringForNode(quad.getSubject(), sCxt) ;
-            String p = FmtUtils.stringForNode(quad.getPredicate(), sCxt) ;
-            String o = FmtUtils.stringForNode(quad.getObject(), sCxt) ;
-            
-            out.print(s) ;
-            out.print(" ") ;
-            out.print(p) ;
-            out.print(" ") ;
-            out.print(o) ;
-        }
-        
 
         
         @Override
