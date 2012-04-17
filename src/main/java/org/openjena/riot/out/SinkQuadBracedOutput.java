@@ -30,7 +30,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
     
     public SinkQuadBracedOutput(OutputStream out)
     {
-        this(out, new SerializationContext());
+        this(out, null);
     }
     
     public SinkQuadBracedOutput(OutputStream out, SerializationContext sCxt)
@@ -43,6 +43,11 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
         if (out == null)
         {
             throw new IllegalArgumentException("out may not be null") ;
+        }
+        
+        if (sCxt == null)
+        {
+            sCxt = new SerializationContext();
         }
         
         this.out = out;
@@ -137,7 +142,7 @@ public class SinkQuadBracedOutput implements Sink<Quad>, Closeable
                 out.decIndent(BLOCK_INDENT);
                 out.println("}");
             }
-        
+            
             out.decIndent(BLOCK_INDENT);
             out.print("}");
             
