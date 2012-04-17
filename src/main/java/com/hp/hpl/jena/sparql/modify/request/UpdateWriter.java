@@ -93,7 +93,7 @@ public class UpdateWriter
 
 
     // newline policy - don't add until needed.
-    private static class Writer implements UpdateVisitor
+    public static class Writer implements UpdateVisitor
     {
         private static final int BLOCK_INDENT = 2 ;
         private final IndentedWriter out ;
