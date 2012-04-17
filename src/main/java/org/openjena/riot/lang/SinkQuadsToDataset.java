@@ -24,8 +24,8 @@ import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Send quads to a dataset.
- * This Sink must be clsosed after use.
+/**
+ * Send quads to a dataset. This Sink must be closed after use.
  */
 public class SinkQuadsToDataset implements Sink<Quad>
 {
