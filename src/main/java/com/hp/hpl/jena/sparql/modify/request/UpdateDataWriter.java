@@ -3,7 +3,6 @@ package com.hp.hpl.jena.sparql.modify.request;
 import org.openjena.atlas.io.IndentedWriter;
 import org.openjena.riot.out.SinkQuadBracedOutput;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 
 public class UpdateDataWriter extends SinkQuadBracedOutput
@@ -18,7 +17,6 @@ public class UpdateDataWriter extends SinkQuadBracedOutput
     }
     
     private final UpdateMode mode;
-    private Node currentGraph;
     
     public UpdateDataWriter(UpdateMode mode, IndentedWriter out, SerializationContext sCxt)
     {
