@@ -235,7 +235,23 @@ public class TestXMLFeatures extends XMLOutputTestBase {
 		// }
 		// });
 	}
-
+        
+        // JENA-24
+        public void testDisallowedXMLNamespace() throws IOException {
+		// xml and xmlns, if present, must be bound to correct namespaces
+		check(file1, null, Change.setPrefix("j.0", "http://www.w3.org/XML/1998/namespace"));
+                check(file1, null, Change.setPrefix("xml", "http://www.w3.org/XML/1998/namespace"));
+                // Not sure about this case. It's bad, but it ought to round trip
+                //check(file1, null, Change.setPrefix("xml", "http://example.org/#"));
+	}
+        
+        // JENA-24
+        public void testDisallowedXMLNSNamespace() throws IOException {
+		// xml and xmlns, if present, must be bound to correct namespaces
+		check(file1, null, Change.setPrefix("j.0", "http://www.w3.org/2000/xmlns/"));
+                check(file1, null, Change.setPrefix("xmlns", "http://www.w3.org/2000/xmlns/"));
+	}
+        
 	public void testDuplicateNamespace() throws IOException {
 		check(
 				file1,

@@ -340,6 +340,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     
     final public String getPrefixFor( String uri )
         {
+            // xml and xmlns namespaces are pre-bound
+            if ("http://www.w3.org/XML/1998/namespace".equals(uri)) return "xml";
+            if ("http://www.w3.org/2000/xmlns/".equals(uri)) return "xmlns";
         Set<String> s = nameSpaces.backward( uri );
         if (s != null && s.size() == 1) return s.iterator().next();
         return null; 
