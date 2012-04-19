@@ -183,7 +183,7 @@ public class RiotReader
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(input, lang, null);
+            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(input, lang, baseIRI);
             parsePuller.parse();
             return parsePuller;
         }
@@ -233,7 +233,7 @@ public class RiotReader
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            RiotQuadParsePuller parsePuller = new RiotQuadParsePuller(input, lang, null);
+            RiotQuadParsePuller parsePuller = new RiotQuadParsePuller(input, lang, baseIRI);
             parsePuller.parse();
             return parsePuller;
         }
