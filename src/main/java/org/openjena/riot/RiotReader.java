@@ -24,9 +24,11 @@ import static org.openjena.riot.Lang.RDFJSON ;
 import static org.openjena.riot.Lang.RDFXML ;
 
 import java.io.InputStream ;
+import java.util.Iterator;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
+import org.openjena.atlas.iterator.IteratorResourceClosing;
 import org.openjena.atlas.json.io.parser.TokenizerJSON ;
 import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
@@ -170,6 +172,23 @@ public class RiotReader
         return null ;
     }
     
+    // TODO create a Tokenizer version of this method
+    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
+    {
+        // Special case N-Triples, because the RIOT reader has a pull interface
+        if (lang == Lang.NTRIPLES)
+        {
+            return new IteratorResourceClosing<Triple>(createParserNTriples(input, null), input);
+        }
+        else
+        {
+            // Otherwise, we have to spin up a thread to deal with it
+            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(input, lang, null);
+            parsePuller.parse();
+            return parsePuller;
+        }
+    }
+    
     /** Create a parser for a quads (or triples) language */  
     public static LangRIOT createParserQuads(InputStream input, Lang lang, String baseIRI, Sink<Quad> sink)
     {
@@ -201,6 +220,23 @@ public class RiotReader
                 return createParserTriG(tokenizer, baseIRI, sink) ;
         }
         return null ;
+    }
+    
+    // TODO create a Tokenizer version of this method
+    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
+    {
+        // Special case N-Quads, because the RIOT reader has a pull interface
+        if (lang == Lang.NTRIPLES)
+        {
+            return new IteratorResourceClosing<Quad>(createParserNQuads(input, null), input);
+        }
+        else
+        {
+            // Otherwise, we have to spin up a thread to deal with it
+            RiotQuadParsePuller parsePuller = new RiotQuadParsePuller(input, lang, null);
+            parsePuller.parse();
+            return parsePuller;
+        }
     }
     
     /** Create a parser for Turtle, with default behaviour */

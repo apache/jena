@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.openjena.atlas.io.IndentedWriter;
@@ -49,6 +50,16 @@ public class UpdateWriter implements Closeable
     
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
+        if (out == null)
+        {
+            throw new IllegalArgumentException("out may not be null") ;
+        }
+        
+        if (sCxt == null)
+        {
+            sCxt = new SerializationContext();
+        }
+        
         this.out = out;
         this.sCxt = sCxt;
     }
@@ -105,6 +116,16 @@ public class UpdateWriter implements Closeable
         insert(quad.getGraph(), quad.asTriple());
     }
     
+    public void insert(Iterator<? extends Quad> it)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.INSERT);
+        while (it.hasNext())
+        {
+            udw.send(it.next());
+        }
+    }
+    
     public void insert(Node graph, Triple triple)
     {
         checkOpen();
@@ -112,9 +133,29 @@ public class UpdateWriter implements Closeable
         udw.send(graph, triple);
     }
     
+    public void insert(Node graph, Iterator<? extends Triple> it)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.INSERT);
+        while (it.hasNext())
+        {
+            udw.send(graph, it.next());
+        }
+    }
+    
     public void delete(Quad quad)
     {
         delete(quad.getGraph(), quad.asTriple());
+    }
+    
+    public void delete(Iterator<? extends Quad> it)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.DELETE);
+        while (it.hasNext())
+        {
+            udw.send(it.next());
+        }
     }
     
     public void delete(Node graph, Triple triple)
@@ -122,6 +163,16 @@ public class UpdateWriter implements Closeable
         checkOpen();
         prepareForDataUpdate(UpdateMode.DELETE);
         udw.send(graph, triple);
+    }
+    
+    public void delete(Node graph, Iterator<? extends Triple> it)
+    {
+        checkOpen();
+        prepareForDataUpdate(UpdateMode.DELETE);
+        while (it.hasNext())
+        {
+            udw.send(graph, it.next());
+        }
     }
     
     public void update(Update update)

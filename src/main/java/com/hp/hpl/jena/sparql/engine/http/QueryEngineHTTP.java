@@ -27,10 +27,8 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.iterator.IteratorResourceClosing ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.RiotTripleParsePuller ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -301,18 +299,7 @@ public class QueryEngineHTTP implements QueryExecution
         Lang lang = WebContent.contentTypeToLang(actualContentType);
         if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
         
-        // Special case N-Triples, because the RIOT reader has a pull interface
-        if (lang == Lang.NTRIPLES)
-        {
-            return new IteratorResourceClosing<Triple>(RiotReader.createParserNTriples(in, null), in);
-        }
-        else
-        {
-            // Otherwise, we have to spin up a thread to deal with it
-            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(in, lang, null);
-            parsePuller.parse();
-            return parsePuller;
-        }
+        return RiotReader.createIteratorTriples(in, lang, null);
     }
     
     @Override
