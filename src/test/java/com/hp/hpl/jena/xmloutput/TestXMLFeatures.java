@@ -238,18 +238,30 @@ public class TestXMLFeatures extends XMLOutputTestBase {
         
         // JENA-24
         public void testDisallowedXMLNamespace() throws IOException {
-		// xml and xmlns, if present, must be bound to correct namespaces
-		check(file1, null, Change.setPrefix("j.0", "http://www.w3.org/XML/1998/namespace"));
-                check(file1, null, Change.setPrefix("xml", "http://www.w3.org/XML/1998/namespace"));
-                // Not sure about this case. It's bad, but it ought to round trip
-                //check(file1, null, Change.setPrefix("xml", "http://example.org/#"));
+		// xml, if present, must be bound to correct namespaces
+                
+                // fine, though ill-advised
+		check(file1, null, Change.setPrefix("xml", "http://www.w3.org/XML/1998/namespace"));
+                
+                // bad, but not fatal now -- we probably ought to raise an warning
+                check(file1, null, Change.setPrefix("notxml", "http://www.w3.org/XML/1998/namespace"));
+                
+                // bad, will warn
+                check(file1, null, null, null, true, Change.setPrefix("xml", "http://example.org/#"));
 	}
         
         // JENA-24
         public void testDisallowedXMLNSNamespace() throws IOException {
-		// xml and xmlns, if present, must be bound to correct namespaces
-		check(file1, null, Change.setPrefix("j.0", "http://www.w3.org/2000/xmlns/"));
-                check(file1, null, Change.setPrefix("xmlns", "http://www.w3.org/2000/xmlns/"));
+		// xmlns, if present, must be bound to correct namespace
+                
+                // fine, though ill-advised
+		check(file1, null, Change.setPrefix("xmlns", "http://www.w3.org/2000/xmlns/"));
+                
+                // bad, but not fatal now -- we probably ought to raise an warning
+                check(file1, null, Change.setPrefix("notxmlns", "http://www.w3.org/2000/xmlns/"));
+                
+                // bad, will warn
+                check(file1, null, null, null, true, Change.setPrefix("xmlns", "http://example.org/#"));
 	}
         
 	public void testDuplicateNamespace() throws IOException {
