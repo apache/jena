@@ -4,6 +4,7 @@ Release Notes
 ==== Jena 2.7.1
 
 + icu4j dependency removed
++ xml / xmlns namespaces issues on write fixed (JENA-24)
 
 ==== Jena 2.6.5 / 2.7.0
 
