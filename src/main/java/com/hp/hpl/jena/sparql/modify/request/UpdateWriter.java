@@ -194,11 +194,16 @@ public class UpdateWriter implements Closeable
         firstOp = false;
     }
     
-    public void update(Iterable<Update> updates)
+    public void update(Iterable<? extends Update> updates)
     {
-        for (Update update : updates)
+        update(updates.iterator());
+    }
+    
+    public void update(Iterator<? extends Update> updateIter)
+    {
+        while (updateIter.hasNext())
         {
-            update(update);
+            update(updateIter.next());
         }
     }
     
