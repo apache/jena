@@ -216,7 +216,11 @@ public class FmtUtils
         String lang = literal.getLiteralLanguage() ;
         String s = literal.getLiteralLexicalForm() ;
         
-        if ( datatype != null )
+        //For some literals we can use plain literal form unless the Serialization Context
+        //explicitly says not to
+        //For backwards compatibility if using a null context then we use plain literal
+        //forms where possible as this was the existing behaviour prior to this addition to the API
+        if ( datatype != null && (context == null || context.getUsePlainLiterals()))
         {
             // Special form we know how to handle?
             // Assume valid text

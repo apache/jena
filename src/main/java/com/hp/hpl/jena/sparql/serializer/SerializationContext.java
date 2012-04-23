@@ -30,6 +30,7 @@ public class SerializationContext
     
     private Prologue prologue ;
     private NodeToLabelMap bNodeMap ;
+    private boolean usePlainLiterals = true;
     
     public SerializationContext(SerializationContext cxt)
     {
@@ -66,6 +67,34 @@ public class SerializationContext
         bNodeMap = bMap ;
         if ( bMap == null )
             bNodeMap = new NodeToLabelMap("b", false) ;
+    }
+    
+    public SerializationContext(boolean usePlainLiterals)
+    {
+    	this((Prologue)null, null, usePlainLiterals);
+    }
+    
+    public SerializationContext(PrefixMapping prefixMap, boolean usePlainLiterals)
+    {
+    	this(new Prologue(prefixMap), null);
+    	this.usePlainLiterals = usePlainLiterals;
+    }
+    
+    public SerializationContext(PrefixMapping prefixMap, NodeToLabelMap bMap, boolean usePlainLiterals)
+    {
+    	this(new Prologue(prefixMap), bMap);
+    	this.usePlainLiterals = usePlainLiterals;
+    }
+    
+    public SerializationContext(Prologue prologue, boolean usePlainLiterals)
+    {
+    	this(prologue, null, usePlainLiterals);
+    }
+    
+    public SerializationContext(Prologue prologue, NodeToLabelMap bMap, boolean usePlainLiterals)
+    {
+    	this(prologue, bMap);
+    	this.usePlainLiterals = usePlainLiterals;
     }
     
     /**
@@ -105,9 +134,24 @@ public class SerializationContext
     
     public String getBaseIRI() { return prologue.getBaseURI() ; }
 
-    
     public Prologue getPrologue()
     {
         return prologue ;
+    }
+    
+    /**
+     * Gets whether Plain Literal forms should be used for appropriate typed literals (booleans, integers, decimals and doubles)
+     */
+    public boolean getUsePlainLiterals()
+    {
+    	return usePlainLiterals;
+    }
+    
+    /**
+     * Sets whether Plain Literal forms should be used for appropriate typed literals (booleans, integers, decimals and doubles)
+     */
+    public void setUsePlainLiterals(boolean usePlainLiterals)
+    {
+    	this.usePlainLiterals = usePlainLiterals;
     }
 }
