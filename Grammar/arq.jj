@@ -1860,7 +1860,7 @@ TOKEN:
           ( "_" |
             "~" | "." | "-" | "!" | "$" | "&" | "'" |
            "(" | ")" | "*" | "+" | "," | ";" | "=" |
-           ":" | "/" | "?" | "#" | "@" | "%" ) >
+           "/" | "?" | "#" | "@" | "%" ) >
 |
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
@@ -1872,7 +1872,7 @@ TOKEN:
           >
           // [#x10000-#xEFFFF]
 |
-  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" | ":" >
 |
 // No DOT
   <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |

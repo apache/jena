@@ -902,31 +902,6 @@ Path PathMod(Path p) : { long i1 ; long i2 ; }
    ( <QMARK> { return PathFactory.pathZeroOrOne(p) ; }
    | <STAR> { return PathFactory.pathZeroOrMore1(p) ; }
    | <PLUS> { return PathFactory.pathOneOrMore1(p) ; }
-   | <LBRACE>
-         //{*}
-       ( <STAR> <RBRACE> { return PathFactory.pathZeroOrMoreN(p) ; }
-         // {+}
-       | <PLUS> <RBRACE> { return PathFactory.pathOneOrMoreN(p) ; }
-       | // {N} {N,M} {N,}
-          i1 = Integer()
-          ( <COMMA>
-            ( // case {N,}
-              <RBRACE>
-              { return PathFactory.pathMod(p, i1, PathFactory.UNSET) ; }
-            | // case {N,M}
-              i2 = Integer() <RBRACE> // case {N,M}
-              { return PathFactory.pathMod(p, i1, i2) ; }
-            )
-          |
-            <RBRACE> // {N}
-                     { return PathFactory.pathFixedLength(p, i1) ; }
-          )
-       | // {,N}
-         <COMMA>
-         i2 = Integer()
-         <RBRACE>
-           { return PathFactory.pathMod(p, PathFactory.UNSET, i2) ; }
-       )
    )
 }
 Path PathPrimary() : { String str ; Path p ; Node n ; }
@@ -1249,6 +1224,8 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <TIMEZONE> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTimezone(expr1) ; }
   | <TZ> <LPAREN> expr1 = Expression() <RPAREN> { return new E_DateTimeTZ(expr1) ; }
   | <NOW> <NIL> { return new E_Now() ; }
+  | <UUID> <NIL> { return new E_UUID() ; }
+  | <STRUUID> <NIL> { return new E_StrUUID() ; }
   | <MD5> <LPAREN> expr1 = Expression() <RPAREN> { return new E_MD5(expr1) ; }
   | <SHA1> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA1(expr1) ; }
   | <SHA256> <LPAREN> expr1 = Expression() <RPAREN> { return new E_SHA256(expr1) ; }
@@ -1600,6 +1577,8 @@ TOKEN [IGNORE_CASE] :
 | < TIMEZONE: "TIMEZONE" >
 | < TZ: "TZ" >
 | < NOW: "NOW" >
+| < UUID: "UUID" >
+| < STRUUID: "STRUUID" >
 | < MD5: "MD5" >
 | < SHA1: "SHA1" >
 | < SHA224: "SHA224" >
@@ -1734,7 +1713,7 @@ TOKEN:
           ( "_" |
             "~" | "." | "-" | "!" | "$" | "&" | "'" |
            "(" | ")" | "*" | "+" | "," | ";" | "=" |
-           ":" | "/" | "?" | "#" | "@" | "%" ) >
+           "/" | "?" | "#" | "@" | "%" ) >
 |
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
@@ -1746,7 +1725,7 @@ TOKEN:
           >
           // [#x10000-#xEFFFF]
 |
-  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" | ":" >
 |
 // No DOT
   <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |

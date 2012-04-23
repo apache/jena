@@ -148,7 +148,7 @@
     mf:name    "Multipath / path{2} / not distinct" ;
     rdf:type   mfx:TestQuery ; 
     mf:action
-            [ qt:query  <no-distinct-multi-2.rq> ;
+            [ qt:query  <no-distinct-multi-2.arq> ;
               qt:data   <data-multipath.ttl> ] ;
     mf:result  <no-distinct-multi-2.srj> .
 
@@ -173,7 +173,7 @@
     mf:name    "Multipath / path{2} / distinct" ;
     rdf:type   mfx:TestQuery ; 
     mf:action
-            [ qt:query  <distinct-multi-2.rq> ;
+            [ qt:query  <distinct-multi-2.arq> ;
               qt:data   <data-multipath.ttl> ] ;
     mf:result  <distinct-multi-2.srj> .
 
@@ -197,7 +197,7 @@
     mf:name    "Multipath / path{2} / reduced" ;
     rdf:type   mfx:TestQuery ; 
     mf:action
-            [ qt:query  <reduced-multi-2.rq> ;
+            [ qt:query  <reduced-multi-2.arq> ;
               qt:data   <data-multipath.ttl> ] ;
     mf:result  <reduced-multi-2.srj> .
 
