@@ -35,9 +35,9 @@
   <url>http://incubator.apache.org/jena/documentation/larq/</url>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating</developerConnection>
-    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</developerConnection>
+    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/tags/jena-larq-1.0.0-incubating-RC-1</url>
   </scm>
 
   <properties>
@@ -120,39 +120,12 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-remote-resources-plugin</artifactId>
-        <version>1.2.1</version>
-        <configuration>
-          <outputDirectory>src/main/resources</outputDirectory>
-          <attached>false</attached>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
       </plugin>
 
     </plugins>
 
   </build>
-
-  <repositories>
-    <!-- This is here so that Maven can retrieve jena-top parent pom snapshots -->
-    <repository>
-      <id>apache.snapshots</id>
-      <name>Apache Snapshot Repository</name>
-      <url>http://repository.apache.org/snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>apache.staging</id>
-      <name>Apache Staging Repository</name>
-      <url>https://repository.apache.org/content/repositories/staging/</url>
-    </repository>
-  </repositories>
 
   <issueManagement>
     <system>JIRA</system>
