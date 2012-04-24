@@ -28,22 +28,37 @@ import com.hp.hpl.jena.sparql.path.Path ;
 
 public class PathEval
 {
-    /** Evaluate a path */ 
+    /** Evaluate a path : SPARQL semantics */ 
     static public Iterator<Node> eval(Graph graph, Node node, Path path)
     {
+        //return PathEvaluator.eval(graph, node, path, new PathEngineSPARQL(graph, true)) ;
         return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, true)) ;
+    }
+
+    /** Evaluate a path */ 
+    static public Iterator<Node> evalReverse(Graph graph, Node node, Path path)
+    {
+        //return PathEvaluator.eval(graph, node, path, new PathEngineSPARQL(graph, false)) ;
+        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, false)) ;
+    }
+
+    
+    /** Evaluate a path : counting semantics */ 
+    static public Iterator<Node> evalN(Graph graph, Node node, Path path)
+    {
+        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, true)) ;
+    }
+
+    /** Evaluate a path : counting semantics */ 
+    static public Iterator<Node> evalReverseN(Graph graph, Node node, Path path)
+    {
+        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
     /** Evaluate a path : unique results */ 
     static public Iterator<Node> eval1(Graph graph, Node node, Path path)
     {
         return PathEvaluator.eval(graph, node, path, new PathEngine1(graph, true)) ;
-    }
-
-    /** Evaluate a path */ 
-    static public Iterator<Node> evalReverse(Graph graph, Node node, Path path)
-    {
-        return PathEvaluator.eval(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
     /** Evaluate a path : unique results */ 

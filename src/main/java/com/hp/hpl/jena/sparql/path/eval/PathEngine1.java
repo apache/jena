@@ -29,7 +29,11 @@ import com.hp.hpl.jena.sparql.path.P_Mod ;
 import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
 import com.hp.hpl.jena.sparql.path.Path ;
 
-/** Path evaluation visitor that provide distinct nodes visited, */ 
+/** Path evaluation visitor that provide distinct nodes visited only.
+ * This is NOT SPARQL semantics.
+ * This class exists for experimentation.
+ * It is written to get the right results - not necessarily with maximum efficiency.
+ */
 final class PathEngine1 extends PathEngine
 {
     private final Graph graph ;
@@ -43,7 +47,9 @@ final class PathEngine1 extends PathEngine
     
     // Choose the underlying impl - different choice for debugging.
     @Override
-    protected Collection<Node> collector() { return new ArrayList<Node>()  ; }
+    protected Collection<Node> collector() 
+    { return new ArrayList<Node>()  ; }
+    //{ return new HashSet<Node>()  ; }
     
     @Override
     protected void flipDirection()

@@ -35,9 +35,11 @@ import com.hp.hpl.jena.sparql.path.Path ;
 
 // ----
 /** Path evaluator that produces duplicates.
- *  This is the algorithm in the SPARQL 1.1 spec.  
- * 
+ * This is NOT SPARQL semantics.
+ * This class exists for experimentation.
+ * It is written to get the right results - not necessarily with maximum efficiency.
  */
+
 final class PathEngineN extends PathEngine
 {
     private final Graph graph ;
@@ -87,7 +89,7 @@ final class PathEngineN extends PathEngine
     }
 
     @Override
-    public void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
+    protected void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
     {
         Path part1 = forwardMode ? pathStepLeft : pathStepRight ;
         Path part2 = forwardMode ? pathStepRight : pathStepLeft ;

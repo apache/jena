@@ -32,7 +32,6 @@ import com.hp.hpl.jena.sparql.path.P_NegPropSet ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.path.eval.PathEvaluator.FilterExclude ;
 
-
 abstract public class PathEngine {
     
     protected abstract void doNegatedPropertySet(P_NegPropSet pathNotOneOf, Node node, Collection<Node> output) ;
@@ -83,8 +82,6 @@ abstract public class PathEngine {
     protected abstract void doFixedLengthPath(Path pathStep, Node node, long fixedLength, Collection<Node> output) ;
 
     protected abstract void doMultiLengthPath(Path pathStep, Node node, long min, long max, Collection<Node> output) ;
-
-    //protected abstract void doArbitaryLengthPath(Path pathStep, Node node, Collection<Node> output) ;
 
     protected abstract void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) ;
 

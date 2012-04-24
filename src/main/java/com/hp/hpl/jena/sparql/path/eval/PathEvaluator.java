@@ -133,10 +133,10 @@ final class PathEvaluator implements PathVisitor
             engine.doFixedLengthPath(pathMod.getSubPath(), node, pathMod.getFixedLength(), output) ;
         else
             engine.doMultiLengthPath(pathMod.getSubPath(),
-                              node,
-                              pathMod.getMin(),
-                              pathMod.getMax(), 
-                              output) ;
+                                     node,
+                                     pathMod.getMin(),
+                                     pathMod.getMax(), 
+                                     output) ;
     }
 
     @Override
@@ -157,8 +157,7 @@ final class PathEvaluator implements PathVisitor
     {
         // Regardless of engine, do distinct. 
         PathEngine engine2 = engine ;
-        if ( engine instanceof PathEngineN )
-            engine = new PathEngine1(graph, engine.direction()) ;
+        engine = new PathEngine1(graph, engine.direction()) ;
         engine.doZeroOrMore(path.getSubPath(), node, output) ;
         engine = engine2 ;
     }
@@ -166,8 +165,14 @@ final class PathEvaluator implements PathVisitor
     @Override
     public void visit(P_ZeroOrMoreN path)
     {
-        // Do as per engine.
+        // TEMP: Do as engine.
         engine.doZeroOrMore(path.getSubPath(), node, output) ;
+        
+//        // Regardless of engine, do counting. 
+//        PathEngine engine2 = engine ;
+//        engine = new PathEngineN(graph, engine.direction()) ;
+//        engine.doZeroOrMore(path.getSubPath(), node, output) ;
+//        engine = engine2 ;
     }
     
 
@@ -176,8 +181,7 @@ final class PathEvaluator implements PathVisitor
     {
         // Regardless of engine, do distinct. 
         PathEngine engine2 = engine ;
-        if ( engine instanceof PathEngineN )
-            engine = new PathEngine1(graph, engine.direction()) ;
+        engine = new PathEngine1(graph, engine.direction()) ;
         engine.doOneOrMore(path.getSubPath(), node, output) ;
         engine = engine2 ;
     }
@@ -185,8 +189,13 @@ final class PathEvaluator implements PathVisitor
     @Override
     public void visit(P_OneOrMoreN path)
     {
-        // Do as per engine.
+        // TEMP Do as engine.
         engine.doOneOrMore(path.getSubPath(), node, output) ;
+        
+//        PathEngine engine2 = engine ;
+//        engine = new PathEngineN(graph, engine.direction()) ;
+//        engine.doOneOrMore(path.getSubPath(), node, output) ;
+//        engine = engine2 ;
     }
     
     
@@ -203,15 +212,9 @@ final class PathEvaluator implements PathVisitor
     @Override
     public void visit(P_Distinct pathDistinct)
     {
-        doDistinct(pathDistinct.getSubPath()) ;
-    }
-    
-    protected void doDistinct(Path path)
-    {
         PathEngine engine2 = engine ;
-        if ( engine instanceof PathEngineN )
-            engine = new PathEngine1(graph, engine.direction()) ;
-        engine.eval(graph, path, node, output) ;
+        engine = new PathEngine1(graph, engine.direction()) ;
+        engine.eval(graph, pathDistinct.getSubPath(), node, output) ;
         engine = engine2 ;
     }
 
@@ -219,8 +222,7 @@ final class PathEvaluator implements PathVisitor
     public void visit(P_Multi pathMulti)
     {
         PathEngine engine2 = engine ;
-        if ( engine instanceof PathEngine1 )
-            engine = new PathEngineN(graph, engine.direction()) ;
+        engine = new PathEngineN(graph, engine.direction()) ;
         engine.eval(graph, pathMulti.getSubPath(), node, output) ;
         engine = engine2 ;
     }
