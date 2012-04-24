@@ -62,12 +62,12 @@ abstract public class PathEngine {
 
     protected final Iter<Node> eval(Graph graph, Path path, Node node)
     {
-        return PathEvaluator.eval(graph, node, path, this) ;
+        return PathEval.eval$(graph, node, path, this) ;
     }
     
     protected final void eval(Graph graph, Path path, Node node, Collection<Node> output)
     {
-        PathEvaluator.eval(graph, node, path, this, output) ;
+        PathEval.eval$(graph, node, path, this, output) ;
     }
     
     protected abstract void flipDirection() ;

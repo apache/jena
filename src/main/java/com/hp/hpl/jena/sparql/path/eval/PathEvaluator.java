@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.sparql.path.eval;
 
-import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 
@@ -39,26 +38,6 @@ final class PathEvaluator implements PathVisitor
     protected final Collection<Node> output ;
     private PathEngine engine ; 
     
-    //protected abstract void eval(Graph graph, Node node, Path p, boolean forward) ;
-    //protected abstract Iterator<Node> doOne(Node property) ;
-
-    /** Evaluate a path */ 
-    static void eval(Graph graph, Node node, Path path, PathEngine engine, Collection<Node> acc)
-    {
-        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
-        path.visit(evaluator) ;
-    }
-
-    /** Evaluate a path */ 
-    static Iter<Node> eval(Graph graph, Node node, Path path, PathEngine engine)
-    {
-        Collection<Node> acc = new ArrayList<Node>() ;
-        PathEvaluator evaluator = new PathEvaluator(graph, node, acc, engine) ;
-        path.visit(evaluator) ;
-        return Iter.iter(acc) ;
-    }
-
-    // Pass in graph, node only to PathEngine?
     protected PathEvaluator(Graph g, Node n, Collection<Node> output, PathEngine engine)
     {
         this.graph = g ; 
