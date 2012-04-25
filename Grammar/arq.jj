@@ -88,7 +88,6 @@ void Query() : { }
 // #endif
   )
   BindingsClause()
-  ValuesClause()
 }
 void UpdateUnit() : {}
 {
@@ -378,16 +377,6 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = NumericLiteral() { return n ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
-}
-// Like BINDINGS, only with the work VALUES
-void ValuesClause() : { Token t ; }
-{
- (
-    t = <VALUES>
-    { startValuesBlock(t.beginLine, t.beginColumn) ; }
-    DataBlock()
-    { finishValuesBlock(t.beginLine, t.beginColumn) ; }
-  )?
 }
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point

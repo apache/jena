@@ -128,9 +128,6 @@ void Query() : { }
 // #endif
   )
   BindingsClause()
-#ifdef ARQ
-  ValuesClause()
-#endif
 }
 
 #ifdef UPDATE
@@ -468,20 +465,6 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = BooleanLiteral()  { return n ; }
 | <UNDEF>               { return null ; }
 }
-
-#ifdef ARQ
-// Like BINDINGS, only with the work VALUES
-void ValuesClause() : { Token t ; }
-{
- (
-    t = <VALUES>  
-    { startValuesBlock(t.beginLine, t.beginColumn) ; }
-    DataBlock()
-    { finishValuesBlock(t.beginLine, t.beginColumn) ; }
-  )?
-}
-
-#endif
 
 #ifdef UPDATE
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
