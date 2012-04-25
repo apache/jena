@@ -35,15 +35,15 @@ public class PathEval
     /** Evaluate a path : SPARQL semantics */ 
     static public Iterator<Node> eval(Graph graph, Node node, Path path)
     {
-        //return eval$(graph, node, path, new PathEngineSPARQL(graph, true)) ;
-        return eval$(graph, node, path, new PathEngineN(graph, true)) ;
+        return eval$(graph, node, path, new PathEngineSPARQL(graph, true)) ;
+        //return eval$(graph, node, path, new PathEngineN(graph, true)) ;
     }
 
     /** Evaluate a path */ 
     static public Iterator<Node> evalReverse(Graph graph, Node node, Path path)
     {
-        //return eval$(graph, node, path, new PathEngineSPARQL(graph, false)) ;
-        return eval$(graph, node, path, new PathEngineN(graph, false)) ;
+        return eval$(graph, node, path, new PathEngineSPARQL(graph, false)) ;
+        //return eval$(graph, node, path, new PathEngineN(graph, false)) ;
     }
 
     

@@ -59,6 +59,32 @@ final class PathEngine1 extends PathEngine
     protected boolean direction()
     { return forwardMode ; }
 
+    @Override
+    protected void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
+    {
+        // Must be duplicate supressing.
+        Collection<Node> nodes = new HashSet<Node>() ;
+        // Insert directly.
+        eval(graph, pathStepLeft, node, nodes) ;
+        // Need to reduce/check other side.
+        eval(graph, pathStepRight, node, nodes) ;
+        output.addAll(nodes) ;
+    }
+
+    @Override
+    protected void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
+    {
+        Path part1 = forwardMode ? pathStepLeft : pathStepRight ;
+        Path part2 = forwardMode ? pathStepRight : pathStepLeft ;
+        
+        Collection<Node> nodes = collector() ;
+        eval(graph, part1, node, nodes) ;
+        Collection<Node> nodes2 = new HashSet<Node>() ;
+        for ( Node n : nodes )
+            eval(graph, part2, n, nodes2) ;
+        output.addAll(nodes2) ;
+    }
+
     // Can use .addAll if collector is set-like.
     private static void fillUnique(Iterator<Node> nodes, Collection<Node> acc)
     {
@@ -237,31 +263,5 @@ final class PathEngine1 extends PathEngine
     {
         if ( !output.contains(node) )
             output.add(node) ;
-    }
-
-    @Override
-    protected void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
-    {
-        // Must be duplicate supressing.
-        Collection<Node> nodes = new HashSet<Node>() ;
-        // Insert directly.
-        eval(graph, pathStepLeft, node, nodes) ;
-        // Need to reduce/check other side.
-        eval(graph, pathStepRight, node, nodes) ;
-        output.addAll(nodes) ;
-    }
-
-    @Override
-    protected void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output)
-    {
-        Path part1 = forwardMode ? pathStepLeft : pathStepRight ;
-        Path part2 = forwardMode ? pathStepRight : pathStepLeft ;
-        
-        Collection<Node> nodes = collector() ;
-        eval(graph, part1, node, nodes) ;
-        Collection<Node> nodes2 = new HashSet<Node>() ;
-        for ( Node n : nodes )
-            eval(graph, part2, n, nodes2) ;
-        output.addAll(nodes2) ;
     }
 }

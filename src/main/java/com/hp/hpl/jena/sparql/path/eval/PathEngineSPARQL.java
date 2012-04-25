@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sparql.path.eval;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.LinkedList ;
+import java.util.* ;
 
 import org.openjena.atlas.iterator.Iter ;
 
@@ -39,7 +36,7 @@ public class PathEngineSPARQL extends PathEngine
     private final Graph graph ;
     private boolean forwardMode ;
     
-    private PathEngineSPARQL(Graph graph, boolean forward)
+    public PathEngineSPARQL(Graph graph, boolean forward)
     {
         this.graph = graph ;
         this.forwardMode = forward ;
@@ -96,7 +93,7 @@ public class PathEngineSPARQL extends PathEngine
     {
         // Reuse "output"
         Collection<Node> visited = new LinkedList<Node>() ; //new HashSet<Node>() ;
-        ALP1(graph, forwardMode, 0, -1, node, pathStep, visited) ;
+        ALP_1(graph, forwardMode, 0, -1, node, pathStep, visited) ;
         output.addAll(visited) ;
     }
 
@@ -110,12 +107,19 @@ public class PathEngineSPARQL extends PathEngine
         for ( ; iter1.hasNext() ; )
         {
             Node n1 = iter1.next();
-            ALP1(graph, forwardMode, 0, -1, n1, pathStep, visited) ;
+            ALP_1(graph, forwardMode, 0, -1, n1, pathStep, visited) ;
         }
         output.addAll(visited) ;
     }
+    
+    @Override
+    protected void doZero(Path path, Node node, Collection<Node> output)
+    {
+        // Not SPARQL
+        output.add(node) ;
+    }
 
-    private void ALP1(Graph graph, boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited)
+    private void ALP_1(Graph graph, boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited)
     {
         if ( false ) System.out.printf("ALP1 node=%s\n   visited=%s\n   output=%s\n", node, visited) ;
         if ( maxStepCount >=0 && stepCount > maxStepCount ) return ; 
@@ -129,15 +133,51 @@ public class PathEngineSPARQL extends PathEngine
         for ( ; iter1.hasNext() ; )
         {
             Node n1 = iter1.next();
-            ALP1(graph, forwardMode, stepCount+1, maxStepCount, n1, path, visited) ;
+            ALP_1(graph, forwardMode, stepCount+1, maxStepCount, n1, path, visited) ;
         }
     }
 
     @Override
-    protected void doZero(Path path, Node node, Collection<Node> output)
+    protected void doZeroOrMoreN(Path pathStep, Node node, Collection<Node> output)
     {
-        // Not SPARQL
-        output.add(node) ;
+        Set<Node> visited = new HashSet<Node>() ;
+        ALP_N(node, pathStep, visited, output) ;
+    }
+
+    @Override
+    protected void doOneOrMoreN(Path pathStep, Node node, Collection<Node> output)
+    {
+        Set<Node> visited = new HashSet<Node>() ;
+        // Do one step without including.
+        Iterator<Node> iter1 = eval(graph, pathStep, node) ;
+        for ( ; iter1.hasNext() ; )
+        {
+            Node n1 = iter1.next();
+            ALP_N(n1, pathStep, visited, output) ;
+        }
+    }
+
+    // This is the worker function for path{*}
+    private void ALP_N(Node node, Path path, Collection<Node> visited, Collection<Node> output)
+    {
+        if ( visited.contains(node) ) return ;
+    
+        // If output is a set, then no point going on if node has been added to the results.
+        // If output includes duplicates, more solutions are generated
+        // "visited" is nodes on this path (see the matching .remove).
+        if ( ! output.add(node) )
+            return ;
+    
+        visited.add(node) ;
+    
+        Iterator<Node> iter1 = eval(graph, path, node) ;
+        // For each step, add to results and recurse.
+        for ( ; iter1.hasNext() ; )
+        {
+            Node n1 = iter1.next();
+            ALP_N(n1, path, visited, output) ;
+        }
+        visited.remove(node) ;
     }
 
     @Override

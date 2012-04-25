@@ -99,12 +99,12 @@ final class PathEvaluator implements PathVisitor
         if ( pathMod.isZeroOrMore() )
         {
             // :p{0,}
-            engine.doOneOrMore(pathMod.getSubPath(), node, output) ;
+            engine.doOneOrMoreN(pathMod.getSubPath(), node, output) ;
             return ;
         }
         if ( pathMod.isOneOrMore() )
         {
-            engine.doOneOrMore(pathMod.getSubPath(), node, output) ;
+            engine.doOneOrMoreN(pathMod.getSubPath(), node, output) ;
             return ;
         }
         
@@ -127,60 +127,33 @@ final class PathEvaluator implements PathVisitor
     @Override
     public void visit(P_ZeroOrOne path)
     {
-        //WORK
         engine.doZeroOrOne(path.getSubPath(), node, output) ;
     }
     
     @Override
     public void visit(P_ZeroOrMore1 path)
     {
-        // Regardless of engine, do distinct. 
-        PathEngine engine2 = engine ;
-        engine = new PathEngine1(graph, engine.direction()) ;
         engine.doZeroOrMore(path.getSubPath(), node, output) ;
-        engine = engine2 ;
     }
     
     @Override
     public void visit(P_ZeroOrMoreN path)
     {
-        // TEMP: Do as engine.
-        engine.doZeroOrMore(path.getSubPath(), node, output) ;
-        
-//        // Regardless of engine, do counting. 
-//        PathEngine engine2 = engine ;
-//        engine = new PathEngineN(graph, engine.direction()) ;
-//        engine.doZeroOrMore(path.getSubPath(), node, output) ;
-//        engine = engine2 ;
+        engine.doZeroOrMoreN(path.getSubPath(), node, output) ;
     }
     
 
     @Override
     public void visit(P_OneOrMore1 path)
     {
-        // Regardless of engine, do distinct. 
-        PathEngine engine2 = engine ;
-        engine = new PathEngine1(graph, engine.direction()) ;
         engine.doOneOrMore(path.getSubPath(), node, output) ;
-        engine = engine2 ;
     }
     
     @Override
     public void visit(P_OneOrMoreN path)
     {
-        // TEMP Do as engine.
-        engine.doOneOrMore(path.getSubPath(), node, output) ;
-        
-//        PathEngine engine2 = engine ;
-//        engine = new PathEngineN(graph, engine.direction()) ;
-//        engine.doOneOrMore(path.getSubPath(), node, output) ;
-//        engine = engine2 ;
+        engine.doOneOrMoreN(path.getSubPath(), node, output) ;
     }
-    
-    
-//    protected abstract void doZero(Path pathStep, Node node, Collection<Node> output) ;
-//    protected abstract void doOne(Path pathStep, Node node, Collection<Node> output) ;
-
     
     @Override
     public void visit(P_Alt pathAlt)

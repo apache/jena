@@ -194,7 +194,6 @@ public class TestPath
         assertEquals(p1, p2) ;
     }
 
-
     @Test public void path_01()   { test(graph1, n1,   ":p",          n2) ; }
     @Test public void path_02()   { test(graph1, n1,   ":p{0}",       n1) ; }
     @Test public void path_03()   { test(graph1, n1,   ":p{1}",       n2) ; }
@@ -211,12 +210,7 @@ public class TestPath
     @Test public void path_14()   { test(graph1, n2,   "^:p",         n1) ; }
     @Test public void path_15()   { test(graph1, n2,   "^:p^:p"       ) ; }
     @Test public void path_16()   { test(graph1, n4,   "^:p^:p",      n2) ; }
-    
-    
-    
-    
     @Test public void path_17()   { test(graph1, n4,   "^(:p/:p)",    n2) ; }
-    
     
     @Test public void path_18()   { test(graph1, n2,   "^:p/:p",      n2) ; }
 
@@ -230,11 +224,17 @@ public class TestPath
 
     @Test public void path_30()   { test(graph1, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_31()   { test(graph2, n1,   ":p*",       n1,n2,n3) ; }
-    @Test public void path_32()   { test(graph3, n1,   ":p{*}",       n1,n2,n3,n4,n4) ; }
+    
+//    // A DAG, one property
+//    graph3.add(new Triple(n1, p, n2)) ;
+//    graph3.add(new Triple(n1, p, n3)) ;
+//    graph3.add(new Triple(n2, p, n4)) ;
+//    graph3.add(new Triple(n3, p, n4)) ;
+
+    
+    @Test public void path_32()   { test(graph3, n1,   ":p{*}",     n1,n2,n3,n4,n4) ; }
     @Test public void path_33()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_34()   { test(graph3, n1,   ":p+",       n2,n3,n4) ; }
-    @Test public void path_35()   { test(graph3, n1,   ":p{+}",       n2,n3,n4,n4) ; }
-    
     
     // TODO Shortest path is not implemented yet.  These also need to be verified that they are correct.
     @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
@@ -268,7 +268,7 @@ public class TestPath
         Assert.assertTrue("expected:"+expected+", got:"+results, sameUnorder(expected, results)) ;
     }
     
-    private static boolean sameUnorder(List<Node> expected, List<Node> results)
+    static boolean sameUnorder(List<Node> expected, List<Node> results)
     {
         // Copy - this is modified.
         List<Node> x = new ArrayList<Node>(results) ;

@@ -202,7 +202,6 @@ final class PathEngineN extends PathEngine
     @Override
     protected void doZeroOrMore(Path path, Node node, Collection<Node> output)
     {
-        //Deque<Node> visited = new ArrayDeque<Node>() ;
         Set<Node> visited = new HashSet<Node>() ;
         ALP(node, path, visited, output) ;
     }

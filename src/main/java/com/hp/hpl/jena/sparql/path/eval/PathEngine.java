@@ -33,11 +33,22 @@ import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.path.eval.PathEvaluator.FilterExclude ;
 
 abstract public class PathEngine {
+
+    protected final Iter<Node> eval(Graph graph, Path path, Node node)
+    {
+        return PathEval.eval$(graph, node, path, this) ;
+    }
     
-    protected abstract void doNegatedPropertySet(P_NegPropSet pathNotOneOf, Node node, Collection<Node> output) ;
-
-    protected abstract void doZeroOrOne(Path pathStep, Node node, Collection<Node> output) ;
-
+    protected final void eval(Graph graph, Path path, Node node, Collection<Node> output)
+    {
+        PathEval.eval$(graph, node, path, this, output) ;
+    }
+    
+    protected abstract void flipDirection() ;
+    protected abstract boolean direction() ;
+    
+    protected abstract Collection<Node> collector() ;
+    
     //    protected abstract void doZero(Path pathStep, Node node, Collection<Node> output) ;
     //    protected abstract void doOne(Path pathStep, Node node, Collection<Node> output) ;
     
@@ -56,38 +67,40 @@ abstract public class PathEngine {
             Iter<Triple> iter1 = Iter.iter(graph.find(Node.ANY, property, node)) ;
             iter2 = iter1.map(PathEngine.selectSubject) ;
         }
-
+    
         return iter2 ;
     }
 
-    protected final Iter<Node> eval(Graph graph, Path path, Node node)
-    {
-        return PathEval.eval$(graph, node, path, this) ;
-    }
-    
-    protected final void eval(Graph graph, Path path, Node node, Collection<Node> output)
-    {
-        PathEval.eval$(graph, node, path, this, output) ;
-    }
-    
-    protected abstract void flipDirection() ;
-    protected abstract boolean direction() ;
-    
-    protected abstract Collection<Node> collector() ;
-    
-    protected abstract void doOneOrMore(Path pathStep, Node node, Collection<Node> output) ;
-
-    protected abstract void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) ;
-
-    protected abstract void doFixedLengthPath(Path pathStep, Node node, long fixedLength, Collection<Node> output) ;
-
-    protected abstract void doMultiLengthPath(Path pathStep, Node node, long min, long max, Collection<Node> output) ;
+    protected abstract void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) ;
 
     protected abstract void doAlt(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) ;
 
-    protected abstract void doSeq(Path pathStepLeft, Path pathStepRight, Node node, Collection<Node> output) ;
+    // path*
+    protected abstract void doZeroOrMore(Path pathStep, Node node, Collection<Node> output) ;
+
+    // path+
+    protected abstract void doOneOrMore(Path pathStep, Node node, Collection<Node> output) ;
+
+    // path?
+    protected abstract void doZeroOrOne(Path pathStep, Node node, Collection<Node> output) ;
+
+    protected abstract void doNegatedPropertySet(P_NegPropSet pathNotOneOf, Node node, Collection<Node> output) ;
+
+    // path{*} : default implementation
+    protected void doZeroOrMoreN(Path pathStep, Node node, Collection<Node> output)
+    { doZeroOrMore(pathStep, node, output) ; } 
+
+    // path{+} : default implementation
+    protected void doOneOrMoreN(Path pathStep, Node node, Collection<Node> output)
+    { doOneOrMore(pathStep, node, output) ; } 
 
     protected abstract void doZero(Path path, Node node, Collection<Node> output) ;
+    
+    // {N,M} and variations
+    
+    protected abstract void doFixedLengthPath(Path pathStep, Node node, long fixedLength, Collection<Node> output) ;
+
+    protected abstract void doMultiLengthPath(Path pathStep, Node node, long min, long max, Collection<Node> output) ;
     
     protected final void fill(Iterator<Node> iter, Collection<Node> output)
     {
