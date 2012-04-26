@@ -466,6 +466,46 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | <UNDEF>               { return null ; }
 }
 
+#ifdef ARQ
+Element InlineData() : {}
+{
+  <DATA>
+  ( InlineDataOneVar() |  InlineDataFull() )
+  { return null ; }
+}
+
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+{
+  v = Var()
+  t = <LBRACE>
+  ( n = DataBlockValue() )*
+  t = <RBRACE>
+}  
+  
+void InlineDataFull() : { Var v ; Node n ; Token t ; }
+{
+  t = <LPAREN>
+  (v = Var())*
+  t = <RPAREN>
+  t = <LBRACE>
+  (
+    t = <LPAREN> 
+    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    (n = DataBlockValue() 
+        //{ emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
+    ) *
+    t = <RPAREN> 
+    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+  |
+    t = <NIL>
+    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+   )*
+  t = <RBRACE>
+}  
+#endif
+
+
 #ifdef UPDATE
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
@@ -856,6 +896,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
  |
    el = Bind()
 #ifdef ARQ
+ |
+   el = InlineData()
  |
    el = Assignment()
 #ifdef ARQ_FETCH
@@ -2210,7 +2252,7 @@ TOKEN [IGNORE_CASE] :
 
 TOKEN [IGNORE_CASE] :
 {
-  < #DATA:	      "data" >
+  < DATA:	      "data" >
 | < INSERT:       "insert">
 | < DELETE:       "delete" >
 

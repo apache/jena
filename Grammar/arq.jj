@@ -378,6 +378,40 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
 }
+Element InlineData() : {}
+{
+  <DATA>
+  ( InlineDataOneVar() | InlineDataFull() )
+  { return null ; }
+}
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+{
+  v = Var()
+  t = <LBRACE>
+  ( n = DataBlockValue() )*
+  t = <RBRACE>
+}
+void InlineDataFull() : { Var v ; Node n ; Token t ; }
+{
+  t = <LPAREN>
+  (v = Var())*
+  t = <RPAREN>
+  t = <LBRACE>
+  (
+    t = <LPAREN>
+    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    (n = DataBlockValue()
+        //{ emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
+    ) *
+    t = <RPAREN>
+    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+  |
+    t = <NIL>
+    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+   )*
+  t = <RBRACE>
+}
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 // Optional SEMICOLON
@@ -682,6 +716,8 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = Filter()
  |
    el = Bind()
+ |
+   el = InlineData()
  |
    el = Assignment()
  |
@@ -1725,7 +1761,7 @@ TOKEN [IGNORE_CASE] :
 // SPARQL/Update parts.
 TOKEN [IGNORE_CASE] :
 {
-  < #DATA: "data" >
+  < DATA: "data" >
 | < INSERT: "insert">
 | < DELETE: "delete" >
 | < INSERT_DATA: <INSERT> (<WSC>)* <DATA> >

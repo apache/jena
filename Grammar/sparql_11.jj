@@ -1591,7 +1591,7 @@ TOKEN [IGNORE_CASE] :
 // SPARQL/Update parts.
 TOKEN [IGNORE_CASE] :
 {
-  < #DATA: "data" >
+  < DATA: "data" >
 | < INSERT: "insert">
 | < DELETE: "delete" >
 | < INSERT_DATA: <INSERT> (<WSC>)* <DATA> >
