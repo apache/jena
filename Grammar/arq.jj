@@ -378,37 +378,47 @@ Node DataBlockValue() : { Node n ; String iri ; }
 | n = BooleanLiteral() { return n ; }
 | <UNDEF> { return null ; }
 }
-Element InlineData() : {}
+Element InlineData() : { ElementData el ; Token t ; }
 {
-  <DATA>
-  ( InlineDataOneVar() | InlineDataFull() )
-  { return null ; }
+  t = <DATA>
+  { el = new ElementData() ;
+    startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ; }
+  ( InlineDataOneVar(el) | InlineDataFull(el) )
+  { finishInlineData(t.beginLine, t.beginColumn) ;
+    return el ; }
 }
-void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+void InlineDataOneVar(ElementData el) : { Var v ; Node n ; Token t ; }
 {
   v = Var()
+  { emitDataBlockVariable(v) ; }
   t = <LBRACE>
-  ( n = DataBlockValue() )*
+  (
+    n = DataBlockValue()
+    { startDataBlockValueRow(-1, -1) ;
+      emitDataBlockValue(n, -1, -1) ;
+      finishDataBlockValueRow(-1, -1) ;
+    }
+  )*
   t = <RBRACE>
 }
-void InlineDataFull() : { Var v ; Node n ; Token t ; }
+void InlineDataFull(ElementData el) : { Var v ; Node n ; Token t ; }
 {
   t = <LPAREN>
-  (v = Var())*
+  (v = Var() { emitDataBlockVariable(v) ; })*
   t = <RPAREN>
   t = <LBRACE>
   (
     t = <LPAREN>
-    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
     (n = DataBlockValue()
-        //{ emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
+        { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
     ) *
     t = <RPAREN>
-    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
   |
     t = <NIL>
-    //{ startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-    //{ finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
    )*
   t = <RBRACE>
 }

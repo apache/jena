@@ -61,7 +61,7 @@ public class QueryFactory
     
     static public Query create(String queryString, String baseURI)
     {
-        Query query = new Query(queryString) ;
+        Query query = new Query() ;
         parse(query, queryString, baseURI, Syntax.defaultQuerySyntax) ;
         return query ;
         
@@ -77,7 +77,7 @@ public class QueryFactory
    
    static public Query create(String queryString, String baseURI, Syntax syntax)
    {
-       Query query = new Query(queryString) ;
+       Query query = new Query() ;
        parse(query, queryString, baseURI, syntax) ;
        return query ;
        
@@ -142,7 +142,6 @@ public class QueryFactory
         else
             query.setSyntax(syntaxURI) ;
 
-        query.setRawQuery(queryString);
         Parser parser = Parser.createParser(syntaxURI) ;
         
         if ( parser == null )

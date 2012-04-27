@@ -30,9 +30,12 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.path.PathWriter ;
 import com.hp.hpl.jena.sparql.syntax.* ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 
 public class FormatterElement extends FormatterBase
@@ -223,6 +226,69 @@ public class FormatterElement extends FormatterBase
         out.print(" AS ") ;
         out.print("?"+el.getVar().getVarName()) ;
         out.print(")") ;
+    }
+
+    @Override
+    public void visit(ElementData el)
+    {
+        // QuerySrializer.outputDataBlock.
+        
+        List<Var> variables = el.getVars() ;
+        out.print("DATA ") ;
+        if ( variables.size() == 1 )
+        {
+            // Short form.
+            out.print("?") ;
+            out.print(variables.get(0).getVarName()) ;
+            out.print(" {") ;
+            out.incIndent() ;
+            for ( Binding valueRow : el.getRows() )
+            {
+                // A value may be null for UNDEF
+                for ( Var var : variables )
+                {
+                    out.print(" ") ;
+                    Node value = valueRow.get(var) ; 
+                    if ( value == null )
+                        out.print("UNDEF") ;
+                    else
+                        out.print(FmtUtils.stringForNode(value, context)) ;
+                }
+            }
+            out.decIndent() ;
+            out.print("}") ;
+            return ;
+        }
+        // Long form.
+        out.print("(") ;
+        for ( Var v : variables )
+        {
+            out.print(" ") ;
+            out.print(v) ;
+        }
+        out.print(" )") ;
+        out.print(" {") ;
+        out.incIndent() ;
+        for ( Binding valueRow : el.getRows() )
+        {
+            out.println() ;
+            // A value may be null for UNDEF
+            out.print("(") ;
+            for ( Var var : variables )
+            {
+                out.print(" ") ;
+                Node value = valueRow.get(var) ; 
+                if ( value == null )
+                    out.print("UNDEF") ;
+                else
+                    out.print(FmtUtils.stringForNode(value, context)) ;
+            }
+            out.print(" )") ;
+        }
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
+        out.print("}") ;
+        
     }
 
     @Override

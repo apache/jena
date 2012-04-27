@@ -177,17 +177,6 @@ public class QueryCompare implements QueryVisitor
     }
 
     @Override
-    public void visitValues(Query query1)
-    {
-        // Must be same order for now.
-        check("VALUES/variables", query1.getValuesVariables(), query2.getValuesVariables()) ;
-        check("VALUES/values", query1.getValuesData(), query2.getValuesData()) ;
-    }
-
-
-    
-    
-    @Override
     public void finishVisit(Query query1)
     {}
     

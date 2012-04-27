@@ -266,16 +266,6 @@ public class QuerySerializer implements QueryVisitor
         }
     }
 
-    @Override
-    public void visitValues(Query query)
-    {
-        if ( query.hasValues() )
-        {
-            out.print("VALUES") ;
-            outputDataBlock(out, query.getValuesVariables(), query.getValuesData(),query) ;
-        }
-    }
-    
     private static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, Query query)
     {
         for ( Var v : variables )

@@ -169,18 +169,16 @@ public class ParserQueryBase extends ParserBase
     {
         getQuery().setBindingsDataBlock(variables, values) ;
     }
-
-    protected void startValuesBlock(int line, int col)               
-    { 
-        variables = new ArrayList<Var>() ;
-        values = new ArrayList<Binding>() ;
-    }
     
-    protected void finishValuesBlock(int line, int col)
+    protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col)
     {
-        getQuery().setValuesDataBlock(variables, values) ;
+        variables = vars ;
+        values = rows ;
     }
 
+    protected void finishInlineData(int line, int col)
+    {}
+    
     private BindingMap currentValueRow()                            { return (BindingMap)values.get(values.size()-1) ; }
     
     protected void emitDataBlockVariable(Var v)                     { variables.add(v) ; }

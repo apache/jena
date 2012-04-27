@@ -75,9 +75,6 @@ public class Query extends Prologue implements Cloneable, Printable
     private List<String> graphURIs = new ArrayList<String>() ;
     private List<String> namedGraphURIs = new ArrayList<String>() ;
     
-    // The Original Raw Query as provided to the API
-    private String rawQuery = null;
-    
     // The WHERE clause
     private Element queryPattern = null ;
     
@@ -98,8 +95,8 @@ public class Query extends Prologue implements Cloneable, Printable
 
     // BINDINGS
     protected TableData bindingsDataBlock = null ;
-    // VALUES
-    protected TableData valuesDataBlock = null ;
+//    // VALUES
+//    protected TableData valuesDataBlock = null ;
     
 //    // BINDINGS
 //        protected List<Var> bindingVariables = null ;
@@ -140,30 +137,6 @@ public class Query extends Prologue implements Cloneable, Printable
     {
         this() ;
         usePrologueFrom(prologue) ;
-    }
-    
-    /**
-     * Creates a new empty query with the given raw query string
-     * <p>
-     * <strong>Important:</strong> This constructor does not cause the query to be parsed, this only stores a reference to the original query string in the query which may be useful if you want to see the original unaltered syntax (including comments) at some later point.
-     * </p>
-     */
-    public Query(String queryString)
-    {
-    	this();
-    	rawQuery = queryString;
-    }
-    
-    /**
-     * Creates a new empty query with the given raw query string and prologue
-     * <p>
-     * <strong>Important:</strong> This constructor does not cause the query to be parsed, this only stores a reference to the original query string in the query which may be useful if you want to see the original unaltered syntax (including comments) at some later point.
-     * </p>
-     */
-    public Query(String queryString, Prologue prologue)
-    {
-    	this(prologue);
-    	rawQuery = queryString;
     }
     
     // Allocate variables that are unique to this query.
@@ -223,22 +196,6 @@ public class Query extends Prologue implements Cloneable, Printable
     public void setReduced(boolean b) { reduced = b ; }
     public boolean isReduced()        { return reduced ; }
     
-    /**
-     * Sets the raw query string
-     */
-    protected void setRawQuery(String queryString)
-    {
-    	rawQuery = queryString;
-    }
-    
-    /**
-     * Gets the original raw query string from which this instance was populated, may be null depending on how the query was created
-     */
-    public String getRawQuery()
-    {
-    	return rawQuery;
-    }
-
     /** @return Returns the syntax. */
     public Syntax getSyntax()         { return syntax ; }
 
@@ -661,24 +618,24 @@ public class Query extends Prologue implements Cloneable, Printable
         bindingsDataBlock = new TableData(variables, values) ;
     }
     
-    // ---- Values
-
-    /** Does the query have any BINDINGS? */
-    public boolean hasValues()                  { return valuesDataBlock != null ; }
-    
-    /** VALUES variables */
-    public List<Var> getValuesVariables()       { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
-    
-    /** VALUES - null for a Node means undef */ 
-    public List<Binding> getValuesData()        { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
-    
-    //public TableData getValuesDataBlock()          { return valuesDataBlock ; }
-    
-    public void setValuesDataBlock(List<Var> variables, List<Binding> values)
-    {
-        checkDataBlock(variables, values) ;
-        valuesDataBlock = new TableData(variables, values) ;
-    }
+//    // ---- Values
+//
+//    /** Does the query have any VALUES? */
+//    public boolean hasValues()                  { return valuesDataBlock != null ; }
+//    
+//    /** VALUES variables */
+//    public List<Var> getValuesVariables()       { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
+//    
+//    /** VALUES - null for a Node means undef */ 
+//    public List<Binding> getValuesData()        { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
+//    
+//    //public TableData getValuesDataBlock()          { return valuesDataBlock ; }
+//    
+//    public void setValuesDataBlock(List<Var> variables, List<Binding> values)
+//    {
+//        checkDataBlock(variables, values) ;
+//        valuesDataBlock = new TableData(variables, values) ;
+//    }
     
     private static void checkDataBlock(List<Var> variables, List<Binding> values)
     {
@@ -786,8 +743,8 @@ public class Query extends Prologue implements Cloneable, Printable
             PatternVars.vars(queryVars, this.getQueryPattern()) ;
             if ( this.hasBindings() )
                 queryVars.addAll(getBindingsVariables()) ;
-            if ( this.hasValues() )
-                queryVars.addAll(getValuesVariables()) ;
+//            if ( this.hasValues() )
+//                queryVars.addAll(getValuesVariables()) ;
             varIter = queryVars.iterator() ;
         }
         
@@ -824,7 +781,6 @@ public class Query extends Prologue implements Cloneable, Printable
         visitor.visitOffset(this) ;
         visitor.visitLimit(this) ;
         visitor.visitBindings(this) ;
-        visitor.visitValues(this) ;
         visitor.finishVisit(this) ;
     }
 
@@ -848,19 +804,10 @@ public class Query extends Prologue implements Cloneable, Printable
      */
     public Query cloneQuery(boolean useRawQuery)
     {
-    	String qs;
-    	if (useRawQuery && this.rawQuery != null && !this.rawQuery.equals(""))
-    	{
-    		//If specified (and is present) clone from raw query rather than the serialized query
-    		qs = this.rawQuery;
-    	}
-    	else
-    	{
-    		// A little crude.
-    		IndentedLineBuffer buff = new IndentedLineBuffer() ;
-    		serialize(buff, getSyntax()) ;
-    		qs = buff.toString() ;
-    	}
+        // A little crude.
+        IndentedLineBuffer buff = new IndentedLineBuffer() ;
+        serialize(buff, getSyntax()) ;
+        String qs = buff.toString() ;
         return QueryFactory.create(qs, getSyntax()) ;
     }
     

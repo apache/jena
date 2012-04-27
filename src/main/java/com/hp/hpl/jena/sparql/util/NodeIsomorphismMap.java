@@ -34,7 +34,7 @@ public class NodeIsomorphismMap //extends HashMap
     private Node get(Node key) { return map.get(key) ; }
     private void put(Node key, Node value) { map.put(key, value) ; }
     
-    public boolean makeIsomorhpic(Node n1, Node n2)
+    public boolean makeIsomorphic(Node n1, Node n2)
     {
         if ( n1.isBlank() && n2.isBlank() )
         {

@@ -79,6 +79,12 @@ public class ElementWalker
         }
         
         @Override
+        public void visit(ElementData el)
+        {
+            proc.visit(el) ;
+        }
+        
+        @Override
         public void visit(ElementUnion el)
         {
             for ( Element e : el.getElements() )

@@ -22,7 +22,6 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.NotImplemented ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -286,6 +285,7 @@ public class AlgebraGenerator
             groupElts.add(elt) ;
         }
         //End of group - put in any accumulated filters
+        
         if ( filters != null )
             groupElts.addAll(filters) ;
         return groupElts ;
@@ -370,8 +370,17 @@ public class AlgebraGenerator
             Op op = compileElementMinus(current, elt2) ;
             return op ;
         }
+
+        if ( elt instanceof ElementData)
+        {
+            // Accumulate, like filters.
+            ElementData elt2 = (ElementData)elt ;
+            Op op = compileElementData(current, elt2) ;
+            return op ;
+        }
+
         
-//        // SPARQL 1.1 UNION -- did no tmake SPARQL 
+//        // SPARQL 1.1 UNION -- did not make SPARQL 
 //        if ( elt instanceof ElementUnion )
 //        {
 //            ElementUnion elt2 = (ElementUnion)elt ;
@@ -392,6 +401,8 @@ public class AlgebraGenerator
             Op op = compileElement(elt) ;
             return join(current, op) ;
         }
+
+        
         
         broken("compile/Element not recognized: "+Utils.className(elt)) ;
         return null ;
@@ -417,6 +428,12 @@ public class AlgebraGenerator
         Op op = compile(elt2.getMinusElement()) ;
         Op opMinus = OpMinus.create(current, op) ;
         return opMinus ;
+    }
+
+    private Op compileElementData(Op current, ElementData elt2)
+    {
+        OpTable opTable = OpTable.create(elt2.getTable()) ;
+        return OpJoin.create(current, opTable) ;
     }
 
     private Op compileElementUnion(Op current, ElementUnion elt2)
@@ -580,17 +597,6 @@ public class AlgebraGenerator
                 table.addBinding(binding) ;
             OpTable opTable = OpTable.create(table) ;
             op = OpJoin.create(op, opTable) ;
-        }
-        
-        // ---- VALUES
-        if ( query.hasValues() )
-        {
-            if ( true ) throw new NotImplemented("VALUES Not implemented yet") ;
-            Table table = TableFactory.create() ;
-            for ( Binding binding : query.getValuesData() )
-                table.addBinding(binding) ;
-            OpTable opTable = OpTable.create(table) ;
-            // NOT THIS op = OpJoin.create(op, opTable) ;
         }
         
         // ---- ToList

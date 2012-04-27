@@ -243,7 +243,7 @@ public class Utils
     public static boolean nodeIso(Node n1, Node n2, NodeIsomorphismMap isoMap)
     {
         if ( isoMap != null && Var.isBlankNodeVar(n1) && Var.isBlankNodeVar(n2) )
-            return isoMap.makeIsomorhpic(n1, n2) ;
+            return isoMap.makeIsomorphic(n1, n2) ;
         return n1.equals(n2) ;
     }
 }

@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.ArrayList ;
 import java.util.Collection ;
-import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -36,6 +35,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.sparql.util.NodeUtils.EqualityTest ;
 
@@ -148,8 +148,6 @@ public class ResultSetCompare
         rs1a.reset() ;    
         rs2a.reset() ;
         return isomorphic(rs1, rs2) ;
-
-        
     }
 
     
@@ -296,12 +294,12 @@ public class ResultSetCompare
     
     public static class BNodeIso implements EqualityTest
     {
-        private HashMap<Node, Node> mapping ;
+        private NodeIsomorphismMap mapping ;
         private EqualityTest literalTest ;
     
         public BNodeIso(EqualityTest literalTest)
         { 
-            this.mapping = new HashMap<Node, Node>() ;
+            this.mapping = new NodeIsomorphismMap() ;
             this.literalTest = literalTest ;
         }
     
@@ -319,16 +317,7 @@ public class ResultSetCompare
                 return literalTest.equal(n1, n2) ;
             
             if ( n1.isBlank() && n2.isBlank() )
-            {
-                Node x = mapping.get(n1) ;
-                if ( x == null )
-                {
-                    // Not present: map n1 to n2.
-                    mapping.put(n1, n2) ;
-                    return true ;
-                }
-                return x.equals(n2) ;
-            }
+                return  mapping.makeIsomorphic(n1, n2) ;
             
             return false ;
         }

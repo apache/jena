@@ -139,16 +139,6 @@ public class QueryHashCode
         }
 
         @Override
-        public void visitValues(Query query)
-        {
-            if ( query.hasValues() )
-            {
-                x ^= query.getValuesVariables().hashCode() ;
-                x ^= query.getValuesData().hashCode() ;
-            }
-        }
-
-        @Override
         public void finishVisit(Query query)
         {}
 

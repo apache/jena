@@ -97,8 +97,6 @@ public class SyntaxVarScope
         Collection<Var> vars = PatternVars.vars(query.getQueryPattern()) ;
         if ( query.hasBindings() )
             vars.addAll(query.getBindingsVariables()) ;
-        if ( query.hasValues() )
-            vars.addAll(query.getValuesVariables()) ;
         return vars ;
     }
     
