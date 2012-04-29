@@ -151,6 +151,14 @@ public abstract class NodeValue extends ExprNode
     private static final String strForUnNode = "node value nothing" ;
     public static final NodeValue nvNothing = NodeValue.makeNode(Node.createAnon(new AnonId("node value nothing"))) ;
     
+    private static DatatypeFactory datatypefactory = null ;
+    static
+    {
+        try { datatypefactory = DatatypeFactory.newInstance() ; }
+        catch (DatatypeConfigurationException ex)
+        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
+    }
+    
     // Use NodeValue.toNode(NodeValue) 
 //    public static Node asNode(NodeValue nv)
 //    {
@@ -182,8 +190,12 @@ public abstract class NodeValue extends ExprNode
     // ----------------------------------------------------------------
     // ---- Construct NodeValue without a graph node.
     
+    /** Convenience operation - parse a string to produce a NodeValue - common namespaces like xsd: are built-in */
+    public static NodeValue parse(String string)
+    { return makeNode(NodeFactory.parseNode(string)) ; }
+    
     public static NodeValue makeInteger(long i)
-    { return new NodeValueInteger(i) ; }
+    { return new NodeValueInteger(BigInteger.valueOf(i)) ; }
     
     public static NodeValue makeInteger(BigInteger i)
     { return new NodeValueInteger(i) ; }
@@ -204,11 +216,10 @@ public abstract class NodeValue extends ExprNode
     { return new NodeValueDecimal(d) ; }
   
     public static NodeValue makeDecimal(long i)
-    //{ return new NodeValueDecimal(new BigDecimal(i)) ; } // Java 1.5-ism - the long constructor.  If 1.4, type promotion to double :-( 
     { return new NodeValueDecimal(BigDecimal.valueOf(i)) ; }
   
     public static NodeValue makeDecimal(double d)
-    { return new NodeValueDecimal(new BigDecimal(d)) ; }   // java 1.5 ; use BigDecimal.valueOf(double)
+    { return new NodeValueDecimal(BigDecimal.valueOf(d)) ; } 
   
     public static NodeValue makeDecimal(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdecimal) ; }
@@ -235,6 +246,9 @@ public abstract class NodeValue extends ExprNode
         XSDDateTime xdt = new XSDDateTime(cal) ;
         return new NodeValueDate(xdt) ;
     }
+    
+    public static NodeValue makeDuration(String lexicalForm)
+    { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDduration) ; }
 
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE ; }
@@ -336,8 +350,6 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDecimal(BigDecimal decimal)
     {
-        // Java 1.5-ism
-        //NodeValue nv = makeNode(decimal.toPlainString(), null, XSD.decimal.getURI()) ;
         NodeValue nv = makeNode(Utils.stringForm(decimal), null, XSD.decimal.getURI()) ;
         return nv ;
     }
@@ -356,7 +368,6 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDateTime(Calendar date)
     {
-        //XSDDateTime dt = new XSDDateTime(date) ;
         String lex = Utils.calendarToXSDDateTimeString(date) ;
         NodeValue nv = makeNode(lex, XSDDatatype.XSDdateTime) ;
         return nv ;
@@ -1105,18 +1116,10 @@ public abstract class NodeValue extends ExprNode
     }
     
     // ----------------------------------------------------------------
-    
-    private static DatatypeFactory df = null ;
-    static
-    {
-        try { df = DatatypeFactory.newInstance() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
-    }
 
     private static Duration createDuration(String lex)
     {
-        return df.newDuration(lex) ;
+        return datatypefactory.newDuration(lex) ;
     }
     
     // Point to catch all exceptions.

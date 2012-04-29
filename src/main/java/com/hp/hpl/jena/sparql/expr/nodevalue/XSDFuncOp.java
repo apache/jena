@@ -110,9 +110,6 @@ public class XSDFuncOp
         }
     }
     
-    // Java 1.4 does not have BigDecimal.ZERO
-    private static final BigDecimal BigDecimalZero = new BigDecimal(0e0) ;
-    
     /* Quote from XQuery/XPath F&O:
         For xs:float or xs:double values, a positive number divided by positive zero returns INF.
         A negative number divided by positive zero returns -INF.
@@ -136,7 +133,7 @@ public class XSDFuncOp
             }
             case OP_DECIMAL:
             {
-                if ( nv2.getDecimal().compareTo(BigDecimalZero) == 0 )
+                if ( nv2.getDecimal().compareTo(BigDecimal.ZERO) == 0 )
                     throw new ExprEvalException("Divide by zero in decimal divide") ;
                 BigDecimal d1 = nv1.getDecimal() ;
                 BigDecimal d2 = nv2.getDecimal() ;

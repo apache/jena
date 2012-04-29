@@ -48,14 +48,6 @@ public class Utils
         return tmp ;
     }
     
-    // See also:
-    // Java 1.5
-    // javax.xml.datatype.XMLGregorianCalendar
-    // javax.xml.datatype.DatatypeFactory.newXMLGregorianCalendar 
-
-    // warning all calendar based operations force the timezone
-    // to the default if not present. 
-    
     public static String nowAsXSDDateTimeString()
     {
         return calendarToXSDDateTimeString(new GregorianCalendar()) ;
@@ -148,14 +140,8 @@ public class Utils
         return sign+tzH_str+":"+tzM_str ;
     }
     
-    // Java 1.4 .toString == Java 1.5 .toPlainString
-    // Java 1.5 .toString => different to .toString 1.4
-    // Portable(?!) - round to scale 0 and get the toString
-    
     static public String stringForm(BigDecimal decimal)
     { 
-        // Java 1.5-ism -- 
-        //return decimal.toPlainString() ;
         return decimal.toPlainString() ;
     }
     
