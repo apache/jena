@@ -103,6 +103,7 @@ public class PathEngineSPARQL extends PathEngine
         // Reuse "output"
         Collection<Node> visited = new LinkedList<Node>() ; // new HashSet<Node>() ;
         // Do one step without including.
+        //TODO switch to PathEngine1 for the sub-step as we only need uniques.
         Iter<Node> iter1 = eval(graph, pathStep, node) ;
         for ( ; iter1.hasNext() ; )
         {
@@ -119,6 +120,7 @@ public class PathEngineSPARQL extends PathEngine
         output.add(node) ;
     }
 
+    //TODO switch to PathEngine1 for the sub-step as we only need uniques.
     private void ALP_1(Graph graph, boolean forwardMode, int stepCount, int maxStepCount, Node node, Path path, Collection<Node> visited)
     {
         if ( false ) System.out.printf("ALP1 node=%s\n   visited=%s\n   output=%s\n", node, visited) ;
