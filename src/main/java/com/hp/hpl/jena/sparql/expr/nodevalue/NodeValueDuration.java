@@ -18,35 +18,30 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
+import javax.xml.datatype.Duration ;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.expr.ExprException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
-/** XSD Duration (which is unrelated to XSD dateTime in the datatype hierarchy) */ 
+/** XSD Duration */ 
 
 public class NodeValueDuration extends NodeValue
 {
-    XSDDuration duration ; 
+    Duration duration ; 
     
-    public NodeValueDuration(XSDDuration dt)
+    public NodeValueDuration(Duration dt)
     { 
         duration = dt ;
-        if (dt.getDays() != 0 && dt.getMonths() !=0 && dt.getYears() != 0) {
-        	throw new ExprException("Illegal time: "+dt) ;
-        }
-        if ( dt.getTimePart() == 0 ) 
-            throw new ExprException("Illegal time: "+dt) ;
     }
     
-    public NodeValueDuration(XSDDuration dt, Node n) { super(n) ; duration = dt ; }
+    public NodeValueDuration(Duration dt, Node n) { super(n) ; duration = dt ; }
     
     @Override
     public boolean isDuration() { return true ; }
     @Override
-    public XSDDuration getDuration()     { return duration ; }
-    
+    public Duration getDuration()     { return duration ; }
+
     @Override
     protected Node makeNode()
     {

@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-enum ValueSpaceClassification {
+public enum ValueSpaceClassification {
     VSPACE_NODE,
     VSPACE_NUM, 
     VSPACE_DATETIME, 

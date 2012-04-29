@@ -21,6 +21,8 @@ package com.hp.hpl.jena.sparql.expr;
 import java.util.Collection ;
 import java.util.Set ;
 
+import javax.xml.datatype.DatatypeConstants ;
+
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
@@ -28,12 +30,12 @@ import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 
 public interface Expr
 {
-    public static final int CMP_GREATER  = +1 ;
-    public static final int CMP_EQUAL    =  0 ;
-    public static final int CMP_LESS     = -1 ;
+    public static final int CMP_GREATER  =  DatatypeConstants.GREATER ;
+    public static final int CMP_EQUAL    =  DatatypeConstants.EQUAL ;
+    public static final int CMP_LESS     =  DatatypeConstants.LESSER ;
     
     public static final int CMP_UNEQUAL  = -9 ;
-    public static final int CMP_INDETERMINATE  = 2 ;
+    public static final int CMP_INDETERMINATE  = DatatypeConstants.INDETERMINATE ;
     
     /** Test whether a Constraint is satisfied, given a set of bindings
      *  Includes error propagtion and Effective Boolean Value rules.

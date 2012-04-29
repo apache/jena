@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class NodeValueDouble extends NodeValue
 {
-   double value = Double.NaN ;
+    double value = Double.NaN ;
     
     public NodeValueDouble(double d)         { super() ; value = d ; }
     public NodeValueDouble(double d, Node n) { super(n) ; value = d ; } 

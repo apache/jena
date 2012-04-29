@@ -18,20 +18,45 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.* ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATE ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATETIME ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DIFFERENT ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DURATION ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_DAY ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTH ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_MONTHDAY ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEAR ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_G_YEARMONTH ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_LANG ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_NODE ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_NUM ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_STRING ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_TIME ;
+import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_UNKNOWN ;
+import static javax.xml.datatype.DatatypeConstants.DAYS ;
+import static javax.xml.datatype.DatatypeConstants.HOURS ;
+import static javax.xml.datatype.DatatypeConstants.MINUTES ;
+import static javax.xml.datatype.DatatypeConstants.MONTHS ;
+import static javax.xml.datatype.DatatypeConstants.SECONDS ;
+import static javax.xml.datatype.DatatypeConstants.YEARS ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.util.Calendar ;
 
+import javax.xml.datatype.DatatypeConfigurationException ;
+import javax.xml.datatype.DatatypeFactory ;
+import javax.xml.datatype.Duration ;
+
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -44,13 +69,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import org.openjena.atlas.logging.Log ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
-import com.hp.hpl.jena.sparql.util.RefBoolean ;
-import com.hp.hpl.jena.sparql.util.RomanNumeral ;
-import com.hp.hpl.jena.sparql.util.RomanNumeralDatatype ;
-import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.sparql.util.* ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
 public abstract class NodeValue extends ExprNode
@@ -744,10 +763,10 @@ public abstract class NodeValue extends ExprNode
         throw new ARQInternalErrorException("Compare failure "+nv1+" and "+nv2) ;
     }
 
-    private static ValueSpaceClassification classifyValueOp(NodeValue nv1, NodeValue nv2)
+    public static ValueSpaceClassification classifyValueOp(NodeValue nv1, NodeValue nv2)
     {
-        ValueSpaceClassification c1 = classifyValueSpace(nv1) ;
-        ValueSpaceClassification c2 = classifyValueSpace(nv2) ;
+        ValueSpaceClassification c1 = nv1.getValueSpace() ;
+        ValueSpaceClassification c2 = nv2.getValueSpace() ;
         if ( c1 == c2 ) return c1 ;
         if ( c1 == VSPACE_UNKNOWN || c2 == VSPACE_UNKNOWN )
             return VSPACE_UNKNOWN ;
@@ -755,6 +774,8 @@ public abstract class NodeValue extends ExprNode
         // Known values spaces but incompatible  
         return VSPACE_DIFFERENT ;
     }
+    
+    public ValueSpaceClassification getValueSpace()     { return classifyValueSpace(this) ; }
     
     private static ValueSpaceClassification classifyValueSpace(NodeValue nv)
     {
@@ -833,6 +854,22 @@ public abstract class NodeValue extends ExprNode
     public boolean isTime()         { return false ; }
     public boolean isDuration()     { return false ; }
 
+    public boolean isYearMonth()
+    {
+        if ( ! isDuration() ) return false ;
+        Duration dur = getDuration() ;
+        return ( dur.isSet(YEARS) || dur.isSet(MONTHS) ) &&
+               ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS) ;
+    }
+
+    boolean isDayTime()
+    {
+        if ( ! isDuration() ) return false ;
+        Duration dur = getDuration() ;
+        return !dur.isSet(YEARS) && ! dur.isSet(MONTHS) &&
+            ( dur.isSet(DAYS) || dur.isSet(HOURS) || dur.isSet(MINUTES) || dur.isSet(SECONDS) );
+    }
+
     public boolean isGYear()        { return false ; }
     public boolean isGYearMonth()   { return false ; }
     public boolean isGMonth()       { return false ; }
@@ -865,7 +902,7 @@ public abstract class NodeValue extends ExprNode
 //    public XSDDateTime getGDay()        { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
 
     
-    public XSDDuration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)) ; return null ; }
+    public Duration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)) ; return null ; }
 
     // ----------------------------------------------------------------
     // ---- Setting : used when a node is used to make a NodeValue
@@ -1027,8 +1064,9 @@ public abstract class NodeValue extends ExprNode
             
             if ( XSDDatatype.XSDduration.isValidLiteral(lit) )
             {
-                XSDDuration duration = (XSDDuration)lit.getValue() ;
-                return new NodeValueDuration(duration, node) ;
+                //XSDDuration duration = (XSDDuration)lit.getValue() ;
+                Duration jduration = createDuration(lit.getLexicalForm()) ;
+                return new NodeValueDuration(jduration, node) ;
             }
             
             if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
@@ -1067,6 +1105,19 @@ public abstract class NodeValue extends ExprNode
     }
     
     // ----------------------------------------------------------------
+    
+    private static DatatypeFactory df = null ;
+    static
+    {
+        try { df = DatatypeFactory.newInstance() ; }
+        catch (DatatypeConfigurationException ex)
+        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
+    }
+
+    private static Duration createDuration(String lex)
+    {
+        return df.newDuration(lex) ;
+    }
     
     // Point to catch all exceptions.
     public static void raise(ExprException ex)

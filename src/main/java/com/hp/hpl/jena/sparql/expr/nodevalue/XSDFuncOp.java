@@ -32,13 +32,15 @@ import java.util.List ;
 import java.util.Set ;
 import java.util.regex.Pattern ;
 
+import javax.xml.datatype.DatatypeConstants ;
+import javax.xml.datatype.Duration ;
+
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.* ;
@@ -862,7 +864,7 @@ public class XSDFuncOp
     
     public static int compareDuration(NodeValue nv1, NodeValue nv2)
     { 
-        return compareXSDDuration(nv1.getDuration(), nv2.getDuration()) ;
+        return compareDuration(nv1.getDuration(), nv2.getDuration()) ;
     }
 
     public static int compareGYear(NodeValue nv1, NodeValue nv2)
@@ -947,7 +949,7 @@ public class XSDFuncOp
             if ( nv3 != null )
             {
                 XSDDateTime dt3 = nv3.getDateTime() ; 
-                x =  compareXSDDateTime(dt1, dt3) ;
+                x = compareXSDDateTime(dt1, dt3) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
                 return x ;
@@ -991,34 +993,31 @@ public class XSDFuncOp
         // F&O has an "implicit timezone" - this code implements the XMLSchema compare algorithm.  
 
         int x = dt1.compare(dt2) ;
-        if ( x == XSDDateTime.EQUAL )
-            return Expr.CMP_EQUAL ;
-        if ( x == XSDDateTime.LESS_THAN )
-            return Expr.CMP_LESS ;
-        if ( x == XSDDateTime.GREATER_THAN )
-            return Expr.CMP_GREATER ;
-        if ( x == XSDDateTime.INDETERMINATE )
-            return Expr.CMP_INDETERMINATE ;
-        throw new ARQInternalErrorException("Unexpected return from XSDDateTime.compare: "+x) ;
+        return convertComparison(x) ;
     }
 
-    private static int compareXSDDuration(XSDDuration duration1 , XSDDuration duration2)
+    private static int compareDuration(Duration duration1 , Duration duration2)
     {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
         // Not fully sure when Indeterminate is returned with regards to a duration
 
         int x = duration1.compare(duration2) ;
-        if ( x == XSDDuration.EQUAL )
+        return convertComparison(x) ;
+    }
+
+    private static int convertComparison(int x)
+    {
+        if ( x == DatatypeConstants.EQUAL )
             return Expr.CMP_EQUAL ;
-        if ( x == XSDDuration.LESS_THAN )
+        if ( x == DatatypeConstants.LESSER )
             return Expr.CMP_LESS ;
-        if ( x == XSDDuration.GREATER_THAN )
+        if ( x == DatatypeConstants.GREATER )
             return Expr.CMP_GREATER ;
-        if ( x == XSDDuration.INDETERMINATE )
+        if ( x == DatatypeConstants.INDETERMINATE )
             return Expr.CMP_INDETERMINATE ;
         throw new ARQInternalErrorException("Unexpected return from XSDDuration.compare: "+x) ;
     }
-
+    
     // --------------------------------
     // Boolean operations
     
