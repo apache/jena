@@ -45,7 +45,7 @@ public class OutputLangUtils
     // "Prologue" is an input concept - whats the equivalent for output?
     //   Prefix mapping + base URI abbreviation.
     
-    // TODO Use NodeFmtLib (objectified) in output(Writer, node,*)
+    // TODO Use NodeFormatters / NodeFmtLib (objectified) in output(Writer, node,*)
     
     // Make an object so it can have per-instance flags
     // ASCII vs UTF-8

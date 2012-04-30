@@ -270,8 +270,13 @@ public class FmtUtils
 
             if ( datatype.equals(XSD.xboolean.getURI()) )
             {
-                if ( s.equalsIgnoreCase("true") ) return s ;
-                if ( s.equalsIgnoreCase("false") ) return s ;
+                // Pragmatics: if the data wrote "1"^^xsd:boolean, keep that form.  
+                // The lexical form must be lower case. 
+//                if ( s.equals("true") || s.equals("1") ) return s ;
+//                if ( s.equals("false") || s.equals("0")  ) return s ;
+                if ( s.equals("true") ) return s ;
+                if ( s.equals("false") ) return s ;
+                
             }
             // Not a recognized form.
         }

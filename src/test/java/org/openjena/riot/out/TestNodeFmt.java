@@ -140,4 +140,16 @@ public class TestNodeFmt extends BaseTest
     @Test public void nodefmt_ttl_60()  { test(nodeFormatterTTL, "'-123.e-10'^^<http://www.w3.org/2001/XMLSchema#double>", "-123.e-10") ; }
     @Test public void nodefmt_ttl_61()  { test(nodeFormatterTTL, "'.1e-10'^^<http://www.w3.org/2001/XMLSchema#double>", ".1e-10") ; }
     @Test public void nodefmt_ttl_62()  { test(nodeFormatterTTL, "'.e9'^^<http://www.w3.org/2001/XMLSchema#double>", "\".e9\"^^<http://www.w3.org/2001/XMLSchema#double>") ; }
+    
+    // Booleans
+    @Test public void nodefmt_ttl_70()  { test(nodeFormatterTTL, "'true'^^<http://www.w3.org/2001/XMLSchema#boolean>", "true") ; }
+    @Test public void nodefmt_ttl_71()  { test(nodeFormatterTTL, "'1'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"1\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
+
+    @Test public void nodefmt_ttl_72()  { test(nodeFormatterTTL, "'false'^^<http://www.w3.org/2001/XMLSchema#boolean>", "false") ; }
+    @Test public void nodefmt_ttl_73()  { test(nodeFormatterTTL, "'0'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"0\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
+
+    // Illegal lexical form.
+    @Test public void nodefmt_ttl_74()  { test(nodeFormatterTTL, "'False'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"False\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
+    @Test public void nodefmt_ttl_75()  { test(nodeFormatterTTL, "'True'^^<http://www.w3.org/2001/XMLSchema#boolean>", "\"True\"^^<http://www.w3.org/2001/XMLSchema#boolean>") ; }
+    
 }

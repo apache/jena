@@ -215,14 +215,15 @@ public class NodeFormatterTTL extends NodeFormatterNT
         return -1 ;
     }
 
+    private static final String dtDecimal   = XSDDatatype.XSDdecimal.getURI() ;
+    private static final String dtInteger   = XSDDatatype.XSDinteger.getURI() ;
+    private static final String dtDouble    = XSDDatatype.XSDdouble.getURI() ;
+    private static final String dtBoolean   = XSDDatatype.XSDboolean.getURI() ;
+
     @Override
     public void formatLitDT(Writer w, String lex, String datatypeURI)
     {
         try {
-            String dtDecimal = XSDDatatype.XSDdecimal.getURI() ;
-            String dtInteger = XSDDatatype.XSDinteger.getURI() ;
-            String dtDouble = XSDDatatype.XSDdouble.getURI() ;
-
             if ( dtDecimal.equals(datatypeURI) )
             {
                 if ( validDecimal(lex) )
@@ -242,6 +243,16 @@ public class NodeFormatterTTL extends NodeFormatterNT
             if ( dtDouble.equals(datatypeURI) )
             {
                 if ( validDouble(lex) )
+                {
+                    w.write(lex) ;
+                    return ; 
+                }
+            }
+            // Boolean
+            if ( dtBoolean.equals(datatypeURI) )
+            {
+                // We leave "0" and "1" as-is assumign that if written like that, there was a reason.
+                if ( lex.equals("true") || lex.equals("false") )
                 {
                     w.write(lex) ;
                     return ; 
