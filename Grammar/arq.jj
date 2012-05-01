@@ -380,7 +380,7 @@ Node DataBlockValue() : { Node n ; String iri ; }
 }
 Element InlineData() : { ElementData el ; Token t ; }
 {
-  t = <DATA>
+  t = <VALUES>
   { el = new ElementData() ;
     startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ; }
   ( InlineDataOneVar(el) | InlineDataFull(el) )
