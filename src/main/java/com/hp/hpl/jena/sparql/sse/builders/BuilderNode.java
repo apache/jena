@@ -126,6 +126,30 @@ public class BuilderNode
         return nv.getInteger() ;
     }
 
+    public static long buildLong(Item item)
+    { 
+        BigInteger i = buildInteger(item, false) ;
+        return i.longValue() ;
+    }
+
+    public static long buildLong(Item item, int dft)
+    { 
+        BigInteger i = buildInteger(item, true) ;
+        if ( i == null )
+            return dft ;
+        return i.longValue() ;
+    }
+
+    public static long buildLong(ItemList list, int idx)
+    {
+        return buildLong(list.get(idx)) ;
+    }
+    
+    public static long buildLong(ItemList list, int idx, int dft)
+    { 
+        return buildLong(list.get(idx), dft) ;
+    }
+    
     public static int buildInt(Item item)
     { 
         BigInteger i = buildInteger(item, false) ;

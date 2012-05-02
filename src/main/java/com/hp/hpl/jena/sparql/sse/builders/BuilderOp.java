@@ -757,8 +757,8 @@ public class BuilderOp
         public Op make(ItemList list)
         {
             BuilderLib.checkLength(4, list, "slice") ;
-            long start = BuilderNode.buildInt(list, 1, -1) ;
-            long length = BuilderNode.buildInt(list, 2, -1) ;
+            long start = BuilderNode.buildLong(list, 1, -1) ;
+            long length = BuilderNode.buildLong(list, 2, -1) ;
 
             if ( start == -1 )
                 start = Query.NOLIMIT ;

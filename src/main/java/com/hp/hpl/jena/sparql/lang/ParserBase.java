@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
+import java.math.BigInteger ;
 import java.util.HashSet ;
 import java.util.Set ;
 
@@ -171,15 +172,25 @@ public class ParserBase
     
     protected long integerValue(String s)
     {
-        if ( s.startsWith("+") )
-            s = s.substring(1) ;
-        if ( s.startsWith("0x") )
+        try {
+            if ( s.startsWith("+") )
+                s = s.substring(1) ;
+            if ( s.startsWith("0x") )
+            {
+                // Hex
+                s = s.substring(2) ;
+                return Long.parseLong(s, 16) ;
+            }
+            return Long.parseLong(s) ;
+        } catch (NumberFormatException ex)
         {
-            // Hex
-            s = s.substring(2) ;
-            return Long.parseLong(s, 16) ;
+            try {
+                // Possible too large for a long.
+                BigInteger integer = new BigInteger(s) ;
+                throwParseException("Number '"+s+"' is a valid number but can't not be stored in a long") ;
+            } catch (NumberFormatException ex2) {}
+            throw new QueryParseException(ex, -1, -1) ;
         }
-        return Long.parseLong(s) ;
     }
     
     protected double doubleValue(String s)
@@ -636,4 +647,10 @@ public class ParserBase
         throw new QueryParseException("Line " + line + ", column " + column + ": " + msg,
                                       line, column) ;
     }
+    
+    public static void throwParseException(String msg)
+    {
+        throw new QueryParseException(msg, -1, -1) ;
+    }
+
 }

@@ -200,7 +200,7 @@ public class BuilderPath
     static long modInt(Item item)
     {
         if ( "_".equals(item.getSymbol()) ) return P_Mod.UNSET ;
-        return BuilderNode.buildInt(item) ;
+        return BuilderNode.buildLong(item) ;
     }
 
     final protected Build buildFixedLength = new Build()

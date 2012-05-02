@@ -79,4 +79,26 @@ public class TestSSE_Builder extends TestCase
         int i = BuilderNode.buildInt(item, 23) ;
         assertEquals(23, i) ;
     }
+    
+    @Test public void testBuildLong_01()
+    { 
+        Item item = SSE.parseItem("100000000000") ;
+        long i = BuilderNode.buildLong(item) ;
+        assertEquals(100000000000L, i) ;
+    }
+
+    @Test public void testBuildLong_02()
+    { 
+        Item item = SSE.parseItem("100000000000") ;
+        long i = BuilderNode.buildLong(item, 23) ;
+        assertEquals(100000000000L, i) ;
+    }
+
+    @Test public void testBuildLong_03()
+    { 
+        Item item = SSE.parseItem("_") ;
+        long i = BuilderNode.buildLong(item, 23) ;
+        assertEquals(23, i) ;
+    }
+
 }
