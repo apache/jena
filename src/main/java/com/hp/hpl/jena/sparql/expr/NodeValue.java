@@ -974,7 +974,7 @@ public abstract class NodeValue extends ExprNode
     {
         LiteralLabel lit = node.getLiteral() ;
         
-        // 50% of the time of this method is in  isValidLiteral and the lexcial form parsing.
+        // 50% of the time of this method is in isValidLiteral and the lexical form parsing.
         
         try { // DatatypeFormatException - should not happen
             

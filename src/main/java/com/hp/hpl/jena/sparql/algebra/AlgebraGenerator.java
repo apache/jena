@@ -592,7 +592,7 @@ public class AlgebraGenerator
         // ---- BINDINGS
         if ( query.hasBindings() )
         {
-            Table table = TableFactory.create() ;
+            Table table = TableFactory.create(query.getBindingsVariables()) ;
             for ( Binding binding : query.getBindingsData() )
                 table.addBinding(binding) ;
             OpTable opTable = OpTable.create(table) ;

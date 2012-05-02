@@ -234,7 +234,7 @@ public class FormatterElement extends FormatterBase
         // QuerySrializer.outputDataBlock.
         
         List<Var> variables = el.getVars() ;
-        out.print("DATA ") ;
+        out.print("VALUES ") ;
         if ( variables.size() == 1 )
         {
             // Short form.

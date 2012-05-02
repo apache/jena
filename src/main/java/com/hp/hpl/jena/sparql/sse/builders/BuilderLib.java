@@ -172,4 +172,14 @@ public class BuilderLib
             msg = location.location()+": "+msg ;
         return msg ;
     }
+
+    public static ItemList skipTag(ItemList list, String tag)
+    {
+        if ( list.size() > 0 )
+        {
+            if ( list.get(0).isSymbol(tag) )
+                list = list.cdr() ;
+        }
+        return list ;
+    }
 }

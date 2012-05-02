@@ -39,6 +39,12 @@ public class TableN extends TableBase
 
     public TableN() {}
     
+    public TableN(List<Var> vars)
+    { 
+        if ( vars != null )
+            this.vars = vars ;
+    }
+    
     public TableN(QueryIterator qIter)
     {
         materialize(qIter) ;

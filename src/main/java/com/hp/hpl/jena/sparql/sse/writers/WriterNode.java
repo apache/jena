@@ -25,6 +25,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.sse.Tags ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
@@ -88,4 +89,16 @@ public class WriterNode
         }
         out.print(")") ;
     }
+
+    public static void outputVars(IndentedWriter out, List<Var> vars, SerializationContext sContext)
+    {
+        WriterLib.start(out, Tags.tagVars, WriterLib.NoSP) ;
+        for ( Var v : vars )
+        {
+            out.print(" ?") ;
+            out.print(v.getVarName()) ;
+        }
+        WriterLib.finish(out, Tags.tagVars) ;
+    }
+
 }

@@ -28,6 +28,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class BuilderNode
 {
@@ -97,6 +98,8 @@ public class BuilderNode
     
     public static List<Var> buildVars(ItemList list)
     {
+        list = BuilderLib.skipTag(list, Tags.tagVars) ;
+        
         List<Var> x = new ArrayList<Var>() ;
         for ( int i = 0 ; i < list.size() ; i++ )
         {

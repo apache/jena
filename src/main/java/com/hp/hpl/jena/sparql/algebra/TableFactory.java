@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.algebra.table.Table1 ;
 import com.hp.hpl.jena.sparql.algebra.table.TableEmpty ;
@@ -37,6 +39,9 @@ public class TableFactory
 
     public static Table create()
     { return new TableN() ; }
+    
+    public static Table create(List<Var> vars)
+    { return new TableN(vars) ; }
     
     public static Table create(QueryIterator queryIterator)
     { 

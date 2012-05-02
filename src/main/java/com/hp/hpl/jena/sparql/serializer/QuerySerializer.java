@@ -66,8 +66,6 @@ public class QuerySerializer implements QueryVisitor
         fmtExpr = formatterExpr ;
     }
     
-    
-    
     @Override
     public void startVisit(Query query)  {}
     

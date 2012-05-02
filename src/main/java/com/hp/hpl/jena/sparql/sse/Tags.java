@@ -35,6 +35,7 @@ public class Tags
     public static final String tagDefault       = "default" ;
     public static final String tagExec          = "exec" ;
     public static final String tagRow           = "row" ;
+    public static final String tagVars          = "vars" ;
 
     // RDF
     public static final String tagGraph         = "graph" ;

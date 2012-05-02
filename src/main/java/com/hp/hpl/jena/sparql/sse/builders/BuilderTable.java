@@ -18,8 +18,11 @@
 
 package com.hp.hpl.jena.sparql.sse.builders;
 
+import java.util.List ;
+
 import com.hp.hpl.jena.sparql.algebra.Table ;
 import com.hp.hpl.jena.sparql.algebra.TableFactory ;
+import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
@@ -37,6 +40,18 @@ public class BuilderTable
             // Null table;
             return TableFactory.createEmpty() ;
 
+        // Maybe vars.
+        List<Var> vars = null ; 
+        if ( list.size() > 1 )
+        {
+            Item item0 = list.get(1) ;
+            if ( item0.isTagged(Tags.tagVars) )
+            {
+                vars = BuilderNode.buildVarList(item0) ;
+                list = list.cdr() ;
+            }
+        }
+        
         if ( list.size() == 2 && list.get(1).isSymbol() )
         {
             //  Short hand for well known tables
@@ -48,7 +63,7 @@ public class BuilderTable
             BuilderLib.broken(list, "Don't recognized table symbol") ;
         }
         
-        Table table = TableFactory.create() ;
+        Table table = TableFactory.create(vars) ;
         
         int count = 0 ;
         Binding lastBinding = null ;

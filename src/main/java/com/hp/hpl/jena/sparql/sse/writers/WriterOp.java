@@ -360,7 +360,9 @@ public class WriterOp
                 return ;
             }
             
-            start(opTable, NL) ;
+            start(opTable, NoNL) ;
+            WriterNode.outputVars(out, opTable.getTable().getVars(), sContext) ;
+            out.println() ;
             WriterTable.outputPlain(out, opTable.getTable(), sContext);
             finish(opTable) ;
         }

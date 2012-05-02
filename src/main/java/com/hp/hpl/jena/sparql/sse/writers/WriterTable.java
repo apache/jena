@@ -35,7 +35,9 @@ public class WriterTable
 {
     public static void output(IndentedWriter out, Table table, SerializationContext sCxt)
     {
-        WriterLib.start(out, Tags.tagTable, WriterLib.NL) ;
+        WriterLib.start(out, Tags.tagTable, WriterLib.NoNL) ;
+        WriterNode.outputVars(out, table.getVars(), sCxt) ;
+        out.println() ;
         outputPlain(out, table, sCxt) ;
         WriterLib.finish(out, Tags.tagTable) ;
     }
