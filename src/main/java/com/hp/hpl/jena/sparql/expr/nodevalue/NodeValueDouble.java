@@ -54,7 +54,7 @@ public class NodeValueDouble extends NodeValue
     { 
         // Preserve lexical form
         if ( getNode() != null ) return super.asString() ;
-        return Double.toString(value) ;
+        return Utils.stringForm(value) ;
     }
     
     @Override
