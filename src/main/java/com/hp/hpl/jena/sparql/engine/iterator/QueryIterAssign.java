@@ -74,7 +74,8 @@ public class QueryIterAssign extends QueryIterProcessBinding
             // Check is already has a value; if so, must be sameValueAs
             if ( b.contains(v) )
             {
-                if ( mustBeNewVar )
+                // Optimization may linearize to push a stream through an (extend).  
+                if ( false && mustBeNewVar )
                     throw new QueryExecException("Already set: "+v) ;
                 
                 Node n2 = b.get(v) ;
