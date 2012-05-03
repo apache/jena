@@ -22,12 +22,14 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 import com.hp.hpl.jena.sparql.engine.binding.TestBindingStreams ;
+import com.hp.hpl.jena.sparql.engine.http.TestService;
 import com.hp.hpl.jena.sparql.engine.iterator.TestQueryIterSort ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
         TestBindingStreams.class
       , TestQueryIterSort.class
+      , TestService.class
 })
 
 public class TS_Engine {}
