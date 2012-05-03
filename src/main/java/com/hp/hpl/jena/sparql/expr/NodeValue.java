@@ -230,9 +230,7 @@ public abstract class NodeValue extends ExprNode
     // Deprecate calendar operations?
     // makeDateTime(Calendar)
     // makeDate(Calendar)
-    // makeNodeDateTime(Calendar)
-    // makeNodeDate(Calendar)
-    
+    @Deprecated
     public static NodeValue makeDateTime(Calendar cal)
     {
         XSDDateTime xdt = new XSDDateTime(cal) ;
@@ -241,6 +239,7 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDate(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdate) ; }
     
+    @Deprecated
     public static NodeValue makeDate(Calendar cal)
     { 
         XSDDateTime xdt = new XSDDateTime(cal) ;
