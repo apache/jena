@@ -21,20 +21,21 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 public interface NodeValueVisitor
 {
     public void visit(NodeValueBoolean nv) ;
-    public void visit(NodeValueDate nv) ;
-    public void visit(NodeValueDateTime nv) ;
+//    public void visit(NodeValueDate nv) ;
+//    public void visit(NodeValueDateTime nv) ;
     public void visit(NodeValueDecimal nv) ;
     public void visit(NodeValueDouble nv) ;
     public void visit(NodeValueFloat nv) ;
     public void visit(NodeValueInteger nv) ;
     public void visit(NodeValueNode nv) ;
     public void visit(NodeValueString nv) ;
-    public void visit(NodeValueTime nv) ;
+    public void visit(NodeValueDT nv) ;
+//    public void visit(NodeValueTime nv) ;
 	public void visit(NodeValueDuration nodeValueDuration);
 
-	public void visit(NodeValueGYear nv) ;
-    public void visit(NodeValueGYearMonth nv) ;
-    public void visit(NodeValueGMonth nv) ;
-    public void visit(NodeValueGMonthDay nv) ;
-    public void visit(NodeValueGDay nv) ;
+//	public void visit(NodeValueGYear nv) ;
+//    public void visit(NodeValueGYearMonth nv) ;
+//    public void visit(NodeValueGMonth nv) ;
+//    public void visit(NodeValueGMonthDay nv) ;
+//    public void visit(NodeValueGDay nv) ;
 }

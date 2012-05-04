@@ -22,28 +22,6 @@ package com.hp.hpl.jena.sparql.util;
 
 public class DateTimeStruct
 {
-    // V2
-    // Does gregorian stuff
-    
-    // "2001Z"      gYear
-    // "2001-01Z"   gYearMonth
-    // "--01Z"      gMonth
-    // "--01-30Z"   gMonthDay
-    // "---30Z"     gDay
-
-    
-//    private static final int idxNeg = 0 ;
-//    private static final int idxYear = 1 ;
-//    private static final int idxMonth = 2 ;
-//    private static final int idxDay = 3 ;
-//
-//    private static final int idxHour = 4 ;
-//    private static final int idxMinute = 5 ;
-//    private static final int idxSecond = 6 ;
-//    private static final int idxTimezone = 7 ;
-//    
-//    private String data[] = new String[8] ;
-    
     public boolean xsdDateTime  ;
     public String neg = null ;         // Null if none. 
     public String year = null ;

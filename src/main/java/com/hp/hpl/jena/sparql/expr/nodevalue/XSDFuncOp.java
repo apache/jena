@@ -34,6 +34,7 @@ import java.util.regex.Pattern ;
 
 import javax.xml.datatype.DatatypeConstants ;
 import javax.xml.datatype.Duration ;
+import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -889,8 +890,8 @@ public class XSDFuncOp
     
     private static int compareDateTimeFO(NodeValue nv1, NodeValue nv2)
     {
-        XSDDateTime dt1 = nv1.getDateTime() ;
-        XSDDateTime dt2 = nv2.getDateTime() ;
+        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
+        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
         
         int x = compareXSDDateTime(dt1, dt2) ;
         
@@ -899,7 +900,7 @@ public class XSDFuncOp
             NodeValue nv3 = fixupDateTime(nv1) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDateTime() ; 
+                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
                 x =  compareXSDDateTime(dt3, dt2) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -909,7 +910,7 @@ public class XSDFuncOp
             nv3 = fixupDateTime(nv2) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDateTime() ; 
+                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
                 x =  compareXSDDateTime(dt1, dt3) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -926,8 +927,8 @@ public class XSDFuncOp
     // This only differs by some "dateTime" => "date" 
     private static int compareDateFO(NodeValue nv1, NodeValue nv2)
     {
-        XSDDateTime dt1 = nv1.getDateTime() ;
-        XSDDateTime dt2 = nv2.getDateTime() ;
+        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
+        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
 
         int x = compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
         if ( x == XSDDateTime.INDETERMINATE )
@@ -935,7 +936,7 @@ public class XSDFuncOp
             NodeValue nv3 = fixupDate(nv1) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDateTime() ; 
+                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
                 x =  compareXSDDateTime(dt3, dt2) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -945,7 +946,7 @@ public class XSDFuncOp
             nv3 = fixupDate(nv2) ;
             if ( nv3 != null )
             {
-                XSDDateTime dt3 = nv3.getDateTime() ; 
+                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
                 x = compareXSDDateTime(dt1, dt3) ;
                 if ( x == XSDDateTime.INDETERMINATE )
                     throw new ARQInternalErrorException("Still get indeterminate comparison") ;
@@ -981,7 +982,7 @@ public class XSDFuncOp
         return nv ;
     }
 
-    private static int compareXSDDateTime(XSDDateTime dt1 , XSDDateTime dt2)
+    private static int compareXSDDateTime(XMLGregorianCalendar dt1 , XMLGregorianCalendar dt2)
     {
         // Returns codes are -1/0/1 but also 2 for "Indeterminate"
         // which occurs when one has a timezone and one does not
@@ -1098,7 +1099,7 @@ public class XSDFuncOp
         if ( ! nv.hasDateTime() )
             throw new ExprEvalTypeException("Not a date/time type: "+nv) ;
         
-        XSDDateTime xsdDT = nv.getDateTime() ;
+        XMLGregorianCalendar xsdDT = nv.getDateTime() ;
         
         if ( XSDDatatype.XSDdateTime.equals(xsd) )
         {
@@ -1106,7 +1107,7 @@ public class XSDFuncOp
             if ( nv.isDateTime() ) return nv ;
             if ( ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:dateTime: "+nv) ;
             // DateTime with time 00:00:00
-            String x = String.format("%04d-%02d-%02dT00:00:00", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+            String x = String.format("%04d-%02d-%02dT00:00:00", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1115,7 +1116,7 @@ public class XSDFuncOp
             // ==> Date
             if ( nv.isDate() ) return nv ;
             if ( ! nv.isDateTime() ) throw new ExprEvalTypeException("Can't cast to XSD:date: "+nv) ;
-            String x = String.format("%04d-%02d-%02d", xsdDT.getYears(), xsdDT.getMonths(),xsdDT.getDays()) ;
+            String x = String.format("%04d-%02d-%02d", xsdDT.getYear(), xsdDT.getMonth(),xsdDT.getDay()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1127,8 +1128,8 @@ public class XSDFuncOp
             // Careful foratting 
             DecimalFormat nf = new DecimalFormat("00.####") ;
             nf.setDecimalSeparatorAlwaysShown(false) ;
-            String x = nf.format(xsdDT.getSeconds()) ;
-            x = String.format("%02d:%02d:%s", xsdDT.getHours(), xsdDT.getMinutes(),x) ;
+            String x = nf.format(xsdDT.getSecond()) ;
+            x = String.format("%02d:%02d:%s", xsdDT.getHour(), xsdDT.getMinute(),x) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1137,7 +1138,7 @@ public class XSDFuncOp
             // ==> Year
             if ( nv.isGYear() ) return nv ;
             if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gYear: "+nv) ;
-            String x = String.format("%04d", xsdDT.getYears()) ;
+            String x = String.format("%04d", xsdDT.getYear()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1146,7 +1147,7 @@ public class XSDFuncOp
             // ==> YearMonth
             if ( nv.isGYearMonth() ) return nv ;
             if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gYearMonth: "+nv) ;
-            String x = String.format("%04d-%02d", xsdDT.getYears(), xsdDT.getMonths()) ;
+            String x = String.format("%04d-%02d", xsdDT.getYear(), xsdDT.getMonth()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1155,7 +1156,7 @@ public class XSDFuncOp
             // ==> Month
             if ( nv.isGMonth() ) return nv ;
             if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gMonth: "+nv) ;
-            String x = String.format("--%02d", xsdDT.getMonths()) ;
+            String x = String.format("--%02d", xsdDT.getMonth()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1164,7 +1165,7 @@ public class XSDFuncOp
             // ==> MonthDay
             if ( nv.isGMonthDay() ) return nv ;
             if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gMonthDay: "+nv) ;
-            String x = String.format("--%02d-%02d", xsdDT.getMonths(), xsdDT.getDays()) ;
+            String x = String.format("--%02d-%02d", xsdDT.getMonth(), xsdDT.getDay()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     
@@ -1173,7 +1174,7 @@ public class XSDFuncOp
             // Day
             if ( nv.isGDay() ) return nv ;
             if ( ! nv.isDateTime() && ! nv.isDate() ) throw new ExprEvalTypeException("Can't cast to XSD:gDay: "+nv) ;
-            String x = String.format("---%02d", xsdDT.getDays()) ;
+            String x = String.format("---%02d", xsdDT.getDay()) ;
             return NodeValue.makeNode(x, xsd) ;
         }
     

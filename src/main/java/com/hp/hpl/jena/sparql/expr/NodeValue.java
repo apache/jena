@@ -18,6 +18,22 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSD ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDboolean ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdate ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdateTime ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdecimal ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDdouble ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDduration ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDfloat ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgDay ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonth ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgMonthDay ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDinteger ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDstring ;
+import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDtime ;
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_BOOLEAN ;
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATE ;
 import static com.hp.hpl.jena.sparql.expr.ValueSpaceClassification.VSPACE_DATETIME ;
@@ -48,6 +64,7 @@ import java.util.Calendar ;
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
+import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
@@ -70,7 +87,6 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.* ;
-import com.hp.hpl.jena.vocabulary.XSD ;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -135,21 +151,23 @@ public abstract class NodeValue extends ExprNode
     public static final BigInteger IntegerZERO = BigInteger.ZERO ;
     public static final BigDecimal DecimalZERO = BigDecimal.ZERO ;
 
-    public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDDatatype.XSDboolean) ;
-    public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDDatatype.XSDboolean) ;
+    public static final NodeValue TRUE   = NodeValue.makeNode("true", XSDboolean) ;
+    public static final NodeValue FALSE  = NodeValue.makeNode("false", XSDboolean) ;
     
     public static final NodeValue nvZERO = NodeValue.makeNode(NodeConst.nodeZero) ;
     public static final NodeValue nvONE  = NodeValue.makeNode(NodeConst.nodeOne) ;
     
-    public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDDatatype.XSDdouble) ;
-    public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDDatatype.XSDdouble) ;
-    public static final NodeValue nvNegINF  = NodeValue.makeNode("-INF",XSDDatatype.XSDdouble) ;
+    public static final NodeValue nvNaN     = NodeValue.makeNode("NaN", XSDdouble) ;
+    public static final NodeValue nvINF     = NodeValue.makeNode("INF", XSDdouble) ;
+    public static final NodeValue nvNegINF  = NodeValue.makeNode("-INF",XSDdouble) ;
     
     public static final NodeValue nvEmptyString  = NodeValue.makeString("") ;
     
     // Use "==" for equality.
     private static final String strForUnNode = "node value nothing" ;
     public static final NodeValue nvNothing = NodeValue.makeNode(Node.createAnon(new AnonId("node value nothing"))) ;
+    
+    public static final String xsdNamespace = XSD+"#" ; 
     
     private static DatatypeFactory datatypefactory = null ;
     static
@@ -222,32 +240,42 @@ public abstract class NodeValue extends ExprNode
     { return new NodeValueDecimal(BigDecimal.valueOf(d)) ; } 
   
     public static NodeValue makeDecimal(String lexicalForm)
-    { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdecimal) ; }
+    { return NodeValue.makeNode(lexicalForm, XSDdecimal) ; }
 
     public static NodeValue makeDateTime(String lexicalForm)
-    { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdateTime) ; }
-
-    // Deprecate calendar operations?
-    // makeDateTime(Calendar)
-    // makeDate(Calendar)
-    @Deprecated
-    public static NodeValue makeDateTime(Calendar cal)
-    {
-        XSDDateTime xdt = new XSDDateTime(cal) ;
-        return new NodeValueDateTime(xdt) ; }
+    { return NodeValue.makeNode(lexicalForm, XSDdateTime) ; }
 
     public static NodeValue makeDate(String lexicalForm)
-    { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDdate) ; }
-    
-    @Deprecated
+    { return NodeValue.makeNode(lexicalForm, XSDdate) ; }
+
+    public static NodeValue makeDateTime(Calendar cal)
+    {
+        String lex = Utils.calendarToXSDDateTimeString(cal) ;
+        return NodeValue.makeNode(lex, XSDdateTime) ;
+    }
+
+    public static NodeValue makeDateTime(XMLGregorianCalendar cal)
+    {
+        String lex = cal.toXMLFormat() ;
+        Node node = Node.createLiteral(lex, XSDdateTime) ; 
+        return new NodeValueDT(lex, node) ;
+    }
+
     public static NodeValue makeDate(Calendar cal)
     { 
-        XSDDateTime xdt = new XSDDateTime(cal) ;
-        return new NodeValueDate(xdt) ;
+        String lex = Utils.calendarToXSDDateString(cal) ;
+        return NodeValue.makeNode(lex, XSDdate) ;
     }
     
+    public static NodeValue makeDate(XMLGregorianCalendar cal)
+    {
+        String lex = cal.toXMLFormat() ;
+        Node node = Node.createLiteral(lex, XSDdate) ; 
+        return new NodeValueDT(lex, node) ;
+    }
+
     public static NodeValue makeDuration(String lexicalForm)
-    { return NodeValue.makeNode(lexicalForm, XSDDatatype.XSDduration) ; }
+    { return NodeValue.makeNode(lexicalForm, XSDduration) ; }
 
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE ; }
@@ -307,55 +335,55 @@ public abstract class NodeValue extends ExprNode
 
     public static NodeValue makeNodeBoolean(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSD.xboolean.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDboolean.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeInteger(long v)
     {
-        NodeValue nv = makeNode(Long.toString(v), null, XSD.integer.getURI()) ;
+        NodeValue nv = makeNode(Long.toString(v), null, XSDinteger.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeInteger(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSD.integer.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDinteger.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeFloat(float f)
     {
-        NodeValue nv = makeNode(Utils.stringForm(f), null, XSD.xfloat.getURI()) ;
+        NodeValue nv = makeNode(Utils.stringForm(f), null, XSDfloat.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeFloat(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSD.xdouble.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDdouble.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeDouble(double v)
     {
-        NodeValue nv = makeNode(Utils.stringForm(v), null, XSD.xdouble.getURI()) ;
+        NodeValue nv = makeNode(Utils.stringForm(v), null, XSDdouble.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeDouble(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSD.xdouble.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDdouble.getURI()) ;
         return nv ;
     }
     
     public static NodeValue makeNodeDecimal(BigDecimal decimal)
     {
-        NodeValue nv = makeNode(Utils.stringForm(decimal), null, XSD.decimal.getURI()) ;
+        NodeValue nv = makeNode(Utils.stringForm(decimal), null, XSDdecimal.getURI()) ;
         return nv ;
     }
 
     public static NodeValue makeNodeDecimal(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, null, XSD.decimal.getURI()) ;
+        NodeValue nv = makeNode(lexicalForm, null, XSDdecimal.getURI()) ;
         return nv ;
     }
     
@@ -368,13 +396,13 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeNodeDateTime(Calendar date)
     {
         String lex = Utils.calendarToXSDDateTimeString(date) ;
-        NodeValue nv = makeNode(lex, XSDDatatype.XSDdateTime) ;
+        NodeValue nv = makeNode(lex, XSDdateTime) ;
         return nv ;
     }
     
     public static NodeValue makeNodeDateTime(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, XSDDatatype.XSDdateTime) ;
+        NodeValue nv = makeNode(lexicalForm, XSDdateTime) ;
         return nv ;
     }
     
@@ -382,13 +410,13 @@ public abstract class NodeValue extends ExprNode
     {
         //XSDDateTime dt = new XSDDateTime(date) ;
         String lex = Utils.calendarToXSDDateString(date) ;
-        NodeValue nv = makeNode(lex, XSDDatatype.XSDdate) ;
+        NodeValue nv = makeNode(lex, XSDdate) ;
         return nv ;
     }
     
     public static NodeValue makeNodeDate(String lexicalForm)
     {
-        NodeValue nv = makeNode(lexicalForm, XSDDatatype.XSDdate) ;
+        NodeValue nv = makeNode(lexicalForm, XSDdate) ;
         return nv ;
     }
     
@@ -894,10 +922,8 @@ public abstract class NodeValue extends ExprNode
     public BigDecimal  getDecimal()     { raise(new ExprEvalTypeException("Not a decimal: "+this)) ; return null ; }
     public float       getFloat()       { raise(new ExprEvalTypeException("Not a float: "+this)) ; return Float.NaN ; }
     public double      getDouble()      { raise(new ExprEvalTypeException("Not a double: "+this)) ; return Double.NaN ; }
-    public XSDDateTime getDateTime()    { raise(new ExprEvalTypeException("No DateTime value: "+this)) ; return null ; }
-//    public XSDDateTime getDate()        { raise(new ExprEvalException("Not a date: "+this)) ; return null ; }
-//    public XSDDateTime getTime()        { raise(new ExprEvalException("Not a time: "+this)) ; return null ; }
-//
+    // Value representation for all date and time values.
+    public XMLGregorianCalendar getDateTime()    { raise(new ExprEvalTypeException("No DateTime value: "+this)) ; return null ; }
 //    /*
 //        gYearMonth   dddd-mm
 //        gYear        dddd
@@ -905,11 +931,6 @@ public abstract class NodeValue extends ExprNode
 //        gDay         ---DD
 //        gMonth       --MM
 //    */
-//    public XSDDateTime getGYear()       { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
-//    public XSDDateTime getGYearMonth()  { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
-//    public XSDDateTime getGMonth()      { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
-//    public XSDDateTime getGMonthDay()   { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
-//    public XSDDateTime getGDay()        { raise(new ExprEvalException("Not a dateTime: "+this)) ; return null ; }
 
     
     public Duration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)) ; return null ; }
@@ -971,13 +992,26 @@ public abstract class NodeValue extends ExprNode
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node)
     {
+        if ( NodeUtils.hasLang(node) )
+            // Check for RDF 1.1!
+            return null ;
         LiteralLabel lit = node.getLiteral() ;
-        
-        // 50% of the time of this method is in isValidLiteral and the lexical form parsing.
-        
+        String lex = lit.getLexicalForm() ;
+        RDFDatatype datatype = lit.getDatatype() ;
+
+        // Quick check.
+        // Only XSD supported.
+        // And (for testing) roman numerals.
+        String datatypeURI = datatype.getURI() ;
+        if ( ! datatypeURI.startsWith(xsdNamespace) && ! enableRomanNumerals.getValue() )
+        {
+            // Not XSD.
+            return null ;
+        }
+
         try { // DatatypeFormatException - should not happen
             
-            if ( sameValueAsString && XSDDatatype.XSDstring.isValidLiteral(node.getLiteral()) ) 
+            if ( sameValueAsString && XSDstring.isValidLiteral(lit) ) 
                     // String - plain or xsd:string
                 return new NodeValueString(lit.getLexicalForm(), node) ;
             
@@ -991,9 +1025,10 @@ public abstract class NodeValue extends ExprNode
 
             // Order here is promotion order integer-decimal-float-double
             
-            if ( ! node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) ) 
+            if ( ! datatype.equals(XSDdecimal) ) 
             {
-                if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
+                // XSD integer and derived types 
+                if ( XSDinteger.isValidLiteral(lit) )
                 {
                     String s = node.getLiteralLexicalForm() ;
                     if ( s.startsWith("+") )
@@ -1006,13 +1041,13 @@ public abstract class NodeValue extends ExprNode
                 }
             }
             
-            if ( XSDDatatype.XSDdecimal.isValidLiteral(lit) )
+            if ( datatype.equals(XSDdecimal) && XSDdecimal.isValidLiteral(lit) )
             {
                 BigDecimal decimal = new BigDecimal(lit.getLexicalForm()) ;
                 return new NodeValueDecimal(decimal, node) ;
             }
             
-            if ( XSDDatatype.XSDfloat.isValidLiteral(lit) )
+            if ( datatype.equals(XSDfloat) && XSDfloat.isValidLiteral(lit) )
             {
                 // NB If needed, call to floatValue, then assign to double.
                 // Gets 1.3f != 1.3d right
@@ -1020,66 +1055,66 @@ public abstract class NodeValue extends ExprNode
                 return new NodeValueFloat(f, node) ;
             }
 
-            if ( XSDDatatype.XSDdouble.isValidLiteral(lit) )
+            if ( datatype.equals(XSDdouble) && XSDdouble.isValidLiteral(lit) )
             {
                 double d = ((Number)lit.getValue()).doubleValue() ;
                 return new NodeValueDouble(d, node) ;
             }
 
-            if ( XSDDatatype.XSDdateTime.isValidLiteral(lit) ) 
+            if ( datatype.equals(XSDdateTime) && XSDdateTime.isValidLiteral(lit) ) 
             {
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDateTime(dateTime, node) ;
+                return new NodeValueDT(lex, node) ;
             }
             
-            if ( XSDDatatype.XSDdate.isValidLiteral(lit) )
+            if ( datatype.equals(XSDdate) && XSDdate.isValidLiteral(lit) )
             {
                 // Jena datatype support works on masked dataTimes. 
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
-                return new NodeValueDate(dateTime, node) ;
+                return new NodeValueDT(lex, node) ;
             }
             
-            if ( XSDDatatype.XSDtime.isValidLiteral(lit) )
+            if ( datatype.equals(XSDtime) && XSDtime.isValidLiteral(lit) )
             {
                 // Jena datatype support works on masked dataTimes. 
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueTime(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
             
-            if ( XSDDatatype.XSDgYear.isValidLiteral(lit) )
+            if ( datatype.equals(XSDgYear) && XSDgYear.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueGYear(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
-            if ( XSDDatatype.XSDgYearMonth.isValidLiteral(lit) )
+            if ( datatype.equals(XSDgYearMonth) && XSDgYearMonth.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueGYearMonth(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
-            if ( XSDDatatype.XSDgMonth.isValidLiteral(lit) )
+            if ( datatype.equals(XSDgMonth) && XSDgMonth.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueGMonth(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
-            if ( XSDDatatype.XSDgMonthDay.isValidLiteral(lit) )
+            if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueGMonthDay(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
-            if ( XSDDatatype.XSDgDay.isValidLiteral(lit) )
+            if ( datatype.equals(XSDgDay) && XSDgDay.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
-                return new NodeValueGDay(time, node) ;
+                return new NodeValueDT(lex, node) ;
             }
             
-            if ( XSDDatatype.XSDduration.isValidLiteral(lit) )
+            if ( datatype.equals(XSDduration) && XSDduration.isValidLiteral(lit) )
             {
                 //XSDDuration duration = (XSDDuration)lit.getValue() ;
                 Duration jduration = createDuration(lit.getLexicalForm()) ;
                 return new NodeValueDuration(jduration, node) ;
             }
             
-            if ( XSDDatatype.XSDboolean.isValidLiteral(lit) )
+            if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) )
             {
                 boolean b = ((Boolean)lit.getValue()).booleanValue() ;
                 return new NodeValueBoolean(b, node) ;

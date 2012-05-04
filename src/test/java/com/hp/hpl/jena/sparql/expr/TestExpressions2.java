@@ -49,9 +49,9 @@ public class TestExpressions2 extends Assert
     @Test public void gregorian_eq_08()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
     @Test public void gregorian_eq_09()         { eval("'1999-01'^^xsd:gYearMonth != '2001Z'^^xsd:gYear", true) ; }
     
-    @Test public void gregorian_cmp_01()        { eval("'1999'^^xsd:gYear < '2000'^^xsd:gYear", true) ; }
-    @Test public void gregorian_cmp_02()        { eval("'1999'^^xsd:gYear > '2000'^^xsd:gYear", false) ; }
-    @Test public void gregorian_cmp_03()        { eval("'1999'^^xsd:gYear < '2000+01:00'^^xsd:gYear", true) ; }
+    @Test public void gregorian_cmp_01()        { eval("'1999'^^xsd:gYear < '2001'^^xsd:gYear", true) ; }
+    @Test public void gregorian_cmp_02()        { eval("'1999'^^xsd:gYear > '2001'^^xsd:gYear", false) ; }
+    @Test public void gregorian_cmp_03()        { eval("'1999'^^xsd:gYear < '2001+01:00'^^xsd:gYear", true) ; }
 
     @Test (expected=ExprEvalException.class)
     public void gregorian_cmp_04()              { eval("'1999'^^xsd:gYear < '1999+05:00'^^xsd:gYear") ; }

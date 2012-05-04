@@ -178,8 +178,8 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a dateTime: "+v, v.isDateTime()) ;
         assertFalse("A date: "+v, v.isDate()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
-        Calendar cal2 = v.getDateTime().asCalendar() ;
-        assertEquals("Not equal: "+v, cal1, cal2) ;
+        Calendar cal2 = v.getDateTime().toGregorianCalendar() ;
+        assertEquals("Not equal: "+v, 0, cal1.compareTo(cal2)) ;
     }
 
     @Test public void testDateTime5()
@@ -240,8 +240,8 @@ public class TestNodeValue extends TestCase
         assertTrue("Not a date: "+v, v.isDate()) ;
         assertFalse("A dateTime: "+v, v.isDateTime()) ;
         assertTrue("Not a node: "+v, v.hasNode()) ;
-        Calendar cal2 = v.getDateTime().asCalendar() ;
-        assertEquals("Not equal: "+v, cal1, cal2) ;
+        Calendar cal2 = v.getDateTime().toGregorianCalendar() ;
+        assertEquals("Not equal: "+v, 0, cal1.compareTo(cal2)) ; 
     }
 
     @Test public void testDate5()
