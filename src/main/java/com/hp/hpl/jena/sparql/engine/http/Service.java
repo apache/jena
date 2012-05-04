@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
@@ -45,25 +46,25 @@ public class Service
     /**
      * Use to set the HttpQuery.allowDeflate flag.
      */
-    public static final Symbol queryDeflate = Symbol.create(base + "queryDeflate");
+    public static final Symbol queryDeflate = ARQConstants.allocSymbol(base, "queryDeflate");
 
     /**
      * Use to set the HttpQuery.allowGZip flag.
      */
-    public static final Symbol queryGzip = Symbol.create(base + "queryGzip");
+    public static final Symbol queryGzip = ARQConstants.allocSymbol(base, "queryGzip");
 
     /**
      * Use to set the user id for basic auth. 
      */
-    public static final Symbol queryAuthUser = Symbol.create(base + "queryAuthUser");
+    public static final Symbol queryAuthUser = ARQConstants.allocSymbol(base, "queryAuthUser");
 
     /**
      * Use to set the user password for basic auth.
      */
-    public static final Symbol queryAuthPwd = Symbol.create(base + "queryAuthPwd");
+    public static final Symbol queryAuthPwd = ARQConstants.allocSymbol(base, "queryAuthPwd");
 
     /** 
-     * Use this Symbol to allow passing additional service contest variables 
+     * Use this Symbol to allow passing additional service context variables 
      * SERVICE <IRI> call.
      * Parameters need to be grouped by SERVICE <IRI>,  
      * a Map<String, Context> is assumed.
@@ -72,7 +73,7 @@ public class Service
      * 
      * @see com.hp.hpl.jena.sparql.engine.http.Service
      */
-    public static final Symbol serviceContext = Symbol.create(base + "serviceContext");
+    public static final Symbol serviceContext = ARQConstants.allocSymbol(base, "serviceContext");
 
     /**
      * Set timeout.  The value of this symbol gives the value of the timeout in milliseconds
@@ -84,7 +85,7 @@ public class Service
      * The first value is passed to HttpQuery.setConnectTimeout() the second, if it exists, is passed
      * to HttpQuery.setReadTimeout()
      */
-    public static final Symbol queryTimeout = Symbol.create(base + "queryTimeout");
+    public static final Symbol queryTimeout = ARQConstants.allocSymbol(base, "queryTimeout");
 
     public static QueryIterator exec(OpService op, Context context)
     {
@@ -101,17 +102,7 @@ public class Service
 
         //Explain.explain("HTTP", opRemote, context) ;
         
-        Query query ;
-//        if ( op.getServiceElement() != null )
-//        {
-// does not cope with substitution?
-//            query = QueryFactory.make() ;
-//            query.setQueryPattern(op.getServiceElement().getElement()) ;
-//            query.setQuerySelectType() ;
-//            query.setQueryResultStar(true) ;
-//        }
-//        else
-            query = OpAsQuery.asQuery(opRemote) ;
+        Query query = OpAsQuery.asQuery(opRemote) ;
             
         Explain.explain("HTTP", query, context) ;
         String uri = op.getService().getURI() ;
