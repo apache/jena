@@ -60,7 +60,7 @@ public class XSDFuncOp
     // http://www.w3.org/TR/xpath-functions/#op.numeric
     // http://www.w3.org/TR/xpath-functions/#comp.numeric
     
-    public static NodeValue add(NodeValue nv1, NodeValue nv2) // F&O numeric-add
+    public static NodeValue numAdd(NodeValue nv1, NodeValue nv2) // F&O numeric-add
     {
         switch (classifyNumeric("add", nv1, nv2))
         {
@@ -77,7 +77,7 @@ public class XSDFuncOp
         }
     }
     
-    public static NodeValue subtract(NodeValue nv1, NodeValue nv2) // F&O numeric-subtract
+    public static NodeValue numSubtract(NodeValue nv1, NodeValue nv2) // F&O numeric-subtract
     {
         switch (classifyNumeric("subtract", nv1, nv2))
         {
@@ -94,7 +94,7 @@ public class XSDFuncOp
         }
     }
     
-    public static NodeValue multiply(NodeValue nv1, NodeValue nv2) // F&O numeric-multiply
+    public static NodeValue numMultiply(NodeValue nv1, NodeValue nv2) // F&O numeric-multiply
     {
         switch (classifyNumeric("multiply", nv1, nv2))
         {
@@ -119,7 +119,7 @@ public class XSDFuncOp
         Also, INF or -INF divided by INF or -INF returns NaN.
      */
     
-    public static NodeValue divide(NodeValue nv1, NodeValue nv2) // F&O numeric-divide
+    public static NodeValue numDivide(NodeValue nv1, NodeValue nv2) // F&O numeric-divide
     {
         switch (classifyNumeric("divide", nv1, nv2))
         {

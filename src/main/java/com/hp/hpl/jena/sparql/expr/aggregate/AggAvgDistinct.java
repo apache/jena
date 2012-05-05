@@ -89,7 +89,7 @@ public class AggAvgDistinct extends AggregatorBase
                 if ( total == noValuesToAvg )
                     total = nv ;
                 else
-                    total = XSDFuncOp.add(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total) ;
             }
             else
                 throw new ExprEvalException("avg: not a number: "+nv) ;
@@ -102,7 +102,7 @@ public class AggAvgDistinct extends AggregatorBase
         {
             if ( count == 0 ) return noValuesToAvg ;
             NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.divide(total, nvCount) ;
+            return XSDFuncOp.numDivide(total, nvCount) ;
         }
 
         @Override

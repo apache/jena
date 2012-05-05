@@ -35,7 +35,7 @@ public class E_Add extends ExprFunction2
     public NodeValue eval(NodeValue x, NodeValue y)
     {
         if ( ARQ.isStrictMode() )
-            return XSDFuncOp.add(x, y) ;
+            return XSDFuncOp.numAdd(x, y) ;
 
         if ( true )
         {
@@ -44,7 +44,7 @@ public class E_Add extends ExprFunction2
             if ( ! x.isNumber() ||  ! y.isNumber() )
                 throw new ExprEvalTypeException("Operator '+' requires two numbers or two strings: got: "+x+" and "+y) ;
         }   
-        return XSDFuncOp.add(x, y) ;
+        return XSDFuncOp.numAdd(x, y) ;
     }
 
     @Override

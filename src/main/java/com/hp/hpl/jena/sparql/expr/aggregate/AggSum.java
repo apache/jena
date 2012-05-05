@@ -83,7 +83,7 @@ public class AggSum  extends AggregatorBase
                 if ( total == null )
                     total = nv ;
                 else
-                    total = XSDFuncOp.add(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total) ;
             }
             else
                 throw new ExprEvalException("Not a number: "+nv) ;

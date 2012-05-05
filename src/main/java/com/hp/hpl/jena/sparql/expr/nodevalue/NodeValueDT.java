@@ -45,27 +45,29 @@ public class NodeValueDT extends NodeValue
         { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
     }
     
-    final XMLGregorianCalendar datatime ;
+    final private XMLGregorianCalendar datetime ;
     
     public NodeValueDT(String lex, Node n)
     {
         super(n) ;
         // Java bug : Java6 gMonth with a timezone of Z causes IllegalArgumnentException
-        if ( isGMonth() )
+        if ( XSDgMonth.equals(getNode().getLiteralDatatype()) )
         {
             if ( lex.endsWith("Z") )
             {
                 lex = lex.substring(0, lex.length()-1) ;
-                datatime = datatypefactory.newXMLGregorianCalendar(lex) ;
-                datatime.setTimezone(0) ;
+                datetime = datatypefactory.newXMLGregorianCalendar(lex) ;
+                datetime.setTimezone(0) ;
                 return ;
             }
         }
-        datatime = datatypefactory.newXMLGregorianCalendar(lex) ;
+        datetime = datatypefactory.newXMLGregorianCalendar(lex) ;
     }
 
     // Look at datatype.
     // By doing this here, the check of valid lexical form must have been done to create the node.
+    
+   
     @Override
     public boolean isDateTime()     { return XSDdateTime.equals(getNode().getLiteralDatatype()) ; }
     @Override
@@ -84,7 +86,7 @@ public class NodeValueDT extends NodeValue
     public boolean isGDay()         { return XSDgDay.equals(getNode().getLiteralDatatype()) ; }
     
     @Override
-    public XMLGregorianCalendar getDateTime()    { return (XMLGregorianCalendar)datatime.clone() ; }
+    public XMLGregorianCalendar getDateTime()    { return (XMLGregorianCalendar)datetime.clone() ; }
 
     
     @Override

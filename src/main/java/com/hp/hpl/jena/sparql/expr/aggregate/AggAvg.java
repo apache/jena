@@ -93,7 +93,7 @@ public class AggAvg extends AggregatorBase
                 if ( total == noValuesToAvg )
                     total = nv ;
                 else
-                    total = XSDFuncOp.add(nv, total) ;
+                    total = XSDFuncOp.numAdd(nv, total) ;
             }
             else
             {
@@ -116,7 +116,7 @@ public class AggAvg extends AggregatorBase
                 //throw new ExprEvalException("avg: error in group") ; 
                 return null ;
             NodeValue nvCount = NodeValue.makeInteger(count) ;
-            return XSDFuncOp.divide(total, nvCount) ;
+            return XSDFuncOp.numDivide(total, nvCount) ;
         }
     }
 }

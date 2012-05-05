@@ -277,6 +277,9 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDuration(String lexicalForm)
     { return NodeValue.makeNode(lexicalForm, XSDduration) ; }
 
+    public static NodeValue makeDuration(Duration duration)
+    { return new NodeValueDuration(duration); }
+
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE ; }
     

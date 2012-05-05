@@ -60,7 +60,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeInteger(7) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not an integer: "+r, r.isInteger()) ;
         assertTrue("Not a NodeValueInteger: "+r, r instanceof NodeValueInteger) ;
         assertEquals("Wrong result", 12, r.getInteger().longValue()) ;
@@ -70,7 +70,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(4.3) ;
         NodeValue nv2 = NodeValue.makeDecimal(3.7) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 8, r.getDecimal().doubleValue(), accuracyExact_D ) ;
@@ -80,7 +80,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeFloat(7.5f) ;
         NodeValue nv2 = NodeValue.makeFloat(2.5f) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a float: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 10, r.getFloat(), accuracyExact_F ) ;
@@ -91,7 +91,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(7.5) ;
         NodeValue nv2 = NodeValue.makeDouble(2.5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 10, r.getDouble(), accuracyExact_D ) ;
@@ -102,7 +102,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeDecimal(7) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 12, r.getDecimal().longValue()) ;
@@ -112,7 +112,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(7) ;
         NodeValue nv2 = NodeValue.makeInteger(5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 12, r.getDecimal().longValue()) ;
@@ -122,7 +122,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeFloat(7) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a float: "+r, r.isFloat()) ;
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_F ) ;
@@ -132,7 +132,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeFloat(7) ;
         NodeValue nv2 = NodeValue.makeInteger(5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a float: "+r, r.isFloat()) ;
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_F ) ;
@@ -142,7 +142,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(5) ;
         NodeValue nv2 = NodeValue.makeDouble(7) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_D ) ;
@@ -152,7 +152,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(7) ;
         NodeValue nv2 = NodeValue.makeInteger(5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 12, r.getDouble(), accuracyExact_D ) ;
@@ -162,7 +162,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
         NodeValue nv2 = NodeValue.makeFloat(4.5f) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a Float: "+r, r.isFloat()) ;
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 8, r.getFloat(), accuracyExact_F) ;
@@ -172,7 +172,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeFloat(4.5f) ;
         NodeValue nv2 = NodeValue.makeDecimal(3.5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a Float: "+r, r.isFloat()) ;
         assertTrue("Not a NodeValueFloat: "+r, r instanceof NodeValueFloat) ;
         assertEquals("Wrong result", 8, r.getFloat(), accuracyExact_F) ;
@@ -181,7 +181,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
         NodeValue nv2 = NodeValue.makeDouble(4.5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 8, r.getDouble(), accuracyExact_D) ;
@@ -191,7 +191,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
         NodeValue nv2 = NodeValue.makeDecimal(3.5) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 8, r.getDouble(), accuracyExact_D ) ;
@@ -201,7 +201,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
         NodeValue nv2 = NodeValue.makeFloat(3.5f) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 8, r.getDouble(), accuracyExact_D ) ;
@@ -211,7 +211,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeFloat(4.5f) ;
         NodeValue nv2 = NodeValue.makeDouble(3.5d) ;
-        NodeValue r = XSDFuncOp.add(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numAdd(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 8, r.getDouble(), accuracyExact_D ) ;
@@ -222,7 +222,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(25) ;
         NodeValue nv2 = NodeValue.makeInteger(2) ;
-        NodeValue r = XSDFuncOp.divide(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numDivide(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 12.5, r.getDecimal().doubleValue(), accuracyExact_D) ;
@@ -234,7 +234,7 @@ public class TestXSDFuncOp extends TestCase
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeInteger(0) ;
         try {
-            NodeValue r = XSDFuncOp.divide(nv1, nv2) ;
+            NodeValue r = XSDFuncOp.numDivide(nv1, nv2) ;
             fail("No expection from .divide") ;
         } catch (ExprEvalException ex)
         { }
@@ -244,7 +244,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(1) ;
         NodeValue nv2 = NodeValue.makeDouble(0) ;
-        NodeValue r = XSDFuncOp.divide(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numDivide(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a +INF: "+r, r.getDouble()==Double.POSITIVE_INFINITY) ;
     }
@@ -253,7 +253,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeInteger(-1) ;
         NodeValue nv2 = NodeValue.makeDouble(-0) ;
-        NodeValue r = XSDFuncOp.divide(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numDivide(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a -INF: "+r, r.getDouble()==Double.NEGATIVE_INFINITY) ;
     }
@@ -262,7 +262,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
         NodeValue nv2 = NodeValue.makeDecimal(3.5) ;
-        NodeValue r = XSDFuncOp.subtract(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numSubtract(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 1d, r.getDouble(), accuracyExact_D ) ;
@@ -272,7 +272,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
         NodeValue nv2 = NodeValue.makeInteger(2) ;
-        NodeValue r = XSDFuncOp.subtract(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numSubtract(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertTrue("Wrong result", NodeValue.sameAs(NodeValue.makeDecimal(1.5), r) ) ;
@@ -282,7 +282,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDouble(4.5) ;
         NodeValue nv2 = NodeValue.makeDecimal(3.5) ;
-        NodeValue r = XSDFuncOp.multiply(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numMultiply(nv1, nv2) ;
         assertTrue("Not a double: "+r, r.isDouble()) ;
         assertTrue("Not a NodeValueDouble: "+r, r instanceof NodeValueDouble) ;
         assertEquals("Wrong result", 4.5d*3.5d, r.getDouble(), accuracyExact_D ) ;
@@ -292,7 +292,7 @@ public class TestXSDFuncOp extends TestCase
     {
         NodeValue nv1 = NodeValue.makeDecimal(3.5) ;
         NodeValue nv2 = NodeValue.makeInteger(2) ;
-        NodeValue r = XSDFuncOp.multiply(nv1, nv2) ;
+        NodeValue r = XSDFuncOp.numMultiply(nv1, nv2) ;
         assertTrue("Not a decimal: "+r, r.isDecimal()) ;
         assertTrue("Not a NodeValueDecimal: "+r, r instanceof NodeValueDecimal) ;
         assertEquals("Wrong result", 7L, r.getDecimal().longValue()) ;

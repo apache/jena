@@ -31,7 +31,7 @@ public class E_Multiply extends ExprFunction2
     }
     
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.multiply(x, y) ; }
+    public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.numMultiply(x, y) ; }
     
     @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Multiply(e1 , e2 ) ; }
