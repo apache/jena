@@ -26,6 +26,7 @@ public enum ValueSpaceClassification {
     VSPACE_TIME,
     VSPACE_DURATION,
     
+    // Collapse to VSPACE_DATETIME?
     VSPACE_G_YEAR,
     VSPACE_G_YEARMONTH,
     VSPACE_G_MONTHDAY,

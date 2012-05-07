@@ -23,6 +23,12 @@ import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DOUBLE ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_FLOAT ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_INTEGER ;
+import static javax.xml.datatype.DatatypeConstants.DAYS ;
+import static javax.xml.datatype.DatatypeConstants.HOURS ;
+import static javax.xml.datatype.DatatypeConstants.MINUTES ;
+import static javax.xml.datatype.DatatypeConstants.MONTHS ;
+import static javax.xml.datatype.DatatypeConstants.SECONDS ;
+import static javax.xml.datatype.DatatypeConstants.YEARS ;
 
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
@@ -1338,5 +1344,18 @@ public class XSDFuncOp
             idx++ ;
             sb.append(indicator) ;
         }
+    }
+    
+    public static boolean isYearMonth(Duration dur)
+    {
+        // Not dur.getXMLSchemaType()
+        return ( dur.isSet(YEARS) || dur.isSet(MONTHS) ) &&
+                 ! dur.isSet(DAYS) && ! dur.isSet(HOURS) && ! dur.isSet(MINUTES) && ! dur.isSet(SECONDS) ;
+    }
+
+    public static boolean isDayTime(Duration dur)
+    {
+        return !dur.isSet(YEARS) && ! dur.isSet(MONTHS) &&
+               ( dur.isSet(DAYS) || dur.isSet(HOURS) || dur.isSet(MINUTES) || dur.isSet(SECONDS) );
     }
 }

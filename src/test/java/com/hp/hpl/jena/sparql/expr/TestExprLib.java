@@ -24,6 +24,11 @@ import org.junit.Test ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 
 
+/** Break expression testing suite into parts
+ * @see TestExpressions
+ * @see TestExprLib
+ * @see TestNodeValue
+ */
 public class TestExprLib
 {
     @Test public void safeEqualityNot_01()      { testSafeEquality("123", false) ;}

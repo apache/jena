@@ -43,6 +43,11 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
+/** Break expression testing suite into parts
+* @see TestExpressions
+* @see TestExprLib
+* @see TestNodeValue
+*/
 public class TestExpressions
 {
     public final static int NO_FAILURE    = 100 ;

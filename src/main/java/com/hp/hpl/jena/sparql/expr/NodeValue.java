@@ -280,6 +280,9 @@ public abstract class NodeValue extends ExprNode
     public static NodeValue makeDuration(Duration duration)
     { return new NodeValueDuration(duration); }
 
+    public static NodeValue makeNodeDuration(Duration duration, Node node)
+    { return new NodeValueDuration(duration, node); }
+
     public static NodeValue makeBoolean(boolean b)
     { return b ? NodeValue.TRUE : NodeValue.FALSE ; }
     
@@ -411,7 +414,6 @@ public abstract class NodeValue extends ExprNode
     
     public static NodeValue makeNodeDate(Calendar date)
     {
-        //XSDDateTime dt = new XSDDateTime(date) ;
         String lex = Utils.calendarToXSDDateString(date) ;
         NodeValue nv = makeNode(lex, XSDdate) ;
         return nv ;
@@ -869,6 +871,8 @@ public abstract class NodeValue extends ExprNode
     /** getNode - return the node form - may be null (use .asNode() to force to a node) */
     public Node getNode() { return node ; }
     
+    public String getDatatypeURI() { return asNode().getLiteralDatatypeURI() ; }
+    
     public boolean hasNode() { return node != null ; }
     
     // ----------------------------------------------------------------
@@ -992,6 +996,12 @@ public abstract class NodeValue extends ExprNode
              
     }
 
+    // Jena code does not have these types (yet)
+    private static final String dtXSDdateTimeStamp       = XSD+"#dateTimeStamp" ; 
+    private static final String dtXSDdayTimeDuration    = XSD+"#dayTimeDuration" ; 
+    private static final String dtXSDyearMonthDuration  = XSD+"#yearMonthDuration" ; 
+    private static final String dtXSDprecisionDecimal   = XSD+"#precisionDecimal" ; 
+    
     // Returns null for unrecognized literal.
     private static NodeValue _setByValue(Node node)
     {
@@ -1064,7 +1074,9 @@ public abstract class NodeValue extends ExprNode
                 return new NodeValueDouble(d, node) ;
             }
 
-            if ( datatype.equals(XSDdateTime) && XSDdateTime.isValidLiteral(lit) ) 
+            // XXX Pending Jena update ... 
+            if ( ( datatype.equals(XSDdateTime) || dtXSDdateTimeStamp.equals(datatypeURI) ) &&
+                    XSDdateTime.isValid(lex) ) 
             {
                 XSDDateTime dateTime = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
@@ -1099,6 +1111,7 @@ public abstract class NodeValue extends ExprNode
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
                 return new NodeValueDT(lex, node) ;
             }
+            
             if ( datatype.equals(XSDgMonthDay) && XSDgMonthDay.isValidLiteral(lit) )
             {
                 XSDDateTime time = (XSDDateTime)lit.getValue() ;
@@ -1110,11 +1123,20 @@ public abstract class NodeValue extends ExprNode
                 return new NodeValueDT(lex, node) ;
             }
             
-            if ( datatype.equals(XSDduration) && XSDduration.isValidLiteral(lit) )
+            // XXX Pending Jena update ... 
+            if ( ( datatype.equals(XSDduration) || 
+                   dtXSDdayTimeDuration.equals(datatypeURI) || 
+                   dtXSDyearMonthDuration.equals(datatypeURI) ) &&
+                   XSDduration.isValid(lex) ) // use lex
             {
-                //XSDDuration duration = (XSDDuration)lit.getValue() ;
-                Duration jduration = createDuration(lit.getLexicalForm()) ;
-                return new NodeValueDuration(jduration, node) ;
+                Duration duration = datatypefactory.newDuration(lex) ;
+                
+                if ( dtXSDdayTimeDuration.equals(datatypeURI) && ! XSDFuncOp.isDayTime(duration) )
+                    return null ;
+                if ( dtXSDyearMonthDuration.equals(datatypeURI) && ! XSDFuncOp.isYearMonth(duration) )
+                    return null ;
+                
+                return new NodeValueDuration(duration, node) ;
             }
             
             if ( datatype.equals(XSDboolean) && XSDboolean.isValidLiteral(lit) )
@@ -1154,11 +1176,6 @@ public abstract class NodeValue extends ExprNode
     
     // ----------------------------------------------------------------
 
-    private static Duration createDuration(String lex)
-    {
-        return datatypefactory.newDuration(lex) ;
-    }
-    
     // Point to catch all exceptions.
     public static void raise(ExprException ex)
     {
@@ -1221,7 +1238,7 @@ public abstract class NodeValue extends ExprNode
             return false ;
         NodeValue nv = (NodeValue)other ;
         return asNode().equals(nv.asNode()) ;
-        // Not NodeFunctions.sameTerm (which smooshes language tags by case
+        // Not NodeFunctions.sameTerm (which smooshes language tags by case)
     }
 
     public abstract void visit(NodeValueVisitor visitor) ;

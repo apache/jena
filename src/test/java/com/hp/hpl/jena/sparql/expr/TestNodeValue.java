@@ -31,6 +31,11 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
+/** Break expression testing suite into parts
+ * @see TestExpressions
+ * @see TestExprLib
+ * @see TestNodeValue
+ */
 public class TestNodeValue extends TestCase
 {
     static final double doubleAccuracy = 0.00000001d ;
