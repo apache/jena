@@ -169,10 +169,10 @@ public abstract class NodeValue extends ExprNode
     
     public static final String xsdNamespace = XSD+"#" ; 
     
-    private static DatatypeFactory datatypefactory = null ;
+    public static DatatypeFactory xmlDatatypeFactory = null ;
     static
     {
-        try { datatypefactory = DatatypeFactory.newInstance() ; }
+        try { xmlDatatypeFactory = DatatypeFactory.newInstance() ; }
         catch (DatatypeConfigurationException ex)
         { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
     }
@@ -1129,7 +1129,7 @@ public abstract class NodeValue extends ExprNode
                    dtXSDyearMonthDuration.equals(datatypeURI) ) &&
                    XSDduration.isValid(lex) ) // use lex
             {
-                Duration duration = datatypefactory.newDuration(lex) ;
+                Duration duration = xmlDatatypeFactory.newDuration(lex) ;
                 
                 if ( dtXSDdayTimeDuration.equals(datatypeURI) && ! XSDFuncOp.isDayTime(duration) )
                     return null ;

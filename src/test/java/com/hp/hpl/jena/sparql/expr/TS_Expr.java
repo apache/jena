@@ -32,6 +32,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestExpressions2.class
     , TestFunctions.class
     , TestFunctions2.class
+    , TestNodeValueOps.class
     , TestOrdering.class 
     , TestRegex.class
     , TestXSDFuncOp.class
