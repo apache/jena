@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueOps ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
 public class E_Divide extends ExprFunction2
@@ -31,7 +33,13 @@ public class E_Divide extends ExprFunction2
     }
     
     @Override
-    public NodeValue eval(NodeValue x, NodeValue y) { return XSDFuncOp.numDivide(x, y) ; }
+    public NodeValue eval(NodeValue x, NodeValue y)
+    {
+        if ( ARQ.isStrictMode() )
+            return XSDFuncOp.numDivide(x, y) ;
+
+        return NodeValueOps.divisionNV(x, y) ;
+    }
     
     @Override
     public Expr copy(Expr e1, Expr e2) {  return new E_Divide(e1 , e2 ) ; }

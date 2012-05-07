@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueOps ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 
 public class E_Add extends ExprFunction2
@@ -37,14 +38,7 @@ public class E_Add extends ExprFunction2
         if ( ARQ.isStrictMode() )
             return XSDFuncOp.numAdd(x, y) ;
 
-        if ( true )
-        {
-            if ( x.isString() && y.isString() )
-                return NodeValue.makeString(x.asString()+y.asString()) ;
-            if ( ! x.isNumber() ||  ! y.isNumber() )
-                throw new ExprEvalTypeException("Operator '+' requires two numbers or two strings: got: "+x+" and "+y) ;
-        }   
-        return XSDFuncOp.numAdd(x, y) ;
+        return NodeValueOps.additionNV(x, y) ;
     }
 
     @Override

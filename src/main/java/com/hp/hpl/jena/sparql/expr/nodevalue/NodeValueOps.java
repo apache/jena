@@ -35,7 +35,6 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.expr.ExprEvalTypeException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.ValueSpaceClassification ;
@@ -113,8 +112,6 @@ public class NodeValueOps
         
         if ( vs1.equals(VSPACE_NUM) && vs2.equals(VSPACE_NUM) )
             return XSDFuncOp.numAdd(nv1, nv2) ;
-        if ( ARQ.isStrictMode() )
-            throw new ExprEvalTypeException("Operator '+' requires two numbers: got: "+nv1+" and "+nv2) ;
         
         if ( vs1.equals(VSPACE_STRING) && vs2.equals(VSPACE_STRING) )
             return NodeValue.makeString(nv1.asString()+nv2.asString()) ;
@@ -177,8 +174,6 @@ public class NodeValueOps
         
         if ( vs1.equals(VSPACE_NUM) && vs2.equals(VSPACE_NUM) )
             return XSDFuncOp.numSubtract(nv1, nv2) ;
-        if ( ARQ.isStrictMode() )
-            throw new ExprEvalTypeException("Operator '-' requires two numbers: got: "+nv1+" and "+nv2) ;
         
         if ( vs1.equals(VSPACE_DURATION) && vs2.equals(VSPACE_DURATION) )
         {
@@ -247,8 +242,7 @@ public class NodeValueOps
         
         if ( vs1.equals(VSPACE_NUM) && vs2.equals(VSPACE_NUM) )
             return XSDFuncOp.numMultiply(nv1, nv2) ;
-        if ( ARQ.isStrictMode() )
-            throw new ExprEvalTypeException("Operator '*' requires two numbers: got: "+nv1+" and "+nv2) ;
+
         if ( vs1.equals(VSPACE_DURATION) && vs2.equals(VSPACE_NUM) )
         {
             // ONLY defined for dayTime.
@@ -271,8 +265,7 @@ public class NodeValueOps
         
         if ( vs1.equals(VSPACE_NUM) && vs2.equals(VSPACE_NUM) )
             return XSDFuncOp.numDivide(nv1, nv2) ;
-//        if ( ARQ.isStrictMode() )
-//            throw new ExprEvalTypeException("Operator '*' requires two numbers: got: "+nv1+" and "+nv2) ;
+
         throw new ExprEvalTypeException("Operator '/' : Undefined division: "+nv1+" and "+nv2) ; 
     }
 
