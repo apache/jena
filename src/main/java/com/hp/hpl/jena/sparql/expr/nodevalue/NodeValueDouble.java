@@ -20,6 +20,8 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 
 //import java.math.BigDecimal;
 
+import java.math.BigDecimal ;
+
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
@@ -41,6 +43,9 @@ public class NodeValueDouble extends NodeValue
     // Does not provide getFloat
     @Override
     public double getDouble()  { return value ; }
+
+    @Override
+    public BigDecimal getDecimal()  { return BigDecimal.valueOf(value) ; }
 
     @Override
     protected Node makeNode()

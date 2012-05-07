@@ -160,10 +160,6 @@ public class XSDFuncOp
     //private static BigDecimal decimalDivide(BigDecimal d1, BigDecimal d2)
     private static NodeValue decimalDivide(BigDecimal d1, BigDecimal d2)
     {
-        // Java 1.5-ism BigDecimal.divide(BigDecimal) -- but fails for 1/3 anyway.
-        // return d1.divide(d2) ;
-        // The one downside here is that the precision is always extended 
-        // even when unnecessary.
         try {
             BigDecimal d3 = d1.divide(d2, DIVIDE_PRECISION, BigDecimal.ROUND_FLOOR) ; 
             return messAroundWithBigDecimalFormat(d3) ;
@@ -188,14 +184,15 @@ public class XSDFuncOp
         // Has a DOT.
         
         int i = x.length()-1;
-        while ( i > dotIdx && x.charAt(i) == '0' )
+        // i+1 at least leave ".0" 
+        while ( i+1 > dotIdx && x.charAt(i) == '0' )
             i -- ;
         if ( i < x.length()-1)
             // And trailing zeros.
             x = x.substring(0, i+1) ;   
 
         // Avoid as expensive.
-        //x = x.replaceAll("0*$", "") ;
+        //x = x.replaceAll("0+$", "") ;
         return NodeValue.makeNode(x, XSDDatatype.XSDdecimal) ;
     }
     
