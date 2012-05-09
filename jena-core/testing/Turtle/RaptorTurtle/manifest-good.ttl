@@ -1,0 +1,155 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix tt:     <http://jena.hpl.hp.com/2005/12/test-turtle#> .
+
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Good turtle tests from Raptor" ;
+    mf:entries
+    ( 
+      # Good tests
+
+      [  mf:name    "test-00" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-00.ttl> ;
+                      tt:inputIRI 
+            <http://www.w3.org/2001/sw/DataAccess/df1/tests/test-00.ttl> ;
+                    ] ;
+         mf:result  [ tt:output <test-00.out> ] ;
+      ]
+
+      [  mf:name    "test-01" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-01.ttl> ] ;
+         mf:result  [ tt:output <test-01.out> ] ;
+      ]
+
+      [  mf:name    "test-02" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-02.ttl> ] ;
+         mf:result  [ tt:output <test-02.out> ] ;
+      ]
+
+      [  mf:name    "test-03" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-03.ttl> ] ;
+         mf:result  [ tt:output <test-03.out> ] ;
+      ]
+
+      [  mf:name    "test-04" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-04.ttl> ] ;
+         mf:result  [ tt:output <test-04.out> ] ;
+      ]
+
+      [  mf:name    "test-05" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-05.ttl> ] ;
+         mf:result  [ tt:output <test-05.out> ] ;
+      ]
+
+      [  mf:name    "test-06" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-06.ttl> ] ;
+         mf:result  [ tt:output <test-06.out> ] ;
+      ]
+
+      [  mf:name    "test-07" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-07.ttl> ] ;
+         mf:result  [ tt:output <test-07.out> ] ;
+      ]
+
+      [  mf:name    "test-08" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-08.ttl> ] ;
+         mf:result  [ tt:output <test-08.out> ] ;
+      ]
+
+      [  mf:name    "test-09" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-09.ttl> ] ;
+         mf:result  [ tt:output <test-09.out> ] ;
+      ]
+
+      [  mf:name    "test-10" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-10.ttl> ] ;
+         mf:result  [ tt:output <test-10.out> ] ;
+      ]
+
+      [  mf:name    "test-11" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-11.ttl> ] ;
+         mf:result  [ tt:output <test-11.out> ] ;
+      ]
+
+      [  mf:name    "test-12" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-12.ttl> ] ;
+         mf:result  [ tt:output <test-12.out> ] ;
+      ]
+
+      [  mf:name    "test-13" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-13.ttl> ] ;
+         mf:result  [ tt:output <test-13.out> ] ;
+      ]
+
+      [  mf:name    "test-14" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-14.ttl> ] ;
+         mf:result  [ tt:output <test-14.out> ] ;
+      ]
+
+      [  mf:name    "test-15" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-15.ttl> ] ;
+         mf:result  [ tt:output <test-15.out> ] ;
+      ]
+
+      [  mf:name    "test-16" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <test-16.ttl> ] ;
+         mf:result  [ tt:output <test-16.out> ] ;
+      ]
+
+      [  mf:name    "rdf-schema" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <rdf-schema.ttl> ] ; 
+         mf:result  [ tt:output <rdf-schema.out> ] ;
+      ]
+
+      [  mf:name    "rdfq-results" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <rdfq-results.ttl> ;
+                      tt:inputIRI
+            <http://www.w3.org/2001/sw/DataAccess/df1/tests/rdfq-results.ttl> ;
+                    ] ; 
+         mf:result  [ tt:output <rdfq-results.out> ] ;
+      ]
+
+      [  mf:name    "rdfs-namespace" ;
+         rdf:type   tt:TestInOut ;
+         mf:action  [ tt:input <rdfs-namespace.ttl> ] ; 
+         mf:result  [ tt:output <rdfs-namespace.out> ] ;
+      ]
+    ).

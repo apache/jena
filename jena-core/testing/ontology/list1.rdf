@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf   'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs  'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF
+    xmlns:rdf   ="&rdf;"
+    xmlns:rdfs  ="&rdfs;"
+    xml:base    ="uri:urn:x-rdf:test"
+    xmlns       ="uri:urn:x-rdf:test#"
+>
+
+<rdf:Description rdf:ID="root">
+   <p rdf:parseType="Collection">
+    <rdf:Description rdf:ID="a" />
+   </p>
+</rdf:Description>
+
+</rdf:RDF>

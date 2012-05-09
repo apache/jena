@@ -1,0 +1,28 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test002.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+# 
+#####################################################################
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#bag1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#bag2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+<http://example.org/b> <http://example.org/otherProp> "A literal" .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#bag2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st2> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/b> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/otherProp> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "A literal" .
+<http://example.org/a> <http://example.org/prop> <http://example.org/b> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#bag1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st1> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://example.org/a> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test002.rdf#st1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://example.org/b> .
+

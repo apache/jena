@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<responses
+  xmlns="http://dl.kr.org/dig/2003/02/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/2003/02/lang      http://dl-web.man.ac.uk/dig/2003/02/dig.xsd">
+  <conceptSet id="q0">
+  	<synonyms>
+  		<catom name="http://example.org/foo#A" />
+  		<catom name="http://example.org/foo#B" />
+  	</synonyms>
+  </conceptSet>
+</responses>

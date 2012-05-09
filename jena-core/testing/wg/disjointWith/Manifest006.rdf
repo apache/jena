@@ -1,0 +1,39 @@
+<!--++ disjointWith/Manifest006.rdf ** generated using webont test editor. ++-->
+<!--++ Created 25 Jul 2003 19:52:46 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest006.rdf,v 1.5 2003-12-05 05:09:26 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/disjointWith/Manifest006'
+>
+<otest:ConsistencyTest rdf:ID='test'>
+   <rtest:status>EXTRACREDIT</rtest:status><rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Oct/0040"/>
+   <dc:creator>Jeremy J. Carroll</dc:creator>
+   <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#disjointWith' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:description rdf:parseType='Literal'>
+If the owl:disjointWith edges in the graph form
+undirected complete subgraphs which share blank nodes
+then this is not within OWL DL.</rtest:description>
+   <rtest:inputDocument>
+         <rtest:RDF-XML-Document rdf:about='consistent006' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+         </rtest:RDF-XML-Document>
+   </rtest:inputDocument>
+</otest:ConsistencyTest >
+</rdf:RDF>

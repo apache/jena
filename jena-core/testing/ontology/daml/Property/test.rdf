@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+
+<daml:Property rdf:ID="p">
+	<rdfs:subPropertyOf>
+		<daml:Property rdf:ID="q" />
+	</rdfs:subPropertyOf>
+	<rdfs:domain>
+		<daml:Class rdf:ID="ClassA" />
+	</rdfs:domain>
+	<rdfs:range>
+		<daml:Class rdf:ID="ClassB" />
+	</rdfs:range>
+	<daml:samePropertyAs>
+		<daml:Property rdf:ID="r" />
+	</daml:samePropertyAs>
+	<daml:inverseOf>
+		<daml:Property rdf:ID="s" />
+	</daml:inverseOf>
+</daml:Property>
+
+
+</rdf:RDF>

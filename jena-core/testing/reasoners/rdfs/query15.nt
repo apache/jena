@@ -1,0 +1,3 @@
+# List (p,type,Property)
+####################################
+<http://www.hpl.hp.com/semweb/2003/eg#p> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .

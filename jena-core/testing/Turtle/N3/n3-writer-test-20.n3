@@ -1,0 +1,13 @@
+@prefix a: <http://foo/a#> .
+@prefix : <#> .
+
+:test :comment "Shared RDF lists tails" .
+
+:a :p :list .
+:b :p :list .
+
+:list :- ("1" "2") .
+
+("a" "b") .
+
+:list2 :- ("3" "4") .

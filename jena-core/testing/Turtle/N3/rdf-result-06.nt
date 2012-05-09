@@ -1,0 +1,4 @@
+# cwm: Tests/rdf-test-06.n3 => Tests/rdf-result-06.nt
+    
+    <file:///base/rdf-test-06.n3#>     <file:///base/rdf-test-06.n3#p> "v" .
+    

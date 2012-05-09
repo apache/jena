@@ -1,0 +1,19 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://incubator.apache.org/jena/2011/10/testont/b#"
+  xml:base  ="http://incubator.apache.org/jena/2011/10/testont/b"
+>
+
+<owl:Ontology rdf:about="">
+</owl:Ontology>
+
+<owl:Class rdf:ID="B">
+    <owl:intersectionOf rdf:parseType="Collection">
+        <rdf:Description rdf:ID="y0" />
+        <rdf:Description rdf:ID="y1" />
+    </owl:intersectionOf>
+</owl:Class>
+
+</rdf:RDF>

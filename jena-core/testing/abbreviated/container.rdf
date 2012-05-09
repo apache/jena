@@ -1,0 +1,27 @@
+<!-- $Id: container.rdf,v 1.2 2003-04-02 08:58:16 jeremy_carroll Exp $ -->
+
+<!-- MUST contain rdf:li -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:eg="http://www.example.org/2001/03/#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+>
+
+
+<rdfs:Class rdf:ID="C">
+  <rdf:li>foo</rdf:li>
+  <rdf:_2 eg:rubbish="a" />
+  <eg:a />
+  <rdf:li rdf:nodeID="x" />
+  <rdf:li rdf:nodeID="x" />
+  <eg:b> 
+    <rdf:Description>
+     <eg:c rdf:resource="#aa"/> 
+    </rdf:Description>
+  </eg:b>
+  <rdf:li eg:z="foobar" />
+</rdfs:Class>
+
+
+</rdf:RDF>

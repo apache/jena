@@ -1,0 +1,13 @@
+// Test the @prefix and @include operations
+
+@prefix p1: <http://jena.hpl.hp.com/newprefix#>
+@prefix p2: <http://jena.hpl.hp.com/newprefix2#>.
+
+-> (p1:A p2:p p1:foo).
+
+@include <RDFS>.
+
+-> (p1:A rdfs:subClassOf p1:B).
+-> (p1:B rdfs:subClassOf p1:C).
+
+@include <file:testing/reasoners/include.rules>.

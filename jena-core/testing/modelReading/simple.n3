@@ -1,0 +1,18 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xyz:        <http://jena.hpl.hp.com/2003/08/xyz#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+xyz:MakerSpec           rdf:type     rdfs:Class .
+xyz:FileMakerSpec       rdf:type     rdfs:Class .
+xyz:MemMakerSpec        rdf:type     rdfs:Class .
+xyz:RDBMakerSpec        rdf:type     rdfs:Class .
+xyz:ModelSpec           rdf:type     rdfs:Class .
+xyz:PlainModelSpec      rdf:type     rdfs:Class .
+xyz:InfModelSpec        rdf:type     rdfs:Class .
+xyz:OntModelSpec        rdf:type     rdfs:Class .
+
+xyz:MemMakerSpec        rdfs:subClassOf     xyz:MakerSpec .
+xyz:FileMakerSpec       rdfs:subClassOf     xyz:MakerSpec .
+xyz:RDBMakerSpec        rdfs:subClassOf     xyz:MakerSpec .
+        

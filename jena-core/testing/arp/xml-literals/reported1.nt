@@ -1,0 +1,2 @@
+_:A <http://example.org/representacionXul> " \n<?xml-stylesheet href=\"/sistema-acceso/css/bindings.css\"  type=\"text/css\"?> \n<?xul-overlay href=\"/sistema-acceso/xul/c4d_common.xul\"?> \n<xul:window xmlns:xul=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\" ID=\"Simulacion\" title=\"Pantalla de Simulaci\u00f3n\"> \n<vbox xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\"></vbox> \n</xul:window> <!--\nA comment.\n-->\n"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+_:A <http://example.org/foo> "bar" .

@@ -1,0 +1,31 @@
+<!--++ someValuesFrom/conclusions001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 12 Dec 2002 16:38:48 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions001.rdf,v 1.6 2003-12-05 05:09:28 jeremy_carroll Exp $
+-->
+<!--
+A simple example.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/someValuesFrom/premises001#"
+    xml:base="http://www.w3.org/2002/03owlt/someValuesFrom/conclusions001" >
+    <rdf:Description rdf:about="premises001#i">
+        <first:p>
+           <first:c />
+         </first:p>
+    </rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,17 @@
+# cwm: Tests/rdf-test-18.n3 => Tests/rdf-result-18.nt
+# Tweaked for no rdf:List generation
+    
+    <file:///base/rdf-test-18.n3#a>     <file:///base/rdf-test-18.n3#b> _:a_g1 .
+    
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:a_g0 .
+    
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a_g3 .
+    
+    <file:///base/rdf-test-18.n3#d1>     <file:///base/rdf-test-18.n3#e1> _:a_g0 .
+    
+    <file:///base/rdf-test-18.n3#d2>     <file:///base/rdf-test-18.n3#e2> _:a_g2 .
+    
+    _:a_g3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:a_g2 .
+    
+    _:a_g3     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    

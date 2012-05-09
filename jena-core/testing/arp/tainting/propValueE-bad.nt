@@ -1,0 +1,3 @@
+_:jA28 <http://example.org/name> <http://www.example.org/b> .
+_:jA28 <http://example.org/name> <http://www.example.org/c> .
+_:jA28 <http://example.org/name> "\n           text\n        " .

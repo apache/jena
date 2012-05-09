@@ -1,0 +1,12 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$JENAROOT" = "" ]
+then
+    echo "JENAROOT not set" 1>&2
+    exit 1
+    fi
+
+CP="$($JENAROOT/bin/jena_path)"
+
+java $SOCKS -cp "$CP" jena.rdfcompare "$@"

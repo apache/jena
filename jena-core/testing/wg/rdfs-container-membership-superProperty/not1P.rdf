@@ -1,0 +1,14 @@
+
+<!-- Processed by Id: cwm.py,v 1.92 2002/03/22 21:36:00 timbl Exp -->
+<!--     using base bogus:-->
+
+
+<rdf:RDF xmlns="http://example/stuff#"
+    xmlns:log="http://www.w3.org/2000/10/swap/log#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <rdf:Description rdf:about="http://example/stuff#something">
+        <rdfs:member rdf:resource="http://example/stuff#somethingElse"/>
+    </rdf:Description>
+</rdf:RDF>

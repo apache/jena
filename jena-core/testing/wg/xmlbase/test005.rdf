@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: xml:base has normal xml scoping rules applying.
+  Author: Jeremy Carroll (jjc@hpl.hp.com)
+
+  $Id: test005.rdf,v 1.2 2005-08-04 09:53:19 jeremy_carroll Exp $
+-->
+
+<foo>
+<bar xml:base="http://example.org/dir/file" >
+</bar>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         >
+
+ <rdf:Description rdf:ID="frag" eg:value="v" />
+
+</rdf:RDF>
+</foo>

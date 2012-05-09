@@ -1,0 +1,2419 @@
+<!--++ miscellaneous/ZZconsistent001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 25 Jul 2003 19:04:02 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: wineRenamed.rdf,v 1.1 2005-10-07 13:48:06 jeremy_carroll Exp $
+-->
+<!--
+ZZWine example taken from the guide.
+-->
+<!-- Author: the Guide editors -->
+<!DOCTYPE owl [
+     <!ENTITY vin  "http://www.w3.org/2002/03owlt/miscellaneous/ZZconsistent001#" >
+     <!ENTITY food "http://www.w3.org/2002/03owlt/miscellaneous/ZZconsistent002#" >
+     <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+   ]>
+
+<rdf:RDF
+  xmlns     = "&vin;"
+  xmlns:vin = "&vin;"
+  xml:base  = "&vin;"
+  xmlns:food= "&food;"
+  xmlns:owl = "&owl;"
+  xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#"
+  >
+
+  <owl:Ontology rdf:about="">
+    <rdfs:comment>An example OWL ontology</rdfs:comment>
+    <owl:priorVersion>
+      <owl:Ontology rdf:about="http://www.example.org/ZZwine-020303"/>
+    </owl:priorVersion>
+    <owl:imports rdf:resource="http://www.w3.org/2002/03owlt/miscellaneous/ZZconsistent002"/>
+    <rdfs:comment>Derived from the DAML ZZWine ontology at 
+      http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
+      Substantially changed, in particular the ZZRegion based relations.
+    </rdfs:comment>
+    <rdfs:label>ZZWine Ontology</rdfs:label>
+  </owl:Ontology>
+  
+  <owl:Class rdf:ID="ZZWine">
+    <rdfs:subClassOf rdf:resource="&food;ZZPotableLiquid" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasMaker" />
+ <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasMaker" />
+ <owl:allValuesFrom rdf:resource="#ZZZZWinery" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+  <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn"/> 
+        <owl:someValuesFrom rdf:resource="&vin;ZZRegion"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:label xml:lang="en">wine</rdfs:label>
+    <rdfs:label xml:lang="fr">vin</rdfs:label>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZVintage">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#hasZZZZVintageYear"/>  
+        <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+
+  <owl:Class rdf:ID="ZZZZWineZZGrape">
+    <rdfs:subClassOf rdf:resource="&food;ZZGrape" />
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZWhiteZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZWhiteZZTableZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZTableZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZWhiteNonZZZZSweetZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZZZWhiteZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZDry" />
+              <owl:Thing rdf:about="#OffZZDry" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZWhiteZZLoire">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLoire" />
+      <owl:Class rdf:about="#ZZZZWhiteZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#ZZWhiteZZLoire">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZZZCheninBlancZZGrape" />
+              <owl:Thing rdf:about="#ZZZZPinotBlancZZGrape" />
+              <owl:Thing rdf:about="#ZZZZSauvignonBlancZZGrape" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZWhiteZZBurgundy">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBurgundy" />
+      <owl:Class rdf:about="#ZZZZWhiteZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#ZZWhiteZZBurgundy">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZChardonnayZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZWhiteZZBordeaux">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBordeaux" />
+      <owl:Class rdf:about="#ZZZZWhiteZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#ZZWhiteZZBordeaux">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZZZSemillonZZGrape" />
+              <owl:Thing rdf:about="#ZZZZSauvignonBlancZZGrape" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZRegion" />
+
+  <owl:ObjectProperty rdf:ID="ZZlocatedIn">
+    <rdf:type rdf:resource="&owl;TransitiveProperty" />
+    <rdfs:domain rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+    <rdfs:range rdf:resource="#ZZRegion" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="adjacentZZRegion">
+    <rdf:type rdf:resource="&owl;SymmetricProperty" />
+    <rdfs:domain rdf:resource="#ZZRegion" />
+    <rdfs:range rdf:resource="#ZZRegion" />
+  </owl:ObjectProperty>
+  
+  <owl:Class rdf:ID="ZZZZVintageYear" />
+
+  <owl:DatatypeProperty rdf:ID="ZZyearValue">
+    <rdfs:domain rdf:resource="#ZZZZVintageYear" />    
+    <rdfs:range  rdf:resource="&xsd;positiveInteger" />
+  </owl:DatatypeProperty>
+  
+  <ZZZZVintageYear rdf:ID="ZZYear1998">
+    <ZZyearValue rdf:datatype="&xsd;positiveInteger">1998</ZZyearValue>
+  </ZZZZVintageYear>
+
+  <owl:ObjectProperty rdf:ID="hasZZZZVintageYear">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="#ZZVintage" />
+    <rdfs:range  rdf:resource="#ZZZZVintageYear" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="ZZmadeFromZZGrape">
+    <rdfs:subPropertyOf rdf:resource="&food;ZZmadeFromFruit" />
+    <rdfs:domain rdf:resource="#ZZWine" />
+    <rdfs:range rdf:resource="#ZZZZWineZZGrape" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="madeIntoZZWine">
+    <owl:inverseOf rdf:resource="#ZZmadeFromZZGrape" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="hasZZZZWineDescriptor">
+    <rdfs:domain rdf:resource="#ZZWine" />
+    <rdfs:range  rdf:resource="#ZZZZWineDescriptor" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="ZZhasSugar">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:subPropertyOf rdf:resource="#hasZZZZWineDescriptor" />
+    <rdfs:range rdf:resource="#ZZZZWineSugar" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="ZZhasBody">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:subPropertyOf rdf:resource="#hasZZZZWineDescriptor" />
+    <rdfs:range rdf:resource="#ZZZZWineBody" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="ZZhasFlavor">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:subPropertyOf rdf:resource="#hasZZZZWineDescriptor" />
+    <rdfs:range rdf:resource="#ZZZZWineFlavor" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="ZZhasColor">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:subPropertyOf rdf:resource="#hasZZZZWineDescriptor" />
+    <rdfs:domain rdf:resource="#ZZWine" />
+    <rdfs:range rdf:resource="#ZZZZWineColor" />
+  </owl:ObjectProperty>
+
+  <owl:ObjectProperty rdf:ID="ZZhasMaker">
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+  </owl:ObjectProperty>
+  
+  <owl:ObjectProperty rdf:ID="producesZZWine">
+    <owl:inverseOf rdf:resource="#ZZhasMaker" />
+  </owl:ObjectProperty>
+
+  <owl:Class rdf:ID="ZZZinfandel">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZZinfandelZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:about="#ZZZinfandel">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZFull" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZWinery" />
+  
+  <owl:Class rdf:ID="ZZZZWineDescriptor">
+    <rdfs:comment>Made ZZZZWineDescriptor unionType of tastes and color</rdfs:comment>
+    <owl:unionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZZZWineTaste" />
+      <owl:Class rdf:about="#ZZZZWineColor" />
+    </owl:unionOf>
+  </owl:Class>
+
+  <owl:Class rdf:ID="ZZZZWineTaste">
+    <rdfs:subClassOf rdf:resource="#ZZZZWineDescriptor" />
+  </owl:Class>
+
+  <owl:Class rdf:ID="ZZZZWineColor">
+    <rdfs:subClassOf rdf:resource="#ZZZZWineDescriptor" />
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="#ZZWhite" />
+      <owl:Thing rdf:about="#ZZRose" />
+      <owl:Thing rdf:about="#ZZRed" />
+    </owl:oneOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZWineSugar">
+    <rdfs:subClassOf rdf:resource="#ZZZZWineTaste" />
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="#ZZSweet" />
+      <owl:Thing rdf:about="#OffZZDry" />
+      <owl:Thing rdf:about="#ZZDry" />
+    </owl:oneOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZWineFlavor">
+    <rdfs:subClassOf rdf:resource="#ZZZZWineTaste" />
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="#ZZDelicate" />
+      <owl:Thing rdf:about="#ZZModerate" />
+      <owl:Thing rdf:about="#ZZStrong" />
+    </owl:oneOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZWineBody">
+    <rdfs:subClassOf rdf:resource="#ZZZZWineTaste" />
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="#ZZLight" />
+      <owl:Thing rdf:about="#ZZMedium" />
+      <owl:Thing rdf:about="#ZZFull" />
+    </owl:oneOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="USZZRegion" />
+  
+  <owl:Class rdf:ID="ZZTours">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLoire" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZToursZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+
+  <owl:Class rdf:about="#ZZTours">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCheninBlancZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZTableZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZSweetZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZSweet" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSweetZZRiesling">
+    <rdfs:subClassOf rdf:resource="#ZZDessertZZWine" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZFull" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZRiesling" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZSweet" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZStEmilion">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZStrong" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCabernetSauvignonZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBordeaux" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZStEmilionZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSemillonOrZZSauvignonBlanc">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZMedium" />
+              <owl:Thing rdf:about="#ZZFull" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZZZSemillonZZGrape" />
+              <owl:Thing rdf:about="#ZZZZSauvignonBlancZZGrape" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSemillon">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZSemillonOrZZSauvignonBlanc" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZSemillonZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSauvignonBlanc">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZSemillonOrZZSauvignonBlanc" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZSauvignonBlancZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSauterne">
+    <rdfs:subClassOf rdf:resource="#ZZLateHarvest" />
+    <rdfs:subClassOf rdf:resource="#ZZBordeaux" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZSauterneZZRegion" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZMedium" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZSancerre">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZMedium" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#OffZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZSauvignonBlancZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLoire" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZSancerreZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZRoseZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRose" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZRiesling">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZRieslingZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZRedZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZRedZZTableZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZTableZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZRedZZBurgundy">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZPinotNoirZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBurgundy" />
+      <owl:Class rdf:about="#ZZZZRedZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZRedZZBordeaux">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZZZCabernetSauvignonZZGrape" />
+              <owl:Thing rdf:about="#ZZZZMerlotZZGrape" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBordeaux" />
+      <owl:Class rdf:about="#ZZZZRedZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZPort">
+    <rdfs:subClassOf rdf:resource="#ZZZZRedZZWine" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZPortugalZZRegion" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZFull" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZStrong" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZSweet" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZPinotNoir">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZPinotNoirZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZPinotBlanc">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZPinotBlancZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZPetiteSyrah">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZMedium" />
+              <owl:Thing rdf:about="#ZZFull" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZPetiteSyrahZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZPauillac">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZFull" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZStrong" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCabernetSauvignonZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZMedoc" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZPauillacZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZMuscadet">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZLight" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZPinotBlancZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLoire" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZMuscadetZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZMeursault">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZFull" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWhiteZZBurgundy" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZMeursaultZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZMerlot">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZDelicate" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZLight" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZMerlotZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZMeritage">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZZZCabernetSauvignonZZGrape" />
+              <owl:Thing rdf:about="#ZZZZCabernetFrancZZGrape" />
+              <owl:Thing rdf:about="#ZZMalbecZZGrape" />
+              <owl:Thing rdf:about="#ZZPetiteVerdotZZGrape" />
+              <owl:Thing rdf:about="#ZZZZMerlotZZGrape" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:minCardinality rdf:datatype="&xsd;nonNegativeInteger">2</owl:minCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZZZMedocZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZBordeauxZZRegion" />
+  </ZZRegion>
+  
+  <owl:Class rdf:ID="ZZMedoc">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZBordeaux" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZMedocZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZMargaux">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZMerlotZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZMedoc" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZMargauxZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZZZLoireZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZFrenchZZRegion" />
+  </ZZRegion>
+  
+  <owl:Class rdf:ID="ZZLoire">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZLoireZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZLateHarvest">
+    <rdfs:subClassOf rdf:resource="#ZZWine" />
+    <owl:disjointWith rdf:resource="#ZZEarlyHarvest" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZSweet" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZItalianZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZItalianZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZItalianZZRegion" />
+  
+  <owl:Class rdf:ID="ZZIceZZWine">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZMedium" />
+              <owl:Thing rdf:about="#ZZFull" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLateHarvest" />
+      <owl:Class rdf:about="#ZZDessertZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZGermanZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZGermanyZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZGamay">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZGamayZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZFullBodiedZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZFull" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZFrenchZZRegion" />
+  
+  <owl:Class rdf:ID="ZZFrenchZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZFrenchZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+
+  <owl:Class rdf:ID="ZZEarlyHarvest">
+    <rdfs:subClassOf rdf:resource="#ZZWine" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZDry" />
+              <owl:Thing rdf:about="#OffZZDry" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZDryZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZDryZZZZWhiteZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZZZDryZZWine" />
+      <owl:Class rdf:about="#ZZZZWhiteZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZDryZZRiesling">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZLight" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZRiesling" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZZZDryZZZZRedZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZZZDryZZWine" />
+      <owl:Class rdf:about="#ZZZZRedZZWine" />
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZDessertZZWine">
+    <rdfs:subClassOf rdf:resource="#ZZWine" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#OffZZDry" />
+              <owl:Thing rdf:about="#ZZSweet" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZCotesDOr">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZModerate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZRedZZBurgundy" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZCotesDOrZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZChianti">
+    <rdfs:subClassOf rdf:resource="#ZZItalianZZWine" />
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZChiantiZZRegion" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZSangioveseZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZModerate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZLight" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZCheninBlanc">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZModerate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZFull" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZDry" />
+              <owl:Thing rdf:about="#OffZZDry" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCheninBlancZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZChardonnay">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZWhite" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZFull" />
+              <owl:Thing rdf:about="#ZZMedium" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZStrong" />
+              <owl:Thing rdf:about="#ZZModerate" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZChardonnayZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZCaliforniaZZRegion">
+    <ZZlocatedIn rdf:resource="#USZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="TexasZZRegion">
+    <ZZlocatedIn rdf:resource="#USZZRegion" />
+  </ZZRegion>
+  
+  <owl:Class rdf:ID="ZZCaliforniaZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZCaliforniaZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZTexasZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#TexasZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZCabernetSauvignon">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZModerate" />
+              <owl:Thing rdf:about="#ZZStrong" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:allValuesFrom>
+          <owl:Class>
+            <owl:oneOf rdf:parseType="Collection">
+              <owl:Thing rdf:about="#ZZMedium" />
+              <owl:Thing rdf:about="#ZZFull" />
+            </owl:oneOf>
+          </owl:Class>
+        </owl:allValuesFrom>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCabernetSauvignonZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZCabernetFranc">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZModerate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZMedium" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZCabernetFrancZZGrape" />
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZBurgundy">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZBourgogneZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZBourgogneZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZFrenchZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="ZZZZBordeauxZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZFrenchZZRegion" />
+  </ZZRegion>
+  
+  <owl:Class rdf:ID="ZZBordeaux">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZBordeauxZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZBeaujolais">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRed" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZLight" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#ZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:hasValue rdf:resource="#ZZZZGamayZZGrape" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZmadeFromZZGrape" />
+        <owl:maxCardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZBeaujolaisZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZRegion rdf:ID="ZZAustralianZZRegion" />
+  
+  <owl:Class rdf:ID="ZZAnjou">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasColor" />
+        <owl:hasValue rdf:resource="#ZZRose" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasBody" />
+        <owl:hasValue rdf:resource="#ZZLight" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasFlavor" />
+        <owl:hasValue rdf:resource="#ZZDelicate" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZhasSugar" />
+        <owl:hasValue rdf:resource="#OffZZDry" />
+      </owl:Restriction>
+    </rdfs:subClassOf>
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZLoire" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZZZAnjouZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZAmericanZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#USZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <owl:Class rdf:ID="ZZAlsatianZZWine">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#ZZWine" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#ZZlocatedIn" />
+        <owl:hasValue rdf:resource="#ZZAlsaceZZRegion" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+  
+  <ZZZZWineBody rdf:ID="ZZFull" />
+  
+  <ZZZZWineBody rdf:ID="ZZMedium" />
+  
+  <ZZZZWineBody rdf:ID="ZZLight" />
+  
+  <ZZZZWineColor rdf:ID="ZZRed" />
+  
+  <ZZZZWineColor rdf:ID="ZZRose" />
+  
+  <ZZZZWineColor rdf:ID="ZZWhite" />
+  
+  <ZZZZWineFlavor rdf:ID="ZZStrong" />
+  
+  <ZZZZWineFlavor rdf:ID="ZZModerate" />
+  
+  <ZZZZWineFlavor rdf:ID="ZZDelicate" />
+  
+  <ZZZZWineSugar rdf:ID="ZZDry" />
+  
+  <ZZZZWineSugar rdf:ID="OffZZDry">
+    <owl:differentFrom rdf:resource="#ZZDry"/>
+    <owl:differentFrom rdf:resource="#ZZSweet"/>
+  </ZZZZWineSugar>
+  
+  <ZZZZWineSugar rdf:ID="ZZSweet">
+    <owl:differentFrom rdf:resource="#ZZDry"/>
+  </ZZZZWineSugar>
+  
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <vin:ZZZZWineColor rdf:about="#ZZRed" />
+      <vin:ZZZZWineColor rdf:about="#ZZWhite" />
+      <vin:ZZZZWineColor rdf:about="#ZZRose" />
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <vin:ZZZZWineBody rdf:about="#ZZLight" />
+      <vin:ZZZZWineBody rdf:about="#ZZMedium" />
+      <vin:ZZZZWineBody rdf:about="#ZZFull" />
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <vin:ZZZZWineFlavor rdf:about="#ZZDelicate" />
+      <vin:ZZZZWineFlavor rdf:about="#ZZModerate" />
+      <vin:ZZZZWineFlavor rdf:about="#ZZStrong" />
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+ 
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <vin:ZZZZWineSugar rdf:about="#ZZSweet" />
+      <vin:ZZZZWineSugar rdf:about="#OffZZDry" />
+      <vin:ZZZZWineSugar rdf:about="#ZZDry" />
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+
+  <ZZRegion rdf:ID="ZZAlsaceZZRegion">   
+    <ZZlocatedIn rdf:resource="#ZZFrenchZZRegion" />
+  </ZZRegion>
+
+  <ZZRegion rdf:ID="ZZZZAnjouZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZLoireZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="ZZArroyoGrandeZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZBeringer" />
+
+  <ZZZZWinery rdf:ID="ZZBancroft" />
+  
+  <ZZChardonnay rdf:ID="ZZZZBancroftZZChardonnay">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZBancroft" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZChardonnay>
+  
+  <ZZRegion rdf:ID="ZZZZBeaujolaisZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZFrenchZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZCabernetFrancZZGrape" />
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZCabernetSauvignonZZGrape" />
+  
+  <ZZRegion rdf:ID="ZZCentralCoastZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZChardonnayZZGrape" />
+  
+  <ZZZZWinery rdf:ID="ZZChateauChevalBlanc" />
+  
+  <ZZStEmilion rdf:ID="ZZZZChateauChevalBlancZZStEmilion">
+    <ZZhasMaker  rdf:resource="#ZZChateauChevalBlanc" />
+  </ZZStEmilion>
+  
+  <ZZZZWinery rdf:ID="ZZChateauDYchem" />
+  
+  <ZZSauterne rdf:ID="ZZZZChateauDYchemZZSauterne">
+    <ZZmadeFromZZGrape rdf:resource="#ZZZZSauvignonBlancZZGrape" />
+    <ZZmadeFromZZGrape rdf:resource="#ZZZZSemillonZZGrape" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasMaker  rdf:resource="#ZZChateauDYchem" />
+  </ZZSauterne> 
+  
+  <ZZZZWinery rdf:ID="ZZChateauDeZZMeursault" />
+  
+  <ZZMeursault rdf:ID="ZZZZChateauDeZZMeursaultZZMeursault">
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasMaker  rdf:resource="#ZZChateauDeZZMeursault" />
+  </ZZMeursault>
+  
+  <ZZZZWinery rdf:ID="ZZChateauLafiteRothschild" />
+  
+  <ZZPauillac rdf:ID="ZZZZChateauLafiteRothschildZZPauillac">
+    <ZZhasMaker  rdf:resource="#ZZChateauLafiteRothschild" />
+  </ZZPauillac>
+  
+  <ZZMargaux rdf:ID="ZZChateauZZMargaux">
+    <ZZhasMaker  rdf:resource="#ZZZZChateauZZMargauxZZZZWinery" />
+  </ZZMargaux>
+  
+  <ZZZZWinery rdf:ID="ZZZZChateauZZMargauxZZZZWinery" />
+  
+  <ZZZZWinery rdf:ID="ZZChateauMorgon" />
+  
+  <ZZBeaujolais rdf:ID="ZZChateauMorgonZZBeaujolais">
+    <ZZhasMaker  rdf:resource="#ZZChateauMorgon" />
+  </ZZBeaujolais>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZCheninBlancZZGrape" />
+
+  <ZZZZWineZZGrape rdf:ID="ZZZZZinfandelZZGrape" />
+
+  <ZZChianti rdf:ID="ZZZZChiantiClassico">
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+    <ZZhasMaker  rdf:resource="#ZZMcGuinnesso" />
+  </ZZChianti>
+  
+  <ZZRegion rdf:ID="ZZZZChiantiZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZItalianZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZClosDeLaPoussie" />
+  
+  <ZZSancerre rdf:ID="ZZZZClosDeLaPoussieZZSancerre">
+    <ZZhasMaker  rdf:resource="#ZZClosDeLaPoussie" />
+  </ZZSancerre>
+  
+  <ZZZZWinery rdf:ID="ZZClosDeVougeot" />
+  
+  <ZZCotesDOr rdf:ID="ZZZZClosDeVougeotZZCotesDOr">
+    <ZZhasMaker  rdf:resource="#ZZClosDeVougeot" />
+  </ZZCotesDOr>
+  
+  <ZZZZWinery rdf:ID="ZZCongressSprings" />
+  
+  <ZZSemillon rdf:ID="ZZZZCongressSpringsZZSemillon">
+    <ZZhasMaker  rdf:resource="#ZZCongressSprings" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZSemillon>
+
+  <ZZZZWinery rdf:ID="ZZCorbans" />
+  
+  <ZZRiesling rdf:ID="ZZZZCorbansZZDryZZWhiteZZRiesling">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZCorbans" />
+    <ZZhasSugar  rdf:resource="#OffZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZRiesling>
+  
+  <ZZSauvignonBlanc rdf:ID="ZZZZCorbansPrivateBinZZSauvignonBlanc">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZCorbans" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZSauvignonBlanc>
+  
+  <ZZSauvignonBlanc rdf:ID="ZZZZCorbansZZSauvignonBlanc">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZCorbans" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZSauvignonBlanc>
+  
+  <ZZZZWinery rdf:ID="ZZCortonMontrachet" />
+  
+  <ZZWhiteZZBurgundy rdf:ID="ZZCortonMontrachetZZWhiteZZBurgundy">
+    <ZZhasMaker  rdf:resource="#ZZCortonMontrachet" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZWhiteZZBurgundy>
+  
+  <ZZRegion rdf:ID="ZZZZCotesDOrZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZBourgogneZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZCotturi" />
+  
+  <ZZZinfandel rdf:ID="ZZZZCotturiZZZinfandel">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZCotturi" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZZinfandel>
+  
+  <ZZZZWinery rdf:ID="DZZAnjou" />
+  
+  <ZZRegion rdf:ID="ZZEdnaValleyZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZElyse" />
+  
+  <ZZZinfandel rdf:ID="ZZZZElyseZZZinfandel">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZElyse" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZZinfandel>
+  
+  <ZZZZWinery rdf:ID="ZZForman" />
+  
+  <ZZCabernetSauvignon rdf:ID="ZZFormanZZCabernetSauvignon">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZForman" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZCabernetSauvignon>
+  
+  <ZZChardonnay rdf:ID="ZZFormanZZChardonnay">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZForman" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZChardonnay>
+  
+  <ZZZZWinery rdf:ID="ZZFoxen" />
+  
+  <ZZCheninBlanc rdf:ID="ZZFoxenZZCheninBlanc">
+    <ZZlocatedIn rdf:resource="#SantaBarbaraZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZFoxen" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZCheninBlanc>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZGamayZZGrape" />
+  
+  <ZZZZWinery rdf:ID="ZZGaryFarrell" />
+  
+  <ZZMerlot rdf:ID="ZZZZGaryFarrellZZMerlot">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZGaryFarrell" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZMerlot>
+  
+  <ZZRegion rdf:ID="ZZGermanyZZRegion" />
+  
+  <ZZZZWinery rdf:ID="ZZHandley" />
+  
+  <ZZZZWinery rdf:ID="ZZKalinCellars" />
+  
+  <ZZSemillon rdf:ID="ZZZZKalinCellarsZZSemillon">
+    <ZZhasMaker  rdf:resource="#ZZKalinCellars" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZSemillon>
+  
+  <ZZZZWinery rdf:ID="ZZKathrynKennedy" />
+  
+  <ZZMeritage rdf:ID="ZZZZKathrynKennedyLateral">
+    <ZZhasMaker  rdf:resource="#ZZKathrynKennedy" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZDelicate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZMeritage>
+  
+  <ZZZZWinery rdf:ID="ZZLaneTanner" />
+  
+  <ZZPinotNoir rdf:ID="ZZZZLaneTannerZZPinotNoir">
+    <ZZlocatedIn rdf:resource="#SantaBarbaraZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZLaneTanner" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZDelicate" />
+    <ZZhasBody   rdf:resource="#ZZLight" />
+  </ZZPinotNoir>
+  
+  <ZZZZWinery rdf:ID="ZZLongridge" />
+  
+  <ZZMerlot rdf:ID="ZZZZLongridgeZZMerlot">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZLongridge" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZLight" />
+  </ZZMerlot>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZMalbecZZGrape" />
+  
+  <ZZRegion rdf:ID="ZZZZMargauxZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZMedocZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZMarietta" />
+  
+  <ZZCabernetSauvignon rdf:ID="ZZMariettaZZCabernetSauvignon">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMarietta" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZCabernetSauvignon>
+  
+  <ZZZZRedZZTableZZWine rdf:ID="ZZZZMariettaOldVinesZZRed">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMarietta" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZZZRedZZTableZZWine>
+  
+  <ZZPetiteSyrah rdf:ID="ZZZZMariettaZZPetiteSyrah">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMarietta" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZPetiteSyrah>
+  
+  <ZZZinfandel rdf:ID="ZZZZMariettaZZZinfandel">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMarietta" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZZinfandel>
+  
+  <ZZZZWinery rdf:ID="ZZMcGuinnesso" />
+  
+  <ZZRegion rdf:ID="ZZMendocinoZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+    <adjacentZZRegion rdf:resource="#SonomaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZMerlotZZGrape" />
+  
+  <ZZRegion rdf:ID="ZZZZMeursaultZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZBourgogneZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZMountEdenVineyard" />
+  
+  <ZZChardonnay rdf:ID="ZZMountEdenVineyardEdnaValleyZZChardonnay">
+    <ZZlocatedIn rdf:resource="#ZZEdnaValleyZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMountEdenVineyard" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZChardonnay>
+  
+  <ZZPinotNoir rdf:ID="ZZZZMountEdenVineyardEstateZZPinotNoir">
+    <ZZlocatedIn rdf:resource="#ZZEdnaValleyZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMountEdenVineyard" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZPinotNoir>
+  
+  <ZZZZWinery rdf:ID="ZZMountadam" />
+  
+  <ZZChardonnay rdf:ID="ZZMountadamZZChardonnay">
+    <ZZlocatedIn rdf:resource="#SouthAustraliaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMountadam" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZChardonnay>
+  
+  <ZZPinotNoir rdf:ID="ZZZZMountadamZZPinotNoir">
+    <ZZlocatedIn rdf:resource="#SouthAustraliaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMountadam" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZPinotNoir>
+  
+  <ZZZZDryZZRiesling rdf:ID="ZZZZMountadamZZRiesling">
+    <ZZlocatedIn rdf:resource="#SouthAustraliaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZMountadam" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZDelicate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZZZDryZZRiesling>
+  
+  <ZZRegion rdf:ID="ZZZZMuscadetZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZLoireZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="ZZNapaZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="ZZNewZealandZZRegion" />
+  
+  <ZZZZWinery rdf:ID="ZZPageMillZZZZWinery" />  
+
+  <ZZCabernetSauvignon rdf:ID="ZZPageMillZZZZWineryZZCabernetSauvignon">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZPageMillZZZZWinery" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZCabernetSauvignon>
+  
+  <ZZRegion rdf:ID="ZZZZPauillacZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZMedocZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZPeterMccoy" />
+  
+  <ZZChardonnay rdf:ID="ZZPeterMccoyZZChardonnay">
+    <ZZlocatedIn rdf:resource="#SonomaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZPeterMccoy" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZChardonnay>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZPetiteSyrahZZGrape" />
+  
+  <ZZZZWineZZGrape rdf:ID="ZZPetiteVerdotZZGrape" />
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZPinotBlancZZGrape" />
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZPinotNoirZZGrape" />
+  
+  <ZZRegion rdf:ID="ZZZZPortugalZZRegion" />
+  
+  <ZZZZWinery rdf:ID="ZZPulignyMontrachet" />
+  
+  <ZZWhiteZZBurgundy rdf:ID="ZZPulignyMontrachetZZWhiteZZBurgundy">
+    <ZZhasMaker  rdf:resource="#ZZPulignyMontrachet" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZWhiteZZBurgundy>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZRieslingZZGrape" />
+  
+  <ZZAnjou rdf:ID="ZZRoseDZZAnjou">
+    <ZZhasMaker  rdf:resource="#DZZAnjou" />
+  </ZZAnjou>
+  
+  <ZZRegion rdf:ID="ZZSancerreZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZLoireZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZSangioveseZZGrape" />
+  
+  <ZZRegion rdf:ID="SantaBarbaraZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZSantaCruzMountainVineyard" />
+  
+  <ZZCabernetSauvignon rdf:ID="ZZSantaCruzMountainVineyardZZCabernetSauvignon">
+    <ZZlocatedIn rdf:resource="#SantaCruzMountainsZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSantaCruzMountainVineyard" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZCabernetSauvignon>
+  
+  <ZZRegion rdf:ID="ZZCentralTexasZZRegion">
+    <ZZlocatedIn rdf:resource="#TexasZZRegion" />
+  </ZZRegion>
+
+  <ZZZZWinery rdf:ID="ZZStGenevieve" />
+
+  <ZZZZWhiteZZWine rdf:ID="ZZZZStGenevieveTexasZZWhite">
+    <ZZlocatedIn rdf:resource="#ZZCentralTexasZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZStGenevieve" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+  </ZZZZWhiteZZWine>
+
+  <ZZRegion rdf:ID="SantaCruzMountainsZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZSaucelitoCanyon" />
+  
+  <ZZZinfandel rdf:ID="ZZZZSaucelitoCanyonZZZinfandel">
+    <ZZlocatedIn rdf:resource="#ZZArroyoGrandeZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSaucelitoCanyon" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZZinfandel>
+  
+  <ZZZinfandel rdf:ID="ZZZZZZSaucelitoCanyonZZZinfandel1998">
+    <ZZlocatedIn rdf:resource="#ZZArroyoGrandeZZRegion" />
+    <hasZZZZVintageYear rdf:resource="#ZZYear1998" />
+    <ZZhasMaker  rdf:resource="#ZZSaucelitoCanyon" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZZinfandel>
+
+  <ZZRegion rdf:ID="ZZSauterneZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZBordeauxZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZSauvignonBlancZZGrape" />
+  
+  <ZZZZWinery rdf:ID="ZZSchlossRothermel" />
+  
+  <ZZSweetZZRiesling rdf:ID="ZZSchlossRothermelTrochenbierenausleseZZRiesling">
+    <ZZlocatedIn rdf:resource="#ZZGermanyZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSchlossRothermel" />
+    <ZZhasSugar  rdf:resource="#ZZSweet" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZSweetZZRiesling>
+  
+  <ZZZZWinery rdf:ID="ZZSchlossVolrad" />
+  
+  <ZZSweetZZRiesling rdf:ID="ZZSchlossVolradTrochenbierenausleseZZRiesling">
+    <ZZlocatedIn rdf:resource ="#ZZGermanyZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSchlossVolrad" />
+    <ZZhasSugar  rdf:resource="#ZZSweet" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZSweetZZRiesling>
+  
+  <ZZZZWinery rdf:ID="ZZSeanThackrey" />
+  
+  <ZZPetiteSyrah rdf:ID="ZZSeanThackreySiriusZZPetiteSyrah">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSeanThackrey" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZStrong" />
+    <ZZhasBody   rdf:resource="#ZZFull" />
+  </ZZPetiteSyrah>
+  
+  <ZZZZWinery rdf:ID="ZZSelaks" />
+  
+  <ZZIceZZWine rdf:ID="ZZSelaksZZIceZZWine">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSelaks" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+    <ZZhasColor rdf:resource="#ZZWhite" />
+  </ZZIceZZWine>
+  
+  <ZZSauvignonBlanc rdf:ID="ZZSelaksZZSauvignonBlanc">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZSelaks" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZSauvignonBlanc>
+  
+  <ZZZZWineZZGrape rdf:ID="ZZZZSemillonZZGrape" />
+  
+  <ZZZZWinery rdf:ID="ZZSevreEtMaine" />
+  
+  <ZZMuscadet rdf:ID="ZZSevreEtMaineZZMuscadet">
+    <ZZhasMaker  rdf:resource="#ZZSevreEtMaine" />
+  </ZZMuscadet>
+  
+  <ZZRegion rdf:ID="SonomaZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZCaliforniaZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="SouthAustraliaZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZAustralianZZRegion" />
+  </ZZRegion>
+  
+  <ZZRegion rdf:ID="ZZStEmilionZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZBordeauxZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZStonleigh" />
+  
+  <ZZSauvignonBlanc rdf:ID="ZZStonleighZZSauvignonBlanc">
+    <ZZlocatedIn rdf:resource="#ZZNewZealandZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZStonleigh" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZDelicate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZSauvignonBlanc>
+  
+  <ZZZZWinery rdf:ID="ZZTaylor" />
+  
+  <ZZPort rdf:ID="ZZTaylorZZPort">
+    <ZZhasMaker  rdf:resource="#ZZTaylor" />
+  </ZZPort>
+  
+  <ZZRegion rdf:ID="ZZToursZZRegion">
+    <ZZlocatedIn rdf:resource="#ZZZZLoireZZRegion" />
+  </ZZRegion>
+  
+  <ZZZZWinery rdf:ID="ZZVentana" />
+  
+  <ZZCheninBlanc rdf:ID="ZZVentanaZZCheninBlanc">
+    <ZZlocatedIn rdf:resource="#ZZCentralCoastZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZVentana" />
+    <ZZhasSugar  rdf:resource="#OffZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZCheninBlanc>
+  
+  <ZZZZWinery rdf:ID="ZZZZWhitehallLane" />
+  
+  <ZZCabernetFranc rdf:ID="ZZZZWhitehallLaneZZCabernetFranc">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasMaker  rdf:resource="#ZZZZWhitehallLane" />
+    <ZZhasSugar  rdf:resource="#ZZDry" />
+    <ZZhasFlavor rdf:resource="#ZZModerate" />
+    <ZZhasBody   rdf:resource="#ZZMedium" />
+  </ZZCabernetFranc>
+  
+  <ZZDessertZZWine rdf:ID="ZZZZZZWhitehallLanePrimavera">
+    <ZZlocatedIn rdf:resource="#ZZNapaZZRegion" />
+    <ZZhasSugar  rdf:resource="#ZZSweet" />
+    <ZZhasFlavor rdf:resource="#ZZDelicate" />
+    <ZZhasBody   rdf:resource="#ZZLight" />
+  </ZZDessertZZWine>
+  
+  <owl:AllDifferent>
+    <owl:distinctMembers rdf:parseType="Collection">
+      <vin:ZZZZWinery rdf:about="#ZZBancroft" />
+      <vin:ZZZZWinery rdf:about="#ZZChateauChevalBlanc" />
+      <vin:ZZZZWinery rdf:about="#ZZChateauDYchem" />
+      <vin:ZZZZWinery rdf:about="#ZZChateauDeZZMeursault" />
+      <vin:ZZZZWinery rdf:about="#ZZChateauLafiteRothschild" />
+      <vin:ZZZZWinery rdf:about="#ZZZZChateauZZMargauxZZZZWinery" />
+      <vin:ZZZZWinery rdf:about="#ZZChateauMorgon" />
+      <vin:ZZZZWinery rdf:about="#ZZClosDeLaPoussie" />
+      <vin:ZZZZWinery rdf:about="#ZZClosDeVougeot" />
+      <vin:ZZZZWinery rdf:about="#ZZCongressSprings" />
+      <vin:ZZZZWinery rdf:about="#ZZCorbans" />
+      <vin:ZZZZWinery rdf:about="#ZZCortonMontrachet" />
+      <vin:ZZZZWinery rdf:about="#ZZCotturi" />
+      <vin:ZZZZWinery rdf:about="#DZZAnjou" />
+      <vin:ZZZZWinery rdf:about="#ZZElyse" />
+      <vin:ZZZZWinery rdf:about="#ZZForman" />
+      <vin:ZZZZWinery rdf:about="#ZZFoxen" />
+      <vin:ZZZZWinery rdf:about="#ZZGaryFarrell" />
+      <vin:ZZZZWinery rdf:about="#ZZKalinCellars" />
+      <vin:ZZZZWinery rdf:about="#ZZKathrynKennedy" />
+      <vin:ZZZZWinery rdf:about="#ZZLaneTanner" />
+      <vin:ZZZZWinery rdf:about="#ZZLongridge" />
+      <vin:ZZZZWinery rdf:about="#ZZMarietta" />
+      <vin:ZZZZWinery rdf:about="#ZZMcGuinnesso" />
+      <vin:ZZZZWinery rdf:about="#ZZMountEdenVineyard" />
+      <vin:ZZZZWinery rdf:about="#ZZMountadam" />
+      <vin:ZZZZWinery rdf:about="#ZZPageMillZZZZWinery" />
+      <vin:ZZZZWinery rdf:about="#ZZPeterMccoy" />
+      <vin:ZZZZWinery rdf:about="#ZZPulignyMontrachet" />
+      <vin:ZZZZWinery rdf:about="#ZZSantaCruzMountainVineyard" />
+      <vin:ZZZZWinery rdf:about="#ZZSaucelitoCanyon" />
+      <vin:ZZZZWinery rdf:about="#ZZSchlossRothermel" />
+      <vin:ZZZZWinery rdf:about="#ZZSchlossVolrad" />
+      <vin:ZZZZWinery rdf:about="#ZZSeanThackrey" />
+      <vin:ZZZZWinery rdf:about="#ZZSelaks" />
+      <vin:ZZZZWinery rdf:about="#ZZSevreEtMaine" />
+      <vin:ZZZZWinery rdf:about="#ZZStGenevieve" />
+      <vin:ZZZZWinery rdf:about="#ZZStonleigh" />
+      <vin:ZZZZWinery rdf:about="#ZZTaylor" />
+      <vin:ZZZZWinery rdf:about="#ZZVentana" />
+      <vin:ZZZZWinery rdf:about="#ZZZZWhitehallLane" />
+    </owl:distinctMembers>
+  </owl:AllDifferent>
+
+</rdf:RDF>

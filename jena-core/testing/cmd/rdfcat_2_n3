@@ -1,0 +1,20 @@
+@prefix dc:      <http://purl.org/dc/elements/1.1/> .
+@prefix jms:     <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :        <#> .
+
+jms:RDBMakerSpec
+      a       rdfs:Class ;
+      rdfs:subClassOf jms:MakerSpec .
+
+jms:FileMakerSpec
+      a       rdfs:Class ;
+      rdfs:subClassOf jms:MakerSpec .
+
+jms:ModelSpec
+      a       rdfs:Class .
+
+jms:MemMakerSpec
+      a       rdfs:Class ;
+      rdfs:subClassOf jms:MakerSpec .

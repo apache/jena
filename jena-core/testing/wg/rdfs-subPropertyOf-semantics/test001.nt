@@ -1,0 +1,24 @@
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Issue rdfs-subPropertyOf-semantics:
+#   The inheritance semantics of the subPropertyOf relationship needs to be clarified.
+#
+#   => subProperties inherit conjunctively the domain and range of their superproperties
+#
+# $Id: test001.nt,v 1.2 2005-08-04 09:53:30 jeremy_carroll Exp $
+##################################################################
+
+<http://example.org/bar> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Property> .
+<http://example.org/bas> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://example.org/bar> .
+<http://example.org/bar> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.org/Domain1> .
+<http://example.org/bas> <http://www.w3.org/2000/01/rdf-schema#domain> <http://example.org/Domain2> .
+<http://example.org/bar> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.org/Range1> .
+<http://example.org/bas> <http://www.w3.org/2000/01/rdf-schema#range> <http://example.org/Range2> .
+<http://example.org/baz1> <http://example.org/bas> <http://example.org/baz2> .

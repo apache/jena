@@ -1,0 +1,20 @@
+#------------------------------------------------------------------
+# Tracking down non-deterministic bug.
+#
+# $Id: owl-fb.rules,v 1.45 2004/03/02 13:38:53 der Exp $
+#------------------------------------------------------------------
+
+-> table(rdf:type).
+
+[rdfs9-alt:  (?a rdf:type ?y) <- (?a rdf:type ?x) (?x rdfs:subClassOf ?y) ] 
+
+[distinct1: (?X owl:differentFrom ?Y) <- 
+    (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D)   ]
+
+[validationIndiv0: (?X rb:violation 'dummy1') 
+				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y) ]
+				
+[validationIndiv: (?I rb:violation 'found')
+				<- (?I rdf:type http://jena.hpl.hp.com/testing/reasoners/owl#A), 
+				   (?I rdf:type http://jena.hpl.hp.com/testing/reasoners/owl#B)]
+				

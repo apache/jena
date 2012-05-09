@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE owl [
+     <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+     <!ENTITY rdfs  "http://www.w3.org/2000/01/rdf-schema#" >
+     <!ENTITY base  "http://jena.hpl.hp.com/test" >
+     <!ENTITY clavin  "http://jena.hpl.hp.com/test" >
+     <!ENTITY abc  "http://jena.hpl.hp.com/test" >
+   ]>
+
+<rdf:RDF
+  xmlns     ="&base;#"
+  xml:base  ="&base;"
+  xmlns:rdf ="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:clavin="&base;#"
+>
+
+<rdf:Description rdf:about="jason6">
+<rdf:type rdf:resource="&clavin;Topic"/>
+<clavin:CreatedBy>jason</clavin:CreatedBy>
+<clavin:CreatedBy>jason2</clavin:CreatedBy>
+<clavin:hasCreationDate>2000-03-04T20:00:00Z</clavin:hasCreationDate>
+</rdf:Description>
+
+</rdf:RDF>

@@ -1,0 +1,3 @@
+# List (*, rdfs:range, *)
+####################################
+<var:x> <http://www.w3.org/2000/01/rdf-schema#range> <var:y> .

@@ -1,0 +1,11 @@
+    
+    <file:///base/rdf-test-11.n3>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "thing too" .
+    
+    <file:///base/rdf-test-11.n3#>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> "another thing" .
+    
+    _:a_ga     <http://www.w3.org/2002/07/owl#sameAs> _:a_gb .
+    
+    _:a_ga     <http://www.w3.org/2000/10/swap/log#implies> _:a_gb .
+    
+    _:a_gb     <http://www.w3.org/2000/10/swap/log#implies> _:a_ga .
+    

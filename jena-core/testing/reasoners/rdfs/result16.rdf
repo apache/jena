@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdfs:Class rdf:about="&eg;D" />
+  <rdfs:Class rdf:about="&eg;C1" />
+  <rdfs:Class rdf:about="&eg;C2" />
+  <rdfs:Class rdf:about="&eg;C3" />
+  
+  <rdfs:Class rdf:about="&rdfs;Resource" />
+  <rdfs:Class rdf:about="&rdf;Property" />
+  <rdfs:Class rdf:about="&rdf;List" />
+  <rdfs:Class rdf:about="&rdfs;Class" />
+  <rdfs:Class rdf:about="&rdfs;Datatype" />
+  <rdfs:Class rdf:about="&rdfs;Literal" />
+  <rdfs:Class rdf:about="&rdf;Statement" />
+
+   <rdfs:Class rdf:about="&rdf;Seq" />
+   <rdfs:Class rdf:about="&rdf;Bag" />
+   <rdfs:Class rdf:about="&rdf;Alt" />
+   <rdfs:Class rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Class rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Class rdf:about="&rdfs;Container" />
+
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#duration" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#positiveInteger" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#integer" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#nonNegativeInteger" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#gYear" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#long" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#date" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#anyURI" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#unsignedLong" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#gDay" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#string" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#nonPositiveInteger" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#dateTime" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#gMonthDay" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#float" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#negativeInteger" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#decimal" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#unsignedInt" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#unsignedShort" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#short" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#gYearMonth" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#gMonth" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#int" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#byte" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#hexBinary" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#time" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#date" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#boolean" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#double" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#base64Binary" />
+   <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#unsignedByte" />
+
+</rdf:RDF>

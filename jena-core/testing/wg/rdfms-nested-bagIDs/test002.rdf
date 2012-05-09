@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdfms-nested-bagIDs
+        Test:  2
+        Author: Dave Beckett, ILRT
+        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-nested-bagIDs/test002.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+
+        An RDF/XML file equivalenet to the example in the issues list.
+        The WG considers this equivalence to be the intent of M&S.
+        
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test002.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:some="http://example.org/">
+  <rdf:Description rdf:about="http://example.org/a" rdf:bagID="bag1">
+    <some:prop rdf:ID="st1" rdf:resource="http://example.org/b"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.org/b" rdf:bagID="bag2">
+    <some:otherProp rdf:ID="st2">A literal</some:otherProp>
+  </rdf:Description>
+</rdf:RDF>
+

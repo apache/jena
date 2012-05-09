@@ -1,0 +1,19 @@
+<!-- $Id: cookup.rdf,v 1.1 2003-11-12 11:18:39 jeremy_carroll Exp $ -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns="http://example.org/#"
+  xmlns:ex1="http://example.org/file1#"
+  xmlns:ex2="http://example.org/file2#"
+>
+
+
+<rdfs:Class rdf:ID="C" ex1:prop1="v1" ex2:prop2="v2" >
+  <prop0>v0</prop0>
+</rdfs:Class>
+
+
+</rdf:RDF>
+
+

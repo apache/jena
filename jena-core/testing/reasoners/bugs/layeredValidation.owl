@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE owl [
+     <!ENTITY eg    "http://www.openjena.org/bugs#" >
+     <!ENTITY rdfs  "http://www.w3.org/2000/01/rdf-schema#" >
+     <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+     <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+   ]>
+
+<rdf:RDF
+  xmlns:rdf ="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:owl="&owl;"
+  xmlns:xsd ="&xsd;"
+  xmlns:eg="&eg;"
+  xmlns     ="&eg;"
+  xml:base  ="&eg;"
+ >
+
+<owl:Class rdf:ID="Student"/>
+<owl:Class rdf:ID="Supervisor"/>
+
+<owl:ObjectProperty rdf:ID="hasStudent">
+  <rdfs:domain rdf:resource="#Supervisor"/>
+  <rdfs:range rdf:resource="#Student"/>
+</owl:ObjectProperty>
+
+<owl:Class rdf:about="Supervisor">
+  <owl:intersectionOf rdf:parseType="Collection">
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="#hasStudent"/>
+      <owl:someValuesFrom rdf:resource="#Student"/>
+    </owl:Restriction>
+  </owl:intersectionOf>
+</owl:Class>
+
+
+<eg:Student rdf:ID="Lagrange"/>
+
+<eg:Supervisor rdf:ID="Euler">
+  <eg:hasStudent rdf:resource="Lagrange"/>
+</eg:Supervisor>
+
+</rdf:RDF>

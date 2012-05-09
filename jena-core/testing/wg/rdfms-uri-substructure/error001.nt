@@ -1,0 +1,18 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: error001.nt,v 1.2 2005-08-04 09:53:22 jeremy_carroll Exp $
+#
+# An RDF/XML serlializer is recommended to produce an exception if
+# asked to serialize the following graph since there is no way
+# to represent it in the RDF/XML syntax.
+# 
+#####################################################################
+_:a <http://example.org/property/> "10" .

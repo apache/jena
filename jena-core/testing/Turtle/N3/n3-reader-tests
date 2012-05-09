@@ -1,0 +1,38 @@
+# Tests for the N3 parser/Jena reader
+
+<rdf-test-01.n3>    <rdf-result-01.nt> .
+<rdf-test-02.n3>    <rdf-result-02.nt> .
+<rdf-test-03.n3>    <rdf-result-03.nt> .
+<rdf-test-04.n3>    <rdf-result-04.nt> .
+<rdf-test-05.n3>    <rdf-result-05.nt> .
+<rdf-test-06.n3>    <rdf-result-06.nt> .
+<rdf-test-07.n3>    <rdf-result-07.nt> .
+<rdf-test-08.n3>    <rdf-result-08.nt> .
+<rdf-test-09.n3>    <rdf-result-09.nt> .
+<rdf-test-10.n3>    <rdf-result-10.nt> .
+
+<rdf-test-11.n3>    <rdf-result-11.nt> .
+<rdf-test-12.n3>    <rdf-result-12.nt> .
+<rdf-test-13.n3>    <rdf-result-13.nt> .
+<rdf-test-14.n3>    <rdf-result-14.nt> .
+<rdf-test-15.n3>    <rdf-result-15.nt> .
+<rdf-test-16.n3>    <rdf-result-16.nt> .
+<rdf-test-17.n3>    <rdf-result-17.nt> .
+<rdf-test-18.n3>    <rdf-result-18.nt> .
+<rdf-test-19.n3>    <rdf-result-19.nt> .
+<rdf-test-20.n3>    <rdf-result-20.nt> .
+
+<rdf-test-21.n3>    <rdf-result-21.nt> .
+<rdf-test-22.n3>    <rdf-result-22.nt> .
+<rdf-test-23.n3>    <rdf-result-23.nt> .
+<rdf-test-24.n3>    <rdf-result-24.nt> .
+<rdf-test-25.n3>    <rdf-result-25.nt> .
+
+<rdf-test-26.n3>    <rdf-result-26.nt> .
+
+<rdf-test-27.n3>    <rdf-result-27.nt> .
+<rdf-test-28.n3>    <rdf-result-28.nt> .
+
+## ?? Need a test with \u escapes in a qname.
+## Currently does not work. Parser doesn't check for \u escapes in URIs.
+

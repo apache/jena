@@ -1,0 +1,127 @@
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+  xmlns     ="http://daml.umbc.edu/ontologies/calendar-ont#"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>$Revision: 1.1 $</daml:versionInfo>
+  <daml:imports rdf:resource="http://www.daml.org/2000/10/daml-ont"/>
+</daml:Ontology>
+
+<!-- Basic Class -->
+
+<daml:Class rdf:ID="Calendar">
+  <daml:comment>Calendar</daml:comment>
+</daml:Class>
+
+<daml:Class rdf:ID="String">
+  <daml:label>String</daml:label>
+</daml:Class>
+
+<daml:Class rdf:ID="Integer">
+  <daml:label>Integer</daml:label>
+</daml:Class>
+
+<!-- Date property for the calendar -->
+
+<rdf:Property rdf:ID="Date">
+  <daml:comment>Date of the calendar event</daml:comment>
+  <daml:domain rdf:resource="#Calendar"/>
+  <daml:range rdf:resource="#date"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<!-- Time property for the calendar -->
+
+<rdf:Property rdf:ID="Time">
+  <daml:comment>Time of the calendar event</daml:comment>
+  <daml:domain rdf:resource="#Calendar"/>
+  <daml:range rdf:resource="#time"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<!-- time class representing time -->
+
+<daml:Class rdf:ID="time">
+  <daml:comment>the time class</daml:comment>
+</daml:Class>
+
+<!-- hour,minute and second properties of the time -->
+
+<rdf:Property rdf:ID="Hour">
+  <daml:comment>hour of the time</daml:comment>
+  <daml:domain rdf:resource="#time"/>
+  <daml:range rdf:resource="#Integer"/>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Minute">
+  <daml:comment>Minute of the time</daml:comment>
+  <daml:domain rdf:resource="#time"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Second">
+  <daml:comment>Second of the time</daml:comment>
+  <daml:domain rdf:resource="#time"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<!-- date class representing the date -->
+
+<daml:Class rdf:ID="date">
+  <daml:comment>the date class</daml:comment>
+</daml:Class>
+
+<!-- day, month and year of the date -->
+
+<rdf:Property rdf:ID="Day">
+  <daml:comment>day of the date</daml:comment>
+  <daml:domain rdf:resource="#date"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Month">
+  <daml:comment>month of the date</daml:comment>
+  <daml:domain rdf:resource="#date"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="Year">
+  <daml:comment>Year of the date</daml:comment>
+  <daml:domain rdf:resource="#date"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+</rdf:Property>
+
+<rdf:Property rdf:ID="DayOfWeek">
+  <daml:comment>Day of the week</daml:comment>
+  <daml:domain rdf:resource="#date"/>
+  <daml:range rdf:resource="#Integer"/>
+  <daml:cardinality>1</daml:cardinality>
+  <daml:oneOf rdf:parseType="daml:collection">
+	<DayofWeek rdf:ID="Monday"/>
+	<DayofWeek rdf:ID="Tuesday"/>
+	<DayofWeek rdf:ID="Wednesday"/>
+	<DayofWeek rdf:ID="Thursday"/>
+	<DayofWeek rdf:ID="Friday"/>
+	<DayofWeek rdf:ID="Saturday"/>
+	<DayofWeek rdf:ID="Sunday"/>
+  </daml:oneOf>
+</rdf:Property>
+
+</rdf:RDF>
+
+
+
+
+
+
+
+
+
+

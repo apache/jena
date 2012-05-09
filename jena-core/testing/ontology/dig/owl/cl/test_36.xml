@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<tells
+  xmlns="http://dl.kr.org/dig/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
+  <defrole name="http://example.org/foo#p" />
+  <defindividual name="http://example.org/foo#a0" />
+  <defindividual name="http://example.org/foo#a1" />
+  <defconcept name="http://example.org/foo#A" />
+
+  <related>
+  	<individual name="http://example.org/foo#a0" />
+  	<ratom name="http://example.org/foo#p" />
+  	<individual name="http://example.org/foo#a1" />
+  </related>
+  
+  <instanceof>
+  	<individual name="http://example.org/foo#a0" />
+  	<catom name="http://example.org/foo#A" />
+  </instanceof>
+  
+  <instanceof>
+  	<individual name="http://example.org/foo#a1" />
+  	<catom name="http://example.org/foo#A" />
+  </instanceof>
+</tells>

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+  Check parsing with xmlns in various positions.
+-->
+<foo>
+<!-- comment -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    
+  <rdf:Description rdf:about="http://example.org/node1"
+         xmlns:eg="Http://example.org/"> 
+    <eg:prop rdf:resource="http://example.org/node2"/>
+  </rdf:Description>
+</rdf:RDF>
+</foo>

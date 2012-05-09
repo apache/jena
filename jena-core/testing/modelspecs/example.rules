@@ -1,0 +1,2 @@
+# this is a line of text.
+[albert: (?sub owl:whoo ?p) -> (?s ?p ?a)]

@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY test 'http://www.hpl.hp.com/semweb/2003/query_tester#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns="&test;">
+  
+  <Test rdf:about="test1">
+    <description>Transitive reasoner: no reasoning, wildcard query</description>
+    <data>transitive/data1.rdf</data>
+    <query>transitive/query-all.nt</query>
+    <result>transitive/data1.rdf</result>
+  </Test>
+  
+  <Test rdf:about="test2">
+    <description>Transitive reasoner: no reasoning, selective query</description>
+    <data>transitive/data1.rdf</data>
+    <query>transitive/query2.nt</query>
+    <result>transitive/result2.rdf</result>
+  </Test>
+
+  <Test rdf:about="test3">
+    <description>Transitive reasoner: no reasoning, tbox+data concatenation</description>
+    <data>transitive/data1.rdf</data>
+    <tbox>transitive/data2.rdf</tbox>
+    <query>transitive/query-all.nt</query>
+    <result>transitive/data1.rdf</result>
+  </Test>
+
+  <Test rdf:about="test4">
+    <description>Transitive reasoner: simple subproperty transitive closure</description>
+    <data>transitive/data1.rdf</data>
+    <tbox>transitive/tbox1.rdf</tbox>
+    <query>transitive/querysp.nt</query>
+    <result>transitive/result4.rdf</result>
+  </Test>
+
+  <Test rdf:about="test5">
+    <description>Transitive reasoner: simple subclass transitive closure</description>
+    <data>transitive/data1.rdf</data>
+    <tbox>transitive/tbox1.rdf</tbox>
+    <query>transitive/querysc.nt</query>
+    <result>transitive/result5.rdf</result>
+  </Test>
+
+  <Test rdf:about="test6">
+    <description>Transitive reasoner: simple subproperty transitive closure, tbox/data merge</description>
+    <data>transitive/data6.rdf</data>
+    <tbox>transitive/tbox1.rdf</tbox>
+    <query>transitive/querysp2.nt</query>
+    <result>transitive/result6.rdf</result>
+  </Test>
+
+  <Test rdf:about="test7">
+    <description>Transitive reasoner: check meta subprops hidden</description>
+    <data>transitive/data1.rdf</data>
+    <tbox>transitive/tbox7.rdf</tbox>
+    <query>transitive/querysp.nt</query>
+    <result>transitive/empty.rdf</result>
+  </Test>
+
+  <Test rdf:about="test8">
+    <description>Transitive reasoner: simple meta level usage - subprop of subclass</description>
+    <data>transitive/data8.rdf</data>
+    <tbox>transitive/tbox7.rdf</tbox>
+    <query>transitive/querysc.nt</query>
+    <result>transitive/result5.rdf</result>
+  </Test>
+
+  <Test rdf:about="test9">
+    <description>Transitive reasoner: simple meta level usage - subprop of subprop</description>
+    <data>transitive/data8.rdf</data>
+    <tbox>transitive/tbox7.rdf</tbox>
+    <query>transitive/querysp.nt</query>
+    <result>transitive/result4.rdf</result>
+  </Test>
+
+  <Test rdf:about="test10">
+    <description>Transitive reasoner: meta level usage - indirect subprop of subclass</description>
+    <data>transitive/data9.rdf</data>
+    <tbox>transitive/tbox7.rdf</tbox>
+    <query>transitive/querysc.nt</query>
+    <result>transitive/result5.rdf</result>
+  </Test>
+  
+  <Test rdf:about="test11">
+    <description>Transitive reasoner: simple subclass transitive closure - wildcard query</description>
+    <data>transitive/data11.rdf</data>
+    <query>transitive/query-all.nt</query>
+    <result>transitive/result11.rdf</result>
+  </Test>
+
+
+  
+</rdf:RDF>

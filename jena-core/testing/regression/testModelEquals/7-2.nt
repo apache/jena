@@ -1,0 +1,5 @@
+_:c <http://test/p> _:b .
+_:b <http://test/p> _:a .
+_:a <http://test/p> _:c .
+
+

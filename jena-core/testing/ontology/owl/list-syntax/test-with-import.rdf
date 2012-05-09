@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<owl:Ontology rdf:about="">
+	<owl:versionInfo>CVS $Id: test-with-import.rdf,v 1.1 2003-04-08 14:29:56 ian_dickinson Exp $</owl:versionInfo>
+	<owl:imports rdf:resource="http://www.w3.org/2002/07/owl" />
+</owl:Ontology>
+
+<rdf:Property rdf:ID="p">
+</rdf:Property>
+
+<owl:ObjectProperty rdf:ID="op">
+</owl:ObjectProperty>
+
+<owl:ObjectProperty rdf:ID="op1">
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:ID="dp">
+</owl:DatatypeProperty>
+
+<A rdf:ID="A0" />
+<A rdf:ID="A1" />
+<C rdf:ID="C0" />
+
+<owl:Class rdf:ID="A">
+	<owl:intersectionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="X0" />
+		<owl:Class rdf:ID="X1" />
+	</owl:intersectionOf>
+</owl:Class>
+
+<owl:Class rdf:ID="B">
+	<owl:unionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="Y0" />
+		<owl:Class rdf:ID="Y1" />
+	</owl:unionOf>
+</owl:Class>
+
+<owl:Class rdf:ID="C">
+	<owl:complementOf>
+		<owl:Class rdf:ID="Z" />
+	</owl:complementOf>
+</owl:Class>
+
+<owl:Class rdf:ID="D">
+	<owl:oneOf rdf:parseType="Collection">
+		<owl:Thing rdf:ID="a0" />
+		<owl:Thing rdf:ID="a1" />
+		<owl:Thing rdf:ID="a2" />
+	</owl:oneOf>
+</owl:Class>
+
+<owl:Class rdf:ID="E">
+	<rdfs:subClassOf>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="#p" />
+			<owl:hasValue rdf:datatype="&xsd;int">42</owl:hasValue>
+		</owl:Restriction>
+	</rdfs:subClassOf>
+</owl:Class>
+
+	
+<owl:AllDifferent>
+	<owl:distinctMembers rdf:parseType="Collection">
+		<owl:Thing rdf:ID="z0" />
+		<owl:Thing rdf:ID="z1" />
+	</owl:distinctMembers>
+</owl:AllDifferent>
+
+<owl:AnnotationProperty rdf:ID="karma" />
+
+</rdf:RDF>

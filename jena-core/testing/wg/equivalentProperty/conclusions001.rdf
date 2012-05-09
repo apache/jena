@@ -1,0 +1,31 @@
+<!--++ equivalentProperty/conclusions001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 11:29:26 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions001.rdf,v 1.6 2003-12-05 05:09:30 jeremy_carroll Exp $
+-->
+<!--
+<code>hasLeader</code> may be stated to be the <code>owl:equivalentProperty</code> of <code>hasHead</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/equivalentProperty/premises001#"
+    xml:base="http://www.w3.org/2002/03owlt/equivalentProperty/conclusions001" >
+   <owl:Thing rdf:about="premises001#X">
+     <first:hasHead>
+        <owl:Thing rdf:about="premises001#Y"/>
+     </first:hasHead>
+   </owl:Thing>   
+   <owl:ObjectProperty rdf:about="premises001#hasHead"/>
+</rdf:RDF>

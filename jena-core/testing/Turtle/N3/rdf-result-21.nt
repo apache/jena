@@ -1,0 +1,6 @@
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#q> "12"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#p> "11" .
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#p> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .
+
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#q2> "99"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<file:///base/rdf-test-21.n3#a> <file:///base/rdf-test-21.n3#q2> "99"^^<http://www.w3.org/2001/XMLSchema#string> .

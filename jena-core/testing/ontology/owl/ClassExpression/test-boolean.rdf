@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+
+<owl:Class rdf:ID="ClassA">
+	<owl:intersectionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="ClassX0" />
+		<owl:Class rdf:ID="ClassX1" />
+	</owl:intersectionOf>
+</owl:Class>
+
+<owl:Class rdf:ID="ClassB">
+	<owl:unionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="ClassY0" />
+		<owl:Class rdf:ID="ClassY1" />
+	</owl:unionOf>
+</owl:Class>
+
+<owl:Class rdf:ID="ClassC">
+	<owl:complementOf>
+		<owl:Class rdf:ID="ClassZ" />
+	</owl:complementOf>
+</owl:Class>
+
+
+</rdf:RDF>

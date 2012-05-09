@@ -1,0 +1,30 @@
+<!--
+  Local test files use in Jena2 development
+
+  Test core hasValue processing - 'only if' direction.
+-->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.w3.org/2002/03owlt/localtests/premisesHv2#"
+    xml:base="http://www.w3.org/2002/03owlt/localtests/premisesHv2" >
+    
+    <owl:ObjectProperty rdf:ID="p"/>
+    
+    <owl:Class rdf:ID="c">
+        <owl:equivalentClass>
+                <owl:Restriction>
+                   <owl:onProperty rdf:resource="#p"/>
+                   <owl:hasValue rdf:resource="#d" />
+                </owl:Restriction>
+        </owl:equivalentClass>
+    </owl:Class>
+    
+     <owl:Thing rdf:ID="d" />
+     
+     <owl:Thing rdf:ID="i">
+        <p rdf:resource="#d" />
+     </owl:Thing>
+
+</rdf:RDF>

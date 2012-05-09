@@ -1,0 +1,3 @@
+_:blank0 <http://host/ns#q2> "French"@fr .
+_:blank0 <http://host/ns#q1> "UK-English"@en-uk .
+_:blank0 <http://host/ns#q3> "aaaa"@any .

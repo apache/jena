@@ -1,0 +1,43 @@
+<!--++ Restriction/consistent003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 25 Jul 2003 03:50:54 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent003.rdf,v 1.5 2003-12-05 05:09:29 jeremy_carroll Exp $
+-->
+<!--
+This test shows syntax that is not permitted in OWL Lite or OWL DL for using the same restriction twice. 
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/Restriction/consistent003#"
+    xml:base="http://www.w3.org/2002/03owlt/Restriction/consistent003" >
+   <owl:DatatypeProperty rdf:ID="dp"/>
+   <owl:Class rdf:ID="C">
+     <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="superC"/>
+        <owl:Restriction rdf:nodeID="r">
+           <owl:onProperty rdf:resource="#dp"/>
+           <owl:someValuesFrom rdf:resource=
+     "http://www.w3.org/2001/XMLSchema#byte" />
+        </owl:Restriction>
+     </owl:intersectionOf>
+   </owl:Class>
+   <owl:Class rdf:ID="D">
+     <owl:intersectionOf rdf:parseType="Collection">
+        <owl:Class rdf:ID="superD"/>
+        <rdf:Description rdf:nodeID="r"/>
+     </owl:intersectionOf>
+   </owl:Class>
+
+</rdf:RDF>

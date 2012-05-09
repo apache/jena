@@ -1,0 +1,36 @@
+# cwm: rdf-test-15.n3 => rdf-result-15.nt
+    
+    <file:///base/rdf-test-15.n3#a1>     <file:///base/rdf-test-15.n3#b1> _:ag1 .
+    
+    <file:///base/rdf-test-15.n3#x2>     <http://a/ns#y2> _:ag3 .
+    
+    <file:///base/rdf-test-15.n3#a2>     <http://a/ns#b2> _:ag4 .
+    
+    _:ag5     <file:///base/rdf-test-15.n3#q1> "3" .
+    
+    _:ag5     <file:///base/rdf-test-15.n3#q2> "4" .
+    
+    _:ag5     <file:///base/rdf-test-15.n3#q2> "5" .
+    
+    _:ag4     <http://a/ns#c2> _:ag5 .
+    
+    <file:///base/rdf-test-15.n3#x1>     <file:///base/rdf-test-15.n3#y1> _:ag0 .
+    
+    _:ag1     <file:///base/rdf-test-15.n3#c1> _:ag2 .
+    
+    _:ag0     <file:///base/rdf-test-15.n3#p1> "3" .
+    
+    _:ag3     <file:///base/rdf-test-15.n3#p2> "3" .
+    
+    _:ag2     <file:///base/rdf-test-15.n3#q1> "3" .
+    
+    _:ag2     <file:///base/rdf-test-15.n3#q2> "4" .
+    
+    _:ag2     <file:///base/rdf-test-15.n3#q2> "5" .
+    
+    <file:///base/rdf-test-15.n3#o>     <http://a/ns#p1> _:ag6 .
+    
+    <file:///base/rdf-test-15.n3#r>     <file:///base/rdf-test-15.n3#p> _:ag7 .
+    
+    _:ag6     <http://a/ns#p2> _:ag7 .
+    

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Author: Dan Connolly
+
+  Description: see:
+
+   http://www.w3.org/2000/03/rdf-tracking/#rdfs-no-cycles-in-subClassOf
+
+  $Id: test001.rdf,v 1.2 2005-08-04 09:53:20 jeremy_carroll Exp $
+
+-->
+
+<rdf:RDF 
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <rdf:Description rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#A">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#B"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#B">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#A"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#X">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfs-no-cycles-in-subClassOf/test001#X"/>
+    </rdf:Description>
+</rdf:RDF>

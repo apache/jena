@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://jena.hpl.hp.com/eg'>
+    <!ENTITY egns   'http://jena.hpl.hp.com/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+]>
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:eg = "&egns;" >
+  <owl:Class rdf:about="&egns;C">
+    <rdfs:subClassOf>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="&egns;R"
+           rdf:type="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property"/>
+        <owl:someValuesFrom rdf:resource="&egns;C"/>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <eg:C rdf:about="&egns;i" />
+</rdf:RDF>

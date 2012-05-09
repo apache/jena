@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<RDF:RDF
+     xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:e="http://www.example.org/dt#"
+     xmlns:NS205="http://www.mozilla.org/rdf/chrome#" >
+
+<!-- Chris the reified triple below should fail the writer tests. -->
+
+   <NS205:className  RDF:about="#Test610"> 
+        <NS205:dtTest RDF:ID="x" RDF:datatype="http://www.w3.org/2001/XMLSchema#int">4</NS205:dtTest>
+    
+    <NS205:foo> 
+    <RDF:Description RDF:ID="bar">
+   <RDF:type RDF:resource="http://www.mozilla.org/rdf/chrome#Another" />
+    <NS205:baseURL>jj</NS205:baseURL>
+    <NS206:locType xmlns:NS206="http://www.mozilla.org/rdf/chrome#">install</NS206:locType>
+    <NS207:displayName xmlns:NS207="http://www.mozilla.org/rdf/chrome#">Toolkit</NS207:displayName>
+    <NS208:author RDF:ID="foo" xmlns:NS208="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS208:author>
+    <NS209:name xmlns:NS209="http://www.mozilla.org/rdf/chrome#">global</NS209:name>
+    </RDF:Description>
+ </NS205:foo>
+ 
+
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Confirm this is electric</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#normalizedString">Confirm this is electric</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#token">Confirm this is electric</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#byte">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#byte">126</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedByte">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedByte">126</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#base64Binary">GpM7</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#hexBinary">0FB7</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">-126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#positiveInteger">126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#negativeInteger">-126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#negativeInteger">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonPositiveInteger">-126789</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonPositiveInteger">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#nonPositiveInteger">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#int">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#int">126789675</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedInt">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedInt">1267896754</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#long">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#long">12678967543233</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedLong">12678967543233</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#short">-1</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#short">12678</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedShort">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#unsignedShort">12678</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">-1.23</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">123.4</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1000.00</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-INF</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-1E4</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">-0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">12.78E-2</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">12</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">INF</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#float">NaN</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-INF</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-1E4</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">0</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">12.78E-2</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">12</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double">INF</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#double" xml:lang="en">NaN</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#time">13:20:00.000-05:00</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#time">13:20:00.000</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#dateTime">1999-05-31T13:20:00.000-05:00</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">P1Y2M3DT10H30M12.3S</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1999-05-31</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonth">--05--</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gYear">1999</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gYearMonth">1999-02</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gDay">---31</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#gMonthDay">--05-31</e:p>
+
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#Name">shipTo</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NCName">USAddress</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#anyURI">http://www.example.com/</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#language">en-GB</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#language">en-US</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#language">fr</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKEN">US</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKEN">Br&#233;sil</e:p>
+<!-- Do not support list types
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKENS">US UK</e:p>
+<e:p rdf:datatype="http://www.w3.org/2001/XMLSchema#NMTOKENS">Br&#233;sil Canada Mexique</e:p>
+-->
+
+
+
+ 
+ 
+   </NS205:className> 
+
+</RDF:RDF>

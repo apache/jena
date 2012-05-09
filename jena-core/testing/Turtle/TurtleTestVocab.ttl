@@ -1,0 +1,54 @@
+## Vocabulary specific to Turtle tests
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix :           <http://jena.hpl.hp.com/2005/12/test-turtle#> .
+
+<>  rdfs:comment     "Vocabulary for Turtle testing" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "Hewlett-Packard" ;
+    dc:title         "Test case vocabulary for Turtle" ;
+    dc:description   "Test case vocabulary for Turtle" ;
+    dc:date          "2005-12" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    rdfs:seeAlso     <http://www.dajobe.org/2004/01/turtle/>
+    .
+
+## ----------------
+## Test types
+
+:Test           rdf:type    rdfs:Class .
+
+# Parse the file.
+:TestSyntax     rdf:type    rdfs:Class ;
+    rdfs:subClassOf         :Test .
+
+# Bad file.
+:TestBadSyntax  rdf:type    rdfs:Class ;
+    rdfs:subClassOf         :Test .
+
+# Parse and check triples
+:TestInOut      rdf:type    rdfs:Class ;
+    rdfs:subClassOf         :Test .
+
+## ----------------
+## Properties
+
+
+:input rdf:type rdf:Property ;
+    rdfs:comment "Input to a test" ;
+    rdfs:domain	 :Test ;
+    .	
+
+:output rdf:type rdf:Property ;
+    rdfs:comment "Output of a test" ;
+    rdfs:domain	 :Test ;
+    .	
+
+
+:inputIRI rdf:type rdf:Property ;
+    rdfs:comment "Declare a IRI for the test input" ;
+    .

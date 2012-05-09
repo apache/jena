@@ -1,0 +1,8 @@
+# cwm: Tests/rdf-test-02.n3 => Tests/rdf-result-02.nt
+    
+    _:a_g0     <http://one.net/ns1#bp1> <http://one.net/ns1#bv1> .
+    
+    _:a_g0     <http://one.net/ns1#bp2> <http://one.net/ns1#bv2> .
+    
+    _:a_g0     <http://two.net/ns2#p1> <http://two.net/ns2#v1> .
+    

@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description:
+    If the property extension of x is known to be a subset
+    of the property extension of y then x is not known to
+    be an rdfs:subPropertyOf y (unless operating in
+    a semantic extension to RDFS with extensional
+    semantics).
+
+
+
+  Related issue:  
+
+   http://www.w3.org/2001/sw/RDFCore/20030123-issues/#horst-01
+
+  Author: Jeremy Carroll 
+
+  $Id: test004.rdf,v 1.1 2005-08-04 09:53:27 jeremy_carroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         >
+
+  <rdf:Property rdf:about="http://example.org/p">
+    <rdfs:subPropertyOf 
+        rdf:resource="http://example.org/q"/>
+  </rdf:Property>
+
+</rdf:RDF>
+
