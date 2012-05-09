@@ -1,0 +1,148 @@
+/**
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+*/
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif ;
+    font-size: 10pt ;
+    line-height: 18pt ;
+    color: black;
+    background: white ;
+    margin: 0 ;
+}
+
+p { margin-left: 2% ; margin-right: 2% ; }
+
+.warning { color: #FF0000 ; }
+.error   { color: #FF0000 ;  font-weight: bold; }
+
+/* Makes lists a little tighter
+li { line-height: 14pt ; }
+*/
+
+textarea { background-color: #F0F0F0 ; }
+
+table {
+  font-family: Verdana, Arial, sans-serif ;
+  font-size: 10pt ;
+  border-collapse: collapse;
+  border: 1px solid black ;
+  cellspacing: 0 ;
+  cellpadding: 0 
+}
+
+td {
+  border: 1px solid #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  spacing: 0 ;
+  vertical-align:top;
+  text-align:center
+}
+
+
+th {
+  border: 1px solid #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  vertical-align:top;
+  text-align:center
+}
+
+.box 
+{ margin-left :     5% ;
+  margin-right :    5% ;
+  border:           solid ;
+  border-width:     thin; 
+  background-color: #F0F0F0; 
+  padding:          2mm;
+  page-break-inside: avoid ;
+}
+
+.noindent     { margin-left: -5% ; margin-right: -5%; }
+.moreindent   { margin-left:  5% ; margin-right:  5%; }
+
+
+/* Use this for the document title as displayed on the page at the top. */
+
+
+h1 {
+    text-align:center ;
+    font-size: 14pt;
+    line-height: 24pt ;
+    font-weight: bold;
+    color:#000;
+    background:#CADFF4;
+    padding: 0 ;
+    margin: 0 ;
+    padding-left: 1ex;
+    padding-right: 1ex;
+    text-align:center;
+}
+
+h2 {
+    font-size: 12pt;
+    line-height: 16pt ;
+    font-size: 110%;
+    font-weight: bold;
+    color: #003399;
+    background:#CADFF4;
+    margin-bottom:5px;
+    padding-left: 1ex;
+    padding-right: 1ex;
+}
+
+h3, h4, h5 {
+    font-size: 100%;
+    font-weight: bold;
+    margin-bottom:3px;
+}
+
+ul { list-style-type: disc }
+dt { font-weight: bold }
+
+/* Change background/foreground colour on hover */
+
+A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
+A:hover { color: rgb(255, 0, 0) }       /* when mouse is over link */
+
+/* No extra space between paragraphs : inherits from body */
+pre {
+    font-family: monospace;
+    font-size: 10pt ;
+    line-height: 14pt ;
+    margin-top: 1 ;
+    margin-bottom: 1 ;
+    margin-left: 5ex ;
+    }
+
+/* Some general utility definitions */
+.centered {
+    text-align: center;
+}
+
+.caption {
+    text-align: center;
+    font-size: smaller;
+}
+
+code {
+    font-size: 10pt;
+}
+
+.footnote {
+    font-size: smaller;
+    border-top: thin solid gray;
+}

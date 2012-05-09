@@ -1,0 +1,9 @@
+#!/bin/bash
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+SOH=${SOH:-soh}
+for s in s-head s-get s-put s-post s-delete s-query s-update s-update-form
+do
+    rm -f $s
+    ln -s "$SOH" $s
+done
