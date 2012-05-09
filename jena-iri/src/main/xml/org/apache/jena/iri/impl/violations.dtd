@@ -1,0 +1,206 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/violations.dtd
+
+--><!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE violations SYSTEM "violations.dtd">
+
+    <violations>
+    ...
+    </violations>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT violations (specification*, scheme*, violation*)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT specification (name, section?,  prohibit*, require*,  (good|bad)*, todo*)>
+<!ATTLIST specification
+    href CDATA #IMPLIED
+    rfc CDATA #IMPLIED
+    type (iri|other) "iri"
+    section CDATA #IMPLIED
+    id ID #REQUIRED
+  >
+  
+<!ELEMENT scheme (name,  defn*, complete?, dns?, port?, prohibit*, require*, pattern*, (good|bad)*, todo*)>
+<!ATTLIST scheme
+    href CDATA #IMPLIED
+    rfc CDATA #IMPLIED
+    type (scheme) "scheme"
+    section CDATA #IMPLIED
+    id ID #REQUIRED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT name (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT section (#PCDATA)>
+
+<!ELEMENT pattern (#PCDATA)>
+<!ATTLIST pattern
+    component (PATH|QUERY|PATHQUERY) #REQUIRED
+    reserved CDATA #IMPLIED
+  >
+
+<!ELEMENT todo (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT violation (name, 
+      (internal|
+         (unimplemented?,
+         (should|minting|must)?,
+         dns?,
+         security?,
+         description,
+         (spec|also|comment|see)*))?, 
+         (good|bad)*)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT description (#PCDATA)>
+
+<!--- Put your DTDDoc comment here.
+  The spec element shows that the violation is defined in a particular
+  specification. 
+  The included text elements give  text from the specification to be included in 
+  documentation and error messages.
+  Each text may include a section or a fragment.
+  Each text may include a component to narrowly scope the text.
+  If there is more than one text then:
+     all are included in the documentation
+  and either:
+     all have a different component and the text applies to that component only.
+     or
+     none have a component and the first text is used in any error message
+ -->
+<!ELEMENT spec (text+)>
+<!ATTLIST spec
+    ref IDREF #REQUIRED
+  >
+
+<!--- The also element 
+   If the also element has a preceding spec element
+   then it increases the scope of that spec to include the referenced specification.
+   In this case there may not be a fragment or section.
+   
+   If there is no preceding spec element, then this element
+   shows that the violation does apply to the referenced specification,
+   even though no text is offered.
+   In this case, the section or ref attributes may be used to give more
+   information, or if not, the section or ref attributes of a preceeding
+   also element.
+-->
+<!ELEMENT also EMPTY>
+<!ATTLIST also
+    fragment CDATA #IMPLIED
+    section CDATA #IMPLIED
+    ref IDREF #REQUIRED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT bad (#PCDATA|unicode)*>
+<!ELEMENT good (#PCDATA|unicode)*>
+
+
+
+<!ELEMENT defn (#PCDATA|ol|pre|em|ul)*>
+<!ATTLIST defn
+    ref CDATA #IMPLIED
+    section CDATA #IMPLIED
+  >
+
+<!ELEMENT complete EMPTY>
+
+<!ELEMENT port (#PCDATA)>
+
+<!ELEMENT prohibit (text*)>
+<!ATTLIST prohibit
+    fragment CDATA #IMPLIED
+    section CDATA #IMPLIED
+    component (HOST|SCHEME|FRAGMENT|AUTHORITY|PORT|USER|QUERY|PATH) #REQUIRED
+  >
+
+<!ELEMENT require (text*)>
+<!ATTLIST require
+    fragment CDATA #IMPLIED
+    section CDATA #IMPLIED
+    component (HOST|SCHEME|FRAGMENT|AUTHORITY|PORT|USER|QUERY|PATH) #REQUIRED
+  >
+
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT text (#PCDATA|ol|pre|em|ul)*>
+<!ATTLIST text
+    component CDATA #IMPLIED
+    fragment CDATA #IMPLIED
+    section CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT em (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT minting EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT unimplemented EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT comment (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT see (#PCDATA)>
+
+
+<!ELEMENT unicode (#PCDATA)>
+
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT security EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT pre (#PCDATA)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT internal EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT dns EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT must EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT should EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ol (li)*>
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT ul (li)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT li (#PCDATA)>
