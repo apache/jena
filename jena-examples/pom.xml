@@ -9,7 +9,7 @@
 
   <name>jena-examples</name>
   <description>A collection of example code illustrating uses of Apache Jena</description>
-  <url>http://incubator.apache.org/jena</url>
+  <url>http://jena.apache.org/</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

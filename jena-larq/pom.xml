@@ -32,12 +32,12 @@
   <version>1.0.1-incubating-SNAPSHOT</version>
 
   <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
-  <url>http://incubator.apache.org/jena/documentation/larq/</url>
+  <url>http://jena.apache.org//documentation/larq/</url>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/trunk</developerConnection>
-    <url>http://svn.apache.org/repos/asf/incubator/jena/Jena2/LARQ/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-larq</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-larq</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-larq</url>
   </scm>
 
   <properties>
