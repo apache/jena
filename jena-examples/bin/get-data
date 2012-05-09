@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo Getting JISC organizations
+wget -O src/main/resources/data/jisc-organizations.rdf http://www.ovod.net/wilbert/linkedData/jiscMUorganisations.rdf
+java jena.rdfcat -o Turtle src/main/resources/data/jisc-organizations.rdf > src/main/resources/data/jisc-organizations.ttl
+
+# split the file up
+arq --data=src/main/resources/data/jisc-organizations.ttl "describe ?uni where {?uni <http://www.jiscmu.ac.uk/schema/muweb/Sector> 'Higher Education'}" > src/main/resources/data/he.ttl
+arq --data=src/main/resources/data/jisc-organizations.ttl "describe ?uni where {?uni <http://www.jiscmu.ac.uk/schema/muweb/Sector> 'Further Education'}" > src/main/resources/data/fe.ttl
+
