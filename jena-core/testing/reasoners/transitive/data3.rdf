@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdf:Description rdf:about="&eg;c">
+    <p rdf:resource="&eg;d"/>
+    <rdf:type rdf:resource="&eg;C3"/>
+  </rdf:Description>
+
+</rdf:RDF>

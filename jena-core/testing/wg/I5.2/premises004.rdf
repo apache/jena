@@ -1,0 +1,74 @@
+<!--++ I5.2/premises004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Feb 2003 07:40:56 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises004.rdf,v 1.5 2003-12-05 05:09:32 jeremy_carroll Exp $
+-->
+<!--
+The complement of a class can be defined using OWL Lite restrictions.
+-->
+<!-- Author: Ian Horrocks -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/I5.2/premises004#"
+    xmlns:second="http://www.w3.org/2002/03owlt/I5.2/conclusions004#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.2/premises004" >
+
+  <owl:Class rdf:ID="Nothing">
+       <rdfs:subClassOf>
+         <owl:Restriction>
+            <owl:onProperty>
+                <owl:ObjectProperty rdf:about="#p"/>
+            </owl:onProperty>
+            <owl:minCardinality rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            >1</owl:minCardinality>
+         </owl:Restriction>
+       </rdfs:subClassOf>
+       <rdfs:subClassOf>
+         <owl:Restriction>
+            <owl:onProperty>
+                <owl:ObjectProperty rdf:about="#p"/>
+            </owl:onProperty>
+            <owl:maxCardinality rdf:datatype=
+"http://www.w3.org/2001/XMLSchema#nonNegativeInteger"
+            >0</owl:maxCardinality>
+         </owl:Restriction>
+       </rdfs:subClassOf>
+   </owl:Class>
+ <owl:Class rdf:ID="A">
+   <owl:equivalentClass>
+     <owl:Restriction>
+       <owl:onProperty>
+         <owl:ObjectProperty rdf:about="#q"/>
+       </owl:onProperty>
+       <owl:someValuesFrom>
+         <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+       </owl:someValuesFrom>
+     </owl:Restriction>
+   </owl:equivalentClass>
+ </owl:Class>
+ <owl:Class rdf:ID="notA">
+   <owl:equivalentClass>
+     <owl:Restriction>
+       <owl:onProperty>
+         <owl:ObjectProperty rdf:about="#q"/>
+       </owl:onProperty>
+       <owl:allValuesFrom>
+         <owl:Class rdf:about="#Nothing"/>
+       </owl:allValuesFrom>
+     </owl:Restriction>
+   </owl:equivalentClass>
+ </owl:Class>
+
+</rdf:RDF>

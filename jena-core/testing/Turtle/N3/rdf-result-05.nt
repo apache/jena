@@ -1,0 +1,4 @@
+# cwm: Tests/rdf-test-05.n3 => Tests/rdf-result-05.nt
+    
+    <file:///base/rdf-test-05.n3>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <file:///base/rdf-test-05.n3a> .
+    

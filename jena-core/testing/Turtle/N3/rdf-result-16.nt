@@ -1,0 +1,16 @@
+# cwm: Tests/rdf-test-16.n3 => Tests/rdf-result-16.nt
+    
+    _:a_g1     <file:///base/rdf-test-16.n3#b> <file:///base/rdf-test-16.n3#a> .
+    
+    _:a_g0     <file:///base/rdf-test-16.n3#p> "3" .
+    
+    _:a_g0     <file:///base/rdf-test-16.n3#y> <file:///base/rdf-test-16.n3#x> .
+    
+    _:a_g2     <file:///base/rdf-test-16.n3#c> _:a_g1 .
+    
+    _:a_g2     <file:///base/rdf-test-16.n3#q1> "3" .
+    
+    _:a_g2     <file:///base/rdf-test-16.n3#q2> "4" .
+    
+    _:a_g2     <file:///base/rdf-test-16.n3#q2> "5" .
+    

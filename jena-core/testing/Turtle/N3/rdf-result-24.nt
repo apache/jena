@@ -1,0 +1,6 @@
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q1> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q1> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q1> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q2> "<foo>bar</foo>"@en .
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q2> "<foo>bar</foo>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<file:///base/rdf-test-24.n3#a> <file:///base/rdf-test-24.n3#q0> "11"^^<http://www.w3.org/2001/XMLSchema#integer> .

@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY jena    'http://jena.hpl.hp.com/'>
+
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY base    '&jena;2003/04/schemagen'>
+    <!ENTITY sgen    '&base;#'>
+]>
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:sgen="http://jena.hpl.hp.com/2003/04/schemagen#">
+
+  <sgen:Config>
+    <!-- specifies that the source document uses OWL -->
+    <sgen:owl rdf:datatype="&xsd;boolean">true</sgen:owl>
+    <!-- specifies that we want the generated vocab to use OntClass, OntProperty, etc, not Resource and Property -->
+    <sgen:ontology rdf:datatype="&xsd;boolean">true</sgen:ontology>
+  </sgen:Config>
+</rdf:RDF>

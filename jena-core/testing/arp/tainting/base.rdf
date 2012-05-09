@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<rdf:RDF  
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <rdf:Description rdf:about="http://www.w3.org/" xml:base="test1/">
+    <dc:title>World Wide Web Consortium</dc:title>
+    <dc:source rdf:resource="test2/"/>
+    <dc:title rdf:datatype="bar">World Wide Web Consortium</dc:title>
+    
+    <dc:relation rdf:resource=""/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://www.w3.org/" xml:base="ht^tp://www.w3.org/demo.mp3">
+    <dc:title>World Wide Web Consortium</dc:title>
+    <dc:title rdf:datatype="bar">World Wide Web Consortium</dc:title>
+    <dc:source>
+      <rdf:Description rdf:type="test2/"/>
+    </dc:source>
+    <dc:relation rdf:resource=""/>
+  </rdf:Description>
+</rdf:RDF>

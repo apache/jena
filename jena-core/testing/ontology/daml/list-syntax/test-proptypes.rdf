@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<daml:Ontology rdf:about="">
+	<daml:versionInfo>CVS $Id: test.rdf,v 1.1 2003/04/02 20:33:33 ian_dickinson Exp $</daml:versionInfo>
+</daml:Ontology>
+
+<daml:UniqueProperty rdf:ID="fp">
+</daml:UniqueProperty>
+
+<daml:TransitiveProperty rdf:ID="tp">
+</daml:TransitiveProperty>
+
+<daml:UnambiguousProperty rdf:ID="ifp">
+</daml:UnambiguousProperty>
+
+</rdf:RDF>

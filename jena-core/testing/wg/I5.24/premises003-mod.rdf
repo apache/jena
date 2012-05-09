@@ -1,0 +1,36 @@
+<!--++ I5.24/premises003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 17 Dec 2002 14:50:04 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises003-mod.rdf,v 1.3 2003-09-24 15:22:46 jeremy_carroll Exp $
+-->
+<!--
+This is a typical definition of range from description logic.
+Modified to include comprehension axioms for checking forward rules.
+-->
+<!-- Author: Ian Horrocks -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.24/premises003" >
+  <owl:ObjectProperty rdf:ID="prop">
+     <rdfs:range rdf:resource="#A"/>
+  </owl:ObjectProperty>
+    <owl:Class rdf:about="http://www.example.org/foo#compClass1">
+      <owl:equivalentClass>
+          <owl:Restriction>
+             <owl:onProperty rdf:resource="premises003#prop"/>
+             <owl:allValuesFrom rdf:resource="premises003#A"/>
+          </owl:Restriction>
+      </owl:equivalentClass>
+    </owl:Class>
+</rdf:RDF>

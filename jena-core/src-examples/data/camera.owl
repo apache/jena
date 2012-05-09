@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:owl="http://www.w3.org/2002/07/owl#"
+	 xmlns="http://www.xfront.com/owl/ontologies/camera/#"
+	 xmlns:camera="http://www.xfront.com/owl/ontologies/camera/#"
+	 xml:base="http://www.xfront.com/owl/ontologies/camera/">
+
+    <owl:Ontology>
+        <rdfs:comment>
+        Camera OWL Ontology                           
+                                                                  
+      Author: Roger L. Costello                                   
+      Acknowlegements: Many thanks to the following people for    
+                       their invaluable input:                    
+                          Richard McCullough, Yuzhong Qu,         
+                          Leo Sauermann, Brian McBride and        
+                          Jim Farrugia.                           
+     
+      Modified as a Jena example by Ian Dickinson
+        </rdfs:comment>
+    </owl:Ontology>
+
+     <owl:Class rdf:ID="Money">
+          <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+     </owl:Class>
+
+     <owl:DatatypeProperty rdf:ID="currency">
+          <rdfs:domain rdf:resource="#Money"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+     <owl:Class rdf:ID="Range">
+          <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+     </owl:Class>
+
+     <owl:DatatypeProperty rdf:ID="min">
+          <rdfs:domain rdf:resource="#Range"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+     </owl:DatatypeProperty>
+
+     <owl:DatatypeProperty rdf:ID="max">
+          <rdfs:domain rdf:resource="#Range"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+     </owl:DatatypeProperty>
+
+     <owl:DatatypeProperty rdf:ID="units">
+          <rdfs:domain rdf:resource="#Range"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+     <owl:Class rdf:ID="Window">
+          <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+     </owl:Class>
+
+     <camera:Window rdf:ID="ThroughTheLens"/>
+     <camera:Window rdf:ID="WindowOnTopOfCamera"/>
+
+     <owl:Class rdf:ID="Viewer">
+         <owl:oneOf rdf:parseType="Collection">
+               <camera:Window rdf:about="#ThroughTheLens"/>
+               <camera:Window rdf:about="#WindowOnTopOfCamera"/>
+          </owl:oneOf>
+     </owl:Class>
+
+     <owl:Class rdf:ID="PurchaseableItem">
+          <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+     </owl:Class>
+
+     <owl:ObjectProperty rdf:ID="cost">
+          <rdfs:domain rdf:resource="#PurchaseableItem"/>
+          <rdfs:range rdf:resource="#Money"/>
+     </owl:ObjectProperty>
+
+     <owl:Class rdf:ID="Body">
+          <rdfs:subClassOf rdf:resource="#PurchaseableItem"/>
+     </owl:Class>
+
+     <owl:Class rdf:ID="BodyWithNonAdjustableShutterSpeed">
+          <owl:intersectionOf rdf:parseType="Collection">
+               <owl:Class rdf:about="#Body"/>
+               <owl:Restriction>
+                     <owl:onProperty rdf:resource="#shutter-speed"/>
+                     <owl:cardinality>0</owl:cardinality>
+               </owl:Restriction>
+          </owl:intersectionOf>
+     </owl:Class>
+
+     <owl:Class rdf:ID="Lens">
+          <rdfs:subClassOf rdf:resource="#PurchaseableItem"/>
+     </owl:Class>
+
+     <owl:Class rdf:ID="Camera">
+          <rdfs:subClassOf rdf:resource="#PurchaseableItem"/>
+     </owl:Class>
+
+     <owl:Class rdf:ID="SLR">
+          <owl:intersectionOf rdf:parseType="Collection">
+               <owl:Class rdf:about="#Camera"/>
+               <owl:Restriction>
+                     <owl:onProperty rdf:resource="#viewFinder"/>
+                     <owl:hasValue rdf:resource="#ThroughTheLens"/>
+               </owl:Restriction>
+          </owl:intersectionOf>
+     </owl:Class>
+
+     <owl:Class rdf:ID="Large-Format">
+          <rdfs:subClassOf rdf:resource="#Camera"/>
+          <rdfs:subClassOf>
+               <owl:Restriction>
+                     <owl:onProperty rdf:resource="#body"/>
+                     <owl:allValuesFrom rdf:resource="#BodyWithNonAdjustableShutterSpeed"/>
+               </owl:Restriction>
+          </rdfs:subClassOf>
+     </owl:Class>
+
+     <owl:Class rdf:ID="Digital">
+          <rdfs:subClassOf rdf:resource="#Camera"/>
+     </owl:Class>
+
+     <owl:ObjectProperty rdf:ID="part"/>
+
+     <owl:ObjectProperty rdf:ID="lens">
+          <rdfs:subPropertyOf rdf:resource="#part"/>
+          <rdfs:domain rdf:resource="#Camera"/>
+          <rdfs:range rdf:resource="#Lens"/>
+     </owl:ObjectProperty>
+
+     <owl:ObjectProperty rdf:ID="body">
+          <rdfs:subPropertyOf rdf:resource="#part"/>
+          <rdfs:domain rdf:resource="#Camera"/>
+          <rdfs:range rdf:resource="#Body"/>
+     </owl:ObjectProperty>
+
+     <owl:ObjectProperty rdf:ID="viewFinder">
+          <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+          <rdfs:domain rdf:resource="#Camera"/>
+          <rdfs:range rdf:resource="#Viewer"/>
+     </owl:ObjectProperty>
+
+     <owl:DatatypeProperty rdf:ID="size">
+          <rdfs:domain rdf:resource="#Lens"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+     <owl:DatatypeProperty rdf:ID="aperture">
+          <rdfs:domain rdf:resource="#Lens"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+     <owl:ObjectProperty rdf:ID="compatibleWith">
+          <rdfs:domain rdf:resource="#Lens"/>
+          <rdfs:range rdf:resource="#Body"/>
+     </owl:ObjectProperty>
+
+     <owl:ObjectProperty rdf:ID="shutter-speed">
+          <rdfs:domain rdf:resource="#Body"/>
+          <rdfs:range rdf:resource="#Range"/>
+     </owl:ObjectProperty>
+
+     <owl:DatatypeProperty rdf:ID="focal-length">
+          <owl:equivalentProperty rdf:resource="#size"/>
+          <rdfs:domain rdf:resource="#Lens"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+     <owl:DatatypeProperty rdf:ID="f-stop">
+          <owl:equivalentProperty rdf:resource="#aperture"/>
+          <rdfs:domain rdf:resource="#Lens"/>
+          <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+     </owl:DatatypeProperty>
+
+</rdf:RDF>

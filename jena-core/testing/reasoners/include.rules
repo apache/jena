@@ -1,0 +1,5 @@
+// Define an axiomatic rule to include in the rule parser test
+
+@prefix p: <http://jena.hpl.hp.com/newprefix3#>
+
+-> (p:a p:a p:a).

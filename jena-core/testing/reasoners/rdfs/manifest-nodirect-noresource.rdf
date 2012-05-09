@@ -1,0 +1,175 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY test 'http://www.hpl.hp.com/semweb/2003/query_tester#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns="&test;">
+
+  <Test rdf:about="test1">
+    <description>RDFS reasoner: range test, wildcard</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data1.rdf</data>
+    <query>rdfs/query-res.nt</query>
+    <result>rdfs/result1.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test2">
+    <description>RDFS reasoner: range test, ground</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data1.rdf</data>
+    <query>rdfs/query2.nt</query>
+    <result>rdfs/result2.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test3">
+    <description>RDFS reasoner: simple subProp case, wildcard</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query3.nt</query>
+    <result>rdfs/result3.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test4">
+    <description>RDFS reasoner: simple subProp case, ground subject</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query4.nt</query>
+    <result>rdfs/result4.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test5">
+    <description>RDFS reasoner: simple subProp case, ground object</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query5.nt</query>
+    <result>rdfs/result4.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test6">
+    <description>RDFS reasoner: range test, ground, with subProp</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query2.nt</query>
+    <result>rdfs/result2.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test7">
+    <description>RDFS reasoner: domain test, ground, with subProp</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query7.nt</query>
+    <result>rdfs/result7.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test8">
+    <description>RDFS reasoner: domain test, wildcard, with subProp</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query8.nt</query>
+    <result>rdfs/result8.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test9">
+    <description>RDFS reasoner: range test, ground, with subProp and subClass</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query9.nt</query>
+    <result>rdfs/result9.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test10">
+    <description>RDFS reasoner: range test, wildcard, with subProp and subClass</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query10.nt</query>
+    <result>rdfs/result10.rdf</result>
+  </Test>
+  
+  <Test rdf:about="test11">
+    <description>RDFS reasoner: wildcard type, with subProp and subClass</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query11.nt</query>
+    <result>rdfs/result11-noresource.rdf</result>
+  </Test>
+
+  <Test rdf:about="test12">
+    <description>RDFS reasoner: list all Resources</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query12.nt</query>
+    <result>rdfs/result12-noresource.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test13">
+    <description>RDFS reasoner: list all Properties</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query13.nt</query>
+    <result>rdfs/result13-noresource.rdf</result>
+  </Test>
+
+  <Test rdf:about="test14">
+    <description>RDFS reasoner: ground case of type Resource test</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query14.nt</query>
+    <result>rdfs/result14.rdf</result>
+  </Test>
+   
+  <Test rdf:about="test15">
+    <description>RDFS reasoner: ground case of type Property test</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query15.nt</query>
+    <result>rdfs/result15.rdf</result>
+  </Test>
+
+   
+  <Test rdf:about="test16">
+    <description>RDFS reasoner: enumerate all Classes</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query16.nt</query>
+    <result>rdfs/result16-noresource.rdf</result>
+  </Test>
+   
+<!-- skip for now   - rule reasoner doesn't support membership properties
+  <Test rdf:about="test17">
+    <description>RDFS reasoner: container property rules</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data3.rdf</data>
+    <query>rdfs/query17.nt</query>
+    <result>rdfs/result17.rdf</result>
+  </Test>
+-->
+   
+  <Test rdf:about="test18">
+    <description>RDFS reasoner: wildcard predicate, ground subject in query</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query18.nt</query>
+    <result>rdfs/result18.rdf</result>
+  </Test>
+
+<!-- skip for now  - code works, test is wrong result19-nodirect needs to get a whole lot bigger 
+  <Test rdf:about="test19">
+    <description>RDFS reasoner: list everything</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query19.nt</query>
+    <result>rdfs/result19-nodirect.rdf</result>
+  </Test>
+-->
+
+  <Test rdf:about="test20">
+    <description>RDFS reasoner: wildcard predicate, ground Class subject</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query20.nt</query>
+    <result>rdfs/result20-nodirect.rdf</result>
+  </Test>
+
+</rdf:RDF>

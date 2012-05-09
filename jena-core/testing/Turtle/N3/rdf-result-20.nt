@@ -1,0 +1,15 @@
+# cwm: rdf-test-19.n3 => rdf-result-19.nt
+# Then fixed up so the list head is resource :list
+# Then removed rdf:List type triples.
+
+   <file:///base/rdf-test-20.n3#a>     <file:///base/rdf-test-20.n3#p>  <file:///base/rdf-test-20.n3#list> .
+    
+   <file:///base/rdf-test-20.n3#b>     <file:///base/rdf-test-20.n3#p>  <file:///base/rdf-test-20.n3#list> .
+    
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "2" .
+    
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    
+    <file:///base/rdf-test-20.n3#list>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1" .
+    
+    <file:///base/rdf-test-20.n3#list>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a_g1 .

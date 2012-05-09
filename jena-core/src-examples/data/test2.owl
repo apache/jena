@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE owl [
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >
+]>
+
+<rdf:RDF
+    xmlns:owl="&owl;"
+    xmlns:rdf="&rdf;"
+    xmlns:rdfs="&rdfs;"
+    xmlns:test1="urn:x-hp-jena:test1#"
+    xmlns="urn:x-hp-jena:test2#"
+    xml:base = "urn:x-hp-jena:test2"
+>
+   <owl:Ontology rdf:about="">
+   </owl:Ontology>
+
+   <owl:Class rdf:ID="Test2A">
+    <rdfs:subClassOf rdf:resource="urn:x-hp-jena:test1#Test1A" />
+   </owl:Class>
+
+   <test1:Test1A rdf:ID="test1a" />
+
+</rdf:RDF>

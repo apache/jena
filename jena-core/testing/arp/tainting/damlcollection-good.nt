@@ -1,0 +1,6 @@
+_:jA296 <http://www.daml.org/2001/03/daml+oil#first> _:jA295 .
+_:jA296 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.daml.org/2001/03/daml+oil#List> .
+_:jA296 <http://www.daml.org/2001/03/daml+oil#rest> _:jA298 .
+_:jA298 <http://www.daml.org/2001/03/daml+oil#first> _:jA297 .
+_:jA298 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.daml.org/2001/03/daml+oil#List> .
+_:jA298 <http://www.daml.org/2001/03/daml+oil#rest> <http://www.daml.org/2001/03/daml+oil#nil> .

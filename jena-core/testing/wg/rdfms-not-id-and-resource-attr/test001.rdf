@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdfms-not-id-and-resource-attr
+        Test:  1
+        Author: Jeremy Carroll, HP
+        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-not-id-and-resource-attr/test001.rdf,v 1.2 2005-08-04 09:53:21 jeremy_carroll Exp $
+
+        rdf:ID on an empty property element indicates reification.
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test001.rdf,v 1.2 2005-08-04 09:53:21 jeremy_carroll Exp $
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+  <rdf:Description>
+    <eg:prop1  rdf:ID="reify" eg:prop2="val"></eg:prop1>
+  </rdf:Description>
+</rdf:RDF>

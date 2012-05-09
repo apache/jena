@@ -1,0 +1,4 @@
+# cwm: Tests/rdf-test-03.n3 => Tests/rdf-result-03.nt
+    
+    _:a_g0     <http://namespace.net/p1> <http://namespace.net/v1> .
+    

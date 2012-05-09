@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdf:Property rdf:about="&eg;p" />
+  <rdf:Property rdf:about="&eg;q" />
+  <rdf:Property rdf:about="&eg;r" />
+<!--  <rdf:Property rdf:about="&eg;fubar" />  -->
+  
+   <rdf:Property rdf:about="&rdf;subject" />
+   <rdf:Property rdf:about="&rdf;predicate" />
+   <rdf:Property rdf:about="&rdf;object" />
+   <rdf:Property rdf:about="&rdf;first" />
+   <rdf:Property rdf:about="&rdf;rest" />
+   <rdf:Property rdf:about="&rdf;type" />
+   
+   <rdf:Property rdf:about="&rdfs;range" />
+   <rdf:Property rdf:about="&rdfs;domain" />
+   <rdf:Property rdf:about="&rdfs;subPropertyOf" />
+   <rdf:Property rdf:about="&rdfs;subClassOf" />
+
+   <rdf:Property rdf:about="&rdfs;seeAlso" />
+   <rdf:Property rdf:about="&rdfs;label" />
+   <rdf:Property rdf:about="&rdfs;isDefinedBy" />
+   <rdf:Property rdf:about="&rdfs;comment" />
+
+
+</rdf:RDF>

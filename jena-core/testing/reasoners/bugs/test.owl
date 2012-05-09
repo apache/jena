@@ -1,0 +1,115 @@
+<?xml version="1.0"?>
+<!DOCTYPE owl [
+     <!ENTITY vin  "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#" >
+     <!ENTITY food "http://www.w3.org/2001/sw/WebOnt/guide-src/food#" >
+     <!ENTITY xsd  "http://www.w3.org/2000/10/XMLSchema#" >
+   ]>
+
+<rdf:RDF
+  xmlns     = "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
+  xmlns:food= "http://www.w3.org/2001/sw/WebOnt/guide-src/food#"
+  xmlns:vin = "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#"
+  xmlns:owl = "http://www.w3.org/2002/07/owl#"
+  xmlns:rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs= "http://www.w3.org/2000/01/rdf-schema#">
+
+  <owl:Ontology rdf:about="">
+    <rdfs:comment>
+      Derived from the DAML Wine ontology at 
+      http://ontolingua.stanford.edu/doc/chimaera/ontologies/wines.daml
+      Substantially modified.
+    </rdfs:comment>
+  </owl:Ontology>
+
+  <owl:Class rdf:ID="ConsumableThing" />
+
+  <owl:Class rdf:ID="EdibleThing">
+    <rdfs:subClassOf rdf:resource="#ConsumableThing" />
+  </owl:Class>
+  
+  <owl:Class rdf:ID="PotableLiquid">
+    <rdfs:subClassOf rdf:resource="#ConsumableThing" />
+    <owl:disjointWith rdf:resource="#EdibleThing" />
+  </owl:Class>
+  
+  <owl:Class rdf:ID="Wine">
+    <owl:equivalentClass rdf:resource="&vin;Wine"/>
+  </owl:Class>
+
+  <owl:ObjectProperty rdf:ID="hasDrink">
+    <rdfs:domain rdf:resource="#MealCourse" />
+    <rdfs:range rdf:resource="#Wine" />
+  </owl:ObjectProperty>
+  
+  <owl:Thing rdf:ID="White">
+    <owl:sameIndividualAs rdf:resource="&vin;White"/>
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Rose">
+    <owl:sameIndividualAs rdf:resource="&vin;Rose" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Red">
+    <owl:sameIndividualAs rdf:resource="&vin;Red" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Sweet">
+    <owl:sameIndividualAs rdf:resource="&vin;Sweet" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="OffDry">
+    <owl:sameIndividualAs rdf:resource="&vin;OffDry" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Dry">
+    <owl:sameIndividualAs rdf:resource="&vin;Dry" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Delicate">
+    <owl:sameIndividualAs rdf:resource="&vin;Delicate" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Moderate">
+    <owl:sameIndividualAs rdf:resource="&vin;Moderate" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Strong">
+    <owl:sameIndividualAs rdf:resource="&vin;Strong" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Light">
+    <owl:sameIndividualAs rdf:resource="&vin;Light" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Medium">
+    <owl:sameIndividualAs rdf:resource="&vin;Medium" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Full">
+    <owl:sameIndividualAs rdf:resource="&vin;Full" />
+  </owl:Thing>
+
+  <owl:Thing rdf:ID="Dummy1">
+    <owl:sameIndividualAs rdf:resource="&vin;Dummy1" />
+  </owl:Thing>
+
+  <owl:ObjectProperty rdf:ID="course">
+    <rdfs:domain rdf:resource="#Meal" />
+    <rdfs:range rdf:resource="#MealCourse" />
+  </owl:ObjectProperty>
+  
+  <owl:Class rdf:ID="Grape">
+    <rdfs:subClassOf rdf:resource="#SweetFruit" />
+  </owl:Class>
+    
+  <owl:Class rdf:ID="PastaWithSpicyRedSauceCourse">
+    <owl:intersectionOf rdf:parseType="Collection">
+      <owl:Class rdf:about="#MealCourse" />
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="#hasFood" />
+        <owl:allValuesFrom rdf:resource="#PastaWithSpicyRedSauce" />
+      </owl:Restriction>
+    </owl:intersectionOf>
+  </owl:Class>
+
+</rdf:RDF>

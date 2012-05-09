@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdfs:ContainerMembershipProperty rdf:about="&rdf;_1" />
+  <rdfs:ContainerMembershipProperty rdf:about="&rdf;_2" />
+  <rdfs:ContainerMembershipProperty rdf:about="&rdf;_3" />
+  
+  <rdf:Description rdf:about="&rdf;_1">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;member" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&rdf;_2">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;member" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&rdf;_3">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;member" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&rdfs;member">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;member" />
+  </rdf:Description>
+
+</rdf:RDF>

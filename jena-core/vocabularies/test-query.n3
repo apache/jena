@@ -1,0 +1,40 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:    <http://www.w3.org/2002/07/owl#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+
+@prefix mf:     <http://jena.hpl.hp.com/2003/03/test-manifest#> .
+
+@prefix :       <http://jena.hpl.hp.com/2003/03/test-query#> .
+
+# RDF testcases vocabulary
+@prefix testns: <http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#> .
+
+<>  rdfs:comment     "Vocabulary for query test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:title         "Query test case vocabulary" ;
+    dc:description   "" ;
+    dc:date          "2003-03" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+## ---- Class declarations ----
+
+:QueryTest a rdfs:Class ;
+    rdfs:comment "The class of query tests" .
+
+## ---- Property declarations ----
+
+
+:query a rdf:Property ;
+    rdfs:comment "The query to ask" ;
+    rdfs:domain	 :QueryTest ;
+    ## rdfs:range   ?? ;
+    .	
+
+:data a rdf:Property ;
+    rdfs:comment "Optional: data for the query test" ;
+    rdfs:domain	 :QueryTest ;
+    rdfs:range   rdfs:Resource ;
+    .

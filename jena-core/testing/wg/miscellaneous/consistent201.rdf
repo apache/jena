@@ -1,0 +1,54 @@
+<!--++ miscellaneous/consistent201.rdf ** generated using webont test editor. ++-->
+<!--++ Created 19 Feb 2003 20:49:54 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: consistent201.rdf,v 1.3 2003/07/28 08:35:08 jcarroll Exp $
+-->
+<!--
+This test shows how <a href=
+"http://www.w3.org/TR/webont-req/#req-user-labels">user labels</a>
+in a variety of languages can be used. Note the use of 
+<a href="http://www.w3.org/TR/ruby/">ruby annotation</a>.
+-->
+<!-- Author: Martin D&#252;rst, Masayasu Ishikawa -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:first="http://www.w3.org/2002/03owlt/miscellaneous/consistent201#"
+    xml:base="http://www.w3.org/2002/03owlt/miscellaneous/consistent201" >
+
+    <owl:Class rdf:ID="ShakespearePlay">
+      <rdfs:label xml:lang="en">Shakespeare's plays</rdfs:label>
+      <rdfs:comment xml:lang="en">The class of Shakespeare's plays.</rdfs:comment>
+      <rdfs:label xml:lang="it">Opere di Shakespeare</rdfs:label>
+      <rdfs:comment xml:lang="it">La classe delle opere di Shakespeare.</rdfs:comment>
+      <rdfs:label rdf:parseType="Literal"
+          ><span xml:lang="ja">シェイクスピアの<ruby><rbc><rb>演</rb><rb>劇</rb></rbc>
+          <rtc><rt>えん</rt><rt>げき</rt></rtc></ruby></span></rdfs:label>
+      <rdfs:comment rdf:parseType="Literal"
+          ><span xml:lang="ja">シェイクスピアの<ruby><rbc><rb>演</rb><rb>劇</rb></rbc>
+          <rtc><rt>えん</rt><rt>げき</rt></rtc></ruby>のクラス。</span></rdfs:comment>
+    </owl:Class>
+    <first:ShakespearePlay rdf:ID="Romeo-and-Juliet">
+      <rdfs:label xml:lang="en">Romeo and Juliet</rdfs:label>
+      <rdfs:comment xml:lang="en">The Most Excellent and Lamentable Tragedy 
+          of Romeo and Juliet.</rdfs:comment>
+      <rdfs:label xml:lang="it">Romeo e Giulietta</rdfs:label>
+      <rdfs:comment xml:lang="it">La tragedia di Romeo e Giulietta</rdfs:comment>
+      <rdfs:label rdf:parseType="Literal"
+          ><span xml:lang="ja">ロミオとジュリエット</span></rdfs:label>
+      <rdfs:comment rdf:parseType="Literal"
+          ><span xml:lang="ja">ロミオとジュリエットの<ruby><rbc><rb>悲</rb><rb>劇</rb></rbc>
+          <rtc><rt>ひ</rt><rt>げき</rt></rtc></ruby></span></rdfs:comment>
+    </first:ShakespearePlay>
+</rdf:RDF>

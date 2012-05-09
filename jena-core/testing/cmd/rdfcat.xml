@@ -1,0 +1,20 @@
+<rdf:RDF
+    xmlns:jms="http://jena.hpl.hp.com/2003/08/jms#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#InfModelSpec"/>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#OntModelSpec"/>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#PlainModelSpec"/>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#MakerSpec"/>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#RDBMakerSpec">
+    <rdfs:subClassOf rdf:resource="http://jena.hpl.hp.com/2003/08/jms#MakerSpec"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#FileMakerSpec">
+    <rdfs:subClassOf rdf:resource="http://jena.hpl.hp.com/2003/08/jms#MakerSpec"/>
+  </rdfs:Class>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#ModelSpec"/>
+  <rdfs:Class rdf:about="http://jena.hpl.hp.com/2003/08/jms#MemMakerSpec">
+    <rdfs:subClassOf rdf:resource="http://jena.hpl.hp.com/2003/08/jms#MakerSpec"/>
+  </rdfs:Class>
+</rdf:RDF>

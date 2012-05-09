@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf   ="&rdf;"
+  xmlns:rdfs  ="&rdfs;"
+  xmlns:owl   ="&owl;"
+  xmlns:xsd   ="&xsd;"
+  xml:base    ="http://example.org/foo"
+  xmlns       ="http://example.org/foo#"
+>
+
+
+<owl:Class rdf:ID="A" />
+<owl:ObjectProperty rdf:ID="p">
+	<rdf:type rdf:resource="&owl;FunctionalProperty" />
+	</owl:ObjectProperty>
+
+
+<!--A rdf:ID="a1" >
+	<owl:sameAs rdf:resource="#a0" />
+</A-->
+<A rdf:ID="b">
+	<p><A rdf:ID="a0" /></p>
+	<p><A rdf:ID="a1" /></p>
+</A>
+
+<!--A rdf:about="#a1"><owl:differentFrom rdf:resource="#a0" /></A-->
+</rdf:RDF>

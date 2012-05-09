@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<tells
+  xmlns="http://dl.kr.org/dig/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
+  <defconcept name="http://example.org/foo#A" />
+  <defconcept name="http://example.org/foo#B" />
+  <defconcept name="http://example.org/foo#C" />
+  <defconcept name="anon:" />
+  <impliesc>
+  	<catom name="http://example.org/foo#A" />
+  	<catom name="anon:" />
+  </impliesc>
+
+  <equalc>
+  	<catom name="anon:" />
+  	<not>
+  		<catom name="anon:" />
+  	</not>
+  </equalc>
+
+  <equalc>
+  	<catom name="anon:" />
+	<or>
+		<catom name="http://example.org/foo#B"/>
+		<catom name="http://example.org/foo#C"/>
+	</or>
+  </equalc>
+</tells>

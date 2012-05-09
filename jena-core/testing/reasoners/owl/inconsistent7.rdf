@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<!--
+	Two distinct literal values for a functional property, via a sameAs
+  -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/reasoners/owl#"
+  xml:base  ="http://jena.hpl.hp.com/testing/reasoners/owl"
+>
+
+    <A rdf:ID="ia">
+    	<dfp rdf:datatype="&xsd;int">3</dfp>
+    </A>
+	
+    <A rdf:ID="ib">
+    	<dfp rdf:datatype="&xsd;int">-1</dfp>
+    	<owl:sameAs rdf:resource="#ia" />
+    </A>
+	
+</rdf:RDF>

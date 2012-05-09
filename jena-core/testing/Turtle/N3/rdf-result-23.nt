@@ -1,0 +1,2 @@
+<file:///base/rdf-test-23.n3#a> <file:///base/rdf-test-23.n3#q1> "<foo>bar</foo>"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .
+<file:///base/rdf-test-23.n3#a> <file:///base/rdf-test-23.n3#q1> "<foo>bar</foo>" .

@@ -1,0 +1,2 @@
+<file:///base/rdf-test-28.n3#x> <file:///base/rdf-test-28.n3#p2> "ab.c"^^<http://www.w3.org/2001/XMLSchema#double> .
+<file:///base/rdf-test-28.n3#x> <file:///base/rdf-test-28.n3#p1> "abc"^^<http://www.w3.org/2001/XMLSchema#integer> .

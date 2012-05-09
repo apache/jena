@@ -1,0 +1,4 @@
+# List (*, r, *)
+####################################
+<var:x> <http://www.hpl.hp.com/semweb/2003/eg#r> <var:y> .
+

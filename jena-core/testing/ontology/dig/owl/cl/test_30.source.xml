@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf   ="&rdf;"
+  xmlns:rdfs  ="&rdfs;"
+  xmlns:owl   ="&owl;"
+  xmlns:xsd   ="&xsd;"
+  xml:base    ="http://example.org/foo"
+  xmlns       ="http://example.org/foo#"
+>
+
+<owl:DatatypeProperty rdf:ID="p">
+</owl:DatatypeProperty>
+
+</rdf:RDF>

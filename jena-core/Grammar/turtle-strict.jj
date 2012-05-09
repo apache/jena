@@ -1,0 +1,543 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Turtle & N3 for Jena 
+
+// N3 compatible:
+// Projection to Turtle is done by filtering non-Trutle forms.
+// A consequence is that where Turtle and N3 are incompatible (e.g.
+// whitespace processing) if follows N3.
+//
+// All legal Turtle documents are acceped by this grammar.
+
+options
+{
+  // Use \ u escapes in streams AND use a reader for the query
+  // => get both raw and escaped unicode
+
+   JAVA_UNICODE_ESCAPE   = true ;
+    // We use a UTF-8 encoded stream anyway so the setting of
+    // this is not important.
+    // and it does not make any difference to the code generated!
+    // One a warning is issued if true.
+   UNICODE_INPUT         = false ;
+
+  STATIC                = false ;
+//   DEBUG_PARSER          = true ;
+//   DEBUG_TOKEN_MANAGER   = true ;
+}
+
+PARSER_BEGIN(TurtleParser)
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.hp.hpl.jena.n3.turtle.parser ;
+
+import com.hp.hpl.jena.n3.turtle.ParserBase ;
+import com.hp.hpl.jena.graph.* ;
+
+public class TurtleParser extends ParserBase
+{
+}
+PARSER_END(TurtleParser)
+
+// --- Entry point
+
+void parse() : {}
+{
+  (Statement())* <EOF>
+}
+
+void Statement() : {}
+{
+  (Directive() | TriplesSameSubject() )
+  <DOT>
+}
+
+void Directive() : { Token t ; Node n ; }
+{
+    // Need a token for @prefix?
+    // Looks like a LANTAG
+    <PREFIX> t = <QNAME_NS> n = Q_IRI_REF()
+    { String s = fixupPrefix(t.image, t.beginLine, t.beginColumn) ;
+      setPrefix(t.beginLine, t.beginColumn, s, n.getURI()) ; }
+}
+
+// -------- PATH
+TOKEN: 
+{
+   < PLING:    "!" >
+ | < VBAR:     "|" >
+ | < CARROT:   "^" >
+ | < FPATH:    "->" >
+ | < RPATH:    "<-" >
+
+}
+
+// N3
+
+// ---- TRIPLES
+// <<<<< SPARQL extract
+
+void TriplesSameSubject() : { Node s ; } 
+{
+  s = VarOrTerm()
+  PropertyListNotEmpty(s) 
+|
+  // Any of the triple generating syntax elements
+  s = TriplesNode()
+  PropertyList(s)
+}
+
+
+void PropertyList(Node s) : { }
+{
+  ( PropertyListNotEmpty(s) ) ?
+}
+// >>>>> SPARQL extract
+
+// Non-recursive for Turtle long PropertyList tests
+void PropertyListNotEmpty(Node s) : { Node p ; }
+{
+  p = Verb()
+  ObjectList(s, p)
+  (<SEMICOLON> (p = Verb() ObjectList(s, p))? )*
+}
+
+// Non-recursive for Turtle long PropertyList tests
+void ObjectList(Node s, Node p): { Node o ; } 
+{
+  Object(s, p)
+  ( <COMMA> Object(s, p) )*
+}
+
+void Object(Node s, Node p): { Node o ; }
+{
+  o = GraphNode() 
+  { Triple t = new Triple(s,p,o) ; 
+    emitTriple(token.beginLine, token.beginColumn, t) ; }  
+}
+
+// <<<<< SPARQL extract
+Node Verb() : {Node p ;}
+{
+  ( p = IRIref() | <KW_A> { p = nRDFtype ; } | 
+    <ARROW> 
+      { p = nLogImplies ;
+        if ( strictTurtle )
+          raiseException("=> (log:implies) not legalin Turtle",
+                          token.beginLine, token.beginColumn ) ;
+      }
+  )
+  { return p ; }
+}
+
+// -------- Triple expansions
+
+// Anything that can stand in a node slot and which is
+// a number of triples
+
+Node TriplesNode() : { Node n ; }
+{
+  n = Collection() { return n ; }
+ |
+  n = BlankNodePropertyList() { return n ; }
+}
+
+Node BlankNodePropertyList() : { }
+{
+  <LBRACKET> 
+    { Node n = createBNode() ; }
+  PropertyListNotEmpty(n)
+  <RBRACKET>
+    { return n ; }
+}
+
+
+// ------- RDF collections
+
+// Code not as SPARQL/ARQ because of output ordering.
+Node Collection() : 
+    { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; }
+{
+  <LPAREN> 
+  (
+    { Node cell = createBNode() ;
+      if ( listHead == nRDFnil )
+         listHead = cell ;
+      if ( lastCell != null )
+        emitTriple(token.beginLine, token.beginColumn,
+                   new Triple(lastCell, nRDFrest,  cell)) ;
+    }
+    n = GraphNode()
+    {
+      emitTriple(token.beginLine, token.beginColumn,
+                 new Triple(cell, nRDFfirst,  n)) ;      
+      lastCell = cell ;
+    }
+  ) +
+  // Not * here - "()" is handled separately.
+  <RPAREN>
+   { if ( lastCell != null )
+       emitTriple(token.beginLine, token.beginColumn,
+                  new Triple(lastCell, nRDFrest,  nRDFnil)) ;
+     return listHead ; }
+}
+
+// -------- Nodes in a graph pattern or template
+
+Node GraphNode() : { Node n ; }
+{
+  n = VarOrTerm() { return n ; }
+ |
+  n = TriplesNode() { return n ; }
+}
+
+Node VarOrTerm() : {Node n = null ; }
+{
+  ( n = Var() | n = GraphTerm() | n = Formula() )
+  { return n ; }
+}
+
+Node Formula() : {Token t ; }
+{
+    t = <LBRACE> { startFormula(t.beginLine, t.beginColumn) ; }
+    // Need to sort this out and merge with Statement above
+    TriplesSameSubject()
+    ( <DOT> (TriplesSameSubject())? )*
+    t = <RBRACE> { endFormula(t.beginLine, t.beginColumn) ; }
+      { return null ; }
+}
+
+// >>>>> SPARQL extract
+
+Node Var() : { Token t ;}
+{
+    ( t = <VAR1> | t = <VAR2> )
+    { return createVariable(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+Node GraphTerm() : { Node n ; }
+{
+  n = IRIref()          { return n ; }
+| 
+  n = RDFLiteral()      { return n ; }
+|
+  // Cleaner sign handling in Turtle.
+  n = NumericLiteral()  { return n ; }
+// |
+//   n = BooleanLiteral()  { return n ; }
+|
+  n = BlankNode()       { return n ; }   
+|
+//  <LPAREN> <RPAREN>     { return nRDFnil ; }
+  <NIL>  { return nRDFnil ; }
+}
+// ---- Basic terms
+
+Node NumericLiteral() : { Token t ; }
+{
+  t = <INTEGER> { return makeNodeInteger(t.image) ; }
+| t = <DECIMAL> { return makeNodeDecimal(t.image) ; }
+| t = <DOUBLE> { return makeNodeDouble(t.image) ; }
+}
+
+// >>>>> SPARQL extract
+// Langtag oddity.
+Node RDFLiteral() : { Token t ; String lex = null ; }
+{
+  lex = String()
+  // Optional lang tag and datatype.
+  { String lang = null ; Node uri = null ; }
+  (
+    lang = Langtag()
+  |
+    ( <DATATYPE> uri = IRIref() )
+  )?
+    { return makeNode(lex, lang, uri) ; }
+} 
+
+String Langtag() : { Token t ; }
+{
+  // Enumerate the directives here
+  ( t = <LANGTAG> | t = <PREFIX> )
+  { String lang = stripChars(t.image, 1) ; return lang ; }
+}
+// >>>>> SPARQL extract
+// Node BooleanLiteral() : {}
+// {
+//   <TRUE> { return XSD_TRUE ; }
+//  |
+//   <FALSE> { return XSD_FALSE ; }
+// }
+
+// <<<<< SPARQL extract
+
+String String() : { Token t ;  String lex ; }
+{
+  ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
+  | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
+  )
+    { lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+      return lex ;
+    }
+}
+
+Node IRIref() : { Node n ; }
+{
+  n = Q_IRI_REF() { return n ; }
+|
+  n = QName() { return n ; }
+}
+
+Node QName() : { Token t ; }
+{
+  ( t = <QNAME>
+    { return createURIfromQName(t.image, t.beginLine, t.beginColumn) ; }
+  |
+    t = <QNAME_NS>
+    { return createURIfromQName(t.image, t.beginLine, t.beginColumn) ; }
+  )
+}
+
+Node BlankNode() :  { Token t = null ; }
+{
+  t = <BLANK_NODE_LABEL>
+    { return createBNode(t.image, t.beginLine, t.beginColumn) ; }  
+|
+//  <LBRACKET> <RBRACKET> { return createBNode() ; }
+  <ANON> { return createBNode() ; }
+
+}
+
+Node Q_IRI_REF() : { Token t ; }
+{
+  t = <Q_IRIref>
+  { return createNodeFromURI(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+// ------------------------------------------
+// Tokens
+
+// Comments and whitespace
+
+SKIP : { " " | "\t" | "\n" | "\r" | "\f" }
+
+TOKEN: { <#WS: " " | "\t" | "\n" | "\r" | "\f"> }
+
+SPECIAL_TOKEN :
+{ <SINGLE_LINE_COMMENT: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n")? > }
+
+// -------------------------------------------------
+// Keyworks : directives before LANGTAG
+
+TOKEN : { <KW_A:  "a" > } // Before HEX rule!
+
+TOKEN [IGNORE_CASE] :
+{
+// Prologue
+  < PREFIX:      "@prefix" >
+| < BASE:        "@base" >
+
+//| < TRUE:        "true" >
+//| < FALSE:       "false" >
+}
+
+// -------------------------------------------------
+
+TOKEN :
+{
+   < INTEGER: (["-","+"])? <DIGITS> >
+|
+   < DECIMAL: (["-","+"])? 
+              ((<DIGITS>)+ "." (<DIGITS>)* | "." (<DIGITS>)+)
+   >
+      // Required exponent.
+|  < DOUBLE:
+      (["+","-"])?
+      ( 
+        (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+        | "." (["0"-"9"])+ (<EXPONENT>)
+        | (["0"-"9"])+ <EXPONENT>
+      )
+      >
+   // Optional exponent.
+// |  < DOUBLE:
+//       //(["+","-"])?
+//       (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+//       | "." (["0"-"9"])+ (<EXPONENT>)?
+//       | (["0"-"9"])+ <EXPONENT>
+//       >
+| < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+| < #QUOTE_3D: "\"\"\"">
+| < #QUOTE_3S: "'''">
+
+// | <UCHAR: ("u" <HEX> <HEX> <HEX> <HEX> )
+//             | ("U" <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX> <HEX>)>
+
+//   <ECHAR: ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
+// 
+// |
+//    <XCHAR: "\\" ( <ECHAR> | <UCHAR> ) >
+
+| <ECHAR: "\\" ("t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'")>
+
+| < STRING_LITERAL1: 
+      // Single quoted string
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+
+| < STRING_LITERAL2:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+
+| < STRING_LITERAL_LONG1:
+     <QUOTE_3S> 
+      ( ~["'","\\"] | <ECHAR> | ("'" ~["'"]) | ("''" ~["'"]))*
+     <QUOTE_3S> >
+
+| < STRING_LITERAL_LONG2: 
+     <QUOTE_3D> 
+      ( ~["\"","\\"] | <ECHAR> | ("\"" ~["\""]) | ("\"\"" ~["\""]))*
+     <QUOTE_3D> >
+| < DIGITS: (["0"-"9"])+>
+| <HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"]>
+}
+
+TOKEN:
+{
+   // Includes # for relative URIs
+   <Q_IRIref: "<" (~[">","<","\u0000"-"\u0020"])* ">" >
+
+|  <QNAME_NS: (<NCNAME_PREFIX>)? ":" >
+|  <QNAME: (<NCNAME_PREFIX>)? ":" (<NCNAME>)? >
+|  <BLANK_NODE_LABEL: "_:" <NCNAME> >
+//|  <BLANK_NODE_ID: "_!:" <NCNAME> >
+
+|  <VAR1: <QMARK> <VARNAME> >
+|  <VAR2: <DOLLAR> <VARNAME> >
+|  <LANGTAG: <AT> (<A2Z>)+("-" (<A2ZN>)+)* >
+|  <#A2Z: ["a"-"z","A"-"Z"]>
+|  <#A2ZN: ["a"-"z","A"-"Z","0"-"9"]>
+}
+
+
+TOKEN :
+{
+  < LPAREN:    "(" >
+| < RPAREN:    ")" >
+
+| <NIL:        <LPAREN> (<WS>|<SINGLE_LINE_COMMENT>)* <RPAREN> >
+
+| < LBRACE:    "{" >
+| < RBRACE:    "}" >
+
+| < LBRACKET:  "[" >
+| < RBRACKET:  "]" >
+| < ANON:      <LBRACKET> (<WS>|<SINGLE_LINE_COMMENT>)* <RBRACKET> >
+
+| < SEMICOLON: ";" >
+| < COMMA:     "," >
+| < DOT:       "." >
+}
+
+// Operator
+
+TOKEN :
+{
+  < EQ:      "=" >
+//| < NE:      "!=" >
+//| < GT:      ">" >
+//| < LT:      "<" >
+//| < LE:      "<=" >    // Maybe: | "=>" >
+//| < GE:      ">=" >    // Maybe: | "=<" >
+
+| <ARROW:    "=>">
+
+| < DOLLAR:  "$">
+| < QMARK:   "?">
+
+| < TILDE:   "~" >
+| < COLON:   ":" >
+
+// | < PLUS:    "+" >
+// | < MINUS:   "-" >
+| < STAR:    "*" >
+| < SLASH:   "/" >
+| < RSLASH:   "\\" >
+
+//| < AMP: "&" >
+//| < REM: "%" >
+
+| < DATATYPE: "^^">
+| < AT: "@">
+}
+
+TOKEN:
+{
+  // XML 1.1 NCNameStartChar without "_"
+  <#NCCHAR1p:
+          ["A"-"Z"] | ["a"-"z"] |
+          ["\u00C0"-"\u00D6"] | ["\u00D8"-"\u00F6"] | ["\u00F8"-"\u02FF"] |
+          ["\u0370"-"\u037D"] | ["\u037F"-"\u1FFF"] |
+          ["\u200C"-"\u200D"] | ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFD"] >
+          // [#x10000-#xEFFFF]
+|
+  <#NCCHAR1: <NCCHAR1p> | "_" >
+
+// No trailing DOTs in qnames.
+|
+  // #NCCHAR without "."
+  <#NCCHAR: (<NCCHAR1> | "-" | ["0"-"9"] | "\u00B7" |
+              ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
+|
+  // NCNAME but no leading "_", no trailing ".", can have dot inside prefix name.
+  <#NCNAME_PREFIX: <NCCHAR1p> ((<NCCHAR>|".")* <NCCHAR>)?  >
+|
+  // With a leading "_", no dot at end of local name.
+  <#NCNAME: <NCCHAR1> ((<NCCHAR>|".")* <NCCHAR>)?  >
+|
+  // NCNAME without "-" and ".", allowing leading digits.
+  <#VARNAME: ( <NCCHAR1> | ["0"-"9"] )
+             ( <NCCHAR1> | ["0"-"9"] | "\u00B7" |
+               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+}
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

@@ -1,0 +1,47 @@
+
+<!-- reported on jena-dev early February 2008 as ugly output from the
+pretty writer. 
+OP Magnus Haraldsen Amundsen
+Subject: JOSEKI: Controlling the output from a CONSTRUCT in Joseki
+
+
+The request is that Airplane and JetEngine be treated consistently.
+-->
+
+<rdf:RDF xmlns:topic="http://sublima.computas.com/topic/" 
+xmlns:skos="http://www.w3.org/2004/02/skos/core#" 
+xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#" 
+xmlns:wdr="http://www.w3.org/2007/05/powder#" 
+xmlns:p1="http://www.owl-ontologies.com/assert.owl#" 
+xmlns:lingvoj="http://www.lingvoj.org/ontology#" 
+xmlns:sioc="http://rdfs.org/sioc/ns#" 
+xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:foaf="http://xmlns.com/foaf/0.1/" 
+xmlns:owl="http://www.w3.org/2002/07/owl#" 
+xmlns:dct="http://purl.org/dc/terms/" 
+xmlns="http://sublima.computas.com/topic-instance/" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema#" 
+xmlns:dcmitype="http://purl.org/dc/dcmitype/" 
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+xmlns:sub="http://xmlns.computas.com/sublima#">
+   <skos:Concept 
+rdf:about="http://sublima.computas.com/topic-instance/Airplane">
+     <skos:prefLabel xml:lang="no">Fly</skos:prefLabel>
+   </skos:Concept>
+   <skos:Concept rdf:about="http://sublima.computas.com/topic-instance/Jet">
+     <skos:related>
+       <skos:Concept 
+rdf:about="http://sublima.computas.com/topic-instance/JetEngine">
+
+         <skos:prefLabel xml:lang="no">Jetmotor</skos:prefLabel>
+       </skos:Concept>
+     </skos:related>
+     <skos:broader 
+rdf:resource="http://sublima.computas.com/topic-instance/Airplane"/>
+     <skos:prefLabel xml:lang="no">Jet</skos:prefLabel>
+     <skos:prefLabel xml:lang="en">Jet</skos:prefLabel>
+     <skos:altLabel xml:lang="no">Jetfly</skos:altLabel>
+
+   </skos:Concept>
+</rdf:RDF>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:eg="http://example.org/">
+  <rdf:Description eg:prop="a" rdf:nodeID="x">
+    <eg:prop rdf:parseType="Collection">
+       <eg:x rdf:nodeID="x"/>
+       <eg:y rdf:nodeID="y"/>
+       <eg:z rdf:nodeID="z">
+         <eg:p>
+           <rdf:Description rdf:nodeID="XX">
+           <!--
+             <eg:p>foo</eg:p>
+           -->
+           </rdf:Description>
+         </eg:p>
+         <eg:xxx rdf:nodeID="xxx"/>
+         <!-- sudden end in next line, note that the XML element is open -->
+         <eg:b eg:x="a" eg:y="c" rdf:nodeID="x"/>
+         <eg:pp rdf:parseType="Collection">
+            <eg:a rdf:nodeID="a"/>
+            <eg:b rdf:nodeID="b"/>
+            <eg:c rdf:nodeID="c"/>
+            <eg:d rdf:nodeID="d"/>
+            

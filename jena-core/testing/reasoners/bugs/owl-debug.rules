@@ -1,0 +1,43 @@
+
+-> tableAll().
+
+[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+
+[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
+#[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y), notFunctor(?y)] ] 
+[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+[rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
+
+[rdfs3a: (?x rdfs:range  ?z) <- bound(?x), (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) ]
+
+[restrictionSubclass2: (?D owl:equivalentClass ?R), isFunctor(?R) ->
+       [restrictionSubclass2b: (?X rdf:type ?R) <- (?X rdf:type ?D)] ]
+
+# Exploding the pairwise assertions is simply done procedurally here.
+# This is better handled by a dedicated equality reasoner any.
+[distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+						
+[equivalentClass2: (?P owl:equivalentClass ?Q) <-  (?P rdfs:subClassOf ?Q), (?Q rdfs:subClassOf ?P) ]
+						
+[symmetricProperty1: (?P rdf:type owl:SymmetricProperty) -> 
+                     [symmetricProperty1b: (?X ?P ?Y) <- (?Y ?P ?X)] ]
+
+[oneOfFP: (?P rdfs:range ?C) (?C owl:oneOf ?l) (?l rdf:first ?x) (?l rdf:rest rdf:nil)
+				-> (?P rdf:type owl:FunctionalProperty) ]
+
+-> (xsd:string rb:xsdBase xsd:string).
+-> (xsd:boolean rb:xsdBase xsd:boolean).
+
+[xsd1: (?X rdfs:subClassOf ?Y) <- 
+        (?X rb:xsdRange xsd(?B, 0, ?L)) (?Y rb:xsdRange xsd(?B, ?S, ?L2)) le(?L, ?L2)]
+
+[range2: (?P rdfs:range xsd:byte) <- (?P rdfs:range xsd:nonNegativeInteger),
+					(?P rdfs:range xsd:nonPositiveInteger)]
+
+[range3: (?P rdfs:range owl:Nothing) <- (?P rdfs:range ?C), (?P rdfs:range ?D), print('before', ?D)
+							 (?C owl:disjointWith ?D) print ('after', ?D)]
+
+[xsd3: (?C owl:disjointWith ?D) <- (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD) ]
+
+										
+

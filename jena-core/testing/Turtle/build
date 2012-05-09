@@ -1,0 +1,31 @@
+#!/bin/bash
+# Build vocabulary
+
+function syntaxCheck
+{
+    FILE="$1"
+    echo "Syntax check: $FILE"
+    n3 -n -rdf "$FILE"
+}
+
+function proc
+{
+    TMP=TT
+    FILE="$1"
+    CLASS="$2"
+    NS="$3"
+    echo "Schemagen: $FILE"
+    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3
+    # Add imports
+    echo "package dev.turtle.test ;" >> "$TMP"
+    echo >>"$TMP"
+    cat "$CLASS".java >> "$TMP"
+    mv "$TMP" "$CLASS".java
+}
+
+syntaxCheck TurtleTestVocab.ttl
+
+proc TurtleTestVocab.ttl TurtleTestVocab \
+	"http://jena.hpl.hp.com/2005/12/test-turtle#"
+
+echo "mv TurtleTestVocab.java ../../src-dev/dev/turtle/test/"

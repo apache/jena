@@ -1,0 +1,51 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix :           <#> .
+
+<>  rdfs:comment     "Vocabulary for describing Jena models" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "HP" ;
+    dc:title         "Jena Model Spec" ;
+    dc:description   "Vocabulary for describing Jena models" ;
+    dc:date          "2004-01-26" ;
+    dc:format        "RDF" ;
+    dc:identifier    :
+    .
+
+# ==== Classes
+
+jms:MakerSpec           rdf:type     rdfs:Class .
+jms:FileMakerSpec       rdf:type     rdfs:Class .
+jms:MemMakerSpec        rdf:type     rdfs:Class .
+jms:RDBMakerSpec        rdf:type     rdfs:Class .
+jms:ModelSpec           rdf:type     rdfs:Class .
+jms:PlainModelSpec      rdf:type     rdfs:Class .
+jms:InfModelSpec        rdf:type     rdfs:Class .
+jms:OntModelSpec        rdf:type     rdfs:Class .
+
+# ==== Resources
+
+jms:MemMakerSpec        rdfs:subClassOf     jms:MakerSpec .
+jms:FileMakerSpec       rdfs:subClassOf     jms:MakerSpec .
+jms:RDBMakerSpec        rdfs:subClassOf     jms:MakerSpec .
+        
+jms:PlainModelSpec      rdfs:subClassOf     jms:ModelSpec .
+jms:InfModelSpec        rdfs:subClassOf     jms:PlainModelSpec .
+jms:OntModelSpec        rdfs:subClassOf     jms:InfModelSpec .
+        
+jms:reificationMode     rdfs:domain         jms:MakerSpec .
+jms:maker               rdfs:domain         jms:PlainModelSpec .
+jms:importMaker         rdfs:domain         jms:OntModelSpec .
+jms:ontLanguage         rdfs:domain         jms:OntModelSpec .
+jms:reasonsWith         rdfs:domain         jms:InfModelSpec .
+        
+jms:importMaker         rdfs:subPropertyOf  jms:maker .
+
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

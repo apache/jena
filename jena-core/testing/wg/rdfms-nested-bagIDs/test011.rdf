@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdfms-nested-bagIDs
+        Test:  11
+        Author: Jeremy Carroll, HP
+        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-nested-bagIDs/test011.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+
+        Two property attributes and a property elements on a typed node.
+        Since the property attributes are not ordered under document
+        order, two different n-triples files corresponding to both
+        possible orderings are permitted. 
+        
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test011.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:some="http://example.org/">
+  <some:type some:otherAttr="other-val" rdf:bagID="bag" some:attr="attr-val" >
+    <some:prop rdf:ID="st"></some:prop>
+  </some:type>
+</rdf:RDF>
+

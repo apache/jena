@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<asks
+  xmlns="http://dl.kr.org/dig/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
+  <types id="q0">
+  	<individual name="http://example.org/foo#c"/>
+  </types>
+  <instance id="q1">
+  	<individual name="http://example.org/foo#c" />
+  	<catom name="http://example.org/foo#A" />
+  </instance>
+</asks>

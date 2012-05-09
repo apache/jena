@@ -1,0 +1,41 @@
+<!--++ description-logic/Manifest109.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Feb 2003 22:36:36 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: Manifest109.rdf,v 1.5 2003-12-05 05:06:35 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+      xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+      xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
+      xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
+      xmlns:dc='http://purl.org/dc/elements/1.0/'
+      xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:owl='http://www.w3.org/2002/07/owl#'
+      xml:base='http://www.w3.org/2002/03owlt/description-logic/Manifest109'
+>
+<otest:InconsistencyTest rdf:ID='test'>
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+   <rtest:status>APPROVED</rtest:status> <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003May/0271"/> <otest:size rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Large'/>
+   <dc:creator>Sean Bechhofer</dc:creator>
+   <otest:issuette rdf:resource='http://www.w3.org/TR/owl-test/#dl-100-heinsohn' />
+   <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+   <rtest:description rdf:parseType='Literal'>
+DL Test: heinsohn3c.1
+Tbox tests from <a href="#ref-Heinsohn_et_al.">[Heinsohn et al.]</a>
+
+Tests incoherency caused by number restrictions and role hierarchy</rtest:description>
+   <rtest:inputDocument>
+         <rtest:RDF-XML-Document rdf:about='inconsistent109' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
+         </rtest:RDF-XML-Document>
+   </rtest:inputDocument>
+</otest:InconsistencyTest >
+</rdf:RDF>

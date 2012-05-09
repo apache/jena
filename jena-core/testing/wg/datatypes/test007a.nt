@@ -1,0 +1,18 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Language affects the semantic equivalence of XMLLiteral
+# when doing a DT-entailment.
+# Obsoleted: no longer NTriples syntax
+#
+# $Id: test007a.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+#
+#####################################################################
+#<http://example.org/foo> <http://example.org/bar> "chat"@en^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> .

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY test 'http://www.hpl.hp.com/semweb/2003/query_tester#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+]>
+
+<!-- tests of the simplified RDFS rule set -->
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns="&test;">
+
+  <Test rdf:about="test1">
+    <description>RDFS reasoner: subproperty test</description>
+    <tbox>rdfs/tbox1.rdf</tbox>
+    <data>rdfs/data2.rdf</data>
+    <query>rdfs/query18.nt</query>
+    <result>rdfs/result18-simple.rdf</result>
+  </Test>
+   
+</rdf:RDF>
+   

@@ -1,0 +1,67 @@
+#!/bin/bash
+# Parser builder
+
+CLASS=Turtle
+DIR="../src/main/java/com/hp/hpl/jena/n3/turtle/parser"
+FILE=turtle.jj
+NAME=Turtle
+
+(cd "$DIR" ; rm TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
+
+echo "---- Process grammar ----"
+## No it's now!  echo "Warning about UNICODE_INPUT is ignorable"
+javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "$FILE"
+RC=$?
+[ "$RC" = 0 ] || return
+echo "---- Create text form ----"
+jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+
+## echo "---- Fixing Java warnings ---- "
+## 
+## 
+##     F="$DIR/${CLASS}ParserTokenManager.java"
+##     sed -e 's/import .*//' -e 's/MatchLoop: do/do/' < $F > F
+##     mv F $F
+##     rm -f F
+
+ # Fix unnecessary imports
+    echo "---- Fixing Java warnings in ${NAME}TokenManager ..."
+
+    F="$DIR/${CLASS}ParserTokenManager.java"
+
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
+        -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
+	< $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in ParseException ..."
+    #Override:
+    #   public String getMessage()
+    F="$DIR/ParseException.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in Token ..."
+    F="$DIR/Token.java"
+    sed -e 's/@Override //' \
+	-e 's/public String toString/@Override public String toString/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in TokenMgrError ..."
+    # Override:
+    #   public String getMessage()
+    F="$DIR/TokenMgrError.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in ${CLASS}Parser ..."
+    F="$DIR/${CLASS}Parser.java"
+    sed -e 's/for (java.util.Iterator/for (java.util.Iterator<int[]>/' \
+	-e 's/(int\[\])//' \
+	-e 's/^\s*;\s*$//' \
+        < $F > F
+    mv F $F
+
+    echo "---- Done"

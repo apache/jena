@@ -1,0 +1,533 @@
+<?xml version="1.0"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+	 xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+	 xmlns:test="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"
+	 xmlns:jjc="http://jcarroll.hpl.hp.com/testSchema#"
+	 >
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/html.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported2">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported2.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported2.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported3.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/bug73a">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/eq-bug73_0.rdf" />
+    </test:inputDocument>
+
+    <test:outputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/eq-bug73_1.rdf" />
+    </test:outputDocument>
+
+  </test:PositiveParserTest>
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/bug73b">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/eq-bug73_0.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/eq-bug73_2.rdf" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_0">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_0.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_0.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <!-- <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_1">
+       <test:status>ARP</test:status>
+       <test:inputDocument>
+       <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_1.rdf" />
+       </test:inputDocument>
+       </test:NegativeParserTest>
+
+       <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_2">
+       <test:inputDocument>
+       "http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_2.rdf" />
+       </test:inputDocument>
+       </test:NegativeParserTest>
+       <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_3">
+       <test:status>ARP</test:status>
+       <test:inputDocument>
+       "http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_3.rdf" />
+       </test:inputDocument>
+       </test:NegativeParserTest>
+
+       <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_4">
+       <test:status>ARP</test:status>
+       <test:inputDocument>
+       <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_4.rdf" />
+       </test:inputDocument>
+       </test:NegativeParserTest> -->
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_5">
+    <test:inputDocument>
+      "http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_5.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_6">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_6.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_6.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_7">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_7.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_7.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_8.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_8.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest test:warning="yes" rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9">
+    
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_9.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/bad-bug67_9.nt" />
+    </test:outputDocument>
+
+  </test:PositiveParserTest>
+
+  <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/50_0">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/bad-bug50_0.rdf" />
+    </test:inputDocument>
+  </test:NegativeParserTest>
+
+  <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74">
+    <test:warning>This should be a warning</test:warning>
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74_0.rdf" />
+    </test:inputDocument>
+
+    <!--
+      <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74_0.nt" />
+      </test:outputDocument>
+    -->
+  </test:NegativeParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51_0.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/bug51_0.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI">
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/rfc2396-issue/fileURI.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/parsetype/bug68">
+    <test:warning>This should be a warning</test:warning>
+    <test:status>ARP</test:status>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/parsetype/bug68_0.rdf" />
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/parsetype/bug68_0.nt" />
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:NegativeParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01" test:status="ARP">
+    <test:warning>This should be a warning</test:warning>
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/bad01.rdf"/>
+    </test:inputDocument>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_NAMESPACE_URI'/>
+  </test:NegativeParserTest>
+
+
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test02" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test02.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test03" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test03.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test01" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test01.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test02" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test02.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test03" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test03.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test04" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test04.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test05" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test05.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test06" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test06.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test07" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test07.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test08" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test08.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test09" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test09.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test0X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test11" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test11.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test1X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test12" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test12.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test1X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test13" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test13.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test1X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <test:PositiveParserTest rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test10" test:status="ARP">
+    <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test10.rdf"/>
+    </test:inputDocument>
+    <test:outputDocument>
+      <test:NT-Document rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/test1X.nt"/>
+    </test:outputDocument>
+  </test:PositiveParserTest>
+
+  <!--
+
+    <test:NegativeParserTest
+    rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/error01" 
+    test:status="ARP">
+    <test:inputDocument>
+    <test:RDF-XML-Document 
+    rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/error01.rdf"/>
+    </test:inputDocument>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+    </test:NegativeParserTest>
+  -->
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_0'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_1'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_1'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_1'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_2'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_2'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_2'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_3'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_3'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_3'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_4'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_4'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_XML'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_4'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_5'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_6'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_7'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_7'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_7'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_8'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/rdf-nnn/67_9'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/50_0'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_RELATIVE_NAMESPACE_URI_DEPRECATED'/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/parsetype/bug68'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_PARSETYPE'/>
+  </rdf:Description>
+
+
+  <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/qname-in-ID/bug74'>
+    <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_NAME'/>
+  </rdf:Description>
+
+</rdf:RDF>

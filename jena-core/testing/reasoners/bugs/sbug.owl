@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE owl [
+     <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+     <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+     <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+     <!ENTITY base  "http://jena.hpl.hp.com/test" >
+   ]>
+
+<rdf:RDF
+  xmlns:owl ="&owl;"
+  xmlns:rdf ="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns     ="&base;#"
+  xml:base  ="&base;"
+    >
+    
+    
+<owl:Class rdf:ID="Topic">
+  <rdfs:subClassOf rdf:resource="&owl;Class"/>
+  <rdfs:subClassOf>
+   <owl:Restriction>
+      <owl:onProperty rdf:resource="#CreatedBy"/>
+      <owl:cardinality rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+    </owl:Restriction>
+  </rdfs:subClassOf>
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="CreatedBy">
+<rdfs:domain rdf:resource="#Topic"/>
+<rdfs:range rdf:resource="#InformationPrincipal"/>
+</owl:ObjectProperty>
+
+<owl:DatatypeProperty rdf:ID="hasCreationDate">
+<rdfs:domain rdf:resource="#InformationFragment"/>
+<rdfs:range rdf:resource="&xsd;dateTime"/>
+</owl:DatatypeProperty>
+   
+</rdf:RDF>

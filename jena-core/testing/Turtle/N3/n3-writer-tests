@@ -1,0 +1,40 @@
+# Files for testing the N3 writer
+# These files are read, written and read again
+# then checked to see if the model is the same (isomorphic).
+
+# Commented out tests are for N3 forms that are not in Turtle.
+# :- => = () on it's own
+
+<n3-writer-test-01.n3>      <> .
+<n3-writer-test-02.n3>      <> .
+<n3-writer-test-03.n3>      <> .
+<n3-writer-test-04.n3>      <> .
+<n3-writer-test-05.n3>      <> .
+<n3-writer-test-06.n3>      <> .
+## <n3-writer-test-07.n3>      <> .
+## <n3-writer-test-08.n3>      <> .
+## <n3-writer-test-09.n3>      <> .
+## <n3-writer-test-10.n3>      <> .
+## 
+## <n3-writer-test-11.n3>      <> .
+## <n3-writer-test-12.n3>      <> .
+<n3-writer-test-13.n3>      <> .
+<n3-writer-test-14.n3>      <> .
+<n3-writer-test-15.n3>      <> .
+<n3-writer-test-16.n3>      <> .
+<n3-writer-test-17.n3>      <> .
+<n3-writer-test-18.n3>      <> .
+## <n3-writer-test-19.n3>      <> .
+## <n3-writer-test-20.n3>      <> .
+
+<n3-writer-test-21.n3>      <> .
+<n3-writer-test-22.n3>      <> .
+<n3-writer-test-23.n3>      <> .
+<n3-writer-test-24.n3>      <> .
+## <n3-writer-test-25.n3>      <> .
+<n3-writer-test-26.n3>      <> .
+<n3-writer-test-27.n3>      <> .
+<n3-writer-test-28.n3>      <> .
+<n3-writer-test-29.n3>      <> .
+
+<n3-writer-test-30.ttl>      <> .

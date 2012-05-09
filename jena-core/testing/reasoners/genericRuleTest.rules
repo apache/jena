@@ -1,0 +1,5 @@
+-> tableAll().
+[a1: -> (a rdf:type t)]
+[r0: (?x r ?y) -> (?x p ?y)]
+[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]
+[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]

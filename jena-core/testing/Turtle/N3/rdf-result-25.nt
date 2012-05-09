@@ -1,0 +1,45 @@
+# cwm: rdf-test-25.n3 => rdf-result-25.nt
+# Except cmw gets exponential 'E' (not 'e') 
+# Converted to XSD decimals
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e1> "1.0e5"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e2> "1e6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e3> "1e+6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e3a> "1e+6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#e4> "1e-6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    
+
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#E1> "1.0E5"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#E2> "1E6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#E3> "1E+6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#E3a> "1E+6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#E4> "1E-6"^^<http://www.w3.org/2001/XMLSchema#double> .
+    
+    
+
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d1> "-1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d2> "+1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d3> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#d4> "0.1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#i1> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#i1a> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#i2> "+1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    
+    <file:///base/rdf-test-25.n3#x>     <file:///base/rdf-test-25.n3#i3> "-1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+    

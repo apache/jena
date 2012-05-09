@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE uridef[
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema">
+  <!ENTITY owl "http://www.w3.org/2002/07/owl">
+  <!ENTITY xsd "http://www.w3.org/2001/XMLSchema">
+  <!ENTITY service "http://www.daml.org/services/owl-s/1.1/Service.owl">
+  <!ENTITY profile "http://www.daml.org/services/owl-s/1.1/Profile.owl">
+  <!ENTITY process "http://www.daml.org/services/owl-s/1.1/Process.owl">
+  <!ENTITY grounding "http://www.daml.org/services/owl-s/1.1/Grounding.owl">
+  <!ENTITY expr 
+"http://www.daml.org/services/owl-s/1.1/generic/Expression.owl">
+  <!ENTITY swrl "http://www.w3.org/2003/11/swrl">
+  <!ENTITY swrlb "http://www.w3.org/2003/11/swrlb">
+  <!ENTITY list 
+"http://www.daml.org/services/owl-s/1.1/generic/ObjList.owl"> 
+]>
+<rdf:RDF
+  xmlns:rdf="&rdf;#"
+  xmlns:rdfs="&rdfs;#"
+  xmlns:owl="&owl;#"
+  xmlns:xsd="&xsd;#"
+  xmlns:service="&service;#"
+  xmlns:profile="&profile;#"
+  xmlns:process="&process;#"
+  xmlns:grounding="&grounding;#"
+  xmlns:expr="&expr;#"
+  xmlns:swrl="&swrl;#"
+  xmlns:list="&list;#"
+ >
+
+<process:Process>
+          <process:hasPrecondition>
+            <expr:SWRL-Condition>
+              <expr:expressionBody rdf:parseType="Literal">
+                <swrl:AtomList>
+                  <rdf:first>
+                    <swrl:BuiltinAtom>
+                      <swrl:builtin rdf:resource="&swrlb;#lessThan"/>
+                      <swrl:arguments rdf:parseType="Collection">
+                            <process:Input rdf:about="#in1"/>
+                            <process:Input rdf:about="#in2"/>
+                      </swrl:arguments>
+                    </swrl:BuiltinAtom>
+                  </rdf:first>
+                  <rdf:rest rdf:resource="&rdf;#nil"/>
+                </swrl:AtomList>
+              </expr:expressionBody>
+            </expr:SWRL-Condition>
+          </process:hasPrecondition>
+</process:Process>
+
+</rdf:RDF>

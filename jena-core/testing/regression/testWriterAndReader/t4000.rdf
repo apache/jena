@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <owl:Class>
+    <owl:unionOf rdf:parseType="Collection">
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class rdf:nodeID="A0"/>
+          <owl:Class>
+            <owl:complementOf>
+              <owl:Class rdf:nodeID="A1"/>
+            </owl:complementOf>
+          </owl:Class>
+        </owl:intersectionOf>
+      </owl:Class>
+      <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+          <owl:Class>
+            <owl:complementOf>
+              <owl:Class rdf:nodeID="A0"/>
+            </owl:complementOf>
+          </owl:Class>
+          <owl:Class rdf:nodeID="A1"/>
+        </owl:intersectionOf>
+      </owl:Class>
+    </owl:unionOf>
+  </owl:Class>
+  <owl:Class rdf:nodeID="A1">
+    <owl:intersectionOf>
+      <rdf:Description rdf:nodeID="A2">
+        <rdf:rest rdf:parseType="Collection">
+          <owl:Restriction>
+            <owl:onProperty>
+              <owl:DatatypeProperty rdf:about="urn:foo#P1"/>
+            </owl:onProperty>
+            <owl:allValuesFrom>
+              <owl:Class rdf:nodeID="A3"/>
+            </owl:allValuesFrom>
+          </owl:Restriction>
+        </rdf:rest>
+        <rdf:first>
+          <owl:Restriction>
+            <owl:onProperty rdf:resource="urn:foo#P1"/>
+            <owl:allValuesFrom rdf:nodeID="A3"/>
+          </owl:Restriction>
+        </rdf:first>
+      </rdf:Description>
+    </owl:intersectionOf>
+  </owl:Class>
+  <owl:Class rdf:nodeID="A0">
+    <owl:intersectionOf rdf:nodeID="A2"/>
+  </owl:Class>
+</rdf:RDF>

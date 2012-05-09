@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!-- 	Issue: rdfms-nested-bagIDs
+        Test:  4
+        Author: Dave Beckett, ILRT; Jeremy Carroll, HP.
+        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdfms-nested-bagIDs/test004.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+
+        Example from issues list (modified).
+        
+-->
+
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: test004.rdf,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:some="http://example.org/">
+  <rdf:Description rdf:about="http://example.org/a" rdf:bagID="bag1">
+    <some:prop >
+      <rdf:Description rdf:about="http://example.org/b" >
+        <some:otherProp >A literal</some:otherProp>
+      </rdf:Description>
+    </some:prop>
+  </rdf:Description>
+</rdf:RDF>
+

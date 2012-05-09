@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.-->
+
+<!--
+Additional facts to be merged with the standard Manifest file.
+-->
+
+<rdf:RDF
+		xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+		xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+		xmlns:test="http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#"		
+            xmlns:jjc="http://jcarroll.hpl.hp.com/testSchema#"
+>
+<test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test017">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdfms-empty-property-elements" />
+   <test:status>PENDING</test:status>
+
+   <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test017.rdf" />
+   </test:inputDocument>
+
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test017.nt" />
+   </test:outputDocument>
+
+</test:PositiveParserTest>
+
+<test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#test016">
+
+   <test:issue rdf:resource="http://www.w3.org/2000/03/rdf-tracking/#rdfms-empty-property-elements" />
+   <test:status>PENDING</test:status>
+
+   <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test016.rdf" />
+   </test:inputDocument>
+
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/test016.nt" />
+   </test:outputDocument>
+
+</test:PositiveParserTest>
+
+<test:PositiveParserTest rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/Manifest.rdf#test3">
+
+   <test:status>PENDING</test:status>
+
+   <test:inputDocument>
+      <test:RDF-XML-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test3.rdf" />
+   </test:inputDocument>
+
+   <test:outputDocument>
+      <test:NT-Document rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/test3.nt" />
+   </test:outputDocument>
+
+</test:PositiveParserTest>
+
+
+<rdf:Description rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/warn-003" test:warning="warn"/>
+<rdf:Description rdf:about="http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/Manifest.rdf#test005" test:warning="warn"/>
+
+
+
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-literals/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_STRING_NOT_NORMAL_FORM_C'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-literals/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_STRING_NOT_NORMAL_FORM_C'/>
+</rdf:Description>
+
+
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-empty-property-elements/Manifest.rdf#error003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-016'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-015'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-018'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-017'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-019'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-020'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-005'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-004'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-007'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-006'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-009'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-008'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_LI_AS_TYPE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-010'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT' />
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-012'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-011'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-014'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-013'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-containers-syntax-vs-schema/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-containers-syntax-vs-schema/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_LI_AS_TYPE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/xmlbase/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_MALFORMED_URI'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-difference-between-ID-and-about/Manifest.rdf#error1'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_REDEFINITION_OF_ID'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-abouteach/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-abouteach/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-literal-is-xml-structure/Manifest.rdf#test005'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_PARSETYPE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0004'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0006'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0005'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0008'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0008'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0007'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0007'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-ns-prefix-confusion/Manifest.rdf#error0009'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNQUALIFIED_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/warn-001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/warn-003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/warn-002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ELEMENT'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error002'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_UNKNOWN_RDF_ATTRIBUTE'/>
+</rdf:Description>
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-parseType/Manifest.rdf#error003'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+</rdf:Description>
+
+<rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/Manifest.rdf#error001'>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_URI_NOT_NORMAL_FORM_C'/>
+</rdf:Description>
+</rdf:RDF>
+

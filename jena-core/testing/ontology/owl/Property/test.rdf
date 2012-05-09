@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+
+<rdf:Property rdf:ID="p">
+	<rdfs:subPropertyOf>
+		<rdf:Property rdf:ID="q" />
+	</rdfs:subPropertyOf>
+	<rdfs:domain>
+		<owl:Class rdf:ID="ClassA" />
+	</rdfs:domain>
+	<rdfs:range>
+		<owl:Class rdf:ID="ClassB" />
+	</rdfs:range>
+	<owl:equivalentProperty>
+		<rdf:Property rdf:ID="r" />
+	</owl:equivalentProperty>
+	<owl:inverseOf>
+		<rdf:Property rdf:ID="s" />
+	</owl:inverseOf>
+</rdf:Property>
+
+
+</rdf:RDF>

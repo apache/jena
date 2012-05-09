@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<daml:Ontology rdf:about="">
+  <daml:versionInfo>test version info</daml:versionInfo>
+  <daml:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
+  <rdfs:comment>a comment</rdfs:comment>
+  <rdfs:seeAlso>xyz</rdfs:seeAlso>
+  <rdfs:isDefinedBy>abc</rdfs:isDefinedBy>
+  <rdfs:label>a label</rdfs:label>
+</daml:Ontology>
+
+
+</rdf:RDF>

@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<!--
+    A p value on a class with max(p,0).
+    Three dp values on a class with max(dp,2).
+  -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/reasoners/owl#"
+  xml:base  ="http://jena.hpl.hp.com/testing/reasoners/owl"
+>
+   
+   	<owl:Thing rdf:ID="it1" />
+   	<owl:Thing rdf:ID="it2" />
+   	
+    <A rdf:ID="ia">
+    	<dp rdf:datatype="&xsd;int">1</dp>
+    	<dp rdf:datatype="&xsd;int">2</dp>
+    	<dp rdf:datatype="&xsd;int">3</dp>
+    </A>
+    
+    <B rdf:ID="ib">
+        <p rdf:resource="#it1" />
+    </B>
+    
+</rdf:RDF>

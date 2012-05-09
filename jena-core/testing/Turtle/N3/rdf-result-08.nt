@@ -1,0 +1,19 @@
+# Jena N3->RDF converter: Tests/rdf-test-08.n3
+<http://h/r> <http://h/p> "0" .
+<http://h/r> <http://h/p> "1" .
+<http://h/r> <http://h/p> "2" .
+<http://h/r> <http://h/p> "12" .
+<http://h/r> <http://h/p> "123" .
+
+<http://h/r> <http://h/p> "Literal with \" double quote - 1" .
+<http://h/r> <http://h/p> "Literal with \" double quote - 2" .
+
+<http://h/r> <http://h/p> "Long 'SingleQuoted' String" .
+<http://h/r> <http://h/p> "Long \"DoubleQuoted\" String" .
+
+<http://h/r> <http://h/p-unix> "Unix newline\nconvention" .
+<http://h/r> <http://h/p-windows> "Windows newline\r\nconvention" .
+<http://h/r> <http://h/p-mac> "Mac newline\rconvention" .
+
+#<http://h/r> <http://h/p> "euro" .
+#<http://h/r> <http://h/p> "\uFFFD" .

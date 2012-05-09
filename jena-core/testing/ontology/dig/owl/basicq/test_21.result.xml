@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<responses
+  xmlns="http://dl.kr.org/dig/2003/02/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/2003/02/lang      http://dl-web.man.ac.uk/dig/2003/02/dig.xsd">
+  <individualSet id="q0">
+  	<individual name="http://example.org/foo#b" />
+  	<individual name="http://example.org/foo#c" />
+  	<individual name="http://example.org/foo#d" />
+  </individualSet>
+</responses>

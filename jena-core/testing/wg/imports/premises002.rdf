@@ -1,0 +1,28 @@
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises002.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+If a premise document uses a namespace but does not import the document corresponding to
+the namespace, then the premises do not necessarily entail anything that is entailed by
+the conjunction of the two documents.
+-->
+<!-- Author: Jeff Heflin -->
+<rdf:RDF
+    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
+    xmlns:owl='http://www.w3.org/2002/07/owl#'
+    xmlns:ont='http://www.w3.org/2002/03owlt/imports/support002-A#'
+    xml:base='http://www.w3.org/2002/03owlt/imports/premises002' >
+
+    <ont:Man rdf:about='http://example.org/data#Socrates'/>
+
+</rdf:RDF>

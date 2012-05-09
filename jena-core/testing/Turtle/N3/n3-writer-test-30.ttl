@@ -1,0 +1,21 @@
+# Lists using URis for cons-cells.
+
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<http://test/1>
+      rdf:first "E1" ;
+      rdf:rest () .
+
+<http://test/3>
+      rdf:first "E5" ;
+      rdf:rest ("E4" "E3") .
+
+<http://test/2>
+      rdf:first "E2" ;
+      rdf:rest <http://test/1> .
+
+<http://root/2>
+      <http://list> <http://test/3> .
+
+<http://root/1>
+      <http://list> <http://test/2> .

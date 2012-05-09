@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns="&eg;">
+
+  <rdf:Description rdf:about="&eg;a">
+    <rdf:type rdf:resource="&eg;C1"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;b">
+    <rdf:type rdf:resource="&eg;C2"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C1">
+    <rdf:type rdf:resource="&rdfs;Class" />
+    <rdfs:subClassOf rdf:resource="&eg;C2"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C2">
+    <rdf:type rdf:resource="&rdfs;Class" />
+  </rdf:Description>
+
+</rdf:RDF>

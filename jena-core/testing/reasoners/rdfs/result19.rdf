@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY drdfs 'urn:x-hp-direct-predicate:http_//www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns:drdfs="&drdfs;" xmlns="&eg;">
+
+  <rdfs:Resource rdf:about="&eg;a" />
+  <rdfs:Resource rdf:about="&eg;b" />
+  <rdfs:Resource rdf:about="&eg;c" />
+  <rdfs:Resource rdf:about="&eg;d" />
+  <rdfs:Resource rdf:about="&eg;p" />
+  <rdfs:Resource rdf:about="&eg;q" />
+  <rdfs:Resource rdf:about="&eg;r" />
+  <rdfs:Resource rdf:about="&eg;C1" />
+  <rdfs:Resource rdf:about="&eg;C2" />
+  <rdfs:Resource rdf:about="&eg;C3" />
+  <rdfs:Resource rdf:about="&eg;D" />
+  <rdfs:Resource rdf:about="&eg;fubar" />
+  
+   <rdfs:Resource rdf:about="&rdf;type" />
+   <rdfs:Resource rdf:about="&rdf;Statement" />
+   <rdfs:Resource rdf:about="&rdf;nil" />
+   <rdfs:Resource rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Resource rdf:about="&rdf;List" />
+   <rdfs:Resource rdf:about="&rdf;Property" />
+   <rdfs:Resource rdf:about="&rdf;subject" />
+   <rdfs:Resource rdf:about="&rdf;predicate" />
+   <rdfs:Resource rdf:about="&rdf;object" />
+   <rdfs:Resource rdf:about="&rdf;first" />
+   <rdfs:Resource rdf:about="&rdf;rest" />
+   
+   <rdfs:Resource rdf:about="&rdfs;Resource" />
+   <rdfs:Resource rdf:about="&rdfs;Literal" />
+   <rdfs:Resource rdf:about="&rdfs;Class" />
+   <rdfs:Resource rdf:about="&rdfs;Datatype" />
+   <rdfs:Resource rdf:about="&rdfs;range" />
+   <rdfs:Resource rdf:about="&rdfs;domain" />
+   <rdfs:Resource rdf:about="&rdfs;subPropertyOf" />
+   <rdfs:Resource rdf:about="&rdfs;subClassOf" />
+   
+  <rdf:Property rdf:about="&eg;p" />
+  <rdf:Property rdf:about="&eg;q" />
+  <rdf:Property rdf:about="&eg;r" />
+  <rdf:Property rdf:about="&eg;fubar" />
+  
+   <rdf:Property rdf:about="&rdf;subject" />
+   <rdf:Property rdf:about="&rdf;predicate" />
+   <rdf:Property rdf:about="&rdf;object" />
+   <rdf:Property rdf:about="&rdf;first" />
+   <rdf:Property rdf:about="&rdf;rest" />
+   <rdf:Property rdf:about="&rdf;type" />
+   
+   <rdf:Property rdf:about="&rdfs;range" />
+   <rdf:Property rdf:about="&rdfs;domain" />
+   <rdf:Property rdf:about="&rdfs;subPropertyOf" />
+   <rdf:Property rdf:about="&rdfs;subClassOf" />
+
+  <rdfs:Class rdf:about="&eg;D" />
+  <rdfs:Class rdf:about="&eg;C1" />
+  <rdfs:Class rdf:about="&eg;C2" />
+  <rdfs:Class rdf:about="&eg;C3" />
+  
+  <rdfs:Class rdf:about="&rdfs;Resource" />
+  <rdfs:Class rdf:about="&rdf;Property" />
+  <rdfs:Class rdf:about="&rdf;List" />
+  <rdfs:Class rdf:about="&rdfs;Class" />
+  <rdfs:Class rdf:about="&rdfs;Datatype" />
+  <rdfs:Class rdf:about="&rdfs;Literal" />
+  <rdfs:Class rdf:about="&rdf;Statement" />
+  
+  <D rdf:about="&eg;a" />
+  <D rdf:about="&eg;c" />
+
+  <C3 rdf:about="&eg;b" />
+  <C2 rdf:about="&eg;b" />
+  <C1 rdf:about="&eg;b" />
+
+  <C3 rdf:about="&eg;d" />
+  <C2 rdf:about="&eg;d" />
+  <C1 rdf:about="&eg;d" />
+
+  <rdfs:Datatype rdf:about="&rdf;XMLLiteral" />
+  <rdf:List rdf:about="&rdf;nil" />
+  
+  <rdf:Description rdf:about="&eg;p">
+    <rdfs:subPropertyOf rdf:resource="&eg;q"/>
+    <rdfs:subPropertyOf rdf:resource="&eg;r"/>
+    <rdfs:subPropertyOf rdf:resource="&eg;p"/>
+    <drdfs:subPropertyOf rdf:resource="&eg;p" />
+    <drdfs:subPropertyOf rdf:resource="&eg;q" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;q">
+    <rdfs:subPropertyOf rdf:resource="&eg;r"/>
+    <rdfs:subPropertyOf rdf:resource="&eg;q"/>
+    <drdfs:subPropertyOf rdf:resource="&eg;q" />
+    <drdfs:subPropertyOf rdf:resource="&eg;r" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;r">
+    <rdfs:range rdf:resource="&eg;C1"/>
+    <rdfs:domain rdf:resource="&eg;D"/>
+    <rdfs:subPropertyOf rdf:resource="&eg;r"/>
+    <drdfs:subPropertyOf rdf:resource="&eg;r" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;fubar">
+    <rdfs:subPropertyOf rdf:resource="&eg;fubar"/>
+    <drdfs:subPropertyOf rdf:resource="&eg;fubar" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C1">
+    <rdfs:subClassOf rdf:resource="&eg;C2"/>
+    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+    <rdfs:subClassOf rdf:resource="&eg;C1"/>
+    <rdfs:subClassOf rdf:resource="&rdfs;Resource" />
+    <drdfs:subClassOf rdf:resource="&eg;C1" />
+    <drdfs:subClassOf rdf:resource="&eg;C2" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C2">
+    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+    <rdfs:subClassOf rdf:resource="&eg;C2"/>
+    <drdfs:subClassOf rdf:resource="&eg;C2" />
+    <drdfs:subClassOf rdf:resource="&eg;C3" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;C3">
+    <rdfs:subClassOf rdf:resource="&eg;C3"/>
+    <drdfs:subClassOf rdf:resource="&eg;C3" />
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;a">
+    <p rdf:resource="&eg;b"/>
+    <q rdf:resource="&eg;b"/>
+    <r rdf:resource="&eg;b"/>
+    <fubar>Hello world</fubar>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&eg;c">
+    <p rdf:resource="&eg;d"/>
+    <q rdf:resource="&eg;d"/>
+    <r rdf:resource="&eg;d"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="&rdfs;subPropertyOf">
+    <rdfs:domain rdf:resource="&rdf;Property" />
+    <rdfs:range  rdf:resource="&rdf;Property" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;subClassOf">
+    <rdfs:domain rdf:resource="&rdfs;Class" />
+    <rdfs:range  rdf:resource="&rdfs;Class" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;type">
+    <rdfs:range rdf:resource="&rdfs;Class" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;subPropertyOf">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;subPropertyOf" />
+    <drdfs:subPropertyOf rdf:resource="&rdfs;subPropertyOf" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;subClassOf">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;subClassOf" />
+    <drdfs:subPropertyOf rdf:resource="&rdfs;subClassOf" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;subject">
+    <rdfs:subPropertyOf rdf:resource="&rdf;subject" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;subject" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;predicate">
+    <rdfs:subPropertyOf rdf:resource="&rdf;predicate" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;predicate" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;object">
+    <rdfs:subPropertyOf rdf:resource="&rdf;object" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;object" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;first">
+    <rdfs:subPropertyOf rdf:resource="&rdf;first" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;first" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;rest">
+    <rdfs:subPropertyOf rdf:resource="&rdf;rest" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;rest" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;type">
+    <rdfs:subPropertyOf rdf:resource="&rdf;type" />
+    <drdfs:subPropertyOf rdf:resource="&rdf;type" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;range">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;range" />
+    <drdfs:subPropertyOf rdf:resource="&rdfs;range" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;domain">
+    <rdfs:subPropertyOf rdf:resource="&rdfs;domain" />
+    <drdfs:subPropertyOf rdf:resource="&rdfs;domain" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;Literal">
+    <rdfs:subClassOf rdf:resource="&rdfs;Literal" />
+    <rdfs:subClassOf rdf:resource="&rdfs;Resource" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdf;Statement">
+    <rdfs:subClassOf rdf:resource="&rdf;Statement" />
+    <rdfs:subClassOf rdf:resource="&rdfs;Resource" />
+  </rdf:Description>
+   
+  <rdf:Description rdf:about="&rdfs;Resource">
+    <rdfs:subClassOf rdf:resource="&rdfs;Resource" />
+  </rdf:Description>
+   
+   
+
+</rdf:RDF>

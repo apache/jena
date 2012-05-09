@@ -1,0 +1,21 @@
+<rdf:RDF
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:cc="http://web.resource.org/cc/" >
+  <rdf:Description rdf:about="http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm">
+    <title>مقتل اربعة أشخاص في اعمال عنف بالعراق</title>
+    <link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm</link>
+    <rdf:type rdf:resource="http://purl.org/rss/1.0/item"/>
+    <description>مقتل اربعة أشخاص على الأقل وإصابة آخرين في عمليات استهدفت القوات   الأمريكية والعراقية. واعمال عنف في  معتقل بوكا إثر مقتل أحد السجناء.</description>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm">
+    <dc:copyright>حقوق النشر والطبع محفوظة لهيئة الإذاعة البريطانية بي بي سي, http://news.bbc.co.uk/1/hi/help/3281849.stm</dc:copyright>
+    <dc:language>ar</dc:language>
+    <title>BBC Arabic News | الصفحة الرئيسية</title>
+    <link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm</link>
+    <description>يتم التحديث كل دقيقة وكل يوم - للاستخدام الشخصي فقط</description>
+    <rdf:type rdf:resource="http://purl.org/rss/1.0/channel"/>
+  </rdf:Description>
+</rdf:RDF>

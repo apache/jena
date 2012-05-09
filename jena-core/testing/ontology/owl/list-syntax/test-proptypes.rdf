@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<owl:Ontology rdf:about="">
+	<owl:versionInfo>CVS $Id: test.rdf,v 1.1 2003/04/02 20:33:33 ian_dickinson Exp $</owl:versionInfo>
+</owl:Ontology>
+
+<owl:FunctionalProperty rdf:ID="fp">
+</owl:FunctionalProperty>
+
+<owl:TransitiveProperty rdf:ID="tp">
+</owl:TransitiveProperty>
+
+<owl:SymmetricProperty rdf:ID="sp">
+</owl:SymmetricProperty>
+
+<owl:InverseFunctionalProperty rdf:ID="ifp">
+</owl:InverseFunctionalProperty>
+
+</rdf:RDF>

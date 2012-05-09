@@ -1,0 +1,35 @@
+<!--++ Ontology/conclusions001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 22 Sep 2003 07:17:48 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions001.rdf,v 1.3 2003-12-05 05:09:31 jeremy_carroll Exp $
+-->
+<!--
+This is a variation of <a href="#equivalentClass-001">equivalentClass-001</a>,
+showing the use of <code>owl:Ontology</code> triples in the premises and conclusions.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/Ontology/premises001#"
+    xml:base="http://www.w3.org/2002/03owlt/Ontology/conclusions001" >
+  <owl:Ontology />
+  <first:Car rdf:about="premises001#auto">
+     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+  </first:Car>
+  <first:Automobile rdf:about="premises001#car">
+     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Thing" />
+  </first:Automobile>
+   <owl:Class rdf:about="premises001#Car"/>
+   <owl:Class rdf:about="premises001#Automobile"/>
+</rdf:RDF>

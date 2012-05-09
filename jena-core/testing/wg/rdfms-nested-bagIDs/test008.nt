@@ -1,0 +1,25 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# $Id: test008.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
+# 
+#####################################################################
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> _:j3 .
+_:j3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+_:j3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j1 .
+_:j3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/propAttr> .
+_:j3 <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> "val" .
+_:j0 <http://example.org/prop> _:j1 .
+_:j1 <http://example.org/propAttr> "val" .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#aReification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#aReification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> _:j0 .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#aReification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://example.org/prop> .
+<http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test008.rdf#aReification> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> _:j1 .

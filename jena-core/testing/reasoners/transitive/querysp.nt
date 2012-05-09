@@ -1,0 +1,6 @@
+# Test query for transitive reasoner
+# List (*,subPropertyOf,p)
+####################################
+<var:x> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.hpl.hp.com/semweb/2003/eg#p> .
+
+

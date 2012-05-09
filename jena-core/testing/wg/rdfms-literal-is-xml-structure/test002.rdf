@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, Institut National de Recherche en Informatique et en
+  Automatique, Keio University).
+ 
+  All Rights Reserved.
+ 
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  Description: tests parseType="Literal" with a simple string and
+    and the xml:lang attribute.
+
+  Related issue:
+
+   http://www.w3.org/2000/03/rdf-tracking/#rdfms-literal-is-xml-structure 
+
+  $Id: test002.rdf,v 1.2 2005-08-04 09:53:24 jeremy_carroll Exp $
+
+-->
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/">
+
+ <rdf:Description rdf:about="http://www.example.org">
+   <eg:property xml:lang="en-US" rdf:parseType="Literal">well-formed XML</eg:property>
+ </rdf:Description>
+
+</rdf:RDF>

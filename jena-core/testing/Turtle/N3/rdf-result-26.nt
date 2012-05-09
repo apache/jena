@@ -1,0 +1,5 @@
+    <file:///base/rdf-test-26.n3#x>     <file:///base/rdf-test-26.n3#y1> "\u03B1" .
+    
+    <file:///base/rdf-test-26.n3#x>     <file:///base/rdf-test-26.n3#y2> "\u00E9" .
+    
+    <file:///base/rdf-test-26.n3#x>     <file:///base/rdf-test-26.n3#y3> "\u00E9" .

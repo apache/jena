@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rdf:RDF xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:dmoz="http://rdf.dmoz.org/" xmlns:dc="http://purl.org/dc/elements/1.0/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns="http://rdf.dmoz.org/">
+   <skos:Concept rdf:about="http://rdf.dmoz.org/Top/World/Tamil/x">
+      <dc:title>&#2951;&#2984;<!-- composing char next -->&#3021;&#2980;&#3007;&#2991;&#3006;</dc:title>
+   </skos:Concept>
+	<!--
+   <skos:Concept rdf:about="http://rdf.dmoz.org/Top/World/Tamil/&#2997;&#2975;&#3021;&#2975;&#3006;&#2992;&#2990;&#3021;/&#2951;&#2984;&#3021;&#2980;&#3007;&#2991;&#3006;">
+      <dmoz:catid rdf:datatype="http://www.w3.org/2001/XMLSchema#int">939037</dmoz:catid>
+      <skos:narrower rdf:resource="http://rdf.dmoz.org/Top/World/Tamil/&#2997;&#2975;&#3021;&#2975;&#3006;&#2992;&#2990;&#3021;/&#2951;&#2984;&#3021;&#2980;&#3007;&#2991;&#3006;/&#2980;&#2990;&#3007;&#2996;&#3021;_&#2984;&#3006;&#2975;&#3009;"/>
+      <dc:title>&#2951;&#2984;&#3021;&#2980;&#3007;&#2991;&#3006;</dc:title>
+      <dmoz:lastUpdate>2004-08-23 06:01:52</dmoz:lastUpdate>
+      <dc:description>&#2951;&#2984;&#3021;&#2980;&#3007;&#2991; &#2984;&#3006;&#2975;&#3009; &#2980;&#3018;&#2975;&#2992;&#3021;&#2986;&#3006;&#2985; &#2997;&#3007;&#2999;&#2991;&#2969;&#3021;&#2965;&#2995;&#3016; &#2965;&#3018;&#2979;&#3021;&#2975;&#3009;&#2995;&#3021;&#2995;&#2985;.  </dc:description>
+   </skos:Concept>
+   -->
+</rdf:RDF>

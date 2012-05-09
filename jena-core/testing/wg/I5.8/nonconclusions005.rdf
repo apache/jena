@@ -1,0 +1,30 @@
+<!--++ I5.8/nonconclusions005.rdf ** generated using webont test editor. ++-->
+<!--++ Created 7 May 2003 11:59:10 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions005.rdf,v 1.5 2003-12-05 05:06:34 jeremy_carroll Exp $
+-->
+<!--
+There are 128 different values of <code>xsd:byte</code>
+that are also <code>xsd:unsignedInt</code>.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/I5.8/premises005#"
+    xml:base="http://www.w3.org/2002/03owlt/I5.8/nonconclusions005" >
+  <owl:Thing rdf:about="premises005#john">
+    <first:p rdf:datatype=
+  "http://www.w3.org/2001/XMLSchema#byte">5</first:p>
+  </owl:Thing>
+  <owl:DatatypeProperty rdf:about="premises005#p"/>
+</rdf:RDF>

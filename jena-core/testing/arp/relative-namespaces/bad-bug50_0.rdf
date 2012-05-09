@@ -1,0 +1,18 @@
+<!--
+  Failing (not RDF document) Test case for bug #50.
+  i.e. hp internal bugzilla #50
+  
+  The use of relative URI for the eg namespace should
+  result in a warning/error message.
+  
+  WARN_RELATIVE_NAMESPACE_URI_DEPRECATED
+  
+-->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="#">
+
+  <rdf:Description>
+    <eg:property>bar</eg:property>
+  </rdf:Description>
+   
+</rdf:RDF>

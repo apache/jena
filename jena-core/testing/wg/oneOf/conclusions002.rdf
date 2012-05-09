@@ -1,0 +1,28 @@
+<!--++ oneOf/conclusions002.rdf ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: conclusions002.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
+-->
+<!--
+<code>oneOf</code> describes a class by enumerating its individuals.
+-->
+<!-- Author: Jos De Roo -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:first="http://www.w3.org/2002/03owlt/oneOf/premises002#"
+    xmlns:second="http://www.w3.org/2002/03owlt/oneOf/conclusions002#"
+    xml:base="http://www.w3.org/2002/03owlt/oneOf/conclusions002" >
+
+    <first:TShirt rdf:about="premises002#small"/>
+
+</rdf:RDF>

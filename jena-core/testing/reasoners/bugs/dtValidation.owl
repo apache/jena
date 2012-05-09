@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE owl [
+     <!ENTITY jbo  "http://www.cs101.org/2003/08/07/RDF/JenaBugOntology#" >
+     <!ENTITY rdfs  "http://www.w3.org/2000/01/rdf-schema#" >
+     <!ENTITY rdf  "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+     <!ENTITY owl  "http://www.w3.org/2002/07/owl#" >
+     <!ENTITY xsd  "http://www.w3.org/2001/XMLSchema#" >
+   ]>
+
+<rdf:RDF
+  xmlns:rdf ="&rdf;"
+  xmlns:rdfs="&rdfs;"
+  xmlns:owl="&owl;"
+  xmlns:xsd ="&xsd;"
+  xmlns:jbo="&jbo;"
+  xmlns     ="&jbo;"
+  xml:base  ="&jbo;"
+ >
+
+<owl:Ontology rdf:about="">
+  <owl:versionInfo>$Id: dtValidation.owl,v 1.1 2003-10-09 13:24:35 der Exp $</owl:versionInfo>
+</owl:Ontology>
+
+<owl:DatatypeProperty rdf:ID="familyName">
+  <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+  <rdfs:range rdf:resource="&xsd;string"/>
+  <rdfs:domain rdf:resource="&jbo;Person"/>
+</owl:DatatypeProperty>
+
+<owl:Class rdf:ID="Person">
+  <rdfs:label>Person</rdfs:label>
+  <owl:intersectionOf rdf:parseType="Collection">
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&jbo;givenName"/>
+      <owl:cardinality 
+rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+    </owl:Restriction>
+    <owl:Restriction>
+      <owl:onProperty rdf:resource="&jbo;familyName"/>
+      <owl:cardinality 
+rdf:datatype="&xsd;nonNegativeInteger">1</owl:cardinality>
+    </owl:Restriction>
+  </owl:intersectionOf>
+</owl:Class>
+
+<rdf:Description rdf:ID="person">
+    <rdf:type rdf:resource="&jbo;Person"/>
+    <jbo:familyName>Heck</jbo:familyName>
+</rdf:Description>
+
+</rdf:RDF>

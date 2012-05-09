@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?> 
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:tp="http://example.org/" 
+xmlns:c4d="http://www.isegware.com/rdfs/au/c4d.rdfs"> 
+<rdf:Description> 
+<tp:representacionXul rdf:parseType="Literal"> 
+<?xml-stylesheet href="/sistema-acceso/css/bindings.css"  type="text/css"?> 
+<?xul-overlay href="/sistema-acceso/xul/c4d_common.xul"?> 
+<xul:window ID="Simulacion" title="Pantalla de Simulación" 
+xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul" 
+xmlns:c4d="http://www.isegware.com/rdfs/au/c4d.rdfs"> 
+<vbox></vbox> 
+</xul:window> <!--
+A comment.
+-->
+</tp:representacionXul> 
+</rdf:Description> 
+</rdf:RDF>
+

@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF
+  xmlns:rdf   ="&rdf;"
+  xmlns:rdfs  ="&rdfs;"
+  xmlns:owl   ="&owl;"
+  xmlns:xsd   ="&xsd;"
+  xml:base    ="http://example.org/foo"
+  xmlns       ="http://example.org/foo#"
+>
+
+<owl:Class rdf:ID="A">
+	<rdfs:subClassOf>
+		<owl:Class rdf:ID="B">
+			<rdfs:subClassOf rdf:resource="#BB" />
+		</owl:Class>
+	</rdfs:subClassOf>
+</owl:Class>
+<owl:Class rdf:ID="BB"></owl:Class>
+
+<owl:Class rdf:ID="C">
+	<owl:unionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="D" />
+		<owl:Class rdf:ID="E" />
+	</owl:unionOf>
+	<owl:disjointWith rdf:resource="#A" />
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="p">
+</owl:ObjectProperty>
+
+<owl:Class rdf:ID="F1">
+	<owl:equivalentClass>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="#p" />
+			<owl:minCardinality rdf:datatype="&xsd;int">1</owl:minCardinality>
+		</owl:Restriction>
+	</owl:equivalentClass>
+</owl:Class>
+<owl:Class rdf:ID="F0">
+	<owl:equivalentClass>
+		<owl:Restriction>
+			<owl:onProperty rdf:resource="#p" />
+			<owl:maxCardinality rdf:datatype="&xsd;int">0</owl:maxCardinality>
+		</owl:Restriction>
+	</owl:equivalentClass>
+</owl:Class>
+<owl:Class rdf:ID="F2">
+	<owl:equivalentClass rdf:resource="#F0" />
+</owl:Class>
+
+<owl:ObjectProperty rdf:ID="p0">
+	<rdfs:subPropertyOf>
+		<owl:ObjectProperty rdf:ID="p1">
+			<rdfs:subPropertyOf>
+				<owl:ObjectProperty rdf:ID="p2">
+				</owl:ObjectProperty>
+			</rdfs:subPropertyOf>
+		</owl:ObjectProperty>
+	</rdfs:subPropertyOf>
+</owl:ObjectProperty>
+
+<owl:TransitiveProperty rdf:ID="q" />
+
+<F0 rdf:ID="i0" />
+<F0 rdf:ID="i1" />
+<F0 rdf:ID="i2" />
+
+<F0 rdf:ID="q0">
+	<q>
+		<F0 rdf:ID="q1">
+			<q>
+				<F0 rdf:ID="q2" />
+			</q>
+		</F0>
+	</q>
+</F0>
+
+</rdf:RDF>

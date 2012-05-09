@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/ontology#"
+  xml:base  ="http://jena.hpl.hp.com/testing/ontology"
+>
+
+<owl:Ontology rdf:about="">
+  <owl:versionInfo>test version info</owl:versionInfo>
+  <owl:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
+  <owl:priorVersion rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1a" />
+  <owl:backwardCompatibleWith rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1b" />
+  <owl:incompatibleWith rdf:resource="http://jena.hpl.hp.com/testing/test-ontology-1c" />
+  <rdfs:comment>a comment</rdfs:comment>
+  <rdfs:seeAlso>xyz</rdfs:seeAlso>
+  <rdfs:isDefinedBy>abc</rdfs:isDefinedBy>
+  <rdfs:label>a label</rdfs:label>
+</owl:Ontology>
+
+
+</rdf:RDF>

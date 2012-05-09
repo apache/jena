@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'http://www.hpl.hp.com/semweb/2003/eg#'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+]>
+
+<rdf:RDF xmlns:rdfs="&rdfs;" xmlns:rdf="&rdf;" xmlns="&eg;">
+
+  <rdfs:Class rdf:about="&eg;D" />
+  <rdfs:Class rdf:about="&eg;C1" />
+  <rdfs:Class rdf:about="&eg;C2" />
+  <rdfs:Class rdf:about="&eg;C3" />
+  
+  <rdfs:Class rdf:about="&rdfs;Resource" />
+  <rdfs:Class rdf:about="&rdf;Property" />
+  <rdfs:Class rdf:about="&rdf;List" />
+  <rdfs:Class rdf:about="&rdfs;Class" />
+  <rdfs:Class rdf:about="&rdfs;Datatype" />
+  <rdfs:Class rdf:about="&rdfs;Literal" />
+  <rdfs:Class rdf:about="&rdf;Statement" />
+
+   <rdfs:Class rdf:about="&rdf;Seq" />
+   <rdfs:Class rdf:about="&rdf;Bag" />
+   <rdfs:Class rdf:about="&rdf;Alt" />
+   <rdfs:Class rdf:about="&rdfs;ContainerMembershipProperty" />
+   <rdfs:Class rdf:about="&rdf;XMLLiteral" />
+   <rdfs:Class rdf:about="&rdfs;Container" />
+
+</rdf:RDF>

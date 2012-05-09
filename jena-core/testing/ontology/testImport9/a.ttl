@@ -1,0 +1,28 @@
+@prefix :        <http://incubator.apache.org/jena/2011/10/testont/a#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+:ClassAC
+      a       owl:Class .
+
+:propA
+      a       owl:ObjectProperty ;
+      rdfs:domain
+              [ a       owl:Class ;
+                owl:unionOf (:ClassAC :ClassAA)
+              ] ;
+      rdfs:range
+              [ a       owl:Class ;
+                owl:unionOf (:ClassAB :ClassAC)
+              ] .
+
+:ClassAB
+      a       owl:Class .
+
+:ClassAA
+      a       owl:Class .
+
+<http://incubator.apache.org/jena/2011/10/testont/a>
+      a       owl:Ontology ;
+      owl:imports <file:b.ttl> .
