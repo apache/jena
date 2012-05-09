@@ -1,0 +1,10 @@
+<http://example.org/alice/foaf.rdf#me> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf.rdf> .
+<http://example.org/alice/foaf.rdf#me> <http://xmlns.com/foaf/0.1/name>                  "Alice"                            <http://example.org/alice/foaf.rdf> .
+<http://example.org/alice/foaf.rdf#me> <http://xmlns.com/foaf/0.1/knows>                 _:bnode1                           <http://example.org/alice/foaf.rdf> .
+_:bnode1                               <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/alice/foaf.rdf> .
+_:bnode1                               <http://xmlns.com/foaf/0.1/name>                  "Bob"                              <http://example.org/alice/foaf.rdf> .
+_:bnode1                               <http://xmlns.com/foaf/0.1/homepage>              <http://example.org/bob/>          <http://example.org/alice/foaf.rdf> .
+_:bnode1                               <http://www.w3.org/2000/01/rdf-schema#seeAlso>   <http://example.org/bob/foaf.rdf>  <http://example.org/alice/foaf.rdf> .
+<http://example.org/bob/foaf.rdf#me>   <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://xmlns.com/foaf/0.1/Person> <http://example.org/bob/foaf.rdf> .
+<http://example.org/bob/foaf.rdf#me>   <http://xmlns.com/foaf/0.1/name>                  "Bob"                              <http://example.org/bob/foaf.rdf> .
+<http://example.org/bob/foaf.rdf#me>   <http://xmlns.com/foaf/0.1/homepage>              <http://example.org/bob/>          <http://example.org/bob/foaf.rdf> .

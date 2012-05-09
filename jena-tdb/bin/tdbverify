@@ -1,0 +1,11 @@
+#!/bin/sh
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+. "$TDBROOT/bin/tdb_init"
+
+echo "JAVA_HOME =  $JAVA_HOME"
+echo "TDBROOT   =  $TDBROOT"
+echo "JVM_ARGS  =  $JVM_ARGS"
+echo "SOCKS     =  $SOCKS"
+echo "TDB_CMD   =  $TDB_CMD"
+echo "TDB_CP    =  $TDB_CP"
