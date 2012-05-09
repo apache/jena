@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source "$SDBROOT/bin/sdb_init"
+exec java $JVM_ARGS -cp "$CP" sdb.DBTest $STORE_SPEC "$@"

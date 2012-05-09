@@ -1,0 +1,48 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix :           <http://example/> .
+@prefix ex:         <http://example/ns#> .
+
+:x :p1    "string" .
+
+:x :p2    "string"@en .
+:x :p3    "string"@en-gb .
+:x :p4    "string"@en-us .
+
+:x :p5    "STRING" .
+:x :p6    "double \" quote" .
+:x :p7    "single ' quote" .
+
+:x :p10    123 .
+
+:x :p11    12.53e1 .
+
+:x :p20    "unknown"^^ex:type1 .
+:x :p21    "unknown"^^ex:TYPE1 .
+:x :p22    "string"^^xsd:string .
+:x :p23    "2006-01-07T02:45:00+01:00"^^xsd:dateTime .
+
+# Lower case E-acute: u00E9
+# Small letter alpha: u03B1
+# Arabic-Indic Digit One u0661
+# Left arrow: u2190, right arrow u2192
+# View in Eclipse with UTC-8.
+
+:x :p24    "E-acute:\u00E9" .
+:y :p24    "E-acute:é" .
+
+:x :p25    "Alpha:\u03B1" .
+:y :p25    "Alpha:α" .
+
+:x :p26    "Arabic 123:\u0661\u0662\u0663" .
+:y :p26    "Arabic 123:١٢٣" .
+
+:x :p27    "Left arrow:\u2190" .
+:y :p27    "Left arrow:←" .
+
+:x :p30    ex:uri .
+:x :p40    _:a .
+:x :p41    _:b .
+:x :p42    [] .
+

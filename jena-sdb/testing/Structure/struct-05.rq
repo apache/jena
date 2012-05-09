@@ -1,0 +1,13 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  :       <http://example/>
+PREFIX  ex:     <http://example/ns#>
+
+# 3 optionals introducing a variable which is not constraint outside.
+
+SELECT *
+{
+   ?x :p ?z  
+   OPTIONAL { ?z :q1 ?w }
+   OPTIONAL { ?z :q2 ?w }
+   OPTIONAL { ?z :q3 ?w }
+}

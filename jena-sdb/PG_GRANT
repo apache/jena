@@ -1,0 +1,10 @@
+-- sdbsql <this file>
+-- GRANT ALL ON TABLE nodes TO public;
+-- GRANT ALL ON TABLE prefixes TO public;
+-- GRANT ALL ON TABLE triples TO public;
+
+GRANT SELECT ON TABLE nodes TO public;
+GRANT SELECT ON TABLE prefixes TO public;
+GRANT SELECT ON TABLE triples TO public;
+
+

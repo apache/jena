@@ -1,0 +1,16 @@
+@prefix : <http://example/> .
+
+:x :p :a .
+:x :p :b .
+:x :p :c .
+
+:a :q1 :z11 .
+:a :q1 :z12 .
+
+:a :q2 :z21 .
+:a :q2 :z22 .
+
+:b :q2 :y21 .
+:b :q2 :y22 .
+
+:c :r  :rr .

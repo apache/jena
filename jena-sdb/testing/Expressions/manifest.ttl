@@ -1,0 +1,56 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Value and expressions" ;
+    mf:entries
+    ( 
+       [  mf:name   "Regex-1" ;
+          mf:action [ qt:query <regex-1.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Regex-2" ;
+          mf:action [ qt:query <regex-2.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Regex-3" ;
+          mf:action [ qt:query <regex-3.rq> ; qt:data <data.ttl> ] ;
+       ]
+
+       [  mf:name   "Regex-opt-1" ;
+          mf:action [ qt:query <regex-opt-1.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Regex-opt-2" ;
+          mf:action [ qt:query <regex-opt-2.rq> ; qt:data <data.ttl> ] ;
+       ]
+
+       [  mf:name   "Regex-opt-3" ;
+          mf:action [ qt:query <regex-opt-3.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Regex-opt-4" ;
+          mf:action [ qt:query <regex-opt-4.rq> ; qt:data <data.ttl> ] ;
+       ]
+
+       [  mf:name   "Equals-1" ;
+          mf:action [ qt:query <equals-1.rq> ; qt:data <data.ttl> ] ;
+       ]
+       [  mf:name   "Equals-2" ;
+          mf:action [ qt:query <equals-2.rq> ; qt:data <data.ttl> ] ;
+       ]
+    ).

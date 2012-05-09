@@ -1,0 +1,67 @@
+SDB ToDo list (and general notes)
+=================================
+
+** Graph management
+    And OpDatasetNames
+** prefixes per model (related) 
+
+
+** OpQuadPattern ==> Track OpGraph and OpBGP (common visitor/transform base pattern?) 
+** OpDatasetNames (and check GRAPH ?g {})
+
+** SELECT DISTINCT ?p { ?s ?p ?o }
+   Can push in DISTINCT through the project if the SelectBlock has the project
+   else just put on the project?
+     TransformSDB 
+
+** Tidy the assembler descriptions on wiki.
+   Currently two pages: make reference and tutorial.
+
+** Check update tests - why is fork needed in ant for Pg and MS-SQL, but not MySQL? 
+
+** Connection pooling (Apache DBCP) which will also cope with MySQL timeouts   
+
+** Store .isClosed, isFormatted
+
+==== Wiki
+** StoreFormatter.isFormatted()
+
++ Break out the merge query section into a separate wiki page.
+
+==== Tests
+
+?? Restruct as run-per-store
+?? Run-per-store for all non-Q tests.
+   May need to hack JUnit 4 to get naming to work.
+   TestEnv.getStore() -> Store
+   For load-general?
++ Test: Dataset description + JDBC connection for pooling.
+
+== Major
+
++ Graph management:
+    Graphs loaded
+    Delete graph (can we make this anymore efficient?)
+      Delete by quad pattern
+    Add new graph (and load of unknown graph fails?)
+    Replace graph
+      Delete model, Clear model, Create model
+      Only load is model exists?
+      Check in GraphSDB
+    Need a "graph ids" table
+    
+== Minor
+
++ StoreLoader => StoreLoaderPlus.
++ LoaderTuplesNodes uses reflection on constructors.  OneTuple loader broken by this.
+   Each loader has many TupleLoader instances - per table to be loaded.
+   ==> TupleLoaderFactory 
+ 
++ Tests with SDB.getContext().setTrue(SDB.unionDefaultGraph) ;
+  --set in manifest?
+
++ OpUnion
+
+==== Notes
+   
++ QueryEngineSDB has duplication with QueryEngineMain - eliminate!

@@ -1,0 +1,78 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "General tests" ;
+    mf:entries
+    ( 
+       [  mf:name   "Term-01" ;
+          mf:action [ qt:query <term-01.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-02 - plain string" ;
+          mf:action [ qt:query <term-02.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-03" ;
+          mf:action [ qt:query <term-03.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-04" ;
+          mf:action [ qt:query <term-04.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-05 - unknown type" ;
+          mf:action [ qt:query <term-05.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-06" ;
+          mf:action [ qt:query <term-06.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-07" ;
+          mf:action [ qt:query <term-07.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-08" ;
+          mf:action [ qt:query <term-08.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-09" ;
+          mf:action [ qt:query <term-09.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-10" ;
+          mf:action [ qt:query <term-10.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-11" ;
+          mf:action [ qt:query <term-11.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Term-12" ;
+          mf:action [ qt:query <term-12.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+
+       [  mf:name   "Vars-1" ;
+          mf:action [ qt:query <vars-1.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Vars-2" ;
+          mf:action [ qt:query <vars-2.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Vars-3" ;
+          mf:action [ qt:query <vars-3.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Vars-4" ;
+          mf:action [ qt:query <vars-4.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+       [  mf:name   "Vars-5" ;
+          mf:action [ qt:query <vars-5.rq> ; qt:data <data-1.ttl> ] ;
+       ]
+    ).
