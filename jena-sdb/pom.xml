@@ -23,7 +23,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
-  <name>SDB</name>
+  <name>jena-sdb</name>
   <version>1.3.4-incubating-SNAPSHOT</version>
 
   <parent>
@@ -35,8 +35,8 @@
   <description>SDB is a persistence layer that uses an SQL databases.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/SDB/</connection>
-    <url>http://svn.apache.org/viewvc/incubator/jena/Jena2/SDB/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb</connection>
+    <url>http://svn.apache.org/viewvc/jena/trunk/jena-sdb</url>
   </scm>
 
   <properties>
