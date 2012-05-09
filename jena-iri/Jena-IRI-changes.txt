@@ -1,0 +1,27 @@
+
+This is an OLD file, relevant to version 0.3 and earlier.
+
+This is a list of changes to the Jena code base
+motivated by the new IRI code.
+================================================
+
+    public void testBadProperty1() throws IOException {
+        checkPropURI("http:/a.b/", null, null, BadPropURI);
+    }
+    
+to
+       
+            public void testBadProperty1() throws IOException {
+        checkPropURI("http://x/a.b/", null, null, BadPropURI);
+    }
+    
+    
+ Changed two of the tainting tests concerning behaviour with badURIs
+ ht^tp: and http://ww^w/  despite being bad can be used as base.
+ 
+ Changed a tainting text with a relative resolution against mailto
+ 
+ ht#tp://jjc3.org/demo.mp3#frag is treated as an ill-formed *relative* URI, rather
+ than simply ill-formed.
+ 
+ 

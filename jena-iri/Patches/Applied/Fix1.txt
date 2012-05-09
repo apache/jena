@@ -1,0 +1,95 @@
+http://tech.groups.yahoo.com/group/jena-dev/message/40853
+------------------------
+
+And here goes the fix (I gues it was developers mistype to return instead of modifying the input buffer) 	
+Buggy code is remd out:
+
+private String mergePathsRemoveDots(String basePath) {
+        int slash = basePath.lastIndexOf('/');
+        StringBuffer output = new StringBuffer();
+        if (slash!=-1)
+            output.append(basePath.substring(0,slash+1));
+        if (base.dotsOK()&&rel.dotsOK()) {
+            String relPath = rel.getRawPath();
+
+            if (relPath.startsWith("./")) {
+                //return basePath + relPath.substring(2);
+            	relPath = relPath.substring(2); //fix by marcus
+            }
+
+            while (relPath.startsWith("../")) {
+                relPath = relPath.substring(3);
+                removeLastSeqment2(output);
+            }
+            if (relPath.equals("..") ) {
+                relPath = "";
+                removeLastSeqment2(output);
+            }
+            if (relPath.equals(".") ) {
+                relPath = "";
+            }
+            output.append(relPath);
+            return output.toString();
+        }
+        output.append(rel.getRawPath());
+        return removeDotSegments(output.toString());
+    }
+
+-----Original Message-----
+From: Marko Martin 
+Sent: Thursday, July 16, 2009 9:46 AM
+To: 'jena-dev@groups.yahoo.com'
+Subject: IRI.resolve ./ question - maybe lame question maybe bug report ?
+
+Hi there.
+We are evaluating Java APIs conforming to (or claiming conformance) 
+RFC 3986.
+
+Your API and implementation has been evaluated as the BEST.
+
+Pseudocode:
+
+IRI(http://a/b/c/d;p?q).resolve(./) should yeald http://a/b/c/
+Correct ? (based on RFC  down there)
+
+However, regardless How do I write the code I always get 
+http://a/b/c/d;p
+
+no warnings of violations
+
+Please any comments on this issue ? (even JDK buggy java.net.URI resolves this as expected)
+
+RFC:
+
+5.4 Reference Resolution Examples 
+
+Within a representation with a well defined base URI of 
+http://a/b/c/d;p?q 
+a relative reference is transformed to its target URI as follows. 
+________________________________________
+Page 36 
+5.4.1 Normal Examples 
+
+      "./"            =  "http://a/b/c/"
+
+------------------------
+My code snipped: 
+
+String base="http://a/b/c/d;p?q";
+String reference="./";
+
+String expected="http://a/b/c/";
+IRIFactory fact=IRIFactory.iriImplementation(); 
+
+IRI b=fact.construct(base); 
+IRI r=fact.construct(reference); 
+IRI	o=b.resolve(r);
+
+out.write(o.toString());
+out.write("<br>");
+out.write(r.toString());
+out.write("<br>");
+out.write(expected+"<hr>"+o.toString().equals(expected));
+out.write("<hr>"+b.hasViolation(true));
+out.write("<hr>"+r.hasViolation(true));
+out.write("<hr>"+o.hasViolation(true));

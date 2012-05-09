@@ -1,0 +1,39 @@
+
+General:
+   document
+   assess compliance
+   document level of compliance
+   document how to use JFlex to produce Lexer files.
+   
+Unimplemented features:
+  IRI.ladderEquals
+  ??.withScheme() (in IRIFactoryImpl not sure what doesn't work as a result)
+  Violation. getSpecificationURL()
+  IRI.normalize
+  IRI.getCooked (private: not sure what doesn't work as a result)
+  coping with bad surrogate pairs
+  checking percent encoding with respect to punycode
+  [i.e. can a percent encoded sequence in a hostname be reencoded as punycode?]
+  better coverage of default port numbers
+  IRIFactory.create with 5 or 7 arguments
+  different rules for schemes that respect DNS and those that don't
+  ability to disable such different rules
+  testing with codepoints > 2^16
+  other considerations for unicode > 2.3, and/or java >= 1.5
+  increased coverage of tests for bad or problematic characters
+  IRIFactory.setQueryCharacterRestrictions
+   
+Get file: stuff working well enough for Jena
+IRI.normalize()
+RFRC 2396 and opaque URIs
+
+Bugs:
+   I think some of the specs have been revved since the initial design,
+   
+
+
+   
+
+   
+
+
