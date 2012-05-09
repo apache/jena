@@ -1,0 +1,53 @@
+==== Fuseki
+
+== 0.2.2/0.3.0
+
++ This version picks up bug fixes from TDB and ARQ.
+  This includes probelms with concurrent operations.
+
+== 0.2.1
+
++ Switch from JSPs to Velocity.
+  This means the standalone jar does not contain a JSP engine anymore.  
+
++ Service by configuration file, command line argument --config=
+
++ Add a servlet filter that processes Accept-Encoding 
+  Result are now compressed if the client request asks for that (JENA-209)
+
++ Rename packages to be org.apache.jena.fuseki.
+
++ --jetty-config= Use a file to configure the jetty server (connector type, parms of connector like "host").  
+  Replaces --host.  See Jetty configuration documentation.
+
++ General purpose SPARQL processor servlet written (not enabled)  
+
++ XSLT style sheet for SPARQL XML results now puts clickable links in the results - query goes back to the server.
+
++ JENA-74 (from Brian McBride): --host= to select the interface to listen on.  Use with --host=localhost if using Apache as a front-end. 
+
++ Add --timeout: adds a timeout to all query executions
+
++ Split logging into 2 loggers: general messages and per-request messages.
+  http://openjena.org/wiki/Fuseki#Logging
+
+== 0.2.0
+
++ Validators now include:
+  Query
+  Update
+  RDF (non-XML formats)
+  IRI
+
++ HTTP request error pages now in "text/plain;charset=utf-8"
++ Location of a TDB database must exist when server starts.
+
++ Form parameter name for SPARQL Update sent by HTML form changed from request= to update=
+  Likely direction of SPARQL-WG.
+
++ Internal consistency checking (also TDB internal consistecy checking).
+  You should not see any warnings.
+
+== 0.1.0
+First release.
+
