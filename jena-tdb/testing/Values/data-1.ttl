@@ -1,0 +1,23 @@
+@prefix : <http://example/> .
+@prefix  xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+:x1 :p 1 .
+:x2 :p "1" .
+:x3 :p "1"@en .
+
+:x4 :p 1.5 .
+
+:x5 :p "2008-04-29T09:13:15+01:00"^^xsd:dateTime .
+
+:x6 :p "0008-04-29T09:13:15-01:00"^^xsd:dateTime .
+
+:x7 :p "-3000-04-29T09:13:15Z"^^xsd:dateTime .
+
+# Not encoded inline
+:x8 :p "-3000-04-29T09:13:15Z"^^xsd:dateTime .
+
+:x9 :p "2008-04-29"^^xsd:date .
+
+:x10 :p "2008-04-29Z"^^xsd:date .
+
+:x11 :p "2008-04-29+01:00"^^xsd:date .

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.apache.jena</groupId>
+  <artifactId>jena-tdb</artifactId>
+  <packaging>jar</packaging>
+  <name>TDB</name>
+  <version>0.9.1-incubating-SNAPSHOT</version>
+
+  <parent>
+    <groupId>org.apache.jena</groupId>
+    <artifactId>jena-top</artifactId>
+    <version>0-incubating</version>
+  </parent> 
+
+  <description>TDB is a storage subsystem for Jena and ARQ</description>
+
+  <scm>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/trunk</developerConnection>
+    <url>https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/</url>
+  </scm>
+  
+  <properties>
+    <this.root>${project.artifactId}-${project.version}</this.root>
+    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
+
+    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
+    
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
+    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
+ 
+  </properties>
+
+  <!-- Testing against staged artifacts - ->
+  <repositories>
+    <repository>
+      <id>apache.jena.staging</id>
+      <name>Apache jena Staging Repository</name>
+      <url>https://repository.apache.org/content/repositories/releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+  -->
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${ver.arq}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.arq}</version>
+      <scope>test</scope>
+    </dependency>
+
+     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>${ver.jena}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <classifier>tests</classifier>
+      <version>${ver.jena}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <resources>
+      <resource>
+        <filtering>false</filtering>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>org/apache/jena/tdb/tdb-properties.xml</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>org/apache/jena/tdb/tdb-properties.xml</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/TS_*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions> 
+          <execution>
+            <id>attach-sources</id>
+            <!-- <phase>package</phase> package is the default -->
+            <goals>
+              <goal>jar-no-fork</goal> 
+            </goals>
+          </execution>
+          <!-- Don't release test support code
+          <execution>
+            <id>attach-sources-test</id>
+            <goals>
+              <goal>test-jar-no-fork</goal>
+            </goals>
+          </execution>
+          -->
+        </executions>
+      
+      </plugin>
+
+      <!-- Don't release test code
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <version>true</version>
+          <show>public</show>
+          <quiet>true</quiet>
+          <encoding>UTF-8</encoding>
+          <windowtitle>${project.name} ${project.version}</windowtitle>
+          <doctitle>${project.name} ${project.version}</doctitle>
+          <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
+          <bottom>Licenced under the Apache License, Version 2.0</bottom>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+      </plugin>
+      
+      <plugin>
+        <!-- This must be the last plug-in attached to the package phase 
+             because it replies on the packaging of the jar to happen first.
+        -->
+        <groupId>org.apache.maven.plugins</groupId>
+
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>create-assembly</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+            <configuration>
+              <!-- If you place this in target/ directly - it will be 
+                   uploaded to the repo AND its name is changed
+                   to the group-artifact name (this can overwrite, silently,
+                   other files.
+              -->
+              <!--
+              <finalName>dist/${assembly.root.name}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              -->
+              <descriptors>
+                <descriptor>assembly.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <reporting>
+    <!-- <outputDirectory>${project.build.directory}/site</outputDirectory> -->
+  </reporting>
+
+</project>

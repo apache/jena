@@ -1,0 +1,23 @@
+#!/bin/sh
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+# Clean a location (directory)
+
+DIR="$1"
+
+if [ "$#" -gt 1 -o -z "$DIR" -o "$DIR" = "-h" -o "$DIR" = "-h" ]
+then
+    echo "Usage: $(basename $0) DIRECTORY" 1>&2
+    exit 0
+    fi
+
+if [ ! -d "$DIR" ]
+then
+    echo "Not a directory: $DIR" 1>&2
+    exit 1
+    fi
+
+# Don't remove subdirectories or prefix files.
+rm -f "$DIR"/*.idn
+rm -f "$DIR"/*.idx
+rm -f "$DIR"/*.dat

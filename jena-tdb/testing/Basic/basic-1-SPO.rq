@@ -1,0 +1,4 @@
+PREFIX :  <http://example/>
+
+SELECT ?v
+{ :x1 :p1 :z1 }

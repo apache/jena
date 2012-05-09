@@ -1,0 +1,18 @@
+ChangeLog for TDB
+=================
+
+==== TDB 0.9.1
+
++ Added tdbloader3 (i.e. a pure Java version of tdbloader2) (JENA-117)
++ Bug fix: Graph.size() reports '0' for TDB "urn:x-arq:UnionGraph" (JENA-222) 	
++ Bug fix: Illegal UTF-8 could corrupt the node table. Use binary-safe encoder/decoder (JENA-225)
++ Bug fix: (JENA-230)
+
+==== TDB 0.9.0
+
+TDB 0.9.0 introduces ACID transactions for TDB.  This is based on write-ahead logging.
+
++ Transactions and transactional datasets.
+  http://incubator.apache.org/jena/documentation/tdb/tdb_transactions.html
++ Maven group id is now "org.apache.jena" and artifact name is "jena-tdb". 
++ Java 6 is required to run TDB.

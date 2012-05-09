@@ -1,0 +1,7 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT *
+{ 
+    # Out of range - not an immediate literal
+    ?s ?p "-3000-04-29T09:13:15Z"^^xsd:dateTime
+}
