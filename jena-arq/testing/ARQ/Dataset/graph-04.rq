@@ -1,0 +1,11 @@
+SELECT  *
+FROM        <dft.ttl>
+FROM NAMED  <dft.ttl> 
+FROM NAMED  <a.ttl>
+FROM NAMED  <b.ttl>
+WHERE
+    { GRAPH ?src1
+        { ?x ?y ?z } . 
+      GRAPH ?src2
+        { ?z ?r ?s } .
+    }

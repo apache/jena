@@ -1,0 +1,7 @@
+PREFIX books:   <http://example.org/book/>
+PREFIX dc:      <http://purl.org/dc/elements/1.1/>
+
+DESCRIBE *
+ { ?book dc:title ?title .
+    FILTER regex(?title, "Fire")
+ }

@@ -1,0 +1,25 @@
+{
+  "head": {
+    "vars": [ "x" , "hpage" , "name" , "mbox" , "age" , "blurb" , "friend" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "x": { "type": "bnode" , "value": "b0" } ,
+        "hpage": { "type": "uri" , "value": "http://work.example.org/alice/" } ,
+        "name": { "type": "literal" , "value": "Alice" } ,
+        "mbox": { "type": "literal" , "value": "" } ,
+        "blurb": { "datatype": "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" , "type": "typed-literal" , "value": "<p xmlns=\"http://www.w3.org/1999/xhtml\">My name is <b>alice<\/b><\/p>" } ,
+        "friend": { "type": "bnode" , "value": "b1" }
+      } ,
+      {
+        "x": { "type": "bnode" , "value": "b1" } ,
+        "hpage": { "type": "uri" , "value": "http://work.example.org/bob/" } ,
+        "name": { "type": "literal" , "xml:lang": "en" , "value": "Bob" } ,
+        "mbox": { "type": "uri" , "value": "mailto:bob@work.example.org" } ,
+        "age": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "30" } ,
+        "friend": { "type": "bnode" , "value": "b0" }
+      }
+    ]
+  }
+}

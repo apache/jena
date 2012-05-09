@@ -1,0 +1,45 @@
+#!/bin/perl
+# Extract tokens (will need more editting)
+
+$/ = undef ;
+$_ = <> ;
+s!//.*!!g ;
+
+# Not greedy to find end brace
+@t = m/TOKEN\s*(?:\[IGNORE_CASE\])?\s*:\s*\n\{(.*?)\n\}/sg ;
+
+#{\s*([^{}]*)}/sg ;
+
+# Fixups:
+
+for $t (@t)
+{
+    $t =~ s/\r//g ;
+
+    #print "\nTEXT:\nT:",$t,":\n" ;
+
+
+    @s = split(/\n\|/,$t) ;
+    for $s (@s)
+    {
+	($name, $rule) = split(/:/,$s,2) ;
+
+	## Leading < and excess whitespace
+	$name =~ s/^\s*\<\s*// ;
+	$name =~ s/\s+$// ;
+	
+	## Trailing > and excess whitespace
+	$rule =~ s/^\s+// ;
+	$rule =~ s/\s*\>\s*$// ;
+
+	$rule =~ s/\|\s*\n\s*/\|/sg ;
+	$rule =~ s/\n\s*\|/\|/sg ;
+
+## 	print "NAME: /",$name , "/\n" ;
+## 	print "-->   ", $rule , "\n" ;
+
+	$spc = ' ' x (10-length($name)) ;
+
+	print "<",$name,">", $spc, " ::= ",$rule,"\n" ;
+    }
+}

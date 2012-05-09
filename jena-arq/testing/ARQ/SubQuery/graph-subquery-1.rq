@@ -1,0 +1,9 @@
+PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
+
+# Take local name to make a more portable test
+SELECT ?x (afn:localname(?g) AS ?gn)
+{
+  GRAPH ?g
+  # Scope: different ?g
+  { SELECT ?x { ?x ?p ?g1 } }
+}

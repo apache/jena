@@ -1,0 +1,109 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Solution Sequence" ;
+    mf:entries
+    ( 
+       [  mf:name    "No modifiers [numbers]" ;
+          mf:action
+             [ qt:query  <q-seq-01.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-01.ttl>
+       ]
+       [  mf:name    "Modifier DISTINCT" ;
+          mf:action
+             [ qt:query  <q-seq-02.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-02.ttl>
+       ]
+       [  mf:name    "Modifier ORDER BY [numbers]" ;
+          mf:action
+             [ qt:query  <q-seq-03.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-03.ttl>
+       ]
+       [  mf:name    "Modifier DISTINCT and ORDER BY [numbers]" ;
+          mf:action
+             [ qt:query  <q-seq-04.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-04.ttl>
+       ]
+
+       [  mf:name    "No modifiers [strings]" ;
+          mf:action
+             [ qt:query  <q-seq-05.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-05.ttl>
+       ]
+       [  mf:name    "Modifier ORDER BY [strings]" ;
+          mf:action
+             [ qt:query  <q-seq-06.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-06.ttl>
+       ]
+
+       [  mf:name    "Modifier OFFSET" ;
+          mf:action
+             [ qt:query  <q-seq-07.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-07.ttl>
+       ]
+
+       [  mf:name    "Modifier LIMIT" ;
+          mf:action
+             [ qt:query  <q-seq-08.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-08.ttl>
+       ]
+
+       [  mf:name    "Modifier DISTINCT-LIMIT" ;
+          mf:action
+             [ qt:query  <q-seq-09.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-09.ttl>
+       ]
+
+       [  mf:name    "Modifier LIMIT-OFFSET" ;
+          mf:action
+             [ qt:query  <q-seq-10.rq> ;
+               qt:data   <data-1.ttl> ] ;
+         mf:result  <results-seq-10.ttl>
+       ]
+
+        ## These next two use 1.0 > 1e0 > 1 
+        ## which may not be stable.
+
+       [  mf:name    "Modifier ORDER BY [duplicates after projection]" ;
+          mf:action
+             [ qt:query  <q-seq-11.rq> ;
+               qt:data   <data-2.ttl> ] ;
+         mf:result  <results-seq-11.ttl>
+       ]
+
+       [  mf:name    "Modifier ORDER BY [duplicates due to blank nodes]" ;
+          mf:action
+             [ qt:query  <q-seq-12.rq> ;
+               qt:data   <data-2.ttl> ] ;
+         mf:result  <results-seq-12.ttl>
+       ]
+
+
+    ).

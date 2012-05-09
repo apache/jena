@@ -1,0 +1,6 @@
+PREFIX  ns: <http://rdf.hp.com/ns#>
+SELECT  ?z
+WHERE
+    { ?x ?y ?z . 
+      FILTER ( ( str(?z) = "value" ) && ( datatype(?z) = ns:someType ) ) .
+    }

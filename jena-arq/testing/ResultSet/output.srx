@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.w3.org/2001/sw/DataAccess/rf1/result2.xsd">
+
+  <head>
+    <variable name="x"/>
+    <variable name="hpage"/>
+    <variable name="name"/>
+    <variable name="mbox"/>
+    <variable name="age"/>
+    <variable name="blurb"/>
+    <variable name="friend"/>
+
+    <link href="example.rq" />
+  </head>
+
+  <results>
+    <result>
+      <binding name="x"><bnode>r1</bnode></binding>
+      <binding name="hpage"><uri>http://work.example.org/alice/</uri></binding>
+      <binding name="name"><literal>Alice</literal></binding>
+      <binding name="mbox"><literal></literal></binding>
+      <binding name="friend"><bnode>r2</bnode></binding>
+      <binding name="blurb"><literal datatype="http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral">&lt;p xmlns="http://www.w3.org/1999/xhtml"&gt;My name is &lt;b&gt;alice&lt;/b&gt;&lt;/p&gt;</literal></binding>
+    </result>
+
+    <result> 
+      <binding name="x"><bnode>r2</bnode></binding>
+      <binding name="hpage"><uri>http://work.example.org/bob/</uri></binding>
+      <binding name="name"><literal xml:lang="en">Bob</literal></binding>
+      <binding name="mbox"><uri>mailto:bob@work.example.org</uri></binding>
+      <binding name="age"><literal datatype="http://www.w3.org/2001/XMLSchema#integer">30</literal></binding>
+      <binding name="friend"><bnode>r1</bnode></binding>
+    </result>
+
+  </results>
+
+</sparql>

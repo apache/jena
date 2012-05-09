@@ -1,0 +1,8 @@
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :       <http://example/>
+
+SELECT (count(distinct ?a) AS ?c)
+{
+    :xx :noMatch ?z .
+}
+GROUP BY ?a

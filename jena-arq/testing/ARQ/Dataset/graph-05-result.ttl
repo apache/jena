@@ -1,0 +1,54 @@
+# Same as graph-04-result.ttl
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+
+[]  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>
+                rs:ResultSet ;
+    rs:resultVariable "src1", "x", "y", "src2", "r", "s", "z";
+
+    rs:solution [ rs:binding  [ rs:value    <a.ttl> ;
+                                rs:variable "src1"
+                              ] ;
+
+                  rs:binding  [ rs:value    <http://example.org/ns#a> ;
+                                rs:variable "x"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#b> ;
+                                rs:variable "y"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#c> ;
+                                rs:variable "z"
+                              ] ;
+                  rs:binding  [ rs:value    <b.ttl> ;
+                                rs:variable "src2"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#p> ;
+                                rs:variable "r"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#z> ;
+                                rs:variable "s"
+                              ] ;
+                ] ;
+
+    rs:solution [ rs:binding  [ rs:value    <dft.ttl> ;
+                                rs:variable "src1"
+                              ] ;
+
+                  rs:binding  [ rs:value    <http://example.org/ns#aRoot> ;
+                                rs:variable "x"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#q> ;
+                                rs:variable "y"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#a> ;
+                                rs:variable "z"
+                              ] ;
+                  rs:binding  [ rs:value    <a.ttl> ;
+                                rs:variable "src2"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#b> ;
+                                rs:variable "r"
+                              ] ;
+                  rs:binding  [ rs:value    <http://example.org/ns#c> ;
+                                rs:variable "s"
+                              ] ;
+                ] .

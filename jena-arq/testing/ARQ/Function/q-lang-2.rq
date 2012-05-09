@@ -1,0 +1,6 @@
+PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ?v
+{ ?x ?p ?v .
+  FILTER ( ! jfn:langeq(?v, "en" ) )
+}

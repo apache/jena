@@ -1,0 +1,7 @@
+{
+  "http://example.org/about" : 
+  {
+      "http://example.org/predicate" : 1234 
+  }
+}
+

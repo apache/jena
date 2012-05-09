@@ -1,0 +1,13 @@
+PREFIX : <http://example/>
+
+SELECT *
+{
+    ?x :p ?v .
+    FILTER sameTerm(?x, :x3 ) 
+    OPTIONAL {   
+      {
+      ?x :p ?v .
+      FILTER sameTerm(?v, :z )
+      }
+  }
+}

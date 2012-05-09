@@ -1,0 +1,8 @@
+PREFIX :           <http://example.org/>
+PREFIX apf:        <http://jena.hpl.hp.com/ARQ/property#>
+PREFIX xsd:        <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?ns
+{
+  xsd:integer apf:splitIRI (?ns [])
+}

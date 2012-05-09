@@ -1,0 +1,435 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<> rdf:type    mf:Manifest ;
+   rdfs:label  "Basic Patterns" ;
+   mf:entries
+      (
+# Dump data to check it.
+
+[ mf:name "query-dump-0" ; 
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model0.nt> ] ]
+
+[ mf:name "query-dump-1" ; 
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model1.nt> ] ]
+
+[ mf:name "query-dump-2" ; 
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model2.nt> ] ]
+
+[ mf:name "query-dump-3" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model3.nt> ] ]
+
+[ mf:name "query-dump-4" ; 
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model4.nt> ] ]
+
+[ mf:name "query-dump-5" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model5.nt> ] ]
+
+[ mf:name "query-dump-6" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model6.nt> ] ]
+
+[ mf:name "query-dump-7" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model7.nt> ] ]
+
+[ mf:name "query-dump-8" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model8.n3> ] ]
+
+[ mf:name "query-dump-9" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <model9.n3> ] ]
+
+[ mf:name "query-dump-A" ;
+  mf:action [ qt:query <query-dump.rq> ; qt:data <modelA.nt> ] ]
+
+
+# Syntax
+
+[ mf:name "test-S-01.rq" ;
+  mf:action [ qt:query <test-S-01.rq> ; qt:data <modelA.nt> ] ;
+  mf:result <result-S-01.n3> ]
+
+[ mf:name "test-S-02.rq" ;
+  mf:action [ qt:query <test-S-02.rq> ; qt:data <modelA.nt> ] ;
+  mf:result <result-S-02.n3> ]
+
+[ mf:name "test-S-03.rq" ;
+  mf:action [ qt:query <test-S-03.rq> ; qt:data <modelA.nt> ] ;
+  mf:result <result-S-03.n3> ]
+
+[ mf:name "test-S-04.rq" ;
+  mf:action [ qt:query <test-S-04.rq> ; qt:data <modelA.nt> ] ;
+  mf:result <result-S-04.n3> ]
+
+[ mf:name "test-S-05.rq" ;
+  mf:action [ qt:query <test-S-05.rq> ; qt:data <modelA.nt> ] ;
+  mf:result <result-S-05.n3> ]
+
+
+# 
+
+[ mf:name "test-0-01.rq" ;
+  mf:action [ qt:query <test-0-01.rq> ; qt:data <model0.nt> ] ;
+  mf:result <result-0-01.n3> ]
+
+[ mf:name "test-0-02.rq" ;
+  mf:action [ qt:query <test-0-02.rq> ; qt:data <model0.nt> ] ;
+  mf:result <result-0-02.n3> ]
+
+[ mf:name "test-0-03.rq" ;
+  mf:action [ qt:query <test-0-03.rq> ; qt:data <model0.nt> ] ;
+  mf:result <result-0-03.n3> ]
+
+[ mf:name "test-0-04.rq" ;
+  mf:action [ qt:query <test-0-04.rq> ; qt:data <model0.nt> ] ;
+  mf:result <result-0-04.n3> ]
+
+
+[ mf:name "test-1-01.rq" ;
+  mf:action [ qt:query <test-1-01.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-01.n3> ]
+
+[ mf:name "test-1-02.rq" ;
+  mf:action [ qt:query <test-1-02.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-02.n3> ]
+
+[ mf:name "test-1-03.rq" ;
+  mf:action [ qt:query <test-1-03.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-03.n3> ]
+
+[ mf:name "test-1-04.rq" ;
+  mf:action [ qt:query <test-1-04.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-04.n3> ]
+
+[ mf:name "test-1-05.rq" ;
+  mf:action [ qt:query <test-1-05.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-05.n3> ]
+
+[ mf:name "test-1-06.rq" ;
+  mf:action [ qt:query <test-1-06.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-06.n3> ]
+
+[ mf:name "test-1-07.rq" ;
+  mf:action [ qt:query <test-1-07.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-07.n3> ]
+
+[ mf:name "test-1-08.rq" ;
+  mf:action [ qt:query <test-1-08.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-08.n3> ]
+
+
+## Removed : violates qname rules in SPARQL
+## [ mf:name "test-1-09.rq" ;
+##   mf:action [ qt:query <test-1-09.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-1-09.n3> ]
+
+[ mf:name "test-1-10.rq" ;
+  mf:action [ qt:query <test-1-10.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-1-10.n3> ]
+
+
+[ mf:name "test-2-01.rq" ;
+  mf:action [ qt:query <test-2-01.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-01.n3> ]
+
+[ mf:name "test-2-02.rq" ;
+  mf:action [ qt:query <test-2-02.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-02.n3> ]
+
+[ mf:name "test-2-03.rq" ;
+  mf:action [ qt:query <test-2-03.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-03.n3> ]
+
+[ mf:name "test-2-04.rq" ;
+  mf:action [ qt:query <test-2-04.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-04.n3> ]
+
+[ mf:name "test-2-05.rq" ;
+  mf:action [ qt:query <test-2-05.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-05.n3> ]
+
+[ mf:name "test-2-06.rq" ;
+  mf:action [ qt:query <test-2-06.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-06.n3> ]
+
+[ mf:name "test-2-07.rq" ;
+  mf:action [ qt:query <test-2-07.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-07.n3> ]
+
+[ mf:name "test-2-08.rq" ;
+  mf:action [ qt:query <test-2-08.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-08.n3> ]
+
+[ mf:name "test-2-09.rq" ;
+  mf:action [ qt:query <test-2-09.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-09.n3> ]
+
+[ mf:name "test-2-10.rq" ;
+  mf:action [ qt:query <test-2-10.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-2-10.n3> ]
+
+
+## Testing URIs with eq : insert a str()
+[ mf:name "test-3-01.rq" ;
+  mf:action [ qt:query <test-3-01.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-01.n3> ]
+
+[ mf:name "test-3-02.rq" ;
+  mf:action [ qt:query <test-3-02.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-02.n3> ]
+
+[ mf:name "test-3-03.rq" ;
+  mf:action [ qt:query <test-3-03.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-03.n3> ]
+
+[ mf:name "test-3-04.rq" ;
+  mf:action [ qt:query <test-3-04.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-04.n3> ]
+
+[ mf:name "test-3-05.rq" ;
+  mf:action [ qt:query <test-3-05.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-05.n3> ]
+
+[ mf:name "test-3-06.rq" ;
+  mf:action [ qt:query <test-3-06.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-3-06.n3> ]
+
+##
+
+[ mf:name "test-3-07.rq" ;
+  mf:action [ qt:query <test-3-07.rq> ; qt:data <model5.nt> ] ;
+  mf:result <result-3-07.n3> ]
+
+[ mf:name "test-4-01.rq" ;
+  mf:action [ qt:query <test-4-01.rq> ; qt:data <model2.nt> ] ;
+  mf:result <result-4-01.n3> ]
+
+[ mf:name "test-4-02.rq" ;
+  mf:action [ qt:query <test-4-02.rq> ; qt:data <model2.nt> ] ;
+  mf:result <result-4-02.n3> ]
+
+[ mf:name "test-4-03.rq" ;
+  mf:action [ qt:query <test-4-03.rq> ; qt:data <model2.nt> ] ;
+  mf:result <result-4-03.n3> ]
+
+[ mf:name "test-4-04.rq" ;
+  mf:action [ qt:query <test-4-04.rq> ; qt:data <model2.nt> ] ;
+  mf:result <result-4-04.n3> ]
+
+[ mf:name "test-4-05.rq" ;
+  mf:action [ qt:query <test-4-05.rq> ; qt:data <model3.nt> ] ;
+  mf:result <result-4-05.n3> ]
+
+
+# Tests bNodes
+## [ mf:name "test-4-06.rq" ;
+##   mf:action [ qt:query <test-4-06.rq> ; qt:data <model3.nt> ] ;
+##   mf:result <result-4-06.n3> ]
+
+## String compare of a var with a URI value
+[ mf:name "test-4-07.rq" ;
+  mf:action [ qt:query <test-4-07.rq> ; qt:data <model3.nt> ] ;
+  mf:result <result-4-07.n3> ]
+
+## --
+
+[ mf:name "test-5-01.rq" ;
+  mf:action [ qt:query <test-5-01.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-5-01.n3> ]
+
+[ mf:name "test-5-02.rq" ;
+  mf:action [ qt:query <test-5-02.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-5-02.n3> ]
+
+[ mf:name "test-5-03.rq" ;
+  mf:action [ qt:query <test-5-03.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-5-03.n3> ]
+
+[ mf:name "test-5-04.rq" ;
+  mf:action [ qt:query <test-5-04.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-5-04.n3> ]
+
+## --
+
+[ mf:name "test-6-01.rq" ;
+  mf:action [ qt:query <test-6-01.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-6-01.n3> ]
+
+[ mf:name "test-6-02.rq" ;
+  mf:action [ qt:query <test-6-02.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-6-02.n3> ]
+
+[ mf:name "test-6-03.rq" ;
+  mf:action [ qt:query <test-6-03.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-6-03.n3> ]
+
+[ mf:name "test-6-04.rq" ;
+  mf:action [ qt:query <test-6-04.rq> ; qt:data <model4.nt> ] ;
+  mf:result <result-6-04.n3> ]
+
+## --
+
+[ mf:name "test-7-01.rq" ;
+  mf:action [ qt:query <test-7-01.rq> ; qt:data <model6.nt> ] ;
+  mf:result <result-7-01.n3> ]
+
+[ mf:name "test-7-02.rq" ;
+  mf:action [ qt:query <test-7-02.rq> ; qt:data <model6.nt> ] ;
+  mf:result <result-7-02.n3> ]
+
+[ mf:name "test-7-03.rq" ;
+  mf:action [ qt:query <test-7-03.rq> ; qt:data <model7.nt> ] ;
+  mf:result <result-7-03.n3> ]
+
+[ mf:name "test-7-04.rq" ;
+  mf:action [ qt:query <test-7-04.rq> ; qt:data <model7.nt> ] ;
+  mf:result <result-7-04.n3> ]
+
+
+## Testing URIs with =~ (needs str added)
+## [ mf:name "test-8-01.rq" ;
+##   mf:action [ qt:query <test-8-01.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-8-01.n3> ]
+## 
+## [ mf:name "test-8-02.rq" ;
+##   mf:action [ qt:query <test-8-02.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-8-02.n3> ]
+## 
+## [ mf:name "test-8-03.rq" ;
+##   mf:action [ qt:query <test-8-03.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-8-03.n3> ]
+## 
+## [ mf:name "test-8-04.rq" ;
+##   mf:action [ qt:query <test-8-04.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-8-04.n3> ]
+## 
+## [ mf:name "test-8-05.rq" ;
+##   mf:action [ qt:query <test-8-05.rq> ; qt:data <model1.nt> ] ;
+##   mf:result <result-8-05.n3> ]
+
+
+[ mf:name "test-9-01.rq" ;
+  mf:action [ qt:query <test-9-01.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-9-01.n3> ]
+
+[ mf:name "test-9-02.rq" ;
+  mf:action [ qt:query <test-9-02.rq> ; qt:data <model1.nt> ] ;
+  mf:result <result-9-02.n3> ]
+
+
+## Testing URIs with eq
+## [ mf:name "test-A-01.rq" ;
+##   mf:action [ qt:query <test-A-01.rq> ; qt:data <model5.nt> ] ;
+##   mf:result <result-A-01.n3> ]
+
+## [ mf:name "test-A-02.rq" ;
+##   mf:action [ qt:query <test-A-02.rq> ; qt:data <model5.nt> ] ;
+##   mf:result <result-A-02.n3> ]
+
+
+[ mf:name "test-B-01.rq" ;
+  mf:action [ qt:query <test-B-01.rq> ; qt:data <model8.n3> ] ;
+  mf:result <result-B-01.n3> ]
+
+[ mf:name "test-B-02.rq" ;
+  mf:action [ qt:query <test-B-02.rq> ; qt:data <model8.n3> ] ;
+  mf:result <result-B-02.n3> ]
+
+[ mf:name "test-B-03.rq" ;
+  mf:action [ qt:query <test-B-03.rq> ; qt:data <model8.n3> ] ;
+  mf:result <result-B-03.n3> ]
+
+[ mf:name "test-B-04.rq" ;
+  mf:action [ qt:query <test-B-04.rq> ; qt:data <model8.n3> ] ;
+  mf:result <result-B-04.n3> ]
+
+[ mf:name "test-B-05.rq" ;
+  mf:action [ qt:query <test-B-05.rq> ; qt:data <model8.n3> ] ;
+  mf:result <result-B-05.n3> ]
+
+
+## Unknown type ; datatype test
+##[ mf:name "test-B-06.rq" ;
+##   mf:action [ qt:query <test-B-06.rq> ; qt:data <model8.n3> ] ;
+##   mf:result <result-B-06.n3> ]
+
+
+## Pointless
+## [ mf:name "test-B-07.rq" ;
+##   mf:action [ qt:query <test-B-07.rq> ; qt:data <model9.n3> ] ;
+##   mf:result <result-B-07.n3> ]
+
+
+[ mf:name "test-B-08.rq" ;
+  mf:action [ qt:query <test-B-08.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-08.n3> ]
+
+[ mf:name "test-B-09.rq" ;
+  mf:action [ qt:query <test-B-09.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-09.n3> ]
+
+[ mf:name "test-B-10.rq" ;
+  mf:action [ qt:query <test-B-10.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-10.n3> ]
+
+[ mf:name "test-B-11.rq" ;
+  mf:action [ qt:query <test-B-11.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-11.n3> ]
+
+[ mf:name "test-B-12.rq" ;
+  mf:action [ qt:query <test-B-12.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-12.n3> ]
+
+[ mf:name "test-B-13.rq" ;
+  mf:action [ qt:query <test-B-13.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-13.n3> ]
+
+
+## Duplicate of test 13 - deleted
+## [ mf:name "test-B-14.rq" ; mf:action <test-B-14.rq> ; mf:result <result-B-14.n3> ]
+
+[ mf:name "test-B-15.rq" ;
+  mf:action [ qt:query <test-B-15.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-15.n3> ]
+
+[ mf:name "test-B-16.rq" ;
+  mf:action [ qt:query <test-B-16.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-16.n3> ]
+
+
+[ mf:name "test-B-17.rq" ;
+  mf:action [ qt:query <test-B-17.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-17.n3> ]
+
+
+## Keywork "true"
+
+[ mf:name "test-B-18.rq" ;
+  mf:action [ qt:query <test-B-18.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-18.n3> ]
+
+[ mf:name "test-B-19.rq" ;
+  mf:action [ qt:query <test-B-19.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-19.n3> ]
+
+[ mf:name "test-B-20.rq" ;
+  mf:action [ qt:query <test-B-20.rq> ; qt:data <model9.n3> ] ;
+  mf:result <result-B-20.n3> ]
+
+    ) .

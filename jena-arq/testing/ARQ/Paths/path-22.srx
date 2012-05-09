@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="t"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example/y</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/B</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/y</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/C</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/A</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/Z</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/B</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/C</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/A</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/Z</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/B</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="t">
+        <uri>http://example/C</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,3 @@
+SELECT  *
+WHERE
+    { <http://rdf.hp.com/r-1> ?y ?z }

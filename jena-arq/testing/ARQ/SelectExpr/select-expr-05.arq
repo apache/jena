@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT ?v str(?v)
+{
+  ?x a :X .
+  OPTIONAL { ?x :p ?v }
+}
+

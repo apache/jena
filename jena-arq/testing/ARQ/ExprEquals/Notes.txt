@@ -1,0 +1,28 @@
+This test set contains some tests that assume value-equality in the graph.
+Under SPARQL, test-passing is graph-equivalent, no D-entailment, so these
+tests fail.
+
+Commneted out:    
+
+      ## DAWG tests are graph-equivalence, not value equivalent.
+      [  mf:name    "Equality 1-1 -- graph" ;
+         mf:action
+            [ qt:query  <query-eq-graph-1.rq> ;
+              qt:data   <data-eq.ttl> ] ;
+         mf:result  <result-eq-graph-1.ttl>
+      ]
+      ## DAWG tests are graph-equivalence, not value equivalent.
+      [  mf:name    "Equality 1-2 -- graph" ;
+         mf:action
+            [ qt:query  <query-eq-graph-2.rq> ;
+              qt:data   <data-eq.ttl> ] ;
+         mf:result  <result-eq-graph-2.ttl>
+      ]
+
+      ## DAWG tests are graph-equivalence, not value equivalent.
+      [  mf:name    "Equality - 2 var - test equals -- graph" ;
+         mf:action
+            [ qt:query  <query-eq2-graph-1.rq> ;
+              qt:data   <data-eq.ttl> ] ;
+         mf:result  <result-eq2-graph-1.ttl>
+      ]

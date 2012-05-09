@@ -1,0 +1,72 @@
+# $Id: dataPool.n3,v 1.1 2006/01/19 17:21:29 andy_seaborne Exp $
+# See DOCUMENT INFO below.
+
+# NAMESPACES
+@prefix r: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#>.
+
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+
+@prefix vcard: <http://www.w3.org/vcard-rdf/3.0#> .
+@prefix ical: <http://www.w3.org/2000/10/swap/pim/ical#> .
+@prefix wgs: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix loc: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/extendedType-0.n3> .
+@prefix time: <http://jibbering.com/2002/9/time#> .
+@prefix air: <http://www.daml.org/2001/10/html/airport-ont#> .
+
+# DOCUMENT INFO
+<> rdfs:comment "Some inspiration from http://www.w3.org/2003/01/geo/" ;
+   owl:versionInfo "$Id: dataPool.n3,v 1.1 2006/01/19 17:21:29 andy_seaborne Exp $".
+
+# DOCUMENT
+<http://jibbering.com/rdf/airports?AUS>
+	dc:source <http://www.markokarppinen.com/airports.html> .
+<http://www.daml.org/cgi-bin/airport?AUS> r:type air:Airport ;
+	time:timezone [
+   ical:tzid "America/Chicago"
+] ;
+	air:location "Austin, TX" ;
+	air:name "Austin Bergstrom International" ;
+	loc:location [ r:type loc:geodetic ;
+		wgs:lat "30.3" ;
+		wgs:long "-97.7"
+	] ;
+	loc:location [ r:type loc:EarthCenteredEarthFixed ;
+		loc:ECEF_X "-7420507.1" ;
+		loc:ECEF_Y "-5462738.5"
+	] ;
+	vcard:country "US" .
+
+<http://jibbering.com/rdf/airports?TYO>
+	dc:source <http://www.markokarppinen.com/airports.html> .
+<http://www.daml.org/cgi-bin/airport?TYO>
+	r:type air:Airport ;
+	air:location "Tokyo" ;
+	air:name "Tokyo" ;
+	loc:location [ r:type loc:geodetic ;
+		wgs:lat "35.766666666667" ;
+		wgs:long "140.31666666667" ];
+	vcard:country "JP" .
+
+<http://jibbering.com/rdf/airports?ORY> dc:source <http://www.markokarppinen.com/airports.html> .
+<http://www.daml.org/cgi-bin/airport?ORY> r:type air:Airport ;
+	time:timezone [
+   ical:tzid "Europe/Paris"
+] ;
+	air:location "Paris" ;
+	air:name "Orly" ;
+	wgs:lat "48.716666666667" ;
+	wgs:long "2.3833333333333" ;
+	vcard:country "FR" .
+
+<http://jibbering.com/rdf/airports?CDG> dc:source <http://www.markokarppinen.com/airports.html> .
+<http://www.daml.org/cgi-bin/airport?CDG> r:type air:Airport ;
+	time:timezone [
+   ical:tzid "Europe/Paris"
+] ;
+	air:location "Paris" ;
+	air:name "Charles-De-Gaulle" ;
+	wgs:lat "49.016666666667" ;
+	wgs:long "2.55" ;
+	vcard:country "FR" .

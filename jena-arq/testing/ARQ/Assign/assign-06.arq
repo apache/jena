@@ -1,0 +1,9 @@
+PREFIX : <http://example/> 
+
+SELECT *
+{
+  ?x :p ?v .
+  LET ( ?more := 100+?v )
+  LET ( ?more2 := 100+?more )
+  FILTER(?more2 > 203)
+}

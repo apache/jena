@@ -1,0 +1,30 @@
+@prefix : <http://example/> .
+@prefix n: <http://example/x#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+
+:x1 a :A .
+:x2 a :A .
+:y a :B .
+
+:A rdfs:subClassOf :B .
+:B rdfs:subClassOf :C .
+
+:A rdfs:subClassOf :Z .
+#:A rdfs:subClassOf :A .
+
+:x n:p :a1 .
+:x n:p :a2 .
+
+:x n:a :b1 .
+:b1 n:b :c1 .
+:c1 n:c :d1 .
+:c1 n:c :d2 .
+
+:x n:a :b2 .
+
+:z1 n:p :z2 .
+:z2 n:p :z3 .
+:z3 n:p :z4 .
+
+:z4 n:p :z1 .

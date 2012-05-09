@@ -1,0 +1,5 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+CP="$($ARQROOT/bin/arq_path)"
+java $SOCKS -cp "$CP" arq.rset "$@"

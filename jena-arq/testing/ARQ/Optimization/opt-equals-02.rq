@@ -1,0 +1,6 @@
+PREFIX : <http://example/>
+
+SELECT *
+{
+  ?x :p ?v . FILTER (?v = 12.0e0 )
+}

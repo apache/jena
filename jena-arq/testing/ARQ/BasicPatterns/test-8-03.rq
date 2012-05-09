@@ -1,0 +1,5 @@
+SELECT  ?x ?y ?z
+WHERE
+    { ?x ?y ?z . 
+      FILTER !regex(?x, "r-1$") && !regex(?y, "p\-1$" ).
+    }

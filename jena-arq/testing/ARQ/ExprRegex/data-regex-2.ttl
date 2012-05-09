@@ -1,0 +1,7 @@
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix :  <http://example.org/ns#> .
+
+:x1 :p1 "abc" .
+:x2 :p2 "abc"^^xsd:string .
+:x3 :p3 "def" .
+:x4 :p4 "def"^^xsd:string .

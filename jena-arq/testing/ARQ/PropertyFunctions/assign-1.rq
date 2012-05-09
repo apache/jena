@@ -1,0 +1,5 @@
+PREFIX :        <http://example.org/> 
+PREFIX apf:     <http://jena.hpl.hp.com/ARQ/property#>
+
+SELECT *
+{ ?s apf:assign "v" . }

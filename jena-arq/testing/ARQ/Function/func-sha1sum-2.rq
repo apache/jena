@@ -1,0 +1,13 @@
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  foaf:   <http://xmlns.com/foaf/0.1/>
+PREFIX  jfn:    <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ?name
+{ ?x a foaf:Person ;
+     foaf:mbox ?mbox2 .
+  ?y a foaf:Person ;
+     foaf:mbox ?mbox1 .
+  FILTER ( jfn:sha1sum(?mbox1) = jfn:sha1sum(?mbox2) )
+  FILTER ( ?x != ?y )
+  ?x foaf:name ?name .
+}

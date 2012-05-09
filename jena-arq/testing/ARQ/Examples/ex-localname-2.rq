@@ -1,0 +1,10 @@
+PREFIX     :    <http://example/> 
+PREFIX jext:    <java:arq.examples.propertyfunction.>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?p ?localname
+{
+   ?x ?p ?v .
+   ?p jext:localname ?localname .
+   ?p jext:localname ?localname .   # This is a check now (all bound)
+}

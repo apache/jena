@@ -1,0 +1,6 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+CMD="$(basename $0)"
+export ARQROOT=${ARQROOT:-~/Projects/ARQ}
+exec "$ARQROOT/bin/$CMD" "$@"

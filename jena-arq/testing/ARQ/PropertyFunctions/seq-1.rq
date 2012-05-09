@@ -1,0 +1,19 @@
+# Sequence in order
+
+PREFIX  rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :       <http://example/>
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  jfn:    <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ?p ?member  WHERE
+  {
+     :x5 :seq ?seq .
+     ?seq ?p ?member .
+     FILTER ( regex (str(?p), "#_\\d+$") )
+  }
+ORDER BY xsd:integer(
+           jfn:substring(
+             str(?p),
+             jfn:strlen(str(rdf:)) + 1
+         ))

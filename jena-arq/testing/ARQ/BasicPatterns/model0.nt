@@ -1,0 +1,2 @@
+# Model 0 : one statement
+<urn:xyz:abc>  <http://localhost/p1>   "/*Not a comment*/" .

@@ -1,0 +1,62 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label   "Expr : Boolean Effective Value" ;
+    rdfs:comment "Expr : Boolean Effective Value" ;
+    mf:entries
+    ( 
+      [  mf:name    "Test 'boolean effective value' - true" ;
+         mf:action
+            [ qt:query  <query-bev-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-1.ttl>
+      ]
+      [  mf:name    "Test 'boolean effective value' - false" ;
+         mf:action
+            [ qt:query  <query-bev-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-2.ttl>
+      ]
+      [  mf:name    "Test 'boolean effective value' - &&" ;
+         mf:action
+            [ qt:query  <query-bev-3.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-3.ttl>
+      ]
+      [  mf:name    "Test 'boolean effective value' - ||" ;
+         mf:action
+            [ qt:query  <query-bev-4.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <result-bev-4.ttl>
+      ]
+      [  mf:name    "Test 'boolean effective value' - optional" ;
+         mf:action
+            [ qt:query  <query-bev-5.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <result-bev-5.ttl>
+      ]
+      [  mf:name    "Test 'boolean effective value' - unknown type" ;
+         mf:action
+            [ qt:query  <query-bev-6.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <result-bev-6.ttl>
+      ]
+    ).

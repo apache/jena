@@ -1,0 +1,2 @@
+SELECT * 
+{ FILTER (?x = 1 ) }

@@ -1,0 +1,246 @@
+#if 0
+// (Run through cpp -P -C first)
+#endif
+
+#define PACKAGE     org.openjena.atlas.json.io.parserjavacc.javacc
+#define CLASS       JSON_Parser
+#define PARSERBASE  JSON_ParserBase
+
+options
+{
+   JAVA_UNICODE_ESCAPE   = true ;
+   UNICODE_INPUT         = false ;
+
+  STATIC                = false ;
+//  DEBUG_PARSER          = true ;
+//  DEBUG_TOKEN_MANAGER   = true ;
+}
+
+
+PARSER_BEGIN(CLASS)
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package PACKAGE ;
+
+public class CLASS extends PARSERBASE
+{
+}
+PARSER_END(CLASS)
+
+
+SKIP : { <" " | "\t" | "\n" | "\r" | "\f"> }
+TOKEN: { <WS: " " | "\t" | "\n" | "\r" | "\f"> }
+
+// Do \ u inside JavaCC??
+
+//TOKEN [IGNORE_CASE] :
+TOKEN :
+{
+  <ECHAR: "\\" ( "t"|"b"|"n"|"r"|"f"|"\\"|"\""|"'") >
+| < #QUOTE_3D: "\"\"\"">
+| < #QUOTE_3S: "'''">
+| < STRING_LITERAL1: 
+      // Single quoted string
+      "'" ( (~["'","\\","\n","\r"]) | <ECHAR> )* "'" > 
+| < STRING_LITERAL2:
+    // Double quoted string
+      "\"" ( (~["\"","\\","\n","\r"]) | <ECHAR> )* "\"" >
+| < STRING_LITERAL_LONG1:
+     <QUOTE_3S> 
+      ( ("'" | "''")? (~["'","\\"] | <ECHAR> ))*
+     <QUOTE_3S> >
+
+| < STRING_LITERAL_LONG2: 
+     <QUOTE_3D> 
+      ( ("\"" | "\"\"")? (~["\"","\\"] | <ECHAR> ))*
+     <QUOTE_3D> >
+
+
+
+
+| < #DIGITS: (["0"-"9"])+>
+| < INTEGER: <DIGITS> >
+| < DECIMAL: ( <DIGITS> "." (<DIGITS>)* | "." <DIGITS> ) >
+| < DOUBLE:   // Required exponent.
+      (
+        (["0"-"9"])+ "." (["0"-"9"])* <EXPONENT>
+        | "." (["0"-"9"])+ (<EXPONENT>)
+        | (["0"-"9"])+ <EXPONENT>
+      )
+      >
+
+| < POSITIVE_INTEGER: <PLUS> <INTEGER> >
+| < POSITIVE_DECIMAL: <PLUS> <DECIMAL> >
+| < POSITIVE_DOUBLE:  <PLUS> <DOUBLE> >
+
+| < NEGATIVE_INTEGER: <MINUS> <INTEGER> >
+| < NEGATIVE_DECIMAL: <MINUS> <DECIMAL> >
+| < NEGATIVE_DOUBLE:  <MINUS> <DOUBLE> >
+
+| < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+
+
+|  <TRUE: "true">
+|  <FALSE: "false">
+|  <NULL: "null">
+
+| < LBRACE:    "{" >
+| < RBRACE:    "}" >
+
+| < LBRACKET:  "[" >
+| < RBRACKET:  "]" >
+
+| < LPAREN:    "(" >
+| < RPAREN:    ")" >
+
+| <COMMA: 	"," >
+| <COLON: 	":" >
+
+| <PLUS:	"+" >
+| <MINUS:	"-" >
+}
+
+// ---- Parser entry points
+
+void unit() : { Token t ; }
+{
+    { startParse(-1, -1) ; }
+    Object()
+    t = <EOF>
+    { finishParse(t.beginLine, t.beginColumn) ; }
+}
+ 
+
+void any() : { Token t ; }
+{
+    { startParse(-1, -1) ; }
+    (Value())?
+    t = <EOF>
+    { finishParse(t.beginLine, t.beginColumn) ; }
+}
+
+
+// ---- Structures
+
+void Value() : {}
+{
+  SimpleValue()
+| Object()
+| Array()
+}
+
+void Object() : { Token t ; }
+{
+  t = <LBRACE> 
+  { startObject(t.beginLine, t.beginColumn) ; }
+  (Members(t))?
+  t = <RBRACE>
+  { finishObject(t.beginLine, t.beginColumn); }
+}
+
+void Members(Token t) : { }
+{
+  Pair(t) 
+  (t = <COMMA> Pair(t))* 
+}
+
+void Pair(Token t) : { }
+{
+  { startPair(t.beginLine, t.beginColumn) ; }
+  String()
+  t = <COLON>
+  { keyPair(t.beginLine, t.beginColumn) ; }
+  Value()
+  { finishPair(t.beginLine, t.beginColumn) ; }
+}
+
+void Array() : { Token t ; }
+{
+   t = <LBRACKET> 
+   { startArray(t.beginLine, t.beginColumn) ; }
+   (Elements(t))?
+   t = <RBRACKET>
+   { finishArray(t.beginLine, t.beginColumn) ; }
+}
+
+void Elements(Token t) : { }
+{
+    ArrayValue(t.beginLine, t.beginColumn)
+    (t = <COMMA> ArrayValue(t.beginLine, t.beginColumn))*
+}
+
+void ArrayValue(long line, long col) : { }
+{
+    Value() { element(line, col) ; }
+}
+
+// ---- 
+
+void SimpleValue() : {}
+{
+  String()
+| Number()
+| True()
+| False()
+| Null()
+}
+
+void Number() : { Token t ; }
+{
+  t = <INTEGER> 		    { valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <DECIMAL>			    { valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <DOUBLE>			    { valueDouble(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_INTEGER>	{ valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_DECIMAL>	{ valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <POSITIVE_DOUBLE>		{ valueDouble(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_INTEGER>	{ valueInteger(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_DECIMAL>	{ valueDecimal(t.image, t.beginLine, t.beginColumn) ; }
+| t = <NEGATIVE_DOUBLE>		{ valueDouble(t.image, t.beginLine, t.beginColumn) ; }
+}
+
+// Token to Java Object : These  rules exist to inject the 
+// necessary Java objects and code for the tokens.
+void String() : { Token t ; }
+{
+  t = <STRING_LITERAL2> { valueString(t.image, t.beginLine, t.beginColumn); } 
+	//  <STRING>
+}
+
+void True() : { Token t ; }
+{
+  t = <TRUE> { valueBoolean(true, t.beginLine, t.beginColumn) ; }
+}
+
+void False() : { Token t ; }
+{
+  t = <FALSE> { valueBoolean(false, t.beginLine, t.beginColumn) ; }
+}
+
+void Null() : { Token t ; }
+{
+  t = <NULL> { valueNull(t.beginLine, t.beginColumn) ; }
+}
+
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

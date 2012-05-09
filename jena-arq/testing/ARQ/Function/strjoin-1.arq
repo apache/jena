@@ -1,0 +1,4 @@
+PREFIX fn:      <http://www.w3.org/2005/xpath-functions#>
+PREFIX  afn:     <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ?X { let ( ?X := afn:strjoin("--", <http://example/> , 'a' , 1 ) ) }

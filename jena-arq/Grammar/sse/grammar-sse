@@ -1,0 +1,95 @@
+#!/bin/bash
+# Parser builder
+
+GRAMMAR="${GRAMMAR:-"sse.jj"}"
+ROOT="../.."
+# --------------------------------------------------------
+
+function grammar
+{
+    FILE="$1"
+    PKG="$2"
+    CLASS="$3"
+
+    echo $1 $2 $3
+
+    DIR="$ROOT/src/com/hp/hpl/jena/sparql/$PKG"
+    (cd "$DIR" ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java )
+
+    echo "---- Process grammar -- $1"
+    javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "${FILE}"
+    RC=$?
+
+    [ "$RC" = 0 ] || return $RC
+
+##     echo "---- Create HTML"
+##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
+    echo "---- Create text form"
+    jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+
+    # Fix unnecessary imports
+    echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
+    F="$DIR/${CLASS}TokenManager.java"
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
+        -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
+	< $F > F
+    mv F $F
+
+##     # Java5+ fixups
+##     echo "---- Fixing Java warnings in JavaCharStream ..."
+##     # Deprecated:
+##     #   public int getColumn()
+##     #   public int getLine()
+##     F="$DIR/JavaCharStream.java"
+##     if [ -e "$F" ]
+## 	then
+## 	sed -e 's/@Deprecated //' \
+## 	    -e 's/public int getColumn/@Deprecated public int getColumn/' \
+## 	    -e 's/public int getLine/@Deprecated public int getLine/' < $F > F
+## 	mv F $F
+##     fi
+## 
+    echo "---- Fixing Java warnings in ParseException ..."
+    #Override:
+    #   public String getMessage()
+    F="$DIR/ParseException.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in Token ..."
+    F="$DIR/Token.java"
+    sed -e 's/@Override //' \
+	-e 's/public String toString/@Override public String toString/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in TokenMgrError ..."
+    # Override:
+    #   public String getMessage()
+    F="$DIR/TokenMgrError.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+    echo "---- Done"
+}
+
+if [ $# == 0 ]
+then
+    set -- unisyn
+    ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
+    ## exit 1
+    fi
+
+for G in "$@"
+  do
+  case "$G" in
+  unisyn)
+    dos2unix < "$GRAMMAR" | cpp -P -C | unix2dos > parser.jj
+    grammar parser.jj sse/lang/parser SSE_ParserCore
+    [ "$RC" = 0 ] && rm parser.jj
+    ;;
+  *)    echo "**** Unknown grammar: $G" 1>&2
+    ;;
+    esac
+done

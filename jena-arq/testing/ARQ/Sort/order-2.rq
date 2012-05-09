@@ -1,0 +1,6 @@
+# Basic sort test
+
+SELECT ?o
+WHERE { ?s ?p ?o }
+ORDER BY ?o
+

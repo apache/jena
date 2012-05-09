@@ -1,0 +1,67 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix :       <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+
+## Additional (non-DAWG) properties, classes and constants.
+
+:   rdfs:comment     "Manifest vocabulary for test cases (additions)" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "Hewlett-Packard Laboratories" ;
+    dc:title         "Test case manifest vocabulary (extra)" ;
+    dc:description   "Test case manifest vocabulary (extra)" ;
+    dc:date          "2005-04" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+
+## ---- Class declarations ----
+
+:TestQuery rdf:type rdfs:Class ;
+    rdfs:comment "The class of test that are Query tests (query, data, results)".
+
+:PositiveSyntaxTestARQ rdf:type rdfs:Class ;
+    rdfs:comment "Syntax tests (query)" .
+
+:NegativeSyntaxTestARQ rdf:type rdfs:Class ;
+    rdfs:subClassOf :TestSyntax ;
+    rdfs:comment "Syntax tests which expect a parse failure" .
+
+:TestSerialization rdf:type rdfs:Class ;
+    rdfs:comment "Query serialization tests" .
+
+:TestSurpressed    rdf:type rdfs:Class ;
+    rdfs:comment "Query test not to be run" .
+
+## ---- Property declarations ----
+
+:querySyntax rdf:type rdf:Property ;
+    rdfs:comment "Syntax of the query" ;
+    .
+
+:dataSyntax rdf:type rdf:Property ;
+    rdfs:comment "Syntax of the query" ;
+    .
+
+:textIndex rdf:type rdf:Property ;
+    rdfs:comment "Whether to create a text index" ;
+    .
+
+:include rdf:type rdf:Property ;
+    rdfs:comment "Include another manifest file." ;
+    .
+
+:defaultTestType rdf:type rdf:Property ;
+    rdfs:comment "Default type of a test" ;
+    rdfs:domain mf:Manifest ;
+    # Default default is a query test
+    .
+
+:option rdf:type rdf:Property ;
+    rdfs:comment "Option for an action" .
+
+
+## ---- Constants ----
+

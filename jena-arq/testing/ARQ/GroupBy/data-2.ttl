@@ -1,0 +1,49 @@
+@prefix :       <http://example/> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+# Complete data in :p and :q
+# :p: ,4,5,5
+# :q: "a" and "b"
+# :n: Use for multiplicity
+# All :r different
+# All have type :X
+
+:x1 
+    rdf:type :X ;
+    :p 4 ; 
+    :q "a" ; 
+    :n 1 ;
+    :n 2 ;
+    :r "x1" .
+
+:x2 
+    rdf:type :X ;
+##    :p 2 ; 
+    :q "a" ;
+    :n 1 ;
+    :r "x2" .
+
+:x3 
+    rdf:type :X ;
+##    :p 2 ;
+##    :q "b" ;
+    :n 2 ;
+    :r "x3" .
+
+:x4 
+    rdf:type :X ;
+    :p 5 ; 
+##    :q "b" ;
+    :n 1 ;
+    :n 2 ;
+    :r "x4" .
+
+:x5 
+    rdf:type :X ;
+    :p 5 ;
+    :q "b" ;
+    :n 1 ;
+    :r "x5" .
+
+
+

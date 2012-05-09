@@ -1,0 +1,35 @@
+{
+  "head": {
+    "vars": [ "p" ]
+  } ,
+  "results": {
+    "distinct": true ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#_9" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#_3" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#_2" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#_1" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/1999/02/22-rdf-syntax-ns#_5" }
+      }
+    ]
+  }
+}

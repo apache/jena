@@ -1,0 +1,10 @@
+@prefix :        <http://example/> .
+
+:x    :p            "000" ;
+      :p1           "a" ;
+      :p1           "b" ;
+      :p2           "y" ;
+      :p2           "x" .
+
+:z    :p1           "a" ;
+      :p1           "b" .

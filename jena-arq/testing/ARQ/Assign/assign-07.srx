@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="v"/>
+    <variable name="more"/>
+    <variable name="more2"/>
+  </head>
+  <results>
+  </results>
+</sparql>

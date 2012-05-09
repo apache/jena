@@ -1,0 +1,66 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Planning" ;
+    mf:entries
+    ( 
+      [  mf:name    "Base case - fixed then optional" ;
+         mf:action
+            [ qt:query  <q-opt-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-1.ttl>
+      ]
+
+    # With reordering enabled
+##       [  mf:name    "Optional then fixed" ;
+##          mf:action
+##             [ qt:query  <q-opt-2.rq> ;
+##               qt:data   <data-1.ttl> ] ;
+##         mf:result  <results-1.ttl>  ## NB same as before
+##       ]
+
+    # Without
+      [  mf:name    "Optional then fixed" ;
+         mf:action
+            [ qt:query  <q-opt-2.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-2.ttl>  ## Not the same as Q1
+      ]
+
+
+
+    # With reordering enabled
+##       [  mf:name    "Fixed, then two optionals" ;
+##          mf:action
+##             [ qt:query  <q-opt-3.rq> ;
+##               qt:data   <data-1.ttl> ] ;
+##         mf:result  <results-3.ttl>
+##       ]
+
+    # Without reordering
+      [  mf:name    "Fixed, then two optionals" ;
+         mf:action
+            [ qt:query  <q-opt-3.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <results-4.ttl>
+      ]
+
+    ).

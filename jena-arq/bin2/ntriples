@@ -1,0 +1,11 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$ARQROOT" = "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+ARQ_CMD=$(basename $0)
+exec "${ARQROOT}/bin/${ARQ_CMD}" "$@"

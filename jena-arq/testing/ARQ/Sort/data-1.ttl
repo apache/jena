@@ -1,0 +1,36 @@
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix :           <http://example/> .
+
+##    1.  (Lowest) no value assigned to the variable 
+##         or expression in this solution.
+##    2. Blank nodes
+##    3. IRIs
+##    4. RDF literals
+##    5. A plain literal before an RDF literal
+##       with type xsd:string of  the same lexical form.
+
+[]  :p <http://example/iri1> ;
+    :i 3 .
+
+[]  :p <http://example/iri2> ;
+    :i 4 .
+
+[]  :p 99 ;
+    :i 5 .
+
+[]  :p 9999 ;
+    :i 6 .
+
+[]  :p "abc" ;
+    :i 7 .
+
+[]  :p "abc"^^xsd:string ;
+    :i 8 .
+
+# Out of order because Jena will return in same
+# order for small numbers "[] :i ..."
+
+[]  :i 1 .
+
+[]  :p [] ;
+    :i 2 .

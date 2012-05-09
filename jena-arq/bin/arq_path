@@ -1,0 +1,18 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$ARQROOT" = "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+if [ -e "$ARQROOT/.classpath" ]
+then
+    # Development area
+    exec "$ARQROOT/bin/make_classpath_mvn" "$ARQROOT"
+    fi
+
+# CP=$(make_classpath "$ARQROOT")
+# echo $CP
+exec "$ARQROOT/bin/make_classpath" "$ARQROOT"

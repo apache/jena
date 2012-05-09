@@ -1,0 +1,11 @@
+@prefix :        <http://example/> .
+
+:x5   :more         105 .
+
+:x4   :more         104 .
+
+:x2   :more         102 .
+
+:x1   :more         101 .
+
+:x3   :more         103 .

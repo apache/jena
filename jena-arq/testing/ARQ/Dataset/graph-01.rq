@@ -1,0 +1,8 @@
+SELECT  *
+FROM       <dft.ttl>
+FROM NAMED <a.ttl> 
+FROM NAMED <b.ttl>
+WHERE
+    { ?x ?y ?z .
+      ?z ?r ?s .
+    }

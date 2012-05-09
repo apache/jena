@@ -1,0 +1,8 @@
+PREFIX : <http://example/>
+PREFIX list: <http://jena.hpl.hp.com/ARQ/list#>
+
+SELECT *
+{
+  ?list list:index (?index "B")
+  FILTER (?index = 1)
+}

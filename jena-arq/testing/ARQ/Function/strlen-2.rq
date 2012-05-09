@@ -1,0 +1,7 @@
+PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  : <http://example/> 
+
+SELECT ?p ?v
+{ :x ?p ?v . 
+  FILTER ( jfn:strlen(?v) = 0 )
+}

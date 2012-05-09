@@ -1,0 +1,24 @@
+{
+  "head": {
+    "vars": [ "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "3" }
+      } ,
+      {
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "4" }
+      } ,
+      {
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "5" }
+      } ,
+      {
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "6" }
+      } ,
+      {
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "7" }
+      }
+    ]
+  }
+}

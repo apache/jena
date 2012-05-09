@@ -1,0 +1,12 @@
+{
+  "head": {
+    "vars": [ "X" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "X": { "type": "literal" , "value": "http://example/--a--1" }
+      }
+    ]
+  }
+}

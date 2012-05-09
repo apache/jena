@@ -1,0 +1,9 @@
+@prefix r: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix t: <http://www.w3.org/2001/sw/DataAccess/tests/data/ValueTesting/dateTime.ttl#> .
+
+[] t:label "A"; t:time "2002-10-10T12:00:00-05:00"^^xsd:dateTime .
+[] t:label "B"; t:time "2002-10-10T17:00:00Z"^^xsd:dateTime .
+[] t:label "C"; t:time "2002-10-10T12:34:00Z"^^xsd:dateTime .
+[] t:label "D"; t:time "2002-10-10T12:34:00.0Z"^^xsd:dateTime .

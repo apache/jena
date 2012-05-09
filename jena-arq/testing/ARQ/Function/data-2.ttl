@@ -1,0 +1,13 @@
+@prefix :       <http://example.org/> .
+
+:x :p "foo" .
+:x :p 1 .
+:x :p [] .
+:x :q :z .
+:x :p "foo"@en .
+:x :p "foo"@fr .
+:x :p "foo"@en-gb .
+:x :p "foo"@xx-en .
+
+
+

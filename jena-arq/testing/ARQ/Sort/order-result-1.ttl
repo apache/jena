@@ -1,0 +1,53 @@
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "o" ;
+      rs:solution   [ rs:binding    [ rs:value      "1234" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "f" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "b23456789" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "123456" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "123456789012" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "1234567890" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "c234567" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "12" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "d2345" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "a2345678901" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "e23" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "12345678" ;
+                                      rs:variable   "o"
+                                    ]
+                    ] .
