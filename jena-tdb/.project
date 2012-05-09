@@ -1,6 +1,6 @@
 <projectDescription>
-  <name>TDB</name>
-  <comment>TDB is a storage subsystem for Jena and ARQ.</comment>
+  <name>jena-tdb</name>
+  <comment>TDB is a storage subsystem for Jena.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
