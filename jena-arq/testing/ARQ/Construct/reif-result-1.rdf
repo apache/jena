@@ -1,0 +1,22 @@
+<rdf:RDF
+    xmlns:data="http://example.org/data/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:ns="http://example.org/ns#">
+  <rdf:Description>
+    <rdf:subject rdf:resource="http://example.org/data/x"/>
+    <rdf:predicate rdf:resource="http://example.org/ns#p"/>
+    <rdf:object rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >2</rdf:object>
+  </rdf:Description>
+  <rdf:Description>
+    <rdf:subject rdf:resource="http://example.org/data/y"/>
+    <rdf:predicate rdf:resource="http://example.org/ns#q"/>
+    <rdf:object rdf:resource="http://example.org/data/x"/>
+  </rdf:Description>
+  <rdf:Description>
+    <rdf:subject rdf:resource="http://example.org/data/x"/>
+    <rdf:predicate rdf:resource="http://example.org/ns#p"/>
+    <rdf:object rdf:datatype="http://www.w3.org/2001/XMLSchema#integer"
+    >1</rdf:object>
+  </rdf:Description>
+</rdf:RDF>

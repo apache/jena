@@ -1,0 +1,12 @@
+{
+  "head": {
+    "vars": [ "x" , "p" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      
+    ]
+  }
+}

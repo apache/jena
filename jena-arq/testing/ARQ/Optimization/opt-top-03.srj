@@ -1,0 +1,105 @@
+{
+  "head": {
+    "vars": [ "x" , "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "x": { "type": "uri" , "value": "http://example/x1" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "1" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x2" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "2" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "3" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x3a" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "3" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x4" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "4" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "5" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x6" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "6" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x6a" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "6" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x7" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "7" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x8" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "8" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x9" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "9" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x10" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "10" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x11" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "11" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x12" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "12" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x13" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "13" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x14" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "14" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x14a" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "14" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x15" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "15" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x16" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "16" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x17" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "17" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x18" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "18" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x19" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "19" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x19a" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "19" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x20" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "20" }
+      }
+    ]
+  }
+}

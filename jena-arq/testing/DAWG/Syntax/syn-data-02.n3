@@ -1,0 +1,4 @@
+@prefix : <http://example.org/data/> .
+
+:x :p <http://example.org/data/v1.1> .
+:x :p <http://example.org/data/v2.1> .

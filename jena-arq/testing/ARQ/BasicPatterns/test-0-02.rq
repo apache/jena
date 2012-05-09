@@ -1,0 +1,3 @@
+SELECT  *
+WHERE
+    { <urn:xyz:abc> ?y ?z }

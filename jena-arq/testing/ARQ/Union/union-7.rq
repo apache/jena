@@ -1,0 +1,12 @@
+PREFIX : <http://example/>
+
+#Exclude ?g as it is location dependent.
+SELECT ?x ?y ?v ?w
+{
+    { ?x :p ?v }
+    UNION 
+    {
+       GRAPH ?g { ?y :q ?w}
+       FILTER (regex(str(?g), "data-1.ttl$"))
+    }
+}

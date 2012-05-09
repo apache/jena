@@ -1,0 +1,3 @@
+# CONSTRUCT and DOTs
+CONSTRUCT { ?s ?p ?o . . ?s ?p ?o }
+WHERE { }

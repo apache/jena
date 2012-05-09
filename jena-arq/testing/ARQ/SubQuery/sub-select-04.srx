@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<sparql xmlns="http://www.w3.org/2005/sparql-results#">
+  <head>
+    <variable name="x"/>
+    <variable name="p"/>
+    <variable name="q"/>
+  </head>
+  <results>
+    <result>
+      <binding name="x">
+        <uri>http://example/x7</uri>
+      </binding>
+      <binding name="p">
+        <literal>2</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x6</uri>
+      </binding>
+      <binding name="p">
+        <literal>a</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x5</uri>
+      </binding>
+      <binding name="p">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">5</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x4</uri>
+      </binding>
+      <binding name="p">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x3</uri>
+      </binding>
+      <binding name="p">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x2</uri>
+      </binding>
+      <binding name="p">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x1</uri>
+      </binding>
+      <binding name="p">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+      <binding name="q">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">100</literal>
+      </binding>
+    </result>
+  </results>
+</sparql>

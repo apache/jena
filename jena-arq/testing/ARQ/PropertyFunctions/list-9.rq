@@ -1,0 +1,10 @@
+# Check property function in NOT EXISTS
+
+PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :      <http://example.org/>
+
+SELECT ?x
+{ 
+    ?x :q ?list .
+    FILTER NOT EXISTS { ?list list:member "a" }
+}

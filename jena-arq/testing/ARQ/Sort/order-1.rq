@@ -1,0 +1,4 @@
+# Basic (no sort) test
+
+SELECT ?o
+WHERE { ?s ?p ?o }

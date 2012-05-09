@@ -1,0 +1,278 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "GROUP BY" ;
+    mf:entries
+    ( 
+        # Complete data
+      [  mf:name    "Group By - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-01.srx>
+      ]
+
+      [  mf:name    "Group By - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-02.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-02.srx>
+      ]
+
+      [  mf:name    "Group By - 3 (Group var does not occur)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-03.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-03.srx>
+      ]
+
+      [  mf:name    "Group By - 4 (Group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-04.srx>
+      ]
+
+      [  mf:name    "Group By - 5 (Named group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-05.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-05.srx>
+      ]
+
+      [  mf:name    "Group By - 6 (Named group expression)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-06.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <group-06.srx>
+      ]
+
+          ## Partial data
+      [  mf:name    "Group By - 10" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-10.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-10.srx>
+      ]
+
+      [  mf:name    "Group By - 11" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-11.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-11.srx>
+      ]
+
+      [  mf:name    "Group By - 12" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-12.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <group-12.srx>
+      ]
+
+    ## No data
+
+     [  mf:name    "Group By - 20 / Zero data" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <group-20.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <group-20.srx>
+      ]
+
+    ## Count.
+
+      [  mf:name    "Count - 1 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-01.srx>
+      ]
+
+      [  mf:name    "Count - 2 - No Group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-02.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-02.srx>
+      ]
+
+      [  mf:name    "Count - 3" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-03.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-03.srx>
+      ]
+
+      [  mf:name    "Count - 4" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-04.srx>
+      ]
+
+      [  mf:name    "Count - 5 - count(*) / count(distinct *)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-05.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-05.srx>
+      ]
+
+      [  mf:name    "Count - 6 - count(?var) / count(distinct ?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-06.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-06.srx>
+      ]
+
+      [  mf:name    "Count - 7 - count(*) / count(*)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-07.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <count-07.srx>
+      ]
+      
+
+    ##  Empty pattern
+      [  mf:name    "Count - 10 - count(*) / no matches" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-10.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <count-10.srx>
+      ]
+
+      [  mf:name    "Count - 11 - count(distinct *) / group / no matches" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-11.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <count-11.srx>
+      ]
+      [  mf:name    "Count - 12 - count(?z) / no matches" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-12.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <count-12.srx>
+      ]
+
+      [  mf:name    "Count - 13 - count(distinct ?z) / group / no matches" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-13.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <count-13.srx>
+      ]
+
+    ## Partial data
+
+      [  mf:name    "Count - 20 - No group" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-20.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-20.srx>
+      ]
+
+      [  mf:name    "Count - 21 - No group - count(distinct ?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-21.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-21.srx>
+      ]
+
+      [  mf:name    "Count - 22 - count(?var)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-22.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-22.srx>
+      ]
+
+      [  mf:name    "Count - 23 - count(?var) - empty" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <count-23.arq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <count-23.srx>
+      ]
+
+
+      [  mf:name    "Sum - 1 - sum(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <sum-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <sum-01.srj>
+      ]
+
+      [  mf:name    "Min - 1 - min(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <min-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <min-01.srj>
+      ]
+
+      [  mf:name    "Max - 1 - max(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <max-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <max-01.srj>
+      ]
+
+      [  mf:name    "Avg - 1 - avg(?v)" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <avg-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <avg-01.srj>
+      ]
+
+    ## HAVING
+
+      [  mf:name    "Having - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <having-1.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <having-1.srx>
+      ]
+
+    ).

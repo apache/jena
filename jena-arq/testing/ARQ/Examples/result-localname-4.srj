@@ -1,0 +1,20 @@
+{
+  "head": {
+    "vars": [ "p" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/2000/01/rdf-schema#label" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://example/label" }
+      } ,
+      {
+        "p": { "type": "uri" , "value": "http://www.w3.org/2000/01/rdf-schema#label" }
+      }
+    ]
+  }
+}

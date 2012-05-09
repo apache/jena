@@ -1,0 +1,41 @@
+#!/bin/perl
+# Grammar HTML to a form of HTML suitable for cut&paste as fragments.
+
+# Remove definition links.
+# In <code class="gRuleHead">
+# <a id="XXX" name="XXX"> ==> <a href="#XXX"> or id="fragXXX"
+#
+# ??
+# In <code class="gRuleBody">
+# <a href="#XXX"> => <a href="#fragXXX">
+
+$DOC = 1 ;
+
+if ( $DOC )
+{
+    print <<'EOF'
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+  <title>SPARQL Grammar Fragments</title>
+  <link rel="stylesheet" type="text/css" href="http://www.w3.org/StyleSheets/TR/base.css" />
+  <link rel="stylesheet" type="text/css" href="http://www.w3.org/2001/sw/DataAccess/rq23/local.css" />
+  </head>
+<body>
+EOF
+}
+
+while(<>)
+{
+    s/\<a id="([^=\"]*)" name="([^=\"]*)"\>/<a href="#$1">/ ;
+    print ;
+}
+
+if ( $DOC )
+{
+    print <<'EOF'
+</body>
+</html>
+EOF
+}

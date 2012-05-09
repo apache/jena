@@ -1,0 +1,102 @@
+@prefix :        <http://example/> .
+@prefix rs:      <http://www.w3.org/2001/sw/DataAccess/tests/result-set#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+[]    rdf:type      rs:ResultSet ;
+      rs:resultVariable  "v" ;
+      rs:resultVariable  "index" ;
+      rs:resultVariable  "x" ;
+      rs:solution   [ rs:binding    [ rs:value      5 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      99 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      5
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      "abc" ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      7 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      7
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :iri2 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      4 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:index      4
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      8 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      "abc"^^<http://www.w3.org/2001/XMLSchema#string> ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      8
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      :iri1 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      3 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:index      3
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      2 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      2
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:binding    [ rs:value      6 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      9999 ;
+                                      rs:variable   "v"
+                                    ] ;
+                      rs:index      6
+                    ] ;
+      rs:solution   [ rs:binding    [ rs:value      1 ;
+                                      rs:variable   "index"
+                                    ] ;
+                      rs:binding    [ rs:value      [ 
+                                                    ] ;
+                                      rs:variable   "x"
+                                    ] ;
+                      rs:index      1
+                    ] .

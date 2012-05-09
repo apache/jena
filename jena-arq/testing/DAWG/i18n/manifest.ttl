@@ -1,0 +1,76 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# $Id: manifest.ttl,v 1.1 2005/10/25 17:26:57 andy_seaborne Exp $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "BASE IRI Resolution" ;
+    mf:entries
+    (
+     
+
+
+     [  mf:name    "kanji-01" ;
+        mf:action
+            [ qt:data   <kanji.ttl> ;
+              qt:query  <kanji-01.rq> ] ;
+        mf:result  <kanji-01-results.ttl> ;
+      ]
+
+     [  mf:name    "kanji-02" ;
+        mf:action
+            [ qt:data   <kanji.ttl> ;
+              qt:query  <kanji-02.rq> ] ;
+        mf:result  <kanji-02-results.ttl> ;
+      ]
+
+
+     [  mf:name    "normalization-01" ;
+        mf:action
+            [ qt:data   <normalization-01.ttl> ;
+              qt:query  <normalization-01.rq> ] ;
+        mf:result  <normalization-01-results.ttl> ;
+      ]
+
+     [  mf:name    "normalization-02" ;
+        rdfs:comment
+            "Example 1 from http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096" ;
+        mf:action
+            [ qt:data   <normalization-02.ttl> ;
+              qt:query  <normalization-02.rq> ] ;
+        mf:result  <normalization-02-results.ttl> ;
+        dawgt:approval dawgt:Approved ;
+        dawgt:approvedBy <http://www.w3.org/2005/07/26-dawg-minutes>
+      ]
+
+     [  mf:name    "normalization-03" ;
+        rdfs:comment
+            "Example 2 from http://lists.w3.org/Archives/Public/public-rdf-dawg/2005JulSep/0096" ;
+        mf:action
+            [ qt:data   <normalization-03.ttl> ;
+              qt:query  <normalization-03.rq> ] ;
+        mf:result  <normalization-03-results.ttl> ;
+        dawgt:approval dawgt:Approved ;
+        dawgt:approvedBy <http://www.w3.org/2005/07/26-dawg-minutes>
+      ]
+
+    # End of tests
+   ).

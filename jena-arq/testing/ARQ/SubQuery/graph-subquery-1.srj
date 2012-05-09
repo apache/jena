@@ -1,0 +1,17 @@
+{
+  "head": {
+    "vars": [ "x" , "gn" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "x": { "type": "uri" , "value": "http://example/b" } ,
+        "gn": { "type": "literal" , "value": "data-sq.ttl" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/a" } ,
+        "gn": { "type": "literal" , "value": "data-sq.ttl" }
+      }
+    ]
+  }
+}

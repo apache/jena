@@ -1,0 +1,155 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Function" ;
+    mf:entries
+    ( 
+     [  mf:name    "Function - unknown" ;
+         mf:action
+            [ qt:query  <func-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+         mf:result  <func-01-results.ttl>
+      ]
+      [  mf:name    "Function - known, registered" ;
+         mf:action
+            [ qt:query  <func-02.rq> ;
+              qt:data   <data-1.ttl> ] ;
+         mf:result  <func-02-results.ttl>
+      ]
+
+      [  mf:name    "Function - loaded as <java:>" ;
+         mf:action
+            [ qt:query  <func-03.rq> ;
+              qt:data   <data-1.ttl> ] ;
+         mf:result  <func-03-results.ttl>
+      ]
+
+      [  mf:name    "Function - loaded via known library prefix" ;
+         mf:action
+            [ qt:query  <func-04.rq> ;
+              qt:data   <data-1.ttl> ] ;
+         mf:result  <func-04-results.ttl>
+      ]
+
+      [  mf:name    "Lang 1" ;
+         mf:action
+            [ qt:query  <q-lang-1.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <lang-1-results.srx>
+      ]
+      [  mf:name    "Lang 2" ;
+         mf:action
+            [ qt:query  <q-lang-2.rq> ;
+              qt:data   <data-2.ttl> ] ;
+        mf:result  <lang-2-results.srx>
+      ]
+
+      [  mf:name    "sha1sum 1" ;
+         mf:action
+            [ qt:query  <func-sha1sum-1.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sha1sum-1-results.srx>
+      ]
+
+      [  mf:name    "sha1sum 2" ;
+         mf:action
+            [ qt:query  <func-sha1sum-2.rq> ;
+              qt:data   <data-3.ttl> ] ;
+        mf:result  <sha1sum-2-results.srx>
+      ]
+
+      [  mf:name    "substring - 1" ;
+         mf:action
+            [ qt:query  <substring-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-1.srx>
+      ]
+
+      [  mf:name    "substring - 2" ;
+         mf:action
+            [ qt:query  <substring-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-2.srx>
+      ]
+
+      [  mf:name    "substring - 3" ;
+         mf:action
+            [ qt:query  <substring-3.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <substring-3.srx>
+      ]
+
+      [  mf:name    "strlen - 1" ;
+         mf:action
+            [ qt:query  <strlen-1.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-1.srj>
+      ]
+
+      [  mf:name    "strlen - 2" ;
+         mf:action
+            [ qt:query  <strlen-2.rq> ;
+              qt:data   <data-6.ttl> ] ;
+        mf:result  <strlen-2.srj>
+      ]
+
+      [ mf:name     "Localname - 1" ;
+        mf:action
+            [ qt:query  <localname-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <localname-1.srj>
+      ]
+
+      [ mf:name     "Namespace - 1" ;
+        mf:action
+            [ qt:query  <namespace-1.rq> ;
+              qt:data   <data-5.ttl> ] ;
+        mf:result  <namespace-1.srj>
+      ]
+
+      [ mf:name     "Concat - 1" ;
+        mf:action
+            [ qt:query  <concat-1.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <concat-1.srj>
+      ]
+
+      [ mf:name     "Concat - 2" ;
+        mf:action
+            [ qt:query  <concat-2.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <concat-2.srj>
+      ]
+
+      [ mf:name     "strjoin - 1" ;
+        mf:action
+            [ qt:query  <strjoin-1.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <strjoin-1.srj>
+      ]
+
+      [ mf:name     "strjoin - 2" ;
+        mf:action
+            [ qt:query  <strjoin-2.arq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <strjoin-2.srj>
+      ]
+    ).

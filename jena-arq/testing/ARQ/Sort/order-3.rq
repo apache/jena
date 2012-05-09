@@ -1,0 +1,5 @@
+PREFIX  jfn:     <http://jena.hpl.hp.com/ARQ/function#>
+
+SELECT ?o
+WHERE { ?s ?p ?o }
+ORDER BY jfn:strlen(?o)

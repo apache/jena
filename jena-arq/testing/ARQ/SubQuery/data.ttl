@@ -1,0 +1,27 @@
+@prefix : <http://example/> .
+
+:x1 a :X ;
+    :p 1 .
+
+:x2 a :X ;
+    :p 2 .
+
+:x3 a :X ;
+    :p 3 .
+
+:x4 a :X ;
+    :p 4 .
+
+:x5 a :X ;
+    :p 5 .
+
+
+:x6 a :X ;
+    :p "a" .
+
+:x7 a :X ;
+    :p "2" .
+
+:x8 a :X ;
+    :q 100 .
+

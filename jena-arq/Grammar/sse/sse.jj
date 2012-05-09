@@ -1,0 +1,245 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+options
+{
+  // Use \ u escapes in streams AND use a reader for the query
+  // => get both raw and escaped unicode
+   JAVA_UNICODE_ESCAPE   = true ;
+   UNICODE_INPUT         = false ;
+
+  STATIC                = false ;
+//   DEBUG_PARSER          = true ;
+//   DEBUG_TOKEN_MANAGER   = true ;
+}
+
+PARSER_BEGIN(SSE_ParserCore)
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.hp.hpl.jena.sparql.sse.lang.parser ;
+
+import com.hp.hpl.jena.sparql.sse.lang.ParserSSEBase ;
+    
+
+public class SSE_ParserCore extends ParserSSEBase
+{
+}
+
+PARSER_END(SSE_ParserCore)
+
+// Now has explicit WS control in the grammar.
+// Policy - eat trailing WS
+
+// ---- Entry points : check for EOF.
+
+void parse() : { }
+{
+    { parseStart() ; }
+    (<WS>)*
+    TermOrList()
+    <EOF>
+    { parseFinish() ; }
+}
+
+void term() : { }
+{
+    { parseStart() ; }
+    Term()
+    <EOF>
+    { parseFinish() ; }
+}
+
+// ----
+
+void TermOrList() : { }
+{
+  ( Term() (<WS>)* |  List() )
+}
+
+void List() : { Token t ; }
+{
+    // The OP token must exclude these
+  ( t = <LPAREN> 
+    (<WS>)*
+    { listStart(t.beginLine, t.beginColumn) ; }
+    BareList() 
+    t = <RPAREN>
+    (<WS>)*
+    { listFinish(t.beginLine, t.beginColumn) ; }
+
+  | t = <LBRACKET> 
+    (<WS>)*
+    { listStart(t.beginLine, t.beginColumn) ; }
+    BareList() 
+    t = <RBRACKET>
+    (<WS>)*
+    { listFinish(t.beginLine, t.beginColumn) ; }  )
+}
+
+void BareList() : { }
+{
+  ( 
+     TermOrList()
+     // White space swallowed
+  )*
+}
+
+void Term() : { Token t ; }
+{
+    Symbol()
+  |
+    IRIref()
+  |
+    PrefixedName()
+  | 
+    Var()
+  |
+    Literal()
+  |
+    BlankNode()
+}
+
+
+void Symbol() : { Token t ; }
+{
+    t = <SYMBOL>
+    { emitSymbol(t.beginLine, t.beginColumn, t.image) ; }
+}
+
+void IRIref() : { Token t ; String s ; }
+{
+  t = <IRIref>
+    { 
+      s = t.image ;
+      s = stripQuotes(s) ;
+      s = unescapeStr(s, t.beginLine, t.beginColumn) ;
+      emitIRI(t.beginLine, t.beginColumn, s) ; } 
+}
+
+void PrefixedName() : { Token t ; }
+{
+  t = <PNAME>
+    { emitPName(t.beginLine, t.beginColumn, t.image) ; }
+}
+
+void Var() : { Token t ; }
+{
+    // VAR_NAMED:   "?"  and any legal SPARQL variable.
+    // VAR_NAMED2:  "?." and non-legal SPARQL variable (usually allocated)
+    // VAR_ANON:    "??" : Anon variables.
+
+
+    // Includes "?" as a variable which allocated one from ?0, ?1, ?2 
+    //    Legal SPARQL syntax.
+    // Includes "??" as a variable for anon non-distinguished variables.
+    // Includes non-distinguished variables as ??0
+    // Includes internal allocated variables as ?.0
+
+//  ( t = <VAR_NAMED> | t = <VAR_NAMED2> | t = <VAR_ANON> )
+  ( t = <VAR_NAMED> | t = <VAR_OTHER> )
+  { emitVar(t.beginLine, t.beginColumn, stripChars(t.image, 1)) ; }
+}
+
+void Literal() : { }
+{
+ ( RDFLiteral()
+ | NumericLiteral()
+// | BooleanLiteral() // Do as a symbol.
+ )
+}
+
+void BlankNode() : { Token t ; }
+{
+  t = <BLANK_NODE_LABEL>
+    { emitBNode(t.beginLine, t.beginColumn, stripChars(t.image, 2)) ; }  
+//|
+//  t = <LBRACKET> <RBRACKET> { return emitBNode(t.beginLine, t.beginColumn) ; }
+//  t = <ANON> { return emitBNode(t.beginLine, t.beginColumn) ; }
+}
+
+void RDFLiteral() : { Token t = null ; int currLine ; int currColumn ;
+                      String lex ; String lang = null ;
+                      String dt_iri = null ; String dt_pn = null ; }
+{
+  ( t = <STRING_LITERAL1> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL2> { lex = stripQuotes(t.image) ; }
+  | t = <STRING_LITERAL_LONG1> { lex = stripQuotes3(t.image) ; }
+  | t = <STRING_LITERAL_LONG2> { lex = stripQuotes3(t.image) ; }
+  )
+  { currLine = t.beginLine ; currColumn = t.beginColumn ;
+    lex = unescapeStr(lex, currLine, currColumn) ;
+  }
+
+  // Optional lang tag and datatype.
+  (
+     t = <LANGTAG> { lang = stripChars(t.image, 1) ; }
+  |
+    <DATATYPE> 
+    ( t = <IRIref> { dt_iri  = stripQuotes(t.image) ; }
+    | t = <PNAME>  { dt_pn = t.image ; }
+    )
+  )?
+  { emitLiteral(currLine, currColumn, lex, lang, dt_iri, dt_pn) ; }
+} 
+
+void NumericLiteral() : { Token t ; }
+{
+  t = <INTEGER>
+   { emitLiteralInteger(t.beginLine, t.beginColumn, t.image) ; }
+| t = <DECIMAL>
+   { emitLiteralDecimal(t.beginLine, t.beginColumn, t.image) ; }
+| t = <DOUBLE>
+   { emitLiteralDouble(t.beginLine, t.beginColumn, t.image) ; }
+}
+
+// Symbol!
+// Node BooleanLiteral() : {}
+// {
+//   <TRUE> { return XSD_TRUE ; }
+//  |
+//   <FALSE> { return XSD_FALSE ; }
+// }
+
+// No whitespace skipping.
+#undef SKIP
+#include "tokens.inc"
+#include "copyright.inc"
+
+/*
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# comment-default-style: "//"
+# End:
+*/

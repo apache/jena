@@ -1,0 +1,8 @@
+PREFIX ns: <http://example.org/ns#>
+PREFIX :   <http://example.org/>
+
+# No match => empty graph
+CONSTRUCT
+    { ?x ns:knows ?y  }
+WHERE
+    { ?x ns:sameTown ?y }

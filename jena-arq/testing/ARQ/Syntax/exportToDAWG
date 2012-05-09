@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DAWG=~/W3C/DataAccess/tests/data/SyntaxDev
+DIR=$(echo Syntax-SPARQL*)
+echo $DIR
+
+for d in $DIR
+do
+  (
+      cd $d
+      cp *.* $DAWG/$d
+  )
+  done

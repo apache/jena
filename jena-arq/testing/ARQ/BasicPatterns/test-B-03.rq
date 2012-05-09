@@ -1,0 +1,4 @@
+PREFIX  ex: <http://example.com/ns#>
+SELECT  ?x ?y
+WHERE
+    { ?x ?y "value"^^ex:someType }

@@ -1,0 +1,29 @@
+@prefix : <http://example/> .
+
+
+:A :p1 :B .
+:B :p2 :C .
+:C :p3 :D .
+:D :p4 :E .
+
+## <http://test.com/cg#incident001><http://test.com/cg#vessel><http://test.com/cg#vessel001> 
+## .
+## <http://test.com/cg#vessel001><http://test.com/cg#roster><http://test.com/cg#roster001> 
+## .
+## <http://test.com/cg#roster001><http://test.com/cg#member><http://test.com/cg#person001> 
+## .
+## 
+## 1) Query using forward paths (gets one result):
+## 
+## prefix t: <http://test.com/cg#>
+## select ?x where {?x t:vessel/t:roster/t:member t:person001}
+## 
+## 2) Query using 'full' reverse paths using '/^' (gets one result)
+## 
+## prefix t: <http://test.com/cg#>
+## select ?x where {t:person001^t:member/^t:roster/^t:vessel ?x}
+## 
+## 3) Query using shorthand reverse paths, '^' (gets zero results)
+## 
+## prefix t: <http://test.com/cg#>
+## select ?x where {t:person001^t:member^t:roster^t:vessel ?x}

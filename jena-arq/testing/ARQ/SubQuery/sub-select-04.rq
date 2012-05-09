@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT *
+{
+  ?x :p ?p .
+  # A silly thing to do ... shows the ?x is different
+  { SELECT ?q { ?x :q ?q } }
+}

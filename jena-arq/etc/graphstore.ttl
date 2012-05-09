@@ -1,0 +1,26 @@
+# Graph store -- for SPARQL/Update
+
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Graphstore - one default graph, two named graphs, all empty.
+
+<> rdf:type         ja:GraphStore ;
+    ja:defaultGraph
+        [ rdf:type ja:MemoryModel ] ;
+    ja:namedGraph [ ja:graphName <http://example/graph1> ;
+                    ja:graph    :data1 ] ;
+    ja:namedGraph [ ja:graphName <http://example/graph2> ;
+                    ja:graph    :data2 ] ;
+    . 
+
+# Empty
+:data1 rdf:type ja:MemoryModel ;
+    .
+
+# Empty
+:data2 rdf:type ja:MemoryModel ;
+    .

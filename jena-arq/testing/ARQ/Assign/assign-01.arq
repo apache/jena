@@ -1,0 +1,8 @@
+PREFIX : <http://example/> 
+
+SELECT ?v ?v1
+{
+  ?x a :X .
+  ?x :p ?v
+  LET ( ?v1 := ?v+9 )
+}

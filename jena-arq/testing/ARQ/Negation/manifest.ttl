@@ -1,0 +1,83 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Negation" ;
+    mf:entries
+    ( 
+      [  mf:name    "Negation-01" ;
+         # TestSyntax, TestSerialization, TestBadSyntax, TestQuery
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-01.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-01.srj>
+      ]
+      [  mf:name    "Negation-02" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-02.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-02.srj>
+      ]
+      [  mf:name    "Negation-03" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-03.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-03.srj>
+      ]
+      [  mf:name    "Negation-04" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-04.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-04.srj>
+      ]
+      [  mf:name    "Negation-05" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-05.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-05.srj>
+      ]
+      [  mf:name    "Negation-06" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-06.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-06.srj>
+      ]
+      [  mf:name    "Negation-07" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-07.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-07.srj>
+      ]
+      [  mf:name    "Negation-08" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <neg-08.arq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <neg-08.srj>
+      ]
+    ).

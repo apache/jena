@@ -1,0 +1,21 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+# Command template for an arq.* command.
+
+if [ "$ARQROOT" = "" ]
+    then 
+    echo "ARQROOT is not set" 1>&2
+    exit 1
+fi
+
+INIT="$ARQROOT/bin/arq_init"
+
+if [ ! -r "$INIT" ] 
+    then 
+    echo "Script $INIT (\$ARQROOT/bin/arq_init) does not exist or is not readable"
+    exit 1
+fi
+
+. "$INIT"
+exec java $JVM_ARGS $SOCKS -cp "$ARQ_CP" "arq.$ARQ_CMD" "$@"
+

@@ -1,0 +1,5 @@
+PREFIX : <http://example/>
+
+SELECT * { ?x :p ?p .}
+GROUP BY ?p ?q (?p*?q)
+HAVING (?p*?q > 1)

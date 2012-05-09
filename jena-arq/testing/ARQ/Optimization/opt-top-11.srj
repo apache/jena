@@ -1,0 +1,29 @@
+{
+  "head": {
+    "vars": [ "x" , "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "x": { "type": "uri" , "value": "http://example/x3" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "3" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x3a" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "3" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x4" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "4" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x5" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "5" }
+      } ,
+      {
+        "x": { "type": "uri" , "value": "http://example/x6" } ,
+        "v": { "datatype": "http://www.w3.org/2001/XMLSchema#integer" , "type": "typed-literal" , "value": "6" }
+      }
+    ]
+  }
+}

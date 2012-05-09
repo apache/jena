@@ -1,0 +1,6 @@
+SELECT  *
+WHERE
+    { ?x ?y ?z . 
+      GRAPH ?src2
+        { ?z ?r ?s } .
+    }

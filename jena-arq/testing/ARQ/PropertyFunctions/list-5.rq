@@ -1,0 +1,8 @@
+PREFIX  list:  <http://jena.hpl.hp.com/ARQ/list#>
+PREFIX  :      <http://example.org/>
+
+SELECT ?x
+{ ?x :q ?list1 .
+  ?list1 list:member ?list2 .
+  ?list2 list:member 3 .
+}

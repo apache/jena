@@ -1,0 +1,32 @@
+# Setting up a dataset which is a single graph which is an OntModel.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Datatset
+
+<> rdf:type         ja:RDFDataset ;
+    ja:graph :ontModel
+    . 
+
+:ontModel rdf:type ja:OntModel ;
+    ja:baseModel 
+        [ rdf:type ja:MemoryModel ;
+          ja:content [ja:externalContent <D.ttl>] ] ;
+    ja:reasoner
+    ## Choices include:
+    ## <http://jena.hpl.hp.com/2003/GenericRuleReasoner>
+    ## <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner>
+    ## <http://jena.hpl.hp.com/2003/OWLMicroFBRuleReasoner>
+    ## <http://jena.hpl.hp.com/2003/OWLMiniFBRuleReasoner>
+    ## <http://jena.hpl.hp.com/2003/DIGReasoner>
+        [ ja:reasonerURL <http://jena.hpl.hp.com/2003/OWLFBRuleReasoner> ; ] ;
+        
+## See http://jena.sourceforge.net/assembler/assembler-howto.htm
+##     ja:ontModelSpec
+##         [ rdf:type ja:OntModelSpec ;
+##           ja:reasonerFactory ... ; 
+##           ja:documentManager ... ;
+##         ] ;
+    .

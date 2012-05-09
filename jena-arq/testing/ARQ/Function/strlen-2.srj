@@ -1,0 +1,15 @@
+{
+  "head": {
+    "vars": [ "p" , "v" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "p": { "type": "uri" , "value": "http://example/p5" } ,
+        "v": { "type": "literal" , "value": "" }
+      }
+    ]
+  }
+}

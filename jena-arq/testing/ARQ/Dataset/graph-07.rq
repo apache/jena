@@ -1,0 +1,10 @@
+# SPARQL query to test the URIs in a dataset
+PREFIX : <.>
+
+
+SELECT ?g 
+FROM       <dft.ttl>
+FROM NAMED <a.ttl>
+FROM NAMED <b.ttl>
+WHERE
+  { GRAPH ?g { } }

@@ -1,0 +1,9 @@
+PREFIX :           <http://example.org/>
+PREFIX apf:        <http://jena.hpl.hp.com/ARQ/property#>
+
+SELECT ?ns ?ln
+{
+  # Reverse the order from splituri-1
+  :x apf:splitIRI (?ns ?ln) .
+  FILTER (?ns = : && ?ln = "x" )
+}

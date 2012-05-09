@@ -1,0 +1,7 @@
+PREFIX :    <http://example.org/>
+PREFIX apf: <http://jena.hpl.hp.com/ARQ/property#>
+
+SELECT ?ns ?ln
+{ :x ?p 1 .
+  ?p apf:splitIRI (?ns ?ln)
+}

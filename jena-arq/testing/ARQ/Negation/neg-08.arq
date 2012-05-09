@@ -1,0 +1,9 @@
+PREFIX :    <http://example/> 
+PREFIX ns:  <http://example/ns#> 
+
+SELECT *
+{
+    ?x :p 1
+    NOT EXISTS{?x :p ?z . FILTER(?z = 2) }
+    ?x :p ?v .
+}

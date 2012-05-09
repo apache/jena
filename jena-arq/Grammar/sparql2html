@@ -1,0 +1,4 @@
+echo "Grammar to X.html, fragments file to Y.html"
+jj2html 'sparql.txt' 'tokens.txt' > X.html
+grammarExtracts < X.html > Y.html
+echo "Check X and Y for IRI_REF because \" became '"

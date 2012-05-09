@@ -1,0 +1,102 @@
+#!/bin/bash
+# Parser builder
+
+GRAMMAR="${GRAMMAR:-"json.jj"}"
+ROOT="../.."
+PKG=org/openjena/atlas/json/io/parserjavacc/javacc
+
+# --------------------------------------------------------
+
+function grammar
+{
+    local FILE="$1"
+    local PKG="$2"
+    local CLASS="$3"
+    echo "JavaCC: $1 $2 $3"
+
+    DIR="$ROOT/src/main/java/$PKG"
+    ( cd $DIR ; rm -f TokenMgrError.java ParseException.java Token.java JavaCharStream.java SimpleCharStream.java )
+
+    echo "---- Process grammar -- $1"
+    javacc -OUTPUT_DIRECTORY=$DIR -JDK_VERSION=1.5 "${FILE}"
+    RC=$?
+
+    [ "$RC" = 0 ] || return $RC
+
+##     echo "---- Create HTML"
+##     jjdoc -OUTPUT_FILE=${FILE%%.jj}.html "${FILE}"
+##     echo "---- Create text form"
+##     jjdoc -TEXT=true -OUTPUT_FILE=${FILE%%.jj}.txt "${FILE}"
+
+    # Fix unnecessary imports
+    echo "---- Fixing Java warnings in ${CLASS}TokenManager ..."
+    F="$DIR/${CLASS}TokenManager.java"
+    sed -e 's/import .*//' -e 's/MatchLoop: do/do/' \
+        -e 's/int hiByte = (int)(curChar/int hiByte = (curChar/' \
+	< $F > F
+    mv F $F
+
+##     echo "---- Fixing Java warnings in JavaCharStream ..."
+##     F="$DIR/JavaCharStream.java"
+##     if [ -e "$F" ]
+## 	then
+## 	sed -e 's/@Deprecated //' \
+## 	    -e 's/public int getColumn/@Deprecated public int getColumn/' \
+## 	    -e 's/public int getLine/@Deprecated public int getLine/' < $F > F
+## 	mv F $F
+##     fi
+
+    echo "---- Fixing Java warnings in ParseException ..."
+    #Override:
+    #   public String getMessage()
+    F="$DIR/ParseException.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in Token ..."
+    F="$DIR/Token.java"
+    sed -e 's/@Override //' \
+	-e 's/public String toString/@Override public String toString/' < $F > F
+    mv F $F
+
+    echo "---- Fixing Java warnings in TokenMgrError ..."
+    # Override:
+    #   public String getMessage()
+    F="$DIR/TokenMgrError.java"
+    sed -e 's/@Override //' \
+	-e 's/public String getMessage/@Override public String getMessage/' < $F > F
+    mv F $F
+
+##     echo "---- Fixing Java warnings in ${CLASS} ..."
+##     F="$DIR/${CLASS}.java"
+##     cat $F > F
+##     mv F $F
+    echo "---- Done"
+}
+
+## if [ $# == 0 ]
+## then
+##     set -- json
+##     ## echo "Usage: grammar [json]" 1>&2
+##     ## exit 1
+##     fi
+
+if [ $# == 0 ]
+then
+    set -- json
+    fi
+
+
+for G in "$@"
+  do
+  case "$G" in
+  json)
+    cpp -P -C "$GRAMMAR" > parser.jj
+    grammar parser.jj $PKG JSON_Parser
+    [ "$RC" = 0 ] && rm -f parser.jj
+    ;;
+  *)    echo "**** Unknown grammar: $G" 1>&2
+    ;;
+    esac
+done

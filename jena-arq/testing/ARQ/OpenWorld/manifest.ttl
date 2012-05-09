@@ -1,0 +1,138 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "Open world expression tests" ;
+    mf:entries
+    ( 
+      [ mf:name    "open-eq-01 - graph match - no lexical form in data (assumes no value matching)" ;
+        mf:action
+            [ qt:query  <open-eq-01.rq> ;
+              qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-01-result.srx>
+      ]
+      [ mf:name    "open-eq-02 - graph match - unknown type" ;
+        mf:action
+           [ qt:query  <open-eq-02.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-02-result.srx>
+      ]
+      [ mf:name    "open-eq-03 - Filter(?v=1)" ;
+        mf:action
+           [ qt:query  <open-eq-03.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-03-result.srx>
+      ]
+      [ mf:name    "open-eq-04 - Filter(?v!=1)" ;
+        mf:action
+           [ qt:query  <open-eq-04.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-04-result.srx>
+      ]
+      [ mf:name    "open-eq-05 - FILTER(?v = unknown type)" ;
+        mf:action
+           [ qt:query  <open-eq-05.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-05-result.srx>
+      ]
+      [ mf:name    "open-eq-06 - FILTER(?v != unknown type)" ;
+        mf:action
+           [ qt:query  <open-eq-06.rq> ;
+             qt:data   <data-1.ttl> ] ;
+        mf:result  <open-eq-06-result.srx>
+      ]
+
+      [ mf:name    "open-eq-07 - Test of '=' " ;
+        mf:action
+           [ qt:query  <open-eq-07.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-07-result.srx>
+      ]
+      [ mf:name    "open-eq-08 - Test of '!='" ;
+        mf:action
+           [ qt:query  <open-eq-08.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-08-result.srx>
+      ]
+      [ mf:name    "open-eq-09 - Test of '='" ;
+        mf:action
+           [ qt:query  <open-eq-09.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-09-result.srx>
+      ]
+      [ mf:name    "open-eq-10 - Test of '!='" ;
+        mf:action
+           [ qt:query  <open-eq-10.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-10-result.srx>
+      ]
+      [ mf:name    "open-eq-11 - test of '=' || '!='" ;
+        mf:action
+           [ qt:query  <open-eq-11.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-11-result.srx>
+      ]
+      [ mf:name    "open-eq-12 - find pairs that don't value-compare" ;
+        mf:action
+           [ qt:query  <open-eq-12.rq> ;
+             qt:data   <data-2.ttl> ] ;
+        mf:result  <open-eq-12-result.srx>
+      ]
+   # xsd:date
+          # xsd:date
+         [ mf:name    "date-1 - Added type : xsd:date '='" ;
+           mf:action
+              [ qt:query  <date-1.rq> ;
+                qt:data   <data-3.ttl> ] ;
+        mf:result  <date-1-result.srx>
+      ]
+         [ mf:name    "date-2 - Added type : xsd:date '!='" ;
+           mf:action
+              [ qt:query  <date-2.rq> ;
+                qt:data   <data-3.ttl> ] ;
+        mf:result  <date-2-result.srx>
+      ]
+
+      [ mf:name    "date-3 - Added type : xsd:date '>'" ;
+        mf:action
+             [ qt:query  <date-3.rq> ;
+               qt:data   <data-3.ttl> ] ;
+        mf:result  <date-3-result.srx>
+      ]
+      [ mf:name    "date-4 - xsd:date ORDER BY" ;
+        mf:action
+           [ qt:query  <date-4.rq> ;
+             qt:data   <data-3.ttl> ] ;
+        mf:result  <date-4-result.srx>
+      ]
+      [ mf:name    "open-cmp-01 - Find things that compare with < or >" ;
+        mf:action
+           [ qt:query  <open-cmp-01.rq> ;
+             qt:data   <data-4.ttl> ] ;
+        mf:result  <open-cmp-01-result.srx>
+      ]
+      [ mf:name    "open-cmp-02 - Find things that compare with <= and >" ;
+        mf:action
+           [ qt:query  <open-cmp-02.rq> ;
+             qt:data   <data-4.ttl> ] ;
+        mf:result  <open-cmp-02-result.srx>
+      ]
+    ).

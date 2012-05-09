@@ -1,0 +1,7 @@
+# Filter do not break up a BGP.
+PREFIX : <http://example.org/>
+SELECT *
+WHERE
+{
+  _:a ?p ?v .  FILTER(true) . [] ?q _:a
+}

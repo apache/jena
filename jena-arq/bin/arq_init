@@ -1,0 +1,35 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0 
+#  -- hint to emacs
+# Source this file, not execute it.
+
+## Environment variable usage:
+## ARQROOT         :: The root of the TDB installation (required)
+## JVM_ARGS        :: Additional argument to the JVM (e.g. -Xmx1024M)
+
+## Source this file to set:
+##  ARQ_CP         :: Classpath
+##  ARQ_CMD        :: The ARQ command to call.
+
+## ---- Check root
+if [ "$ARQROOT" = "" ]
+then
+    echo "ARQROOT is not set" 1>&2
+    exit 1
+    fi
+
+## ---- Set class path separator 
+SEP=':'
+if [ "$OSTYPE" = "cygwin" ]
+then
+    SEP=';'
+    fi
+
+## ---- who am I?
+ARQ_CMD=$(basename $0)
+
+## ---- JVM Args e.g. -Xmx1200M
+JVM_ARGS=${JVM_ARGS:--Xmx1200M -server}
+
+## ---- Classpath : adds in current CP
+ARQ_CP="$($ARQROOT/bin/arq_path)"

@@ -1,0 +1,6 @@
+SELECT  *
+WHERE
+    { ?x ?p1 ?v1 .
+      ?y ?p2 ?v2 . 
+      FILTER str(?x) = str(?y) .
+    }

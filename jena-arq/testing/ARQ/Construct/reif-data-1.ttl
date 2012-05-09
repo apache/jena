@@ -1,0 +1,9 @@
+@prefix data:  <http://example.org/data/> .
+@prefix ns:    <http://example.org/ns#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+data:x ns:p 1 .
+data:x ns:p 2 .
+
+data:y ns:q data:x .
+

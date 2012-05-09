@@ -1,0 +1,7 @@
+PREFIX : <http://example/>
+
+SELECT DISTINCT * 
+{ ?x :p ?v } 
+ORDER BY ASC(?v)
+# Greater than the limit of using a bounded prirotiy queue.
+LIMIT 50000

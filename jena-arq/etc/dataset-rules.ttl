@@ -1,0 +1,23 @@
+# Setting up a single graph which is a rule-backed infModel
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Datatset
+
+<> rdf:type         ja:RDFDataset ;
+    ja:graph :inf .
+
+:inf rdf:type ja:InfModel ;
+    ja:baseModel :data ;
+    ja:reasoner
+        [ ja:reasonerURL <http://jena.hpl.hp.com/2003/GenericRuleReasoner> ;
+          ja:rulesFrom <owlax.jena> 
+        ] ;
+    .
+
+:data rdf:type ja:MemoryModel ;
+    ja:content [ja:externalContent <input-data.ttl>] ;
+    .

@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<sparql
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema#"
+    xmlns="http://www.w3.org/2005/sparql-results#" >
+  <head>
+    <variable name="x"/>
+    <variable name="v"/>
+    <variable name="y"/>
+    <variable name="w"/>
+  </head>
+  <results ordered="false" distinct="false">
+    <result>
+      <binding name="x">
+        <uri>http://example/x</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">4</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">3</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">2</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="x">
+        <uri>http://example/x</uri>
+      </binding>
+      <binding name="v">
+        <literal datatype="http://www.w3.org/2001/XMLSchema#integer">1</literal>
+      </binding>
+    </result>
+    <result>
+      <binding name="y">
+        <uri>http://example/z</uri>
+      </binding>
+      <binding name="w">
+        <uri>http://example/v2</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="y">
+        <uri>http://example/z</uri>
+      </binding>
+      <binding name="w">
+        <uri>http://example/v1</uri>
+      </binding>
+    </result>
+    <result>
+      <binding name="y">
+        <uri>http://example/y</uri>
+      </binding>
+      <binding name="w">
+        <uri>http://example/z</uri>
+      </binding>
+    </result>
+  </results>
+</sparql>

@@ -1,0 +1,32 @@
+# Dataset which has named graphs and a default graph.
+
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix :       <#> .
+
+## Datatset
+
+<> rdf:type         ja:RDFDataset ;
+    # Database-backed model
+    ja:defaultGraph _:modelDB1 ;
+    # And also a memory model - can mix and match.
+    ja:namedGraph [ ja:graphName <http://example/graph1> ;
+                    ja:graph    :data1 ] ;
+    .
+
+_:modelDB1 rdf:type ja:RDBModel ;
+    ja:connection
+    [
+        ja:dbType       "MySQL" ;
+        ja:dbURL        <jdbc:mysql://localhost/jena-db> ;
+        ja:dbUser       "user" ;
+        ja:dbPassword   "password" ;
+        ja:dbClass      "com.mysql.jdbc.Driver" ;
+    ] ;
+    ## Add a model name - this is the name of the mode in the database
+    ## It is NOT the name in the dataset (that comes from 
+    ## ja:namedGraph/ja:graphName)
+    ja:modelName "DEFAULT"
+    . 

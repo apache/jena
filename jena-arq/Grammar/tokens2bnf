@@ -1,0 +1,43 @@
+#!/bin/perl
+# Convert javacc token format to BNF
+
+$/ = undef ;
+$_ = <> ;
+s!//.*!!g ;
+s!\r!!g ;
+s/\n+/\n/g ;
+s/^\n// ;
+
+#@t = split(/\n(?=\<|\[)/, $tokens) ;
+@t = split(/\n/) ;
+
+## for $t (@t)
+## {
+##     ($tokenname,$tokenbody) = split(/::=/, $t) ;	
+##     print $tokenname,"\n" ;
+##     
+## }
+
+# Rewrite to XML BNF
+##   #xN // [a-zA-Z], [#xN-#xN] // [abc], [#xN#xN#xN] //
+##   [^a-z], [^#xN-#xN] // [^abc], [^#xN#xN#xN] 
+
+# Rules
+# 1 --  ~["X","Y"] => [^XY]
+# 2 --  ["a"-"z","A"-"Z"] => [a-zA-Z]
+# 3 --  ["!","&"] => [!&]
+# 4 --  \uXXXX => #xXXXX
+
+## Rule 1
+s/~\[/\[^/g ;
+
+## Rule 2
+s/\["([^"]*)"-"([^"]*)"\]/\[$1-$2\]/g ;
+
+## Rule 3
+## s/\[.*"([^\],"]*)".*\]/\[$1\]/g ;
+
+## Rule 4
+s/\\u(....)/#x$1/g ;
+
+print $_ ;

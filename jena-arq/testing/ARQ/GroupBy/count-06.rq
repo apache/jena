@@ -1,0 +1,13 @@
+PREFIX  rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX  :       <http://example/>
+PREFIX  dc:     <http://purl.org/dc/elements/1.1/>
+
+SELECT ?p (count(?n) AS ?num) (count(distinct ?n) AS ?numD)
+{
+    # UNION is asymmetric in what it generates
+    { ?x rdf:type :X . } UNION { ?x rdf:type :X . FILTER (?x != :x2 )}
+    # and :x2 :p 2 with ":p 2" occuring twice.
+    OPTIONAL { ?x :p ?p . }
+    OPTIONAL { ?x :n ?n . }
+}
+GROUP BY ?p

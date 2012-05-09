@@ -1,0 +1,181 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix :       <manifest#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+@prefix dawgt:  <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Syntax tests Syntax-ARQ" ;
+    mf:entries
+    ( 
+
+:test_1
+:test_2
+:test_3
+:test_4
+:test_5
+:test_6
+:test_7
+:test_8
+:test_9
+:test_10
+:test_11
+:test_12
+:test_13
+:test_14
+:test_15
+:test_16
+:test_17
+:test_18
+:test_19
+:test_20
+:test_21
+:test_22
+:test_23
+:test_24
+:test_25
+) .
+
+:test_1 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-01.arq" ;
+   mf:action  <syntax-select-expr-01.arq> ;.
+
+:test_2 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-02.arq" ;
+   mf:action  <syntax-select-expr-02.arq> ;.
+
+:test_3 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-03.arq" ;
+   mf:action  <syntax-select-expr-03.arq> ;.
+
+:test_4 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-04.arq" ;
+   mf:action  <syntax-select-expr-04.arq> ;.
+
+:test_5 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-05.arq" ;
+   mf:action  <syntax-select-expr-05.arq> ;.
+
+:test_6 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-06.arq" ;
+   mf:action  <syntax-select-expr-06.arq> ;.
+
+:test_7 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-select-expr-07.arq" ;
+   mf:action  <syntax-select-expr-07.arq> ;.
+
+:test_8 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-service-01.arq" ;
+   mf:action  <syntax-service-01.arq> ;.
+
+:test_9 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-group-01.arq" ;
+   mf:action  <syntax-group-01.arq> ;.
+
+:test_10 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-group-02.arq" ;
+   mf:action  <syntax-group-02.arq> ;.
+
+:test_11 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-group-03.arq" ;
+   mf:action  <syntax-group-03.arq> ;.
+
+:test_12 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-group-04.arq" ;
+   mf:action  <syntax-group-04.arq> ;.
+
+:test_13 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-count-01.arq" ;
+   mf:action  <syntax-count-01.arq> ;.
+
+:test_14 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-count-02.arq" ;
+   mf:action  <syntax-count-02.arq> ;.
+
+:test_15 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-count-03.arq" ;
+   mf:action  <syntax-count-03.arq> ;.
+
+:test_16 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-count-04.arq" ;
+   mf:action  <syntax-count-04.arq> ;.
+
+:test_17 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-01.arq" ;
+   mf:action  <syntax-subquery-01.arq> ;.
+
+:test_18 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-02.arq" ;
+   mf:action  <syntax-subquery-02.arq> ;.
+
+:test_19 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-03.arq" ;
+   mf:action  <syntax-subquery-03.arq> ;.
+
+:test_20 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-04.arq" ;
+   mf:action  <syntax-subquery-04.arq> ;.
+
+:test_21 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-let-01.arq" ;
+   mf:action  <syntax-let-01.arq> ;.
+
+:test_22 rdf:type   mfx:PositiveSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-let-02.arq" ;
+   mf:action  <syntax-let-02.arq> ;.
+
+:test_23 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-bad-01.arq" ;
+   mf:action  <syntax-subquery-bad-01.arq> ;.
+
+:test_24 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-subquery-bad-02.arq" ;
+   mf:action  <syntax-subquery-bad-02.arq> ;.
+
+:test_25 rdf:type   mfx:NegativeSyntaxTestARQ ;
+   dawgt:approval dawgt:NotClassified ;
+   mf:name    "syntax-let-bad-01.arq" ;
+   mf:action  <syntax-let-bad-01.arq> ;.
+
+

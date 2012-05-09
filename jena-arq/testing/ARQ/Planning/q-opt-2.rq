@@ -1,0 +1,9 @@
+# An optional and an fixed pattern
+PREFIX : <http://example.org/>
+
+SELECT * 
+WHERE 
+{
+  OPTIONAL {:y :q ?v }
+  :x :p ?v .
+}

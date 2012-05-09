@@ -1,0 +1,10 @@
+# An optional and an fixed pattern
+PREFIX : <http://example.org/>
+
+# This generates the right answer regardlesseh of planning order
+SELECT * 
+WHERE 
+{
+  :x :p ?v .
+  OPTIONAL {:y :q ?v }
+}

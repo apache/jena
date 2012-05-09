@@ -1,0 +1,329 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# $Id: manifest.ttl,v 1.2 2006/01/18 16:58:05 andy_seaborne Exp $
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dawgt:   <http://www.w3.org/2001/sw/DataAccess/tests/test-dawg#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Type Promotion Tests" ;
+    mf:entries
+    (
+     [  mf:name    "tP-double-double" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-double-double.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-double-float" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-double-float.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-double-decimal" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-double-decimal.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-float-float" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-float-float.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-float-decimal" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-float-decimal.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-decimal-decimal" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-decimal-decimal.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-integer-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-integer-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-nonPositiveInteger-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-nonPositiveInteger-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-negativeInteger-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-negativeInteger-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-long-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-long-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-int-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-int-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-byte-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-byte-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-nonNegativeInteger-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-nonNegativeInteger-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-unsignedLong-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-unsignedLong-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-unsignedInt-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-unsignedInt-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-unsignedShort-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-unsignedShort-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-unsignedByte-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-unsignedByte-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-positiveInteger-short" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-positiveInteger-short.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-double" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-double.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-float" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-float.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-decimal" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-decimal.rq> ] ;
+        mf:result  <true.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-short-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-short-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-byte-short-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-byte-short-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-long-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-long-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-int-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-int-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-short-byte-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-short-byte-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-double-float-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-double-float-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-double-decimal-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-double-decimal-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+     [  mf:name    "tP-float-decimal-fail" ;
+        rdfs:comment
+            "Positive test: product of type promotion within the xsd:decimal type tree." ;
+        mf:action
+            [ qt:data   <tP.ttl> ;
+              qt:query  <tP-float-decimal-fail.rq> ] ;
+        mf:result  <false.ttl> ;
+        dawgt:approval dawgt:NotApproved
+      ]
+
+    # End of tests
+   ).

@@ -1,0 +1,5 @@
+SELECT  *
+WHERE
+    { ?x ?y ?z . 
+      FILTER ! REGEX(?x,"r-1$") .
+    }

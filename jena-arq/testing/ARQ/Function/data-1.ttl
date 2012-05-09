@@ -1,0 +1,15 @@
+@prefix :     <http://example.org/ns#> .
+@prefix fn:   <http://example.org/functions#> .
+
+:x :p 1 .
+:x :p 2 .
+
+:y :q 2 .
+:y :p "2" .
+:y :p 2.0 . # Fails - not an integer
+:y :p 2.5 . # Fails
+
+:z :p 3 .
+:z :p 4 .
+
+

@@ -1,0 +1,30 @@
+#!/bin/sh
+## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+if [ "$ARQROOT" = "" ]
+then
+    echo "ARQROOT not set" 1>&2
+    exit 1
+    fi
+
+if [ -e "$ARQROOT/classes" ]
+then
+  CP2="$ARQROOT/classes"
+  fi
+
+if [ "$CP" != "" ]
+then
+  export CP="$CP;$CP2"
+else
+  export CP="$CP2"
+  fi
+
+unset CP2
+
+CP=$(make_classpath "$ARQROOT/lib")
+
+# Set SOCKS if needed
+SOCKS="${SOCKS:-}"
+
+java  -cp "$CP" junit.textui.TestRunner com.hp.hpl.jena.query.test.ARQTestSuite
+

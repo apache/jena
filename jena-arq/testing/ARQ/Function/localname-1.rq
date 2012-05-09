@@ -1,0 +1,8 @@
+PREFIX  jfn:  <http://jena.hpl.hp.com/ARQ/function#>
+PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX     :  <http://example.org/> 
+
+SELECT ?s
+{ ?s ?p ?o
+  FILTER ( jfn:localname(?p) = "list")
+}

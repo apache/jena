@@ -1,0 +1,210 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix mfx:    <http://jena.hpl.hp.com/2005/05/test-manifest-extra#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:label "DISTINCT" ;
+    mf:entries
+    ( 
+      <#no-distinct-1>
+      <#distinct-1>
+      <#no-distinct-2>
+      <#distinct-2>
+      <#no-distinct-3>
+      <#distinct-3>
+      <#no-distinct-4>
+      <#distinct-4>
+      <#no-distinct-9>
+      <#distinct-9>
+
+      <#no-distinct-multi-1>
+      <#no-distinct-multi-2>
+      <#no-distinct-multi-3>
+      <#distinct-multi-1>
+      <#distinct-multi-2>
+      <#distinct-multi-3>
+      <#reduced-multi-1>
+      <#reduced-multi-2>
+      <#reduced-multi-3>
+    ) .
+
+
+<#no-distinct-1>
+    mf:name    "Numbers: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <no-distinct-num.srx> .
+
+<#distinct-1>
+    mf:name    "Numbers: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-num.ttl> ] ;
+    mf:result  <distinct-num.srx> .
+
+<#no-distinct-2>
+    mf:name    "Strings: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <no-distinct-str.srx> .
+
+<#distinct-2>
+    mf:name    "Strings: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-str.ttl> ] ;
+    mf:result  <distinct-str.srx> .
+
+<#no-distinct-3>
+    mf:name    "Nodes: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <no-distinct-node.srx> .
+
+<#distinct-3>
+    mf:name    "Nodes: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-node.ttl> ] ;
+    mf:result  <distinct-node.srx> .
+
+<#no-distinct-4>
+    mf:name    "Opt: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <no-distinct-opt.srx> .
+
+<#distinct-4>
+    mf:name    "Opt: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-2.rq> ;
+              qt:data   <data-opt.ttl> ] ;
+    mf:result  <distinct-opt.srx> .
+
+
+
+<#no-distinct-9>
+    mf:name    "All: No distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-1.rq> ;
+              qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> ] ;
+    mf:result  <no-distinct-all.srx> .
+
+<#distinct-9>
+    mf:name    "All: Distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-1.rq> ;
+              qt:data   <data-num.ttl> , <data-str.ttl> , <data-node.ttl> ] ;
+    mf:result  <distinct-all.srx> .
+
+<#distinct-path-1>
+    mf:name    "Multipath / bnode variables" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-all.srx> .
+
+<#no-distinct-multi-1>
+    mf:name    "Multipath / bnode variables / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-1.srj> .
+
+<#no-distinct-multi-2>
+    mf:name    "Multipath / path{2} / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-2.arq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-2.srj> .
+
+
+<#no-distinct-multi-3>
+    mf:name    "Multipath / sequence / not distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <no-distinct-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <no-distinct-multi-3.srj> .
+
+<#distinct-multi-1>
+    mf:name    "Multipath / bnode variables / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-1.srj> .
+
+<#distinct-multi-2>
+    mf:name    "Multipath / path{2} / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-2.arq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-2.srj> .
+
+<#distinct-multi-3>
+    mf:name    "Multipath / seq path / distinct" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <distinct-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <distinct-multi-3.srj> .
+
+<#reduced-multi-1>
+    mf:name    "Multipath / bnode variables / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-1.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-1.srj> .
+
+<#reduced-multi-2>
+    mf:name    "Multipath / path{2} / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-2.arq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-2.srj> .
+
+<#reduced-multi-3>
+    mf:name    "Multipath / seq path / reduced" ;
+    rdf:type   mfx:TestQuery ; 
+    mf:action
+            [ qt:query  <reduced-multi-3.rq> ;
+              qt:data   <data-multipath.ttl> ] ;
+    mf:result  <reduced-multi-3.srj> .
