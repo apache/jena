@@ -1,0 +1,28 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
+
+@prefix ja:     <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix sdb:    <http://jena.hpl.hp.com/2007/sdb#> .
+
+# Test assembler;  An unformatted, in-memory HSQLDB store.
+
+[] ja:loadClass "com.hp.hpl.jena.sdb.SDB" .
+
+<#store> rdf:type sdb:Store ;
+    sdb:layout      "layout2" ;
+    sdb:connection 
+    [ rdf:type sdb:SDBConnection ;
+        sdb:sdbType      "hsqldb" ;
+        sdb:sdbHost      "mem" ;
+        sdb:sdbUser      "sa" ;
+        sdb:sdbPassword  "" ;
+        sdb:sdbName      "SDB2" ;
+        sdb:driver       "org.hsqldb.jdbcDriver" ;
+    ]
+    .
+
+# Local Variables:        
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

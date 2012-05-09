@@ -1,0 +1,11 @@
+#!/bin/bash
+# Replicate the commands
+
+## sdbdump sdbconfig sdbinfo sdbload sdbprint
+## sdbquery sdbsql sdbtest sdbtruncate sdbmeta
+## but not anything sdb_*
+
+for c in sdb[a-z]*
+do
+  cp sdb_cmd $c
+  done

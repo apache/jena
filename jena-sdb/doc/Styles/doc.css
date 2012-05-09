@@ -1,0 +1,140 @@
+/* CVS $Id: doc.css,v 1.16 2005/09/22 14:18:40 andy_seaborne Exp $ */
+
+/* Non media-specific rules */
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif ;
+	color: black;
+	background: white ;
+	margin:0 ;
+}
+
+
+/* If using fixed size fonts, do h1..h6 as well*/
+
+p  { font-size:10pt ; line-height:175% ; margin-left: 2ex ; margin-right: 2ex; }
+li { font-size:10pt ; line-height:175% ; margin-left: 2ex ; margin-right: 2ex; }
+code { font-size: 105%; }
+tt   { font-size: 105%; }
+
+dt   { font-size: 10pt ; font-weight: 400 ; }
+dd   { font-size: 10pt ; font-weight: normal ; }
+
+h1 { font-size: 14pt ; }
+h2 { font-size: 12pt; }
+h3 { font-size: 10pt; }
+h4 { font-size: 10pt; }
+.todo { font-size: 9pt ; color: #777 ; }
+
+
+
+table {
+  font-family: Verdana, Arial, sans-serif ;
+  border-color : black ;
+  border-collapse: collapse;
+  border-width: 1px;
+  border: 1;
+  cellspacing: 0 ;
+  cellpadding: 0 ;
+}
+
+td {
+  font-size:10pt ;
+  border-width: 1px ;
+  border-collapse: collapse;
+  border-color : #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  spacing: 0 ;
+  vertical-align:top;
+}
+
+
+th {
+  font-size:10pt ;
+  border-collapse: collapse;
+  border-width: 1px ;
+  border-color: #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  vertical-align:top;
+  text-align:center;
+}
+
+
+.noindent     { margin-left: -5% ; margin-right: -5%; }
+.moreindent   { margin-left:  5% ; margin-right:  5%; }
+
+
+/* Use this for the document title as displayed on the page at the top. */
+h1 {
+    font-weight: bold;
+    color:#000;
+    background:#CADFF4;
+    padding-left: 1ex; padding-right: 1ex ;
+    padding-top: 0.5ex; padding-bottom: 0.5ex;
+    text-align:center;
+}
+
+h2 {
+    font-weight: bold;
+    color: black;
+    /* background:#CADFF4; */
+    margin-bottom:0.25ex;
+    padding-left: 1ex; padding-right: 1ex ;
+    padding-top: 0.5ex; padding-bottom: 0.5ex;
+}
+
+h3 { 
+     font-weight: bold;
+     margin-bottom:0.25ex;
+     padding-left: 2ex;
+    }
+
+h4, h5 {
+    font-weight: italic;
+    margin-bottom:0.25ex;
+    padding-left: 2ex;
+}
+
+ul { list-style-type: disc }
+dt { margin-top: 2ex; margin-left:2ex ; font-weight: bold }
+/* Change background/foreground colour on hover */
+
+A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
+A:visited { text-decoration:none; color:blue; background: white; }
+A:hover { text-decoration:none; color:white; background:  #65A2DF ; }
+
+A:hover.clear { background:  white ; }
+
+/* No extra space between paragraphs : inherits from body */
+
+pre {
+    /*font-family: monospace;*/
+    font-size: 10pt ;
+    line-height: 125% ;
+    margin-top: 1ex ;
+    margin-bottom: 1ex ;
+    margin-left: 5ex ;
+    margin-right: 5ex ;
+    }
+.box { padding: 1ex ; border: solid 1px black ; background: #EEE ; }
+pre.box {} 
+
+.centered {
+    text-align: center;
+}
+
+.footnote {
+    font-size: smaller;
+    border-top: 1px solid gray;
+}
+
+/* Media-specific rules */
+
+@media print {
+	h1, h2 { border-top: solid 1px black ; }
+}
+
+@media screen, projection {
+}

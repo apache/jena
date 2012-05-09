@@ -1,0 +1,9 @@
+# single triple pattern, block optional 
+PREFIX : <http://example/>
+
+SELECT * WHERE
+{ 
+    ?x :p 1 .
+    OPTIONAL { ?x :p ?a . ?a :q1 ?v .}
+}
+

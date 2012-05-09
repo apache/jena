@@ -1,0 +1,14 @@
+PREFIX  xsd:    <http://www.w3.org/2001/XMLSchema#>
+PREFIX  :       <http://example/>
+PREFIX  ex:     <http://example/ns#>
+
+# 2 Optionals, sharing a variable that is not set outside.
+# Second optional introduces another variable.
+
+SELECT *
+{
+   ?x :p ?z  
+   OPTIONAL { ?z :q1 ?w }
+   OPTIONAL { ?z :q2 ?w . ?z :q3 ?v }
+}
+
