@@ -1,0 +1,17 @@
+{
+  "head": {
+    "vars": [ "subj" ]
+  } ,
+  "results": {
+    "distinct": false ,
+    "ordered": false ,
+    "bindings": [
+      {
+        "subj": { "type": "uri" , "value": "http://example/doc1" }
+      } ,
+      {
+        "subj": { "type": "uri" , "value": "http://example/doc2" }
+      }
+    ]
+  }
+}
