@@ -27,9 +27,12 @@ import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.compose.Polyadic ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.graph.GraphWrapper ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
 public class SystemARQ
@@ -40,10 +43,27 @@ public class SystemARQ
         sync(model.getGraph()) ;
     }
     
-    /** Sync a if provided. Do nothing if not TDB-backed. */
+    /** Sync if provided. Do nothing if not. */
     public static void sync(Graph graph)
     {
-        syncObject(graph) ;
+        syncGraph(graph) ;
+    }
+    
+    private static void syncGraph(Graph graph)
+    {
+        // "Temporary" hack.  Graph ought to implement sync and casade it down.
+        if ( graph instanceof InfGraph )
+            syncGraph(((InfGraph)graph).getRawGraph()) ;
+        else if ( graph instanceof Polyadic ) // MultiUnion
+            // Only the base graph is updatable.
+            syncGraph(((Polyadic)graph).getBaseGraph()) ;
+        else if ( graph instanceof GraphWrapper )
+            syncGraph(((GraphWrapper)graph).get()) ;
+//        else if ( graph instanceof WrappedGraph )   
+//            // Does not expose the WrappedGraph : checking, no subclass needs a sync().
+//            syncGraph(((WrappedGraph)graph).get()) ;
+        else
+            syncObject(graph) ;
     }
 
     /** Sync a Dataset, if underlying storage provides sync. */
