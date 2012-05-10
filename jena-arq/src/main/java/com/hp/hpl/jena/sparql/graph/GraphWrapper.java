@@ -32,7 +32,7 @@ public class GraphWrapper implements Graph
 
     public GraphWrapper(Graph graph) { this.graph = graph ; }
     
-    protected Graph get() { return graph ; }
+    public Graph get() { return graph ; }
     
     @Override
     public void add(Triple t) throws AddDeniedException
