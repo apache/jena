@@ -82,7 +82,6 @@
       <includes>
 	<include>NOTICE</include>
 	<include>LICENSE</include>
-	<include>DISCLAIMER</include>
 	<include>README</include>
       </includes>
       <fileMode>0622</fileMode>

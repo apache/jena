@@ -56,7 +56,6 @@ Assumes jar made and onejar has been assembled.
       <includes>
         <include>README*</include>
         <include>DEPENDENCIES*</include>
-        <include>DISCLAIMER*</include>
         <include>ChangeLog.txt</include>
       </includes>
     </fileSet>

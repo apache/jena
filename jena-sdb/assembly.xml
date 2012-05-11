@@ -41,7 +41,6 @@
       <includes>
         <include>Copyright.txt</include>
         <include>README*</include>
-        <include>DISCLAIMER*</include>
 	<include>LICENSE*</include>
 	<include>NOTICE*</include>
         <include>ChangeLog.txt</include>
