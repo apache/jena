@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.FileManager ;
 
 public class ModLangParse implements ArgModuleGeneral
 {
-    private ArgDecl argCheck    = new ArgDecl(ArgDecl.HasValue, "check") ;
+    private ArgDecl argCheck    = new ArgDecl(ArgDecl.NoValue, "check") ;
     private ArgDecl argNoCheck  = new ArgDecl(ArgDecl.NoValue, "nocheck", "noCheck") ;
     private ArgDecl argSink     = new ArgDecl(ArgDecl.NoValue, "sink", "null") ;
 
@@ -59,7 +59,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.getUsage().startCategory("Parser control") ;
         cmdLine.add(argSink,    "--sink",           "Parse but throw away output") ;
         cmdLine.add(argBase,    "--base=URI",       "Set the base URI (does not apply to N-triples and N-Quads)") ;
-        cmdLine.add(argCheck,   "--check=boolean",  "Addition checking of RDF terms") ;// (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
+        cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
 //        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
@@ -82,11 +82,7 @@ public class ModLangParse implements ArgModuleGeneral
         }
         
         if ( cmdLine.contains(argCheck) )
-        {
-            boolean b = ! cmdLine.getArg(argCheck).getValue().equalsIgnoreCase("false") ;
-            explicitCheck = b ;
-            explicitNoCheck = !b ;
-        }
+            explicitCheck = true ;
         
         if ( cmdLine.contains(argNoCheck) )
             explicitNoCheck = true ;
