@@ -42,12 +42,14 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     @Override
     public String resolveIRI(String uriStr, long line, long col)
     {
+        // Go via code that checks.
         return makeIRI(uriStr, line, col).toString() ;
     }
     
     @Override
     public IRI makeIRI(String uriStr, long line, long col)
     {
+        // reolves, but we handle the errors and warnings.
         IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
         CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;

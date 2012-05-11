@@ -18,19 +18,16 @@
 
 package org.openjena.riot.system;
 
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
-import org.openjena.atlas.lib.IRILib ;
-import org.openjena.atlas.lib.cache.Getter ;
-import org.openjena.riot.RiotException ;
-
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
+import org.openjena.atlas.lib.Cache ;
+import org.openjena.atlas.lib.CacheFactory ;
+import org.openjena.atlas.lib.IRILib ;
+import org.openjena.riot.RiotException ;
 
-/** Package up IRI reolver functionality. 
- */
+/** Package up IRI reolver functionality. */
 
 public abstract class IRIResolver
 {
@@ -331,11 +328,7 @@ public abstract class IRIResolver
     {
         protected IRIResolverNoOp() {}
 
-        final private Getter<String, IRI> getter = new Getter<String, IRI>() {
-            @Override
-            public IRI get(String relURI) { return  iriFactory.create(relURI) ; }
-        } ;
-        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
+        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(CacheSize) ;
 
         @Override
         protected IRI getBaseIRI()
@@ -346,13 +339,13 @@ public abstract class IRIResolver
         @Override
         public IRI resolve(String uriStr)
         {
-            return iriFactory.create(uriStr) ;
+            return exceptions(resolveSilent(uriStr)) ;
         }
 
         @Override
         public IRI resolveSilent(String uriStr)
         {
-            if ( resolvedIRIs != null && resolvedIRIs.containsKey(uriStr) ) 
+            if ( resolvedIRIs != null  &&  resolvedIRIs.containsKey(uriStr) )
                 return resolvedIRIs.get(uriStr) ;
             IRI iri = iriFactory.create(uriStr) ;
             if ( resolvedIRIs != null )
@@ -360,26 +353,20 @@ public abstract class IRIResolver
             return iri ;
         }
 
-        // ??
-//        @Override
-//        public String resolveToString(String uriStr)
-//        {
-//            return uriStr ;
-//        }
+        @Override
+        public String resolveToString(String uriStr)
+        {
+            return uriStr ;
+        }
     }
 
     /** Resolving resolver **/   
     static class IRIResolverNormal extends IRIResolver
     {
         final private IRI base;
-        // The cache.  Maybe this should be in Prologue.
-        final private Getter<String, IRI> getter = new Getter<String, IRI>() {
-            @Override
-            public IRI get(String relURI) { return  base.resolve(relURI) ; }
-        } ;
         // Not static - contains relative IRIs
         // Could split into absolute (static, global cached) and relative.
-        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(getter, CacheSize) ;
+        private Cache<String, IRI> resolvedIRIs = CacheFactory.createCache(CacheSize) ;
 
 
         /**
