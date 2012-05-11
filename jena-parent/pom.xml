@@ -20,15 +20,16 @@
 
   <name>jena-parent</name>
   <groupId>org.apache.jena</groupId>
-  <artifactId>jena-top</artifactId>
-  <version>1-incubating-SNAPSHOT</version>
+  <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
+  <version>1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
     <version>10</version>
+    <relativePath></relativePath> <!-- MNG-4687 Avoid warning -->
   </parent>
 
   <licenses>
@@ -44,9 +45,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-parent</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</url>
   </scm>
 
   <properties>
@@ -292,42 +293,6 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
-  
-  <mailingLists>
-
-    <mailingList>
-      <name>Users</name>
-      <post>users@jena.apache.org</post>
-      <subscribe>users-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-users/</archive>
-      <otherArchives>
-	<otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
-	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
-      </otherArchives>
-    </mailingList>
-
-    <mailingList>
-      <name>Development</name>
-      <post>dev@jena.apache.org</post>
-      <subscribe>dev-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-dev/</archive>
-      <otherArchives>
-	<otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
-	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
-      </otherArchives>
-    </mailingList>
-
-    <mailingList>
-      <name>Commits</name>
-      <post>commits@jena.apache.org</post>
-      <subscribe>commits-subscribe@jena.apache.org</subscribe>
-      <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
-      <archive>http://mail-archives.apache.org/mod_mbox/jena-commits/</archive>
-    </mailingList>
-
-  </mailingLists>
   
   <!-- Temporary for testing : file:REPO-->
 

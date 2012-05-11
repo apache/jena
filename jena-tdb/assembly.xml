@@ -50,7 +50,6 @@
   <fileSets>
     <fileSet>
       <includes>
-        <include>DISCLAIMER*</include>
         <include>DEPENDENCIES*</include>
 	<include>README*</include>
         <include>ChangeLog.txt</include>
