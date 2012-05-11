@@ -32,7 +32,7 @@ import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Basic profile of things, with key operations based on a simple
- *  use of the parse elements into Nodes (e.g. no URI resolution). 
+ *  use of the parse elements into Nodes 
  */
 public class ParserProfileBase implements ParserProfile
 {
@@ -74,14 +74,13 @@ public class ParserProfileBase implements ParserProfile
     @Override
     public String resolveIRI(String uriStr, long line, long col)
     {
-        return makeIRI(uriStr, line, col).toString() ;
+        return prologue.getResolver().resolveToString(uriStr) ;
     }
     
     @Override
     public IRI makeIRI(String uriStr, long line, long col)
     {
-        IRI iri = prologue.getResolver().resolve(uriStr) ;
-        return iri ;
+        return prologue.getResolver().resolve(uriStr) ;
     }
 
     @Override
