@@ -32,6 +32,18 @@
     <relativePath>../jena-parent</relativePath>
   </parent>
 
+  <!-- Need when the parent is a snapshot -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+	<enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <scm>
