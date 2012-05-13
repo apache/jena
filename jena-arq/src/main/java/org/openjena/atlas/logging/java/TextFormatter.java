@@ -18,11 +18,10 @@
 
 package org.openjena.atlas.logging.java;
 
+import java.text.MessageFormat ;
 import java.util.Date ;
 import java.util.logging.Formatter ;
 import java.util.logging.LogRecord ;
-
-import com.ibm.icu.text.MessageFormat ;
 
 /** A pattern-like log formatter */
 public class TextFormatter extends Formatter
