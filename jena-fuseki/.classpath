@@ -12,20 +12,19 @@
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" sourcepath="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpclient/4.1.2/httpclient-4.1.2-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2.jar" sourcepath="M2_REPO/org/apache/httpcomponents/httpcore/4.1.2/httpcore-4.1.2-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4.jar" sourcepath="M2_REPO/com/ibm/icu/icu4j/3.4.4/icu4j-3.4.4-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4.jar" sourcepath="M2_REPO/org/slf4j/jcl-over-slf4j/1.6.4/jcl-over-slf4j-1.6.4-sources.jar"/>
 
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.1-incubating-SNAPSHOT/jena-arq-2.9.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT-sources.jar"/>
 
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT.jar"
-		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-incubating-SNAPSHOT/jena-core-2.7.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT.jar"
+		  sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT-sources.jar"/>
 
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT.jar"
-		  sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-incubating-SNAPSHOT/jena-iri-0.9.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.1-SNAPSHOT/jena-iri-0.9.1-SNAPSHOT.jar"
+		  sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-SNAPSHOT/jena-iri-0.9.1-SNAPSHOT-sources.jar"/>
 
-  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-tdb/0.9.1-incubating-SNAPSHOT/jena-tdb-0.9.1-incubating-SNAPSHOT.jar" 
-		  sourcepath="M2_REPO/org/apache/jena/jena-tdb/0.9.1-incubating-SNAPSHOT/jena-tdb-0.9.1-incubating-SNAPSHOT-sources.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-tdb/0.9.1-SNAPSHOT/jena-tdb-0.9.1-SNAPSHOT.jar" 
+		  sourcepath="M2_REPO/org/apache/jena/jena-tdb/0.9.1-SNAPSHOT/jena-tdb-0.9.1-SNAPSHOT-sources.jar"/>
 
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-continuation/7.5.4.v20111024/jetty-continuation-7.5.4.v20111024.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-continuation/7.5.4.v20111024/jetty-continuation-7.5.4.v20111024-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/jetty/jetty-http/7.5.4.v20111024/jetty-http-7.5.4.v20111024.jar" sourcepath="M2_REPO/org/eclipse/jetty/jetty-http/7.5.4.v20111024/jetty-http-7.5.4.v20111024-sources.jar"/>
