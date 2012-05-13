@@ -22,14 +22,26 @@
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>jena-tdb</name>
-  <version>0.9.1-incubating-SNAPSHOT</version>
+  <version>0.9.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating</version>
+    <artifactId>jena-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
   </parent> 
 
+  <!-- Need if the parent is a snapshot -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+	<enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
   <description>TDB is a storage subsystem for Jena and ARQ</description>
 
   <scm>
@@ -42,8 +54,8 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
 
-    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
+    <ver.jena>2.7.1-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.1-SNAPSHOT</ver.arq>
     
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
