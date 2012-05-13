@@ -21,15 +21,28 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating</version>
+    <artifactId>jena-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
   </parent>
 
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-larq</artifactId>
   <packaging>jar</packaging>
   <name>LARQ</name>
-  <version>1.0.1-incubating-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
+
+  <!-- Need if the parent is a snapshot -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+	<enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
   <url>http://jena.apache.org//documentation/larq/</url>
@@ -42,8 +55,8 @@
 
   <properties>
     <ver.lucene>3.6.0</ver.lucene>
-    <ver.arq>2.9.0-incubating</ver.arq>
-    <ver.tdb>0.9.0-incubating</ver.tdb>
+    <ver.arq>2.9.0</ver.arq>
+    <ver.tdb>0.9.0</ver.tdb>
   </properties>
 
   <dependencies>
