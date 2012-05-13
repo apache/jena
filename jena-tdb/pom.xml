@@ -42,6 +42,7 @@
       </releases>
     </repository>
   </repositories>
+
   <description>TDB is a storage subsystem for Jena and ARQ</description>
 
   <scm>
