@@ -55,8 +55,8 @@
 
   <properties>
     <ver.lucene>3.6.0</ver.lucene>
-    <ver.arq>2.9.0</ver.arq>
-    <ver.tdb>0.9.0</ver.tdb>
+    <ver.arq>2.9.0-incubating</ver.arq>
+    <ver.tdb>0.9.0-incubating</ver.tdb>
   </properties>
 
   <dependencies>
