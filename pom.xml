@@ -22,15 +22,28 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>jena-fuseki</name>
-  <version>0.2.2-incubating-SNAPSHOT</version>
+  <version>0.2.2-SNAPSHOT</version>
   <description>Jena SPARQL Server</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating</version>
+    <artifactId>jena-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
   </parent> 
+
+  <!-- Need if the parent is a snapshot -->
+  <repositories>
+    <repository>
+      <id>apache.snapshots</id>
+      <name>Apache Snapshot Repository</name>
+      <url>http://repository.apache.org/snapshots</url>
+      <releases>
+	<enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <organization>
     <name>Apache Jena</name>
@@ -61,9 +74,9 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.1-incubating-SNAPSHOT</ver.tdb>
+    <ver.jena>2.7.1-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.1-SNAPSHOT</ver.arq>
+    <ver.tdb>0.9.1-SNAPSHOT</ver.tdb>
 
     <ver.jetty>7.5.4.v20111024</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
