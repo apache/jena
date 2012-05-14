@@ -589,11 +589,11 @@ public class AlgebraGenerator
                 op = OpFilter.filter(expr2 , op) ;
             }
         }
-        // ---- BINDINGS
-        if ( query.hasBindings() )
+        // ---- VALUES
+        if ( query.hasValues() )
         {
-            Table table = TableFactory.create(query.getBindingsVariables()) ;
-            for ( Binding binding : query.getBindingsData() )
+            Table table = TableFactory.create(query.getValuesVariables()) ;
+            for ( Binding binding : query.getValuesData() )
                 table.addBinding(binding) ;
             OpTable opTable = OpTable.create(table) ;
             op = OpJoin.create(op, opTable) ;

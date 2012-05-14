@@ -79,6 +79,9 @@ public class BuilderNode
         
     public static List<Var> buildVarList(ItemList list)
     {
+        if ( list.size() > 0 && list.getFirst().isSymbol(Tags.tagVars) )
+            list = list.cdr() ;
+        
         List<Var> vars = new ArrayList<Var>() ;
         for (Item x : list)
         {

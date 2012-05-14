@@ -1,4 +1,4 @@
-// Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+fBINDI// Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 //Tokens in BNF
 // [] means will be inlined.
@@ -56,7 +56,6 @@
 [<OFFSET>]     ::= 'OFFSET'
 [<ORDER>]      ::= 'ORDER'
 [<BY>]         ::= 'BY'
-[<BINDINGS>]   ::= 'BINDINGS'
 [<VALUES>]     ::= 'VALUES'
 [<UNDEF>]      ::= 'UNDEF'
 

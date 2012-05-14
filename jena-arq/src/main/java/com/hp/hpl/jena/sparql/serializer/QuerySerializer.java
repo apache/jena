@@ -255,12 +255,12 @@ public class QuerySerializer implements QueryVisitor
     }
     
     @Override
-    public void visitBindings(Query query)
+    public void visitValues(Query query)
     {
-        if ( query.hasBindings() )
+        if ( query.hasValues() )
         {
-            out.print("BINDINGS") ;
-            outputDataBlock(out, query.getBindingsVariables(), query.getBindingsData(), query) ;
+            out.print("VALUES") ;
+            outputDataBlock(out, query.getValuesVariables(), query.getValuesData(), query) ;
         }
     }
 

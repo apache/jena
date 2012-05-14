@@ -159,15 +159,15 @@ public class ParserQueryBase extends ParserBase
     private List<Binding> values = null ;
     private int currentColumn = -1 ;
     
-    protected void startBinding(int line, int col)               
+    protected void startValuesClause(int line, int col)               
     { 
         variables = new ArrayList<Var>() ;
         values = new ArrayList<Binding>() ;
     }
     
-    protected void finishBinding(int line, int col)
+    protected void finishValuesClause(int line, int col)
     {
-        getQuery().setBindingsDataBlock(variables, values) ;
+        getQuery().setValuesDataBlock(variables, values) ;
     }
     
     protected void startInlineData(List<Var> vars, List<Binding> rows, int line, int col)
