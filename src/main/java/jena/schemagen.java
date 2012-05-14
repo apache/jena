@@ -86,7 +86,7 @@ public class schemagen {
 
 
 
-    /** List of Java reserved keywords, see <a href="http://java.sun.com/docs/books/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
+    /** List of Java reserved keywords, see <a href="http://docs.oracle.com/javase/tutorial/java/nutsandbolts/_keywords.html">this list</a>. */
     public static final String[] JAVA_KEYWORDS = {
         "abstract",    "continue",    "for",         "new",         "switch",
         "assert",      "default",     "goto",        "package",     "synchronized",
