@@ -27,16 +27,16 @@ import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * Use arbitrary SAX input to Jena. See <a
- * href="../../../../../../../ARP/sax.html">ARP SAX documentation</a>.
- * 
+ * href="/documentation/io/sax.html">ARP SAX documentation</a>.
+ *
  * @author Jeremy J. Carroll
- * 
+ *
  */
 public class SAX2Model extends SAX2RDF {
 
     /**
      * Factory method to create a new SAX2Model.
-     * 
+     *
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
@@ -60,7 +60,7 @@ public class SAX2Model extends SAX2RDF {
      * the application needs to find this value in the outer context.
      * Optionally, namespace prefixes can be passed from the outer context using
      * {@link #startPrefixMapping}.
-     * 
+     *
      * @param base
      *            The retrieval URL, or the base URI to be used while parsing.
      * @param m
@@ -83,7 +83,7 @@ public class SAX2Model extends SAX2RDF {
 
     /**
      * Begin the scope of a prefix-URI Namespace mapping.
-     * 
+     *
      * <p>
      * This is passed to any {@link NamespaceHandler} associated with this
      * parser. It can be called before the initial <code>startElement</code>
@@ -96,12 +96,12 @@ public class SAX2Model extends SAX2RDF {
      * prefixes declared in the outer context, in which case, any output routine
      * will need to use a gensym for such namespaces.
      * </p>
-     * 
+     *
      * @param prefix
      *            The Namespace prefix being declared.
      * @param uri
      *            The Namespace URI the prefix is mapped to.
-     * 
+     *
      */
     @Override
     public void startPrefixMapping(String prefix, String uri)
@@ -117,7 +117,7 @@ public class SAX2Model extends SAX2RDF {
     /**
      * Constructor, see {@link #create(String, Model, String)} for top-level
      * javadoc.
-     * 
+     *
      * @param base
      * @param m
      * @param lang
@@ -136,7 +136,7 @@ public class SAX2Model extends SAX2RDF {
         JenaHandler rslt = new JenaHandler(m, errorHandler);
         rslt.useWith(getHandlers());
         return rslt;
-        
+
     }
     private boolean closed = false;
 
@@ -157,7 +157,7 @@ public class SAX2Model extends SAX2RDF {
      * Note that errors of class {@link ParseException}can be promoted using
      * the {@link ParseException#promote}method. See ARP documentation for
      * {@link org.xml.sax.ErrorHandler}for the details of error promotion.
-     * 
+     *
      * @param errHandler
      *            The new error handler.
      * @return The old error handler.
@@ -172,7 +172,7 @@ public class SAX2Model extends SAX2RDF {
     }
 
     /**
-     * 
+     *
      * Change a property of the RDF or XML parser.
      * <p>
      * I do not believe that many of the XML features or properties are in fact
@@ -251,7 +251,7 @@ public class SAX2Model extends SAX2RDF {
      * </tr>
      * </table></dd>
      * </dl>
-     * 
+     *
      * @param str
      *            The property to set.
      * @param value
