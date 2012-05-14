@@ -24,18 +24,16 @@
 <p>A parser for <a href="http://www.w3.org/TR/rdf-syntax-grammar">RDF/XML</a>.
 </p>
 <p>
-See the 
-<a href="../../../../../../../ARP/index.html">ARP documentation</a> 
-and 
-the 
-<a href="../../../../../../../IO/iohowto.html#input">I/O mini howto</a> for more information.
+See the
+<a href="/documentation/io/index.html">ARP documentation</a>
+for more information.
 </p>
 <!--
-<p>The interaction between ARP and Xerces 
+<p>The interaction between ARP and Xerces
 seems to include a significant
 memory leak possibly caused by Xerces interning some strings, on behalf of ARP.
 This feature cannot be turned off.
-This is not a new bug, so ARP users will not experience a degradation 
+This is not a new bug, so ARP users will not experience a degradation
 in performance. However, for users who have limited memory, or who are processing
 large files, or files from many diverse sources,
 or for long-lived applications such as web servers, it is important to
@@ -45,7 +43,7 @@ form an open set in RDF/XML, unlike most XML applications.
 </p>
 <p>
 A potential work around is to use a SAX parser other than Xerces and then
-use {@link com.hp.hpl.jena.rdf.arp.SAX2Model SAX2Model} or 
+use {@link com.hp.hpl.jena.rdf.arp.SAX2Model SAX2Model} or
 {@link com.hp.hpl.jena.rdf.arp.SAX2RDF SAX2RDF} to parse the SAX event stream as RDF.
 </p>
 <p>
