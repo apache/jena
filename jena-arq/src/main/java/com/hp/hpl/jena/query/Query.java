@@ -93,19 +93,9 @@ public class Query extends Prologue implements Cloneable, Printable
     public static final int ORDER_DEFAULT             = -2 ;    // Not explicitly given. 
     public static final int ORDER_UNKNOW              = -3 ; 
 
-    // BINDINGS
-    protected TableData bindingsDataBlock = null ;
-//    // VALUES
-//    protected TableData valuesDataBlock = null ;
+    // VALUES trailing clause
+    protected TableData valuesDataBlock = null ;
     
-//    // BINDINGS
-//        protected List<Var> bindingVariables = null ;
-//    protected List<Binding> bindingValues = null ;
-//    
-//    // VALUES
-//    protected List<Var> dataVariables = null ;
-//    protected List<Binding> dataValues = null ;
-
     protected boolean strictQuery = true ;
     
     // SELECT * seen
@@ -581,20 +571,29 @@ public class Query extends Prologue implements Cloneable, Printable
         return aggExpr ;
     }
     
-    // ---- BINDINGS
-    // TODO Make a DataBlock.
+    // ---- VALUES
     
-    /** Does the query have any BINDINGS? */
-    public boolean hasBindings()                { return bindingsDataBlock != null ; }
+    /** Does the query have a VALUES trailing block? */
+    public boolean hasValues()                { return valuesDataBlock != null ; }
     
-    /** Binding variables
-     * @deprecated Use getBindingsDataVariable() 
+    
+    /** 
+     * @deprecated Use hasValues() 
      */ 
     @Deprecated 
-    public List<Var> getBindingVariables()      { return getBindingsVariables() ; }
+    public boolean hasBindings()                { return hasValues() ; }
+    
+    /** Binding variables
+     * @deprecated Use getValuesVariables() 
+     */ 
+    @Deprecated 
+    public List<Var> getBindingVariables()      { return getValuesVariables() ; }
 
-    /** Binding variables */
-    public List<Var> getBindingsVariables()     { return bindingsDataBlock==null ? null : bindingsDataBlock.getVars() ; }
+    /** @deprecated Use getValuesVariables() */
+    @Deprecated
+    public List<Var> getBindingsVariables()     { return getValuesVariables() ; }
+
+    public List<Var> getValuesVariables()     { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
     
     /** Binding values - null for a Node means undef
      * @deprecated Use getBindingsData() 
@@ -602,40 +601,28 @@ public class Query extends Prologue implements Cloneable, Printable
     @Deprecated 
     public List<Binding> getBindingValues()     { return getBindingsData() ; }
 
-    /** Binding values - null for a Node means undef */ 
-    public List<Binding> getBindingsData()      { return bindingsDataBlock==null ? null : bindingsDataBlock.getRows() ; }
+    /** @deprecated Use getValuesData() */ 
+    @Deprecated 
+    public List<Binding> getBindingsData()      { return getValuesData() ; }
 
-    /** @deprecated Use setBindingsDataBlock */
+    /** VALUES data - null for a Node means undef */ 
+    public List<Binding> getValuesData()      { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
+
+    /** @deprecated Use setValuesDataBlock */
     @Deprecated
     public void setBindings(List<Var> variables, List<Binding> values)
     { setBindingsDataBlock(variables, values) ; }
     
-    //public TableData getBindingsDataBlock()          { return bindingsDataBlock ; }
-    
+    /** @deprecated Use setValuesDataBlock */
+    @Deprecated
     public void setBindingsDataBlock(List<Var> variables, List<Binding> values)
+    { setValuesDataBlock(variables, values) ; }
+    
+    public void setValuesDataBlock(List<Var> variables, List<Binding> values)
     {
         checkDataBlock(variables, values) ;
-        bindingsDataBlock = new TableData(variables, values) ;
+        valuesDataBlock = new TableData(variables, values) ;
     }
-    
-//    // ---- Values
-//
-//    /** Does the query have any VALUES? */
-//    public boolean hasValues()                  { return valuesDataBlock != null ; }
-//    
-//    /** VALUES variables */
-//    public List<Var> getValuesVariables()       { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
-//    
-//    /** VALUES - null for a Node means undef */ 
-//    public List<Binding> getValuesData()        { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
-//    
-//    //public TableData getValuesDataBlock()          { return valuesDataBlock ; }
-//    
-//    public void setValuesDataBlock(List<Var> variables, List<Binding> values)
-//    {
-//        checkDataBlock(variables, values) ;
-//        valuesDataBlock = new TableData(variables, values) ;
-//    }
     
     private static void checkDataBlock(List<Var> variables, List<Binding> values)
     {
@@ -741,8 +728,8 @@ public class Query extends Prologue implements Cloneable, Printable
             // Binding variables -- in patterns, not in filters and not in EXISTS
             LinkedHashSet<Var> queryVars = new LinkedHashSet<Var>() ;
             PatternVars.vars(queryVars, this.getQueryPattern()) ;
-            if ( this.hasBindings() )
-                queryVars.addAll(getBindingsVariables()) ;
+            if ( this.hasValues() )
+                queryVars.addAll(getValuesVariables()) ;
 //            if ( this.hasValues() )
 //                queryVars.addAll(getValuesVariables()) ;
             varIter = queryVars.iterator() ;
@@ -780,7 +767,7 @@ public class Query extends Prologue implements Cloneable, Printable
         visitor.visitOrderBy(this) ;
         visitor.visitOffset(this) ;
         visitor.visitLimit(this) ;
-        visitor.visitBindings(this) ;
+        visitor.visitValues(this) ;
         visitor.finishVisit(this) ;
     }
 
