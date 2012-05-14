@@ -1,0 +1,6 @@
+SELECT * { 
+  VALUES (?x ?y) 
+  {
+    (1 2) (<x> <y>) (UNDEF <z>)
+  }
+}

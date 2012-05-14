@@ -129,12 +129,12 @@ public class QueryHashCode
         }
 
         @Override
-        public void visitBindings(Query query)
+        public void visitValues(Query query)
         {
-            if ( query.hasBindings() )
+            if ( query.hasValues() )
             {
-                x ^= query.getBindingsVariables().hashCode() ;
-                x ^= query.getBindingsData().hashCode() ;
+                x ^= query.getValuesVariables().hashCode() ;
+                x ^= query.getValuesData().hashCode() ;
             }
         }
 

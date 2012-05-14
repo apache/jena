@@ -244,7 +244,7 @@ public class ARQ
      */
     // Some possible additions to the list:
     // Sort: DISTINCT, merge joins<br/>
-    // Hash table: GROUP BY, MINUS, SERVICE, BINDINGS, and hash joins <br/>
+    // Hash table: GROUP BY, MINUS, SERVICE, VALUES, and hash joins <br/>
     public static final Symbol spillToDiskThreshold = ARQConstants.allocSymbol("spillToDiskThreshold") ;
     
     // Optimizer controls.

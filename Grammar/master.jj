@@ -127,7 +127,7 @@ void Query() : { }
 //   | JsonTemplateQuery()
 // #endif
   )
-  BindingsClause()
+  ValuesClause()
 }
 
 #ifdef UPDATE
@@ -174,6 +174,7 @@ void SubSelect() :{ }
   SelectClause()
   WhereClause()
   SolutionModifier()
+  ValuesClause()
 } 
 
 void SelectClause() : {  Var v ; Expr expr ; Node n ; }
@@ -429,92 +430,15 @@ void OffsetClause() : { Token t ; }
     { getQuery().setOffset(integerValue(t.image)) ; }
 }
 
-void BindingsClause() : { Token t ; }
+void ValuesClause() : { Token t ; }
 {
   (
-    t = <BINDINGS>  
-    { startBinding(t.beginLine, t.beginColumn) ; }
+    t = <VALUES>  
+    { startValuesClause(t.beginLine, t.beginColumn) ; }
     DataBlock()
-    { finishBinding(t.beginLine, t.beginColumn) ; }
+    { finishValuesClause(t.beginLine, t.beginColumn) ; }
   )?
 }
-
-void DataBlock() : { Var v ; Node n ; Token t ; }
-{
-  ( v = Var() { emitDataBlockVariable(v) ; }) *
-  t = <LBRACE>
-  (
-    t = <LPAREN> 
-      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-    (n = DataBlockValue() { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }) *
-    t = <RPAREN> 
-      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-  |
-    t = <NIL>
-    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-    { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-  )*
-  t = <RBRACE>
-}
-
-Node DataBlockValue() : { Node n ; String iri ; }
-{
-  iri = iri()           { return createNode(iri) ; }
-| n = RDFLiteral()      { return n ; }
-| n = NumericLiteral()  { return n ; }
-| n = BooleanLiteral()  { return n ; }
-| <UNDEF>               { return null ; }
-}
-
-#ifdef ARQ
-Element InlineData() : { ElementData el ; Token t ; }
-{
-  t = <VALUES>
-  { el = new ElementData() ;
-    startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ; }
-  ( InlineDataOneVar(el) |  InlineDataFull(el) )
-  { finishInlineData(t.beginLine, t.beginColumn) ;
-    return el ; }
-}
-
-void InlineDataOneVar(ElementData el) : { Var v ; Node n ; Token t ; }
-{
-  v = Var()
-  { emitDataBlockVariable(v) ; }
-  t = <LBRACE>
-  ( 
-    n = DataBlockValue() 
-    { startDataBlockValueRow(-1, -1) ;
-      emitDataBlockValue(n, -1, -1) ;
-      finishDataBlockValueRow(-1, -1) ;
-    }
-  )*
-  t = <RBRACE>
-}  
-  
-void InlineDataFull(ElementData el) : { Var v ; Node n ; Token t ; }
-{
-  t = <LPAREN>
-  (v = Var() { emitDataBlockVariable(v) ; })*
-  t = <RPAREN>
-  t = <LBRACE>
-  (
-    t = <LPAREN> 
-    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-    (n = DataBlockValue() 
-        { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
-    ) *
-    t = <RPAREN> 
-      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-  |
-    t = <NIL>
-      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-   )*
-  t = <RBRACE>
-}  
-#endif
-
 
 #ifdef UPDATE
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
@@ -905,9 +829,9 @@ Element GraphPatternNotTriples() : { Element el = null ; }
    el = Filter()
  |
    el = Bind()
-#ifdef ARQ
  |
    el = InlineData()
+#ifdef ARQ
  |
    el = Assignment()
 #ifdef ARQ_FETCH
@@ -957,6 +881,71 @@ Element Bind() : {  Var v ; Expr expr ; }
   v = Var()
   <RPAREN>
   { return new ElementBind(v, expr) ; }
+}
+
+Element InlineData() : { ElementData el ; Token t ; }
+{
+  t = <VALUES>
+  { el = new ElementData() ;
+    startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ; }
+  DataBlock()
+  { finishInlineData(t.beginLine, t.beginColumn) ;
+    return el ; }
+}
+
+void DataBlock() : { }
+{
+  ( InlineDataOneVar() |  InlineDataFull() )
+}
+
+void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
+{
+  v = Var()
+  { emitDataBlockVariable(v) ; }
+  t = <LBRACE>
+  ( 
+    n = DataBlockValue() 
+    { startDataBlockValueRow(-1, -1) ;
+      emitDataBlockValue(n, -1, -1) ;
+      finishDataBlockValueRow(-1, -1) ;
+    }
+  )*
+  t = <RBRACE>
+}  
+  
+void InlineDataFull() : { Var v ; Node n ; Token t ; }
+{
+  (
+     <NIL>
+  |
+    t = <LPAREN>
+    (v = Var() { emitDataBlockVariable(v) ; })*
+    t = <RPAREN>
+  )
+  t = <LBRACE>
+  (
+    t = <LPAREN> 
+    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    (n = DataBlockValue() 
+        { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
+    ) *
+    t = <RPAREN> 
+      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+  |
+    t = <NIL>
+      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+   )*
+  t = <RBRACE>
+}  
+
+Node DataBlockValue() : { Node n ; String iri ; }
+{
+  iri = iri()           { return createNode(iri) ; }
+| n = RDFLiteral()      { return n ; }
+| n = NumericLiteral()  { return n ; }
+| n = BooleanLiteral()  { return n ; }
+| <UNDEF>               { return null ; }
 }
 
 #ifdef ARQ
@@ -2140,7 +2129,6 @@ TOKEN [IGNORE_CASE] :
 |  < OFFSET:      "offset" >
 |  < ORDER:       "order" >
 |  < BY:          "by" >
-|  < BINDINGS:    "bindings" >
 |  < VALUES:      "values" >
 |  < UNDEF:       "undef" >
 

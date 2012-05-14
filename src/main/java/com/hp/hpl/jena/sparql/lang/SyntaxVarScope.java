@@ -48,7 +48,8 @@ public class SyntaxVarScope
     (expr AS v) for BIND, SELECT and GROUP BY       v is in-scope
     SELECT ..v .. { P }                             v is in-scope if v is mentioned as a project variable
     SELECT * { P }                                  v is in-scope in P
-    BINDINGS varlist (values)                       v is in-scope if v is in varlist
+    VALUES var     (values)                         v is in-scope if v is in varlist
+    VALUES varlist (values)                         v is in-scope if v is in varlist
      */
     
     // Weakness : EXISTS inside FILTERs?
@@ -95,8 +96,8 @@ public class SyntaxVarScope
     private static Collection<Var> varsOfQuery(Query query)
     {
         Collection<Var> vars = PatternVars.vars(query.getQueryPattern()) ;
-        if ( query.hasBindings() )
-            vars.addAll(query.getBindingsVariables()) ;
+        if ( query.hasValues() )
+            vars.addAll(query.getValuesVariables()) ;
         return vars ;
     }
     
