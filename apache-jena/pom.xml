@@ -29,8 +29,9 @@
 
   <parent>
     <groupId>org.apache.jena</groupId>
-    <artifactId>jena-top</artifactId>
-    <version>0-incubating</version>
+    <artifactId>jena-parent</artifactId>
+    <version>1-SNAPSHOT</version>
+    <relativePath>../jena-parent</relativePath>
   </parent> 
 
   <organization>
@@ -52,9 +53,9 @@
   </scm>
 
   <properties>
-    <ver.jena>2.7.1-incubating-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.1-incubating-SNAPSHOT</ver.arq>
-    <ver.iri>0.9.1-incubating-SNAPSHOT</ver.iri>
+    <ver.jena>2.7.1-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.1-SNAPSHOT</ver.arq>
+    <ver.iri>0.9.1-SNAPSHOT</ver.iri>
   </properties>
 
   <dependencies>

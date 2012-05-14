@@ -18,12 +18,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>jena</name>
+  <name>Apache Jena Main</name>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>1-SNAPSHOT</version>
+  <version>2.7.X-SNAPSHOT</version>
+
+  <!-- Needed for -Psource-release -->
+  <parent>
+    <groupId>org.apache</groupId>
+    <artifactId>apache</artifactId>
+    <version>10</version>
+  </parent>
 
   <licenses>
     <license>
@@ -50,10 +57,48 @@
     <module>jena-arq</module>
     <!--
     <module>jena-tdb</module>
-    <module>jena-sdb</module>
     <module>jena-fuseki</module>
+    <module>jena-sdb</module>
     <module>jena-larq</module>
     -->
   </modules>
 
+  <mailingLists>
+    <mailingList>
+      <name>Jena Users Mailing List</name>
+      <post>users@jena.apache.org</post>
+      <subscribe>users-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>users-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/jena-users/</archive>
+      <otherArchives>
+	<otherArchive>http://www.mail-archive.com/users@jena.apache.org/</otherArchive>
+	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.users</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Jena Developers Mailing List</name>
+      <post>dev@jena.apache.org</post>
+      <subscribe>dev-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>dev-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/jena-dev/</archive>
+      <otherArchives>
+	<otherArchive>http://www.mail-archive.com/dev@jena.apache.org/</otherArchive>
+	<otherArchive>http://markmail.org/search/?q=list%3Aorg.apache.jena.dev</otherArchive>
+      </otherArchives>
+    </mailingList>
+    <mailingList>
+      <name>Jena Commits</name>
+      <post>commits@jena.apache.org</post>
+      <subscribe>commits-subscribe@jena.apache.org</subscribe>
+      <unsubscribe>commits-unsubscribe@jena.apache.org</unsubscribe>
+      <archive>http://mail-archives.apache.org/mod_mbox/jena-commits/</archive>
+    </mailingList>
+  </mailingLists>
+  
+
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://issues.apache.org/jira/browse/JENA</url>
+  </issueManagement>
+  
 </project>
