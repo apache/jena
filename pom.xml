@@ -54,17 +54,26 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
+    <ver.xerces>2.10.0</ver.xerces>
     <ver.iri>0.9.1-SNAPSHOT</ver.iri>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
 
   <dependencies>
+
+     <dependency>
+       <groupId>xerces</groupId>
+       <artifactId>xercesImpl</artifactId>
+       <version>${ver.xerces}</version>
+     </dependency>
+
     <dependency>
        <groupId>org.apache.jena</groupId>
        <artifactId>jena-iri</artifactId>
        <version>${ver.iri}</version>
     </dependency>
+
   </dependencies>
 
   <build>
