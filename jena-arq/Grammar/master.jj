@@ -1123,6 +1123,11 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyList(s, acc)
 }
 
+void PropertyList(Node s, TripleCollector acc) : { }
+{
+  ( PropertyListNotEmpty(s, acc) ) ?
+}
+
 void PropertyListNotEmpty(Node s, TripleCollector acc) : 
     { Node p = null ; }
 {
@@ -1136,9 +1141,12 @@ void PropertyListNotEmpty(Node s, TripleCollector acc) :
   )*
 }
 
-void PropertyList(Node s, TripleCollector acc) : { }
+Node Verb() : { Node p ;}
 {
-  ( PropertyListNotEmpty(s, acc) ) ?
+// Blank nodes as predicates
+//   ( p = VarOrBlankNodeOriri() | <KW_A> { p = nRDFtype ; } )
+  ( p = VarOrIri() | <KW_A> { p = nRDFtype ; } )
+  { return p ; }
 }
 
 void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
@@ -1154,14 +1162,6 @@ void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
   { insert(acc, mark, s, p, path, o) ; }
 }
 
-Node Verb() : { Node p ;}
-{
-// Blank nodes as predicates
-//   ( p = VarOrBlankNodeOriri() | <KW_A> { p = nRDFtype ; } )
-  ( p = VarOrIri() | <KW_A> { p = nRDFtype ; } )
-  { return p ; }
-}
-
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
 
@@ -1175,6 +1175,12 @@ void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
   PropertyListPath(s, acc)
 }
 
+
+void PropertyListPath(Node s, TripleCollector acc) : { }
+{
+  ( PropertyListPathNotEmpty(s, acc) ) ?
+}
+
 void PropertyListPathNotEmpty(Node s, TripleCollector acc) : 
     { Path path = null ; Node p = null ; }
 {
@@ -1182,7 +1188,7 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
   | p = VerbSimple()
   )
 
-  ObjectList(s, p, path, acc)
+  ObjectListPath(s, p, path, acc)
   ( <SEMICOLON> 
     { path = null ; p = null ; }
     (
@@ -1198,12 +1204,6 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
 #endif
 }
 
-void PropertyListPath(Node s, TripleCollector acc) : { }
-{
-  ( PropertyListPathNotEmpty(s, acc) ) ?
-}
-
-
 Path VerbPath() : {Node p ; Path path ; }
 {
   path = Path() { return path ; }
@@ -1216,6 +1216,21 @@ Node VerbSimple() : { Node p ; }
   p = Var()
   { return p ; }
 }
+
+void ObjectListPath(Node s,  Node p, Path path, TripleCollector acc): { Node o ; } 
+{
+  ObjectPath(s, p, path, acc)
+  ( <COMMA> ObjectPath(s, p, path, acc) )*
+}
+
+void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
+{
+    { int mark = acc.mark() ; }
+  o = GraphNodePath(acc) 
+  { insert(acc, mark, s, p, path, o) ; }
+}
+
+
 // End paths stuff.
 
 // -------- Paths
@@ -1403,7 +1418,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
 
 Node TriplesNodePath(TripleCollector acc) : { Node n ; }
 {
-  n = Collection(acc) { return n ; }
+  n = CollectionPath(acc) { return n ; }
  |
   n = BlankNodePropertyListPath(acc) { return n ; }
 #if 0
@@ -1473,6 +1488,31 @@ Node Collection(TripleCollector acc) :
      return listHead ; }
 }
 
+Node CollectionPath(TripleCollector acc) : 
+    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
+{
+  t = <LPAREN> 
+  (
+    { Node cell = createListNode( t.beginLine, t.beginColumn) ;
+      if ( listHead == nRDFnil )
+         listHead = cell ;
+      if ( lastCell != null )
+        insert(acc, lastCell, nRDFrest,  cell) ;
+      mark = acc.mark() ;
+    }
+    n = GraphNodePath(acc)
+    {
+      insert(acc, mark, cell, nRDFfirst, n) ;
+      lastCell = cell ;
+    }
+  ) +
+  // Not * here - "()" is handled separately.
+  <RPAREN>
+   { if ( lastCell != null )
+       insert(acc, lastCell, nRDFrest,  nRDFnil) ;
+     return listHead ; }
+}
+
 // -------- Nodes in a graph pattern or template
 
 Node GraphNode(TripleCollector acc) : { Node n ; }
@@ -1480,6 +1520,13 @@ Node GraphNode(TripleCollector acc) : { Node n ; }
   n = VarOrTerm() { return n ; }
  |
   n = TriplesNode(acc) { return n ; }
+}
+
+Node GraphNodePath(TripleCollector acc) : { Node n ; }
+{
+  n = VarOrTerm() { return n ; }
+ |
+  n = TriplesNodePath(acc) { return n ; }
 }
 
 Node VarOrTerm() : {Node n = null ; }
