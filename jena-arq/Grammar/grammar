@@ -88,33 +88,11 @@ function grammar
 
 # --------------------------------------------------------
 
-function rdqlGrammar
-{
-    # This one uses the old RDQL expression code via JJTree
-    (
-	echo "---- Process RDQL grammar"
-	DIR="../src/com/hp/hpl/jena/sparql/lang/rdql"
-	rm -f rdql-arq.jj
-	jjtree "-OUTPUT_DIRECTORY=$DIR" rdql-arq.jjt
-	RC=$?
-	## Move the .jj file back here
-	mv $DIR/rdql-arq.jj .
-	#echo "RC: $RC"
-	if [ "$RC" = "0" ]
-	    then
-	    javacc -OUTPUT_DIRECTORY=$DIR rdql-arq.jj
-	    rm rdql-arq.jj
-	fi
-    )
-}
-
-# --------------------------------------------------------
-
 if [ $# == 0 ]
 then
     # Not sparql10
     set -- sparql11 arq
-    ## echo "Usage: grammar [arq|sparql|rdql]" 1>&2
+    ## echo "Usage: grammar [arq|sparql]" 1>&2
     ## exit 1
     fi
 
@@ -140,10 +118,6 @@ do
       arq|arq.jj)
           cat "$GRAMMAR" | cpp -P -C -DARQ > arq.jj
           grammar arq.jj arq ARQParser
-          ;;
-
-      rdql) echo "Tread carefully" 1>&2
-          rdqlGrammar
           ;;
 
       all)  grammar sparql
