@@ -93,7 +93,9 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         {
             QueryIterator qIterOpen = iterOpen.next() ;
             warn(qIterOpen, "Open iterator: ") ;
+            iterOpen.remove() ;
         }
+     
     }
 
     private static void warn(QueryIterator qIter, String str)
