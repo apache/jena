@@ -18,15 +18,25 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Iterator ;
+
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorResourceClosing ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.Closeable ;
+
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.impl.LiteralImpl ;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.rdf.model.impl.StmtIteratorImpl ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 
 
 public class ModelUtils
@@ -77,6 +87,61 @@ public class ModelUtils
 //        
 //        Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
 //        return stmt ;
+    }
+    
+    
+    public static StmtIterator triplesToStatements(final Iterator<Triple> it, final Model refModel)
+    {
+        return new StmtIteratorImpl(Iter.map(it, new Transform<Triple,Statement>()
+        {
+            @Override
+            public Statement convert(Triple item)
+            {
+                return refModel.asStatement(item);
+            }
+        }))
+        {
+            // Make sure to close the incoming iterator
+            @Override
+            public void close()
+            {
+                if (it instanceof ClosableIterator<?>)
+                {
+                    ((ClosableIterator<?>)it).close();
+                }
+                else
+                {
+                    Iter.close(it);
+                }
+            }
+        };
+    }
+    
+    public static Iterator<Triple> statementsToTriples(final Iterator<Statement> it)
+    {
+        return new IteratorResourceClosing<Triple>(Iter.map(it, new Transform<Statement,Triple>()
+        {
+            @Override
+            public Triple convert(Statement item)
+            {
+                return item.asTriple();
+            }
+        }),
+        new Closeable()
+        {
+            @Override
+            public void close()
+            {
+                if (it instanceof ClosableIterator<?>)
+                {
+                    ((ClosableIterator<?>)it).close();
+                }
+                else
+                {
+                    Iter.close(it);
+                }
+            }
+        });
     }
  
 }
