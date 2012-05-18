@@ -24,8 +24,12 @@ import java.util.List ;
 import java.util.Set ;
 import java.util.concurrent.TimeUnit ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.IteratorResourceClosing ;
+import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.AlarmClock ;
 import org.openjena.atlas.lib.Callback ;
+import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Pingback ;
 import org.openjena.atlas.logging.Log ;
 
@@ -44,6 +48,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.rdf.model.StmtIterator ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -350,6 +355,32 @@ public class QueryExecutionBase implements QueryExecution
 
         this.close() ;
         return model ; 
+    }
+    
+    // TODO not memory efficient
+    @Override
+    public Iterator<Triple> execDescribeTriples()
+    {
+        Model model = execDescribe() ;
+        
+        // TODO Is this the best way to get an Iterator<Triple> out of a model?
+        final StmtIterator it = model.listStatements() ;
+        return new IteratorResourceClosing<Triple>(Iter.map(it, new Transform<Statement, Triple>()
+        {
+            @Override
+            public Triple convert(Statement item)
+            {
+                return item.asTriple() ;
+            }
+        }),
+        new Closeable()
+        {
+            @Override
+            public void close()
+            {
+                it.close() ;
+            }
+        });
     }
 
     @Override
