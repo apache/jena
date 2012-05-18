@@ -25,15 +25,22 @@ import org.openjena.atlas.io.IO;
 import org.openjena.atlas.lib.Closeable;
 
 /**
- * This iterator will automatically close a {@link java.io.Closeable} resource when the iterator is exhausted.
- * Alternatively, the resource will be closed when {@link #close()} is called.  An {@link AtlasException} will
- * be thrown if access is attempted after {@link #close()} has been called.
+ * This iterator will automatically close a {@link org.openjena.atlas.lib.Closeable} or {@link java.io.Closeable}
+ * resource when the iterator is exhausted.  Alternatively, the resource will be closed when {@link #close()} is
+ * called.  An {@link AtlasException} will be thrown if access is attempted after {@link #close()} has been called.
  */
 public class IteratorResourceClosing<T> implements Iterator<T>, Closeable
 {
     private final Iterator<T> iter ;
-    private final java.io.Closeable resource ;
+    private final Object resource ;
     private boolean finished;
+    
+    public IteratorResourceClosing(Iterator<T> iter, Closeable resource)
+    {
+        this.iter = iter;
+        this.resource = resource;
+        this.finished = false;
+    }
     
     public IteratorResourceClosing(Iterator<T> iter, java.io.Closeable resource)
     {
@@ -83,7 +90,17 @@ public class IteratorResourceClosing<T> implements Iterator<T>, Closeable
         if (!finished)
         {
             Iter.close(iter) ;
-            IO.close(resource) ;
+            if (null != resource)
+            {
+                if (resource instanceof Closeable)
+                {
+                    ((Closeable)resource).close() ;
+                }
+                else
+                {
+                    IO.close((java.io.Closeable)resource) ;
+                }
+            }
             finished = true;
         }
     }
