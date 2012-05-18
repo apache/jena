@@ -243,16 +243,22 @@ public class QueryEngineHTTP implements QueryExecution
     }
 
     @Override
-    public Model execConstruct()             { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
+    public Model execConstruct()                   { return execConstruct(GraphFactory.makeJenaDefaultModel()) ; }
     
     @Override
-    public Model execConstruct(Model model)  { return execModel(model) ; }
+    public Model execConstruct(Model model)        { return execModel(model) ; }
+    
+    @Override
+    public Iterator<Triple> execConstructTriples() { return execTriples() ; }
 
     @Override
-    public Model execDescribe()              { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
+    public Model execDescribe()                    { return execDescribe(GraphFactory.makeJenaDefaultModel()) ; }
     
     @Override
-    public Model execDescribe(Model model)   { return execModel(model) ; }
+    public Model execDescribe(Model model)         { return execModel(model) ; }
+    
+    @Override
+    public Iterator<Triple> execDescribeTriples()  { return execTriples() ; }
 
     private Model execModel(Model model)
     {
@@ -278,8 +284,7 @@ public class QueryEngineHTTP implements QueryExecution
         return model ;
     }
     
-    @Override
-    public Iterator<Triple> execConstructTriples()
+    private Iterator<Triple> execTriples()
     {
         HttpQuery httpQuery = makeHttpQuery() ;
         httpQuery.setAccept(modelContentType) ;

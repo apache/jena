@@ -93,9 +93,18 @@ public interface QueryExecution
     public Model execDescribe();
 
     /** Execute a DESCRIBE query, putting the statements into 'model'.
-     *  @return Model The model argument for casaded code.
+     *  @return Model The model argument for cascaded code.
      */
     public Model execDescribe(Model model);
+    
+    /**
+     * Execute a DESCRIBE query, returning the results as an iterator of {@link Triple}.
+     * <b>Caution:</b> This method may return duplicate Triples.  This method may be useful if you only
+     * need the results for stream processing, as it can avoid having to place the results in a Model.
+     * 
+     * @return An iterator of Triple objects (possibly containing duplicates) generated as the output of the DESCRIBE query.
+     */
+    public Iterator<Triple> execDescribeTriples();
 
     /** Execute an ASK query */
     public boolean execAsk();
