@@ -40,6 +40,9 @@ public class Names
     /** ExtHash - dictionary file*/
     public static final String extHashExt               = "exh" ;
     public static final String extHashBucketExt         = "dat" ;
+
+    public static final String datasetConfig            = "config-tdb" ;        // name of the TDB configuration file.
+
     
     /** Node file */
     public static final String extNodeData              = "dat" ;           // Extension of node files
