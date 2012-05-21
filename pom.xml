@@ -23,9 +23,9 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>2.7.X-SNAPSHOT</version>
+  <version>2.7.1-SNAPSHOT</version>
 
-  <!-- Needed for -Psource-release -->
+  <!-- Needed for -Papache-release -->
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
@@ -100,5 +100,14 @@
     <system>JIRA</system>
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>jena-repo-dev</id>
+      <name>Jena development repo</name>
+      <url>sftp://openjena.org/var/repo-dev</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
   
 </project>
