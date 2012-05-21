@@ -559,10 +559,15 @@ public class XSDFuncOp
         Node mainArg = string.asNode() ;
         
         if ( lex2.length() == 0 )
+            // This is considered to be "no match" in fn:substring-before
+            // SPARQL-WG proposed change:: 
+            // return NodeValue.nvEmptyString ;
             return calcReturn("", mainArg) ;
         
         int i = lex1.indexOf(lex2) ;
         if ( i < 0 )
+            // SPARQL-WG proposed change::
+            //return NodeValue.nvEmptyString ;
             return calcReturn("", mainArg) ;
         
         String s = lex1.substring(0, i) ;
@@ -577,10 +582,16 @@ public class XSDFuncOp
         Node mainArg = string.asNode() ;
         
         if ( lex2.length() == 0 )
-            return calcReturn("", mainArg) ;
+            // This is considered to be "no match" in fn:substring-after
+            // SPARQL-WG proposed change:: 
+            // return NodeValue.nvEmptyString ;
+            return calcReturn(lex1, mainArg) ;
         
         int i = lex1.indexOf(lex2) ;
         if ( i < 0 )
+            // This is considered to be "no match" in fn:substring-before
+            // SPARQL-WG proposed change:: 
+            // return NodeValue.nvEmptyString ;
             return calcReturn("", mainArg) ;
         i += lex2.length() ;
         String s = lex1.substring(i) ;
