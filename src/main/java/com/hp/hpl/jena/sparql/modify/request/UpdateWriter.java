@@ -245,7 +245,7 @@ public class UpdateWriter implements Closeable
         
         UpdateWriter uw = new UpdateWriter(out, sCxt);
         uw.open();
-        uw.update(request.getOperations());
+        uw.update(request);
         uw.close();
     }
     
