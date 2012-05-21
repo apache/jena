@@ -45,7 +45,7 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
         add(update) ;
     }
 
-    /** @deprecated Use @link{#add(Update)} */
+    /** @deprecated Use {@link #add(Update)} */
     @Deprecated
     public void addUpdate(Update update) { add(update) ; } 
 
@@ -58,8 +58,8 @@ public class UpdateRequest extends Prologue implements Printable, Iterable<Updat
 
     public List<Update> getOperations() { return operationsView ; }
     
+    /** @deprecated Use {@link #getOperations()} instead. */
     @Deprecated
-    /** @deprecated Use @link{#getOperations()} instead. */
     public List<Update> getUpdates() { return operationsView ; }
     
     @Override
