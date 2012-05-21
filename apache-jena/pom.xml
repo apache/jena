@@ -22,7 +22,7 @@
   <artifactId>apache-jena</artifactId>
   <packaging>pom</packaging>
   <name>apache-jena</name>
-  <!--<version>${ver.jena}</version>-->
+  <!-- Same as version from Jena/pom.xml, repeated for standalone testing -->
   <version>2.7.1-SNAPSHOT</version>
   <description />
   <url>http://jena.apache.org/</url>
@@ -136,7 +136,5 @@
       </plugin>
     </plugins>
   </build>
-
-
 
 </project>
