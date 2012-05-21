@@ -36,7 +36,7 @@ public class UpdateEngineMain extends UpdateEngineBase
     {
         graphStore.startRequest() ;
         UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding, context) ;
-        for ( Update up : request.getOperations() )
+        for ( Update up : request )
             up.visit(worker) ;
         graphStore.finishRequest() ;
     }
