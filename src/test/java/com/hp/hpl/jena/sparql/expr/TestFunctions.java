@@ -95,7 +95,7 @@ public class TestFunctions
     @Test public void exprStrAfter0() { test("STRAFTER('abc', 'abcd')", NodeValue.nvEmptyString) ; }
     @Test public void exprStrAfter1() { test("STRAFTER('abc'@en, 'b')", NodeValue.makeNode("c", "en", (String)null)) ; }
     @Test public void exprStrAfter2() { test("STRAFTER('abc'^^xsd:string, 'a')", NodeValue.makeNode("bc", XSDDatatype.XSDstring)) ; }
-    @Test public void exprStrAfter3() { test("STRAFTER('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("", XSDDatatype.XSDstring)) ; }
+    @Test public void exprStrAfter3() { test("STRAFTER('abc'^^xsd:string, ''^^xsd:string)", NodeValue.makeNode("abc", XSDDatatype.XSDstring)) ; }
     @Test public void exprStrAfter4() { test("STRAFTER('abc', 'bc'^^xsd:string)", NodeValue.nvEmptyString) ; }
     @Test public void exprStrAfter5() { test("STRAFTER('abc'@en, 'b'@en)", NodeValue.makeNode("c", "en", (String)null)) ; }
     
