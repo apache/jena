@@ -28,11 +28,9 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
  * Can be used to exclude daat from specific graphs.   
@@ -71,14 +69,9 @@ public class ExQuadFilter
     /** Create a filter to exclude the graph http://example/g2 */
     private static Filter<Tuple<NodeId>> createFilter(Dataset ds)
     {
-        Object x = ds.asDatasetGraph() ;
-        
-        DatasetGraphTransaction dst = (DatasetGraphTransaction)(ds.asDatasetGraph()) ;
-        DatasetGraphTDB dsg = dst.getBaseDatasetGraph();
-        final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         // Filtering operates at a very low level: 
-        // need to know the internal identifier for the graph name. 
-        final NodeId target = nodeTable.getNodeIdForNode(Node.createURI(graphToHide)) ;
+        // Need to know the internal identifier for the graph name. 
+        final NodeId target = TDBInternal.getNodeId(ds, Node.createURI(graphToHide)) ;
 
         System.out.println("Hide graph: "+graphToHide+" --> "+target) ;
         
@@ -89,7 +82,7 @@ public class ExQuadFilter
             public boolean accept(Tuple<NodeId> item)
             {
                 // Reverse the lookup as a demo
-                //Node n = nodeTable.getNodeForNodeId(target) ;
+                //Node n = TDBInternal.getNode(target) ;
                 //System.err.println(item) ;
                 if ( item.size() == 4 && item.get(0).equals(target) )
                 {
@@ -108,7 +101,7 @@ public class ExQuadFilter
         String[] x = {
             "SELECT * { GRAPH ?g { ?s ?p ?o } }",
             "SELECT * { ?s ?p ?o }",
-            // THis filter does not hide the graph itself, just the quads associated with the graph.
+            // This filter does not hide the graph itself, just the quads associated with the graph.
             "SELECT * { GRAPH ?g {} }"
             } ;
         
