@@ -30,7 +30,10 @@ import com.hp.hpl.jena.shared.PrefixMapping ;
 
 public interface DatasetPrefixStorage extends Closeable, Sync
 {
+    /** Return the set of graph names for which their migh tbe prefix mappings */ 
     public Set<String> graphNames() ;
+    
+    
     public String readPrefix(String graphName, String prefix) ;
     public String readByURI(String graphName, String uriStr) ;
     public Map<String, String> readPrefixMap(String graphName) ;
@@ -38,10 +41,9 @@ public interface DatasetPrefixStorage extends Closeable, Sync
     public void insertPrefix(String graphName, String prefix, String uri) ;
     
     public void loadPrefixMapping(String graphName, PrefixMapping pmap) ;
-    public void removeFromPrefixMap(String graphName, String prefix, String uri) ;
-    
-    
-    /** Return a PrefixMapping for the unamed graph */ 
+    public void removeFromPrefixMap(String graphName, String prefix) ;
+
+    /** Return a PrefixMapping for the default (unnamed) graph */ 
     public PrefixMapping getPrefixMapping() ;
 
     /** Return a PrefixMapping for a named graph */ 

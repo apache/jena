@@ -23,6 +23,8 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Pair ;
 
 import org.apache.jena.iri.IRI ;
@@ -46,6 +48,22 @@ public class PrefixMap
     
     /** return a copy of the underlying mapping */
     public Map<String, IRI> getMappingCopy() { return new HashMap<String, IRI>(prefixes) ; }
+    
+    public Map<String, String> getMappingCopyStr()
+    { 
+        final Map<String, String> smap = new HashMap<String, String>() ;
+        ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>(){
+            @Override
+            public void apply(String key, IRI value)
+            {
+                String str = value.toString() ;
+                smap.put(key, str) ;
+            }
+        } ;
+        Iter.apply(getMapping(), action) ;
+        return Collections.unmodifiableMap(smap)  ;
+    }
+    
 
     /** Add a prefix, overwites any existing association */
     public void add(String prefix, String iriString)

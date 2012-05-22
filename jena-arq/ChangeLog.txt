@@ -4,8 +4,9 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.1
 
++ (internal) DatasetPrefixStorage : change removeFromPrefixMap(String, String, String) to removeFromPrefixMap(String, String)
 + Changes for BINDINGS (SPARQL 1.1) - align with SPARQL-WG
-  Now called VALUES : slight synatx changes.
+  Now called VALUES : slight syntax changes.
   VALUES can be inline data as part of a query pattern.  
 + Comprehensive support for date/time/durations operations (JENA-235)
 + Property path syntax revised to align with current SPARQL
@@ -22,6 +23,7 @@ ChangeLog for ARQ
   Allow the context to include a set of parameters add to SERVICE requests  
   (JENA-195)
 + SPARQL 1.1: Complete scope tracking of variables (JENA-142)
++ SPARQL/Trutle alignment: Prefix names can contain ':' unescaped.  No escape for ':' 
 + Faster writing of XML and JSON results formats (JENA-178)
 + Support for SERVICE with additional parameters (JENA-195)  
 
