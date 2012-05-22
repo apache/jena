@@ -22,12 +22,8 @@ import org.openjena.atlas.iterator.Filter ;
 import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
@@ -36,6 +32,7 @@ import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Example of how to filter quads as they are accessed at the lowest level.
  * Can be used to exclude daat from specific graphs.   
@@ -63,7 +60,7 @@ public class ExQuadFilter
     private static Dataset setup()
     {
         Dataset ds = TDBFactory.createDataset() ;
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        DatasetGraph dsg = ds.asDatasetGraph() ;
         Quad q1 = SSE.parseQuad("(<http://example/g1> <http://example/s> <http://example/p> <http://example/o1>)") ;
         Quad q2 = SSE.parseQuad("(<http://example/g2> <http://example/s> <http://example/p> <http://example/o2>)") ;
         dsg.add(q1) ;
@@ -74,7 +71,10 @@ public class ExQuadFilter
     /** Create a filter to exclude the graph http://example/g2 */
     private static Filter<Tuple<NodeId>> createFilter(Dataset ds)
     {
-        DatasetGraphTDB dsg = (DatasetGraphTDB)(ds.asDatasetGraph()) ;
+        Object x = ds.asDatasetGraph() ;
+        
+        DatasetGraphTransaction dst = (DatasetGraphTransaction)(ds.asDatasetGraph()) ;
+        DatasetGraphTDB dsg = dst.getBaseDatasetGraph();
         final NodeTable nodeTable = dsg.getQuadTable().getNodeTupleTable().getNodeTable() ;
         // Filtering operates at a very low level: 
         // need to know the internal identifier for the graph name. 

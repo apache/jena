@@ -53,7 +53,6 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         }
     }
     
-    
     @Override
     protected void finalize() throws Throwable
     {
