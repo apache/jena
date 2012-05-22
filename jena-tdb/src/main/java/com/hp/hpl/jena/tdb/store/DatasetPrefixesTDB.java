@@ -196,7 +196,7 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
     
     @Override
-    public synchronized void removeFromPrefixMap(String graphName, String prefix, String uri)
+    public synchronized void removeFromPrefixMap(String graphName, String prefix)
     {
         Node g = Node.createURI(graphName) ; 
         Node p = Node.createLiteral(prefix) ; 
