@@ -91,12 +91,13 @@ public class DatasetPrefixStorageLogger implements DatasetPrefixStorage
     }
 
     @Override
-    public void removeFromPrefixMap(String graphName, String prefix, String uri)
+    public void removeFromPrefixMap(String graphName, String prefix)
     {
-        info("removeFromPrefixMap("+graphName+", "+prefix+", "+uri+")") ;
-        other.removeFromPrefixMap(graphName, prefix, uri) ;
+        info("removeFromPrefixMap("+graphName+", "+prefix+")") ;
+        other.removeFromPrefixMap(graphName, prefix) ;
     }
 
+    
     @Override
     public PrefixMapping getPrefixMapping()
     {
