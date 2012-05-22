@@ -78,7 +78,7 @@ public class GraphPrefixesProjection extends PrefixMappingImpl
                 // Already there - no-op (thanks to Eric Diaz for pointing this out)
                 return;
             // Remove from cache.
-            prefixes.removeFromPrefixMap(graphName, prefix, x) ;
+            prefixes.removeFromPrefixMap(graphName, prefix) ;
         }
         // Persist
         prefixes.insertPrefix(graphName, prefix, uri) ;
@@ -104,7 +104,7 @@ public class GraphPrefixesProjection extends PrefixMappingImpl
     {
         String uri = super.getNsPrefixURI(prefix) ;
         if ( uri != null )
-            prefixes.removeFromPrefixMap(graphName, prefix, uri) ;
+            prefixes.removeFromPrefixMap(graphName, prefix) ;
         super.removeNsPrefix(prefix) ;
         return this ; 
     }
