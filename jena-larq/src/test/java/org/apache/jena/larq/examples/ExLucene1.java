@@ -54,14 +54,14 @@ public class ExLucene1
         String searchString = "+document" ;
         
         String queryString = StrUtils.strjoin("\n", 
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
             "PREFIX :       <http://example/>" ,
-            "PREFIX larq:     <http://openjena.org/LARQ/property#>",
             "SELECT * {" ,
-            "    ?lit larq:search '"+searchString+"'.",
+            "    ?lit pf:textMatch '"+searchString+"'.",
             "}") ;
         
-        // Two of three docuemnts should match. 
+        // Three documents should match. 
         performQuery(model, index, queryString) ;
         index.close() ;
     }

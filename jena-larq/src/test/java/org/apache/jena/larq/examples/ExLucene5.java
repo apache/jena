@@ -54,9 +54,9 @@ public class ExLucene5
         
         // This time, find documents with a matching DC title. 
         String queryString = StrUtils.strjoin("\n", 
-            "PREFIX larq:     <http://openjena.org/LARQ/property#>",
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "SELECT ?doc {" ,
-            "    ?doc larq:search '"+searchString+"'.",
+            "    ?doc pf:textMatch '"+searchString+"'.",
             "}") ;
         
         // Two of three docuemnts should match. 
