@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.1
 
++ SPARQL 1.1: STRBEFORE and STRAFTER return simple empty string on no match.
++ Stop multiple SERVICE calls locking Fuseki up (JENA-248)
 + (internal) DatasetPrefixStorage : change removeFromPrefixMap(String, String, String) to removeFromPrefixMap(String, String)
 + Changes for BINDINGS (SPARQL 1.1) - align with SPARQL-WG
   Now called VALUES : slight syntax changes.
