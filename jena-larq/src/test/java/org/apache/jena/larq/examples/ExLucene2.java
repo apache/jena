@@ -50,12 +50,12 @@ public class ExLucene2
         
         // This time, find documents with a matching DC title. 
         String queryString = StrUtils.strjoin("\n", 
+            "PREFIX pf:     <http://jena.hpl.hp.com/ARQ/property#>",
             "PREFIX xsd:    <http://www.w3.org/2001/XMLSchema#>" ,
+            "PREFIX dc:     <http://purl.org/dc/elements/1.1/>",
             "PREFIX :       <http://example/>" ,
-            "PREFIX larq:     <http://openjena.org/LARQ/property#>",
-            "PREFIX  dc:    <http://purl.org/dc/elements/1.1/>",
             "SELECT ?doc ?title {" ,
-            "    ?title larq:search '"+searchString+"'.",
+            "    ?title pf:textMatch '"+searchString+"'.",
             "    ?doc   dc:title ?title", 
             "}") ;
         
