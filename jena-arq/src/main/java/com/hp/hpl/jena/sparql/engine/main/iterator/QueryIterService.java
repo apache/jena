@@ -49,10 +49,11 @@ public class QueryIterService extends QueryIterRepeatApply
         QueryIterator qIter ;
         try {
             qIter = Service.exec((OpService)op, getExecContext().getContext()) ;
-            // Materialise, otherwise we may have outstanding incoming data.
-            // Allows the server to fulfil the request as soon as possible.
+            // This iterator is materialized already otherwise we may end up
+            // not servicing the HTTP connection as needed.
             // In extremis, can cause a deadlock when SERVICE loops back to this server.
-            qIter = QueryIter.materialize(qIter, getExecContext()) ;
+            // Add tracking.
+            qIter = QueryIter.makeTracked(qIter, getExecContext()) ;
         } catch (RuntimeException ex)
         {
             if ( silent )
