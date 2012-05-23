@@ -19,7 +19,9 @@
 package com.hp.hpl.jena.sparql.engine.http;
 
 import java.io.InputStream ;
-import java.util.Map;
+import java.util.Map ;
+
+import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -31,6 +33,7 @@ import com.hp.hpl.jena.sparql.algebra.OpAsQuery ;
 import com.hp.hpl.jena.sparql.algebra.op.OpService ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.Rename ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIter ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorResultSet ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -92,7 +95,6 @@ public class Service
         if ( ! op.getService().isURI() )
             throw new QueryExecException("Service URI not bound: "+op.getService()) ; 
         
-        
         // This relies on the observation that the query was originally correct,
         // so reversing the scope renaming is safe (it merely restores the algebra expression).
         // Any variables that reappear should be internal ones that were hidden by renaming
@@ -108,8 +110,16 @@ public class Service
         String uri = op.getService().getURI() ;
         HttpQuery httpQuery = configureQuery(uri, context, query);
         InputStream in = httpQuery.exec() ;
+
+        // Read the whole of the results now.
+        // Avoids the problems with calling back into the same system e.g. Fuseki+SERVICE <http://localhost:3030/...>
+        
         ResultSet rs = ResultSetFactory.fromXML(in) ;
-        return new QueryIteratorResultSet(rs) ; 
+        QueryIterator qIter = new QueryIteratorResultSet(rs) ; 
+        qIter = QueryIter.materialize(qIter) ;
+        // And close connection now, not when qIter is closed. 
+        IO.close(in) ;
+        return  qIter ;
     }
     
     /**

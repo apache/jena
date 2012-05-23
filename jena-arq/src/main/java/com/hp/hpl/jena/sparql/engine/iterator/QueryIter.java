@@ -50,9 +50,13 @@ public abstract class QueryIter extends QueryIteratorBase
 
     public static QueryIter materialize(QueryIterator qIter, ExecutionContext execCxt)
     {
-        return makeTracked(new QueryIteratorCopy(qIter), execCxt) ;
+        return makeTracked(materialize(qIter), execCxt) ;
     }
 
+    public static QueryIterator materialize(QueryIterator qIter)
+    {
+        return new QueryIteratorCopy(qIter) ;
+    }
     
     @Override
     public final void close()
