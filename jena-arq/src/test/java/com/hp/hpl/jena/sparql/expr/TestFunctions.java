@@ -91,7 +91,11 @@ public class TestFunctions
     @Test public void exprStrBefore6() { testEvalException("STRBEFORE('ab'@en, 'ab'@fr)") ; }
     @Test public void exprStrBefore7() { testEvalException("STRBEFORE(123, 'ab'@fr)") ; }
     @Test public void exprStrBefore8() { testEvalException("STRBEFORE('123'^^xsd:string, 12.3)") ; }
-    
+    // No match case
+    @Test public void exprStrBefore9() { test("STRBEFORE('abc'^^xsd:string, 'z')", NodeValue.nvEmptyString) ; }
+    // Empty string case
+    @Test public void exprStrBefore10() { test("STRBEFORE('abc'^^xsd:string, '')", NodeValue.makeNode("", XSDDatatype.XSDstring)) ; }
+
     @Test public void exprStrAfter0() { test("STRAFTER('abc', 'abcd')", NodeValue.nvEmptyString) ; }
     @Test public void exprStrAfter1() { test("STRAFTER('abc'@en, 'b')", NodeValue.makeNode("c", "en", (String)null)) ; }
     @Test public void exprStrAfter2() { test("STRAFTER('abc'^^xsd:string, 'a')", NodeValue.makeNode("bc", XSDDatatype.XSDstring)) ; }
@@ -102,6 +106,10 @@ public class TestFunctions
     @Test public void exprStrAfter6() { testEvalException("STRAFTER('ab'@en, 'ab'@fr)") ; }
     @Test public void exprStrAfter7() { testEvalException("STRAFTER(123, 'ab'@fr)") ; }
     @Test public void exprStrAfter8() { testEvalException("STRAFTER('123'^^xsd:string, 12.3)") ; }
+    // No match case
+    @Test public void exprStrAfter9() { test("STRAFTER('abc'^^xsd:string, 'z')", NodeValue.nvEmptyString) ; }
+    // Empty string case
+    @Test public void exprStrAfter10() { test("STRAFTER('abc'^^xsd:string, '')", NodeValue.makeNode("abc", XSDDatatype.XSDstring)) ; }
 
     @Test public void exprStrEnds0() { test("fn:ends-with('abc', '')", TRUE) ; }
     @Test public void exprStrEnds1() { test("fn:ends-with('abc', 'c')", TRUE) ; }
