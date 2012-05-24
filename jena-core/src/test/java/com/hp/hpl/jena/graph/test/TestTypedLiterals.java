@@ -44,7 +44,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
 import com.hp.hpl.jena.graph.query.Domain ;
-import com.hp.hpl.jena.graph.query.Query ;
+import com.hp.hpl.jena.graph.query.GraphQuery ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
 import com.hp.hpl.jena.vocabulary.XSD ;
@@ -834,7 +834,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(model.getGraph().find(null, p.asNode(), l2.asNode()).hasNext());
         assertTrue(model.getGraph().find(a.asNode(), p.asNode(), l2.asNode()).hasNext());
         assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         q.addMatch(a.asNode(), p.asNode(), l2.asNode());
         Iterator<Domain> qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
         assertTrue(qi.hasNext());

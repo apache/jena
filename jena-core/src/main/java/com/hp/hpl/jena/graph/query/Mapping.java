@@ -62,7 +62,7 @@ public class Mapping implements VariableIndexes
 	public int indexOf( Node v )
 		{ 
         int res = lookUp(v);
-        if (res < 0) throw new Query.UnboundVariableException( v );
+        if (res < 0) throw new GraphQuery.UnboundVariableException( v );
         return res;
         }
         

@@ -3002,12 +3002,12 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     protected BindingQueryPlan queryXTypeOfType( Resource type ) {
         if (type != null) {
-            Query q = new Query();
+            GraphQuery q = new GraphQuery();
             // kers: this non-intuitive order should improve search performance
-            q.addMatch( Query.Y, RDF.type.asNode(), type.asNode() );
-            q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
+            q.addMatch( GraphQuery.Y, RDF.type.asNode(), type.asNode() );
+            q.addMatch( GraphQuery.X, RDF.type.asNode(), GraphQuery.Y );
 
-            return queryHandler().prepareBindings( q, new Node[] {Query.X} );
+            return queryHandler().prepareBindings( q, new Node[] {GraphQuery.X} );
         }
         else {
             return null;

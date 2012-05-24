@@ -43,10 +43,10 @@ public class TestEarlyConstraints extends QueryTestBase
     public void testEarlyConstraint()
         {
         final int [] count = {0};
-        Query q = new Query()
-            .addMatch( Query.S, node( "eg:p1" ), Query.O )
-            .addMatch( Query.X, node( "eg:p2" ), Query.Y )
-            .addConstraint( notEqual( Query.S, Query.O ) )
+        GraphQuery q = new GraphQuery()
+            .addMatch( GraphQuery.S, node( "eg:p1" ), GraphQuery.O )
+            .addMatch( GraphQuery.X, node( "eg:p2" ), GraphQuery.Y )
+            .addConstraint( notEqual( GraphQuery.S, GraphQuery.O ) )
             ;
         Graph gBase = graphWith( "a eg:p1 a; c eg:p1 d; x eg:p2 y" );
         Graph g = new WrappedGraph( gBase )
@@ -66,7 +66,7 @@ public class TestEarlyConstraints extends QueryTestBase
                 return super.find( tm ); 
                 }
             };
-        Set<Node> s = q.executeBindings( g, new Node[] {Query.S} ) .mapWith ( getFirst ).toSet();
+        Set<Node> s = q.executeBindings( g, new Node[] {GraphQuery.S} ) .mapWith ( getFirst ).toSet();
         assertEquals( nodeSet( "c" ), s );
         assertEquals( 1, count[0] );
         }

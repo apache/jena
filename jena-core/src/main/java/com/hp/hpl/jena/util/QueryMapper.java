@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.query.*;
 */
 public class QueryMapper
     {
-    private Query query;
+    private GraphQuery query;
     private Node [] variables;
     private Graph graph;
     
@@ -38,14 +38,14 @@ public class QueryMapper
         {
         super();
         this.graph = toQueryGraph( m );
-        this.query = new Query( this.graph );
+        this.query = new GraphQuery( this.graph );
         this.variables = toQueryVariables( variables );
         }
         
     public Node [] getVariables()
         { return variables; }
         
-    public Query getQuery()
+    public GraphQuery getQuery()
         { return query; }
         
     public Graph getGraph()
