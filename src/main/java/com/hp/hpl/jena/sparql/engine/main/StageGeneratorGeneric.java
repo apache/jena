@@ -19,33 +19,24 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.TERM ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
-import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriples ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterBlockTriplesQH ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternTriple ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderFixed ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformationBase ;
+import com.hp.hpl.jena.sparql.engine.optimizer.reorder.* ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
-import org.openjena.atlas.logging.Log ;
-import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Generic - always works - StageGenerator */
 public class StageGeneratorGeneric implements StageGenerator
 {
-    public final static Symbol altMatcher = ARQConstants.allocSymbol("altmatcher") ;
-    
     public StageGeneratorGeneric() {}
     
     @Override
@@ -97,14 +88,6 @@ public class StageGeneratorGeneric implements StageGenerator
         return execution.execute(pattern, input, execCxt) ; 
     }
     
-    // ---- Execution policies
-    private static StageGenerator executeQueryHandler = new StageGenerator() {
-        @Override
-        public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-        {
-            return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
-        }} ;
-
     private static StageGenerator executeInline = new StageGenerator() {
         @Override
         public QueryIterator execute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
@@ -126,29 +109,12 @@ public class StageGeneratorGeneric implements StageGenerator
         return new ReorderStatsHandler(graph, graph.getStatisticsHandler()) ;
     }
 
-    /* Execution - allow the inline matcher to be turned off */ 
-    private static QueryIterator baseExecute(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        if ( execCxt.getContext().isTrueOrUndef(altMatcher) )
-            return executeInline(pattern, input, execCxt) ;
-        else
-            return executeQueryHandler(pattern, input, execCxt) ;
-    }
-    
     /** Use the inline BGP matcher */ 
     public static QueryIterator executeInline(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
     {
         return QueryIterBlockTriples.create(input, pattern, execCxt) ;
     }
 
-    /** Use the graph's query handler. */ 
-    private static QueryIterator executeQueryHandler(BasicPattern pattern, QueryIterator input, ExecutionContext execCxt)
-    {
-        return QueryIterBlockTriplesQH.create(input, pattern, execCxt) ;
-    }
-    
-    
-    
     /** Reorder a basic graph pattern using a graph statistic handler */
     private static class ReorderStatsHandler extends ReorderTransformationBase
     {
