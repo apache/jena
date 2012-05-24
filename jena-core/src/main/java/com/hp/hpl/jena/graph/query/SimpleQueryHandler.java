@@ -45,7 +45,7 @@ public class SimpleQueryHandler implements QueryHandler
         { return new PatternStage( graph, map, constraints, t ); }
                 
     @Override
-    public BindingQueryPlan prepareBindings( Query q, Node [] variables )   
+    public BindingQueryPlan prepareBindings( GraphQuery q, Node [] variables )   
         { return new SimpleQueryPlan( graph, q, variables ); }
         
     @Override

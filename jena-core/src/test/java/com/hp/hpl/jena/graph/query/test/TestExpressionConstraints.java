@@ -47,21 +47,21 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testConstraintFALSE()
         {
         Graph g = graphWith( "x R y; a P b" );
-        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eFALSE );
+        GraphQuery q = new GraphQuery().addMatch( X, ANY, ANY ).addConstraint( eFALSE );
         assertFalse( q.executeBindings( g, justX ).hasNext() ); 
         }    
         
     public void testConstraintTRUE()
         {
         Graph g = graphWith( "x R y; a P b" );
-        Query q = new Query().addMatch( X, ANY, ANY ).addConstraint( eTRUE );
+        GraphQuery q = new GraphQuery().addMatch( X, ANY, ANY ).addConstraint( eTRUE );
         assertTrue( q.executeBindings( g, justX ).hasNext() ); 
         }
 
     public void testConstraintNE1()
         {        
         Graph g = graphWith( "x R y; a P a" );
-        Query q = new Query()
+        GraphQuery q = new GraphQuery()
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;
@@ -73,7 +73,7 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testConstraintNE2()
         {        
         Graph g = graphWith( "x R y; a P a" );
-        Query q = new Query()
+        GraphQuery q = new GraphQuery()
             // .addMatch( Z, ANY, ANY )
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
@@ -86,7 +86,7 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testConstraintNE3()
         {        
         Graph g = graphWith( "x R a; y P b; z Q c" );
-        Query q = new Query()
+        GraphQuery q = new GraphQuery()
             .addMatch( X, ANY, ANY )
             .addConstraint( notEqual( X, node( "y" ) ) )
             ;
@@ -99,7 +99,7 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testConstraintNE4()
         {        
         Graph g = graphWith( "x R a; y P b; z Q c" );
-        Query q = new Query()
+        GraphQuery q = new GraphQuery()
             .addMatch( X, ANY, ANY )
             .addConstraint( notEqual( X, node( "y" ) ) )
             .addConstraint( notEqual( X, node( "x" ) ) )
@@ -179,7 +179,7 @@ public class TestExpressionConstraints extends QueryTestBase
     public void testDetectAnd()
         {
         Expression e1 = notEqual( X, Y ), e2 = notEqual( X, Z );
-        Query q = new Query().addConstraint( Dyadic.and( e1, e2 ) );
+        GraphQuery q = new GraphQuery().addConstraint( Dyadic.and( e1, e2 ) );
         Set<Expression> eBoth = CollectionFactory.createHashedSet(); eBoth.add( e1 ); eBoth.add( e2 );
         Set<Expression> s = iteratorToSet( q.getConstraints().iterator() );
         assertEquals( eBoth, s );

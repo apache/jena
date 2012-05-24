@@ -62,7 +62,7 @@ public final class PatternStageCompiler implements PatternCompiler
     */
     private static Element compile( PatternCompiler compiler, Node X, Mapping map )
         {
-        if (X.equals( Query.ANY )) return compiler.any();
+        if (X.equals( GraphQuery.ANY )) return compiler.any();
         if (X.isVariable()) 
             {
             if (map.hasBound( X ))

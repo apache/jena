@@ -117,18 +117,18 @@ public class OntClassImpl
 
         // pre-built queries
         // ?x a rdf:Property ; rdfs:domain this.
-        Query q = new Query();
-        q.addMatch( Query.X, getProfile().DOMAIN().asNode(), asNode() );
+        GraphQuery q = new GraphQuery();
+        q.addMatch( GraphQuery.X, getProfile().DOMAIN().asNode(), asNode() );
 
-        m_domainQuery = getModel().queryHandler().prepareBindings( q, new Node[] {Query.X} );
+        m_domainQuery = getModel().queryHandler().prepareBindings( q, new Node[] {GraphQuery.X} );
 
         // this rdfs:subClassOf ?x. ?x owl:onProperty ?y.
         if (getProfile().ON_PROPERTY() != null) {
-            q = new Query();
-            q.addMatch( asNode(), getProfile().SUB_CLASS_OF().asNode(), Query.X );
-            q.addMatch( Query.X, getProfile().ON_PROPERTY().asNode(), Query.Y );
+            q = new GraphQuery();
+            q.addMatch( asNode(), getProfile().SUB_CLASS_OF().asNode(), GraphQuery.X );
+            q.addMatch( GraphQuery.X, getProfile().ON_PROPERTY().asNode(), GraphQuery.Y );
 
-            m_restrictionPropQuery = getModel().queryHandler().prepareBindings( q, new Node[] {Query.Y} );
+            m_restrictionPropQuery = getModel().queryHandler().prepareBindings( q, new Node[] {GraphQuery.Y} );
         }
     }
 

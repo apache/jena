@@ -32,10 +32,10 @@ import com.hp.hpl.jena.graph.*;
 public class SimpleQueryPlan implements BindingQueryPlan
     {
     private Graph graph;
-    private Query query;
+    private GraphQuery query;
     private Node [] variables;
     
-    public SimpleQueryPlan( Graph graph, Query query, Node [] variables )
+    public SimpleQueryPlan( Graph graph, GraphQuery query, Node [] variables )
         {
         this.graph = graph;
         this.query = query;

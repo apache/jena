@@ -31,7 +31,7 @@ import java.util.*;
 	@author hedgehog
 */
 
-public class Query 
+public class GraphQuery 
 	{   
     /**
         A convenient synonym for Node.ANY, used in a match to match anything.
@@ -66,7 +66,7 @@ public class Query
     /**
         Initialiser for Query; makes an empty Query [no matches, no constraints]
     */
-	public Query()
+	public GraphQuery()
 		{ }
         
     /**
@@ -74,7 +74,7 @@ public class Query
         <code>pattern</code>.
         @param pattern a Graph whose triples are used as match elements
     */
-    public Query( Graph pattern )
+    public GraphQuery( Graph pattern )
         { addMatches( pattern ); }
 
     /**
@@ -91,7 +91,7 @@ public class Query
         @param o the node to match the object
         @return this Query, for cascading
     */
-    public Query addMatch( Node s, Node p, Node o )
+    public GraphQuery addMatch( Node s, Node p, Node o )
         { return addNamedMatch( NamedTripleBunches.anon, s, p, o ); }    
     
     /**
@@ -100,14 +100,14 @@ public class Query
         @param t an (S, P, O) triple to add to the collection of matches
         @return this Query, for cascading
     */
-    public Query addMatch( Triple t )
+    public GraphQuery addMatch( Triple t )
         { 
         triplePattern.add( t );
         triples.add( NamedTripleBunches.anon, t );
         return this; 
         }
     
-    private Query addNamedMatch( String name, Node s, Node p, Node o )
+    private GraphQuery addNamedMatch( String name, Node s, Node p, Node o )
         { 
         triplePattern.add( Triple.create( s, p, o ) );
         triples.add( name, Triple.create( s, p, o ) ); 
@@ -135,7 +135,7 @@ public class Query
     public ExpressionSet getConstraints()
         { return constraint; }
         
-    public Query addConstraint( Expression e )
+    public GraphQuery addConstraint( Expression e )
         { 
         if (e.isApply() && e.getFun().equals( ExpressionFunctionURIs.AND ))
            for (int i = 0; i < e.argCount(); i += 1) addConstraint( e.getArg( i ) ); 

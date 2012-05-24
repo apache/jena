@@ -42,7 +42,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
 
     public abstract Graph getGraph();
 
-    protected Query Q;
+    protected GraphQuery Q;
     protected Node O = node( "?O" );
     protected Graph empty;
     protected Graph single;
@@ -60,7 +60,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     @Override
     public void setUp()
         {
-		Q = new Query();
+		Q = new GraphQuery();
 		empty = getGraphWith( "" );
 		single = getGraphWith( "spindizzies drive cities" );
 		}
@@ -111,7 +111,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     public void testEmptyIterator()
         {
         Graph empty = getGraph();
-        Query q = new Query().addMatch( X, Y, Z );
+        GraphQuery q = new GraphQuery().addMatch( X, Y, Z );
         BindingQueryPlan bqp = empty.queryHandler().prepareBindings( q, justX );
         assertEquals( new HashSet<Domain>(), bqp.executeBindings().toSet() );
         }
@@ -120,7 +120,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Graph single = getGraphWith( "rice grows quickly" );
         Node V1 = node( "?v1" ), V3 = node( "?v3" );
-        Query q = new Query().addMatch( V1, node( "grows" ), V3 );
+        GraphQuery q = new GraphQuery().addMatch( V1, node( "grows" ), V3 );
         BindingQueryPlan qp = single.queryHandler().prepareBindings( q, new Node[] {V1, V3} );
         assertEquals( nodeListSet( "rice quickly" ), qp.executeBindings().toSet() );
         }
@@ -129,7 +129,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         { 
 		Graph several = getGraphWith( "rice grows quickly; time isan illusion" );
 		Node V1 = node( "?v1" ), V2 = node( "?v2" ), V3 = node( "?v3" );
-		Query q = new Query().addMatch( V1, V2, V3 );
+		GraphQuery q = new GraphQuery().addMatch( V1, V2, V3 );
 		BindingQueryPlan qp = several.queryHandler().prepareBindings
             ( q, new Node[] { V1, V2, V3 } );
         Set<List<Node>> wanted = nodeListSet( "time isan illusion; rice grows quickly" );
@@ -148,7 +148,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Graph bookish = getGraphWith
             ( "ben wrote Clayface; Starfish ingenre SF; Clayface ingenre Geology; bill wrote Starfish" );
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Node A = node( "?A" ); 
         q.addMatch( X, node( "wrote" ), A ).addMatch(  A, node( "ingenre" ), node( "SF" ) );
         BindingQueryPlan qp = bookish.queryHandler().prepareBindings( q, justX );
@@ -160,13 +160,13 @@ public abstract class AbstractTestQuery extends QueryTestBase
     	Utility. Run the query <code>q</code> over the graph <code>g</code> 
         requesting the output variables <code>nodes</code>.
      */
-    protected ExtendedIterator<Domain> eb( Graph g, Query q, Node [] nodes )
+    protected ExtendedIterator<Domain> eb( Graph g, GraphQuery q, Node [] nodes )
         { return g.queryHandler().prepareBindings( q, nodes ).executeBindings(); }
     
-    protected List<Domain> ebList( Graph g, Query q, Node [] nodes )
+    protected List<Domain> ebList( Graph g, GraphQuery q, Node [] nodes )
         { return eb( g, q, nodes ).toList(); }
     
-    protected Set<Domain> ebSet( Graph g, Query q, Node [] nodes )
+    protected Set<Domain> ebSet( Graph g, GraphQuery q, Node [] nodes )
         { return eb( g, q, nodes ).toSet(); }
         
     public void testNodeVariablesA()
@@ -198,9 +198,9 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph empty = getGraphWith( "" );
         Graph base = getGraphWith( "pigs might fly; cats chase mice; dogs chase cars; cats might purr" );
     /* */
-        Query any = new Query().addMatch( Query.ANY, Query.ANY, Query.ANY );
+        GraphQuery any = new GraphQuery().addMatch( GraphQuery.ANY, GraphQuery.ANY, GraphQuery.ANY );
         assertFalse( "empty graph, no bindings", eb( empty, any, none ).hasNext() );
-        assertTrue( "full graph, > 0 bindings", eb( base, new Query(), none ).hasNext() );
+        assertTrue( "full graph, > 0 bindings", eb( base, new GraphQuery(), none ).hasNext() );
         }
 
     public void testEmpty()
@@ -213,7 +213,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         
     public void testOneMatch()
         {
-        Q.addMatch( X, Query.ANY, Query.ANY );
+        Q.addMatch( X, GraphQuery.ANY, GraphQuery.ANY );
         List<Domain> bindings = ebList( single, Q, justX ); 
         assertEquals( "select X from {spindizzies drive cities} => 1 binding [size]", bindings.size(), 1 );
         Domain d = bindings.get( 0 );
@@ -275,7 +275,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph pattern = getGraphWith( "?X reads ?Y; ?Y inGenre ?Z" );
         Graph target = getGraphWith( "chris reads blish; blish inGenre SF" );
         // System.err.println( "| pattern: " + pattern );
-        Query q = new Query( pattern );
+        GraphQuery q = new GraphQuery( pattern );
         List<Domain> bindings = ebList( target, q, new Node [] {node("?X"), node("?Z")} ); 
         assertEquals( "testTwoPatterns: one binding", 1, bindings.size() );
         Domain  d = bindings.get( 0 );
@@ -302,8 +302,8 @@ public abstract class AbstractTestQuery extends QueryTestBase
                 
     public void testGraphConstraints( String title, Expression constraint, String wanted )
         { 
-        Query Q = new Query()
-            .addMatch( Query.ANY, Query.ANY, O )
+        GraphQuery Q = new GraphQuery()
+            .addMatch( GraphQuery.ANY, GraphQuery.ANY, O )
             .addConstraint( constraint );
         Graph G = getGraphWith( "pigs fly south; dogs fly badly; plans fly flat" );
         Set<Node> results = eb( G, Q, new Node[] {O} ).mapWith( getFirst ).toSet();
@@ -320,9 +320,9 @@ public abstract class AbstractTestQuery extends QueryTestBase
         
     private void helpConstraint( String title, Expression constraints, int n )
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Graph g = getGraphWith( "blish wrote CIF; blish wrote VOR; hambly wrote Darwath; feynman mechanicked quanta" );
-        q.addMatch( X, node("wrote"), Query.ANY );
+        q.addMatch( X, node("wrote"), GraphQuery.ANY );
         q.addConstraint( constraints );
         List<Domain> bindings = ebList( g, q, justX ); 
         assertEquals( "testConstraint " + title + ": number of bindings", n, bindings.size() );
@@ -337,7 +337,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
 
     private void helpConstraintThree( String title, Expression c, int n )
         {           
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Graph g = getGraphWith( "brust wrote jhereg; hedgehog hacked code; angel age 230; brust wrote 230" );
         q.addConstraint( c );
         q.addMatch( X, Y, Z );
@@ -354,7 +354,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
        
    public void testConstraintFour()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Graph g = getGraphWith( "bill pinged ben; ben pinged weed; weed pinged weed; bill ignored bill" );
         q.addMatch( X, node("pinged"), Y );
         q.addConstraint( notEqual( X, Y ) );
@@ -369,7 +369,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Set<Node> expected = CollectionFactory.createHashedSet();
         expected.add( node( "beta" ) );
-        Query q = new Query()  
+        GraphQuery q = new GraphQuery()  
             .addMatch( X, node( "ppp" ), Y ).addConstraint( matches( Y, node( "'ell'" ) ) ) 
             ;
         Graph g = getGraphWith( "alpha ppp beta; beta ppp 'hello'; gamma ppp 'goodbye'" );
@@ -388,7 +388,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     public void testStringResults()
         {
         Graph g = getGraphWith( "ding dong dilly" );
-        Query q = new Query() .addMatch( X, Y, Query.ANY );
+        GraphQuery q = new GraphQuery() .addMatch( X, Y, GraphQuery.ANY );
         List<Domain> bindings = ebList( g, q, new Node [] {X, Y} );
         assertEquals( "one result back by name", bindings.size(), 1 );
         assertEquals( "x = ding", bindings.get(0).get(0), node("ding") );
@@ -415,7 +415,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     public void testDisconnected()
         {
         Graph g = getGraphWith( "x pred1 foo; y pred2 bar" );
-        Query q = new Query( getGraphWith( "?X ?? foo; ?Y ?? bar" ) );
+        GraphQuery q = new GraphQuery( getGraphWith( "?X ?? foo; ?Y ?? bar" ) );
         List<Domain> bindings = ebList( g, q, nodeArray( "?X ?Y" ) );
         assertEquals( 1, bindings.size() );
         assertEquals( node( "x" ), bindings.get(0).get(0) );
@@ -441,7 +441,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     */
     private List<Triple> getTriplesFromQuery( List<Triple> desired )
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         final Triple [][] tripleses = new Triple[1][];
         final Graph g = new GraphBase()
             {
@@ -496,7 +496,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     public void assertCount( int expected, String query, String vars )
         {
         Graph g = getGraphWith( "" );
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Triple [] triples = tripleArray( query );
         for (int i = 0; i < triples.length; i += 1) q.addMatch( triples[i] );
         // eb( g, q, nodes( vars ) ); 
@@ -509,9 +509,9 @@ public abstract class AbstractTestQuery extends QueryTestBase
     */  
     public void testQueryConstraintUnbound()
         {
-        Query q = new Query()
+        GraphQuery q = new GraphQuery()
             .addConstraint( notEqual( X, Z ) )
-            .addMatch( X, Query.ANY, X )
+            .addMatch( X, GraphQuery.ANY, X )
             ;
         Graph g = getGraphWith( "x R x; x R y" );
         try
@@ -519,14 +519,14 @@ public abstract class AbstractTestQuery extends QueryTestBase
             ExtendedIterator<Domain> it = eb( g, q, justX );
             fail( "should spot unbound variable" );
             }
-        catch (Query.UnboundVariableException b) { pass(); }
+        catch (GraphQuery.UnboundVariableException b) { pass(); }
         } 
         
     public void testCloseQuery()
         { // TODO does this really test what it says on the can?
         Graph g = getGraphWith( "x R y; a P b; i L j; d X f; h S g; no more heroes" );
         for (int n = 0; n < 1000; n += 1) graphAdd( g, "ping pong X" + n );
-        Query q = new Query().addMatch( Query.S, Query.P, Query.O );
+        GraphQuery q = new GraphQuery().addMatch( GraphQuery.S, GraphQuery.P, GraphQuery.O );
         List<Stage> stages = new ArrayList<Stage>();
         ExtendedIterator<Domain> it = eb( g, q, nodeArray( "?P" ) ); 
         /* eat one answer to poke pipe */ it.next();
@@ -537,7 +537,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         
     public void testRewriteStartswithExpression()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "^begins" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -549,7 +549,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
 
     public void testRewriteStartswithInsensitiveExpression()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createModifiedPattern( "^begins", "i" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -561,7 +561,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
 
     public void testRewriteEndswithExpression()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "ends$" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -573,7 +573,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
    
     public void testRewriteEndswithInsensitiveExpression()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createModifiedPattern( "ends$", "i" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -585,7 +585,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
    
     public void testRewriteContainsExpression()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "contains" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -597,7 +597,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     
     public void testRewritePreservesCharacterCases()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Expression L = constant( "x" );
         Expression R = createModifiedPattern( "coNtaIns", "i" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
@@ -614,7 +614,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     
     public void testQueryExceptionCleanlyExits()
         {
-        Query q = new Query().addMatch( Triple.ANY );
+        GraphQuery q = new GraphQuery().addMatch( Triple.ANY );
         Graph g = new GraphBase() 
             {
             @Override
@@ -699,7 +699,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     protected Map<List<Node>, Integer> getAnswer( Graph g, TripleSorter sorter )
         {
         Map<List<Node>, Integer> result = CollectionFactory.createHashedMap();
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         q.addMatch( triple( "?a ?? ?d " ) ).addMatch( triple( "?a X ?b" ) ).addMatch( triple( "?b Y ?c" ) );
         q.addConstraint( notEqual( node( "?d" ), node( "?b" ) ) );
         Node [] answers = nodeArray( "?a ?d" );
@@ -731,9 +731,9 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph g = getGraphWith( "a P 'value'xsd:string; b P 'value'xsd:nosuch" );
         if (g.getCapabilities().handlesLiteralTyping())
             {
-            Query q = new Query()
-                .addMatch( Query.S, Query.P, node( "'value'" ) );
-            ExtendedIterator<Domain> it = q.executeBindings( g, new Node[] {Query.S, Query.P} );
+            GraphQuery q = new GraphQuery()
+                .addMatch( GraphQuery.S, GraphQuery.P, node( "'value'" ) );
+            ExtendedIterator<Domain> it = q.executeBindings( g, new Node[] {GraphQuery.S, GraphQuery.P} );
             assertEquals( nodeSet( "a" ), it.mapWith( select(0) ).toSet() );
             }
         }
@@ -743,10 +743,10 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph g = getGraphWith( "a P 'value'xsd:string; b V 'value'" );
         if (g.getCapabilities().handlesLiteralTyping())
             {
-            Query q = new Query()
-                .addMatch( node( "b" ), node( "V" ), Query.X )
-                .addMatch( Query.S, node( "P" ), Query.X );
-            ExtendedIterator<Domain> it = q.executeBindings( g, new Node[] {Query.S, Query.P} );
+            GraphQuery q = new GraphQuery()
+                .addMatch( node( "b" ), node( "V" ), GraphQuery.X )
+                .addMatch( GraphQuery.S, node( "P" ), GraphQuery.X );
+            ExtendedIterator<Domain> it = q.executeBindings( g, new Node[] {GraphQuery.S, GraphQuery.P} );
             assertEquals( nodeSet( "a" ), it.mapWith( select(0) ).toSet() );
             }
         }

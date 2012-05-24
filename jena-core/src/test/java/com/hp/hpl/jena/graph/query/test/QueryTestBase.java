@@ -139,17 +139,17 @@ public abstract class QueryTestBase extends GraphTestBase
     /**
      	A Node with spelling "X".
     */
-    protected static final Node X = Query.X;
+    protected static final Node X = GraphQuery.X;
 
     /**
  		A Node with spelling "Y".
     */
-    protected static final Node Y = Query.Y;
+    protected static final Node Y = GraphQuery.Y;
     
     /**
  		A Node with spelling "Z".
     */
-    protected static final Node Z = Query.Z;
+    protected static final Node Z = GraphQuery.Z;
 
     /**
         A convenient way to refer to Node.ANY
