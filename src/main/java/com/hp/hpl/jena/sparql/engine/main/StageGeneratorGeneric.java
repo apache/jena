@@ -24,7 +24,6 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -54,7 +53,7 @@ public class StageGeneratorGeneric implements StageGenerator
         final ReorderTransformation reorder ;
         final StageGenerator executor ;
         
-        if ( graph instanceof GraphMemFaster || graph instanceof GraphMem )            // New and old Graph-in-memory
+        if ( graph instanceof GraphMemFaster  )            // Jena in-memory graph
         {
             reorder = reorderBasicStats(graph) ;
             executor = executeInline ; 
