@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.junit;
 import junit.framework.Test ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Resource ;
@@ -158,6 +159,12 @@ public class ScriptTestSuiteFactory extends TestFactoryManifest
             
             if ( testType.equals(TestManifestX.TestSurpressed) )
                 return new SurpressedTest(testName, results, item) ;
+            
+            if ( testType.equals(TestManifest_11.CSVResultFormatTest) )
+            {
+                Log.warn("Tests", "Skip CSV test: "+testName) ;
+                return null ;
+            }
             
             System.err.println("Test type '"+testType+"' not recognized") ;
         }

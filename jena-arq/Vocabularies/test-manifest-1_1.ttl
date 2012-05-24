@@ -50,3 +50,9 @@
       rdfs:comment """A type of test specifically for query evaluation
       testing. Query evaluation tests are required to have an associated
       input dataset, a query, and an expected output dataset.""" .
+
+
+:CSVResultFormatTest  rdf:type rdfs:Class ;
+      rdfs:label "CSV Test" ;
+      rdfs:comment "CSV Test"
+      .
