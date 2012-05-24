@@ -474,7 +474,7 @@ public class WebOntTestHarness {
      */
     public boolean testEntailment(Graph conclusions, Graph result) {
         QueryHandler qh = result.queryHandler();
-        Query query = WGReasonerTester.graphToQuery(conclusions);
+        GraphQuery query = WGReasonerTester.graphToQuery(conclusions);
         Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
         return i.hasNext();
     }

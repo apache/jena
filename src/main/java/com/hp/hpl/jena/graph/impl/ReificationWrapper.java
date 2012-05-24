@@ -158,8 +158,8 @@ public class ReificationWrapper implements Reifier
     @Override
     public boolean hasTriple( Triple t )
         { // CHECK: there's one match AND it matches the triple t.
-        Node X = Query.X,  S = Query.S, P = Query.P, O = Query.O;
-        Query q = quadsQuery( Query.X );
+        Node X = GraphQuery.X,  S = GraphQuery.S, P = GraphQuery.P, O = GraphQuery.O;
+        GraphQuery q = quadsQuery( GraphQuery.X );
         List<Domain> bindings = base.queryHandler().prepareBindings( q, new Node[] {X, S, P, O} ).executeBindings().toList();
         return bindings.size() == 1 && t.equals( tripleFromRSPO( bindings.get( 0 ) ) );
         }
@@ -173,18 +173,18 @@ public class ReificationWrapper implements Reifier
     @Override
     public Triple getTriple( Node n )
         {
-        Node S = Query.S, P = Query.P, O = Query.O;
-        Query q = quadsQuery( n );
+        Node S = GraphQuery.S, P = GraphQuery.P, O = GraphQuery.O;
+        GraphQuery q = quadsQuery( n );
         List<Domain> bindings = base.queryHandler().prepareBindings( q, new Node[] {S, P, O} ).executeBindings().toList();
         return bindings.size() == 1 ? tripleFromSPO( bindings.get(0) ) : null;
         }
     
-    private static Query quadsQuery( Node subject )
+    private static GraphQuery quadsQuery( Node subject )
         {
-        return new Query()
-            .addMatch( subject, RDF.Nodes.subject, Query.S )
-            .addMatch( subject, RDF.Nodes.predicate, Query.P )
-            .addMatch( subject, RDF.Nodes.object, Query.O )
+        return new GraphQuery()
+            .addMatch( subject, RDF.Nodes.subject, GraphQuery.S )
+            .addMatch( subject, RDF.Nodes.predicate, GraphQuery.P )
+            .addMatch( subject, RDF.Nodes.object, GraphQuery.O )
             .addMatch( subject, RDF.Nodes.type, RDF.Nodes.Statement )
             ;
         }

@@ -21,7 +21,7 @@ package com.hp.hpl.jena.graph.query.test;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Query;
+import com.hp.hpl.jena.graph.query.GraphQuery;
 
 public class TestQuery extends QueryTestBase
     {
@@ -31,12 +31,12 @@ public class TestQuery extends QueryTestBase
 
     public void testEmptyQueryPattern()
         {
-        assertEquals( new ArrayList<Triple>(), new Query().getPattern() );
+        assertEquals( new ArrayList<Triple>(), new GraphQuery().getPattern() );
         }
     
     public void testIOneTriple()
         {
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         Triple spo = triple( "S P O" );
         q.addMatch( spo );
         assertEquals( listOfOne( spo ), q.getPattern() );
@@ -46,7 +46,7 @@ public class TestQuery extends QueryTestBase
         {
         Triple [] triples = tripleArray( "a P b; c Q ?d; ?e R '17'" );
         List<Triple> expected = new ArrayList<Triple>();
-        Query q = new Query();
+        GraphQuery q = new GraphQuery();
         for (int i = 0; i < triples.length; i += 1)
             {
             expected.add( triples[i] );

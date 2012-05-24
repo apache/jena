@@ -376,7 +376,7 @@ public class WGReasonerTester {
      */
     private boolean testConclusions(Graph conclusions, Graph result) {
         QueryHandler qh = result.queryHandler();
-        Query query = graphToQuery(conclusions);
+        GraphQuery query = graphToQuery(conclusions);
         Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
         return i.hasNext();
     }
@@ -385,9 +385,9 @@ public class WGReasonerTester {
     /**
      * Translate a conclusions graph into a query pattern
      */
-    public static Query graphToQuery(Graph graph) {
+    public static GraphQuery graphToQuery(Graph graph) {
         HashMap<Node, Node> bnodeToVar = new HashMap<Node, Node>();
-        Query query = new Query();
+        GraphQuery query = new GraphQuery();
         for (Iterator<Triple> i = graph.find(null, null, null); i.hasNext(); ) {
             Triple triple = i.next();
             query.addMatch(

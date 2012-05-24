@@ -3,6 +3,8 @@ Release Notes
 
 ==== Jena 2.7.1
 
++ Rename c.h.h.j.graph.Query as c.h.h.j.graph.GraphQuery (not related to SPARQL)  
++ remove out-of-date resultSet vocabulary class
 + icu4j dependency removed
 + xml / xmlns namespaces issues on write fixed (JENA-24)
 

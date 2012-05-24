@@ -36,7 +36,7 @@ public interface QueryHandler
         prepare a plan for generating bindings given the query _q_ and the result
         variables _variables_.
     */
-    public BindingQueryPlan prepareBindings( Query q, Node [] variables );
+    public BindingQueryPlan prepareBindings( GraphQuery q, Node [] variables );
 
     /**
         produce a single Stage which will probe the underlying graph for triples
