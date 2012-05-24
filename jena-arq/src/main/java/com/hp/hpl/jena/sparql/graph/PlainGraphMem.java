@@ -24,7 +24,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
-import com.hp.hpl.jena.mem.SmallGraphMem ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;

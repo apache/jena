@@ -197,8 +197,8 @@ public class qtest extends CmdARQ
     {
         String name =  "ARQ" ;
         String releaseName =  "ARQ" ;
-        String version = "2.9.1-incubating" ;
-        String homepage = "http://incubator.apache.org/jena" ;
+        String version = "2.9.1" ;
+        String homepage = "http://jena.apache.org/" ;
         String systemURI = "http://jena.apache.org/#arq" ;  // Null for bNode.
         
         // Include information later.
@@ -210,7 +210,7 @@ public class qtest extends CmdARQ
         
         // Update the EARL report. 
         Resource jena = model.createResource()
-                    .addProperty(FOAF.homepage, model.createResource("http://incubator.apache.org/jena")) ;
+                    .addProperty(FOAF.homepage, model.createResource("http://jena.apache.org/")) ;
         
         // ARQ is part fo Jena.
         Resource arq = report.getSystem()
