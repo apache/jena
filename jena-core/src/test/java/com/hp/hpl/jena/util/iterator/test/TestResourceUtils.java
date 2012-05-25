@@ -23,7 +23,6 @@ package com.hp.hpl.jena.util.iterator.test;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.mem.SmallGraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.util.*;
@@ -90,11 +89,6 @@ public class TestResourceUtils
         assertEquals( "Result should be a", c, ResourceUtils.maximalLowerElements( cd, RDFS.subClassOf, true ).iterator().next() );
     }
     
-    // this is a way to check for violation of the CME constraint.
-    public void testRenameResourceAvoidsCCE() {
-        testRenameResource( ModelFactory.createModelForGraph( new SmallGraphMem() ) );
-    }
-
     public void testRenameResource() {
         testRenameResource( ModelFactory.createDefaultModel() );
     }

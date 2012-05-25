@@ -30,6 +30,7 @@ import com.hp.hpl.jena.shared.*;
     
  	@author kers
 */
+@SuppressWarnings("deprecation")
 public class TestReificationWrapper extends AbstractTestReifier
     {
     protected final Class<? extends Graph> graphClass;

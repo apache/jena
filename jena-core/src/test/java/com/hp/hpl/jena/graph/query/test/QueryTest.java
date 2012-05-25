@@ -18,10 +18,11 @@
 
 package com.hp.hpl.jena.graph.query.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.*;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
 
 /**
     Test query over plain memory graphs.
@@ -36,7 +37,6 @@ public class QueryTest extends TestCase
     	{ 
         TestSuite result = new TestSuite();
         result.addTest( new TestSuite( TestQueryGraphMem.class ) );
-        result.addTest( new TestSuite( TestQuerySmallGraphMem.class ) );
         result.addTestSuite( TestQuery.class );
         result.setName(QueryTest.class.getName());
         return result;
@@ -48,12 +48,4 @@ public class QueryTest extends TestCase
         
         @Override public Graph getGraph() { return Factory.createGraphMem(); }       
         }
-    
-    public static class TestQuerySmallGraphMem extends AbstractTestQuery
-        {
-        public TestQuerySmallGraphMem( String name ) { super( name ); }
-        
-        @Override public Graph getGraph() { return new SmallGraphMem(); }       
-        }
-     
     }

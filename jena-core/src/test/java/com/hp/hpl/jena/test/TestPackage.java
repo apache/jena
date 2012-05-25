@@ -43,6 +43,7 @@ public class TestPackage extends TestCase{
         addTest(ts,  "Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest(ts,  "Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
         addTest(ts,  "Mem", com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
+        addTest(ts,  "Mem2", com.hp.hpl.jena.mem.faster.test.TestFasterMemPackage.suite() );
         addTest(ts,  "Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
         addTest(ts,  "N3", com.hp.hpl.jena.n3.N3TestSuite.suite());
         addTest(ts,  "Turtle", com.hp.hpl.jena.n3.turtle.TurtleTestSuite.suite()) ;

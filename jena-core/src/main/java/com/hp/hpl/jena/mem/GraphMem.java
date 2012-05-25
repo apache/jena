@@ -29,6 +29,7 @@ import com.hp.hpl.jena.util.iterator.*;
     A memory-backed graph with S/P/O indexes. 
     @author  bwm, kers
 */
+@Deprecated
 public class GraphMem extends GraphMemBase implements Graph 
     {    
     public GraphTripleStore forTestingOnly_getStore() 
