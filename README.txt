@@ -6,4 +6,4 @@ A database subsystem for Jena, optimized for SPARQL.
 Home page: http://openjena.org/SDB/
 
 The documentation will be migrated here:
-http://incubator.apache.org/jena/documentation/sdb/
+http://jena.apache.org/documentation/sdb/
