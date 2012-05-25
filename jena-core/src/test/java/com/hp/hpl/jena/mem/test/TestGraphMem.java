@@ -65,6 +65,7 @@ public class TestGraphMem extends AbstractTestGraphMem
         assertFalse( g.contains( triple( "y R b" ) ) );
         }    
     
+    @SuppressWarnings("deprecation")
     protected final class GraphMemWithoutFind extends GraphMem
         {
         @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )

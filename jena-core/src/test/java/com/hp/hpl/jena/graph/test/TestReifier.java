@@ -54,6 +54,7 @@ public class TestReifier extends AbstractTestReifier
         this.style = style;
         }
         
+    @SuppressWarnings("deprecation")
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
