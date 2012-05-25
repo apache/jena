@@ -5,8 +5,8 @@ Welcome to Apache Jena,  a Java framework for
 writing Semantic Web applications.
 
 Documentation can be found on the web at
-http://incubator.apache.org/jena
+http://jena.apache.org/
 
 There is a mailing lists for questions and feedback:
-jena-users@incubator.apache.org
+users@jena.apache.org
 
