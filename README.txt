@@ -1,17 +1,6 @@
 ARQ : Jena SPARQL System
 ========================
 
-Apache Jena is an effort undergoing incubation at The Apache Software Foundation (ASF), 
-sponsored by the Incubator PMC. Incubation is required of all newly accepted projects 
-until a further review indicates that the infrastructure, communications, and decision 
-making process have stabilized in a manner consistent with other successful ASF projects.
-While incubation status is not necessarily a reflection of the completeness or stability 
-of the code, it does indicate that the project has yet to be fully endorsed by the ASF.
-
-
-Website: http://incubator.apache.org/jena/documentation/query/
-Old ARQ website: http://openjena.org/ARQ
-
 ARQ is a complete implementation of SPARQL that can query any Jena model
 or graph, including ones stored in databases.
 
@@ -19,7 +8,7 @@ Download
 --------
 
 Also available via SVN:
-https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/
+https://svn.apache.org/repos/asf/jena/trunk/jena-arq
 
 Maven:
 GroupId: org.apache.jena
@@ -27,15 +16,6 @@ ArtifactId: jena-arq
 
 Development repository:
   https://repository.apache.org/content/repositories/snapshots/org/apache/jena/ 
-
-
-Old releases:
-  Mirrored to http://repo1.maven.org/
-http://openjena.org/repo
-http://sourceforge.net/project/showfiles.php?group_id=40417&package_id=143808
-
-
-See below of maven repository contents.
 
 Online demos and services
 -------------------------
@@ -48,17 +28,15 @@ http://www.sparql.org/validator.html
 Documentation
 -------------
 
-http://incubator.apache.org/jena/documentation/query/index.html
+http://jena.apache.org/documentation/query/index.html
 
 Installation
 ------------
 
-
-
 The apache-jena distribution includes ARQ and all it's dependencies.  It
 also includes scripts to run the command line tools.
 
-www.apache.org/dist/incubator/jena
+http://www.apache.org/dist/jena/
 
 Unpack zip : it unpacks into a directory, including the version number.
 
@@ -144,7 +122,7 @@ Support and Questions
 ---------------------
 
 Comments and questions about ARQ to the Jena mailing list 
-    jena-users@incubator.apache.org
+    users@jena.apache.org
 
 General questions and comments on SPARQL to jena-dev or
     public-sparql-dev@w3.org
