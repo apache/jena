@@ -23,31 +23,14 @@ ARQ     - SPARQL query engine
 
 The current release is available at:
 
-http://www.apache.org/dist/incubator/jena/
+http://www.apache.org/dist/jena/
 
-Older Apache releases ara available at:
+Older Apache releases are available at:
 
-http://archive.apache.org/dist/incubator/jena/
+http://archive.apache.org/dist/jena/
 
-Download all the "source-release" artifacts and unpack these together with
+Download the "source-release" artifact and unpack it together with
 the ".asc" signature and checksums ".md5" and ".sha1".
-
-Download and unzip:
-
-http://archive.apache.org/dist/incubator/jena/jena-top-0-incubating/jena-top-0-incubating-source-release.zip
-(directory will be jena-top-0-incubating/)
-
-http://archive.apache.org/dist/incubator/jena/jena-iri-0.9.0-incubating/jena-iri-0.9.0-incubating-source-release.zip
-(directory will be jena-iri-0.9.0-incubating)
-
-http://archive.apache.org/dist/incubator/jena/jena-core-2.7.0-incubating/jena-core-2.7.0-incubating-source-release.zip
-(directory will be jena-core-2.7.0-incubating)
-
-http://archive.apache.org/dist/incubator/jena/jena-arq-2.9.0-incubating/jena-arq-2.9.0-incubating-source-release.zip
-(directory will be jena-arq-2.9.0-incubating)
-
-http://archive.apache.org/dist/incubator/jena/apache-jena-2.7.0-incubating/apache-jena-2.7.0-incubating-source-release.zip
-(directory will be apache-jena-2.7.0-incubating)
 
 == Verify
 
@@ -63,7 +46,7 @@ The file with extension .asc contains the
 
 For the zip file of the zzz module:
 
-    gpg --verify jena-zzz-VER-incubating-source-release.zip.asc
+    gpg --verify apache-jena-zzz-VER-source-release.zip.asc
 
 = Verify a checksum
 
@@ -72,7 +55,7 @@ respectively.  Calculate the checksum on the downloaded file
 
 Example (linux):
 
-    md5sum jena-zzz-VER-incubating-source-release.zip
+    md5sum jena-zzz-VER-source-release.zip
 
 == Build
 
@@ -80,18 +63,9 @@ Example (linux):
 will have version numbers in them).
 
 # Build modules.
-for module in jena-top* jena-iri* jena-core* jena-arq* apache-jena*
-do
-  cd $module
-  mvn clean install
-  cd ..
-  done
-
-# Build download.
-cd apache-jena*
 mvn clean package
 
-The download will be in apache-jena-2.7.0-incubating/target/
+The download will be in apache-jena-2.7.0/target/ and jena-fuseki/target
 
 == Sources from subversion
 
@@ -99,19 +73,10 @@ Alternatively, you can build from the development codebase.
 
 The Jena2 subversion area is rooted at:
 
-https://svn.apache.org/repos/asf/incubator/jena/Jena2/
-
-The modules are subdirectories of this area.  Check out each one, and
-install it into you local maven repository:
-
-svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaTop/trunk jena-top
-svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/IRI/trunk jena-iri
-svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/jena/trunk jena-core
-svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/ARQ/trunk jena-arq
-svn co https://svn.apache.org/repos/asf/incubator/jena/Jena2/JenaZip/trunk apache-jena
+https://svn.apache.org/repos/asf/jena/trunk/
 
 
 -------------------------------------------------------
 If you have any questions, please do not hesitate in contacting the Jena project:
-  jena-users@incubator.apache.org
-  jena-dev@incubator.apache.org
+  users@jena.apache.org
+  dev@jena.apache.org

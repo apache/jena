@@ -1,5 +1,4 @@
 
-
                                   Apache Jena
                                   ===========
 
@@ -11,6 +10,7 @@
 
   - jena-core: provides the Jena RDF APIs, Ontology APIs and Inference APIs. 
   - jena-arq: SPARQL 1.1, query and update.
+  - jena-tdb: scalable and performant storage subsystem for Jena
   - jena-iri: provides an implementation of RFC 3987 (IRI) and RFC 3986 (URI)
 
   Installing Jena
@@ -32,11 +32,11 @@
   unzipped the Jena distribution:
 
   Windows:
-    set JENAROOT \path\to\apache-jena-2.7.0-incubating
+    set JENAROOT \path\to\apache-jena-2.7.1
     bat\sparql.bat --version    
 
   Linux
-    export JENAROOT=/path/to/apache-jena-2.7.0-incubating
+    export JENAROOT=/path/to/apache-jena-2.7.1
     bin/sparql --version    
 
 
@@ -44,27 +44,27 @@
   -------
 
   The Apache Jena website is available here:
-  http://incubator.apache.org/jena/
+  http://jena.apache.org/
 
 
   Documentation
   -------------
 
-  Getting started: http://incubator.apache.org/jena/getting_started/
-  Tutorials: http://incubator.apache.org/jena/tutorials/
-  Documentation: http://incubator.apache.org/jena/documentation/
+  Getting started: http://jena.apache.org/getting_started/
+  Tutorials: http://jena.apache.org/tutorials/
+  Documentation: http://jena.apache.org/documentation/
 
-  Support is provided via jena-users@incubator.apache.org mailing list.
-  See also: http://incubator.apache.org/jena/help_and_support/
+  Support is provided via users@jena.apache.org mailing list.
+  See also: http://jena.apache.org/help_and_support/
 
   Sources and Getting Involved
   ----------------------------
 
   The Apache Jena source code repository is here:
-  http://svn.apache.org/repos/asf/incubator/jena/Jena2/
+  http://svn.apache.org/repos/asf//jena/
 
   If you are interested in getting involved with Apache Jena development: 
-  http://incubator.apache.org/jena/getting_involved/
+  http://jena.apache.org/getting_involved/
 
 
   Licensing
