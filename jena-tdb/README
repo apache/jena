@@ -1,16 +1,16 @@
 Apache Jena TDB : A Jena Storage Layer
 ======================================
 
-Website and documentation: http://incubator.apache.org/jena/documentation/tdb/
+Website and documentation: http://jena.apache.org/documentation/tdb/
 
 Download
 --------
 
 Download releases:
-http://www.apache.org/dist/incubator/jena/
+http://www.apache.org/dist/jena/
 
 SVN:
-https://svn.apache.org/repos/asf/incubator/jena/Jena2/TDB/
+https://svn.apache.org/repos/asf/jena/trunk/jena-tdb/
 
 Maven:
 GroupId: org.apache.jena
