@@ -33,7 +33,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
      
     @author kers
 */
-
+@Deprecated
 public class SmallGraphMem extends GraphMemBase
     {
     protected Set<Triple> triples = CollectionFactory.createHashedSet();

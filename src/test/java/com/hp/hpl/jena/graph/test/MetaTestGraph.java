@@ -31,6 +31,7 @@ import com.hp.hpl.jena.shared.*;
 
 	@author kers
 */
+@SuppressWarnings("deprecation")
 public class MetaTestGraph extends AbstractTestGraph 
     {
     protected final Class<? extends Graph> graphClass;
