@@ -103,13 +103,4 @@
     <url>http://issues.apache.org/jira/browse/JENA</url>
   </issueManagement>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <id>jena-repo-dev</id>
-      <name>Jena development repo</name>
-      <url>sftp://openjena.org/var/repo-dev</url>
-      <layout>default</layout>
-    </snapshotRepository>
-  </distributionManagement>
-  
 </project>
