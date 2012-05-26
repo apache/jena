@@ -17,13 +17,17 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- Build the Jena download file.
+       Assumes it is run as part of the module build (not run standalone)
+       with a complete svn tree for the active codebase available.
+  -->
+
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>apache-jena</artifactId>
   <packaging>pom</packaging>
   <name>apache-jena</name>
-  <!-- Same as version from Jena/pom.xml, repeated for standalone testing -->
-  <version>2.7.1-SNAPSHOT</version>
   <description />
   <url>http://jena.apache.org/</url>
 
@@ -52,9 +56,12 @@
     <url>http://svn.apache.org/viewvc//jena/trunk/</url>
   </scm>
 
+  <!-- Inherit would be better-->
   <properties>
     <ver.jena>2.7.1-SNAPSHOT</ver.jena>
     <ver.arq>2.9.1-SNAPSHOT</ver.arq>
+    <ver.tdb>0.9.1-SNAPSHOT</ver.tdb>
+    <ver.fuseki>0.2.2-SNAPSHOT</ver.fuseki>
     <ver.iri>0.9.1-SNAPSHOT</ver.iri>
   </properties>
 
@@ -102,6 +109,26 @@
 
     <dependency>
       <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.tdb}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.tdb}</version>
+      <classifier>sources</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.tdb}</version>
+      <classifier>javadoc</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
       <version>${ver.iri}</version>
     </dependency>
@@ -112,6 +139,21 @@
       <version>${ver.iri}</version>
       <classifier>sources</classifier>
     </dependency>
+
+    <!--
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki</artifactId>
+      <version>${ver.fuseki}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-fuseki</artifactId>
+      <version>${ver.fuseki}</version>
+      <classifier>sources</classifier>
+    </dependency>
+    -->
 
   </dependencies>
 
