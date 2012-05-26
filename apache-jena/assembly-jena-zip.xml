@@ -22,7 +22,7 @@
   <id>binary-distribution</id>
   <formats>
     <format>zip</format>
-    <format>tar.gz</format>
+    <!-- <format>tar.gz</format> -->
     <!--<format>tar.bz2</format>-->
   </formats>
 
@@ -123,39 +123,80 @@
       <fileMode>0755</fileMode>
     </fileSet>
 
-    <files>
+    <!-- Examples : needs tidying up -->
+    <fileSet>
+      <outputDirectory>src-examples</outputDirectory>
+      <directory>../jena-examples/src/main/java/</directory>
+      <includes>
+	<include>**</include>
+      </includes>
+      <fileMode>0622</fileMode>
+      <directoryMode>0755</directoryMode>
+      <filtered>false</filtered>
+    </fileSet>
 
-      <file>
-	<source>../jena-core/ReleaseNotes.txt</source>
-	<outputDirectory>/</outputDirectory>
-	<destName>ReleaseNotes-Jena.txt</destName>
-	<fileMode>0622</fileMode>
-      </file>
+    <fileSet>
+      <outputDirectory>src-examples</outputDirectory>
+      <directory>../jena-core/src-examples</directory>
+      <includes>
+	<include>**</include>
+      </includes>
+      <fileMode>0622</fileMode>
+      <directoryMode>0755</directoryMode>
+      <filtered>false</filtered>
+    </fileSet>
 
-      <file>
-	<source>../jena-arq/ChangeLog.txt</source>
-	<outputDirectory>/</outputDirectory>
-	<destName>ReleaseNotes-ARQ.txt</destName>
-	<fileMode>0622</fileMode>
-      </file>
-
-      <file>
-	<source>../jena-tdb/ChangeLog.txt</source>
-	<outputDirectory>/</outputDirectory>
-	<destName>ReleaseNotes-TDB.txt</destName>
-	<fileMode>0622</fileMode>
-      </file>
-      
-      <!--
-      <file>
-	<source>../jena-fuseki/ChangeLog.txt</source>
-	<outputDirectory>/</outputDirectory>
-	<destName>ReleaseNotes-Fuseki.txt</destName>
-	<fileMode>0622</fileMode>
-      </file>
-      -->
-    </files>
+    <fileSet>
+      <outputDirectory>src-examples</outputDirectory>
+      <directory>../jena-arq/src-examples</directory>
+      <includes>
+	<include>**</include>
+      </includes>
+      <fileMode>0622</fileMode>
+      <directoryMode>0755</directoryMode>
+      <filtered>false</filtered>
+    </fileSet>
+    <fileSet>
+      <outputDirectory>src-examples</outputDirectory>
+      <directory>../jena-tdb/src-examples</directory>
+      <includes>
+	<include>**</include>
+      </includes>
+      <fileMode>0622</fileMode>
+      <directoryMode>0755</directoryMode>
+      <filtered>false</filtered>
+    </fileSet>
 
   </fileSets>
+
+  <files>
+    <file>
+      <source>../jena-core/ReleaseNotes.txt</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>ReleaseNotes-Jena.txt</destName>
+      <fileMode>0622</fileMode>
+    </file>
+
+    <file>
+      <source>../jena-arq/ChangeLog.txt</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>ReleaseNotes-ARQ.txt</destName>
+      <fileMode>0622</fileMode>
+    </file>
+
+    <file>
+      <source>../jena-tdb/ChangeLog.txt</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>ReleaseNotes-TDB.txt</destName>
+      <fileMode>0622</fileMode>
+    </file>
+    
+    <file>
+      <source>../jena-fuseki/ChangeLog.txt</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>ReleaseNotes-Fuseki.txt</destName>
+      <fileMode>0622</fileMode>
+    </file>
+  </files>
 
 </assembly>
