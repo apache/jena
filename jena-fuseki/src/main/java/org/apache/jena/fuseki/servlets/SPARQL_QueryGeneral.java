@@ -25,6 +25,7 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.riot.RiotException ;
@@ -81,12 +82,14 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     @Override
     protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
     {
+        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+            return true ;
         errorBadRequest("No query string given") ;
         return false ;
     }
 
     /**
-     * Construct a Dataset based on a dadaset description.
+     * Construct a Dataset based on a dataset description.
      */
     
     protected static Dataset datasetFromDescription(HttpActionQuery action, DatasetDescription datasetDesc)
