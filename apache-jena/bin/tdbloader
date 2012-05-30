@@ -20,4 +20,4 @@ JENA_CP="$JENAROOT"'/lib/*'
 SOCKS=
 LOGGING="-Dlog4j.configuration=file:$JENAROOT/log4j.properties"
 
-java $JVM_ARGS $LOGGING -cp "$JENA_CP" arq.rupdate "$@" 
+java $JVM_ARGS $LOGGING -cp "$JENA_CP" tdbloader "$@" 

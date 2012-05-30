@@ -41,9 +41,16 @@ riotcmd.turtle
 riotcmd.trig
 riotcmd.infer
 riotcmd.utf8
+tdbbackup
+tdbdump
+tdbloader
+tdbloader3
+tdbquery
+tdbrecovery
+tdbstats
+tdbupdate
 EOF
 )
-
 
 make_bin()
 {
@@ -67,3 +74,6 @@ do
     make_bin $cmd
     make_bat $cmd
 done
+
+## Specials
+cp ../jena-tdb/bin/tdbloader2 bin
