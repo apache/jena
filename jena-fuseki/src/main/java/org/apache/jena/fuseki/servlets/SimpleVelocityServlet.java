@@ -95,6 +95,7 @@ public class SimpleVelocityServlet extends HttpServlet
         {
             Template temp = velocity.getTemplate(path) ;        // ResourceNotFoundException, ParseErrorException
             context.put("request", req) ;
+            resp.setContentType("text/html") ;
             resp.setCharacterEncoding("UTF-8") ;
             Writer out = resp.getWriter() ;
             temp.merge(context, out);                           // ResourceNotFoundException, ParseErrorException, MethodInvocationException

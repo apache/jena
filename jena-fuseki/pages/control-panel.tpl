@@ -17,7 +17,7 @@
 <html>
   <head>
     <title>Fuseki - A SPARQL 1.1 Server</title>
-    <link rel="stylesheet" type="text/css" href="/fuseki.css" />
+    <link rel="stylesheet" type="text/css" href="fuseki.css" />
   </head>
 
   <body>
