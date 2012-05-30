@@ -139,6 +139,8 @@ public class SPARQLServer
         mt.addMimeMapping("nt",     WebContent.contentTypeNTriples+";charset=ascii") ;
         mt.addMimeMapping("nq",     WebContent.contentTypeNQuads+";charset=ascii") ;
         mt.addMimeMapping("trig",   WebContent.contentTypeTriG+";charset=utf-8") ;
+        
+        //mt.addMimeMapping("tpl",    "text/html;charset=utf-8") ;
         context.setMimeTypes(mt) ;
         server.setHandler(context);
 
