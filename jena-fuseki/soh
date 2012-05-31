@@ -471,8 +471,8 @@ end
 def cmd_sparql_query
   options={}
   optparse = OptionParser.new do |opts|
-    opts.banner = "Usage: #{$cmd} [--query QUERY] [--service URI] 'query' | @file"
-     opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
+    opts.banner = "Usage: #{$cmd} [--query QUERY] [--service URI] [--post] 'query' | @file"
+    opts.on('--service=URI', '--server=URI', 'SPARQL endpoint') do |uri|
       options[:service]=uri
     end
     opts.on('--query=FILE','--file=FILE', 'Take query from a file') do |file|
@@ -487,6 +487,9 @@ def cmd_sparql_query
       options[:accept]=type
     end
     options[:verbose] = false
+    opts.on( '--post', 'Force use of POST' ) do
+      options[:post] = true
+    end
     opts.on( '-v', '--verbose', 'Verbose' ) do
       options[:verbose] = true
     end
@@ -508,6 +511,7 @@ def cmd_sparql_query
 
   $verbose = options[:verbose]
   $print_http = $verbose
+  usePOST = options[:post]
 
   service = options[:service]
   warn_exit 'No service specified.  Required --service=URI',1 if service.nil?
@@ -544,7 +548,12 @@ def cmd_sparql_query
 
   print "SPARQL #{service}\n" if $verbose
   #args={"output"=>"text"}
-  SPARQL_query(service, query, query_file, args)
+  if ! usePOST
+  then
+    SPARQL_query(service, query, query_file, args)
+  else
+    SPARQL_query_POST(service, query, query_file, args)
+  end
   exit(0)
 end
 
