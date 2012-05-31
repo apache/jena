@@ -34,11 +34,11 @@ public class UpdateEngineMain extends UpdateEngineBase
     @Override
     public void execute()
     {
-        graphStore.startRequest() ;
+        graphStore.startRequest(request) ;
         UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding, context) ;
         for ( Update up : request )
             up.visit(worker) ;
-        graphStore.finishRequest() ;
+        graphStore.finishRequest(request) ;
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
