@@ -41,14 +41,14 @@ riotcmd.turtle
 riotcmd.trig
 riotcmd.infer
 riotcmd.utf8
-tdbbackup
-tdbdump
-tdbloader
-tdbloader3
-tdbquery
-tdbrecovery
-tdbstats
-tdbupdate
+tdb.tdbbackup
+tdb.tdbdump
+tdb.tdbloader
+tdb.tdbloader3
+tdb.tdbquery
+tdb.tdbrecovery
+tdb.tdbstats
+tdb.tdbupdate
 EOF
 )
 
