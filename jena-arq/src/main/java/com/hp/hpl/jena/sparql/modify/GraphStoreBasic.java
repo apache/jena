@@ -24,6 +24,7 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
 {
@@ -43,14 +44,23 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
         return DatasetFactory.create(getWrapped()) ;
     }
 
+    @Deprecated
     @Override
-    public void startRequest()
+    public void startRequest() { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
+    
+    @Override
+    public void startRequest(UpdateRequest request)
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
 
+    @Deprecated
     @Override
     public void finishRequest()
     { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
     
+    @Override
+    public void finishRequest(UpdateRequest request)
+    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; }
+
     @Override
     public void close()
     {
