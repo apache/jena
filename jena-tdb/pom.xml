@@ -198,11 +198,12 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
       </plugin>
-      
+
+      <!-- assembly - disable
       <plugin>
-        <!-- This must be the last plug-in attached to the package phase 
+        <!- - This must be the last plug-in attached to the package phase 
              because it replies on the packaging of the jar to happen first.
-        -->
+        - ->
         <groupId>org.apache.maven.plugins</groupId>
 
         <artifactId>maven-assembly-plugin</artifactId>
@@ -212,15 +213,15 @@
             <phase>package</phase>
             <goals><goal>single</goal></goals>
             <configuration>
-              <!-- If you place this in target/ directly - it will be 
+              <!- - If you place this in target/ directly - it will be 
                    uploaded to the repo AND its name is changed
                    to the group-artifact name (this can overwrite, silently,
                    other files.
-              -->
-              <!--
+              - ->
+              <!- -
               <finalName>dist/${assembly.root.name}</finalName>
               <appendAssemblyId>false</appendAssemblyId>
-              -->
+              - ->
               <descriptors>
                 <descriptor>assembly.xml</descriptor>
               </descriptors>
@@ -228,6 +229,7 @@
           </execution>
         </executions>
       </plugin>
+      -->
 
     </plugins>
   </build>
