@@ -30,6 +30,7 @@
   <name>apache-jena</name>
   <description />
   <url>http://jena.apache.org/</url>
+  <version>2.7.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
