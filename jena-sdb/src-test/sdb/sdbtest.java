@@ -115,24 +115,24 @@ public class sdbtest extends CmdArgsDB
     static void execOneManifestEarl(String testManifest)
     {
         // Include information later.
-        EarlReport report = new EarlReport("SDB", SDB.VERSION, "http://jena.sf.net/SDB") ;
+        EarlReport report = new EarlReport("http://jena.apache.org/#sdb", "SDB", SDB.VERSION, "http://jena.apahe.org/") ;
         ScriptTestSuiteFactory.results = report ;
         
         Model model = report.getModel() ;
 
         // Update the EARL report. 
         Resource jena = model.createResource()
-                    .addProperty(FOAF.homepage, model.createResource("http://jena.sf.net/")) ;
+                    .addProperty(FOAF.homepage, model.createResource("http://jena.apahe.org/")) ;
         
         // SDB is part of Jena.
         Resource arq = report.getSystem()
                         .addProperty(DCTerms.isPartOf, jena) ;
         
         // Andy wrote the test software (updates the thing being tested as well as they are the same). 
-        Resource who = report.getModel().createResource(FOAF.Person)
-                                .addProperty(FOAF.name, "Andy Seaborne")
-                                .addProperty(FOAF.homepage, 
-                                             model.createResource("http://www.hpl.hp.com/people/afs")) ; 
+        Resource who = model.createResource(FOAF.Person)
+            .addProperty(FOAF.name, "Andy Seaborne")
+            .addProperty(FOAF.homepage, 
+                         model.createResource("http://people.apache.org/~andy")) ; 
         Resource reporter = report.getReporter() ;
         reporter.addProperty(DC.creator, who) ;
         
