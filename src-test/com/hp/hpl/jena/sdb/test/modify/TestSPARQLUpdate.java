@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sdb.test.modify;
 
+import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.sdb.SDBFactory;
@@ -28,9 +29,9 @@ import com.hp.hpl.jena.update.GraphStore;
 
 public class TestSPARQLUpdate extends TestUpdateGraph
 {
-    public static junit.framework.Test suite() {
+    public static junit.framework.TestSuite suite() {
         TestSuite ts = new TestSuite();
-        ts.addTestSuite(TestSPARQLUpdate.class);
+        ts.addTest(new JUnit4TestAdapter(TestSPARQLUpdate.class));
         return ts;
     }
     
