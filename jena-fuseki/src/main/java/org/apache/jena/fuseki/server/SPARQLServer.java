@@ -112,6 +112,11 @@ public class SPARQLServer
     public Server getServer() { return server ; }
     public List<DatasetRef> getDatasets() { return serverConfig.services ; }
     
+    public ServerConfig getServerConfig()
+    {
+        return serverConfig ;
+    }
+
     // Later : private and in constructor.
     private ServletContextHandler buildServer(String jettyConfig, boolean enableCompression)
     {
