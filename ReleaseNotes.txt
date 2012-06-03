@@ -5,7 +5,7 @@ Release Notes
 
 + Rename c.h.h.j.graph.Query as c.h.h.j.graph.GraphQuery (not related to SPARQL)  
 + remove out-of-date resultSet vocabulary class
-+ icu4j dependency removed
++ icu4j dependency removed (JENA-177)
 + xml / xmlns namespaces issues on write fixed (JENA-24)
 
 ==== Jena 2.6.5 / 2.7.0
