@@ -187,8 +187,8 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name} ${project.version}</windowtitle>
-          <doctitle>${project.name} ${project.version}</doctitle>
+          <windowtitle>Apache Jena TDB</windowtitle>
+          <doctitle>Apache Jena TDB ${project.version}</doctitle>
           <excludePackageNames>com.hp.hpl.jena.tdb.*</excludePackageNames>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
