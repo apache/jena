@@ -189,8 +189,8 @@
           <show>public</show>
           <quiet>true</quiet>
           <encoding>UTF-8</encoding>
-          <windowtitle>${project.name} ${project.version}</windowtitle>
-          <doctitle>${project.name} ${project.version}</doctitle>
+          <windowtitle>Apache Jena ARQ</windowtitle>
+          <doctitle>Apache Jena ARQ ${project.version}</doctitle>
           <excludePackageNames>arq:arq.*:riotcmd:riotcmd.*</excludePackageNames>
           <groups>
             <group>
