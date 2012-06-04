@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
 /** A implementation of a Dataset.
  * This is the "usual" implementation based on wrapping a DatasetGraph
  * and providing an adapter layer from Model/Resource to Graph/Node
- * The characteristics of this adpter depend on the charcateristics of
+ * The characteristics of this adapter depend on the characteristics of
  * DatasetGraph.   
  */
 
