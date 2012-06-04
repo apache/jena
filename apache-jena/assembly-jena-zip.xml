@@ -178,25 +178,27 @@
     </file>
 
     <file>
-      <source>../jena-arq/ChangeLog.txt</source>
+      <source>../jena-arq/ReleaseNotes.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>ReleaseNotes-ARQ.txt</destName>
       <fileMode>0622</fileMode>
     </file>
 
     <file>
-      <source>../jena-tdb/ChangeLog.txt</source>
+      <source>../jena-tdb/ReleaseNotes.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>ReleaseNotes-TDB.txt</destName>
       <fileMode>0622</fileMode>
     </file>
     
+    <!--
     <file>
-      <source>../jena-fuseki/ChangeLog.txt</source>
+      <source>../jena-fuseki/ReleaseNotes.txt</source>
       <outputDirectory>/</outputDirectory>
       <destName>ReleaseNotes-Fuseki.txt</destName>
       <fileMode>0622</fileMode>
     </file>
+    -->
   </files>
 
 </assembly>
