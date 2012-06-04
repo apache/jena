@@ -18,6 +18,7 @@
 
 package arq.cmdline;
 
+import org.openjena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 
@@ -35,7 +36,10 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public abstract class CmdMain extends CmdLineArgs
 {
-
+    // Do this very early so it happens before anything else
+    // gets a chance to create a logger.
+    static { Log.setCmdLogging() ; }
+    
     public CmdMain(String[] args)
     {
         super(args) ;
