@@ -328,7 +328,7 @@ public class Log
             PropertyConfigurator.configure(filename) ;
     }
     
-    private static final String log4Jsetup = StrUtils.strjoinNL(
+    private static String log4Jsetup = StrUtils.strjoinNL(
         "## Plain output to stdout"
         , "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender"
         , "log4j.appender.jena.plain.target=System.out"
@@ -348,7 +348,7 @@ public class Log
         , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
         , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, jena.plainlevel "
         ) ;
-
+    
     /** Set logging, suitable for a command line application.
      * <ol>
      * <li>Check for -Dlog4j.configuration.</li>
@@ -356,16 +356,33 @@ public class Log
      * <li>Sets log4j using an internal configuration.</li>
      * </ol>
      */
-    public static void setLoggingCmd()
+    public static void setCmdLogging()
+    {
+        setCmdLogging(log4Jsetup) ; 
+    }
+    
+    /** Set logging, suitable for a command line application.
+     * <ol>
+     * <li>Check for -Dlog4j.configuration.</li>
+     * <li>Looks for log4j.properties file in current directory.</li>
+     * <li>Sets log4j using the provided default configuration.</li>
+     * </ol>
+     * T 
+     */
+    public static void setCmdLogging(String defaultConfig)
     {
         if ( !setLog4j() )
-        {
-            Properties p = new Properties() ;
-            InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
-            try { p.load(in) ; } catch (IOException ex) {}
-            PropertyConfigurator.configure(p) ;
-            System.setProperty("log4j.configuration", "set") ;
-        }
+            resetLogging(log4Jsetup) ;
+    }
+    
+
+    public static void resetLogging(String config)
+    {
+        Properties p = new Properties() ;
+        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(config)) ;
+        try { p.load(in) ; } catch (IOException ex) {}
+        PropertyConfigurator.configure(p) ;
+        System.setProperty("log4j.configuration", "set") ;
     }
     
     //---- java.util.logging - because that's always present.
@@ -410,14 +427,5 @@ public class Log
             java.util.logging.LogManager.getLogManager().readConfiguration(details) ;
             
         } catch (Exception ex) { throw new AtlasException(ex) ; } 
-    }
-    
-    /** Set for command line tools so that (e.g. log4j.properties) isn't assumed
-     * Avoids need for baked in log4j.properties which can be problematic
-     * if there are multiple ones. 
-     */
-    private static void setLoggingForCommandLine()
-    {
-            // See CmdTDB.setLogging.
     }
 }
