@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.After ;
 import org.junit.Before ;
-import org.junit.Test ;
 
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -40,11 +39,4 @@ public class TestTransSequentialMem extends AbstractTestTransSeq
     {
         return StoreConnection.make(Location.mem()) ;
     }
-    
-    // release/connect - meaningless in-memory.
-    @Override @Test public void trans_50()  {}
-    @Override @Test public void trans_51()  {}
-    @Override @Test public void trans_52()  {}
-    @Override @Test public void trans_53()  {}
-    @Override @Test public void trans_54()  {}
 }

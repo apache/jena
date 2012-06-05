@@ -36,6 +36,7 @@ import org.junit.runners.Suite;
     , TestConcurrentAccess.class
     , TestDynamicDataset.class
     , TestLoader.class
+    , TestStoreConnections.class
 } )
 public class TS_Store
 { 
