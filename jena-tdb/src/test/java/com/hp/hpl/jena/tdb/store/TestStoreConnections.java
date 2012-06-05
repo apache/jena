@@ -116,7 +116,7 @@ public class TestStoreConnections  extends BaseTest
     }
     
     
-    @Test
+    //@Test
     public void store_4()
     {
         StoreConnection sConn = getStoreConnection() ;
