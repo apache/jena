@@ -62,12 +62,13 @@ public class SPARQLServer
     private ServerConfig serverConfig ;
     
     private Server server = null ;
-    private boolean verbose = false ;
+    private boolean verboseLogging = false ;
     //private static int ThreadPoolSize = 100 ;
     
     public SPARQLServer(ServerConfig config)
     {
-        this.serverConfig = config ;  
+        this.serverConfig = config ; 
+        verboseLogging = config.verboseLogging ;
         
         // GZip compression
         // Note that regardless of this setting we'll always leave it turned off for the servlets
@@ -224,11 +225,11 @@ public class SPARQLServer
         DatasetRegistry.get().put(datasetPath, sDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
-        HttpServlet sparqlQuery = new SPARQL_QueryDataset(verbose) ;
-        HttpServlet sparqlUpdate = new SPARQL_Update(verbose) ;
-        HttpServlet sparqlUpload = new SPARQL_Upload(verbose) ;
-        HttpServlet sparqlHttpR = new SPARQL_REST_R(verbose) ;  
-        HttpServlet sparqlHttpRW = new SPARQL_REST_RW(verbose) ;
+        HttpServlet sparqlQuery = new SPARQL_QueryDataset(verboseLogging) ;
+        HttpServlet sparqlUpdate = new SPARQL_Update(verboseLogging) ;
+        HttpServlet sparqlUpload = new SPARQL_Upload(verboseLogging) ;
+        HttpServlet sparqlHttpR = new SPARQL_REST_R(verboseLogging) ;  
+        HttpServlet sparqlHttpRW = new SPARQL_REST_RW(verboseLogging) ;
         
         addServlet(context, datasetPath, sparqlQuery, sDesc.queryEP, enableCompression) ;
         addServlet(context, datasetPath, sparqlUpdate, sDesc.updateEP, false) ; // No point - no results of any size.

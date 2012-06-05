@@ -373,6 +373,7 @@ public class FusekiCmd extends CmdARQ
         serverConfig.pagesPort = port ;
         serverConfig.enableCompression = enableCompression ;
         serverConfig.jettyConfigFile = jettyConfigFile ;
+        serverConfig.verboseLogging = ( super.isVerbose() || super.isDebug() ) ;
         
         SPARQLServer server = new SPARQLServer(serverConfig) ;
         
