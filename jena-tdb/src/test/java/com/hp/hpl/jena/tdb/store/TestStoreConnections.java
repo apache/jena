@@ -67,7 +67,7 @@ public class TestStoreConnections  extends BaseTest
         return StoreConnection.make(DIR) ;
     }
     
-    @Test public void store_50()
+    @Test public void store_0()
     {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
@@ -79,7 +79,7 @@ public class TestStoreConnections  extends BaseTest
     }
     
     @Test
-    public void store_51()
+    public void store_1()
     {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
@@ -97,7 +97,7 @@ public class TestStoreConnections  extends BaseTest
     }
     
     @Test(expected=TDBTransactionException.class)
-    public void store_52()
+    public void store_2()
     {
         // Expel.
         // Only applies to non-memory.
@@ -107,7 +107,7 @@ public class TestStoreConnections  extends BaseTest
     }
 
     @Test(expected=TDBTransactionException.class)
-    public void store_53()
+    public void store_3()
     {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
@@ -117,7 +117,7 @@ public class TestStoreConnections  extends BaseTest
     
     
     @Test
-    public void store_54()
+    public void store_4()
     {
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
