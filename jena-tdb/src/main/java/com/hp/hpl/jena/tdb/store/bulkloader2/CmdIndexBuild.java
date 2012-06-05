@@ -47,7 +47,7 @@ public class CmdIndexBuild
     
     public static void main(String...argv)
     {
-        CmdTDB.setLogging() ;
+        CmdTDB.init() ;
         // DATA IN S/P/O columns but sorted by index order.
         
         if ( argv.length != 3 )

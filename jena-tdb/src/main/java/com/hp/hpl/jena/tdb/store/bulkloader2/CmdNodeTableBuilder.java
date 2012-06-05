@@ -74,7 +74,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
     
     public static void main(String...argv)
     {
-        CmdTDB.setLogging() ;
+        CmdTDB.init() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
         new CmdNodeTableBuilder(argv).mainRun() ;
     }
