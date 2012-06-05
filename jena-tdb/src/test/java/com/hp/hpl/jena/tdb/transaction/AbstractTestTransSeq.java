@@ -535,10 +535,30 @@ public abstract class AbstractTestTransSeq extends BaseTest
         StoreConnection sConn2 = getStoreConnection() ;
     }
     
-    @Test
+    @Test(expected=TDBTransactionException.class)
     public void trans_52()
     {
-        // Fails for in-memory because the sttae is lost on  StoreConnection.release
+        // Expel.
+        // Only applies to non-memory.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        StoreConnection.release(sConn.getLocation()) ;
+    }
+
+    @Test(expected=TDBTransactionException.class)
+    public void trans_53()
+    {
+        // Expel.
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.WRITE) ;
+        StoreConnection.release(sConn.getLocation()) ;
+    }
+    
+    
+    @Test
+    public void trans_54()
+    {
+        // Fails for in-memory because the state is lost on StoreConnection.release
         
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
@@ -561,6 +581,5 @@ public abstract class AbstractTestTransSeq extends BaseTest
         long x = Iter.count(dsgR2.find()) ;
         assertEquals(2, x) ;
     }
-   
 
 }

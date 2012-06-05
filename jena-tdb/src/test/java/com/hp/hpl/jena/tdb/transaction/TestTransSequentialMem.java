@@ -41,7 +41,10 @@ public class TestTransSequentialMem extends AbstractTestTransSeq
         return StoreConnection.make(Location.mem()) ;
     }
     
-    @Override
-    @Test
-    public void trans_52()  {}
+    // release/connect - meaningless in-memory.
+    @Override @Test public void trans_50()  {}
+    @Override @Test public void trans_51()  {}
+    @Override @Test public void trans_52()  {}
+    @Override @Test public void trans_53()  {}
+    @Override @Test public void trans_54()  {}
 }
