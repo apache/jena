@@ -22,6 +22,7 @@ package com.hp.hpl.jena.tdb.transaction;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
+import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.logging.Log ;
 
@@ -532,10 +533,34 @@ public abstract class AbstractTestTransSeq extends BaseTest
         sConn = null ;
         
         StoreConnection sConn2 = getStoreConnection() ;
+    }
+    
+    @Test
+    public void trans_52()
+    {
+        // Fails for in-memory because the sttae is lost on  StoreConnection.release
+        
+        StoreConnection sConn = getStoreConnection() ;
+        DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
+        dsgW1.add(q1) ;
+        dsgW1.commit() ;
+        dsgW1.end() ;
+        dsgR1.end();
+        
+        StoreConnection.release(sConn.getLocation()) ;
+        sConn = null ;
+        
+        StoreConnection sConn2 = getStoreConnection() ;
         DatasetGraphTxn dsgW2 = sConn2.begin(ReadWrite.WRITE) ;
-        dsgW2.add(q1) ;
+        dsgW2.add(q2) ;
         dsgW2.commit() ;
         dsgW2.end() ;
+        
+        DatasetGraphTxn dsgR2 = sConn2.begin(ReadWrite.READ) ;
+        long x = Iter.count(dsgR2.find()) ;
+        assertEquals(2, x) ;
     }
    
+
 }
