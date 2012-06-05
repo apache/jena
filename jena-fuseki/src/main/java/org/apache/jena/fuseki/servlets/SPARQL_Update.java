@@ -185,7 +185,8 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         UpdateRequest req ;
         try {
-            if ( action.verbose )
+            
+            if ( super.verbose_debug || action.verbose )
             {
                 // Verbose mode only .... capture request for logging (does not scale). 
                 // Content-Length.
@@ -213,7 +214,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( requestStr == null )
             requestStr = action.request.getParameter(paramRequest) ;
         
-        if ( action.verbose )
+        if ( super.verbose_debug || action.verbose )
             requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
         
         UpdateRequest req ; 
