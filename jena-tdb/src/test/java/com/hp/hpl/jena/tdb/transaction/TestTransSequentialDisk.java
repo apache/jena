@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import java.io.File ;
+
 import org.junit.After ;
 import org.junit.Before ;
 import org.openjena.atlas.lib.FileOps ;
@@ -39,6 +41,10 @@ public class TestTransSequentialDisk extends AbstractTestTransSeq
         DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
 		FileOps.ensureDir(DIR) ;
 		FileOps.clearDirectory(DIR) ;
+		
+        File d = new File(DIR) ;
+        if ( d.list().length > 2 )  // . and ..
+            throw new RuntimeException("not empty") ;
     }
 
     @After public void after() {} 
