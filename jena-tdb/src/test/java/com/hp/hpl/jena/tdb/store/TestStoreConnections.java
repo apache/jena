@@ -38,7 +38,6 @@ import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
 public class TestStoreConnections  extends BaseTest
 {
-    
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
     static Quad q  = SSE.parseQuad("(<g> <s> <p> 000) ") ;
@@ -120,8 +119,6 @@ public class TestStoreConnections  extends BaseTest
     @Test
     public void store_54()
     {
-        // Fails for in-memory because the state is lost on StoreConnection.release
-        
         StoreConnection sConn = getStoreConnection() ;
         DatasetGraphTxn dsgR1 = sConn.begin(ReadWrite.READ) ;
         DatasetGraphTxn dsgW1 = sConn.begin(ReadWrite.WRITE) ;
