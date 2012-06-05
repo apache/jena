@@ -18,14 +18,10 @@
 
 package tdb.cmdline;
 
-import java.io.ByteArrayInputStream ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.util.Properties ;
-
-import org.apache.log4j.PropertyConfigurator ;
-import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.SysRIOT ;
+import org.apache.log4j.Level ;
+import org.apache.log4j.LogManager ;
+import org.apache.log4j.Logger ;
+import org.openjena.atlas.logging.Log ;
 import arq.cmdline.CmdARQ ;
 
 import com.hp.hpl.jena.Jena ;
@@ -43,30 +39,31 @@ public abstract class CmdTDB extends CmdARQ
 {
     protected final ModTDBDataset tdbDatasetAssembler   = new ModTDBDataset() ;
 
-    private static final String log4Jsetup = StrUtils.strjoin("\n"
-                   , "## Plain output to stdout"
-                   , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
-                   , "log4j.appender.tdb.plain.target=System.out"
-                   , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
-                   , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
-
-                   , "## Plain output with level, to stderr"
-                   , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
-                   , "log4j.appender.tdb.plainlevel.target=System.err"
-                   , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
-                   , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
-
-                   , "## Everything"
-                   , "log4j.rootLogger=INFO, tdb.plainlevel"
-
-                   , "## Loader output"
-                   , "log4j.additivity."+TDB.logLoaderName+"=false"
-                   , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
-
-                   , "## Parser output"
-                   , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
-                   , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, tdb.plainlevel "
-    ) ;
+    // Check oK - remove.
+//    private static final String log4Jsetup = StrUtils.strjoin("\n"
+//                   , "## Plain output to stdout"
+//                   , "log4j.appender.tdb.plain=org.apache.log4j.ConsoleAppender"
+//                   , "log4j.appender.tdb.plain.target=System.out"
+//                   , "log4j.appender.tdb.plain.layout=org.apache.log4j.PatternLayout"
+//                   , "log4j.appender.tdb.plain.layout.ConversionPattern=%m%n"
+//
+//                   , "## Plain output with level, to stderr"
+//                   , "log4j.appender.tdb.plainlevel=org.apache.log4j.ConsoleAppender"
+//                   , "log4j.appender.tdb.plainlevel.target=System.err"
+//                   , "log4j.appender.tdb.plainlevel.layout=org.apache.log4j.PatternLayout"
+//                   , "log4j.appender.tdb.plainlevel.layout.ConversionPattern=%-5p %m%n"
+//
+//                   , "## Everything"
+//                   , "log4j.rootLogger=INFO, tdb.plainlevel"
+//
+//                   , "## Loader output"
+//                   , "log4j.additivity."+TDB.logLoaderName+"=false"
+//                   , "log4j.logger."+TDB.logLoaderName+"=INFO, tdb.plain"
+//
+//                   , "## Parser output"
+//                   , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
+//                   , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, tdb.plainlevel "
+//    ) ;
     private static boolean initialized = false ;
     
     protected CmdTDB(String[] argv)
@@ -85,31 +82,22 @@ public abstract class CmdTDB extends CmdARQ
             return ;
         // attempt once.
         initialized = true ;
-        // We are a command - ignore any log4j setting.
-        String log4jProperty =  System.getProperty("log4j.configuration") ;
-        if ( log4jProperty == null || log4jProperty.equals("cmdsettings") )
-            setLogging() ;
+        Log.setCmdLogging() ;
+        // Logging is initized (via ARQ command super classes)
+        // Need to put in stuff for the loader.
+        
+        Logger loggerLoader = LogManager.getLogger(TDB.logLoaderName) ;
+        loggerLoader.setLevel(Level.INFO) ;
+        loggerLoader.setAdditivity(false) ;
         
         // This sets context based on system properties.
         // ModSymbol can then override. 
         TDB.init() ;
+        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
     }
     
-    /** Reset the logging to be good for command line tools */
-    public static void setLogging()
-    {
-        // See also ARQ Log.setCmdLogging()
-        
-        // Turn off optimizer warning.
-        // Use a plain logger for output. 
-        Properties p = new Properties() ;
-        InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
-        try { p.load(in) ; } catch (IOException ex) {}
-        PropertyConfigurator.configure(p) ;
-        DatasetBuilderStd.setOptimizerWarningFlag(false) ;
-        System.setProperty("log4j.configuration", "set") ;
-    }
-
+    
+    
     @Override
     protected void processModulesAndArgs()
     {

@@ -48,7 +48,7 @@ public class CmdIndexCopy
     
     public static void main(String...argv)
     {
-        CmdTDB.setLogging() ;
+        CmdTDB.init() ;
         
         // Ideas:
         // Copy to buffer, sort, write in sequential clumps.

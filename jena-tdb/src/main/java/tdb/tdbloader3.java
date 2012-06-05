@@ -18,85 +18,63 @@
 
 package tdb;
 
-import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
+import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong ;
 
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
+import java.io.InputStream ;
+import java.io.StringWriter ;
+import java.util.Comparator ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import org.apache.jena.tdb.store.bulkloader3.CustomLabelToNode;
-import org.apache.jena.tdb.store.bulkloader3.DataStreamFactory;
-import org.apache.jena.tdb.store.bulkloader3.MultiThreadedSortedDataBag;
-import org.apache.jena.tdb.store.bulkloader3.NodeTableBuilder2;
-import org.apache.jena.tdb.store.bulkloader3.ProgressLogger;
-import org.apache.jena.tdb.store.bulkloader3.QuadSerializationFactory;
-import org.apache.jena.tdb.store.bulkloader3.TripleSerializationFactory;
-import org.apache.jena.tdb.store.bulkloader3.TupleComparator;
-import org.openjena.atlas.AtlasException;
-import org.openjena.atlas.data.DataBag;
-import org.openjena.atlas.data.SerializationFactory;
-import org.openjena.atlas.data.ThresholdPolicy;
-import org.openjena.atlas.data.ThresholdPolicyCount;
-import org.openjena.atlas.data.ThresholdPolicyMemory;
-import org.openjena.atlas.io.IO;
-import org.openjena.atlas.iterator.Iter;
-import org.openjena.atlas.iterator.Transform;
-import org.openjena.atlas.lib.Bytes;
-import org.openjena.atlas.lib.ColumnMap;
-import org.openjena.atlas.lib.FileOps;
-import org.openjena.atlas.lib.Sink;
-import org.openjena.atlas.lib.Tuple;
-import org.openjena.atlas.logging.Log;
-import org.openjena.riot.ErrorHandlerFactory;
-import org.openjena.riot.Lang;
-import org.openjena.riot.lang.LabelToNode;
-import org.openjena.riot.lang.LangNQuads;
-import org.openjena.riot.lang.LangNTriples;
-import org.openjena.riot.out.NodeToLabel;
-import org.openjena.riot.out.OutputLangUtils;
-import org.openjena.riot.system.IRIResolver;
-import org.openjena.riot.system.ParserProfile;
-import org.openjena.riot.system.ParserProfileBase;
-import org.openjena.riot.system.Prologue;
-import org.openjena.riot.system.RiotLib;
-import org.openjena.riot.system.SinkExtendTriplesToQuads;
-import org.openjena.riot.tokens.Token;
-import org.openjena.riot.tokens.Tokenizer;
-import org.openjena.riot.tokens.TokenizerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.tdb.store.bulkloader3.* ;
+import org.openjena.atlas.AtlasException ;
+import org.openjena.atlas.data.* ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.iterator.Transform ;
+import org.openjena.atlas.lib.* ;
+import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.Lang ;
+import org.openjena.riot.lang.LabelToNode ;
+import org.openjena.riot.lang.LangNQuads ;
+import org.openjena.riot.lang.LangNTriples ;
+import org.openjena.riot.out.NodeToLabel ;
+import org.openjena.riot.out.OutputLangUtils ;
+import org.openjena.riot.system.* ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
+import arq.cmdline.CmdGeneral ;
 
-import tdb.cmdline.CmdTDB;
-import arq.cmd.CmdException;
-import arq.cmdline.ArgDecl;
-import arq.cmdline.CmdGeneral;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.util.Utils;
-import com.hp.hpl.jena.tdb.TDB;
-import com.hp.hpl.jena.tdb.base.block.BlockMgr;
-import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;
-import com.hp.hpl.jena.tdb.base.file.FileSet;
-import com.hp.hpl.jena.tdb.base.file.Location;
-import com.hp.hpl.jena.tdb.base.record.Record;
-import com.hp.hpl.jena.tdb.base.record.RecordFactory;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams;
-import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter;
-import com.hp.hpl.jena.tdb.solver.stats.Stats;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
-import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader;
-import com.hp.hpl.jena.tdb.sys.Names;
-import com.hp.hpl.jena.tdb.sys.SetupTDB;
-import com.hp.hpl.jena.tdb.sys.SystemTDB;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
+import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;
+import com.hp.hpl.jena.tdb.base.file.FileSet ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.record.Record ;
+import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTree ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams ;
+import com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriter ;
+import com.hp.hpl.jena.tdb.solver.stats.Stats ;
+import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
+import com.hp.hpl.jena.tdb.sys.Names ;
+import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class tdbloader3 extends CmdGeneral
 {
-    static { Log.setLog4j() ; }
+    static { Log.setCmdLogging() ; }
     private static Logger cmdLog = LoggerFactory.getLogger(tdbloader3.class) ;
 
     private static String runId = String.valueOf(System.currentTimeMillis()) ; // a unique identifier for this run, it's used for blank node labels
@@ -124,7 +102,6 @@ public class tdbloader3 extends CmdGeneral
     
     public static void main(String...argv)
     {
-        CmdTDB.setLogging() ;
         TDB.setOptimizerWarningFlag(false) ;
         new tdbloader3(argv).mainRun() ;
     }
