@@ -43,5 +43,9 @@ public class ServerConfig
     public List<DatasetRef> services ;
     /** Enable Accept-Encoding compression */
     public boolean enableCompression = false ;
+    
+    /** Enable additional logging */
+    public boolean verboseLogging = false ;
+
 }
 
