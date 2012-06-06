@@ -57,6 +57,9 @@ import com.hp.hpl.jena.vocabulary.*;
  * @version CVS $Id: schemagen.java,v 1.14 2011-03-22 12:37:59 ian_dickinson Exp $
  */
 public class schemagen {
+    
+    static { setLog4jConfiguration() ; }
+
     // Constants
     //////////////////////////////////
 
@@ -146,10 +149,6 @@ public class schemagen {
 
     // External signature methods
     //////////////////////////////////
-
-    static {
-        setLog4jConfiguration() ;
-    }
 
     /* Main entry point. See Javadoc for details of the many command line arguments */
     public static void main( String[] args ) {

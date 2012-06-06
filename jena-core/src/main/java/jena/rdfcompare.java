@@ -49,9 +49,7 @@ import java.io.FileInputStream;
  */
 public class rdfcompare extends java.lang.Object {
 
-    static {
-    	setLog4jConfiguration() ;
-    }
+    static { setLog4jConfiguration() ; }
 
     /**
     * @param args the command line arguments
