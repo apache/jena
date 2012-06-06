@@ -47,6 +47,7 @@ import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+import tdb.cmdline.CmdTDB ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -102,6 +103,7 @@ public class tdbloader3 extends CmdGeneral
     
     public static void main(String...argv)
     {
+        CmdTDB.init() ;
         TDB.setOptimizerWarningFlag(false) ;
         new tdbloader3(argv).mainRun() ;
     }
