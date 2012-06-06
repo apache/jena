@@ -30,9 +30,7 @@ import java.lang.reflect.*;
  */
 public class version implements Jena {
 
-    static {
-    	setLog4jConfiguration() ;
-    }
+    static { setLog4jConfiguration() ; }
 
     /**
 	 * Print out jena version information and exit.

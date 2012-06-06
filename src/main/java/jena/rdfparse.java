@@ -78,9 +78,7 @@ import com.hp.hpl.jena.shared.Command;
 
 public class rdfparse {
 
-    static {
-    	setLog4jConfiguration() ;
-    }
+    static { setLog4jConfiguration() ; }
 
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.

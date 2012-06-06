@@ -53,6 +53,7 @@ import java.io.*;
  * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:51 $
  */
 public class RuleMap {
+    static { setLog4jConfiguration() ; }
     
     /**
      * Load a set of rule definitions including processing of
@@ -128,10 +129,6 @@ public class RuleMap {
         }
     }
     
-    static {
-    	setLog4jConfiguration() ;
-    }
-
     /**
      * General command line utility to process one RDF file into another
      * by application of a set of forward chaining rules. 
