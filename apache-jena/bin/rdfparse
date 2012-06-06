@@ -18,6 +18,6 @@ JVM_ARGS=${JVM_ARGS:--Xmx1024M}
 # Expand JENAROOT but literal *
 JENA_CP="$JENAROOT"'/lib/*'
 SOCKS=
-LOGGING="-Dlog4j.configuration=file:$JENAROOT/log4j.properties"
+LOGGING="-Dlog4j.configuration=file:$JENAROOT/jena-log4j.properties"
 
 java $JVM_ARGS $LOGGING -cp "$JENA_CP" jena.rdfparse "$@" 
