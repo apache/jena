@@ -9,7 +9,7 @@ exit /B
 
 set JVM_ARGS=-Xmx1024M
 set JENA_CP="%JENAROOT%\lib\*;"
-set LOGGING=-Dlog4j.configuration=file:%JENAROOT%/log4j.properties
+set LOGGING=-Dlog4j.configuration=file:%JENAROOT%/jena-log4j.properties
 
 java %JVM_ARGS% %LOGGING% -cp %JENA_CP% riotcmd.trig %*
 exit /B
