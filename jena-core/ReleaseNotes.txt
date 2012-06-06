@@ -3,6 +3,7 @@ Release Notes
 
 ==== Jena 2.7.1
 
++ Fix timezone calculation during transition to/from DST.  (JENA-247)
 + Rename c.h.h.j.graph.Query as c.h.h.j.graph.GraphQuery (not related to SPARQL)  
 + remove out-of-date resultSet vocabulary class
 + icu4j dependency removed (JENA-177)
