@@ -21,11 +21,13 @@ package com.hp.hpl.jena.graph.test;
 import java.io.* ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
+import java.text.SimpleDateFormat ;
 import java.util.* ;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 import org.apache.xerces.impl.dv.util.HexBin ;
+import org.junit.Assert ;
 
 import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
@@ -1022,6 +1024,82 @@ public class TestTypedLiterals extends TestCase {
         checkSerialization("--05-12", XSDDatatype.XSDgMonthDay);
         checkSerialization("---12", XSDDatatype.XSDgDay);
     }
+    
+    private static Date getDateFromPattern(String ts, String format, String timezoneid) throws Exception {
+        return getDateFromPattern(ts, new String[]{format}, TimeZone.getTimeZone(timezoneid));
+    }
+
+    private static Date getDateFromPattern(String ts, String[] formats, TimeZone tz) throws Exception {
+        java.util.Date date = null;
+        java.text.DateFormat sdf = java.text.DateFormat.getInstance();
+        {
+            sdf.setTimeZone(tz == null ? java.util.TimeZone.getDefault() : tz);
+            for (int i=0; date == null && i<formats.length;i++){
+                ((java.text.SimpleDateFormat)sdf).applyPattern(formats[i]);
+                try {
+                    date = sdf.parse(ts);
+                } catch (java.text.ParseException pe){} // keep trying
+            }
+        }
+        return date;
+    }
+    
+    public void testDateTimeBug2() throws Exception {
+        String[] timezonelist = {
+            "GMT",
+            "America/New_York",
+            "America/Chicago",
+        };
+
+        for (String timezoneid : timezonelist) {
+            TimeZone tz = TimeZone.getTimeZone(timezoneid);
+            String[] sampletimelist = {
+                "03/10/2012 01:29", 
+                // 03/11/2012 DST time change at 2 am
+                "03/11/2012 00:29",
+                "03/11/2012 01:29",
+                "03/11/2012 02:29",
+                "03/11/2012 03:29",
+                "03/11/2012 04:29",
+
+                "03/12/2012 01:29",
+                "11/03/2012 23:29",
+                // 11/04/2012 standard time change at 2 am
+                "11/04/2012 00:29",
+                "11/04/2012 01:29",
+                "11/04/2012 02:29",
+                "11/04/2012 03:29",
+            };
+
+
+
+            String format = "MM/dd/yyy HH:mm";
+            for (String tstr : sampletimelist){
+                Date dt=getDateFromPattern(tstr, format, timezoneid);
+                SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
+                df.setTimeZone(tz);
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeZone(tz);
+                cal.setTime(dt);
+                XSDDateTime xdt = new XSDDateTime(cal);
+                int offset = tz.getOffset(dt.getTime()) /( 60 * 60 * 1000);
+                int xhr = xdt.getHours();
+                int dhr = cal.get(Calendar.HOUR_OF_DAY);
+                int dif = (xhr -dhr + offset) % 24;
+                Assert.assertEquals("Difference between cal and xdt", 0, dif) ;
+                
+//                //System.out.println("xhr="+xhr+",dhr="+dhr+",dif="+dif);
+//                System.out.println(""
+//                    +"tstr="+tstr
+//                    +"\tdate="+df.format(dt)
+//                    +(dif==0?"\t ":"\tX")
+//                    +" xsddt="+xdt
+//                    +"\toffset="+offset);
+            }
+            //System.out.println();
+        }
+    }
+    
     
     /**
      * Test global parameter flags.
