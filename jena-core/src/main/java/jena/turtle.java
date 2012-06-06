@@ -35,9 +35,7 @@ import com.hp.hpl.jena.util.FileUtils;
 
 public class turtle
 {
-	static {
-    	setLog4jConfiguration() ;
-    }
+	static { setLog4jConfiguration() ; }
 	
     /** Run the Turtle parser - produce N-triples */
     public static void main(String[] args)

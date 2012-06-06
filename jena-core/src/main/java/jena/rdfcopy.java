@@ -55,9 +55,7 @@ import java.io.*;
  */
 public class rdfcopy extends java.lang.Object {
 
-    static {
-    	setLog4jConfiguration() ;
-    }
+    static { setLog4jConfiguration() ; }
 
 	/**
 	* @param args the command line arguments

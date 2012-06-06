@@ -127,6 +127,8 @@ import jena.cmdline.*;
  */
 public class rdfcat
 {
+    static { setLog4jConfiguration() ; }
+    
     // Constants
     //////////////////////////////////
 
@@ -256,10 +258,6 @@ public class rdfcat
 
     // External signature methods
     //////////////////////////////////
-
-    static {
-    	setLog4jConfiguration() ;
-    }
 
     public static void main( String[] args ) {
         new rdfcat().go( args );
