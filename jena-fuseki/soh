@@ -419,11 +419,11 @@ end
 ## -------- SPARQL Query
 
 ## Choose method
-def SPARQL_query(service, query, query_file, args2={})
+def SPARQL_query(service, query, query_file, forcePOST=false, args2={})
    if ! query_file.nil?
     query = open(query_file, 'rb'){|f| f.read}
   end
-  if query.length >= 2*1024 
+  if forcePOST || query.length >= 2*1024 
     SPARQL_query_POST(service, query, args2)
   else
     SPARQL_query_GET(service, query, args2)
@@ -548,12 +548,7 @@ def cmd_sparql_query
 
   print "SPARQL #{service}\n" if $verbose
   #args={"output"=>"text"}
-  if ! usePOST
-  then
-    SPARQL_query(service, query, query_file, args)
-  else
-    SPARQL_query_POST(service, query, query_file, args)
-  end
+  SPARQL_query(service, query, query_file, usePOST, args)
   exit(0)
 end
 
