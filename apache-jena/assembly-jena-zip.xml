@@ -109,7 +109,7 @@
     <fileSet>
       <outputDirectory>/</outputDirectory>
       <includes>
-	<include>log4j.properties</include>
+	<include>jena-log4j.properties</include>
       </includes> 
       <fileMode>0622</fileMode>
     </fileSet>
