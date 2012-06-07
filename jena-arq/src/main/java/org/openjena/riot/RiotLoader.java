@@ -215,20 +215,6 @@ public class RiotLoader
         LangRIOT parser = RiotReader.createParserTriples(input, language, baseURI, sink) ;
         parser.parse() ;
         sink.flush();
-//        LangRIOT parser ;
-//        switch (language)
-//        { case NTRIPLES :
-//            parser = RiotReader.createParserNTriples(input, sink) ;
-//            break ;
-//        case TURTLE:
-//            parser = RiotReader.createParserTurtle(input, baseURI, sink) ;
-//            break ;
-//        default:
-//            throw new RiotException("Language not supported for triples: "+language) ;
-//        }
-//        parser.parse() ;
-//        sink.flush();
-//        return ;
     }
 
     // Better place?
