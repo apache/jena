@@ -222,6 +222,11 @@ public class BPlusTree implements Iterable<Record>, RangeIndex
                 root.checkNodeDeep() ;
                 root.release() ;
             }
+            
+            // Sync created blocks to disk - any caches are now clean. 
+            nodeManager.getBlockMgr().sync() ;
+            recordsMgr.getBlockMgr().sync() ;
+            
             // Cache : not currently done - root is null
             //setRoot(root) ;
             finishUpdateBlkMgr() ;

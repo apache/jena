@@ -35,6 +35,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     
     private final BlockAccess file ;
     private boolean closed = false ;
+    private boolean syncNeeded = false ;    // Set on any write operations.
     
     // Create via the BlockMgrFactory.
     /*package*/ BlockMgrFileAccess(BlockAccess blockAccess, int blockSize)
@@ -46,6 +47,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     protected Block allocate()
     {
+        syncNeeded = true ;
         return file.allocate(blockSize) ;
     }
 
@@ -89,19 +91,21 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     public void write(Block block)
     {
+        syncNeeded = true ;
         file.write(block) ;
     }
 
     @Override
     public void overwrite(Block block)
     {
+        syncNeeded = true ;
         file.overwrite(block) ;
     }
-
 
     @Override
     public void free(Block block)
     {
+        //syncNeeded = true ;
         // We do nothing about free blocks currently.
     }
 
@@ -113,7 +117,20 @@ public class BlockMgrFileAccess extends BlockMgrBase
 
     @Override
     public void sync()
-    { file.sync() ; }
+    { 
+        if ( syncNeeded )
+            file.sync() ;
+        else
+            syncNeeded = true;
+        syncNeeded = false ;
+    }
+    
+    @Override
+    public void syncForce()
+    { 
+        sync() ;
+    }
+        
     
     @Override
     public boolean isClosed() { return closed ; }  

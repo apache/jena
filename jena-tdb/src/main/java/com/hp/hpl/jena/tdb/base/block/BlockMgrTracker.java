@@ -259,6 +259,12 @@ public class BlockMgrTracker /*extends BlockMgrWrapper*/ implements BlockMgr
     {
         blockMgr.sync() ;
     }
+
+    @Override
+    public void syncForce()
+    {
+        blockMgr.syncForce() ;
+    }
     
     @Override
     public void close()

@@ -274,4 +274,10 @@ public class BlockAccessMapped extends BlockAccessBase
     {
         return log ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.getLabel() ;
+    }
 }

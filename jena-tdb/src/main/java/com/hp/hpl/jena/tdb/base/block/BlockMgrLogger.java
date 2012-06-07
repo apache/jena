@@ -149,8 +149,15 @@ public class BlockMgrLogger implements BlockMgr //extends BlockMgrWrapper
     @Override
     public void sync()
     {
-        info("Sync") ;
+        info("sync") ;
         blockMgr.sync() ;
+    }
+
+    @Override
+    public void syncForce()
+    {
+        info("syncForce") ;
+        blockMgr.syncForce() ;
     }
 
     @Override

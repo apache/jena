@@ -32,6 +32,8 @@ public class BlockMgrSync implements BlockMgr
         this.blockMgr = blockMgr ;
     }
 
+    public BlockMgr getWrapped() { return blockMgr ; }
+    
     @Override
     synchronized
     public Block allocate(int blockSize)
@@ -101,6 +103,15 @@ public class BlockMgrSync implements BlockMgr
     {
         blockMgr.sync() ;
     }
+    
+
+    @Override
+    synchronized
+    public void syncForce()
+    {
+        blockMgr.syncForce() ;
+    }
+
     
     @Override
     synchronized

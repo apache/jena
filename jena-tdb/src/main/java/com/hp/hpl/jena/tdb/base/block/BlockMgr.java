@@ -76,6 +76,9 @@ public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/
     @Override
     public void sync() ;
     
+    /** Sync the block manager : system operation to ensure sync() is passed down */
+    public void syncForce() ;
+
     // This is not Session interface which si more an application facing
     // coarser granularity interface.  We also add iterator tracking.
     
