@@ -141,7 +141,8 @@ public class RiotReader
     {
         if ( lang == RDFXML )
         {
-            baseIRI = IRIResolver.resolveString(baseIRI) ;
+            if ( baseIRI != null )
+                baseIRI = IRIResolver.resolveString(baseIRI) ;
             return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
         }
         Tokenizer tokenizer = ( lang == RDFJSON ) ?
