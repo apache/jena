@@ -243,24 +243,14 @@ public class BlockMgrCache extends BlockMgrSync
     synchronized
     public void sync()
     {
-        if ( true )
-        {
-            String x = "" ;
-            if ( indexName != null )
-                x = indexName+" : ";
-            log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits) ;
-        }
-        
-        if ( writeCache != null )
-            log("sync (%d blocks)", writeCache.size()) ;
-        else
-            log("sync") ;
-        boolean somethingWritten = syncFlush() ;
-        // Sync the wrapped object
-        if ( somethingWritten ) 
-            log("sync underlying BlockMgr") ;
-        else
-            log("Empty sync") ;
+        _sync(false) ;
+    }
+    
+    @Override
+    synchronized
+    public void syncForce()
+    {
+        _sync(true) ;
     }
     
     @Override
@@ -289,6 +279,31 @@ public class BlockMgrCache extends BlockMgrSync
         log.debug(msg) ;
     }
     
+    private void _sync(boolean force)
+    {
+        if ( true )
+        {
+            String x = "" ;
+            if ( indexName != null )
+                x = indexName+" : ";
+            log("%sH=%d, M=%d, W=%d", x, cacheReadHits, cacheMisses, cacheWriteHits) ;
+        }
+        
+        if ( writeCache != null )
+            log("sync (%d blocks)", writeCache.size()) ;
+        else
+            log("sync") ;
+        boolean somethingWritten = syncFlush() ;
+        // Sync the wrapped object
+        if ( somethingWritten || force )
+        {
+            log("sync underlying BlockMgr") ;
+            super.sync() ;
+        }
+        else
+            log("Empty sync") ;
+    }
+
     private boolean syncFlush()
     {
         if ( writeCache == null ) return false ;
