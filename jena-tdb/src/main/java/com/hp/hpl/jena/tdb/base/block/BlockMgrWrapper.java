@@ -38,6 +38,8 @@ public class BlockMgrWrapper implements BlockMgr
         return old ;
     }
     
+    public BlockMgr getWrapped() { return blockMgr ; }
+    
     @Override
     public Block allocate(int blockSize)
     {
@@ -105,6 +107,14 @@ public class BlockMgrWrapper implements BlockMgr
         blockMgr.sync() ;
     }
 
+
+    @Override
+    public void syncForce()
+    {
+        blockMgr.syncForce() ;
+    }
+
+    
     @Override
     public boolean valid(int id)
     {

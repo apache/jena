@@ -115,8 +115,7 @@ public class TestStoreConnections  extends BaseTest
         StoreConnection.release(sConn.getLocation()) ;
     }
     
-    
-    //@Test
+    @Test
     public void store_4()
     {
         StoreConnection sConn = getStoreConnection() ;

@@ -316,6 +316,8 @@ public class BlockMgrCache extends BlockMgrSync
             Long id = ids[i] ;
             expelEntry(id) ;
         }
+        if ( didSync )
+            super.sync() ;
         return didSync ;
     }
     

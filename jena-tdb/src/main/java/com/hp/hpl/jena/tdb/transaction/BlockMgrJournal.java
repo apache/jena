@@ -267,6 +267,12 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     {
         checkIfClosed() ;
     }
+    
+    @Override
+    public void syncForce()
+    {
+        blockMgr.syncForce() ;
+    }
 
     // we only use the underlying blockMgr in read-mode - we don't write back blocks.  
     @Override

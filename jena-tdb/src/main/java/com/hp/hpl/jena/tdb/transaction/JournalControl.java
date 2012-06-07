@@ -24,6 +24,7 @@ import static java.lang.String.format ;
 
 import java.io.File ;
 import java.nio.ByteBuffer ;
+import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.Map ;
 
@@ -255,11 +256,18 @@ public class JournalControl
     
     public static void replay(Journal journal, DatasetGraphTDB dsg)
     {
+        if ( journal.size() == 0 )
+            return ;
+        
         journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;
         try {
             for ( JournalEntry e : journal )
                 replay(e, dsg) ;
+            // There is no point sync here.  
+            // No writes via the DSG have been done 
+            // so all internal flags "syncNeeded" are false.
+            //dsg.sync() ;
         } 
         catch (RuntimeException ex)
         { 
@@ -268,6 +276,11 @@ public class JournalControl
             throw ex ;
         }
         finally { dsg.getLock().leaveCriticalSection() ; }
+        
+        Collection<BlockMgr> x = dsg.getConfig().blockMgrs.values() ;
+        for ( BlockMgr blkMgr : x )
+            blkMgr.syncForce() ;
+        // Must do a hard sync before this.
         journal.truncate(0) ;
     }
 
@@ -290,11 +303,6 @@ public class JournalControl
                 log.debug("Replay: {} {}",e.getFileRef(), blk) ;
                 blk.setModified(true) ;
                 blkMgr.overwrite(blk) ; 
-                
-//                Block blk = blkMgr.getWrite(e.getBlock().getId()) ;
-//                blk.getByteBuffer().rewind() ;
-//                blk.getByteBuffer().put(e.getBlock().getByteBuffer()) ;
-//                blkMgr.write(e.getBlock()) ; 
                 return true ;
             }   
             case Buffer:

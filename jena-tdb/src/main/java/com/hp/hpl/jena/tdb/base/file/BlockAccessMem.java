@@ -154,4 +154,11 @@ public class BlockAccessMem implements BlockAccess
     {
         return label ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return "Mem:"+label ;
+    }
+
 }
