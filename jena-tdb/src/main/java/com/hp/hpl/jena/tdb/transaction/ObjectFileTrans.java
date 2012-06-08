@@ -95,12 +95,12 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
     }
 
     /** Copy from the temporary file to the real file */
-    public /*temporary*/ void append()
+    private void append()
     {
         // We could write directly to the real file if:
-        //   we record the truncate point needed for an abort
-        //   manage partial final writes
-        //   deny the existence of nodes after the transaction mark.
+        //    we record the truncate point needed for an abort
+        //    manage partial final writes
+        //    deny the existence of nodes after the transaction mark.
         // Later - stay simple for now.
         
         // Truncate/position the ObjectFile.
@@ -119,7 +119,7 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         }
     }
     
-    public void setPassthrough(boolean v) { passthrough = v ; }
+    //public void setPassthrough(boolean v) { passthrough = v ; }
     
     @Override
     public void reposition(long id)
