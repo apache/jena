@@ -294,8 +294,13 @@ public class BlockMgrCache extends BlockMgrSync
         else
             log("sync") ;
         boolean somethingWritten = syncFlush() ;
-        // Sync the wrapped object
-        if ( somethingWritten || force )
+
+        if ( force )
+        {
+            log("syncForce underlying BlockMgr") ;
+            super.syncForce() ;
+        }
+        else if ( somethingWritten )
         {
             log("sync underlying BlockMgr") ;
             super.sync() ;

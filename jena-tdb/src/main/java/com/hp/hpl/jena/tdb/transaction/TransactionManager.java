@@ -432,7 +432,6 @@ public class TransactionManager
         {
             if ( queue.size() > 0 ) 
                 System.out.print("!"+queue.size()+"!") ;
-            
         }
         
         if ( log() )

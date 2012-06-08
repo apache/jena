@@ -128,7 +128,7 @@ public class BlockMgrFileAccess extends BlockMgrBase
     @Override
     public void syncForce()
     { 
-        sync() ;
+        file.sync() ;
     }
         
     

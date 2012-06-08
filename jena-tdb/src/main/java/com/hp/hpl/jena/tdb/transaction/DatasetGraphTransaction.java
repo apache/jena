@@ -139,6 +139,8 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     {
         synchronized(lock)
         {
+            if ( ! haveUsedInTransaction )
+                getBaseDatasetGraph().sync() ;
             haveUsedInTransaction = true ;
             DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
             txn.set(dsgTxn) ;

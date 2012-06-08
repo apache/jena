@@ -28,30 +28,38 @@ import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.transaction.TDBTransactionException ;
 
-public class TestStoreConnections  extends BaseTest
+public abstract class AbstractStoreConnections extends BaseTest
 {
+    // Subclass to give direct and mapped versions.
+    
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
     
-    static Quad q  = SSE.parseQuad("(<g> <s> <p> 000) ") ;
-    static Quad q1 = SSE.parseQuad("(<g> <s> <p> 111)") ;
-    static Quad q2 = SSE.parseQuad("(<g> <s> <p> 222)") ;
-    static Quad q3 = SSE.parseQuad("(<g> <s> <p> 333)") ;
-    static Quad q4 = SSE.parseQuad("(<g> <s> <p> 444)") ;
+    // Per-test unique-ish.
+    static int count = 0 ;
+    long x = System.currentTimeMillis()+(count++) ;
+    
+    Quad q  = SSE.parseQuad("(<g> <s> <p> '000-"+x+"') ") ;
+    Quad q1 = SSE.parseQuad("(<g> <s> <p> '111-"+x+"')") ;
+    Quad q2 = SSE.parseQuad("(<g> <s> <p> '222-"+x+"')") ;
+    Quad q3 = SSE.parseQuad("(<g> <s> <p> '333-"+x+"')") ;
+    Quad q4 = SSE.parseQuad("(<g> <s> <p> '444-"+x+"')") ;
     
     String DIR = null ;
 
     @Before public void before()
     {
         StoreConnection.reset() ;
-        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
         FileOps.ensureDir(DIR) ;
         FileOps.clearDirectory(DIR) ;
         
@@ -67,7 +75,8 @@ public class TestStoreConnections  extends BaseTest
         return StoreConnection.make(DIR) ;
     }
     
-    @Test public void store_0()
+    @Test 
+    public void store_0()
     {
         // Expel.
         StoreConnection sConn = getStoreConnection() ;
@@ -140,6 +149,104 @@ public class TestStoreConnections  extends BaseTest
         assertEquals(2, x) ;
     }
 
+    @Test 
+    public void store_5()
+    {
+        // No transaction.  Make sure StoreConnection.release cleans up OK.  
+        StoreConnection sConn = getStoreConnection() ;
+        Location loc = sConn.getLocation() ;
+        DatasetGraph dsg = sConn.getBaseDataset() ;
+        dsg.add(q) ;
+        assertTrue(dsg.contains(q)) ;
+        
+        StoreConnection.release(loc) ;
+        sConn = StoreConnection.make(loc) ;
+        dsg = sConn.getBaseDataset() ;
+        assertTrue(dsg.contains(q)) ;
+    }
 
+    @Test 
+    public void store_6()
+    {
+        // Transaction - release - reattach 
+        // This tests that the dataset is sync'ed when going into transactional mode. 
+        
+        StoreConnection sConn = getStoreConnection() ;
+        Location loc = sConn.getLocation() ;
+
+        DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
+
+        dsgTxn.add(q1) ;
+        assertTrue(dsgTxn.contains(q1)) ;
+        dsgTxn.commit() ;
+        dsgTxn.end() ;
+
+        assertTrue(sConn.getBaseDataset().contains(q1)) ;
+        
+        StoreConnection.release(loc) ;
+        sConn = StoreConnection.make(loc) ;
+        DatasetGraph dsg2 = sConn.getBaseDataset() ;
+        assertTrue(dsg2.contains(q1)) ;
+        
+        DatasetGraphTxn dsgTxn2 = sConn.begin(ReadWrite.READ) ;
+        assertTrue(dsgTxn2.contains(q1)) ;
+        dsgTxn2.end() ;
+    }
+
+    //@Test
+    // Does not work yet - or it fails and is detechign something -- unclear.
+    public void store_7()
+    {
+        // No transaction, plain update, then transaction.
+        // This tests that the dataset is sync'ed when going into transactional mode. 
+        
+        boolean nonTxnData = false ;
+        
+        StoreConnection sConn = getStoreConnection() ;
+        Location loc = sConn.getLocation() ;
+        DatasetGraph dsg = sConn.getBaseDataset() ;
+        if ( nonTxnData ) 
+        {
+            dsg.add(q) ;
+            assertTrue(dsg.contains(q)) ;
+        }
+
+        // DIRECT
+        // problem: this is the only quad after the TXN.
+        // Transition the problem?
+
+        DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
+        if ( nonTxnData ) 
+            assertTrue(dsgTxn.contains(q)) ;
+        dsgTxn.add(q1) ;
+        assertTrue(dsgTxn.contains(q1)) ;
+        if ( nonTxnData ) 
+            assertTrue(dsgTxn.contains(q)) ;
+        dsgTxn.commit() ;
+        dsgTxn.end() ;
+
+        // Should have flushed to disk.
+        if ( nonTxnData ) 
+            assertTrue(dsg.contains(q)) ;
+        assertTrue(dsg.contains(q1)) ;
+        
+        //StoreConnection.release(loc) ;
+        
+        sConn = StoreConnection.make(loc) ;
+        DatasetGraph dsg2 = sConn.getBaseDataset() ;
+        
+        //DatasetGraph dsg2 = TDBFactory.createDatasetGraph(loc) ;
+        if ( nonTxnData ) 
+            assertTrue(dsg2.contains(q)) ;
+        assertTrue(dsg2.contains(q1)) ;
+        
+        DatasetGraphTxn dsgTxn2 = sConn.begin(ReadWrite.READ) ;
+        if ( nonTxnData ) 
+            assertTrue(dsgTxn2.contains(q)) ;
+        assertTrue(dsgTxn2.contains(q1)) ;
+        dsgTxn2.end() ;
+    }
+
+    
 }
 
