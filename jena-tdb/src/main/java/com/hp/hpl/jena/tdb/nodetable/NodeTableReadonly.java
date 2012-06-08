@@ -18,6 +18,10 @@
 
 package com.hp.hpl.jena.tdb.nodetable;
 
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.tdb.TDBException ;
+import com.hp.hpl.jena.tdb.store.NodeId ;
+
 public class NodeTableReadonly extends NodeTableWrapper
 {
     public NodeTableReadonly(NodeTable nodeTable)
@@ -25,4 +29,12 @@ public class NodeTableReadonly extends NodeTableWrapper
         super(nodeTable) ;
     }
 
+    @Override
+    public NodeId getAllocateNodeId(Node node)
+    {
+        NodeId nodeId = getNodeIdForNode(node) ;
+        if ( NodeId.isDoesNotExist(nodeId) )
+            throw new TDBException("Allocation attempt on NodeTableReadonly") ;
+        return nodeId ;
+    }
 }
