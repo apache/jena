@@ -139,8 +139,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     {
         synchronized(lock)
         {
-            if ( ! haveUsedInTransaction )
-                getBaseDatasetGraph().sync() ;
+            syncIfNotTransactional() ;
             haveUsedInTransaction = true ;
             DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
             txn.set(dsgTxn) ;
@@ -173,8 +172,10 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     public String toString()
     {
-        // Risky ... 
-        return get().toString() ;
+        try {
+            // Risky ... 
+            return get().toString() ;
+        } catch (Throwable th) { return "DatasetGraphTransactional" ; }
     }
     
     
