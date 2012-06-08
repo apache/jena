@@ -18,40 +18,25 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import java.io.File ;
-
 import org.junit.After ;
 import org.junit.Before ;
-import org.openjena.atlas.lib.FileOps ;
 
-import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 
 /** Basic tests and tests of ordering (single thread) */
-public class TestTransSequentialDisk extends AbstractTestTransSeq
+public class TestTransMem extends AbstractTestTransSeq
 {
-    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
-    
-    String DIR = null ;
-    
     @Before public void before()
     {
         StoreConnection.reset() ;
-        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
-		FileOps.ensureDir(DIR) ;
-		FileOps.clearDirectory(DIR) ;
-		
-        File d = new File(DIR) ;
-        if ( d.list().length > 2 )  // . and ..
-            throw new RuntimeException("not empty") ;
     }
-
-    @After public void after() {} 
-
+  
+    @After public void after() {}
+    
     @Override
     protected StoreConnection getStoreConnection()
     {
-        return StoreConnection.make(DIR) ;
+        return StoreConnection.make(Location.mem()) ;
     }
 }

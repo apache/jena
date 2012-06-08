@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,39 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.AfterClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.BeforeClass ;
 
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TestOps ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestNodeId.class
-    , TestTripleTable.class
-    , TestGraphTDB.class
-    , TestGraphNamedTDB.class
-    , TestDatasetTDBPersist.class
-    , TestDatasetTDB.class
-    , TestLoader.class
-    // The script suite
-    , TestSuiteGraphTDB.class
-    , Test_SPARQL_TDB.class
-    , TestConcurrentAccess.class
-    , TestDynamicDataset.class
-    , TestLoader.class
-    , TestStoreConnectionsDirect.class
-    , TestStoreConnectionsMapped.class
-} )
-public class TS_Store
-{ 
-    @AfterClass
-    public static void doubleCheck()
-    {
-        if (SystemTDB.fileMode() != FileMode.mapped)
-            System.err.println("Wrong mode") ;
-    }
+public class TestTransDiskDirect extends AbstractTestTransSequentialDisk
+{
+    static FileMode mode = SystemTDB.fileMode() ;  
+    @BeforeClass public static void beforeClass() { TestOps.setFileMode(FileMode.direct) ; }
+    @AfterClass  public static void afterClass()  { TestOps.setFileMode(mode) ; }
 }
+

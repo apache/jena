@@ -37,14 +37,17 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 /** Basic tests and tests of ordering (single thread) */
 public abstract class AbstractTestTransSeq extends BaseTest
 {
-    @BeforeClass public static void beforeClass() { Log.disable(SystemTDB.errlog.getName()) ; } 
-    @AfterClass public static void afterClass()   { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClassLoggingOn()   { Log.enable(SystemTDB.errlog.getName(), "info") ; }
     
-    static Quad q  = SSE.parseQuad("(<g> <s> <p> <o>) ") ;
-    static Quad q1 = SSE.parseQuad("(<g> <s> <p> <o1>)") ;
-    static Quad q2 = SSE.parseQuad("(<g> <s> <p> <o2>)") ;
-    static Quad q3 = SSE.parseQuad("(<g> <s> <p> <o3>)") ;
-    static Quad q4 = SSE.parseQuad("(<g> <s> <p> <o4>)") ;
+    // Per test unique-ish.
+    long x = System.currentTimeMillis() ;
+
+    Quad q  = SSE.parseQuad("(<g> <s> <p> '0-"+x+"') ") ;
+    Quad q1 = SSE.parseQuad("(<g> <s> <p> '1-"+x+"')") ;
+    Quad q2 = SSE.parseQuad("(<g> <s> <p> '2-"+x+"')") ;
+    Quad q3 = SSE.parseQuad("(<g> <s> <p> '3-"+x+"')") ;
+    Quad q4 = SSE.parseQuad("(<g> <s> <p> '4-"+x+"')") ;
    
     private StoreConnection sConn ;
 

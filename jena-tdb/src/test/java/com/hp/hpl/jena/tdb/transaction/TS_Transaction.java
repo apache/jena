@@ -33,8 +33,9 @@ import org.junit.runners.Suite ;
     , TestObjectFileTransStorage.class
     , TestNodeTableTransMem.class
     , TestNodeTableTransDisk.class
-    , TestTransSequentialMem.class
-    , TestTransSequentialDisk.class
+    , TestTransMem.class
+    , TestTransDiskDirect.class
+    , TestTransDiskMapped.class
     , TestTransRestart.class
     //, TestTransactionTDB.class
 })

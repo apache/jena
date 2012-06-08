@@ -381,6 +381,12 @@ public class SystemTDB
         fileMode = newFileMode ;
     }
     
+    // So the test suite can setup thing up ... very carefully.
+    /*package*/ static void internalSetFileMode(FileMode newFileMode)
+    {
+        fileMode = newFileMode ;
+    }
+    
     private static FileMode determineFileMode()
     {
         // Be careful that this is not called very, very early, before --set might be seen.

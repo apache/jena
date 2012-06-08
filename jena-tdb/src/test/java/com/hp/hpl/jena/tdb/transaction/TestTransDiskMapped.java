@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,25 +18,18 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.junit.After ;
-import org.junit.Before ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 
-import com.hp.hpl.jena.tdb.StoreConnection ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TestOps ;
 
-/** Basic tests and tests of ordering (single thread) */
-public class TestTransSequentialMem extends AbstractTestTransSeq
+public class TestTransDiskMapped extends AbstractTestTransSequentialDisk
 {
-    @Before public void before()
-    {
-        StoreConnection.reset() ;
-    }
-  
-    @After public void after() {}
-    
-    @Override
-    protected StoreConnection getStoreConnection()
-    {
-        return StoreConnection.make(Location.mem()) ;
-    }
+    static FileMode mode = SystemTDB.fileMode() ;  
+    @BeforeClass public static void beforeClassFileMode() { TestOps.setFileMode(FileMode.mapped) ; }
+    @AfterClass  public static void afterClassFileMode()  { TestOps.setFileMode(mode) ; }
+
 }
+

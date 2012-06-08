@@ -18,39 +18,44 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import java.io.File ;
+
+import org.junit.After ;
 import org.junit.Before ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
-import com.hp.hpl.jena.tdb.base.file.FileSet ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
-import com.hp.hpl.jena.tdb.sys.SetupTDB ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
-public class TestNodeTableTransDisk extends AbstractTestNodeTableTrans
+/** Basic tests and tests of ordering (single thread) */
+public abstract class AbstractTestTransSequentialDisk extends AbstractTestTransSeq
 {
-    Location loc = null ;
     static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
-    static int count = 0 ;
+    
+    String DIR = null ;
+    
+    // Subclasses must implement.
+//    @BeforeClass public static void beforeClass() {}
+//    @AfterClass  public static void afterClass()  {}
     
     @Before public void before()
     {
-    	String dir = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
-    	loc = new Location(dir) ;
-    	FileOps.clearDirectory(loc.getDirectoryPath()) ;
-    }
-    
-    @Override
-    protected ObjectFile createObjectFile()
-    {
-        FileSet fs = new FileSet(loc, "data") ;
-        return SetupTDB.makeObjectFile(fs) ;
+        StoreConnection.reset() ;
+        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+		FileOps.ensureDir(DIR) ;
+		FileOps.clearDirectory(DIR) ;
+		
+        File d = new File(DIR) ;
+        if ( d.list().length > 2 )  // . and ..
+            throw new RuntimeException("not empty") ;
     }
 
+    @After public void after() {} 
+
     @Override
-    protected Location getLocation()
+    protected StoreConnection getStoreConnection()
     {
-        return loc ;
+        return StoreConnection.make(DIR) ;
     }
 }
