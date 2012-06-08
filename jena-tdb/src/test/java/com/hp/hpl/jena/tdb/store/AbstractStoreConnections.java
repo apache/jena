@@ -27,12 +27,16 @@ import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
 
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
@@ -193,14 +197,13 @@ public abstract class AbstractStoreConnections extends BaseTest
         dsgTxn2.end() ;
     }
 
-    //@Test
-    // Does not work yet - or it fails and is detechign something -- unclear.
+    @Test
     public void store_7()
     {
         // No transaction, plain update, then transaction.
         // This tests that the dataset is sync'ed when going into transactional mode. 
         
-        boolean nonTxnData = false ;
+        boolean nonTxnData = true ;
         
         StoreConnection sConn = getStoreConnection() ;
         Location loc = sConn.getLocation() ;
@@ -208,12 +211,9 @@ public abstract class AbstractStoreConnections extends BaseTest
         if ( nonTxnData ) 
         {
             dsg.add(q) ;
+            TDB.sync(dsg) ;
             assertTrue(dsg.contains(q)) ;
         }
-
-        // DIRECT
-        // problem: this is the only quad after the TXN.
-        // Transition the problem?
 
         DatasetGraphTxn dsgTxn = sConn.begin(ReadWrite.WRITE) ;
         if ( nonTxnData ) 
@@ -230,21 +230,29 @@ public abstract class AbstractStoreConnections extends BaseTest
             assertTrue(dsg.contains(q)) ;
         assertTrue(dsg.contains(q1)) ;
         
-        //StoreConnection.release(loc) ;
+        // release via the transactional machinery 
+        StoreConnection.release(loc) ;
+        sConn = null ;
         
-        sConn = StoreConnection.make(loc) ;
-        DatasetGraph dsg2 = sConn.getBaseDataset() ;
+        StoreConnection sConn2 = StoreConnection.make(loc) ;
+        DatasetGraph dsg2 = sConn2.getBaseDataset() ;
         
-        //DatasetGraph dsg2 = TDBFactory.createDatasetGraph(loc) ;
         if ( nonTxnData ) 
             assertTrue(dsg2.contains(q)) ;
         assertTrue(dsg2.contains(q1)) ;
         
-        DatasetGraphTxn dsgTxn2 = sConn.begin(ReadWrite.READ) ;
+        DatasetGraphTxn dsgTxn2 = sConn2.begin(ReadWrite.READ) ;
         if ( nonTxnData ) 
             assertTrue(dsgTxn2.contains(q)) ;
         assertTrue(dsgTxn2.contains(q1)) ;
         dsgTxn2.end() ;
+
+        // Check API methods work. 
+        Dataset ds = TDBFactory.createDataset(loc) ;
+        ds.begin(ReadWrite.READ) ;
+        Model m = (q.isDefaultGraph() ? ds.getDefaultModel() : ds.getNamedModel("g")) ; 
+        assertEquals( nonTxnData ? 2 : 1 , m.size()) ;
+        ds.end() ;
     }
 
     

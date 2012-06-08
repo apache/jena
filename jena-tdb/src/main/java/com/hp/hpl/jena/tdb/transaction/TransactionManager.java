@@ -211,7 +211,11 @@ public class TransactionManager
                 // Could simply add txn to the commit queue and do it that way.  
                 if ( log() ) log("Commit immediately", txn) ; 
                 
-                // Right after reply?
+                // Currently, all we need is 
+                //    JournalControl.replay(txn) ;
+                // because that plays queued transactions.
+                // But for long term generallity, at the cost of one check of the journal size
+                // we do this sequence.
                 
                 processDelayedReplayQueue(txn) ;
                 enactTransaction(txn) ;
