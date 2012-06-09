@@ -24,13 +24,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpConditional ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpSequence ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.E_Equals ;
@@ -108,12 +102,35 @@ public class TransformFilterEquality extends TransformCopy
     private static boolean safeToTransform(ExprList exprs, Op op)
     {
         if ( op instanceof OpBGP || op instanceof OpQuadPattern ) return true ;
-        if ( op instanceof OpSequence ) return true ;
+        
+        // This will be applied also in sub-calls of the Transform but queries 
+        // are very rarely so deep that it matters. 
+        if ( op instanceof OpSequence )
+        {
+            OpN opN = (OpN)op ;
+            for ( Op subOp : opN.getElements() )
+            {
+                if ( ! safeToTransform(exprs, subOp) )
+                    return false ;
+            }
+            return true ; 
+        }
+        
+        if ( op instanceof OpJoin )
+        {
+            Op2 op2 = (Op2)op ;
+            return safeToTransform(exprs, op2.getLeft()) && safeToTransform(exprs, op2.getRight()) ; 
+        }
 
         // Not safe unless filter is on the RHS. 
         if ( op instanceof OpConditional )
         {
             OpConditional opCond = (OpConditional)op ;
+            
+            if ( ! safeToTransform(exprs, opCond.getLeft()) || 
+                 ! safeToTransform(exprs, opCond.getRight()) )
+                return false ;
+            
             Op opLeft = opCond.getLeft() ;
             
             Set<Var> x = OpVars.patternVars(opLeft) ;
@@ -125,7 +142,6 @@ public class TransformFilterEquality extends TransformCopy
         
         if ( op instanceof OpGraph )
         {
-            // ???
             OpGraph opg = (OpGraph)op ;
             return safeToTransform(exprs, opg.getSubOp()) ;
         }
