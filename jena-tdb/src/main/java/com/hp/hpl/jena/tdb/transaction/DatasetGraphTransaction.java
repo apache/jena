@@ -56,11 +56,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void finalize() throws Throwable
     {
+//        if ( txn.get() != null )
+//            txn.get().abort() ;
         txn.remove() ;
     }
 
     // Transaction per thread.
-    private Object lock = new Object() ;
     private ThreadLocalTxn txn = new ThreadLocalTxn() ;
     private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
 
@@ -70,11 +71,6 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     public DatasetGraphTransaction(Location location)
     {
         sConn = StoreConnection.make(location) ;
-    }
-
-    public DatasetGraphTransaction(DatasetGraphTDB dsg)
-    {
-        sConn = StoreConnection.make(dsg) ;
     }
 
     public Location getLocation()       { return sConn.getLocation() ; }
@@ -137,7 +133,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _begin(ReadWrite readWrite)
     {
-        synchronized(lock)
+        synchronized(sConn)
         {
             syncIfNotTransactional() ;
             haveUsedInTransaction = true ;
