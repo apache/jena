@@ -43,12 +43,13 @@ public class StoreConnection
     private final DatasetGraphTDB    baseDSG ;
     private boolean                  isValid = true ;
 
-    // private StoreConnection(Location location)
-    // {
-    // baseDSG = DatasetBuilderStd.build(location) ;
-    // transactionManager = new TransactionManager(baseDSG) ;
-    // }
-    //
+    // Uncached - very dangerous.
+//    private StoreConnection(Location location)
+//    {
+//        baseDSG = DatasetBuilderStd.build(location) ;
+//        transactionManager = new TransactionManager(baseDSG) ;
+//    }
+
     private StoreConnection(DatasetGraphTDB dsg)
     {
         baseDSG = dsg ;
@@ -146,9 +147,8 @@ public class StoreConnection
     {
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
-        if (!force && sConn.transactionManager.activeTransactions()) throw new TDBTransactionException(
-                                                                                                       "Can't expel: Active transactions for location: "
-                                                                                                           + location) ;
+        if (!force && sConn.transactionManager.activeTransactions()) 
+            throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 
         // No transactions at this point (or we don't care and are clearing up
         // forcefully.)
@@ -172,24 +172,24 @@ public class StoreConnection
         return sConn ;
     }
 
-    /**
-     * Return a StoreConnection for a particular connection. This is used to
-     * create transactions for the database at the location.
-     */
-    public static synchronized StoreConnection make(DatasetGraphTDB dsg)
-    {
-        if (dsg instanceof DatasetGraphTxn)
-        {
-            // ((DatasetGraphTxn)dsg).getTransaction().getBaseDataset() ;
-            throw new TDBTransactionException(
-                                              "Can't make a StoreConnection from a transaction instance - need the base storage DatasetGraphTDB") ;
-        }
-        Location location = dsg.getLocation() ;
-
-        StoreConnection sConn = cache.get(location) ;
-        if (sConn == null) sConn = _makeAndCache(dsg) ;
-        return sConn ;
-    }
+//    /**
+//     * Return a StoreConnection for a particular connection. This is used to
+//     * create transactions for the database at the location.
+//     */
+//    public static synchronized StoreConnection make(DatasetGraphTDB dsg)
+//    {
+//        if (dsg instanceof DatasetGraphTxn)
+//        {
+//            // ((DatasetGraphTxn)dsg).getTransaction().getBaseDataset() ;
+//            throw new TDBTransactionException(
+//                                              "Can't make a StoreConnection from a transaction instance - need the base storage DatasetGraphTDB") ;
+//        }
+//        Location location = dsg.getLocation() ;
+//
+//        StoreConnection sConn = cache.get(location) ;
+//        if (sConn == null) sConn = _makeAndCache(dsg) ;
+//        return sConn ;
+//    }
 
     /**
      * Return the StoreConnection if one already exists for this location, else

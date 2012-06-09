@@ -20,7 +20,6 @@ package com.hp.hpl.jena.tdb.sys;
 
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** factory for creating objects datasets backed by TDB storage which support transactions */
@@ -50,12 +49,6 @@ public class TDBMakerTxn
         return new DatasetGraphTransaction(location) ;
     }
     
-    private static DatasetGraphTransaction _create(DatasetGraphTDB dsg)
-    {
-        // No need to cache StoreConnection does all that.
-        return new DatasetGraphTransaction(dsg) ;
-    }
-
     public static void releaseLocation(Location location)
     {
         StoreConnection.release(location) ;

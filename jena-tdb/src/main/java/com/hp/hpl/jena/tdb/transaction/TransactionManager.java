@@ -323,18 +323,13 @@ public class TransactionManager
     
     public static final boolean DEBUG = false ; 
         
+    // If DatasetGraphTransaction has a sync lock on sConn, this
+    // does not need to be sync'ed. But it's possible to use some
+    // of the low level object directly so we'll play safe.  
+    
     synchronized
     private DatasetGraphTxn begin$(ReadWrite mode, String label)
     {
-//        // Subs transactions are a new view - commit is only commit to parent transaction.  
-//        if ( dsg instanceof DatasetGraphTxn )
-//        {
-//            throw new TDBException("Already in transactional DatasetGraph") ;
-//            // Either:
-//            //   error -> implies nested
-//            //   create new transaction 
-//        }
-        
         if ( mode == ReadWrite.WRITE && activeWriters.get() > 0 )    // Guard
             throw new TDBTransactionException("Existing active write transaction") ;
 
