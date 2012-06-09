@@ -56,7 +56,6 @@ public class TripleTable extends TableBase
 
     public boolean add(Node s, Node p, Node o) 
     { 
-        syncNeeded = true ;
         return table.addRow(s, p, o) ;
     }
     
@@ -70,7 +69,6 @@ public class TripleTable extends TableBase
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
     public boolean delete(Node s, Node p, Node o) 
     { 
-        syncNeeded = true ;
         return table.deleteRow(s, p, o) ;
     }
 

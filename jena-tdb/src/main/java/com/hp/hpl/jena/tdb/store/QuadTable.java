@@ -62,7 +62,6 @@ public class QuadTable extends TableBase
     /** Add a quad - return true if it was added, false if it already existed */
     public boolean add(Node g, Node s, Node p, Node o) 
     { 
-        syncNeeded = true ;
         return table.addRow(g,s,p,o) ;
     }
     
@@ -83,7 +82,6 @@ public class QuadTable extends TableBase
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public boolean delete(Node g, Node s, Node p, Node o) 
     { 
-        syncNeeded = true ;
         return table.deleteRow(g, s, p, o) ;
     }
     

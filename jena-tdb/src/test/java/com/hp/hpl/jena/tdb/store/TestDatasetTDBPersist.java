@@ -23,6 +23,7 @@ import java.util.Arrays ;
 import java.util.List ;
 
 import org.junit.After ;
+import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.iterator.Iter ;
@@ -36,6 +37,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.junit.GraphLocation ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -58,6 +60,7 @@ public class TestDatasetTDBPersist extends BaseTest
     @Before public void before()
     {   
     	String dirname = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDir() ;
+    	StoreConnection.reset() ;
 		FileOps.ensureDir(dirname) ;
 		FileOps.clearDirectory(dirname) ;
 		graphLocation = new GraphLocation(new Location(dirname)) ;
@@ -72,6 +75,8 @@ public class TestDatasetTDBPersist extends BaseTest
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
     }
     
+    @AfterClass public static void afterClass() { StoreConnection.reset() ; }
+
     @Test public void dataset1()
     {
         Dataset ds = graphLocation.getDataset() ;

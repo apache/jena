@@ -340,12 +340,11 @@ public class TransactionManager
                 case WRITE : System.out.print("w") ; break ;
             }
         
-        // Even flush queue here.
-        
         DatasetGraphTDB dsg = baseDataset ;
         // *** But, if there are pending, committed transactions, use latest.
         if ( ! commitedAwaitingFlush.isEmpty() )
-        {  if ( DEBUG ) System.out.print(commitedAwaitingFlush.size()) ;
+        {  
+            if ( DEBUG ) System.out.print(commitedAwaitingFlush.size()) ;
             dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
         }
         else 

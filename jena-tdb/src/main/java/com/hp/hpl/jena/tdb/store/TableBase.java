@@ -30,7 +30,6 @@ import com.hp.hpl.jena.tdb.sys.DatasetControl ;
 public class TableBase implements Sync, Closeable
 {
     final protected NodeTupleTable table ;
-    protected boolean syncNeeded = false ; 
     
     protected TableBase(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl policy)
     {
@@ -50,9 +49,7 @@ public class TableBase implements Sync, Closeable
     @Override
     public void sync()
     { 
-        if ( syncNeeded )
-            table.sync() ;
-        syncNeeded = false ;
+        table.sync() ;
     }
 
     @Override
