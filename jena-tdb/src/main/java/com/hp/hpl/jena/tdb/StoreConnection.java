@@ -35,20 +35,13 @@ import com.hp.hpl.jena.tdb.transaction.* ;
 public class StoreConnection
 {
     // A StoreConnection is the reference to the underlying storage.
-    // There is cache of backing datasets, managed by statics in
-    // StoreConnection.
+    // There is cache of backing datasets, managed by statics.
     // The work of transaction coordination is done in TransactionManager.
 
     private final TransactionManager transactionManager ;
     private final DatasetGraphTDB    baseDSG ;
     private boolean                  isValid = true ;
-
-    // Uncached - very dangerous.
-//    private StoreConnection(Location location)
-//    {
-//        baseDSG = DatasetBuilderStd.build(location) ;
-//        transactionManager = new TransactionManager(baseDSG) ;
-//    }
+    private volatile boolean         haveUsedInTransaction = false ;
 
     private StoreConnection(DatasetGraphTDB dsg)
     {
@@ -61,22 +54,45 @@ public class StoreConnection
         if (!isValid) 
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?") ;
     }
+    
+    // Ensure that a dadaset used non-trasnactionally has been flushed to disk
+    private void checkTransactional()
+    {
+        // Access to booleans is atomic.
+        if ( ! haveUsedInTransaction )
+        {
+            // See http://en.wikipedia.org/wiki/Double-checked_locking
+            // Except we don't have the delayed constructor problem.
+            synchronized(this)
+            {
+                if ( ! haveUsedInTransaction )
+                {
+                    // Sync the underlying databse in case used
+                    // non-transactionally by the application.
+                    baseDSG.sync() ;
+                }
+                haveUsedInTransaction = true ;
+            }
+        }
+    }
 
+    public boolean haveUsedInTransaction() { return haveUsedInTransaction ; }
+    
     public Location getLocation()
     {
         checkValid() ;
         return baseDSG.getLocation() ;
     }
 
-    /**
-     * Return the associated transaction manager - do NOT use to manipulate
-     * transactions
-     */
-    public TransactionManager getTransMgr()
-    {
-        checkValid() ;
-        return transactionManager ;
-    }
+//    /**
+//     * Return the associated transaction manager - do NOT use to manipulate
+//     * transactions
+//     */
+//    public TransactionManager getTransMgr()
+//    {
+//        checkValid() ;
+//        return transactionManager ;
+//    }
 
     /** Return a description of the transaction manager state */
     public SysTxnState getTransMgrState()
@@ -93,8 +109,10 @@ public class StoreConnection
     public DatasetGraphTxn begin(ReadWrite mode)
     {
         checkValid() ;
+        checkTransactional() ;
         return transactionManager.begin(mode) ;
     }
+
 
     /**
      * Begin a transaction, giving it a label. Terminate a write transaction
@@ -104,6 +122,7 @@ public class StoreConnection
     public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
         checkValid() ;
+        checkTransactional() ;
         return transactionManager.begin(mode, label) ;
     }
 
@@ -214,7 +233,7 @@ public class StoreConnection
             // Don't cache use-once in-memory datasets.
             cache.put(location, sConn) ;
             String NS = TDB.PATH ;
-            TransactionInfo txInfo = new TransactionInfo(sConn.getTransMgr()) ;
+            TransactionInfo txInfo = new TransactionInfo(sConn.transactionManager) ;
             ARQMgt.register(NS + ".system:type=Transactions", txInfo) ;
         }
         return sConn ;
