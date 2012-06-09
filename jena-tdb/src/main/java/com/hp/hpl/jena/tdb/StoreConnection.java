@@ -145,7 +145,7 @@ public class StoreConnection
         return make(new Location(location)) ;
     }
 
-    /** Stop managing all locations. */
+    /** Stop managing all locations. Use with great care. */
     public static synchronized void reset()
     {
         // Copy to avoid potential CME.
@@ -155,14 +155,14 @@ public class StoreConnection
         cache.clear() ;
     }
 
-    /** Stop managing a location. */
+    /** Stop managing a location. There should be no transactions running. */
     public static synchronized void release(Location location)
     {
         expel(location, false) ;
     }
 
-    /** Stop managing a location. */
-    private static synchronized void expel(Location location, boolean force)
+    /** Stop managing a location. Use with great care (testing only). */
+    public static synchronized void expel(Location location, boolean force)
     {
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
