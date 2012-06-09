@@ -39,7 +39,6 @@ public class TupleTable implements Sync, Closeable
     private final TupleIndex[] indexes ;
     private final int tupleLen ;
     private boolean syncNeeded = false ;
-
     
     public TupleTable(int tupleLen, TupleIndex[] indexes)
     {
@@ -217,6 +216,7 @@ public class TupleTable implements Sync, Closeable
             if ( idx != null )
                 idx.clear() ;
         }
+        syncNeeded = true ;
     }
     
     public long size()

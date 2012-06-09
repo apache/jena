@@ -44,15 +44,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             return null ;
         }
     }
-    
-    static class ThreadLocalBoolean extends ThreadLocal<Boolean>
-    {
-        // This is the default implementation - but nice to give it a name and to set it clearly.
-        @Override protected Boolean initialValue() {
-            return Boolean.FALSE ;
-        }
-    }
-    
+
     @Override
     protected void finalize() throws Throwable
     {
@@ -63,9 +55,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
 
     // Transaction per thread.
     private ThreadLocalTxn txn = new ThreadLocalTxn() ;
-    private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
 
-    private boolean haveUsedInTransaction = false ;
     private final StoreConnection sConn ;
 
     public DatasetGraphTransaction(Location location)
@@ -96,7 +86,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             return dsgTxn ;
         }
         
-        if ( haveUsedInTransaction )
+        if ( sConn.haveUsedInTransaction() )
             throw new TDBTransactionException("Not in a transaction") ;
 
         // Never used in a transaction - return underlying database for old style (non-transactional) usage.  
@@ -106,62 +96,52 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void checkActive()
     {
-        if ( haveUsedInTransaction && ! isInTransaction() )
+        if ( sConn.haveUsedInTransaction() && ! isInTransaction() )
             throw new JenaTransactionException("Not in a transaction ("+getLocation()+")") ;
     }
 
     @Override
     protected void checkNotActive()
     {
-        if ( haveUsedInTransaction && isInTransaction() )
+        if ( sConn.haveUsedInTransaction() && isInTransaction() )
             throw new JenaTransactionException("Currently in a transaction ("+getLocation()+")") ;
     }
     
     @Override
     public boolean isInTransaction()    
-    { return inTransaction.get() ; }
+    { return txn.get() != null ; }
 
-    /** This method sync the dataset if it has only ever been used non-transactionally.
-     *  Otherwise it silently does nothing.
-     */
-    public void syncIfNotTransactional()    
-    { 
-        if ( ! haveUsedInTransaction )
-            getBaseDatasetGraph().sync() ;
+    
+    public void syncIfNotTransactional()
+    {
+        if ( ! sConn.haveUsedInTransaction() )
+            sConn.getBaseDataset().sync() ;
     }
 
+    
     @Override
     protected void _begin(ReadWrite readWrite)
     {
-        synchronized(sConn)
-        {
-            syncIfNotTransactional() ;
-            haveUsedInTransaction = true ;
-            DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
-            txn.set(dsgTxn) ;
-            inTransaction.set(true) ;
-        }
+        DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
+        txn.set(dsgTxn) ;
     }
 
     @Override
     protected void _commit()
     {
         txn.get().commit() ;
-        inTransaction.set(false) ;
     }
 
     @Override
     protected void _abort()
     {
         txn.get().abort() ;
-        inTransaction.set(false) ;
     }
 
     @Override
     protected void _end()
     {
         txn.get().end() ;
-        inTransaction.set(false) ;
         txn.set(null) ;
     }
 
@@ -171,6 +151,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         try {
             // Risky ... 
             return get().toString() ;
+            // Hence ...
         } catch (Throwable th) { return "DatasetGraphTransactional" ; }
     }
     
@@ -178,10 +159,12 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _close()
     {
-        if ( ! haveUsedInTransaction && get() != null )
-            get().sync() ;
-        // Don't close the base dataset.
-//        if (get() != null)
-//            get().close() ;
+        if ( ! sConn.haveUsedInTransaction() && get() != null )
+        {
+            // Non-transactional behaviour.
+            DatasetGraphTDB dsg = get() ;
+            dsg.sync() ;
+            dsg.close() ;
+        }
     }
 }

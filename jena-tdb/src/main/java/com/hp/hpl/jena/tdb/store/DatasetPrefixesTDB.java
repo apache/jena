@@ -52,14 +52,12 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     // Index on GPU and a nodetable.
     // The nodetable is itself an index and a data file.
     
+    static final ColumnMap colMap = new ColumnMap(Names.primaryIndexPrefix, Names.primaryIndexPrefix) ;
+    static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
     static final String unamedGraphURI = "" ; //Quad.defaultGraphNode.getURI() ;
     
     // Use NodeTupleTableView?
     private final NodeTupleTable nodeTupleTable ;
-    static final ColumnMap colMap = new ColumnMap(Names.primaryIndexPrefix, Names.primaryIndexPrefix) ;
-    
-    public static final RecordFactory factory = new RecordFactory(3*NodeId.SIZE, 0) ;
-
     
     @Deprecated
     public static DatasetPrefixesTDB create(Location location, DatasetControl policy) { return create(IndexBuilder.get(), location, policy) ; }
@@ -232,5 +230,8 @@ public class DatasetPrefixesTDB implements DatasetPrefixStorage
     }
 
     @Override
-    public void sync()  { nodeTupleTable.sync() ; }
+    public void sync()
+    {
+        nodeTupleTable.sync() ;
+    }
 }

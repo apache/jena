@@ -20,15 +20,14 @@ package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Map ;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.* ;
 import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.graph.AbstractTestPrefixMapping2 ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -41,7 +40,11 @@ public class TestPrefixMappingTDB extends AbstractTestPrefixMapping2
     static DatasetPrefixesTDB last = null ;
     
     @BeforeClass public static void beforeClass() {}
-    @AfterClass public static void afterClass()   { ConfigTest.deleteTestingDir() ; }
+    @AfterClass public static void afterClass()   { StoreConnection.reset() ; ConfigTest.deleteTestingDir() ; }
+
+    @Before public void before() { StoreConnection.reset() ; }
+    @After public  void after()  { }
+
     
     @Override
     protected PrefixMapping create()

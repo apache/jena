@@ -51,6 +51,7 @@ public class TestTDBAssembler extends BaseTest
     
     @Before public void before()
     {
+        StoreConnection.reset() ;
         FileOps.clearDirectory(dirDB) ;
     }
     
