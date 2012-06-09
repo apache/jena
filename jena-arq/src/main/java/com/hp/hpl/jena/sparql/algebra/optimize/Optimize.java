@@ -169,8 +169,8 @@ public class Optimize implements Rewrite
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
 
         // TODO Improve filter placement to go through assigns that have no effect.
-        // Do this before filter placement and other sequence generating transformations.
-        // or improve to place in a sequence.
+        // Either, do filter placement and other sequence generating transformations.
+        // or improve to place in a sequence (latter is better?)
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
         {
@@ -192,7 +192,7 @@ public class Optimize implements Rewrite
             op = apply("Distinct replaced with reduced", new TransformDistinctToReduced(), op) ;
         
         // Convert paths to triple patterns. 
-        // Also done in the AlgebraGenerator so this transofmr step catches programattically built op expressions 
+        // Also done in the AlgebraGenerator so this transform step catches programattically built op expressions 
         op = apply("Path flattening", new TransformPathFlattern(), op) ;
         
         // Find joins/leftJoin that can be done by index joins (generally preferred as fixed memory overhead).
