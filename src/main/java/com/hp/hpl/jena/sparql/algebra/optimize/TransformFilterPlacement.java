@@ -98,6 +98,7 @@ public class TransformFilterPlacement extends TransformCopy
     
     private static Op transform(ExprList exprs, Set<Var> varsScope, Op x)
     {
+        // OpAssign could be done if the assignment and exprs are independent.
         // TODO Dispatch by visitor
         if ( x instanceof OpBGP )
             return transformFilterBGP(exprs, varsScope, (OpBGP)x) ;
