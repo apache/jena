@@ -50,7 +50,6 @@ public class TripleTable extends TableBase
     
     public boolean add( Triple triple ) 
     { 
-        //syncNeeded = true ;
         return add(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
@@ -62,7 +61,6 @@ public class TripleTable extends TableBase
     /** Delete a triple  - return true if it was deleted, false if it didn't exist */
     public boolean delete( Triple triple ) 
     { 
-        //syncNeeded = true ;
         return delete(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
