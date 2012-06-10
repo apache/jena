@@ -48,14 +48,12 @@ public class QuadTable extends TableBase
     /** Add a quad - return true if it was added, false if it already existed */
     public boolean add( Quad quad ) 
     { 
-        //syncNeeded = true ;
         return add(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Add a quad (as graph node and triple) - return true if it was added, false if it already existed */
     public boolean add(Node gn, Triple triple ) 
     { 
-        //syncNeeded = true ;
         return add(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
     
@@ -68,14 +66,12 @@ public class QuadTable extends TableBase
     /** Delete a quad - return true if it was deleted, false if it didn't exist */
     public boolean delete( Quad quad ) 
     { 
-        //syncNeeded = true ;
         return delete(quad.getGraph(), quad.getSubject(), quad.getPredicate(), quad.getObject()) ;
     }
 
     /** Delete a quad (as graph node and triple) - return true if it was deleted, false if it didn't exist */
     public boolean delete( Node gn, Triple triple ) 
     { 
-        //syncNeeded = true ;
         return delete(gn, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
