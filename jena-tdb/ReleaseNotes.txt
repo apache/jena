@@ -3,6 +3,8 @@ ChangeLog for TDB
 
 ==== TDB 0.9.1
 
++ (JENA-252) Fix multithreaded interaction transitioning to transactional mode
++ (JENA-250) Fix lack of sync transitioning to transactional mode
 + Added tdbloader3 (i.e. a pure Java version of tdbloader2) (JENA-117)
 + Bug fix: Graph.size() reports '0' for TDB "urn:x-arq:UnionGraph" (JENA-222) 	
 + Bug fix: Illegal UTF-8 could corrupt the node table. Use binary-safe encoder/decoder (JENA-225)
