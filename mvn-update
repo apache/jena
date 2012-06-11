@@ -1,4 +1,0 @@
-#!/bin/bash
-# This will update your local maven repository to align with the current ARQ pom.xml
-
-mvn dependency:resolve dependency:sources
