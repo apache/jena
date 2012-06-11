@@ -8,20 +8,20 @@
 	<classpathentry excluding="**/*.java|**/.svn/" kind="src" path="src/test/resources"/>
 	<classpathentry excluding="**/*.java|**/.svn/" kind="src" path="resources2"/>
 
-	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT.jar" 
-			sourcepath="/M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.2-SNAPSHOT/jena-arq-2.9.2-SNAPSHOT.jar" 
+			sourcepath="/M2_REPO/org/apache/jena/jena-arq/2.9.2-SNAPSHOT/jena-arq-2.9.2-SNAPSHOT-sources.jar"/>
 
-	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT-tests.jar" 
-			sourcepath="/M2_REPO/org/apache/jena/jena-arq/2.9.1-SNAPSHOT/jena-arq-2.9.1-SNAPSHOT-test-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-arq/2.9.2-SNAPSHOT/jena-arq-2.9.2-SNAPSHOT-tests.jar" 
+			sourcepath="/M2_REPO/org/apache/jena/jena-arq/2.9.2-SNAPSHOT/jena-arq-2.9.2-SNAPSHOT-test-sources.jar"/>
 
-	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.1-SNAPSHOT/jena-iri-0.9.1-SNAPSHOT.jar" 
-			sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.1-SNAPSHOT/jena-iri-0.9.1-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-iri/0.9.2-SNAPSHOT/jena-iri-0.9.2-SNAPSHOT.jar" 
+			sourcepath="M2_REPO/org/apache/jena/jena-iri/0.9.2-SNAPSHOT/jena-iri-0.9.2-SNAPSHOT-sources.jar"/>
 
-	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT-tests.jar" 
-			sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT-test-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.2-SNAPSHOT/jena-core-2.7.2-SNAPSHOT-tests.jar" 
+			sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.2-SNAPSHOT/jena-core-2.7.2-SNAPSHOT-test-sources.jar"/>
 
-	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT.jar" 
-			sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.1-SNAPSHOT/jena-core-2.7.1-SNAPSHOT-sources.jar"/>
+	<classpathentry kind="var" path="M2_REPO/org/apache/jena/jena-core/2.7.2-SNAPSHOT/jena-core-2.7.2-SNAPSHOT.jar" 
+			sourcepath="M2_REPO/org/apache/jena/jena-core/2.7.2-SNAPSHOT/jena-core-2.7.2-SNAPSHOT-sources.jar"/>
 
 	<classpathentry kind="var" path="M2_REPO/commons-codec/commons-codec/1.5/commons-codec-1.5.jar" sourcepath="/M2_REPO/commons-codec/commons-codec/1.5/commons-codec-1.5-sources.jar"/>
 

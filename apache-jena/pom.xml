@@ -59,11 +59,11 @@
 
   <!-- Inherit would be better-->
   <properties>
-    <ver.jena>2.7.1</ver.jena>
-    <ver.arq>2.9.1-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.1-SNAPSHOT</ver.tdb>
-    <ver.fuseki>0.2.2-SNAPSHOT</ver.fuseki>
-    <ver.iri>0.9.1-SNAPSHOT</ver.iri>
+    <ver.jena>2.7.2-SNAPSHOT</ver.jena>
+    <ver.arq>2.9.2-SNAPSHOT</ver.arq>
+    <ver.tdb>0.9.2-SNAPSHOT</ver.tdb>
+    <ver.fuseki>0.2.3-SNAPSHOT</ver.fuseki>
+    <ver.iri>0.9.2-SNAPSHOT</ver.iri>
   </properties>
 
   <dependencies>
