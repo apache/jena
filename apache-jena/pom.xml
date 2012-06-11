@@ -30,12 +30,12 @@
   <name>apache-jena</name>
   <description />
   <url>http://jena.apache.org/</url>
-  <version>2.7.1-SNAPSHOT</version>
+  <version>2.7.1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -52,14 +52,14 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/apache-jena</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/apache-jena</developerConnection>
-    <url>http://svn.apache.org/viewvc//jena/trunk/</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.1/apache-jena</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.1/apache-jena</developerConnection>
+    <url>http://svn.apache.org/viewvc//jena/tags/jena-2.7.1/trunk</url>
   </scm>
 
   <!-- Inherit would be better-->
   <properties>
-    <ver.jena>2.7.1-SNAPSHOT</ver.jena>
+    <ver.jena>2.7.1</ver.jena>
     <ver.arq>2.9.1-SNAPSHOT</ver.arq>
     <ver.tdb>0.9.1-SNAPSHOT</ver.tdb>
     <ver.fuseki>0.2.2-SNAPSHOT</ver.fuseki>
@@ -71,20 +71,20 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.arq}</version>
+      <version>2.9.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.arq}</version>
+      <version>2.9.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>${ver.arq}</version>
+      <version>2.9.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
@@ -111,33 +111,33 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>${ver.tdb}</version>
+      <version>0.9.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>${ver.tdb}</version>
+      <version>0.9.1</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>${ver.tdb}</version>
+      <version>0.9.1</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>${ver.iri}</version>
+      <version>0.9.1</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>${ver.iri}</version>
+      <version>0.9.1</version>
       <classifier>sources</classifier>
     </dependency>
 
