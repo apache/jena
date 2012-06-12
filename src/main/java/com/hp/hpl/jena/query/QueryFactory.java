@@ -62,9 +62,7 @@ public class QueryFactory
     static public Query create(String queryString, String baseURI)
     {
         Query query = new Query() ;
-        parse(query, queryString, baseURI, Syntax.defaultQuerySyntax) ;
-        return query ;
-        
+        return parse(query, queryString, baseURI, Syntax.defaultQuerySyntax) ;
     }
     
     /** Create a query from the given string by calling the parser.
@@ -78,9 +76,7 @@ public class QueryFactory
    static public Query create(String queryString, String baseURI, Syntax syntax)
    {
        Query query = new Query() ;
-       parse(query, queryString, baseURI, syntax) ;
-       return query ;
-       
+       return parse(query, queryString, baseURI, syntax) ;
    }
    
    /**
