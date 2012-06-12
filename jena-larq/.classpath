@@ -1,6 +1,5 @@
 <classpath>
   <classpathentry kind="src" path="src/test/java" including="**/*.java"/>
-  <classpathentry kind="src" path="src/test/resources" excluding="**/*.java"/>
   <classpathentry kind="src" path="src/main/java" including="**/*.java"/>
   <classpathentry kind="src" path="src/main/resources" excluding="META-INF/NOTICE|META-INF/LICENSE|META-INF/DEPENDENCIES|**/*.java"/>
   <classpathentry kind="src" path="target/maven-shared-archive-resources" excluding="**/*.java"/>
