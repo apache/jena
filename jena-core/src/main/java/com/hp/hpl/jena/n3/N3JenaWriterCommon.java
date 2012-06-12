@@ -564,10 +564,10 @@ public class N3JenaWriterCommon implements RDFWriter
             if ( datatype.equals(XSD.decimal.getURI()) )
             {
                 // Must have ., can't have e or E
-                // "." can't be first character, hence "> 0"
-                if ( s.indexOf('.') > 0 &&
+                if ( s.indexOf('.') >= 0 &&
                      s.indexOf('e') == -1 && s.indexOf('E') == -1 )
                 {
+                    // Turtle - N3 does not allow .3 +.3 or -.3
                     // See if parsable.
                     try {
                         BigDecimal d = new BigDecimal(s) ;
