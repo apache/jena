@@ -82,10 +82,11 @@ public class PathEngineSPARQL extends PathEngine
     @Override
     protected void doZeroOrOne(Path pathStep, Node node, Collection<Node> output)
     {
-        // Unique.
-        eval(graph, pathStep, node, output) ;
-        if ( ! output.contains(node) )
-            output.add(node) ;
+        // Force unique evaluation.
+        Collection<Node> x = new HashSet<Node>() ;
+        eval(graph, pathStep, node, x) ;
+        x.add(node) ;
+        output.addAll(x) ;
     }
 
     @Override
