@@ -277,7 +277,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
     
     private static boolean validDecimal(String lex)
     {
-        // case : "." illegal.
+        // case : In N3, "." illegal, as is "+." and -." but legal in Turtle.
         int N = lex.length() ;
         if ( N <= 1 ) return false ;
         int idx = 0 ;
