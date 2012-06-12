@@ -54,7 +54,7 @@ public class rdfcompare extends java.lang.Object {
     /**
     * @param args the command line arguments
     */
-    public static void main (String args[]) {
+    public static void main (String ... args) {
         if (args.length < 2 || args.length > 4) {
             usage();
             System.exit(-1);

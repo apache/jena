@@ -38,7 +38,7 @@ public class turtle
 	static { setLog4jConfiguration() ; }
 	
     /** Run the Turtle parser - produce N-triples */
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         if ( args.length == 0 )
         {

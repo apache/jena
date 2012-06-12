@@ -31,7 +31,7 @@ public class query
     }
 
     // Call-through to arq command line application
-    public static void main(String[] args)
+    public static void main(String... args)
     {
         // Do this by reflection so it is not assumed that ARQ is available
         // at compile time.
