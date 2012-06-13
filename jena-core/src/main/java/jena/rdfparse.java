@@ -83,7 +83,7 @@ public class rdfparse {
     /** Either start an RDF/XML to NTriple converter, or run test suite.
 	 * @param args The command-line arguments.
 	 */
-	public static void main( String[] args ) throws Exception {
+	public static void main( String... args ) throws Exception {
 		if (args.length == 1 && (args[0].equals( "--test" ) || args[0].equals( "--internal-test" ))) 
             runTests( args[0].equals( "--test" ) );
         else

@@ -55,8 +55,8 @@
     <this.root>${project.artifactId}-${project.version}</this.root>
     <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
 
-    <ver.jena>2.7.1-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.1-SNAPSHOT</ver.arq>
+    <ver.jena>2.7.2</ver.jena>
+    <ver.arq>2.9.2</ver.arq>
     
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>

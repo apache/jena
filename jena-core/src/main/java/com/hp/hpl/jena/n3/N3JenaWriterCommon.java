@@ -567,6 +567,7 @@ public class N3JenaWriterCommon implements RDFWriter
                 if ( s.indexOf('.') >= 0 &&
                      s.indexOf('e') == -1 && s.indexOf('E') == -1 )
                 {
+                    // Turtle - N3 does not allow .3 +.3 or -.3
                     // See if parsable.
                     try {
                         BigDecimal d = new BigDecimal(s) ;

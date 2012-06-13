@@ -79,7 +79,7 @@ public class BPlusTreeRewriter
     
         // Allocate and format a root index block.
         // We will use this slot later and write in the correct root.
-        /// The root has to block zero currently.
+        /// The root has to be block zero currently.
 
         BPTreeNode root = bpt2.getNodeManager().createNode(BPlusTreeParams.RootParent) ;
         int rootId = root.getId() ;

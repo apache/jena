@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb;
 
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
+import org.junit.After ;
+import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.FileOps ;
@@ -30,23 +30,24 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.sys.TDBMakerTxn ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TestTDBFactory extends BaseTest
 {
-    static final String DIR = ConfigTest.getTestingDirDB() ; 
+    final String DIR = SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
     
     static Quad quad1 = SSE.parseQuad("(_ <s> <p> 1)") ;
     static Quad quad2 = SSE.parseQuad("(_ <s> <p> 1)") ;
     
-    @BeforeClass public static void beforeClass()
+    @Before public void before()
     {
         FileOps.clearDirectory(DIR) ; 
     }
     
-    @AfterClass public static void afterClass()
+    @After public void after()
     {
         FileOps.clearDirectory(DIR) ; 
     }

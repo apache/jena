@@ -259,7 +259,7 @@ public class rdfcat
     // External signature methods
     //////////////////////////////////
 
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         new rdfcat().go( args );
     }
 

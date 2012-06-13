@@ -151,7 +151,7 @@ public class schemagen {
     //////////////////////////////////
 
     /* Main entry point. See Javadoc for details of the many command line arguments */
-    public static void main( String[] args ) {
+    public static void main( String... args ) {
         try {
             new schemagen().go( args );
         }
