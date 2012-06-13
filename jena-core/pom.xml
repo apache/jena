@@ -22,12 +22,12 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>jena-core</name>
-  <version>2.7.1-SNAPSHOT</version>
+  <version>2.7.1</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -46,9 +46,9 @@
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/jena-core</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/jena-core</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-core</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.1/jena-core</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.1/jena-core</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.1/jena-core</url>
   </scm>
 
   <properties>
@@ -63,7 +63,7 @@
     <dependency>
        <groupId>org.apache.jena</groupId>
        <artifactId>jena-iri</artifactId>
-       <version>0.9.1-SNAPSHOT</version>
+       <version>0.9.1</version>
     </dependency>
 
      <dependency>
