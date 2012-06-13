@@ -22,13 +22,12 @@
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
   <name>jena-core</name>
-  <!--<version>${ver.jena}</version>-->
-  <version>2.7.2-SNAPSHOT</version>
+  <version>2.7.1-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>1-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent>
 
@@ -70,7 +69,7 @@
     <dependency>
        <groupId>org.apache.jena</groupId>
        <artifactId>jena-iri</artifactId>
-       <version>0.9.2-SNAPSHOT</version>
+       <version>0.9.1-SNAPSHOT</version>
     </dependency>
 
   </dependencies>
