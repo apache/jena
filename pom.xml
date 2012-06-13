@@ -60,17 +60,17 @@
 
   <dependencies>
 
+    <dependency>
+       <groupId>org.apache.jena</groupId>
+       <artifactId>jena-iri</artifactId>
+       <version>0.9.1-SNAPSHOT</version>
+    </dependency>
+
      <dependency>
        <groupId>xerces</groupId>
        <artifactId>xercesImpl</artifactId>
        <version>${ver.xerces}</version>
      </dependency>
-
-    <dependency>
-       <groupId>org.apache.jena</groupId>
-       <artifactId>jena-iri</artifactId>
-       <version>0.9.1</version>
-    </dependency>
 
   </dependencies>
 
