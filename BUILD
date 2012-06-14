@@ -3,21 +3,20 @@ Apache Jena - download build instructions
 
 This is how to build the Jena download from source.
 
-The Jena download contains the IRI, API and SPARQL modules as jar files,
-together with all the necssary dependencies.  Put all the jars in lib/ on
-the java classpath.
-
-The build of the Jena download collects all the dependencies together. It
-assumes that dependences are already built so if you want to build from
-scratc, you need to build the dependencies first.  This can be done from
-the Apache "source-release" artifacts or from subversion.
-
 == Modules
 
-JenaTop - the parent POM
-IRI     - The IRI library
-jena    - the main RDF and OWL APIs, and memory storage subsystem.
-ARQ     - SPARQL query engine
+All modules are releases as maven artifacts.
+
+jena-parent
+
+jena-iri
+jena-core
+jena-arq
+jena-tdb
+  These are assembled into the apache-jena download.
+
+jena-fuseki
+  This is a separate downloadable 
 
 == Source from the Apache release
 
@@ -46,7 +45,7 @@ The file with extension .asc contains the
 
 For the zip file of the zzz module:
 
-    gpg --verify apache-jena-zzz-VER-source-release.zip.asc
+    gpg --verify jena-VER-source-release.zip.asc
 
 = Verify a checksum
 
@@ -55,7 +54,7 @@ respectively.  Calculate the checksum on the downloaded file
 
 Example (linux):
 
-    md5sum jena-zzz-VER-source-release.zip
+    md5sum jena-VER-source-release.zip
 
 == Build
 
@@ -65,7 +64,7 @@ will have version numbers in them).
 # Build modules.
 mvn clean package
 
-The download will be in apache-jena-2.7.0/target/ and jena-fuseki/target
+The download will be in apache-jena/target/ and jena-fuseki/target.
 
 == Sources from subversion
 
