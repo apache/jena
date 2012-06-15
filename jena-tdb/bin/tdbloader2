@@ -62,7 +62,7 @@ log "Data phase"
 DATA_TRIPLES="$LOC/data-triples.$TMP"
 DATA_QUADS="$LOC/data-quads.$TMP"
 
-JVM_ARGS=${JVM_ARGS:--Xmx1200M -server}
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 java $JVM_ARGS -cp "$CP" "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
@@ -87,7 +87,7 @@ process_rows()
     log "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
-    java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    java -cp "$CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
     # Remove intermediary file.
     if [ "$KEEPWORKFILES" != "yes" ] 
     then
