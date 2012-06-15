@@ -65,7 +65,6 @@ public class HttpAction
         this.id = id ;
         this.desc = desc ;
         this.dsg = desc.dataset ;
-        
 
         if ( dsg instanceof Transactional )
             transactional = (Transactional)dsg ;
