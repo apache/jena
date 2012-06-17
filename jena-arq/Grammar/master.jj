@@ -2475,7 +2475,7 @@ TOKEN:
   // If goes ahead, consolidate
   <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> ) 
               ( (<PN_CHARS>|"."| <PLX> )* 
-                (<PN_CHARS>|<PLX>) ) ?  >
+                (<PN_CHARS>|<PLX>) )?  >
 |
   // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
