@@ -65,7 +65,7 @@ public class PrefixMap
     }
     
 
-    /** Add a prefix, overwites any existing association */
+    /** Add a prefix, overwrites any existing association */
     public void add(String prefix, String iriString)
     { 
         prefix = canonicalPrefix(prefix) ;
@@ -74,14 +74,14 @@ public class PrefixMap
         prefixes.put(prefix, iri);
     }
     
-    /** Add a prefix, overwites any existing association */
+    /** Add a prefix, overwrites any existing association */
     public void add(String prefix, IRI iri)
     { 
         prefix = canonicalPrefix(prefix) ;
         prefixes.put(prefix, iri) ;
     }
     
-    /** Add a prefix, overwites any existing association */
+    /** Add a prefix, overwrites any existing association */
     public void putAll(PrefixMap pmap)
     {
         prefixes.putAll(pmap.prefixes) ; 
@@ -125,7 +125,7 @@ public class PrefixMap
     private static boolean strSafeFor(String str, char ch) { return str.indexOf(ch) == -1 ; } 
     
     
-    /** Abbreviate an IRI or retrn null */
+    /** Abbreviate an IRI or return null */
     public Pair<String, String> abbrev(String uriStr)
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
