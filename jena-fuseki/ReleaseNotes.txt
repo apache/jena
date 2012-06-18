@@ -1,13 +1,13 @@
 ==== Fuseki
 
-== 0.2.3
+== Fuseki 0.2.3
 
-== 0.2.2
+== Fuseki 0.2.2
 
 + This version picks up bug fixes from TDB and ARQ.
-  This includes probelms with concurrent operations.
+  This includes problems with concurrent operations.
 
-== 0.2.1
+== Fuseki 0.2.1
 
 + Switch from JSPs to Velocity.
   This means the standalone jar does not contain a JSP engine anymore.  
@@ -33,7 +33,7 @@
 + Split logging into 2 loggers: general messages and per-request messages.
   http://openjena.org/wiki/Fuseki#Logging
 
-== 0.2.0
+== Fuseki 0.2.0
 
 + Validators now include:
   Query
@@ -50,6 +50,6 @@
 + Internal consistency checking (also TDB internal consistecy checking).
   You should not see any warnings.
 
-== 0.1.0
+== Fuseki 0.1.0
 First release.
 
