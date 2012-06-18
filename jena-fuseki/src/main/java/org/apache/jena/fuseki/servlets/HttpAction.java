@@ -113,13 +113,13 @@ public class HttpAction
 
     public void endWrite()
     {
+        transactional.end() ;
         if (transactional.isInTransaction())
         {
             Log.warn(this, "Transaction still active in endWriter - no commit or abort seen (forced abort)") ;
             try { transactional.abort() ; } 
             catch (RuntimeException ex) { Log.warn(this, "Exception in forced abort (trying to continue)", ex) ;} 
         }
-        transactional.end() ;
         activeDSG = null ;
     }
 
