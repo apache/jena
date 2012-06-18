@@ -1,6 +1,8 @@
 ChangeLog for TDB
 =================
 
+==== TDB 0.9.2
+
 ==== TDB 0.9.1
 
 + (JENA-252) Fix multithreaded interaction transitioning to transactional mode
