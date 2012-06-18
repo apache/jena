@@ -1,6 +1,8 @@
 ==== Fuseki
 
-== 0.2.2/0.3.0
+== 0.2.3
+
+== 0.2.2
 
 + This version picks up bug fixes from TDB and ARQ.
   This includes probelms with concurrent operations.
