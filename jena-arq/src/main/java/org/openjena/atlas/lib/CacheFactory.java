@@ -37,7 +37,7 @@ public class CacheFactory
      */
     public static <Key, Value> Cache<Key, Value> createCache(float loadFactor, int maxSize)
     {
-        return new CacheLRU<Key, Value>(0.75f, maxSize) ;
+        return new CacheLRU<Key, Value>(loadFactor, maxSize) ;
     }
     
     /** Create a cache which has space for upto a certain number of objects. 
