@@ -54,7 +54,7 @@ public class TestTransactionTDB extends AbstractTestTransaction
     private static Triple triple1 = SSE.parseTriple("(<s> <p> <o>)") ;  
 
     
-    @Test public void factoryTxn10()
+    @Test public void transaction_50()
     {
         // This assumes you have two datasets on the same location.
         // That's not necessarily true for uncached memory datasets, 
