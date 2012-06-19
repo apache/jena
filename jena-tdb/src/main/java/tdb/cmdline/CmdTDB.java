@@ -18,9 +18,6 @@
 
 package tdb.cmdline;
 
-import org.apache.log4j.Level ;
-import org.apache.log4j.LogManager ;
-import org.apache.log4j.Logger ;
 import org.openjena.atlas.logging.Log ;
 import arq.cmdline.CmdARQ ;
 
@@ -83,20 +80,9 @@ public abstract class CmdTDB extends CmdARQ
         // attempt once.
         initialized = true ;
         Log.setCmdLogging() ;
-        // Logging is initized (via ARQ command super classes)
-        // Need to put in stuff for the loader.
-        
-        Logger loggerLoader = LogManager.getLogger(TDB.logLoaderName) ;
-        loggerLoader.setLevel(Level.INFO) ;
-        loggerLoader.setAdditivity(false) ;
-        
-        // This sets context based on system properties.
-        // ModSymbol can then override. 
         TDB.init() ;
         DatasetBuilderStd.setOptimizerWarningFlag(false) ;
     }
-    
-    
     
     @Override
     protected void processModulesAndArgs()
