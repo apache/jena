@@ -36,12 +36,24 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
      * But as soon as it starts a transaction, the dataset can only be used
      * inside transactions. 
      */
+    
+    // Two per-thread state variables:
+    //   txn: ThreadLocalTxn -- the transactional , one time use dataset
+    //   isInTransactionB: ThreadLocalBoolean -- flags true between begin and commit/abort, and end for read transactions.
+    
 
     static class ThreadLocalTxn extends ThreadLocal<DatasetGraphTxn>
     {
-        // This is the default implementation - but nice to give it a name and to set it clearly.
+        // This is the default - but nice to give it a name and to set it clearly.
         @Override protected DatasetGraphTxn initialValue() {
             return null ;
+        }
+    }
+
+    static class ThreadLocalBoolean extends ThreadLocal<Boolean>
+    {
+        @Override protected Boolean initialValue() {
+            return false ;
         }
     }
 
@@ -55,7 +67,8 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
 
     // Transaction per thread.
     private ThreadLocalTxn txn = new ThreadLocalTxn() ;
-
+    private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
+    
     private final StoreConnection sConn ;
 
     public DatasetGraphTransaction(Location location)
@@ -109,7 +122,9 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     
     @Override
     public boolean isInTransaction()    
-    { return txn.get() != null ; }
+    { 
+        return inTransaction.get() ;
+    }
 
     
     public void syncIfNotTransactional()
@@ -124,24 +139,29 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     {
         DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
         txn.set(dsgTxn) ;
+        inTransaction.set(true) ;
     }
 
     @Override
     protected void _commit()
     {
         txn.get().commit() ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void _abort()
     {
         txn.get().abort() ;
+        inTransaction.set(false) ;
     }
 
     @Override
     protected void _end()
     {
         txn.get().end() ;
+        // May already be false due to .commit/.abort.
+        inTransaction.set(false) ;
         txn.set(null) ;
     }
 
@@ -154,7 +174,6 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             // Hence ...
         } catch (Throwable th) { return "DatasetGraphTransactional" ; }
     }
-    
     
     @Override
     protected void _close()

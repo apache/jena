@@ -29,13 +29,13 @@ public abstract class AbstractTestTransaction extends BaseTest
     //MIGRATE
     protected abstract Dataset create() ;
     
-    @Test public void factoryTxn0()
+    @Test public void transaction_0()
     {
         Dataset ds = create() ;
         assertTrue(ds.supportsTransactions()) ;
     }
     
-    @Test public void factoryTxn1()
+    @Test public void transaction_1()
     {
         Dataset ds = create() ;
         ds.begin(ReadWrite.READ) ;
@@ -44,7 +44,7 @@ public abstract class AbstractTestTransaction extends BaseTest
         assertFalse(ds.isInTransaction()) ; 
     }
 
-    @Test public void factoryTxn2()
+    @Test public void transaction_2()
     {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -53,7 +53,7 @@ public abstract class AbstractTestTransaction extends BaseTest
         assertFalse(ds.isInTransaction()) ; 
     }
 
-    @Test public void factoryTxn3()
+    @Test public void transaction_3()
     {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -62,7 +62,7 @@ public abstract class AbstractTestTransaction extends BaseTest
         assertFalse(ds.isInTransaction()) ; 
     }
 
-    @Test public void factoryTxn4()
+    @Test public void transaction_4()
     {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -73,7 +73,7 @@ public abstract class AbstractTestTransaction extends BaseTest
         assertFalse(ds.isInTransaction()) ; 
     }
 
-    @Test public void factoryTxn5()
+    @Test public void transaction_5()
     {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
@@ -83,5 +83,36 @@ public abstract class AbstractTestTransaction extends BaseTest
         ds.end() ;
         assertFalse(ds.isInTransaction()) ; 
     }
+
+    @Test public void transaction_6()
+    {
+        // .end is not necessary
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.WRITE) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.abort() ;
+        assertFalse(ds.isInTransaction()) ;
+
+        ds.begin(ReadWrite.WRITE) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.abort() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
+    @Test public void transaction_7()
+    {
+        // .end is not necessary
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.WRITE) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+
+        ds.begin(ReadWrite.WRITE) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
 }
 
