@@ -43,6 +43,7 @@ public class ContentType
         if ( y.length == 2 && y[1] != null && y[1].contains("=") )
         {
             String[] z = y[1].split("=") ;
+            z[0] = z[0].trim();
             if ( z[0].toLowerCase().startsWith(nameCharset) )
                 charset=z[1].trim() ;
         }
