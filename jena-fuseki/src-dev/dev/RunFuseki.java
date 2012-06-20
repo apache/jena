@@ -55,22 +55,22 @@ public class RunFuseki
         FusekiCmd.main(
                     //"-v", 
                     //"--debug",
-                    //"--update",
+                    "--update",
                     //"--timeout=1000,5000",
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
                     //"--mgtPort=3031",
                     //"--host=localhost",
-                    //"--mem",
+                    "--mem",
                     //"--home=/home/afs/Projects/Fuseki",
                     //"--loc=DB",
-                    "--file=D.nt",
+                    //"--file=D.nt",
                     //"--gzip=no",
                     //"--desc=desc.ttl",
                     //--pages=
                     //"--jetty-config=jetty-fuseki.xml",
                     // "/ds"
-                    "/dataset"
+                    "/ds"
                     ) ;
         System.exit(0) ;
     }
