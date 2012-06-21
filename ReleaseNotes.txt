@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.2
 
++ Significant speed-up of MINUS queries (JENA-266) - contribution from Paul Gearon (@quoll). 
+
 ==== ARQ 2.9.1
 
 + SPARQL 1.1: STRBEFORE and STRAFTER return simple empty string on no match.
