@@ -59,8 +59,8 @@ public class AlgebraGenerator
     // The  {{}} results in (join unit (filter ...)) the filter is not moved
     // into the LeftJoin.  
     
-    static final private boolean applySimplification = true ;              // Allows raw algebra to be generated (testing) 
-    static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;   // False is the correct setting. 
+    static final private boolean applySimplification = true ;                   // False allows raw algebra to be generated (testing) 
+    static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;  // False is the correct setting. 
 
     public AlgebraGenerator(Context context)
     { 
@@ -98,7 +98,7 @@ public class AlgebraGenerator
         return Transformer.transform(simplify, op) ;
     }
 
-    // This is the operation to call for recursive application of step 4.
+    // This is the operation to call for recursive application.
     protected Op compileElement(Element elt)
     {
         if ( elt instanceof ElementUnion )
@@ -133,18 +133,10 @@ public class AlgebraGenerator
 
         broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
         return null ;
-        
     }
     
     protected Op compileElementUnion(ElementUnion el)
     { 
-//        if ( el.getElements().size() == 1 )
-//        {
-//            // SPARQL 1.0 but never happens in a legal syntax query.
-//            Element subElt = el.getElements().get(0) ;
-//            return compileElement(subElt) ;
-//        }
-        
         Op current = null ;
         
         for ( Element subElt: el.getElements() )
@@ -155,23 +147,21 @@ public class AlgebraGenerator
         return current ;
     }
     
-    // Produce the algebra for a single group.
-    // http://www.w3.org/TR/rdf-sparql-query/#convertGraphPattern
+    //Produce the algebra for a single group.
+    //<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlQuery">Translation to the SPARQL Algebra</a>
     //
-    // We do some of the steps recursively as we go along. 
-    // The only step that must be done after the others to get
-    // the right results is simplification.
-    //
-    // Step 0: (URI resolving and triple pattern syntax forms) was done during parsing
-    // Step 1: (BGPs) Done in this code
-    // Step 2: (Groups and unions) Was done during parsing to get ElementUnion.
-    // Step 3: (GRAPH) Done in this code.
-    // Step 4: (Filter extraction and OPTIONAL) Done in this code
+    // Step : (URI resolving and triple pattern syntax forms) was done during parsing
+    // Step : (Paths) e.g. simple links become triple patterns. [finalizeSyntax]
+    // Step : (BGPs) Merge BGPs   [finalizeSyntax]
+    // Step : (BIND/LET) Associate with BGP
+    // Step : (Groups and unions) Was done during parsing to get ElementUnion.
+    // Step : (GRAPH) Done in this code.
+    // Step : (Filter extraction and OPTIONAL) Done in this code
     // Simplification: Done later 
     // If simplicifation is done now, it changes OPTIONAL { { ?x :p ?w . FILTER(?w>23) } } because it removes the
     //   (join Z (filter...)) that in turn stops the filter getting moved into the LeftJoin.  
     //   It need a depth of 2 or more {{ }} for this to happen. 
-
+    
     protected Op compileElementGroup(ElementGroup groupElt)
     {
         Op current = OpTable.unit() ;
@@ -185,8 +175,12 @@ public class AlgebraGenerator
         
         List<Element> groupElts = finalizeSyntax(groupElt) ;
 
-        // Second: compile the consolidated group elements.
-        // Asumes that filters moved to end.
+        // Processing assignments is combined into the whole group processing.
+        // This includes a small amount of undoing some of the conversion work
+        // but means that the translation after finalizeSyntax is a single pass.
+        
+        // Compile the consolidated group elements.
+        // Assumes the filters have been moved to end.
         for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
             Element elt = iter.next() ;
@@ -196,8 +190,10 @@ public class AlgebraGenerator
         return current ;
     }
 
-    /* Extract filters, merge adjacent BGPs.
-     * Return a list of elements: update the exprList
+    /* Extract filters, merge adjacent BGPs, do BIND.
+     * When extracting filters, BGP or PathBlocks may become adjacent
+     * so merge them into one. 
+     * Return a list of elements with any filters at the end. 
      */
     
     private List<Element> finalizeSyntax(ElementGroup groupElt)
@@ -207,9 +203,9 @@ public class AlgebraGenerator
             return groupElt.getElements() ;
         
         List<Element> groupElts = new ArrayList<Element>() ;
-        BasicPattern prev = null ;
+        BasicPattern prevBGP = null ;
         List<ElementFilter> filters = null ;
-        PathBlock prev2 = null ;
+        PathBlock prevPathBlock = null ;
         
         for (Element elt : groupElt.getElements() )
         {
@@ -222,21 +218,23 @@ public class AlgebraGenerator
                 // Collect filters but do not place them yet.
                 continue ;
             }
+
+            // Rather ugly code that combines blocks. 
             
             if ( elt instanceof ElementTriplesBlock )
             {
-                if ( prev2 != null )
+                if ( prevPathBlock != null )
                     throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 1)") ;
                 
                 ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
 
-                if ( prev != null )
+                if ( prevBGP != null )
                 {
                     // Previous was an ElementTriplesBlock.
                     // Merge because they were adjacent in a group
                     // in syntax, so it must have been BGP, Filter, BGP.
                     // Or someone constructed a non-serializable query. 
-                    prev.addAll(etb.getPattern()) ;
+                    prevBGP.addAll(etb.getPattern()) ;
                     continue ;
                 }
                 // New BGP.
@@ -244,7 +242,7 @@ public class AlgebraGenerator
 
                 ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
                 etb2.getPattern().addAll(etb.getPattern()) ;
-                prev = etb2.getPattern() ;
+                prevBGP = etb2.getPattern() ;
                 groupElts.add(etb2) ;
                 continue ;
             }
@@ -253,35 +251,28 @@ public class AlgebraGenerator
             // Can't mix ElementTriplesBlock and ElementPathBlock (which subsumes ElementTriplesBlock)
             if ( elt instanceof ElementPathBlock )
             {
-                if ( prev != null )
+                if ( prevBGP != null )
                     throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 2)") ;
                 
                 ElementPathBlock epb = (ElementPathBlock)elt ;
-                if ( prev2 != null )
+                if ( prevPathBlock != null )
                 {
-                    prev2.addAll(epb.getPattern()) ;
+                    prevPathBlock.addAll(epb.getPattern()) ;
                     continue ;
                 }
                 
                 ElementPathBlock epb2 = new ElementPathBlock() ;
                 epb2.getPattern().addAll(epb.getPattern()) ;
-                prev2 = epb2.getPattern() ;
+                prevPathBlock = epb2.getPattern() ;
                 groupElts.add(epb2) ;
                 continue ;
             }
             
-            // Anything else.  End of BGP - put in any accumulated filters 
-
-            //[Old:BGP-scoped filter]
-//            endBGP(groupElts, filters) ;
-//            // Clear any BGP-related accumulators.
-//            filters = null ;
-            
+            // Not BGP or Filter.
             // Clear any BGP-related triple accumulators.
-            prev = null ;
-            prev2 = null ;
-            
-            // Add this element (not BGP/Filter related).
+            prevBGP = null ;
+            prevPathBlock = null ;
+            // Add this element
             groupElts.add(elt) ;
         }
         //End of group - put in any accumulated filters
@@ -290,13 +281,6 @@ public class AlgebraGenerator
             groupElts.addAll(filters) ;
         return groupElts ;
     }
-    
-// [Old:BGP-scoped filter]
-//    private void endBGP(List<Element> groupElts, List<ElementFilter> filters)
-//    {
-//        if ( filters != null )
-//            groupElts.addAll(filters) ;
-//    }
     
     private Op compileOneInGroup(Element elt, Op current)
     {
@@ -338,6 +322,11 @@ public class AlgebraGenerator
         
         if ( elt instanceof ElementAssign )
         {
+            // This step and the similar BIND step needs to access the preceeding 
+            // element if it is a BGP.
+            // That might 'current', or in the left side of a join.
+            // If not a BGP, insert a empty one.  
+            
             ElementAssign assign = (ElementAssign)elt ;
             Op op = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
             return op ;
@@ -378,7 +367,6 @@ public class AlgebraGenerator
             Op op = compileElementData(current, elt2) ;
             return op ;
         }
-
         
 //        // SPARQL 1.1 UNION -- did not make SPARQL 
 //        if ( elt instanceof ElementUnion )
