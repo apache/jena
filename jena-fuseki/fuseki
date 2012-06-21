@@ -1,44 +1,261 @@
 #!/bin/bash
-# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-## Run Fuseki, include development code if it looks like it's available.
-## Or --pages=
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# =========
+#
+# Startup script for Fuseki under *nix systems (works with cygwin too)
+#
+# Configuration:
+#
+# JAVA
+#   Command to invoke Java. If not set, java (from the PATH) will be used.
+#
+# JAVA_OPTIONS
+#   Extra options to pass to the JVM
+#
+# FUSEKI_HOME
+#   Where Fuseki is installed.  If not set, the script will try
+#   to guess it based on the script invokation path.
+#
+# FUSEKI_RUN
+#   Where the fuseki.pid file should be stored.  It defaults
+#   first available of /var/run, /usr/var/run, and /tmp if not set.
+#
+# FUSEKI_PID
+#   The FUSEKI PID file, defaults to $FUSEKI_RUN/fuseki.pid
+#
+#
+# TODO:
+#   - Add support for start-stop-daemon (daemontools)
+#   - Support for running as a different user
+#   - A way to specify arguments to Fuseki (FUSEKI_ARGS)
 
-export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
-if [ ! -e $FUSEKI_HOME ]
+usage()
+{
+  echo "Usage: ${0##*/} {start|stop|restart|status}"
+  exit 1
+}
+
+[ $# -gt 0 ] || usage
+
+# Utility functions:
+findDirectory()
+{
+  local L OP=$1
+  shift
+  for L in "$@"; do
+    [ "$OP" "$L" ] || continue 
+    printf %s "$L"
+    break
+  done 
+}
+
+running()
+{
+  local PID=$(cat "$1" 2>/dev/null) || return 1
+  kill -0 "$PID" 2>/dev/null
+}
+
+# Are we running in cygwin?
+cygwin=false
+case "`uname`" in
+    CYGWIN*) cygwin=true;;
+esac
+
+# Set FUSKEI_HOME to the script invocation directory if it is not specified
+# TODO Make this better, it will only really work with relative paths
+if [ -z "$FUSEKI_HOME" ]
 then
-     echo "$FUSEKI_HOME does not exist" 1>&2
-    exit 1
-    fi
-if [ ! -d $FUSEKI_HOME ]
+  SCRIPT_PATH=`dirname $BASH_SOURCE`
+  if [ "$SCRIPT_PATH" == "." ]
+  then
+    export FUSEKI_HOME="$PWD"
+  else
+    export FUSEKI_HOME="$PWD/$SCRIPT_PATH"
+  fi
+fi
+
+#echo "DEBUG: FUSEKI_HOME=$FUSEKI_HOME"
+
+if [ ! -e "$FUSEKI_HOME" ]
 then
-    echo "$FUSEKI_HOME exists but is not a directory" 1>&2
-    exit 1
-    fi
+  echo "$FUSEKI_HOME does not exist" 1>&2
+  exit 1
+fi
 
-## M2_REPO="/home/afs/.m2/repo" ;
-## X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
-## 
-## CP=
-## for x in $X
-## do
-##    CP="$CP:$M2_REPO$x"
-## done
-## CP="classes$CP"
 
-CP="$(. $FUSEKI_HOME/run_cp)"
-if [ -e "$FUSEKI_HOME/target/classes" ]
+
+
+# Find a location for the pid file
+if [ -z "$FUSEKI_RUN" ] 
 then
-    CP="$FUSEKI_HOME/target/classes:$CP"
-    fi
-if [ -e "$FUSEKI_HOME/classes" ]
+  FUSEKI_RUN=$(findDirectory -w /var/run /usr/var/run /tmp)
+fi
+
+# Get PID file name
+if [ -z "$FUSEKI_PID" ] 
 then
-    CP="$FUSEKI_HOME/classes:$CP"
+  FUSEKI_PID="$FUSEKI_RUN/fuseki.pid"
+fi
+
+# Log directory
+if [ -z "$FUSEKI_LOGS" ] 
+then
+  FUSEKI_LOGS="$FUSEKI_HOME/log"
+fi
+
+# Std Err and Out log
+if [ -z "$FUSEKI_LOGS_STDERROUT" ] 
+then
+  FUSEKI_LOGS_STDERROUT="$FUSEKI_LOGS/stderrout.log"
+fi
+
+# Data directory
+if [ -z "$FUSEKI_DATA_DIR" ] 
+then
+  FUSEKI_DATA_DIR="$FUSEKI_HOME/data"
+fi
+
+# Set up JAVA if not set
+if [ -z "$JAVA" ]
+then
+  JAVA=$(which java)
+fi
+if [ -z "$JAVA" ]
+then
+  echo "Cannot find a Java JDK. Please set either set JAVA or put java (>=1.6) in your PATH." 2>&2
+  exit 1
+fi
+
+# The location of the start up JAR
+FUSEKI_START=$FUSEKI_HOME/fuseki-server.jar
+
+# Deal with Cygwin path issues
+if [ "$cygwin" == "true" ]
+then
+  DATA_DIR=`cygpath -w "$FUSEKI_DATA_DIR"`
+  FUSEKI_START=`cygpath -w "$FUSEKI_START"`
+else
+  DATA_DIR="$FUSEKI_DATA_DIR"
+fi
+
+
+#######################################
+#
+# TODO - Read these items from a Config file!
+#
+
+# Some JVM settings
+JAVA_OPTIONS+=("-Dlog4j.configuration=log4j.properties" "-Xmx1200M")
+
+# Run command
+if [ -z "$FUSEKI_ARGS" ]
+then
+  FUSEKI_ARGS="--update --loc="$DATA_DIR" /ds"
+fi
+
+RUN_CMD=("$JAVA" ${JAVA_OPTIONS[@]} -jar "$FUSEKI_START" $FUSEKI_ARGS)
+
+#echo "DEBUG: RUN_CMD=${RUN_CMD[@]}"
+
+#######################################
+
+# Life cycle functions
+start() {
+
+  # Make sure the data and log directories exist
+  mkdir -p "$FUSEKI_DATA_DIR"
+  mkdir -p "$FUSEKI_LOGS"
+
+  echo -n "Starting Fuseki: "
+
+  # TODO Add support for start-stop-daemon
+  if [ -f "$FUSEKI_PID" ]
+  then
+    if running $FUSEKI_PID
+    then
+      echo "Already Running!"
+      exit 1
+    else
+      # dead pid file - remove
+      rm -f "$FUSEKI_PID"
+    fi
+  fi
+  
+  # Deal with more Cygwin path issues
+  if [ "$cygwin" == "true" ]
+  then
+    FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
+  fi
+
+  # echo "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
+  exec "${RUN_CMD[@]}" &> "$FUSEKI_LOGS_STDERROUT" &
+  disown $!
+  echo $! > "$FUSEKI_PID"
+
+  echo "STARTED Fuseki `date`"
+}
+
+stop() {
+  echo -n "Stopping Fuseki: "
+
+  PID=$(cat "$FUSEKI_PID" 2>/dev/null)
+  kill "$PID" 2>/dev/null
+  
+  TIMEOUT=30
+  while running $FUSEKI_PID; do
+    if (( TIMEOUT-- == 0 )); then
+      kill -KILL "$PID" 2>/dev/null
     fi
 
-FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
-JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
-#JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"
+    sleep 1
+  done
 
-exec java -cp "$CP" $JVM_ARGS $FUSEKI_LOG org.apache.jena.fuseki.FusekiCmd \
-    --home="$FUSEKI_HOME" "$@"
+  rm -f "$FUSEKI_PID"
+  echo "OK"
+}
+
+
+
+case $1 in
+  start)
+    start
+  ;;
+  stop)
+    stop
+  ;;
+  restart)
+    stop
+    start
+  ;;
+  status)
+    if running $FUSEKI_PID
+    then
+      echo -n "Fuseki is running with pid: "
+      echo `cat "$FUSEKI_PID"`
+    else
+      echo "Fuseki is not running"
+    fi
+  ;;
+  *)
+    usage
+  ;;
+esac
+
+exit 0
+

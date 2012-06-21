@@ -64,6 +64,7 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <includes>
         <include>log4j.properties</include>
+        <include>fuseki</include>
         <include>fuseki-server</include>
         <include>config*.ttl</include>
         <include>s-*</include>
