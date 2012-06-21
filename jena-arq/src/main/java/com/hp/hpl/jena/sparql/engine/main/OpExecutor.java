@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.engine.main;
 import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Set;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.logging.Log ;
@@ -29,9 +30,11 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVars;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
@@ -250,9 +253,16 @@ public class OpExecutor
     
     protected QueryIterator execute(OpMinus opMinus, QueryIterator input)
     { 
-        QueryIterator left = executeOp(opMinus.getLeft(), input) ;
-        QueryIterator right = executeOp(opMinus.getRight(), root()) ;
-        return new QueryIterMinus(left, right, execCxt) ;
+    	Op lhsOp = opMinus.getLeft();
+    	Op rhsOp = opMinus.getRight();
+    	
+        QueryIterator left = executeOp(lhsOp, input) ;
+        QueryIterator right = executeOp(rhsOp, root()) ;
+
+        Set<Var> commonVars = OpVars.patternVars(lhsOp) ;
+        commonVars.retainAll(OpVars.patternVars(rhsOp)) ;
+
+        return new QueryIterMinus(left, right, commonVars, execCxt) ;
     }
 
     protected QueryIterator execute(OpUnion opUnion, QueryIterator input)
