@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.index;
+package com.hp.hpl.jena.sparql.engine.index;
 
 import java.util.ArrayList;
 import java.util.List;
