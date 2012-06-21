@@ -22,12 +22,12 @@ import java.util.Map;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.algebra.index.IndexFactory;
-import com.hp.hpl.jena.sparql.algebra.index.IndexTable;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.index.IndexFactory ;
+import com.hp.hpl.jena.sparql.engine.index.IndexTable ;
 
 /** Minus by materializing the RHS - this is not streamed on the right */
 public class QueryIterMinus extends QueryIter2
