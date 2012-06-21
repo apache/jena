@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.index;
+package com.hp.hpl.jena.sparql.engine.index;
 
 import java.util.Set;
 
-import com.hp.hpl.jena.sparql.algebra.index.HashIndexTable.MissingBindingException;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
+import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingException ;
 
 public class IndexFactory {
 
