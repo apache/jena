@@ -18,57 +18,72 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import java.util.Iterator ;
+import java.util.Map;
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
-
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.sparql.algebra.index.IndexFactory;
+import com.hp.hpl.jena.sparql.algebra.index.IndexTable;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 /** Minus by materializing the RHS - this is not streamed on the right */
-public class QueryIterMinus extends QueryIter2LoopOnLeft
+public class QueryIterMinus extends QueryIter2
 {
-    public QueryIterMinus(QueryIterator left, QueryIterator right, ExecutionContext qCxt)
+	private IndexTable tableRight;
+	private Map<Var, Integer> varColumns ;
+	private Set<Node[]> rightTable;
+    Binding slot = null ;
+
+	public QueryIterMinus(QueryIterator left, QueryIterator right, Set<Var> commonVars, ExecutionContext qCxt)
     {
         super(left, right, qCxt) ;
+        tableRight = IndexFactory.createIndex(commonVars, right) ;
+    }
+
+    protected Binding getNextSlot(Binding bindingLeft)
+    {
+        if ( tableRight.containsCompatibleWithSharedDomain(bindingLeft) )
+        	return null ;
+        
+        return bindingLeft;
     }
 
     @Override
-    protected Binding getNextSlot(Binding bindingLeft)
+    protected final void closeSubIterator() { }
+    
+    @Override
+    protected void requestSubCancel() { }
+   
+    @Override
+    protected final boolean hasNextBinding()
     {
-        boolean accept = true ;
-        Set<Var> varsLeft = Iter.toSet(bindingLeft.vars()) ;
-
-        for ( Iterator<Binding> iter = tableRight.iterator(null) ; iter.hasNext() ; )
+        if ( slot != null )
+            return true ;
+        
+        while ( getLeft().hasNext() )
         {
-            Binding bindingRight = iter.next() ;
-            
-            if ( ! commonVariable(varsLeft, bindingRight) )
-                continue ;
-            if ( Algebra.compatible(bindingLeft, bindingRight) )
+            Binding bindingLeft = getLeft().nextBinding() ;
+            slot = getNextSlot(bindingLeft) ;
+            if ( slot != null )
             {
-                accept = false ;
-                break ;
+                slot = bindingLeft ; 
+                return true ;
             }
         }
-
-        if ( accept )
-            return bindingLeft ;
-        return null ;
+        getLeft().close() ;
+        return false ;
     }
 
-    private boolean commonVariable(Set<Var> varsLeft, Binding bindingRight)
+    @Override
+    protected final Binding moveToNextBinding()
     {
-        for ( Iterator<Var> iter = bindingRight.vars() ; iter.hasNext() ; )
-        {
-            Var v = iter.next() ;
-            if ( varsLeft.contains(v) )
-                return true ;
-        }
-        return false ;
+        if ( ! hasNextBinding() )
+            return null ;
+        Binding x = slot ;
+        slot = null ;
+        return x ;
     }
 }
