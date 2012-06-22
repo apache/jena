@@ -29,6 +29,12 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
+/**
+ * Indexes bindings so that they can be search for quickly when a binding to all the
+ * variables is provided. If a binding to only some of the known variables is provided
+ * then the index still works, but will search linearly.
+ * @author Paul Gearon
+ */
 public class HashIndexTable implements IndexTable {
 
 	final private Set<Key> table ;
