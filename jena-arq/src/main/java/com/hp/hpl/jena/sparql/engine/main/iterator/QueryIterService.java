@@ -58,7 +58,7 @@ public class QueryIterService extends QueryIterRepeatApply
         {
             if ( silent )
             {
-                Log.warn(this, "SERVICE: "+ex.getMessage()) ;
+                Log.warn(this, "SERVICE <" + opService.getService().toString() + ">: " + ex.getMessage()) ;
                 return QueryIterSingleton.create(BindingFactory.binding(), getExecContext()) ; 
             }
             throw ex ;
