@@ -48,7 +48,6 @@ public class TSVInput {
         List<Var> vars = new ArrayList<Var>();
         List<String> varNames = new ArrayList<String>();
 
-        boolean first = true;
     	String str = null;
         try 
         {
