@@ -43,7 +43,17 @@ if [ "$JAR" = "" ]
 then
     echo "Can't find jarfile to run"
     exit 1
-    fi
+fi
+
+# Deal with Cygwin path issues
+cygwin=false
+case "`uname`" in
+    CYGWIN*) cygwin=true;;
+esac
+if [ "$cygwin" == "true" ]; then
+    JAR=`cygpath -w "$JAR"`
+    FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
+fi
 
 JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 
