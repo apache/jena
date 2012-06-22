@@ -30,6 +30,24 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 import com.hp.hpl.jena.sparql.engine.binding.BindingHashMap;
 
+/**
+ * A slow "index" that looks for data by searching linearly through a set.
+ * Only used when the indexed data contains fewer bound variables than expected.
+ * Note that this class is only used for a MINUS operation that is removing data
+ * with potentially unbound values, and is therefore rarely used.
+ * 
+ * TODO: If this index starts to be used more often then consider various options for
+ *       indexing on the known bound variables.
+ *       One possibility is for each variable (found in commonVars) to take
+ *       the value of a var/value pair and TreeMap this to a set of Bindings that it occurs in.
+ *       This would offer a reduced set to search, and set intersections may also work
+ *       (intersections like this could be done on Binding reference equality rather than value).
+ *       TreeMap is suggested here, since there would be commonVars.size() maps, which would take
+ *       a lot of heap, particularly since performance of this class is only an issue when the
+ *       data to search is significant.
+ * @author Paul Gearon
+ */
+
 public class LinearIndex implements IndexTable {
 
 	final Set<Var> commonVars ;
@@ -79,7 +97,7 @@ public class LinearIndex implements IndexTable {
 		return false;
 	}
 
-	private static Binding toBinding(HashIndexTable.Key key, Map<Var,Integer> mappings)
+	static Binding toBinding(HashIndexTable.Key key, Map<Var,Integer> mappings)
 	{
 		Node[] values = key.getNodes() ;
 		BindingHashMap b = new BindingHashMap() ;
