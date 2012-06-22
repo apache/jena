@@ -20,6 +20,13 @@ package com.hp.hpl.jena.sparql.engine.index;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
 
+/**
+ * Interface for indexes that are used for identifying matching
+ * {@link com.hp.hpl.jena.sparql.engine.binding.Binding}s when
+ * {@link com.hp.hpl.jena.sparql.engine.iterator.QueryIterMinus} is trying to determine
+ * which Bindings need to be removed.
+ * @author Paul Gearon
+ */
 public interface IndexTable {
 
 	public abstract boolean containsCompatibleWithSharedDomain(Binding binding);

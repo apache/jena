@@ -24,6 +24,11 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingException ;
 
+/**
+ * Creates {@link com.hp.hpl.jena.sparql.engine.index.IndexTable}s for use by
+ * {@link com.hp.hpl.jena.sparql.engine.iterator.QueryIterMinus}.
+ * @author Paul Gearon
+ */
 public class IndexFactory {
 
 	public static IndexTable createIndex(Set<Var> commonVars, QueryIterator data)
