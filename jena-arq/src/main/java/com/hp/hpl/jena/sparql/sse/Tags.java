@@ -199,6 +199,7 @@ public class Tags
 
     public static final String tagIn             = "in" ;
     public static final String tagNotIn          = "notin" ;
+    public static final String tagCall           = "call" ;
     
     public static final String tagTrue          = "true" ;
     public static final String tagFalse         = "false" ;

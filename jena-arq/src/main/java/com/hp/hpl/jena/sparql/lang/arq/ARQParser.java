@@ -16,9 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.hp.hpl.jena.sparql.lang.arq ;
-
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -26,11 +24,8 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.* ;
-
 import com.hp.hpl.jena.update.* ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
-
-
 public class ARQParser extends ARQParserBase implements ARQParserConstants {
     boolean allowAggregatesInExpressions = false ;
 
@@ -40,7 +35,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 //     ( Query() | Update() )
 //     <EOF>
 // }
-
 // Query only entry point
   final public void QueryUnit() throws ParseException {
     startQuery() ;
@@ -149,7 +143,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void SelectClause() throws ParseException {
-                         Var v ; Expr expr ; Node n ;
+                        Var v ; Expr expr ; Node n ;
     jj_consume_token(SELECT);
       getQuery().setQuerySelectType() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -162,7 +156,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         break;
       case REDUCED:
         jj_consume_token(REDUCED);
-                 getQuery().setReduced(true);
+                getQuery().setReduced(true);
         break;
       default:
         jj_la1[4] = jj_gen;
@@ -266,7 +260,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case VAR1:
         case VAR2:
           v = Var();
-                                      getQuery().addResultVar(v) ;
+                  getQuery().addResultVar(v) ;
           break;
         case IRIref:
         case PNAME_NS:
@@ -351,21 +345,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         case STRING_LITERAL_LONG2:
           if (jj_2_1(2)) {
             expr = BuiltInCall();
-                                      getQuery().addResultVar((Var)null, expr) ;
+                               getQuery().addResultVar((Var)null, expr) ;
           } else {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case IRIref:
             case PNAME_NS:
             case PNAME_LN:
               expr = FunctionCall();
-                                      getQuery().addResultVar((Var)null, expr) ;
+                                getQuery().addResultVar((Var)null, expr) ;
               break;
             case STRING_LITERAL1:
             case STRING_LITERAL2:
             case STRING_LITERAL_LONG1:
             case STRING_LITERAL_LONG2:
               n = RDFLiteral();
-                                      getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
+                           getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
               break;
             case INTEGER:
             case DECIMAL:
@@ -377,12 +371,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
             case DECIMAL_NEGATIVE:
             case DOUBLE_NEGATIVE:
               n = NumericLiteral();
-                                      getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
+                               getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
               break;
             case TRUE:
             case FALSE:
               n = BooleanLiteral();
-                                      getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
+                               getQuery().addResultVar((Var)null, NodeValue.makeNode(n)) ;
               break;
             default:
               jj_la1[6] = jj_gen;
@@ -932,13 +926,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case SHA384:
     case SHA512:
       expr = BuiltInCall();
-                             getQuery().addGroupBy((Var)null, expr) ;
+                           getQuery().addGroupBy((Var)null, expr) ;
       break;
     case IRIref:
     case PNAME_NS:
     case PNAME_LN:
       expr = FunctionCall();
-                             getQuery().addGroupBy((Var)null, expr) ;
+                            getQuery().addGroupBy((Var)null, expr) ;
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -1155,7 +1149,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case ASC:
         jj_consume_token(ASC);
-                 direction = Query.ORDER_ASCENDING ;
+                direction = Query.ORDER_ASCENDING ;
         break;
       case DESC:
         jj_consume_token(DESC);
@@ -1390,8 +1384,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
-
-
 // Optional SEMICOLON
   final public void Update() throws ParseException {
     Prologue();
@@ -1488,7 +1480,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
       jj_consume_token(SILENT);
-                        silent = true ;
+                       silent = true ;
       break;
     default:
       jj_la1[41] = jj_gen;
@@ -1575,7 +1567,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
       jj_consume_token(SILENT);
-                     silent=true ;
+                    silent=true ;
       break;
     default:
       jj_la1[47] = jj_gen;
@@ -1594,7 +1586,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
       jj_consume_token(SILENT);
-                      silent=true ;
+                     silent=true ;
       break;
     default:
       jj_la1[48] = jj_gen;
@@ -1613,7 +1605,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SILENT:
       jj_consume_token(SILENT);
-                      silent=true ;
+                     silent=true ;
       break;
     default:
       jj_la1[49] = jj_gen;
@@ -1626,7 +1618,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// #ifdef 1
+// #ifdef ARQ
 // void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
 // {
 //    <META> 
@@ -1656,7 +1648,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Update DeleteWhere() throws ParseException {
-                         QuadAcc qp = new QuadAcc() ;  Token t ;
+                         QuadAcc qp = new QuadAcc() ; Token t ;
     t = jj_consume_token(DELETE_WHERE);
     startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     QuadPattern(qp);
@@ -1755,7 +1747,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void DeleteClause(UpdateModify up) throws ParseException {
-                                       QuadAcc qp = up.getDeleteAcc() ;  Token t ;
+                                       QuadAcc qp = up.getDeleteAcc() ; Token t ;
     t = jj_consume_token(DELETE);
      startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
     OptionalFromTarget(qp);
@@ -1864,7 +1856,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         ;
       }
       iri = iri();
-        {if (true) return Target.create(createNode(iri)) ;}
+       {if (true) return Target.create(createNode(iri)) ;}
       break;
     default:
       jj_la1[63] = jj_gen;
@@ -1896,15 +1888,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
         break;
       case DFT:
         jj_consume_token(DFT);
-                {if (true) return Target.DEFAULT ;}
+             {if (true) return Target.DEFAULT ;}
         break;
       case NAMED:
         jj_consume_token(NAMED);
-                {if (true) return Target.NAMED ;}
+               {if (true) return Target.NAMED ;}
         break;
       case ALL:
         jj_consume_token(ALL);
-                {if (true) return Target.ALL ;}
+             {if (true) return Target.ALL ;}
         break;
       default:
         jj_la1[64] = jj_gen;
@@ -2349,7 +2341,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Element Bind() throws ParseException {
-                    Var v ; Expr expr ;
+                   Var v ; Expr expr ;
     jj_consume_token(BIND);
     jj_consume_token(LPAREN);
     expr = Expression();
@@ -2529,14 +2521,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case PNAME_NS:
     case PNAME_LN:
       iri = iri();
-                          {if (true) return createNode(iri) ;}
+                {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
       n = RDFLiteral();
-                          {if (true) return n ;}
+                     {if (true) return n ;}
       break;
     case INTEGER:
     case DECIMAL:
@@ -2548,16 +2540,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case DECIMAL_NEGATIVE:
     case DOUBLE_NEGATIVE:
       n = NumericLiteral();
-                          {if (true) return n ;}
+                         {if (true) return n ;}
       break;
     case TRUE:
     case FALSE:
       n = BooleanLiteral();
-                          {if (true) return n ;}
+                         {if (true) return n ;}
       break;
     case UNDEF:
       jj_consume_token(UNDEF);
-                          {if (true) return null ;}
+            {if (true) return null ;}
       break;
     default:
       jj_la1[88] = jj_gen;
@@ -2610,12 +2602,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 //     el = GroupGraphPattern()
 //     { return new ElementUnion(el) ; }
 // }
-
-
 // SPARQL 1.0: {pattern} UNION {pattern} UNION {pattern} ... :: 
 // SPARQL 1.1 may introduce: { pattern UNION pattern UNION ... }
-
-
 // G (union G)* can be a single group pattern
 // or a group pattern as part of an union.
   final public Element GroupOrUnionGraphPattern() throws ParseException {
@@ -3009,8 +2997,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void ObjectList(Node s,  Node p, Path path, TripleCollector acc) throws ParseException {
-                                                                    Node o ;
+  final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+                                                                   Node o ;
     Object(s, p, path, acc);
     label_26:
     while (true) {
@@ -3197,8 +3185,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public void ObjectListPath(Node s,  Node p, Path path, TripleCollector acc) throws ParseException {
-                                                                        Node o ;
+  final public void ObjectListPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+                                                                       Node o ;
     ObjectPath(s, p, path, acc);
     label_28:
     while (true) {
@@ -3223,7 +3211,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
 // End paths stuff.
-
 // -------- Paths
   final public Path PathUnit() throws ParseException {
                     Path p ;
@@ -3350,15 +3337,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case QMARK:
       jj_consume_token(QMARK);
-                {if (true) return PathFactory.pathZeroOrOne(p) ;}
+               {if (true) return PathFactory.pathZeroOrOne(p) ;}
       break;
     case STAR:
       jj_consume_token(STAR);
-                {if (true) return PathFactory.pathZeroOrMore1(p) ;}
+              {if (true) return PathFactory.pathZeroOrMore1(p) ;}
       break;
     case PLUS:
       jj_consume_token(PLUS);
-                {if (true) return PathFactory.pathOneOrMore1(p) ;}
+              {if (true) return PathFactory.pathOneOrMore1(p) ;}
       break;
     case LBRACE:
       jj_consume_token(LBRACE);
@@ -3371,7 +3358,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       case PLUS:
         jj_consume_token(PLUS);
         jj_consume_token(RBRACE);
-                           {if (true) return  PathFactory.pathOneOrMoreN(p) ;}
+                           {if (true) return PathFactory.pathOneOrMoreN(p) ;}
         break;
       case INTEGER:
         // {N} {N,M} {N,}
@@ -3541,7 +3528,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case KW_A:
       jj_consume_token(KW_A);
-                     {if (true) return new P_Link(nRDFtype) ;}
+             {if (true) return new P_Link(nRDFtype) ;}
       break;
     case CARAT:
       jj_consume_token(CARAT);
@@ -3578,7 +3565,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
 // -------- Triple expansions
-
 // Anything that can stand in a node slot and which is
 // a number of triples
   final public Node TriplesNode(TripleCollector acc) throws ParseException {
@@ -3649,7 +3635,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
-        insert(acc, lastCell, nRDFrest,  cell) ;
+        insert(acc, lastCell, nRDFrest, cell) ;
       mark = acc.mark() ;
       n = GraphNode(acc);
       insert(acc, mark, cell, nRDFfirst, n) ;
@@ -3689,7 +3675,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     jj_consume_token(RPAREN);
      if ( lastCell != null )
-       insert(acc, lastCell, nRDFrest,  nRDFnil) ;
+       insert(acc, lastCell, nRDFrest, nRDFnil) ;
      {if (true) return listHead ;}
     throw new Error("Missing return statement in function");
   }
@@ -3703,7 +3689,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
-        insert(acc, lastCell, nRDFrest,  cell) ;
+        insert(acc, lastCell, nRDFrest, cell) ;
       mark = acc.mark() ;
       n = GraphNodePath(acc);
       insert(acc, mark, cell, nRDFfirst, n) ;
@@ -3743,7 +3729,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     jj_consume_token(RPAREN);
      if ( lastCell != null )
-       insert(acc, lastCell, nRDFrest,  nRDFnil) ;
+       insert(acc, lastCell, nRDFrest, nRDFnil) ;
      {if (true) return listHead ;}
     throw new Error("Missing return statement in function");
   }
@@ -3920,14 +3906,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case PNAME_NS:
     case PNAME_LN:
       iri = iri();
-                       {if (true) return createNode(iri) ;}
+                {if (true) return createNode(iri) ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
       n = RDFLiteral();
-                          {if (true) return n ;}
+                     {if (true) return n ;}
       break;
     case INTEGER:
     case DECIMAL:
@@ -3939,21 +3925,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case DECIMAL_NEGATIVE:
     case DOUBLE_NEGATIVE:
       n = NumericLiteral();
-                          {if (true) return n ;}
+                         {if (true) return n ;}
       break;
     case TRUE:
     case FALSE:
       n = BooleanLiteral();
-                          {if (true) return n ;}
+                         {if (true) return n ;}
       break;
     case BLANK_NODE_LABEL:
     case ANON:
       n = BlankNode();
-                          {if (true) return n ;}
+                    {if (true) return n ;}
       break;
     case NIL:
       jj_consume_token(NIL);
-           {if (true) return nRDFnil ;}
+          {if (true) return nRDFnil ;}
       break;
     default:
       jj_la1[135] = jj_gen;
@@ -4089,7 +4075,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Expr NumericExpression() throws ParseException {
-                               Expr expr ;
+                              Expr expr ;
     expr = AdditiveExpression();
       {if (true) return expr ;}
     throw new Error("Missing return statement in function");
@@ -4169,12 +4155,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           case STAR:
             jj_consume_token(STAR);
             expr3 = UnaryExpression();
-                                            expr2 = new E_Multiply(expr2, expr3) ;
+                                           expr2 = new E_Multiply(expr2, expr3) ;
             break;
           case SLASH:
             jj_consume_token(SLASH);
             expr3 = UnaryExpression();
-                                             expr2 = new E_Divide(expr2, expr3) ;
+                                            expr2 = new E_Divide(expr2, expr3) ;
             break;
           default:
             jj_la1[143] = jj_gen;
@@ -4243,7 +4229,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case PLUS:
       jj_consume_token(PLUS);
       expr = PrimaryExpression();
-                                         {if (true) return new E_UnaryPlus(expr) ;}
+                                        {if (true) return new E_UnaryPlus(expr) ;}
       break;
     case MINUS:
       jj_consume_token(MINUS);
@@ -4422,14 +4408,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case PNAME_NS:
     case PNAME_LN:
       expr = iriOrFunction();
-                              {if (true) return expr ;}
+                             {if (true) return expr ;}
       break;
     case STRING_LITERAL1:
     case STRING_LITERAL2:
     case STRING_LITERAL_LONG1:
     case STRING_LITERAL_LONG2:
       gn = RDFLiteral();
-                             {if (true) return asExpr(gn) ;}
+                        {if (true) return asExpr(gn) ;}
       break;
     case INTEGER:
     case DECIMAL:
@@ -4441,17 +4427,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case DECIMAL_NEGATIVE:
     case DOUBLE_NEGATIVE:
       gn = NumericLiteral();
-                             {if (true) return asExpr(gn) ;}
+                            {if (true) return asExpr(gn) ;}
       break;
     case TRUE:
     case FALSE:
       gn = BooleanLiteral();
-                             {if (true) return asExpr(gn) ;}
+                            {if (true) return asExpr(gn) ;}
       break;
     case VAR1:
     case VAR2:
       gn = Var();
-                             {if (true) return asExpr(gn) ;}
+                 {if (true) return asExpr(gn) ;}
       break;
     default:
       jj_la1[148] = jj_gen;
@@ -4466,7 +4452,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_consume_token(LPAREN);
     expr = Expression();
     jj_consume_token(RPAREN);
-                                             {if (true) return expr ;}
+                                            {if (true) return expr ;}
     throw new Error("Missing return statement in function");
   }
 
@@ -4564,7 +4550,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                    {if (true) return new E_NumAbs(expr1) ;}
+                                                   {if (true) return new E_NumAbs(expr1) ;}
       break;
     case CEIL:
       jj_consume_token(CEIL);
@@ -4732,57 +4718,57 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     case NOW:
       jj_consume_token(NOW);
       jj_consume_token(NIL);
-                    {if (true) return new E_Now() ;}
+                  {if (true) return new E_Now() ;}
       break;
     case UUID:
       jj_consume_token(UUID);
       jj_consume_token(NIL);
-                    {if (true) return new E_UUID() ;}
+                   {if (true) return new E_UUID() ;}
       break;
     case STRUUID:
       jj_consume_token(STRUUID);
       jj_consume_token(NIL);
-                       {if (true) return new E_StrUUID() ;}
+                      {if (true) return new E_StrUUID() ;}
       break;
     case MD5:
       jj_consume_token(MD5);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                           {if (true) return new E_MD5(expr1) ;}
+                                                   {if (true) return new E_MD5(expr1) ;}
       break;
     case SHA1:
       jj_consume_token(SHA1);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                           {if (true) return new E_SHA1(expr1) ;}
+                                                    {if (true) return new E_SHA1(expr1) ;}
       break;
     case SHA256:
       jj_consume_token(SHA256);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                           {if (true) return new E_SHA256(expr1) ;}
+                                                      {if (true) return new E_SHA256(expr1) ;}
       break;
     case SHA384:
       jj_consume_token(SHA384);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                           {if (true) return new E_SHA384(expr1) ;}
+                                                      {if (true) return new E_SHA384(expr1) ;}
       break;
     case SHA512:
       jj_consume_token(SHA512);
       jj_consume_token(LPAREN);
       expr1 = Expression();
       jj_consume_token(RPAREN);
-                                                           {if (true) return new E_SHA512(expr1) ;}
+                                                      {if (true) return new E_SHA512(expr1) ;}
       break;
     case VERSION:
       jj_consume_token(VERSION);
       jj_consume_token(NIL);
-                          {if (true) return new E_Version();}
+                      {if (true) return new E_Version();}
       break;
     case COALESCE:
       jj_consume_token(COALESCE);
@@ -4874,11 +4860,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case EXISTS:
       expr = ExistsFunc();
-                               {if (true) return expr ;}
+                          {if (true) return expr ;}
       break;
     case NOT:
       expr = NotExistsFunc();
-                               {if (true) return expr ;}
+                             {if (true) return expr ;}
       break;
     default:
       jj_la1[150] = jj_gen;
@@ -4973,7 +4959,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Expr Aggregate() throws ParseException {
                      Aggregator agg = null ; String sep = null ;
                      boolean distinct = false ;
-                     Expr expr = null ;  Expr expr2 = null ;
+                     Expr expr = null ; Expr expr2 = null ;
                      ExprList a = new ExprList() ;
                      ExprList ordered = new ExprList() ;
                      Token t ;
@@ -5274,7 +5260,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LANGTAG:
         t = jj_consume_token(LANGTAG);
-                       lang = stripChars(t.image, 1) ;
+                      lang = stripChars(t.image, 1) ;
         break;
       case DATATYPE:
         jj_consume_token(DATATYPE);
@@ -5334,7 +5320,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case DOUBLE:
       t = jj_consume_token(DOUBLE);
-                  {if (true) return createLiteralDouble(t.image) ;}
+                 {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[170] = jj_gen;
@@ -5357,7 +5343,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case DOUBLE_POSITIVE:
       t = jj_consume_token(DOUBLE_POSITIVE);
-                           {if (true) return createLiteralDouble(t.image) ;}
+                          {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[171] = jj_gen;
@@ -5380,7 +5366,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case DOUBLE_NEGATIVE:
       t = jj_consume_token(DOUBLE_NEGATIVE);
-                           {if (true) return createLiteralDouble(t.image) ;}
+                          {if (true) return createLiteralDouble(t.image) ;}
       break;
     default:
       jj_la1[172] = jj_gen;
@@ -5432,7 +5418,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-      lex = unescapeStr(lex,  t.beginLine, t.beginColumn) ;
+      lex = unescapeStr(lex, t.beginLine, t.beginColumn) ;
       {if (true) return lex ;}
     throw new Error("Missing return statement in function");
   }
@@ -5477,7 +5463,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public Node BlankNode() throws ParseException {
-                      Token t = null ;
+                     Token t = null ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case BLANK_NODE_LABEL:
       t = jj_consume_token(BLANK_NODE_LABEL);
@@ -5531,77 +5517,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_3R_163() {
-    if (jj_scan_token(INTEGER_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_156() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_163()) {
-    jj_scanpos = xsp;
-    if (jj_3R_164()) {
-    jj_scanpos = xsp;
-    if (jj_3R_165()) return true;
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_scan_token(STRDT)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_127() {
     if (jj_scan_token(LBRACKET)) return true;
     return false;
   }
 
-  private boolean jj_3R_87() {
-    if (jj_scan_token(STRLANG)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_162() {
-    if (jj_scan_token(DOUBLE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_161() {
-    if (jj_scan_token(DECIMAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_160() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_155() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_160()) {
-    jj_scanpos = xsp;
-    if (jj_3R_161()) {
-    jj_scanpos = xsp;
-    if (jj_3R_162()) return true;
-    }
-    }
+  private boolean jj_3R_108() {
+    if (jj_scan_token(NOT)) return true;
+    if (jj_scan_token(EXISTS)) return true;
     return false;
   }
 
   private boolean jj_3R_123() {
     if (jj_3R_127()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_86() {
-    if (jj_scan_token(IF)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -5620,19 +5548,203 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_107() {
+    if (jj_scan_token(EXISTS)) return true;
+    if (jj_3R_119()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_105() {
+    if (jj_scan_token(REPLACE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_39()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_104() {
+    if (jj_scan_token(SUBSTR)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_106() {
+    if (jj_scan_token(REGEX)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_149() {
+    if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
+    if (jj_3R_108()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_96() {
+    if (jj_3R_107()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_148() {
+    if (jj_scan_token(ANON)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_99() {
+    if (jj_3R_110()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_95() {
+    if (jj_3R_106()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_94() {
+    if (jj_scan_token(IS_NUMERIC)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_147() {
+    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_138() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_147()) {
+    jj_scanpos = xsp;
+    if (jj_3R_148()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_98()) {
+    jj_scanpos = xsp;
+    if (jj_3R_99()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_98() {
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_93() {
+    if (jj_scan_token(IS_LITERAL)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_92() {
+    if (jj_scan_token(IS_BLANK)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_159() {
+    if (jj_scan_token(PNAME_NS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_91() {
+    if (jj_scan_token(IS_URI)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_158() {
+    if (jj_scan_token(PNAME_LN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_90() {
+    if (jj_scan_token(IS_IRI)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_150() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_158()) {
+    jj_scanpos = xsp;
+    if (jj_3R_159()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_89() {
+    if (jj_scan_token(SAME_TERM)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_88() {
+    if (jj_scan_token(STRDT)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_140() {
+    if (jj_3R_150()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_87() {
+    if (jj_scan_token(STRLANG)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_139() {
+    if (jj_3R_149()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_134() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_139()) {
+    jj_scanpos = xsp;
+    if (jj_3R_140()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_86() {
+    if (jj_scan_token(IF)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   private boolean jj_3R_85() {
     if (jj_scan_token(CALL)) return true;
     if (jj_3R_103()) return true;
     return false;
   }
 
-  private boolean jj_3R_144() {
-    if (jj_3R_157()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_143() {
-    if (jj_3R_156()) return true;
+  private boolean jj_3R_154() {
+    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
   }
 
@@ -5642,8 +5754,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_142() {
-    if (jj_3R_155()) return true;
+  private boolean jj_3R_153() {
+    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
     return false;
   }
 
@@ -5653,22 +5765,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_136() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_142()) {
-    jj_scanpos = xsp;
-    if (jj_3R_143()) {
-    jj_scanpos = xsp;
-    if (jj_3R_144()) return true;
-    }
-    }
+  private boolean jj_3R_152() {
+    if (jj_scan_token(STRING_LITERAL2)) return true;
     return false;
   }
 
   private boolean jj_3R_82() {
     if (jj_scan_token(SHA512)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_151() {
+    if (jj_scan_token(STRING_LITERAL1)) return true;
     return false;
   }
 
@@ -5680,6 +5789,27 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_80() {
     if (jj_scan_token(SHA256)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_141() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_151()) {
+    jj_scanpos = xsp;
+    if (jj_3R_152()) {
+    jj_scanpos = xsp;
+    if (jj_3R_153()) {
+    jj_scanpos = xsp;
+    if (jj_3R_154()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_118() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -5708,9 +5838,29 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_146() {
+    if (jj_scan_token(FALSE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_75() {
     if (jj_scan_token(NOW)) return true;
     if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_133() {
+    if (jj_scan_token(NIL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_103() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(166)) {
+    jj_scanpos = xsp;
+    if (jj_3R_118()) return true;
+    }
     return false;
   }
 
@@ -5720,8 +5870,18 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_135() {
-    if (jj_3R_141()) return true;
+  private boolean jj_3R_145() {
+    if (jj_scan_token(TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_137() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_145()) {
+    jj_scanpos = xsp;
+    if (jj_3R_146()) return true;
+    }
     return false;
   }
 
@@ -5731,9 +5891,19 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_132() {
+    if (jj_3R_138()) return true;
+    return false;
+  }
+
   private boolean jj_3R_72() {
     if (jj_scan_token(SECONDS)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_131() {
+    if (jj_3R_137()) return true;
     return false;
   }
 
@@ -5743,9 +5913,24 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_130() {
+    if (jj_3R_136()) return true;
+    return false;
+  }
+
   private boolean jj_3R_70() {
     if (jj_scan_token(HOURS)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_168() {
+    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_129() {
+    if (jj_3R_135()) return true;
     return false;
   }
 
@@ -5755,157 +5940,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_68() {
-    if (jj_scan_token(MONTH)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_67() {
-    if (jj_scan_token(YEAR)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_119() {
-    if (jj_scan_token(LBRACE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_66() {
-    if (jj_scan_token(STRAFTER)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_65() {
-    if (jj_scan_token(STRBEFORE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3_2() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_64() {
-    if (jj_scan_token(STRENDS)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_scan_token(STRSTARTS)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_scan_token(CONTAINS)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_61() {
-    if (jj_scan_token(ENCODE_FOR_URI)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_60() {
-    if (jj_scan_token(LCASE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_59() {
-    if (jj_scan_token(UCASE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_58() {
-    if (jj_3R_105()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_57() {
-    if (jj_scan_token(STRLEN)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3_4() {
-    if (jj_scan_token(SEMICOLON)) return true;
-    if (jj_scan_token(SEPARATOR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_56() {
-    if (jj_3R_104()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_55() {
-    if (jj_scan_token(CONCAT)) return true;
-    if (jj_3R_103()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_133() {
-    if (jj_scan_token(NIL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_117() {
-    if (jj_scan_token(GROUP_CONCAT)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_54() {
-    if (jj_scan_token(ROUND)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_132() {
-    if (jj_3R_138()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_131() {
-    if (jj_3R_137()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_53() {
-    if (jj_scan_token(FLOOR)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_130() {
-    if (jj_3R_136()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_116() {
-    if (jj_scan_token(SAMPLE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_129() {
-    if (jj_3R_135()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_52() {
-    if (jj_scan_token(CEIL)) return true;
-    if (jj_scan_token(LPAREN)) return true;
+  private boolean jj_3R_167() {
+    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
     return false;
   }
 
@@ -5936,9 +5972,235 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_115() {
-    if (jj_scan_token(AVG)) return true;
+  private boolean jj_3R_68() {
+    if (jj_scan_token(MONTH)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_166() {
+    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_157() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_166()) {
+    jj_scanpos = xsp;
+    if (jj_3R_167()) {
+    jj_scanpos = xsp;
+    if (jj_3R_168()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_scan_token(YEAR)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_121() {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_124() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(13)) {
+    jj_scanpos = xsp;
+    if (jj_scan_token(14)) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_66() {
+    if (jj_scan_token(STRAFTER)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_165() {
+    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_65() {
+    if (jj_scan_token(STRBEFORE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_164() {
+    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_163() {
+    if (jj_scan_token(INTEGER_POSITIVE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_156() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_163()) {
+    jj_scanpos = xsp;
+    if (jj_3R_164()) {
+    jj_scanpos = xsp;
+    if (jj_3R_165()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_64() {
+    if (jj_scan_token(STRENDS)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(STRSTARTS)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_162() {
+    if (jj_scan_token(DOUBLE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_scan_token(CONTAINS)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_161() {
+    if (jj_scan_token(DECIMAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_scan_token(ENCODE_FOR_URI)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_160() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_155() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_160()) {
+    jj_scanpos = xsp;
+    if (jj_3R_161()) {
+    jj_scanpos = xsp;
+    if (jj_3R_162()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_60() {
+    if (jj_scan_token(LCASE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_120() {
+    if (jj_3R_124()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    if (jj_scan_token(UCASE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_58() {
+    if (jj_3R_105()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_109() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_120()) {
+    jj_scanpos = xsp;
+    if (jj_3R_121()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_57() {
+    if (jj_scan_token(STRLEN)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_144() {
+    if (jj_3R_157()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_56() {
+    if (jj_3R_104()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_143() {
+    if (jj_3R_156()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_scan_token(CONCAT)) return true;
+    if (jj_3R_103()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_142() {
+    if (jj_3R_155()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    if (jj_scan_token(ROUND)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_53() {
+    if (jj_scan_token(FLOOR)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_scan_token(CEIL)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_136() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_142()) {
+    jj_scanpos = xsp;
+    if (jj_3R_143()) {
+    jj_scanpos = xsp;
+    if (jj_3R_144()) return true;
+    }
+    }
     return false;
   }
 
@@ -5954,65 +6216,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_124() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(13)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(14)) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_114() {
-    if (jj_scan_token(MAX)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_102() {
     if (jj_scan_token(NIL)) return true;
     return false;
   }
 
-  private boolean jj_3R_121() {
-    if (jj_3R_125()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_99() {
-    if (jj_3R_110()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_113() {
-    if (jj_scan_token(MIN)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
   private boolean jj_3R_101() {
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_40() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_98()) {
-    jj_scanpos = xsp;
-    if (jj_3R_99()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_98() {
-    if (jj_3R_109()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_112() {
-    if (jj_scan_token(SUM)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -6034,67 +6243,20 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_3() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
   private boolean jj_3R_47() {
     if (jj_scan_token(IRI)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_120() {
-    if (jj_3R_124()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_111() {
-    if (jj_scan_token(COUNT)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_109() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_120()) {
-    jj_scanpos = xsp;
-    if (jj_3R_121()) return true;
-    }
+  private boolean jj_3R_135() {
+    if (jj_3R_141()) return true;
     return false;
   }
 
   private boolean jj_3R_46() {
     if (jj_scan_token(BOUND)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_100() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_111()) {
-    jj_scanpos = xsp;
-    if (jj_3R_112()) {
-    jj_scanpos = xsp;
-    if (jj_3R_113()) {
-    jj_scanpos = xsp;
-    if (jj_3R_114()) {
-    jj_scanpos = xsp;
-    if (jj_3R_115()) {
-    jj_scanpos = xsp;
-    if (jj_3R_116()) {
-    jj_scanpos = xsp;
-    if (jj_3R_117()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
     return false;
   }
 
@@ -6302,118 +6464,38 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_108() {
-    if (jj_scan_token(NOT)) return true;
-    if (jj_scan_token(EXISTS)) return true;
+  private boolean jj_3_4() {
+    if (jj_scan_token(SEMICOLON)) return true;
+    if (jj_scan_token(SEPARATOR)) return true;
     return false;
   }
 
-  private boolean jj_3R_107() {
-    if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_119()) return true;
+  private boolean jj_3R_119() {
+    if (jj_scan_token(LBRACE)) return true;
     return false;
   }
 
-  private boolean jj_3R_118() {
+  private boolean jj_3R_117() {
+    if (jj_scan_token(GROUP_CONCAT)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_103() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(166)) {
-    jj_scanpos = xsp;
-    if (jj_3R_118()) return true;
-    }
+  private boolean jj_3_2() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_40()) return true;
     return false;
   }
 
-  private boolean jj_3R_149() {
-    if (jj_scan_token(IRIref)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_105() {
-    if (jj_scan_token(REPLACE)) return true;
+  private boolean jj_3R_116() {
+    if (jj_scan_token(SAMPLE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_148() {
-    if (jj_scan_token(ANON)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_147() {
-    if (jj_scan_token(BLANK_NODE_LABEL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_138() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_147()) {
-    jj_scanpos = xsp;
-    if (jj_3R_148()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_159() {
-    if (jj_scan_token(PNAME_NS)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_104() {
-    if (jj_scan_token(SUBSTR)) return true;
+  private boolean jj_3R_115() {
+    if (jj_scan_token(AVG)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_158() {
-    if (jj_scan_token(PNAME_LN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_150() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_158()) {
-    jj_scanpos = xsp;
-    if (jj_3R_159()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_140() {
-    if (jj_3R_150()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_139() {
-    if (jj_3R_149()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_134() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_139()) {
-    jj_scanpos = xsp;
-    if (jj_3R_140()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_106() {
-    if (jj_scan_token(REGEX)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_154() {
-    if (jj_scan_token(STRING_LITERAL_LONG2)) return true;
     return false;
   }
 
@@ -6422,148 +6504,52 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_97() {
-    if (jj_3R_108()) return true;
+  private boolean jj_3R_114() {
+    if (jj_scan_token(MAX)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_153() {
-    if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+  private boolean jj_3R_113() {
+    if (jj_scan_token(MIN)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_152() {
-    if (jj_scan_token(STRING_LITERAL2)) return true;
+  private boolean jj_3R_112() {
+    if (jj_scan_token(SUM)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_96() {
-    if (jj_3R_107()) return true;
+  private boolean jj_3R_111() {
+    if (jj_scan_token(COUNT)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_151() {
-    if (jj_scan_token(STRING_LITERAL1)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_95() {
-    if (jj_3R_106()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_141() {
+  private boolean jj_3R_100() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_151()) {
+    if (jj_3R_111()) {
     jj_scanpos = xsp;
-    if (jj_3R_152()) {
+    if (jj_3R_112()) {
     jj_scanpos = xsp;
-    if (jj_3R_153()) {
+    if (jj_3R_113()) {
     jj_scanpos = xsp;
-    if (jj_3R_154()) return true;
+    if (jj_3R_114()) {
+    jj_scanpos = xsp;
+    if (jj_3R_115()) {
+    jj_scanpos = xsp;
+    if (jj_3R_116()) {
+    jj_scanpos = xsp;
+    if (jj_3R_117()) return true;
     }
     }
     }
-    return false;
-  }
-
-  private boolean jj_3R_94() {
-    if (jj_scan_token(IS_NUMERIC)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_146() {
-    if (jj_scan_token(FALSE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_1() {
-    if (jj_3R_39()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_93() {
-    if (jj_scan_token(IS_LITERAL)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_145() {
-    if (jj_scan_token(TRUE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_137() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_145()) {
-    jj_scanpos = xsp;
-    if (jj_3R_146()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_92() {
-    if (jj_scan_token(IS_BLANK)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_91() {
-    if (jj_scan_token(IS_URI)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_168() {
-    if (jj_scan_token(DOUBLE_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_167() {
-    if (jj_scan_token(DECIMAL_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_166() {
-    if (jj_scan_token(INTEGER_NEGATIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_157() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_166()) {
-    jj_scanpos = xsp;
-    if (jj_3R_167()) {
-    jj_scanpos = xsp;
-    if (jj_3R_168()) return true;
     }
     }
-    return false;
-  }
-
-  private boolean jj_3R_90() {
-    if (jj_scan_token(IS_IRI)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_89() {
-    if (jj_scan_token(SAME_TERM)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_165() {
-    if (jj_scan_token(DOUBLE_POSITIVE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_164() {
-    if (jj_scan_token(DECIMAL_POSITIVE)) return true;
+    }
     return false;
   }
 
