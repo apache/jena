@@ -128,7 +128,8 @@ public class TestExpressions2 extends Assert
     public void xsd_cast_13()                       { eval("xsd:double(' 1.0e0')") ; }
     
     // Dynamic Function Calls
-    @Test public void dynamic_call_01()             { eval("CALL()", false); }
+    @Test (expected=ExprEvalException.class)
+    public void dynamic_call_01()                   { eval("CALL()", false); }
     @Test public void dynamic_call_02()             { eval("CALL(xsd:double, '1') = 1") ; }
     @Test (expected=ExprEvalException.class)
     public void dynamic_call_03()                   { eval("CALL(xsd:double)") ; }
@@ -147,13 +148,7 @@ public class TestExpressions2 extends Assert
     {
         Expr expr = ExprUtils.parse(string) ;
         NodeValue nv = expr.eval(null, FunctionEnvBase.createTest()) ;
-        if (nv != null) { 
-        	//If non-null test EBV
-        	boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
-        	assertEquals(string, result, b) ;
-        } else {
-        	//If null fail if a true EBV was expected
-        	if (result) fail("Got null when a true EBV was expected");
-        }
+        boolean b = XSDFuncOp.booleanEffectiveValue(nv) ;
+        assertEquals(string, result, b) ;
     }
 }

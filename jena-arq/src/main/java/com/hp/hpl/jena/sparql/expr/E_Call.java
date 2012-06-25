@@ -61,7 +61,7 @@ public class E_Call extends ExprFunctionN
     public NodeValue evalSpecial(Binding binding, FunctionEnv env)
     {
         //No argument returns unbound
-        if (identExpr == null) return null;
+        if (identExpr == null) throw new ExprEvalException("CALL() has no arguments");
         
         //One/More arguments means invoke a function dynamically
         NodeValue func = identExpr.eval(binding, env);
@@ -82,7 +82,6 @@ public class E_Call extends ExprFunctionN
 
 	@Override
 	protected NodeValue eval(List<NodeValue> args) {
-		if (args.size() == 0) return null; //Can evaluate in this form only if empty arg list, otherwise error
 		throw new ARQInternalErrorException();
 	}
 	    
