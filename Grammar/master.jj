@@ -1688,13 +1688,18 @@ Expr PrimaryExpression() : { Expr expr ; Node gn ; }
   ( expr = BrackettedExpression() { return expr ; }
   | expr = BuiltInCall() { return expr ; }  
   | expr = iriOrFunction()  { return expr ; }
-
 // NOT  | gn = VarOrTerm()           { return asExpr(gn) ; }
 // Because of iriOrFunction 
   | gn = RDFLiteral()      { return asExpr(gn) ; }
   | gn = NumericLiteral()  { return asExpr(gn) ; }
   | gn = BooleanLiteral()  { return asExpr(gn) ; }
   | gn = Var()             { return asExpr(gn) ; }
+#ifdef ARQ
+// and not SPARQL 11
+// needs checking.
+// Use this for ?var(args)
+//  |  expr = VarOrFunction()  { return expr ; }
+#endif
   )
 }
 
@@ -1814,6 +1819,7 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
     { return new E_Coalesce(a) ; }
     
 #if ARQ
+  // Also allowed ?func(?a1,?a2,...)
   | <CALL> a = ExpressionList()
     { return new E_Call(a) ; }
 #endif
@@ -1828,12 +1834,6 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
 
   | <STRDT> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_StrDatatype(expr1, expr2) ; }
-
-#ifdef ARQ_CALL
-  // Also allowed ?func(?a1,?a2,...)
-  | <CALL> a = ExpressionList()
-    { return new E_Call(a) ; }
-#endif
 
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
@@ -1995,6 +1995,7 @@ Expr iriOrFunction() : { String iri ; ExprList a = null ;
 }
 
 #ifdef ARQ_CALL
+// Needs checking.
 // The case of "?var()" or just "?var"
 Expr VarOrFunction() : { Var v ; ExprList a = null ; }
 {

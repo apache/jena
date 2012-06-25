@@ -297,6 +297,8 @@ public class BuilderExpr
         dispatch.put(Tags.tagIn, buildIn) ;
         dispatch.put(Tags.tagNotIn, buildNotIn) ;
         
+        dispatch.put(Tags.tagCall, buildCall) ;
+        
         dispatch.put(Tags.tagCount, buildCount) ;
         dispatch.put(Tags.tagSum, buildSum) ;
         dispatch.put(Tags.tagMin, buildMin) ;
@@ -349,8 +351,6 @@ public class BuilderExpr
         // Args
         return new E_Function(node.getURI(), args) ;
     }
-
- 
 
     // ---- Dispatch objects
     // Can assume the tag is right (i.e. dispatched correctly) 
@@ -1181,6 +1181,18 @@ public class BuilderExpr
         }
     };
     
+    
+    final protected Build buildCall = new Build()
+    {
+        @Override
+        public Expr make(ItemList list)
+        {
+            ExprList args = buildExprListUntagged(list, 1) ;
+            // Args
+            return new E_Call(args) ;
+        }
+    };
+
     // ---- Aggregate functions
     // (count)
     // (count distinct)
