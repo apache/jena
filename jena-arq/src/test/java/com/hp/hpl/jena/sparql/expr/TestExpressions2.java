@@ -128,13 +128,14 @@ public class TestExpressions2 extends Assert
     public void xsd_cast_13()                       { eval("xsd:double(' 1.0e0')") ; }
     
     // Dynamic Function Calls
-    @Test (expected=ExprEvalException.class)
-    public void dynamic_call_01()                   { eval("CALL()", false); }
+    @Test public void dynamic_call_01()             { eval("CALL()", false); }
     @Test public void dynamic_call_02()             { eval("CALL(xsd:double, '1') = 1") ; }
+    @Test public void dynamic_call_03()             { eval("CALL(fn:concat, 'A', 2+3 ) = 'A5'") ; }
+    
     @Test (expected=ExprEvalException.class)
-    public void dynamic_call_03()                   { eval("CALL(xsd:double)") ; }
+    public void dynamic_call_10()                   { eval("CALL(xsd:double)") ; }
     @Test (expected=ExprEvalException.class)
-    public void dynamic_call_04()                   { eval("CALL(xsd:noSuchFunc)") ; }
+    public void dynamic_call_11()                   { eval("CALL(xsd:noSuchFunc)") ; }
     
     // ---- Workers
     
