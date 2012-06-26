@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.expr;
 import org.junit.Assert ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
@@ -128,7 +129,7 @@ public class TestExpressions2 extends Assert
     public void xsd_cast_13()                       { eval("xsd:double(' 1.0e0')") ; }
     
     // Dynamic Function Calls
-    @Test (expected=ExprEvalException.class)
+    @Test (expected=QueryParseException.class)
     public void dynamic_call_01()                   { eval("CALL()", false); }
     
     @Test public void dynamic_call_02()             { eval("CALL(xsd:double, '1') = 1") ; }

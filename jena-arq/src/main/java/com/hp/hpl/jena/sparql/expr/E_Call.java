@@ -18,15 +18,14 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashMap ;
 import java.util.List ;
-import java.util.Map;
+import java.util.Map ;
 
-import com.hp.hpl.jena.sparql.ARQInternalErrorException;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
-import com.hp.hpl.jena.sparql.util.Context;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /**
  * ARQ extension to SPARQL which provides for dynamic function invocation
@@ -50,10 +49,7 @@ public class E_Call extends ExprFunctionN
         	identExpr = null;
         } else {
         	identExpr = args.get(0);
-        	argExprs = new ArrayList<Expr>();
-        	for (int i = 1; i < args.size(); i++) {
-        		argExprs.add(args.get(i));
-        	}
+        	argExprs = args.getList().subList(1,args.size()) ; 
         }
     }
 
