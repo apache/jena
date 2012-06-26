@@ -128,7 +128,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                         return new QueryIterNullIterator(execCxt) ;
                     }
                     
-                    Binding binding = null ;
+                    BindingMap binding = BindingFactory.create() ;
 
                     for ( Iterator<ExprAggregator> aggIter = aggregators.iterator() ; aggIter.hasNext() ; )
                     {
@@ -136,9 +136,7 @@ public class QueryIterGroup extends QueryIterPlainWrapper
                         Var v = agg.getVar() ;
                         Node value = agg.getAggregator().getValueEmpty() ;
                         if ( value != null )
-                            binding = BindingFactory.binding(v, value) ;
-                        else
-                            binding = BindingFactory.binding() ;
+                            binding.add(v, value) ;
                     }
                         
                     if ( binding == null )
