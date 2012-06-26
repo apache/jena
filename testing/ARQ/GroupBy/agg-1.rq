@@ -1,0 +1,1 @@
+SELECT (count(*) AS ?C) (sum(?x) AS ?S) { ?s ?p ?x FILTER (false) } 
