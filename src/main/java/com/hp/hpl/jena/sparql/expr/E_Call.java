@@ -76,8 +76,28 @@ public class E_Call extends ExprFunctionN
     @Override
     protected Expr copy(ExprList newArgs)       { return new E_Call(newArgs) ; }
 
+    @Override
+    public NodeValue eval(List<NodeValue> args, FunctionEnv env) {
+        // Instead of evalSpecial, we can rely on the machinery to evaluate the arguments to CALL first.
+        // This precludes special forms for CALL first argument.
+        // This code here is not usually called - evalSpecial is more general and is the main code path,
+        NodeValue func = args.get(0) ;
+        if (func == null) throw new ExprEvalException("CALL: Function identifier unbound");
+        if (func.isIRI()) {
+            ExprList a = new ExprList() ;
+            for ( int i = 1 ; i < args.size() ; i++ )
+                a.add(args.get(i)) ;
+            //Expr e = null ;
+            Expr e = new E_Function(func.getNode().getURI(), a);
+            //Calling this may throw an error which we will just let bubble up
+            return e.eval(null, env) ;
+        } else
+            throw new ExprEvalException("CALL: Function identifier not an IRI");
+    }
+    
 	@Override
 	protected NodeValue eval(List<NodeValue> args) {
+	    // eval(List, FunctionEnv) should be called.
 		throw new ARQInternalErrorException();
 	}
 	    

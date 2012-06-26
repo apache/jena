@@ -78,7 +78,6 @@ public class E_Function extends ExprFunctionN
         // For functions, we delay argument evaluation to the "Function" heierarchy
         // so applications can add their own functional forms.
         throw new ARQInternalErrorException() ;
-        
     }
 
     public void buildFunction(Context cxt)

@@ -39,7 +39,6 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  *  (2) the arguments are in a different order 
  */
 
-
 public class strjoin extends FunctionBase
 {
     @Override
