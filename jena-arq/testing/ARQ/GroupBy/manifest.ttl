@@ -274,5 +274,21 @@
               qt:data   <data-1.ttl> ] ;
         mf:result  <having-1.srx>
       ]
+    ## Misc tests
+      [  mf:name    "No rows in group - 1" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <agg-1.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <agg-1.srj>
+      ]
+
+      [  mf:name    "No rows in group - 2" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <agg-2.rq> ;
+              qt:data   <data-0.ttl> ] ;
+        mf:result  <agg-2.srj>
+      ]
 
     ).

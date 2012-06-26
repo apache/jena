@@ -56,12 +56,6 @@ public class QueryIterConvert extends QueryIter1
     @Override
     public boolean hasNextBinding()
     {
-//        if ( isFinished() )
-//            return false ;
-//        boolean r = getInput().hasNext() ;
-//        if ( !r )
-//            close() ;
-//        return r ;
         return getInput().hasNext() ;
     }
 
