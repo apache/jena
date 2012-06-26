@@ -18,20 +18,35 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.* ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kBindings ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kBnode ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kBoolean ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kDatatype ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kHead ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kLink ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kLiteral ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kResults ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kType ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kTypedLiteral ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kUri ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kValue ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kVars ;
+import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kXmlLang ;
 
-import java.io.FileInputStream ;
 import java.io.InputStream ;
 import java.util.* ;
 
-import org.openjena.atlas.json.* ;
+import org.openjena.atlas.json.JSON ;
+import org.openjena.atlas.json.JsonArray ;
+import org.openjena.atlas.json.JsonObject ;
+import org.openjena.atlas.json.JsonValue ;
+import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -41,23 +56,9 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetException ;
-import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public class JSONInput extends SPARQLResult
 {
-    static public void main(String... args) throws Exception
-    {
-        String FILE = "../ARQ/testing/ResultSet/output.srj" ;
-        //String FILE = "../ARQ/testing/ARQ/Ask/ask-2.srj" ;
-        InputStream in = new FileInputStream(FILE) ;
-        SPARQLResult r = new JSONInput().process(in, null) ;
-        if ( r.isBoolean() )
-            System.out.println("ASK: "+r.getBooleanResult()) ;
-        if ( r.isResultSet() )
-            ResultSetFormatter.out(r.getResultSet()) ;
-    }
-    
     public static ResultSet fromJSON(InputStream input)
     {
         SPARQLResult r = new JSONInput().process(input, null) ;
@@ -143,8 +144,29 @@ public class JSONInput extends SPARQLResult
         JsonObject head = obj.get(kHead).getAsObject() ;
         
         // ---- Head
-        // -- Link
-        String link = stringOrNull(head, kLink) ;
+        // -- Link - array.
+        if ( head.hasKey(kLink) )
+        {
+            List<String> links = new ArrayList<String>() ; 
+
+            if ( head.get(kLink).isString() )
+            {
+                Log.warn(this, "Link field is a string, should be an array of strings") ;
+                links.add(head.get(kLink).getAsString().value()) ;
+            }
+            else
+            {
+                if ( ! head.get(kLink).isArray() )
+                    throw new ResultSetException("Key 'link' must have be an array: found: "+obj.get(kLink)) ;
+
+                for ( JsonValue v : head.get(kLink).getAsArray() )
+                {
+                    if ( ! v.isString() )
+                        throw new ResultSetException("Key 'link' must have be an array of strings: found: "+v) ;
+                    links.add(v.getAsString().value()) ;
+                }
+            }
+        }
         // -- Vars
         vars = parseVars(head) ;
 
@@ -232,7 +254,7 @@ public class JSONInput extends SPARQLResult
         JsonValue v = obj.get(key) ;
         if ( v == null ) return null ;
         if ( ! v.isString() )
-            throw new ResultSetException("Not a string") ;
+            throw new ResultSetException("Not a string: key: "+key) ;
         return v.getAsString().value();
         
     }
