@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.ListIterator ;
 
-public class JsonArray extends JsonValue implements List<JsonValue>
+public class JsonArray extends JsonValue implements List<JsonValue>, Iterable<JsonValue>
 {
     private List<JsonValue> array = new ArrayList<JsonValue>() ;
     
