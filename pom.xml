@@ -119,14 +119,19 @@
   <build>
     <resources>
       <resource>
-        <filtering>false</filtering>
+        <filtering>true</filtering>
+        <targetPath>com/hp/hpl/jena/sparql/</targetPath>
         <directory>src/main/resources</directory>
+	<includes>
+	  <include>arq-properties.xml</include>
+	</includes>
       </resource>
       <resource>
-        <targetPath>com/hp/hpl/jena/sparql/</targetPath>
-        <filtering>true</filtering>
-        <!-- FIXME -->
-        <directory>resources</directory>
+        <filtering>false</filtering>
+	<directory>src/main/resources</directory>
+	<excludes>
+	  <exclude>arq-properties.xml</exclude>
+	</excludes>
       </resource>
     </resources>
 
