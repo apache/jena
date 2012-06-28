@@ -30,12 +30,12 @@
   <name>apache-jena</name>
   <description />
   <url>http://jena.apache.org/</url>
-  <version>2.7.2</version>
+  <version>2.7.3-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>2</version>
+    <version>3-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -52,9 +52,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.2/apache-jena</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.2/apache-jena</developerConnection>
-    <url>http://svn.apache.org/viewvc//jena/tags/jena-2.7.2/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/apache-jena</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/apache-jena</developerConnection>
+    <url>http://svn.apache.org/viewvc//jena/trunk/</url>
   </scm>
 
   <!-- Inherit would be better-->
@@ -71,73 +71,73 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.3-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.9.2</version>
+      <version>2.9.3-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.2</version>
+      <version>2.7.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.2</version>
+      <version>2.7.3-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.2</version>
+      <version>2.7.3-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3-SNAPSHOT</version>
       <classifier>javadoc</classifier>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-iri</artifactId>
-      <version>0.9.2</version>
+      <version>0.9.3-SNAPSHOT</version>
       <classifier>sources</classifier>
     </dependency>
 
