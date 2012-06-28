@@ -34,7 +34,7 @@ LIBDIR="$DIRROOT/lib"
 # List
 CPDIR1="$DIRROOT/classes"
 CPDIR2="$DIRROOT/target/classes"
-#CPDIR3="$DIRROOT/build/classes"
+CPDIR3="$DIRROOT/target/classes-eclipse"
 ETCDIR="$DIRROOT/etc"
 
 # Cygwin - on Windows, the Java separator is ;
@@ -78,7 +78,7 @@ done
 
 # Prepend any classes/ directory
 # As it's "prepend", we need to do it in reverse.
-for dir in "$CPDIR2" "$CPDIR1"
+for dir in "$CPDIR3" "$CPDIR2" "$CPDIR1"
 do
   if [ -e "$dir" ]
       then
