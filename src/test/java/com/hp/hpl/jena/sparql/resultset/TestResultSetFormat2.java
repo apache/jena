@@ -79,6 +79,13 @@ public class TestResultSetFormat2
     	parseTSV(x);
     }
     
+    @Test
+    public void resultset_tsv_07()
+    {
+    	//Three vars, one row of no values
+    	String x = "?x\t?y\t?z\n\t\t";
+    }
+    
     @Test (expected=QueryException.class) 
     public void resultset_bad_tsv_01()
     {
@@ -109,7 +116,7 @@ public class TestResultSetFormat2
     	String x = "?x\t?y\n\n";
     	parseTSV(x);
     }
-    
+        
     public void parseTSV(String x)
     {
         byte[] b = StrUtils.asUTF8bytes(x) ;
