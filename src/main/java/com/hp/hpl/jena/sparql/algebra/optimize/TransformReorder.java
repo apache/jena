@@ -29,7 +29,10 @@ import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation;
 /**
  * A Transformer that applies a reordering to all BGPs and Quad Patterns present in the algebra
  * <p>
- * This transformer may be slightly naive in that it only leverages the {@link ReorderTransformation#reorder()} method and does not use the {@link ReorderTransformation#reorderIndexes()} method at all so may not achieve the best reordering
+ * This transformer may be slightly naive in that it only leverages the 
+ * {@link ReorderTransformation#reorder(BasicPattern)} method and does not use 
+ * the {@link ReorderTransformation#reorderIndexes(BasicPattern)} method at all
+ * so may not achieve the best reordering
  * </p>
  */
 public class TransformReorder extends TransformCopy {
