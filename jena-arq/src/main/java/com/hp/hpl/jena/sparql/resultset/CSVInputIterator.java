@@ -47,6 +47,7 @@ public class CSVInputIterator extends QueryIteratorBase
 	private BindingMap binding;
 	private int expectedItems;
 	private List<Var> vars;
+	private long lineNum = 1;
 	
 	/**
 	 * Creates a new CSV Input Iterator
@@ -90,9 +91,10 @@ public class CSVInputIterator extends QueryIteratorBase
 	        line = this.reader.readLine();
 	        //Once EOF has been reached we'll see null for this call so we can return false because there are no further bindings
 	        if (line == null) return false;
+	        this.lineNum++;
 	    } 
 	    catch (IOException e) 
-	    { throw new QueryException("Error parsing TSV results - " + e.getMessage()); }
+	    { throw new QueryException("Error parsing CSV results - " + e.getMessage()); }
 
 	    if ( line.isEmpty() )
 	    {
@@ -100,7 +102,7 @@ public class CSVInputIterator extends QueryIteratorBase
 	    	// Only valid when we expect zero/one values as otherwise we should get a sequence of tab characters
 	    	// which means a non-empty string which we handle normally
 	    	if (expectedItems > 1) 
-	    	    throw new QueryException(String.format("Error Parsing CSV results - A result row had 0/1 values when %d were expected", expectedItems));
+	    	    throw new QueryException(String.format("Error Parsing CSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
 	        binding = BindingFactory.create() ;
 	        if ( expectedItems == 1 )
 	            binding.add(vars.get(0), NodeConst.emptyString) ; 
@@ -112,7 +114,7 @@ public class CSVInputIterator extends QueryIteratorBase
 	}
 	    
 	    
-    private static BindingMap parseLine(List<Var> vars, String line)
+    private BindingMap parseLine(List<Var> vars, String line)
     {
         BindingMap binding = BindingFactory.create() ;
         List<String> terms = new ArrayList<String>() ;
@@ -137,12 +139,12 @@ public class CSVInputIterator extends QueryIteratorBase
                     s.append(ch) ;
                 }
                 if ( ch != qCh )
-                    throw new QueryException("Error Parsing CSV results - Unterminated quoted string");
+                    throw new QueryException(String.format("Error Parsing CSV results at Line %d  - Unterminated quoted string", this.lineNum));
                 if ( idx < line.length() )
                 {
                     ch = line.charAt(idx) ;
                     if ( ch != ',' )
-                        throw new QueryException("Error Parsing CSV results - Expected comma after quote") ;
+                        throw new QueryException(String.format("Error Parsing CSV results at Line %d - Expected comma after quote", this.lineNum)) ;
                 }
             }
             else
@@ -173,7 +175,7 @@ public class CSVInputIterator extends QueryIteratorBase
         }
         
         if ( terms.size() != vars.size() )
-            throw new QueryException("Error Parsing CSV results - Number of items does not match number of variables: "+StrUtils.strjoin(",", terms)) ;
+            throw new QueryException(String.format("Error Parsing CSV results at Line %d - The result row '%s' has %d items when %d was expected", this.lineNum, line, terms.size(), vars.size())) ;
         for ( int i = 0 ; i < vars.size() ; i++ )
             binding.add(vars.get(i), Node.createLiteral(terms.get(i))) ;
         return binding ;

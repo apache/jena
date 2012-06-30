@@ -99,7 +99,7 @@ public class TSVInputIterator extends QueryIteratorBase
 	        // Empty input line - no bindings.
 	    	// Only valid when we expect zero/one values as otherwise we should get a sequence of tab characters
 	    	// which means a non-empty string which we handle normally
-	    	if (expectedItems > 1) throw new QueryException(String.format("Error Parsing TSV results at Line " + this.lineNum + " - A result row had 0/1 values when %d were expected", expectedItems));
+	    	if (expectedItems > 1) throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
 	        this.binding = BindingFactory.create() ;
 	        return true ;
 	    }
@@ -107,27 +107,27 @@ public class TSVInputIterator extends QueryIteratorBase
         String[] tokens = TSVInput.pattern.split(line, -1);
 	    
         if (tokens.length != expectedItems)
-        	 throw new QueryException(String.format("Error Parsing TSV results at Line " + this.lineNum + " - A result row had %d values instead of the expected %d.", tokens.length, expectedItems));
+        	 throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.", this.lineNum, line, tokens.length, expectedItems));
 
         this.binding = BindingFactory.create();
 
 
-        for ( int i = 0; i < tokens.length; i++ ) 
+        try
         {
-        	String token = tokens[i];
-
-        	//If we see an empty string this denotes an unbound value
-        	if (token.equals("")) continue; 
-
-        	try
-        	{
-        		//Bound value so parse it and add to the binding
-        		Node node = NodeFactory.parseNode(token, null);
-        		this.binding.add(this.vars.get(i), node);
-        	} catch (Exception e) {
-        		throw new QueryException(String.format("Error Parsing TSV results at Line " + this.lineNum + " - %s is not a valid encoding of a Node", token));
-        	}
-        }
+	        for ( int i = 0; i < tokens.length; i++ ) 
+	        {
+	        	String token = tokens[i];
+	
+	        	//If we see an empty string this denotes an unbound value
+	        	if (token.equals("")) continue; 
+	
+	        		//Bound value so parse it and add to the binding
+	        		Node node = NodeFactory.parseNode(token, null);
+	        		this.binding.add(this.vars.get(i), node);
+	        }
+    	} catch (Exception e) {
+    		throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row '%s' contains an invalid encoding of a Node", this.lineNum, line));
+    	}
 
         return true;
 	}
