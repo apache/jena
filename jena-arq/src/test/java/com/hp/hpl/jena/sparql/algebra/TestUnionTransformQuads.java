@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public class TestUnionTransformQuads extends UnionTransformTests  
+public class TestUnionTransformQuads extends AbstractTestUnionTransform  
 {
     @Override
     protected Op op(String pattern)

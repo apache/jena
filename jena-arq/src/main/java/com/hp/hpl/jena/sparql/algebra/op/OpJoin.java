@@ -28,25 +28,34 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpJoin extends Op2
 {
+    /** Create join - an argument of null is 
+     * simply dropped so Join.create(null, op) is op and Join.create(op,null) is op.
+     */
     public static Op create(Op left, Op right)
     {
-        // Don't simplify here - changes SPARQL for OPTIONAL {{ FILTER }}
-        // The  {{}} results in (join unit (filter ...)) the filter is not moved
-        // into the LeftJoin.  
-        
-//        // Inline simplification (too early - changes SPARQL for OPTIONAL {{ FILTER }} 
-//        if ( simplifyEarly )
-//        {
-//            if ( isJoinIdentify(left) )
-//                return right ;
-//
-//            if ( isJoinIdentify(right) )
-//                return left ;
-//        }
-        
+        if ( left == null )
+            return right ;
+        if ( right == null )
+            return left ;
         return new OpJoin(left, right) ;
     }
     
+    /** Create join, removing any joins with the identity table and any nulls.
+     *  <br/>Join.create(null, op) is op.
+     *  <br/>Join.create(op, null) is op.
+     *  <br/>Join.create(TableUnit, op) is op.
+     *  <br/>Join.create(op, TableUnit) is op.
+     */
+    public static Op createReduce(Op left, Op right)
+    {
+        if ( left == null || isJoinIdentify(left) )
+            return right ;
+        if ( right == null || isJoinIdentify(right) )
+            return left ;
+        return new OpJoin(left, right) ;
+    }
+    
+
     public static boolean isJoinIdentify(Op op)
     {
         if ( ! ( op instanceof OpTable ) )
