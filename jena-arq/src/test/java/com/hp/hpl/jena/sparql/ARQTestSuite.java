@@ -125,7 +125,6 @@ public class ARQTestSuite extends TestSuite
         ts.addTest(TS_SSE.suite()) ;
 
         ts.addTest(new JUnit4TestAdapter(TS_Graph.class)) ;
-        ts.addTest(new JUnit4TestAdapter(TS_Lang.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Solver.class)) ;
         ts.addTest(new JUnit4TestAdapter(TS_Engine.class)) ; 
 
