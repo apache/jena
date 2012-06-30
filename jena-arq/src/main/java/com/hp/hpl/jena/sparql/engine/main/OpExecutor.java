@@ -139,6 +139,37 @@ public class OpExecutor
         return execute(opTriple.asBGP(), input) ;
     }
 
+    protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
+    { 
+        QueryIterator qIter = specialcase(opGraph.getNode(), opGraph.getSubOp(), input) ;
+        if ( qIter != null )
+            return qIter ;
+        return new QueryIterGraph(input, opGraph, execCxt) ;
+    }
+
+    private QueryIterator specialcase(Node gn, Op subOp, QueryIterator input)
+    {
+        // This is a placeholder for code to specially handle explicitly named 
+        // default graph and union graph.
+        
+        if ( Quad.isDefaultGraph(gn) )
+        {
+            ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph()) ;
+            return execute(subOp, input, cxt2) ;
+        }
+        
+        if ( gn == Quad.unionGraph )
+            Log.warn(this, "Not implemented yet: union default graph in general OpExecutor") ;
+
+        if ( true ) return null ;
+    
+        /* Bad
+        if ( gn == Quad.tripleInQuad ) {}
+         */
+    
+        return null ;
+    }
+
     protected QueryIterator execute(OpQuad opQuad, QueryIterator input)
     {
         return execute(opQuad.asQuadPattern(), input) ;
@@ -155,9 +186,6 @@ public class OpExecutor
             OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
             return execute(opBGP, input) ;  
         }
-        if ( Quad.isUnionGraph(quadPattern.getGraphNode()) )
-            Log.warn(this, "Not implemented yet: quad/union default graph in general OpExecutor") ;
-        
         // Not default graph - (graph .... )
         OpBGP opBGP = new OpBGP(quadPattern.getBasicPattern()) ;
         OpGraph op = new OpGraph(quadPattern.getGraphNode(), opBGP) ;
@@ -303,37 +331,6 @@ public class OpExecutor
         for ( Expr expr : exprs )
             qIter = new QueryIterFilterExpr(qIter, expr, execCxt) ;
         return qIter ;
-    }
-
-    protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
-    { 
-        QueryIterator qIter = specialcase(opGraph.getNode(), opGraph.getSubOp(), input) ;
-        if ( qIter != null )
-            return qIter ;
-        return new QueryIterGraph(input, opGraph, execCxt) ;
-    }
-    
-    private QueryIterator specialcase(Node gn, Op subOp, QueryIterator input)
-    {
-        // This is a placeholder for code to specially handle explicitly named 
-        // default graph and union graph.
-        
-        if ( Quad.isDefaultGraph(gn) )
-        {
-            ExecutionContext cxt2 = new ExecutionContext(execCxt, execCxt.getDataset().getDefaultGraph()) ;
-            return execute(subOp, input, cxt2) ;
-        }
-        
-        if ( true ) return null ;
-        
-        if ( gn == Quad.unionGraph )
-        {}
-
-        /* Bad
-        if ( gn == Quad.tripleInQuad ) {}
-         */
-
-        return null ;
     }
 
     protected QueryIterator execute(OpService opService, QueryIterator input)
