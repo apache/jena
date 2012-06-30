@@ -18,23 +18,20 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import java.util.ArrayList ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.* ;
 
+import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformSimplify ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.PathBlock ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.path.PathLib ;
@@ -44,13 +41,14 @@ import com.hp.hpl.jena.sparql.syntax.* ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
+// Develop modifications outside of main codebase.Table
 public class AlgebraGenerator 
 {
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
     // Helpful only to write exactly what you mean and test the full query compiler.
     private boolean fixedFilterPosition = false ;
     private Context context ;
-    private int subQueryDepth = 0 ;
+    private final int subQueryDepth ;
     
     // simplifyInAlgebraGeneration=true is the alternative reading of
     // the DAWG Algebra translation algorithm. 
@@ -63,13 +61,17 @@ public class AlgebraGenerator
     static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;  // False is the correct setting. 
 
     public AlgebraGenerator(Context context)
-    { 
-        if ( context == null )
-            context = ARQ.getContext().copy() ;
-        this.context = context ;
+    {
+        this (context != null ? context : ARQ.getContext().copy(), 0) ;
     }
     
     public AlgebraGenerator() { this(null) ; } 
+    
+    private AlgebraGenerator(Context context, int depth)
+    {
+        this.context = context ;
+        this.subQueryDepth = depth ;
+    }
     
     //-- Public operations.  Do not call recursively (call compileElement).
     // These operations apply the simplification step which is done, once, at the end.
@@ -101,11 +103,11 @@ public class AlgebraGenerator
     // This is the operation to call for recursive application.
     protected Op compileElement(Element elt)
     {
-        if ( elt instanceof ElementUnion )
-            return compileElementUnion((ElementUnion)elt) ;
-      
         if ( elt instanceof ElementGroup )
             return compileElementGroup((ElementGroup)elt) ;
+      
+        if ( elt instanceof ElementUnion )
+            return compileElementUnion((ElementUnion)elt) ;
       
         if ( elt instanceof ElementNamedGraph )
             return compileElementGraph((ElementNamedGraph)elt) ; 
@@ -128,6 +130,9 @@ public class AlgebraGenerator
         if ( elt instanceof ElementSubQuery )
             return compileElementSubquery((ElementSubQuery)elt) ; 
         
+        if ( elt instanceof ElementData )
+            return compileElementData((ElementData)elt) ; 
+
         if ( elt == null )
             return OpNull.create() ;
 
@@ -135,58 +140,49 @@ public class AlgebraGenerator
         return null ;
     }
     
-    protected Op compileElementUnion(ElementUnion el)
-    { 
-        Op current = null ;
-        
-        for ( Element subElt: el.getElements() )
-        {
-            Op op = compileElement(subElt) ;
-            current = union(current, op) ;
-        }
-        return current ;
-    }
-    
     //Produce the algebra for a single group.
     //<a href="http://www.w3.org/TR/rdf-sparql-query/#sparqlQuery">Translation to the SPARQL Algebra</a>
     //
     // Step : (URI resolving and triple pattern syntax forms) was done during parsing
-    // Step : (Paths) e.g. simple links become triple patterns. [finalizeSyntax]
-    // Step : (BGPs) Merge BGPs   [finalizeSyntax]
-    // Step : (BIND/LET) Associate with BGP
+    // Step : Collection FILTERS [prepareGroup]
+    // Step : (Paths) e.g. simple links become triple patterns. Done later in [compileOneInGroup]
+    // Step : (BGPs) Merge PathBlocks - these are SPARQL 1.1's TriplesBlock   [prepareGroup]
+    // Step : (BIND/LET) Associate with BGP [??]
     // Step : (Groups and unions) Was done during parsing to get ElementUnion.
-    // Step : (GRAPH) Done in this code.
-    // Step : (Filter extraction and OPTIONAL) Done in this code
+    // Step : Graph Patterns [compileOneInGroup]
+    // Step : Filters [here]
     // Simplification: Done later 
-    // If simplicifation is done now, it changes OPTIONAL { { ?x :p ?w . FILTER(?w>23) } } because it removes the
+    // If simplification is done now, it changes OPTIONAL { { ?x :p ?w . FILTER(?w>23) } } because it removes the
     //   (join Z (filter...)) that in turn stops the filter getting moved into the LeftJoin.  
     //   It need a depth of 2 or more {{ }} for this to happen. 
     
     protected Op compileElementGroup(ElementGroup groupElt)
     {
-        Op current = OpTable.unit() ;
-        
-        // First: get all filters, merge adjacent BGPs. This includes BGP-FILTER-BGP
-        // This is done in finalizeSyntax after which the new ElementGroup is in
-        // the right order w.r.t. BGPs and filters. 
-        // 
-        // This is a delay from parsing time so a printed query
-        // keeps filters where the query author put them.
-        
-        List<Element> groupElts = finalizeSyntax(groupElt) ;
+        Pair<List<Expr>, List<Element>> pair = prepareGroup(groupElt) ;
+        List<Expr> filters = pair.getLeft() ;
+        List<Element> groupElts = pair.getRight() ;
 
-        // Processing assignments is combined into the whole group processing.
-        // This includes a small amount of undoing some of the conversion work
-        // but means that the translation after finalizeSyntax is a single pass.
-        
         // Compile the consolidated group elements.
-        // Assumes the filters have been moved to end.
+        // "current" is the completed part only - there may be thing pushed into the accumulator.
+        Op current = OpTable.unit() ;
+        Deque<Op> acc = new ArrayDeque<Op>() ;
+        
         for (Iterator<Element> iter = groupElts.listIterator() ; iter.hasNext() ; )
         {
             Element elt = iter.next() ;
-            current = compileOneInGroup(elt, current) ;
+            if ( elt != null )
+                current = compileOneInGroup(elt, current, acc) ;
         }
-            
+        
+        // Deal with any remaining ops.
+        current = joinOpAcc(current, acc) ;
+        
+        if ( filters != null )
+        {
+            // Put filters round the group.
+            for ( Expr expr : filters )
+                current = OpFilter.filter(expr, current) ;
+        }
         return current ;
     }
 
@@ -196,130 +192,150 @@ public class AlgebraGenerator
      * Return a list of elements with any filters at the end. 
      */
     
-    private List<Element> finalizeSyntax(ElementGroup groupElt)
+    private Pair<List<Expr>, List<Element>> prepareGroup(ElementGroup groupElt)
     {
-        if ( fixedFilterPosition )
-            // Illegal SPARQL
-            return groupElt.getElements() ;
-        
         List<Element> groupElts = new ArrayList<Element>() ;
-        BasicPattern prevBGP = null ;
-        List<ElementFilter> filters = null ;
-        PathBlock prevPathBlock = null ;
+        
+        PathBlock currentBGP = null ;
+        PathBlock currentPathBlock = null ;
+        List<Expr> filters = null ;
         
         for (Element elt : groupElt.getElements() )
         {
-            if ( elt instanceof ElementFilter )
+            if ( ! fixedFilterPosition && elt instanceof ElementFilter )
             {
+                // For fixed position filters, drop through to general element processing.
+                // It's also illegal SPARQL - filters operate over the whole group.
                 ElementFilter f = (ElementFilter)elt ;
                 if ( filters == null )
-                    filters = new ArrayList<ElementFilter>() ;
-                filters.add(f) ;
+                    filters = new ArrayList<Expr>() ;
+                filters.add(f.getExpr()) ;
                 // Collect filters but do not place them yet.
                 continue ;
             }
 
-            // Rather ugly code that combines blocks. 
+            // The parser does not generate ElementTriplesBlock (SPARQL 1.1) 
+            // but SPARQL 1.0 does and also we cope for programmtically built queries
             
             if ( elt instanceof ElementTriplesBlock )
             {
-                if ( prevPathBlock != null )
-                    throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 1)") ;
-                
                 ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
 
-                if ( prevBGP != null )
+                if ( currentPathBlock == null )
                 {
-                    // Previous was an ElementTriplesBlock.
-                    // Merge because they were adjacent in a group
-                    // in syntax, so it must have been BGP, Filter, BGP.
-                    // Or someone constructed a non-serializable query. 
-                    prevBGP.addAll(etb.getPattern()) ;
-                    continue ;
+                    ElementPathBlock etb2 = new ElementPathBlock() ;
+                    currentPathBlock = etb2.getPattern() ;
+                    groupElts.add(etb2) ;
                 }
-                // New BGP.
-                // Copy - so that any later mergings do not change the original query. 
-
-                ElementTriplesBlock etb2 = new ElementTriplesBlock() ;
-                etb2.getPattern().addAll(etb.getPattern()) ;
-                prevBGP = etb2.getPattern() ;
-                groupElts.add(etb2) ;
+                
+                for ( Triple t : etb.getPattern())
+                    currentPathBlock.add(new TriplePath(t)) ;
                 continue ;
             }
             
-            // TIDY UP - grr this is duplication.
-            // Can't mix ElementTriplesBlock and ElementPathBlock (which subsumes ElementTriplesBlock)
+            // To PathLib
+            
             if ( elt instanceof ElementPathBlock )
             {
-                if ( prevBGP != null )
-                    throw new ARQInternalErrorException("Mixed ElementTriplesBlock and ElementPathBlock (case 2)") ;
-                
                 ElementPathBlock epb = (ElementPathBlock)elt ;
-                if ( prevPathBlock != null )
-                {
-                    prevPathBlock.addAll(epb.getPattern()) ;
-                    continue ;
-                }
+                // Done later.  remove when definitely OK to delay.
+//                for ( TriplePath p : epb.getPattern() )
+//                {
+//                    if ( p.isTriple() )
+//                    {}
+//                    
+//                    // Do the top level conversion.
+//                    Path path = p.getPath() ;
+//                    if ( path instanceof P_Link )
+//                    {}
+//                    else if ( path instanceof P_Inverse ) 
+//                    {
+//                        // and inverse of a link.
+//                    }
+//                    else if ( path instanceof P_Seq )
+//                    {
+//                        P_Seq seq = (P_Seq)path ;
+//                        
+//                    }
+//                    else
+//                    {}
+//                }
                 
-                ElementPathBlock epb2 = new ElementPathBlock() ;
-                epb2.getPattern().addAll(epb.getPattern()) ;
-                prevPathBlock = epb2.getPattern() ;
-                groupElts.add(epb2) ;
+                
+                if ( currentPathBlock == null )
+                {
+                    ElementPathBlock etb2 = new ElementPathBlock() ;
+                    currentPathBlock = etb2.getPattern() ;
+                    groupElts.add(etb2) ;
+                }
+
+                currentPathBlock.addAll(epb.getPattern()) ;
                 continue ;
             }
             
-            // Not BGP or Filter.
+            // else
+            
+            // Not BGP, path or filters.
             // Clear any BGP-related triple accumulators.
-            prevBGP = null ;
-            prevPathBlock = null ;
+            currentPathBlock = null ;
             // Add this element
             groupElts.add(elt) ;
         }
-        //End of group - put in any accumulated filters
-        
-        if ( filters != null )
-            groupElts.addAll(filters) ;
-        return groupElts ;
+        return Pair.create(filters, groupElts) ;
     }
     
-    private Op compileOneInGroup(Element elt, Op current)
+    /** Flush the op accumulator - and clear it */
+    private void accumulate(Deque<Op> acc, Op op) { acc.addLast(op) ; }
+
+    /** Accumulate stored ops, return unit if none. */
+    private Op popAccumulated(Deque<Op> acc)
     {
+        if ( acc.size() == 0 )
+            return OpTable.unit() ; 
+        
+        Op joined = null ;
+        // First first to last.
+        for ( Op op : acc )
+            joined = OpJoin.create(joined,op) ;
+        acc.clear() ;
+        return joined ; 
+    }
+    
+    /** Join stored ops to the current state */
+    private Op joinOpAcc(Op current, Deque<Op> acc)
+    {
+        if ( acc.size() == 0 ) return current ;
+        Op joined = current ;
+        // First first to last.
+        for ( Op op : acc )
+            joined = OpJoin.create(joined,op) ;
+        acc.clear() ;
+        return joined ; 
+    }
+    
+    private Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
+    {
+        // PUSH
         // Replace triple patterns by OpBGP (i.e. SPARQL translation step 1)
         if ( elt instanceof ElementTriplesBlock )
         {
+            // Should not happen.
             ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
             Op op = compileBasicPattern(etb.getPattern()) ;
-            return join(current, op) ;
+            accumulate(acc, op) ;
+            return current ;
         }
         
+        // PUSH
         if ( elt instanceof ElementPathBlock )
         {
             ElementPathBlock epb = (ElementPathBlock)elt ;
             Op op = compilePathBlock(epb.getPattern()) ;
-            return join(current, op) ;
+            accumulate(acc, op) ;
+            return current ;
         }
         
-        // Filters were collected together by finalizeSyntax.
-        // So they are in the right place.
-        if ( elt instanceof ElementFilter )
-        {
-            ElementFilter f = (ElementFilter)elt ;
-            return OpFilter.filter(f.getExpr(), current) ;
-        }
-    
-        if ( elt instanceof ElementOptional )
-        {
-            ElementOptional eltOpt = (ElementOptional)elt ;
-            return compileElementOptional(eltOpt, current) ;
-        }
-        
-        if ( elt instanceof ElementSubQuery )
-        {
-            ElementSubQuery elQuery = (ElementSubQuery)elt ;
-            Op op = compileElementSubquery(elQuery) ;
-            return join(current, op) ;
-        }
-        
+        // POP
         if ( elt instanceof ElementAssign )
         {
             // This step and the similar BIND step needs to access the preceeding 
@@ -327,16 +343,59 @@ public class AlgebraGenerator
             // That might 'current', or in the left side of a join.
             // If not a BGP, insert a empty one.  
             
+            Op op = popAccumulated(acc) ;
             ElementAssign assign = (ElementAssign)elt ;
-            Op op = OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
-            return op ;
+            Op opAssign = OpAssign.assign(op, assign.getVar(), assign.getExpr()) ;
+            accumulate(acc, opAssign) ;
+            return current ;
         }
         
+        // POP
         if ( elt instanceof ElementBind )
         {
+            Op op = popAccumulated(acc) ;
             ElementBind bind = (ElementBind)elt ;
-            Op op = OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
+            Op opExtend = OpExtend.extend(op, bind.getVar(), bind.getExpr()) ;
+            accumulate(acc, opExtend) ;
+            return current ;
+        }
+
+        // Flush.
+        current = joinOpAcc(current, acc) ; 
+        
+        if ( elt instanceof ElementOptional )
+        {
+            ElementOptional eltOpt = (ElementOptional)elt ;
+            return compileElementOptional(eltOpt, current) ;
+        }
+        
+//        if ( elt instanceof ElementSubQuery )
+//        {
+//            ElementSubQuery elQuery = (ElementSubQuery)elt ;
+//            Op op = compileElementSubquery(elQuery) ;
+//            //TODO Plain join
+//            return join(current, op) ;
+//        }
+        
+        if ( elt instanceof ElementMinus )
+        {
+            ElementMinus elt2 = (ElementMinus)elt ;
+            Op op = compileElementMinus(current, elt2) ;
             return op ;
+        }
+
+        // All elements that simply "join" into the algebra.
+        if ( elt instanceof ElementGroup || 
+             elt instanceof ElementNamedGraph ||
+             elt instanceof ElementService ||
+             elt instanceof ElementFetch ||
+             elt instanceof ElementUnion || 
+             elt instanceof ElementSubQuery  ||
+             elt instanceof ElementData
+            )
+        {
+            Op op = compileElement(elt) ;
+            return join(current, op) ;
         }
         
         if ( elt instanceof ElementExists )
@@ -353,21 +412,14 @@ public class AlgebraGenerator
             return op ;
         }
         
-        if ( elt instanceof ElementMinus )
+        // Filters were collected together by prepareGroup
+        // This only handels filters left in place by some magic. 
+        if ( elt instanceof ElementFilter )
         {
-            ElementMinus elt2 = (ElementMinus)elt ;
-            Op op = compileElementMinus(current, elt2) ;
-            return op ;
+            ElementFilter f = (ElementFilter)elt ;
+            return OpFilter.filter(f.getExpr(), current) ;
         }
-
-        if ( elt instanceof ElementData)
-        {
-            // Accumulate, like filters.
-            ElementData elt2 = (ElementData)elt ;
-            Op op = compileElementData(current, elt2) ;
-            return op ;
-        }
-        
+    
 //        // SPARQL 1.1 UNION -- did not make SPARQL 
 //        if ( elt instanceof ElementUnion )
 //        {
@@ -379,21 +431,21 @@ public class AlgebraGenerator
 //            }
 //        }
         
-        // All other elements: compile the element and then join on to the current group expression.
-        if ( elt instanceof ElementGroup || 
-             elt instanceof ElementNamedGraph ||
-             elt instanceof ElementService ||
-             elt instanceof ElementFetch ||
-             elt instanceof ElementUnion )
-        {
-            Op op = compileElement(elt) ;
-            return join(current, op) ;
-        }
-
-        
         
         broken("compile/Element not recognized: "+Utils.className(elt)) ;
         return null ;
+    }
+
+    private Op compileElementUnion(ElementUnion el)
+    { 
+        Op current = null ;
+        
+        for ( Element subElt: el.getElements() )
+        {
+            Op op = compileElement(subElt) ;
+            current = union(current, op) ;
+        }
+        return current ;
     }
 
     private Op compileElementNotExists(Op current, ElementNotExists elt2)
@@ -418,10 +470,9 @@ public class AlgebraGenerator
         return opMinus ;
     }
 
-    private Op compileElementData(Op current, ElementData elt2)
+    private Op compileElementData(ElementData elt)
     {
-        OpTable opTable = OpTable.create(elt2.getTable()) ;
-        return OpJoin.create(current, opTable) ;
+        return OpTable.create(elt.getTable()) ;
     }
 
     private Op compileElementUnion(Op current, ElementUnion elt2)
@@ -500,10 +551,8 @@ public class AlgebraGenerator
 
     protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
     {
-        subQueryDepth++ ;
-        Op sub = this.compile(eltSubQuery.getQuery()) ;
-        subQueryDepth-- ;
-        return sub ;
+        AlgebraGenerator gen = new AlgebraGenerator(context, subQueryDepth+1) ;
+        return gen.compile(eltSubQuery.getQuery()) ;
     }
     
     /** Compile query modifiers */
@@ -632,22 +681,10 @@ public class AlgebraGenerator
 
     // -------- 
     
-    protected Op join(Op current, Op newOp)
+    private static Op join(Op current, Op newOp)
     { 
-//        if ( current instanceof OpBGP && newOp instanceof OpBGP )
-//        {
-//            OpBGP opBGP = (OpBGP)current ;
-//            opBGP.getPattern().addAll( ((OpBGP)newOp).getPattern() ) ;
-//            return current ;
-//        }
-        
         if ( simplifyTooEarlyInAlgebraGeneration && applySimplification )
-        {
-            if ( OpJoin.isJoinIdentify(current) )
-                return newOp ;
-            if ( OpJoin.isJoinIdentify(newOp) )
-                return current ;
-        }
+            return OpJoin.createReduce(current, newOp) ;
         
         return OpJoin.create(current, newOp) ;
     }

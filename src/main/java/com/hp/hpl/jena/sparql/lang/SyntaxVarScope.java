@@ -237,46 +237,90 @@ public class SyntaxVarScope
     
     public static class ScopeChecker extends ElementVisitorBase
     {
-        private Collection<Var> accScope = new HashSet<Var>() ;
         public ScopeChecker() {}
         
         @Override
         public void visit(ElementGroup el)
         {
-            // There are two kinds of elements: ones that accumulate variables
-            // across the group and ones that isolate a subexpression to be joined
-            // Scoped: UNION, Group, (MINUS), SERVICE, SubSELECT
-            // Accumulating: BGPs, paths, BIND, LET, OPTIONAL.
-            // FILTER: may involve an EXISTS (not checked currently) 
+            // BIND scope rules
+            // BIND acts over the immediately preceeding ElementPathBlock, ElementTriplesBlock
+            // and any ElementBind, ElementAssign.
             
-            // Accumulate:
-            //   This BGP - used by EleemntBind.
-            //   All elements of this group - total aggregation.
-
-            accScope.clear() ;
-            
-            for ( Element e : el.getElements() )
+            for ( int i = 0 ; i < el.getElements().size() ; i++ )
             {
+                Element e = el.getElements().get(i) ;
                 // Tests.
                 if ( e instanceof ElementBind )
+                {
+                    Collection<Var> accScope = calcScopeImmediate(el.getElements(), i) ;
                     check(accScope, (ElementBind)e) ;
-                else if ( e instanceof ElementService )
+                }
+                
+                if ( e instanceof ElementService )
+                {
+                    Collection<Var> accScope = calcScopeAll(el.getElements(), i) ;
                     check(accScope, (ElementService)e) ;
-                // if joined in, the scope protects 
-                if ( ! joinedInGroup(e) )
-                    PatternVars.vars(accScope, e) ;
+                }
             }
         }
 
-        private static boolean joinedInGroup(Element e)
+        private static boolean scoped(Element e)
         {
+            // See AlgebraGenerator.compileOneInGroup
             return e instanceof ElementGroup ||
-                e instanceof ElementUnion ||
-                //e instanceof ElementOptional ||
-                e instanceof ElementService ||
-                e instanceof ElementSubQuery ;
+                   e instanceof ElementUnion ||
+                   //e instanceof ElementOptional ||
+                   e instanceof ElementService ||
+                   e instanceof ElementSubQuery || 
+                   e instanceof ElementNamedGraph ||
+                   e instanceof ElementFetch ||
+                   e instanceof ElementData ;
+        }
+
+        
+        private static Collection<Var> calcScopeAll(List<Element> elements, int idx)
+        {
+            return calcScope(elements, 0, idx) ;
         }
         
+        private static Collection<Var> calcScopeImmediate(List<Element> elements, int idx)
+        {
+            // Work backwards.
+            Collection<Var> accScope = new HashSet<Var>() ;
+            int start = idx ;
+            
+            for ( int i = idx-1 ; i >= 0 ; i-- )
+            {
+                start = i ;
+                Element e = elements.get(i) ;
+                if ( ! ( e instanceof ElementTriplesBlock ||
+                         e instanceof ElementPathBlock ||
+                         e instanceof ElementBind ||
+                         e instanceof ElementAssign ) ) 
+                    break ;
+
+                // Include.
+                // it does not matter that we work backwards.
+                PatternVars.vars(accScope, e) ;
+            }
+         
+            return accScope ;
+        }
+
+        /** Calculate scope, working forwards */
+        private static Collection<Var> calcScope(List<Element> elements, int start, int finish)
+        {
+            Collection<Var> accScope = new HashSet<Var>() ;
+            for ( int i = start ; i < finish ; i++ )
+            {
+                Element e = elements.get(i) ;
+                if ( ! scoped(e) )
+                    PatternVars.vars(accScope, e) ;
+            }
+            return accScope ;
+        }
+
+
         // Inside filters.
         
         private static void check(Collection<Var> scope, ElementBind el)

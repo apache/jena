@@ -31,6 +31,7 @@ import org.junit.runners.Suite ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestVarFinder.class
+    , TestAlgebraTranslate.class
     , TestClassify.class
     , TestFilterTransform.class
     , TestTransformQuads.class
