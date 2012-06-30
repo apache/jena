@@ -26,7 +26,6 @@ import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryException ;
