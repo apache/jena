@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 public class OpUnion extends Op2
 {
+    /** Create a union, dropping any nulls. */
     public static Op create(Op left, Op right)
     {
         if ( left == null )

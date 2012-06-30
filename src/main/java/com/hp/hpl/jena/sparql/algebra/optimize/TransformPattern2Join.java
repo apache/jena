@@ -61,13 +61,8 @@ public class TransformPattern2Join extends TransformCopy
         return op ;
     }
     
-    
     private static Op join(Op left, Op right)
     {
-        if ( left == null || OpJoin.isJoinIdentify(left) )
-          return right ;
-      if ( right == null || OpJoin.isJoinIdentify(right) )
-          return left ;
-      return OpJoin.create(left, right) ;
-  }
+      return OpJoin.createReduce(left, right) ;
+    }
 }
