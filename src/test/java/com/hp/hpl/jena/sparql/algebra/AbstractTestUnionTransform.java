@@ -32,6 +32,9 @@ public abstract class AbstractTestUnionTransform extends BaseTest
 {
     // Tests of patterns over the implicit union of all named graphs.
     // Two sets - for triples and for quads
+    
+    // TODO need multiple triple pattern BGPs. 
+    
     @Test public void union_1()
     {
         List<Binding> results = exec("(bgp (?s ?p ?o))") ;
@@ -71,7 +74,7 @@ public abstract class AbstractTestUnionTransform extends BaseTest
     @Test public void union_7()
     {
         List<Binding> results = exec("(graph <"+Quad.defaultGraphIRI+"> (bgp (<x2> ?p ?o)))") ;
-        assertEquals(4, results.size()) ;
+        assertEquals(3, results.size()) ;
     }
  
 //    @Test public void union_7()
@@ -83,7 +86,7 @@ public abstract class AbstractTestUnionTransform extends BaseTest
     private List<Binding> exec(String pattern)
     {
         Op op = op(pattern) ;
-        QueryIterator qIter = Algebra.exec(op, TestUnionGraph.dsg) ;
+        QueryIterator qIter = Algebra.exec(op, TestUnionGraph.dsg1) ;
         return  Iter.toList(qIter) ;
     }
     
