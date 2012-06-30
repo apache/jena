@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,20 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.uniongraph;
 
-import com.hp.hpl.jena.sparql.sse.SSE ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
 
-public class TestUnionTransformTriples extends AbstractTestUnionTransform  
-{
-    @Override
-    protected Op op(String pattern)
-    {
-        Op op = SSE.parseOp(pattern) ;
-        Op op2 = Algebra.unionDefaultGraph(op) ;
-        return op2 ;
-    }
-}
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {
+    TestUnionGraph.class
+    , TestUnionTransformTriples.class
+    , TestUnionTransformQuads.class
+})
+
+// Not active (hence does not get named TS_* because the POM names them for surefire tests) 
+
+public class Dev_TS_UnionGraph
+{ }
+

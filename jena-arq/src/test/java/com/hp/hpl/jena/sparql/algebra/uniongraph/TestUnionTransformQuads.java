@@ -16,8 +16,10 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra;
+package com.hp.hpl.jena.sparql.algebra.uniongraph;
 
+import com.hp.hpl.jena.sparql.algebra.Algebra ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestUnionTransformQuads extends AbstractTestUnionTransform  
