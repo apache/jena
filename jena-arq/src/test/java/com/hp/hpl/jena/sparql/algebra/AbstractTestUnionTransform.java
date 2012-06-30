@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
-public abstract class UnionTransformTests extends BaseTest
+public abstract class AbstractTestUnionTransform extends BaseTest
 {
     // Tests of patterns over the implicit union of all named graphs.
     // Two sets - for triples and for quads

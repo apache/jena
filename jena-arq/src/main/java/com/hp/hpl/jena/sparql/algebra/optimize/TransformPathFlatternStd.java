@@ -76,22 +76,13 @@ public class TransformPathFlatternStd extends TransformCopy
     
     static VarAlloc varAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker+"Q") ;
     
-    static Op join(Op op1, Op op2)
+    private static Op join(Op op1, Op op2)
     {
-        if ( op1 == null )
-            return op2 ;
-        if ( op2 == null )
-            return op1 ;
         return OpJoin.create(op1, op2) ;
     }
     
-    static Op union(Op left, Op right)
+    private static Op union(Op left, Op right)
     {
-        if ( left == null )
-            return right ;
-        if ( right == null )
-            return left ;
-
         return new OpUnion(left, right) ;
     }
     
