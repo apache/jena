@@ -437,7 +437,19 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     {
         return filter(iter, new FilterUnique<T>()) ;
     }
-    
+
+    /** Remove adjacent duplicates */
+    public static <T> Iterator<T> distinctAdjacent(Iterable<T> iter)
+    {
+        return distinctAdjacent(iter.iterator()) ;
+    }
+
+    /** Remove adjacent duplicates */
+    public static <T> Iterator<T> distinctAdjacent(Iterator<T> iter)
+    {
+        return filter(iter, new FilterDistinctAdjacent<T>()) ;
+    }
+
     public static <T> Iterator<T> removeNulls(Iterable<T> iter)
     {
         return filter(iter, new FilterOutNulls<T>()) ;
@@ -790,6 +802,11 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public Iter<T> distinct()
     {
         return new Iter<T>(distinct(iterator())) ;
+    }
+
+    public Iter<T> distinctAdjacent()
+    {
+        return new Iter<T>(distinctAdjacent(iterator())) ;
     }
 
     // ---- Iterable
