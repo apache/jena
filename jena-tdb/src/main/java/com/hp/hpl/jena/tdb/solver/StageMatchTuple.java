@@ -30,8 +30,6 @@ import org.openjena.atlas.iterator.RepeatApplyIterator ;
 import org.openjena.atlas.iterator.Transform ;
 import org.openjena.atlas.lib.Tuple ;
 
-
-
 import com.hp.hpl.jena.graph.Node;
 
 import com.hp.hpl.jena.sparql.core.Var;
@@ -113,6 +111,9 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         if ( anyGraphs )
         {
             iterMatches = Iter.operate(iterMatches, quadsToTriples) ;
+            // If any slots were set, then the inde would be ???G and we can use distinctAdjacent.
+            // If all slots are unset, the idnex is probably GSPO (SPOG would be better in this one case). 
+            // This is a safe, if potentially costly, choice. 
             iterMatches = Iter.distinct(iterMatches) ;  // WRT only three varying slots.
         }
         
