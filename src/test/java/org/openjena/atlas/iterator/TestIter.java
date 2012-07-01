@@ -436,4 +436,33 @@ public class TestIter
         
         test(it, null, "x", null, null, null, null);
     }
+    
+    @Test public void distinct_01() 
+    {
+        List<String> x = Arrays.asList("a", "b", "a") ;
+        Iterator<String> iter = Iter.distinct(x) ;
+        test(iter, "a", "b") ;
+    }
+    
+    @Test public void distinct_02() 
+    {
+        List<String> x = Arrays.asList("a", "b", "a") ;
+        Iterator<String> iter = Iter.distinctAdjacent(x) ;
+        test(iter, "a", "b", "a") ;
+    }
+    
+    @Test public void distinct_03() 
+    {
+        List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a") ;
+        Iterator<String> iter = Iter.distinct(x) ;
+        test(iter, "a", "b") ;
+    }
+    
+    @Test public void distinct_04() 
+    {
+        List<String> x = Arrays.asList("a", "a", "b", "b", "b", "a", "a") ;
+        Iterator<String> iter = Iter.distinctAdjacent(x) ;
+        test(iter, "a", "b", "a") ;
+    }
+
 }
