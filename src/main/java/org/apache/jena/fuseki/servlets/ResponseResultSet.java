@@ -93,8 +93,7 @@ public class ResponseResultSet
         if ( serializationType.equals(WebContent.contentTypeResultsXML) )
         {
             try {
-                output(contentType, null, new OutputContent()
-                {
+                sparqlXMLOutput(contentType, new OutputContent(){
                     @Override
                     public void output(ServletOutputStream out)
                     {
@@ -188,6 +187,7 @@ public class ResponseResultSet
                     } ;
                 }
                 textOutput(contentType, output, request, response) ;
+                response.flushBuffer() ;
             }
 //            catch (IOException ioEx)
 //            {
@@ -214,7 +214,8 @@ public class ResponseResultSet
             ServletOutputStream out = httpResponse.getOutputStream() ;
             proc.output(out) ;
             out.flush() ;
-            httpResponse.flushBuffer();
+            // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
+            // then the JSON callback closing deatls can't be added. 
         } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
     }
 
@@ -246,6 +247,15 @@ public class ResponseResultSet
             || contentType.equals(WebContent.contentTypeXML) ; 
     }
 
+    private static void sparqlXMLOutput(String contentType, OutputContent proc,
+                                   HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    {
+        try {
+            output(contentType, null, proc, httpRequest, httpResponse) ;
+            httpResponse.flushBuffer() ;
+        } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+    }
+    
     private static void jsonOutput(String contentType, OutputContent proc,
                                    HttpServletRequest httpRequest, HttpServletResponse httpResponse)
     {
@@ -263,11 +273,7 @@ public class ResponseResultSet
             output(contentType, WebContent.charsetUTF8, proc, httpRequest, httpResponse) ;
 
             if ( callback != null )
-            {
-                out.print(")") ;
-                out.println() ;
-            }
-            out.flush() ;
+                out.println(")") ;
             httpResponse.flushBuffer();
 
         } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
