@@ -28,6 +28,7 @@ import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryException ;
+import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
@@ -121,15 +122,25 @@ public class TSVInputIterator extends QueryIteratorBase
 	        	//If we see an empty string this denotes an unbound value
 	        	if (token.equals("")) continue; 
 	
-	        		//Bound value so parse it and add to the binding
-	        		Node node = NodeFactory.parseNode(token, null);
-	        		this.binding.add(this.vars.get(i), node);
+        		//Bound value so parse it and add to the binding
+        		Node node = parseNode(token);
+        		this.binding.add(this.vars.get(i), node);
 	        }
     	} catch (Exception e) {
     		throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row '%s' contains an invalid encoding of a Node", this.lineNum, line));
     	}
 
         return true;
+	}
+	
+	private Node parseNode(String token) {
+		if (token.startsWith("_:")) {
+			return Node.createAnon(new AnonId(token.substring(2)));
+		} else if (token.startsWith("<")) {
+			return Node.createURI(token.substring(1, token.length()-1));
+		} else {
+			return NodeFactory.parseNode(token, null);
+		}
 	}
 
 	@Override
