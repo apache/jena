@@ -26,14 +26,12 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.openjena.atlas.lib.StrUtils ;
-
+import org.openjena.riot.out.NodeFormatterTTL;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /**
@@ -54,9 +52,8 @@ public class TSVOutput extends OutputBase
     public void format(OutputStream out, ResultSet resultSet)
     {
         try {
-        	//We'll use a null serialization context as otherwise the TSV Output may reduce things to Prefixed Names using
-        	//ARQs default prefix mapping which then means the output is invalid
-        	SerializationContext ctx = null;        	
+        	//Use a Turtle formatter to format terms
+        	NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
         	
             Writer w = FileUtils.asUTF8(out) ;
             w = new BufferedWriter(w) ;
@@ -94,8 +91,7 @@ public class TSVOutput extends OutputBase
                     if ( n != null )
                     {
                         // This will not include a raw tab.
-                        String str = FmtUtils.stringForNode(n, ctx) ;
-                        w.write(str) ;
+                        formatter.format(w, n);
                     }
                 }
                 w.write(NL) ;
