@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream ;
 import org.junit.Test ;
 import org.openjena.atlas.lib.StrUtils ;
 
-import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.sparql.ARQException;
@@ -86,7 +85,54 @@ public class TestResultSetFormat2
     	String x = "?x\t?y\t?z\n\t\t";
     }
     
-    @Test (expected=QueryException.class) 
+    // various values
+    
+    @Test
+    public void resultset_tsv_08()
+    {
+        String x = "?x\n<http://example/foo>\n";
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_09()
+    {
+        String x = "?x\n_:abc\n";
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_11()
+    {
+        String x = "?x\n123\n";
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_12()
+    {
+        // We allow leading white space.
+        String x = "?x\n  123\n";
+        parseTSV(x);
+    }
+    
+    @Test
+    public void resultset_tsv_13()
+    {
+        // We allow trailing white space.
+        String x = "?x\n123   \n";
+        parseTSV(x);
+    }
+        
+    @Test
+    public void resultset_tsv_14()
+    {
+        // We allow trailing white space.
+        String x = "?x\n<http://example/>    \n";
+        parseTSV(x);
+    }
+
+    @Test (expected=ResultSetException.class) 
     public void resultset_bad_tsv_01()
     {
         // Two vars, row of 3 values.
@@ -94,7 +140,7 @@ public class TestResultSetFormat2
         parseTSV(x);
     }
 
-    @Test (expected=QueryException.class) 
+    @Test (expected=ResultSetException.class) 
     public void resultset_bad_tsv_02()
     {
         // Two vars, row of 1 value only.
@@ -109,14 +155,45 @@ public class TestResultSetFormat2
     	parseTSV("");
     }
     
-    @Test (expected=QueryException.class)
+    @Test (expected=ResultSetException.class)
     public void resultset_bad_tsv_04()
     {
     	//Two vars but a completely empty row (should contain a tab)
     	String x = "?x\t?y\n\n";
     	parseTSV(x);
     }
-        
+    
+    // various values - broken
+    
+    @Test(expected=ResultSetException.class)
+    public void resultset_bad_tsv_05()
+    {
+        String x = "?x\n<http://example/\n";
+        parseTSV(x);
+    }
+    
+    @Test(expected=ResultSetException.class)
+    public void resultset_bad_tsv_06()
+    {
+        String x = "?x\n<http://example/ white space >\n";
+        parseTSV(x);
+    }
+
+    @Test(expected=ResultSetException.class)
+    public void resultset_bad_tsv_07()
+    {
+        String x = "?x\n<<<<http://example/>>>>\n";
+        parseTSV(x);
+    }
+
+
+    @Test (expected=ResultSetException.class)
+    public void resultset_bad_tsv_08()
+    {
+        String x = "?x\n_:abc def\n";
+        parseTSV(x);
+    }
+
     public void parseTSV(String x)
     {
         byte[] b = StrUtils.asUTF8bytes(x) ;
