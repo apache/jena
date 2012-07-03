@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
+import static java.lang.String.format ;
+
 import java.io.BufferedReader ;
 import java.io.IOException ;
 import java.util.List ;
@@ -25,17 +27,16 @@ import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
@@ -93,14 +94,14 @@ public class TSVInputIterator extends QueryIteratorBase
 	        this.lineNum++;
 	    } 
 	    catch (IOException e) 
-	    { throw new QueryException("Error parsing TSV results - " + e.getMessage()); }
+	    { throw new ResultSetException("Error parsing TSV results - " + e.getMessage()); }
 
 	    if ( line.isEmpty() )
 	    {
 	        // Empty input line - no bindings.
 	    	// Only valid when we expect zero/one values as otherwise we should get a sequence of tab characters
 	    	// which means a non-empty string which we handle normally
-	    	if (expectedItems > 1) throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
+	    	if (expectedItems > 1) throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row had 0/1 values when %d were expected", this.lineNum, expectedItems));
 	        this.binding = BindingFactory.create() ;
 	        return true ;
 	    }
@@ -108,10 +109,8 @@ public class TSVInputIterator extends QueryIteratorBase
         String[] tokens = TSVInput.pattern.split(line, -1);
 	    
         if (tokens.length != expectedItems)
-        	 throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.", this.lineNum, line, tokens.length, expectedItems));
-
+        	 throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.", this.lineNum, line, tokens.length, expectedItems));
         this.binding = BindingFactory.create();
-
 
         try
         {
@@ -123,24 +122,33 @@ public class TSVInputIterator extends QueryIteratorBase
 	        	if (token.equals("")) continue; 
 	
         		//Bound value so parse it and add to the binding
-        		Node node = parseNode(token);
+        		Node node = parseNode(token, lineNum);
         		this.binding.add(this.vars.get(i), node);
 	        }
     	} catch (Exception e) {
-    		throw new QueryException(String.format("Error Parsing TSV results at Line %d - The result row '%s' contains an invalid encoding of a Node", this.lineNum, line));
+    		throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' contains an invalid encoding of a Node", this.lineNum, line));
     	}
 
         return true;
 	}
 	
-	private Node parseNode(String token) {
-		if (token.startsWith("_:")) {
-			return Node.createAnon(new AnonId(token.substring(2)));
-		} else if (token.startsWith("<")) {
-			return Node.createURI(token.substring(1, token.length()-1));
-		} else {
-			return NodeFactory.parseNode(token, null);
-		}
+	private static Node parseNode(String token, long lineNum) {
+	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(token) ;
+	    if ( ! tokenizer.hasNext() )
+	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - The result row contains an empty term", lineNum, token)) ; 
+	    Node node = tokenizer.next().asNode() ;
+	    if ( ! node.isConcrete() )
+	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Bad RDF term", lineNum, token)) ;
+	    if ( tokenizer.hasNext() )
+	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Trailing characters", lineNum, token)) ;
+	    if ( node.isURI() )
+	    {
+	        // Lightly test for bad URIs.
+	        String x = node.getURI() ;
+	        if ( x.indexOf(' ') >= 0 )
+	            throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Space(s) in  IRI", lineNum, token)) ;
+	    }
+	    return node ;
 	}
 
 	@Override
