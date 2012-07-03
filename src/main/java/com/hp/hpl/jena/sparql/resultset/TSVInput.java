@@ -60,7 +60,8 @@ public class TSVInput {
             	String[] tokens = pattern.split(str,-1);
             	for ( String token : tokens ) 
             	{
-            		if (token.startsWith("?")) token = token.substring(1);
+            		if (!token.startsWith("?")) throw new ResultSetException("TSV Results malformed - variable names must begin with a ? in the header");
+            		token = token.substring(1);
             		Var var = Var.alloc(token);
             		vars.add(var);
             		varNames.add(var.getName());

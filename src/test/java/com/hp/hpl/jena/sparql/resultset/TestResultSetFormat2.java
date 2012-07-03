@@ -83,6 +83,7 @@ public class TestResultSetFormat2
     {
     	//Three vars, one row of no values
     	String x = "?x\t?y\t?z\n\t\t";
+    	parseTSV(x);
     }
     
     // various values
@@ -168,21 +169,21 @@ public class TestResultSetFormat2
     @Test(expected=ResultSetException.class)
     public void resultset_bad_tsv_05()
     {
-        String x = "?x\n<http://example/\n";
+        String x = "?x\n<http://example/";
         parseTSV(x);
     }
     
     @Test(expected=ResultSetException.class)
     public void resultset_bad_tsv_06()
     {
-        String x = "?x\n<http://example/ white space >\n";
+        String x = "?x\n<http://example/ white space >";
         parseTSV(x);
     }
 
     @Test(expected=ResultSetException.class)
     public void resultset_bad_tsv_07()
     {
-        String x = "?x\n<<<<http://example/>>>>\n";
+        String x = "?x\n<<<<http://example/>>>>";
         parseTSV(x);
     }
 
@@ -190,8 +191,15 @@ public class TestResultSetFormat2
     @Test (expected=ResultSetException.class)
     public void resultset_bad_tsv_08()
     {
-        String x = "?x\n_:abc def\n";
+        String x = "?x\n_:abc def";
         parseTSV(x);
+    }
+    
+    @Test (expected=ResultSetException.class)
+    public void resultset_bad_tsv_09()
+    {
+    	String x = "x\n<http://example.com>";
+    	parseTSV(x);
     }
 
     public void parseTSV(String x)
@@ -202,7 +210,7 @@ public class TestResultSetFormat2
         
         while (rs2.hasNext())
         {
-        	Binding binding = rs2.nextBinding();
+        	rs2.nextBinding();
         }
     }
     
