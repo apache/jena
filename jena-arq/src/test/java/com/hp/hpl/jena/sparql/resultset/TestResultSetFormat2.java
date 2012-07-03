@@ -26,7 +26,6 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 
 public class TestResultSetFormat2
 {
