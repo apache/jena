@@ -27,8 +27,7 @@ import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
+import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -37,6 +36,7 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /**
  * Class used to do streaming parsing of actual result rows from the TSV
@@ -112,45 +112,28 @@ public class TSVInputIterator extends QueryIteratorBase
         	 throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' has %d values instead of the expected %d.", this.lineNum, line, tokens.length, expectedItems));
         this.binding = BindingFactory.create();
 
-        try
+        for ( int i = 0; i < tokens.length; i++ ) 
         {
-	        for ( int i = 0; i < tokens.length; i++ ) 
-	        {
-	        	String token = tokens[i];
-	
-	        	//If we see an empty string this denotes an unbound value
-	        	if (token.equals("")) continue; 
-	
-        		//Bound value so parse it and add to the binding
-        		Node node = parseNode(token, lineNum);
-        		this.binding.add(this.vars.get(i), node);
-	        }
-    	} catch (Exception e) {
-    		throw new ResultSetException(format("Error Parsing TSV results at Line %d - The result row '%s' contains an invalid encoding of a Node", this.lineNum, line));
-    	}
+            String token = tokens[i];
+
+            //If we see an empty string this denotes an unbound value
+            if (token.equals("")) continue; 
+
+            //Bound value so parse it and add to the binding
+            try {
+                Node node = NodeFactory.parseNode(token) ;
+                if ( !node.isConcrete() )
+                    throw new ResultSetException(format("Line %d: Not a concrete RDF term: %s",lineNum, token)) ;
+                this.binding.add(this.vars.get(i), node);
+            } catch (RiotException ex)
+            {
+                throw new ResultSetException(format("Line %d: %s", lineNum, ex.getMessage()));
+            }
+        }
 
         return true;
 	}
 	
-	private static Node parseNode(String token, long lineNum) {
-	    Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(token) ;
-	    if ( ! tokenizer.hasNext() )
-	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - The result row contains an empty term", lineNum, token)) ; 
-	    Node node = tokenizer.next().asNode() ;
-	    if ( ! node.isConcrete() )
-	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Bad RDF term", lineNum, token)) ;
-	    if ( tokenizer.hasNext() )
-	        throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Trailing characters", lineNum, token)) ;
-	    if ( node.isURI() )
-	    {
-	        // Lightly test for bad URIs.
-	        String x = node.getURI() ;
-	        if ( x.indexOf(' ') >= 0 )
-	            throw new ResultSetException(format("Error Parsing TSV results at Line %d, item '%s' - Space(s) in  IRI", lineNum, token)) ;
-	    }
-	    return node ;
-	}
-
 	@Override
 	protected Binding moveToNextBinding() {
         if (!hasNext()) throw new NoSuchElementException() ;
