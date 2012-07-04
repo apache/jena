@@ -18,31 +18,56 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.system.PrefixMap ;
+import org.openjena.riot.tokens.Token ;
+import org.openjena.riot.tokens.Tokenizer ;
+import org.openjena.riot.tokens.TokenizerFactory ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class NodeFactory
 {
+    private static final PrefixMap prefixMappingDefault = PrefixMap.fromPrefixMapping(SSE.getDefaultPrefixMapRead()) ; 
+    
     /** Parse a node - with convenience prefix mapping */ 
     public static Node parseNode(String nodeString)
     {
-        return SSE.parseNode(nodeString) ;
+        return parseNode(nodeString, prefixMappingDefault) ;
     }
 
-    private static PrefixMapping pmapEmpty = new PrefixMappingImpl() ; 
-    /** Parse a string into a node. Pass null for the prefix mapping to indicate using no defined mappings */ 
-    public static Node parseNode(String nodeString, PrefixMapping pmap)
+    private static PrefixMap pmapEmpty = new PrefixMap() ; 
+
+    /** Parse a string into a node. 
+     * Pass null for the prefix mapping to indicate using no defined mappings
+     * Allows surrounding white space.
+     */ 
+    public static Node parseNode(String nodeString, PrefixMap pmap)
     {
-        if ( pmap == null )
-            pmap = pmapEmpty ;
-        return SSE.parseNode(nodeString, pmap) ;
+        Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(nodeString) ;
+        if ( ! tokenizer.hasNext() )
+            throw new RiotException("Empty RDF term") ; 
+        Token token = tokenizer.next() ;
+        Node node = token.asNode(pmap) ;
+        if ( node == null )
+            throw new RiotException("Bad RDF Term: "+nodeString) ;
+
+        if ( tokenizer.hasNext() )
+            throw new RiotException("Trailing characters in string: "+nodeString) ;
+        if ( node.isURI() )
+        {
+            // Lightly test for bad URIs.
+            String x = node.getURI() ;
+            if ( x.indexOf(' ') >= 0 )
+                throw new RiotException("Space(s) in  IRI: "+ nodeString) ;
+        }
+        return node ;
     }
     
     private static QueryParseException makeException(String msg, int line, int column)

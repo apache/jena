@@ -37,6 +37,7 @@ public class NodeConst
     public static final Node nodeFirst      = RDF.Nodes.first ;
     public static final Node nodeRest       = RDF.Nodes.rest ;
     public static final Node nodeNil        = RDF.Nodes.nil ;
+    public static final Node nodeANY        = Node.ANY ;
     
     public static final Node nodeOwlSameAs  = OWL.sameAs.asNode() ;
     public static final Node dtRDFlangString = Node.createURI(RDF.getURI()+"langString") ;

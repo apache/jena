@@ -26,11 +26,14 @@ import java.util.List ;
 import java.util.regex.Pattern ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.riot.RiotException ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
+import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 /**
  * Input reader associated to {@link TSVOutput}.
@@ -57,14 +60,20 @@ public class TSVInput {
         	    throw new ARQException("TSV Results malformed - input is empty (no header row)") ;
         	if ( ! str.isEmpty() )
         	{
-            	String[] tokens = pattern.split(str,-1);
-            	for ( String token : tokens ) 
-            	{
-            		if (!token.startsWith("?")) throw new ResultSetException("TSV Results malformed - variable names must begin with a ? in the header");
-            		token = token.substring(1);
-            		Var var = Var.alloc(token);
-            		vars.add(var);
-            		varNames.add(var.getName());
+        	    String[] tokens = pattern.split(str,-1);
+        	    for ( String token : tokens ) 
+        	    {
+        	        Node v ;
+        	        try {
+        	            v = NodeFactory.parseNode(token) ;
+        	            if ( v == null || ! v.isVariable())
+        	                throw new ResultSetException("TSV Results malformed - not a variable: "+token);
+        	        } catch (RiotException ex)
+        	        { throw new ResultSetException("TSV Results malformed - variable names must begin with a ? in the header: "+token); }
+
+        	        Var var = Var.alloc(v);
+        	        vars.add(var);
+        	        varNames.add(var.getName());
             	}
         	}
         } 
@@ -77,6 +86,4 @@ public class TSVInput {
         //This will parse actual result rows as needed thus minimising memory usage
         return new ResultSetStream(varNames, null, new TSVInputIterator(reader, vars));
     }
- 
-
-}
+ }

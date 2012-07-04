@@ -54,6 +54,8 @@ import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 import com.hp.hpl.jena.vocabulary.XSD ;
 
@@ -68,7 +70,9 @@ public final class Token
     private long line ;
     
     // Keywords recognized.
-    public static final String ImageANY = "ANY" ;
+    public static final String ImageANY     = "ANY" ;
+    public static final String ImageTrue    = "true" ;
+    public static final String ImageFalse   = "false" ;
     
     public final TokenType getType() { return tokenType ; }
     public final String getImage()   { return tokenImage ; }
@@ -347,14 +351,25 @@ public final class Token
         return tokenType.equals(TokenType.BNODE) ;
     }
 
-    // Validation of URIs?
     
     /** Token to Node, a very direct form that is purely driven off the token.
      *  Turtle and N-triples need to process the token and not call this:
      *  1/ Use bNode label as given
      *  2/ No prefix or URI resolution.
+     *  3/ No checking.
      */
     public Node asNode()
+    {
+        return asNode(null) ;
+    }
+    
+    /** Token to Node, with a prefix map
+     *  Turtle and N-triples need to process the token and not call this:
+     *  1/ Use bNode label as given
+     *  2/ No prefix or URI resolution.
+     *  3/ No checking.
+     */
+    public Node asNode(PrefixMap pmap)
     {
         switch(tokenType)
         {
@@ -362,13 +377,21 @@ public final class Token
             case BNODE : return Node.createAnon(new AnonId(tokenImage)) ;
             case IRI :   return Node.createURI(tokenImage) ; 
             case PREFIXED_NAME :
-                return Node.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
+                if ( pmap == null )
+                    return Node.createURI("urn:prefixed-name:"+tokenImage+":"+tokenImage2) ;
+                String x = pmap.expand(tokenImage, tokenImage2) ;
+                if ( x == null )
+                    throw new RiotException("Can't expand prefixed name: "+this) ;
+                return Node.createURI(x) ;
             case DECIMAL :  return Node.createLiteral(tokenImage, null, XSDDatatype.XSDdecimal)  ; 
             case DOUBLE :   return Node.createLiteral(tokenImage, null, XSDDatatype.XSDdouble)  ;
             case INTEGER:   return Node.createLiteral(tokenImage, null, XSDDatatype.XSDinteger) ;
             case LITERAL_DT :
             {
-                Node n = getSubToken().asNode();
+                if ( pmap == null && getSubToken().hasType(TokenType.PREFIXED_NAME) )
+                    // Must be able to resolve the datattype else we can't find it's datatype.
+                    throw new RiotException("Invalid token: "+this) ;
+                Node n = getSubToken().asNode(pmap);
                 if ( ! n.isURI() )
                     throw new RiotException("Invalid token: "+this) ;
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI()) ;
@@ -381,14 +404,21 @@ public final class Token
             case LONG_STRING1:
             case LONG_STRING2:
                 return Node.createLiteral(tokenImage) ;
+            case VAR:
+                return Var.alloc(tokenImage) ;
             case KEYWORD:
                 if ( tokenImage.equals(ImageANY) )
-                    return Node.ANY ;
+                    return NodeConst.nodeANY ;
+                if ( tokenImage.equals(ImageTrue) )
+                    return NodeConst.nodeTrue ;
+                if ( tokenImage.equals(ImageFalse) )
+                    return NodeConst.nodeFalse; ;
                 //$FALL-THROUGH$
             default: break ;
         }
         return null ;
     }
+
     
     public boolean hasType(TokenType tokenType)
     {

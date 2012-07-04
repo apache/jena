@@ -23,18 +23,27 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.ActionKeyValue ;
 import org.openjena.atlas.lib.Pair ;
 
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /** Lightweight, prefix mapping for parsers.  No XML rules, no reverse lookup. */
 public class PrefixMap
 {
     private final Map<String, IRI> prefixes = new HashMap<String, IRI>() ;
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes) ;
+ 
+    public static PrefixMap fromPrefixMapping(PrefixMapping pmap)
+    {
+        PrefixMap pm = new PrefixMap() ;
+        for ( Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet() )
+            pm.add(e.getKey(), e.getValue()) ;
+        return pm ;
+    }
     
     public PrefixMap() {}
     
