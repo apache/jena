@@ -448,41 +448,50 @@ public class QueryExecutionFactory
         return makePlan(query, dataset, input, context) ;
     }
     
-    public static Plan createPlan(String queryStr, Graph graph)
-    {
-        return createPlan(QueryFactory.create(queryStr), graph) ; 
-    }
-    
-    public static Plan createPlan(String queryStr, DatasetGraph dataset)
-    {
-        return createPlan(QueryFactory.create(queryStr), dataset) ; 
-    }
-     
-    public static Plan createPlan(Query query, Graph graph)
-    {
-        return makePlan(query, DatasetGraphFactory.createOneGraph(graph), null, null) ; 
-    }
-    
-    public static Plan createPlan(Query query, DatasetGraph dataset)
-    {
-        return makePlan(query, dataset, null, null) ;
-    }
-    
     public static Plan createPlan(Query query, DatasetGraph dataset, Binding input)
     {
         return makePlan(query, dataset, input, null) ;
     }
 
+    // These expose internals too much.
+    
+    @Deprecated
+    public static Plan createPlan(String queryStr, Graph graph)
+    {
+        return createPlan(QueryFactory.create(queryStr), graph) ; 
+    }
+    
+    @Deprecated
+    public static Plan createPlan(String queryStr, DatasetGraph dataset)
+    {
+        return createPlan(QueryFactory.create(queryStr), dataset) ; 
+    }
+     
+    @Deprecated
+    public static Plan createPlan(Query query, Graph graph)
+    {
+        return makePlan(query, DatasetGraphFactory.createOneGraph(graph), null, null) ; 
+    }
+    
+    @Deprecated
+    public static Plan createPlan(Query query, DatasetGraph dataset)
+    {
+        return makePlan(query, dataset, null, null) ;
+    }
+    
+    @Deprecated
     public static Plan createPlan(Element pattern, Graph graph)
     {
         return createPlan(toQuery(pattern), graph) ; 
     }
     
+    @Deprecated
     public static Plan createPlan(Element pattern, DatasetGraph dataset)
     {
         return createPlan(toQuery(pattern), dataset, null) ;
     }
     
+    @Deprecated
     public static Plan createPlan(Element pattern, DatasetGraph dataset, Binding input)
     {
         return createPlan(toQuery(pattern), dataset, input) ;
