@@ -218,6 +218,7 @@ end
 
 def response_print_body(uri, request)
   http = Net::HTTP::Proxy($proxy.host,$proxy.port).new(uri.host, uri.port)
+  http.read_timeout = nil
   # check we can connect.
   begin http.start
   rescue => e  
