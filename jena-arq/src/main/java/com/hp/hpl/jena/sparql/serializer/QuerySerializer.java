@@ -259,25 +259,51 @@ public class QuerySerializer implements QueryVisitor
     {
         if ( query.hasValues() )
         {
-            out.print("VALUES") ;
             outputDataBlock(out, query.getValuesVariables(), query.getValuesData(), query) ;
+            out.newline() ;
         }
     }
 
-    private static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, Query query)
+    public static void outputDataBlock(IndentedWriter out, List<Var> variables, List<Binding> values, Prologue prologue)
     {
+        out.print("VALUES ") ;
+        if ( variables.size() == 1 )
+        {
+            // Short form.
+            out.print("?") ;
+            out.print(variables.get(0).getVarName()) ;
+            out.print(" {") ;
+            out.incIndent() ;
+            for ( Binding valueRow : values )
+            {
+                // A value may be null for UNDEF
+                for ( Var var : variables )
+                {
+                    out.print(" ") ;
+                    Node value = valueRow.get(var) ; 
+                    if ( value == null )
+                        out.print("UNDEF") ;
+                    else
+                        out.print(FmtUtils.stringForNode(value, prologue)) ;
+                }
+            }
+            out.decIndent() ;
+            out.print(" }") ;
+            return ;
+        }
+        // Long form.
+        out.print("(") ;
         for ( Var v : variables )
         {
             out.print(" ") ;
             out.print(v) ;
         }
-        out.println();
-
-        out.print("{") ;
+        out.print(" )") ;
+        out.print(" {") ;
         out.incIndent() ;
-        out.println() ;
         for ( Binding valueRow : values )
         {
+            out.println() ;
             // A value may be null for UNDEF
             out.print("(") ;
             for ( Var var : variables )
@@ -287,13 +313,13 @@ public class QuerySerializer implements QueryVisitor
                 if ( value == null )
                     out.print("UNDEF") ;
                 else
-                    out.print(FmtUtils.stringForNode(value, query)) ;
+                    out.print(FmtUtils.stringForNode(value, prologue)) ;
             }
-            out.println(" )") ;
+            out.print(" )") ;
         }
         out.decIndent() ;
+        out.ensureStartOfLine() ;
         out.print("}") ;
-        out.println() ;
     }
     
 
