@@ -28,12 +28,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDistinct ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpReduced ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TransformFilterPlacement ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -44,6 +39,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPeek ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutor ;
 import com.hp.hpl.jena.sparql.engine.main.OpExecutorFactory ;
 import com.hp.hpl.jena.sparql.engine.main.QC ;
+import com.hp.hpl.jena.sparql.engine.main.iterator.QueryIterGraph ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderProc ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
@@ -160,6 +156,13 @@ public class OpExecutorTDB extends OpExecutor
         BasicPattern bgp = quadPattern.getBasicPattern() ;
         Node gn = quadPattern.getGraphNode() ;
         return optimizeExecuteQuads(ds, input, gn, bgp, null, execCxt) ;
+    }
+
+    @Override
+    protected QueryIterator execute(OpGraph opGraph, QueryIterator input)
+    {
+        // Path evaluation or dataset sets which do not go straight to the DatasetGraphTDB  
+        return new QueryIterGraph(input, opGraph, execCxt) ;
     }
 
     /** Execute a BGP (and filters) on a TDB graph, which may be in default storage or it may be a named graph */ 
