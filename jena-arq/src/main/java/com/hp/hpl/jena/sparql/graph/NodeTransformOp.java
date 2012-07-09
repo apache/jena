@@ -24,23 +24,9 @@ import java.util.List ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.SortCondition ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
-import com.hp.hpl.jena.sparql.algebra.op.OpAssign ;
-import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpDatasetNames ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExtend ;
-import com.hp.hpl.jena.sparql.algebra.op.OpFilter ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGraph ;
-import com.hp.hpl.jena.sparql.algebra.op.OpGroup ;
-import com.hp.hpl.jena.sparql.algebra.op.OpLeftJoin ;
-import com.hp.hpl.jena.sparql.algebra.op.OpOrder ;
-import com.hp.hpl.jena.sparql.algebra.op.OpPath ;
-import com.hp.hpl.jena.sparql.algebra.op.OpProject ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTable ;
-import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
@@ -150,9 +136,7 @@ class NodeTransformOp extends TransformCopy
     {
         if ( opTable.isJoinIdentity() )
             return opTable ;
-        
-        throw new ARQNotImplemented() ;
-        //return null ;
+        return opTable ;
     }
     
     @Override public Op transform(OpLeftJoin opLeftJoin, Op left, Op right)
