@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.syntax.* ;
@@ -350,7 +351,17 @@ public class OpAsQuery
         { 
             // This will go in a group so simply forget it. 
             if ( opTable.isJoinIdentity() ) return ;
-            throw new ARQNotImplemented("OpTable") ;
+            
+            // Put in a VALUES
+            // This may be related to the grpup of the overall query.
+            
+            ElementData el = new ElementData() ; 
+            el.getVars().addAll(opTable.getTable().getVars()) ;
+            QueryIterator qIter = opTable.getTable().iterator(null) ;
+            while(qIter.hasNext())
+                el.getRows().add(qIter.next()) ;
+            qIter.close() ;
+            currentGroup().addElement(el) ;
         }
 
         @Override
