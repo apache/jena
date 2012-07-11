@@ -26,10 +26,8 @@ import com.hp.hpl.jena.graph.Graph ;
 
 public class JenaWriterRdfJson extends JenaWriterBase
 {
-
 	@Override
 	protected void write(Graph graph, Writer out, String base) {
 		RDFJSONWriter.write(out, graph) ;
 	}
-
 }
