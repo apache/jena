@@ -19,6 +19,8 @@
 package org.apache.jena.fuseki.servlets;
 
 import java.io.IOException ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
@@ -41,6 +43,26 @@ import com.hp.hpl.jena.query.ResultSetFormatter ;
 public class ResponseResultSet
 {
     private static Logger log = LoggerFactory.getLogger(ResponseResultSet.class) ;
+
+    // Short names for "output="
+    private static final String contentOutputJSON          = "json" ;
+    private static final String contentOutputXML           = "xml" ;
+    private static final String contentOutputSPARQL        = "sparql" ;
+    private static final String contentOutputText          = "text" ;
+    private static final String contentOutputCSV           = "csv" ;
+    private static final String contentOutputTSV           = "tsv" ;
+    
+    public static Map<String,String> shortNamesResultSet = new HashMap<String, String>() ;
+    static {
+        // Some short names.  keys are lowercase.
+        ResponseOps.put(shortNamesResultSet, contentOutputJSON,   WebContent.contentTypeResultsJSON) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputSPARQL, WebContent.contentTypeResultsXML) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputXML,    WebContent.contentTypeResultsXML) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputText,   WebContent.contentTypeTextPlain) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputCSV,    WebContent.contentTypeTextCSV) ;
+        ResponseOps.put(shortNamesResultSet, contentOutputTSV,    WebContent.contentTypeTextTSV) ;
+    }
+
     
     interface OutputContent { void output(ServletOutputStream out) ; }
 
@@ -71,7 +93,7 @@ public class ResponseResultSet
         // Override content type
         // Does &output= override?
         // Requested output type by the web form or &output= in the request.
-        String outputField = ResponseOps.paramOutput(request) ;    // Expands short names
+        String outputField = ResponseOps.paramOutput(request, shortNamesResultSet) ;    // Expands short names
         if ( outputField != null )
             mimeType = outputField ;
         
@@ -86,7 +108,7 @@ public class ResponseResultSet
         // Force to text/plain?
         String forceAccept = ResponseOps.paramForceAccept(request) ;
         if ( forceAccept != null )
-            contentType = forceAccept ;
+            contentType = WebContent.contentTypeTextPlain ;
 
         // Better : dispatch on MediaType
         // ---- Form: XML
@@ -261,7 +283,6 @@ public class ResponseResultSet
     {
         try {
             String callback = ResponseOps.paramCallback(httpRequest) ;
-            String outputField = ResponseOps.paramOutput(httpRequest) ;
             ServletOutputStream out = httpResponse.getOutputStream() ;
 
             if ( callback != null )
@@ -289,14 +310,4 @@ public class ResponseResultSet
             httpResponse.flushBuffer();
         } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
     }
-
-    // Short names for "output="
-    // TODO Map !
-    public static final String contentOutputJSON          = "json" ;
-    public static final String contentOutputXML           = "xml" ;
-    public static final String contentOutputSPARQL        = "sparql" ;
-    public static final String contentOutputText          = "text" ;
-    public static final String contentOutputCSV           = "csv" ;
-    public static final String contentOutputTSV           = "tsv" ;
-
 }

@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import java.util.HashMap ;
+import java.util.Map ;
+
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -38,6 +41,25 @@ import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 
 public class ResponseModel
 {
+
+    // Short names for "output="
+    private static final String contentOutputJSON          = "json" ;
+    private static final String contentOutputXML           = "xml" ;
+    private static final String contentOutputText          = "text" ;
+    private static final String contentOutputTTL           = "ttl" ;
+    private static final String contentOutputNT            = "nt" ;
+
+    public static Map<String,String> shortNamesModel = new HashMap<String, String>() ;
+    static {
+
+        // Some short names.  keys are lowercase.
+        ResponseOps.put(shortNamesModel, contentOutputJSON, WebContent.contentTypeRDFJSON) ;
+        ResponseOps.put(shortNamesModel, contentOutputXML,  WebContent.contentTypeRDFXML) ;
+        ResponseOps.put(shortNamesModel, contentOutputText, WebContent.contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputTTL,  WebContent.contentTypeTurtle) ;
+        ResponseOps.put(shortNamesModel, contentOutputNT,   WebContent.contentTypeNTriples) ;
+    }
+
     public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
         {
             String mimeType = null ;        // Header request type 
@@ -46,6 +68,10 @@ public class ResponseModel
             MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
             if ( i != null )
                 mimeType = i.getContentType() ;
+            
+            String outputField = ResponseOps.paramOutput(request, shortNamesModel) ;
+            if ( outputField != null )
+                mimeType = outputField ;
             
             String writerMimeType = mimeType ;
             
@@ -60,8 +86,19 @@ public class ResponseModel
                     msg = "Accept: "+x+" : Not understood" ;
                 SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
             }
-            
+
+            // Force to text/plain?
             TypedInputStream ts = new TypedInputStream(null, mimeType, WebContent.charsetUTF8) ;
+            String contentType = ts.getMediaType() ;
+            String charset =     ts.getCharset() ;
+            
+            String forceAccept = ResponseOps.paramForceAccept(request) ;
+            if ( forceAccept != null )
+            {
+                contentType = WebContent.contentTypeTextPlain ;
+                charset = WebContent.charsetUTF8 ;
+            }
+            
             Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ; 
             RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
                  
@@ -81,7 +118,7 @@ public class ResponseModel
             
             // Managed to write it locally
             try {
-                ResponseResultSet.setHttpResponse(request, response, ts.getMediaType(), ts.getCharset()) ; 
+                ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
                 response.setStatus(HttpSC.OK_200) ;
                 rdfw.write(model, response.getOutputStream(), null) ;
                 response.getOutputStream().flush() ;

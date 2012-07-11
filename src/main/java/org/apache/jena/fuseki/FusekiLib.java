@@ -52,6 +52,7 @@ public class FusekiLib
     // Use riot.WebContent on next ARQ update.
     static {
         mapContentTypeToLang.put(WebContent.contentTypeRDFXML, Lang.RDFXML) ;
+        mapContentTypeToLang.put(WebContent.contentTypeRDFJSON, Lang.RDFJSON) ;
         mapContentTypeToLang.put(WebContent.contentTypeTurtle, Lang.TURTLE) ;
         mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt1, Lang.TURTLE) ;
         mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt2, Lang.TURTLE) ;
@@ -68,6 +69,7 @@ public class FusekiLib
     private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;
     static {
         mapLangToWriterName.put(Lang.N3, WebContent.langN3) ;
+        mapLangToWriterName.put(Lang.RDFJSON, WebContent.langRdfJson) ;
         mapLangToWriterName.put(Lang.TURTLE, WebContent.langTurtle) ;
         mapLangToWriterName.put(Lang.NTRIPLES, WebContent.langNTriples) ;
         mapLangToWriterName.put(Lang.RDFXML, WebContent.langRDFXML) ;
