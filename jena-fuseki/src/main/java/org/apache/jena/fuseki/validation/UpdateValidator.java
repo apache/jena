@@ -82,29 +82,6 @@ public class UpdateValidator extends ValidatorBase
             
             // Currently default.
             boolean outputSPARQL = true ;
-            boolean outputPrefix = false ;
-            boolean outputAlgebra = false ;
-            boolean outputQuads = false ;
-            
-            if ( a != null )
-            {
-                outputSPARQL = false ;
-                for ( int i = 0 ; i < a.length ; i++ )
-                {
-                    if ( a[i].equals("sparql") ) 
-                        outputSPARQL = true ;
-                    if ( a[i].equals("prefix") ) 
-                        outputPrefix = true ;
-                    if ( a[i].equals("algebra") ) 
-                        outputAlgebra = true ;
-                    if ( a[i].equals("quads") ) 
-                        outputQuads = true ;
-                }
-            }
-            
-//            if ( ! outputSPARQL && ! outputPrefix )
-//                outputSPARQL = true ;
-            
             boolean lineNumbers = true ;
             
             if ( lineNumbersArg != null )
@@ -172,6 +149,7 @@ public class UpdateValidator extends ValidatorBase
                 } ;
                 output(outStream, c, lineNumbers) ;
             }
+            outStream.println("</body>") ;
             outStream.println("</html>") ;
             
         } catch (Exception ex)

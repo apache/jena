@@ -90,6 +90,8 @@ public class QueryValidator extends ValidatorBase
             boolean outputPrefix = false ;
             boolean outputAlgebra = false ;
             boolean outputQuads = false ;
+            boolean outputOptimized = false ;
+            boolean outputOptimizedQuads = false ;
             
             if ( a != null )
             {
@@ -103,6 +105,10 @@ public class QueryValidator extends ValidatorBase
                         outputAlgebra = true ;
                     if ( a[i].equals("quads") ) 
                         outputQuads = true ;
+                    if ( a[i].equals("opt") ) 
+                        outputOptimized = true ;
+                    if ( a[i].equals("optquads") ) 
+                        outputOptimizedQuads = true ;
                 }
             }
             
@@ -138,9 +144,9 @@ public class QueryValidator extends ValidatorBase
             }
             
             // Attempt to parse it.
-            Query q = null ;
+            Query query = null ;
             try {
-                q = QueryFactory.create(queryString, "http://example/base/", language) ;
+                query = QueryFactory.create(queryString, "http://example/base/", language) ;
             } catch (ARQException ex)
             {
                 // Over generous exception (should be QueryException)
@@ -158,47 +164,25 @@ public class QueryValidator extends ValidatorBase
                 finishFixed(outStream) ;
             }
             
-            // Because we pass into anon inner classes
-            final Query query = q ;
-            
-            // OK?  Pretty print
-            if ( query != null && outputSPARQL )
+            if ( query != null )
             {
-                outStream.println("<p>Formatted, parsed query:</p>") ;
-                Content c = new Content(){
-                    @Override
-                    public void print(IndentedWriter out)
-                    { query.serialize(out) ; }
-                } ;
-                output(outStream, c, lineNumbers) ;
+                if ( outputSPARQL )
+                    outputSyntax(outStream, query, lineNumbers) ;
+                
+                if ( outputAlgebra )
+                    outputAlgebra(outStream, query, lineNumbers) ;
+                
+                if ( outputQuads )
+                    outputAlgebraQuads(outStream, query, lineNumbers) ;
+                
+                if ( outputOptimized )
+                    outputAlgebraOpt(outStream, query, lineNumbers) ;
+
+                if ( outputOptimizedQuads )
+                    outputAlgebraOptQuads(outStream, query, lineNumbers) ;
             }
             
-            if ( query != null && outputAlgebra )
-            {
-                outStream.println("<p>Algebra structure:</p>") ;
-                final Op op = Algebra.compile(query) ;   // No optimization
-                final SerializationContext sCxt = new SerializationContext(query) ;
-                Content c = new Content(){
-                    @Override
-                    public void print(IndentedWriter out)
-                    {  op.output(out, sCxt) ; }
-                } ;
-                output(outStream, c , lineNumbers) ;
-            }
-            
-            if ( query != null && outputQuads )
-            {
-                outStream.println("<p>Quad structure:</p>") ;
-                final Op op = Algebra.toQuadForm(Algebra.compile(query)) ;
-                final SerializationContext sCxt = new SerializationContext(query) ;
-                Content c = new Content(){
-                    @Override
-                    public void print(IndentedWriter out)
-                    {  op.output(out, sCxt) ; }
-                } ;
-                output(outStream, c , lineNumbers) ;
-            }
-            
+            outStream.println("</body>") ;
             outStream.println("</html>") ;
             
         } catch (Exception ex)
@@ -209,6 +193,56 @@ public class QueryValidator extends ValidatorBase
     
     interface Content { void print(IndentedWriter out) ; }
     
+    private void outputSyntax(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
+    {
+        outStream.println("<p>Formatted, parsed query:</p>") ;
+        Content c = new Content(){
+            @Override
+            public void print(IndentedWriter out)
+            { query.serialize(out) ; }
+        } ;
+        output(outStream, c, lineNumbers) ;
+    }
+    
+    private void outputAlgebra(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
+    {
+        outStream.println("<p>Algebra structure:</p>") ;
+        final Op op = Algebra.compile(query) ;   // No optimization
+        output(outStream, query, op, lineNumbers) ;
+    }
+        
+    private void outputAlgebraOpt(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
+    {
+        outStream.println("<p>Alebgra, with general triple optimizations:</p>") ;
+        final Op op = Algebra.optimize(Algebra.compile(query)) ;
+        output(outStream, query, op, lineNumbers) ;
+    }
+        
+    private void outputAlgebraQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
+    {
+        outStream.println("<p>Quad structure:</p>") ;
+        final Op op = Algebra.toQuadForm(Algebra.compile(query)) ;
+        output(outStream, query, op, lineNumbers) ;
+    }
+
+    private void outputAlgebraOptQuads(ServletOutputStream outStream, final Query query, boolean lineNumbers) throws IOException
+    {
+        outStream.println("<p>Alebgra, with general quads optimizations:</p>") ;
+        final Op op = Algebra.optimize(Algebra.toQuadForm(Algebra.compile(query))) ;
+        output(outStream, query, op, lineNumbers) ;
+    }
+    
+    private void output(ServletOutputStream outStream, Query query, final Op op, boolean lineNumbers) throws IOException
+    {
+        final SerializationContext sCxt = new SerializationContext(query) ;
+        Content c = new Content(){
+            @Override
+            public void print(IndentedWriter out)
+            {  op.output(out, sCxt) ; }
+        } ;
+        output(outStream, c , lineNumbers) ;
+    }
+
     private void output(ServletOutputStream outStream, Content content, boolean lineNumbers) throws IOException
     {
         startFixed(outStream) ;
@@ -220,6 +254,4 @@ public class QueryValidator extends ValidatorBase
         outStream.write(b) ;
         finishFixed(outStream) ;
     }
-    
- 
 }

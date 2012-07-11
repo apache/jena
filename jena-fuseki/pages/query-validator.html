@@ -41,16 +41,22 @@ SELECT ?book ?title
 WHERE
    { ?book dc:title ?title }</textarea>
 <br/>
-  Input syntax:
+  Input syntax:<br/>
     <input type="radio" name="languageSyntax" value="SPARQL" checked="checked"/>SPARQL
     <input type="radio" name="languageSyntax" value="ARQ"/>SPARQL extended syntax
   <br/>
-Output syntax:
-  <input type="checkbox" name="outputFormat" value="sparql" checked="checked"/>SPARQL
-  <input type="checkbox" name="outputFormat" value="algebra"/>SPARQL algebra
-  <input type="checkbox" name="outputFormat" value="quads"/>SPARQL algebra (quads)
   <br/>
-
+Output:<br/>
+  <input type="checkbox" name="outputFormat" value="sparql" checked="checked"/>SPARQL<br/>
+  <input type="checkbox" name="outputFormat" value="algebra"/>SPARQL algebra<br/>
+  <input type="checkbox" name="outputFormat" value="quads"/>SPARQL algebra (quads)<br/>
+  <input type="checkbox" name="outputFormat" value="opt"/>SPARQL algebra
+(general optimizations)<br/>
+<!--
+  <input type="checkbox" name="outputFormat" value="optquads"/>SPARQL algebra
+(quads, general optimizations)<br/>
+-->
+  <br/>
   Line numbers:
   <input type="radio" name="linenumbers" value="true" checked="checked"/>Yes
   <input type="radio" name="linenumbers" value="false"/>No
