@@ -19,16 +19,22 @@
 package org.apache.jena.fuseki.servlets;
 
 import java.io.IOException ;
+import java.util.Locale ;
+import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.WebLib ;
-import org.openjena.riot.WebContent ;
 
 public class ResponseOps
 {
-
+    // Helpers
+    public static void put(Map<String, String> map, String key, String value)
+    {
+        map.put(key.toLowerCase(Locale.US), value) ;
+    }
+    
     public static boolean isEOFexception(IOException ioEx)
     {
         if ( ioEx.getClass().getName().equals("org.mortbay.jetty.EofException eofEx") )
@@ -41,22 +47,22 @@ public class ResponseOps
     public static String paramForceAccept(HttpServletRequest request)
     {
         String x = fetchParam(request, HttpNames.paramForceAccept) ;
-        return expandShortName(x) ; 
+        return x ; 
     }
 
     public static String paramStylesheet(HttpServletRequest request)
     { return fetchParam(request, HttpNames.paramStyleSheet) ; }
 
-    public static String paramOutput(HttpServletRequest request)
+    public static String paramOutput(HttpServletRequest request, Map<String,String> map)
     {
         // Two names.
         String x = fetchParam(request, HttpNames.paramOutput1) ;
         if ( x == null )
             x = fetchParam(request, HttpNames.paramOutput2) ;
-        return expandShortName(x) ; 
+        return expandShortName(x, map) ; 
     }
 
-    public static String paramAcceptField(HttpServletRequest request)
+    public static String paramAcceptField(HttpServletRequest request, Map<String,String> map)
     {
         String acceptField = WebLib.getAccept(request) ;
         String acceptParam = fetchParam(request, HttpNames.paramAccept) ;
@@ -65,33 +71,17 @@ public class ResponseOps
             acceptField = acceptParam ;
         if ( acceptField == null )
             return null ;
-        return expandShortName(acceptField) ; 
+        return expandShortName(acceptField, map) ; 
     }
 
-    public static String expandShortName(String str)
+    public static String expandShortName(String str, Map<String,String> map)
     {
         if ( str == null )
             return null ;
-        // Some short names.
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputJSON) ) 
-            return WebContent.contentTypeResultsJSON ;
-        
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputSPARQL) )
-            return WebContent.contentTypeResultsXML ;
-        
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputXML) )
-            return WebContent.contentTypeResultsXML ;
-        
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputText) )
-            return WebContent.contentTypeTextPlain ;
-        
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputCSV) )
-            return WebContent.contentTypeTextCSV ;
-        
-        if ( str.equalsIgnoreCase(ResponseResultSet.contentOutputTSV) )
-            return WebContent.contentTypeTextTSV ;
-        
-        return str ;
+        String str2 = map.get(str) ;
+        if ( str2 == null )
+            return str ;
+        return str2 ;
     }
 
     public static String paramCallback(HttpServletRequest request)
