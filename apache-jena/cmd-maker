@@ -16,6 +16,7 @@
 ## See the License for the specific language governing permissions and
 ## limitations under the License.
 
+# Not tdbloader2
 CMDS=$(cat <<EOF
 jena.rdfcat
 jena.rdfcompare
