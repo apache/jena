@@ -38,6 +38,8 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class RDFJSONWriter {
 
+    public RDFJSONWriter() {}
+    
 	public static void write (OutputStream out, Graph graph) {
         Prologue prologue = Prologue.create(null, null) ; // (null, graph.getPrefixMapping()) ;
 		Sink<Pair<Node, Map<Node, Set<Node>>>> sink = new SinkEntityOutput(out, prologue, SyntaxLabels.createNodeToLabel()) ;
