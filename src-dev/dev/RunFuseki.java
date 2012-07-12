@@ -60,8 +60,7 @@ public class RunFuseki
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
                     //"--mgtPort=3031",
-                    //"--host=localhost",
-                    "--mem",
+                    //"--mem",
                     //"--home=/home/afs/Projects/Fuseki",
                     //"--loc=DB",
                     //"--file=D.nt",
@@ -69,8 +68,8 @@ public class RunFuseki
                     //"--desc=desc.ttl",
                     //--pages=
                     //"--jetty-config=jetty-fuseki.xml",
+                    "--config=config-tdb.ttl"
                     // "/ds"
-                    "/ds"
                     ) ;
         System.exit(0) ;
     }
