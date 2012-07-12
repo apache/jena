@@ -346,7 +346,7 @@ public class Log
         , "log4j.logger.com.hp.hpl.jena=WARN"
         , "log4j.logger.org.openjena=WARN"
         , "log4j.logger.org.apache.jena=WARN"
-        , "log4j.logger.com.hp.hpl.jena.tdb.loader=INFO"
+        , "log4j.logger.org.apache.jena.tdb.loader=INFO"
         
         , "## Parser output"
         , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"

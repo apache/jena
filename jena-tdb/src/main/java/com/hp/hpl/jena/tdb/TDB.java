@@ -69,15 +69,15 @@ public class TDB
     // Internal logging
     private static final Logger log = LoggerFactory.getLogger(TDB.class) ;
 
-    /** Logger for general information */ 
-    public static final String logInfoName = "com.hp.hpl.jena.tdb.info" ;
-    /** Logger for general information */ 
-    public static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
-    
     /** Logger for loading information */
-    public static final String logLoaderName = "com.hp.hpl.jena.tdb.loader" ;
+    public static final String logLoaderName = "org.apache.jena.tdb.loader" ;
     /** Logger for loading information */
     public static final Logger logLoader = LoggerFactory.getLogger(logLoaderName) ;
+    
+    /** Logger for general information */ 
+    public static final String logInfoName = "org.apache.jena.info" ;
+    /** Logger for general information */ 
+    public static final Logger logInfo = LoggerFactory.getLogger(logInfoName) ;
     
 //    /** Logger for execution information */
 //    public static final String logExecName = "com.hp.hpl.jena.tdb.exec" ;
