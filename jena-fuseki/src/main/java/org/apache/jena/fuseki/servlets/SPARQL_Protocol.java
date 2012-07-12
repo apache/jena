@@ -43,8 +43,7 @@ import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
 {
     protected class HttpActionProtocol extends HttpAction {
-        DatasetDescription datasetDesc = null ;
-        
+
         public HttpActionProtocol(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;

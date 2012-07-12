@@ -23,8 +23,6 @@ import java.util.List ;
 /** This represents a configuration of a SPARQL server.
  */
 
-// Not yet used.
-
 public class ServerConfig
 {
     public ServerConfig() {}

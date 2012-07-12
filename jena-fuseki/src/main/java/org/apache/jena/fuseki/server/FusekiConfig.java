@@ -117,7 +117,7 @@ public class FusekiConfig
     
     public static ServerConfig configure(String filename)
     {
-        // Be absolutely sure everything has initaialized.
+        // Be absolutely sure everything has initialized.
         // Some initialization registers assemblers and sets abbreviation vocabulary. 
         ARQ.init();
         TDB.init() ;
