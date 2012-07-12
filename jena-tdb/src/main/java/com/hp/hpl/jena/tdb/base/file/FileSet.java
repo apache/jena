@@ -25,8 +25,6 @@ import org.openjena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.tdb.sys.Names ;
-
 /** Naming metadata management to a collection of related files
  *  (same directory, same basename within directory, various extensions).
  */
@@ -38,7 +36,6 @@ public class FileSet
     
     private Location location ;
     private String basename ;
-    private MetaFile metafile ;
 
     /** FileSet for "in-memory" */
     public static FileSet mem()
@@ -83,26 +80,11 @@ public class FileSet
     {
         this.location = directory ;
         this.basename = basename ;
-        
-        if ( location.isMem() )
-        {
-            if ( useLocationMetadata )
-                metafile = location.getMetaFile() ;
-            else
-                metafile = new MetaFile("Fileset: memory", Names.memName) ;
-            return ;
-        }
-        
-        String metaFileName = location.getPath(basename, Names.extMeta) ; // **** MEMORY
-        if ( useLocationMetadata )
-            metafile = location.getMetaFile() ;
-        else
-            metafile = new MetaFile("Fileset: "+this.basename, metaFileName) ;
     }
     
     public Location getLocation()   { return location ; }
     public String getBasename()     { return basename ; }
-    public MetaFile getMetaFile()   { return metafile ; }
+    //public MetaFile getMetaFile()   { return metafile ; }
     
     public boolean isMem()
     {
