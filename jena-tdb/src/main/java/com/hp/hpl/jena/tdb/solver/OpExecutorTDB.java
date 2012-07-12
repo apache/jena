@@ -191,12 +191,16 @@ public class OpExecutorTDB extends OpExecutor
     
         // -- Input
         // Must pass this iterator into the next stage.
-        ReorderTransformation transform = graph.getReorderTransform() ;
-        if ( transform != null )
+        if ( pattern.size() >= 2 )
         {
-            QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-            input = peek ; // Must pass on
-            pattern = reorder(pattern, peek, transform) ;
+            // Must be 2 or triples to reorder. 
+            ReorderTransformation transform = graph.getReorderTransform() ;
+            if ( transform != null )
+            {
+                QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
+                input = peek ; // Must pass on
+                pattern = reorder(pattern, peek, transform) ;
+            }
         }
         // -- Filter placement
             
