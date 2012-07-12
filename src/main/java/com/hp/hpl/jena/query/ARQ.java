@@ -108,7 +108,7 @@ public class ARQ
     
     /** Controls bNode labels as &lt;_:...&gt; or not -
      * that is a pseudo URIs.
-     * This does not affect [] or _:a bNodes a variables in queries. 
+     * This does not affect [] or _:a bNodes as variables in queries. 
      */
 
     public static final Symbol constantBNodeLabels =
