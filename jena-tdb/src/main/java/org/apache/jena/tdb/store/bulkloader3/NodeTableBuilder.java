@@ -33,6 +33,8 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB;
 import com.hp.hpl.jena.tdb.store.NodeId;
 
+// UNUSED - DELETE?
+
 public class NodeTableBuilder implements Sink<Quad>
 {
     private NodeTable nodeTable ;
@@ -41,7 +43,7 @@ public class NodeTableBuilder implements Sink<Quad>
     private ProgressLogger monitor ;
     private StatsCollectorNodeId stats ;
 
-    public NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, DataBag<Tuple<Long>> outputTriples, DataBag<Tuple<Long>> outputQuads)
+    private NodeTableBuilder(DatasetGraphTDB dsg, ProgressLogger monitor, DataBag<Tuple<Long>> outputTriples, DataBag<Tuple<Long>> outputQuads)
     {
         this.monitor = monitor ;
         NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ; 
