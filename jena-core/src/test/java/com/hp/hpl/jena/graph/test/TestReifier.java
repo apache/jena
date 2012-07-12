@@ -18,21 +18,18 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Constructor ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.impl.ReifierFragmentsMap;
-import com.hp.hpl.jena.graph.impl.ReifierTripleMap;
-import com.hp.hpl.jena.graph.impl.SimpleReifier;
-import com.hp.hpl.jena.graph.impl.SimpleReifierFragmentsMap;
-import com.hp.hpl.jena.graph.impl.SimpleReifierTripleMap;
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.impl.* ;
+import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     This class tests the reifiers of ordinary GraphMem graphs.
@@ -54,11 +51,9 @@ public class TestReifier extends AbstractTestReifier
         this.style = style;
         }
         
-    @SuppressWarnings("deprecation")
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
-        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
         result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMemFaster.class ) );
         result.setName(TestReifier.class.getSimpleName());
         return result; 

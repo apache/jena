@@ -34,13 +34,11 @@ import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.WrappedGraph ;
-import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.util.CollectionFactory ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
-@SuppressWarnings("deprecation")
 public class TestGraph extends GraphTestBase
     { 
 	public TestGraph( String name )
@@ -55,8 +53,6 @@ public class TestGraph extends GraphTestBase
         TestSuite result = new TestSuite( TestGraph.class );
         result.addTest( suite( MetaTestGraph.class, GraphMemFaster.class ) );
         result.addTest( suite( TestReifier.class, GraphMemFaster.class ) );
-        result.addTest( suite( MetaTestGraph.class, GraphMem.class ) );
-        result.addTest( suite( TestReifier.class, GraphMem.class ) );
         result.addTest( suite( MetaTestGraph.class, WrappedGraphMem.class ) );
         result.addTest( suite( TestReifier.class, WrappedGraphMem.class ) );
         result.addTest( TestGraphListener.suite() );

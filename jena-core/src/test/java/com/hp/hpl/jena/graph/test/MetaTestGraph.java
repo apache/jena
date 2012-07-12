@@ -23,15 +23,11 @@ import java.lang.reflect.*;
 import junit.framework.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.*;
 
 /**
 	MetaTestGraph
-
-	@author kers
 */
-@SuppressWarnings("deprecation")
 public class MetaTestGraph extends AbstractTestGraph 
     {
     protected final Class<? extends Graph> graphClass;
@@ -47,9 +43,6 @@ public class MetaTestGraph extends AbstractTestGraph
     public MetaTestGraph( String name )
         { super( name ); graphClass = null; style = null; }
      
-    public static TestSuite suite()
-        { return suite( MetaTestGraph.class, GraphMem.class, ReificationStyle.Minimal ); }
-            
     /**
         Construct a suite of tests from the test class <code>testClass</code>
         by instantiating it three times, once each for the three reification styles,
