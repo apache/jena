@@ -104,8 +104,27 @@ public class Service
 
         //Explain.explain("HTTP", opRemote, context) ;
         
-        Query query = OpAsQuery.asQuery(opRemote) ;
+        Query query ;
+        
+        // Comment (for the future?)
+//        if ( false )
+//        {
+//            // ***** Interacts with substitution.
+//            Element el = op.getServiceElement().getElement() ;
+//            if ( el instanceof ElementSubQuery )
+//                query = ((ElementSubQuery)el).getQuery() ;
+//            else
+//            {
+//                query = QueryFactory.create() ;
+//                query.setQueryPattern(el) ;
+//                query.setResultVars() ;
+//            }
+//        }
+//        else
+            query = OpAsQuery.asQuery(opRemote) ;
             
+        
+        
         Explain.explain("HTTP", query, context) ;
         String uri = op.getService().getURI() ;
         HttpQuery httpQuery = configureQuery(uri, context, query);
