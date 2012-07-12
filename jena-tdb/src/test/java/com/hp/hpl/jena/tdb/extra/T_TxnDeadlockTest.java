@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.extra;
 
 import java.security.SecureRandom ;
 import java.util.Iterator ;
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class T_TxnDeadlockTest {
