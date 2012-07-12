@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.transaction;
+package com.hp.hpl.jena.tdb.extra;
 
 import static com.hp.hpl.jena.tdb.transaction.TransTestLib.count ;
 import static java.lang.String.format ;
@@ -52,6 +52,9 @@ import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
+import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 /** System testing using multiple datasets of the transactions. */
 public class T_TransSystemMultiDatasets
