@@ -128,6 +128,11 @@ public class HttpAction
         return activeDSG ;
     }
     
+    public final DatasetRef getDatasetRef()
+    {
+        return desc ;
+    }
+    
     // External, additional lock.
     private void enter(DatasetGraph dsg, Lock lock, boolean readLock)
     {

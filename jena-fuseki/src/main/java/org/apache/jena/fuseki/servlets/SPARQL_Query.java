@@ -62,16 +62,19 @@ import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_Protocol
 {
     protected class HttpActionQuery extends HttpActionProtocol {
-        DatasetRef desc;
+        
+        // Used if the protocol or query has a dataset description.
+        DatasetDescription datasetDesc = null ;
+        
         public HttpActionQuery(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
-            this.desc = desc;
         }
     }
     
@@ -289,7 +292,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     private void setAnyTimeouts(QueryExecution qexec, HttpActionQuery action) {
-        if (!(action.desc.allowTimeoutOverride))
+        if (!(action.getDatasetRef().allowTimeoutOverride))
             return;
 
         long desiredTimeout = Long.MAX_VALUE;
@@ -309,7 +312,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             }
         }
 
-        desiredTimeout = Math.min(action.desc.maximumTimeoutOverride, desiredTimeout);
+        desiredTimeout = Math.min(action.getDatasetRef().maximumTimeoutOverride, desiredTimeout);
         if (desiredTimeout != Long.MAX_VALUE)
             qexec.setTimeout(desiredTimeout);
     }
