@@ -323,7 +323,7 @@ public class tdbloader3 extends CmdGeneral
         return bpt2 ;
     }
 
-    private void createBPlusTreeIndex(String indexName, final ColumnMap colMap, BPlusTree bpt) {
+    private void createBPlusTreeIndex(final String indexName, final ColumnMap colMap, BPlusTree bpt) {
     	final int size = indexName.length() ;
 
     	if ( ( size != 3 ) && ( size != 4 ) ) throw new AtlasException("Unsupported size.") ;
@@ -343,7 +343,9 @@ public class tdbloader3 extends CmdGeneral
             @Override public Tuple<Long> convert(Record record) {
                 Long[] ids = new Long[size] ;
                 for ( int i = 0 ; i < size ; i++ ) {
-                    ids[colMap.fetchSlotIdx(i)] = Bytes.getLong(record.getKey(), i*SizeOfLong) ;
+                    int idx = colMap.mapSlotIdx(i) ;
+                    long x = Bytes.getLong(record.getKey(), i*SizeOfLong) ;
+                    ids[idx] = x ;
                 }
                 monitor.tick() ;
                 return Tuple.create(ids) ;
