@@ -66,7 +66,6 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
-    //@Deprecated
     //Leave - bypasses extract step in Tuple<NodeId> -> Tuple<Node> -> Triple
     public static Iterator<Triple> convertToTriples(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
@@ -79,7 +78,6 @@ public class TupleLib
         return Iter.map(iter, action) ;
     }
     
-    //@Deprecated
     public static Iterator<Quad> convertToQuads(final NodeTable nodeTable, Iterator<Tuple<NodeId>> iter)
     {
         Transform<Tuple<NodeId>, Quad> action =  new Transform<Tuple<NodeId>, Quad>(){
