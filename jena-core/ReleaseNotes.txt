@@ -1,7 +1,13 @@
 Release Notes 
 =============
 
+==== Jena 2.7.3
+
++ Remnove unused: GramMemSmal, MixedGraphMem and GraphMem (in-memory is GraphMemFaster).   
+
 ==== Jena 2.7.2
+
+(maintainence to other modules)
 
 ==== Jena 2.7.1
 

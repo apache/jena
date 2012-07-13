@@ -1,7 +1,13 @@
 ChangeLog for TDB
 =================
 
+==== TDB 0.9.3
+
++ Batching of writer-commits to inprove write trasnaction performance.
+
 ==== TDB 0.9.2
+
++ Bug fix (for use in Fuseki).  Caused excessive, if harmless log messages.
 
 ==== TDB 0.9.1
 
