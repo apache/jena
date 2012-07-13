@@ -113,7 +113,6 @@ public abstract class QueryIteratorBase
             } catch (QueryFatalException ex)
             { 
                 Log.fatal(this, "Fatal exception: "+ex.getMessage() ) ;
-                abort() ;       // Abort this iterator.
                 throw ex ;      // And pass on up the exception.
             }
         return r ;
@@ -164,7 +163,6 @@ public abstract class QueryIteratorBase
         } catch (QueryFatalException ex)
         { 
             Log.fatal(this, "QueryFatalException", ex) ; 
-            abort() ;
             throw ex ; 
         }
     }
@@ -184,18 +182,6 @@ public abstract class QueryIteratorBase
         try { closeIterator() ; }
         catch (QueryException ex)
         { Log.warn(this, "QueryException in close()", ex) ; } 
-        finished = true ;
-    }
-    
-    @Override
-    @Deprecated
-    public void abort()
-    {
-        // Calling cancel() is the preferred style.
-        if ( finished )
-            return ;
-        try { closeIterator() ; }
-        catch (QueryException ex) { } 
         finished = true ;
     }
     

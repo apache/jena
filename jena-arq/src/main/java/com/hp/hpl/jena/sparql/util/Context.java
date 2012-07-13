@@ -27,6 +27,7 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** A class for setting and keeping named values.  Used to pass 
@@ -35,13 +36,22 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class Context
 {
+    public static final Context emptyContext = new Context(true) ;
+    
     protected Map<Symbol, Object> context = new HashMap<Symbol, Object>() ;
     protected List<Callback> callbacks = new ArrayList<Callback>() ;
+    protected boolean readonly = false ;
     
     /** Create an empty context */
     public Context()
     { }
     
+    /* Create an empty context, mark it's readonly state */
+    private Context(boolean readonly)
+    { 
+        this.readonly = readonly ;
+    }
+
     /** Create a context and initialize it with a copy of the named values of another one.
      *  Shallow copy: the values themselves are not copied
      */ 
@@ -68,10 +78,17 @@ public class Context
     }
     
     /** Store a named value - overwrites any previous set value */
-    public void put(Symbol property, Object value) { context.put(property, value) ; doCallbacks(property) ; }
+    public void put(Symbol property, Object value) { _put(property, value) ; doCallbacks(property) ; }
     
     /** Store a named value - overwrites any previous set value */
-    public void set(Symbol property, Object value) { context.put(property, value) ; doCallbacks(property) ; }
+    public void set(Symbol property, Object value) { _put(property, value) ; doCallbacks(property) ; }
+    
+    private void _put(Symbol property, Object value)
+    {
+        if ( readonly )
+            throw new ARQException("Context is readonly") ;
+        context.put(property, value) ; 
+    }
 
     /** Store a named value - overwrites any previous set value */
     public void   set(Symbol property, boolean value)
@@ -87,7 +104,7 @@ public class Context
     { 
         Object x = context.get(property) ;
         if ( x == null )
-            context.put(property, value) ;
+            put(property, value) ;
     }
 
     /** Remove any value associated with a property */
@@ -126,21 +143,15 @@ public class Context
         return x.toString() ;
     }
 
-//    @Deprecated
-//    public void setAll(Context other)
-//    {
-//        if ( other != null )
-//        {
-//            context.putAll(other.context) ;
-//            callbacks.addAll(other.callbacks) ;
-//        }
-//    }
-    
     public void putAll(Context other)
     {
+        if ( readonly )
+            throw new ARQException("Context is readonly") ;
         if ( other != null )
-            // Does not copy callbacks
-            context.putAll(other.context) ;
+        {
+            for ( Map.Entry<Symbol, Object> e : other.context.entrySet() )
+                put(e.getKey(), e.getValue()) ;
+        }
     }
     
     // -- true/false

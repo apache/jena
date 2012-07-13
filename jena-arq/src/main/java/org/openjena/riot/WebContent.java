@@ -35,13 +35,6 @@ public class WebContent
     public static final String contentTypeTurtleAlt1        = "application/turtle" ;
     public static final String contentTypeTurtleAlt2        = "application/x-turtle" ;
 
-    /** @deprecated Use contentTypeTurtleAlt1 */ @Deprecated
-    public static final String contentTypeTurtle1           = "application/turtle" ;
-    /** @deprecated Use contentTypeTurtle */ @Deprecated
-    public static final String contentTypeTurtle2           = "text/turtle" ;
-    /** @deprecated Use contentTypeTurtleAlt2 */ @Deprecated
-    public static final String contentTypeTurtle3           = "application/x-turtle" ;
-    
     public static final String contentTypeRDFXML            = "application/rdf+xml" ;
     public static final String contentTypeRDFJSON            = "application/rdf+json" ;
     

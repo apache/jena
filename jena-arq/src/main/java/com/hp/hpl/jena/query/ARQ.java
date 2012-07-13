@@ -294,10 +294,6 @@ public class ARQ
      */  
     public static final Symbol optDistinctToReduced = ARQConstants.allocSymbol("optDistinctToReduced") ;
 
-    /** @deprecated Use optFilterPlacement */
-    @Deprecated
-    public static final Symbol filterPlacement = optFilterPlacement ;
-    
     /** 
      *  Context key controlling whether the standard optimizer applies
      *  optimizations to equalities in FILTERs.

@@ -50,15 +50,6 @@ public class QueryIteratorCheck extends QueryIteratorWrapper
         checkForOpenIterators(execCxt) ;
     }
     
-    // Remove me sometime.
-    @Deprecated
-    @Override
-    public void abort()
-    {
-        super.abort() ;
-        checkForOpenIterators(execCxt) ;
-    }
-    
     // Be silent about ourselves.
     @Override
     public void output(IndentedWriter out, SerializationContext sCxt)

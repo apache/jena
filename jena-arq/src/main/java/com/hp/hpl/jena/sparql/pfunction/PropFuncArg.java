@@ -24,8 +24,6 @@ import java.util.List ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Substitute ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
@@ -135,18 +133,5 @@ public class PropFuncArg extends PrintSerializableBase
         }
         if ( arg != null )
             out.print(FmtUtils.stringForNode(arg)) ;
-    }
-    
-    /** Create a new PropFuncArg by replacing any variables by their values given in the binding.
-     *  If there is no binding, keep the variable.
-     *  
-     * @param binding
-     * @return A PropFuncArg with any varibales substituted by values in the binding
-     * @deprecated Use {@link Substitute#substitute(PropFuncArg, Binding)}
-     */  
-    @Deprecated
-    public PropFuncArg evalIfExists(Binding binding)
-    {
-        return Substitute.substitute(this, binding) ;
     }
 }
