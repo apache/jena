@@ -57,7 +57,7 @@ public class GraphFactory
     /** Very simple graph that uses same-term for find() (small-scale use only) */
     public static Graph createPlainGraph()
     {
-        return new GraphMemSimple2() ; // new PlainGraphMem() ;
+        return new GraphMemPlain() ; // new PlainGraphMem() ;
     }
 
     public static Graph sinkGraph()

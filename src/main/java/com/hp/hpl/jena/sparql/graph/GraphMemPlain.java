@@ -18,35 +18,49 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
+import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
+import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
 
-/** A lightweight implementation of graph that uses syntactic identity
- * for find(), that is, .equals(), not .sameValueAs(), and also compares
- * language tags canonically (as lowercase).
- * 
- * Suitable for small graph only (no indexing of s/p/o) */
-
-public class PlainGraphMem extends SmallGraphMem
+/** A version of Graph that does term equality only */ 
+public class GraphMemPlain extends GraphBase2
 {
-    public PlainGraphMem() {}
+    private Set<Triple> triples = new HashSet<Triple>() ;
     
-    // In a normal memory graph, 
-    // TripleMatchFilter uses
-    //   Triple.matches uses
-    //     Node.matches uses
-    //       Literal.matches uses 
-    //         sameValueAs
-    // This version uses equalsNode
+    public GraphMemPlain() {}
     
-    // @Override
+    @Override
+    public void performAdd( Triple t )
+    { triples.add(t) ; }
+
+    @Override
+    public void performDelete( Triple t ) 
+    { triples.remove(t) ; }
+    
+    @Override
+    public QueryHandler queryHandler()
+    {
+        return new SimpleQueryHandler(this) ;
+    }
+
+    @Override
+    protected PrefixMapping createPrefixMapping()
+    {
+        return new PrefixMappingImpl() ;
+    }
+
     @Override
     public boolean graphBaseContains( Triple t ) 
     {
@@ -66,7 +80,7 @@ public class PlainGraphMem extends SmallGraphMem
     }
     
     @Override
-    public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
+    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
         Iterator<Triple> iter = triples.iterator() ;
         return 
@@ -119,8 +133,9 @@ public class PlainGraphMem extends SmallGraphMem
         @Override
         public boolean accept(Triple t)
         {
-            return PlainGraphMem.tripleContained(tMatch, t) ;
+            return tripleContained(tMatch, t) ;
         }
         
     }
+    
 }
