@@ -32,11 +32,6 @@ public interface QueryIterator extends Closeable, Iterator<Binding>, PrintSerial
     /** Get next binding */ 
     public Binding nextBinding() ;
     
-    /** Abort a query - may not clearup properly
-     * @deprecated - Use cancel() which can be called asynchronously. */
-    @Deprecated
-    public void abort() ; 
- 
     /**
      * Cancels the query as soon as is possible for the given iterator
      */

@@ -25,7 +25,6 @@ import org.openjena.atlas.lib.CacheFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.query.DataSource ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.LabelExistsException ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -43,8 +42,7 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
  * DatasetGraph.   
  */
 
-@SuppressWarnings("deprecation")
-public class DatasetImpl implements Dataset, DataSource
+public class DatasetImpl implements Dataset
 {
     /* 
      * We are cautious - SPARQL Update can change the graphs in a store

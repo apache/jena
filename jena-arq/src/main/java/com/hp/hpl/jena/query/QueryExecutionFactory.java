@@ -21,10 +21,8 @@ import java.util.List ;
 
 import org.openjena.atlas.logging.Log ;
 
-import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
 import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
@@ -453,50 +451,6 @@ public class QueryExecutionFactory
         return makePlan(query, dataset, input, null) ;
     }
 
-    // These expose internals too much.
-    
-    @Deprecated
-    public static Plan createPlan(String queryStr, Graph graph)
-    {
-        return createPlan(QueryFactory.create(queryStr), graph) ; 
-    }
-    
-    @Deprecated
-    public static Plan createPlan(String queryStr, DatasetGraph dataset)
-    {
-        return createPlan(QueryFactory.create(queryStr), dataset) ; 
-    }
-     
-    @Deprecated
-    public static Plan createPlan(Query query, Graph graph)
-    {
-        return makePlan(query, DatasetGraphFactory.createOneGraph(graph), null, null) ; 
-    }
-    
-    @Deprecated
-    public static Plan createPlan(Query query, DatasetGraph dataset)
-    {
-        return makePlan(query, dataset, null, null) ;
-    }
-    
-    @Deprecated
-    public static Plan createPlan(Element pattern, Graph graph)
-    {
-        return createPlan(toQuery(pattern), graph) ; 
-    }
-    
-    @Deprecated
-    public static Plan createPlan(Element pattern, DatasetGraph dataset)
-    {
-        return createPlan(toQuery(pattern), dataset, null) ;
-    }
-    
-    @Deprecated
-    public static Plan createPlan(Element pattern, DatasetGraph dataset, Binding input)
-    {
-        return createPlan(toQuery(pattern), dataset, input) ;
-    }
-    
     private static Query toQuery(Element pattern)
     {
         Query query = QueryFactory.make() ;

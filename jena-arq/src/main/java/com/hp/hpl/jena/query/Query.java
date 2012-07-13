@@ -136,9 +136,6 @@ public class Query extends Prologue implements Cloneable, Printable
     //private VarAlloc varAnonAlloc = new VarAlloc(ARQConstants.allocVarAnonMarker) ;
     //public Var allocVarAnon() { return varAnonAlloc.allocVar() ; }
     
-    @Deprecated
-    public void setQueryType(int qType)         { queryType = qType ; }
-    
     public void setQuerySelectType()            { queryType = QueryTypeSelect ; }
     public void setQueryConstructType()         { queryType = QueryTypeConstruct ; queryResultStar = true ; }
     public void setQueryDescribeType()          { queryType = QueryTypeDescribe ; }
@@ -576,48 +573,11 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Does the query have a VALUES trailing block? */
     public boolean hasValues()                { return valuesDataBlock != null ; }
     
-    
-    /** 
-     * @deprecated Use hasValues() 
-     */ 
-    @Deprecated 
-    public boolean hasBindings()                { return hasValues() ; }
-    
-    /** Binding variables
-     * @deprecated Use getValuesVariables() 
-     */ 
-    @Deprecated 
-    public List<Var> getBindingVariables()      { return getValuesVariables() ; }
-
-    /** @deprecated Use getValuesVariables() */
-    @Deprecated
-    public List<Var> getBindingsVariables()     { return getValuesVariables() ; }
-
     public List<Var> getValuesVariables()     { return valuesDataBlock==null ? null : valuesDataBlock.getVars() ; }
     
-    /** Binding values - null for a Node means undef
-     * @deprecated Use getBindingsData() 
-     */ 
-    @Deprecated 
-    public List<Binding> getBindingValues()     { return getBindingsData() ; }
-
-    /** @deprecated Use getValuesData() */ 
-    @Deprecated 
-    public List<Binding> getBindingsData()      { return getValuesData() ; }
-
     /** VALUES data - null for a Node means undef */ 
     public List<Binding> getValuesData()      { return valuesDataBlock==null ? null : valuesDataBlock.getRows() ; }
 
-    /** @deprecated Use setValuesDataBlock */
-    @Deprecated
-    public void setBindings(List<Var> variables, List<Binding> values)
-    { setBindingsDataBlock(variables, values) ; }
-    
-    /** @deprecated Use setValuesDataBlock */
-    @Deprecated
-    public void setBindingsDataBlock(List<Var> variables, List<Binding> values)
-    { setValuesDataBlock(variables, values) ; }
-    
     public void setValuesDataBlock(List<Var> variables, List<Binding> values)
     {
         checkDataBlock(variables, values) ;
@@ -813,18 +773,6 @@ public class Query extends Prologue implements Cloneable, Printable
     /** Must align with .equals */
     private int hashcode = -1 ;
     
-    /** Perform some check on the query
-     * @deprecated This call does do anything. 
-     */
-    
-    @Deprecated
-    public void validate()
-    {
-        // This is mostly done now as part of parsing.
-        // See SyntaxVarScope and Parser.validatePasredQuery.
-        setResultVars() ;
-    }
-
     @Override
     public int hashCode()
     { 
