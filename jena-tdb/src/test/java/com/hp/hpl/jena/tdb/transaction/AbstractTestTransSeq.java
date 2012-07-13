@@ -153,6 +153,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgW1.commit() ;
         dsgW1.end() ;
 
+        sConn.forceRecoverFromJournal() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
@@ -427,7 +428,8 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
         dsgW2.commit() ;
         dsgW2.end() ;
-
+        
+        sConn.forceRecoverFromJournal() ;
         DatasetGraphTDB dsg = sConn.getBaseDataset() ; 
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;

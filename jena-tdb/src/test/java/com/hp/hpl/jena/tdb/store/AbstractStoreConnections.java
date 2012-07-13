@@ -185,6 +185,7 @@ public abstract class AbstractStoreConnections extends BaseTest
         dsgTxn.commit() ;
         dsgTxn.end() ;
 
+        sConn.forceRecoverFromJournal() ;
         assertTrue(sConn.getBaseDataset().contains(q1)) ;
         
         StoreConnection.release(loc) ;
@@ -227,7 +228,10 @@ public abstract class AbstractStoreConnections extends BaseTest
 
         // Should have flushed to disk.
         if ( nonTxnData ) 
+        {
+            sConn.forceRecoverFromJournal() ;
             assertTrue(dsg.contains(q)) ;
+        }
         assertTrue(dsg.contains(q1)) ;
         
         // release via the transactional machinery 

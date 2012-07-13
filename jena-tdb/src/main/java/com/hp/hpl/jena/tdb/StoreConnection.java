@@ -135,6 +135,12 @@ public class StoreConnection
         checkValid() ;
         return baseDSG ;
     }
+    
+    /** Flush the journal regardless - use with great case - do not use when transactions may be active. */ 
+    public void forceRecoverFromJournal()
+    {
+        JournalControl.recoverFromJournal(getBaseDataset(), transactionManager.getJournal()) ;
+    }
 
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
 
