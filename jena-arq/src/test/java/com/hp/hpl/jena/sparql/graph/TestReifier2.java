@@ -39,7 +39,7 @@ public class TestReifier2 extends AbstractTestReifier
     @Override
     public Graph getGraph()
     {
-        return new GraphMemSimple2() ;
+        return new GraphMemPlain() ;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TestReifier2 extends AbstractTestReifier
     {
         if ( style != ReificationStyle.Standard )
         {}
-        return new GraphMemSimple2() ;
+        return new GraphMemPlain() ;
     }
 
     // Standard only.
