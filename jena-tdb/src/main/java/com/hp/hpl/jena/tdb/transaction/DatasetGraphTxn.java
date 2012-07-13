@@ -55,13 +55,4 @@ public class DatasetGraphTxn extends DatasetGraphTDB
             transaction.close() ;
     }
 
-    /** Do not end a transaction this way - use .end() - compatiblity only 
-     * @deprecated Strongly deprecated -- use {@link #end}*/
-    @Override
-    @Deprecated
-    public void close()
-    {
-        end() ;
-    }
-    
 }
