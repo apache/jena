@@ -276,22 +276,6 @@ the value has
         pw.println("servletInfo:  '"+getServletInfo()+"'");
         pw.println("serverInfo:  '"+sc.getServerInfo()+"'");
 
-//        Enumeration en = null ;
-//         // Deprecated and will be removed - from Servlet API 2.0
-//        eneration en = sc.getServlets();
-//        if (en != null) {
-//            pw.println("servlets: ");
-//            while(en.hasMoreElements())
-//            {
-//                String key = (String)en.nextElement();
-//                try {
-//                    pw.println(key+": '"+sc.getServlet(key)+"'");
-//                } catch (ServletException e1) {
-//                    pw.println(key+": '"+e1.toString()+"'");
-//                }
-//            }
-//        }
-        
         {
             @SuppressWarnings("unchecked")
             Enumeration<String> en = sc.getInitParameterNames();
