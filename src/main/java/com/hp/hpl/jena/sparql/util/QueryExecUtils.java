@@ -82,18 +82,6 @@ public class QueryExecUtils
         queryExecution.close() ;
     }
 
-    /**
-     * @deprecated Use execute(Op, DatasetGraph)
-     */
-    @Deprecated
-    public static void executeAlgebra(Op op, DatasetGraph dsg) { execute(op, dsg) ; } 
-    
-    /**
-     * @deprecated Use execute(Op, DatasetGraph)
-     */
-    @Deprecated
-    public static void executeAlgebra(Op op, DatasetGraph dsg, ResultsFormat outputFormat) { execute(op, dsg, outputFormat) ; } 
-
     public static void execute(Op op, DatasetGraph dsg)
     {
         execute(op, dsg, ResultsFormat.FMT_TEXT) ;

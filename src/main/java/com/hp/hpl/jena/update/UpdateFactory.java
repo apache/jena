@@ -18,15 +18,16 @@
 
 package com.hp.hpl.jena.update;
 
+import static com.hp.hpl.jena.query.Syntax.defaultUpdateSyntax ;
+import static com.hp.hpl.jena.query.Syntax.syntaxARQ ;
+import static com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11 ;
+
 import java.io.InputStream ;
 
 import org.openjena.atlas.io.IO ;
 
 import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import static com.hp.hpl.jena.query.Syntax.* ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 
 public class UpdateFactory
@@ -205,92 +206,5 @@ public class UpdateFactory
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
         parser.parse(request, input) ;
-    }
-    
-//    /** Create an UpdateRequest by reading it from a Reader */
-//    private static UpdateRequest read(StringReader input, Syntax syntax)
-//    {
-//        UpdateRequest request = new UpdateRequest() ;
-//        UpdateParser parser = setupParser(request, null, syntax) ;
-//        parser.parse(request, input) ;
-//        return request ;
-//    }
-
-    // OLD
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param update
-     * @param graphStore
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(Update,GraphStore)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(Update update, GraphStore graphStore)
-    {
-        return UpdateExecutionFactory.create(update, graphStore) ;
-    }
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param update
-     * @param graphStore
-     * @param initialSolution
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(Update,GraphStore,QuerySolution)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(Update update, GraphStore graphStore, QuerySolution initialSolution)
-    {
-        return UpdateExecutionFactory.create(update, graphStore, initialSolution) ;
-    }
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param update
-     * @param graphStore
-     * @param initialBinding
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(Update,GraphStore,Binding)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(Update update, GraphStore graphStore, Binding initialBinding)
-    {
-        return UpdateExecutionFactory.create(update, graphStore, initialBinding) ;
-    }
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(UpdateRequest,GraphStore)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore)
-    {
-        return UpdateExecutionFactory.create(updateRequest, graphStore) ;
-    }
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
-     * @param initialSolution
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(UpdateRequest,GraphStore,QuerySolution)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, QuerySolution initialSolution)
-    {
-        return UpdateExecutionFactory.create(updateRequest, graphStore, initialSolution) ;
-    }
-    
-    /** Create a UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param updateRequest
-     * @param graphStore
-     * @param initialBinding
-     * @return UpdateProcessor or null
-     * @deprecated Use {@link UpdateExecutionFactory#create(UpdateRequest,GraphStore,Binding)} instead
-     */
-    @Deprecated
-    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding)
-    {
-        return UpdateExecutionFactory.create(updateRequest, graphStore, initialBinding) ;
     }
 }

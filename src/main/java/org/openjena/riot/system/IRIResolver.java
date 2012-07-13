@@ -247,24 +247,6 @@ public abstract class IRIResolver
         }
     }
 
-    /**
-     * Choose a baseURI based on a suggestion
-     * @return IRI (if relative, relative to current working directory).
-     */
-    @Deprecated
-    static public IRI chooseBaseURI(String baseURI)
-    {
-        synchronized (globalResolver)
-        {
-            if (baseURI == null) return chooseBaseURI() ;
-            baseURI = "file:." ;
-            if (baseURI.startsWith("file:")) 
-                return globalResolver.resolveSilent(IRILib.filenameToIRI(baseURI)) ;
-            else
-                return globalResolver.resolveSilent(baseURI) ;
-        }
-    }
-
     public String getBaseIRIasString()
     { 
         IRI iri = getBaseIRI() ;

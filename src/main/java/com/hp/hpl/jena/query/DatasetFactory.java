@@ -50,7 +50,7 @@ public class DatasetFactory
      * @deprecated Use createMem
      */
     @Deprecated
-    public static DataSource create()
+    public static Dataset create()
     { 
         // This may not be a defaultJena model - during testing, 
         // we use a graph that is not value-aware for xsd:String vs plain literals.
@@ -61,25 +61,22 @@ public class DatasetFactory
      * @param model
      * @return Dataset 
      */ 
-    @SuppressWarnings("deprecation")
-    public static DataSource create(Model model)
+    public static Dataset create(Model model)
     { return new DatasetImpl(model) ; }
 
     /** Create a dataset
      * @param dataset
      * @return Dataset 
      */ 
-    @SuppressWarnings("deprecation")
-    public static DataSource create(Dataset dataset)
+    public static Dataset create(Dataset dataset)
     { return new DatasetImpl(dataset) ; }
 
     /** Wrap a datasetgraph to make a mutable dataset
      * @param dataset DatasetGraph
      * @return Dataset 
      */ 
-    @SuppressWarnings("deprecation")
-    public static DataSource create(DatasetGraph dataset)
-    { return (DataSource)DatasetImpl.wrap(dataset) ; }
+    public static Dataset create(DatasetGraph dataset)
+    { return DatasetImpl.wrap(dataset) ; }
     
     /** Create a dataset based on a list of URIs : these are merged into the default graph of the dataset.
      * 

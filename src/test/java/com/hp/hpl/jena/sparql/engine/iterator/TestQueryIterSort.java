@@ -340,9 +340,6 @@ public class TestQueryIterSort {
         }
 
         @Override
-        @SuppressWarnings("deprecation") public void abort() { throw new ARQNotImplemented() ; }
-        
-        @Override
         public void cancel() { canceled = true ; }
         
         @Override
