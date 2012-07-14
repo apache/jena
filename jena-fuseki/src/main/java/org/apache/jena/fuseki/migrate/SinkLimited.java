@@ -25,7 +25,7 @@ import org.openjena.riot.RiotException ;
 public class SinkLimited<T> extends SinkWrapper<T>
 {
    private long count = 0 ;
-private long limit ;
+   private final long limit ;
     
     public SinkLimited(Sink<T> output, long limit)
     {
@@ -43,5 +43,6 @@ private long limit ;
     }
     
     public long getCount() { return count ; } 
+    public long getLimit() { return limit ; }
 }
 

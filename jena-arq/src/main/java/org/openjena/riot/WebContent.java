@@ -21,6 +21,8 @@ package org.openjena.riot;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.atlas.web.MediaType ;
+
 public class WebContent
 {
     // Names for things.
@@ -72,11 +74,6 @@ public class WebContent
     public static final String charsetUTF8                  = "utf-8" ;
     public static final String charsetASCII                 = "ascii" ;
 
-    /** Constants */
-    public static final ContentType ctN3                    = ContentType.createConst(contentTypeN3, charsetUTF8) ;
-
-
-    
     // Names used in Jena for the parsers
     // See also Lang enum (preferred).
     public static final String langRDFXML           = "RDF/XML" ;
@@ -144,12 +141,9 @@ public class WebContent
     
     public static String getCharsetForContentType(String contentType)
     {
-        ContentType ct = ContentType.parse(contentType) ;
+        MediaType ct = MediaType.create(contentType) ;
         if ( ct.getCharset() != null )
             return ct.getCharset() ;
-        
-        if ( ct.getDftCharset() != null )
-            return ct.getDftCharset() ;
         
         String mt = ct.getContentType() ;
         if ( contentTypeNTriples.equals(mt) )       return charsetASCII ;

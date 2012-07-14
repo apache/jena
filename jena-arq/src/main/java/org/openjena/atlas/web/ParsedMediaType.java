@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,9 +16,17 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.openjena.atlas.web;
 
-public class FM2
+import java.util.LinkedHashMap ;
+import java.util.Map ;
+
+/** The outcome of parsing 
+ * @see MediaType#parse 
+ */
+class ParsedMediaType
 {
-
+    public String type ;
+    public String subType ;
+    public Map<String, String> params = new LinkedHashMap<String, String>() ;
 }

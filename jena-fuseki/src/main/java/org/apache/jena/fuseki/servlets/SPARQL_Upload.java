@@ -37,6 +37,7 @@ import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.web.ContentType ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
