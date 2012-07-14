@@ -42,7 +42,13 @@ public class MediaRange extends MediaType
 
     public MediaRange(String string)
     {  
-        super(string) ;  
+        super(MediaType.parse(string)) ;  
+        set_q() ;
+    }
+    
+    public MediaRange(String type, String subType, String charset)
+    {
+        super(type, subType, charset) ;
         set_q() ;
     }
     

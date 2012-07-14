@@ -267,7 +267,7 @@ public class HttpOp
                 String contentType = response.getFirstHeader(HttpNames.hContentType).getValue() ;
                 if ( contentType != null )
                 {
-                    mt = new MediaType(contentType) ;
+                    mt = MediaType.create(contentType) ;
                     if ( log.isDebugEnabled() )
                         log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
                 }

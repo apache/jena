@@ -33,18 +33,21 @@ import org.slf4j.LoggerFactory ;
  */
 public class MediaType
 {
-    // Unify with Content Type???
-    
     private static Logger log = LoggerFactory.getLogger(MediaType.class) ; 
 
-    private String type = null ;
-    private String subType = null ;
-    private String charset = null ;
-    public static final String strCharset              = "charset" ;
+    private static final String strCharset              = "charset" ;
+
+    private final String type ;
+    private final String subType ;
     // Keys in insertion order.
-    private Map<String, String> params = new LinkedHashMap<String, String>() ;
+    private final Map<String, String> params ;//= new LinkedHashMap<String, String>() ;
    
-    private MediaType() {}
+    protected MediaType(ParsedMediaType parser)
+    {
+        this.type = parser.type ;
+        this.subType = parser.subType ;
+        this.params = parser.params ;
+    }
     
     public MediaType(MediaType other)
     {
@@ -54,57 +57,64 @@ public class MediaType
         this.params = new LinkedHashMap<String, String>(other.params) ;
     }
     
-    public MediaType(String string)
-    {
-        parseOneEntry(string) ;
-    }
-    
     /** Create a media type from type and subType */
-    protected MediaType(String type, String subType)
+    public MediaType(String type, String subType)
+    {
+        this(type, subType, null) ;
+    }
+
+    /** Create a media type from type and subType */
+    public MediaType(String type, String subType, String charset)
     {
         this.type = type ;
         this.subType = subType ;
+        this.params = new LinkedHashMap<String, String>() ;
+        if ( charset != null )
+            setParameter(strCharset, charset) ;
     }
 
     public static MediaType create(String contentType, String charset)
     {
-        MediaType mediaType = new MediaType(contentType) ;
-        mediaType.setParameter(strCharset, charset) ;
-        return mediaType ;
+        ParsedMediaType mediaType = parse(contentType) ;
+        mediaType.params.put(strCharset, charset) ;
+        return new MediaType(mediaType) ;
     }
     
+    public static MediaType createFromContentType(String string)
+    {
+        return new MediaType(parse(string)) ;
+    }
+
     public static MediaType create(String contentType, String subType, String charset)
     {
-        MediaType mediaType = new MediaType() ;
-        mediaType.type = contentType ;
-        mediaType.subType = subType ;
-        mediaType.setParameter(strCharset, charset) ;
-        return mediaType ;
+        return new MediaType(contentType, subType, charset) ;
     }
     
-    private void parseOneEntry(String s)
+    public static MediaType create(String string)
     {
-        String[] x = WebLib.split(s, ";") ;
-        parseAndSetType(x[0]) ;
+        return new MediaType(parse(string)) ;
+    }
+    
+    public static ParsedMediaType parse(String string)
+    {
+        ParsedMediaType mt = new ParsedMediaType() ;
+        
+        String[] x = WebLib.split(string, ";") ;
+        String[] t = WebLib.split(x[0], "/") ;
+        mt.type = t[0] ;
+        if ( t.length > 1 )
+            mt.subType = t[1] ;
         
         for ( int i = 1 ; i < x.length ; i++ )
         {
             // Each a parameter
             String z[] = WebLib.split(x[i], "=") ;
             if ( z.length == 2 )
-                this.params.put(z[0], z[1]) ;
+                mt.params.put(z[0], z[1]) ;
             else
-                log.warn("Duff parameter: "+x[i]+" in "+s) ;
+                log.warn("Duff parameter: "+x[i]+" in "+string) ;
         }
-        strContentType = null ; 
-    }
-    
-    private void parseAndSetType(String s)
-    {
-        String[] t = WebLib.split(s, "/") ;
-        type = t[0] ;
-        if ( t.length > 1 )
-            subType = t[1] ;
+        return mt ;
     }
     
     /** Format for use in HTTP header */
@@ -172,8 +182,9 @@ public class MediaType
     }
 
     public String getParameter(String name)             { return params.get(name) ; }
-    public void setParameter(String name, String value) { params.put(name, value) ; strContentType = null ; }
-    
+    private void setParameter(String name, String value) { params.put(name, value) ; strContentType = null ; }
+
+    // A cache.
     private String strContentType = null ;
     public String getContentType()
     {
@@ -187,7 +198,7 @@ public class MediaType
     public String getCharset()              { return getParameter(strCharset) ; }
 
     public String getSubType()              { return subType ; }
-    public void setSubType(String subType)  { this.subType = subType ; strContentType = null ; }
+//    public void setSubType(String subType)  { this.subType = subType ; strContentType = null ; }
     public String getType()                 { return type ; }
-    public void setType(String type)        { this.type = type ; strContentType = null ; }
+//    public void setType(String type)        { this.type = type ; strContentType = null ; }
 }
