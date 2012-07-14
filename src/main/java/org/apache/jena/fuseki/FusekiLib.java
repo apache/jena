@@ -24,7 +24,7 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.openjena.atlas.lib.MultiMap ;
-import org.openjena.riot.ContentType ;
+import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.WebContent ;
@@ -61,9 +61,9 @@ public class FusekiLib
     }
     // ---- 
 
-    public static ContentType contentType(HttpServletRequest request)
+    public static MediaType contentType(HttpServletRequest request)
     {
-        return ContentType.parse(request.getHeader(HttpNames.hContentType)) ;
+        return MediaType.create(request.getHeader(HttpNames.hContentType)) ;
     }
 
     private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;

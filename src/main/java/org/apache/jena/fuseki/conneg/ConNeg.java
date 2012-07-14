@@ -23,6 +23,7 @@ import static org.apache.jena.fuseki.HttpNames.hAcceptCharset ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.openjena.atlas.web.AcceptList ;
 import org.openjena.atlas.web.MediaRange ;
 import org.openjena.atlas.web.MediaType ;
 import org.slf4j.Logger ;
@@ -37,7 +38,7 @@ public class ConNeg
     static public MediaType parse(String contentType)
     {
         try {
-            return new MediaType(contentType) ;
+            return MediaType.create(contentType) ;
         } catch (RuntimeException ex) { return null ; }
     }
     

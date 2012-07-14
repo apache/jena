@@ -34,10 +34,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
-import com.hp.hpl.jena.shared.NotFoundException ;
-import com.hp.hpl.jena.util.FileManager ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /** A packaging of code to do a controlled read of a graph or model */
 
@@ -80,45 +76,12 @@ public class GraphLoadUtils
         Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
         sink = new SinkLimited<Triple>(sink, limit) ;
         
-        // TODO Conneg - awiting RIOT code upgrade.
-        // WebReader.
+        // TODO Conneg - awaiting RIOT code upgrade.
         InputStream input = Fuseki.webFileManager.open(uri) ;
         
         LangRIOT parser = RiotReader.createParserTriples(input, lang, uri, sink) ;
         try {
             parser.parse() ;
         } catch (RiotException ex) { throw ex ; }
-    }
-    
-    private static Model readUtil1(Graph graph, String uri, int limit, String syntax) 
-    {
-        // Use the mapped uri as the syntax hint.
-        {
-            String altURI = FileManager.get().mapURI(uri) ;
-            if ( altURI != null )
-                syntax = FileUtils.guessLang(uri) ;
-        }
-        // Temporary model wrapper 
-        Graph g = new LimitingGraph(graph, limit) ;
-        Model m = ModelFactory.createModelForGraph(g) ;
-        
-        // If it's RDF/XML, go via Jena and set the HTTP readers.
-//        if ( FileUtils.langXML.equals(syntax) )
-//        {
-//            m.read(uri, uri) ;
-//            return m ;
-//        }
-//        else
-        {
-            // Otherwise open raw and hope the syntax is right. 
-            RDFReader r = m.getReader(syntax) ;
-            r.setErrorHandler(new GraphErrorHandler()) ;
-            InputStream in = FileManager.get().open(uri) ;
-            if ( in == null )
-                // Not found.
-                throw new NotFoundException("Not found: "+uri) ;
-            r.read(m, in, uri) ;
-            return m ;
-        }
     }
 }

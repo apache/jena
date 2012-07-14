@@ -28,9 +28,9 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
-import org.apache.jena.fuseki.conneg.AcceptList ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.openjena.atlas.web.AcceptList ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
