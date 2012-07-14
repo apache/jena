@@ -63,7 +63,10 @@ public class FusekiLib
 
     public static MediaType contentType(HttpServletRequest request)
     {
-        return MediaType.create(request.getHeader(HttpNames.hContentType)) ;
+        String x = request.getHeader(HttpNames.hContentType) ;
+        if ( x == null )
+            return null ;
+        return MediaType.create(x) ;
     }
 
     private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;
