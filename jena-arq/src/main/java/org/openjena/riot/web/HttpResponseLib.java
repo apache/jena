@@ -56,7 +56,7 @@ public class HttpResponseLib
             try {
                 Graph g = GraphFactory.createDefaultGraph() ;
                 HttpEntity entity = response.getEntity() ;
-                MediaType mt = new MediaType(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
+                MediaType mt = MediaType.create(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
                 mt.getCharset() ;
                 Sink<Triple> sink = new SinkTriplesToGraph(g) ; 
                 InputStream in = entity.getContent() ;
@@ -137,7 +137,7 @@ public class HttpResponseLib
         @Override
         public void handle(String contentType, String baseIRI, HttpResponse response) throws IOException
         {
-            MediaType mt = new MediaType(contentType) ;
+            MediaType mt = MediaType.create(contentType) ;
             ResultsFormat fmt = mapContentTypeToResultSet.get(contentType) ; // contentTypeToResultSet(contentType) ;
             InputStream in = response.getEntity().getContent() ;
             rs = ResultSetFactory.load(in, fmt) ;

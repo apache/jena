@@ -37,7 +37,7 @@ import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
-import org.openjena.riot.ContentType ;
+import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
@@ -104,7 +104,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {
-            ContentType incoming = FusekiLib.contentType(request) ;
+            MediaType incoming = FusekiLib.contentType(request) ;
             if ( incoming == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else
@@ -130,7 +130,7 @@ public class SPARQL_Update extends SPARQL_Protocol
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {
-            ContentType incoming = FusekiLib.contentType(request) ;
+            MediaType incoming = FusekiLib.contentType(request) ;
             if ( incoming == null )
                 ctStr = WebContent.contentTypeSPARQLUpdate ;
             else

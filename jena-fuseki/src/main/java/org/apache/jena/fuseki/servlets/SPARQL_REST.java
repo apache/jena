@@ -44,6 +44,7 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.web.ContentType ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRIOT ;

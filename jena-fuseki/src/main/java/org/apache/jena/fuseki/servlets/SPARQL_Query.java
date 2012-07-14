@@ -49,7 +49,7 @@ import org.apache.jena.fuseki.migrate.WebIO ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.riot.ContentType ;
+import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.Dataset ;
@@ -117,7 +117,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             return ;
         }
 
-        ContentType ct = FusekiLib.contentType(request) ;
+        MediaType ct = FusekiLib.contentType(request) ;
         String incoming = ct.getContentType() ;
         
         // POST application/sparql-query
@@ -152,7 +152,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     /** Helper for validating request */
     protected void validate(HttpServletRequest request, Set<String> params)
     {
-        ContentType ct = FusekiLib.contentType(request) ;
+        MediaType ct = FusekiLib.contentType(request) ;
         boolean mustHaveQueryParam = true ;
         if ( ct != null )
         {

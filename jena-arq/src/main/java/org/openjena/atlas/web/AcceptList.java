@@ -56,11 +56,12 @@ public class AcceptList
      * @param acceptItems
      */
     
-    public AcceptList(MediaType...acceptItems)
+    public static AcceptList create(MediaType...acceptItems)
     { 
-        ranges = new ArrayList<MediaRange>() ;
+        AcceptList accepList = new AcceptList() ;
         for ( MediaType mtype : acceptItems )
-            ranges.add(new MediaRange(mtype)) ;
+            accepList.ranges.add(new MediaRange(mtype)) ;
+        return accepList ;
     }        
 
     /**
@@ -68,11 +69,12 @@ public class AcceptList
      * @param acceptStrings
      */
     
-    public AcceptList(String... acceptStrings)
+    public static AcceptList create(String... acceptStrings)
     {
-        ranges = new ArrayList<MediaRange>() ;
+        AcceptList accepList = new AcceptList() ;
         for ( int i = 0 ; i < acceptStrings.length ; i++ )
-            ranges.add(new MediaRange(acceptStrings[i])) ;
+            accepList.ranges.add(new MediaRange(acceptStrings[i])) ;
+        return accepList ;
     }
     
     /**
@@ -127,11 +129,8 @@ public class AcceptList
                 // This looses any q
                 if ( aItem.moreGroundedThan(acceptItem) )
                 {
-                    // Clone.
-                    acceptItem = new MediaRange(acceptItem) ;
-                    // Copy type info 
-                    acceptItem.setType(aItem.getType()) ;
-                    acceptItem.setSubType(aItem.getSubType()) ;
+                    // Clone/change.
+                    acceptItem = new MediaRange(aItem.getType(), aItem.getSubType(), acceptItem.getCharset()) ;
                 }
                 choice = acceptItem ;
             }

@@ -32,12 +32,11 @@ import org.openjena.atlas.logging.Log ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestContentNegotiation.class
+    TestProtocol.class
     , TestDatasetGraphAccessorMem.class
     , TestDatasetGraphAccessorTDB.class
     , TestDatasetGraphAccessorHTTP.class
     , TestDatasetAccessorHTTP.class
-    , TestProtocol.class
     , TestUpdate.class
     , TestQuery.class
 })
