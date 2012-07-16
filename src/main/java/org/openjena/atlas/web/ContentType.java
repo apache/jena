@@ -70,5 +70,11 @@ public class ContentType
             if (!mediaType.equals(other.mediaType)) return false ;
         return true ;
     }
+    
+    @Override
+    public String toString()
+    {
+        return mediaType.toString() ;
+    }
 }
 
