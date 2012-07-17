@@ -1,4 +1,4 @@
-#!/bin/perl
+#!/usr/bin/perl
 # Extract tokens (will need more editting)
 
 $/ = undef ;
