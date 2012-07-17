@@ -2453,19 +2453,6 @@ TOKEN :
 
 TOKEN:
 {
-  // ARQ extensions to the PN_LOCAL token.
-  < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
-|
-  < #PERCENT: "%" <HEX> <HEX> >
-|
-  // Prefixed Name, Local Part, charcater escape sequences
-  // Align with QueryParseBase unescapePName.
-  < #PN_LOCAL_ESC: "\\" 
-          ( "_" | 
-            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
-           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
-           "/" | "?" | "#" | "@" | "%" ) >
-|
   // XML 1.1 NCNameStartChar without "_"
   <#PN_CHARS_BASE:
           ["A"-"Z"] | ["a"-"z"] |
@@ -2476,32 +2463,41 @@ TOKEN:
           >
           // [#x10000-#xEFFFF]
 |
-  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" | ":" >
+  // With underscore
+  <#PN_CHARS_U: <PN_CHARS_BASE> | "_" >
 |
-// No DOT
   <#PN_CHARS: (<PN_CHARS_U> | "-" | ["0"-"9"] | "\u00B7" |
               ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] ) >
 |
   // No leading "_", no trailing ".", can have dot inside prefix name.
   <#PN_PREFIX: <PN_CHARS_BASE> ((<PN_CHARS>|".")* <PN_CHARS>)?  >
 |
-  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
+  // Local part.
+  <#PN_LOCAL: (<PN_CHARS_U> | ":" | ["0"-"9"] | <PLX> ) 
+              ( (<PN_CHARS> | "." |":" | <PLX> )* 
+                (<PN_CHARS> | ":" | <PLX>) )?  >
 |
-  // If goes ahead, consolidate
-  <#PN_LOCAL: (<PN_CHARS_U> | ["0"-"9"] | <PLX> ) 
-              ( (<PN_CHARS>|"."| <PLX> )* 
-                (<PN_CHARS>|<PLX>) )?  >
-|
-  // NCNAME without "-" and ".", allowing leading digits.
   <#VARNAME: ( <PN_CHARS_U> | ["0"-"9"] )
              ( <PN_CHARS_U> | ["0"-"9"] | "\u00B7" |
                ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+|
+  // Align with QueryParseBase unescapePName.
+  < #PN_LOCAL_ESC: "\\" 
+          ( "_" | 
+            "~" | "." | "-" | "!" | "$" | "&" | "'" | 
+           "(" | ")" | "*" | "+" | "," | ";" | "=" | 
+           "/" | "?" | "#" | "@" | "%" ) >
+|
+  <#PLX:  <PERCENT> | <PN_LOCAL_ESC> >
+|
+  < #HEX: ["0"-"9"] | ["A"-"F"] | ["a"-"f"] >
+|
+  < #PERCENT: "%" <HEX> <HEX> >
 }
 
 // Catch-all tokens.  Must be last.  
 // Any non-whitespace.  Causes a parser exception, rather than a
-// token manager error (with hidden line numbers).
-// Only bad IRIs (e.g. spaces) now give unhelpful parse errors.
+// token manager error (which hides the line numbers).
 TOKEN:
 {
   <#UNKNOWN: (~[" ","\t","\n","\r","\f" ])+ >

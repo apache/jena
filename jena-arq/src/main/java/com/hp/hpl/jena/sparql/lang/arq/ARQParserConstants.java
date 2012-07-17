@@ -412,25 +412,25 @@ public interface ARQParserConstants {
   /** RegularExpression Id. */
   int QMARK = 197;
   /** RegularExpression Id. */
-  int HEX = 198;
+  int PN_CHARS_BASE = 198;
   /** RegularExpression Id. */
-  int PERCENT = 199;
+  int PN_CHARS_U = 199;
   /** RegularExpression Id. */
-  int PN_LOCAL_ESC = 200;
+  int PN_CHARS = 200;
   /** RegularExpression Id. */
-  int PN_CHARS_BASE = 201;
+  int PN_PREFIX = 201;
   /** RegularExpression Id. */
-  int PN_CHARS_U = 202;
+  int PN_LOCAL = 202;
   /** RegularExpression Id. */
-  int PN_CHARS = 203;
+  int VARNAME = 203;
   /** RegularExpression Id. */
-  int PN_PREFIX = 204;
+  int PN_LOCAL_ESC = 204;
   /** RegularExpression Id. */
   int PLX = 205;
   /** RegularExpression Id. */
-  int PN_LOCAL = 206;
+  int HEX = 206;
   /** RegularExpression Id. */
-  int VARNAME = 207;
+  int PERCENT = 207;
   /** RegularExpression Id. */
   int UNKNOWN = 208;
 
@@ -637,16 +637,16 @@ public interface ARQParserConstants {
     "\"->\"",
     "\"<-\"",
     "\"?\"",
-    "<HEX>",
-    "<PERCENT>",
-    "<PN_LOCAL_ESC>",
     "<PN_CHARS_BASE>",
     "<PN_CHARS_U>",
     "<PN_CHARS>",
     "<PN_PREFIX>",
-    "<PLX>",
     "<PN_LOCAL>",
     "<VARNAME>",
+    "<PN_LOCAL_ESC>",
+    "<PLX>",
+    "<HEX>",
+    "<PERCENT>",
     "<UNKNOWN>",
   };
 
