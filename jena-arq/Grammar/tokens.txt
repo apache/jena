@@ -255,7 +255,7 @@
 
 <#PN_PREFIX> ::= <PN_CHARS_BASE> ((<PN_CHARS>|'.')* <PN_CHARS>)?
 
-<#PN_LOCAL>  ::= (<PN_CHARS_U> | ':' | [0-9] | <PLX> ) ((<PN_CHARS> | "." | ":" | <PLX>)* (<PN_CHARS> | ":" | <PLX>) )?
+<#PN_LOCAL>  ::= (<PN_CHARS_U> | ':' | [0-9] | <PLX> ) ((<PN_CHARS> | '.' | ':' | <PLX>)* (<PN_CHARS> | ':' | <PLX>) )?
 
 <#PLX>            ::= <PERCENT> | <PN_LOCAL_ESC>
 
