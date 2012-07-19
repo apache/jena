@@ -39,6 +39,7 @@ import org.apache.http.protocol.HTTP ;
 import org.apache.jena.fuseki.* ;
 import org.apache.jena.fuseki.migrate.UnmodifiableGraph ;
 import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.logging.Log ;
 import org.openjena.atlas.web.TypedInputStream ;
@@ -166,7 +167,10 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     {
         if ( ! name.isURI() )
             throw new FusekiException("Not a URI: "+name) ;
-        return remote+"?"+paramGraph+"="+name.getURI() ;
+        String guri = name.getURI() ;
+        // Encode
+        guri = IRILib.encodeUriComponent(guri) ;
+        return remote+"?"+paramGraph+"="+guri ;
     }
 
     static private HttpParams httpParams = createHttpParams() ;
