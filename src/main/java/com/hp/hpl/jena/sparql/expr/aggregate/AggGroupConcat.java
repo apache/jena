@@ -34,36 +34,33 @@ public class AggGroupConcat extends AggregatorBase
 {
     static final String SeparatorDefault = " " ;
     private final Expr expr ;
-    private final String separatorSeen ;
     private final String separator ;
+    private final String effectiveSeparator ;
 
     public AggGroupConcat(Expr expr, String separator)
     {
         this(expr, 
              ( separator != null ) ? separator : SeparatorDefault ,
              separator) ;
-//        this.expr = expr ; 
-//        separatorSeen = separator ;
-//        this.separator = ( separator != null ) ? separator : SeparatorDefault ; 
     } 
     
-    private AggGroupConcat(Expr expr, String separator, String separatorSeen)
+    private AggGroupConcat(Expr expr, String effectiveSeparator, String separatorSeen)
     {
         this.expr = expr ; 
-        this.separatorSeen = separatorSeen ;
-        this.separator = separator ; 
+        this.separator = separatorSeen ;
+        this.effectiveSeparator = effectiveSeparator ; 
     }
     
     @Override
-    public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, separator, separatorSeen) ; }
+    public Aggregator copy(Expr expr) { return new AggGroupConcat(expr, effectiveSeparator, separator) ; }
 
     @Override
     public String toString()
     {
         String x = "GROUP_CONCAT("+ExprUtils.fmtSPARQL(expr) ;
-        if ( separatorSeen != null )
+        if ( separator != null )
         {
-            String y = StrUtils.escapeString(separatorSeen) ;
+            String y = StrUtils.escapeString(separator) ;
             x = x+"; SEPARATOR='"+y+"'" ;
         }
         x = x+")" ;
@@ -75,9 +72,9 @@ public class AggGroupConcat extends AggregatorBase
     {
         String x = "(group_concat " ;
         
-        if ( separatorSeen != null )
+        if ( separator != null )
         {
-            String y = StrUtils.escapeString(separatorSeen) ;
+            String y = StrUtils.escapeString(separator) ;
             x = x+"(separator '"+y+"') " ;
         }
         x = x+WriterExpr.asString(expr)+")" ;
@@ -87,12 +84,13 @@ public class AggGroupConcat extends AggregatorBase
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcat(expr, separator) ;
+        return new AccGroupConcat(expr, effectiveSeparator) ;
     }
 
     @Override
     public Expr getExpr() { return expr ; }
-    protected final String getSeparator() { return separator ; }
+    
+    public String getSeparator() { return separator ; }
 
     @Override
     public Node getValueEmpty() { return NodeConst.emptyString ; } 

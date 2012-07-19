@@ -32,36 +32,33 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 public class AggGroupConcatDistinct extends AggregatorBase
 {
     private final Expr expr ;
-    private final String separatorSeen ;
     private final String separator ;
+    private final String effectiveSeparator ;
 
     public AggGroupConcatDistinct(Expr expr, String separator)
     { 
         this(expr, 
              ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ,
              separator) ;
-//        this.expr = expr ; 
-//        this.separatorSeen = separator ;
-//        this.separator =  ( separator != null ) ? separator : AggGroupConcat.SeparatorDefault ; 
     }
 
-    private AggGroupConcatDistinct(Expr expr, String separator, String separatorSeen)
+    private AggGroupConcatDistinct(Expr expr, String effectiveSeparator, String separatorSeen)
     {
         this.expr = expr ; 
-        this.separatorSeen = separatorSeen ;
-        this.separator = separator ; 
+        this.separator = separatorSeen ;
+        this.effectiveSeparator = effectiveSeparator ; 
     }
     
     @Override
-    public Aggregator copy(Expr expr) { return new AggGroupConcatDistinct(expr, separator, separatorSeen) ; }
+    public Aggregator copy(Expr expr) { return new AggGroupConcatDistinct(expr, effectiveSeparator, separator) ; }
 
     @Override
     public String toString()
     {
         String x = "GROUP_CONCAT(DISTINCT "+ExprUtils.fmtSPARQL(expr) ;
-        if ( separatorSeen != null )
+        if ( separator != null )
         {
-            String y = StrUtils.escapeString(separatorSeen) ;
+            String y = StrUtils.escapeString(separator) ;
             x = x+"; SEPARATOR='"+y+"'" ;
         }
         x = x+")" ;
@@ -73,9 +70,9 @@ public class AggGroupConcatDistinct extends AggregatorBase
     {
         String x = "(group_concat distinct " ;
         
-        if ( separatorSeen != null )
+        if ( separator != null )
         {
-            String y = StrUtils.escapeString(separatorSeen) ;
+            String y = StrUtils.escapeString(separator) ;
             x = x+"(separator '"+y+"') " ;
         }
         x = x+WriterExpr.asString(expr)+")" ;
@@ -85,12 +82,13 @@ public class AggGroupConcatDistinct extends AggregatorBase
     @Override
     public Accumulator createAccumulator()
     { 
-        return new AccGroupConcatDistinct(expr, separator) ;
+        return new AccGroupConcatDistinct(expr, effectiveSeparator) ;
     }
 
     @Override
     public Expr getExpr() { return expr ; }
-    protected final String getSeparator() { return separator ; }
+    
+    public String getSeparator() { return separator ; }
 
     @Override
     public Node getValueEmpty()     { return null ; } 
