@@ -199,7 +199,7 @@ public class TransactionManager
             processDelayedReplayQueue(txn) ;
         }
         
-        /** This cotrols how many write transactions we batch up before 
+        /** This controls how many write transactions we batch up before 
          *  deciding to flush the journal to the main database.  
          */
         private static final int QueueBatchSize = 10 ; 
@@ -208,7 +208,6 @@ public class TransactionManager
         {
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
 
-            // This is so important, it shouldn't be in a TSM.
             if ( activeReaders.get() == 0 && queue.size() >= QueueBatchSize )
             {
                 // Can commit immediately.
