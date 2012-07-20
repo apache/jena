@@ -596,6 +596,7 @@ public class schemagen {
         writeModelDeclaration();
         writeSource();
         writeNamespace();
+        writeOntologyVersionInfo();
 
         if (m_options.hasDeclarationsOption()) {
             writeln( 0, m_options.getDeclarationsOption() );
@@ -666,6 +667,17 @@ public class schemagen {
     private String protectQuotes( String s ) {
         return s.replaceAll( "\\\\", "\\\\\\\\" ).replaceAll( "\"", "\\\\\"" );
     }
+    
+    /** Write owl:versionInfo string if it exists **/
+    protected void writeOntologyVersionInfo() {
+        String versionInfo = getOntologyElementVersionInfo();
+        
+        if (null != versionInfo) {
+            writeln( 1, "/** <p>The ontology's owl:versionInfo as a string</p> */" );
+            writeln( 1, "public static final String VERSION_INFO = \"" + protectQuotes(versionInfo) + "\";" );
+            writeln( 1 );
+        }
+    }
 
     /** Write the string and resource that represent the namespace */
     protected void writeNamespace() {
@@ -723,6 +735,42 @@ public class schemagen {
         }
 
         return defaultNS;
+    }
+    
+    /** Document has an owl:Ontology or daml:Ontology element */
+    protected String getOntologyElementVersionInfo() {
+        String versionInfo = null;
+        
+        StmtIterator i = m_source.getBaseModel().listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() );
+        if (i.hasNext()) {
+            Resource ont = i.nextStatement().getSubject();
+            StmtIterator j = m_source.getBaseModel().listStatements( ont, OWL.versionInfo, (RDFNode)null );
+            if (j.hasNext()) {
+                versionInfo = j.nextStatement().getObject().asLiteral().getLexicalForm();
+                
+                // check for ambiguous answers
+                if (j.hasNext()) {
+                    System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
+                    System.err.println( "Picking first choice: " + versionInfo  + ". Other choices are:" );
+                    while (j.hasNext()) {
+                        System.err.print( " " );
+                        System.err.print( j.nextStatement().getString() );
+                    }
+                }
+            }
+            
+            // check for ambiguous answers
+            if (i.hasNext()) {
+                System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
+                System.err.println( "Picking first choice: " + ont.getURI()  + ". Other choices are:" );
+                while (i.hasNext()) {
+                    System.err.print( " " );
+                    System.err.print( i.nextStatement().getString() );
+                }
+            }
+        }
+        
+        return versionInfo;
     }
 
     /** Document has an owl:Ontology or daml:Ontology element */
