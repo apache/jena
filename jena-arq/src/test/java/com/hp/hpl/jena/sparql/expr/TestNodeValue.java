@@ -201,6 +201,31 @@ public class TestNodeValue extends TestCase
         }
     }
     
+    @Test public void testDateTime6()
+    {
+        NodeValue v0 = NodeValue.makeDateTime("2005-02-18T20:39:10Z") ;
+        NodeValue v1 = NodeValue.makeDateTime("2005-02-18T20:39:10.0Z") ;
+        NodeValue v2 = NodeValue.makeDateTime("2005-02-18T20:39:10.00Z") ;
+        NodeValue v3 = NodeValue.makeDateTime("2005-02-18T20:39:10.000Z") ;
+        assertEquals("Not Calendar.equals: ", v0.getDateTime(), v1.getDateTime()) ;
+        assertEquals("Not Calendar.equals: ", v0.getDateTime(), v2.getDateTime()) ;
+        assertEquals("Not Calendar.equals: ", v0.getDateTime(), v3.getDateTime()) ;
+    }
+    
+    @Test public void testDateTime7()
+    {
+        NodeValue v0 = NodeValue.makeDateTime("2005-02-18T20:39:10Z") ;
+        NodeValue v1 = NodeValue.makeDateTime("2005-02-18T20:39:10.001Z") ;
+        assertNotSame("Calendar.equals: ", v0.getDateTime(), v1.getDateTime()) ;
+    }
+    
+    @Test public void testDateTime8()
+    {
+        NodeValue v0 = NodeValue.makeDateTime("2005-02-18T20:39:10-05:00") ;
+        NodeValue v1 = NodeValue.makeDateTime("2005-02-18T17:39:10.000-08:00") ;
+        assertEquals("Not Calendar.equals: ", v0.getDateTime(), v1.getDateTime()) ;
+    }
+    
     @Test public void testDate1()
     {
         Calendar cal = new GregorianCalendar() ;
