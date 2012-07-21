@@ -741,31 +741,36 @@ public class schemagen {
     protected String getOntologyElementVersionInfo() {
         String versionInfo = null;
         
-        StmtIterator i = m_source.getBaseModel().listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() );
-        if (i.hasNext()) {
-            Resource ont = i.nextStatement().getSubject();
-            StmtIterator j = m_source.getBaseModel().listStatements( ont, OWL.versionInfo, (RDFNode)null );
-            if (j.hasNext()) {
-                versionInfo = j.nextStatement().getObject().asLiteral().getLexicalForm();
-                
-                // check for ambiguous answers
+        Resource ontologyClass = m_source.getProfile().ONTOLOGY();
+        if (null != ontologyClass) {
+            StmtIterator i = m_source.getBaseModel().listStatements( null, RDF.type, ontologyClass );
+            if (i.hasNext()) {
+                Resource ont = i.nextStatement().getSubject();
+                StmtIterator j = m_source.getBaseModel().listStatements( ont, OWL.versionInfo, (RDFNode)null );
                 if (j.hasNext()) {
-                    System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
-                    System.err.println( "Picking first choice: " + versionInfo  + ". Other choices are:" );
-                    while (j.hasNext()) {
-                        System.err.print( " " );
-                        System.err.print( j.nextStatement().getString() );
+                    versionInfo = j.nextStatement().getObject().asLiteral().getLexicalForm();
+                    
+                    // check for ambiguous answers
+                    if (j.hasNext()) {
+                        System.err.println( "Warning: ambiguous owl:versionInfo - there are more than one owl:versionInfo statements." );
+                        System.err.println( "Picking first choice: " + versionInfo  + ". Other choices are:" );
+                        while (j.hasNext()) {
+                            System.err.print( " " );
+                            System.err.print( j.nextStatement().getObject().toString() );
+                        }
+                        System.err.println();
                     }
                 }
-            }
-            
-            // check for ambiguous answers
-            if (i.hasNext()) {
-                System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
-                System.err.println( "Picking first choice: " + ont.getURI()  + ". Other choices are:" );
-                while (i.hasNext()) {
-                    System.err.print( " " );
-                    System.err.print( i.nextStatement().getString() );
+                
+                // check for ambiguous answers
+                if (i.hasNext()) {
+                    System.err.println( "Warning: ambiguous owl:versionInfo - there is more than one owl:Ontology element." );
+                    System.err.println( "Picking first choice: " + ont.getURI()  + ". Other choices are:" );
+                    while (i.hasNext()) {
+                        System.err.print( " " );
+                        System.err.print( i.nextStatement().getObject().toString() );
+                    }
+                    System.err.println();
                 }
             }
         }
