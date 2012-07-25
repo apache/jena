@@ -8,8 +8,7 @@ exit /B
 :okRoot
 
 set JVM_ARGS=-Xmx1024M
-set JENA_CP="%JENAROOT%\lib\*;"
-set LOGGING=-Dlog4j.configuration=file:%JENAROOT%/jena-log4j.properties
+set JENA_CP=%JENAROOT%\lib\*;
 
-java %JVM_ARGS% %LOGGING% -cp %JENA_CP% jena.schemagen %*
+java %JVM_ARGS% -Dlog4j.configuration="file:%JENAROOT%/jena-log4j.properties" -cp "%JENA_CP%" jena.schemagen %*
 exit /B
