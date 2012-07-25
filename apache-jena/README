@@ -38,6 +38,18 @@
   Linux
     export JENAROOT=/path/to/apache-jena-2.7.2
     bin/sparql --version    
+    
+  If you receive a class not found exception when trying to run one of the 
+  scripts then you may have set JENAROOT incorrectly. A quick and easy way
+  to validate that JENAROOT is set correctly is to run the following:
+  
+  Windows:
+    cd %JENAROOT%
+    
+  Linux:
+    cd $JENAROOT
+    
+  If this command returns an error then JENAROOT is not pointed to a valid directory
 
 
   Website
