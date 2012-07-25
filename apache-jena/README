@@ -32,11 +32,11 @@
   unzipped the Jena distribution:
 
   Windows:
-    set JENAROOT=\path\to\apache-jena-2.7.1
+    set JENAROOT=\path\to\apache-jena-2.7.2
     bat\sparql.bat --version    
 
   Linux
-    export JENAROOT=/path/to/apache-jena-2.7.1
+    export JENAROOT=/path/to/apache-jena-2.7.2
     bin/sparql --version    
 
 
