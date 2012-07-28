@@ -24,7 +24,6 @@ package com.hp.hpl.jena.graph;
     may be converted to triples [which in fact subsume the work of TripleMatch].
     
     @author Jeremy Carroll
-    @author kers
 */
 public interface TripleMatch {
     

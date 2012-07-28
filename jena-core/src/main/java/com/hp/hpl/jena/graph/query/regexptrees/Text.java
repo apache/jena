@@ -23,8 +23,7 @@ package com.hp.hpl.jena.graph.query.regexptrees;
     include material that was meta-quoted in the original patterm. There are
     two sub-classes, one for strings and one for single characters; the factory
     methods ensure that there are no single-character TextString instances.
-    
-    @author kers
+
 */
 
 public abstract class Text extends RegexpTree

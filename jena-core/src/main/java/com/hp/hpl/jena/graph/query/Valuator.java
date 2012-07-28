@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
 	Valuator - an interface for things that evaluate to some 
 	value, given a binding of variable (inexes) to values. 
 
-	@author kers
 */
 public interface Valuator 
     {

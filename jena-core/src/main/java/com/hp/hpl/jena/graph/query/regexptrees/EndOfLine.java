@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 /**
     EndOfLine - a pattern that matches the empty string at the end of a line
     (ie just before a newline or the end of the subject string).
-    @author kers
 */
 public class EndOfLine extends RegexpTree
     {

@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
      PatternLiteral - an interface for pattern literals recognised by Rewrite.
      Also contains the definitions for the pattern language names.
      
-     @author kers
 */
 public interface PatternLiteral
     {

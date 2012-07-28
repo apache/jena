@@ -23,8 +23,7 @@ import com.hp.hpl.jena.shared.*;
 /**
     Preliminary interface for graphs supporting transactions.
     
- 	@author kers
-*/
+ */
 public interface TransactionHandler
     {
     /**

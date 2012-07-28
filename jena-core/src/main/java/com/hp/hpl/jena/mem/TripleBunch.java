@@ -28,8 +28,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     A bunch of triples - a stripped-down set with specialized methods. A
     bunch is expected to store triples that share some useful property 
     (such as having the same subject or predicate).
-    
-    @author kers
+
 */
 public interface TripleBunch 
     {

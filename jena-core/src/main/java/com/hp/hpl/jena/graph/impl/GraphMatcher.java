@@ -35,9 +35,6 @@ import com.hp.hpl.jena.shared.*;
  * Non-pathological examples, where most nodes have some properties that
  * help distinguish them from other nodes, will experience nearly linear
  * performance.
- *<p>
- * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:43 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);

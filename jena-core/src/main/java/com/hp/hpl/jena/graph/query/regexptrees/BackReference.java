@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 /**
      BackReference - class describing back-references in regular expressions.
-     @author kers
 */
 public class BackReference extends RegexpTree
     {

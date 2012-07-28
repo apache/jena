@@ -20,7 +20,7 @@ package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.shared.*;
@@ -31,10 +31,8 @@ import java.io.*;
     A FileGraph is a memory-based graph that is optionally read in from a file
     when it is created, and is written back when it is closed. It supports
     (weak) transactions by using checkpoint files.
-    
- 	@author hedgehog
 */
-public class FileGraph extends GraphMemFaster
+public class FileGraph extends GraphMem
     {
     public interface NotifyOnClose
         {

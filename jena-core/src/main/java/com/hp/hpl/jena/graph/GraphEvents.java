@@ -21,8 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
     GraphEvents is the base class for Jena general graph events. Each graph event
     has a title and some content.
-    
-    @author kers
+
  */
 public class GraphEvents
 	{

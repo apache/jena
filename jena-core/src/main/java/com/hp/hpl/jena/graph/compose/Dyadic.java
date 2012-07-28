@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
     Base class for the two-operand composition operations; has two graphs L and R
-    @author kers
     @author Ian Dickinson - refactored most of the content to {@link CompositionBase}.
 */
 

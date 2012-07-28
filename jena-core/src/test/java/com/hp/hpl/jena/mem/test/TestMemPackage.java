@@ -23,7 +23,6 @@ import junit.framework.TestSuite;
 
 /**
      TestMemPackage
-     @author kers
  */
 public class TestMemPackage extends TestCase
     {

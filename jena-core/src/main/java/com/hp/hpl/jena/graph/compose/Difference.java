@@ -24,7 +24,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     Class representing the dynamic set difference L - R of two graphs. This is updatable;
     the updates are written through to one or other of the base graphs.
-	@author hedgehog
 */
 
 public class Difference extends Dyadic implements Graph 

@@ -21,8 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
     The Highlander Node_NULL exists for the database code (as a Node that
     coresponds to a null in database tables for the reification code).
-    
-    @author kers
+
 */
 
 public class Node_NULL extends Node_Concrete

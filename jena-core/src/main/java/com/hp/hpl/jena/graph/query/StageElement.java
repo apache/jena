@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
 /**
     Class used internally by PatternStage to express the notion of "the
     runnable next component in this stage".
-    @author kers
 */
 public abstract class StageElement
     {

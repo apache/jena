@@ -27,7 +27,6 @@ import com.hp.hpl.jena.shared.QueryStageException;
 
 /**
     This class is a pipe between query threads, implemented as a bounded buffer.
-	@author kers
 */
 public class BufferPipe implements Pipe
     {

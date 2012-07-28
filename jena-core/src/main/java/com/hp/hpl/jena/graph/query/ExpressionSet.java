@@ -25,7 +25,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 /**
 	ExpressionSet: represent a set of (boolean) expressions ANDed together.
 
-	@author kers
 */
 public class ExpressionSet 
     {

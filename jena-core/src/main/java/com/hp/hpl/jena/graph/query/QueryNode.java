@@ -46,8 +46,7 @@ public abstract class QueryNode
     /**
         Internal exception to throw if, against all chance, something that
         shouldn't be involved in a match <i>is</i>.
-        @author kers
-    */
+       */
     public class MustNotMatchException extends BrokenException
         {
         public MustNotMatchException( String message )

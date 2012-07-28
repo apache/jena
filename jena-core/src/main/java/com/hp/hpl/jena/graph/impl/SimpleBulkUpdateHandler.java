@@ -32,8 +32,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     It handles update events, with a special eye to not copying iterators unless
     there is at least one listener registered with the graph's event manager.
     
- 	@author kers
-*/
+ */
 
 public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     {

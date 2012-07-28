@@ -24,7 +24,6 @@ package com.hp.hpl.jena.graph.query;
     may be closed with an exception, in which case hasNext/get will fail with that 
     exception when they are called.
     
-	@author kers
 */
 public interface Pipe
     {

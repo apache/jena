@@ -35,8 +35,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
        a reification API that respects persistent data.
      </p>
      
- 	@author kers
-*/
+ */
 public final class ReificationWrapperGraph extends WrappedGraph
     {
     protected final ReificationStyle style;

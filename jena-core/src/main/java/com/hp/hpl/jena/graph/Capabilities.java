@@ -20,8 +20,7 @@ package com.hp.hpl.jena.graph;
 
 /**
     Interface for expressing capabilities.
- 	@author kers
-*/
+ */
 public interface Capabilities
     {
     /**

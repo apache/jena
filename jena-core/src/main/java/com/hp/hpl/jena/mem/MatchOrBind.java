@@ -21,7 +21,7 @@ package com.hp.hpl.jena.mem;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.QueryNode;
-import com.hp.hpl.jena.mem.faster.ProcessedTriple;
+import com.hp.hpl.jena.mem.impl.ProcessedTriple ;
 
 public abstract class MatchOrBind
     {

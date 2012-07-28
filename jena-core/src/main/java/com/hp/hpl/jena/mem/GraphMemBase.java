@@ -31,7 +31,6 @@ import com.hp.hpl.jena.shared.ReificationStyle;
      but GraphMakers using GraphMems can arrange to re-use the same named 
      graph.
     
-     @author kers
 */
 public abstract class GraphMemBase extends GraphBase
     {

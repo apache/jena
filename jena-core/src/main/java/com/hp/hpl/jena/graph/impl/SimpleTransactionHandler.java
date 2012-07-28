@@ -19,8 +19,7 @@
 package com.hp.hpl.jena.graph.impl;
 
 /**
- 	@author kers
-*/
+ */
 public class SimpleTransactionHandler extends TransactionHandlerBase
     {
     public SimpleTransactionHandler()

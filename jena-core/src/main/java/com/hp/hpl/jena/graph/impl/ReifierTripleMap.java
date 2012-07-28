@@ -24,7 +24,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /**
      ReifierTripleMap - an interface that describes how SimpleReifier manages
      complete reified statements.
-     @author kers
 */
 public interface ReifierTripleMap
     {

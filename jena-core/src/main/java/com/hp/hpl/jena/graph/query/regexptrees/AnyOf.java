@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 /**
      AnyOf - a pattern that can match any of a set of specific characters
-     @author kers
 */
 public class AnyOf extends RegexpTree
     {

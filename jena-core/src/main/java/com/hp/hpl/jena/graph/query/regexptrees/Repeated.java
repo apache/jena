@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 /**
     Repeated - abstract base class for quantified repetitions of some operand
     expression.
-    @author kers
 */
 
 public abstract class Repeated extends RegexpTree

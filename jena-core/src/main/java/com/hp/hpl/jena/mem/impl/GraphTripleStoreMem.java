@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster;
+package com.hp.hpl.jena.mem.impl;
 
 import java.util.*;
 
@@ -26,25 +26,25 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 
-public class FasterTripleStore extends GraphTripleStoreBase implements TripleStore
+public class GraphTripleStoreMem extends GraphTripleStoreBase implements TripleStore
     {    
-    public FasterTripleStore( Graph parent )
+    public GraphTripleStoreMem( Graph parent )
         { 
         super( parent,
-            new NodeToTriplesMapFaster( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
-            new NodeToTriplesMapFaster( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject ),
-            new NodeToTriplesMapFaster( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
+            new NodeToTriplesMapMem( Field.fieldSubject, Field.fieldPredicate, Field.fieldObject ),
+            new NodeToTriplesMapMem( Field.fieldPredicate, Field.fieldObject, Field.fieldSubject ),
+            new NodeToTriplesMapMem( Field.fieldObject, Field.fieldSubject, Field.fieldPredicate )
                 ); 
         }
     
-    public NodeToTriplesMapFaster getSubjects()
-        { return (NodeToTriplesMapFaster) subjects; }
+    public NodeToTriplesMapMem getSubjects()
+        { return (NodeToTriplesMapMem) subjects; }
 
-    public NodeToTriplesMapFaster getPredicates()
-        { return (NodeToTriplesMapFaster) predicates; }
+    public NodeToTriplesMapMem getPredicates()
+        { return (NodeToTriplesMapMem) predicates; }
     
-    public NodeToTriplesMapFaster getObjects()
-        { return (NodeToTriplesMapFaster) objects; }
+    public NodeToTriplesMapMem getObjects()
+        { return (NodeToTriplesMapMem) objects; }
     
     public Applyer createApplyer( ProcessedTriple pt )
         {

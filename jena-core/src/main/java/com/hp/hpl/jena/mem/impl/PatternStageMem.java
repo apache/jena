@@ -16,19 +16,13 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster.test;
+package com.hp.hpl.jena.mem.impl;
 
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.*;
 
-import junit.framework.*;
-
-public class TestFasterMemPackage extends TestCase
+public class PatternStageMem extends PatternStageBase
     {
-    public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestFasterGraphMem.suite() );
-        result.addTest( TestFasterQuery.suite() );
-        result.addTest( TestConcurrentModificationException.suite() );
-        return result;
-        }
+    public PatternStageMem( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
+        { super( ProcessedTriple.factory, graph, map, constraints, triples ); }
     }

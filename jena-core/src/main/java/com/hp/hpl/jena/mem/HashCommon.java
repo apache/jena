@@ -26,7 +26,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     Shared stuff for our hashing implementations: does the base work for
     hashing and growth sizes.
-    @author kers
 */
 public abstract class HashCommon<Key>
     {
@@ -89,8 +88,7 @@ public abstract class HashCommon<Key>
         a <code>NotifyEmpty</code> object in when the iterator is constructed,
         and its <code>emptied</code> method is called when the bunch
         becomes empty.
-        @author kers
-    */
+       */
     public static interface NotifyEmpty
         {
         /**

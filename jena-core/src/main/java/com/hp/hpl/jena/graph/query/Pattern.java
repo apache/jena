@@ -22,8 +22,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
     A Pattern represents a matching triple; it is composed of S, P, and O Elements.
-    
-	@author hedgehog
 */
 
 public class Pattern 

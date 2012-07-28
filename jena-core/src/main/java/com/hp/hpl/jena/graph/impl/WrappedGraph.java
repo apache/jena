@@ -25,8 +25,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
     A  wrapper class which simply defers all operations to its base.
- 	@author kers
-*/
+ */
 public class WrappedGraph implements GraphWithPerform
     {
     protected Graph base;

@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph;
     "variable" nodes; these are outside the RDF2003 specification, but are
     used internally for "placeholder" nodes where blank nodes would be
     wrong, most specifically in Query.
-    @author kers
 */
 
 public class Node_Variable extends Node_Fluid

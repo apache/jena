@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 /**
     AnySingle - a pattern that matches any single character.
-    @author kers
 */
 
 public class AnySingle extends RegexpTree

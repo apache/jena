@@ -25,7 +25,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /**
 	WrappedReifier: a class that wraps a reifier [needed by WrappedGraph].
 
-	@author kers
 */
 public class WrappedReifier implements Reifier 
     {

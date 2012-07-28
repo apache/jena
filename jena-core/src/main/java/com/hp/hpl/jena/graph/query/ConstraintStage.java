@@ -23,8 +23,7 @@ package com.hp.hpl.jena.graph.query;
     query. Any constraints not handled by previous PatternStages are prepared
     against the mapping and valuated against each binding that comes down
     the pipe; only bindings that evaluate to <code>true</code> are passed onward.
-    
-    @author kers
+
 */
 
 public class ConstraintStage extends Stage

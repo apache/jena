@@ -22,7 +22,6 @@ import java.util.List;
 
 /**
      Alt - expresses patterns which are an (ordered) sequence of alternatives.
-     @author kers
 */
 public class Alternatives extends MultiOperandTree
     {

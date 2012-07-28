@@ -29,8 +29,7 @@ import com.hp.hpl.jena.graph.*;
      tracked by the parent <code>TrackingTripleIterator</code> so that it
      can be removed from the other two maps, which are passed in when this 
      StoreTripleIterator is created.
-     
-    @author kers
+ 
 */
 public class StoreTripleIterator extends TrackingTripleIterator
 	{

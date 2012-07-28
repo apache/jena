@@ -21,8 +21,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
     An Element that matches a single specified value.
-    
-	@author hedgehog
 */
 public class Fixed extends Element 
 	{
