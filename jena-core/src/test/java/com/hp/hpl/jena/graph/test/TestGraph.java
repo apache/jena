@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.WrappedGraph ;
-import com.hp.hpl.jena.mem.impl.GraphMem ;
+import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.util.CollectionFactory ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;

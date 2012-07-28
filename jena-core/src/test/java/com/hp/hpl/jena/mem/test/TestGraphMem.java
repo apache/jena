@@ -16,13 +16,13 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl.test;
+package com.hp.hpl.jena.mem.test;
 
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.mem.impl.GraphMem ;
+import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 

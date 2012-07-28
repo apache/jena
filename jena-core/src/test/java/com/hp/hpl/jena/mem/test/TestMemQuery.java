@@ -16,19 +16,24 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl.test;
+package com.hp.hpl.jena.mem.test;
 
+import junit.framework.TestSuite;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.query.test.AbstractTestQuery;
+import com.hp.hpl.jena.mem.GraphMem ;
 
-public class TestGraphMemPackage extends TestCase
+public class TestMemQuery extends AbstractTestQuery
     {
+    public TestMemQuery( String name )
+        { super( name ); }
+
     public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestGraphMem.suite() );
-        result.addTest( TestMemQuery.suite() );
-        result.addTest( TestConcurrentModificationException.suite() );
-        return result;
-        }
+        { return new TestSuite( TestMemQuery.class ); }
+    
+    @Override
+    public Graph getGraph()
+        { return new GraphMem(); }
+
     }

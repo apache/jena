@@ -16,24 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl.test;
+package com.hp.hpl.jena.mem;
 
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.query.ExpressionSet ;
+import com.hp.hpl.jena.graph.query.Mapping ;
+import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.graph.query.Stage ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.query.test.AbstractTestQuery;
-import com.hp.hpl.jena.mem.impl.GraphMem ;
-
-public class TestMemQuery extends AbstractTestQuery
+public class GraphMemQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
     {
-    public TestMemQuery( String name )
-        { super( name ); }
-
-    public static TestSuite suite()
-        { return new TestSuite( TestMemQuery.class ); }
+    GraphMemQueryHandler( GraphMem graph ) 
+        { super( graph ); }
     
-    @Override
-    public Graph getGraph()
-        { return new GraphMem(); }
-
+    @Override public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
+        { return new PatternStageMem( graph, map, constraints, t ); }
     }

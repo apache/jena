@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl;
+package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.Reifier.Util;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.Reifier.Util ;
+import com.hp.hpl.jena.graph.impl.SimpleReifier ;
+import com.hp.hpl.jena.graph.impl.TripleStore ;
+import com.hp.hpl.jena.graph.query.* ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class GraphMem extends GraphMemBase
     {
