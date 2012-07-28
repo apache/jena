@@ -20,7 +20,7 @@ package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.graph.TransactionHandler;
-import com.hp.hpl.jena.mem.impl.GraphMem ;
+import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.shared.*;

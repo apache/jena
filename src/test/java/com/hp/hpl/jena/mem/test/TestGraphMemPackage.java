@@ -16,17 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl;
+package com.hp.hpl.jena.mem.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.*;
 
-public class GraphMemQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
+import junit.framework.*;
+
+public class TestGraphMemPackage extends TestCase
     {
-    GraphMemQueryHandler( GraphMem graph ) 
-        { super( graph ); }
-    
-    @Override public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
-        { return new PatternStageMem( graph, map, constraints, t ); }
+    public static TestSuite suite()
+        { 
+        TestSuite result = new TestSuite();
+        result.addTest( TestGraphMem.suite() );
+        result.addTest( TestMemQuery.suite() );
+        result.addTest( TestConcurrentModificationException.suite() );
+        return result;
+        }
     }
