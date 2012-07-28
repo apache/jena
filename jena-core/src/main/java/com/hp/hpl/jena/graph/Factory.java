@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.mem.impl.GraphMem ;
+import com.hp.hpl.jena.mem.GraphMem ;
 import com.hp.hpl.jena.shared.*;
 
 /**

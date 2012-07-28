@@ -16,15 +16,16 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.impl;
+package com.hp.hpl.jena.mem;
 
-import java.util.*;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.Triple.Field;
-import com.hp.hpl.jena.graph.impl.TripleStore;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.Triple.Field ;
+import com.hp.hpl.jena.graph.impl.TripleStore ;
+import com.hp.hpl.jena.graph.query.* ;
 
 public class GraphTripleStoreMem extends GraphTripleStoreBase implements TripleStore
     {    
