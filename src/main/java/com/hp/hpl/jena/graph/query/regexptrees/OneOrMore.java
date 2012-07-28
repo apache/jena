@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 /**
     OneOrMore - expresses a pattern that matches at least one, and maybe more,
     of the operand expression.
-    @author kers
 */
 
 public class OneOrMore extends Repeated

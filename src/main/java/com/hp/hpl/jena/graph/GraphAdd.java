@@ -24,8 +24,7 @@ import com.hp.hpl.jena.shared.*;
     The Add part of Graph's interface. It proved convenient to factor this
     out so that it could be used in the reification code.
     
- 	@author kers
-*/
+ */
 public interface GraphAdd
     {
     /** 

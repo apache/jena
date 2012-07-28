@@ -30,8 +30,7 @@ import com.hp.hpl.jena.shared.JenaException;
     are discarded, and the checkpointed contents restored; on a commit(),
     the current contents are written back to the backing file, and the
     checkpoint file is deleted. Nested transactions are Not Allowed.
-    
-    @author kers
+
 */
 public class FileGraphTransactionHandler 
     extends TransactionHandlerBase implements TransactionHandler

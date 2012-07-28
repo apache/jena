@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 /**
      Nothing - the empty pattern (which matches the empty string)
-     @author kers
 */
 public class Nothing extends RegexpTree
     {

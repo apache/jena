@@ -24,8 +24,7 @@ import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
 /**
  	A GraphMemBulkUpdateHandler specialises the SimpleBulkUpdateHandler
  	by doing removeAll efficiently, by clearing the indexes directly.
- 	@author hedgehog
-*/
+ */
 
 public class GraphMemBulkUpdateHandler extends SimpleBulkUpdateHandler
 	{

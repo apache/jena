@@ -21,8 +21,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
     An element which represents an already-bound variable.
-    
-	@author hedgehog
 */
 
 public class Bound extends Element

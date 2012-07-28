@@ -28,7 +28,6 @@ import java.util.*;
     A class representing the dynamic union of two graphs. Addition only affects the left 
     operand, deletion affects both. 
     @see MultiUnion
-	@author hedgehog
 */
 
 public class Union extends Dyadic implements Graph 

@@ -23,7 +23,6 @@ import com.hp.hpl.jena.graph.*;
 /**
     A PatternCompiler is some class that knows how to handle fixed Node values,
     binding and bound occurences of variables, and wildcards.
-	@author kers
 */
 
 public interface PatternCompiler

@@ -22,8 +22,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
- 	@author kers
-    
+     
     A base for transaction handlers - all it does is provide the canonical
     implementation of executeInTransaction.
 */

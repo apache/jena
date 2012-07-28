@@ -25,7 +25,6 @@ package com.hp.hpl.jena.graph;
     Each slot is treated independantly and only the most recent stored triple is
     remembered - there is no weighting, LRU, or anything like that.
 
-	@author kers
 */
 public class TripleCache
     {

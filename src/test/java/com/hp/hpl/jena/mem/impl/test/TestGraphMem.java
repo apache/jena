@@ -16,26 +16,26 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster.test;
+package com.hp.hpl.jena.mem.impl.test;
 
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class TestFasterGraphMem extends AbstractTestGraph
+public class TestGraphMem extends AbstractTestGraph
     {
-    public TestFasterGraphMem( String name )
+    public TestGraphMem( String name )
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestFasterGraphMem.class ); }
+        { return new TestSuite( TestGraphMem.class ); }
     
     @Override public Graph getGraph()
-        { return new GraphMemFaster(); }   
+        { return new GraphMem(); }   
     
     public void testRemoveAllDoesntUseFind()
         {
@@ -131,7 +131,7 @@ public class TestFasterGraphMem extends AbstractTestGraph
     public void testStatsWithreification()
         {
         ReificationStyle style = ReificationStyle.Standard;
-        Graph g = new GraphMemFaster( style );
+        Graph g = new GraphMem( style );
         GraphStatisticsHandler h = g.getStatisticsHandler();
         graphAdd( g, "x rdf:subject A" );
         assertEquals( -1L, h.getStatistic( node( "x" ), Node.ANY, Node.ANY ) );
@@ -145,7 +145,7 @@ public class TestFasterGraphMem extends AbstractTestGraph
         assertEquals( expect, h.getStatistic( t.getSubject(), t.getPredicate(), t.getObject() ) );
         }
 
-    protected final class GraphMemWithoutFind extends GraphMemFaster
+    protected final class GraphMemWithoutFind extends GraphMem
         {
         @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch t )
             { throw new JenaException( "find is Not Allowed" ); }

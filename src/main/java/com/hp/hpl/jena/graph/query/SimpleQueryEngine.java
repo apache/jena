@@ -26,7 +26,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
 	SimpleQueryEngine
 
-	@author kers
 */
 public class SimpleQueryEngine 
     {

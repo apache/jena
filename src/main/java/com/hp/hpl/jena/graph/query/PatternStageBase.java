@@ -41,8 +41,6 @@ import com.hp.hpl.jena.graph.query.StageElement.PutBindings;
     <li>classifies all the triples according to the factory
     <li>constructs the array of applicable guards
     </ul>
-    
-    @author hedgehog
 */
 public abstract class PatternStageBase extends Stage
     {

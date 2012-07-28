@@ -30,8 +30,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
     a bunch of different literal nodes), getting the list of objects requires
     mapping that indexing value to all the triples that use it, and then
     filtering those triples for their objects, removing duplicates.
-    
-    @author kers
+
 */
 public abstract class ObjectIterator extends NiceIterator<Node>
     {
@@ -55,7 +54,7 @@ public abstract class ObjectIterator extends NiceIterator<Node>
     @Override public Node next()
         {
         if (!hasNext()) throw new NoSuchElementException
-            ( "FasterTripleStore listObjects next()" );
+            ( "ObjectIterator.next()" );
         return pending.remove( pending.size() - 1 );
         }
     

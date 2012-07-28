@@ -37,7 +37,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 <p>
     When a GraphBase is closed, future operations on it may throw an exception.
     
-	@author kers
 */
 
 public abstract class GraphBase implements GraphWithPerform 

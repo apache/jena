@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 /**
     StartOfLine - a pattern that matches the empty string at the start of a line,
     ie after a newline or at the beginning of the subject string.
-    @author kers
 */
 
 public class StartOfLine extends RegexpTree

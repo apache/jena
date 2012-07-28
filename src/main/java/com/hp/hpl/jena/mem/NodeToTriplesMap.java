@@ -27,7 +27,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
 	NodeToTriplesMap: a map from nodes to sets of triples.
 	Subclasses must override at least one of useXXXInFilter methods.
-	@author kers
 */
 public class NodeToTriplesMap extends NodeToTriplesMapBase 
     {    

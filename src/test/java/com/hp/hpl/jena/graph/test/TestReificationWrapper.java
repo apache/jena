@@ -23,7 +23,7 @@ import junit.framework.TestSuite ;
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.impl.ReificationWrapperGraph ;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
 
 /**
@@ -69,5 +69,5 @@ public class TestReificationWrapper extends AbstractTestReifier
 
     @Override
     public Graph getGraph( ReificationStyle style )
-        { return new ReificationWrapperGraph( new GraphMemFaster( Standard ), style );  }
+        { return new ReificationWrapperGraph( new GraphMem( Standard ), style );  }
     }

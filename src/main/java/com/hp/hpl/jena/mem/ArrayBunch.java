@@ -29,8 +29,6 @@ import com.hp.hpl.jena.util.iterator.*;
     array of Triples. The array can grow, but it only grows by 4 elements each time
     (because, if it gets big enough for this linear growth to be bad, it should anyways
     have been replaced by a more efficient set-of-triples implementation).
-    
-    @author kers
 */
 public class ArrayBunch implements TripleBunch
     {

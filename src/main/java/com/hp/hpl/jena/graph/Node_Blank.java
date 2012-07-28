@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     RDF blank nodes, ie nodes with identity but without URIs.
-	@author kers
 */
 
 public class Node_Blank extends Node_Concrete

@@ -25,9 +25,7 @@ import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
-    A base class for the "normal" and "faster" NodeToTriplesMaps.
-    
-    @author kers
+    A base class for in-memory graphs
 */
 public abstract class NodeToTriplesMapBase
     {

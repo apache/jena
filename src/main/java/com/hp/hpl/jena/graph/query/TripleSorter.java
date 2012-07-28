@@ -23,8 +23,7 @@ import com.hp.hpl.jena.graph.*;
 /**
     Interface for things that can sort triples (for optimising queries).
     
- 	@author kers
-*/
+ */
 public interface TripleSorter
     {
     /**

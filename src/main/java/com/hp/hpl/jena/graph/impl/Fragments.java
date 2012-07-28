@@ -32,8 +32,7 @@ public class Fragments
         { 
         /**
             A GetSlots allows to extract one of the sets of nodes in the Fragments.
-         	@author kers
-        */
+                 */
         public interface GetSlot { public Set<Node> get( Fragments f ); }
 
         Set<Node> subjects = new HashSet<Node>();

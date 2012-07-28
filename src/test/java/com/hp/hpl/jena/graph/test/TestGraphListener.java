@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
 /**
@@ -52,7 +52,7 @@ public class TestGraphListener extends MetaTestGraph {
     { super( graphClass, name, style ); }
     
     public static TestSuite suite()
-    { return MetaTestGraph.suite( TestGraphListener.class, GraphMemFaster.class ); }
+    { return MetaTestGraph.suite( TestGraphListener.class, GraphMem.class ); }
 	/**
 	 * A listener to check that a graph is being tracked
 	 * correctly by its events.

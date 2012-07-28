@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 
 /**
     ZeroOrMore - expresses 0-or-more repetitions of some oeprand expression.
-    @author kers
 */
 
 public class ZeroOrMore extends Repeated

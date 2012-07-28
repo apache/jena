@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.Node_Literal;
 
 /**
      Rewrite - class which does expression rewrites for Query
-     @author kers
 */
 public class Rewrite
     {

@@ -23,8 +23,6 @@ import com.hp.hpl.jena.graph.*;
 /**
     A binding instance of a variable. It accepts any node and records it in the supplied
     Domain at the index allocated to it when it is created.
-    
-	@author hedgehog
 */
 public class Bind extends Element 
 	{	

@@ -16,17 +16,17 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster;
+package com.hp.hpl.jena.mem.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 
-public class GraphMemFasterQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
+public class GraphMemQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
     {
-    GraphMemFasterQueryHandler( GraphMemFaster graph ) 
+    GraphMemQueryHandler( GraphMem graph ) 
         { super( graph ); }
     
     @Override public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
-        { return new FasterPatternStage( graph, map, constraints, t ); }
+        { return new PatternStageMem( graph, map, constraints, t ); }
     }

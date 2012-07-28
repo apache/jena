@@ -27,8 +27,6 @@ import java.util.*;
 /**
     A NamedTripleBunches maps a [graph] name to a bunch of triples associated
     with that name. 
-    
- 	@author hedgehog
 */
 public class NamedTripleBunches
     {

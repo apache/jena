@@ -29,7 +29,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
      to the graph adds them to the left component, and does <i>not</i> add
      triples that are already in the right component.
      
-     @author kers
 */
 public class DisjointUnion extends Dyadic
     {

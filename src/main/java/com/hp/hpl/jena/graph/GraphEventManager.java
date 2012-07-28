@@ -26,8 +26,7 @@ import java.util.*;
     the same; the special case to note is that an event manager expects to be
     handed iterator events as lists, not as iterators. 
     
- 	@author kers
-*/
+ */
 public interface GraphEventManager extends GraphListener
     {
     /**

@@ -27,9 +27,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
      GraphExtract offers a very simple recursive extraction of a subgraph with a
      specified root in some supergraph. The recursion is terminated by triples
      that satisfy some supplied boundary condition.
-     
- 	@author hedgehog
-*/
+ */
 public class GraphExtract
     {
     protected final TripleBoundary b;
@@ -59,8 +57,7 @@ public class GraphExtract
          source and destination graphs, the TripleBoundary that determines the
          limits of the extraction, and a local set <code>active</code> of nodes 
          already seen and hence not to be re-processed.
-        @author kers
-     */
+        */
     protected static class Extraction
         {
         protected Graph toUpdate;

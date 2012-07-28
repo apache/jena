@@ -21,9 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
      An interface for expressing a stopping condition on triples, such as in 
      sub-graph extraction.
-      
- 	@author hedgehog
-*/
+  */
 public interface TripleBoundary
     {
     /**

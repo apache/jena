@@ -22,8 +22,7 @@ package com.hp.hpl.jena.graph;
     A graph's StatisticsHandler offers access to some statistics about that
     graph's contents that might be useful for optimisation.
     
- 	@author kers
-*/
+ */
 public interface GraphStatisticsHandler
     {
     /**

@@ -28,7 +28,6 @@ import java.util.*;
     A SimpleQueryHandler is a more-or-less straightforward implementation of QueryHandler
     suitable for use on graphs with no special query engines.
     
-	@author kers
 */
 
 public class SimpleQueryHandler implements QueryHandler

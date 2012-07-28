@@ -21,8 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
     This is the class of "concrete" nodes, ie those which correspond
     to actual RDF data - URIs, blank nodes, and literals.
- 	@author kers
-*/
+ */
 public abstract class Node_Concrete extends Node
     {
     protected Node_Concrete( Object label )

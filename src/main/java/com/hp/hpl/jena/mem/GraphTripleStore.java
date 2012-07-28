@@ -26,8 +26,7 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
     GraphTripleStore - the underlying triple-indexed triple store for GraphMem et al,
     ripped out from the heart of GraphMem as part of simplifying the reification code.
     A GraphTripleStore is a searchable repository for triples. 
-    
-    @author kers
+
 */
 
 public class GraphTripleStore extends GraphTripleStoreBase implements TripleStore

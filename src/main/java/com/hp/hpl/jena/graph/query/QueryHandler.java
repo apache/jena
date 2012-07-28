@@ -27,7 +27,6 @@ import com.hp.hpl.jena.util.iterator.*;
     different Graph implementations can use the same QueryHandler class, such
     as the built-in SimpleQueryHandler.
 
-	@author kers
 */
 
 public interface QueryHandler

@@ -27,7 +27,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 	Util: some utility code used by graph query that doesn't seem to belong 
     anywhere else that it can be put.
 
-	@author kers
 */
 public class Util 
     {

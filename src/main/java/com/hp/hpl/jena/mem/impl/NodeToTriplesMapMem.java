@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster;
+package com.hp.hpl.jena.mem.impl;
 
 import java.util.*;
 
@@ -27,9 +27,9 @@ import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
-public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
+public class NodeToTriplesMapMem extends NodeToTriplesMapBase
     {    
-    public NodeToTriplesMapFaster( Field indexField, Field f2, Field f3 )
+    public NodeToTriplesMapMem( Field indexField, Field f2, Field f3 )
        { super( indexField, f2, f3 ); }
     
     /**

@@ -39,10 +39,6 @@ import java.util.*;
  * A graph implementation that presents the union of zero or more subgraphs,
  * one of which is distinguished as the updateable graph.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
  */
 public class MultiUnion extends Polyadic
 {

@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.graph.impl;
 
 /**
-	@author kers
 <p>
     A base-level implementation of Reifier, intended to be straightforward
     and obvious. It fails this test nowadays ...

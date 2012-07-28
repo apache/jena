@@ -29,8 +29,7 @@ import com.hp.hpl.jena.util.IteratorCollection;
  	passed on to the base handler, and then this graph's event manager is
  	notified.
  	 
- 	@author kers
-*/
+ */
 public class WrappedBulkUpdateHandler implements BulkUpdateHandler
     {
     protected BulkUpdateHandler base;

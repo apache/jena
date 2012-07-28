@@ -21,8 +21,7 @@ package com.hp.hpl.jena.graph.query.regexptrees;
 /**
     Optional - expresses a pattern which may or may not match the operand
     expression.
-    
-    @author kers
+
 */
 
 public class Optional extends Repeated

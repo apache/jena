@@ -28,8 +28,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 /**
     SimpleReifierFragmentsMap - a map from nodes to the incompleteb(or 
     overcomplete) reification quadlets.
-    
-    @author kers
+
 */
 public class SimpleReifierFragmentsMap implements ReifierFragmentsMap 
     {

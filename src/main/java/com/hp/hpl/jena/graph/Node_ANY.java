@@ -23,7 +23,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 /**
     A Node_ANY (there should be only one) is a meta-node that is used to stand
     for any other node in a query.
-    @author kers
 */
 
 public class Node_ANY extends Node_Fluid

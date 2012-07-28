@@ -37,10 +37,6 @@ import java.util.*;
  * a home for shared functionality that was previously in {@link Dyadic} before
  * refactoring.
  * </p>
- *
- * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
- * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
  */
 public abstract class CompositionBase extends GraphBase
 {
