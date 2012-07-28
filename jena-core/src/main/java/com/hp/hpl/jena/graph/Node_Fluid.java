@@ -21,8 +21,7 @@ package com.hp.hpl.jena.graph;
 /**
     This is the subclass of "fluid" nodes, ie nodes that are "holes" in pattern
     matching.
- 	@author kers
-*/
+ */
 public abstract class Node_Fluid extends Node
     {
     protected Node_Fluid(Object label)

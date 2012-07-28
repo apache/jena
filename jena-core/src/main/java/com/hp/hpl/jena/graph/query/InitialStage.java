@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
     The initial stage of a query, responsible for dropping the no-variables-bound seed
     binding domain into the remaining stages of the query pipeline.
     
-	@author kers
 */
 public class InitialStage extends Stage
     {

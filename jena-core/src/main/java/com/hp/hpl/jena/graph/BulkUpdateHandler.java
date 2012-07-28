@@ -29,8 +29,7 @@ import java.util.*;
     addition or removal of triples must have been successfully completed
     in accordance with the operation of the owning graph.    
     
- 	@author kers
-*/
+ */
 public interface BulkUpdateHandler
     {
     /**

@@ -26,8 +26,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
     SimpleReifierTripleMap - a map storing complete node -> triple maps.
-    
-    @author kers
+
 */
 public class SimpleReifierTripleMap implements ReifierTripleMap 
     {

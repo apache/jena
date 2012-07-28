@@ -23,7 +23,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
      TripleStore - interface for bulk storage of triples used in composed graphs.
-     @author kers
 */
 public interface TripleStore
     {

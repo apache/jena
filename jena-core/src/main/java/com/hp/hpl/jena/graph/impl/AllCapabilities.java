@@ -23,8 +23,6 @@ import com.hp.hpl.jena.graph.Capabilities;
 /**
     A default implementation of capabilities, in which everything is allowed,
     size is accurate, and graphs may be completely empty.
-    
- 	@author hedgehog
  */
 
 public class AllCapabilities implements Capabilities

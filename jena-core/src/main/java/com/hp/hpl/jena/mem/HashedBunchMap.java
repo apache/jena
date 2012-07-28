@@ -22,7 +22,6 @@ import com.hp.hpl.jena.shared.*;
 
 /**
     An implementation of BunchMap that does open-addressed hashing.
-    @author kers
 */
 public class HashedBunchMap extends HashCommon<Object> implements BunchMap
     {

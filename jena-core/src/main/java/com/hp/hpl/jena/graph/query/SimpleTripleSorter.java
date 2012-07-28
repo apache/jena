@@ -38,8 +38,7 @@ import java.util.*;
     No weighting is applied to predicate position, and no knowledge about the graph 
     being queried is required.
     
- 	@author kers
-*/
+ */
 public class SimpleTripleSorter implements TripleSorter
     {
     private Triple [] result;

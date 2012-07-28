@@ -24,7 +24,6 @@ import com.hp.hpl.jena.graph.Triple;
     A Matcher knows how to match itself against a concrete triple (the triple
     to be matched) and a domain (of bindings to check and extend). It is part
     of the improved-we-hope PatternStage code.
-    @author kers
 */
 public abstract class Matcher
     {

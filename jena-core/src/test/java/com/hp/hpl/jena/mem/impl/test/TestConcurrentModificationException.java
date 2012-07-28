@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster.test;
+package com.hp.hpl.jena.mem.impl.test;
 
 import java.util.*;
 

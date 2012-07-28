@@ -25,7 +25,6 @@ import com.hp.hpl.jena.graph.*;
      with the performAdd and performDelete methods used by GraphBase
      to invoke non-notifying versions of add and delete.
      
-     @author kers
 */
 public interface GraphWithPerform extends Graph
     {

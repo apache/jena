@@ -21,7 +21,6 @@ package com.hp.hpl.jena.graph.query;
 /**
     The interface that allows the values of variables in expressions to be found.
 
-	@author kers
  */
 public interface VariableValues
     {

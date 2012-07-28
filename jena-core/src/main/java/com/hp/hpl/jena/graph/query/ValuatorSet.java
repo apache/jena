@@ -25,7 +25,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 /**
 	ValuatorSet - a set of Valuators, which can be added to and evaluated [only].
 
-	@author kers
 */
 public class ValuatorSet 
     {

@@ -25,7 +25,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
      ReifierFragmentsMap: how a SimpleReifier manages its incomplete reifications.
      Most of the active operations are deferred to FragmentHandler.
      
-     @author kers
 */
 public interface ReifierFragmentsMap
     {

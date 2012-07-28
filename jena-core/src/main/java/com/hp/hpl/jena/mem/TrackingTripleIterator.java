@@ -27,8 +27,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
     A WrappedIterator which remembers the last object next'ed in a
     protected instance variable, so that subclasses have access to it 
     during .remove.
-
-	@author kers
 */
 public class TrackingTripleIterator extends WrappedIterator<Triple>
     {

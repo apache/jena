@@ -40,10 +40,6 @@ import java.util.*;
  * of the graphs in the composition can be nominated to be the distinguished
  * graph.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.2 2009-08-08 11:25:31 andy_seaborne Exp $
  */
 public abstract class Polyadic extends CompositionBase
 {

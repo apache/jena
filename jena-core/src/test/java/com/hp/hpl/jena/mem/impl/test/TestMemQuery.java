@@ -16,24 +16,24 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster.test;
+package com.hp.hpl.jena.mem.impl.test;
 
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.query.test.AbstractTestQuery;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 
-public class TestFasterQuery extends AbstractTestQuery
+public class TestMemQuery extends AbstractTestQuery
     {
-    public TestFasterQuery( String name )
+    public TestMemQuery( String name )
         { super( name ); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestFasterQuery.class ); }
+        { return new TestSuite( TestMemQuery.class ); }
     
     @Override
     public Graph getGraph()
-        { return new GraphMemFaster(); }
+        { return new GraphMem(); }
 
     }

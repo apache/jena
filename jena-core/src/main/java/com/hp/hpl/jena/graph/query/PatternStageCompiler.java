@@ -24,8 +24,7 @@ import com.hp.hpl.jena.graph.*;
     PatternStageCompiler serves two purposes: it contains the standard algorithm
     for compiling patterns-as-triples to patterns-as-Pattern(s), and it has the
     standard implementation of PatternCompiler in terms of ordinary Elements.
-    
-    @author kers
+
 */
 public final class PatternStageCompiler implements PatternCompiler
     {

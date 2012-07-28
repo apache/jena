@@ -32,8 +32,6 @@ import com.hp.hpl.jena.util.iterator.*;
     directory. We have to keep track of created files ourselves, because a
     FileGraph that has been created but not closed is not visible in the
     filing system. (This might count as a bug at some point.)
-    
- 	@author hedgehog
 */
 public class FileGraphMaker 
     extends BaseGraphMaker 

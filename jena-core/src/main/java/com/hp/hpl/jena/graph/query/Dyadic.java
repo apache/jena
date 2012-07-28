@@ -25,8 +25,7 @@ import com.hp.hpl.jena.shared.JenaException;
     A base class for dyadic expressions with a built-in Valuator; subclasses must
     define an evalObject or evalBool method which will be supplied with the
     evaluated operands.
-    
-    @author kers
+
 */
 public abstract class Dyadic extends Application
     {

@@ -23,7 +23,6 @@ package com.hp.hpl.jena.graph;
     semantics for HasNode is that classes implementing HasNode promise that
     their .equals() is based *only* on the underlying Node. 
 
-	@author kers
 */
 public interface FrontsNode 
     {

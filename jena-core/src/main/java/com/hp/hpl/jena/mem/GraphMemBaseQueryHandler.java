@@ -28,8 +28,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     indexes to implement objectsFor, predicatesFor, and subjectsFor efficiently
     for the (ANY, ANY) case used in listSubjects(), listPredicates(), and
     listObjects().
-    
-    @author kers
+
 */
 public class GraphMemBaseQueryHandler extends SimpleQueryHandler
     {

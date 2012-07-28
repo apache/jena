@@ -24,9 +24,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     Graph operation for wrapping a base graph and leaving it unchanged while recording
     all the attempted updates for later access.
-<p>    
-    TODO review in the light of GraphWrapper
-	@author hedgehog
 */
 
 public class Delta extends Dyadic implements Graph 

@@ -27,7 +27,6 @@ import com.hp.hpl.jena.graph.Triple;
      They are delivered from FragmentHandler instances and remain bound to
      their originating instance.
      
-     @author kers
 */
 public interface ReifierFragmentHandler
     {

@@ -26,7 +26,6 @@ package com.hp.hpl.jena.graph;
     means that we don't need to have any explicit cache-clearing code in normal
     oepration.
      
-	@author kers
  */
 public class NodeCache
     {

@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
 	IndexValues: something that when supplied with a non-negative integer, returns
     a value.
 
-	@author kers
 */
 public interface IndexValues 
     {

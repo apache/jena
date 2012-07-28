@@ -24,8 +24,6 @@ import com.hp.hpl.jena.graph.*;
     An Element of a matching triple. Elements have associated indexes, their place
     in the Domain storing the matching values. Subclasses represent constants,
     binding occurances of variables, and bound instances of variables.
-    
-	@author hedgehog
 */
 
 public abstract class Element 

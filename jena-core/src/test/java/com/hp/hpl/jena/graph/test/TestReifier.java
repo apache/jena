@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.impl.* ;
-import com.hp.hpl.jena.mem.faster.GraphMemFaster ;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
@@ -54,7 +54,7 @@ public class TestReifier extends AbstractTestReifier
     public static TestSuite suite()
         { 
         TestSuite result = new TestSuite();
-        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMemFaster.class ) );
+        result.addTest( MetaTestGraph.suite( TestReifier.class, GraphMem.class ) );
         result.setName(TestReifier.class.getSimpleName());
         return result; 
         }   

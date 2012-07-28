@@ -38,7 +38,6 @@ import java.util.*;
     <code>Variable</code>, and <code>Application</code> provide a framework 
     for developers to implement Expressions over.
 
-	@author kers
 */
 public interface Expression 
     { 
@@ -269,8 +268,7 @@ public interface Expression
         to produce a VariableValues map. A Valof has mutable state; the setDomain
         operation changes the IndexValues mapping of the Valof.
     
-    	@author kers
-     */
+         */
     static class Valof implements VariableValues
         {
         private VariableIndexes map;

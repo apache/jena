@@ -27,8 +27,7 @@ import java.util.*;
     interface so that casual users don't have to worry about its special
     features - for them, it is immutable (they only ever get to see Domains
     that have emerged from the query process).
-    
-    @author kers
+
 */
 
 

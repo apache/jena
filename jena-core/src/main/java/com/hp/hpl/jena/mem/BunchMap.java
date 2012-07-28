@@ -23,8 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /**
     A pruned (and slightly stewed) version of Map, containing just those operations
     required by NodeToTriplesMaps. BunchMaps contain only TripleBunch's.
-    
-    @author kers
+
 */
 public interface BunchMap
     {

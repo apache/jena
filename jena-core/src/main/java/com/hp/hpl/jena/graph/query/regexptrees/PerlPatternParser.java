@@ -23,9 +23,7 @@ import java.util.*;
 /**
      Parse Perl5 patterns into RegexpTree structures, or throw an exception for
      cases that haven't been implemented.
-     
- 	@author hedgehog
-*/
+ */
 public class PerlPatternParser
     {
     /**

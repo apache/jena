@@ -24,7 +24,6 @@ import com.hp.hpl.jena.shared.*;
 
 /**
     An RDF node holding a literal value. Literals may have datatypes.
-	@author kers
 */
 public class Node_Literal extends Node_Concrete
 {

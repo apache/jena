@@ -22,7 +22,6 @@ package com.hp.hpl.jena.graph.query;
 	VariableIndexes: a mapping from variable names to their offsets in some
     table of variable values.
 
-	@author kers
 */
 public interface VariableIndexes 
     {

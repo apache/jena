@@ -22,8 +22,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
     An ad-hoc collection of useful code for graphs; starting with findAll.
- 	@author kers
-*/
+ */
 public class GraphUtil
     {
     /**

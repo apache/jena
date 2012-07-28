@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster;
+package com.hp.hpl.jena.mem.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Reifier.Util;
@@ -26,16 +26,16 @@ import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class GraphMemFaster extends GraphMemBase
+public class GraphMem extends GraphMemBase
     {
-    public GraphMemFaster()
+    public GraphMem()
         { this( ReificationStyle.Minimal ); }
     
-    public GraphMemFaster( ReificationStyle style )
+    public GraphMem( ReificationStyle style )
         { super( style ); }
 
     @Override protected TripleStore createTripleStore()
-        { return new FasterTripleStore( this ); }
+        { return new GraphTripleStoreMem( this ); }
 
     @Override protected void destroy()
         { store.close(); }
@@ -51,26 +51,24 @@ public class GraphMemFaster extends GraphMemBase
     
     @Override public QueryHandler queryHandler()
         { 
-        if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
+        if (queryHandler == null) queryHandler = new GraphMemQueryHandler( this );
         return queryHandler;
         }
 
     @Override protected GraphStatisticsHandler createStatisticsHandler()
-        { return new GraphMemFasterStatisticsHandler( (FasterTripleStore) store, getReifier() ); }
+        { return new GraphMemStatisticsHandler( (GraphTripleStoreMem) store, getReifier() ); }
     
     /**
-        The GraphMemFasterStatisticsHandler exploits the existing FasterTripleStore
+        The GraphMemStatisticsHandler exploits the existing TripleStoreMem
         indexes to deliver statistics information for single-concrete-node queries
         and for trivial cases of two-concrete-node queries.        
-        
-     	@author kers
     */
-    protected static class GraphMemFasterStatisticsHandler implements GraphStatisticsHandler
+    protected static class GraphMemStatisticsHandler implements GraphStatisticsHandler
         {
-        protected final FasterTripleStore store;
+        protected final GraphTripleStoreMem store;
         protected final Reifier reifier;
         
-        public GraphMemFasterStatisticsHandler( FasterTripleStore store, Reifier reifier )
+        public GraphMemStatisticsHandler( GraphTripleStoreMem store, Reifier reifier )
             { this.store = store; this.reifier = reifier; }
 
         private static class C 
@@ -133,13 +131,13 @@ public class GraphMemFaster extends GraphMemBase
             return -1;
             }
 
-        public long countsInMap( Node a, NodeToTriplesMapFaster mapA, Node b, NodeToTriplesMapFaster mapB )
+        public long countsInMap( Node a, NodeToTriplesMapMem mapA, Node b, NodeToTriplesMapMem mapB )
             {
             long countA = countInMap( a, mapA ), countB = countInMap( b, mapB );
             return countA == 0 || countB == 0 ? 0 : -1L;
             }
         
-        public long countInMap( Node n, NodeToTriplesMapFaster map )
+        public long countInMap( Node n, NodeToTriplesMapMem map )
             {
             TripleBunch b = map.get( n.getIndexingValue() );
             return b == null ? 0 : b.size();
@@ -155,7 +153,7 @@ public class GraphMemFaster extends GraphMemBase
 
     public Applyer createApplyer( ProcessedTriple pt )
         { 
-        Applyer plain = ((FasterTripleStore) store).createApplyer( pt ); 
+        Applyer plain = ((GraphTripleStoreMem) store).createApplyer( pt ); 
         return matchesReification( pt ) && hasReifications() ? withReification( plain, pt ) : plain;
         }
 

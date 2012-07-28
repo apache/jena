@@ -24,8 +24,6 @@ import com.hp.hpl.jena.shared.*;
 /**
     This base class provides convenience functions for the three "usual" graph
     makers and a place to hold the reification style for the graphs it constructs.   
- 
- 	@author kers
 */
 public abstract class BaseGraphMaker implements GraphMaker
     {

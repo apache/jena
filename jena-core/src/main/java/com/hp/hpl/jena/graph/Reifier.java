@@ -25,8 +25,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 /**
     This interface represents the type of things that can hold reified triples
     for a Jena Graph.
-    
-    @author kers
+
 */
 
 public interface Reifier extends GetTriple

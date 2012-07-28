@@ -18,13 +18,12 @@
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.mem.faster.GraphMemFaster;
+import com.hp.hpl.jena.mem.impl.GraphMem ;
 import com.hp.hpl.jena.shared.*;
 
 /**
     A factory class for creating Graphs.
-    
-    @author kers
+
 */
 
 public class Factory
@@ -45,14 +44,14 @@ public class Factory
         { return Factory.createGraphMem( style ); }
               
     public static Graph createGraphMem()
-        { return new GraphMemFaster(); }
+        { return new GraphMem(); }
 
     public static Graph createGraphMem( ReificationStyle style )
-        { return new GraphMemFaster( style ); }
+        { return new GraphMem( style ); }
 
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {
-        Graph g = new GraphMemFaster() 
+        Graph g = new GraphMem() 
             {
             @Override
             public TransactionHandler getTransactionHandler() 

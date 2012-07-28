@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.mem.faster;
+package com.hp.hpl.jena.mem.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
@@ -25,8 +25,7 @@ import com.hp.hpl.jena.graph.query.*;
     A ProcessedTriple is three QueryNodes; it knows how to deliver an
     optimised Matcher which will use only the necessary QueryNode.match
     methods.
-    
-    @author kers
+
 */
 public class ProcessedTriple extends QueryTriple
     {    
@@ -46,7 +45,7 @@ public class ProcessedTriple extends QueryTriple
 
     @Override
     public Applyer createApplyer( Graph g )
-        { return ((GraphMemFaster) g).createApplyer( this ); }
+        { return ((GraphMem) g).createApplyer( this ); }
 
     public boolean hasNoVariables()
         { return S.isFrozen() && P.isFrozen() && O.isFrozen(); }

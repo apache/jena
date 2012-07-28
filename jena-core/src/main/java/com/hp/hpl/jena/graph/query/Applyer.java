@@ -22,8 +22,7 @@ package com.hp.hpl.jena.graph.query;
     An Applyer object will run the StageElement <code>next</code> over all the
     extensions of the Domain <code>d</code> which are derived from applying
     the Matcher <code>m</code> to some internal supply of triples.
-    
-    @author kers
+
 */
 public abstract class Applyer
     {   
