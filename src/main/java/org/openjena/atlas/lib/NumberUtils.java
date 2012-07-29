@@ -66,6 +66,7 @@ public class NumberUtils
         formatInt(sb, value, width, true) ;
     }
 
+    /** Format an integer, which may be signed */
     public static void formatInt(StringBuilder sb, int value, int width, boolean signAlways)
     {
         boolean negative = (value < 0 ) ;
@@ -81,19 +82,25 @@ public class NumberUtils
             width -- ;
             sb.append('+') ;
         }
-            
-        char chars[] = new char[width] ;
 
-        formatUnsignedInt(chars, value, width) ;
+        formatUnsignedInt(sb, value, width) ;
+    }
+
+    /** Place a fixed width representation into the string buffer : never signed. */ 
+    public static void formatUnsignedInt(StringBuilder sb, int value, int width) 
+    { 
+        char chars[] = new char[width] ;
+        formatUnsignedInt$(chars, value, width) ;
         
         // Append - the buffer was filled backwards. 
         for ( int i = 0 ; i < width ; i++ )
             // Un-backwards.
             sb.append(chars[width-1-i]) ;
+        
     }
 
     // No checking.  char[] filled backwards
-    private static int formatUnsignedInt(char[] b, int x, int width)
+    private static int formatUnsignedInt$(char[] b, int x, int width)
     {
         // x >= 0 
         // Inserts chars backwards
