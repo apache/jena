@@ -92,7 +92,7 @@ public class NumberUtils
             sb.append(chars[width-1-i]) ;
     }
 
-    // No checking.
+    // No checking.  char[] filled backwards
     private static int formatUnsignedInt(char[] b, int x, int width)
     {
         // x >= 0 
@@ -112,7 +112,7 @@ public class NumberUtils
         }
         
         if ( x != 0 )
-            throw new AtlasException("formatInt: overflow") ;
+            throw new AtlasException("formatInt: overflow[x="+x+", width="+width+"]") ;
         
         while ( width > 0 )
         {

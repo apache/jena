@@ -177,12 +177,24 @@ public class DateTimeNode
 
     public static String unpackDateTime(long v)
     {
-        return unpack(v, true) ;
+        try {
+            return unpack(v, true) ;
+        } catch (RuntimeException ex)
+        {
+            System.err.printf("Failed to unpackDateTime: %08X\n",v) ; 
+            throw ex ;
+        }
     }
 
     public static String unpackDate(long v)
     {
-        return unpack(v, false) ;
+        try {
+            return unpack(v, false) ;
+        } catch (RuntimeException ex)
+        {
+            System.err.printf("Failed to unpackDate: %08X\n",v) ; 
+            throw ex ;
+        }
     }
 
     // Avoid calls to String.format
