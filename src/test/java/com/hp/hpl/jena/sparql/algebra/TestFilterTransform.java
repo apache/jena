@@ -103,6 +103,36 @@ public class TestFilterTransform
              "(filter (= ?x1 <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))") ;
     }
     
+    @Test public void equality09()
+    {
+        // Can't optimize if filter does not only cover vars in LHS 
+        test("(filter (= ?UNUSED <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+             t_equality,
+             "(filter (= ?UNUSED <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))") ;
+    }
+    
+    @Test public void equality10()
+    {
+        test("(filter (= ?x <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+             t_equality,
+             "(assign((?x <x>)) (leftjoin (bgp ( ?s ?p <x>))  (bgp ( ?s ?p <x>))))") ;
+    }
+    
+    @Test public void equality11()
+    {
+        test("(filter (= ?x <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(assign((?x <x>)) (leftjoin (bgp ( ?s ?p <x>))  (bgp ( ?s ?p ?x1))))") ;
+    }
+    
+    @Test public void equality12()
+    {
+        test("(filter (= ?x1 <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(filter (= ?x1 <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))") ;
+    }
+
+    
     @Test public void disjunction01()
     {
         test("(filter (|| (= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",
