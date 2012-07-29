@@ -82,7 +82,7 @@ public final class BitsInt
         return set$(bits, bitIndex) ;
     }
 
-    /** Set the bits from string (inc) to finish (exc) to one
+    /** Set the bits from start (inc) to finish (exc) to one
      * 
      * @param bits      Pattern
      * @param start     start  (inclusive)
@@ -96,6 +96,12 @@ public final class BitsInt
         return set$(bits, start, finish) ;
     }
 
+    /** Test whether a bit is the same as isSet 
+     * @param bits      Pattern
+     * @param isSet     Test whether is set or not. 
+     * @param bitIndex  Bit index
+     * @return          Boolean
+     */
     public static final
     boolean test(int bits, boolean isSet, int bitIndex)
     {
@@ -103,6 +109,11 @@ public final class BitsInt
         return test$(bits, isSet, bitIndex) ;
     }
     
+    /** Test whether a bit is set 
+     * @param bits      Pattern
+     * @param bitIndex  Bit index
+     * @return          Boolean
+     */
     public static final
     boolean isSet(int bits, int bitIndex)
     {
@@ -110,6 +121,13 @@ public final class BitsInt
         return test$(bits, true, bitIndex) ;
     }
     
+    /** Test whether a range has a specific value or not   
+     * @param bits      Pattern
+     * @param value     Value to test for
+     * @param start     start  (inclusive)
+     * @param finish    finish (exclusive)
+     * @return          Boolean
+     */
     public static final
     boolean test(int bits, int value, int start, int finish)
     {
