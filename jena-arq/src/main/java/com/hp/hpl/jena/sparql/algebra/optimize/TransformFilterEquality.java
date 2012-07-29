@@ -122,17 +122,17 @@ public class TransformFilterEquality extends TransformCopy
             return safeToTransform(exprs, op2.getLeft()) && safeToTransform(exprs, op2.getRight()) ; 
         }
 
-        // Not safe unless filter is on the RHS. 
-        if ( op instanceof OpConditional )
+        // Not safe unless filter variables are mentioned on the LHS. 
+        if ( op instanceof OpConditional || op instanceof OpLeftJoin )
         {
-            OpConditional opCond = (OpConditional)op ;
+            Op2 opleftjoin = (Op2)op ;
             
-            if ( ! safeToTransform(exprs, opCond.getLeft()) || 
-                 ! safeToTransform(exprs, opCond.getRight()) )
+            if ( ! safeToTransform(exprs, opleftjoin.getLeft()) || 
+                 ! safeToTransform(exprs, opleftjoin.getRight()) )
                 return false ;
             
-            Op opLeft = opCond.getLeft() ;
-            
+            Op opLeft = opleftjoin.getLeft() ;
+            // ?? Slightly stronger condition that OpConditional transformation.
             Set<Var> x = OpVars.patternVars(opLeft) ;
             Set<Var> y = ExprVars.getVarsMentioned(exprs) ;
             if ( x.containsAll(y) )
