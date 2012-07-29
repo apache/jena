@@ -27,9 +27,7 @@ log() { echo " $(date $DATE)" "$@" ; }
 TMP=$$
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
-
-CP="$JENAROOT"'/lib/*'
-
+CP="$($TDBROOT/bin/tdb_path $TDBROOT)"
 USAGE="Usage: $(basename $0) --loc location datafile ..."
 PKG=com.hp.hpl.jena.tdb.store.bulkloader2
 
@@ -64,7 +62,7 @@ log "Data phase"
 DATA_TRIPLES="$LOC/data-triples.$TMP"
 DATA_QUADS="$LOC/data-quads.$TMP"
 
-JVM_ARGS=${JVM_ARGS:--Xmx1200M -server}
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 java $JVM_ARGS -cp "$CP" "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
@@ -89,7 +87,7 @@ process_rows()
     log "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
-    java -cp "$CP" -server "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
+    java -cp "$CP" "$PKG".CmdIndexBuild "$LOC" "$IDX" "$WORK"
     # Remove intermediary file.
     if [ "$KEEPWORKFILES" != "yes" ] 
     then
