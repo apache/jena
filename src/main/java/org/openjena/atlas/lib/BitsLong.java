@@ -101,6 +101,12 @@ public final class BitsLong
         return set$(bits, start, finish) ;
     }
 
+    /** Test whether a bit is the same as isSet 
+     * @param bits      Pattern
+     * @param isSet     Test whether is set or not. 
+     * @param bitIndex  Bit index
+     * @return          Boolean
+     */
     public static final
     boolean test(long bits, boolean isSet, int bitIndex)
     {
@@ -108,6 +114,11 @@ public final class BitsLong
         return test$(bits, isSet, bitIndex) ;
     }
     
+    /** Test whether a bit is set 
+     * @param bits      Pattern
+     * @param bitIndex  Bit index
+     * @return          Boolean
+     */
     public static final
     boolean isSet(long bits, int bitIndex)
     {
@@ -115,6 +126,13 @@ public final class BitsLong
         return test$(bits, true, bitIndex) ;
     }
     
+    /** Test whether a range has a specific value or not   
+     * @param bits      Pattern
+     * @param value     Value to test for
+     * @param start     start  (inclusive)
+     * @param finish    finish (exclusive)
+     * @return          Boolean
+     */
     public static final
     boolean test(long bits, long value, int start, int finish)
     {
