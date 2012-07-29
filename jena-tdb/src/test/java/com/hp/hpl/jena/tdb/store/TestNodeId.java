@@ -122,13 +122,21 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_dateTime_13()
     { test("'2008-04-28T15:36:05.100'^^xsd:dateTime", "'2008-04-28T15:36:05.1'^^xsd:dateTime") ; }
 
-    // Out of range.
-    // But XMLGregorian calendar truncates.
-//    @Test public void nodeId_dateTime_14()
-//    { test("'2008-04-28T15:36:05.0001'^^xsd:dateTime") ; }
-//
-//    @Test public void nodeId_dateTime_15()
-//    { test("'2008-04-28T15:36:05.00010'^^xsd:dateTime", "'2008-04-28T15:36:05.0001'^^xsd:dateTime") ; }
+    @Test public void nodeId_dateTime_14()
+    { test("'2012-07-29T20:39:11.100+01:15'^^xsd:dateTime", "'2012-07-29T20:39:11.1+01:15'^^xsd:dateTime") ; }
+
+    @Test public void nodeId_dateTime_15()
+    { test("'2012-07-29T20:39:11.100-01:15'^^xsd:dateTime", "'2012-07-29T20:39:11.1-01:15'^^xsd:dateTime") ; }
+
+
+    @Test public void nodeId_dateTime_16()
+    { test("'2012-07-29T20:39:11.100+01:30'^^xsd:dateTime", "'2012-07-29T20:39:11.1+01:30'^^xsd:dateTime") ; }
+
+    @Test public void nodeId_dateTime_17()
+    { test("'2012-07-29T20:39:11.100-01:45'^^xsd:dateTime", "'2012-07-29T20:39:11.1-01:45'^^xsd:dateTime") ; }
+
+    @Test public void nodeId_dateTime_18()
+    { test("'2012-07-29T20:39:11.100Z'^^xsd:dateTime", "'2012-07-29T20:39:11.1Z'^^xsd:dateTime") ; }
 
     @Test public void nodeId_date_1()
     { test("'2008-04-28Z'^^xsd:date", NodeFactory.parseNode("'2008-04-28Z'^^xsd:date")) ; }
@@ -144,6 +152,12 @@ public class TestNodeId extends BaseTest
 
     @Test public void nodeId_date_5()
     { test("'8008-04-28'^^xsd:date", (Node)null) ; }
+
+    @Test public void nodeId_date_6()
+    { test("'2012-07-29+06:15'^^xsd:date", "'2012-07-29+06:15'^^xsd:date") ; }
+
+    @Test public void nodeId_date_7()
+    { test("'2012-07-29-06:30'^^xsd:date", "'2012-07-29-06:30'^^xsd:date") ; }
 
     @Test public void nodeId_boolean_1()
     { test("'true'^^xsd:boolean", NodeFactory.parseNode("'true'^^xsd:boolean")) ; }

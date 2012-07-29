@@ -140,7 +140,7 @@ public class DateTimeNode
         // T24:00:00 not accepted.
         // See also TestNodeId.nodeId_date_time_7
         
-        XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ; ;
+        XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lex) ;
         
         if ( xcal.getFractionalSecond() != null )
         { 
@@ -177,24 +177,12 @@ public class DateTimeNode
 
     public static String unpackDateTime(long v)
     {
-        try {
-            return unpack(v, true) ;
-        } catch (RuntimeException ex)
-        {
-            System.err.printf("Failed to unpackDateTime: %08X\n",v) ; 
-            throw ex ;
-        }
+        return unpack(v, true) ;
     }
 
     public static String unpackDate(long v)
     {
-        try {
-            return unpack(v, false) ;
-        } catch (RuntimeException ex)
-        {
-            System.err.printf("Failed to unpackDate: %08X\n",v) ; 
-            throw ex ;
-        }
+        return unpack(v, false) ;
     }
 
     // Avoid calls to String.format
@@ -245,8 +233,7 @@ public class DateTimeNode
             }
         }
         // tz in 15min units
-        
-
+        // Special values.
         if ( tz == TZ_Z )
         {
             sb.append("Z") ;
@@ -260,11 +247,19 @@ public class DateTimeNode
         if ( BitsLong.isSet(v, TZ+TZ_LEN-1) )
             tz = BitsInt.set(tz, TZ_LEN, 32) ;
         
+        if ( tz < 0 )
+        {
+            tz = -tz ;
+            sb.append('-') ;
+        }
+        else
+            sb.append('+') ;
+            
         int tzH = tz/4 ;
         int tzM = (tz%4)*15 ;
-        NumberUtils.formatSignedInt(sb, tzH, 3) ; // Sign always included.
+        NumberUtils.formatUnsignedInt(sb, tzH, 2) ;
         sb.append(':') ;
-        NumberUtils.formatInt(sb, tzM, 2) ;
+        NumberUtils.formatUnsignedInt(sb, tzM, 2) ;
         return sb.toString();
     }
 }
