@@ -48,7 +48,6 @@ public class TestNumberUtils extends BaseTest
    
     @Test public void int_format_16() { testSigned(-1, 3, "-01") ; }
     
-    
     @Test public void int_format_21() { testInt(1, "1") ; } 
 
     @Test public void int_format_22() { testInt(0, "0") ; } 
@@ -62,6 +61,13 @@ public class TestNumberUtils extends BaseTest
     @Test public void int_format_26() { testInt(-10, "-10") ; }
 
     @Test public void int_format_27() { testInt(-100, "-100") ; }
+
+
+    @Test public void int_format_31() { testUnsigned(1, 2, "01") ; } 
+    
+    @Test public void int_format_32() { testUnsigned(1, 1, "1") ; } 
+
+    @Test public void int_format_33() { testUnsigned(0, 1, "0") ; }
 
     
     private static void testInt(int value, String expected)
@@ -87,4 +93,13 @@ public class TestNumberUtils extends BaseTest
         String result = sb.toString();
         assertEquals(expected, result) ;
     }
+    
+    private static void testUnsigned(int value, int width, String expected)
+    {
+        StringBuilder sb = new StringBuilder() ;
+        NumberUtils.formatUnsignedInt(sb, value, width) ;
+        String result = sb.toString();
+        assertEquals(expected, result) ;
+    }
+
 }
