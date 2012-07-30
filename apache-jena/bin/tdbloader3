@@ -12,9 +12,24 @@ then
     exit 1
     fi
 
+# TMP on Windows, and TMPDIR on linux.
+T=
+if [ "$TMP" != "" ]
+then
+    T="$TMP"
+    fi
+if [ "$TMPDIR" != "" ]
+then
+    T="$TMPDIR"
+    fi
 
 # ---- Setup
 JVM_ARGS=${JVM_ARGS:--Xmx1024M}
+if [ "$T" != "" ]
+then
+    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=$T"
+    fi
+
 # Expand JENAROOT but literal *
 JENA_CP="$JENAROOT"'/lib/*'
 SOCKS=
