@@ -31,5 +31,22 @@ then
 fi
 
 . "$INIT"
+
+# TMP on Windows, and TMPDIR on linux.
+
+if [ "$TMP" != "" ]
+then
+    T="$TMP"
+    fi
+if [ "$TMPDIR" != "" ]
+then
+    T="$TMPDIR"
+    fi
+
+if [ "$T" != "" ]
+then
+    JVM_ARGS="$JVM_ARGS -Djava.io.tmpdir=$T"
+    fi
+
 #echo "$TDB_CP"
 exec java $JVM_ARGS $SOCKS -cp "$TDB_CP" "tdb.$TDB_CMD" $TDB_SPEC "$@"
