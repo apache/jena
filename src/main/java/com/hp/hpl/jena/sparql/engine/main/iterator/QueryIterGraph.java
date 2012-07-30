@@ -153,6 +153,10 @@ public class QueryIterGraph extends QueryIterRepeatApply
             Node gn = graphNames.next() ;
 
             QueryIterator qIter = buildIterator(parentBinding, gn, opGraph, getExecContext()) ;
+            if ( qIter == null )
+                // Know to be nothing (e.g. graph does not exist). 
+                return null ;
+            
             if ( Var.isVar(opGraph.getNode()) )
             {
                 // This is the join of the graph node variable to the sub-pattern solution.
@@ -165,7 +169,7 @@ public class QueryIterGraph extends QueryIterRepeatApply
             return qIter ;
         }
         
-
+        // Create the iterator - or return null if there can't be any results.
         protected static QueryIterator buildIterator(Binding binding, Node graphNode, OpGraph opGraph, ExecutionContext outerCxt)
         {
             if ( !graphNode.isURI() )
