@@ -53,9 +53,11 @@ public class RunFuseki
     private static void main1()
     {
         FusekiCmd.main(
+                       "--update", "--mem", "/ds"
+                       
                     //"-v", 
                     //"--debug",
-                    "--update",
+                    //"--update",
                     //"--timeout=1000,5000",
                     //"--set=arq:queryTimeout=1000",
                     //"--port=3030",
@@ -68,7 +70,7 @@ public class RunFuseki
                     //"--desc=desc.ttl",
                     //--pages=
                     //"--jetty-config=jetty-fuseki.xml",
-                    "--config=config-tdb.ttl"
+                    //"--config=config-tdb.ttl"
                     // "/ds"
                     ) ;
         System.exit(0) ;
