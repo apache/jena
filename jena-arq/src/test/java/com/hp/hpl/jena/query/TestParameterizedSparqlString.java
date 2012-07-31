@@ -482,6 +482,22 @@ public class TestParameterizedSparqlString {
 	}
 	
 	@Test
+	public void test_param_string_name_collision_3()
+	{
+		//Test name collision
+		//In this test the parameter we inject has a name which collides with a term used
+		//in a prefix in the query
+		String cmdText = "PREFIX ex: <http://example.org/vocab#> SELECT * WHERE { ?s ex:name ?name }";
+		ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+		query.setLiteral("name", "Bob");
+		
+		//In the expected list we want to see Bob, in the not expected list we don't want to see
+		//ex:Bob since that would be a bad variable insertion
+		test(query, new String[] { "Bob" }, new String[] { "?name", "ex:Bob" });
+		testAsQuery(query);
+	}
+	
+	@Test
 	public void test_param_string_clear_1()
 	{
 		//Test clearing of parameter
