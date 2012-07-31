@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.jena.iri.IRI;
@@ -613,7 +614,7 @@ public class ParameterizedSparqlString implements PrefixMapping {
 			String var = vars.next();
 			
 			Pattern p = Pattern.compile("([?$]" + var + ")([^\\w]|$)");
-			command = p.matcher(command).replaceAll(FmtUtils.stringForNode(this.params.get(var), context) + "$2");
+			command = p.matcher(command).replaceAll(Matcher.quoteReplacement(FmtUtils.stringForNode(this.params.get(var), context)) + "$2");
 		}
 		
 		//Build the final command string
