@@ -235,6 +235,97 @@ public class TestParameterizedSparqlString {
 	}
 	
 	@Test
+	public void test_param_string_string_1()
+	{
+	    // Test regular string injection
+	    String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "test");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test\" . }", query.toString());
+	}
+	
+	@Test
+    public void test_param_string_string_2()
+    {
+        // Test a string with quotes
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "A \"test\" string");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A \\\"test\\\" string\" . }", query.toString());
+    }
+	
+	@Test
+    public void test_param_string_string_3()
+    {
+        // Test a string with a $
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "Show me the $!");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"Show me the $!\" . }", query.toString());
+    }
+	
+	@Test
+    public void test_param_string_string_4()
+    {
+        // Test a string with a newline
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "A multi\nline string");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A multi\\nline string\" . }", query.toString());
+    }
+	
+	@Test
+    public void test_param_string_string_5()
+    {
+        // Test a string with a tab
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "A tabby\tstring");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A tabby\\tstring\" . }", query.toString());
+    }
+	
+	@Test
+    public void test_param_string_string_6()
+    {
+        // Test a string with a single quote
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "A test's test");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"A test's test\" . }", query.toString());
+    }
+	
+	@Test
+    public void test_param_string_string_7()
+    {
+        // Test a string with a backslash
+        String cmdText = "SELECT * WHERE { ?s ?p ?o . }";
+        ParameterizedSparqlString query = new ParameterizedSparqlString(cmdText);
+        query.setIri("s", "http://example.org");
+        query.setIri("p", "http://predicate");
+        query.setLiteral("o", "test a\\b");
+        
+        Assert.assertEquals("SELECT * WHERE { <http://example.org> <http://predicate> \"test a\\\\b\" . }", query.toString());
+    }
+	
+	@Test
 	public void test_param_string_boolean_1()
 	{
 		//Test boolean injection
