@@ -46,7 +46,6 @@ import org.openjena.atlas.web.TypedInputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;
-import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 
@@ -302,12 +301,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
         Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
-        LangRIOT parser ;
-        
-        if ( lang.equals(Lang.RDFXML) )
-            parser = LangRDFXML.create(ts, base, base, null, sink) ;
-        else
-            parser = RiotReader.createParserTriples(ts, lang, base, sink) ;
+        LangRIOT parser = RiotReader.createParserTriples(ts, lang, base, sink) ;
         parser.parse() ;
         IO.close(ts) ;
     }    
