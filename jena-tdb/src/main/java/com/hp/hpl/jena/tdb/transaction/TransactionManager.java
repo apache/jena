@@ -61,6 +61,13 @@ public class TransactionManager
     // Record happenings.
     private boolean recordHistory = false ;
     
+    /** This controls how many write transactions we batch up before 
+     *  deciding to flush the journal to the main database.  
+     */
+    @Deprecated
+    // Temporarily public ....
+    public static /*final*/ int QueueBatchSize = 0 ; 
+    
     enum TxnPoint { BEGIN, COMMIT, ABORT, CLOSE, QUEUE, UNQUEUE }
     private List<Pair<Transaction, TxnPoint>> transactionStateTransition ;
     
@@ -196,11 +203,6 @@ public class TransactionManager
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
             processDelayedReplayQueue(txn) ;
         }
-        
-        /** This controls how many write transactions we batch up before 
-         *  deciding to flush the journal to the main database.  
-         */
-        private static final int QueueBatchSize = 0 ; 
         
         @Override public void writerCommits(Transaction txn)
         {
