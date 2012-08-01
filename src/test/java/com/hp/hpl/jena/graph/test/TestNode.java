@@ -19,22 +19,29 @@
 package com.hp.hpl.jena.graph.test;
 
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.vocabulary.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.vocabulary.DC ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RSS ;
+import com.hp.hpl.jena.vocabulary.VCARD ;
 
 /**
     @author bwm out of kers
     Exercise nodes. Make sure that the different node types do not overlap
     and that the test predicates work properly on the different node kinds.
 */
-
+@SuppressWarnings("deprecation")
+// Node.useCache is deprecated.
 public class TestNode extends GraphTestBase
     {    
     public TestNode( String name )
@@ -270,15 +277,17 @@ public class TestNode extends GraphTestBase
         }
     
     public void testCache()
+    {
+        if ( Node.isCaching() )
         {
-        assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
-        assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
-        assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
-        assertTrue( "remembers hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
-        assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
-        assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
+            assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
+            assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
+            assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
+            assertTrue( "remembers hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
+            assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
+            assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
         }
-        
+    }        
     /** 
         Test that the create method does sensible things on null and ""
     */

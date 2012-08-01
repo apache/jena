@@ -167,29 +167,12 @@ public class Triple implements TripleMatch
     */    
     public static int hashCode( Node s, Node p, Node o ) 
         { return (s.hashCode() >> 1) ^ p.hashCode() ^ (o.hashCode() << 1); }
-    
-//    /**
-//        Factory method for creating triples, allows caching opportunities. Attempts
-//        to use triples from the cache, if any suitable ones exist.
-//        
-//        @return a triple with subject=s, predicate=p, object=o
-//    */
-//    public static Triple create( Node s, Node p, Node o )
-//        { 
-//        Triple already = cache.get( s, p, o );
-//        return already == null ? cache.put( new Triple( s, p, o ) ) : already;
-//        }
 
-      public static Triple create( Node s, Node p, Node o )
-      {
-          return new Triple( s, p, o ) ;
-      }
+    public static Triple create( Node s, Node p, Node o )
+    {
+        return new Triple( s, p, o ) ;
+    }
     
-    /**
-        The cache of already-created triples.
-    */
-    protected static TripleCache cache = new TripleCache();
-        
     public static Triple createMatch( Node s, Node p, Node o )
         { return Triple.create( nullToAny( s ), nullToAny( p ), nullToAny( o ) ); }
         
