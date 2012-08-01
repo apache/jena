@@ -288,7 +288,7 @@ public abstract class Node {
     /* package visibility only */ Node( Object label ) 
         { this.label = label; }
         
-    static private boolean caching = true;
+    static private boolean caching = false;
     
     /**
         provided only for testing purposes. _cache(false)_ switches off caching and
