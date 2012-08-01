@@ -36,10 +36,8 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
     fuseki:serviceQuery             "query" ;
     fuseki:serviceQuery             "sparql" ;
     fuseki:serviceUpdate            "update" ;
-    fuseki:serviceUpload            "upload" ;
-    fuseki:serviceReadWriteGraphStore      "data" ;
-    # A separate read-only graph store endpoint:
-    fuseki:serviceReadGraphStore       "get" ;
+    fuseki:serviceReadGraphStore    "data" ;
+    fuseki:serviceReadGraphStore    "get" ;
     fuseki:dataset           <#tdb_dataset_read> ;
     .
 
@@ -70,3 +68,4 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 ##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
 ##     # Default graph for query is the (read-only) union of all named graphs.
      .
+1
