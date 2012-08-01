@@ -97,8 +97,6 @@ public class TransactionManager
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
     
-    // TODO Tidy up - more to end-of-file.
-    
     /* Various policies:
      * + MRSW : writer locks to write back; blocks until let trhough.  Every reader takes an read lock.
      * + Writers write if free, else queue for a reader or writer to clearup.
@@ -202,7 +200,7 @@ public class TransactionManager
         /** This controls how many write transactions we batch up before 
          *  deciding to flush the journal to the main database.  
          */
-        private static final int QueueBatchSize = 10 ; 
+        private static final int QueueBatchSize = 0 ; 
         
         @Override public void writerCommits(Transaction txn)
         {
@@ -248,14 +246,14 @@ public class TransactionManager
     // Still use semaphore for writer entry control.
     class TSM_WriterWriteBack extends TSM_Base
     {
-        // TODO
+        // Not implemented
     }
     
     // Policy for writing where a transaction takes an  MRSW at the start.
     // Semaphore for writer entry unnecessary.
     class TSM_MRSW_Writer extends TSM_Base
     {
-        // TODO
+        // Not implemented
     }
     
 
