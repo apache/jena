@@ -30,6 +30,8 @@ import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
+@SuppressWarnings("deprecation")
+//Node.useCache is deprecated.
 public class TestTriple extends GraphTestBase
     {    
         
