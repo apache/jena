@@ -41,8 +41,6 @@ public abstract class Node {
     final protected Object label;
     static final int THRESHOLD = 10000;
     
-    static final NodeCache present = new NodeCache(); 
-    
     /**
         The canonical instance of Node_ANY. No other instances are required.
     */       
@@ -288,45 +286,28 @@ public abstract class Node {
     /* package visibility only */ Node( Object label ) 
         { this.label = label; }
         
-    static private boolean caching = false;
-    
     /**
         provided only for testing purposes. _cache(false)_ switches off caching and
         clears the cache. _cache(true)_ switches caching [back] on. This allows
         structural equality to be tested. 
     */
-    public static void cache( boolean wantCache )
-        {
-        if (wantCache == false) present.clear();
-        caching = wantCache;
-        }
-        
+    @Deprecated
+    public static void cache( boolean wantCache ) {}
+
+    @Deprecated
+    public static boolean isCaching() { return false ;}
+
+    
     /**
-        We object strongly to null labels: for example, they make .equals flaky. We reuse nodes 
-        from the recent cache if we can. Otherwise, the maker knows how to construct a new
-        node of the correct class, and we add that node to the cache. create is
-        synchronised to avoid threading problems - a separate thread might zap the
-        cache entry that get is currently looking at.
+        We object strongly to null labels: for example, they make .equals flaky.
     */
-    public static synchronized Node create( NodeMaker maker, Object label )
+    public static Node create( NodeMaker maker, Object label )
         {
         if (label == null) throw new JenaException( "Node.make: null label" );
-        Node node = present.get( label );
-        return node == null ? cacheNewNode( label, maker.construct( label ) ) : node;
+        return maker.construct( label ) ;
         }
-        
+
     /**
-         cache the node <code>n</code> under the key <code>label</code>,
-         and return that node.
-    */
-    private static Node cacheNewNode( Object label, Node n )
-        { 
-        if (present.size() > THRESHOLD) { /* System.err.println( "> trashing node cache" ); */ present.clear(); }
-        if (caching) present.put( label, n );
-        return n;
-        }
-        
-	/**
 		Nodes only equal other Nodes that have equal labels.
 	*/	
     @Override

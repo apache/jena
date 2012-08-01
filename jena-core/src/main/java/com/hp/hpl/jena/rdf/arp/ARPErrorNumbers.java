@@ -60,6 +60,7 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
 
     // All error numbers must be between 1 and 399.
     // Divide by 100 to get class.
+    // Don't see->@see : some javadoc production then generates warning (incorrectly)
     /**
      An xml:lang attribute uses one or more of the extension
      facilities in RFC3066 or ISO639. 
@@ -68,9 +69,9 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      *In both default and strict modes this is ignored; a conservative application
      *in verbose mode may wish to raise a warning.
      * (W001)
-     *@see com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes#LT_PRIVATE_USE
-     *@see com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes#LT_LOCAL_USE
-     *@see com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes#LT_EXTRA
+     * see LanguageTagCodes#LT_PRIVATE_USE
+     * see LanguageTagCodes#LT_LOCAL_USE
+     * see LanguageTagCodes#LT_EXTRA
      */
 
     public int IGN_PRIVATE_XMLLANG = 1;
