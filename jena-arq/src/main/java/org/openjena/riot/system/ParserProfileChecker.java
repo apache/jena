@@ -49,7 +49,7 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     @Override
     public IRI makeIRI(String uriStr, long line, long col)
     {
-        // reolves, but we handle the errors and warnings.
+        // resolves, but we handle the errors and warnings.
         IRI iri = prologue.getResolver().resolveSilent(uriStr) ;
         CheckerIRI.iriViolations(iri, errorHandler, line, col) ;
         return iri ;
