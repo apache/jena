@@ -368,7 +368,7 @@ public class FileManager
     
     private Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
     {
-        // Doesn't call open() - we want to make the synatx guess based on the mapped URI.
+        // Doesn't call open() - we want to make the syntax guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
 
         if ( log.isDebugEnabled() && ! mappedURI.equals(filenameOrURI) )
@@ -376,8 +376,9 @@ public class FileManager
 
         if ( syntax == null && baseURI == null && mappedURI.startsWith( "http:" ) )
         {
-            // No syntax, no baseURI, HTTP URL ==> use content negotiation
-            model.read(mappedURI) ;
+            syntax = FileUtils.guessLang(mappedURI) ;
+            // Content negotation in next version (FileManager2) 
+            model.read(mappedURI, syntax) ;
             return model ;
         }
         
