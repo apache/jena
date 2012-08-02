@@ -37,6 +37,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphReadOnly ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
@@ -66,6 +67,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
         String uri = request.getRequestURI() ;
         initResponse(request, response) ;
         
+        DatasetRef desc = null ;
+        Context cxt = ARQ.getContext() ;
+        
         try {
             if ( request.getQueryString() == null && queryStringHandling == PlainRequestFlag.DIFFERENT )
             {
@@ -75,7 +79,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             }
 
             uri = mapRequestToDataset(uri) ;
-            DatasetRef desc = null ;
+
             if ( uri != null )
             {
                 desc = DatasetRegistry.get().get(uri) ;
@@ -84,6 +88,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
                     errorNotFound("No dataset for URI: "+uri) ;
                     return ;
                 }
+                cxt = desc.dataset.getContext() ;
             }
             else {
                 desc = new DatasetRef();
@@ -93,7 +98,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (QueryCancelledException ex)
         {
-        	String message = String.format("The query timed out (restricted to %s ms).", ARQ.getContext().get(ARQ.queryTimeout));
+        	String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
         	responseSendError(response, HttpSC.REQUEST_TIMEOUT_408, message);
             // Log message done by printResponse in a moment.
         } catch (ActionErrorException ex)
