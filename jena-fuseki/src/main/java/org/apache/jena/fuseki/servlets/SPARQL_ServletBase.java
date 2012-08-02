@@ -88,7 +88,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
                     errorNotFound("No dataset for URI: "+uri) ;
                     return ;
                 }
-                cxt = desc.dataset.getContext() ;
+                //cxt = desc.dataset.getContext() ;
             }
             else {
                 desc = new DatasetRef();
@@ -98,6 +98,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
             //serverlog.info(String.format("[%d] 200 Success", id)) ;
         } catch (QueryCancelledException ex)
         {
+            // Also need the per query info ...
         	String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
         	responseSendError(response, HttpSC.REQUEST_TIMEOUT_408, message);
             // Log message done by printResponse in a moment.

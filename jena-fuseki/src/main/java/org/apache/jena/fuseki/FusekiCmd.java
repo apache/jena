@@ -128,7 +128,7 @@ public class FusekiCmd extends CmdARQ
         add(argPages,   "--pages=DIR",          "Set of pages to serve as static content") ; 
         // Set via jetty config file.
         //add(argHost,    "--host=name or IP",    "Listen on a particular interface (e.g. localhost)") ;
-        add(argTimeout, "--timeout",            "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
+        add(argTimeout, "--timeout=",           "Global timeout applied to queries (value in ms) -- format is X[,Y] ") ;
         add(argAllowUpdate, "--update",         "Allow updates (via SPARQL Update and SPARQL HTTP Update)") ;
         add(argFusekiConfig, "--config=",       "Use a configuration file to determine the services") ;
         add(argJettyConfig, "--jetty-config=",  "Set up the server (not services) with a Jetty XML file") ;
