@@ -37,8 +37,6 @@ public class TestPackage extends TestSuite {
         super("graph");
         addTest( TestFindLiterals.suite() );
         addTest( TestLiteralLabels.suite() );
-        addTest( TestTripleCache.suite() );
-        addTest( TestNodeCache.suite() );
         addTest( TestNode.suite() );
         addTest( TestTriple.suite() );
         addTest( TestTripleField.suite() );
