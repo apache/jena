@@ -25,13 +25,13 @@
   <packaging>jar</packaging>
   <name>jena-iri</name>
   <!--<version>${ver.iri}</version>-->
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.3-SNAPSHOT</version>
   <description />
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>4-SNAPSHOT</version>
+    <version>3-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
