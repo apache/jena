@@ -22,14 +22,14 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>jena-fuseki</name>
-  <version>0.2.4</version>
+  <version>0.2.5-SNAPSHOT</version>
   <description>Jena SPARQL Server</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>3</version>
+    <version>4-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -58,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC1/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC1/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC1/jena-fuseki</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</url>
   </scm>
 
   <properties>
@@ -93,19 +93,19 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.9.3</version>
+      <version>2.9.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.3</version>
+      <version>2.7.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>0.9.3</version>
+      <version>0.9.4-SNAPSHOT</version>
     </dependency>
 
     <!--
