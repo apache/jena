@@ -25,13 +25,13 @@
   <packaging>jar</packaging>
   <name>jena-iri</name>
   <!--<version>${ver.iri}</version>-->
-  <version>0.9.3-SNAPSHOT</version>
+  <version>0.9.3</version>
   <description />
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>3-SNAPSHOT</version>
+    <version>3</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -48,9 +48,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-iri</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/jena-iri</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-iri</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2/jena-iri</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2/jena-iri</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2/jena-iri</url>
   </scm>
 
   <properties>

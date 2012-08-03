@@ -23,7 +23,7 @@
   <artifactId>jena</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>2.7.3-SNAPSHOT</version>
+  <version>2.7.3</version>
 
   <!-- Needed for -Papache-release -->
   <parent>
@@ -45,9 +45,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3-RC2</url>
   </scm>
 
   <modules>
