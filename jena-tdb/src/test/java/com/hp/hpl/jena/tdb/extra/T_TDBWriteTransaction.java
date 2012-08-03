@@ -42,11 +42,17 @@ import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.Journal ;
+import com.hp.hpl.jena.tdb.transaction.JournalControl ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
-public class T_TDBWriteTransactionPerformance {
+public class T_TDBWriteTransaction {
 
-	private final static int TOTAL = 100;
+	private final static int TOTAL = 100 ;
+    static boolean bracketWithReader = true ;
+
 	final static String INDEX_INFO_SUBJECT =   "http://test.net/xmlns/test/1.0/Triple-Indexer";
 	final static String TIMESTAMP_PREDICATE =  "http://test.net/xmlns/test/1.0/lastProcessedTimestamp";
 	final static String URI_PREDICATE =        "http://test.net/xmlns/test/1.0/lastProcessedUri";
@@ -56,6 +62,7 @@ public class T_TDBWriteTransactionPerformance {
     public static void main(String[] args) {
 
 	    Log.setLog4j() ;
+	    TransactionManager.QueueBatchSize = 10;
 	    
 //		if (args.length == 0) {
 //			System.out.println("Provide index location");
@@ -64,21 +71,37 @@ public class T_TDBWriteTransactionPerformance {
 
 	    String location = "DBX" ;
 	    FileOps.ensureDir(location) ;
-	    FileOps.clearDirectory(location) ;
+	    //FileOps.clearDirectory(location) ;
+	    bracketWithReader = false ;
+	    
+	    //Log.enable(JournalControl.class.getName()) ;
 	    
 	    //Submitted without .... 
 	    if ( true )
 	        SystemTDB.setFileMode(FileMode.direct) ;
 	    
-	    //String location = args[0]; // + "/" + UUID.randomUUID().toString();
+	    run(location) ;
+//	    StoreConnection.make(location).forceRecoverFromJournal() ;
+//	    run(location) ;
+    }
+
+    static public void run(String location)
+    {
+        if ( false )
+        {
+            Journal journal = Journal.create(new Location(location)) ;
+            JournalControl.print(journal) ;
+            journal.close() ;
+        }
+        //String location = args[0]; // + "/" + UUID.randomUUID().toString();
 
 		//String baseGraphName = "com.ibm.test.graphNamePrefix.";   
 
 		long totalExecTime = 0L;
 		long size = 0;
 		Dataset dataset = TDBFactory.createDataset(location);
+		
 		Dataset dataset1 = TDBFactory.createDataset(location);
-		boolean bracketWithReader = false ;
 		
 		if ( bracketWithReader )
 		    dataset1.begin(ReadWrite.READ) ;
