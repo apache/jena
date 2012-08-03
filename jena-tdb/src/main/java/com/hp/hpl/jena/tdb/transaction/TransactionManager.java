@@ -64,9 +64,8 @@ public class TransactionManager
     /** This controls how many write transactions we batch up before 
      *  deciding to flush the journal to the main database.  
      */
-    @Deprecated
     // Temporarily public ....
-    public static /*final*/ int QueueBatchSize = 0 ; 
+    public static /*final*/ int QueueBatchSize = 10 ; 
     
     enum TxnPoint { BEGIN, COMMIT, ABORT, CLOSE, QUEUE, UNQUEUE }
     private List<Pair<Transaction, TxnPoint>> transactionStateTransition ;

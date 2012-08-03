@@ -38,7 +38,7 @@ public abstract class BlockAccessBase implements BlockAccess
     
     protected final String label ;
     protected long numFileBlocks = -1 ;             // Don't overload use of this!
-    protected final AtomicLong seq ;   // Id (future)
+    protected final AtomicLong seq ;                // Id (future)
     protected boolean isEmpty = false ;
 
     public BlockAccessBase(String filename, int blockSize)
@@ -46,10 +46,10 @@ public abstract class BlockAccessBase implements BlockAccess
         file = FileBase.create(filename) ;
         this.blockSize = blockSize ;
         this.label = FileOps.basename(filename) ;
-        long filesize = file.size() ;
+        long filesize = file.size() ;               // This is not related to used file length in mapped mode.
         long longBlockSize = blockSize ;
             
-        numFileBlocks = filesize/longBlockSize ;
+        numFileBlocks = filesize/longBlockSize ;    // This is not related to used file length in mapped mode.
         seq = new AtomicLong(numFileBlocks) ;
 
         if ( numFileBlocks > Integer.MAX_VALUE )
@@ -104,7 +104,7 @@ public abstract class BlockAccessBase implements BlockAccess
             synchronized(this)
             {
                 if ( id < 0 || id >= numFileBlocks )
-                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", file.filename, id,numFileBlocks)) ;
+                    throw new BlockException(format("BlockAccessBase: Bounds exception: %s: (%d,%d)", file.filename, id, numFileBlocks)) ;
             }
         }
     }
