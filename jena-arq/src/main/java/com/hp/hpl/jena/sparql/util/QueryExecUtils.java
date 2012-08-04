@@ -273,6 +273,9 @@ public class QueryExecUtils
         if ( outputFormat == null || outputFormat == ResultsFormat.FMT_UNKNOWN )
             outputFormat = ResultsFormat.FMT_TEXT ;
 
+        if ( outputFormat.equals(ResultsFormat.FMT_NONE) )
+            return ;
+        
         if ( outputFormat.equals(ResultsFormat.FMT_RS_XML) )
         {
             ResultSetFormatter.outputAsXML(System.out, b) ;
