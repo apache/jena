@@ -88,7 +88,7 @@ public class T_TransSystem
     static {
         //TransactionManager.DEBUG = inlineProgress ;     // This cause one character details to be printed. 
         if ( TransactionManager.DEBUG != inlineProgress )
-            log.warn("TransactionManager.DEBUG != inlineProgress (need chnage siurce code to make DEBUG no final)" ) ;
+            log.warn("TransactionManager.DEBUG != inlineProgress (need change source code to make DEBUG not final)" ) ;
         
 
         // Various flags (may not still exist)

@@ -179,7 +179,7 @@ public class SolverLib
             return new BindingTDB(bindingNodeIds, nodeTable) ;
         else
         {
-            // Makes nodes immediately.  Causing unecessary NodeTable accesses (e.g. project) 
+            // Makes nodes immediately.  Causing unnecessary NodeTable accesses (e.g. project) 
             BindingMap b = BindingFactory.create() ;
             for ( Var v : bindingNodeIds )
             {
