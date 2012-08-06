@@ -23,6 +23,7 @@ import java.util.Map ;
 
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -152,11 +153,11 @@ public class DatasetBuilderStd implements DatasetBuilder
         // Ensure that there is global synchronization
         synchronized(DatasetBuilderStd.class)
         {
-            return _build(location, params) ;
+            return _build(location, params, null) ;
         }
     }
     
-    protected DatasetGraphTDB _build(Location location, SystemParams _params)
+    public DatasetGraphTDB _build(Location location, SystemParams _params, ReorderTransformation _transform)
     {
         params = _params ;
         init(location) ;
@@ -169,9 +170,10 @@ public class DatasetBuilderStd implements DatasetBuilder
         TripleTable tripleTable = makeTripleTable(location, nodeTable, policy) ; 
         QuadTable quadTable = makeQuadTable(location, nodeTable, policy) ;
         DatasetPrefixesTDB prefixes = makePrefixTable(location, policy) ;
-        ReorderTransformation transform  = chooseReorderTransformation(location) ;
         
-        StoreConfig storeConfig = new StoreConfig(location, params, blockMgrs, bufferChannels, nodeTables) ;
+        ReorderTransformation transform = (_transform==null) ? chooseReorderTransformation(location) : _transform ;
+        
+        StoreConfig storeConfig = new StoreConfig(location, params, blockMgrs, bufferChannels, nodeTables, transform) ;
         DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storeConfig) ;
         return dsg ;
     }
@@ -321,6 +323,7 @@ public class DatasetBuilderStd implements DatasetBuilder
 
     public static ReorderTransformation chooseOptimizer(Location location)
     {
+        Log.info(DatasetBuilderStd.class, "chooseOptimizer") ;
         if ( location == null )
             return ReorderLib.identity() ;
 

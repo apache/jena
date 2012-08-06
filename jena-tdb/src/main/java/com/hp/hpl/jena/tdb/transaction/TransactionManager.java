@@ -32,6 +32,7 @@ import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.LinkedBlockingDeque ;
 import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
+import java.util.concurrent.atomic.AtomicReference ;
 
 import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.logging.Log ;
@@ -92,6 +93,12 @@ public class TransactionManager
     AtomicLong finishedReaders = new AtomicLong(0) ;
     AtomicLong committedWriters = new AtomicLong(0) ;
     AtomicLong abortedWriters = new AtomicLong(0) ;
+    
+    // This is the last read-transaction created
+    // The read DatasetGraphTxn can be used by all the readers seeing the same view.
+    // A write transaction clears this when it commits; future readers see the new state;
+    // the first reader of a particular state creates teh view datasetgraph and sets the  lastreader.
+    private AtomicReference<DatasetGraphTxn> lastreader = new AtomicReference<DatasetGraphTxn>(null) ;
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
@@ -292,17 +299,14 @@ public class TransactionManager
         journal.close() ;
     }
     
-    private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
-    {
-        Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
-        return txn ;
-    }
-
     public DatasetGraphTxn begin(ReadWrite mode)
     {
         return begin(mode, null) ;
     }
     
+    
+    public /*for testing only*/ static final boolean DEBUG = false ; 
+
     public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
         // Not synchronized (else blocking on semaphore will never wake up
@@ -323,8 +327,6 @@ public class TransactionManager
         // entry synchronized part
         return begin$(mode, label) ;
     }
-    
-    public static final boolean DEBUG = false ; 
         
     // If DatasetGraphTransaction has a sync lock on sConn, this
     // does not need to be sync'ed. But it's possible to use some
@@ -357,15 +359,47 @@ public class TransactionManager
         Transaction txn = createTransaction(dsg, mode, label) ;
         
         log("begin$", txn) ;
+        
+        // Code for reusing the lastreader 
+//        if ( mode == ReadWrite.READ )
+//        {
+//            DatasetGraphTxn dsgTxn = lastreader.get() ;
+//            if ( dsgTxn != null )
+//            {
+//                // Use cached
+//                // Sort out components.
+//            }
+//        }
 
-        DatasetGraphTxn dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        DatasetGraphTxn dsgTxn = createDSGTxn(dsg,txn, mode) ;
         txn.setActiveDataset(dsgTxn) ;
 
-        for ( TransactionLifecycle component : dsgTxn.getTransaction().components() )
+        // Empty for READ ; only WRITE transactions have components that need notifiying.
+        List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
+
+        if ( mode == ReadWrite.READ )
+        {
+            if ( components.size() != 0 )
+                log.warn("read transaction, non-empty componets list") ;
+        }
+        
+        for ( TransactionLifecycle component : components )
             component.begin(dsgTxn.getTransaction()) ;
 
         noteStartTxn(txn) ;
         return dsgTxn ;
+    }
+
+    private Transaction createTransaction(DatasetGraphTDB dsg, ReadWrite mode, String label)
+    {
+        Transaction txn = new Transaction(dsg, mode, transactionId.getAndIncrement(), label, this) ;
+        return txn ;
+    }
+
+    
+    private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode)
+    {
+        return (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
     }
 
     /* Signal a transaction has commited.  The journal has a commit record
@@ -409,7 +443,7 @@ public class TransactionManager
     private void enactTransaction(Transaction transaction)
     {
         // Really, really do it!
-        for ( TransactionLifecycle x : transaction.components() )
+        for ( TransactionLifecycle x : transaction.lifecycleComponents() )
         {
             x.commitEnact(transaction) ;
             x.commitClearup(transaction) ;
