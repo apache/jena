@@ -399,6 +399,10 @@ public class TransactionManager
     
     private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode)
     {
+        // [TxTDB:TODO]
+        // a read transaction (no lifecycle components) can be shared over all
+        // read transactions at the same commit level. 
+        //    lastreader
         return (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
     }
 
