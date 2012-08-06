@@ -261,7 +261,8 @@ public class Transaction
 //        }
 //    }
     
-    public List<TransactionLifecycle> components()
+    /** Return the list of items registered for the transaction lifecycle */ 
+    public List<TransactionLifecycle> lifecycleComponents()
     {
         List<TransactionLifecycle> x = new ArrayList<TransactionLifecycle>() ;
         x.addAll(nodeTableTrans) ;
