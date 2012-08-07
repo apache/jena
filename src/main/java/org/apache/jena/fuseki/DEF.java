@@ -39,7 +39,7 @@ public class DEF
     public static final MediaType acceptRSXML         = MediaType.create(WebContent.contentTypeResultsXML) ;
 
     public static final AcceptList rdfOffer           = AcceptList.create(acceptRDFXML, acceptTurtle1, acceptTurtle2, acceptTurtle3, acceptNTriples, acceptNTriplesAlt) ;
-    public static final AcceptList quadsOffer         = AcceptList.create(acceptTriG, acceptTriGAlt, acceptNQuads, acceptNQuadsAlt) ;
+    public static final AcceptList quadsOffer         = AcceptList.create(acceptNQuads, acceptNQuadsAlt, acceptTriG, acceptTriGAlt) ;
     public static final AcceptList charsetOffer       = AcceptList.create(charsetUTF8) ;
     
     public static final AcceptList rsOffer            = AcceptList.create(WebContent.contentTypeResultsXML, 

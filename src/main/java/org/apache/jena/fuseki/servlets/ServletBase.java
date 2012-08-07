@@ -43,13 +43,13 @@ public abstract class ServletBase extends HttpServlet
         this.verbose_debug = verbose_debug ;
     }
     
-    private void responseSendError(HttpServletResponse response, int statusCode, String message)
+    protected void responseSendError(HttpServletResponse response, int statusCode, String message)
     {
         try { response.sendError(statusCode, message) ; }
         catch (IOException ex) { errorOccurred(ex) ; }
     }
     
-    private void responseSendError(HttpServletResponse response, int statusCode)
+    protected void responseSendError(HttpServletResponse response, int statusCode)
     {
         try { response.sendError(statusCode) ; }
         catch (IOException ex) { errorOccurred(ex) ; }
@@ -116,7 +116,7 @@ public abstract class ServletBase extends HttpServlet
             out.flush() ;
         } catch (IOException ex) { errorOccurred(ex) ; }
     }
-
+    
     protected static void warning(String string)
     {
         log.warn(string) ;

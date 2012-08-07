@@ -19,7 +19,6 @@
 package org.apache.jena.fuseki.servlets;
 
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
 
@@ -38,6 +37,17 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected void validate(HttpServletRequest request)
     {
+        String method = request.getMethod().toUpperCase() ;
+        
+        if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
+            errorMethodNotAllowed("Not a GET or POST request") ;
+        
+        if ( HttpNames.METHOD_GET.equals(method) && request.getQueryString() == null )
+        {
+            warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
+            errorNotFound("Service Description: "+request.getRequestURI()) ;
+        }
+        
         validate(request, allParams) ;
     }
 
@@ -49,21 +59,5 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
         return DatasetFactory.create(action.getActiveDSG()) ;
-    }
-
-    @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
-            return true ;
-        
-        if ( ! HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) )
-        {
-            errorNotImplemented("Not a GET or POST request") ;
-            return false ;
-        }
-        warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
-        errorNotFound("Service Description: "+request.getRequestURI()) ;
-        return false ;
     }
 }

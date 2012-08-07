@@ -59,7 +59,7 @@ public class SPARQL_Update extends SPARQL_Protocol
     }
     
     public SPARQL_Update(boolean verbose)
-    { super(PlainRequestFlag.REGULAR, verbose) ; }
+    { super(verbose) ; }
 
     public SPARQL_Update()
     { this(false) ; }
@@ -83,15 +83,6 @@ public class SPARQL_Update extends SPARQL_Protocol
     {
         response.setHeader(HttpNames.hAllow, "OPTIONS,POST");
         response.setHeader(HttpNames.hContentLengh, "0") ;
-    }
-
-    @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
-            return true ;
-        errorOccurred("Bad!") ;
-        return false ;
     }
 
     @Override
@@ -125,8 +116,12 @@ public class SPARQL_Update extends SPARQL_Protocol
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + request.getContentType()) ;
     }
 
-    private void validate(HttpServletRequest request)
+    @Override
+    protected void validate(HttpServletRequest request)
     {
+        if ( ! HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+            errorMethodNotAllowed("SPARQL Update : use POST") ;
+        
         // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {

@@ -61,8 +61,7 @@ public class HttpNames
     public static final String paramTimeout         = "timeout" ;
     
     public static final String paramUpdate          = "update" ;
-    public static final String paramRequest         = "request" ;       // Alternative name. 
-    
+    public static final String paramRequest         = "request" ; 
     
     public static final String METHOD_DELETE        = "DELETE";
     public static final String METHOD_HEAD          = "HEAD";
@@ -81,7 +80,6 @@ public class HttpNames
     public static final String ServiceQueryAlt  = "sparql" ;
     public static final String ServiceUpdate    = "update" ;
     public static final String ServiceData      = "data" ;
-    public static final String ServiceData1     = "" ;
     public static final String ServiceUpload    = "upload" ;
     
     // Posisble values of fields.
