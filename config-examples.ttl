@@ -26,7 +26,6 @@
    ) .
 
 # Custom code.
-# For each declaration, static "Class.init()" will be called.
 [] ja:loadClass "com.hp.hpl.jena.tdb.TDB" .
 
 # TDB
@@ -57,8 +56,6 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 
     # A separate read-only graph store endpoint:
     fuseki:serviceReadGraphStore       "get" ;   # Graph store protocol (read only) -- /ds/get
-    # ... (special case) and as both /ds?default and /ds/?default
-    fuseki:serviceReadGraphStore       "" ;      
 
     fuseki:dataset           <#emptyDataset> ;
     .
