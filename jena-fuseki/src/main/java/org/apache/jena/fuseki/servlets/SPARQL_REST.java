@@ -38,14 +38,11 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.ContentType ;
-import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
@@ -67,7 +64,16 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    protected class HttpActionREST extends HttpAction {
+    public static class HttpActionREST extends HttpAction {
+        
+        // Special ; direct.
+        HttpActionREST(long id, DatasetRef desc, String absUri, HttpServletRequest request, HttpServletResponse response, boolean verbose)
+        {
+            super(id, desc, request, response, verbose) ;
+            Node gn = Node.createURI(absUri) ;
+            _target = Target.createNamed(desc.dataset, absUri, gn) ; 
+        }
+        
         private Target _target = null ; 
         protected HttpActionREST(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
@@ -165,7 +171,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     }
 
     public SPARQL_REST(boolean verbose)
-    { super(PlainRequestFlag.DIFFERENT, verbose) ; }
+    { super(verbose) ; }
 
     public SPARQL_REST()
     { this(false) ; }
@@ -191,7 +197,8 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         dispatch(action) ;
     }
 
-    private void dispatch(HttpActionREST action)
+    // Public for general dispatch
+    public void dispatch(HttpActionREST action)
     {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
@@ -229,49 +236,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected abstract void doPut(HttpActionREST action) ;
     protected abstract void doOptions(HttpActionREST action) ;
 
-    @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        errorBadRequest("No query string") ;
-        return false ;
-    }
-
-//    private TypedStream createTypedStream(MediaType contentType)
-//    {
-//        MediaType contentType = contentNegotationRDF(request) ;
-//        String charset = null ;
-//        
-//        if ( ! DEF.acceptRDFXML.equals(contentType) )
-//            charset = ConNeg.chooseCharset(request, DEF.charsetOffer, DEF.charsetUTF8).getType() ;
-//        
-//        String contentTypeStr = contentType.getMediaType() ;
-//        try {
-//            TypedStream ts = new TypedStream(request.getInputStream(),
-//                                             contentTypeStr,
-//                                             charset) ;
-//            return ts ;
-//        } catch (IOException ex) { errorOccurred(ex) ; return null ; }
-//    }
-
-    protected static MediaType contentNegotationRDF(HttpActionREST action)
-    {
-        MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
-        if ( mt == null )
-            return null ;
-        if ( mt.getContentType() != null )
-            action.response.setContentType(mt.getContentType());
-        if ( mt.getCharset() != null )
-        action.response.setCharacterEncoding(mt.getCharset()) ;
-        return mt ;
-    }
-    
-    protected static MediaType contentNegotationQuads(HttpActionREST action)
-    {
-        return ConNeg.chooseContentType(action.request, DEF.quadsOffer, DEF.acceptTriG) ;
-    }
-
-    // Auxilliary functionality.
-    
     protected static void deleteGraph(HttpActionREST action)
     {
         if ( action.getTarget().isDefault )
@@ -379,8 +343,12 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         return dsgTmp ;
     }
     
-    protected static void validate(HttpServletRequest request)
+    @Override
+    protected void validate(HttpServletRequest request)
     {
+        if ( request.getQueryString() == null )
+            errorBadRequest("No query string") ;
+        
         String g = request.getParameter(HttpNames.paramGraph) ;
         String d = request.getParameter(HttpNames.paramGraphDefault) ;
         

@@ -58,6 +58,13 @@ public class FusekiLib
         mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt2, Lang.TURTLE) ;
         mapContentTypeToLang.put(WebContent.contentTypeNTriples, Lang.NTRIPLES) ;   // text/plain
         mapContentTypeToLang.put(WebContent.contentTypeNTriplesAlt, Lang.NTRIPLES) ;
+        
+        
+        mapContentTypeToLang.put(WebContent.contentTypeTriG, Lang.TRIG) ;
+        mapContentTypeToLang.put(WebContent.contentTypeTriGAlt, Lang.TRIG) ;
+        mapContentTypeToLang.put(WebContent.contentTypeNQuads, Lang.NQUADS) ;
+        mapContentTypeToLang.put(WebContent.contentTypeNQuadsAlt, Lang.NQUADS) ;
+
     }
     // ---- 
 

@@ -22,10 +22,7 @@ import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
 import java.io.FileInputStream ;
-import java.util.EnumSet ;
-import java.util.HashMap ;
-import java.util.List ;
-import java.util.Map ;
+import java.util.* ;
 
 import javax.servlet.http.HttpServlet ;
 
@@ -63,6 +60,8 @@ public class SPARQLServer
     
     private Server server = null ;
     private boolean verboseLogging = false ;
+    private static List<String> epDataset = Arrays.asList("*") ;
+    
     //private static int ThreadPoolSize = 100 ;
     
     public SPARQLServer(ServerConfig config)
@@ -160,7 +159,7 @@ public class SPARQLServer
         
         // Should all services be /_/.... or some such?
         
-        if ( installManager || installServices)
+        if ( installManager || installServices )
         {
             // TODO Respect port.
             if ( serverConfig.pagesPort != serverConfig.port )
@@ -225,17 +224,27 @@ public class SPARQLServer
         DatasetRegistry.get().put(datasetPath, sDesc) ;
         serverLog.info(format("Dataset path = %s", datasetPath)) ;
         
-        HttpServlet sparqlQuery = new SPARQL_QueryDataset(verboseLogging) ;
-        HttpServlet sparqlUpdate = new SPARQL_Update(verboseLogging) ;
-        HttpServlet sparqlUpload = new SPARQL_Upload(verboseLogging) ;
-        HttpServlet sparqlHttpR = new SPARQL_REST_R(verboseLogging) ;  
-        HttpServlet sparqlHttpRW = new SPARQL_REST_RW(verboseLogging) ;
+        HttpServlet sparqlQuery     = new SPARQL_QueryDataset(verboseLogging) ;
+        HttpServlet sparqlUpdate    = new SPARQL_Update(verboseLogging) ;
+        HttpServlet sparqlUpload    = new SPARQL_Upload(verboseLogging) ;
+        HttpServlet sparqlHttpR     = new SPARQL_REST_R(verboseLogging) ;  
+        HttpServlet sparqlHttpRW    = new SPARQL_REST_RW(verboseLogging) ;
+        HttpServlet sparqlDataset   = new SPARQL_Dataset(verboseLogging) ;
         
-        addServlet(context, datasetPath, sparqlQuery, sDesc.queryEP, enableCompression) ;
-        addServlet(context, datasetPath, sparqlUpdate, sDesc.updateEP, false) ; // No point - no results of any size.
-        addServlet(context, datasetPath, sparqlUpload, sDesc.uploadEP, false) ;
-        addServlet(context, datasetPath, sparqlHttpR, sDesc.readGraphStoreEP, enableCompression) ;
-        addServlet(context, datasetPath, sparqlHttpRW, sDesc.readWriteGraphStoreEP, enableCompression) ;
+        addServlet(context, datasetPath, sparqlQuery,   sDesc.queryEP,    enableCompression) ;
+        addServlet(context, datasetPath, sparqlUpdate,  sDesc.updateEP,   false) ;
+        addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ; // No point - no results of any size.
+        addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
+        addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
+        
+        // This is the servlet that:
+        //   1/ handles Graph Store Protocol direct naming.
+        //   2/ Handles dataset?operation.
+        //   3/ Handles GET dataset
+        // The servlet naming rules and priorities are a bit obscure - this takes priority over the above!
+        // ??No compression support because it is right sometimes and not others.
+        
+        //addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
     }
     
     private static Server configServer(String jettyConfig)

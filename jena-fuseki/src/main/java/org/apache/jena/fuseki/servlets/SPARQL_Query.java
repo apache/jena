@@ -79,7 +79,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
     
     public SPARQL_Query(boolean verbose)
-    { super(PlainRequestFlag.DIFFERENT, verbose) ; }
+    { super(verbose) ; }
 
     
     public SPARQL_Query()
@@ -148,6 +148,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                         paramTimeout } ;
     protected static Set<String> allParams = new HashSet<String>(Arrays.asList(params_)) ;
     /** Called to validate arguments */
+    @Override
     protected abstract void validate(HttpServletRequest request) ;
     
     /** Helper for validating request */
