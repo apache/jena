@@ -2,8 +2,8 @@
 
 ## Basic Fuseki configuation file.
 ## 
-## See also config_examples.ttl for commented examples.
-## See also config_tdb.ttl for TDB specific examples.
+## See also config-tdb.ttl for TDB specific examples.
+## See also config-examples.ttl for commented examples.
 
 @prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
@@ -39,7 +39,6 @@
     fuseki:serviceUpload               "upload" ;
     fuseki:serviceReadWriteGraphStore  "data" ;     
     fuseki:serviceReadGraphStore       "get" ;
-    fuseki:serviceReadGraphStore       "" ;      
     fuseki:dataset                     <#emptyDataset> ;
     .
 
