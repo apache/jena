@@ -97,13 +97,9 @@ public class FusekiConfig
             sDesc.updateEP.add(HttpNames.ServiceUpdate) ;
             sDesc.uploadEP.add(HttpNames.ServiceUpload) ;
             sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData) ;
-            sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData1) ;
         }
         else
-        {
             sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
-            sDesc.readGraphStoreEP.add(HttpNames.ServiceData1) ;
-        }        
         ServerConfig config = new ServerConfig() ;
         config.services = Arrays.asList(sDesc) ;
         config.port = 3030 ;

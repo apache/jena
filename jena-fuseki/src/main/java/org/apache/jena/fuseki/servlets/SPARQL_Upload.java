@@ -61,7 +61,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     
     public SPARQL_Upload(boolean verbose_debug)
     {
-        super(PlainRequestFlag.REGULAR, verbose_debug) ;
+        super(verbose_debug) ;
     }
 
     // Methods to respond to.
@@ -198,15 +198,8 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             return ;
         }
     }
-
-    private void validate(HttpServletRequest request)
-    {}
-
+    
     @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        errorOccurred("requestNoQueryString") ;
-        return true ;
-    }
-
+    protected void validate(HttpServletRequest request)
+    {}
 }

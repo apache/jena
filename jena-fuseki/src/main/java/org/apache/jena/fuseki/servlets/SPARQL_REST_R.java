@@ -48,7 +48,7 @@ public class SPARQL_REST_R extends SPARQL_REST
     {
         // Assume success - do the set up before grabbing the lock.
         // Sets content type.
-        MediaType mediaType = contentNegotationRDF(action) ;
+        MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
         
         ServletOutputStream output ;
         try { output = action.response.getOutputStream() ; }
@@ -95,7 +95,7 @@ public class SPARQL_REST_R extends SPARQL_REST
                 successNotFound(action) ;
                 return ;
             }
-            MediaType mediaType = contentNegotationRDF(action) ;
+            MediaType mediaType = HttpAction.contentNegotationRDF(action) ;
             success(action) ;
         } finally { action.endRead() ; }
     }

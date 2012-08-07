@@ -23,7 +23,6 @@ import static java.lang.String.format ;
 import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
-import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
@@ -52,13 +51,14 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     @Override
     protected void validate(HttpServletRequest request)
     {
+        if ( HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) && request.getQueryString() == null )
+            errorBadRequest("No query string given") ;
         validate(request, allParams) ;
     }
 
     @Override
     protected void validateQuery(HttpActionQuery action, Query query)
     {
-        // One or the other,
     }
     
     @Override
@@ -77,15 +77,6 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
             errorBadRequest("No dataset description in protocol request or in the query string") ;
 
         return datasetFromDescription(action, datasetDesc) ;
-    }
-    
-    @Override
-    protected boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response)
-    {
-        if ( HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
-            return true ;
-        errorBadRequest("No query string given") ;
-        return false ;
     }
 
     /**

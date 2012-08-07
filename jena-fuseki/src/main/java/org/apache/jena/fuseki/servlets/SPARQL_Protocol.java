@@ -50,9 +50,9 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
         }
     }
     
-    protected SPARQL_Protocol(PlainRequestFlag noQueryStringIsOK, boolean verbose_debug)
+    protected SPARQL_Protocol(boolean verbose_debug)
     {
-        super(noQueryStringIsOK, verbose_debug) ;
+        super(verbose_debug) ;
     }
 
     protected static String messageForQPE(QueryParseException ex)
@@ -63,12 +63,6 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
             return Lib.classShortName(ex.getCause().getClass()) ;
         return null ;
     }
-
-    // These are the operations passed on by SPARQL_ServletBase
-//    protected abstract String mapRequestToDataset(String uri) ;
-//    protected abstract void perform(long id, DatasetGraph dsg, HttpServletRequest request, HttpServletResponse response) ;
-//    protected abstract boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response) ;
-
     
     protected static DatasetDescription getDatasetDescription(HttpActionQuery action)
     {

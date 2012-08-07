@@ -23,6 +23,7 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 
 import javax.servlet.ServletOutputStream ;
+import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
@@ -35,29 +36,31 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
  * Servlet that serves up quads for a dataset.
- * Combine with something for RDF GET on graphs?
  */
 
 public class REST_Quads extends SPARQL_REST
 {
-    // This is nearly SPARQL_REST_R
+    public REST_Quads(boolean verbose)
+    { super(verbose) ; }
     
-    // Have a "serve quads", "serve triples" library.
-    // ResponseQuads, ResponseTriples 
+    @Override
+    protected void validate(HttpServletRequest request)
+    {
+        // already checked?
+    }
     
     @Override
     protected void doGet(HttpActionREST action)
     {
-        if ( action.hasTarget() )
-            errorBadRequest("Attempt to use GET for quads and name a graph") ;
- 
-        MediaType mediaType = contentNegotationQuads(action) ;
+        MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
         ServletOutputStream output ;
         try { output = action.response.getOutputStream() ; }
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+        if ( lang == null )
+            lang = Lang.TRIG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
@@ -90,12 +93,9 @@ public class REST_Quads extends SPARQL_REST
     @Override
     protected void doHead(HttpActionREST action)
     {
-        if ( action.hasTarget() )
-            errorBadRequest("Attempt to use GET for quads and name a graph") ;
-        
         action.beginRead() ;
         try { 
-            MediaType mediaType = contentNegotationQuads(action) ;
+            MediaType mediaType = HttpAction.contentNegotationQuads(action) ;
             success(action) ;
         } finally { action.endRead() ; }
     }

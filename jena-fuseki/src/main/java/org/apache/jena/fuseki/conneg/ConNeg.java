@@ -20,7 +20,6 @@ package org.apache.jena.fuseki.conneg;
 
 import static org.apache.jena.fuseki.HttpNames.hAcceptCharset ;
 
-
 import javax.servlet.http.HttpServletRequest ;
 
 import org.openjena.atlas.web.AcceptList ;

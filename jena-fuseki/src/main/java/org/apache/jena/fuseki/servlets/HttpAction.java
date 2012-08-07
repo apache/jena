@@ -22,8 +22,11 @@ package org.apache.jena.fuseki.servlets;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.DEF ;
+import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.logging.Log ;
+import org.openjena.atlas.web.MediaType ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
@@ -161,4 +164,22 @@ public class HttpAction
     {
         SystemARQ.sync(dsg) ;
     }
+    
+    public static MediaType contentNegotationRDF(HttpAction action)
+    {
+        MediaType mt = ConNeg.chooseContentType(action.request, DEF.rdfOffer, DEF.acceptRDFXML) ;
+        if ( mt == null )
+            return null ;
+        if ( mt.getContentType() != null )
+            action.response.setContentType(mt.getContentType());
+        if ( mt.getCharset() != null )
+        action.response.setCharacterEncoding(mt.getCharset()) ;
+        return mt ;
+    }
+    
+    public static MediaType contentNegotationQuads(HttpAction action)
+    {
+        return ConNeg.chooseContentType(action.request, DEF.quadsOffer, DEF.acceptNQuads) ;
+    }
+
 }

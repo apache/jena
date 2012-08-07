@@ -42,16 +42,16 @@ import com.hp.hpl.jena.tdb.migrate.DatasetGraphReadOnly ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {
-    private final PlainRequestFlag queryStringHandling ;
+//    private final PlainRequestFlag queryStringHandling ;
     private static DatasetGraph dummyDSG = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
     // Flag for whether a request (no query string) is handled as a regular operation or
     // routed to special handler.
-    protected enum PlainRequestFlag { REGULAR, DIFFERENT }
+//    protected enum PlainRequestFlag { REGULAR, DIFFERENT }
     
-    protected SPARQL_ServletBase(PlainRequestFlag noQueryStringIsOK, boolean verbose_debug)
+    protected SPARQL_ServletBase(boolean verbose_debug)
     {
         super(verbose_debug) ;
-        this.queryStringHandling = noQueryStringIsOK ;
+        //this.queryStringHandling = noQueryStringIsOK ;
     }
     
     // Common framework for handling HTTP requests
@@ -63,44 +63,17 @@ public abstract class SPARQL_ServletBase extends ServletBase
         
         HttpServletResponseTracker responseTracked = new HttpServletResponseTracker(response) ;
         response = responseTracked ;
-        
-        String uri = request.getRequestURI() ;
         initResponse(request, response) ;
-        
-        DatasetRef desc = null ;
         Context cxt = ARQ.getContext() ;
-        
+
         try {
-            if ( request.getQueryString() == null && queryStringHandling == PlainRequestFlag.DIFFERENT )
-            {
-                boolean requestContinue = requestNoQueryString(request, response) ;
-                if ( ! requestContinue ) 
-                    return ;
-            }
-
-            uri = mapRequestToDataset(uri) ;
-
-            if ( uri != null )
-            {
-                desc = DatasetRegistry.get().get(uri) ;
-                if ( desc == null )
-                {
-                    errorNotFound("No dataset for URI: "+uri) ;
-                    return ;
-                }
-                //cxt = desc.dataset.getContext() ;
-            }
-            else {
-                desc = new DatasetRef();
-                desc.dataset = dummyDSG;
-            }
-            perform(id, desc, request, response) ;
-            //serverlog.info(String.format("[%d] 200 Success", id)) ;
+            validate(request) ;
+            doCommonWorker(id, request, response) ;
         } catch (QueryCancelledException ex)
         {
             // Also need the per query info ...
-        	String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
-        	responseSendError(response, HttpSC.REQUEST_TIMEOUT_408, message);
+            String message = String.format("The query timed out (restricted to %s ms)", cxt.get(ARQ.queryTimeout));
+            responseSendError(response, HttpSC.REQUEST_TIMEOUT_408, message);
             // Log message done by printResponse in a moment.
         } catch (ActionErrorException ex)
         {
@@ -118,8 +91,36 @@ public abstract class SPARQL_ServletBase extends ServletBase
             log.warn(format("[%d] RC = %d : %s", id, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()), ex) ;
             responseSendError(response, HttpSC.INTERNAL_SERVER_ERROR_500, ex.getMessage()) ;
         }
-        
+
         printResponse(id, responseTracked) ;
+    }
+
+    protected abstract void validate(HttpServletRequest request) ;
+    
+    protected void doCommonWorker(long id, HttpServletRequest request, HttpServletResponse response)
+    {
+        DatasetRef desc = null ;
+        String uri = request.getRequestURI() ;
+
+        validate(request) ;
+        
+        uri = mapRequestToDataset(uri) ;
+
+        if ( uri != null )
+        {
+            desc = DatasetRegistry.get().get(uri) ;
+            if ( desc == null )
+            {
+                errorNotFound("No dataset for URI: "+uri) ;
+                return ;
+            }
+            //cxt = desc.dataset.getContext() ;
+        }
+        else {
+            desc = new DatasetRef();
+            desc.dataset = dummyDSG;
+        }
+        perform(id, desc, request, response) ;
     }
 
     @SuppressWarnings("unused") // ServletException
@@ -182,18 +183,6 @@ public abstract class SPARQL_ServletBase extends ServletBase
             log.info(String.format("[%d] %d %s", id, response.statusCode, response.message)) ;
     }
     
-    private void responseSendError(HttpServletResponse response, int statusCode, String message)
-    {
-        try { response.sendError(statusCode, message) ; }
-        catch (IOException ex) { errorOccurred(ex) ; }
-    }
-    
-    private void responseSendError(HttpServletResponse response, int statusCode)
-    {
-        try { response.sendError(statusCode) ; }
-        catch (IOException ex) { errorOccurred(ex) ; }
-    }
-
     /** Map request to uri in the registry.
      *  null means no mapping done (passthrough). 
      */
@@ -220,11 +209,4 @@ public abstract class SPARQL_ServletBase extends ServletBase
     }
 
     protected abstract void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response) ;
-
-    /** Request had no query string.
-     *  Either: (1) handle the request in this opeation - throw an error or send response
-     *  and return "false" (don't continue) 
-     *  Or: (2) return true for continue.
-     */
-    protected abstract boolean requestNoQueryString(HttpServletRequest request, HttpServletResponse response) ;
 }
