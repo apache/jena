@@ -1,6 +1,6 @@
 # Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
-## Example of a TDB dataset published using Fuseki
+## Example of a TDB dataset published using Fuseki: persistent storage.
 
 @prefix :        <#> .
 @prefix fuseki:  <http://jena.apache.org/fuseki#> .
@@ -68,4 +68,3 @@ tdb:GraphTDB    rdfs:subClassOf  ja:Model .
 ##     ja:context [ ja:cxtName "arq:queryTimeout" ;  ja:cxtValue "1000" ] ;
 ##     # Default graph for query is the (read-only) union of all named graphs.
      .
-1
