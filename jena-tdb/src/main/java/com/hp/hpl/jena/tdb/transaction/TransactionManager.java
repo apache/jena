@@ -86,6 +86,7 @@ public class TransactionManager
     
     static AtomicLong transactionId = new AtomicLong(1) ;
     
+    // Accessed by SysTxnState
     AtomicLong activeReaders = new AtomicLong(0) ; 
     AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
     
@@ -360,17 +361,6 @@ public class TransactionManager
         
         log("begin$", txn) ;
         
-        // Code for reusing the lastreader 
-//        if ( mode == ReadWrite.READ )
-//        {
-//            DatasetGraphTxn dsgTxn = lastreader.get() ;
-//            if ( dsgTxn != null )
-//            {
-//                // Use cached
-//                // Sort out components.
-//            }
-//        }
-
         DatasetGraphTxn dsgTxn = createDSGTxn(dsg,txn, mode) ;
         txn.setActiveDataset(dsgTxn) ;
 
@@ -379,8 +369,9 @@ public class TransactionManager
 
         if ( mode == ReadWrite.READ )
         {
+            // Consistency check.
             if ( components.size() != 0 )
-                log.warn("read transaction, non-empty componets list") ;
+                log.warn("read transaction, non-empty lifecycleComponents list") ;
         }
         
         for ( TransactionLifecycle component : components )
@@ -399,11 +390,26 @@ public class TransactionManager
     
     private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode)
     {
-        // [TxTDB:TODO]
-        // a read transaction (no lifecycle components) can be shared over all
+        // A read transaction (if it has no lifecycle components) can be shared over all
         // read transactions at the same commit level. 
         //    lastreader
-        return (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        
+        DatasetGraphTxn dsgTxn ;
+        
+        if ( mode == ReadWrite.READ )
+        {   
+            // If a READ transaction, and a previously built one is cached, use it.
+            dsgTxn = lastreader.get();
+            if ( dsgTxn != null )
+                return dsgTxn ;
+        }
+        
+        dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        if ( mode == ReadWrite.READ )
+            // If a READ transaction, cached it.
+            // This is cleared when a WRITE commits
+            lastreader.set(dsgTxn);
+        return dsgTxn ;
     }
 
     /* Signal a transaction has commited.  The journal has a commit record
@@ -423,7 +429,9 @@ public class TransactionManager
         switch ( transaction.getMode() )
         {
             case READ: break ;
-            case WRITE: writersWaiting.release() ;
+            case WRITE:
+                lastreader.set(null) ;      // Clear the READ transaction cache.
+                writersWaiting.release() ;  // Single writer: let another (waiting?) writer have a turn.
         }
     }
 
