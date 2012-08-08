@@ -482,12 +482,10 @@ void Update1() : { Update up ; }
     emitUpdate(up) ;
     finishUpdateOperation() ;
   }
-
 }
 
 Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
-    // Should be +?
     //    <LOAD> ( iri() )+
     <LOAD>  (<SILENT> { silent = true ; })? url = iri()
 #ifndef ARQ_UPDATE
@@ -551,7 +549,7 @@ Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
    QuadData(qd)
 #else
    OptionalIntoTarget(qd)
-   QuadPattern(qd)
+   QuadData(qd)
 #endif
   {
     finishDataInsert(qd, t.beginLine, t.beginColumn) ;
