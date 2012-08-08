@@ -40,6 +40,8 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     @Override
     public boolean containsGraph(Node graphNode)
     {
+        if ( isDefaultGraph(graphNode) )
+            return true ;
         return false ;
     }
     
@@ -47,7 +49,12 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     public Graph getDefaultGraph() { return graph ; }
 
     @Override
-    public Graph getGraph(Node graphNode) { return null ; }
+    public Graph getGraph(Node graphNode)
+    { 
+        if ( isDefaultGraph(graphNode) )
+            return graph ;
+        return null ;
+    }
 
     @Override
     public Iterator<Node> listGraphNodes()
@@ -73,7 +80,7 @@ public class DatasetGraphOne extends DatasetGraphBaseFind
     @Override
     public void add(Quad quad)
     { 
-        if (  isDefaultGraph(quad) )
+        if ( isDefaultGraph(quad) )
             graph.add(quad.asTriple()) ;
         else
             throw new UnsupportedOperationException("DatasetGraphOne.add/named graph") ;
