@@ -385,7 +385,6 @@ void Update1() : { Update up ; }
 }
 Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
-    // Should be +?
     //    <LOAD> ( iri() )+
     <LOAD> (<SILENT> { silent = true ; })? url = iri()
     { String iri ; }
@@ -434,7 +433,7 @@ Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
   t = <INSERT_DATA>
   { startDataInsert(qd, t.beginLine, t.beginColumn) ; }
    OptionalIntoTarget(qd)
-   QuadPattern(qd)
+   QuadData(qd)
   {
     finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     return new UpdateDataInsert(qd) ;

@@ -371,7 +371,6 @@ void Update1() : { Update up ; }
 }
 Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
-    // Should be +?
     //    <LOAD> ( iri() )+
     <LOAD> (<SILENT> { silent = true ; })? url = iri()
     (<INTO> dest = GraphRef() )?
