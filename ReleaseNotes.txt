@@ -4,8 +4,8 @@ Release Notes
 ==== Jena 2.7.3
 
 + Remove unused: GraphMemSmall, MixedGraphMem and GraphMem (in-memory is GraphMemFaster).
-+ Schemagen: added ontology's owl:versionInfo if it exists.
-+ Rename GraphMemFaster as GraphMem as theer is only one implementation. Pul up classes into mem package. 
++ Schemagen: add ontology's owl:versionInfo if it exists.
++ Rename GraphMemFaster as GraphMem as there is only one implementation. Pull up classes into mem package. 
 
 ==== Jena 2.7.2
 
@@ -26,7 +26,7 @@ Release Notes
 
 ==== Jena 2.6.4
 
-+ Maintenace release
++ Maintenance release
 
 ==== Jena 2.6.3
 
