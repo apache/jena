@@ -327,15 +327,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         Query query = elementToQuery(update.getWherePattern()) ;
         
         // USING/USING NAMED
-        DatasetGraph dsg = processUsing(update, query) ;
+        DatasetGraph dsg = processUsing(update) ;
         
         // USING overrides WITH
         if ( dsg == null && withGraph != null )
-        {
-            //Graph g = graphStore.getGraph(withGraph) ;
-            Graph g = graph(graphStore, withGraph) ;
-            dsg = new DatasetGraphAltDefaultGraph(graphStore, g) ;
-        }
+            dsg = processWith(update) ;    
+            
         if ( dsg == null )
             dsg = graphStore ;
         
@@ -363,7 +360,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     }
 
     // Indirection for subsystems to support USING/USING NAMED.
-    protected DatasetGraph processUsing(UpdateModify update, Query query)
+    protected DatasetGraph processUsing(UpdateModify update)
     {
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null ;
@@ -379,7 +376,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 
                 for ( Node gn : update.getUsing() )
                 {
-                    Graph g2 = graphStore.getGraph(gn) ;
+                    Graph g2 = graphOrDummy(graphStore, gn) ;
                     g.getBulkUpdateHandler().add(g2) ;
                 }
                 dsg.setDefaultGraph(g) ;
@@ -387,7 +384,8 @@ public class UpdateEngineWorker implements UpdateVisitor
             else
             {
                 Node gn = update.getUsing().get(0) ;
-                dsg.setDefaultGraph(graphStore.getGraph(gn)) ;
+                Graph g = graphOrDummy(graphStore, gn) ;
+                dsg.setDefaultGraph(g) ;
             }
         }
         
@@ -397,9 +395,27 @@ public class UpdateEngineWorker implements UpdateVisitor
             dsg = new DatasetGraphMap(dsg.getDefaultGraph()) ;
             
             for ( Node gn : update.getUsingNamed() )
-                dsg.addGraph(gn, graphStore.getGraph(gn)) ; 
+                dsg.addGraph(gn, graphOrDummy(graphStore, gn)) ;
         }
         return dsg ;
+    }
+    
+    protected DatasetGraph processWith(UpdateModify update)
+    {
+        Node withGraph = update.getWithIRI() ;
+        if ( withGraph == null )
+            return null ;
+        Graph g = graphOrDummy(graphStore, withGraph) ;
+        DatasetGraph dsg = new DatasetGraphAltDefaultGraph(graphStore, g) ;
+        return dsg ;
+    }
+    
+    private Graph graphOrDummy(DatasetGraph dsg, Node gn)
+    {
+        Graph g = graph(graphStore, gn) ;
+        if ( g == null )
+            g = GraphFactory.createGraphMem() ;
+        return g ;
     }
     
     protected static List<Quad> unused_convertBNodesToVariables(List<Quad> quads)
@@ -531,7 +547,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         {
             if ( dftGraph != null )
             {
-                Graph g = dsg.getGraph(dftGraph) ;
+                Graph g = graphOrDummy(dsg, dftGraph) ;
                 dsg = new DatasetGraphAltDefaultGraph(dsg, g) ;
             }
         }
