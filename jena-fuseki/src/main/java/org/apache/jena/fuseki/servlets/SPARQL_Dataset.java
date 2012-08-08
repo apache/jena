@@ -80,6 +80,18 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
     private SPARQL_ServletBase restServlet_RW  = new SPARQL_REST_RW(verbose_debug) ;
     private SPARQL_ServletBase restServlet_R   = new SPARQL_REST_R(verbose_debug) ;
     private SPARQL_ServletBase restQuads       = new REST_Quads(verbose_debug) ;
+
+    
+    private String getEPName(String dsname, List<String> endpoints)
+    {
+        if (endpoints == null || endpoints.size() == 0) return null ;
+        String x = endpoints.get(0) ;
+        if ( ! dsname.endsWith("/") )
+            x = dsname+"/"+x ;
+        else
+            x = dsname+x ;
+        return x ;
+    }
     
     @Override
     protected void validate(HttpServletRequest request)
@@ -87,6 +99,9 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         // already checked in SPARQ_Dataset?
     }
 
+    // Developement : calls to other srvlets marked ****
+    // This will need to do a proper servlet dispatch if they are going to be filterd (security, compression).
+    
     @Override
     protected void doCommonWorker(long id, HttpServletRequest request, HttpServletResponse response)
     {
@@ -115,15 +130,17 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         {
             if ( trailing.length() != 0 )
             {
-                // Direct naming    
+                // Direct naming to indirect naming.
                 String absURI = request.getRequestURL().toString() ;
                 HttpActionREST a = new HttpActionREST(id, desc, absURI, request, response, verbose_debug) ;
                 // Conneg.
                 // Check access.
+                // ****
                 new SPARQL_REST_RW(verbose_debug).dispatch(a) ;
             }
             else
             {
+                // Direct action on the dataset itself.
                 restQuads.doCommonWorker(id, request, response) ;
                 return ;
             }
@@ -160,15 +177,26 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         // Check an endpoint is registered.
         if ( hasParamQuery )
         {
-            if ( desc.queryEP.size() > 0 )
-                queryServlet.doCommonWorker(id, request, response) ;
-            else
+            // Call by dispatch - follows the servlet chain. 
+            String x = getEPName(desc.name, desc.queryEP) ;
+            if ( x == null )
                 errorMethodNotAllowed(method) ;
+            else
+            {
+                //request.setAttribute("org.apache.jena.fuseki.id", id) ;
+                forwardServlet(x, request, response) ;
+            }
+            // Call direct.
+//            if ( desc.queryEP.size() > 0 )
+//                queryServlet.doCommonWorker(id, request, response) ;
+//            else
+//                errorMethodNotAllowed(method) ;
         }
 
         if ( hasParamRequest )
         {
             if ( desc.updateEP.size() > 0 )
+                // ****
                 updateServlet.doCommonWorker(id, request, response) ;
             else
                 errorMethodNotAllowed(method) ;
@@ -177,8 +205,10 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         if ( hasParamGraph )
         {
             if ( desc.readWriteGraphStoreEP.size() > 0 )
+                // ****
                 restServlet_RW.doCommonWorker(id, request, response) ;
             else if ( desc.readGraphStoreEP.size() > 0 )
+                // ****
                 restServlet_R.doCommonWorker(id, request, response) ;
             else
                 errorMethodNotAllowed(method) ;
@@ -206,6 +236,17 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         return true ;
     }
 
+    private void forwardServlet(String target, HttpServletRequest request, HttpServletResponse response)
+    {
+        try
+        {
+            // relative
+            request.getRequestDispatcher(target).forward(request, response) ;
+            
+            // Absolute
+            // getServletContext().getRequestDispatcher(target)
+        } catch (Exception e) { errorOccurred(e) ; }
+    }
 
     @Override
     protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
