@@ -46,9 +46,9 @@
   <description>Jena is a Java framework for building Semantic Web applications. It provides a programmatic environment for RDF, RDFS and OWL, SPARQL and includes a rule-based inference engine.</description>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-core</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-core</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-core</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-core</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-core</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-core</url>
   </scm>
 
   <properties>

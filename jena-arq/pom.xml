@@ -47,9 +47,9 @@
   <description>ARQ is a SPARQL 1.1 query engine for Jena</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-arq</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-arq</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-arq</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-arq</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-arq</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-arq</url>
   </scm>
 
   <properties>

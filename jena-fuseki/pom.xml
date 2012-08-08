@@ -58,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-fuseki</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-fuseki</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-fuseki</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-fuseki</url>
   </scm>
 
   <properties>

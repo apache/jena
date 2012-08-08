@@ -48,9 +48,9 @@
   </repositories>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-iri</connection>
-    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-iri</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/jena-iri</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-iri</connection>
+    <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-iri</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/jena-iri</url>
   </scm>
 
   <properties>

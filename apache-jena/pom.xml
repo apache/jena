@@ -52,9 +52,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/apache-jena</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3/apache-jena</developerConnection>
-    <url>http://svn.apache.org/viewvc//jena/tags/jena-2.7.3/trunk</url>
+    <connection>scm:svn:http://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/apache-jena</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3/apache-jena</developerConnection>
+    <url>http://svn.apache.org/viewvc//jena/tags/2.7.3-RC3/trunk</url>
   </scm>
 
   <!-- Inherit would be better-->

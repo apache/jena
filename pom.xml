@@ -45,9 +45,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.7.3</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/2.7.3-RC3</url>
   </scm>
 
   <modules>
