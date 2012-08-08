@@ -4,10 +4,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.3
 
-+ Interface DataSource removed after havign been deprecated across releases.
++ Interface DataSource removed after having been deprecated across releases.
   Use Dataset.
-+ Remove many deprecated operations in classes Query, UpdateFcatory and UpdateRequest.
-  Also many internal operations marked deprected were removed.
++ Remove many deprecated operations in classes Query, UpdateFactory and UpdateRequest.
+  Also many internal operations marked deprecated were removed.
 
 ==== ARQ 2.9.2
 
