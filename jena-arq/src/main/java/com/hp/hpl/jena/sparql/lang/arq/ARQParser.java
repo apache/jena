@@ -1630,7 +1630,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     t = jj_consume_token(INSERT_DATA);
     startDataInsert(qd, t.beginLine, t.beginColumn) ;
     OptionalIntoTarget(qd);
-    QuadPattern(qd);
+    QuadData(qd);
     finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     {if (true) return new UpdateDataInsert(qd) ;}
     throw new Error("Missing return statement in function");
