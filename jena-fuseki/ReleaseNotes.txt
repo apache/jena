@@ -4,8 +4,8 @@
 
 == Fuseki 0.2.3
 
-+ Added a script to support running Fuseki as a service (JENA-268)
-+ (TDB change) Removes excessive and harmless warnings in log file.   
++ Add a script to support running Fuseki as a service (JENA-268)
++ (TDB change) Remove excessive and harmless warnings in log file.
 
 == Fuseki 0.2.2
 
