@@ -32,8 +32,6 @@ public class BaseServerTest extends BaseTest
     public static final String serviceQuery  = "http://localhost:"+ServerTest.port+datasetPath+"/query" ; 
     public static final String serviceREST   = "http://localhost:"+ServerTest.port+datasetPath+"/data" ; // ??????
     
-    
-    
     protected static final String gn1       = "http://graph/1" ;
     protected static final String gn2       = "http://graph/2" ;
     protected static final String gn99      = "http://graph/99" ;
