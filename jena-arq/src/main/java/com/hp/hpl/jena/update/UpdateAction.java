@@ -229,6 +229,8 @@ public class UpdateAction
     }
     
     /** Execute SPARQL Update operations.
+     * Warning - changes on named graphs not supported by this operation.
+     * @see #execute(UpdateRequest, Dataset)
      * @param request
      * @param model
      */
@@ -256,6 +258,8 @@ public class UpdateAction
     }
 
     /** Execute SPARQL Update operations.
+     *  Warning - changes on named graphs not supported by this operation.
+     * @see #execute(UpdateRequest, DatasetGraph)
      * @param request
      * @param graph
      */
