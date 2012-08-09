@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.sys.Session ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -176,9 +175,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         tripleTable = null ;
         quadTable = null ;
         prefixes = null ;
-
-        // To be removed.
-        TDBMaker.releaseDataset(this) ;
     }
     
     @Override

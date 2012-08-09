@@ -18,12 +18,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import junit.framework.TestSuite;
-import org.junit.runner.RunWith;
-import org.junit.runners.AllTests;
+import junit.framework.TestSuite ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.AllTests ;
 
-import com.hp.hpl.jena.tdb.junit.TestFactoryTDB;
-import com.hp.hpl.jena.tdb.sys.TDBMaker;
+import com.hp.hpl.jena.tdb.junit.TestFactoryTDB ;
 
 /** Scripted test generation */
 
@@ -37,6 +36,6 @@ public class TestSuiteGraphTDB extends TestSuite
     private TestSuiteGraphTDB()
     {
         super("TDB-Scripts") ;
-        TestFactoryTDB.make(this, manifestMain, "TDB-", TDBMaker.stdFactory) ;
+        TestFactoryTDB.make(this, manifestMain, "TDB-") ;
     }
 }

@@ -41,7 +41,6 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.junit.GraphLocation ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** Testing persistence  */ 
 public class TestDatasetTDBPersist extends BaseTest
@@ -69,7 +68,6 @@ public class TestDatasetTDBPersist extends BaseTest
     
     @After public void after()
     {
-    	TDBMaker.reset() ;
     	if ( graphLocation != null )
     		graphLocation.release() ;
     	graphLocation.clearDirectory() ;	// Does not have the desired effect on Windows.
@@ -80,7 +78,6 @@ public class TestDatasetTDBPersist extends BaseTest
     @Test public void dataset1()
     {
         Dataset ds = graphLocation.getDataset() ;
-        //assertTrue( ds.asDatasetGraph() instanceof DatasetGraphTDB ) ;
         assertTrue( ds.getDefaultModel().getGraph() instanceof GraphTriplesTDB ) ;
         assertTrue( ds.getNamedModel("http://example/").getGraph() instanceof GraphNamedTDB ) ;
     }

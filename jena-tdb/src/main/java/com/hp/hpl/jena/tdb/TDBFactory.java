@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.tdb.assembler.VocabTDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMakerTxn ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 /** Public factory for creating objects datasets backed by TDB storage */
@@ -96,24 +96,24 @@ public class TDBFactory
      */
     public static void reset()
     {
-        TDBMakerTxn.reset() ;
+        TDBMaker.reset() ;
     }
 
     private static DatasetGraph _createDatasetGraph(Location location)
     {
-        return TDBMakerTxn.createDatasetGraph(location) ;
+        return TDBMaker.createDatasetGraphTransaction(location) ;
     }
     
     private static DatasetGraph _createDatasetGraph()
     {
-        return TDBMakerTxn.createDatasetGraph() ;
+        return TDBMaker.createDatasetGraphTransaction() ;
     }
     
     private static void _release(Location location)
     {
         if ( location == null )
             return ;
-        TDBMakerTxn.releaseLocation(location) ;
+        TDBMaker.releaseLocation(location) ;
     }
 
     /** Return the location of a dataset if it is backed by TDB, else null */ 

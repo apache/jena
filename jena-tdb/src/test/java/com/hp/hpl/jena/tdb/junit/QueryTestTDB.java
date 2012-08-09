@@ -18,29 +18,24 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import java.util.List;
+import java.util.List ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.rdf.model.Model;
-
-import com.hp.hpl.jena.util.FileManager;
-
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory;
-import com.hp.hpl.jena.sparql.engine.QueryExecutionBase;
-import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.EarlTestCase;
-import com.hp.hpl.jena.sparql.junit.TestItem;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
+import com.hp.hpl.jena.sparql.engine.QueryExecutionBase ;
+import com.hp.hpl.jena.sparql.engine.ref.QueryEngineRef ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+import com.hp.hpl.jena.sparql.junit.TestItem ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
-import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable;
+import com.hp.hpl.jena.sparql.resultset.ResultSetRewindable ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
-
-import com.hp.hpl.jena.query.*;
-
-import com.hp.hpl.jena.tdb.TDBFactory;
-import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.util.FileManager ;
 
 public class QueryTestTDB extends EarlTestCase
 {
@@ -57,19 +52,17 @@ public class QueryTestTDB extends EarlTestCase
     final String queryFile ; 
     final SPARQLResult results ;
     
-    final private DatasetGraphMakerTDB factory ;
- 
     // Track what's currently loaded in the GraphLocation
     private static List<String> currentDefaultGraphs = null ;
     private static List<String> currentNamedGraphs = null ;
 
     // Old style (Junit3)
-    public QueryTestTDB(String testName, EarlReport report, TestItem item, DatasetGraphMakerTDB factory)
+    public QueryTestTDB(String testName, EarlReport report, TestItem item)
     {
         this(testName, report, item.getURI(), 
              item.getDefaultGraphURIs(), item.getNamedGraphURIs(), 
-             item.getResults(), item.getQueryFile(),
-             factory) ;
+             item.getResults(), item.getQueryFile()
+             ) ;
     }
     
     public QueryTestTDB(String testName, EarlReport report, 
@@ -77,15 +70,14 @@ public class QueryTestTDB extends EarlTestCase
                         List<String> dftGraphs,
                         List<String> namedGraphs,
                         SPARQLResult rs,
-                        String queryFile,
-                        DatasetGraphMakerTDB factory)
+                        String queryFile
+                        )
     {
         super(testName, uri, report) ;
         this.defaultGraphURIs = dftGraphs ;
         this.namedGraphURIs = namedGraphs ;
         this.queryFile = queryFile ;
         this.results = rs ;
-        this.factory = factory ;
     }
     
     

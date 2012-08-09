@@ -51,7 +51,6 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.block.FileMode ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.tdb.transaction.SysTxnState ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -140,10 +139,7 @@ public class T_TransSystemMultiDatasets
     private static void clean()
     {
     	for ( Location location : LOCATIONS ) {
-            if ( USE_TRANSACTIONS ) 
-                StoreConnection.release(location) ;
-            else 
-                TDBMaker.releaseLocation(location) ;
+    	    StoreConnection.release(location) ;
             if ( ! location.isMem() )
                 FileOps.clearDirectory(location.getDirectoryPath()) ;			
 		}

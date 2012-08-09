@@ -30,7 +30,7 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 
 public abstract class CmdTDB extends CmdARQ
 {
@@ -103,7 +103,7 @@ public abstract class CmdTDB extends CmdARQ
     protected DatasetGraphTDB getDatasetGraphTDB()
     {
         DatasetGraph dsg = getDatasetGraph() ;
-        return SystemTDB.getBaseDatasetGraphTDB(dsg) ;
+        return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
     }
 
     protected Dataset getDataset()

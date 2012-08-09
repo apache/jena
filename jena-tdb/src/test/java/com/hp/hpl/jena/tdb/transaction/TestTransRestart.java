@@ -42,6 +42,7 @@ import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 /** Test of re-attaching to a pre-existing database */  
 public class TestTransRestart extends BaseTest {
@@ -55,7 +56,7 @@ public class TestTransRestart extends BaseTest {
     private final String path = ( SystemTDB.isWindows ? ConfigTest.getTestingDirUnique() : "/tmp/TDB" ) ; 
     private Location location = new Location (path) ;
 
-    private static boolean useTransactionsSetup = false ;
+    private static boolean useTransactionsSetup = true ;
     private static Quad quad1 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'foo')") ;
     private static Quad quad2 = SSE.parseQuad("(_ <foo:bar> rdfs:label 'bar')") ;
     
@@ -73,13 +74,14 @@ public class TestTransRestart extends BaseTest {
         cleanup() ;
     }
     
+    private static DatasetGraphTDB createPlain(Location location) { return TDBMaker.createDatasetGraphTDB(location) ; }
+    
     private void setupPlain() {
         // Make without transactions.
-        DatasetGraphTDB dsg = com.hp.hpl.jena.tdb.sys.TDBMaker._createDatasetGraph(location) ;
+        DatasetGraphTDB dsg = createPlain(location) ;
         dsg.add(quad1) ; 
         dsg.close() ;
-        // Normally done via close() but be explicit. 
-        com.hp.hpl.jena.tdb.sys.TDBMaker.releaseDataset(dsg) ;
+        StoreConnection.release(location) ; 
         return ;
     }
 
@@ -107,7 +109,6 @@ public class TestTransRestart extends BaseTest {
     @Test
     public void testTxn() {
         assertEquals (3, countRDFNodes()) ;
-
         StoreConnection sc = StoreConnection.make(location) ; 
         DatasetGraphTxn dsg = sc.begin(ReadWrite.WRITE) ;
         assertTrue(dsg.contains(quad1)) ;
@@ -121,12 +122,12 @@ public class TestTransRestart extends BaseTest {
     @Test
     public void testPlain() {
         assertEquals (3, countRDFNodes()) ;
-        DatasetGraphTDB dsg = com.hp.hpl.jena.tdb.sys.TDBMaker._createDatasetGraph(location) ;
+        DatasetGraphTDB dsg = createPlain(location) ;
         assertTrue(dsg.contains(quad1)) ;
         dsg.add(quad2) ;
         assertTrue(dsg.contains(quad2)) ;
-        dsg.close() ; 
-        com.hp.hpl.jena.tdb.sys.TDBMaker.releaseDataset(dsg) ;
+        dsg.close() ;
+        StoreConnection.release(location) ;
         assertEquals (4, countRDFNodes()) ;
     }
     

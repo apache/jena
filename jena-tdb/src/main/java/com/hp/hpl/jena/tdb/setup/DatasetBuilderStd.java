@@ -71,9 +71,7 @@ public class DatasetBuilderStd implements DatasetBuilder
     
     public static DatasetGraphTDB build()
     {
-        DatasetBuilderStd x = new DatasetBuilderStd() ;
-        x.setStd() ;
-        return x.build(Location.mem(), null) ;
+        return build(Location.mem()) ;
     }
     
     public static DatasetBuilderStd stdBuilder()
