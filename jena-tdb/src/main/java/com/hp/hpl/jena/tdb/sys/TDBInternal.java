@@ -21,6 +21,8 @@ package com.hp.hpl.jena.tdb.sys;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.util.Utils ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
@@ -98,5 +100,16 @@ public class TDBInternal
         return null ;
     }
     
+    /** Return a DatasetGraphTDB that uses the raw storage for tables 
+     * Use with care.
+     */ 
+    public static DatasetGraphTDB getBaseDatasetGraphTDB(DatasetGraph datasetGraph)
+    {
+        if ( datasetGraph instanceof DatasetGraphTransaction )
+            return ((DatasetGraphTransaction)datasetGraph).getBaseDatasetGraph() ;
+        throw new TDBException("Not a suitable DatasetGraph to get it's base storage: "+Utils.classShortName(datasetGraph.getClass())) ; 
+    }
+    
+
 }
 

@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.* ;
 
 /** Interface to the TDB transaction mechanism. */
@@ -115,7 +114,16 @@ public class StoreConnection
 
 
     /**
-     * Begin a transaction, giving it a label. Terminate a write transaction
+     * Begin a transact//    public static Graph _createGraph()
+//    { return factory.createDatasetGraph().getDefaultGraph() ; }
+//
+//    public static Graph _createGraph(Location loc)
+//    {
+//        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
+//        return factory.createDatasetGraph(loc).getDefaultGraph() ;
+//    }
+
+ion, giving it a label. Terminate a write transaction
      * with {@link Transaction#commit()} or {@link Transaction#abort()}.
      * Terminate a write transaction with {@link Transaction#close()}.
      */
@@ -197,25 +205,6 @@ public class StoreConnection
         return sConn ;
     }
 
-//    /**
-//     * Return a StoreConnection for a particular connection. This is used to
-//     * create transactions for the database at the location.
-//     */
-//    public static synchronized StoreConnection make(DatasetGraphTDB dsg)
-//    {
-//        if (dsg instanceof DatasetGraphTxn)
-//        {
-//            // ((DatasetGraphTxn)dsg).getTransaction().getBaseDataset() ;
-//            throw new TDBTransactionException(
-//                                              "Can't make a StoreConnection from a transaction instance - need the base storage DatasetGraphTDB") ;
-//        }
-//        Location location = dsg.getLocation() ;
-//
-//        StoreConnection sConn = cache.get(location) ;
-//        if (sConn == null) sConn = _makeAndCache(dsg) ;
-//        return sConn ;
-//    }
-
     /**
      * Return the StoreConnection if one already exists for this location, else
      * return null
@@ -228,8 +217,6 @@ public class StoreConnection
     private static StoreConnection _makeAndCache(DatasetGraphTDB dsg)
     {
         Location location = dsg.getLocation() ;
-        // Just in case ... also poke the old-style cache.
-        TDBMaker.releaseLocation(dsg.getLocation()) ;
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null)
         {

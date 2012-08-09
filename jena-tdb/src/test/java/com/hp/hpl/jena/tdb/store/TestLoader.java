@@ -35,6 +35,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBLoader ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 
 public class TestLoader extends BaseTest
@@ -48,9 +49,11 @@ public class TestLoader extends BaseTest
     @BeforeClass static public void beforeClass()   { Log.disable(ARQ.logExecName) ; Log.disable(TDB.logLoaderName) ; }
     @AfterClass  static public void afterClass()    { Log.enable(ARQ.logExecName) ; Log.enable(TDB.logLoaderName) ; }
     
+    static DatasetGraphTDB fresh() { return TDBMaker.createDatasetGraphTDB(Location.mem()) ; }
+    
     @Test public void load_dataset_01()
     {
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        DatasetGraphTDB dsg = fresh() ;
         TDBLoader.load(dsg, DIR+"data-1.nq", false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;
@@ -58,7 +61,7 @@ public class TestLoader extends BaseTest
 
     @Test public void load_dataset_02()
     {
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        DatasetGraphTDB dsg = fresh() ;
         InputStream in = IO.openFile(DIR+"data-1.nq") ;
         TDBLoader.load(dsg, in, false) ;
         assertTrue(dsg.getDefaultGraph().isEmpty()) ;
@@ -67,21 +70,21 @@ public class TestLoader extends BaseTest
 
     @Test public void load_graph_01()
     {
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        DatasetGraphTDB dsg = fresh() ;
         TDBLoader.load(dsg, DIR+"data-2.nt", false) ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
     }
 
     @Test public void load_graph_02()
     {
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        DatasetGraphTDB dsg = fresh() ;
         TDBLoader.load(dsg.getDefaultGraphTDB(), DIR+"data-2.nt", false) ;
         assertEquals(1, dsg.getDefaultGraph().size()) ;
     }
 
     @Test public void load_graph_03()
     {
-        DatasetGraphTDB dsg = TDBMaker._createDatasetGraph() ;
+        DatasetGraphTDB dsg = fresh() ;
         TDBLoader.load(dsg.getGraphTDB(g), DIR+"data-2.nt", false) ;
         assertEquals(0, dsg.getDefaultGraph().size()) ;
         assertEquals(1, dsg.getGraph(g).size()) ;

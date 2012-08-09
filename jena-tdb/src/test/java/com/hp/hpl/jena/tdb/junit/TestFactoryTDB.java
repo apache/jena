@@ -18,37 +18,33 @@
 
 package com.hp.hpl.jena.tdb.junit;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.Test ;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.util.junit.TestFactoryManifest;
-
-import com.hp.hpl.jena.sparql.core.DataFormat;
-import com.hp.hpl.jena.sparql.junit.EarlReport;
-import com.hp.hpl.jena.sparql.junit.SurpressedTest;
-import com.hp.hpl.jena.sparql.junit.TestItem;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifestX;
-
-import com.hp.hpl.jena.query.Syntax;
-
-import com.hp.hpl.jena.tdb.sys.DatasetGraphMakerTDB;
+import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DataFormat ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.SurpressedTest ;
+import com.hp.hpl.jena.sparql.junit.TestItem ;
+import com.hp.hpl.jena.sparql.vocabulary.TestManifestX ;
+import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 
 public class TestFactoryTDB extends TestFactoryManifest
 {
     public static EarlReport report = null ;
     
-    public static void make(TestSuite ts, String manifestFile, String testRootName, DatasetGraphMakerTDB factory)
+    public static void make(TestSuite ts, String manifestFile, String testRootName)
     {
         // for each graph type do
-        TestSuite ts2 = makeSuite(manifestFile, testRootName, factory) ;
+        TestSuite ts2 = makeSuite(manifestFile, testRootName) ;
         ts.addTest(ts2) ;
     }
     
-    public static TestSuite makeSuite(String manifestFile, String testRootName, DatasetGraphMakerTDB factory)
+    public static TestSuite makeSuite(String manifestFile, String testRootName)
     {
-        TestFactoryTDB f = new TestFactoryTDB(testRootName, factory) ;
+        TestFactoryTDB f = new TestFactoryTDB(testRootName) ;
         TestSuite ts = f.process(manifestFile) ;
         if ( testRootName != null )
             ts.setName(testRootName+ts.getName()) ;
@@ -58,12 +54,10 @@ public class TestFactoryTDB extends TestFactoryManifest
     // Factory
     
     public String testRootName ;
-    private DatasetGraphMakerTDB factory ;
 
-    public TestFactoryTDB(String testRootName, DatasetGraphMakerTDB factory)
+    public TestFactoryTDB(String testRootName)
     {
         this.testRootName = testRootName ;
-        this.factory = factory ;
     }
     
     @Override
@@ -79,7 +73,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         if ( testItem.getTestType() != null )
         {
             if ( testItem.getTestType().equals(TestManifestX.TestQuery) )
-                test = new QueryTestTDB(testName, report, testItem, factory) ;
+                test = new QueryTestTDB(testName, report, testItem) ;
             
             if ( testItem.getTestType().equals(TestManifestX.TestSurpressed) )
                 test = new SurpressedTest(testName, report, testItem) ;
@@ -89,7 +83,7 @@ public class TestFactoryTDB extends TestFactoryManifest
         }
         // Default 
         if ( test == null )
-            test = new QueryTestTDB(testName, report, testItem, factory) ;
+            test = new QueryTestTDB(testName, report, testItem) ;
 
         return test ;
     }

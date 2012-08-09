@@ -52,7 +52,6 @@ import com.hp.hpl.jena.tdb.solver.StageGeneratorDirectTDB ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.sys.EnvTDB ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-import com.hp.hpl.jena.tdb.sys.TDBMaker ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 public class TDB
@@ -104,7 +103,6 @@ public class TDB
      */
     public static void closedown()
     {
-        TDBMaker.reset() ;
         StoreConnection.reset() ;
     }
 

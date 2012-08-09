@@ -18,97 +18,101 @@
 
 package com.hp.hpl.jena.tdb.sys;
 
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
-/** 
- * Non-transactions dataset creation.
- * The workhorse for TDB Factory - hides the internal operations from
- * the public interface (and javadoc) of TDBFactory for clarity.  
- */
+/** Make datasets in various ways. */
+
 public class TDBMaker
 {
-    // ---- Implementation factories 
-    /** Implementation factory for creation of datasets - uncached */ 
-    //public final static DatasetGraphMakerTDB uncachedFactory = new TDBMakerFactoryGraph() ;
-    public final static DatasetGraphMakerTDB uncachedFactory = new DatasetGraphSetup() ;
+    // ---- Transactional
+    // This hides details from the top level TDB Factory 
     
-    /** Implementation factory for cached creation of datasets */ 
-    public final static DatasetGraphMakerTDB cachedFactory = new CachingTDBMaker(uncachedFactory) ;
+    /** Create a DatasetGraph that supports transactions */  
+    public static DatasetGraphTransaction createDatasetGraphTransaction(String location)
+    {
+        return createDatasetGraphTransaction(new Location(location)) ;
+    }
     
-    // Caching by location.
-    private final static boolean CACHING = true ;
-
-    /** The default implementation factory for TDB datasets. 
-     *  Caching of datasets for sharing purposes.  
-     */
-
-    public final static DatasetGraphMakerTDB stdFactory = CACHING ? cachedFactory :
-                                                           uncachedFactory ;
-
-//    /** In-memory datasets */
-//    public final static DatasetGraphMakerTDB memFactory = new DatasetGraphSetupMem() ;
-
-    // ----
+    /** Create a Dataset that supports transactions */  
+    public static DatasetGraphTransaction createDatasetGraphTransaction(Location location)
+    {
+        return _create(location) ;
+    }
     
-    // The one we are using.
-    private static DatasetGraphMakerTDB factory = stdFactory ;
+    /** Create a Dataset that supports transactions but runs in-memory (for creating test cases)*/  
+    public static DatasetGraphTransaction createDatasetGraphTransaction()
+    {
+        return createDatasetGraphTransaction(Location.mem()) ;
+    }
 
-    /** Clear any TDB dataset cache */
-    //@Deprecated
+    private static DatasetGraphTransaction _create(Location location)
+    {
+        // No need to cache StoreConnection does all that.
+        return new DatasetGraphTransaction(location) ;
+    }
+    
+    public static void releaseLocation(Location location)
+    {
+        StoreConnection.release(location) ;
+    }
+
     public static void reset()
     {
-        if ( factory instanceof CachingTDBMaker )
-            ((CachingTDBMaker)factory).flush();
+        StoreConnection.reset() ;
     }
     
-    /** Sync all cached datasets */
-    //@Deprecated
-    public synchronized static void syncDatasetCache()
+    // ---- Base storage.
+    
+    /* The one we are using */
+    private static DatasetGraphMakerTDB builder = new BuilderStd() ;
+
+    public static DatasetGraphTDB createDatasetGraphTDB(Location loc)
+    { return builder.createDatasetGraph(loc) ; }
+
+    // -- Different ways of doing it.
+    
+    /** Interface to maker of the actual implementations of TDB datasets */ 
+    private interface DatasetGraphMakerTDB 
     {
-        if ( factory instanceof CachingTDBMaker )
-            ((CachingTDBMaker)factory).sync();
+        /** Create a TDB-backed dataset at a given location */
+        public DatasetGraphTDB createDatasetGraph(Location location) ;
+    }
+
+    /** Make directly the base DatasetGraphTDB */
+    private static class BuilderStd implements DatasetGraphMakerTDB
+    {
+        @Override
+        public DatasetGraphTDB createDatasetGraph(Location location)
+        {
+            return DatasetBuilderStd.build(location) ;
+        }
     }
     
-    /** Release a dataset from any caching */
-    //@Deprecated
-    public static void releaseDataset(DatasetGraphTDB dataset)
-    { factory.releaseDatasetGraph(dataset) ; }
+    /** Make by creating the normal, transactional one and finding the base */ 
+    private static class BuilderBase implements DatasetGraphMakerTDB
+    {
+        @Override
+        public DatasetGraphTDB createDatasetGraph(Location location)
+        {
+            DatasetGraph dsg = TDBFactory.createDatasetGraph(location) ;
+            return TDBInternal.getBaseDatasetGraphTDB(dsg) ;
+        }
+    }
     
-    /** Release a location from any caching */
-    //@Deprecated
-    public static void releaseLocation(Location location)
-    { factory.releaseLocation(location) ; }
+    /** The StoreConenction-cached base DatasetGraphTDB.*/ 
+    private static class BuilderStoreConnectionBase implements DatasetGraphMakerTDB
+    {
+        @Override
+        public DatasetGraphTDB createDatasetGraph(Location location)
+        {
+            return StoreConnection.make(location).getBaseDataset() ;
+        }
+    }
     
-//    public static Graph _createGraph()
-//    { return factory.createDatasetGraph().getDefaultGraph() ; }
-//
-//    public static Graph _createGraph(Location loc)
-//    {
-//        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
-//        return factory.createDatasetGraph(loc).getDefaultGraph() ;
-//    }
-
-    //@Deprecated
-    public static DatasetGraphTDB _createDatasetGraph()
-    { return factory.createDatasetGraph() ; }
-
-    //@Deprecated
-    public static DatasetGraphTDB _createDatasetGraph(Location loc)
-    { return factory.createDatasetGraph(loc) ; }
-    
-    //@Deprecated
-    public static DatasetGraphTDB _createDatasetGraph(String loc)
-    { return _createDatasetGraph(new Location(loc)) ; }
-
-    /** Set the implementation factory.  Not normally needed - only systems that wish
-     * to create unusually combinations of indexes and node tables need to use this call.
-     * A detailed knowledge of how TDB works, and internal assumptions, is needed to
-     * create full functional TDB graphs or datasets.  Beware.   
-     */
-    public static void setImplFactory(DatasetGraphMakerTDB f) { factory = f ; }
-
-    /** Get the current implementation factory. */
-    public static DatasetGraphMakerTDB getImplFactory() { return factory ; }
-
 }
