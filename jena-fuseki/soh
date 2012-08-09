@@ -522,7 +522,7 @@ def cmd_sparql_query
   query_file=options[:file]
   if query_file.nil? && ARGV.size == 0
   then
-    warn_exit 'No query specified.',1 if service.nil?
+    warn_exit 'No query specified.',1
     end
   if query_file.nil?
     query = ARGV.shift
