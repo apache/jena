@@ -34,4 +34,8 @@ case "$(uname)" in
 esac
 
 export JENA_CP
-exec tdbloader2worker "$@"
+
+## And --parallel=3 if available.
+export SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+
+exec "$JENA_HOME/bin/tdbloader2worker" "$@"
