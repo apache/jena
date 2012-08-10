@@ -32,24 +32,27 @@
   unzipped the Jena distribution:
 
   Windows:
-    set JENAROOT=\path\to\apache-jena-2.7.2
+    set JENA_HOME=\path\to\apache-jena-2.7.5
     bat\sparql.bat --version    
 
-  Linux
-    export JENAROOT=/path/to/apache-jena-2.7.2
+  Linux:
+    The command scripts automatically set JENA_HOME but if you want
+    to switch to a different version fro the same scripts:
+
+    export JENA_HOMEROOT=/path/to/apache-jena-2.7.5
     bin/sparql --version    
     
   If you receive a class not found exception when trying to run one of the 
-  scripts then you may have set JENAROOT incorrectly. A quick and easy way
-  to validate that JENAROOT is set correctly is to run the following:
+  scripts then you may have set JENA_HOME incorrectly. A quick and easy way
+  to validate that JENA_HOME is set correctly is to run the following:
   
   Windows:
-    cd %JENAROOT%
+    cd %JENA_HOME%
     
   Linux:
-    cd $JENAROOT
+    cd $JENA_HOME
     
-  If this command returns an error then JENAROOT is not pointed to a valid directory
+  If this command returns an error then JENA_HOME is not pointed to a valid directory
 
 
   Website
