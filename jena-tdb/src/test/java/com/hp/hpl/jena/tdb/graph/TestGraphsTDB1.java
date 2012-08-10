@@ -18,18 +18,17 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.junit.After ;
+import org.junit.Before ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestPrefixMappingTDB.class
-    , TestBulkUpdateTDB.class
-    , TestDatasetGraphTDB.class
-    , TestGraphsTDB1.class
-    , TestGraphsTDB2.class
-})
-public class TS_Graph
+public class TestGraphsTDB1 extends AbstractTestGraphsTDB
 {
+    // Non-transactional.
+    @Before public void before() 
+    {
+    }
 
+    @After public void after() 
+    {
+    }
 }

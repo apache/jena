@@ -18,26 +18,20 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.BeforeClass ;
+import org.junit.After ;
+import org.junit.Before ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
-import com.hp.hpl.jena.sparql.graph.GraphsTests ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.query.ReadWrite ;
 
-public class TestGraphsTDB extends GraphsTests
+public class TestGraphsTDB2 extends AbstractTestGraphsTDB
 {
-    private static Dataset ds ;
-    @BeforeClass public static void setupClass()
+    @Before public void before() 
     {
-        SystemTDB.defaultOptimizer = ReorderLib.identity() ;
-        ds = TDBFactory.createDataset() ;
-        
+        getDataset().begin(ReadWrite.READ) ;
     }
-    @Override
-    protected Dataset createDataset()
+
+    @After public void after() 
     {
-        return ds ;
+        getDataset().end() ;
     }
 }
