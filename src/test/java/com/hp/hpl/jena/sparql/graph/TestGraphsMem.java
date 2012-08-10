@@ -58,4 +58,13 @@ public class TestGraphsMem extends GraphsTests
     @Override
     @Test public void graph_api6() {}       // defaultGraphNodeGenerated
     
+    @Override
+    @Test public void graph_count4() {}       // Quad.unionGraph
+    
+    @Override
+    @Test public void graph_count5() {}       // defaultGraphIRI
+    
+    @Override
+    @Test public void graph_count6() {}       // defaultGraphNodeGenerated
+    
 }

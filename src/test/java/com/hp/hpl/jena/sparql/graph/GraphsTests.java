@@ -26,14 +26,7 @@ import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
-import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -48,8 +41,8 @@ public abstract class GraphsTests extends BaseTest
     protected static final String graph2 = "http://example/g2" ;
     protected static final String graph3 = "http://example/g3" ;
     
-    static Dataset ds ;
-    static Model calcUnion = ModelFactory.createDefaultModel() ;
+    private Dataset ds ;
+    private Model calcUnion = ModelFactory.createDefaultModel() ;
 
     protected abstract Dataset createDataset() ;
     
@@ -118,7 +111,50 @@ public abstract class GraphsTests extends BaseTest
         assertEquals(1,x) ;
     }
 
+    @Test public void graph_count1() 
+    {
+        long x = count(getDataset().getDefaultModel()) ;
+        assertEquals(1,x) ;
+    }
+
+    @Test public void graph_count2() 
+    {
+        long x = count(getDataset().getNamedModel(graph1)) ;
+        assertEquals(2,x) ;
+    }
+
+    @Test public void graph_count3() 
+    {
+        long x = count(getDataset().getNamedModel(graph3)) ;
+        assertEquals(0,x) ;
+    }
     
+    @Test public void graph_count4() 
+    {
+        long x = count(getDataset().getNamedModel(Quad.unionGraph.getURI())) ;
+        assertEquals(3,x) ;
+    }
+    
+    @Test public void graph_count5() 
+    {
+        long x = count(getDataset().getNamedModel(Quad.defaultGraphIRI.getURI())) ;
+        assertEquals(1,x) ;
+    }
+
+    @Test public void graph_count6() 
+    {
+        long x = count(getDataset().getNamedModel(Quad.defaultGraphNodeGenerated.getURI())) ;
+        assertEquals(1,x) ;
+    }
+
+    @Test public void graph_count7()
+    {
+        Dataset ds = getDataset() ;
+        Model m = ds.getNamedModel("http://example/no-such-graph") ;
+        long x = m.size() ;
+        assertEquals(0, x) ;
+    }
+
     @Test public void graph_api1() 
     {
         int x = api(getDataset().getDefaultModel()) ;
@@ -174,4 +210,10 @@ public abstract class GraphsTests extends BaseTest
         int x = (int)Iter.count(iter) ;
         return x ;
     }
+    
+    private long count(Model model)
+    {
+        return model.size() ;
+    }
+
 }
