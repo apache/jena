@@ -34,4 +34,6 @@ fi
 
 #echo "$TDB_CP"
 export JENA_CP="$TDB_CP"
-exec tdbloader2worker "$@"
+## And --parallel=3 if available.
+export SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+exec "$TDBROOT/bin/tdbloader2worker" "$@"

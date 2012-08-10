@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 ## Licensed to the Apache Software Foundation (ASF) under one
 ## or more contributor license agreements.  See the NOTICE file
@@ -29,8 +29,12 @@ log() { echo " $(date $DATE)" "$@" ; }
 TMP=$$
 #DATE="+%Y-%m-%dT%H:%M:%S%:z"
 DATE="+%H:%M:%S"
-# Classpath set in "tdbloader2"
 
+##--parallel is not always available.
+SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
+JVM_ARGS=${JVM_ARGS:--Xmx1200M}
+
+# Classpath set in "tdbloader2"
 if [ -z "$JENA_CP" ]
 then
     echo "Classpath not provided : set JENA_CP" 1>&2
@@ -71,7 +75,6 @@ log "Data phase"
 DATA_TRIPLES="$LOC/data-triples.$TMP"
 DATA_QUADS="$LOC/data-quads.$TMP"
 
-JVM_ARGS=${JVM_ARGS:--Xmx1200M}
 java $JVM_ARGS -cp "$JENA_CP" "$PKG".CmdNodeTableBuilder \
     "--loc=$LOC" "--triples=$DATA_TRIPLES" "--quads=$DATA_QUADS" $FILES
 
@@ -92,7 +95,7 @@ process_rows()
 	fi
 
     log "Index $IDX"
-    sort -u $KEYS < "$DATA" > $WORK
+    sort $SORT_ARGS -u $KEYS < "$DATA" > $WORK
     log "Build $IDX"
     rm -f "$LOC/$IDX.dat"
     rm -f "$LOC/$IDX.idn"
