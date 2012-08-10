@@ -67,8 +67,6 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
                     return uri.startsWith(datasetname) ;
                 }
             } ;
-        
-        
         String ds = Iter.first(datasets, matchDS) ;
         return ds ;
     }
