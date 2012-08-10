@@ -24,17 +24,20 @@ import java.util.NoSuchElementException ;
 
 import org.openjena.atlas.lib.DS ;
 
-
-
 /** Iterator of Iterators */
 
 public class IteratorConcat<T> implements Iterator<T>
 {
+    // No - we don't really need IteratorCons and IteratorConcat
+    // Historical.
+    
     private List<Iterator<T>> iterators = DS.list(); 
     int idx = -1 ;
     private Iterator<T> current = null ;
+    private Iterator<T> removeFrom = null ;
     boolean finished = false ;
     
+    /** @see IteratorCons */
     public static <T> Iterator<T> concat(Iterator<T> iter1, Iterator<T> iter2)
     {
         if (iter2 == null) return iter1 ;
@@ -72,12 +75,21 @@ public class IteratorConcat<T> implements Iterator<T>
     @Override
     public T next()
     {
-        if ( ! hasNext() ) throw new NoSuchElementException() ; 
+        if ( ! hasNext() )
+            throw new NoSuchElementException() ; 
+        removeFrom = current ;
         return current.next();
     }
 
     @Override
     public void remove()
-    { throw new UnsupportedOperationException() ; }
+    { 
+        if ( null == removeFrom )
+            throw new IllegalStateException("no calls to next() since last call to remove()") ;
+        
+        removeFrom.remove() ;
+        removeFrom = null ;
+
+    }
 
 }
