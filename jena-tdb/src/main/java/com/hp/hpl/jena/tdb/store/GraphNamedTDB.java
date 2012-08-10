@@ -122,6 +122,9 @@ public class GraphNamedTDB extends GraphTDBBase
     protected Iterator<Tuple<NodeId>> countThis()
     {
         NodeId gn = isUnionGraph(graphNode) ? null : getGraphNodeId() ; 
+        if ( NodeId.isDoesNotExist(gn) )
+            return Iter.nullIterator() ;
+        
         Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().find(gn, null, null, null) ;
         if ( isUnionGraph(graphNode) )
         {
@@ -143,10 +146,14 @@ public class GraphNamedTDB extends GraphTDBBase
     /** Graph node as NodeId */
     public final NodeId getGraphNodeId()
     {
-//        if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
-//            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
-        if ( graphNodeId == null )
-            graphNodeId = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getAllocateNodeId(graphNode) ;
+        // Caution - may not exist.
+        if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
+        {
+            // Don't allocate - we may be in a read transaction.
+            NodeId n = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+            graphNodeId = n ; 
+        }
+        
         return graphNodeId ;
     }
 
