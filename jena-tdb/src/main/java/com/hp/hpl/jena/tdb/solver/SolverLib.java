@@ -147,7 +147,7 @@ public class SolverLib
         // Need to make sure the bindings here point to parent.
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         
-        // "input" = wil be closed by QueryIterTDB but is otherwise unused.
+        // "input" will be closed by QueryIterTDB but is otherwise unused.
         return new QueryIterTDB(iterBinding, input, execCxt) ;
     }
     
