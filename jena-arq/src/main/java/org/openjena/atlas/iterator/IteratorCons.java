@@ -26,6 +26,9 @@ import java.util.NoSuchElementException ;
 
 public class IteratorCons<T> implements Iterator<T>, Iterable<T>
 {
+    // No - we don't really need IteratorCons and IteratorConcat
+    // Historical.
+    
     private Iterator<? extends T> iter1 ;
     private Iterator<? extends T> iter2 ;
     private Iterator<? extends T> removeFrom ;
