@@ -116,7 +116,7 @@ public class TransformFilterEquality extends TransformCopy
             return true ; 
         }
         
-        if ( op instanceof OpJoin )
+        if ( op instanceof OpJoin || op instanceof OpUnion)
         {
             Op2 op2 = (Op2)op ;
             return safeToTransform(exprs, op2.getLeft()) && safeToTransform(exprs, op2.getRight()) ; 
