@@ -132,7 +132,20 @@ public class TestFilterTransform
              "(filter (= ?x1 <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x1))))") ;
     }
 
-    
+    @Test public void equality13()
+    {
+        test("(filter (= ?x1 <x>) (join (bgp ( ?s ?p ?x1))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(assign((?x1 <x>))  (join (bgp ( ?s ?p <x>))  (bgp ( ?s ?p <x>))))") ;
+    }
+
+    @Test public void equality14()
+    {
+        test("(filter (= ?x1 <x>) (union (bgp ( ?s ?p ?x1))  (bgp ( ?s ?p ?x1))))",
+             t_equality,
+             "(assign((?x1 <x>))  (union (bgp ( ?s ?p <x>))  (bgp ( ?s ?p <x>))))") ;
+    }
+
     @Test public void disjunction01()
     {
         test("(filter (|| (= ?x <x>) (= ?x <y>)) (bgp ( ?s ?p ?x)) )",

@@ -20,7 +20,6 @@ package com.hp.hpl.jena.sparql.algebra;
 
 
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
-import com.hp.hpl.jena.sparql.algebra.optimize.TestPattern2Join ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformMergeBGPs ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
 

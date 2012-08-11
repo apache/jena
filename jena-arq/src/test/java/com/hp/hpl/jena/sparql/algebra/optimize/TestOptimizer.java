@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;
@@ -49,7 +50,6 @@ public class TestOptimizer extends BaseTest
         check(queryString, opExpectedString) ;
     }
 
-
     @Test public void query_rename_02()
     {
         String queryString = 
@@ -60,14 +60,7 @@ public class TestOptimizer extends BaseTest
             "    (bgp (triple ?s ?p ?o))\n" + 
             "    (slice _ 50\n" + 
             "      (project (?v)\n" + 
-
-//            // Old - no BGP merge
-//            "        (sequence\n" + 
-//            "          (bgp (triple ?/x ?/y ?v))\n" + 
-//            "          (bgp (triple ?/a ?/y ?/w)))" +
-            // Merged BGP
             "(bgp (triple ?/x ?/y ?v) (triple ?/a ?/y ?/w))" +
-
             "))))" ; 
         check(queryString, opExpectedString) ;
     }
@@ -312,6 +305,25 @@ public class TestOptimizer extends BaseTest
             ARQ.unset(ARQ.optDistinctToReduced) ;
         }
     }
+    
+    @Test public void optimize_01()
+    { 
+        String queryString = "SELECT * { { ?s ?p ?x } UNION { ?s1 ?p1 ?x } FILTER(?x = <urn:x1> || ?x = <urn:x2>) }" ;
+        String opExpectedString =  StrUtils.strjoinNL(
+                                            "(disjunction",
+                                            "    (assign ((?x <urn:x1>))" ,
+                                            "      (union" ,
+                                            "        (bgp (triple ?s ?p <urn:x1>))" ,
+                                            "        (bgp (triple ?s1 ?p1 <urn:x1>))))" ,
+                                            "    (assign ((?x <urn:x2>))" ,
+                                            "      (union" ,
+                                            "        (bgp (triple ?s ?p <urn:x2>))" ,
+                                            "        (bgp (triple ?s1 ?p1 <urn:x2>)))))" ) ;
+        check(queryString, opExpectedString) ; 
+    }
+
+    
+
     
     private static void check(String queryString, String opExpectedString)
     {
