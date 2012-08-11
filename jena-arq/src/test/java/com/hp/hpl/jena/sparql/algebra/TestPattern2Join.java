@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.algebra.optimize;
+package com.hp.hpl.jena.sparql.algebra;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
@@ -27,6 +27,7 @@ import com.hp.hpl.jena.query.QueryFactory ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
+import com.hp.hpl.jena.sparql.algebra.optimize.TransformPattern2Join ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class TestPattern2Join extends BaseTest
