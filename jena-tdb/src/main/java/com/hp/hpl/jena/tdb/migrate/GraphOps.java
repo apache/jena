@@ -33,7 +33,7 @@ public class GraphOps
     public static boolean containsGraph(DatasetGraph dsg, Node gn)
     {
         // [[DynDS]]
-        if ( Quad.isDefaultGraphExplicit(gn))
+        if ( Quad.isDefaultGraph(gn))
             return true ;
         if ( Quad.isUnionGraph(gn))
             return true ;
@@ -43,8 +43,10 @@ public class GraphOps
     public static Graph getGraph(DatasetGraph dsg, Node gn)
     {
         // [[DynDS]]
-        // Remove when all datasets understand <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph> 
-        if ( Quad.isDefaultGraphExplicit(gn))
+        if ( gn == null )
+            return dsg.getDefaultGraph() ;
+        if ( Quad.isDefaultGraph(gn) )
+            // Explicit or generated.
             return dsg.getDefaultGraph() ;
         if ( Quad.isUnionGraph(gn))
             return unionGraph(dsg) ;
