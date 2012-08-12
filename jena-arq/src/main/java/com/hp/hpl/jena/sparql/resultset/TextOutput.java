@@ -213,7 +213,7 @@ public class TextOutput extends OutputBase
         out.println() ;
     }
 
-    private String getVarValueAsString(QuerySolution rBind, String varName)
+    protected String getVarValueAsString(QuerySolution rBind, String varName)
     {
         RDFNode obj = rBind.get(varName) ;
         
