@@ -352,7 +352,7 @@ public class WriterOp
         @Override
         public void visit(OpTable opTable)
         {
-            if ( TableUnit.isJoinUnit(opTable.getTable()) )
+            if ( TableUnit.isTableUnit(opTable.getTable()) )
             {
                 start(opTable, NoNL) ;
                 out.print("unit") ;

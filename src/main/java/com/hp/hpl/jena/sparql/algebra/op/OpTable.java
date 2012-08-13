@@ -45,7 +45,7 @@ public class OpTable extends Op0
     private OpTable(Table table) { this.table = table ; }
     
     public boolean isJoinIdentity()
-    { return (table instanceof TableUnit) ; }
+    { return TableUnit.isTableUnit(table) ; }
     // One row of no bindings.
     
     public Table getTable()
