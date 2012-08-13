@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
+import com.hp.hpl.jena.tdb.sys.TDBInternal ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** A graph implementation that projects a graph from a quad table */
@@ -64,14 +65,6 @@ public class GraphNamedTDB extends GraphTDBBase
             throw new TDBException("GraphNamedTDB: Graph name not a URI") ; 
     }
 
-//    @Override
-//    public QueryHandler queryHandler()
-//    { return queryHandler ; }
-//    
-//    @Override
-//    public TransactionHandler getTransactionHandler()
-//    { return transactionHandler ; }
-    
     @Override
     protected PrefixMapping createPrefixMapping()
     {
@@ -144,13 +137,13 @@ public class GraphNamedTDB extends GraphTDBBase
         }} ; 
     
     /** Graph node as NodeId */
-    public final NodeId getGraphNodeId()
+    private final NodeId getGraphNodeId()
     {
         // Caution - may not exist.
         if ( graphNodeId == null || graphNodeId == NodeId.NodeDoesNotExist )
         {
             // Don't allocate - we may be in a read transaction.
-            NodeId n = dataset.getQuadTable().getNodeTupleTable().getNodeTable().getNodeIdForNode(graphNode) ;
+            NodeId n = TDBInternal.getNodeId(dataset, graphNode) ;
             graphNodeId = n ; 
         }
         

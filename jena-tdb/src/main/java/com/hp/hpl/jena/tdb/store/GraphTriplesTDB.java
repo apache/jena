@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
-/** A graph implementation that uses a triple table - free-standing graph or default graph of dataset */
+/** A graph implementation that uses a triple table - concrete default graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
 {
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
