@@ -85,7 +85,7 @@ public class DatasetBuilderTxn
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderReadonly() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderReadonly() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
-        DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, dsg.getTransform()) ;
+        DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, dsg.getReorderTransform()) ;
         
         return dsg2 ;
     }
@@ -95,7 +95,7 @@ public class DatasetBuilderTxn
         BlockMgrBuilder blockMgrBuilder = new BlockMgrBuilderTx() ;
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
-        DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, dsg.getTransform()) ;
+        DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, dsg.getReorderTransform()) ;
         return dsg2 ;
     }
 

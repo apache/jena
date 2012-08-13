@@ -46,7 +46,7 @@ import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** TDB Dataset - this is the class that creates a dataset over the storage via
- *  TripleTable, QuadTable and prefixes.  Any transactions
+ *  TripleTable, QuadTable and prefixes. These may be transactional.
  *  
  *  See also:
  *  <ul>
@@ -235,7 +235,13 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 //        return PropertyUtils.getPropertyAsInteger(config.properties, key, dftValue) ;
 //    }
 //
-    public ReorderTransformation getTransform()     { return transform ; }
+    /**
+     * @deprecate  Use getReorderTransform
+     */
+    @Deprecated
+    public ReorderTransformation getTransform()     { return getReorderTransform() ; }
+    
+    public ReorderTransformation getReorderTransform()     { return transform ; }
     
     public DatasetPrefixesTDB getPrefixes()       { return prefixes ; }
 

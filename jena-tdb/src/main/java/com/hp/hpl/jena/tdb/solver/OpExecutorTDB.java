@@ -194,7 +194,7 @@ public class OpExecutorTDB extends OpExecutor
         if ( pattern.size() >= 2 )
         {
             // Must be 2 or triples to reorder. 
-            ReorderTransformation transform = graph.getReorderTransform() ;
+            ReorderTransformation transform = graph.getDataset().getReorderTransform() ;
             if ( transform != null )
             {
                 QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
@@ -229,7 +229,7 @@ public class OpExecutorTDB extends OpExecutor
             return optimizeExecuteTriples(ds.getEffectiveDefaultGraph(), input, bgp, exprs, execCxt) ;
         
         // ---- Execute quads+filters
-        ReorderTransformation transform = ds.getTransform() ;
+        ReorderTransformation transform = ds.getReorderTransform() ;
 
         if ( transform != null )
         {
@@ -309,19 +309,11 @@ public class OpExecutorTDB extends OpExecutor
 
         // Not default storage graph.
         // ---- Union (RDF Merge) of named graphs
+
+        if ( Quad.isUnionGraph(gn) ) 
+            return Node.ANY ;
         boolean doingUnion = false ;
-    
-//        if ( isUnionDefaultGraph && Quad.isQuadDefaultGraphNode(gn) ) 
-//            // Implicit: default graph is union of named graphs.  (rewritten - does not occur). 
-//            doingUnion = true ;
-    
-        if ( gn.equals(Quad.unionGraph) )
-            // Explicit name of the union of named graphs
-            doingUnion = true ;
-    
-        if ( doingUnion )
-            // Set the "any" graph node.
-            gn = Node.ANY ;
+        
         return gn ;
     }
 
