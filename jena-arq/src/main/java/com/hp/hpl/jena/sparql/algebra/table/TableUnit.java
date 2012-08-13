@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 
 public class TableUnit extends TableBase
 {
-    static public boolean isJoinUnit(Table table)
+    static public boolean isTableUnit(Table table)
     { return (table instanceof TableUnit) ; } 
     
     public TableUnit() {}
