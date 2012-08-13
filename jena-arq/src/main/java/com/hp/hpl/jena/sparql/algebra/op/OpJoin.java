@@ -62,7 +62,7 @@ public class OpJoin extends Op2
             return false ;
         Table t = ((OpTable)op).getTable() ;
         // Safe answer.
-        return (t instanceof TableUnit) ;
+        return TableUnit.isTableUnit(t) ;
     }
     
     private OpJoin(Op left, Op right) { super(left, right) ; }
