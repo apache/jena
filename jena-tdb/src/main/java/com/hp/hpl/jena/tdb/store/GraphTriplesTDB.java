@@ -18,20 +18,19 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
 import org.openjena.atlas.lib.Tuple ;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.TripleMatch;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** A graph implementation that uses a triple table - free-standing graph or default graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
@@ -69,7 +68,7 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
     {
-        return graphBaseFindWorker(tripleTable, m) ;
+        return graphBaseFindDft(dataset, m) ;
     }
 
 //    @Override
@@ -78,12 +77,6 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected final Logger getLog() { return log ; }
 
-    @Override
-    public Tuple<Node> asTuple(Triple triple)
-    {
-        return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-    }
-    
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {

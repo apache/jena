@@ -113,9 +113,9 @@ public class GraphNamedTDB extends GraphTDBBase
         // Explicitly named default graph
         if ( isDefaultGraph(graphNode) )
             // Default graph.
-            return graphBaseFindWorker(getDataset().getTripleTable(), m) ;
+            return graphBaseFindDft(getDataset(), m) ;
         // Includes union graph
-        return graphBaseFindWorker(getDataset(), graphNode, m) ;
+        return graphBaseFindNG(getDataset(), graphNode, m) ;
     }
     
     @Override
@@ -155,15 +155,6 @@ public class GraphNamedTDB extends GraphTDBBase
         }
         
         return graphNodeId ;
-    }
-
-    @Override
-    public Tuple<Node> asTuple(Triple triple)
-    {
-//        if ( getGraphNode() == null )
-//            return Tuple.create(triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
-//        else
-            return Tuple.create(getGraphNode(), triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
     }
 
     @Override

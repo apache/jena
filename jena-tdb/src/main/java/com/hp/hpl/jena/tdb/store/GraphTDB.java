@@ -20,21 +20,16 @@ package com.hp.hpl.jena.tdb.store;
 
 import org.openjena.atlas.lib.Closeable ;
 import org.openjena.atlas.lib.Sync ;
-import org.openjena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.Reorderable ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.Session ;
 
-public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
+public interface GraphTDB extends Graph, Closeable, Sync, Session
 {
     public NodeTupleTable getNodeTupleTable() ;
-    public Tuple<Node> asTuple(Triple triple) ;
     
     /** Get a lock that is shared for all graphs from the same dataset (it is the dataset lock) */
     public Lock getLock() ;
@@ -45,11 +40,6 @@ public interface GraphTDB extends Graph, Closeable, Sync, Reorderable, Session
      */ 
     public Node getGraphNode() ;
     
-    /** Return the TDB-backed daatset for this graph.
-     *  Maybe null - indicating it's a simple graph backed by TDB
-     *  (and also the concrete default graph) 
-     */
+    /** Return the TDB-backed dataset for this graph */
     public DatasetGraphTDB getDataset() ;
-    
-    public Location getLocation() ; 
 }

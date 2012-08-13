@@ -25,21 +25,13 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.graph.BulkUpdateHandler ;
-import com.hp.hpl.jena.graph.Capabilities ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Reifier ;
-import com.hp.hpl.jena.graph.TransactionHandler ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.sparql.graph.Reifier2 ;
 import com.hp.hpl.jena.tdb.TDB ;
-import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
@@ -64,13 +56,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         this.dataset = dataset ; 
         this.graphNode = graphName ;
     }
-    
-    /** Reorder processor - may be null, for "none" */
-    @Override
-    public final ReorderTransformation getReorderTransform()    { return dataset.getTransform() ; }
-    
-    @Override
-    public final Location getLocation()                         { return dataset.getLocation() ; }
     
     @Override
     public final Node getGraphNode()                            { return graphNode ; }
@@ -121,19 +106,17 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         }
     }
     
-    protected static ExtendedIterator<Triple> graphBaseFindWorker(TripleTable tripleTable, TripleMatch m)
+    protected static ExtendedIterator<Triple> graphBaseFindDft(DatasetGraphTDB dataset, TripleMatch m)
     {
-        // See also SolverLib.execute
-        Iterator<Triple> iter = tripleTable.find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
-        if ( iter == null )
+        Iterator<Quad> iterQuads = dataset.find(Quad.defaultGraphIRI, m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject()) ;
+        if ( iterQuads == null )
             return com.hp.hpl.jena.util.iterator.NullIterator.instance() ;
-
-        // Look now!
-        boolean b = iter.hasNext() ;
-        return WrappedIterator.createNoRemove(iter) ;
+        // Can't be duplicates - fixed graph node..
+        Iterator<Triple> iterTriples = new ProjectQuadsToTriples(Quad.defaultGraphIRI , iterQuads) ;
+        return WrappedIterator.createNoRemove(iterTriples) ;
     }
     
-    protected static ExtendedIterator<Triple> graphBaseFindWorker(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
+    protected static ExtendedIterator<Triple> graphBaseFindNG(DatasetGraphTDB dataset, Node graphNode, TripleMatch m)
     {
         Node gn = graphNode ;
         // Explicitly named union graph. 
@@ -194,7 +177,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         { 
             Quad q = iter.next();
             if ( graphNode != null && ! q.getGraph().equals(graphNode))
-                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph") ;
+                throw new InternalError("ProjectQuadsToTriples: Quads from unexpected graph (expected="+graphNode+", got="+q.getGraph()+")") ;
             return q.asTriple() ;
         }
         @Override
@@ -202,7 +185,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     @Override
-    public BulkUpdateHandler getBulkUpdateHandler() {return bulkUpdateHandler ; }
+    public BulkUpdateHandler getBulkUpdateHandler() { return bulkUpdateHandler ; }
 
     @Override
     public Capabilities getCapabilities()
@@ -239,8 +222,4 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     @Override
     public TransactionHandler getTransactionHandler()
     { return transactionHandler ; }
-    
-//    protected GraphStatisticsHandler createStatisticsHandler()
-//    { return null; }
- 
 }
