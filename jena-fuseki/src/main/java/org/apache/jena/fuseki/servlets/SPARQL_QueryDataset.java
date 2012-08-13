@@ -48,7 +48,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
             errorNotFound("Service Description: "+request.getRequestURI()) ;
         }
         
-        validate(request, allParams) ;
+        validate(request, dsParams) ;
     }
 
     @Override
