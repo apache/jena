@@ -20,6 +20,7 @@ package org.openjena.riot.lang;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.io.Reader ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
@@ -53,6 +54,7 @@ public class LangRDFXML implements LangRIOT
     private long count = 0 ;
     
     private InputStream input = null ;
+    private Reader reader = null ;
     private String xmlBase ;
     private String filename ;
     private Sink<Triple> sink ;
@@ -73,9 +75,25 @@ public class LangRDFXML implements LangRIOT
         return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
     }
     
+    @Deprecated
+    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
+    {
+        return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;
+    }
+    
+
     public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
     {
         return create(IO.openFile(filename), xmlBase, filename, errorHandler, sink) ;
+    }
+    
+    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
+    {
+        this.reader = reader ;
+        this.xmlBase = xmlBase ;
+        this.filename = filename ;
+        this.sink = sink ;
+        this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
     }
     
     private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, Sink<Triple> sink)
@@ -102,7 +120,10 @@ public class LangRDFXML implements LangRIOT
         arp.getHandlers().setNamespaceHandler(rslt) ;
         
         try {
-            arp.load(input, xmlBase);
+            if ( reader != null )
+                arp.load(reader, xmlBase);
+            else
+                arp.load(input, xmlBase);
         } catch (IOException e) {
             getProfile().getHandler().error(filename + ": " + ParseException.formatMessage(e), -1 , -1) ;
         } catch (SAXParseException e) {
