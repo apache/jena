@@ -138,7 +138,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     // All the params we support
-    private static String[] params_ = { paramQuery, paramDefaultGraphURI, paramNamedGraphURI, 
+    private static String[] params_1 = { paramQuery, 
+                                        paramDefaultGraphURI, paramNamedGraphURI, 
                                         paramQueryRef,
                                         paramStyleSheet,
                                         paramAccept,
@@ -146,7 +147,19 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                         paramCallback, 
                                         paramForceAccept,
                                         paramTimeout } ;
-    protected static Set<String> allParams = new HashSet<String>(Arrays.asList(params_)) ;
+    private static String[] params_2 = { paramQuery, 
+        // paramDefaultGraphURI, paramNamedGraphURI,
+        paramQueryRef,
+        paramStyleSheet,
+        paramAccept,
+        paramOutput1, paramOutput2, 
+        paramCallback, 
+        paramForceAccept,
+        paramTimeout } ;
+
+    protected static Set<String> allParams  = new HashSet<String>(Arrays.asList(params_1)) ;
+    protected static Set<String> dsParams   = new HashSet<String>(Arrays.asList(params_2)) ;
+    
     /** Called to validate arguments */
     @Override
     protected abstract void validate(HttpServletRequest request) ;
