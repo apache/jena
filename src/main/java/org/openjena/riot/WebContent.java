@@ -42,8 +42,8 @@ public class WebContent
     
     // MIME type for N-triple is text/plain (!!!)
     public static final String contentTypeTextPlain         = "text/plain" ;
-    public static final String contentTypeNTriples          = contentTypeTextPlain ;
-    public static final String contentTypeNTriplesAlt       = "application/n-triples" ;
+    public static final String contentTypeNTriples          = "application/n-triples" ;
+    public static final String contentTypeNTriplesAlt       = contentTypeTextPlain ;
     
     public static final String contentTypeXML               = "application/xml" ;
 
