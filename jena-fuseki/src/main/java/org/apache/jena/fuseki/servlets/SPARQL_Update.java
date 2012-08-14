@@ -102,6 +102,8 @@ public class SPARQL_Update extends SPARQL_Protocol
                 ctStr = incoming.getContentType() ;
         }
         // ----
+        // using-graph-uri
+        // using-named-graph-uri
         
         if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
         {
@@ -122,7 +124,6 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( ! HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
             errorMethodNotAllowed("SPARQL Update : use POST") ;
         
-        // WebContent needs to migrate to using ContentType.
         String ctStr ;
         {
             MediaType incoming = FusekiLib.contentType(request) ;
