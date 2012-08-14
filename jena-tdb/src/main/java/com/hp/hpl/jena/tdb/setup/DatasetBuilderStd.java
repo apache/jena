@@ -23,7 +23,6 @@ import java.util.Map ;
 
 import org.openjena.atlas.lib.ColumnMap ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -321,7 +320,6 @@ public class DatasetBuilderStd implements DatasetBuilder
 
     public static ReorderTransformation chooseOptimizer(Location location)
     {
-        Log.info(DatasetBuilderStd.class, "chooseOptimizer") ;
         if ( location == null )
             return ReorderLib.identity() ;
 
