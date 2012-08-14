@@ -27,14 +27,7 @@ import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.E_Equals ;
-import com.hp.hpl.jena.sparql.expr.E_SameTerm ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprFunction2 ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprVar ;
-import com.hp.hpl.jena.sparql.expr.ExprVars ;
-import com.hp.hpl.jena.sparql.expr.NodeValue ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 public class TransformFilterEquality extends TransformCopy
 {
@@ -101,7 +94,8 @@ public class TransformFilterEquality extends TransformCopy
     
     private static boolean safeToTransform(ExprList exprs, Op op)
     {
-        if ( op instanceof OpBGP || op instanceof OpQuadPattern ) return true ;
+        if ( op instanceof OpBGP || op instanceof OpQuadPattern )
+            return true ;
         
         // This will be applied also in sub-calls of the Transform but queries 
         // are very rarely so deep that it matters. 
@@ -132,10 +126,19 @@ public class TransformFilterEquality extends TransformCopy
                 return false ;
             
             Op opLeft = opleftjoin.getLeft() ;
-            // ?? Slightly stronger condition that OpConditional transformation.
-            Set<Var> x = OpVars.patternVars(opLeft) ;
+            //Op opRight = opleftjoin.getRight() ;
+            // ?? Slightly stronger condition than OpConditional transformation.
+            //    ** Extract out the (conditional) condition
+            //    ** Reorder so join optimization does first and be more aggregsssive if (conditional).
+            // The requirment is that all expression vars are certainy bound.
+            
+            Set<Var> varsLeft = OpVars.patternVars(opLeft) ;
+            //Set<Var> varsRight = OpVars.patternVars(opRight) ;
             Set<Var> y = ExprVars.getVarsMentioned(exprs) ;
-            if ( x.containsAll(y) )
+            
+            //if ( varsLeft.containsAll(y) )
+            
+            if ( varsLeft.containsAll(y) )
                 return true ;
             return false ;
         }
@@ -144,6 +147,12 @@ public class TransformFilterEquality extends TransformCopy
         {
             OpGraph opg = (OpGraph)op ;
             return safeToTransform(exprs, opg.getSubOp()) ;
+        }
+        
+        if (op instanceof OpTable )
+        {
+            if ( ((OpTable)op).isJoinIdentity() )
+                return true;
         }
         
         return false ;
@@ -196,6 +205,10 @@ public class TransformFilterEquality extends TransformCopy
             return null ;
 
         if ( !patternVars.contains(var) )
+            // The underlying op does not define the variable.
+            // The filter will fail.  Could remove all together.
+            //return OpTable.empty() ;
+            // For now, play safe in this (rare?) case.
             return null ;
         
         // Corner case: sameTerm is false for string/plain literal, 
