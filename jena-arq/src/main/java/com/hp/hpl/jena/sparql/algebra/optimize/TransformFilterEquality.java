@@ -149,14 +149,22 @@ public class TransformFilterEquality extends TransformCopy
             return safeToTransform(exprs, opg.getSubOp()) ;
         }
         
-        if (op instanceof OpTable )
-        {
-            if ( ((OpTable)op).isJoinIdentity() )
-                return true;
-        }
+        if (isUnitTable(op) )
+            return true;
         
         return false ;
     }
+
+    private static boolean isUnitTable(Op op)
+    {
+        if (op instanceof OpTable )
+        {
+            if ( ((OpTable)op).isJoinIdentity() )
+                return true;  
+        }
+        return false ;
+    }
+        
     
     // ++ called by TransformFilterDisjunction
     /** Return null for "no change" */
