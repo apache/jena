@@ -21,6 +21,7 @@ package com.hp.hpl.jena.tdb.transaction;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.DatasetGraphTrackActive ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -159,6 +160,14 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _end()
     {
+        DatasetGraphTxn dsg = txn.get() ;
+        // It's null if end() already called.
+        if ( dsg  == null )
+        {
+            TDB.logInfo.warn("Transaction already ended") ;
+            return ;
+            // throw new TDBTransactionException("Transaction already ended") ;
+        }
         txn.get().end() ;
         // May already be false due to .commit/.abort.
         inTransaction.set(false) ;
