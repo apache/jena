@@ -119,7 +119,7 @@ public class OpAssign extends Op1
     { opVisitor.visit(this) ; }
 
     @Override
-    public Op copy(Op subOp)
+    public Op1 copy(Op subOp)
     {
         OpAssign op = new OpAssign(subOp, new VarExprList(getVarExprList())) ;
         return op ;

@@ -46,7 +46,7 @@ public class OpReduced extends OpModifier
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpReduced(subOp) ; }
+    public Op1 copy(Op subOp)                { return new OpReduced(subOp) ; }
 
     @Override
     public int hashCode()

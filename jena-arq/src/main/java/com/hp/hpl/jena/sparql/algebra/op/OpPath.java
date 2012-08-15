@@ -52,7 +52,7 @@ public class OpPath extends Op0
     { return transform.transform(this) ; }
 
     @Override
-    public Op copy()    { return new OpPath(triplePath) ; }
+    public Op0 copy()    { return new OpPath(triplePath) ; }
 
     @Override
     public boolean equalTo(Op other, NodeIsomorphismMap isoMap)

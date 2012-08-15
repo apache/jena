@@ -48,7 +48,7 @@ public class OpBGP extends Op0
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy()                        { return new OpBGP(pattern) ; }
+    public Op0 copy()                        { return new OpBGP(pattern) ; }
     
     @Override
     public int hashCode()

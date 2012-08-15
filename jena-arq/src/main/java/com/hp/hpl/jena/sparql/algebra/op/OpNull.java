@@ -36,7 +36,7 @@ public class OpNull extends Op0
     { return transform.transform(this) ; }
 
     @Override
-    public Op copy() { return this ; }
+    public Op0 copy() { return this ; }
 
     @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }

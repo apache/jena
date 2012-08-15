@@ -50,7 +50,7 @@ public class OpGroup extends Op1
     @Override
     public void visit(OpVisitor opVisitor)      { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators) ; }
+    public Op1 copy(Op subOp)                    { return new OpGroup(subOp, groupVars, aggregators) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)

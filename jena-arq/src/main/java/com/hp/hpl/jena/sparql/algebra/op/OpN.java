@@ -33,12 +33,17 @@ public abstract class OpN extends OpBase
     protected OpN()         { elements = new ArrayList<Op>() ; }
     protected OpN(List<Op> x)   { elements = x ; }
     
+    /** Accumulate an op in the OpN.
+     *  This exists to help building OpN in teh first place.
+     *  Once built, an OpN, like any Op should be treated as immutable
+     *  with no calls change the sub ops contents.
+     *  No calls to .add.
+     */
     public void add(Op op) { elements.add(op) ; }
     public Op get(int idx) { return elements.get(idx) ; }
     
     public abstract Op apply(Transform transform, List<Op> elts) ;
-    public abstract Op copy(List<Op> elts) ;
-    
+    public abstract OpN copy(List<Op> elts) ;
 
     // Tests the sub-elements for equalTo.
     protected boolean equalsSubOps(OpN op, NodeIsomorphismMap labelMap)

@@ -26,5 +26,5 @@ import com.hp.hpl.jena.sparql.algebra.Transform ;
 public abstract class Op0 extends OpBase
 {
     public abstract Op apply(Transform transform) ;
-    public abstract Op copy() ;
+    public abstract Op0 copy() ;
 }

@@ -47,7 +47,7 @@ public class OpProject extends OpModifier
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpProject(subOp, vars) ; }
+    public Op1 copy(Op subOp)                { return new OpProject(subOp, vars) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)

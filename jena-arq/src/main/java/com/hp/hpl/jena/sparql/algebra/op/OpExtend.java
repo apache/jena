@@ -121,7 +121,7 @@ public class OpExtend extends Op1
     { opVisitor.visit(this) ; }
 
     @Override
-    public Op copy(Op subOp)
+    public Op1 copy(Op subOp)
     {
         OpExtend op = new OpExtend(subOp, new VarExprList(getVarExprList())) ;
         return op ;
