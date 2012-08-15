@@ -91,7 +91,7 @@ public class OpQuadPattern extends Op0
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy()                        { return new OpQuadPattern(graphNode, triples) ; }
+    public Op0 copy()                        { return new OpQuadPattern(graphNode, triples) ; }
 
     @Override
     public int hashCode()

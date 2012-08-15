@@ -37,11 +37,8 @@ public abstract class Op2 extends OpBase
     public Op getLeft() { return left ; }
     public Op getRight() { return right ; }
 
-    public void setLeft(Op op)  { left = op ; }
-    public void setRight(Op op) { right = op ; }
-    
     public abstract Op apply(Transform transform, Op left, Op right) ;
-    public abstract Op copy(Op left, Op right) ;
+    public abstract Op2 copy(Op left, Op right) ;
 
     @Override
     public int hashCode()

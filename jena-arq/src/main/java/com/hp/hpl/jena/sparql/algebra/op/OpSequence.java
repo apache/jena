@@ -87,7 +87,7 @@ public class OpSequence extends OpN
     { return transform.transform(this, elts) ; }
 
     @Override
-    public Op copy(List<Op> elts)
+    public OpN copy(List<Op> elts)
     {
         return new OpSequence(elts) ; 
     }

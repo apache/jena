@@ -67,7 +67,7 @@ public class OpPropFunc extends Op1
     public Node getProperty() { return uri ; }
     
     @Override
-    public Op copy(Op op)
+    public Op1 copy(Op op)
     {
         return new OpPropFunc(uri, subjectArgs, objectArgs2, op) ;
     }

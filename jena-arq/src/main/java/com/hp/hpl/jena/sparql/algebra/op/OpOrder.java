@@ -43,7 +43,7 @@ public class OpOrder extends OpModifier
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
+    public Op1 copy(Op subOp)                { return new OpOrder(subOp, conditions) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)

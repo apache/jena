@@ -63,7 +63,7 @@ public class OpTable extends Op0
     { return transform.transform(this) ; }
 
     @Override
-    public Op copy()
+    public Op0 copy()
     { return new OpTable(table) ; }
 
     @Override

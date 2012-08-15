@@ -93,7 +93,7 @@ public class OpDisjunction extends OpN
     //{ throw new ARQNotImplemented("OpDisjunction.apply") ; }
 
     @Override
-    public Op copy(List<Op> elts)
+    public OpN copy(List<Op> elts)
     {
         return new OpDisjunction(elts) ; 
     }

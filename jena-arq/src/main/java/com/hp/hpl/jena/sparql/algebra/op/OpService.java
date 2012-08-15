@@ -49,7 +49,7 @@ public class OpService extends Op1
     public Op apply(Transform transform, Op subOp)  { return transform.transform(this, subOp) ; }
 
     @Override
-    public Op copy(Op newOp)                    { return new OpService(serviceNode, newOp, silent) ; }
+    public Op1 copy(Op newOp)                    { return new OpService(serviceNode, newOp, silent) ; }
     @Override
     public String getName()                     { return Tags.tagService ; }
     @Override
