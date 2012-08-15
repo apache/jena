@@ -207,7 +207,7 @@ public class IO
      */
     public static String readWholeFileAsUTF8(InputStream in) throws IOException
     {
-        // Don't buffer - we're going to read in larg chunks anyway
+        // Don't buffer - we're going to read in large chunks anyway
         Reader r = asUTF8(in) ;
         return readWholeFileAsUTF8(r) ;
     }
