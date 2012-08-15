@@ -33,10 +33,7 @@ import static org.apache.jena.fuseki.HttpNames.paramTimeout ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.Arrays ;
-import java.util.Enumeration ;
-import java.util.HashSet ;
-import java.util.Set ;
+import java.util.* ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -52,15 +49,7 @@ import org.openjena.atlas.io.IndentedLineBuffer ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
@@ -138,34 +127,32 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     }
 
     // All the params we support
-    private static String[] params_1 = { paramQuery, 
-                                        paramDefaultGraphURI, paramNamedGraphURI, 
-                                        paramQueryRef,
-                                        paramStyleSheet,
-                                        paramAccept,
-                                        paramOutput1, paramOutput2, 
-                                        paramCallback, 
-                                        paramForceAccept,
-                                        paramTimeout } ;
-    private static String[] params_2 = { paramQuery, 
-        // paramDefaultGraphURI, paramNamedGraphURI,
-        paramQueryRef,
-        paramStyleSheet,
-        paramAccept,
-        paramOutput1, paramOutput2, 
-        paramCallback, 
-        paramForceAccept,
-        paramTimeout } ;
 
-    protected static Set<String> allParams  = new HashSet<String>(Arrays.asList(params_1)) ;
-    protected static Set<String> dsParams   = new HashSet<String>(Arrays.asList(params_2)) ;
+    protected static List<String> allParams  = Arrays.asList(paramQuery, 
+                                                             paramDefaultGraphURI, paramNamedGraphURI, 
+                                                             paramQueryRef,
+                                                             paramStyleSheet,
+                                                             paramAccept,
+                                                             paramOutput1, paramOutput2, 
+                                                             paramCallback, 
+                                                             paramForceAccept,
+                                                             paramTimeout) ;
+    protected static List<String> dsParams   = Arrays.asList(paramQuery, 
+                                                             // paramDefaultGraphURI, paramNamedGraphURI,
+                                                             paramQueryRef,
+                                                             paramStyleSheet,
+                                                             paramAccept,
+                                                             paramOutput1, paramOutput2, 
+                                                             paramCallback, 
+                                                             paramForceAccept,
+                                                             paramTimeout) ;
     
     /** Called to validate arguments */
     @Override
     protected abstract void validate(HttpServletRequest request) ;
     
     /** Helper for validating request */
-    protected void validate(HttpServletRequest request, Set<String> params)
+    protected void validate(HttpServletRequest request, Collection<String> params)
     {
         MediaType ct = FusekiLib.contentType(request) ;
         boolean mustHaveQueryParam = true ;
