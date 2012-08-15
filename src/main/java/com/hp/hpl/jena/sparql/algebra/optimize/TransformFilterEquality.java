@@ -127,17 +127,11 @@ public class TransformFilterEquality extends TransformCopy
             
             Op opLeft = opleftjoin.getLeft() ;
             //Op opRight = opleftjoin.getRight() ;
-            // ?? Slightly stronger condition than OpConditional transformation.
-            //    ** Extract out the (conditional) condition
-            //    ** Reorder so join optimization does first and be more aggregsssive if (conditional).
-            // The requirment is that all expression vars are certainy bound.
-            
+            // See also transform condition for OpConditional transformation.
+
             Set<Var> varsLeft = OpVars.patternVars(opLeft) ;
             //Set<Var> varsRight = OpVars.patternVars(opRight) ;
             Set<Var> y = ExprVars.getVarsMentioned(exprs) ;
-            
-            //if ( varsLeft.containsAll(y) )
-            
             if ( varsLeft.containsAll(y) )
                 return true ;
             return false ;
@@ -245,12 +239,12 @@ public class TransformFilterEquality extends TransformCopy
         return OpAssign.assign(op, var, nv) ;
     }
     
-    private static Op subst(Op subOp , ExprVar var1, ExprVar var2)
-    {
-        // Replace var2 with var1
-        Op op = Substitute.substitute(subOp, var2.asVar(), var1.asVar()) ;
-        // Insert LET(var2 := var1)
-        return OpAssign.assign(op, var2.asVar(), var1) ;
-    }
+//    private static Op subst(Op subOp , ExprVar var1, ExprVar var2)
+//    {
+//        // Replace var2 with var1
+//        Op op = Substitute.substitute(subOp, var2.asVar(), var1.asVar()) ;
+//        // Insert LET(var2 := var1)
+//        return OpAssign.assign(op, var2.asVar(), var1) ;
+//    }
 
 }
