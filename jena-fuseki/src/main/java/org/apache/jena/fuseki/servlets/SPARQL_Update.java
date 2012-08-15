@@ -42,7 +42,6 @@ import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
 import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 import org.openjena.riot.system.IRIResolver ;
@@ -108,16 +107,7 @@ public class SPARQL_Update extends SPARQL_Protocol
             else
                 ctStr = incoming.getContentType() ;
         }
-        // ----
-        // using-graph-uri
-        // using-named-graph-uri
-        // then modify the parsed query - find all UpdateWithUsing and .
-        
-        /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 
-         * when using this protocol to convey a SPARQL 1.1 Update request that contains an 
-         * operation that uses the USING, USING NAMED, or WITH clause.]
-         */
-        
+
         if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
         {
             executeBody(action) ;
@@ -202,11 +192,10 @@ public class SPARQL_Update extends SPARQL_Protocol
             if ( super.verbose_debug || action.verbose )
             {
                 // Verbose mode only .... capture request for logging (does not scale). 
-                // Content-Length.
-                //String requestStr = IO.readWholeFileAsUTF8(action.request.getInputStream()) ;
-                // (fixed)Bug in atlas.IO
-                byte[] b = IO.readWholeFile(input) ;
-                String requestStr = Bytes.bytes2string(b) ;
+                String requestStr = null ;
+                try { requestStr = IO.readWholeFileAsUTF8(action.request.getInputStream()) ; }
+                catch (IOException ex) { IO.exception(ex) ; }
+
                 String requestStrLog = formatForLog(requestStr) ;
                 requestLog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
                 req = UpdateFactory.create(requestStr, Syntax.syntaxARQ) ;
@@ -253,6 +242,11 @@ public class SPARQL_Update extends SPARQL_Protocol
         finally { action.endWrite() ; }
     }
 
+    /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 
+     * when using this protocol to convey a SPARQL 1.1 Update request that contains an 
+     * operation that uses the USING, USING NAMED, or WITH clause.]
+     */
+    
     private void processProtocol(HttpServletRequest request, UpdateRequest updateRequest)
     {
         String[] usingArgs = request.getParameterValues(paramUsingGraphURI) ;
@@ -281,9 +275,6 @@ public class SPARQL_Update extends SPARQL_Protocol
                     upu.addUsingNamed(createNode(a)) ;
             }
         }
-        
-//        String x = formatForLog(updateRequest.toString()) ;
-//        requestLog.info("Processed: "+x) ;
     }
     
     private static Node createNode(String x)
