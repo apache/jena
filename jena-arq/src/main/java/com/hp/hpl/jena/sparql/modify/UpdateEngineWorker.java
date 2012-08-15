@@ -364,22 +364,19 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null ;
+     
+        Graph dftGraph = GraphFactory.createGraphMem() ;
+        DatasetGraphMap dsg = new DatasetGraphMap(dftGraph) ;
         
-        DatasetGraphMap dsg = new DatasetGraphMap(graphStore) ;
         if ( update.getUsing().size() > 0  )
         {
             if ( update.getUsing().size() > 1 )
             {
-                // Lack of scaling here
-                // Need to take a copy to merge.
-                Graph g = GraphFactory.createGraphMem() ;
-                
                 for ( Node gn : update.getUsing() )
                 {
                     Graph g2 = graphOrDummy(graphStore, gn) ;
-                    g.getBulkUpdateHandler().add(g2) ;
+                    dftGraph.getBulkUpdateHandler().add(g2) ;
                 }
-                dsg.setDefaultGraph(g) ;
             }
             else
             {
