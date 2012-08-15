@@ -22,10 +22,15 @@ import static java.lang.String.format ;
 import static org.apache.jena.fuseki.Fuseki.requestLog ;
 import static org.apache.jena.fuseki.HttpNames.paramRequest ;
 import static org.apache.jena.fuseki.HttpNames.paramUpdate ;
+import static org.apache.jena.fuseki.HttpNames.paramUsingGraphURI ;
+import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
 
 import java.io.IOException ;
 import java.io.InputStream ;
+import java.util.Arrays ;
+import java.util.Collection ;
 import java.util.Enumeration ;
+import java.util.List ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -35,21 +40,23 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.iri.IRI ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Bytes ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
+import org.openjena.riot.system.IRIResolver ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
+import com.hp.hpl.jena.update.* ;
 
 public class SPARQL_Update extends SPARQL_Protocol
 {
     private static String updateParseBase = "http://example/base/" ;
+    private static IRIResolver resolver = IRIResolver.create(updateParseBase) ;
     
     private class HttpActionUpdate extends HttpActionProtocol {
         public HttpActionUpdate(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
@@ -104,6 +111,12 @@ public class SPARQL_Update extends SPARQL_Protocol
         // ----
         // using-graph-uri
         // using-named-graph-uri
+        // then modify the parsed query - find all UpdateWithUsing and .
+        
+        /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 
+         * when using this protocol to convey a SPARQL 1.1 Update request that contains an 
+         * operation that uses the USING, USING NAMED, or WITH clause.]
+         */
         
         if (WebContent.contentTypeSPARQLUpdate.equals(ctStr))
         {
@@ -118,6 +131,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Bad content type: " + request.getContentType()) ;
     }
 
+    protected static List<String> paramsForm = Arrays.asList(paramRequest, paramUpdate, 
+                                                             paramUsingGraphURI, paramUsingNamedGraphURI) ;
+    protected static List<String> paramsPOST = Arrays.asList(paramUsingGraphURI, paramUsingNamedGraphURI) ;
+    
     @Override
     protected void validate(HttpServletRequest request)
     {
@@ -136,18 +153,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         
         if ( WebContent.contentTypeSPARQLUpdate.equals(ctStr) )
         {
-            // For now, all query string stuff is not allowed.
-            if ( request.getQueryString() != null )
-                errorBadRequest("No query string allowed: found: "+request.getQueryString()) ;
-            // For later...
-            @SuppressWarnings("unchecked")
-            Enumeration<String> en = request.getParameterNames() ;
-            if ( en.hasMoreElements() )
-                errorBadRequest("No request parameters allowed") ;
-            
             String charset = request.getCharacterEncoding() ;
             if ( charset != null && ! charset.equalsIgnoreCase(WebContent.charsetUTF8) )
                 errorBadRequest("Bad charset: "+charset) ;
+            validate(request, paramsPOST) ;
             return ;
         }
         
@@ -158,19 +167,27 @@ public class SPARQL_Update extends SPARQL_Protocol
                 requestStr = request.getParameter(paramRequest) ;
             if ( requestStr == null )
                 errorBadRequest("SPARQL Update: No update= in HTML form") ;
+            validate(request, paramsForm) ;
+            return ;
+        }
+        
+        
+        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
+    }
+    
+    protected void validate(HttpServletRequest request, Collection<String> params)
+    {
+        if ( params != null )
+        {
             @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String name = en.nextElement() ;
-                if ( !name.equals(paramRequest) && !name.equals(paramUpdate) )
-                    errorBadRequest("SPARQL Update: Unrecognized update request parameter: "+name) ;
+                if ( ! params.contains(name) )
+                    warning("SPARQL Update: Unrecognize request parameter (ignored): "+name) ;
             }
-            
-            return ;
         }
-        
-        error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
     }
 
     private void executeBody(HttpActionUpdate action)
@@ -225,7 +242,8 @@ public class SPARQL_Update extends SPARQL_Protocol
     
     private void execute(HttpActionUpdate action, UpdateRequest updateRequest)
     {
-        //GraphStore graphStore = GraphStoreFactory.create(action.dsg) ;
+        processProtocol(action.request, updateRequest) ;
+        
         action.beginWrite() ;
         try {
             UpdateAction.execute(updateRequest, action.getActiveDSG()) ;
@@ -233,5 +251,51 @@ public class SPARQL_Update extends SPARQL_Protocol
         }
         catch ( UpdateException ex) { action.abort() ; errorBadRequest(ex.getMessage()) ; }
         finally { action.endWrite() ; }
+    }
+
+    private void processProtocol(HttpServletRequest request, UpdateRequest updateRequest)
+    {
+        String[] usingArgs = request.getParameterValues(paramUsingGraphURI) ;
+        String[] usingNamedArgs = request.getParameterValues(paramUsingNamedGraphURI) ;
+        if ( usingArgs == null && usingNamedArgs == null )
+            return ;
+        if ( usingArgs == null )
+            usingArgs = new String[0] ;
+        if ( usingNamedArgs == null )
+            usingNamedArgs = new String[0] ;
+        // Impossible.
+//        if ( usingArgs.length == 0 && usingNamedArgs.length == 0 )
+//            return ;
+        // ---- check USING/USING NAMED/WITH not used.
+        // ---- update request to have USING/USING NAMED 
+        for ( Update up : updateRequest.getOperations() )
+        {
+            if ( up instanceof UpdateWithUsing )
+            {
+                UpdateWithUsing upu = (UpdateWithUsing)up ;
+                if ( upu.getUsing().size() != 0 || upu.getUsingNamed().size() != 0 || upu.getWithIRI() != null )
+                    errorBadRequest("SPARQL Update: Protocol using-graph-uri or using-named-graph-uri present where update request has USING, USING NAMED or WITH") ;
+                for ( String a : usingArgs )
+                    upu.addUsing(createNode(a)) ;
+                for ( String a : usingNamedArgs )
+                    upu.addUsingNamed(createNode(a)) ;
+            }
+        }
+        
+//        String x = formatForLog(updateRequest.toString()) ;
+//        requestLog.info("Processed: "+x) ;
+    }
+    
+    private static Node createNode(String x)
+    {
+        try {
+            IRI iri = resolver.resolve(x) ;
+            return Node.createURI(iri.toString()) ;
+        } catch (Exception ex)
+        {
+            errorBadRequest("SPARQL Update: bad IRI: "+x) ;
+            return null ;
+        }
+        
     }
 }
