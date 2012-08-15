@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.tdb.migrate;
 
+import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -121,5 +122,10 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         // When moving to 2.7.1 or later, remove the code line below. 
         // And these comments. 
         SystemARQ.sync(dsg.getDefaultGraph()) ;
+    }
+    
+    @Override 
+    public String toString() { 
+        try { return dsg.toString() ; } catch (Exception ex) { return Lib.className(this) ; }  
     }
 }
