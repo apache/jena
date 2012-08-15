@@ -2,6 +2,8 @@
 
 == Fuseki 0.2.4
 
++ JENA-295 - Implement using-graph-uri= and using-named-graph-uri=
+
 == Fuseki 0.2.3
 
 + Add a script to support running Fuseki as a service (JENA-268)
