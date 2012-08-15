@@ -36,5 +36,5 @@ public abstract class Op1 extends OpBase
     //public void setSubOp(Op op) { sub = op ; }
     
     public abstract Op apply(Transform transform, Op subOp) ;
-    public abstract Op copy(Op subOp) ;
+    public abstract Op1 copy(Op subOp) ;
 }

@@ -48,7 +48,7 @@ public class OpConditional extends Op2 //OpN??
     { opVisitor.visit(this) ; }
     
     @Override
-    public Op copy(Op newLeft, Op newRight)
+    public Op2 copy(Op newLeft, Op newRight)
     { return new OpConditional(newLeft, newRight) ; }
     
     @Override

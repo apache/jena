@@ -57,7 +57,7 @@ public class OpLeftJoin extends Op2
     @Override
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op newLeft, Op newRight)
+    public Op2 copy(Op newLeft, Op newRight)
     { return new OpLeftJoin(newLeft, newRight, expressions) ; }
     
     @Override

@@ -60,7 +60,7 @@ public class OpQuad extends Op0
     { return transform.transform(this) ; }
 
     @Override
-    public Op copy()
+    public Op0 copy()
     {
         return new OpQuad(quad) ;
     }

@@ -44,7 +44,7 @@ public class OpDatasetNames extends Op0
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy()                        { return new OpDatasetNames(graphNode) ; }
+    public Op0 copy()                        { return new OpDatasetNames(graphNode) ; }
 
     @Override
     public int hashCode()

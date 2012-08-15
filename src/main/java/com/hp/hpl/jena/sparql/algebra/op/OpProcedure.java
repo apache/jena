@@ -88,7 +88,7 @@ public class OpProcedure extends Op1
     }
 
     @Override
-    public Op copy(Op subOp)
+    public Op1 copy(Op subOp)
     {
         return new OpProcedure(procId, args, getSubOp()) ;
     }

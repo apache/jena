@@ -30,7 +30,7 @@ public class OpList extends OpModifier
     { super(subOp) ; }
 
     @Override
-    public Op copy(Op subOp)
+    public Op1 copy(Op subOp)
     { return new OpList(subOp) ; }
 
     @Override

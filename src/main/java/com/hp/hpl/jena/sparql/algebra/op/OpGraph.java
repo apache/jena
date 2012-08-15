@@ -46,7 +46,7 @@ public class OpGraph extends Op1
     @Override
     public void visit(OpVisitor opVisitor)          { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
+    public Op1 copy(Op newOp)                        { return new OpGraph(node, newOp) ; }
     
     @Override
     public int hashCode()

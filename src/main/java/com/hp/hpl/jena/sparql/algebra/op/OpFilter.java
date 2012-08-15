@@ -110,7 +110,7 @@ public class OpFilter extends Op1
     public void visit(OpVisitor opVisitor) { opVisitor.visit(this) ; }
     
     @Override
-    public Op copy(Op subOp)                { return new OpFilter(expressions, subOp) ; }
+    public Op1 copy(Op subOp)                { return new OpFilter(expressions, subOp) ; }
     
     @Override
     public int hashCode()

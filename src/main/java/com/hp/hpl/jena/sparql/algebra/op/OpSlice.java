@@ -49,7 +49,7 @@ public class OpSlice extends OpModifier
     @Override
     public void visit(OpVisitor opVisitor)  { opVisitor.visit(this) ; }
     @Override
-    public Op copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
+    public Op1 copy(Op subOp)                { return new OpSlice(subOp, start, length) ; }
 
     @Override
     public Op apply(Transform transform, Op subOp)
