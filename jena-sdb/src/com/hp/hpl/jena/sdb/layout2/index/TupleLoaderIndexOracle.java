@@ -85,14 +85,15 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 	public String getLoadNodes() {
 		StringBuilder stmt = new StringBuilder();
 		
-                stmt.append("LOCK TABLE Nodes IN EXCLUSIVE MODE; ");
+        stmt.append("BEGIN LOCK TABLE Nodes IN EXCLUSIVE MODE;\n");
 		stmt.append("INSERT INTO Nodes \nSELECT nodeid.nextval , "); // Autoindex thingy
 		for (int i = 0; i < getNodeColTypes().length; i++) {
 			if (i != 0) stmt.append(" , ");
 			stmt.append(getNodeLoader()).append(".").append("n").append(i);
 		}
 		stmt.append("\nFROM ").append(getNodeLoader()).append(" LEFT JOIN Nodes ON (");
-		stmt.append(getNodeLoader()).append(".n0=Nodes.hash) \nWHERE Nodes.hash IS NULL"); 
+		stmt.append(getNodeLoader()).append(".n0=Nodes.hash) \nWHERE Nodes.hash IS NULL");
+		stmt.append(";\nEND;")
 		return stmt.toString();
 	}
 }
