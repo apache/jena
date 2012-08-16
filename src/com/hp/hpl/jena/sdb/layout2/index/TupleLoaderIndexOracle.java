@@ -93,7 +93,7 @@ public class TupleLoaderIndexOracle extends TupleLoaderIndexBase {
 		}
 		stmt.append("\nFROM ").append(getNodeLoader()).append(" LEFT JOIN Nodes ON (");
 		stmt.append(getNodeLoader()).append(".n0=Nodes.hash) \nWHERE Nodes.hash IS NULL");
-		stmt.append(";\nEND;")
+		stmt.append(";\nEND;");
 		return stmt.toString();
 	}
 }
