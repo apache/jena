@@ -152,8 +152,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     public Iterator<Tuple<NodeId>> find(NodeId... ids)
     {
         Tuple<NodeId> tuple = Tuple.create(ids) ;
-        startRead() ;
         try {
+            startRead() ;
             return find(tuple) ; // **public call
         } finally { finishRead() ; }
     }
