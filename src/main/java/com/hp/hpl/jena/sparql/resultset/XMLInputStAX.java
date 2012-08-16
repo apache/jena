@@ -224,9 +224,10 @@ class XMLInputStAX extends SPARQLResult
         if ( ! isResultSet )
             throw new ResultSetException("Not an XML result set") ;
         
+        if ( finished )
+            return false ;
+        
         try {
-            if ( finished )
-                return false ;
             if ( binding == null )
                 binding = getOneSolution() ;
         } catch (XMLStreamException ex)
@@ -237,6 +238,8 @@ class XMLInputStAX extends SPARQLResult
         row++ ;
         boolean b = (binding != null) ;
         //parser.close() ; // Some way to close the input stream.
+        if (!b)
+            finished = true ;
         return b ;
     }
 
