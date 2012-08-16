@@ -239,7 +239,7 @@ class XMLInputStAX extends SPARQLResult
         boolean b = (binding != null) ;
         //parser.close() ; // Some way to close the input stream.
         if (!b)
-            finished = true ;
+            close();
         return b ;
     }
 
