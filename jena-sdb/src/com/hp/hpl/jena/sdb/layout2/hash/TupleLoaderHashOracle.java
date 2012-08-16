@@ -54,6 +54,6 @@ public class TupleLoaderHashOracle extends TupleLoaderHashBase {
         
         @Override
         public String getLoadNodes() {
-            return "LOCK TABLE Nodes IN EXCLUSIVE MODE; " + super.getLoadNodes();
+            return "BEGIN LOCK TABLE Nodes IN EXCLUSIVE MODE;\n" + super.getLoadNodes() + ";\nEND;";
         }
 }
