@@ -162,7 +162,6 @@ public class TestResultSet extends BaseTest
         test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
     }
     
-    @org.junit.Ignore
     @Test public void test_RS_10()
     {
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
