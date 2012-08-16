@@ -161,6 +161,15 @@ public class TestResultSet extends BaseTest
         ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
         test_RS_fmt(rs, ResultsFormat.FMT_RDF_XML, false) ;
     }
+    
+    @org.junit.Ignore
+    @Test public void test_RS_10()
+    {
+        ResultSet rs = ResultSetFactory.load("testing/ResultSet/output.srx") ;
+        for ( ; rs.hasNext(); rs.next()) { }
+        // We should be able to call hasNext() as many times as we want!
+        assertFalse(rs.hasNext());
+    }
 
     @Test public void test_RS_union_1() 
     {
