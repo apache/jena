@@ -94,7 +94,12 @@ public class WriterOp
         output(iWriter, op, sCxt) ;
     }
     
+    /** @deprecated Use {@link #output(OutputStream,Op,SerializationContext)}     */
+    @Deprecated
     public static void out(OutputStream out, Op op, SerializationContext sCxt)
+    { out(out, op, sCxt) ; }
+    
+    public static void output(OutputStream out, Op op, SerializationContext sCxt)
     {
         output(new IndentedWriter(out), op, sCxt) ;
     }
