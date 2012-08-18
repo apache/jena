@@ -67,12 +67,6 @@ public class JournalControl
     /** Recover a base storage DatasetGraph */
     public static void recovery(DatasetGraphTDB dsg)
     {
-        if ( dsg instanceof DatasetGraphTxn )
-            throw new TDBTransactionException("Recovery works on the base dataset, not a transactional one") ;
-        // Later we may have ...
-//        if ( dsg instanceof DatasetGraphTransaction )
-//            throw new TDBTransactionException("Recovery works on the base dataset, not a transactional one") ; 
-        
         if ( dsg.getLocation().isMem() )
             return ;
         
@@ -114,9 +108,6 @@ public class JournalControl
      */
     public static void recoverFromJournal(DatasetGraphTDB dsg, Journal jrnl )
     {
-        if ( dsg instanceof DatasetGraphTxn )
-            throw new TDBTransactionException("Recovery works on the base dataset, not a transactional one") ;
-
         if ( jrnl.isEmpty() )
             return ;
         

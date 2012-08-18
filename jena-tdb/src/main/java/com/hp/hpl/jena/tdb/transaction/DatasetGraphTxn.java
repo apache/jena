@@ -18,14 +18,15 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 
-/** A DatasetGraph that is a singe transaction.
+/** A DatasetGraph that is a single transaction.
  * It does not support transactions, it is a transaction (single use).
  */
-public class DatasetGraphTxn extends DatasetGraphTDB
+public class DatasetGraphTxn extends DatasetGraphWrapper
 {
-    private final Transaction transaction ;
+    private Transaction transaction ;
 
     public DatasetGraphTxn(DatasetGraphTDB dsg, Transaction txn)
     {
@@ -34,6 +35,9 @@ public class DatasetGraphTxn extends DatasetGraphTDB
     }
 
     public Transaction getTransaction() { return transaction ; }
+    
+    /** Return the view (storage) for this transaction */ 
+    public DatasetGraphTDB getView() { return (DatasetGraphTDB)getWrapped() ; }
     
     public void commit()
     {
@@ -53,6 +57,7 @@ public class DatasetGraphTxn extends DatasetGraphTDB
     {
         if ( transaction != null )
             transaction.close() ;
+        transaction = null ;
     }
 
 }

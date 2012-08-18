@@ -45,7 +45,7 @@ import com.hp.hpl.jena.tdb.transaction.DatasetGraphTxn ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** TDB Dataset - this is the class that creates a dataset over the storage via
+/** This is the class that creates a dataset over the storage via
  *  TripleTable, QuadTable and prefixes. These may be transactional.
  *  
  *  See also:
@@ -54,6 +54,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  *  <li>{@link DatasetGraphTransaction} &ndash; class that provides the application with the right DatasetGraphTDB (base or transaction).</li>
  *  </ul>
  */
+final
 public class DatasetGraphTDB extends DatasetGraphCaching
                              implements /*DatasetGraph,*/ Sync, Closeable, GraphStore, Session
 {

@@ -41,7 +41,6 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     // Two per-thread state variables:
     //   txn: ThreadLocalTxn -- the transactional , one time use dataset
     //   isInTransactionB: ThreadLocalBoolean -- flags true between begin and commit/abort, and end for read transactions.
-    
 
     static class ThreadLocalTxn extends ThreadLocal<DatasetGraphTxn>
     {
@@ -97,7 +96,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             DatasetGraphTxn dsgTxn = txn.get() ;
             if ( dsgTxn == null )
                 throw new TDBTransactionException("In a transaction but no transactional DatasetGraph") ;
-            return dsgTxn ;
+            return dsgTxn.getView() ;
         }
         
         if ( sConn.haveUsedInTransaction() )

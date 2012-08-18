@@ -88,11 +88,15 @@ public class TDBInternal
     
     /**
      * Return the DatasetGraphTDB for a DatasetGraph, or null.
+     * May not be up-to-date.
      */
     public static DatasetGraphTDB getDatasetGraphTDB(DatasetGraph dsg)
     {
         if ( dsg instanceof DatasetGraphTransaction )
-            return ((DatasetGraphTransaction)dsg).getBaseDatasetGraph() ;
+            // Latest.
+            return ((DatasetGraphTransaction)dsg).getDatasetGraphToQuery() ;
+            // Core.
+            //.getBaseDatasetGraph() ;
         
         if ( dsg instanceof DatasetGraphTDB )
             return (DatasetGraphTDB)dsg ;

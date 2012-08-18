@@ -83,16 +83,6 @@ public class StoreConnection
         return baseDSG.getLocation() ;
     }
 
-//    /**
-//     * Return the associated transaction manager - do NOT use to manipulate
-//     * transactions
-//     */
-//    public TransactionManager getTransMgr()
-//    {
-//        checkValid() ;
-//        return transactionManager ;
-//    }
-
     /** Return a description of the transaction manager state */
     public SysTxnState getTransMgrState()
     {
@@ -114,16 +104,7 @@ public class StoreConnection
 
 
     /**
-     * Begin a transact//    public static Graph _createGraph()
-//    { return factory.createDatasetGraph().getDefaultGraph() ; }
-//
-//    public static Graph _createGraph(Location loc)
-//    {
-//        // The code to choose the optimizer is in GraphTDBFactory.chooseOptimizer
-//        return factory.createDatasetGraph(loc).getDefaultGraph() ;
-//    }
-
-ion, giving it a label. Terminate a write transaction
+     * Begin a transaction, giving it a label. Terminate a write transaction
      * with {@link Transaction#commit()} or {@link Transaction#abort()}.
      * Terminate a write transaction with {@link Transaction#close()}.
      */
@@ -135,13 +116,36 @@ ion, giving it a label. Terminate a write transaction
     }
 
     /**
-     * testing operation - do not use the base dataset without knowing how the
-     * transaction system uses it
+     * Testing operation - do not use the base dataset without knowing how the
+     * transaction system uses it. The base dataset may not reflect the true state
+     * if pending commits are queued.
+     * @see #flush
      */
     public DatasetGraphTDB getBaseDataset()
     {
         checkValid() ;
         return baseDSG ;
+    }
+    
+    /** Flush the delayed write queue to th ebase storage.
+     *  This can only be done if there are no active transactions.
+     *  If there are active transactions, nothing is done but this is safe to call. 
+     */ 
+    public void flush()
+    {
+        if ( ! haveUsedInTransaction() )
+            return ;
+        checkValid() ;
+        transactionManager.flush() ;
+    }
+    
+    /** Indicate whether there are any active transactions.
+     *  @see #getTransMgrState
+     */
+    public boolean activeTransactions()
+    { 
+        checkValid() ;
+        return transactionManager.activeTransactions() ; 
     }
     
     /** Flush the journal regardless - use with great case - do not use when transactions may be active. */ 
