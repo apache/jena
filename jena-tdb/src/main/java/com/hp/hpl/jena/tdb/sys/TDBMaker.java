@@ -105,7 +105,7 @@ public class TDBMaker
         }
     }
     
-    /** The StoreConenction-cached base DatasetGraphTDB.*/ 
+    /** The StoreConnection-cached base DatasetGraphTDB.*/ 
     private static class BuilderStoreConnectionBase implements DatasetGraphMakerTDB
     {
         @Override

@@ -222,7 +222,12 @@ public class Transaction
     public DatasetGraphTxn getActiveDataset()       { return activedsg ; }
 
     public void setActiveDataset(DatasetGraphTxn activedsg)
-    { this.activedsg = activedsg ; }
+    { 
+        this.activedsg = activedsg ;
+        if ( activedsg.getTransaction() != this )
+            Log.warn(this, "Active DSG does not point to this transaction; "+this) ;
+    }
+        
 
     public Journal getJournal()                     { return journal ; }
 

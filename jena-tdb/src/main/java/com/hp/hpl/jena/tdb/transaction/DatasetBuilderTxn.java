@@ -58,23 +58,23 @@ public class DatasetBuilderTxn
 
     public DatasetBuilderTxn(TransactionManager txnMgr) { this.txnMgr = txnMgr ; }
     
-    public DatasetGraphTDB build(Transaction transaction, ReadWrite mode, DatasetGraphTDB dsg)
+    public DatasetGraphTxn build(Transaction transaction, ReadWrite mode, DatasetGraphTDB dsg)
     {
         this.blockMgrs = dsg.getConfig().blockMgrs ;
         this.nodeTables = dsg.getConfig().nodeTables ;
         this.txn = transaction ;
         this.dsg = dsg ;
         
-        DatasetGraphTDB dsgTxn ;
+        DatasetGraphTDB dsgTDB ;
             
         switch(mode)
         {
-            case READ : dsgTxn = buildReadonly() ; break ;
-            case WRITE : dsgTxn = buildWritable() ;  break ;
-            default: dsgTxn = null ;  // Silly Java.
+            case READ : dsgTDB = buildReadonly() ; break ;
+            case WRITE : dsgTDB = buildWritable() ;  break ;
+            default: dsgTDB = null ;  // Silly Java.
         }
         
-        dsgTxn = new DatasetGraphTxn(dsgTxn, txn) ;
+        DatasetGraphTxn dsgTxn = new DatasetGraphTxn(dsgTDB, txn) ;
         // Copy context. Changes not propagated back to the base dataset. 
         dsgTxn.getContext().putAll(dsg.getContext()) ;
         return dsgTxn ;

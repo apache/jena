@@ -1,9 +1,15 @@
 ChangeLog for TDB
 =================
 
+==== TDB 0.9.4
+
++ Cache read transaction datastructures and reuse view when possible.
++ Add StoreConnection flush() operation to push delayed writer-commits if possible.    
++ JENA-290 - TDB txn creation touched stats unnecessarily, causing slow down. 
+
 ==== TDB 0.9.3
 
-+ Batching of writer-commits to inprove write trasnaction performance.
++ Batching of writer-commits to improve write transaction performance.
 
 ==== TDB 0.9.2
 

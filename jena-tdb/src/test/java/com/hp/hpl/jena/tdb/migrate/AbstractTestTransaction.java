@@ -101,7 +101,20 @@ public abstract class AbstractTestTransaction extends BaseTest
 
     @Test public void transaction_7()
     {
-        // .end is not necessary
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+    
+    @Test public void transaction_8()
+    {
         Dataset ds = create() ;
         ds.begin(ReadWrite.WRITE) ;
         assertTrue(ds.isInTransaction()) ; 
@@ -113,6 +126,32 @@ public abstract class AbstractTestTransaction extends BaseTest
         ds.commit() ;
         assertFalse(ds.isInTransaction()) ;
     }
+    
+    @Test public void transaction_9()
+    {
+        Dataset ds = create() ;
+        ds.begin(ReadWrite.WRITE) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+
+        ds.begin(ReadWrite.READ) ;
+        assertTrue(ds.isInTransaction()) ; 
+        ds.commit() ;
+        assertFalse(ds.isInTransaction()) ;
+        ds.end() ;
+        assertFalse(ds.isInTransaction()) ;
+    }
+
 
 }
 

@@ -46,9 +46,6 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TransactionManager
 {
-    // TODO Don't keep counters, keep lists.
-    // TODO Useful logging.
-    
     private static boolean checking = true ;
     
     private static Logger log = LoggerFactory.getLogger(TransactionManager.class) ;
@@ -90,16 +87,20 @@ public class TransactionManager
     AtomicLong activeReaders = new AtomicLong(0) ; 
     AtomicLong activeWriters = new AtomicLong(0) ; // 0 or 1
     
+    public long getCountActiveReaders()     { return activeReaders.get() ; }
+    public long getCountActiveWriters()     { return activeWriters.get() ; }
+    
     // Misc stats
     AtomicLong finishedReaders = new AtomicLong(0) ;
     AtomicLong committedWriters = new AtomicLong(0) ;
     AtomicLong abortedWriters = new AtomicLong(0) ;
     
-    // This is the last read-transaction created
-    // The read DatasetGraphTxn can be used by all the readers seeing the same view.
-    // A write transaction clears this when it commits; future readers see the new state;
-    // the first reader of a particular state creates teh view datasetgraph and sets the  lastreader.
-    private AtomicReference<DatasetGraphTxn> lastreader = new AtomicReference<DatasetGraphTxn>(null) ;
+    // This is the DatasetGraphTDB for the first read-transaction created for
+    // a particular view.  The read DatasetGraphTDB can be used by all the readers
+    // seeing the same view.
+    // A write transaction clears this when it commits; the first reader of a 
+    // particular state creates the view datasetgraph and sets the  lastreader.
+    private AtomicReference<DatasetGraphTDB> currentReaderView = new AtomicReference<DatasetGraphTDB>(null) ;
     
     // Ensure single writer.
     private Semaphore writersWaiting = new Semaphore(1, true) ;
@@ -111,13 +112,6 @@ public class TransactionManager
     private DatasetGraphTDB baseDataset ;
     private Journal journal ;
     
-    /* Various policies:
-     * + MRSW : writer locks to write back; blocks until let trhough.  Every reader takes an read lock.
-     * + Writers write if free, else queue for a reader or writer to clearup.
-     * + Async: there is a thread whose job it is to flush tot he base dataset (with an MRSW lock). 
-     */
-    
-    // Add queue unqueue?
     /*
      * The order of calls is: 
      * 1/ transactionStarts
@@ -129,7 +123,6 @@ public class TransactionManager
     
     private interface TSM
     {
-        // Quert unqueue?
         void transactionStarts(Transaction txn) ;
         void transactionFinishes(Transaction txn) ;
         void transactionCloses(Transaction txn) ;
@@ -154,6 +147,7 @@ public class TransactionManager
     
     class TSM_Logger extends TSM_Base
     {
+        TSM_Logger() {}
         @Override public void readerStarts(Transaction txn)         { log("start", txn) ; }
         @Override public void readerFinishes(Transaction txn)       { log("finish", txn) ; }
         @Override public void writerStarts(Transaction txn)         { log("begin", txn) ; }
@@ -164,6 +158,7 @@ public class TransactionManager
     /** More detailed */
     class TSM_LoggerDebug extends TSM_Base
     {
+        TSM_LoggerDebug() {}
         @Override public void readerStarts(Transaction txn)         { logInternal("start",  txn) ; }
         @Override public void readerFinishes(Transaction txn)       { logInternal("finish", txn) ; }
         @Override public void writerStarts(Transaction txn)         { logInternal("begin",  txn) ; }
@@ -174,6 +169,7 @@ public class TransactionManager
     
     class TSM_Counters implements TSM
     {
+        TSM_Counters() {}
         @Override public void transactionStarts(Transaction txn)    { activeTransactions.add(txn) ; }
         @Override public void transactionFinishes(Transaction txn)  { activeTransactions.remove(txn) ; }
         @Override public void transactionCloses(Transaction txn)    { }
@@ -200,15 +196,17 @@ public class TransactionManager
         // Safe mode.
         // Take a READ lock over the base dataset.
         // Write-back takes a WRITE lock.
-        @Override public void readerStarts(Transaction txn)    { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
-        @Override public void writerStarts(Transaction txn)    { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
+        @Override public void readerStarts(Transaction txn)     { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
+        
+        @Override public void writerStarts(Transaction txn)     { txn.getBaseDataset().getLock().enterCriticalSection(Lock.READ) ; }
         
         // Currently, the writer semaphore is managed explicitly in the main code.
         
         @Override public void readerFinishes(Transaction txn)       
         { 
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
-            processDelayedReplayQueue(txn) ;
+            if ( queue.size() >= QueueBatchSize )
+                processDelayedReplayQueue(txn) ;
         }
         
         @Override public void writerCommits(Transaction txn)
@@ -245,7 +243,8 @@ public class TransactionManager
         @Override public void writerAborts(Transaction txn)
         { 
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
-            processDelayedReplayQueue(txn) ;
+            if ( queue.size() >= QueueBatchSize )
+                processDelayedReplayQueue(txn) ;
         }
     }
     
@@ -299,7 +298,7 @@ public class TransactionManager
         processDelayedReplayQueue(null) ;
         journal.close() ;
     }
-    
+
     public DatasetGraphTxn begin(ReadWrite mode)
     {
         return begin(mode, null) ;
@@ -307,6 +306,9 @@ public class TransactionManager
     
     
     public /*for testing only*/ static final boolean DEBUG = false ; 
+    
+    /** Control logging - the logger must be set as well */
+    //public /*for testing only*/ static boolean LOG = false ;
 
     public DatasetGraphTxn begin(ReadWrite mode, String label)
     {
@@ -351,7 +353,7 @@ public class TransactionManager
         if ( ! commitedAwaitingFlush.isEmpty() )
         {  
             if ( DEBUG ) System.out.print(commitedAwaitingFlush.size()) ;
-            dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset() ;
+            dsg = commitedAwaitingFlush.get(commitedAwaitingFlush.size()-1).getActiveDataset().getView() ;
         }
         else 
         {
@@ -361,15 +363,16 @@ public class TransactionManager
         
         log("begin$", txn) ;
         
-        DatasetGraphTxn dsgTxn = createDSGTxn(dsg,txn, mode) ;
+        DatasetGraphTxn dsgTxn = createDSGTxn(dsg, txn, mode) ;
+
         txn.setActiveDataset(dsgTxn) ;
 
         // Empty for READ ; only WRITE transactions have components that need notifiying.
         List<TransactionLifecycle> components = dsgTxn.getTransaction().lifecycleComponents() ;
-
+        
         if ( mode == ReadWrite.READ )
         {
-            // Consistency check.
+            // ---- Consistency check.  View caching does not reset components.
             if ( components.size() != 0 )
                 log.warn("read transaction, non-empty lifecycleComponents list") ;
         }
@@ -387,28 +390,31 @@ public class TransactionManager
         return txn ;
     }
 
-    
     private DatasetGraphTxn createDSGTxn(DatasetGraphTDB dsg, Transaction txn, ReadWrite mode)
     {
         // A read transaction (if it has no lifecycle components) can be shared over all
         // read transactions at the same commit level. 
         //    lastreader
         
-        DatasetGraphTxn dsgTxn ;
-        
         if ( mode == ReadWrite.READ )
         {   
             // If a READ transaction, and a previously built one is cached, use it.
-            dsgTxn = lastreader.get();
-            if ( dsgTxn != null )
-                return dsgTxn ;
+            DatasetGraphTDB dsgCached = currentReaderView.get();
+            if ( dsgCached != null )
+            {
+                // No components so we don't need to notify them.
+                // We can just reuse the storage dataset.
+                return new DatasetGraphTxn(dsgCached, txn) ;
+            }
         }
         
-        dsgTxn = (DatasetGraphTxn)new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
+        DatasetGraphTxn dsgTxn = new DatasetBuilderTxn(this).build(txn, mode, dsg) ;
         if ( mode == ReadWrite.READ )
-            // If a READ transaction, cached it.
+        {
+            // If a READ transaction, cache the storage view.
             // This is cleared when a WRITE commits
-            lastreader.set(dsgTxn);
+            currentReaderView.set(dsgTxn.getView());
+        }
         return dsgTxn ;
     }
 
@@ -430,7 +436,7 @@ public class TransactionManager
         {
             case READ: break ;
             case WRITE:
-                lastreader.set(null) ;      // Clear the READ transaction cache.
+                currentReaderView.set(null) ;      // Clear the READ transaction cache.
                 writersWaiting.release() ;  // Single writer: let another (waiting?) writer have a turn.
         }
     }
@@ -463,11 +469,15 @@ public class TransactionManager
         transaction.signalEnacted() ;
     }
 
+    /** Try to flush the delayed write queue - only happens if there are no active transactions */ 
+    public void flush()
+    {
+        processDelayedReplayQueue(null) ;
+    }
+    
     private void processDelayedReplayQueue(Transaction txn)
     {
-        // Sync'ed by notifyCommit.
-        // If we knew which version of the DB each was looking at, we could reduce more often here.
-        // [TxTDB:TODO]
+        // Can we do work?
         if ( activeReaders.get() != 0 || activeWriters.get() != 0 )
         {
             if ( queue.size() > 0 && log() )
@@ -481,14 +491,14 @@ public class TransactionManager
                 System.out.print("!"+queue.size()+"!") ;
         }
         
-        if ( log() )
-            log("Start flush delayed commits", txn) ;
-        
         if ( DEBUG ) checkNodesDatJrnl("1", txn) ;
         
         if ( queue.size() == 0 && txn != null )
             // Nothing to do - journal should be empty. 
             return ;
+        
+        if ( log() )
+            log("Start flush delayed commits", txn) ;
         
         while ( queue.size() > 0 )
         {
@@ -501,7 +511,7 @@ public class TransactionManager
                 if ( txn2.getMode() == ReadWrite.READ )
                     continue ;
                 if ( log() )
-                    log("Flush delayed commit of "+txn2.getLabel(), txn) ;
+                    log("  Flush delayed commit of "+txn2.getLabel(), txn) ;
                 if ( DEBUG ) checkNodesDatJrnl("2", txn) ;
                 checkReplaySafe() ;
                 enactTransaction(txn2) ;
@@ -526,7 +536,7 @@ public class TransactionManager
         
     }
 
-    private static void checkNodesDatJrnl(String label, Transaction txn)
+    private void checkNodesDatJrnl(String label, Transaction txn)
     {
         if (txn != null)
         {
@@ -559,7 +569,6 @@ public class TransactionManager
         noteTxnClose(txn) ;
     }
         
-    // TODO Collapse these.
     private void noteStartTxn(Transaction transaction)
     {
         switch (transaction.getMode())
@@ -624,12 +633,17 @@ public class TransactionManager
         return journal ;
     }
 
-    private static boolean log()
+    // ---- Logging
+    // Choose log output once when this object is created.
+    
+    private final boolean logstate = (syslog.isDebugEnabled() || log.isDebugEnabled()) ;
+    
+    private boolean log()
     {
-        return syslog.isDebugEnabled() || log.isDebugEnabled() ;
+        return logstate ;
     }
     
-    private static void log(String msg, Transaction txn)
+    private void log(String msg, Transaction txn)
     {
         if ( ! log() )
             return ;
@@ -644,7 +658,8 @@ public class TransactionManager
         if ( ! log() )
             return ;
         String txnStr = ( txn == null ) ? "<null>" : txn.getLabel() ;
-        System.err.printf(format("%6s %s -- %s", action, txnStr, state())) ;
+        //System.err.printf(format("%6s %s -- %s", action, txnStr, state())) ;
+        logger().debug(format("%6s %s -- %s", action, txnStr, state())) ;
     }
 
     private static Logger logger()

@@ -89,6 +89,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsg2.contains(q)) ;
         dsg2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
         
@@ -109,6 +110,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertFalse(dsg2.contains(q)) ;
         dsg2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertFalse(dsg.contains(q)) ;
     }
@@ -132,6 +134,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgR2.contains(q2)) ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
@@ -184,6 +187,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgR2.contains(q)) ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
     }
@@ -240,6 +244,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgR2.contains(q2)) ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
@@ -268,6 +273,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         dsgR1.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertFalse(dsg.contains(q2)) ;
         assertTrue(dsg.contains(q3)) ;
@@ -304,6 +310,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         
         dsgR1.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
         assertFalse(dsg.contains(q2)) ;
@@ -328,7 +335,9 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
         DatasetGraphTxn dsgR2 = sConn.begin(ReadWrite.READ) ;
         assertTrue(dsgR2.contains(q)) ;
+        dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
     }
@@ -353,6 +362,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         assertTrue(dsgR2.contains(q)) ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
     }
@@ -377,6 +387,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR1.end() ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q)) ;
     }
@@ -406,6 +417,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
         dsgR1.end() ;
         dsgR2.end() ;
         
+        sConn.flush() ;
         DatasetGraph dsg = sConn.getBaseDataset() ;
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
@@ -459,6 +471,7 @@ public abstract class AbstractTestTransSeq extends BaseTest
 
         dsgR1.end() ;
         
+        sConn.flush() ;
         DatasetGraphTDB dsg = sConn.getBaseDataset() ; 
         assertTrue(dsg.contains(q1)) ;
         assertTrue(dsg.contains(q2)) ;
