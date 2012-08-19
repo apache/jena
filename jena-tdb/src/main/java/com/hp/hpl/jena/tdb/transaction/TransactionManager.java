@@ -500,6 +500,10 @@ public class TransactionManager
         if ( log() )
             log("Start flush delayed commits", txn) ;
         
+        // Drop the cached reader view so that next time it is recreated
+        // against the updated database.
+        currentReaderView.set(null) ;
+        
         while ( queue.size() > 0 )
         {
             // Currently, replay is replay everything
