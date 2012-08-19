@@ -2,6 +2,9 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+==== ARQ 2.9.4
+
+
 ==== ARQ 2.9.3
 
 + Interface DataSource removed after having been deprecated across releases.
