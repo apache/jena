@@ -174,8 +174,8 @@ public class Optimize implements Rewrite
         
         if ( context.isTrueOrUndef(ARQ.optFilterEquality) )
         {
-            boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
-            op = apply("Filter Equality", new TransformFilterEquality(!termStrings), op) ;
+            //boolean termStrings = context.isDefined(ARQ.optTermStrings) ;
+            op = apply("Filter Equality", new TransformFilterEquality(), op) ;
         }
         
         if ( context.isTrueOrUndef(ARQ.optFilterDisjunction) )

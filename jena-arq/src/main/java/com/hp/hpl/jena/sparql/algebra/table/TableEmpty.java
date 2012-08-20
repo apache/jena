@@ -71,5 +71,4 @@ public class TableEmpty extends TableBase
     public int size()           { return 0 ; }
     @Override
     public boolean isEmpty()    { return true ; }
-
 }

@@ -46,7 +46,6 @@ public class OpTable extends Op0
     
     public boolean isJoinIdentity()
     { return TableUnit.isTableUnit(table) ; }
-    // One row of no bindings.
     
     public Table getTable()
     { return table ; }

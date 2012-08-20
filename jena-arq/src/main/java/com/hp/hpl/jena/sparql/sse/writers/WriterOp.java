@@ -34,15 +34,9 @@ import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.table.TableUnit ;
-import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Prologue ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.QuadPattern ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
+import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -361,6 +355,14 @@ public class WriterOp
             {
                 start(opTable, NoNL) ;
                 out.print("unit") ;
+                finish(opTable) ;
+                return ;
+            }
+            
+            if ( opTable.getTable().isEmpty() )
+            {
+                start(opTable, NoNL) ;
+                out.print("empty") ;
                 finish(opTable) ;
                 return ;
             }
