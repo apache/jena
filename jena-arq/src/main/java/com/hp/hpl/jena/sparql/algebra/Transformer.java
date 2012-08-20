@@ -61,7 +61,6 @@ public class Transformer
         return transformSkipService(transform, op, null, null) ; 
     }
 
-    
     /** Transform an algebra expression except skip (leave alone) any OpService nodes */
     public static Op transformSkipService(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
@@ -80,6 +79,14 @@ public class Transformer
             OpWalker.walk(walker, op, v) ;
             return v.result() ;
         }
+    }
+    
+    /** Transform an Op - not recursively */ 
+    public static Op transformOne(Transform transform, Op op)
+    {
+        OpTransformApplyOne visitor = new OpTransformApplyOne(transform) ;
+        op.visit(visitor) ;
+        return visitor.result ;
     }
     
     // To allow subclassing this class, we use a singleton pattern 
@@ -384,5 +391,36 @@ public class Transformer
         @Override
         public Op transform(OpService opService, Op subOp)
         { return opService ; } 
+    }
+    
+    static class OpTransformApplyOne extends OpVisitorByType
+    {
+        private final Transform transform ;
+        Op result ;
+
+        OpTransformApplyOne(Transform transform)
+        {
+            this.transform = transform ;
+        }
+
+        @Override
+        protected void visitN(OpN op)
+        { result = op.apply(transform, op.getElements()) ; }
+
+        @Override
+        protected void visit2(Op2 op)
+        { result = op.apply(transform, op.getLeft(), op.getRight()) ; }
+
+        @Override
+        protected void visit1(Op1 op)
+        { result = op.apply(transform, op.getSubOp()) ; }
+
+        @Override
+        protected void visit0(Op0 op)
+        { result = op.apply(transform) ; }
+
+        @Override
+        protected void visitExt(OpExt op)
+        { op.apply(transform) ; }
     }
 }
