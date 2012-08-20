@@ -1,0 +1,8 @@
+PREFIX : <http://example.org/>
+
+SELECT *
+{
+   OPTIONAL { ?x :zpp ?o1 }
+   OPTIONAL { ?x :zqq ?o2 }
+   FILTER(?x = :x)
+}

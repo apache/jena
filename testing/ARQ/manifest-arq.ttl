@@ -34,6 +34,7 @@
 
         <Algebra/manifest.ttl>
         <Optimization/manifest.ttl>
+        <OptFilterEquality/manifest.ttl>
 
         <Select/manifest.ttl>
         <Construct/manifest.ttl>
