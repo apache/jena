@@ -1,0 +1,10 @@
+{
+  "head": {
+    "vars": [ "x" , "o" , "v" ]
+  } ,
+  "results": {
+    "bindings": [
+      
+    ]
+  }
+}

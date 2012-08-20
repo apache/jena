@@ -1,0 +1,6 @@
+(prefix ((: <http://example.org/>))
+  (assign ((?x :x))
+    (conditional
+      (bgp (triple :x :qq ?o1))
+      (bgp (triple :x :p ?o2))))
+)
