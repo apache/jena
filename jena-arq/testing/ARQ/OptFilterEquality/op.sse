@@ -1,0 +1,7 @@
+(prefix ((: <http://example.org/>))
+  (filter (= ?x :x)
+    (leftjoin
+      (leftjoin
+        (table unit)
+        (bgp (triple ?x :qq ?o1)))
+      (bgp (triple ?x :p ?o2)))))

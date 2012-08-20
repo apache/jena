@@ -61,8 +61,6 @@ public class TransformFilterEquality extends TransformCopy
         ExprList remaining = p.getRight() ;
         
         // ---- Check if the subOp is the right shape to transform.
-        
-
         Op op = subOp ;
         
         // Special case : deduce that the filter will always "eval unbound"
@@ -72,7 +70,6 @@ public class TransformFilterEquality extends TransformCopy
         {
             return OpTable.empty() ;
         }
-
         
         // Special case: the deep left op of a OpConditional/OpLeftJoin is unit table.
         // Given the there is an equality filter, if the right does not match, 
@@ -223,10 +220,7 @@ public class TransformFilterEquality extends TransformCopy
         return false ;
     }
     
-    // -- A special case
-    // If a sequence of OPTIONALS, and nothing prior to the first, we end up with
-    // a unit table on the left sid of a next of LeftJoin/conditionals.
-
+    // -- Special cases
     private static boolean testSpecialCaseUnused(Op op, List<Pair<Var, NodeValue>> equalities, ExprList remaining)
     {
         // If the op does not contain the var at all, for some equality
@@ -241,6 +235,9 @@ public class TransformFilterEquality extends TransformCopy
         return false ;
     }
 
+    // If a sequence of OPTIONALS, and nothing prior to the first, we end up with
+    // a unit table on the left side of deepest leftjoin/conditional.
+    
     private static boolean testSpecialCase1(Op op, List<Pair<Var, NodeValue>> equalities , ExprList remaining )
     {
        return false ;
