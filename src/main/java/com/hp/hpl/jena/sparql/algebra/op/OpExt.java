@@ -20,8 +20,10 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import org.openjena.atlas.io.IndentedWriter ;
 
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
+import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
@@ -80,6 +82,8 @@ public abstract class OpExt extends OpBase
         if ( line != out.getRow() )
             out.ensureStartOfLine() ;
     }
+    
+    public Op apply(Transform transform) { throw new ARQNotImplemented("OpExt.appy(Transform)") ; } 
     
 //    /** Return the sub tag - must match the builder */ 
 //    public abstract String getSubTag() ;
