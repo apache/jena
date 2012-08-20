@@ -18,9 +18,15 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import java.util.ArrayList ;
+import java.util.Collection ;
+import java.util.List ;
 import java.util.Set ;
 
+import org.openjena.atlas.lib.Pair ;
+
 import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -31,160 +37,87 @@ import com.hp.hpl.jena.sparql.expr.* ;
 
 public class TransformFilterEquality extends TransformCopy
 {
-    // E_OneOf -- done by expansion earlier.
-    
-    // TODO (Carefully) transformPlainStrings
-    // Aggressive on strings goes for efficient over exactlness of xsd:string/plain literal.
-    
-    private boolean stringsAsTerms ;
-    
-    public TransformFilterEquality(boolean stringsAsTerms)
-    {
-        // XSD string is not a simple literal
-        // Inactive.
-        // What about numbers? 
-        this.stringsAsTerms = stringsAsTerms ;
-    }
+    public TransformFilterEquality()
+    { }
     
     @Override
     public Op transform(OpFilter opFilter, Op subOp)
-    { 
-        ExprList exprs = opFilter.getExprs() ;
-
-        if ( ! safeToTransform(exprs, subOp) )
+    {
+        Op op = apply(opFilter.getExprs(), subOp) ;
+        if ( op == null )
             return super.transform(opFilter, subOp) ;
-        
-        Op op = subOp ;
-        // Variables set
-        Set<Var> patternVars = OpVars.patternVars(op) ;
-        
-        // Any assignments must go inside filters so the filters see the assignments.
-        // For each filter in the expr list ...
-        
-        ExprList exprs2 = new ExprList() ;      // Unchanged filters.  Put around the result. 
-        
-        for (  Expr e : exprs.getList() )
-        {
-            Op op2 = processFilterWorker(e, op, patternVars) ;
-            if ( op2 == null )
-                exprs2.add(e) ;
-            else
-                op = op2 ;
-        }
-
-        // Place any filter expressions around the processed sub op. 
-        if ( exprs2.size() > 0 )
-            op = OpFilter.filter(exprs2, op) ;
         return op ;
     }
     
-    /** Return an optimized filter for equality expressions */
-    public static Op processFilterOrOpFilter(Expr e, Op subOp)
+    private static Op apply(ExprList exprs, Op subOp)
     {
-        Op op2 = processFilterWorker(e, subOp, null) ;
-        if ( op2 == null )
-            op2 = OpFilter.filter(e, subOp) ;
-        return op2 ;
-    }
-    
-    private static boolean safeToTransform(Expr expr, Op op)
-    {
-        return safeToTransform(new ExprList(expr), op) ;
-    }
-    
-    private static boolean safeToTransform(ExprList exprs, Op op)
-    {
-        if ( op instanceof OpBGP || op instanceof OpQuadPattern )
-            return true ;
-        
-        // This will be applied also in sub-calls of the Transform but queries 
-        // are very rarely so deep that it matters. 
-        if ( op instanceof OpSequence )
-        {
-            OpN opN = (OpN)op ;
-            for ( Op subOp : opN.getElements() )
-            {
-                if ( ! safeToTransform(exprs, subOp) )
-                    return false ;
-            }
-            return true ; 
-        }
-        
-        if ( op instanceof OpJoin || op instanceof OpUnion)
-        {
-            Op2 op2 = (Op2)op ;
-            return safeToTransform(exprs, op2.getLeft()) && safeToTransform(exprs, op2.getRight()) ; 
-        }
-
-        // Not safe unless filter variables are mentioned on the LHS. 
-        if ( op instanceof OpConditional || op instanceof OpLeftJoin )
-        {
-            Op2 opleftjoin = (Op2)op ;
-            
-            if ( ! safeToTransform(exprs, opleftjoin.getLeft()) || 
-                 ! safeToTransform(exprs, opleftjoin.getRight()) )
-                return false ;
-            
-            Op opLeft = opleftjoin.getLeft() ;
-            //Op opRight = opleftjoin.getRight() ;
-            // See also transform condition for OpConditional transformation.
-
-            Set<Var> varsLeft = OpVars.patternVars(opLeft) ;
-            //Set<Var> varsRight = OpVars.patternVars(opRight) ;
-            Set<Var> y = ExprVars.getVarsMentioned(exprs) ;
-            if ( varsLeft.containsAll(y) )
-                return true ;
-            return false ;
-        }
-        
-        if ( op instanceof OpGraph )
-        {
-            OpGraph opg = (OpGraph)op ;
-            return safeToTransform(exprs, opg.getSubOp()) ;
-        }
-        
-        if (isUnitTable(op) )
-            return true;
-        
-        return false ;
-    }
-
-    private static boolean isUnitTable(Op op)
-    {
-        if (op instanceof OpTable )
-        {
-            if ( ((OpTable)op).isJoinIdentity() )
-                return true;  
-        }
-        return false ;
-    }
-        
-    
-    // ++ called by TransformFilterDisjunction
-    /** Return null for "no change" */
-    public static Op processFilter(Expr e, Op subOp)
-    {
-        if ( ! safeToTransform(e, subOp) )
+        // ---- Find and extract any equality filters.
+        Pair<List<Pair<Var, NodeValue>>, ExprList> p = preprocessFilterEquality(exprs) ;
+        if ( p == null || p.getLeft().size() == 0 )
             return null ;
-        return processFilterWorker(e, subOp, null) ;
+        
+        List<Pair<Var, NodeValue>> equalities = p.getLeft() ;
+        Collection<Var> varsMentioned = varsMentionedInEqualityFilters(equalities) ;
+        ExprList remaining = p.getRight() ;
+        
+        // ---- Check if the subOp is the right shape to transform.
+        
+
+        Op op = subOp ;
+        
+        // Special case : deduce that the filter will always "eval unbound"
+        // hence elimate all rows.  Return the empty table. 
+        
+        if ( testSpecialCaseUnused(subOp, equalities, remaining))
+        {
+            return OpTable.empty() ;
+        }
+
+        
+        // Special case: the deep left op of a OpConditional/OpLeftJoin is unit table.
+        // Given the there is an equality filter, if the right does not match, 
+        // the empty row will be rejected by the filter.
+        // So the bottom is in fact a normal join; 
+        // and a form like "(join unit P)" is equal to P.  
+        if ( testSpecialCase1(subOp, equalities, remaining))
+            op = processSpecialCase1(op, equalities) ;
+        
+        // ---- Transform
+
+        if ( ! safeToTransform(varsMentioned, op) )
+            return null ;
+        for ( Pair<Var, NodeValue> equalityTest : equalities )
+            op = processFilterWorker(op, equalityTest.getLeft(), equalityTest.getRight()) ;
+
+            // ---- Place any filter expressions around the processed sub op. 
+        if ( remaining.size() > 0 )
+            op = OpFilter.filter(remaining, op) ;
+        return op ;
     }
 
-    private static Op processFilterWorker(Expr e, Op subOp, Set<Var> patternVars)
+    // --- find and extract 
+    private static Pair<List<Pair<Var, NodeValue>>, ExprList> preprocessFilterEquality(ExprList exprs)
     {
-        if ( patternVars == null )
-            patternVars = OpVars.patternVars(subOp) ;
-        // Rewrites: 
-        // FILTER ( ?x = ?y ) 
-        // FILTER ( ?x = :x ) for IRIs and bNodes, not literals 
-        //    (to preserve value testing in the filter, and not in the graph). 
-        // FILTER ( sameTerm(?x, :x ) ) etc
-        
+        List<Pair<Var, NodeValue>> exprsFilterEquality = new ArrayList<Pair<Var, NodeValue>>() ;
+        ExprList exprsOther = new ExprList() ;
+        for (  Expr e : exprs.getList() )
+        {
+            Pair<Var, NodeValue> p = preprocess(e) ;
+            if ( p != null )
+                exprsFilterEquality.add(p) ;
+            else
+                exprsOther.add(e) ;
+        }
+        if ( exprsFilterEquality.size() == 0 )
+            return null ;
+        return Pair.create(exprsFilterEquality, exprsOther) ;
+    }
+    
+    private static Pair<Var, NodeValue> preprocess(Expr e)
+    {
         if ( !(e instanceof E_Equals) && !(e instanceof E_SameTerm) )
             return null ;
 
-        // Corner case: sameTerm is false for string/plain literal, 
-        // but true in the graph for graphs with 
-        
         ExprFunction2 eq = (ExprFunction2)e ;
         Expr left = eq.getArg1() ;
         Expr right = eq.getArg2() ;
@@ -206,13 +139,6 @@ public class TransformFilterEquality extends TransformCopy
         if ( var == null || constant == null )
             return null ;
 
-        if ( !patternVars.contains(var) )
-            // The underlying op does not define the variable.
-            // The filter will fail.  Could remove all together.
-            //return OpTable.empty() ;
-            // For now, play safe in this (rare?) case.
-            return null ;
-        
         // Corner case: sameTerm is false for string/plain literal, 
         // but true in the graph for graph matching. 
         if (e instanceof E_SameTerm)
@@ -225,12 +151,111 @@ public class TransformFilterEquality extends TransformCopy
         if ( e instanceof E_Equals )
         {
             // Value based?
-            // XXX Optimize here.
             if ( ! ARQ.isStrictMode() && constant.isLiteral() )
                 return null ;
         }
+        
+        return Pair.create(var, constant) ;
+    }
 
-        return subst(subOp, var, constant) ;
+    private static Collection<Var> varsMentionedInEqualityFilters(List<Pair<Var, NodeValue>> equalities)
+    {
+        List<Var> vars = new ArrayList<Var>() ;
+        for ( Pair<Var, NodeValue> p : equalities )
+            vars.add(p.getLeft()) ;
+        return vars ;
+    }
+
+    private static boolean safeToTransform(Collection<Var> varsEquality, Op op)
+    {
+        if ( op instanceof OpBGP || op instanceof OpQuadPattern )
+            return true ;
+        
+        // This will be applied also in sub-calls of the Transform but queries 
+        // are very rarely so deep that it matters. 
+        if ( op instanceof OpSequence )
+        {
+            OpN opN = (OpN)op ;
+            for ( Op subOp : opN.getElements() )
+            {
+                if ( ! safeToTransform(varsEquality, subOp) )
+                    return false ;
+            }
+            return true ; 
+        }
+        
+        if ( op instanceof OpJoin || op instanceof OpUnion)
+        {
+            Op2 op2 = (Op2)op ;
+            return safeToTransform(varsEquality, op2.getLeft()) && safeToTransform(varsEquality, op2.getRight()) ; 
+        }
+
+        // Not safe unless filter variables are mentioned on the LHS. 
+        if ( op instanceof OpConditional || op instanceof OpLeftJoin )
+        {
+            Op2 opleftjoin = (Op2)op ;
+            
+            if ( ! safeToTransform(varsEquality, opleftjoin.getLeft()) || 
+                 ! safeToTransform(varsEquality, opleftjoin.getRight()) )
+                return false ;
+            
+            // Not only must the left and right be safe to transform,
+            // but the equality variable must be known to be always set. 
+
+            // If the varsLeft are disjoint from assigned vars,
+            // we may be able to push assign down right
+            // (this generalises the unit table case specialcase1)
+            // Needs more investigation.
+            
+            Op opLeft = opleftjoin.getLeft() ;
+            Set<Var> varsLeft = OpVars.patternVars(opLeft) ;
+            if ( varsLeft.containsAll(varsEquality) )
+                return true ;
+            return false ;
+        }        
+        
+        if ( op instanceof OpGraph )
+        {
+            OpGraph opg = (OpGraph)op ;
+            return safeToTransform(varsEquality, opg.getSubOp()) ;
+        }
+        
+        return false ;
+    }
+    
+    // -- A special case
+    // If a sequence of OPTIONALS, and nothing prior to the first, we end up with
+    // a unit table on the left sid of a next of LeftJoin/conditionals.
+
+    private static boolean testSpecialCaseUnused(Op op, List<Pair<Var, NodeValue>> equalities, ExprList remaining)
+    {
+        // If the op does not contain the var at all, for some equality
+        // then the filter expression wil/ be "eval unbound" i.e. false.
+        // We can return empty table.
+        Set<Var> patternVars = OpVars.patternVars(op) ;
+        for ( Pair<Var, NodeValue> p : equalities )
+        {
+            if ( ! patternVars.contains(p.getLeft()))
+                return true ;
+        }
+        return false ;
+    }
+
+    private static boolean testSpecialCase1(Op op, List<Pair<Var, NodeValue>> equalities , ExprList remaining )
+    {
+       return false ;
+    }
+
+    private static Op processSpecialCase1(Op op, List<Pair<Var, NodeValue>> equalities)
+    {
+        throw new ARQNotImplemented() ;
+    }
+
+    // ---- Transformation
+        
+    private static Op processFilterWorker(Op op, Var var, NodeValue constant)
+    {
+        return subst(op, var, constant) ;
     }
     
     private static Op subst(Op subOp , Var var, NodeValue nv)
@@ -239,12 +264,12 @@ public class TransformFilterEquality extends TransformCopy
         return OpAssign.assign(op, var, nv) ;
     }
     
-//    private static Op subst(Op subOp , ExprVar var1, ExprVar var2)
-//    {
-//        // Replace var2 with var1
-//        Op op = Substitute.substitute(subOp, var2.asVar(), var1.asVar()) ;
-//        // Insert LET(var2 := var1)
-//        return OpAssign.assign(op, var2.asVar(), var1) ;
-//    }
+    // Helper for TransformFilterDisjunction.
+    
+    /** Apply the FilterEquality transform or return null if no change */
 
+    static Op processFilter(Expr e, Op subOp)
+    {
+        return apply(new ExprList(e), subOp) ;
+    }
 }

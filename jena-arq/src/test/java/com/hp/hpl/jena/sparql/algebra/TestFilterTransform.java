@@ -38,7 +38,7 @@ public class TestFilterTransform
         return new JUnit4TestAdapter(TestFilterTransform.class) ;
     }
     
-    private Transform t_equality    = new TransformFilterEquality(false) ;
+    private Transform t_equality    = new TransformFilterEquality() ;
     private Transform t_disjunction = new TransformFilterDisjunction() ;
     private Transform t_placement   = new TransformFilterPlacement() ;
     private Transform t_expandOneOf = new TransformExpandOneOf() ;
@@ -71,16 +71,17 @@ public class TestFilterTransform
         // Unused
         test("(filter (= ?UNUSED <x>) (bgp ( ?s ?p ?x)) )",
              t_equality,
-             (String[])null) ;
+             "(table empty)") ;
     }
     
     @Test public void equality05()
     {
-        // Can't optimize if filter does not only cover vars in LHS 
-        test("(filter (= ?UNUSED <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+        // Can't optimize if filter does not cover vars in LHS 
+        test("(filter (= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
              t_equality,
-             "(filter (= ?UNUSED <x>) (conditional (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))") ;
+             "(filter (= ?x2 <x>) (conditional (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))") ;
     }
+    
     
     @Test public void equality06()
     {
@@ -105,10 +106,10 @@ public class TestFilterTransform
     
     @Test public void equality09()
     {
-        // Can't optimize if filter does not only cover vars in LHS 
-        test("(filter (= ?UNUSED <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))",
+        // Can't optimize if filter does not cover vars in LHS 
+        test("(filter (= ?x2 <x>) (leftjoin (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))",
              t_equality,
-             "(filter (= ?UNUSED <x>) (leftjoin (bgp ( ?s ?p ?x))  (bgp ( ?s ?p ?x))))") ;
+             "(filter (= ?x2 <x>) (leftjoin (bgp ( ?s1 ?p1 ?x1))  (bgp ( ?s2 ?p2 ?x2))))") ;
     }
     
     @Test public void equality10()
