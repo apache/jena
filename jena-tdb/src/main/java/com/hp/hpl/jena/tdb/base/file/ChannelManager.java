@@ -92,6 +92,11 @@ public class ChannelManager
             name2channel.remove(name) ;
     }
     
+    public static void reset()
+    {
+        shutdown(null) ;
+    }
+    
     /** Shutdown all the files matching the prefix (typically a directory) */  
     public static void shutdown(String prefix)
     {
@@ -99,7 +104,7 @@ public class ChannelManager
         List<FileChannel> x = new ArrayList<FileChannel>() ;
         for ( String fn : name2channel.keySet() )
         {
-            if ( fn.startsWith(prefix) )
+            if ( prefix == null || fn.startsWith(prefix) )
             {
                 x.add(name2channel.get(fn)) ;
                 // Don't call release here - potential CME problems.

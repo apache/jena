@@ -127,7 +127,7 @@ public class StoreConnection
         return baseDSG ;
     }
     
-    /** Flush the delayed write queue to th ebase storage.
+    /** Flush the delayed write queue to the base storage.
      *  This can only be done if there are no active transactions.
      *  If there are active transactions, nothing is done but this is safe to call. 
      */ 
@@ -154,6 +154,12 @@ public class StoreConnection
         JournalControl.recoverFromJournal(getBaseDataset(), transactionManager.getJournal()) ;
     }
 
+    /** Highly risky! */
+    public void printJournal()
+    {
+        JournalControl.print(transactionManager.getJournal()) ;
+    }
+    
     private static Map<Location, StoreConnection> cache = new HashMap<Location, StoreConnection>() ;
 
     // ---- statics managing the cache.
@@ -225,10 +231,20 @@ public class StoreConnection
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
-            JournalControl.recoverFromJournal(dsg, sConn.transactionManager.getJournal()) ;
+            boolean actionTaken = JournalControl.recoverFromJournal(dsg, sConn.transactionManager.getJournal()) ;
+            
+            if ( actionTaken )
+            {
+                // Clunky!  Complete reset.
+                sConn.transactionManager.closedown() ;
+                sConn.baseDSG.close() ;
+                dsg = DatasetBuilderStd.build(location) ;
+                sConn = new StoreConnection(dsg) ;
+            }
+            
             if (!location.isMemUnique())
-            // Don't cache use-once in-memory datasets.
-            cache.put(location, sConn) ;
+                // Don't cache use-once in-memory datasets.
+                cache.put(location, sConn) ;
             String NS = TDB.PATH ;
             TransactionInfo txInfo = new TransactionInfo(sConn.transactionManager) ;
             ARQMgt.register(NS + ".system:type=Transactions", txInfo) ;

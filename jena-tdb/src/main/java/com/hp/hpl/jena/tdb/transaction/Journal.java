@@ -45,7 +45,7 @@ import com.hp.hpl.jena.tdb.sys.Names ;
  *  if the journal grows to the point where it needs to free up cache. 
  */
 public final
-class Journal implements Iterable<JournalEntry>, Sync, Closeable
+class Journal implements Sync, Closeable
 {
     private static Logger log = LoggerFactory.getLogger(Journal.class) ;
     
@@ -287,10 +287,6 @@ class Journal implements Iterable<JournalEntry>, Sync, Closeable
     {
         return new IteratorEntries(startPosition) ;
     }
-    
-    /** Convenience method to iterate over the whole journal */ 
-    @Override
-    public Iterator<JournalEntry> iterator() { return entries() ; }
 
     @Override
     public void sync()  { channel.sync() ; }

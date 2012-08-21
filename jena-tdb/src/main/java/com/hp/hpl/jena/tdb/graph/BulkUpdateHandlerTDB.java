@@ -42,48 +42,6 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
         this.graphTDB = graph ;
     }
 
-//    @Override
-//    public void add(Triple[] triples)
-//    {}
-//
-//    @Override
-//    public void add(List triples)
-//    { }
-//
-//    @Override
-//    public void add(Iterator it)
-//    {}
-//
-//    @Override
-//    public void add(Graph g)
-//    {}
-//
-//    @Override
-//    public void add(Graph g, boolean withReifications)
-//    {}
-//
-//    @Override
-//    public void delete(Triple[] triples)
-//    {}
-//
-//    @Override
-//    public void delete(List triples)
-//    {}
-//
-//    @Override
-//    public void delete(Iterator it)
-//    {}
-//
-//    @Override
-//    public void delete(Graph g)
-//    {}
-//
-//    @Override
-//    public void delete(Graph g, boolean withReifications)
-//    {}
-//
-    
-    // Testcases needed
     @Override
     public void remove(Node s, Node p, Node o)
     {
@@ -133,15 +91,14 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
                 // Finished?
                 return ;
             
-            //Arrays.fill(array, null) ;
-            
-            // Get the first sliceSize
+            // Get a slice
             int len = 0 ;
             for ( ; len < sliceSize ; len++ )
             {
                 if ( !iter.hasNext() ) break ;
                 array[len] = iter.next() ;
             }
+            
             // Delete them.
             for ( int i = 0 ; i < len ; i++ )
             {
