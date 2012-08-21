@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,26 +16,18 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package com.hp.hpl.jena.sparql.function.library;
 
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-public class E_StrEncodeForURI extends ExprFunction1
+public class FN_TimezoneFromDateTime extends FunctionBase1
 {
-    private static final String symbol = Tags.tagStrEncodeForURI ;
-
-    public E_StrEncodeForURI(Expr expr)
+    @Override
+    public NodeValue exec(NodeValue v)
     {
-        super(expr, symbol) ;
+        return XSDFuncOp.dtGetTimezone(v) ; 
     }
-    
-    @Override
-    public NodeValue eval(NodeValue v)
-    { 
-        return XSDFuncOp.strEncodeForURI(v) ;
-    }
-        
-    @Override
-    public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
 }
+

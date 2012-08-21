@@ -18,7 +18,8 @@
 
 package com.hp.hpl.jena.sparql.expr.nodevalue;
 
-import static com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions.* ;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions.checkAndGetStringLiteral ;
+import static com.hp.hpl.jena.sparql.expr.nodevalue.NodeFunctions.checkTwoArgumentStringLiterals ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DECIMAL ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_DOUBLE ;
 import static com.hp.hpl.jena.sparql.expr.nodevalue.NumericType.OP_FLOAT ;
@@ -39,9 +40,11 @@ import java.util.Set ;
 import java.util.regex.Pattern ;
 
 import javax.xml.datatype.DatatypeConstants ;
+import javax.xml.datatype.DatatypeConstants.Field ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
+import org.openjena.atlas.lib.IRILib ;
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
 
@@ -603,7 +606,25 @@ public class XSDFuncOp
         return calcReturn(lex2, string.asNode()) ;
     }
     
-    // F&O fn;concat (implicit cast to strings).
+    public static NodeValue strEncodeForURI(NodeValue v)
+    {
+        Node n = v.asNode() ;
+        if ( ! n.isLiteral() )
+            throw new ExprEvalException("Not a literal") ;
+        if ( n.getLiteralDatatype() != null )
+        {
+            if ( ! n.getLiteralDatatype().equals(XSDDatatype.XSDstring) )
+                throw new ExprEvalException("Not a string literal") ;
+        }
+    
+        String str = n.getLiteralLexicalForm() ;
+        String encStr = IRILib.encodeUriComponent(str) ;
+        encStr = IRILib.encodeNonASCII(encStr) ;
+    
+        return NodeValue.makeString(encStr) ;
+    }
+
+    // F&O fn:concat (implicit cast to strings).
     public static NodeValue fnConcat(List<NodeValue> args)
     {
         StringBuilder sb = new StringBuilder() ;
@@ -926,40 +947,39 @@ public class XSDFuncOp
         
     }
     
-    // XXX Remove??
-    // This only differs by some "dateTime" => "date" 
-    private static int compareDateFO(NodeValue nv1, NodeValue nv2)
-    {
-        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
-        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
-
-        int x = compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
-        if ( x == XSDDateTime.INDETERMINATE )
-        {
-            NodeValue nv3 = fixupDate(nv1) ;
-            if ( nv3 != null )
-            {
-                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
-                x =  compareXSDDateTime(dt3, dt2) ;
-                if ( x == XSDDateTime.INDETERMINATE )
-                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-                return x ;
-            }
-            
-            nv3 = fixupDate(nv2) ;
-            if ( nv3 != null )
-            {
-                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
-                x = compareXSDDateTime(dt1, dt3) ;
-                if ( x == XSDDateTime.INDETERMINATE )
-                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
-                return x ;
-            }
-            
-            throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
-        }
-        return x ;
-    }
+//    // This only differs by some "dateTime" => "date" 
+//    private static int compareDateFO(NodeValue nv1, NodeValue nv2)
+//    {
+//        XMLGregorianCalendar dt1 = nv1.getDateTime() ;
+//        XMLGregorianCalendar dt2 = nv2.getDateTime() ;
+//
+//        int x = compareXSDDateTime(dt1, dt2) ;    // Yes - compareDateTIme
+//        if ( x == XSDDateTime.INDETERMINATE )
+//        {
+//            NodeValue nv3 = fixupDate(nv1) ;
+//            if ( nv3 != null )
+//            {
+//                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
+//                x =  compareXSDDateTime(dt3, dt2) ;
+//                if ( x == XSDDateTime.INDETERMINATE )
+//                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
+//                return x ;
+//            }
+//            
+//            nv3 = fixupDate(nv2) ;
+//            if ( nv3 != null )
+//            {
+//                XMLGregorianCalendar dt3 = nv3.getDateTime() ; 
+//                x = compareXSDDateTime(dt1, dt3) ;
+//                if ( x == XSDDateTime.INDETERMINATE )
+//                    throw new ARQInternalErrorException("Still get indeterminate comparison") ;
+//                return x ;
+//            }
+//            
+//            throw new ARQInternalErrorException("Failed to fixup dateTimes") ;
+//        }
+//        return x ;
+//    }
     
     private static NodeValue fixupDateTime(NodeValue nv)
     {
@@ -1354,5 +1374,44 @@ public class XSDFuncOp
     {
         return !dur.isSet(YEARS) && ! dur.isSet(MONTHS) &&
                ( dur.isSet(DAYS) || dur.isSet(HOURS) || dur.isSet(MINUTES) || dur.isSet(SECONDS) );
+    }
+    
+    public static NodeValue durGetYears(NodeValue nv)
+    { return accessDuration(nv, DatatypeConstants.YEARS) ; }
+
+    public static NodeValue durGetMonths(NodeValue nv)
+    {return accessDuration(nv, DatatypeConstants.MONTHS) ; }
+    
+    public static NodeValue durGetDays(NodeValue nv)
+    { return accessDuration(nv, DatatypeConstants.DAYS) ; }
+    
+    public static NodeValue durGetHours(NodeValue nv)
+    { return accessDuration(nv, DatatypeConstants.HOURS) ; }
+    
+    public static NodeValue durGetMinutes(NodeValue nv)
+    { return accessDuration(nv, DatatypeConstants.MINUTES) ; }
+
+    public static NodeValue durGetSeconds(NodeValue nv)
+    { return accessDuration(nv, DatatypeConstants.SECONDS) ; }
+    
+    public static NodeValue durGetSign(NodeValue nv)
+    { 
+        int x = nv.getDuration().getSign() ;
+        return NodeValue.makeInteger(x) ;
+    }
+
+    private static NodeValue accessDuration(NodeValue nv, Field field)
+    {
+//        if ( ! nv.isDuration() )
+//            throw new ExprEvalException("Not a duration: "+nv) ;
+        
+        Number x = nv.getDuration().getField(field) ;
+        if ( x == null )
+            throw new ExprEvalException("Not a valid field of a duration: "+nv) ;
+        
+        if ( field.equals(DatatypeConstants.SECONDS) )
+            return NodeValue.makeDecimal((BigDecimal)x) ;
+        
+        return NodeValue.makeInteger((BigInteger)x) ;
     }
 }
