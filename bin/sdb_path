@@ -10,7 +10,7 @@ then
 
 export CP="$SDB_CP"
 
-if [ ! -e "$SDBROOT/lib/jena-sdb*" ]
+if [ ! -e "$SDBROOT/lib/jena-sdb"* ]
 then
     CP="$($SDBROOT/bin/make_classpath_mvn "$SDBROOT")"
 else
