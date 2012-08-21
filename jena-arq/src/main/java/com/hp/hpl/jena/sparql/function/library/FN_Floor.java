@@ -16,26 +16,20 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.expr;
+package com.hp.hpl.jena.sparql.function.library;
 
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
-import com.hp.hpl.jena.sparql.sse.Tags ;
+import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-public class E_StrEncodeForURI extends ExprFunction1
+/** floor(expression) */ 
+
+public class FN_Floor extends FunctionBase1
 {
-    private static final String symbol = Tags.tagStrEncodeForURI ;
-
-    public E_StrEncodeForURI(Expr expr)
-    {
-        super(expr, symbol) ;
-    }
+    public FN_Floor() { super() ; }
     
     @Override
-    public NodeValue eval(NodeValue v)
-    { 
-        return XSDFuncOp.strEncodeForURI(v) ;
-    }
-        
-    @Override
-    public Expr copy(Expr expr) { return new E_StrEncodeForURI(expr) ; } 
+    public NodeValue exec(NodeValue v)
+    { return XSDFuncOp.floor(v) ; }
+
 }
