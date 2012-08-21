@@ -25,7 +25,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
-import com.hp.hpl.jena.rdf.arp.impl.Location;
+import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;
 import com.hp.hpl.jena.rdf.arp.impl.Taint;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
@@ -63,7 +63,7 @@ class TestHandler extends XMLHandler {
         triples = 0;
         scope = 0;
         this.failOnWarning = failOnWarning_;
-        idsUsed = new HashMap<IRI, Map<String,Location>>();
+        idsUsed = new HashMap<IRI, Map<String,ARPLocation>>();
         idsUsedCount = 0;
     }
 

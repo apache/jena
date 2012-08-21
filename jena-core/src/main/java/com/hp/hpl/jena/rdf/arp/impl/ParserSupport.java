@@ -50,7 +50,7 @@ public class ParserSupport
 		this.arp = arp;
         this.xml= xml;
 	}
-    Map<IRI, Map<String,Location>> idsUsed() {
+    Map<IRI, Map<String,ARPLocation>> idsUsed() {
         return arp.idsUsed;
     }
     protected final XMLHandler arp;
@@ -62,12 +62,12 @@ public class ParserSupport
 		throws SAXParseException {
 		if (arp.idsUsed != null) {
 			IRI uri = ctxt.uri;
-            Map<String,Location> idsUsedForBase = idsUsed().get(uri);
+            Map<String,ARPLocation> idsUsedForBase = idsUsed().get(uri);
 			if (idsUsedForBase == null) {
-				idsUsedForBase = new HashMap<String, Location>();
+				idsUsedForBase = new HashMap<String, ARPLocation>();
 				idsUsed().put(uri, idsUsedForBase);
 			}
-			Location prev = idsUsedForBase.get(str);
+			ARPLocation prev = idsUsedForBase.get(str);
 			if (prev != null) {
 				arp.warning(taintMe,
 					WARN_REDEFINITION_OF_ID,

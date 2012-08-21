@@ -20,7 +20,7 @@ package com.hp.hpl.jena.rdf.arp;
 
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.Location;
+import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;
 
 /**
  * An exception during the RDF processing of ARP. Note: it is distinguished from
@@ -37,7 +37,7 @@ public class ParseException extends SAXParseException implements
     private static final long serialVersionUID = -5986976549492477885L;
     final int id;
 
-    protected ParseException(int id, Location where, String msg) {
+    protected ParseException(int id, ARPLocation where, String msg) {
         super(msg, where.inputName, null, where.endLine, where.endColumn);
         this.id = id;
         
@@ -45,7 +45,7 @@ public class ParseException extends SAXParseException implements
 
 
 
-    public ParseException(int id, Location where, Exception e) {
+    public ParseException(int id, ARPLocation where, Exception e) {
         super(e.getMessage(), where.inputName, null, where.endLine, where.endColumn,e);
         if (getCause()==null)
             initCause(e);

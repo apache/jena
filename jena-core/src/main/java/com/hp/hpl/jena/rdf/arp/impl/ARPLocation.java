@@ -25,17 +25,12 @@
 package com.hp.hpl.jena.rdf.arp.impl;
 import org.xml.sax.Locator;
 
-/**
- *
- * @author  jjc
- * 
- */
-public class Location implements Locator {
+public class ARPLocation implements Locator {
     public final String inputName;
     final String publicId;
     public final int endLine;
     public final int endColumn;
-    Location(Locator locator) {
+    ARPLocation(Locator locator) {
     	if (locator==null){
     	  inputName = "unknown-source";
     	  publicId = "unknown-source";

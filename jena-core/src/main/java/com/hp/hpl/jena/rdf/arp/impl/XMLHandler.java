@@ -61,7 +61,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
 
     boolean encodingProblems = false;
 
-    protected Map<IRI, Map<String,Location>> idsUsed = new HashMap<IRI, Map<String,Location>>();
+    protected Map<IRI, Map<String,ARPLocation>> idsUsed = new HashMap<IRI, Map<String,ARPLocation>>();
     protected int idsUsedCount = 0;
 
     public XMLHandler() {}
@@ -180,7 +180,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
             warning(taintMe,id, location(), msg);
     }
 
-    void warning(Taint taintMe, int id, Location loc, String msg) throws SAXParseException {
+    void warning(Taint taintMe, int id, ARPLocation loc, String msg) throws SAXParseException {
         if (options.getErrorMode(id) != EM_IGNORE)
             warning(taintMe, id, new ParseException(id, loc, msg) {
                 private static final long serialVersionUID = 1990910846204964756L;
@@ -188,7 +188,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
     }
 
     void generalError( int id, Exception e) throws SAXParseException {
-        Location where = new Location(locator);
+        ARPLocation where = new ARPLocation(locator);
         // System.err.println(e.getMessage());
         warning(null, id, new ParseException(id, where, e));
 
@@ -386,7 +386,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         idsUsed = 
         	ignoring(WARN_REDEFINITION_OF_ID)?
         			null:
-        	        new HashMap<IRI, Map<String,Location>>();
+        	        new HashMap<IRI, Map<String,ARPLocation>>();
         idsUsedCount = 0;
         if (options.getEmbedding())
             frame = new LookingForRDF(this, initialContext(base, lang));
@@ -422,8 +422,8 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         }
     }
 
-    public Location location() {
-        return new Location(locator);
+    public ARPLocation location() {
+        return new ARPLocation(locator);
     }
 
     private IRIFactory factory = null ;
