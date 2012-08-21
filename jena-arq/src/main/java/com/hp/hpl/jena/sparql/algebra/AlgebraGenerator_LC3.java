@@ -42,7 +42,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 // Develop modifications outside of main codebase.Table
-public class AlgebraGenerator 
+public class AlgebraGenerator_LC3 
 {
     // Fixed filter position means leave exactly where it is syntactically (illegal SPARQL)
     // Helpful only to write exactly what you mean and test the full query compiler.
@@ -60,14 +60,14 @@ public class AlgebraGenerator
     static final private boolean applySimplification = true ;                   // False allows raw algebra to be generated (testing) 
     static final private boolean simplifyTooEarlyInAlgebraGeneration = false ;  // False is the correct setting. 
 
-    public AlgebraGenerator(Context context)
+    public AlgebraGenerator_LC3(Context context)
     {
         this (context != null ? context : ARQ.getContext().copy(), 0) ;
     }
     
-    public AlgebraGenerator() { this(null) ; } 
+    public AlgebraGenerator_LC3() { this(null) ; } 
     
-    private AlgebraGenerator(Context context, int depth)
+    private AlgebraGenerator_LC3(Context context, int depth)
     {
         this.context = context ;
         this.subQueryDepth = depth ;
@@ -175,7 +175,7 @@ public class AlgebraGenerator
         }
         
         // Deal with any remaining ops.
-        //current = joinOpAcc(current, acc) ;
+        current = joinOpAcc(current, acc) ;
         
         if ( filters != null )
         {
@@ -238,6 +238,29 @@ public class AlgebraGenerator
             if ( elt instanceof ElementPathBlock )
             {
                 ElementPathBlock epb = (ElementPathBlock)elt ;
+                // Done later.  remove when definitely OK to delay.
+//                for ( TriplePath p : epb.getPattern() )
+//                {
+//                    if ( p.isTriple() )
+//                    {}
+//                    
+//                    // Do the top level conversion.
+//                    Path path = p.getPath() ;
+//                    if ( path instanceof P_Link )
+//                    {}
+//                    else if ( path instanceof P_Inverse ) 
+//                    {
+//                        // and inverse of a link.
+//                    }
+//                    else if ( path instanceof P_Seq )
+//                    {
+//                        P_Seq seq = (P_Seq)path ;
+//                        
+//                    }
+//                    else
+//                    {}
+//                }
+                
                 
                 if ( currentPathBlock == null )
                 {
@@ -261,71 +284,98 @@ public class AlgebraGenerator
         return Pair.create(filters, groupElts) ;
     }
     
-//    /** Flush the op accumulator - and clear it */
-//    private void accumulate(Deque<Op> acc, Op op) { acc.addLast(op) ; }
-//
-//    /** Accumulate stored ops, return unit if none. */
-//    private Op popAccumulated(Deque<Op> acc)
-//    {
-//        if ( acc.size() == 0 )
-//            return OpTable.unit() ; 
-//        
-//        Op joined = null ;
-//        // First first to last.
-//        for ( Op op : acc )
-//            joined = OpJoin.create(joined,op) ;
-//        acc.clear() ;
-//        return joined ; 
-//    }
-//    
-//    /** Join stored ops to the current state */
-//    private Op joinOpAcc(Op current, Deque<Op> acc)
-//    {
-//        if ( acc.size() == 0 ) return current ;
-//        Op joined = current ;
-//        // First first to last.
-//        for ( Op op : acc )
-//            joined = OpJoin.create(joined,op) ;
-//        acc.clear() ;
-//        return joined ; 
-//    }
+    /** Flush the op accumulator - and clear it */
+    private void accumulate(Deque<Op> acc, Op op) { acc.addLast(op) ; }
+
+    /** Accumulate stored ops, return unit if none. */
+    private Op popAccumulated(Deque<Op> acc)
+    {
+        if ( acc.size() == 0 )
+            return OpTable.unit() ; 
+        
+        Op joined = null ;
+        // First first to last.
+        for ( Op op : acc )
+            joined = OpJoin.create(joined,op) ;
+        acc.clear() ;
+        return joined ; 
+    }
+    
+    /** Join stored ops to the current state */
+    private Op joinOpAcc(Op current, Deque<Op> acc)
+    {
+        if ( acc.size() == 0 ) return current ;
+        Op joined = current ;
+        // First first to last.
+        for ( Op op : acc )
+            joined = OpJoin.create(joined,op) ;
+        acc.clear() ;
+        return joined ; 
+    }
     
     private Op compileOneInGroup(Element elt, Op current, Deque<Op> acc)
     {
-//            // Coming into the general block.
-//            if ( elt instanceof ElementTriplesBlock )
-//            {
-//                ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
-//                Op op = compileBasicPattern(etb.getPattern()) ;
-//                return join(current, op) ;
-//            }
-//
-//            if ( elt instanceof ElementPathBlock )
-//            {
-//                ElementPathBlock epb = (ElementPathBlock)elt ;
-//                Op op = compilePathBlock(epb.getPattern()) ;
-//                return join(current, op) ;
-//            }
-//            
-        // Elements that group so far and evaluate over that. 
+        // PUSH
+        // Replace triple patterns by OpBGP (i.e. SPARQL translation step 1)
+        if ( elt instanceof ElementTriplesBlock )
+        {
+            // Should not happen.
+            ElementTriplesBlock etb = (ElementTriplesBlock)elt ;
+            Op op = compileBasicPattern(etb.getPattern()) ;
+            accumulate(acc, op) ;
+            return current ;
+        }
         
+        // PUSH
+        if ( elt instanceof ElementPathBlock )
+        {
+            ElementPathBlock epb = (ElementPathBlock)elt ;
+            Op op = compilePathBlock(epb.getPattern()) ;
+            accumulate(acc, op) ;
+            return current ;
+        }
+        
+        // POP
         if ( elt instanceof ElementAssign )
         {
+            // This step and the similar BIND step needs to access the preceeding 
+            // element if it is a BGP.
+            // That might 'current', or in the left side of a join.
+            // If not a BGP, insert a empty one.  
+            
+            Op op = popAccumulated(acc) ;
             ElementAssign assign = (ElementAssign)elt ;
-            return OpAssign.assign(current, assign.getVar(), assign.getExpr()) ;
+            Op opAssign = OpAssign.assign(op, assign.getVar(), assign.getExpr()) ;
+            accumulate(acc, opAssign) ;
+            return current ;
         }
-
+        
+        // POP
         if ( elt instanceof ElementBind )
         {
+            Op op = popAccumulated(acc) ;
             ElementBind bind = (ElementBind)elt ;
-            return OpExtend.extend(current, bind.getVar(), bind.getExpr()) ;
+            Op opExtend = OpExtend.extend(op, bind.getVar(), bind.getExpr()) ;
+            accumulate(acc, opExtend) ;
+            return current ;
         }
 
+        // Flush.
+        current = joinOpAcc(current, acc) ; 
+        
         if ( elt instanceof ElementOptional )
         {
             ElementOptional eltOpt = (ElementOptional)elt ;
             return compileElementOptional(eltOpt, current) ;
         }
+        
+//        if ( elt instanceof ElementSubQuery )
+//        {
+//            ElementSubQuery elQuery = (ElementSubQuery)elt ;
+//            Op op = compileElementSubquery(elQuery) ;
+//            //TODO Plain join
+//            return join(current, op) ;
+//        }
         
         if ( elt instanceof ElementMinus )
         {
@@ -335,22 +385,18 @@ public class AlgebraGenerator
         }
 
         // All elements that simply "join" into the algebra.
-        if ( elt instanceof ElementGroup        || 
-             elt instanceof ElementNamedGraph   ||
-             elt instanceof ElementService      ||
-             elt instanceof ElementFetch        ||
-             elt instanceof ElementUnion        || 
-             elt instanceof ElementSubQuery     ||
-             elt instanceof ElementData         ||
-             elt instanceof ElementTriplesBlock ||
-             elt instanceof ElementPathBlock
+        if ( elt instanceof ElementGroup || 
+             elt instanceof ElementNamedGraph ||
+             elt instanceof ElementService ||
+             elt instanceof ElementFetch ||
+             elt instanceof ElementUnion || 
+             elt instanceof ElementSubQuery  ||
+             elt instanceof ElementData
             )
         {
             Op op = compileElement(elt) ;
             return join(current, op) ;
         }
-        
-        // Specials.
         
         if ( elt instanceof ElementExists )
         {
@@ -367,14 +413,14 @@ public class AlgebraGenerator
         }
         
         // Filters were collected together by prepareGroup
-        // This only handles filters left in place by some magic. 
+        // This only handels filters left in place by some magic. 
         if ( elt instanceof ElementFilter )
         {
             ElementFilter f = (ElementFilter)elt ;
             return OpFilter.filter(f.getExpr(), current) ;
         }
     
-//        // SPARQL 1.1 UNION -- did not make it into SPARQL 
+//        // SPARQL 1.1 UNION -- did not make SPARQL 
 //        if ( elt instanceof ElementUnion )
 //        {
 //            ElementUnion elt2 = (ElementUnion)elt ;
@@ -505,7 +551,7 @@ public class AlgebraGenerator
 
     protected Op compileElementSubquery(ElementSubQuery eltSubQuery)
     {
-        AlgebraGenerator gen = new AlgebraGenerator(context, subQueryDepth+1) ;
+        AlgebraGenerator_LC3 gen = new AlgebraGenerator_LC3(context, subQueryDepth+1) ;
         return gen.compile(eltSubQuery.getQuery()) ;
     }
     
