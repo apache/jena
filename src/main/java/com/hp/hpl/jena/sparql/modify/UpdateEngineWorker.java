@@ -342,6 +342,21 @@ public class UpdateEngineWorker implements UpdateVisitor
         {
             Iterator<Binding> bindings = evalBindings(query, dsg, initialBinding, context) ;
             
+            if ( false )
+            {   
+                System.out.println("=======================================") ;
+                System.out.println(graphStore) ;
+                System.out.println("=======================================") ;
+                System.out.println(dsg) ;
+                System.out.println("=======================================") ;
+                // Debug.
+                List<Binding> x = Iter.toList(bindings) ;
+                System.out.println("====") ;
+                Iter.asString(x, "\n") ;
+                System.out.println("====") ;
+                bindings = Iter.iter(x) ;
+            }
+            
             db.addAll(bindings) ;
             Iter.close(bindings) ;
             
@@ -388,9 +403,6 @@ public class UpdateEngineWorker implements UpdateVisitor
         
         if ( update.getUsingNamed().size() > 0  )
         {
-            // Replace with a no named graphs version.
-            dsg = new DatasetGraphMap(dsg.getDefaultGraph()) ;
-            
             for ( Node gn : update.getUsingNamed() )
                 dsg.addGraph(gn, graphOrDummy(graphStore, gn)) ;
         }
