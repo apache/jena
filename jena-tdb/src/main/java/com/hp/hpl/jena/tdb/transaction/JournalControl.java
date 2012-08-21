@@ -55,12 +55,13 @@ public class JournalControl
     public static void print(Journal journal)
     {
         System.out.println("Size: "+journal.size()) ;
+        Iterator<JournalEntry> iter = journal.entries() ; 
         
-        for ( JournalEntry e : journal )
+        for (  ; iter.hasNext() ; )
         {
+            JournalEntry e = iter.next() ;
             System.out.println(JournalEntry.format(e)) ;
             System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
-            
         }
     }
 
@@ -105,11 +106,12 @@ public class JournalControl
     /** Recovery from a journal.
      *  Find if there is a commit record; if so, reply the journal to that point.
      *  Try to see if there is another commit record ...
+     *  Retirn true if a recovery was attempted; return false if we decided no work needed.
      */
-    public static void recoverFromJournal(DatasetGraphTDB dsg, Journal jrnl )
+    public static boolean recoverFromJournal(DatasetGraphTDB dsg, Journal jrnl )
     {
         if ( jrnl.isEmpty() )
-            return ;
+            return false ;
         
         long posn = 0 ;
         for ( ;; )
@@ -123,6 +125,7 @@ public class JournalControl
         // We have replayed the journals - clean up.
         jrnl.truncate(0) ;
         dsg.sync() ;
+        return true ;
     }
 
     /** Scan to a commit entry, starting at a given position in the journal.
@@ -253,12 +256,18 @@ public class JournalControl
         journal.position(0) ;
         dsg.getLock().enterCriticalSection(Lock.WRITE) ;
         try {
-            for ( JournalEntry e : journal )
+            Iterator<JournalEntry> iter = journal.entries() ; 
+
+            for (  ; iter.hasNext() ; )
+            {
+                JournalEntry e = iter.next() ;
                 replay(e, dsg) ;
-            // There is no point sync here.  
-            // No writes via the DSG have been done 
-            // so all internal flags "syncNeeded" are false.
-            //dsg.sync() ;
+
+                // There is no point sync here.  
+                // No writes via the DSG have been done. 
+                // so all internal flags "syncNeeded" are false.
+                //dsg.sync() ;
+            }
         } 
         catch (RuntimeException ex)
         { 

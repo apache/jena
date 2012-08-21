@@ -60,8 +60,10 @@ public class T_TDBWriteTransaction {
 	final static String INDEX_SIZE_PREDICATE = "http://test.net/xmlns/test/1.0/indexSize";
 
     public static void main(String[] args) {
+        if ( true )
+            SystemTDB.setFileMode(FileMode.direct) ;
 
-	    Log.setLog4j() ;
+        Log.setLog4j() ;
 	    TransactionManager.QueueBatchSize = 10;
 	    
 //		if (args.length == 0) {
@@ -73,12 +75,6 @@ public class T_TDBWriteTransaction {
 	    FileOps.ensureDir(location) ;
 	    //FileOps.clearDirectory(location) ;
 	    bracketWithReader = false ;
-	    
-	    //Log.enable(JournalControl.class.getName()) ;
-	    
-	    //Submitted without .... 
-	    if ( true )
-	        SystemTDB.setFileMode(FileMode.direct) ;
 	    
 	    run(location) ;
 //	    StoreConnection.make(location).forceRecoverFromJournal() ;
