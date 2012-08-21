@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -22,14 +22,12 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.function.FunctionBase1 ;
 
-/** floor(expression) */ 
-
-public class FN_floor extends FunctionBase1
+public class FN_StrEncodeForURI extends FunctionBase1
 {
-    public FN_floor() { super() ; }
-    
     @Override
     public NodeValue exec(NodeValue v)
-    { return XSDFuncOp.floor(v) ; }
-
+    {
+        return XSDFuncOp.strEncodeForURI(v) ;
+    }
 }
+

@@ -46,6 +46,9 @@ public class ARQConstants
     /** XSD namespace prefix */
     public static final String xsdPrefix = XSDDatatype.XSD+"#" ;
     
+    /** The prefix of SPARQL functions and operator */
+    public static final String fnSparql = "http://www.w3.org/ns/sparql#" ;
+    
     /** The namespace of the XML results format */ 
     public static final String srxPrefix = "http://www.w3.org/2005/sparql-results#" ;
     
