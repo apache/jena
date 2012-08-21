@@ -4,6 +4,10 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.4
 
++ Implement WG decision on BIND - use original semantics. 
++ improved optimization of sequeneces of OPTIONALs where the grouois only OPTIONAL and an equality filter (JENA-294)
++ Add URIs for all XQuery/Xpath F&O functions for duration accessors. (JENA-302)
++ Add URIs for all XQuery/Xpath F&O functions where there are SPARQl functions (JENA-303)
 
 ==== ARQ 2.9.3
 

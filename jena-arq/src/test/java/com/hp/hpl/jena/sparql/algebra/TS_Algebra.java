@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.sparql.algebra;
 
 
+import com.hp.hpl.jena.sparql.algebra.optimize.TestFilterTransform ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestOptimizer ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestTransformMergeBGPs ;
 import com.hp.hpl.jena.sparql.algebra.optimize.TestVarRename ;
