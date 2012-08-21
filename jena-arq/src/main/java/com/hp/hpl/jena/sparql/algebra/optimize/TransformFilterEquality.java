@@ -26,7 +26,6 @@ import java.util.Set ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVars ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
@@ -37,6 +36,9 @@ import com.hp.hpl.jena.sparql.expr.* ;
 
 public class TransformFilterEquality extends TransformCopy
 {
+    // The approach taken for { OPTIONAL{} OPTIONAL{} } is more general ... and better?
+    // Still need to be careful of double-nested OPTIONALS as intermedates of a different
+    // value can block overall results so don't mask immediately.
     public TransformFilterEquality()
     { }
     
@@ -67,17 +69,23 @@ public class TransformFilterEquality extends TransformCopy
         // hence elimate all rows.  Return the empty table. 
         
         if ( testSpecialCaseUnused(subOp, equalities, remaining))
-        {
             return OpTable.empty() ;
-        }
         
         // Special case: the deep left op of a OpConditional/OpLeftJoin is unit table.
-        // Given the there is an equality filter, if the right does not match, 
-        // the empty row will be rejected by the filter.
-        // So the bottom is in fact a normal join; 
-        // and a form like "(join unit P)" is equal to P.  
+        // This is 
+        // { OPTIONAL{P1} OPTIONAL{P2} ... FILTER(?x = :x) } 
         if ( testSpecialCase1(subOp, equalities, remaining))
-            op = processSpecialCase1(op, equalities) ;
+        {
+            // Find backbone of ops
+            List<Op> ops = extractOptionals(subOp) ;
+            ops = processSpecialCase1(ops, equalities) ;
+            // Put back together
+            op = rebuild((Op2)subOp, ops) ;
+            // Put all filters - either we optimized, or we left alone.
+            // Either way, the complete set of filter expressions.
+            op = OpFilter.filter(exprs, op) ;
+            return op ;
+        }
         
         // ---- Transform
 
@@ -86,7 +94,7 @@ public class TransformFilterEquality extends TransformCopy
         for ( Pair<Var, NodeValue> equalityTest : equalities )
             op = processFilterWorker(op, equalityTest.getLeft(), equalityTest.getRight()) ;
 
-            // ---- Place any filter expressions around the processed sub op. 
+        // ---- Place any filter expressions around the processed sub op. 
         if ( remaining.size() > 0 )
             op = OpFilter.filter(remaining, op) ;
         return op ;
@@ -220,7 +228,8 @@ public class TransformFilterEquality extends TransformCopy
         return false ;
     }
     
-    // -- Special cases
+    // -- A special case
+
     private static boolean testSpecialCaseUnused(Op op, List<Pair<Var, NodeValue>> equalities, ExprList remaining)
     {
         // If the op does not contain the var at all, for some equality
@@ -234,20 +243,70 @@ public class TransformFilterEquality extends TransformCopy
         }
         return false ;
     }
-
-    // If a sequence of OPTIONALS, and nothing prior to the first, we end up with
-    // a unit table on the left side of deepest leftjoin/conditional.
     
+    // If a sequence of OPTIONALS, and nothing prior to the first, we end up with
+    // a unit table on the left sid of a next of LeftJoin/conditionals.
+
     private static boolean testSpecialCase1(Op op, List<Pair<Var, NodeValue>> equalities , ExprList remaining )
     {
-       return false ;
+        while ( op instanceof OpConditional || op instanceof OpLeftJoin )
+        {
+            Op2 opleftjoin2 = (Op2)op ;
+            op = opleftjoin2.getLeft() ;
+        }
+        return isUnitTable(op) ;
     }
-
-    private static Op processSpecialCase1(Op op, List<Pair<Var, NodeValue>> equalities)
+    
+    private static List<Op> extractOptionals(Op op)
     {
-        throw new ARQNotImplemented() ;
+        List<Op> chain = new ArrayList<Op>() ;
+        while ( op instanceof OpConditional || op instanceof OpLeftJoin )
+        {
+            Op2 opleftjoin2 = (Op2)op ;
+            chain.add(opleftjoin2.getRight()) ;
+            op = opleftjoin2.getLeft() ;
+        }
+        return chain ;
     }
 
+    private static List<Op> processSpecialCase1(List<Op> ops, List<Pair<Var, NodeValue>> equalities)
+    {
+        List<Op> ops2 = new ArrayList<Op>() ;
+        Collection<Var> vars = varsMentionedInEqualityFilters(equalities) ;
+        
+        for ( Op op : ops )
+        {
+            Op op2 = op ;
+            if ( safeToTransform(vars, op) )
+            {
+                for ( Pair<Var, NodeValue> p : equalities )
+                        op2 = processFilterWorker(op, p.getLeft(), p.getRight()) ;
+            }
+            ops2.add(op2) ;
+        }
+        return ops2 ;
+    }
+
+    private static Op rebuild(Op2 subOp, List<Op> ops)
+    {
+        Op chain = OpTable.unit() ; 
+        for ( Op op : ops )
+        {
+            chain = subOp.copy(chain, op) ;
+        }
+        return chain ;
+    }
+  
+    private static boolean isUnitTable(Op op)
+    {
+        if (op instanceof OpTable )
+        {
+            if ( ((OpTable)op).isJoinIdentity() )
+                return true;  
+        }
+        return false ;
+    }
+    
     // ---- Transformation
         
     private static Op processFilterWorker(Op op, Var var, NodeValue constant)
