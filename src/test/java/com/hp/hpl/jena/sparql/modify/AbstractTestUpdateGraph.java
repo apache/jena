@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.* ;
 
-public abstract class TestUpdateGraph extends TestUpdateBase
+public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
 {
     protected static Node s = NodeFactory.parseNode("<http://example/r>") ;
     protected static Node p = NodeFactory.parseNode("<http://example/p>") ;

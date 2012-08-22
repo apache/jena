@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,27 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql;
 
 import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.sparql.ARQTestSuite ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
-public class TS3_Syntax extends TestSuite
+public class TC_Scripted extends TestSuite
 {
     static public TestSuite suite()
     {
-        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
+        TestSuite ts = new TC_Scripted() ;
+        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/manifest-arq.ttl")) ;
+        ts.addTest(ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl")) ;
+        return ts ;
+    }
+    
+    public TC_Scripted()
+    {
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
     }
 }

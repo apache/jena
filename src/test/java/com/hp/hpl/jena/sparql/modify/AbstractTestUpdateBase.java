@@ -23,11 +23,12 @@ import org.openjena.atlas.junit.BaseTest ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQTestSuite ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateAction ;
 
-public abstract class TestUpdateBase extends BaseTest
+public abstract class AbstractTestUpdateBase extends BaseTest
 {
     protected abstract GraphStore getEmptyGraphStore() ; 
     
@@ -51,7 +52,7 @@ public abstract class TestUpdateBase extends BaseTest
         g.getBulkUpdateHandler().add(data) ;
     }
     
-    protected static final String FileBase = TS3_Update.testDirUpdate ;
+    protected static final String FileBase = ARQTestSuite.testDirUpdate ;
     
     protected static void script(GraphStore gStore, String filename)
     {
