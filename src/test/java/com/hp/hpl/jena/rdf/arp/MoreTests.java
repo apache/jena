@@ -165,6 +165,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 				"testing/wg/rdfms-syntax-incomplete/test001.rdf");
 		if (r.getEncoding().startsWith("UTF")) {
 			logger.warn("Encoding mismatch tests not executed on platform with default UTF encoding.");
+	        r.close() ;
 			return;
 		}
 		rdr.setErrorHandler(this);
@@ -172,7 +173,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		rdr.read(m, r, "http://example.org/");
 		//System.err.println(m.size() + " triples read.");
 		checkExpected();
-
+        r.close() ;
 	}
 
 	public void testIcu() throws IOException {
@@ -269,7 +270,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		catch (java.io.UnsupportedEncodingException e) {
 			System.err
 			.println("WARNING: Encoding mismatch3 test not executed on platform without MS950 encoding.");
-
+			if ( fin != null ) fin.close() ;
 			return;
 		}
 		

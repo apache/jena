@@ -392,8 +392,9 @@ int debugC = 0;
 		}
 	}
 
-	static private void process(String surl) {
-		InputStream in;
+	@SuppressWarnings("resource")
+    static private void process(String surl) {
+		InputStream in = null ;
 		
 		URL url;
 		String baseURL;
@@ -421,7 +422,9 @@ int debugC = 0;
 			}
 		}
 		process(in, baseURL, surl);
+		try { in.close() ; } catch (IOException ex) {} 
 	}
+		
 	static private void process(InputStream in, String xmlBasex, String surl) {
 		String xmlBasey = xmlBase == null ? xmlBasex : xmlBase;
 		try {
