@@ -243,6 +243,7 @@ public final class InStreamUTF8 extends Reader implements CharStream
             Reader r = new InStreamUTF8(in) ;
             int len ;
             len = r.read(chars) ;
+            IO.close(r) ;
             return new String(chars, 0, len) ;
         } catch (IOException ex)
         {
