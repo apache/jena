@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,26 +18,16 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-import junit.framework.TestSuite ;
-
-
-public class TS3_Update extends TestSuite
+@RunWith(Suite.class)
+@SuiteClasses( { 
+    TestUpdateGraphMem.class ,
+    TestUpdateGraphMgtMem.class
+})
+public class TS_Update
 {
-    public static final String testDirUpdate = "testing/Update" ;
-    
-    static public TestSuite suite()
-    {
-        TestSuite ts = new TS3_Update() ;
-//        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
-//        ts.addTestSuite(TestUpdateGraphMem.class) ;
-      ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
-      ts.addTest(TestUpdateGraphMem.suite()) ;
-        return ts ;
-    }
-    
-    private TS3_Update()
-    {
-        super(TS3_Update.class.getName());
-    }
 }
+

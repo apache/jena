@@ -147,7 +147,12 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-            <include>**/TS_*.java</include>
+	    <!-- Test collections -->
+	    <!-- TC_General, TC_Riot, TC_Atlas-->
+	    <include>**/TS_*.java</include>
+            <include>**/TC_Scripted.java</include>
+            <include>**/TC_DAWG.java</include>
+            <!--<include>**/TC_SPARQL11.java</include>-->
           </includes>
         </configuration>
       </plugin>
