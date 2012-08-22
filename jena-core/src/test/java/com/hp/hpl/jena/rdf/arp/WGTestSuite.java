@@ -150,13 +150,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 			if (logging) {	    
 				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
 				w.setProperty("xmlbase",BASE_RESULTS_URI );
-				OutputStream out;
-				try {
+				OutputStream out = System.out ;
 				out = new FileOutputStream("/tmp/rdf-results.rdf");
-				}
-				catch (Exception e){
-					out = System.out;
-				}
 				w.write(testResults,out,BASE_RESULTS_URI);
 				out.close();
 			}

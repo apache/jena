@@ -44,8 +44,11 @@ public class TestARPStates extends TestCase {
           while (true) {
               String line = r.readLine();
               if (line == null)
+              {
+                  r.close() ;
                   return rslt;
-              int hash = line.indexOf('%');
+              }
+               int hash = line.indexOf('%');
               line = (hash==-1?line:line.substring(0,hash)).trim();
               String fields[] = line.split("  *");
               if (fields.length==0)

@@ -88,6 +88,7 @@ public class TestStreamUTF8 extends BaseTest
                 int len = r.read(cbuff) ;
                 String str = new String(cbuff, 0 , len) ;
                 assertEquals(x, str) ;
+                r.close();
             } catch (IOException ex) { throw new RuntimeException(ex) ; } 
         }
 

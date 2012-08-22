@@ -18,14 +18,9 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import java.io.FileInputStream ;
-import java.io.FileNotFoundException ;
-import java.io.IOException ;
-import java.io.InputStream ;
-import java.io.OutputStream ;
-import java.io.Reader ;
-import java.io.StringReader ;
+import java.io.* ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -49,11 +44,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderExpr ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderOp ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
-import com.hp.hpl.jena.sparql.sse.builders.BuilderTable ;
+import com.hp.hpl.jena.sparql.sse.builders.* ;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandler ;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerPlain ;
 import com.hp.hpl.jena.sparql.sse.lang.ParseHandlerResolver ;
@@ -238,8 +229,9 @@ public class SSE
     /** Read a file and obtain an SSE item expression */
     public static Item readFile(String filename, PrefixMapping pmap)
     {
+        FileInputStream in = null ;
         try {
-            FileInputStream in = new FileInputStream(filename) ;
+            in = new FileInputStream(filename) ;
             long len = in.getChannel().size() ;
             if ( len == 0 )
                 return Item.nil ;
@@ -249,6 +241,7 @@ public class SSE
         { throw new NotFoundException("Not found: "+filename) ; } 
         catch (IOException ex)
         { throw new ARQException("IOExeption: "+filename, ex) ; }
+        finally { IO.close(in) ; }
     }
     
     /** Parse a string and obtain an SSE item expression (no additional prefix mappings)*/
