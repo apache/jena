@@ -98,7 +98,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     @Override
     protected final void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
-        validate(request) ;
         HttpActionQuery action = new HttpActionQuery(id, desc, request, response, verbose_debug) ;
         // GET
         if ( request.getMethod().equals(HttpNames.METHOD_GET) )
