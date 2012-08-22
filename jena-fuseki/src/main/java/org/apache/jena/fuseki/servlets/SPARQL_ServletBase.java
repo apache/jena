@@ -37,8 +37,8 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphReadOnly ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.tdb.migrate.DatasetGraphReadOnly ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {

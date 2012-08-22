@@ -25,6 +25,7 @@ import org.apache.jena.fuseki.HttpNames ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sparql.core.DatasetDescription ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
@@ -48,7 +49,8 @@ public class SPARQL_QueryDataset extends SPARQL_Query
             errorNotFound("Service Description: "+request.getRequestURI()) ;
         }
         
-        validate(request, dsParams) ;
+        // Use of the dataset describing parameters is check later.
+        validate(request, allParams) ;
     }
 
     @Override
@@ -58,6 +60,11 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
+        // Protocol.
+        DatasetDescription dsDesc = getDatasetDescription(action) ;
+        if (dsDesc != null )
+            warning("SPARQL Query: Ignoring dataset description in the protocol request") ;  
+        
         return DatasetFactory.create(action.getActiveDSG()) ;
     }
 }
