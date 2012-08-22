@@ -102,8 +102,6 @@ public abstract class SPARQL_ServletBase extends ServletBase
         DatasetRef desc = null ;
         String uri = request.getRequestURI() ;
 
-        validate(request) ;
-        
         uri = mapRequestToDataset(uri) ;
 
         if ( uri != null )

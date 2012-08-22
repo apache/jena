@@ -63,7 +63,7 @@ public class SPARQL_QueryDataset extends SPARQL_Query
         // Protocol.
         DatasetDescription dsDesc = getDatasetDescription(action) ;
         if (dsDesc != null )
-            warning("SPARQL Query: Ignoring dataset description in the protocol request") ;  
+            errorBadRequest("SPARQL Query: Dataset description in the protocol request") ;  
         
         return DatasetFactory.create(action.getActiveDSG()) ;
     }
