@@ -31,7 +31,6 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.openjena.atlas.web.MediaType ;
-import org.openjena.atlas.web.TypedInputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 
@@ -87,10 +86,8 @@ public class ResponseModel
                 SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
             }
 
-            // Force to text/plain?
-            TypedInputStream ts = new TypedInputStream(null, mimeType, WebContent.charsetUTF8) ;
-            String contentType = ts.getMediaType() ;
-            String charset =     ts.getCharset() ;
+            String contentType = mimeType ;
+            String charset =     WebContent.charsetUTF8 ;
             
             String forceAccept = ResponseOps.paramForceAccept(request) ;
             if ( forceAccept != null )
@@ -99,7 +96,7 @@ public class ResponseModel
                 charset = WebContent.charsetUTF8 ;
             }
             
-            Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ; 
+            Lang lang = FusekiLib.langFromContentType(contentType) ; 
             RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
                  
             if ( rdfw instanceof RDFXMLWriterI )
