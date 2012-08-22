@@ -26,6 +26,8 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
 
 public class SPARQL_QueryDataset extends SPARQL_Query
 {
@@ -60,11 +62,18 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     @Override
     protected Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) 
     { 
+        DatasetGraph dsg = action.getActiveDSG() ;
+        
+        // query.getDatasetDescription() ;
+        
         // Protocol.
         DatasetDescription dsDesc = getDatasetDescription(action) ;
         if (dsDesc != null )
-            errorBadRequest("SPARQL Query: Dataset description in the protocol request") ;  
+        {
+            //errorBadRequest("SPARQL Query: Dataset description in the protocol request") ;
+            dsg = DynamicDatasets.dynamicDataset(dsDesc, dsg, false) ;
+        }
         
-        return DatasetFactory.create(action.getActiveDSG()) ;
+        return DatasetFactory.create(dsg) ;
     }
 }
