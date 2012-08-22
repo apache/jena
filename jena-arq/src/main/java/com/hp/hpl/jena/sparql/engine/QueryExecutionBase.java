@@ -586,8 +586,7 @@ public class QueryExecutionBase implements QueryExecution
             baseURI = IRIResolver.chooseBaseURI() ;
         
         DatasetGraph dsg =
-            DatasetUtils.createDatasetGraph(query.getGraphURIs(),
-                                            query.getNamedGraphURIs(),
+            DatasetUtils.createDatasetGraph(query.getDatasetDescription(),
                                             fileManager, baseURI ) ;
         return dsg ;
     }
