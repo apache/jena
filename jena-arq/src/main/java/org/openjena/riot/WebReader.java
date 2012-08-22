@@ -32,10 +32,13 @@ import static org.openjena.riot.WebContent.contentTypeTurtle ;
 import static org.openjena.riot.WebContent.contentTypeTurtleAlt1 ;
 import static org.openjena.riot.WebContent.contentTypeTurtleAlt2 ;
 
+import java.io.FileInputStream ;
+import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.TypedInputStream ;
 
@@ -103,8 +106,12 @@ public class WebReader
     
     private static TypedInputStream open(String uri, Lang lang)
     {
+        // Partial/
+        try {
+        InputStream in = new FileInputStream(uri) ; 
         // **** A FileManager that deals in TypedStreams properly (copy/rewrite)
-        return new TypedInputStream(null, null/*Content-Type*/, null/*charset*/) ;
+        return new TypedInputStream(in, lang.getContentType()/*Content-Type*/, null/*charset*/) ;
+    } catch (IOException ex) { IO.exception(ex) ; return null ; }
     }
     
     // -----------------------
