@@ -23,7 +23,7 @@ import junit.framework.JUnit4TestAdapter ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.GraphStoreFactory ;
 
-public class TestUpdateGraphMgtMem extends TestUpdateGraphMgt
+public class TestUpdateGraphMgtMem extends AbstractTestUpdateGraphMgt
 {
     public static junit.framework.Test suite()
     {

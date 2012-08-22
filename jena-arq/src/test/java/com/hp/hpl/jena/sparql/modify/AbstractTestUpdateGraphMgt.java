@@ -29,7 +29,7 @@ import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
 
-public abstract class TestUpdateGraphMgt extends TestUpdateBase
+public abstract class AbstractTestUpdateGraphMgt extends AbstractTestUpdateBase
 {
     static final Node graphIRI = Node.createURI("http://example/graph") ;
     

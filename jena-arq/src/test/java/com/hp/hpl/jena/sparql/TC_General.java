@@ -20,6 +20,8 @@ package com.hp.hpl.jena.sparql;
 
 
 import junit.framework.TestSuite ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
@@ -29,9 +31,12 @@ import com.hp.hpl.jena.sparql.api.TS_API ;
 import com.hp.hpl.jena.sparql.core.TS_Core ;
 import com.hp.hpl.jena.sparql.engine.TS_Engine ;
 import com.hp.hpl.jena.sparql.engine.binding.TS_Binding ;
+import com.hp.hpl.jena.sparql.expr.E_Function ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.lang.TS_Lang ;
+import com.hp.hpl.jena.sparql.modify.TS_Update ;
 import com.hp.hpl.jena.sparql.path.TS_Path ;
 import com.hp.hpl.jena.sparql.resultset.TS_ResultSet ;
 import com.hp.hpl.jena.sparql.solver.TS_Solver ;
@@ -50,7 +55,6 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     TS_Expr.class ,
     TS_ResultSet.class ,
     TS_Binding.class ,
-    TS_ParamString.class ,
     TS_Engine.class ,
     TS_Solver.class ,
     TS_Algebra.class ,
@@ -60,10 +64,20 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     TS_API.class ,
     TS_Core.class ,
     TS_Path.class ,
-    TS_ParamString.class 
+    TS_ParamString.class ,
+    TS_Update.class
 })
 
 public class TC_General extends TestSuite
 {
-
+    @BeforeClass public static void beforeClass()
+    {
+        NodeValue.VerboseWarnings = false ;
+        E_Function.WarnOnUnknownFunction = false ;
+    }
+    
+    @AfterClass  public static void afterClass()
+    {
+        
+    }
 }

@@ -28,4 +28,9 @@ public class TC_SPARQL11 extends TestSuite
     static public TestSuite suite() { return new TC_SPARQL11(); }
     
     // SPARQL 1.1 test suite (when ready)
+    
+    public TC_SPARQL11()
+    {
+        super(TC_SPARQL11.class.getName()) ;
+    }
 }
