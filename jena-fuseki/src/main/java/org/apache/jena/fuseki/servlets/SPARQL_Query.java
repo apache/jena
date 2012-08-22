@@ -137,15 +137,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
                                                              paramCallback, 
                                                              paramForceAccept,
                                                              paramTimeout) ;
-    protected static List<String> dsParams   = Arrays.asList(paramQuery, 
-                                                             // paramDefaultGraphURI, paramNamedGraphURI,
-                                                             paramQueryRef,
-                                                             paramStyleSheet,
-                                                             paramAccept,
-                                                             paramOutput1, paramOutput2, 
-                                                             paramCallback, 
-                                                             paramForceAccept,
-                                                             paramTimeout) ;
     
     /** Called to validate arguments */
     @Override

@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki.servlets;
 
-
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -32,8 +31,8 @@ import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWithLock ;
 import com.hp.hpl.jena.sparql.core.Transactional ;
-import com.hp.hpl.jena.tdb.migrate.DatasetGraphWithLock ;
 
 public class HttpAction
 {
