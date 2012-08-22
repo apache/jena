@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.Iterator ;
 
@@ -24,16 +24,10 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class DatasetGraphTrackActive implements DatasetGraph, Transactional
 {
-    // Layer - make this extend DatasetGraphWrapper - i.e. a switching wrapper.
-    // Can use switcher for switching between locations?
-    
     protected abstract DatasetGraph get() ;
     private boolean inTransaction = false ; 
 

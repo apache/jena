@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.core;
+package com.hp.hpl.jena.sparql.lang;
 
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestCase ;

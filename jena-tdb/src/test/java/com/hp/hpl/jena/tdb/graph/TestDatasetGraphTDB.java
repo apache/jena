@@ -20,12 +20,12 @@ package com.hp.hpl.jena.tdb.graph;
 
 import org.junit.Test ;
 
+import com.hp.hpl.jena.sparql.core.AbstractDatasetGraphTests ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphTests ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 
 // Quad tests
-public class TestDatasetGraphTDB extends DatasetGraphTests
+public class TestDatasetGraphTDB extends AbstractDatasetGraphTests
 {
     @Override
     protected DatasetGraph emptyDataset() { return TDBFactory.createDatasetGraph() ; }

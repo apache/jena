@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.core;
 
 import org.openjena.atlas.lib.Lib ;
 import org.openjena.atlas.lib.Sync ;
@@ -24,9 +24,8 @@ import org.openjena.atlas.lib.Sync ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** A DatasetGraph that uses the dataset lock to give wek transactional behaviour.
+/** A DatasetGraph that uses the dataset lock to give weak transactional behaviour.
  *  Only supports multiple-reader OR single-writer, and no transction abort.
  *  Transactions are not durable. 
  */

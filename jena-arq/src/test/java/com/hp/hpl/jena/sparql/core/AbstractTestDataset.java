@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-public abstract class TestDataset extends BaseTest
+public abstract class AbstractTestDataset extends BaseTest
 {
     // Assumes a dadatset which need explicit add graph 
     protected abstract Dataset createFixed() ;

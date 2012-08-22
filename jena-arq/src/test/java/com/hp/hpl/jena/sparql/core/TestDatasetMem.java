@@ -23,7 +23,7 @@ import junit.framework.JUnit4TestAdapter ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
-public class TestDatasetMem extends TestDataset 
+public class TestDatasetMem extends AbstractTestDataset 
 {
     public static junit.framework.Test suite()
     {

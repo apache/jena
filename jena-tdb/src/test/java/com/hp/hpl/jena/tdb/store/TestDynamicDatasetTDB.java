@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,28 +16,24 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.modify;
+package com.hp.hpl.jena.tdb.store;
 
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.sparql.core.AbstractTestDynamicDataset ;
+import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
 
-import junit.framework.TestSuite ;
-
-
-public class TS_Update extends TestSuite
+public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
 {
-    public static final String testDirUpdate = "testing/Update" ;
-    
-    static public TestSuite suite()
+
+    @Override
+    protected Dataset createDataset()
     {
-        TestSuite ts = new TS_Update() ;
-//        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
-//        ts.addTestSuite(TestUpdateGraphMem.class) ;
-      ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
-      ts.addTest(TestUpdateGraphMem.suite()) ;
-        return ts ;
+        return TDBFactory.createDataset() ;
     }
     
-    private TS_Update()
-    {
-        super(TS_Update.class.getName());
-    }
+    protected void startDynamicAndUnionTest()    { TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ; }
+    protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
+
 }
+

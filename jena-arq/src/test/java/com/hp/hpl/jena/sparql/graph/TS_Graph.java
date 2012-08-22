@@ -26,6 +26,8 @@ import org.junit.runners.Suite ;
       TestGraphsMem.class
     , TestDatasetGraphMem.class
     , TestGraphsDataBag.class
+    , TestGraphUnionRead.class
+    , TestReifier2.class
 })
 public class TS_Graph
 {

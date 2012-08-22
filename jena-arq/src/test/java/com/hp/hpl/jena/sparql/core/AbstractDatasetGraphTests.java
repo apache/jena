@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public abstract class DatasetGraphTests
+public abstract class AbstractDatasetGraphTests
 {
     protected abstract DatasetGraph emptyDataset() ;
     

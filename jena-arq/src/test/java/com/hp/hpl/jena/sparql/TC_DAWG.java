@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
  *  but we keep this set here as a reference.  
  * 
  *  */
-public class TS_DAWG extends TestSuite
+public class TC_DAWG extends TestSuite
 {
     static final String testSetNameDAWG        = "DAWG - Misc" ;
 
@@ -65,11 +65,11 @@ public class TS_DAWG extends TestSuite
         E_Function.WarnOnUnknownFunction = false ; 
     }
     
-    static public TestSuite suite() { return new TS_DAWG(); }
+    static public TestSuite suite() { return new TC_DAWG(); }
 
-    public TS_DAWG()
+    public TC_DAWG()
     {
-        super(TS_DAWG.class.getName()) ;
+        super(TC_DAWG.class.getName()) ;
 
         // One test, dawg-optional-filter-005-simplified or dawg-optional-filter-005-not-simplified
         // must fail because it's the same query and data with different interpretations of the
