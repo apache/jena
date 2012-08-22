@@ -49,8 +49,9 @@ public class utf8
             long lineNum = INIT_LINE ;
             long colNum = INIT_COL ;
             
+            InStreamUTF8 utf8 = null ;
             try {
-                InStreamUTF8 utf8 = new InStreamUTF8(in) ;
+                utf8 = new InStreamUTF8(in) ;
                 for (;;) 
                 {
                     int ch = utf8.read() ;
@@ -76,6 +77,7 @@ public class utf8
             {
                 ex.printStackTrace(System.err) ;
             }
+            finally { IO.close(utf8) ; }
         }
     }
 }

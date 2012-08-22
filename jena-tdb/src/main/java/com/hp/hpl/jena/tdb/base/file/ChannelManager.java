@@ -77,6 +77,7 @@ public class ChannelManager
             // "rws" - Syncs the file contents and metadata
             // "rw"  - OS write behind possible
             // "r"   - read only
+            @SuppressWarnings("resource")
             RandomAccessFile out = new RandomAccessFile(filename, mode) ;
             FileChannel channel = out.getChannel() ;
             return channel ;

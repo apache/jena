@@ -53,6 +53,7 @@ class BPlusTreeTools
                 ByteBufferLib.print(bb) ;
                 bb.clear() ;
             }
+            fh.close() ;
             
         } catch (IOException ex)
         {
