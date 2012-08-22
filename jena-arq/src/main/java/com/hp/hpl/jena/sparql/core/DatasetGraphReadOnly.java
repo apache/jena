@@ -16,16 +16,14 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.HashMap ;
 import java.util.Map ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.graph.GraphReadOnly ;
 
 /** Read-only view of a DatasetGraph.  Assumes the dataset underneath isn't changing.
  */
@@ -60,6 +58,7 @@ public class DatasetGraphReadOnly extends DatasetGraphWrapper
         
         Graph g = super.getGraph(graphNode) ;
         if ( g == null ) return null ;
+        g = new GraphReadOnly(g) ;
         namedGraphs.put(graphNode, g) ;
         return g ;
     }

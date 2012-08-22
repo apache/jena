@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,39 +16,17 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.store;
+package com.hp.hpl.jena.sparql.engine.binding;
 
-import org.junit.AfterClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
-import com.hp.hpl.jena.tdb.base.block.FileMode ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
-
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TestNodeId.class
-    , TestTripleTable.class
-    , TestGraphTDB.class
-    , TestGraphNamedTDB.class
-    , TestDatasetTDBPersist.class
-    , TestDatasetTDB.class
-    , TestLoader.class
-    // The script suite
-    , TestSuiteGraphTDB.class
-    , Test_SPARQL_TDB.class
-    , TestConcurrentAccess.class
-    , TestDynamicDatasetTDB.class
-    , TestLoader.class
-    , TestStoreConnectionsDirect.class
-    , TestStoreConnectionsMapped.class
-} )
-public class TS_Store
-{ 
-    @AfterClass
-    public static void doubleCheck()
-    {
-        if (SystemTDB.fileMode() != FileMode.mapped)
-            System.err.println("Wrong mode") ;
-    }
+   TestBindingStreams.class
+})
+public class TS_Binding
+{
+
 }
+

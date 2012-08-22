@@ -16,17 +16,28 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql.modify;
+
 
 import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
-public class TS_Syntax extends TestSuite
+public class TS3_Update extends TestSuite
 {
+    public static final String testDirUpdate = "testing/Update" ;
+    
     static public TestSuite suite()
     {
-        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
+        TestSuite ts = new TS3_Update() ;
+//        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
+//        ts.addTestSuite(TestUpdateGraphMem.class) ;
+      ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
+      ts.addTest(TestUpdateGraphMem.suite()) ;
+        return ts ;
+    }
+    
+    private TS3_Update()
+    {
+        super(TS3_Update.class.getName());
     }
 }

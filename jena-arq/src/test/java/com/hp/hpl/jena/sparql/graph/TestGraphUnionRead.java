@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.graph;
 
 import java.util.Arrays ;
 import java.util.List ;
@@ -29,6 +29,7 @@ import org.openjena.atlas.lib.StrUtils ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.graph.GraphUnionRead ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;

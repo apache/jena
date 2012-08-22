@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.graph;
 
 import java.util.Collection ;
 
@@ -32,11 +32,10 @@ import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
-/** Immutable graph that is the view of a a union of graphs in a TDB store. */ 
+/** Immutable graph that is the view of a union of graphs in a dataset. */ 
 public class GraphUnionRead extends GraphBase2
 {
     // This exists for the property path evaulator to have a graph to call.

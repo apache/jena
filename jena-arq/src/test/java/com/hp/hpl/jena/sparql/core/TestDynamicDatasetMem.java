@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.core;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 
-import com.hp.hpl.jena.tdb.junit.Base_TS ;
-
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestGraphUnionRead.class
-})
-
-public class TS_Migrate extends Base_TS
+public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
 {
 
+    @Override
+    protected Dataset createDataset()
+    {
+        return DatasetFactory.createMem() ;
+    }
+
 }
+

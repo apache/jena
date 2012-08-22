@@ -20,10 +20,10 @@ package com.hp.hpl.jena.sparql.graph;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphTests ;
+import com.hp.hpl.jena.sparql.core.AbstractDatasetGraphTests ;
 
 // Quad tests
-public class TestDatasetGraphMem extends DatasetGraphTests
+public class TestDatasetGraphMem extends AbstractDatasetGraphTests
 {
     @Override
     protected DatasetGraph emptyDataset() { return DatasetGraphFactory.createMem() ; }

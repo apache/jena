@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.core;
 
 import java.util.Collection ;
 import java.util.Set ;
@@ -25,10 +25,8 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetDescription ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.graph.GraphOps ;
+import com.hp.hpl.jena.sparql.graph.GraphUnionRead ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class DynamicDatasets

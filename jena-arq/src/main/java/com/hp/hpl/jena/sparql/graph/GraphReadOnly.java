@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.tdb.migrate;
+package com.hp.hpl.jena.sparql.graph;
 
 import com.hp.hpl.jena.graph.BulkUpdateHandler ;
 import com.hp.hpl.jena.graph.Graph ;
