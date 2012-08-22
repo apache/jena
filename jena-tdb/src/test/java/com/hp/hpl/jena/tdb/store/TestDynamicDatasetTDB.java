@@ -25,7 +25,6 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
 {
-
     @Override
     protected Dataset createDataset()
     {
@@ -33,7 +32,7 @@ public class TestDynamicDatasetTDB extends AbstractTestDynamicDataset
     }
     
     protected void startDynamicAndUnionTest()    { TDB.getContext().setTrue(TDB.symUnionDefaultGraph) ; }
-    protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
 
+    protected void finishDynamicAndUnionTest()   { TDB.getContext().unset(TDB.symUnionDefaultGraph) ; }
 }
 
