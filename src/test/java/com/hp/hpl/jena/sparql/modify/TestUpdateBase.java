@@ -51,7 +51,7 @@ public abstract class TestUpdateBase extends BaseTest
         g.getBulkUpdateHandler().add(data) ;
     }
     
-    protected static final String FileBase = TS_Update.testDirUpdate ;
+    protected static final String FileBase = TS3_Update.testDirUpdate ;
     
     protected static void script(GraphStore gStore, String filename)
     {

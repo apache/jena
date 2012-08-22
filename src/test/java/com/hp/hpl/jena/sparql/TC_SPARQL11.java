@@ -16,27 +16,16 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql;
 
 import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
 
-import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-
-@RunWith(Suite.class)
-@SuiteClasses( { 
-    TestSerialization.class
-})
-public class TS_Serialization extends TestSuite
+/** The test suite for all SPARQL (the second SPARQL working group) approved tests. 
+ */
+public class TC_SPARQL11 extends TestSuite
 {
-    // See also TestSerialization for some low level tests (not scripted)
-    static public TestSuite suite()
-    {
-    	E_Function.WarnOnUnknownFunction = false ;
-        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl") ;
-    }
+    
+    static public TestSuite suite() { return new TC_SPARQL11(); }
+    
+    // SPARQL 1.1 test suite (when ready)
 }

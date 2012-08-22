@@ -19,24 +19,14 @@
 package com.hp.hpl.jena.sparql.syntax;
 
 import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
 
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 
-@RunWith(Suite.class)
-@SuiteClasses( { 
-    TestSerialization.class
-})
-public class TS_Serialization extends TestSuite
+public class TS3_Syntax extends TestSuite
 {
-    // See also TestSerialization for some low level tests (not scripted)
     static public TestSuite suite()
     {
-    	E_Function.WarnOnUnknownFunction = false ;
-        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Serialization/manifest.ttl") ;
+        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
     }
 }

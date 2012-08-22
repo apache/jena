@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,17 +16,19 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.sparql.syntax;
+package com.hp.hpl.jena.sparql.core;
 
-import junit.framework.TestSuite ;
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 
-import com.hp.hpl.jena.sparql.ARQTestSuite ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
-
-public class TS_Syntax extends TestSuite
+public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
 {
-    static public TestSuite suite()
+
+    @Override
+    protected Dataset createDataset()
     {
-        return ScriptTestSuiteFactory.make(ARQTestSuite.testDirARQ+"/Syntax/manifest-syntax.ttl") ;
+        return DatasetFactory.createMem() ;
     }
+
 }
+

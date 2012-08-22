@@ -22,13 +22,13 @@ package com.hp.hpl.jena.sparql.modify;
 import junit.framework.TestSuite ;
 
 
-public class TS_Update extends TestSuite
+public class TS3_Update extends TestSuite
 {
     public static final String testDirUpdate = "testing/Update" ;
     
     static public TestSuite suite()
     {
-        TestSuite ts = new TS_Update() ;
+        TestSuite ts = new TS3_Update() ;
 //        ts.addTestSuite(TestUpdateGraphMgtMem.class) ; 
 //        ts.addTestSuite(TestUpdateGraphMem.class) ;
       ts.addTest(TestUpdateGraphMgtMem.suite()) ; 
@@ -36,8 +36,8 @@ public class TS_Update extends TestSuite
         return ts ;
     }
     
-    private TS_Update()
+    private TS3_Update()
     {
-        super(TS_Update.class.getName());
+        super(TS3_Update.class.getName());
     }
 }
