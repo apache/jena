@@ -33,8 +33,11 @@ import org.eclipse.jetty.server.Server ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
 import org.openjena.atlas.lib.Sink ;
+import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
+import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.slf4j.Logger ;
@@ -54,6 +57,43 @@ import com.hp.hpl.jena.tdb.TDBFactory ;
 
 public class FusekiCmd extends CmdARQ
 {
+    private static String log4Jsetup = StrUtils.strjoinNL(
+          "## Plain output to stdout"
+          , "log4j.appender.jena.plain=org.apache.log4j.ConsoleAppender"
+          , "log4j.appender.jena.plain.target=System.out"
+          , "log4j.appender.jena.plain.layout=org.apache.log4j.PatternLayout"
+          , "log4j.appender.jena.plain.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n"
+          
+          , "## Plain output with level, to stderr"
+          , "log4j.appender.jena.plainlevel=org.apache.log4j.ConsoleAppender"
+          , "log4j.appender.jena.plainlevel.target=System.err"
+          , "log4j.appender.jena.plainlevel.layout=org.apache.log4j.PatternLayout"
+          , "log4j.appender.jena.plainlevel.layout.ConversionPattern=%d{HH:mm:ss} %-5p %m%n"
+          
+          , "## Everything"
+          , "log4j.rootLogger=INFO, jena.plain"
+          , "log4j.logger.com.hp.hpl.jena=WARN"
+          , "log4j.logger.org.openjena=WARN"
+          , "log4j.logger.org.apache.jena=WARN"
+          
+          , "# Server log."
+          , "log4j.logger.org.apache.jena.fuseki.Server=INFO"
+          , "# Request log."
+          , "log4j.logger.org.apache.jena.fuseki.Fuseki=INFO"
+          , "log4j.logger.org.apache.jena.tdb.loader=INFO"
+          
+          , "## Parser output"
+          , "log4j.additivity."+SysRIOT.riotLoggerName+"=false"
+          , "log4j.logger."+SysRIOT.riotLoggerName+"=INFO, jena.plainlevel "
+        ) ;
+
+    
+    static {
+        // Check if default command logging.
+        if ( "set".equals(System.getProperty("log4j.configuration", "set") ) )
+            Log.resetLogging(log4Jsetup) ; 
+    }
+    
     // Arguments:
     // --update
     
