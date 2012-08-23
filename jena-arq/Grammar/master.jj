@@ -1335,12 +1335,12 @@ Path PathPrimary() : { String str ; Path p ; Node n ; }
      { p = PathFactory.pathLink(nRDFtype) ; }
   | <BANG> p = PathNegatedPropertySet()
   | <LPAREN> p = Path() <RPAREN>
+#ifdef ARQ
   |
      <DISTINCT><LPAREN> 
      p = Path()
      { p = PathFactory.pathDistinct(p) ; }
      <RPAREN>
-#ifdef ARQ
   |
      <SHORTEST> <LPAREN> 
      p = Path()
