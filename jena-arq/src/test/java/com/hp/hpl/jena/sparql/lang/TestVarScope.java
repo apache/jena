@@ -66,21 +66,26 @@ public class TestVarScope extends BaseTest
     
     @Test public void scope_23() { scope("SELECT * { ?s ?p ?o { BIND(5 AS ?o) } }") ; }
  
-    @Test public void scope_24() { scope("SELECT * { { ?s ?p ?o } BIND(5 AS ?o) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_24() { scope("SELECT * { { ?s ?p ?o } BIND(5 AS ?o) }") ; }
     
     @Test public void scope_25() { scope("SELECT * { { ?s ?p ?o } { BIND(5 AS ?o) } }") ; }
     
     @Test public void scope_26() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(?o2+5 AS ?z) }") ; }
 
-    @Test public void scope_27() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o2) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_27() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o2) }") ; }
 
-    @Test public void scope_28() { scope("SELECT * { { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} } BIND(?o+5 AS ?o2) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_28() { scope("SELECT * { { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} } BIND(?o+5 AS ?o2) }") ; }
 
-    @Test public void scope_29() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_29() { scope("SELECT * { ?s ?p ?o OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
 
-    @Test public void scope_30() { scope("SELECT * { { ?s ?p ?o } OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
+    @Test(expected=QueryException.class)
+    public void scope_30() { scope("SELECT * { { ?s ?p ?o } OPTIONAL{?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
     
-    @Test
+    @Test(expected=QueryException.class)
     public void scope_34() { scope("SELECT * { { ?s ?p ?o } UNION {?s ?p2 ?o2} BIND(5 AS ?o) }") ; }
     
     @Test

@@ -73,7 +73,7 @@ public class SyntaxVarScope
     // Check BIND by accumulating variables and making sure BIND does not attempt to reuse one  
     private static void checkBind(Query query)
     {
-        ScopeChecker v = new ScopeChecker() ;
+        BindScopeChecker v = new BindScopeChecker() ;
         ElementWalker.walk(query.getQueryPattern(), v) ;
     }
     
@@ -235,16 +235,15 @@ public class SyntaxVarScope
     // Applies scope rules at each point it matters.
     // Does some recalculation in nested structures.
     
-    public static class ScopeChecker extends ElementVisitorBase
+    public static class BindScopeChecker extends ElementVisitorBase
     {
-        public ScopeChecker() {}
+        public BindScopeChecker() {}
         
         @Override
         public void visit(ElementGroup el)
         {
             // BIND scope rules
-            // BIND acts over the immediately preceeding ElementPathBlock, ElementTriplesBlock
-            // and any ElementBind, ElementAssign.
+            // (and service warning)
             
             for ( int i = 0 ; i < el.getElements().size() ; i++ )
             {
@@ -252,7 +251,7 @@ public class SyntaxVarScope
                 // Tests.
                 if ( e instanceof ElementBind )
                 {
-                    Collection<Var> accScope = calcScopeImmediate(el.getElements(), i) ;
+                    Collection<Var> accScope = calcScopeAll(el.getElements(), i) ;
                     check(accScope, (ElementBind)e) ;
                 }
                 
@@ -263,48 +262,10 @@ public class SyntaxVarScope
                 }
             }
         }
-
-        private static boolean scoped(Element e)
-        {
-            // See AlgebraGenerator.compileOneInGroup
-            return e instanceof ElementGroup ||
-                   e instanceof ElementUnion ||
-                   //e instanceof ElementOptional ||
-                   e instanceof ElementService ||
-                   e instanceof ElementSubQuery || 
-                   e instanceof ElementNamedGraph ||
-                   e instanceof ElementFetch ||
-                   e instanceof ElementData ;
-        }
-
         
         private static Collection<Var> calcScopeAll(List<Element> elements, int idx)
         {
             return calcScope(elements, 0, idx) ;
-        }
-        
-        private static Collection<Var> calcScopeImmediate(List<Element> elements, int idx)
-        {
-            // Work backwards.
-            Collection<Var> accScope = new HashSet<Var>() ;
-            int start = idx ;
-            
-            for ( int i = idx-1 ; i >= 0 ; i-- )
-            {
-                start = i ;
-                Element e = elements.get(i) ;
-                if ( ! ( e instanceof ElementTriplesBlock ||
-                         e instanceof ElementPathBlock ||
-                         e instanceof ElementBind ||
-                         e instanceof ElementAssign ) ) 
-                    break ;
-
-                // Include.
-                // it does not matter that we work backwards.
-                PatternVars.vars(accScope, e) ;
-            }
-         
-            return accScope ;
         }
 
         /** Calculate scope, working forwards */
@@ -314,12 +275,10 @@ public class SyntaxVarScope
             for ( int i = start ; i < finish ; i++ )
             {
                 Element e = elements.get(i) ;
-                if ( ! scoped(e) )
-                    PatternVars.vars(accScope, e) ;
+                PatternVars.vars(accScope, e) ;
             }
             return accScope ;
         }
-
 
         // Inside filters.
         
