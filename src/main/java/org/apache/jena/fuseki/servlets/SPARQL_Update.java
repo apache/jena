@@ -152,6 +152,10 @@ public class SPARQL_Update extends SPARQL_Protocol
         
         if ( WebContent.contentTypeForm.equals(ctStr) )
         {
+            int x = countParamOccurences(request,paramUpdate) + countParamOccurences(request, paramRequest) ;
+            if ( x != 1 )
+                errorBadRequest("SPARQL Update: Multiple 'update=' parameters") ;
+            
             String requestStr = request.getParameter(paramUpdate) ;
             if ( requestStr == null )
                 requestStr = request.getParameter(paramRequest) ;
@@ -160,7 +164,6 @@ public class SPARQL_Update extends SPARQL_Protocol
             validate(request, paramsForm) ;
             return ;
         }
-        
         
         error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "Must be "+WebContent.contentTypeSPARQLUpdate+" or "+WebContent.contentTypeForm+" (got "+ctStr+")") ;
     }
@@ -217,7 +220,8 @@ public class SPARQL_Update extends SPARQL_Protocol
             requestStr = action.request.getParameter(paramRequest) ;
         
         if ( super.verbose_debug || action.verbose )
-            requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
+            //requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
+            requestLog.info(format("[%d] Form update = \n%s", action.id, requestStr)) ;
         
         UpdateRequest req ; 
         try {
