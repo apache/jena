@@ -138,6 +138,8 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
             }
             else
             {
+                // This could be POST-query, POST-update
+                // as a form or with content type : application/sparql-query or  ...-update
                 // Direct action on the dataset itself.
                 restQuads.doCommonWorker(id, request, response) ;
                 return ;
