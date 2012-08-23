@@ -139,7 +139,25 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     
     /** Called to validate arguments */
     @Override
-    protected abstract void validate(HttpServletRequest request) ;
+    protected void validate(HttpServletRequest request)
+    {
+        String method = request.getMethod().toUpperCase() ;
+        
+        if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
+            errorMethodNotAllowed("Not a GET or POST request") ;
+            
+        if ( HttpNames.METHOD_GET.equals(method) && request.getQueryString() == null )
+        {
+            warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
+            errorNotFound("Service Description: "+request.getRequestURI()) ;
+        }
+            
+        // Use of the dataset describing parameters is check later.
+        validate(request, allParams) ;
+        validateRequest(request) ;
+    }
+    
+    protected abstract void validateRequest(HttpServletRequest request) ;
     
     /** Helper for validating request */
     protected void validate(HttpServletRequest request, Collection<String> params)
@@ -164,6 +182,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
         if ( mustHaveQueryParam )
         {
+            if ( countParamOccurences(request, paramQuery) != 1 )
+                // We checked for zero already.
+                errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
+            
             // application/sparql-query does not use a query param.
             String queryStr = request.getParameter(HttpNames.paramQuery) ;
             
@@ -206,7 +228,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     private void execute(String queryString, HttpActionQuery action)
     {
         String queryStringLog = formatForLog(queryString) ;
-        log.info(format("[%d] Query = %s", action.id, queryStringLog));
+        if ( super.verbose_debug || action.verbose )
+            log.info(format("[%d] Query = \n%s", action.id, queryString));
+        else
+            log.info(format("[%d] Query = %s", action.id, queryStringLog));
 
         Query query = null ;
         try {

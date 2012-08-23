@@ -20,8 +20,6 @@ package org.apache.jena.fuseki.servlets;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.fuseki.HttpNames ;
-
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.Query ;
@@ -38,25 +36,11 @@ public class SPARQL_QueryDataset extends SPARQL_Query
     { this(false) ; }
     
     @Override
-    protected void validate(HttpServletRequest request)
-    {
-        String method = request.getMethod().toUpperCase() ;
-        
-        if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
-            errorMethodNotAllowed("Not a GET or POST request") ;
-        
-        if ( HttpNames.METHOD_GET.equals(method) && request.getQueryString() == null )
-        {
-            warning("Service Description / SPARQL Query / "+request.getRequestURI()) ;
-            errorNotFound("Service Description: "+request.getRequestURI()) ;
-        }
-        
-        // Use of the dataset describing parameters is check later.
-        validate(request, allParams) ;
-    }
+    protected void validateRequest(HttpServletRequest request) 
+    { }
 
     @Override
-    protected void validateQuery(HttpActionQuery action, Query query)
+    protected void validateQuery(HttpActionQuery action, Query query) 
     { }
    
     @Override

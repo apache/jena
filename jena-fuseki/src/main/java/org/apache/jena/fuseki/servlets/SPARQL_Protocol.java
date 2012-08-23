@@ -101,5 +101,15 @@ public  abstract class SPARQL_Protocol extends SPARQL_ServletBase
             return item != null && item.length() != 0 ;
         }
     } ;
+    
+    protected static int countParamOccurences(HttpServletRequest request, String param)
+    {
+        String[] x = request.getParameterValues(param) ;
+        if ( x == null )
+            return 0 ;
+        return x.length ;
+    }
+    
+
 }
 

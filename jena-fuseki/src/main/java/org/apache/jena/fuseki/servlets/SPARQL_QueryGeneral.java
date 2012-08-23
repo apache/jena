@@ -24,7 +24,6 @@ import java.util.List ;
 
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
 import org.openjena.atlas.lib.InternalErrorException ;
 import org.openjena.riot.RiotException ;
@@ -49,16 +48,10 @@ public class SPARQL_QueryGeneral extends SPARQL_Query
     { this(false) ; }
 
     @Override
-    protected void validate(HttpServletRequest request)
-    {
-        if ( HttpNames.METHOD_GET.equals(request.getMethod().toUpperCase()) && request.getQueryString() == null )
-            errorBadRequest("No query string given") ;
-        validate(request, allParams) ;
-    }
+    protected void validateRequest(HttpServletRequest request) {}
 
     @Override
-    protected void validateQuery(HttpActionQuery action, Query query)
-    { }
+    protected void validateQuery(HttpActionQuery action, Query query) {}
     
     @Override
     protected String mapRequestToDataset(String uri)
