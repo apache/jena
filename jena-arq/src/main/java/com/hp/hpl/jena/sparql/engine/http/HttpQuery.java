@@ -269,6 +269,8 @@ public class HttpQuery extends Params
         try
         {
             httpConnection = (HttpURLConnection) target.openConnection();
+            // This is the default setting - but be clear about it.
+            httpConnection.setInstanceFollowRedirects(true) ;       
             httpConnection.setRequestProperty("Accept", contentTypeResult) ;
             
             int x = httpConnection.getReadTimeout() ;
