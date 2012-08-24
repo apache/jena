@@ -66,7 +66,7 @@ public class UpdateProcessRemoteForm implements UpdateProcessor
     {
         String reqStr = request.toString() ;
         List<Pair<String, String>> params = new ArrayList<Pair<String, String>>() ;
-        params.add(Pair.create("request", reqStr)) ;
+        params.add(Pair.create("update", reqStr)) ;
         Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
         //handlers.put("text/html", HttpResponseLib.nullResponse) ;
         handlers.put("*", HttpResponseLib.nullResponse) ;
