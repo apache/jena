@@ -292,39 +292,4 @@ public class HttpOp
             }
         } finally { closeEntity(response.getEntity()) ; }
     }
-    
-//    public static void main2(String...argv) throws Exception
-//    {
-//        String queryString =  "SELECT * { ?s ?p ?o } LIMIT 1" ;
-//        // HttpClient 4.1.2
-//        URI uri = URIUtils.createURI("http",
-//                                     "sparql.org",
-//                                     -1, 
-//                                     "books",
-//                                     "query="+URLEncoder.encode(queryString,"UTF-8"),
-//                                     null
-//                                     ) ;
-//        HttpGet httpget = new HttpGet(uri);
-//        httpget.addHeader("Accept", "application/sparql-results+json") ;
-//        
-//        System.out.println(httpget.getURI());
-//        
-//        DefaultHttpClient httpclient = new DefaultHttpClient();
-//
-//        HttpContext localContext = new BasicHttpContext();
-//        
-//        HttpResponse response = httpclient.execute(httpget, localContext) ;
-//        System.out.println(response.getFirstHeader("Content-type")) ;
-//        
-//        System.out.println(response.getStatusLine()) ;
-//        HttpEntity entity = response.getEntity();
-//        InputStream instream = entity.getContent() ;
-//        try {
-//            //entity = new BufferedHttpEntity(entity) ;
-//            String x = FileUtils.readWholeFileAsUTF8(instream) ;
-//            System.out.print(x) ;  
-//        } finally {
-//            instream.close();
-//        }
-//    }
 }
