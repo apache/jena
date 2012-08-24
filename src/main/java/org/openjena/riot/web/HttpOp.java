@@ -23,19 +23,27 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.UnsupportedEncodingException ;
+import java.util.ArrayList ;
+import java.util.HashMap ;
+import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.atomic.AtomicLong ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
+import org.apache.http.NameValuePair ;
 import org.apache.http.StatusLine ;
 import org.apache.http.client.HttpClient ;
+import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpPost ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.DefaultHttpClient ;
+import org.apache.http.message.BasicNameValuePair ;
+import org.openjena.atlas.io.IO ;
+import org.openjena.atlas.lib.Pair ;
 import org.openjena.atlas.web.HttpException ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
@@ -59,32 +67,16 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
  */
 public class HttpOp
 {
-    
     // See also:
     //   Fluent API in HttpClient from v4.2
-    
-    
     static private Logger log = LoggerFactory.getLogger(HttpOp.class) ;
     
     static private AtomicLong counter = new AtomicLong(0) ;
-
-//    /** GET with unencoded query string.
-//     *  See {@link #execHttpGet(String, String, Map)} for additional details.
-//     *  <p>The query string will be encoded as needed and appended to the URL, inserting a "?".
-//     */
-//    public static void execHttpGet(String url, String queryString, String acceptHeader, Map<String, HttpResponseHandler> handlers)
-//    {
-//        try {
-//            System.err.println("BROKEN - encodes the queyr string structure") ;
-//            String requestURL = url+"?"+URLEncoder.encode(queryString, "UTF-8")  ;
-//            execHttpGet(requestURL, acceptHeader, handlers) ;
-//        } catch (UnsupportedEncodingException ex)
-//        {
-//            // UTF-8 required of all Java platforms.
-//            throw new ARQInternalErrorException("No UTF-8 charset") ;
-//        }
-//    }
     
+    static Map<String, HttpResponseHandler> noActionHandlers = new HashMap<String, HttpResponseHandler>() ;
+    static {
+        noActionHandlers.put("*", HttpResponseLib.nullResponse) ;
+    }
     /** GET
      *  <p>The acceptHeader string is any legal value for HTTP Accept: field.
      *  <p>The handlers are the set of content types (without charset),
@@ -112,10 +104,7 @@ public class HttpOp
             // Handle response
             httpResponse(id, response, baseIRI, handlers) ;
             httpclient.getConnectionManager().shutdown(); 
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
+        } catch (IOException ex) { IO.exception(ex) ; }
     }
     
     /** POST a string without response body.
@@ -153,9 +142,8 @@ public class HttpOp
             e.setContentType(contentType) ;
             execHttpPost(url, e, acceptType, handlers) ;
         } catch (UnsupportedEncodingException e1)
-        {
-            throw new ARQInternalErrorException("Platform does not support required UTF-8") ;
-        } finally { closeEntity(e) ; }
+        { throw new ARQInternalErrorException("Platform does not support required UTF-8") ; }
+        finally { closeEntity(e) ; }
     }
     
     /** POST with response body.
@@ -209,12 +197,42 @@ public class HttpOp
             httpResponse(id, response, baseIRI, handlers) ;
             
             httpclient.getConnectionManager().shutdown(); 
-        } catch (IOException ex)
-        {
-            ex.printStackTrace(System.err) ;
-        }
+        } catch (IOException ex) { IO.exception(ex) ; }
         finally { closeEntity(provider) ; }
     }
+    
+    /** Execute an HTTP POST form operation */
+    public static void execHttpPostForm(String url, List<Pair<String, String>> params, Map<String, HttpResponseHandler> handlers)
+    {
+        try {
+            long id = counter.incrementAndGet() ;
+            String requestURI = url ;// determineBaseIRI(url) ;
+            String baseIRI = determineBaseIRI(requestURI) ;
+            //A rat walked over the keyboard:   >n'e q5tas5aaas v            
+            HttpPost httppost = new HttpPost(requestURI);
+            httppost.setEntity(convertFormParams(params));
+            if ( log.isDebugEnabled() )
+                log.debug(format("[%d] %s %s",id ,httppost.getMethod(),httppost.getURI().toString())) ;
+
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(httppost) ;
+            httpResponse(id, response, baseIRI, handlers) ;
+            httpclient.getConnectionManager().shutdown(); 
+        } catch (IOException ex) { IO.exception(ex) ; }
+    }
+    
+    private static HttpEntity convertFormParams(List<Pair<String, String>> params)
+    {
+        try {
+            List<NameValuePair> nvps = new ArrayList<NameValuePair>() ;
+            for (Pair<String, String> p : params)
+                nvps.add(new BasicNameValuePair(p.getLeft(), p.getRight())) ;
+            HttpEntity e = new UrlEncodedFormEntity(nvps, "UTF-8") ;
+            return e ;
+        } catch (UnsupportedEncodingException e)
+        { throw new ARQInternalErrorException("Platform does not support required UTF-8") ; }
+    }
+    
 
     private static void closeEntity(HttpEntity entity)
     {
@@ -252,6 +270,8 @@ public class HttpOp
     {
         if ( response == null )
             return ;
+        if ( handlers == null )
+            handlers = noActionHandlers ;
         try {
             StatusLine statusLine = response.getStatusLine() ;
             if ( statusLine.getStatusCode() >= 400 )
@@ -268,6 +288,7 @@ public class HttpOp
                 if ( contentType != null )
                 {
                     mt = MediaType.create(contentType) ;
+                    ct = mt.getContentType() ;
                     if ( log.isDebugEnabled() )
                         log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
                 }

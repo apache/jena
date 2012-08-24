@@ -22,10 +22,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessRemote ;
-import com.hp.hpl.jena.sparql.modify.UpdateProcessorBase ;
+import com.hp.hpl.jena.sparql.modify.* ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** Create UpdateProcessors (one-time executions of a SPARQL Update request) */
@@ -128,5 +125,23 @@ public class UpdateExecutionFactory
     public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint)
     {
         return new UpdateProcessRemote(updateRequest, remoteEndpoint) ;
+    }
+    
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
+     * @param update
+     * @param remoteEndpoint
+     */
+    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint)
+    {
+        return new UpdateProcessRemoteForm(new UpdateRequest(update), remoteEndpoint) ;
+    }
+    
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
+     * @param updateRequest
+     * @param remoteEndpoint
+     */
+    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint)
+    {
+        return new UpdateProcessRemoteForm(updateRequest, remoteEndpoint) ;
     }
 }

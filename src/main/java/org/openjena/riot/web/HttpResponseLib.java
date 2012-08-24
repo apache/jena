@@ -96,6 +96,13 @@ public class HttpResponseLib
             }
         }
     } ;
+    
+    public static HttpResponseHandler nullResponse = new HttpResponseHandler() {
+        @Override
+        public void handle(String contentType, String baseIRI, HttpResponse response)
+        {}
+    } ;
+    
     public static HttpCaptureResponse<Graph> graphReaderTurtle = new AbstractGraphReader()
     {
         @Override
