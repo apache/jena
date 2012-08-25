@@ -64,6 +64,8 @@ public class UpdateProcessRemoteForm implements UpdateProcessor
     @Override
     public void execute()
     {
+        if ( endpoint == null )
+            throw new ARQException("Null endpoint for remote update by form") ;
         String reqStr = request.toString() ;
         List<Pair<String, String>> params = new ArrayList<Pair<String, String>>() ;
         params.add(Pair.create("update", reqStr)) ;
