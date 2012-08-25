@@ -205,46 +205,19 @@ public class TransactionManager
         @Override public void readerFinishes(Transaction txn)       
         { 
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
-            if ( queue.size() >= QueueBatchSize )
-                processDelayedReplayQueue(txn) ;
+            readerFinishesWorker(txn) ;
         }
-        
+
         @Override public void writerCommits(Transaction txn)
         {
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
-
-            if ( activeReaders.get() == 0 && queue.size() >= QueueBatchSize )
-            {
-                // Can commit immediately.
-                // Ensure the queue is empty though.
-                // Could simply add txn to the commit queue and do it that way.  
-                if ( log() ) log("Commit immediately", txn) ; 
-                
-                // Currently, all we need is 
-                //    JournalControl.replay(txn) ;
-                // because that plays queued transactions.
-                // But for long term generallity, at the cost of one check of the journal size
-                // we do this sequence.
-                
-                processDelayedReplayQueue(txn) ;
-                enactTransaction(txn) ;
-                JournalControl.replay(txn) ;
-            }
-            else
-            {
-                // Can't write back to the base database at the moment.
-                commitedAwaitingFlush.add(txn) ;
-                maxQueue = Math.max(commitedAwaitingFlush.size(), maxQueue) ;
-                if ( log() ) log("Add to pending queue", txn) ; 
-                queue.add(txn) ;
-            }
+            writerCommitsWorker(txn) ;
         }
         
         @Override public void writerAborts(Transaction txn)
         { 
             txn.getBaseDataset().getLock().leaveCriticalSection() ;
-            if ( queue.size() >= QueueBatchSize )
-                processDelayedReplayQueue(txn) ;
+            writerAbortsWorker(txn) ; 
         }
     }
     
@@ -473,6 +446,52 @@ public class TransactionManager
     public void flush()
     {
         processDelayedReplayQueue(null) ;
+    }
+    
+    // -- The main operations to undertake when a transaction finishes.
+    // Called from TSM_WriteBackEndTxn but the worker code is shere so all
+    // related code, including queue flushing is close together.
+    
+    private void readerFinishesWorker(Transaction txn)
+    {
+        if ( queue.size() >= QueueBatchSize )
+            processDelayedReplayQueue(txn) ;
+    }
+    
+    private void writerAbortsWorker(Transaction txn)
+    {
+        if ( queue.size() >= QueueBatchSize )
+            processDelayedReplayQueue(txn) ;
+    }
+    
+    private void writerCommitsWorker(Transaction txn)
+    {
+        if ( activeReaders.get() == 0 && queue.size() >= QueueBatchSize )
+        {
+            // Can commit immediately.
+            // Ensure the queue is empty though.
+            // Could simply add txn to the commit queue and do it that way.  
+            if ( log() ) log("Commit immediately", txn) ; 
+            
+            // Currently, all we need is 
+            //    JournalControl.replay(txn) ;
+            // because that plays queued transactions.
+            // But for long term generallity, at the cost of one check of the journal size
+            // we do this sequence.
+            
+            processDelayedReplayQueue(txn) ;
+            enactTransaction(txn) ;
+            JournalControl.replay(txn) ;
+        }
+        else
+        {
+            // Can't write back to the base database at the moment.
+            commitedAwaitingFlush.add(txn) ;
+            maxQueue = Math.max(commitedAwaitingFlush.size(), maxQueue) ;
+            if ( log() ) log("Add to pending queue", txn) ; 
+            queue.add(txn) ;
+        }
+
     }
     
     private void processDelayedReplayQueue(Transaction txn)

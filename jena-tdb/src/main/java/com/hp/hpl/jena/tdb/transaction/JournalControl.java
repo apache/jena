@@ -210,8 +210,11 @@ public class JournalControl
     
     public static void replay(Transaction transaction)
     {
+        if ( syslog.isDebugEnabled())
+            syslog.debug("Replay "+transaction.getLabel()) ;
         Journal journal = transaction.getJournal() ;
         DatasetGraphTDB dsg = transaction.getBaseDataset() ;
+        // Currently, we (crudely) replay the whole journal.
         replay(journal, dsg.getConfig()) ;
     }
     
