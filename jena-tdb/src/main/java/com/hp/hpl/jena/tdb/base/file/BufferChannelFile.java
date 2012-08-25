@@ -18,8 +18,11 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
+import java.io.FileNotFoundException ;
 import java.io.IOException ;
+import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
+import java.nio.channels.FileChannel ;
 
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.FileOps ;
@@ -28,12 +31,41 @@ import org.openjena.atlas.lib.FileOps ;
 public class BufferChannelFile implements BufferChannel
 {
     private FileBase file ;
+    
+    /** Create a BufferChannelFile */
+    public static BufferChannelFile create(String filename)
+    { 
+        FileBase base = FileBase.create(filename) ;
+        return new BufferChannelFile(base) ;
+    } 
 
-    public BufferChannelFile(String filename)
+    /** Create a BufferChannelFile with unmangaged file resources - use with care */
+    public static BufferChannelFile createUnmanaged(String filename, String mode)
+    { 
+        try
+        {
+            @SuppressWarnings("resource")
+            RandomAccessFile out = new RandomAccessFile(filename, mode) ;
+            FileChannel channel = out.getChannel() ;
+            FileBase base = FileBase.createUnmanged(filename, channel) ;
+            return new BufferChannelFile(base) ;
+        } catch (FileNotFoundException e)
+        {
+            IO.exception(e) ;
+            return null ;
+        }
+    } 
+
+    private BufferChannelFile(FileBase filebase)
+    {
+        file = filebase ;
+    }
+    
+    private BufferChannelFile(String filename)
     {
         file = FileBase.create(filename) ;
     }
-    
+
     @Override
     public BufferChannel duplicate()
     {

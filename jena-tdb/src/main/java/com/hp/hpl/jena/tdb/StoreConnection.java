@@ -151,7 +151,7 @@ public class StoreConnection
     /** Flush the journal regardless - use with great case - do not use when transactions may be active. */ 
     public void forceRecoverFromJournal()
     {
-        JournalControl.recoverFromJournal(getBaseDataset(), transactionManager.getJournal()) ;
+        JournalControl.recoverFromJournal(getBaseDataset().getConfig(), transactionManager.getJournal()) ;
     }
 
     /** Highly risky! */
@@ -231,7 +231,7 @@ public class StoreConnection
         if (sConn == null)
         {
             sConn = new StoreConnection(dsg) ;
-            boolean actionTaken = JournalControl.recoverFromJournal(dsg, sConn.transactionManager.getJournal()) ;
+            boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
             
             if ( actionTaken )
             {

@@ -62,14 +62,14 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     private QuadTable quadTable ;
     private DatasetPrefixesTDB prefixes ;
     private final ReorderTransformation transform ;
-    private final StoreConfig config ;
+    private final StorageConfig config ;
     
     private GraphTDB effectiveDefaultGraph ;
     private boolean closed = false ;
     private boolean readOnly = false ;
 
     public DatasetGraphTDB(TripleTable tripleTable, QuadTable quadTable, DatasetPrefixesTDB prefixes, 
-                           ReorderTransformation transform, StoreConfig config)
+                           ReorderTransformation transform, StorageConfig config)
     {
         this.tripleTable = tripleTable ;
         this.quadTable = quadTable ;
@@ -220,7 +220,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
 
     public GraphTDB getEffectiveDefaultGraph()          { return effectiveDefaultGraph ; }
 
-    public StoreConfig getConfig()                       { return config ; }
+    public StorageConfig getConfig()                       { return config ; }
     
 //    public String getConfigValue(String key)
 //    {

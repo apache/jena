@@ -32,7 +32,7 @@ public class FileFactory
     
     public static ObjectFile createObjectFileDisk(String filename)
     {
-        BufferChannel file = new BufferChannelFile(filename) ; 
+        BufferChannel file = BufferChannelFile.create(filename) ; 
         return new ObjectFileStorage(file) ;
     }
 

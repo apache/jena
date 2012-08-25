@@ -170,8 +170,8 @@ public class DatasetBuilderStd implements DatasetBuilder
         
         ReorderTransformation transform = (_transform==null) ? chooseReorderTransformation(location) : _transform ;
         
-        StoreConfig storeConfig = new StoreConfig(location, params, blockMgrs, bufferChannels, nodeTables, transform) ;
-        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storeConfig) ;
+        StorageConfig storageConfig = new StorageConfig(location, params, blockMgrs, bufferChannels, nodeTables) ;
+        DatasetGraphTDB dsg = new DatasetGraphTDB(tripleTable, quadTable, prefixes, transform, storageConfig) ;
         return dsg ;
     }
     
