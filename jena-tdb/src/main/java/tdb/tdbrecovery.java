@@ -48,6 +48,8 @@ public class tdbrecovery extends CmdTDB
     protected void exec()
     {
         DatasetGraphTDB dsg = super.getDatasetGraphTDB() ;
+        // Just creating the DSG does a recovery so this is not (currently) necessary:
+        // This may change (not immediately recovering on start up).
         JournalControl.recovery(dsg) ;
     }
 }
