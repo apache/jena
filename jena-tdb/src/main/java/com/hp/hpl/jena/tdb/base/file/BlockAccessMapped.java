@@ -107,10 +107,7 @@ public class BlockAccessMapped extends BlockAccessBase
     @Override
     public void overwrite(Block block)
     {
-        // Write at end => extend
-        if ( block.getId() >= numFileBlocks )
-            // Housekeeping.
-            numFileBlocks = block.getId()+1 ;
+        overwriteNotification(block) ;
         write(block, CopyContents.Overwrite) ;
     }
 

@@ -233,9 +233,10 @@ public class StoreConnection
             sConn = new StoreConnection(dsg) ;
             boolean actionTaken = JournalControl.recoverFromJournal(dsg.getConfig(), sConn.transactionManager.getJournal()) ;
             
-            if ( actionTaken )
+            if ( false && actionTaken )
             {
-                // Clunky!  Complete reset.
+                // This should be unnecessary because we wrote the journal replay
+                // via the DSG storage configuration.  
                 sConn.transactionManager.closedown() ;
                 sConn.baseDSG.close() ;
                 dsg = DatasetBuilderStd.build(location) ;

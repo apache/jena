@@ -266,11 +266,6 @@ public class JournalControl
         {
             case Block:
             {
-                // All-purpose, works for direct and mapped mode, copy of a block.
-                // [TxTDB:PATCH-UP]
-                // Direct: blkMgr.write(e.getBlock()) would work.
-                // Mapped: need to copy over the bytes.
-                
                 BlockMgr blkMgr = sConf.blockMgrs.get(e.getFileRef()) ;
                 Block blk = e.getBlock() ;
                 log.debug("Replay: {} {}",e.getFileRef(), blk) ;

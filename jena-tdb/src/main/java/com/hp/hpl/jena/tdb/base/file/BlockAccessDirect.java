@@ -101,9 +101,7 @@ public class BlockAccessDirect extends BlockAccessBase
     @Override
     public void overwrite(Block block)
     {
-        // Write at end => extend
-        if ( block.getId() >= numFileBlocks )
-            numFileBlocks = block.getId()+1 ;
+        overwriteNotification(block) ;
         write(block) ;
     }
 
