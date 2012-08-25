@@ -56,6 +56,8 @@ public class UpdateProcessRemote implements UpdateProcessor
     @Override
     public void execute()
     {
+        if ( endpoint == null )
+            throw new ARQException("Null endpoint for remote update") ;
         String reqStr = request.toString() ;
         HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr) ;
     }

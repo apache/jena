@@ -306,11 +306,11 @@ public class HttpOp
                 else
                     log.warn(format("[%d] No handler found for %s", id, ct));
             }
-            else
-            {
-                if( handlers != null )
-                    log.warn(format("[%d] No content returned but handlers provided"));
-            }
+//            else
+//            {
+//                if ( handlers != null )
+//                    log.warn(format("[%d] No content returned but handlers provided", id));
+//            }
         } finally { closeEntity(response.getEntity()) ; }
     }
 }

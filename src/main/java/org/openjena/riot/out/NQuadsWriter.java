@@ -27,6 +27,7 @@ import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -35,6 +36,11 @@ public class NQuadsWriter
     public static void write(OutputStream out, DatasetGraph dsg)
     {
         write(out, dsg.find(Node.ANY, Node.ANY, Node.ANY, Node.ANY)) ;
+    }
+    
+    public static void write(OutputStream out, Dataset dsg)
+    {
+        write(out, dsg.asDatasetGraph()) ;
     }
     
     public static void write(OutputStream out, Iterator<Quad> iter)
