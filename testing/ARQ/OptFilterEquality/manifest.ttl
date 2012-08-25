@@ -106,4 +106,18 @@
               qt:data   <data-4.ttl> ] ;
         mf:result  <filter-equality-12.srj>
       ]
-    ) .
+      [  mf:name    "filter-equality-13" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-equality-13.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <filter-equality-13.srj>
+      ]
+      [  mf:name    "filter-equality-14" ;
+         rdf:type   mfx:TestQuery ; 
+         mf:action
+            [ qt:query  <filter-equality-14.rq> ;
+              qt:data   <data-4.ttl> ] ;
+        mf:result  <filter-equality-14.srj>
+      ]
+   ) .
