@@ -68,6 +68,17 @@ public abstract class BlockAccessBase implements BlockAccess
     
     final protected void writeNotification(Block block) { isEmpty = false ; }
     
+    final protected void overwriteNotification(Block block)
+    {
+        // Write at end => extend
+        if ( block.getId() >= numFileBlocks )
+        {
+            numFileBlocks = block.getId()+1 ;
+            seq.set(numFileBlocks) ;
+        }
+    }
+
+    
     //@Override 
     final
     //public 
