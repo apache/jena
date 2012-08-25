@@ -26,17 +26,16 @@ import java.io.File ;
 import java.nio.ByteBuffer ;
 import java.util.Collection ;
 import java.util.Iterator ;
-import java.util.Map ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
+import com.hp.hpl.jena.tdb.base.file.BufferChannelFile ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;
@@ -44,6 +43,7 @@ import com.hp.hpl.jena.tdb.base.record.RecordFactory ;
 import com.hp.hpl.jena.tdb.index.IndexMap ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.tdb.store.StorageConfig ;
 import com.hp.hpl.jena.tdb.sys.FileRef ;
 import com.hp.hpl.jena.tdb.sys.Names ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
@@ -52,6 +52,15 @@ public class JournalControl
 {
     private static Logger log = LoggerFactory.getLogger(JournalControl.class) ;
 
+    /** Dump a journal - debug support function - opens the journal specially - inconsistent views possible  */
+    public static void print(String filename)
+    {
+        BufferChannelFile chan = BufferChannelFile.createUnmanaged(filename, "r") ;
+        Journal journal = new Journal(chan) ;
+        JournalControl.print(journal) ;
+        chan.close() ;
+    }
+    
     public static void print(Journal journal)
     {
         System.out.println("Size: "+journal.size()) ;
@@ -60,8 +69,8 @@ public class JournalControl
         for (  ; iter.hasNext() ; )
         {
             JournalEntry e = iter.next() ;
-            System.out.println(JournalEntry.format(e)) ;
             System.out.println("Posn: "+journal.position()+" : ("+(journal.size()-journal.position())+")") ;
+            System.out.println(JournalEntry.format(e)) ;
         }
     }
 
@@ -78,7 +87,8 @@ public class JournalControl
         
         for ( FileRef fileRef : dsg.getConfig().nodeTables.keySet() )
             recoverNodeDat(dsg, fileRef) ;
-        recoverFromJournal(dsg, journal) ;
+        recoverFromJournal(dsg.getConfig(), journal) ;
+        
         journal.close() ;
         // Recovery complete.  Tidy up.  Node journal files have already been handled.
         if ( journal.getFilename() != null )
@@ -101,14 +111,12 @@ public class JournalControl
             return null ;
     }
 
-    // New recovery - scan to commit, enact, scan, ....
-    
     /** Recovery from a journal.
-     *  Find if there is a commit record; if so, reply the journal to that point.
+     *  Find if there is a commit record; if so, replay the journal to that point.
      *  Try to see if there is another commit record ...
-     *  Retirn true if a recovery was attempted; return false if we decided no work needed.
+     *  Return true if a recovery was attempted; return false if we decided no work needed.
      */
-    public static boolean recoverFromJournal(DatasetGraphTDB dsg, Journal jrnl )
+    public static boolean recoverFromJournal(StorageConfig sConf, Journal jrnl)
     {
         if ( jrnl.isEmpty() )
             return false ;
@@ -118,13 +126,14 @@ public class JournalControl
         {
             long x = scanForCommit(jrnl, posn) ;
             if ( x == -1 ) break ;
-            recoverSegment(jrnl, posn, x, dsg) ;
+            recoverSegment(jrnl, posn, x, sConf) ;
             posn = x ;
         }
 
         // We have replayed the journals - clean up.
         jrnl.truncate(0) ;
-        dsg.sync() ;
+        jrnl.sync() ;
+        syncAll(sConf) ;
         return true ;
     }
 
@@ -152,7 +161,7 @@ public class JournalControl
      *  Return true is a commit was found.
      *  Leave journal positioned just after commit or at end if none found.
      */
-    private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, DatasetGraphTDB dsg)
+    private static void recoverSegment(Journal jrnl, long startPosn, long endPosn, StorageConfig sConf)
     {
         Iterator<JournalEntry> iter = jrnl.entries(startPosn) ;
         iter = jrnl.entries(startPosn) ;
@@ -166,56 +175,14 @@ public class JournalControl
                         log.warn(format("Inconsistent: end at %d; expected %d", e.getEndPosition(), endPosn)) ;
                     return ;
                 }
-                replay(e, dsg) ;
+                replay(e, sConf) ;
             }
         } finally { Iter.close(iter) ; }
     }
     
-//    /** Recovery from the system journal.
-//     *  Find is there is a commit record; if so, reply the journal.
-//     */
-//    private static void recoverSystemJournal_0(DatasetGraphTDB dsg)
-//    {
-//        Location loc = dsg.getLocation() ;
-//        String journalFilename = loc.absolute(Names.journalFile) ;
-//        File f = new File(journalFilename) ;
-//        //if ( FileOps.exists(journalFilename)
-//        if ( f.exists() && f.isFile() && f.length() > 0 )
-//        {
-//            Journal jrnl = Journal.create(loc) ;
-//            // Scan for commit.
-//            boolean committed = false ;
-//            for ( JournalEntry e : jrnl )
-//            {
-//                if ( e.getType() == JournalEntryType.Commit )
-//                    committed = true ;
-//                else
-//                {
-//                    if ( committed )
-//                    {
-//                        errlog.warn("Extra journal entries ("+loc+")") ;
-//                        break ;
-//                    }
-//                }
-//            }
-//            if ( committed )
-//            {
-//                syslog.info("Recovering committed transaction") ;
-//                // The NodeTable Journal has already been done!
-//                JournalControl.replay(jrnl, dsg) ;
-//            }
-//            jrnl.truncate(0) ;
-//            jrnl.close();
-//            dsg.sync() ;
-//        }
-//        
-//        if ( f.exists() )
-//            FileOps.delete(journalFilename) ;
-//    }
-    
     /** Recover a node data file (".dat").
      *  Node data files are append-only so recovering, then not using the data is safe.
-     *  Node data file is a precursor for ful lrecovery that works from the master journal.
+     *  Node data file is a precursor for full recovery that works from the master journal.
      */
     private static void recoverNodeDat(DatasetGraphTDB dsg, FileRef fileRef)
     {
@@ -245,23 +212,29 @@ public class JournalControl
     {
         Journal journal = transaction.getJournal() ;
         DatasetGraphTDB dsg = transaction.getBaseDataset() ;
-        replay(journal, dsg) ;
+        replay(journal, dsg.getConfig()) ;
     }
     
+    /** Replay a journal onto a dataset */
     public static void replay(Journal journal, DatasetGraphTDB dsg)
+    {
+        replay(journal, dsg.getConfig()) ;
+    }
+    
+    /** Replay a journal onto a store configuration (the file resources) */
+    private static void replay(Journal journal, StorageConfig sConf)
     {
         if ( journal.size() == 0 )
             return ;
         
         journal.position(0) ;
-        dsg.getLock().enterCriticalSection(Lock.WRITE) ;
         try {
             Iterator<JournalEntry> iter = journal.entries() ; 
 
             for (  ; iter.hasNext() ; )
             {
                 JournalEntry e = iter.next() ;
-                replay(e, dsg) ;
+                replay(e, sConf) ;
 
                 // There is no point sync here.  
                 // No writes via the DSG have been done. 
@@ -275,9 +248,8 @@ public class JournalControl
             syslog.error("Exception during journal replay", ex) ;
             throw ex ;
         }
-        finally { dsg.getLock().leaveCriticalSection() ; }
         
-        Collection<BlockMgr> x = dsg.getConfig().blockMgrs.values() ;
+        Collection<BlockMgr> x = sConf.blockMgrs.values() ;
         for ( BlockMgr blkMgr : x )
             blkMgr.syncForce() ;
         // Must do a hard sync before this.
@@ -285,10 +257,8 @@ public class JournalControl
     }
 
     /** return true for "go on" */
-    private static boolean replay(JournalEntry e, DatasetGraphTDB dsg)
+    private static boolean replay(JournalEntry e, StorageConfig sConf)
     {
-        Map<FileRef, BlockMgr> mgrs = dsg.getConfig().blockMgrs ;
-    
         switch (e.getType())
         {
             case Block:
@@ -298,7 +268,7 @@ public class JournalControl
                 // Direct: blkMgr.write(e.getBlock()) would work.
                 // Mapped: need to copy over the bytes.
                 
-                BlockMgr blkMgr = mgrs.get(e.getFileRef()) ;
+                BlockMgr blkMgr = sConf.blockMgrs.get(e.getFileRef()) ;
                 Block blk = e.getBlock() ;
                 log.debug("Replay: {} {}",e.getFileRef(), blk) ;
                 blk.setModified(true) ;
@@ -307,7 +277,7 @@ public class JournalControl
             }   
             case Buffer:
             {
-                BufferChannel chan = dsg.getConfig().bufferChannels.get(e.getFileRef()) ;
+                BufferChannel chan = sConf.bufferChannels.get(e.getFileRef()) ;
                 ByteBuffer bb = e.getByteBuffer() ;
                 log.debug("Replay: {} {}",e.getFileRef(), bb) ;
                 chan.write(bb, 0) ; // YUK!
@@ -322,5 +292,16 @@ public class JournalControl
                 errlog.warn("Unexpected block type: "+e.getType()) ;
         }
         return false ;
+    }
+
+    private static void syncAll(StorageConfig sConf)
+    {
+        Collection<BlockMgr> x = sConf.blockMgrs.values() ;
+        for ( BlockMgr blkMgr : x )
+            blkMgr.syncForce() ;
+        Collection<BufferChannel> y = sConf.bufferChannels.values() ;
+        for ( BufferChannel bChan : y )
+            bChan.sync() ;
+        //sConf.nodeTables ;
     }
 }

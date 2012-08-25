@@ -35,6 +35,6 @@ public class TestChannelFile extends AbstractTestChannel
     protected BufferChannel open()
     {
         FileOps.deleteSilent(filename) ;
-        return new BufferChannelFile(filename) ;
+        return BufferChannelFile.create(filename) ;
     }
 }

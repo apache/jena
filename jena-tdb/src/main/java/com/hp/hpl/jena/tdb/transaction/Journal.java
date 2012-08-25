@@ -83,19 +83,13 @@ class Journal implements Sync, Closeable
         if ( location.isMem() )
             chan = BufferChannelMem.create() ;
         else
-            chan = new BufferChannelFile(journalFilename(location)) ;
+            chan = BufferChannelFile.create(journalFilename(location)) ;
         return new Journal(chan) ;
     }
     
     private static String journalFilename(Location location) { return location.absolute(Names.journalFile) ; }
     
-    private Journal(String filename)
-    {
-        this(new BufferChannelFile(filename)) ;
-        
-    }
-    
-    /*testing*/Journal(BufferChannel channel)
+    public /*testing*/ Journal(BufferChannel channel)
     {
         this.channel = channel ;
         position = 0 ;

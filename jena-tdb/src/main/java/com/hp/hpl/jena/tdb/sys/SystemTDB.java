@@ -47,7 +47,7 @@ public class SystemTDB
     
     /** TDB System log - use for general messages (a few) and warnings.
      *  Generally, do not log events unless you want every user to see them every time.
-     *  TDB is an embedded database - libraries and embedded systsm shoudl be seen and not heard.
+     *  TDB is an embedded database - libraries and embedded systems should be seen and not heard.
      *  @see #errlog 
      */
     // This was added quite late in TDB so need to check it's used appropriately - check for Log.*

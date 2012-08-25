@@ -38,6 +38,10 @@ public final class FileBase implements Sync, Closeable
     private static long counter = 0 ;
     private final long id ;
 
+    /** Create an FileBase withotu managed resources  Use with case. */
+    static FileBase createUnmanged(String filename, FileChannel channel) { return new FileBase(filename, channel) ; }
+    
+    /** Create a Filebase with managed resources */
     static FileBase create(String filename) { return new FileBase(filename) ; }
     static FileBase create(String filename, String mode) { return new FileBase(filename, mode) ; }
     
@@ -57,6 +61,14 @@ public final class FileBase implements Sync, Closeable
         channel = ChannelManager.acquire(filename, mode) ;
     }
     
+    private /*public*/ FileBase(String filename, FileChannel channel)
+    {
+        DebugThis = false ;
+        id  = -1  ;
+        this.filename = filename ;
+        this.channel = channel ; 
+    }
+
     public final FileChannel channel() { return channel ; }
     
     public long size()
