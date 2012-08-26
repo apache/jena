@@ -15,6 +15,9 @@
 	<!-- BlockingChannelConnector specific:
 	     <Set name="useDirectBuffer">false</Set>
 	-->
+	<!-- Only listen to interface ...
+	<Set name="host">localhost</Set>
+	-->
 	<Set name="port">3535</Set>
 	<Set name="maxIdleTime">0</Set>
 	<!-- All connectors -->
