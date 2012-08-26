@@ -40,12 +40,16 @@ just want -jar-with-dependences to by replaced by -sys as  classifier
           <exclude>**/NOTICE*</exclude>
           <exclude>**/LICENSE*</exclude>
           <exclude>**/DEPENDENCIES*</exclude>
+	  <exclude>META-INF/**</exclude>
+	  <!-- Exclude folders - this INFO level "skipping" messages -->
+	  <exclude>%regex[.*/]</exclude>
+	  <exclude>about.html</exclude>
         </excludes>
-    </unpackOptions>
+      </unpackOptions>
     </dependencySet>
   </dependencySets>
   
-  <!-- put our (rolled up) LICNESE and NOTICE.  We have no DEPENDENCIES --> 
+  <!-- put our (rolled up) LICENSE and NOTICE.  We have no DEPENDENCIES --> 
   <files>
     <file>
       <source>dist/LICENSE-dist</source>
