@@ -106,7 +106,7 @@ public class IndexBuilderBase implements IndexBuilder
             if ( indexWriter != null ) {
                 return IndexReader.open(indexWriter, true); // Let's use the Near Real Time (NRT) 
             } else {
-            	return IndexReader.open(dir, true) ;
+            	return IndexReader.open(dir) ;
             }
         } catch (Exception e) { throw new ARQLuceneException("getIndexReader", e) ; }
     }
