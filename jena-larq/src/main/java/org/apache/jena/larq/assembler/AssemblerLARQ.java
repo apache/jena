@@ -113,7 +113,7 @@ public class AssemblerLARQ extends AssemblerBase implements Assembler
         
         if ( indexLARQ == null ) 
         {
-            indexReader = IndexReader.open(directory, true) ; // read-only
+            indexReader = IndexReader.open(directory) ; // read-only
             indexLARQ = new IndexLARQ(indexReader) ;
         }
 

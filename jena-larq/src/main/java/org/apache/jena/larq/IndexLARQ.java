@@ -201,7 +201,7 @@ public class IndexLARQ
     
     private synchronized IndexSearcher getIndexSearcher() throws IOException {
         if ( !reader.isCurrent() ) {
-            IndexReader newReader = IndexReader.openIfChanged(reader, true) ;
+            IndexReader newReader = IndexReader.openIfChanged(reader) ;
             if ( newReader != null ) {
                 reader.close();
                 reader = newReader;

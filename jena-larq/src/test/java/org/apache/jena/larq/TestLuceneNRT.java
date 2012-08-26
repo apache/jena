@@ -287,9 +287,14 @@ public class TestLuceneNRT {
     }
     
     private int count (IndexReader reader, Term term) throws IOException {
-        IndexSearcher searcher = new IndexSearcher(reader);
-        TopDocs hits = searcher.search(new TermQuery(term), 10);
-        return hits.totalHits;
+    	IndexSearcher searcher = null;
+    	try {
+    		searcher = new IndexSearcher(reader);
+            TopDocs hits = searcher.search(new TermQuery(term), 10);
+            return hits.totalHits;
+    	} finally {
+    		if ( searcher != null ) searcher.close();
+    	}
     }
     
     private void close ( Closeable closeable ) {

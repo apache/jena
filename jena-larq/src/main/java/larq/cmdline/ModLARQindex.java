@@ -57,7 +57,7 @@ public class ModLARQindex implements ArgModuleGeneral
     { 
         try {
             FSDirectory dir = FSDirectory.open(luceneDir);
-            IndexReader indexReader = IndexReader.open(dir, true) ;
+            IndexReader indexReader = IndexReader.open(dir) ;
             return new IndexLARQ(indexReader) ;
         } catch (Exception ex)
         { throw new ARQLuceneException("LARQ", ex) ; }
