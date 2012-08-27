@@ -508,6 +508,7 @@ public class HttpQuery extends Params
             // Apps sometimes call QueryExecution.close straight after .execSelect.
             // that results in some resuls being seen, not all of them => XMl parse errors.
 //            byte[] bytes = IO.readWholeFile(in) ;
+//            in.close()            
 //            in = new ByteArrayInputStream(bytes) ;
             // +++ 
            
