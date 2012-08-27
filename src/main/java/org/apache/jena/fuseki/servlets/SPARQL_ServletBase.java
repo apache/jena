@@ -42,11 +42,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class SPARQL_ServletBase extends ServletBase
 {
-//    private final PlainRequestFlag queryStringHandling ;
     private static DatasetGraph dummyDSG = new DatasetGraphReadOnly(DatasetGraphFactory.createMemFixed()) ;
-    // Flag for whether a request (no query string) is handled as a regular operation or
-    // routed to special handler.
-//    protected enum PlainRequestFlag { REGULAR, DIFFERENT }
     
     protected SPARQL_ServletBase(boolean verbose_debug)
     {
