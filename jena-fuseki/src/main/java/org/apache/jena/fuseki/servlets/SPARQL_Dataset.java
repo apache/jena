@@ -75,8 +75,8 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
     private SPARQL_ServletBase updateServlet   = new SPARQL_Update(verbose_debug) ;
     // No upload support on the dataset itself - use service (or REST!) 
     //private SPARQL_ServletBase uploadServlet   = new SPARQL_Upload(verbose_debug) ;
-    private SPARQL_ServletBase restServlet_RW  = new SPARQL_REST_RW(verbose_debug) ;
-    private SPARQL_ServletBase restServlet_R   = new SPARQL_REST_R(verbose_debug) ;
+    private SPARQL_REST_RW     restServlet_RW  = new SPARQL_REST_RW(verbose_debug) ;
+    private SPARQL_REST_R      restServlet_R   = new SPARQL_REST_R(verbose_debug) ;
     private SPARQL_ServletBase restQuads       = new REST_Quads(verbose_debug) ;
 
     
@@ -94,10 +94,9 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
     @Override
     protected void validate(HttpServletRequest request)
     {
-        // already checked in SPARQ_Dataset?
     }
 
-    // Developement : calls to other srvlets marked ****
+    // Developement : calls to other servlets marked ****
     // This will need to do a proper servlet dispatch if they are going to be filterd (security, compression).
     
     @Override
@@ -131,10 +130,16 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
                 // Direct naming to indirect naming.
                 String absURI = request.getRequestURL().toString() ;
                 HttpActionREST a = new HttpActionREST(id, desc, absURI, request, response, verbose_debug) ;
-                // Conneg.
-                // Check access.
-                // ****
-                new SPARQL_REST_RW(verbose_debug).dispatch(a) ;
+                
+                if ( desc.readWriteGraphStoreEP.size() > 0 )
+                    // ****
+                    restServlet_RW.dispatch(a) ;
+                else if ( desc.readGraphStoreEP.size() > 0 )
+                    // ****
+                    restServlet_R.dispatch(a) ;
+                else
+                    errorMethodNotAllowed(method) ;
+                return ;
             }
             else
             {
@@ -172,7 +177,7 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         if ( c > 1 )
             errorBadRequest("Multiple possible actions") ;
         if ( c == 0 )
-            errorBadRequest("Query string does not contain a speific action") ;
+            errorBadRequest("Query string does not contain a specific action") ;
 
         // Check an endpoint is registered.
         if ( hasParamQuery )
@@ -261,6 +266,10 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    { doCommon(request, response) ; }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
     { doCommon(request, response) ; }
 
     @Override

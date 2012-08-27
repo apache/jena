@@ -244,6 +244,7 @@ public class SPARQLServer
         // The servlet naming rules and priorities are a bit obscure - this takes priority over the above!
         // ??No compression support because it is right sometimes and not others.
         
+        // Eventually, as an alternative, this should handle everything (no named services) 
         //addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
     }
     
