@@ -270,7 +270,6 @@ public class QueryExecutionBase implements QueryExecution
         startQueryIterator() ;
         
         Template template = query.getConstructTemplate() ;
-        
         return TemplateLib.calcTriples(template.getTriples(), queryIterator);
     }
 
@@ -308,7 +307,6 @@ public class QueryExecutionBase implements QueryExecution
                     set.add(n) ;
                 }
             }
-            this.close() ;
         }
 
         if ( query.getResultURIs() != null )
