@@ -39,7 +39,7 @@
 	<exclude>org.apache.jena:jena-*:*:sources</exclude>
 	<exclude>org.apache.jena:jena-*:*:javadoc</exclude>
       </excludes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
@@ -49,7 +49,7 @@
       <includes>
 	<include>org.apache.jena:jena-*:*:sources</include>
       </includes>
-      <fileMode>0622</fileMode>
+      <fileMode>0644</fileMode>
       <directoryMode>0755</directoryMode>
     </dependencySet>
 
