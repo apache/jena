@@ -96,7 +96,7 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
     {
     }
 
-    // Developement : calls to other servlets marked ****
+    // Development : calls to other servlets marked ****
     // This will need to do a proper servlet dispatch if they are going to be filterd (security, compression).
     
     @Override
@@ -112,7 +112,10 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         
         //log.info(format("[%d] All: %S %s :: %s ? %s", id, method, dsname, trailing, qs==null?"":qs)) ;
         
-        if ( trailing.length() != 0 )
+        boolean hasTrailing = ( trailing.length() != 0 ) ;
+        boolean hasQueryString = ( qs != null ) ;
+        
+        if ( hasTrailing )
         {
             // Is it a registered service?
             if ( checkDispatch(desc.queryEP, trailing, queryServlet, desc, id, request, response) ) return ; 
@@ -122,10 +125,14 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
             if ( checkDispatch(desc.readWriteGraphStoreEP, trailing, restServlet_RW, desc, id, request, response) ) return ; 
         }
         
+        if ( hasTrailing && hasQueryString )
+            // Revisit
+            errorBadRequest("Can't invoke a query-string service on a direct named graph") ; 
+        
         // if no query string => direct naming or REST on the dataset itself.
-        if ( qs == null )
+        if ( ! hasQueryString )
         {
-            if ( trailing.length() != 0 )
+            if ( hasTrailing )
             {
                 // Direct naming to indirect naming.
                 String absURI = request.getRequestURL().toString() ;
@@ -143,20 +150,17 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
             }
             else
             {
-                // This could be POST-query, POST-update
-                // as a form or with content type : application/sparql-query or  ...-update
+                // No trailing name, no query string => 
+                //    REST on dataset
+                //    POST-query
+                //    POST-update
                 // Direct action on the dataset itself.
                 restQuads.doCommonWorker(id, request, response) ;
                 return ;
             }
         }
-        
-        if ( trailing.length() != 0 )
-        {
-            errorBadRequest("Can't invoke a query-string service on a direct named graph") ;
-            return ;
-        }
-        
+
+        // 
         datasetQueryString(id, desc, request, response) ;
     }
     
