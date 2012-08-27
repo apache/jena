@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static java.lang.String.format ;
 import java.util.Iterator ;
 import java.util.List ;
 
@@ -41,17 +42,15 @@ import org.openjena.atlas.web.MediaType ;
  */
 public class SPARQL_Dataset extends SPARQL_ServletBase
 {
+    /*  This can be used for
+     *  1/ a single servlet for everything (über-servlet)
+     *  2/ just direct naming for a dataset with other services  
+     *  May need refactoring to separate those 2 functions. 
+     */   
     // To test: enable in SPARQLServer.configureOneDataset
 
-    // Restructure: 
-    //    Remove PlainRequestFlag - just use the query string override.
-    //    doCommonWorker without perform.
-    // pull 
-    // or allow validate(HttpServletRequest) override.
-    
     public SPARQL_Dataset(boolean verbose_debug)
     {
-        // Split SPARQL_ServletBase or move doCommon stub to ServletBase
         super(verbose_debug) ;
     }
 
@@ -98,6 +97,9 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
 
     // Development : calls to other servlets marked ****
     // This will need to do a proper servlet dispatch if they are going to be filterd (security, compression).
+    // TODO Handling content-type: application/sparql-query and application/sparql-update  
+    // If forwarding, id is added again.
+    // For an über-servlet, directly call the other servlets.   
     
     @Override
     protected void doCommonWorker(long id, HttpServletRequest request, HttpServletResponse response)
@@ -108,9 +110,16 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         String trailing = uri.substring(dsname.length()) ;
         String qs = request.getQueryString() ;
         
+        String ct = request.getContentType() ;
+        String charset = request.getCharacterEncoding() ;
+        
+        MediaType mt = null ;
+        if ( ct != null )
+            mt = MediaType.create(ct, charset) ;
+        
         DatasetRef desc = DatasetRegistry.get().get(dsname) ;
         
-        //log.info(format("[%d] All: %S %s :: %s ? %s", id, method, dsname, trailing, qs==null?"":qs)) ;
+        log.info(format("[%d] All: %S %s :: %s :: %s ? %s", id, method, dsname, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
         
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         boolean hasQueryString = ( qs != null ) ;
@@ -129,9 +138,29 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
             // Revisit
             errorBadRequest("Can't invoke a query-string service on a direct named graph") ; 
         
+        /* Sort out:
+         * No trailing.
+         * query
+         *   GET query string, ?query
+         *   POST form, ?query
+         *   POST content-type application/sparql-query
+         * update
+         *   GET form, ?update
+         *   POST content-type application/sparql-update
+         * REST:
+         *   content-type != application/sparql-query, application/sparql-update
+         *   GET, POST, PUT, (DELETE)
+         *   
+         * Trailing:
+         *   GET, POST, PUT, (DELETE), direct naming
+         *   ?? Query or update on a graph only.
+         */
+        
         // if no query string => direct naming or REST on the dataset itself.
         if ( ! hasQueryString )
         {
+            // what about Content-type: application/sparql-query and application/sparql-update   
+            
             if ( hasTrailing )
             {
                 // Direct naming to indirect naming.
@@ -160,10 +189,8 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
             }
         }
 
-        // 
         datasetQueryString(id, desc, request, response) ;
     }
-    
     
     // It's an ?operation on the dataset 
     private void datasetQueryString(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
@@ -175,31 +202,36 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         boolean hasParamGraph    = request.getParameter(HttpNames.paramGraph) != null ;
 
         int c = 0 ;
-        if ( hasParamQuery ) c++ ;
+        if ( hasParamQuery )   c++ ;
         if ( hasParamRequest ) c++ ;
-        if ( hasParamGraph ) c++ ;
+        if ( hasParamGraph )   c++ ;
         if ( c > 1 )
             errorBadRequest("Multiple possible actions") ;
         if ( c == 0 )
             errorBadRequest("Query string does not contain a specific action") ;
 
+        // ****
         // Check an endpoint is registered.
         if ( hasParamQuery )
         {
-            // Call by dispatch - follows the servlet chain. 
-            String x = getEPName(desc.name, desc.queryEP) ;
-            if ( x == null )
-                errorMethodNotAllowed(method) ;
+//            // ---- Call by forwarding
+//            if ( false )
+//            {
+//                // Call by dispatch - follows the servlet chain. 
+//                String x = getEPName(desc.name, desc.queryEP) ;
+//                if ( x == null )
+//                    errorMethodNotAllowed(method) ;
+//                else
+//                {
+//                    //request.setAttribute("org.apache.jena.fuseki.id", id) ;
+//                    forwardServlet(x, request, response) ;
+//                }
+//            }
+            // ---- Call direct.
+            if ( desc.queryEP.size() > 0 )
+                queryServlet.doCommonWorker(id, request, response) ;
             else
-            {
-                //request.setAttribute("org.apache.jena.fuseki.id", id) ;
-                forwardServlet(x, request, response) ;
-            }
-            // Call direct.
-//            if ( desc.queryEP.size() > 0 )
-//                queryServlet.doCommonWorker(id, request, response) ;
-//            else
-//                errorMethodNotAllowed(method) ;
+                errorMethodNotAllowed(method) ;
         }
 
         if ( hasParamRequest )
