@@ -33,6 +33,7 @@ import java.util.zip.GZIPInputStream ;
 
 import org.apache.commons.codec.binary.Base64 ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -59,7 +60,7 @@ public class HttpQuery extends Params
     
     String serviceURL ;
     
-    String contentTypeResult = HttpParams.contentTypeResultsXML ;
+    String contentTypeResult = WebContent.contentTypeResultsXML ;
     HttpURLConnection httpConnection = null ;
     
     // An object indicate no value associated with parameter name 
