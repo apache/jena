@@ -38,7 +38,7 @@ public class WebContent
     public static final String contentTypeTurtleAlt2        = "application/x-turtle" ;
 
     public static final String contentTypeRDFXML            = "application/rdf+xml" ;
-    public static final String contentTypeRDFJSON            = "application/rdf+json" ;
+    public static final String contentTypeRDFJSON           = "application/rdf+json" ;
     
     // MIME type for N-triple is text/plain (!!!)
     public static final String contentTypeTextPlain         = "text/plain" ;

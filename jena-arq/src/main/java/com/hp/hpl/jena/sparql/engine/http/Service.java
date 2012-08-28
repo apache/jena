@@ -22,6 +22,7 @@ import java.io.InputStream ;
 import java.util.Map ;
 
 import org.openjena.atlas.io.IO ;
+import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;
@@ -167,7 +168,7 @@ public class Service
     	// configure the query object.
     	httpQuery.merge(QueryEngineHTTP.getServiceParams(uri, context));
     	httpQuery.addParam(HttpParams.pQuery, query.toString());
-    	httpQuery.setAccept(HttpParams.contentTypeResultsXML);
+    	httpQuery.setAccept(WebContent.contentTypeResultsXML);
     	httpQuery.setAllowGZip(context.isTrue(queryGzip));
     	httpQuery.setAllowDeflate(context.isTrue(queryDeflate));
 
