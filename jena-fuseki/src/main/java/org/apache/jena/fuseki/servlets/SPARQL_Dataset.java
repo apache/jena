@@ -120,9 +120,16 @@ public class SPARQL_Dataset extends SPARQL_ServletBase
         DatasetRef desc = DatasetRegistry.get().get(dsname) ;
         
         log.info(format("[%d] All: %S %s :: %s :: %s ? %s", id, method, dsname, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
-        
+                       
         boolean hasTrailing = ( trailing.length() != 0 ) ;
         boolean hasQueryString = ( qs != null ) ;
+        
+        /* Better:
+         *   Is it a query? => dispatch 
+         *   Is it an update? => dispatch
+         *   Trailing? =>  direct naming
+         *   Dataset REST operation.
+         */
         
         if ( hasTrailing )
         {

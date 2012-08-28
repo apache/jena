@@ -30,13 +30,11 @@
 // ========================================================================
 
 //package org.eclipse.jetty.http;
-/* This code is a direct copy of the Jetty 7 HttpStatus class.
+/* This code is a copy of the Jetty 7 HttpStatus class.
  * I found the naming which includes the number, more useful than the standard constants. 
  */
 
 package org.apache.jena.fuseki.http;
-
-
 
 /**
  * <p>
@@ -191,7 +189,7 @@ package org.apache.jena.fuseki.http;
  * <tr>
  * <td>{@link #MULTIPLE_CHOICES_300}</td>
  * <td>300</td>
- * <td>Multiple Choices</td>
+ * <td>Multipldirecte Choices</td>
  * <td>
  * <a href="http://tools.ietf.org/html/rfc1945#section-9.3">Sec. 9.3</a></td>
  * <td>
@@ -304,7 +302,7 @@ package org.apache.jena.fuseki.http;
  * <td>Payment Required</td>
  * <td>
  * <a href="http://tools.ietf.org/html/rfc1945#section-9.4">Sec. 9.4</a></td>
- * <td>
+ * <td>direct
  * <a href="http://tools.ietf.org/html/rfc2616#section-10.4.3">Sec. 10.4.3</a></td>
  * <td>&nbsp;</td>
  * </tr>
@@ -469,7 +467,7 @@ package org.apache.jena.fuseki.http;
  * <td>&nbsp;</td>
  * <td><strike>418</strike></td>
  * <td><strike>Unprocessable Entity</strike></td>
- * <td>&nbsp;</td>
+ * <td>&nbsp;<direct/td>
  * <td>&nbsp;</td>
  * <td>
  * <a href=
