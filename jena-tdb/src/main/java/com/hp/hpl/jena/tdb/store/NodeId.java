@@ -207,13 +207,25 @@ public class NodeId
         {
             if ( XSDDatatype.XSDinteger.isValidLiteral(lit) )
             {
-                long v = ((Number)lit.getValue()).longValue() ;
-                v = IntegerNode.pack(v) ;
-                // Value -1 is "does not fit"
-                if ( v != -1 )
-                    return new NodeId(v) ;
-                else
+                // Check length of lexical form to see if it's in range of a long.
+                // Long.MAX_VALUE =  9223372036854775807
+                // Long.MIN_VALUE = -9223372036854775808
+                // 9,223,372,036,854,775,807 is 19 digits.
+                
+                if ( lit.getLexicalForm().length() > 19 )
                     return null ;
+
+                try {
+                    long v = ((Number)lit.getValue()).longValue() ;
+                    v = IntegerNode.pack(v) ;
+                    // Value -1 is "does not fit"
+                    if ( v != -1 )
+                        return new NodeId(v) ;
+                    else
+                        return null ;
+                }
+                // Out of range for the type, not a long etc etc.
+                catch (Throwable ex) { return null ; }
             }
         }
         
@@ -292,11 +304,6 @@ public class NodeId
             case INTEGER:
             {
                 long val = IntegerNode.unpack(v) ;
-//                
-//                long val = BitsLong.clear(v, 56, 64) ;
-//                // Sign extends to 64 bits.
-//                if ( BitsLong.isSet(val, 55) )
-//                    val = BitsLong.set(v, 56, 64) ;
                 Node n = Node.createLiteral(Long.toString(val), null, XSDDatatype.XSDinteger) ;
                 return n ;
             }

@@ -41,29 +41,36 @@ public class TestNodeId extends BaseTest
     
     // Inlines
     
-    @Test public void nodeId_int_1()
+    @Test public void nodeId_int_01()
     { test("1", NodeFactory.parseNode("1")) ; }
 
-    @Test public void nodeId_int_2()
+    @Test public void nodeId_int_02()
     { test("2", NodeFactory.parseNode("2")) ; }
 
-    @Test public void nodeId_int_3()
+    @Test public void nodeId_int_03()
     { test("'3'^^xsd:int", NodeFactory.parseNode("3")) ; }
 
-    @Test public void nodeId_int_4()
+    @Test public void nodeId_int_04()
     { test("'3'", (Node)null) ; }
 
-    @Test public void nodeId_int_5()
+    @Test public void nodeId_int_05()
     { test("-1",  NodeFactory.parseNode("-1")) ; }
     
-    @Test public void nodeId_int_6()
+    @Test public void nodeId_int_06()
     { test("-180",  NodeFactory.parseNode("-180")) ; }
 
-    @Test public void nodeId_int_7()
+    @Test public void nodeId_int_07()
     { test("01",  NodeFactory.parseNode("1")) ; }
     
-    @Test public void nodeId_int_8()
+    @Test public void nodeId_int_08()
     { test("+01",  NodeFactory.parseNode("1")) ; }
+    
+    @Test public void nodeId_int_09()
+    // More than Long.MAX_VALUE
+    { test("92233720368547758070",  (Node)null) ; }
+
+    @Test public void nodeId_int_10()
+    { test("'300'^^xsd:byte",  (Node)null) ; }
     
     @Test public void nodeId_decimal_1()
     { test("3.14", NodeFactory.parseNode("3.14")) ; }
