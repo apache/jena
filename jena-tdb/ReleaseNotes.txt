@@ -3,6 +3,7 @@ ChangeLog for TDB
 
 ==== TDB 0.9.4
 
++ Bug fix: out-of-range derived integers (e.g. xsd:int)
 + Cache read transaction datastructures and reuse view when possible.
 + Add StoreConnection flush() operation to push delayed writer-commits if possible.    
 + JENA-290 - TDB txn creation touched stats unnecessarily, causing slow down. 
