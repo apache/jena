@@ -278,9 +278,10 @@ public class QueryEngineHTTP implements QueryExecution
         
         //Try to select language appropriately here based on the model content type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
-        model.read(in, null, lang.getName()) ; 
-        
+        if (!lang.isTriples()) 
+            throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
+        model.read(in, null, lang.getName()) ;
+        this.close() ; 
         return model ;
     }
     
@@ -459,7 +460,7 @@ public class QueryEngineHTTP implements QueryExecution
 
     @Override
     public void close() {
-        finished = false ;
+        finished = true ;
         if (retainedConnection != null) {
             try { retainedConnection.close(); }
             catch (java.io.IOException e) { log.warn("Failed to close connection", e); }
