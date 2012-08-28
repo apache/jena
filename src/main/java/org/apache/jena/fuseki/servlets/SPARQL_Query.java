@@ -246,10 +246,16 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
         // Assumes finished whole thing by end of sendResult. 
         action.beginRead() ;
+        QueryExecution qExec = null ;
         try {
-            SPARQLResult result = executeQuery(action, query, queryStringLog) ;
+            Dataset dataset = decideDataset(action, query, queryStringLog) ; 
+            qExec = createQueryExecution(query, dataset) ;
+            SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
             sendResults(action, result) ;
-        } finally { action.endRead() ; }
+        } finally { 
+            if ( qExec != null )
+                qExec.close() ;
+            action.endRead() ; }
     }
 
     /** Check the query - throw ActionErrorException or call super.error* */
@@ -260,15 +266,13 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return QueryExecutionFactory.create(query, dataset) ;
     }
 
-    protected SPARQLResult executeQuery(HttpActionQuery action, Query query, String queryStringLog)
+    protected SPARQLResult executeQuery(HttpActionQuery action, QueryExecution qExec, Query query, String queryStringLog)
     {
-        Dataset dataset = decideDataset(action, query, queryStringLog) ; 
-        QueryExecution qexec = createQueryExecution(query, dataset) ;
-        setAnyTimeouts(qexec, action);
+        setAnyTimeouts(qExec, action);
 
         if ( query.isSelectType() )
         {
-            ResultSet rs = qexec.execSelect() ;
+            ResultSet rs = qExec.execSelect() ;
             
             // Force some query execution now.
             // Do this to force the query to do something that should touch any underlying database,
@@ -276,8 +280,8 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // MySQL can time out after 8 hours of an idle connection
             rs.hasNext() ;
 
-//            // Not necessary if we are inside a read lock until the end of sending results. 
-//            rs = ResultSetFactory.copyResults(rs) ;
+            // Not necessary if we are inside a read transaction or lock until the end of sending results. 
+            // rs = ResultSetFactory.copyResults(rs) ;
 
             log.info(format("[%d] OK/select", action.id)) ;
             return new SPARQLResult(rs) ;
@@ -285,21 +289,21 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         if ( query.isConstructType() )
         {
-            Model model = qexec.execConstruct() ;
+            Model model = qExec.execConstruct() ;
             log.info(format("[%d] OK/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isDescribeType() )
         {
-            Model model = qexec.execDescribe() ;
+            Model model = qExec.execDescribe() ;
             log.info(format("[%d] OK/describe",action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() )
         {
-            boolean b = qexec.execAsk() ;
+            boolean b = qExec.execAsk() ;
             log.info(format("[%d] OK/ask",action.id)) ;
             return new SPARQLResult(b) ;
         }
@@ -339,12 +343,11 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     protected void sendResults(HttpActionQuery action, SPARQLResult result)
     {
         if ( result.isResultSet() )
-            ResponseResultSet.doResponseResultSet(result.getResultSet(), null, action.request, action.response) ;
+            ResponseResultSet.doResponseResultSet(result.getResultSet(), action.request, action.response) ;
         else if ( result.isGraph() )
             ResponseModel.doResponseModel(result.getModel(), action.request, action.response) ;
         else if ( result.isBoolean() )
-            // Make different?
-            ResponseResultSet.doResponseResultSet(null, result.getBooleanResult(), action.request, action.response) ;
+            ResponseResultSet.doResponseResultSet(result.getBooleanResult(), action.request, action.response) ;
         else
             errorOccurred("Unknown or invalid result type") ;
     }
