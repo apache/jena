@@ -2,6 +2,7 @@
 
 == Fuseki 0.2.4
 
++ JENA-307 - Close QueryExecution object after query execution. 
 + JENA-295 - Implement using-graph-uri= and using-named-graph-uri=
 + Add support for default-graph-uri= and named-graph-uri= query parameters to a dataset.
   It picks the specific graphs out of the dataset for the query. 

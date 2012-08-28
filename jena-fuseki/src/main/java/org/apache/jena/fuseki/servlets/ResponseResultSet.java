@@ -69,8 +69,20 @@ public class ResponseResultSet
     static AcceptList prefContentTypeResultSet     = DEF.rsOffer ; 
     static AcceptList prefContentTypeRDF           = DEF.rdfOffer ;
 
+    public static void doResponseResultSet(Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
+    {
+        doResponseResultSet$(null, booleanResult, request, response) ;
+    }
+
+    public static void doResponseResultSet(ResultSet resultSet, HttpServletRequest request, HttpServletResponse response)
+    {
+        doResponseResultSet$(resultSet, null, request, response) ;
+    }
+    
+    // if we refatcor the conneg into a single function, we can split boolean and result set handling. 
+    
     // One or the other argument must be null
-    public static void doResponseResultSet(final ResultSet resultSet, final Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
+    private static void doResponseResultSet$(final ResultSet resultSet, final Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
     {
         if ( resultSet == null && booleanResult == null )
         {
