@@ -40,21 +40,4 @@ public class HttpParams
 
     /** Parameter for query language URI */
     public static final String pQueryLang      = "lang" ;
-
-    // -------- Constants
-    
-    public static final String contentTypeAppN3        = "application/n3" ;
-    public static final String contentTypeTurtle       = "application/turtle" ;
-    public static final String contentTypeRDFXML       = "application/rdf+xml" ;
-    public static final String contentTypeNTriples     = "application/n-triples" ;
-    public static final String contentTypeXML          = "application/xml" ;
-    public static final String contentTypeResultsXML   = "application/sparql-results+xml" ;
-
-    public static final String contentTypeTextPlain    = "text/plain" ;
-    public static final String contentTypeTextN3       = "text/n3" ;
-    public static final String contentTypeForText      = contentTypeTextPlain ;
-    
-    public static final String charsetUTF8             = "utf-8" ;
-
-    
 }
