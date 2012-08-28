@@ -229,23 +229,34 @@ public class SPARQLServer
         HttpServlet sparqlUpload    = new SPARQL_Upload(verboseLogging) ;
         HttpServlet sparqlHttpR     = new SPARQL_REST_R(verboseLogging) ;  
         HttpServlet sparqlHttpRW    = new SPARQL_REST_RW(verboseLogging) ;
-        HttpServlet sparqlDataset   = new SPARQL_Dataset(verboseLogging) ;
+        HttpServlet sparqlDataset   = new SPARQL_Dataset(verboseLogging) ;  // Rename SPARQL_ÜberServlet
+
+        // The überservlet sits on the daatset name and handles all requests.
+        // Includes direct naming.
+        // Need to control as it allows PUT/POST to the dataset as quads.
+        final boolean uberServlet = false ;
         
-        addServlet(context, datasetPath, sparqlQuery,   sDesc.queryEP,    enableCompression) ;
-        addServlet(context, datasetPath, sparqlUpdate,  sDesc.updateEP,   false) ;
-        addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ; // No point - no results of any size.
-        addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
-        addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
-        
-        // This is the servlet that:
-        //   1/ handles Graph Store Protocol direct naming.
-        //   2/ Handles dataset?operation.
-        //   3/ Handles GET dataset
-        // The servlet naming rules and priorities are a bit obscure - this takes priority over the above!
-        // ??No compression support because it is right sometimes and not others.
-        
-        // Eventually, as an alternative, this should handle everything (no named services) 
-        //addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
+        if ( ! uberServlet )
+        {
+            // If uberserver, these are unnecessary but can be used.
+            // If just means the überservlet isn't handling these operations. 
+            addServlet(context, datasetPath, sparqlQuery,   sDesc.queryEP,    enableCompression) ;
+            addServlet(context, datasetPath, sparqlUpdate,  sDesc.updateEP,   false) ;
+            addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ;    // No point - no results of any size.
+            addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
+            addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
+        }
+        else
+        {
+            //** May need to split into direct naming and uberservlet.
+            // This is the servlet that:
+            //   1/ handles Graph Store Protocol direct naming.
+            //   2/ Handles dataset?operation.
+            //   3/ Handles GET dataset
+            // The servlet naming rules and priorities are a bit obscure - this takes priority over the above!
+            // ??No compression support because it is right sometimes and not others.
+            addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
+        }
     }
     
     private static Server configServer(String jettyConfig)
