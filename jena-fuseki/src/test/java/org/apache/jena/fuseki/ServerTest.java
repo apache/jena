@@ -18,7 +18,6 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.fuseki.http.UpdateRemote ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
@@ -28,6 +27,11 @@ import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateExecutionFactory ;
+import com.hp.hpl.jena.update.UpdateProcessor ;
 
 /** Manage a server for testing.
  * <pre>
@@ -88,6 +92,8 @@ public class ServerTest extends BaseServerTest
     
     public static void resetServer()
     {
-        UpdateRemote.executeClear(serviceUpdate) ;
+        Update clearRequest = new UpdateDrop(Target.ALL) ;
+        UpdateProcessor proc = UpdateExecutionFactory.createRemote(clearRequest, serviceUpdate) ;
+        proc.execute() ;
     }
 }
