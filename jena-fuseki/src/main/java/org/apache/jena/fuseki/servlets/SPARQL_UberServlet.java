@@ -41,7 +41,7 @@ import org.openjena.riot.WebContent ;
  *  and acts as a router for all SPARQL operations
  *  (query, update, graph store, both direct and indirect naming). 
  */
-public class SPARQL_ÜberServlet extends SPARQL_ServletBase
+public class SPARQL_UberServlet extends SPARQL_ServletBase
 {
     /*  This can be used for a single servlet for everything (über-servlet)
      *  
@@ -59,7 +59,7 @@ public class SPARQL_ÜberServlet extends SPARQL_ServletBase
     private final SPARQL_REST        restServlet_R   = new SPARQL_REST_R(verbose_debug) ;
     private final SPARQL_ServletBase restQuads       = new REST_Quads(verbose_debug) ;
     
-    public SPARQL_ÜberServlet(boolean verbose_debug)
+    public SPARQL_UberServlet(boolean verbose_debug)
     {
         super(verbose_debug) ;
     }
