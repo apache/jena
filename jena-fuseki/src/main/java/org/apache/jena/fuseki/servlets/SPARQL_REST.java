@@ -74,10 +74,11 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             _target = Target.createNamed(desc.dataset, absUri, gn) ; 
         }
         
-        private Target _target = null ; 
+        private final Target _target ; 
         protected HttpActionREST(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
+            _target = targetGraph(request, desc, super.getActiveDSG() ) ;
         }
 
         protected final boolean hasTarget()
@@ -89,8 +90,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         protected final Target getTarget() 
         {
-            if ( _target == null )
-                _target = targetGraph(request, super.getActiveDSG() ) ;
             return _target ;
         }
     }
@@ -193,7 +192,11 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
+        //Indirect
         HttpActionREST action = new HttpActionREST(id, desc, request, response, verbose_debug) ;
+        
+        // Direct 
+        
         dispatch(action) ;
     }
 
@@ -358,6 +361,14 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( g == null && d == null )
             errorBadRequest("Neither ?default nor ?graph in the query string of the request") ;
         
+        int x1 = SPARQL_Protocol.countParamOccurences(request, HttpNames.paramGraph) ;
+        int x2 = SPARQL_Protocol.countParamOccurences(request, HttpNames.paramGraphDefault) ;
+        
+        if ( x1 > 1 )
+            errorBadRequest("Multiple ?default in the query string of the request") ;
+        if ( x2 > 1 )
+            errorBadRequest("Multiple ?graph in the query string of the request") ;
+        
         @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
@@ -371,13 +382,17 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
     }
 
-    protected static Target targetGraph(HttpServletRequest request, DatasetGraph dsg)
+    protected static Target targetGraph(HttpServletRequest request, DatasetRef desc, DatasetGraph dsg)
     {
         boolean dftGraph = getOneOnly(request, HttpNames.paramGraphDefault) != null ;
         String uri = getOneOnly(request, HttpNames.paramGraph) ;
         
         if ( !dftGraph && uri == null )
-            errorBadRequest("Neither default graph nor named graph specificed") ;
+        {
+            // Direct naming or error.
+            uri = request.getRequestURL().toString() ;
+            //errorBadRequest("Neither default graph nor named graph specificed") ;
+        }
         
         if ( dftGraph )
             return Target.createDefault(dsg) ;
