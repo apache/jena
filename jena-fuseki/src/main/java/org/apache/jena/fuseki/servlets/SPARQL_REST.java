@@ -74,11 +74,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             _target = Target.createNamed(desc.dataset, absUri, gn) ; 
         }
         
-        private final Target _target ; 
+        private Target _target = null ; 
         protected HttpActionREST(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
-            _target = targetGraph(request, desc, super.getActiveDSG() ) ;
         }
 
         protected final boolean hasTarget()
@@ -90,6 +89,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         protected final Target getTarget() 
         {
+            // Delayed until inside a transaction.
+            if ( _target == null )
+            {
+                if ( super.getActiveDSG() == null )
+                    errorOccurred("Internal error : No action graph (not in a transaction?)") ;
+                _target = targetGraph(request, super.getDatasetRef(), super.getActiveDSG() ) ;
+            }
             return _target ;
         }
     }
@@ -391,7 +397,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         {
             // Direct naming or error.
             uri = request.getRequestURL().toString() ;
-            //errorBadRequest("Neither default graph nor named graph specificed") ;
+            if ( request.getRequestURI().equals(desc.name) )
+                // No name 
+                errorBadRequest("Neither default graph nor named graph specificed; no direct name") ;
         }
         
         if ( dftGraph )
