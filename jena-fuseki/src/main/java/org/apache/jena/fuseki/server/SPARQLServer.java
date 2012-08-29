@@ -229,7 +229,7 @@ public class SPARQLServer
         HttpServlet sparqlUpload    = new SPARQL_Upload(verboseLogging) ;
         HttpServlet sparqlHttpR     = new SPARQL_REST_R(verboseLogging) ;  
         HttpServlet sparqlHttpRW    = new SPARQL_REST_RW(verboseLogging) ;
-        HttpServlet sparqlDataset   = new SPARQL_ÜberServlet(verboseLogging) ;
+        HttpServlet sparqlDataset   = new SPARQL_UberServlet(verboseLogging) ;
 
         // The überservlet sits on the daatset name and handles all requests.
         // Includes direct naming.
