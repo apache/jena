@@ -229,14 +229,14 @@ public class SPARQLServer
         HttpServlet sparqlUpload    = new SPARQL_Upload(verboseLogging) ;
         HttpServlet sparqlHttpR     = new SPARQL_REST_R(verboseLogging) ;  
         HttpServlet sparqlHttpRW    = new SPARQL_REST_RW(verboseLogging) ;
-        HttpServlet sparqlDataset   = new SPARQL_Dataset(verboseLogging) ;  // Rename SPARQL_ÜberServlet
+        HttpServlet sparqlDataset   = new SPARQL_ÜberServlet(verboseLogging) ;
 
         // The überservlet sits on the daatset name and handles all requests.
         // Includes direct naming.
         // Need to control as it allows PUT/POST to the dataset as quads.
-        final boolean uberServlet = false ;
+        final boolean überServlet = false ;
         
-        if ( ! uberServlet )
+        if ( ! überServlet )
         {
             // If uberserver, these are unnecessary but can be used.
             // If just means the überservlet isn't handling these operations. 
@@ -248,13 +248,12 @@ public class SPARQLServer
         }
         else
         {
-            //** May need to split into direct naming and uberservlet.
-            // This is the servlet that:
-            //   1/ handles Graph Store Protocol direct naming.
-            //   2/ Handles dataset?operation.
-            //   3/ Handles GET dataset
-            // The servlet naming rules and priorities are a bit obscure - this takes priority over the above!
-            // ??No compression support because it is right sometimes and not others.
+            // This is the servlet that analyses requests and dispatches them to the appropriate servlet.
+            //    SPARQL Query, SPARQL Update -- handles dataset?query=  dataset?update=
+            //    Graph Store Protocol (direct and indirect naming).
+            //    GET/PUT/POST on the dataset itself.
+            // It also checks for a request that looks like a service request and passes it
+            // on to the service (this takes precedence over direct naming).
             addServlet(context, datasetPath, sparqlDataset, epDataset, enableCompression) ;
         }
     }

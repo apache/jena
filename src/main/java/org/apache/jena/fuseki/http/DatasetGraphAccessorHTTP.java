@@ -59,9 +59,6 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
     private final String remote ;
-    // Library
-    static final String paramGraph = "graph" ; 
-    static final String paramDefault = "default" ; 
 
     /** Create a DatasetUpdater for the remote URL */
     public DatasetGraphAccessorHTTP(String remote)
@@ -159,7 +156,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private String targetDefault()
     {
-        return remote+"?"+paramDefault+"=" ;
+        return remote+"?"+HttpNames.paramGraphDefault+"=" ;
     }
 
     private String target(Node name)
@@ -169,7 +166,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         String guri = name.getURI() ;
         // Encode
         guri = IRILib.encodeUriComponent(guri) ;
-        return remote+"?"+paramGraph+"="+guri ;
+        return remote+"?"+HttpNames.paramGraph+"="+guri ;
     }
 
     static private HttpParams httpParams = createHttpParams() ;
