@@ -32,6 +32,7 @@ import org.openjena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.file.BufferChannel ;
@@ -120,11 +121,19 @@ public class JournalControl
     {
         if ( jrnl.isEmpty() )
             return false ;
-        
+
         long posn = 0 ;
         for ( ;; )
         {
-            long x = scanForCommit(jrnl, posn) ;
+            // Any errors indicate a partially written journal.
+            // A commit was not written properly in the prepare phase.
+            // e.g. JVM died half-way though writing the prepare phase data.
+            // The valid journal ends at this point. Exit loop and clean up.  
+
+            long x ;
+            try { x = scanForCommit(jrnl, posn) ; }
+            catch (TDBException ex) { x = -1 ; }
+            
             if ( x == -1 ) break ;
             recoverSegment(jrnl, posn, x, sConf) ;
             posn = x ;
@@ -138,8 +147,7 @@ public class JournalControl
     }
 
     /** Scan to a commit entry, starting at a given position in the journal.
-     * Return addrss of entry after commit if found, else -1.
-     *  
+     * Return address of entry after commit if found, else -1.
      */
     private static long scanForCommit(Journal jrnl, long startPosn)
     {
