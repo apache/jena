@@ -32,8 +32,8 @@ import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 
-/** Support for renamign all the variables in an algebra expession
- * except for a fixed set to leave alone */
+/** Support for renaming all the variables in an algebra expession
+ *  except for a fixed set to leave alone */
 public class Rename
 {
     /** Given an old name, and some names already in use, pick a fresh, new name*/ 
