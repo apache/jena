@@ -65,6 +65,11 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         this.base = sub ;
         this.nodeIndex = nodeIndex ;
         this.journalObjFile = objFile ;
+        // Clear bytes from an old run
+        // (a crash while writing means the old transaction did not commit
+        //  any bytes in the file are junk)
+        // This is coupled to the fact the prepare phase does the actually data writing.  
+        journalObjFile.truncate(0) ;
         this.label = label ; 
     }
 
@@ -160,12 +165,10 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         allocOffset = base.allocOffset().getId() ;
         // base node table empty e.g. first use.
         journalObjFileStartOffset = journalObjFile.length() ;
+        // Because the data is written in prepare, the journal of object data is
+        // always empty at the start of a transaction.
         if ( journalObjFileStartOffset != 0 )
-        {
             warn(log, "%s journalStartOffset not zero: %d/0x%02X",txn.getLabel(), journalObjFileStartOffset, journalObjFileStartOffset) ;
-            // repeat for debugging.
-            journalObjFile.length() ;
-        }
         allocOffset += journalObjFileStartOffset ;
         
         this.nodeTableJournal = new NodeTableNative(nodeIndex, journalObjFile) ;
@@ -300,7 +303,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         long expected = base.allocOffset().getId() ;
         long len = journalObjFile.length() ;
         if ( expected != allocOffset )
-            System.err.println("************* UNEXPECTED [1]") ;
+            warn(log, "Inconsistency: base.allocOffset() = "+expected+" : allocOffset = "+allocOffset) ;
         
         long newbase = -1 ; 
         append() ;      // Calls all() which does a buffer flish.
