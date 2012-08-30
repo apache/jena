@@ -249,14 +249,6 @@ public class OpExecutor
         return qIter ;
     }
     
-    // Pass iterator from one step directly into the next.
-    protected QueryIterator execute(OpDisjunction opDisjunction, QueryIterator input)
-    {
-        QueryIterator cIter = new QueryIterUnion(input, opDisjunction.getElements(), execCxt) ;
-        return cIter ;
-    }
-
-    
     protected QueryIterator execute(OpLeftJoin opLeftJoin, QueryIterator input)
     {
         QueryIterator left = executeOp(opLeftJoin.getLeft(), input) ;
@@ -291,6 +283,12 @@ public class OpExecutor
         commonVars.retainAll(OpVars.patternVars(rhsOp)) ;
 
         return new QueryIterMinus(left, right, commonVars, execCxt) ;
+    }
+    
+    protected QueryIterator execute(OpDisjunction opDisjunction, QueryIterator input)
+    {
+        QueryIterator cIter = new QueryIterUnion(input, opDisjunction.getElements(), execCxt) ;
+        return cIter ;
     }
 
     protected QueryIterator execute(OpUnion opUnion, QueryIterator input)
