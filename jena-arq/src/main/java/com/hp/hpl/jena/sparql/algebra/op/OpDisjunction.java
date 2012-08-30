@@ -74,8 +74,6 @@ public class OpDisjunction extends OpN
     @Override
     public void visit(OpVisitor opVisitor)
     { opVisitor.visit(this) ; }
-    //{ throw new ARQNotImplemented("OpDisjunction.visit") ; }
-
     
     @Override
     public boolean equalTo(Op op, NodeIsomorphismMap labelMap)
@@ -90,7 +88,6 @@ public class OpDisjunction extends OpN
     @Override
     public Op apply(Transform transform, List<Op> elts)
     { return transform.transform(this, elts) ; }
-    //{ throw new ARQNotImplemented("OpDisjunction.apply") ; }
 
     @Override
     public OpN copy(List<Op> elts)
