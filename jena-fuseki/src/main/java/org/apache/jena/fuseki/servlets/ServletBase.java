@@ -147,6 +147,14 @@ public abstract class ServletBase extends HttpServlet
         error(HttpSC.METHOD_NOT_ALLOWED_405, "HTTP method not allowed: "+method) ;
     }
 
+    protected static void errorForbidden(String msg)
+    {
+        if ( msg != null )
+            error(HttpSC.FORBIDDEN_403, msg) ;
+        else
+            error(HttpSC.FORBIDDEN_403, "Forbidden") ;
+    }
+    
     protected static void error(int statusCode)
     {
         throw new ActionErrorException(null, null, statusCode) ;

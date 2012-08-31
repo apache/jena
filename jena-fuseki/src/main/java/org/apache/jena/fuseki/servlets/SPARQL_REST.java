@@ -64,9 +64,8 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     
     protected static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
 
-    public static class HttpActionREST extends HttpAction {
-        
-        // Special ; direct.
+    public static class HttpActionREST extends HttpAction
+    {
         HttpActionREST(long id, DatasetRef desc, String absUri, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
@@ -82,9 +81,9 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
         protected final boolean hasTarget()
         {
-            return 
-                request.getParameter(HttpNames.paramGraphDefault) == null &&
-                request.getParameter(HttpNames.paramGraph) == null ;
+            return true ;
+//                request.getParameter(HttpNames.paramGraphDefault) == null &&
+//                request.getParameter(HttpNames.paramGraph) == null ;
         }
         
         protected final Target getTarget() 
@@ -198,11 +197,17 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
+        
+//        // Decide on t 
+//        String uri = request.getRequestURI() ;
+//        String method = request.getMethod() ;
+//        String dsname = findDataset(uri) ;
+//        String trailing = uri.substring(dsname.length()+1) ;    // Skip the "/"
+//        String qs = request.getQueryString() ;
+
         //Indirect
         HttpActionREST action = new HttpActionREST(id, desc, request, response, verbose_debug) ;
-        
         // Direct 
-        
         dispatch(action) ;
     }
 
@@ -272,7 +277,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                 errorOccurred("Dataset does not have a default graph") ;
             log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
             // Not default graph.
-            // Not an autocreate dataset - create something.
+            // Not an autocreate dataset -               create something.
             g = GraphFactory.createDefaultGraph() ;
             dest.dsg.addGraph(dest.graphName, g) ;
         }
@@ -327,7 +332,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                     // Without content length, reading to send of file is occassionaly fraught.
                     // Reason unknown - maybe some client mishandling of the stream. 
                     String x = FileUtils.readWholeFileAsUTF8(input) ;
-                    System.out.println(x) ;
+                    //System.out.println(x) ;
                     input = new ByteArrayInputStream(x.getBytes("UTF-8")) ; 
                 }
             }
@@ -355,8 +360,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     @Override
     protected void validate(HttpServletRequest request)
     {
+        // Direct naming.
         if ( request.getQueryString() == null )
-            errorBadRequest("No query string") ;
+            //errorBadRequest("No query string") ;
+            return ;
         
         String g = request.getParameter(HttpNames.paramGraph) ;
         String d = request.getParameter(HttpNames.paramGraphDefault) ;

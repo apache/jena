@@ -188,7 +188,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
     /** A possible implementation for mapRequestToDataset(String)
      *  that assums the form /dataset/service 
      */
-    protected String mapRequestToDataset$(String uri)
+    
+    protected static String mapRequestToDataset$(String uri)
     {
         // Chop off trailing part - the service selector
         // e.f. /dataset/sparql => /dataset 
@@ -201,6 +202,6 @@ public abstract class SPARQL_ServletBase extends ServletBase
         
         return uri.substring(0, i) ;
     }
-
+    
     protected abstract void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response) ;
 }
