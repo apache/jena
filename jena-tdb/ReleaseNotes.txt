@@ -3,6 +3,7 @@ ChangeLog for TDB
 
 ==== TDB 0.9.4
 
++ JENA-301 : Recovery did not reset internal file state under certain conditions.  
 + Bug fix: out-of-range derived integers (e.g. xsd:int)
 + Cache read transaction datastructures and reuse view when possible.
 + Add StoreConnection flush() operation to push delayed writer-commits if possible.    

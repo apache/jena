@@ -61,10 +61,13 @@ import com.hp.hpl.jena.sparql.util.NodeUtils ;
  * graphs in the datasets.
  */
 
-// Problems with paths - that code accesses the active graph.
-
 public class TransformDynamicDataset_Imperfect extends TransformCopy
 {
+    /*
+     * ** Problems with paths - that code accesses the active graph.
+     * ** See also Dynamic Dataset which forms a general DatasetGraph 
+     */
+    
     // The graphs making up the usual default graph of the query.
     private Set<Node> defaultGraphs ;
     // The graphs making up the default graph seen as <urn:x-arq:DefaultGraph>

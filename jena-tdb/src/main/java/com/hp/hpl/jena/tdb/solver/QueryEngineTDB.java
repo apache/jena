@@ -18,11 +18,8 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.Set ;
-
 import org.openjena.atlas.lib.Lib ;
 
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.algebra.Algebra ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
@@ -35,13 +32,11 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
 import com.hp.hpl.jena.sparql.mgt.Explain ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.migrate.A2 ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.GraphNamedTDB ;
-import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
 
 // This exists to intercept the query execution setup.
@@ -66,14 +61,6 @@ public class QueryEngineTDB extends QueryEngineMain
         this.initialInput = input ;
     }
     
-    /*
-     * rewrite does not work for paths (:p*) because the path evaluator uses the active graph. 
-     * Need to alter the active graph in the QueryExecutionContext which is set in
-     * QueryEngineMain.
-     * Possibility: pass up the preferred active graph (defaulting to the default graph).
-     * TEMPORARY FIX: rewrite the dataset to be a general one with the right graphs in it.  
-     */
-    private static final boolean DynamicDatasetByRewrite = false ;
     private boolean doingDynamicDatasetBySpecialDataset = false ;
     
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
@@ -84,18 +71,11 @@ public class QueryEngineTDB extends QueryEngineMain
         
         DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
         
-        if ( ! DynamicDatasetByRewrite && dsDesc != null )
+        if ( dsDesc != null )
         {
-            // MIGRATION.
-            // 1 - All this to ARQ.
-            //     Context slot for real default graph and union graph.
-            //     or DatasetGraph.getUnionGraph(), DatasetGraph.getRealDftGraph(),   
-            // 2 - Modify OpExecutor.execute(OpGraph) to skip Quad.unionGraph, Quad.defaultGraphIRI
-            
             doingDynamicDatasetBySpecialDataset = true ;
-            DatasetGraph dsg = super.dataset; 
-            dsg = DynamicDatasets.dynamicDataset(dsDesc, dsg, context.isTrue(TDB.symUnionDefaultGraph) ) ;  // Flag for default union graph?
-            super.dataset = dsg ;
+            super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB.symUnionDefaultGraph) ) ;
+            // The other (imperfect) way is to use TransformDynamicDataset
         }
         this.initialInput = input ; 
     }
@@ -109,22 +89,9 @@ public class QueryEngineTDB extends QueryEngineMain
         op = super.modifyOp(op) ;
 
         // Quadification
+        // Only apply if not a rewritten DynamicDataset
         if ( ! doingDynamicDatasetBySpecialDataset )
-            // [[DynDS]]
-            // We flipped to general execution-leave alone.
             op = Algebra.toQuadForm(op) ;
-
-        // Could apply dynamic dataset transform before everything else
-        // but default merged graphs works on quads. 
-
-//        // [[DynDS]]
-//        if ( doingDynamicDatasetBySpecialDataset )
-//        {
-//            // No action. Already done.
-//        }
-//        else if ( DynamicDatasetByRewrite )
-//            // Do by rewrite - note issues about paths
-//            op = dynamicDatasetOp(op, context) ;
         
         // Record it.
         setOp(op) ;
@@ -184,8 +151,6 @@ public class QueryEngineTDB extends QueryEngineMain
         @Override
         public Plan create(Query query, DatasetGraph dataset, Binding input, Context context)
         {
-            //DatasetGraphTDB ds = (DatasetGraphTDB)dataset ;
-            dynamicDatasetQE(query, context) ;
             QueryEngineTDB engine = new QueryEngineTDB(query, dsgToQuery(dataset), input, context) ;
             return engine.getPlan() ;
         }
@@ -201,19 +166,6 @@ public class QueryEngineTDB extends QueryEngineMain
             return engine.getPlan() ;
         }
     } ;
-    
-    // Write the DatasetDescription into the context.
-    private static void dynamicDatasetQE(Query query,  Context context)
-    {
-        if ( query.hasDatasetDescription() )
-        {
-            Set<Node> defaultGraphs = NodeUtils.convertToNodes(query.getGraphURIs()) ; 
-            Set<Node> namedGraphs = NodeUtils.convertToNodes(query.getNamedGraphURIs()) ;
-            
-            context.set(SystemTDB.symDatasetDefaultGraphs, defaultGraphs) ;
-            context.set(SystemTDB.symDatasetNamedGraphs, namedGraphs) ;
-        }
-    }
     
 //    // By rewrite, not using a general purpose dataset with the right graphs in.
 //    private static Op dynamicDatasetOp(Op op,  Context context)
