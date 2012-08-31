@@ -235,7 +235,7 @@ class Journal implements Sync, Closeable
         crcTrailer.clear() ;
         lenRead = channel.read(crcTrailer) ;
         if ( lenRead != SizeofCRC )
-            throw new TDBTransactionException("Failed to read block checksum.") ;
+            throw new TDBTransactionException("Failed to read block checksum (got "+lenRead+" bytes, not "+SizeofCRC+").") ;
         int checksum = Bytes.getInt(crcTrailer.array()) ;
         if ( checksum != (int)adler.getValue() )
         	throw new TDBTransactionException("Checksum error reading from the Journal.") ;

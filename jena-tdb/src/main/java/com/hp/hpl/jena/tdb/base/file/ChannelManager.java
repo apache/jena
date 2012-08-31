@@ -26,8 +26,6 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IO ;
-
 public class ChannelManager
 {
     // Make per "location"?
@@ -87,7 +85,7 @@ public class ChannelManager
     public static void release(FileChannel chan)
     {
         // Always close even if not managed.
-        IO.close(chan) ;
+        try { chan.close() ; } catch (Exception ex) {}
         String name = channel2name.remove(chan) ;
         if ( name != null )
             name2channel.remove(name) ;
