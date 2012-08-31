@@ -38,11 +38,55 @@ import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 /** This servlet can be attached to a dataset location
- *  and acts as a router for all SPARQL operations
+ *  and acts as a falserouter for all SPARQL operations
  *  (query, update, graph store, both direct and indirect naming). 
  */
-public class SPARQL_UberServlet extends SPARQL_ServletBase
+public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
 {
+    protected abstract boolean allowQuery(HttpAction action) ;
+    protected abstract boolean allowUpdate(HttpAction action) ;
+    protected abstract boolean allowREST_R(HttpAction action) ;
+    protected abstract boolean allowREST_W(HttpAction action) ;
+    protected abstract boolean allowQuadsR(HttpAction action) ;
+    protected abstract boolean allowQuadsW(HttpAction action) ;
+    
+    public static class ReadOnly extends SPARQL_UberServlet
+    {
+        public ReadOnly(boolean verbose_debug) { super(verbose_debug) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return true ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return false ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
+        @Override protected boolean allowREST_W(HttpAction action)   { return false ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return true ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return false ; }
+    }
+    
+    public static class ReadWrite extends SPARQL_UberServlet
+    {
+        public ReadWrite(boolean verbose_debug) { super(verbose_debug) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return true ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return true ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return true ; }
+        @Override protected boolean allowREST_W(HttpAction action)   { return true ; }
+        @Override protected boolean allowQuadsR(HttpAction action)   { return true ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return true ; }
+    }
+    
+    public static class AccessByConfig extends SPARQL_UberServlet
+    {
+        public AccessByConfig(boolean verbose_debug) { super(verbose_debug) ; }
+        @Override protected boolean allowQuery(HttpAction action)    { return isEnabled(action.getDatasetRef().queryEP) ; }
+        @Override protected boolean allowUpdate(HttpAction action)   { return isEnabled(action.getDatasetRef().updateEP) ; }
+        @Override protected boolean allowREST_R(HttpAction action)   { return isEnabled(action.getDatasetRef().readGraphStoreEP) ; }
+        @Override protected boolean allowREST_W(HttpAction action)   { return isEnabled(action.getDatasetRef().readWriteGraphStoreEP) ; }
+        // Quad operations tied to presence/absence of GSP.
+        @Override protected boolean allowQuadsR(HttpAction action)   { return isEnabled(action.getDatasetRef().readGraphStoreEP) ; }
+        @Override protected boolean allowQuadsW(HttpAction action)   { return isEnabled(action.getDatasetRef().readWriteGraphStoreEP) ; }
+        
+        private boolean isEnabled(List<String> ep) { return ep.size() > 0 ; } 
+    }
+        
+    
     /*  This can be used for a single servlet for everything (über-servlet)
      *  
      *  It can check for a request that looks like a service request and passes it on.
@@ -62,22 +106,6 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
     public SPARQL_UberServlet(boolean verbose_debug)
     {
         super(verbose_debug) ;
-    }
-
-    protected String findDataset(final String uri) 
-    {
-        // Find the dataset.
-        Iterator<String> datasets = DatasetRegistry.get().keys() ;
-        Filter<String> matchDS = new Filter<String>()
-            {
-                @Override
-                public boolean accept(String datasetname)
-                {
-                    return uri.startsWith(datasetname) ;
-                }
-            } ;
-        String ds = Iter.first(datasets, matchDS) ;
-        return ds ;
     }
 
     private String getEPName(String dsname, List<String> endpoints)
@@ -103,10 +131,11 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
         String uri = request.getRequestURI() ;
         String method = request.getMethod() ;
         String dsname = findDataset(uri) ;
-        String trailing = uri.substring(dsname.length()+1) ;    // Skip the "/"
+        String trailing = findTrailing(uri, dsname) ;
         String qs = request.getQueryString() ;
+
+        boolean hasParams = request.getParameterMap().size() > 0 ;
         
-        boolean hasParams               = request.getParameterMap().size() != 0 ;
         // Test for parameters - includes HTML forms.
         boolean hasParamQuery           = request.getParameter(HttpNames.paramQuery) != null ;
         // Include old name "request="
@@ -123,6 +152,9 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
             mt = MediaType.create(ct, charset) ;
         
         DatasetRef desc = DatasetRegistry.get().get(dsname) ;
+        // The servlets create their own, subclass, action, but it's 
+        // convenient to collect everything together. 
+        HttpAction action = new HttpAction(id, desc, request, response, verbose_debug) ;
         
         log.info(format("[%d] All: %S %s :: %s :: %s ? %s", id, method, dsname, trailing, (mt==null?"<none>":mt), (qs==null?"":qs))) ;
                        
@@ -141,25 +173,25 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
             // Has params of some kind.
             if ( hasParamQuery || WebContent.contentTypeSPARQLQuery.equalsIgnoreCase(ct) )
             {
-                // query
+                // SPARQL Query
+                if ( ! allowQuery(action))
+                    errorForbidden("Forbidden: SPARQL query") ; 
                 executeRequest(desc, queryServlet, desc.queryEP, id, request, response) ;
                 return ;
             }
                  
             if ( hasParamUpdate || WebContent.contentTypeSPARQLUpdate.equalsIgnoreCase(ct) )
             {
-                // update
+                // SPARQL Update
+                if ( ! allowQuery(action))
+                    errorForbidden("Forbidden: SPARQL query") ; 
                 executeRequest(desc, updateServlet, desc.updateEP, id, request, response) ;
                 return ;
             }
             
             if ( hasParamGraph || hasParamGraphDefault )
             {
-                // Indirct naming. Prefer the RW service if available.
-                if ( desc.readWriteGraphStoreEP.size() > 0 )
-                    executeRequest(desc, restServlet_RW, desc.readWriteGraphStoreEP, id, request, response) ;
-                else
-                    executeRequest(desc, restServlet_R, desc.readGraphStoreEP, id, request, response) ;
+                doGraphStoreProtocol(action) ;
                 return ;
             }
             
@@ -178,41 +210,41 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
             if ( checkDispatch(desc.readGraphStoreEP, trailing, restServlet_R, desc, id, request, response) ) return ; 
             if ( checkDispatch(desc.readWriteGraphStoreEP, trailing, restServlet_RW, desc, id, request, response) ) return ; 
         }       
-        // There is a trailing paSPARQL_RESTrt - params are illegal by this point.
+        // There is a trailing part - params are illegal by this point.
         if ( hasParams )
             // Revisit to include query-on-one-graph 
             errorBadRequest("Can't invoke a query-string service on a direct named graph") ; 
 
-        // There is a trailing part - not a service, no params ==> direct naming.
-        // Direct naming to indirect naming.
-        doDirectNaming(desc, id, request, response) ;
+        // There is a trailing part - not a service, no params ==> GSP direct naming.
+        doGraphStoreProtocol(action) ;
     }
     
-    private void doDirectNaming(DatasetRef desc , long id, HttpServletRequest request, HttpServletResponse response)
+    private void doGraphStoreProtocol(HttpAction action)
     {
-        if ( desc.readWriteGraphStoreEP.size() > 0 )
-            executeRequest(desc, restServlet_RW, desc.readWriteGraphStoreEP, id, request, response) ;
-        else if ( desc.readGraphStoreEP.size() > 0 )
-            executeRequest(desc, restServlet_R, desc.readGraphStoreEP, id, request, response) ;
-        else
-            errorMethodNotAllowed(request.getMethod()) ;
-
-        // If direct naming not supported by SPARQL_REST_*
-//        String uri = request.getRequestURI() ;
-//        String dsname = findDataset(uri) ;
-//        DatasetRef desc = DatasetRegistry.get().get(dsname) ;
-//        
-//        String absURI = request.getRequestURL().toString() ;
-//        HttpActionREST a = new HttpActionREST(id, desc, absURI, request, response, verbose_debug) ;
-//
-//        if ( desc.readWriteGraphStoreEP.size() > 0 )
-//            // ****
-//            restServlet_RW.dispatch(a) ;
-//        else if ( desc.readGraphStoreEP.size() > 0 )
-//            // ****
-//            restServlet_R.dispatch(a) ;
-//        else
-//            errorMethodNotAllowed(request.getMethod()) ;
+        // The GSP servlets handle direct and indirect naming. 
+        DatasetRef desc = action.getDatasetRef();
+        String method = action.request.getMethod() ;
+        
+        if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) ||
+            HttpNames.METHOD_HEAD.equalsIgnoreCase(method) ) 
+       {
+           if ( ! allowREST_R(action))
+               errorForbidden("Forbidden: SPARQL Graph Store Protocol : Read operation : "+method) ;
+           // Graphs Store Protocol, indirect naming, read
+           // Indirect naming. Prefer the R service if available.
+           if ( desc.readGraphStoreEP.size() > 0 )
+               executeRequest(desc, restServlet_R, desc.readGraphStoreEP, action.id, action.request, action.response) ;
+           else if ( desc.readWriteGraphStoreEP.size() > 0 )
+               executeRequest(desc, restServlet_RW, desc.readWriteGraphStoreEP, action.id, action.request, action.response) ;
+           else
+               errorMethodNotAllowed(method) ;
+       }
+       
+       // Graphs Store Protocol, indirect naming, write
+       if ( ! allowREST_W(action))
+           errorForbidden("Forbidden: SPARQL Graph Store Protocol : Write operation : "+method) ;
+       executeRequest(desc, restServlet_RW, desc.readWriteGraphStoreEP, action.id, action.request, action.response) ;
+       return ;
     }
 
     private void executeRequest(DatasetRef desc, SPARQL_ServletBase servlet, List<String> endpointList, long id,
@@ -268,6 +300,31 @@ public class SPARQL_UberServlet extends SPARQL_ServletBase
     {
         // Dummy - restructure SPARQL_ServletBase?
         error(HttpSC.INTERNAL_SERVER_ERROR_500, "Operation directed to general indirection servlet") ;
+    }
+    
+    /** Find the dataset name even if direct naming */ 
+    protected static String findDataset(final String uri) 
+    {
+        // Find the dataset.
+        Iterator<String> datasets = DatasetRegistry.get().keys() ;
+        Filter<String> matchDS = new Filter<String>()
+            {
+                @Override
+                public boolean accept(String datasetname)
+                {
+                    return uri.startsWith(datasetname) ;
+                }
+            } ;
+        String ds = Iter.first(datasets, matchDS) ;
+        return ds ;
+    }
+
+    /** Find the dataset name even if direct naming */ 
+    protected static String findTrailing(String uri, String dsname) 
+    {
+        if ( dsname.length() >= uri.length() )
+            return "" ;
+        return uri.substring(dsname.length()+1) ;   // Skip the separating "/"
     }
 
     @Override
