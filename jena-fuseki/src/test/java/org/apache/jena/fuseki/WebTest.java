@@ -29,16 +29,16 @@ import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.impl.client.DefaultHttpClient ;
 import org.openjena.atlas.io.IO ;
 
-public class WebTest
+public class WebTest extends BaseTest
 {
     
-    public static void exec_get(String url, int expectedResponseCode)
+    public static void exec_get(String url, int ... expectedResponseCodes)
     {
         HttpUriRequest httpRequest = new HttpGet(url) ;
-        exec(httpRequest, expectedResponseCode) ;
+        exec(httpRequest, expectedResponseCodes) ;
     }
     
-    public static void exec(HttpUriRequest httpRequest, int expectedResponseCode)
+    public static void exec(HttpUriRequest httpRequest, int...expectedResponseCodes)
     {
         HttpClient httpclient = new DefaultHttpClient() ;
         try {
@@ -54,7 +54,12 @@ public class WebTest
                 byte[] bytes = IO.readWholeFile(instream) ;
                 instream.close() ;
             }
-            org.junit.Assert.assertEquals("("+responseCode+", "+responseMessage+")", expectedResponseCode, responseCode) ;
+
+            boolean found = false ;
+            for ( int expected : expectedResponseCodes)
+                if ( expected == responseCode )
+                    return ;
+            fail("Reponse: "+responseCode+" : Expected : "+expectedResponseCodes) ;
         } catch (IOException ex)
         { IO.exception(ex) ; }
     }

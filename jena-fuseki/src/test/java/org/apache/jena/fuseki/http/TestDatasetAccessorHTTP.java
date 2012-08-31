@@ -41,8 +41,8 @@ public class TestDatasetAccessorHTTP extends BaseServerTest
     
     @Test public void test_ds_1()
     {
-        // Can't GET the dataset
-        WebTest.exec_get(serviceREST, 400) ;
+        // Can't GET the dataset service.
+        WebTest.exec_get(serviceREST, 400, 404) ;
     }
     
     @Test public void test_ds_2()
@@ -52,12 +52,6 @@ public class TestDatasetAccessorHTTP extends BaseServerTest
     }
 
     @Test public void test_ds_3()
-    {
-        // Longer path URI.
-        WebTest.exec_get(datasetURI_not_2, 404) ;
-    }
-
-    @Test public void test_ds_4()
     {
         // Longer path URI.
         WebTest.exec_get(datasetURI_not_2, 404) ;
