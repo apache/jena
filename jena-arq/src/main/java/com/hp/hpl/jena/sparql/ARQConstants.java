@@ -237,6 +237,12 @@ public class ARQConstants
     /** Context key for the execution-scoped bNode variable generator */
     public static final Symbol sysVarAllocAnon          = Symbol.create(systemVarNS+"namedVarAnon") ;
     
+    /** Graphs forming the default graph (List&lt;String&gt;) (Dynamic dataset) */
+    public static final Symbol symDatasetDefaultGraphs     = allocSymbol("datasetDefaultGraphs") ;
+    
+    /** Graphs forming the named graphs (List&lt;String&gt;) (Dynamic dataset) */
+    public static final Symbol symDatasetNamedGraphs       = allocSymbol("datasetNamedGraphs") ;
+    
     /** Context key for making all SELECT queries have DISTINCT applied, whether stated ot not */
     public static final Symbol autoDistinct             = ARQConstants.allocSymbol("autoDistinct") ;
     

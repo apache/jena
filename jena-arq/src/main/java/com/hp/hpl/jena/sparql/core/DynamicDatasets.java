@@ -25,35 +25,13 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
+import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.graph.GraphOps ;
 import com.hp.hpl.jena.sparql.graph.GraphUnionRead ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
 public class DynamicDatasets
 {
-//    // See QueryEngineTDB.dynamicDatasetOp
-//    public static Op dynamicDatasetOp(Query query, Op op)
-//    {
-    // problems with paths and property functions? which access the active graph. 
-//        return TransformDynamicDataset.transform(query, op) ;
-//    }
-    
-//    /** Given a DatasetGraph and a query, form a DatasetGraph that 
-//     * is the dynamic dataset from the query.
-//     * Returns the original DatasetGraph if the query has no dataset description.
-//     */ 
-//    public static DatasetGraph dynamicDataset(Query query, DatasetGraph dsg, boolean defaultUnionGraph)
-//    {
-//        if ( query.hasDatasetDescription() )
-//        {
-//            Set<Node> defaultGraphs = NodeUtils.convertToNodes(query.getGraphURIs()) ; 
-//            Set<Node> namedGraphs = NodeUtils.convertToNodes(query.getNamedGraphURIs()) ;
-//            return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ; 
-//        }
-//        return dsg ;
-//    }
-    
-    
     /** Given a Dataset and a query, form a Dataset that 
      * is the dynamic dataset from the query.
      * Returns the original Dataset if the query has no dataset description.
@@ -73,13 +51,11 @@ public class DynamicDatasets
      */ 
     public static DatasetGraph dynamicDataset(DatasetDescription description, DatasetGraph dsg, boolean defaultUnionGraph)
     {
-        if ( description != null )
-        {
-            Set<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
-            Set<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
-            return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ; 
-        }
-        return dsg ;
+        if ( description == null )
+            return dsg ;    
+        Set<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
+        Set<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
+        return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
     }
     
     /** Given a DatasetGraph and a query, form a DatasetGraph that 
@@ -111,6 +87,9 @@ public class DynamicDatasets
 
         // read-only, <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph> processing.
         dsg2 = new DynamicDatasetGraph(dsg2) ;
+        // Record what we've done.
+        dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs) ;
+        dsg2.getContext().set(ARQConstants.symDatasetNamedGraphs,   namedGraphs) ;
         return dsg2 ;
     }
     
