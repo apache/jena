@@ -197,7 +197,7 @@ public class QueryEngineTDB extends QueryEngineMain
         @Override
         public Plan create(Op op, DatasetGraph dataset, Binding binding, Context context)
         {
-            QueryEngineTDB engine = new QueryEngineTDB(op, (DatasetGraphTDB)dataset, binding, context) ;
+            QueryEngineTDB engine = new QueryEngineTDB(op, dsgToQuery(dataset), binding, context) ;
             return engine.getPlan() ;
         }
     } ;
