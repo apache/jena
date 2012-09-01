@@ -23,7 +23,8 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestGraphsMem.class
+	  TestDatasets.class
+    , TestGraphsMem.class
     , TestDatasetGraphMem.class
     , TestGraphsDataBag.class
     , TestGraphUnionRead.class
