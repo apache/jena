@@ -53,6 +53,10 @@ public class DynamicDatasets
     {
         if ( description == null )
             return dsg ;    
+//    	//An empty description means leave the dataset as-is
+//    	if (description.getDefaultGraphURIs().size() == 0 && description.getNamedGraphURIs().size() == 0) {
+//    		return dsg;
+//    	}
         Set<Node> defaultGraphs = NodeUtils.convertToNodes(description.getDefaultGraphURIs()) ; 
         Set<Node> namedGraphs = NodeUtils.convertToNodes(description.getNamedGraphURIs()) ;
         return dynamicDataset(defaultGraphs, namedGraphs, dsg, defaultUnionGraph) ;
