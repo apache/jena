@@ -37,10 +37,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphMap ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.* ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
@@ -380,33 +377,36 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( update.getUsing().size() == 0 && update.getUsingNamed().size() == 0 )
             return null ;
      
-        Graph dftGraph = GraphFactory.createGraphMem() ;
-        DatasetGraphMap dsg = new DatasetGraphMap(dftGraph) ;
+        return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), graphStore, false) ;
         
-        if ( update.getUsing().size() > 0  )
-        {
-            if ( update.getUsing().size() > 1 )
-            {
-                for ( Node gn : update.getUsing() )
-                {
-                    Graph g2 = graphOrDummy(graphStore, gn) ;
-                    dftGraph.getBulkUpdateHandler().add(g2) ;
-                }
-            }
-            else
-            {
-                Node gn = update.getUsing().get(0) ;
-                Graph g = graphOrDummy(graphStore, gn) ;
-                dsg.setDefaultGraph(g) ;
-            }
-        }
-        
-        if ( update.getUsingNamed().size() > 0  )
-        {
-            for ( Node gn : update.getUsingNamed() )
-                dsg.addGraph(gn, graphOrDummy(graphStore, gn)) ;
-        }
-        return dsg ;
+        // Old code : remove after ARQ 2.9.4 or ealier if we're sure the replacement above is stable.
+//        Graph dftGraph = GraphFactory.createGraphMem() ;
+//        DatasetGraphMap dsg = new DatasetGraphMap(dftGraph) ;
+//        
+//        if ( update.getUsing().size() > 0  )
+//        {
+//            if ( update.getUsing().size() > 1 )
+//            {
+//                for ( Node gn : update.getUsing() )
+//                {
+//                    Graph g2 = graphOrDummy(graphStore, gn) ;
+//                    dftGraph.getBulkUpdateHandler().add(g2) ;
+//                }
+//            }
+//            else
+//            {
+//                Node gn = update.getUsing().get(0) ;
+//                Graph g = graphOrDummy(graphStore, gn) ;
+//                dsg.setDefaultGraph(g) ;
+//            }
+//        }
+//        
+//        if ( update.getUsingNamed().size() > 0  )
+//        {
+//            for ( Node gn : update.getUsingNamed() )
+//                dsg.addGraph(gn, graphOrDummy(graphStore, gn)) ;
+//        }
+//        return dsg ;
     }
     
     protected DatasetGraph processWith(UpdateModify update)
