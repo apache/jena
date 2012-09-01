@@ -92,6 +92,7 @@ public class DynamicDatasets
         // read-only, <urn:x-arq:DefaultGraph> and <urn:x-arq:UnionGraph> processing.
         dsg2 = new DynamicDatasetGraph(dsg2) ;
         // Record what we've done.
+        // c.f. "ARQConstants.sysDatasetDescription" which is used to pass in a  DatasetDescription
         dsg2.getContext().set(ARQConstants.symDatasetDefaultGraphs, defaultGraphs) ;
         dsg2.getContext().set(ARQConstants.symDatasetNamedGraphs,   namedGraphs) ;
         return dsg2 ;
