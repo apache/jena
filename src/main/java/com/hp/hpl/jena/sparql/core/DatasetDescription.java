@@ -66,7 +66,7 @@ public class DatasetDescription
         if ( context != null && context.isDefined(ARQConstants.sysDatasetDescription) )
         {
             try {
-             return (DatasetDescription)context.get(ARQConstants.sysDatasetDescription) ;
+                return (DatasetDescription)context.get(ARQConstants.sysDatasetDescription) ;
             } catch (ClassCastException ex)
             {
                 throw new ARQException("Unexpected type (expected DatasetDescription): "+ex.getMessage()) ;
