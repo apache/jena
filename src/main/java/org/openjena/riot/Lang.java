@@ -117,14 +117,12 @@ public enum Lang
      */
     public static Lang get(String name, Lang dftLang)
     {
-        if ( matchesLangName(name, Lang.RDFXML) )       return RDFXML ;
-        if ( matchesLangName(name, Lang.NTRIPLES) )     return NTRIPLES ;
-        if ( matchesLangName(name, Lang.TURTLE) )       return TURTLE ;
-        if ( matchesLangName(name, Lang.NQUADS) )       return NQUADS ;
-        if ( matchesLangName(name, Lang.TRIG) )         return TRIG ;
-        if ( matchesLangName(name, Lang.RDFJSON) )		return RDFJSON ;
+        for (Lang l : Lang.values())
+            if ( matchesLangName(name, l) )
+                return l ;
         return dftLang ;
     }
+    
 
     private static boolean matchesLangName(String name, Lang lang)
     {
