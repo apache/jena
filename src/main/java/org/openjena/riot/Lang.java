@@ -29,20 +29,38 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public enum Lang
 {
-    RDFXML(     "RDF/XML",      true, langRDFXML, langRDFXMLAbbrev) ,
-    NTRIPLES(   "N-Triples",    true, langNTriples, langNTriple) ,
-    N3(         "N3",           true) ,
-    TURTLE(     "Turtle",       true, langTTL) ,
-    RDFJSON(	"RDF/JSON",		true) ,
+    RDFXML (    "RDF/XML",      true,  
+                new String[]{ "rdf", "owl", "xml" },    
+                langRDFXML, langRDFXMLAbbrev) ,
+                
+    NTRIPLES (  "N-Triples",    true,
+                new String[]{ "nt" },  
+                langNTriples, langNTriple) ,
+                
+    N3 (        "N3",           true,
+                new String[]{ "n3" }) ,
+    
+    TURTLE (    "Turtle",       true,
+                new String[]{ "ttl" },   
+                langTTL) ,
+                
+    RDFJSON (   "RDF/JSON",		true,
+            	new String[]{ "rj", "json" }) ,
    
-    NQUADS(     "N-Quads",      false, langNQuads) ,
-    TRIG(       "TriG",         false) ,
+    NQUADS (    "N-Quads",      false,
+                new String[]{ "nq" },
+                langNQuads) ,
+                
+    TRIG (      "TriG",         false,
+                new String[]{ "trig" }) ,
+                
     //TUPLE("rdf-tuples", true, langNTuple)
     ;
     
     private final String name ;
     private final boolean isTriples ;
     private final String[] altNames ;
+    private final String[] fileExtensions;
 
 //    public static final String langXML          = langXML ;
 //    public static final String langNTriple      = langNTriple ; // FileUtils is wrong.
@@ -52,26 +70,32 @@ public enum Lang
 //    public static final String langNQuads       = "N-QUADS" ;
 //    public static final String langTrig         = "TRIG" ;
 
-    // File extension names
-    private static final String[] extRDFXML      = { "rdf", "owl", "xml" } ;
-    private static final String[] extNTriples    = { "nt" } ;
-    private static final String[] extNTurtle     = { "ttl" } ;
-    private static final String[] extN3          = { "n3" } ;
-    private static final String[] extNQuads      = { "nq" } ;
-    private static final String[] extTrig        = { "trig" } ;
-    private static final String[] extRdfJson	 = { "rj", "json" } ;
-    
-    private Lang(String name, boolean isTriples, String...altNames)
+//    
+    private Lang(String name, boolean isTriples, String[] fileExtensions, String...altNames )
     {
         this.name = name ;
         this.isTriples = isTriples ;
         this.altNames = altNames ;
+        this.fileExtensions = fileExtensions;
     }
     
     public String getName() { return name ; }
     
-    public boolean isTriples() { return isTriples ; }
-    public boolean isQuads() { return ! isTriples ; }
+    /** get the list of potential file extensions. */
+    public String[] getFileExtensions()
+    {
+    	return fileExtensions; 	
+    }
+    
+    /** Get the default file extension. */
+    public String getDefaultFileExtension() {
+        if ( getFileExtensions() == null )
+            return null ;
+    	return getFileExtensions()[0];
+    }
+    
+    public boolean isTriples()  { return isTriples ; }
+    public boolean isQuads()    { return ! isTriples ; }
     
     public String getContentType() { return WebContent.mapLangToContentType(this) ; }
     
@@ -138,15 +162,12 @@ public enum Lang
             resourceIRI = resourceIRI.substring(0, resourceIRI.length()-".gz".length()) ;
             ext = FileUtils.getFilenameExt(resourceIRI).toLowerCase() ;
         }
-        
-        if ( isOneOf(ext, extRDFXML) )      return RDFXML ;
-        if ( isOneOf(ext, extNTriples) )    return NTRIPLES ;
-        if ( isOneOf(ext, extNTurtle) )     return TURTLE ;
-        if ( isOneOf(ext, extN3) )          return N3 ;
-        if ( isOneOf(ext, extNQuads) )      return NQUADS ;
-        if ( isOneOf(ext, extTrig) )        return TRIG ;
-        if ( isOneOf(ext, extRdfJson) )		return RDFJSON ;
-        return null ;
+        for (Lang lang : Lang.values())
+        {
+        	if (isOneOf( ext, lang.fileExtensions))
+        		return lang;
+        }
+        return null;
     }
 
     private static boolean isOneOf(String ext, String[] names)
