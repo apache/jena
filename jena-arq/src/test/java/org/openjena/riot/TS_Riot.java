@@ -65,6 +65,7 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestOutputRDFJSON.class
     , TestLangTag.class
     , TestNormalization.class
+    , TestLangFileExtensions.class
 })
 
 public class TS_Riot
