@@ -68,7 +68,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // Clear bytes from an old run
         // (a crash while writing means the old transaction did not commit
         //  any bytes in the file are junk)
-        // This is coupled to the fact the prepare phase does the actually data writing.  
+        // This is coupled to the fact the prepare phase does the actually data writing. 
         journalObjFile.truncate(0) ;
         this.label = label ; 
     }
@@ -196,7 +196,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
             
             NodeId nodeId = x.getLeft() ;
             Node node = x.getRight() ;
-            //debug("append: %s -> %s", x, mapFromJournal(nodeId)) ;
+            debug("  append: %s -> %s", x, mapFromJournal(nodeId)) ;
             // This does the write.
             NodeId nodeId2 = base.getAllocateNodeId(node) ;
             if ( ! nodeId2.equals(mapFromJournal(nodeId)) )
@@ -262,6 +262,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
+        debug("commitPrepare") ;
+        
         // The node table is append-only so it can be written during prepare.
         // The index isn't written (via the transaction journal) until enact.
         if ( nodeTableJournal == null )
@@ -278,6 +280,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitEnact(Transaction txn)
     {
+        debug("commitEnact") ;
         // The work was done in commitPrepare, using the fact that node data file
         // is append only.  Until here, pointers to the extra data aren't available
         // until the index is written.
@@ -287,19 +290,6 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
 
     private void writeNodeJournal()
     {
-        //*****
-        //if ( false && nodeTableJournal.isEmpty() )
-        //if ( nodeIndex.isEmpty() )
-        if ( false && journalObjFile.isEmpty() )
-        {
-            journalObjFile.close() ;                                // Side effect is a buffer flush.
-            journalObjFile = null ;
-            base.sync() ;
-            allocOffset = -99 ; // base.allocOffset().getId() ; // Will be invalid as we may write through to the base table later.
-            passthrough = true ;
-            return ;
-        }
-
         long expected = base.allocOffset().getId() ;
         long len = journalObjFile.length() ;
         if ( expected != allocOffset )
@@ -321,12 +311,14 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public void commitClearup(Transaction txn)
     {
+        debug("commitClearup") ;
         finish() ;
     }
 
     @Override
     public void abort(Transaction txn)
     {
+        debug("abort") ;
         if ( nodeTableJournal == null )
             throw new TDBTransactionException(txn.getLabel()+": Not in a transaction for a commit to happen") ;
         // Ensure the cache does not flush.
@@ -360,7 +352,10 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
 
     @Override
     public void sync()
-    {}
+    {
+        if ( passthrough )
+            base.sync() ;
+    }
 
     @Override
     public void close()
@@ -382,7 +377,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         if ( log.isDebugEnabled() )
         {
             String x = String.format(fmt, args) ;
-            log.debug(x) ;
+            log.debug(label+": "+x) ;
         }
     }
 }
