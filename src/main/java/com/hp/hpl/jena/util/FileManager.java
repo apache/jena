@@ -207,7 +207,6 @@ public class FileManager
     }
     
     /** Change the state of model cache : does not clear the cache */ 
-    
     public void setModelCaching(boolean state)
     {
         cacheModelLoads = state ;
@@ -300,7 +299,6 @@ public class FileManager
 
     private Model loadModelWorker(String filenameOrURI, String baseURI, String rdfSyntax)
     {
-        // Better: if ( hasCachedModel(filenameOrURI) ) return getFromCache(filenameOrURI) ;  
         if ( modelCache != null && modelCache.containsKey(filenameOrURI) )
         {
             if ( log.isDebugEnabled() )
