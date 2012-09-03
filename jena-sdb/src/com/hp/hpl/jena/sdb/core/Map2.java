@@ -27,7 +27,7 @@ public class Map2<S,T>
     Map<T, S> mapBackward = new HashMap<T, S>() ;
     
     // Two way map
-    public Map2() {} ;
+    public Map2() {}
     
     public void putMapping(S s, T t)
     {
