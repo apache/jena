@@ -21,12 +21,14 @@ package org.openjena.atlas.lib;
 import java.util.ArrayList ;
 import java.util.List ;
 
+
 import org.openjena.atlas.io.IndentedWriter ;
 import org.openjena.atlas.iterator.Action ;
 import org.openjena.atlas.iterator.FilterUnique ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.atlas.logging.Log ;
 
-/*8 Various things for lists */
+/** Various things for lists */
 public class ListUtils
 {
     private ListUtils() {}
@@ -110,5 +112,39 @@ public class ListUtils
             }
         } ;
         Iter.apply(list, output) ;
+    }
+    
+    /** Return a list of lists of all the elements of collection in every order
+     *  Easy to run out of heap memory.
+     */  
+    static public <T> List<List<T>> permute(List<T> c)
+    {
+        if ( c.size() > 5 )
+        {
+            Log.warn(ListUtils.class, "Attempt to permute more than 5 items - think again") ;
+            return null ;
+        }
+        
+        List<List<T>> x = new ArrayList<List<T>>() ;
+        if ( c.size() == 1 )
+        {
+            x.add(c) ;
+            return x ;
+        }
+
+        for ( T obj : c )
+        {
+            List<T> c2 = new ArrayList<T>(c) ;
+            c2.remove(obj) ;
+            List<List<T>> x2 = permute(c2) ;
+            // For each list returned
+            for ( List<T> x3 : x2 )
+            {
+                // Gives a more expected ordering
+                x3.add(0,obj) ;
+                x.add(x3) ;
+            }
+        }
+        return x ;
     }
 }
