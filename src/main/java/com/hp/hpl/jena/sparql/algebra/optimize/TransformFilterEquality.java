@@ -23,6 +23,7 @@ import java.util.Collection ;
 import java.util.List ;
 import java.util.Set ;
 
+import static org.openjena.atlas.lib.CollectionUtils.disjoint ;
 import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -105,7 +106,7 @@ public class TransformFilterEquality extends TransformCopy
     {
         List<Pair<Var, NodeValue>> exprsFilterEquality = new ArrayList<Pair<Var, NodeValue>>() ;
         ExprList exprsOther = new ExprList() ;
-        for (  Expr e : exprs.getList() )
+        for ( Expr e : exprs.getList() )
         {
             Pair<Var, NodeValue> p = preprocess(e) ;
             if ( p != null )
@@ -175,6 +176,16 @@ public class TransformFilterEquality extends TransformCopy
     {
         if ( op instanceof OpBGP || op instanceof OpQuadPattern )
             return true ;
+        
+        if ( op instanceof OpFilter )
+        {
+            OpFilter opf = (OpFilter)op ;
+            
+            Collection<Var> fvars = opf.getExprs().getVarsMentioned() ;
+            if ( ! disjoint(fvars, varsEquality) )
+                return false ;
+            return safeToTransform(varsEquality, opf.getSubOp()) ;
+        }
         
         // This will be applied also in sub-calls of the Transform but queries 
         // are very rarely so deep that it matters. 
