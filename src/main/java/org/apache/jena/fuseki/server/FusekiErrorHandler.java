@@ -20,12 +20,7 @@ package org.apache.jena.fuseki.server;
 
 import static java.lang.String.format ;
 
-import java.io.ByteArrayOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStreamWriter ;
-import java.io.PrintWriter ;
-import java.io.StringWriter ;
-import java.io.Writer ;
+import java.io.* ;
 
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
@@ -35,7 +30,7 @@ import org.apache.jena.fuseki.http.HttpSC ;
 import org.eclipse.jetty.http.HttpHeaders ;
 import org.eclipse.jetty.http.HttpMethods ;
 import org.eclipse.jetty.http.MimeTypes ;
-import org.eclipse.jetty.server.HttpConnection ;
+import org.eclipse.jetty.server.AbstractHttpConnection ;
 import org.eclipse.jetty.server.Request ;
 import org.eclipse.jetty.server.handler.ErrorHandler ;
 
@@ -45,7 +40,7 @@ public class FusekiErrorHandler extends ErrorHandler
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
-        HttpConnection connection = HttpConnection.getCurrentConnection();
+        AbstractHttpConnection connection = AbstractHttpConnection.getCurrentConnection();
         connection.getRequest().setHandled(true);
         String method = request.getMethod();
      
