@@ -74,7 +74,9 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <ver.jetty>7.5.4.v20111024</ver.jetty>
+    <!-- 7.6.5.v20120716 -->
+    <!-- 8.1.5.v20120716 -->
+    <ver.jetty>7.6.5.v20120716</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
 
     <ver.httpclient>4.1.2</ver.httpclient>
