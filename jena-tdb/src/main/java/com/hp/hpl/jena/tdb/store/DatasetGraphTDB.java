@@ -37,6 +37,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreEvents ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.sys.Session ;
@@ -168,9 +169,15 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     @Override
     protected void _close()
     {
+        if ( closed )
+            return ;
+        closed = true ;
+        
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
+        // Break when in transaction mode?  Why?
+        // StoreConnection.release(getLocation()) ;
         
         // Which will cause reuse to throw exceptions early.
         tripleTable = null ;
