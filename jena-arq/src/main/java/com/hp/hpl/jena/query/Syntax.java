@@ -74,7 +74,9 @@ public class Syntax extends Symbol
     public static TranslationTable<Syntax> querySyntaxNames = new TranslationTable<Syntax>(true) ;
     static {
         querySyntaxNames.put("sparql",      syntaxSPARQL) ;
+        querySyntaxNames.put("sparql10",   syntaxSPARQL_10) ;
         querySyntaxNames.put("sparql_10",   syntaxSPARQL_10) ;
+        querySyntaxNames.put("sparql11",   syntaxSPARQL_11) ;
         querySyntaxNames.put("sparql_11",   syntaxSPARQL_11) ;
         querySyntaxNames.put("arq",         syntaxARQ) ;
         querySyntaxNames.put("alg",         syntaxAlgebra) ;
