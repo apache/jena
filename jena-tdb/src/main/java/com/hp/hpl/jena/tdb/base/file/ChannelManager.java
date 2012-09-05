@@ -82,6 +82,13 @@ public class ChannelManager
         } catch (IOException ex) { throw new FileException("Failed to open: "+filename+" (mode="+mode+")", ex) ; }
     }
     
+    public static void release(String filename)
+    {
+        FileChannel channel = name2channel.get(filename) ;
+        if ( channel != null )
+            release(channel) ;
+    }
+    
     public static void release(FileChannel chan)
     {
         // Always close even if not managed.
@@ -93,11 +100,11 @@ public class ChannelManager
     
     public static void reset()
     {
-        shutdown(null) ;
+        releaseAll(null) ;
     }
     
     /** Shutdown all the files matching the prefix (typically a directory) */  
-    public static void shutdown(String prefix)
+    public static void releaseAll(String prefix)
     {
         // Use an iterator explicitly so we can remove from the map.
         List<FileChannel> x = new ArrayList<FileChannel>() ;
