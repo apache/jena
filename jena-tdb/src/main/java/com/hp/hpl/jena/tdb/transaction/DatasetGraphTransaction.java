@@ -57,14 +57,6 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         }
     }
 
-    @Override
-    protected void finalize() throws Throwable
-    {
-//        if ( txn.get() != null )
-//            txn.get().abort() ;
-        txn.remove() ;
-    }
-
     // Transaction per thread.
     private ThreadLocalTxn txn = new ThreadLocalTxn() ;
     private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
