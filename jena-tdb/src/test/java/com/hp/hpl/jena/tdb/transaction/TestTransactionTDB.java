@@ -28,7 +28,9 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
+import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.AbstractTestTransaction ;
 
 public class TestTransactionTDB extends AbstractTestTransaction
@@ -38,6 +40,7 @@ public class TestTransactionTDB extends AbstractTestTransaction
     @Before public void before()
     {
         FileOps.clearDirectory(DIR) ; 
+        StoreConnection.release(new Location(DIR)) ;
     }
     
     @After public void after()
