@@ -38,7 +38,7 @@ import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 public abstract class AbstractTestTransSeq extends BaseTest
 {
     @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
-    @AfterClass public static void afterClassLoggingOn()   { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    @AfterClass public static void afterClassLoggingOn()    { Log.enable(SystemTDB.errlog.getName(), "info") ; }
     
     // Per test unique-ish.
     long x = System.currentTimeMillis() ;
@@ -54,6 +54,8 @@ public abstract class AbstractTestTransSeq extends BaseTest
     protected abstract StoreConnection getStoreConnection() ;
 
     // Basics.
+    
+    
     
     @Test public void trans_01()
     {
