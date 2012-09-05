@@ -18,18 +18,28 @@
 
 package com.hp.hpl.jena.tdb.migrate;
 
+import static com.hp.hpl.jena.query.ReadWrite.READ ;
+import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.JenaTransactionException ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public abstract class AbstractTestTransaction extends BaseTest
 {
+    @BeforeClass public static void beforeClassLoggingOff() { Log.disable(SystemTDB.errlog.getName()) ; } 
+    @AfterClass public static void afterClassLoggingOn()    { Log.enable(SystemTDB.errlog.getName(), "info") ; }
+    
     //MIGRATE
     protected abstract Dataset create() ;
     
-    @Test public void transaction_00()
+    @Test public void transaction_err_00()
     {
         Dataset ds = create() ;
         assertTrue(ds.supportsTransactions()) ;
@@ -131,6 +141,43 @@ public abstract class AbstractTestTransaction extends BaseTest
         read2(ds) ;
     }
 
+    // if parameterised tests had decent naming ...
+    @Test
+    public void transaction_err_01()    { testBeginBegin(WRITE, WRITE) ; }
+
+    @Test
+    public void transaction_err_02()    { testBeginBegin(WRITE, READ) ; }
+
+    @Test
+    public void transaction_err_03()    { testBeginBegin(READ, READ) ; }
+
+    @Test
+    public void transaction_err_04()    { testBeginBegin(READ, WRITE) ; }
+
+    @Test 
+    public void transaction_err_05()    { testCommitCommit(READ) ; }
+
+    @Test 
+    public void transaction_err_06()    { testCommitCommit(WRITE) ; }
+
+    @Test 
+    public void transaction_err_07()    { testCommitAbort(READ) ; }
+
+    @Test 
+    public void transaction_err_08()    { testCommitAbort(WRITE) ; }
+
+    @Test 
+    public void transaction_err_09()    { testAbortAbort(READ) ; }
+
+    @Test 
+    public void transaction_err_10()    { testAbortAbort(WRITE) ; }
+
+    @Test 
+    public void transaction_err_11()    { testAbortCommit(READ) ; }
+
+    @Test 
+    public void transaction_err_12()    { testAbortCommit(WRITE) ; }
+
     private void read1(Dataset ds)
     {
         ds.begin(ReadWrite.READ) ;
@@ -156,5 +203,70 @@ public abstract class AbstractTestTransaction extends BaseTest
         assertFalse(ds.isInTransaction()) ;
         ds.end() ;
     }
+    
+
+    // Error conditions that should be detected.
+    
+    private void testBeginBegin(ReadWrite mode1, ReadWrite mode2)
+    {
+        Dataset ds = create() ;
+        ds.begin(mode1) ;
+        try {
+            ds.begin(mode2) ;
+            fail("Expected transaction exception - begin-begin ("+mode1+", "+mode2+")") ;
+        } catch (JenaTransactionException ex)
+        { ds.end() ; }
+    }
+    
+    private void testCommitCommit(ReadWrite mode)
+    {
+        Dataset ds = create() ;
+        ds.begin(mode) ;
+        ds.commit() ;
+        try {
+            ds.commit() ;
+            fail("Expected transaction exception - commit-commit("+mode+")") ;
+        } catch (JenaTransactionException ex)
+        { ds.end() ; }
+    }
+    
+    private void testCommitAbort(ReadWrite mode)
+    {
+        Dataset ds = create() ;
+        ds.begin(mode) ;
+        ds.commit() ;
+        try {
+            ds.abort() ;
+            fail("Expected transaction exception - commit-commit("+mode+")") ;
+        } catch (JenaTransactionException ex)
+        { ds.end() ; }
+    }
+
+    private void testAbortAbort(ReadWrite mode)
+    {
+        Dataset ds = create() ;
+        ds.begin(mode) ;
+        ds.abort() ;
+        try {
+            ds.abort() ;
+            fail("Expected transaction exception - commit-commit("+mode+")") ;
+        } catch (JenaTransactionException ex)
+        { ds.end() ; }
+    }
+
+
+    private void testAbortCommit(ReadWrite mode)
+    {
+        Dataset ds = create() ;
+        ds.begin(mode) ;
+        ds.abort() ;
+        try {
+            ds.commit() ;
+            fail("Expected transaction exception - commit-commit("+mode+")") ;
+        } catch (JenaTransactionException ex)
+        { ds.end() ; }
+    }
+    
+
 }
 

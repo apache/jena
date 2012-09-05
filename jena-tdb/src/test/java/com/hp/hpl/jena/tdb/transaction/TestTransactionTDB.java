@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import static com.hp.hpl.jena.query.ReadWrite.READ ;
+import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
@@ -25,7 +27,6 @@ import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
@@ -67,20 +68,19 @@ public class TestTransactionTDB extends AbstractTestTransaction
         Dataset ds1 = create() ;
         Dataset ds2 = create() ;
         
-        ds1.begin(ReadWrite.WRITE) ;
+        ds1.begin(WRITE) ;
         ds1.getDefaultModel().getGraph().add(triple1) ; 
         
-        ds2.begin(ReadWrite.READ) ;
+        ds2.begin(READ) ;
         assertTrue(ds2.getDefaultModel().isEmpty()) ;
         ds2.commit() ;
         
         ds1.commit() ;
 
-        ds2.begin(ReadWrite.READ) ;
+        ds2.begin(READ) ;
         assertFalse(ds2.getDefaultModel().isEmpty()) ;
         assertEquals(1, ds2.getDefaultModel().size()) ;
         ds2.commit() ;
     }
-
 }
 
