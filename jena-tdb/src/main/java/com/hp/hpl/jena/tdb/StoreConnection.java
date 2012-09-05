@@ -25,6 +25,7 @@ import java.util.Set ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
+import com.hp.hpl.jena.tdb.base.file.ChannelManager ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.setup.DatasetBuilderStd ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
@@ -54,7 +55,7 @@ public class StoreConnection
             throw new TDBTransactionException("StoreConnection inValid (issued before a StoreConnection.release?") ;
     }
     
-    // Ensure that a dadaset used non-trasnactionally has been flushed to disk
+    // Ensure that a dataset used non-trasnactionally has been flushed to disk
     private void checkTransactional()
     {
         // Access to booleans is atomic.
@@ -99,6 +100,7 @@ public class StoreConnection
     {
         checkValid() ;
         checkTransactional() ;
+        haveUsedInTransaction = true ;
         return transactionManager.begin(mode) ;
     }
 
@@ -190,6 +192,7 @@ public class StoreConnection
     {
         StoreConnection sConn = cache.get(location) ;
         if (sConn == null) return ;
+        
         if (!force && sConn.transactionManager.activeTransactions()) 
             throw new TDBTransactionException("Can't expel: Active transactions for location: " + location) ;
 
@@ -199,6 +202,7 @@ public class StoreConnection
         sConn.baseDSG.close() ;
         sConn.isValid = false ;
         cache.remove(location) ;
+        ChannelManager.release(sConn.transactionManager.getJournal().getFilename()) ;
     }
 
     /**
