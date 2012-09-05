@@ -36,7 +36,6 @@ import org.eclipse.jetty.server.handler.ErrorHandler ;
 
 public class FusekiErrorHandler extends ErrorHandler
 {
-    /* ------------------------------------------------------------ */
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException
     {
@@ -69,7 +68,6 @@ public class FusekiErrorHandler extends ErrorHandler
         writer.close() ;
     }
     
-    /* ------------------------------------------------------------ */
     @Override
     protected void handleErrorPage(HttpServletRequest request, Writer writer, int code, String message)
         throws IOException
