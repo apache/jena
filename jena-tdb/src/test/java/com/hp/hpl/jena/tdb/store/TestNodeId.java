@@ -85,6 +85,15 @@ public class TestNodeId extends BaseTest
     @Test public void nodeId_decimal_4()
     { test("-1.0",  NodeFactory.parseNode("-1.0")) ; }
     
+    // This number has > 47 bits of value : 2412.80478192688
+    @Test public void nodeId_decimal_5()
+    { test("2412.80478192688",  (Node)null) ; }
+    
+    // This number has > 47 bits of value : -2412.80478192688
+    @Test public void nodeId_decimal_6()
+    { test("-2412.80478192688",  (Node)null) ; }
+
+    
     @Test public void nodeId_dateTime_01()
     { test("'2008-04-28T15:36:15+01:00'^^xsd:dateTime") ; }
 
@@ -194,12 +203,12 @@ public class TestNodeId extends BaseTest
         NodeId nodeId = NodeId.inline(n) ;
         if ( correct == null )
         {
-            assertNull(nodeId) ;
+            assertNull("Expected no encoding: got: "+nodeId, nodeId) ;
             return ;
         }
-
+        assertNotNull("Expected inlining: "+n, nodeId) ;
         Node n2 = NodeId.extract(nodeId) ;
-        assertNotNull(n2) ;
+        assertNotNull("Expected recovery", n2) ;
         
         String s = "("+correct.getLiteralLexicalForm()+","+n2.getLiteralLexicalForm()+")" ;
         

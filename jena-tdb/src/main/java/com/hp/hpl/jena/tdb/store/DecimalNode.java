@@ -31,48 +31,52 @@ public class DecimalNode
     
     BigDecimal decimal = null ;
     
-    // 8 bits of scale, signed 48 bits of value.
+    // signed 8 bits of scale, signed 48 bits of value.
+    // Decimal precision is 47 bits (it's signed) or around 14 places.
     // Not finance industry accuracy nor XSD (18 places minimum) but still useful.
     
-    static final long MAX = (1L<<48) ;
-    static final BigInteger MAX_I = BigInteger.valueOf(MAX) ;
-    static final BigInteger MIN_I = BigInteger.valueOf(-MAX) ;
+    static final int SCALE_LEN  = 8 ; 
+    static final int VALUE_LEN  = 48 ; 
+    
+    static final long MAX_VALUE =   (1L<< (VALUE_LEN-1) )-1 ;
+    static final long MIN_VALUE =  -(1L<< (VALUE_LEN-1) ) ;
+
+    static final int MAX_SCALE  =   (1<< (SCALE_LEN-1) )-1 ;
+    static final int MIN_SCALE  =  -(1<< (SCALE_LEN-1) ) ;
+    
+    static final BigInteger MAX_I = BigInteger.valueOf(MAX_VALUE) ;
+    static final BigInteger MIN_I = BigInteger.valueOf(MIN_VALUE) ;
     
     // Bits counts
-    static private int SCALE_LO = 56-8 ;
+    static private int SCALE_LO = 56-SCALE_LEN ;
     static private int SCALE_HI = 56 ;    // Exclusive index
 
     static private int VALUE_LO = 0 ;
-    static private int VALUE_HI = VALUE_LO+48 ;
+    static private int VALUE_HI = VALUE_LO+VALUE_LEN ;
     
-    // Decimal precision is 47 bits (it's signed) or around 14 places.
-    private int scale ;     // Limted to byte value range. +255 - -256  
-    private long value ;    // 48 bits of precision (8 bits type, 8 bits scale).
-    
+    private int scale ;  
+    private long value ;
 
     public static DecimalNode valueOf(BigDecimal decimal)
     {
         int scale = decimal.scale() ;
         BigInteger bigInt = decimal.unscaledValue() ;
+        
         if ( bigInt.compareTo(MAX_I) > 0 || bigInt.compareTo(MIN_I) < 0 )
-        {
-            // This check also makes sure that bigInt.logValue is safe. 
-            // Too big for 56 bits
-            //log.warn("Value out of range: ("+decimal.scale()+","+decimal.unscaledValue()+")") ;
+            // This check makes sure that bigInt.longValue() is safe   
             return null ;
-        }
         return valueOf(bigInt.longValue(), scale) ;
     }
     
     public static DecimalNode valueOf(long binValue, int scale)
     {
-        if ( scale >= 128 || scale < -128 )
+        if ( scale < MIN_SCALE || scale > MAX_SCALE )
         {
             //log.warn("Scale out of range: ("+binValue+","+scale+")") ;
             return null ;
         }
         
-        if ( Math.abs(binValue) > MAX )
+        if ( binValue < MIN_VALUE || binValue > MAX_VALUE )
         {
             //log.warn("Value out of range: ("+binValue+","+scale+")") ;
             return null ;
@@ -95,6 +99,7 @@ public class DecimalNode
         long v = BitsLong.pack(0, NodeId.DECIMAL, 56, 64) ;
         v = BitsLong.pack(v, scale, SCALE_LO, SCALE_HI) ;
         v = BitsLong.pack(v, value, VALUE_LO, VALUE_HI) ;
+        // No need to do something about negative numbers
         return v ;
     }
 
@@ -113,8 +118,8 @@ public class DecimalNode
         int scale =  (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI) ;
         long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI) ;
         // Sign extend value.
-        if ( BitsLong.isSet(value, 47) )
-            value = value | -1L<<48 ;
+        if ( BitsLong.isSet(value, VALUE_LEN-1) )
+            value = value | -1L<<(VALUE_LEN) ;
         
         return BigDecimal.valueOf(value, scale) ;
     }
