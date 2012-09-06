@@ -37,6 +37,7 @@ public class DecimalNode
     
     static final int SCALE_LEN  = 8 ; 
     static final int VALUE_LEN  = 48 ; 
+    static final int ENC_LEN  = 48+SCALE_LEN ;
     
     static final long MAX_VALUE =   (1L<< (VALUE_LEN-1) )-1 ;
     static final long MIN_VALUE =  -(1L<< (VALUE_LEN-1) ) ;
@@ -96,7 +97,7 @@ public class DecimalNode
     public static long pack(long value, int scale)
     {
         // pack : DECIMAL , sign, scale, value
-        long v = BitsLong.pack(0, NodeId.DECIMAL, 56, 64) ;
+        long v = BitsLong.pack(0, NodeId.DECIMAL, ENC_LEN, Long.SIZE) ;
         v = BitsLong.pack(v, scale, SCALE_LO, SCALE_HI) ;
         v = BitsLong.pack(v, value, VALUE_LO, VALUE_HI) ;
         // No need to do something about negative numbers
@@ -118,8 +119,8 @@ public class DecimalNode
         int scale =  (int)BitsLong.unpack(v, SCALE_LO, SCALE_HI) ;
         long value = BitsLong.unpack(v, VALUE_LO, VALUE_HI) ;
         // Sign extend value.
-        if ( BitsLong.isSet(value, VALUE_LEN-1) )
-            value = value | -1L<<(VALUE_LEN) ;
+        if ( BitsLong.isSet(value, VALUE_HI-1) )
+            value = value | -1L<<(VALUE_HI) ;
         
         return BigDecimal.valueOf(value, scale) ;
     }
