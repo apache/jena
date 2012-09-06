@@ -38,6 +38,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
      * inside transactions. 
      */
     
+    
     // Two per-thread state variables:
     //   txn: ThreadLocalTxn -- the transactional , one time use dataset
     //   isInTransactionB: ThreadLocalBoolean -- flags true between begin and commit/abort, and end for read transactions.
@@ -62,6 +63,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     private ThreadLocalBoolean inTransaction = new ThreadLocalBoolean() ;
     
     private final StoreConnection sConn ;
+    private boolean isClosed = false ; 
 
     public DatasetGraphTransaction(Location location)
     {
@@ -72,11 +74,13 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     
     public DatasetGraphTDB getDatasetGraphToQuery()
     {
+        checkNotClosed() ;
         return get() ;
     }
     
     public DatasetGraphTDB getBaseDatasetGraph()
     {
+        checkNotClosed() ;
         return sConn.getBaseDataset() ;
     }
 
@@ -101,6 +105,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void checkActive()
     {
+        checkNotClosed() ;
         if ( sConn.haveUsedInTransaction() && ! isInTransaction() )
             throw new JenaTransactionException("Not in a transaction ("+getLocation()+")") ;
     }
@@ -108,16 +113,26 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void checkNotActive()
     {
+        checkNotClosed() ;
         if ( sConn.haveUsedInTransaction() && isInTransaction() )
             throw new JenaTransactionException("Currently in a transaction ("+getLocation()+")") ;
+    }
+    
+    protected void checkNotClosed()
+    {
+        if ( isClosed )
+            throw new JenaTransactionException("Already closed") ;
     }
     
     @Override
     public boolean isInTransaction()    
     { 
+        checkNotClosed() ;
         return inTransaction.get() ;
     }
 
+    public boolean isClosed()
+    { return isClosed ; }
     
     public void syncIfNotTransactional()
     {
@@ -129,6 +144,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _begin(ReadWrite readWrite)
     {
+        checkNotClosed() ;
         DatasetGraphTxn dsgTxn = sConn.begin(readWrite) ;
         txn.set(dsgTxn) ;
         inTransaction.set(true) ;
@@ -137,6 +153,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _commit()
     {
+        checkNotClosed() ;
         txn.get().commit() ;
         inTransaction.set(false) ;
     }
@@ -144,6 +161,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _abort()
     {
+        checkNotClosed() ;
         txn.get().abort() ;
         inTransaction.set(false) ;
     }
@@ -151,13 +169,13 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _end()
     {
+        checkNotClosed() ;
         DatasetGraphTxn dsg = txn.get() ;
         // It's null if end() already called.
         if ( dsg  == null )
         {
             TDB.logInfo.warn("Transaction already ended") ;
             return ;
-            // throw new TDBTransactionException("Transaction already ended") ;
         }
         txn.get().end() ;
         // May already be false due to .commit/.abort.
@@ -178,6 +196,9 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
     @Override
     protected void _close()
     {
+        if ( isClosed )
+            return ;
+        
         if ( ! sConn.haveUsedInTransaction() && get() != null )
         {
             // Non-transactional behaviour.
@@ -185,5 +206,16 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             dsg.sync() ;
             dsg.close() ;
         }
+        
+        if ( isInTransaction() )
+        {
+            TDB.logInfo.warn("Attempt to close a DatasetGraphTransaction while a transaction is active - ignored close ("+getLocation()+")") ;
+            return ; 
+        }
+        isClosed = true ;
+        txn.remove() ;
+        inTransaction.remove() ;
     }
+    
+    
 }
