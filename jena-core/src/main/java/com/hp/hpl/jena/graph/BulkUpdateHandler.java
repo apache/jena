@@ -36,6 +36,7 @@ public interface BulkUpdateHandler
         Add all the triples into the graph this is handler for.
         @param triples an array of triples to add
     */
+    @Deprecated
     void add( Triple [] triples );
     
     /**
@@ -43,6 +44,7 @@ public interface BulkUpdateHandler
         Each element of the List must be a Triple.
         @param triples a list of Triple objects to add
     */
+    @Deprecated
     void add( List<Triple> triples );
     
     /**
@@ -52,6 +54,7 @@ public interface BulkUpdateHandler
         elements; hence long iterators may be expensive on store. 
         @param it an Iterator delivering Triples
     */
+    @Deprecated
     void add( Iterator<Triple> it );
     
     /**
@@ -60,6 +63,7 @@ public interface BulkUpdateHandler
         @param g a Graph whose triples are to be added
         @param withReifications if true, the reified triples of g are added as well
     */
+    @Deprecated
     void add( Graph g, boolean withReifications );
     
     /**
@@ -67,12 +71,15 @@ public interface BulkUpdateHandler
         Leave this graph's reifications unchanged.
         @param g a Graph whose triples are to be added
     */
+    // @Deprecated
+    // Will move to Graph.add(Graph)
     void add( Graph g );
     
     /**
         Remove all the triples from the graph this is handler for.
         @param triples an array of triples to remove
     */
+    @Deprecated
     void delete( Triple [] triples );
     
     /**
@@ -80,6 +87,7 @@ public interface BulkUpdateHandler
         Each element of the List must be a Triple.
         @param triples a list of triples to remove
     */
+    @Deprecated
     void delete( List<Triple> triples );
     
     /**
@@ -90,6 +98,7 @@ public interface BulkUpdateHandler
         
         @param it an iterator over Triple
     */
+    @Deprecated
     void delete( Iterator<Triple> it );
     
     /**
@@ -97,6 +106,8 @@ public interface BulkUpdateHandler
         Do not change the reifications.
         @param g a graph whose triples are to be removed
     */
+    // @Deprecated
+    // Will move to Graph.delete(Graph)
     void delete( Graph g );
     
     /**
@@ -105,15 +116,20 @@ public interface BulkUpdateHandler
         @param g a graph whose triples are to be removed
         @param withReifications if true, remove g's reifications from this graph
     */
+    @Deprecated
     void delete( Graph g, boolean withReifications );
 
     /**
     	Remove all the statements from a graph.
     */
+    // @Deprecated
+    // Will move to Graph.removeAll() or .clear()
     void removeAll();
     
     /**
        Remove all triples that would be delivered by find(s, p, o)
     */
+    // @Deprecated
+    // Will move to Graph.remove(s,p,o)
     void remove( Node s, Node p, Node o );
     }

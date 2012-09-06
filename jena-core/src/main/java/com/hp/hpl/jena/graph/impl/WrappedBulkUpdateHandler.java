@@ -44,6 +44,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void add( Triple [] triples )
         {
         base.add( triples );
@@ -51,6 +52,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
     
     @Override
+    @Deprecated
     public void add( List<Triple> triples )
         {
         base.add( triples );
@@ -58,6 +60,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void add( Iterator<Triple> it )
         {
         List<Triple> s = IteratorCollection.iteratorToList( it );
@@ -66,6 +69,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void add( Graph g, boolean withReifications )
         {
         base.add( g, withReifications );
@@ -80,6 +84,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( Triple[] triples )
         {
         base.delete( triples );
@@ -87,6 +92,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( List<Triple> triples )
         {
         base.delete( triples );
@@ -94,6 +100,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( Iterator<Triple> it )
         {
         List<Triple> s = IteratorCollection.iteratorToList( it );
@@ -109,6 +116,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( Graph g, boolean withReifications )
         {
         base.delete( g, withReifications );
