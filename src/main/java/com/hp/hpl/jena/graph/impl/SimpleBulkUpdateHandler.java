@@ -46,6 +46,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void add( Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) graph.performAdd( triples[i] ); 
@@ -53,6 +54,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
         
     @Override
+    @Deprecated
     public void add( List<Triple> triples )
         { add( triples, true ); }
         
@@ -63,6 +65,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void add( Iterator<Triple> it )
         { addIterator( it, true ); }
 
@@ -78,6 +81,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         { add( g, false ); }
         
     @Override
+    @Deprecated
     public void add( Graph g, boolean withReifications )
         { 
         addIterator( GraphUtil.findAll( g ), false );  
@@ -108,6 +112,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) graph.performDelete( triples[i] ); 
@@ -115,6 +120,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
     
     @Override
+    @Deprecated
     public void delete( List<Triple> triples )
         { delete( triples, true ); }
         
@@ -125,6 +131,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
     
     @Override
+    @Deprecated
     public void delete( Iterator<Triple> it )
         { deleteIterator( it, true ); }
         
@@ -148,6 +155,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         { delete( g, false ); }
         
     @Override
+    @Deprecated
     public void delete( Graph g, boolean withReifications )
         { 
         if (g.dependsOn( graph ))
