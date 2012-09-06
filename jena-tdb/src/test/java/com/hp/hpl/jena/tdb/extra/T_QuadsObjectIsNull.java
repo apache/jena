@@ -1,0 +1,93 @@
+package com.hp.hpl.jena.tdb.extra ;
+
+import java.util.Iterator ;
+
+import org.openjena.atlas.lib.FileOps ;
+import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.query.ReadWrite ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.base.file.Location ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
+import com.hp.hpl.jena.tdb.transaction.DatasetGraphTransaction ;
+import com.hp.hpl.jena.tdb.transaction.Journal ;
+import com.hp.hpl.jena.tdb.transaction.JournalControl ;
+import com.hp.hpl.jena.tdb.transaction.NodeTableTrans ;
+
+public class T_QuadsObjectIsNull {
+//	static {
+//		ARQ.getContext().set(SystemTDB.symFileMode, "direct");
+//		TDB.getContext().set(TDB.symUnionDefaultGraph, true);
+//	}
+
+	static String DIR = "DBX" ;
+	static Location location = new Location(DIR) ;
+
+	public static void main(String[] args) {
+
+	    if ( false )
+	    {
+    	    Log.enable(SystemTDB.syslog.getName()) ;
+    	    Log.enable(Journal.class) ;
+    	    Log.enable(JournalControl.class) ;
+    	    Log.enable(NodeTableTrans.class) ;
+	    }
+	    if ( false )
+	    {
+	        String journal = "DBX/journal.jrnl" ;
+	        if ( FileOps.exists(journal))
+	            JournalControl.print(journal) ;
+	    } 
+	    
+	    if ( false ) {
+	        FileOps.ensureDir(DIR) ;
+	        FileOps.clearDirectory(DIR) ;
+	    }
+	    one() ;
+	}
+	
+	public static void write(DatasetGraphTransaction dsg, Quad quad)
+	{
+        dsg.begin(ReadWrite.WRITE) ;
+        dsg.add(quad) ;
+        if ( ! dsg.contains(quad) )
+            throw new RuntimeException("No quad: "+quad) ;
+        dsg.commit() ;
+        dsg.end() ;
+	}
+	
+    private static void dump(DatasetGraphTransaction dsg)
+    {
+        dsg.begin(ReadWrite.READ);
+        Iterator<Quad> iter = dsg.find() ;
+        for ( ; iter.hasNext() ; )
+        {
+            Quad q = iter.next() ;
+            System.out.println(q) ;
+        }
+        //RiotWriter.writeNQuads(System.out, dsg) ;
+        dsg.commit();
+        dsg.end();
+    }
+
+    public static void one()
+	{
+	    Quad q1 = SSE.parseQuad("(<g1> <s1> <p1> '1')") ;
+	    Quad q2 = SSE.parseQuad("(<g2> <s2> <p2> '2')") ;
+        Quad q3 = SSE.parseQuad("(<g3> <s3> <p3> '3')") ;
+
+        DatasetGraphTransaction dsg = (DatasetGraphTransaction)TDBFactory.createDatasetGraph(location);
+        System.out.println("Start") ;
+        dump(dsg) ;
+        
+        write(dsg, q1) ;
+        write(dsg, q2) ;
+        //write(dsg, q3) ;
+        System.out.println("Finish") ;
+        dump(dsg) ;
+	}
+
+	
+}
