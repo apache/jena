@@ -205,6 +205,8 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
             DatasetGraphTDB dsg = get() ;
             dsg.sync() ;
             dsg.close() ;
+            isClosed = true ;
+            return ;
         }
         
         if ( isInTransaction() )
