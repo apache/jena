@@ -22,26 +22,30 @@ import org.openjena.atlas.lib.BitsLong ;
 
 public class IntegerNode
 {
+    // 56 bits of value, including sign bit.
+    public static int LEN = 56 ;
+    public static int LBITS = Long.SIZE ;
+    public static long MAX = (1L<< (LEN-1) ) ;
+    public static long MIN = (1L<< (LEN-1) ) ;
+
     public static long pack(long v) 
     {
-        // 56 bits of value, including sign bit.
-        if ( Math.abs(v) < (1L<<55) )
+        if ( v < MIN || v > MAX )
         {
-            v = BitsLong.clear(v, 56, 64) ;
+            v = BitsLong.clear(v, LEN, LBITS) ;
             v = NodeId.setType(v, NodeId.INTEGER) ;
             return v ;
         }
         else
             return -1 ;
     }
-    
+
     public static long unpack(long v) 
     {
-        long val = BitsLong.clear(v, 56, 64) ;
+        long val = BitsLong.clear(v, LEN, LBITS) ;
         // Sign extends to 64 bits.
-        if ( BitsLong.isSet(val, 55) )
-            val = BitsLong.set(v, 56, 64) ;
+        if ( BitsLong.isSet(val, LEN-1) )
+            val = BitsLong.set(v, LEN, LBITS) ;
         return val ;
     }
-
 }
