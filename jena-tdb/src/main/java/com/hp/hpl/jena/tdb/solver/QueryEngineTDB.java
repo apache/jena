@@ -66,16 +66,12 @@ public class QueryEngineTDB extends QueryEngineMain
     protected QueryEngineTDB(Query query, DatasetGraphTDB dataset, Binding input, Context cxt)
     { 
         super(query, dataset, input, cxt) ; 
-        // [[DynDS]]
-        // Dynamic dataset done as a special dataset.
-        
         DatasetDescription dsDesc = DatasetDescription.create(query, context) ;
         
         if ( dsDesc != null )
         {
             doingDynamicDatasetBySpecialDataset = true ;
             super.dataset = DynamicDatasets.dynamicDataset(dsDesc, dataset, cxt.isTrue(TDB.symUnionDefaultGraph) ) ;
-            // The other (imperfect) way is to use TransformDynamicDataset
         }
         this.initialInput = input ; 
     }
