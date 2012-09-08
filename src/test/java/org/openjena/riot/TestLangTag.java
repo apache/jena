@@ -18,76 +18,67 @@
 
 package org.openjena.riot;
 
-import java.util.Arrays;
-import java.util.Collection;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
 
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-import org.openjena.riot.LangTag ;
-
-
-@RunWith(Parameterized.class)
-
-public class TestLangTag
+public class TestLangTag extends BaseTest
 {
-    
-    
-    @Parameters public static Collection<Object[]> data()
-    
-    {
-        return Arrays.asList(new Object[][] {
-            // input, language, script, region, variant, extension 
-            //{"en", new String[]{"en", "junk", null, null }},
-            
-            {"en",                  "en",               new String[]{"en", null, null, null, null}},
-            {"en-uk",               "en-UK",            new String[]{"en", null, "UK", null, null}},
-            {"es-419",              "es-419",           new String[]{"es", null, "419", null, null}},
-            {"zh-Hant",             "zh-Hant",          new String[]{"zh", "Hant", null, null, null}},
-            {"sr-Latn-CS",          "sr-Latn-CS",       new String[]{"sr", "Latn", "CS", null, null}},
-            {"sl-nedis",            "sl-nedis",         new String[]{"sl", null, null, "nedis", null}},
-            {"sl-IT-nedis",         "sl-IT-nedis",      new String[]{"sl", null, "IT", "nedis", null}},
-            {"sl-Latn-IT-nedis",    "sl-Latn-IT-nedis", new String[]{"sl", "Latn", "IT", "nedis", null}},
-            {"de-CH-x-Phonebk",     "de-CH-x-Phonebk",  new String[]{"de", null, "CH", null, "x-Phonebk"}},
-            {"zh-cn-a-myExt-x-private", "zh-CN-a-myExt-x-private", new String[]{"zh", null, "CN", null, "a-myExt-x-private"}},
+    @Test public void parse_01() 
+    { parseGood("en",                  "en",               "en", null, null, null, null) ; }
 
-            {"12345", "12345", null},
-//            
-//            {"en", "en", new String[]{"en", null, null, null, null}},
-//            {"en-uk", "en-UK", new String[]{"en", null, "UK", null, null}},
-//            {"es-419", "es-419", new String[]{"es", null, "419", null, null}},
-//            {"zh-hant", "zh-Hant", new String[]{"zh", "Hant", null, null, null}},
-//            {"sr-latn-cs", "sr-Latn-CS", new String[]{"sr", "Latn", "CS", null, null}},
-//            {"sl-nedis", "sl-nedis", new String[]{"sl", null, null, "nedis", null}},
-//            {"sl-IT-nedis", "sl-IT-nedis", new String[]{"sl", null, "IT", "nedis", null}},
-//            {"SL-latn-it-Nedis", "sl-Latn-IT-nedis", new String[]{"sl", "Latn", "IT", "nedis", null}},
-//            {"12345", "12345", (String[])null},
-            });
+    @Test public void parse_02()
+    { parseGood("en-uk",               "en-UK",            "en", null, "UK", null, null) ; }
+    
+    @Test public void parse_03()
+    { parseGood("es-419",              "es-419",           "es", null, "419", null, null) ; }
+    
+    @Test public void parse_04()
+    { parseGood("zh-Hant",             "zh-Hant",          "zh", "Hant", null, null, null) ; }
+    
+    @Test public void parse_05()
+    { parseGood("sr-Latn-CS",          "sr-Latn-CS",       "sr", "Latn", "CS", null, null) ; }
+    
+    @Test public void parse_06()
+    { parseGood("sl-nedis",            "sl-nedis",         "sl", null, null, "nedis", null) ; }
+    
+    @Test public void parse_07()
+    { parseGood("sl-IT-nedis",         "sl-IT-nedis",      "sl", null, "IT", "nedis", null) ; }
+    
+    @Test public void parse_08()
+    { parseGood("sl-Latn-IT-nedis",    "sl-Latn-IT-nedis", "sl", "Latn", "IT", "nedis", null) ; }
+    
+    @Test public void parse_09()
+    { parseGood("de-CH-x-Phonebk",     "de-CH-x-Phonebk",  "de", null, "CH", null, "x-Phonebk") ; }
+    
+    @Test public void parse_10()
+    { parseGood("zh-cn-a-myExt-x-private", "zh-CN-a-myExt-x-private", 
+                                      "zh", null, "CN", null, "a-myExt-x-private") ; }
+    
+    @Test public void parse_bad_01() { parseBad("i18n") ; }
+    @Test public void parse_bad_02() { parseBad("i@n") ; }
+    @Test public void parse_bad_03() { parseBad("123-abc") ; }
+    @Test public void parse_bad_04() { parseBad("en-") ; }
+    
+    private static void parseGood(String input, String ex_output, String... ex_parts )
+    {
+      String[] parts = LangTag.parse(input) ;
+      assertArrayEquals(ex_parts, parts) ;
+      
+      String output = LangTag.canonical(input) ;
+      assertEquals(ex_output, output) ;
+      
+      assertTrue(LangTag.check(input)) ;
     }
 
-    private String input ;
-    private String[] parts ;
-    private String output ;
     
-    public TestLangTag(String input, String output, String[] parts)
-    { 
-        this.input = input ;
-        this.output = output ;
-        this.parts = parts ;
-    }
-   
-    @Test
-    public void verify()
+    private static void parseBad(String input)
     {
-        //System.out.println(input+" ==> "+output) ;
-        
         String[] parts = LangTag.parse(input) ;
+        assertNull(parts) ;
         String output = LangTag.canonical(input) ;
-        Assert.assertArrayEquals(this.parts, parts) ;
-        Assert.assertEquals(this.output, output) ;
+        assertEquals(input, output) ;
+        assertFalse(LangTag.check(input)) ;
     }
 
 }

@@ -36,12 +36,8 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.arp.ALiteral ;
-import com.hp.hpl.jena.rdf.arp.ARP ;
-import com.hp.hpl.jena.rdf.arp.AResource ;
-import com.hp.hpl.jena.rdf.arp.NamespaceHandler ;
-import com.hp.hpl.jena.rdf.arp.ParseException ;
-import com.hp.hpl.jena.rdf.arp.StatementHandler ;
+import com.hp.hpl.jena.rdf.arp.* ;
+import static com.hp.hpl.jena.rdf.arp.ARPErrorNumbers.* ;
 import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
 
@@ -108,6 +104,14 @@ public class LangRDFXML implements LangRIOT
     @Override
     public Lang getLang()   { return Lang.RDFXML ; }
 
+    public static boolean RiotUniformCompatibility = false ;
+    // Warnings in ARP that should bd errors to be compatible with
+    // non-XML-based languages.  e.g. language tags should be
+    // syntactically valid.
+    private static int[] additionalErrors = new int[] {
+        WARN_MALFORMED_XMLLANG
+        //, WARN_STRING_NOT_NORMAL_FORM_C
+    } ;
     
     @Override
     public void parse()
@@ -118,6 +122,15 @@ public class LangRDFXML implements LangRIOT
         arp.getHandlers().setStatementHandler(rslt);
         arp.getHandlers().setErrorHandler(rslt) ;
         arp.getHandlers().setNamespaceHandler(rslt) ;
+        
+        if ( RiotUniformCompatibility )
+        {
+            ARPOptions options = arp.getOptions() ;
+            // Convert some warnings to errors for compatible behaviour for all parsers. 
+            for ( int code : additionalErrors )
+                options.setErrorMode(code, EM_FATAL) ;
+            arp.setOptionsWith(options) ;
+        }
         
         try {
             if ( reader != null )
