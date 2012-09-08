@@ -22,6 +22,7 @@ import java.nio.ByteBuffer ;
 
 import org.openjena.atlas.io.BlockUTF8 ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.LangTag ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -60,6 +61,14 @@ public class NodecSSE implements Nodec
             String x = StrUtils.encodeHex(node.getURI(), MarkerChar, invalidIRIChars) ;
             if ( x != node.getURI() )
                 node = Node.createURI(x) ; 
+        }
+        
+        if ( node.isLiteral() && node.getLiteralLanguage() != null )
+        {
+            // Check syntactcally valid.
+            String lang = node.getLiteralLanguage() ;
+            if ( ! LangTag.check(lang) )
+                throw new TDBException("bad language tag: "+node) ;
         }
         
         // Node->String

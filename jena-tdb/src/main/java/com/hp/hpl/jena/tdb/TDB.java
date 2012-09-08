@@ -23,6 +23,7 @@ import java.util.Iterator ;
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.lib.Sync ;
 import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.lang.LangRDFXML ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -190,6 +191,7 @@ public class TDB
         SysRIOT.wireIntoJena() ;
         SystemTDB.init() ;
         ARQ.init() ;
+        LangRDFXML.RiotUniformCompatibility = true ;
         EnvTDB.processGlobalSystemProperties() ;
         
         MappingRegistry.addPrefixMapping(SystemTDB.tdbSymbolPrefix, SystemTDB.symbolNamespace) ;
