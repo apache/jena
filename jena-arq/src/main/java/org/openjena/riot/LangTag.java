@@ -21,6 +21,9 @@ package org.openjena.riot;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
+import org.openjena.atlas.lib.Chars ;
+import org.openjena.riot.system.RiotChars ;
+
 
 /**
  * Language tags: support for parsing and canonicalization of case. 
@@ -141,6 +144,52 @@ public class LangTag
     private static Pattern patternPrivateuse    = Pattern.compile(privateuseRE) ;
     private static Pattern patternGrandfathered = Pattern.compile(grandfatheredRE) ; 
     
+    /** Validate - basic syntax check for a language tags: [a-zA-Z]+ ('-' [a-zA-Z0-9]+)* */
+    public static boolean check(String languageTag)
+    {
+        int len = languageTag.length() ;
+        int idx = 0;
+        boolean first = true ;
+        while ( idx < languageTag.length() )
+        {
+            int idx2 = checkPart(languageTag, idx, first) ;
+            first = false ;
+            if ( idx2 == idx )
+                // zero length part.
+                return false ;
+            idx = idx2 ;
+            if ( idx == len )
+                return true ;
+            if ( languageTag.charAt(idx) != Chars.CH_DASH )
+                return false ;
+            idx ++ ;
+            if ( idx == len)
+                // trailing DASH
+                return false ;
+        }
+        return true ;
+    }
+    
+    private static int checkPart(String languageTag, int idx, boolean leader)
+    {
+        for ( ; idx < languageTag.length() ; idx++)
+        {
+            int ch = languageTag.charAt(idx) ;
+            if ( leader )
+            {
+                if ( RiotChars.isA2Z(ch) ) continue ;
+            }
+            else
+            {
+                if ( RiotChars.isA2ZN(ch) ) continue ;
+            }
+            // Not acceptable.
+            return idx ;
+        }
+        // Off end.
+        return idx ;
+    }
+
     /** Parse a langtag string and return it's parts in canonical case.
      *  See constants for the array contents.  Parts not present cause a null
      *  in the return array. 

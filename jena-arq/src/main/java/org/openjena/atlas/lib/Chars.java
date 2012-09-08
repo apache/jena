@@ -214,6 +214,7 @@ public class Chars
     public static final char CH_HASH         = '#' ;
     public static final char CH_PLUS         = '+' ;
     public static final char CH_MINUS        = '-' ;
+    public static final char CH_DASH         = '-' ; // Alt name
     public static final char CH_SLASH        = '/' ;
     public static final char CH_RSLASH       = '\\' ;
     
@@ -249,6 +250,7 @@ public class Chars
     public static final byte B_HASH          = '#' ;
     public static final byte B_PLUS          = '+' ;
     public static final byte B_MINUS         = '-' ;
+    public static final byte B_DASH          = '-' ; // Alt name
     public static final byte B_SLASH         = '/' ;
     public static final byte B_RSLASH        = '\\' ;
     
