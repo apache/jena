@@ -62,9 +62,15 @@ public class NodeLib
         // Make sure this operation is sync'ed. 
         int maxSize = nodec.maxSize(node) ;
         Block block = file.allocWrite(maxSize) ;
-        int len = nodec.encode(node, block.getByteBuffer(), null) ;
-        file.completeWrite(block) ;
-        return block.getId() ;
+        try {
+            int len = nodec.encode(node, block.getByteBuffer(), null) ;
+            file.completeWrite(block) ;
+            return block.getId() ;
+        } catch (TDBException ex)
+        {
+            file.abortWrite(block) ;
+            throw ex ;
+        }
     }
     
     public static Node fetchDecode(long id, ObjectFile file)
