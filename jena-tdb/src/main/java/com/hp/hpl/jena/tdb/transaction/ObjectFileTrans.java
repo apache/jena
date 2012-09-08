@@ -167,6 +167,14 @@ public class ObjectFileTrans implements ObjectFile, TransactionLifecycle
         block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
         transObjects.completeWrite(block) ;
     }
+    
+    @Override
+    public void abortWrite(Block block)
+    {
+        if ( passthrough ) { base.abortWrite(block) ; return ; } 
+        block = new Block(block.getId()-otherAllocOffset, block.getByteBuffer()) ;
+        transObjects.abortWrite(block) ;
+    }
 
     /** Convert from a id to the id in the "other" file */ 
     private long mapToOther(long x) { return x-otherAllocOffset ; }

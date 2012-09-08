@@ -57,6 +57,13 @@ public class ObjectFileLogger implements ObjectFile
     }
 
     @Override
+    public void abortWrite(Block buffer)
+    {
+        info("abortWrite("+buffer.getId()+")") ;
+        other.abortWrite(buffer) ;
+    }
+
+    @Override
     public long write(ByteBuffer buffer)
     {
         info("write"+buffer) ;
