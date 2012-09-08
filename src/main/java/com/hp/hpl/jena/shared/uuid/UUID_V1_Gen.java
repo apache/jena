@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.shared.uuid;
 
-import com.hp.hpl.jena.shared.uuid.JenaUUID.FormatException;
+import com.hp.hpl.jena.shared.uuid.JenaUUID.FormatException ;
 
 /* RFC 4122  "A Universally Unique IDentifier (UUID) URN Namespace"
    ftp://ftp.rfc-editor.org/in-notes/rfc4122.txt
@@ -281,6 +281,14 @@ public class UUID_V1_Gen implements UUIDFactory
 
     private void setInitialState()
 	{
+//        try {
+//            // And in Java7 : NetworkInterface.getByIndex(0)
+//            // Java 6:        
+//            InetAddress address = InetAddress.getLocalHost();
+//            NetworkInterface ni = NetworkInterface.getByInetAddress(address) ;
+//            byte[] b = ni.getHardwareAddress() ;
+//        } catch (Exception ex) {}
+        
         long random = LibUUID.makeRandom().nextLong() ;
 
         node = Bits.unpack(random, 0, 47);      // Low 48bits, except groups address bit
