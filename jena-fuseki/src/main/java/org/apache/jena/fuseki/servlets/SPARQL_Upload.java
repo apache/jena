@@ -185,7 +185,14 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                 else
                     action.getActiveDSG().getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
                 action.commit() ;
-            } finally { action.endWrite() ; }
+            } catch (RuntimeException ex)
+            {
+                // If anything went wrong, try to backout.
+                action.abort() ;
+                errorOccurred(ex.getMessage()) ;
+                return ;
+            } 
+            finally { action.endWrite() ; }
                     
             response.setContentType("text/plain") ;
             response.getOutputStream().print("Triples = "+tripleCount) ;
