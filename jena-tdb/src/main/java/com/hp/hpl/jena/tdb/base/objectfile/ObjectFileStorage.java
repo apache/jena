@@ -74,6 +74,11 @@ public class ObjectFileStorage implements ObjectFile
     private boolean inAllocWrite = false ;
     private Block allocBlock = null ;
     private long allocLocation = -1 ;
+    
+    // Old values for abort.
+    int oldBufferPosn = -1 ;
+    int oldBufferLimit = -1 ;
+
 
     public ObjectFileStorage(BufferChannel file)
     {
@@ -177,6 +182,10 @@ public class ObjectFileStorage implements ObjectFile
         // Will fit.
         inAllocWrite = true ;
         int start = writeBuffer.position() ;
+        // Old values for restoration
+        oldBufferPosn = start ;
+        oldBufferLimit = writeBuffer.limit() ;
+        
         // id (but don't tell the caller yet).
         allocLocation = filesize+start ;
         
@@ -224,6 +233,24 @@ public class ObjectFileStorage implements ObjectFile
         writeBuffer.position(newLen);
         writeBuffer.limit(writeBuffer.capacity()) ;
         allocLocation = -1 ;
+        oldBufferPosn = -1 ;
+        oldBufferLimit = -1 ;
+    }
+
+    @Override
+    public void abortWrite(Block block)
+    {
+        allocBlock = null ;
+        int oldstart = (int)(allocLocation-filesize) ;
+        if ( oldstart != oldBufferPosn)
+            throw new FileException("Wrong reset point: calc="+oldstart+" : expected="+oldBufferPosn) ;        
+        
+        writeBuffer.position(oldstart) ;
+        writeBuffer.limit(oldBufferLimit) ;
+        allocLocation = -1 ;
+        oldBufferPosn = -1 ;
+        oldBufferLimit = -1 ;
+        inAllocWrite = false ;
     }
 
     private void flushOutputBuffer()

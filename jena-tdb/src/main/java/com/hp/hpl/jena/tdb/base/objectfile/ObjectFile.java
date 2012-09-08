@@ -42,8 +42,11 @@ public interface ObjectFile extends Sync, Closeable
     /** Allocate space for a write - pass this buffer to completeWrite */ 
     public Block allocWrite(int bytesSpace) ;
     
-    /** Announce that a write is complete (buffer must come from allocWrite) - return the accessor number */
+    /** Announce that a write is complete (buffer must come from allocWrite) */
     public void completeWrite(Block buffer) ;
+
+    /** Decide not to perform the write */
+    public void abortWrite(Block buffer) ;
 
     /** Write out the buffer - return the accessor number */ 
     public long write(ByteBuffer buffer) ;

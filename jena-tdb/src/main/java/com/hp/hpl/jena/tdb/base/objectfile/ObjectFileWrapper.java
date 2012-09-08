@@ -43,6 +43,9 @@ public class ObjectFileWrapper implements ObjectFile
     public void completeWrite(Block buffer)         { other.completeWrite(buffer) ; }
 
     @Override
+    public void abortWrite(Block buffer)            { other.abortWrite(buffer) ; }
+    
+    @Override
     public long write(ByteBuffer buffer)            { return other.write(buffer) ; }
     
     @Override
