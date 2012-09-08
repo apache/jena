@@ -63,14 +63,15 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     {
         DatasetGraph body = parseBody(action) ;
         action.beginWrite() ;
-        boolean existedBefore ;
+        boolean existedBefore = false ;
         try {
             existedBefore = action.getTarget().exists() ; 
             if ( existedBefore )
                 clearGraph(action.getTarget()) ;
             addDataInto(body.getDefaultGraph(), action) ;
             action.commit() ;
-        } finally { action.endWrite() ; }
+        } catch (RuntimeException ex) { action.abort() ; errorOccurred(ex.getMessage()) ; return ; }
+        finally { action.endWrite() ; }
         // Differentiate: 201 Created or 204 No Content 
         if ( existedBefore )
             SPARQL_ServletBase.successNoContent(action) ;

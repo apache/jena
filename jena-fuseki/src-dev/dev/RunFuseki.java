@@ -53,7 +53,8 @@ public class RunFuseki
     private static void main1()
     {
         FusekiCmd.main(
-                       "--update", "--mem", "/ds"
+                     //"--update", "--mem", "/ds"
+                     "--update", "--loc=DB", "/ds"
                        
                     //"-v", 
                     //"--debug",
