@@ -269,19 +269,28 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     protected static void addDataInto(Graph data, HttpActionREST action)
     {   
-        Target dest = action.getTarget() ;
-        Graph g = dest.graph() ;
-        if ( g == null )
+        try
         {
-            if ( dest.isDefault )
-                errorOccurred("Dataset does not have a default graph") ;
-            log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
-            // Not default graph.
-            // Not an autocreate dataset -               create something.
-            g = GraphFactory.createDefaultGraph() ;
-            dest.dsg.addGraph(dest.graphName, g) ;
+            Target dest = action.getTarget() ;
+            Graph g = dest.graph() ;
+            if (g == null)
+            {
+                if (dest.isDefault) errorOccurred("Dataset does not have a default graph") ;
+                log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
+                // Not default graph.
+                // Not an autocreate dataset - create something.
+                g = GraphFactory.createDefaultGraph() ;
+                dest.dsg.addGraph(dest.graphName, g) ;
+            }
+            g.getBulkUpdateHandler().add(data) ;
+        } catch (RuntimeException ex)
+        {
+            // If anything went wrong, try to backout.
+            action.abort() ;
+            errorOccurred(ex.getMessage()) ;
+            return ;
         }
-        g.getBulkUpdateHandler().add(data) ;
+        
     }
 
     protected static DatasetGraph parseBody(HttpActionREST action)
