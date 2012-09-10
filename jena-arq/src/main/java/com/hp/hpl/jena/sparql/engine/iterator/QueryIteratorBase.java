@@ -208,6 +208,7 @@ public abstract class QueryIteratorBase
     /** Cancel this iterator but allow it to continue servicing hasNext/next.
      *  Wrong answers are possible (e.g. partial ORDER BY and LIMIT).
      */
+    @Deprecated
     public final void cancelAllowContinue()
     {
         // Call requestCancel() once.
