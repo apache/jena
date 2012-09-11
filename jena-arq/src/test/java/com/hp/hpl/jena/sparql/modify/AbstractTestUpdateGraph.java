@@ -420,7 +420,8 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     private static Graph data(Triple... triples)
     {
         Graph graph = Factory.createDefaultGraph();
-        graph.getBulkUpdateHandler().add(triples);
+        for ( Triple t : triples )
+            graph.add(t);
         return graph;
     }
 }
