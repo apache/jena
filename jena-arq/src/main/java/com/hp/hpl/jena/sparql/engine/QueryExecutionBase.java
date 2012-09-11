@@ -32,18 +32,8 @@ import org.openjena.atlas.logging.Log ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFNode ;
-import com.hp.hpl.jena.rdf.model.Resource ;
-import com.hp.hpl.jena.rdf.model.Statement ;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -52,7 +42,6 @@ import com.hp.hpl.jena.sparql.core.describe.DescribeHandlerRegistry ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorWrapper ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.modify.TemplateLib ;
@@ -182,9 +171,6 @@ public class QueryExecutionBase implements QueryExecution
         cancelPingback() ;
     }
 
-    @Deprecated
-    public static boolean cancelAllowDrain = false ; 
-    //public synchronized void cancel()
     @Override
     public synchronized void abort()
 	{
@@ -194,14 +180,7 @@ public class QueryExecutionBase implements QueryExecution
 		{
 			// we cancel the chain of iterators, however, we do *not* close the iterators. 
 			// That happens after the cancellation is properly over.
-		    if ( cancelAllowDrain && queryIterator instanceof QueryIteratorBase )
-		    {
-		        QueryIteratorBase qIter = (QueryIteratorBase)queryIterator ;
-		        qIter.cancelAllowContinue() ;
-		    }
-		    else
-		        // Normal case - correct SPARQL
-		        queryIterator.cancel() ;
+		    queryIterator.cancel() ;
 			cancel = true ;
 		}
         cancel = true ;
