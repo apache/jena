@@ -59,17 +59,17 @@ public class PlanOp extends PlanBase
         }
 
         String str = label ;
-        
+
         if ( label == null )
             str = "Plan" ;
         out.print(Plan.startMarker) ;
         out.println(str) ;
         out.incIndent() ;
-       //getOp().output(out, sCxt) ;
-       qIter.output(out, sCxt) ;
+        //getOp().output(out, sCxt) ;
+        qIter.output(out, sCxt) ;
 
-       out.print(Plan.finishMarker) ;
-       out.decIndent() ;
-       out.ensureStartOfLine() ;
+        out.print(Plan.finishMarker) ;
+        out.decIndent() ;
+        out.ensureStartOfLine() ;
     }
 }
