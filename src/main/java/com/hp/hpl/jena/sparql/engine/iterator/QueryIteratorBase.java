@@ -56,7 +56,11 @@ public abstract class QueryIteratorBase
     /** In the process of requesting a cancel, or one has been done */  
     private volatile boolean requestingCancel = false;
 
-    /* If set, any hasNext/next throws QueryAbortedException */
+    /* If set, any hasNext/next throws QueryAbortedException
+     * In normal operation, this is the same setting as requestingCancel.
+     * Non-compliant behaviour can result otherwise. 
+     * Accessed through cancelAllowContinue()
+     */
     private boolean abortIterator = false ;
     private Object cancelLock = new Object();
     
@@ -140,10 +144,9 @@ public abstract class QueryIteratorBase
                 close() ;
                 throw new QueryCancelledException() ;
             }
+
             if ( finished )
-            {
                 throw new NoSuchElementException(Utils.className(this)) ;
-            }
             
             if ( ! hasNextBinding() )
                 throw new NoSuchElementException(Utils.className(this)) ;
@@ -208,8 +211,8 @@ public abstract class QueryIteratorBase
     /** Cancel this iterator but allow it to continue servicing hasNext/next.
      *  Wrong answers are possible (e.g. partial ORDER BY and LIMIT).
      */
-    @Deprecated
-    public final void cancelAllowContinue()
+    
+    private final void cancelAllowContinue()
     {
         // Call requestCancel() once.
         synchronized (cancelLock)
