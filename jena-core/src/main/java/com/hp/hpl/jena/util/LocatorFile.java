@@ -92,6 +92,8 @@ public class LocatorFile implements Locator
     @Override
     public int hashCode()
     {
+        if ( altDir == null )
+            return 157 ;
         return altDir.hashCode();
     }
     
