@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+/** To be deleted */
 @Deprecated
 public class GraphStoreEvents
 {
