@@ -212,34 +212,6 @@
         </executions>
       </plugin>
 
-
-      <!--
-      <plugin>
-    ! - - Must use maven name of ${project.artifactId}-${project.version}-$id
-	 or else the name is changed on install
-    <assembly.root.name>apache-${project.artifactId}-${project.version}</assembly.root.name>
-    - -
-
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>create-assembly</id>
-            <phase>package</phase>
-            <goals><goal>single</goal></goals>
-            <configuration>
-	      ! - -
-	          <finalName>${assembly.root.name}</finalName>
-	          <appendAssemblyId>false</appendAssemblyId>
-	          - -
-	          <descriptors>
-		        <descriptor>assembly.xml</descriptor>
-              </descriptors>
-	        </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      -->
-
     </plugins>
   </build>
 
