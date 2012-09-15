@@ -40,6 +40,12 @@ Assumes jar made and onejar has been assembled.
       <outputDirectory></outputDirectory>
       <destName>fuseki-server.jar</destName>
     </file>
+    <!-- include sources in binary distribution?
+    <file>
+      <source>${project.artifactId}-${project.version}-sources.jar</source>
+      <outputDirectory></outputDirectory>
+    </file>
+    -->
     <file>
       <source>dist/LICENSE-dist</source>
       <destName>LICENSE</destName>
