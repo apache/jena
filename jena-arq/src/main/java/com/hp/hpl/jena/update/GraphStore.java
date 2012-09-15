@@ -29,18 +29,6 @@ public interface GraphStore extends DatasetGraph
     /** Convert to a dataset (for query) */
     public Dataset toDataset() ;
 
-    /** Signal start of a request being executed.
-     * @deprecated Use {@link #startRequest(UpdateRequest)} 
-     */
-    @Deprecated
-    public void startRequest() ;
-    
-    /** Signal end of a request being executed.
-     * @deprecated Use {@link #finishRequest(UpdateRequest)}
-     */
-    @Deprecated
-    public void finishRequest() ;
-
     /** Signal start of a request being executed */ 
     public void startRequest(UpdateRequest request) ;
     /** Signal end of a request being executed */ 

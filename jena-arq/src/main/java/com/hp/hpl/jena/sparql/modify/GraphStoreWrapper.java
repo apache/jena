@@ -37,14 +37,6 @@ public class GraphStoreWrapper extends DatasetGraphWrapper implements GraphStore
     public Dataset toDataset()
     { return graphStore.toDataset() ; }
 
-    @Override @Deprecated
-    public void startRequest()
-    { graphStore.startRequest() ; }
-
-    @Override @Deprecated
-    public void finishRequest()
-    { graphStore.finishRequest() ; }
-
     @Override
     public void startRequest(UpdateRequest request)
     { graphStore.startRequest(request) ; }

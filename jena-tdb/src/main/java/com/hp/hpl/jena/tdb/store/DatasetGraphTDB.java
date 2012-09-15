@@ -35,8 +35,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.DatasetImpl ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderTransformation ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreEvents ;
-import com.hp.hpl.jena.sparql.modify.GraphStoreUtils ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.lib.NodeLib ;
 import com.hp.hpl.jena.tdb.sys.Session ;
@@ -292,22 +290,14 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         prefixes.sync() ;
     }
     
-    // Done by superclass that then call _close. public void close()
-
     // --- GraphStore
-    @Override @Deprecated
-    public void startRequest()      { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
-
-    @Override @Deprecated
-    public void finishRequest()     { this.sync() ; GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; } 
-
     @Override
     public void startRequest(UpdateRequest request)
-    { GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestStartEvent) ; }
+    { }
 
     @Override
     public void finishRequest(UpdateRequest request)
-    { this.sync() ; GraphStoreUtils.sendToAll(this, GraphStoreEvents.RequestFinishEvent) ; } 
+    { } 
 
     @Override
     public Dataset toDataset()      { return DatasetImpl.wrap(this) ; }

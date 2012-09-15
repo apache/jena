@@ -28,6 +28,11 @@ import com.hp.hpl.jena.update.UpdateException ;
 
 public class GraphStoreUtils
 {
+    /*
+     * All the "actionAll" operations  
+     */
+
+    @Deprecated
     public static void sendToAll(GraphStore graphStore, final Object object)
     {
         actionAll(graphStore, new GraphStoreAction()
@@ -37,6 +42,7 @@ public class GraphStoreUtils
         }) ; 
     }
     
+    @Deprecated
     public static void actionAll(GraphStore graphStore, GraphStoreAction action)
     {
         action.exec(graphStore.getDefaultGraph()) ;
@@ -51,6 +57,7 @@ public class GraphStoreUtils
     }
     
     // Choose graph and dispatch.
+    @Deprecated
     public static void action(GraphStore graphStore, Node graphName, GraphStoreAction action)
     {
         Graph g = null ;
@@ -65,6 +72,7 @@ public class GraphStoreUtils
         action.exec(g) ;
     }
 
+    @Deprecated
     public static void action(GraphStore graphStore, List<Node> graphNodes, GraphStoreAction action)
     {
         if ( graphNodes.isEmpty() )
