@@ -4,6 +4,7 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.4
 
++ Remove GraphStore.(start|finish)Request(0 (was prviosuly deprecated)
 + Remove deprecated QueryExecutionBase.cancelAllowDrain
 + Implement WG decision on BIND - use original semantics. 
 + improved optimization of sequeneces of OPTIONALs where the grouois only OPTIONAL and an equality filter (JENA-294)
