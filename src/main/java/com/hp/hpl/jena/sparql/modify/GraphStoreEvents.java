@@ -18,8 +18,11 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+@Deprecated
 public class GraphStoreEvents
 {
+    @Deprecated
     public static final Object RequestStartEvent = new Object() ; 
+    @Deprecated
     public static final Object RequestFinishEvent = new Object() ;
 }
