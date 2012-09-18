@@ -29,7 +29,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 /** A structure to represent a <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.7">media type</a>.
- * Se also the <a href="http://httpd.apache.org/docs/current/content-negotiation.html">Apache httpd documentation</a>.
+ * See also the <a href="http://httpd.apache.org/docs/current/content-negotiation.html">Apache httpd documentation</a>.
  */
 public class MediaType
 {
