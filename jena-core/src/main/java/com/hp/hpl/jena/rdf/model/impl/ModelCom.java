@@ -249,7 +249,7 @@ public class ModelCom extends EnhGraph
             { 
             InputStream is = new URL( url ) .openStream();
             try { read( is, base, lang ); }
-            finally { is.close(); }
+            finally { if (null != is) { is.close(); } }
             }
         catch (IOException e) { throw new WrappedIOException( e ); }
         return this;
@@ -1437,7 +1437,9 @@ public class ModelCom extends EnhGraph
             }
             return resultModel;
         } finally {
-            iter.close();
+            if (null != iter) {
+                iter.close();
+            }
         }
     }
     
