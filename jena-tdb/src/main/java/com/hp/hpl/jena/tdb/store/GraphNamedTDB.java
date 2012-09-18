@@ -62,7 +62,7 @@ public class GraphNamedTDB extends GraphTDBBase
         if ( graphName == null )
             throw new TDBException("GraphNamedTDB: Null graph name") ; 
         if ( ! graphName.isURI() )
-            throw new TDBException("GraphNamedTDB: Graph name not a URI") ; 
+            throw new TDBException("GraphNamedTDB: Graph name not a URI - " + graphName.toString()) ; 
     }
 
     @Override
