@@ -137,7 +137,10 @@ public class NTripleReader extends Object implements RDFReader {
 
                 skipWhiteSpace();
                 try {
-                    predicate = model.createProperty(readResource().getURI());
+                    Resource r = readResource() ;
+                    if (inErr)
+                        break;
+                    predicate = model.createProperty(r.getURI());
                 } catch (Exception e1) {
                     errorHandler.fatalError(e1);
                 }
@@ -173,7 +176,10 @@ public class NTripleReader extends Object implements RDFReader {
     public Resource readResource()  {
         char inChar = in.readChar();
         if (badEOF())
+        {
+            System.err.println("**** Bad EOF") ;
             return null;
+        }
 
         if (inChar == '_') { // anon resource
             if (!expect(":"))
