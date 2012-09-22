@@ -17,6 +17,7 @@
  */
 
 package com.hp.hpl.jena.tdb.transaction;
+import java.io.IOException ;
 import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.Iterator ;
@@ -108,10 +109,41 @@ public class Transaction
                     break ;
                 case WRITE:
                     if ( state != TxnState.ACTIVE )
-                        throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-                    prepare() ;
-                    journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
-                    journal.sync() ;        // Commit point.
+                        throw new TDBTransactionException("Transaction has already committed or aborted") ;
+                    // ---- Prepare
+                    try {
+                        prepare() ;
+                    } catch (RuntimeException ex)
+                    {
+                        if ( isIOException(ex) )
+                            SystemTDB.errlog.warn("IOException during 'prepare' : attempting transaction abort: "+ex.getMessage()) ;
+                        else
+                            SystemTDB.errlog.warn("Exception during 'prepare' : attempting transaction abort", ex) ;
+                        state = TxnState.ACTIVE ;
+                        try {
+                            abort() ;
+                        } catch (RuntimeException ex2) 
+                        {
+                            // It's a mess.
+                            SystemTDB.errlog.warn("Exception during 'abort' after 'prepare'", ex2) ;
+                        }
+                        throw new TDBTransactionException("Abort during prepare - transaction did not commit", ex) ;
+                    }
+                    // ---- end prepare
+                    
+                    try {
+                        journal.write(JournalEntryType.Commit, FileRef.Journal, null) ;
+                        journal.sync() ;        // Commit point.
+                    } catch (RuntimeException ex) {
+                        // It either did all commit or didn't but we don't know which.
+                        // Some low level system error - probably a sign of something
+                        // serious like disk error. 
+                        if ( isIOException(ex) )
+                            SystemTDB.errlog.warn("IOException during 'commit' : transaction status not known (but not a partial commit): "+ex.getMessage()) ;
+                        else
+                            SystemTDB.errlog.warn("Exception during 'commit' : transaction status not known (but not a partial commit): ",ex) ;
+                        throw new TDBTransactionException("Exception at commit point", ex) ;
+                    }
                     outcome = TxnOutcome.W_COMMITED ;
                     break ;
             }
@@ -119,7 +151,29 @@ public class Transaction
             state = TxnState.COMMITED ;
             // The transaction manager does the enact and clearup calls
         }
-        txnMgr.notifyCommit(this) ;
+        
+        try { txnMgr.notifyCommit(this) ; }
+        catch (RuntimeException ex)
+        {
+            if ( isIOException(ex) )
+                SystemTDB.errlog.warn("IOException after commit point : transaction commited but internal status not recorded properly : "+ex.getMessage()) ;
+            else
+                SystemTDB.errlog.warn("Exception after commit point : transaction commited but internal status not recorded properly", ex) ;
+            throw new TDBTransactionException("Exc eption after commit point - transaction did commit", ex) ;
+        }
+    }
+    
+    private boolean isIOException(Throwable ex)
+    {
+//        if ( ex == null ) return false ;
+//        if ( ex instanceof IOException ) return true ;
+//        return isIOException(ex.getCause()) ;
+        while(ex != null )
+        {
+            if ( ex instanceof IOException ) return true ;
+            ex = ex.getCause() ;
+        }
+        return false ;
     }
 
     private void prepare()
@@ -144,13 +198,22 @@ public class Transaction
                 case WRITE:
                     if ( state != TxnState.ACTIVE )
                         throw new TDBTransactionException("Transaction has already committed or aborted") ; 
-
-                    // Clearup.
-                    for ( BlockMgrJournal x : blkMgrs )
-                        x.abort(this) ;
-
-                    for ( NodeTableTrans x : nodeTableTrans )
-                        x.abort(this) ;
+                    try {
+                        // Clearup.
+                        for ( BlockMgrJournal x : blkMgrs )
+                            x.abort(this) ;
+    
+                        for ( NodeTableTrans x : nodeTableTrans )
+                            x.abort(this) ;
+                    } catch (RuntimeException ex)
+                    {
+                        if ( isIOException(ex) )
+                            SystemTDB.errlog.warn("IOException during 'abort' : "+ex.getMessage()) ;
+                        else
+                            SystemTDB.errlog.warn("Exception during 'abort'", ex) ;
+                        // It's a bit of a mess!
+                        throw new TDBTransactionException("Exception during abort - transaction did abort", ex) ;
+                    }
                     state = TxnState.ABORTED ;
                     outcome = TxnOutcome.W_ABORTED ;
                     // [TxTDB:TODO]
@@ -159,7 +222,16 @@ public class Transaction
                     break ;
             }
         }
-        txnMgr.notifyAbort(this) ;
+        try { txnMgr.notifyAbort(this) ; } 
+        catch (RuntimeException ex)
+        {
+            if ( isIOException(ex) )
+                SystemTDB.errlog.warn("IOException during post-abort (transaction did abort): "+ex.getMessage()) ;
+            else
+                SystemTDB.errlog.warn("Exception during post-abort (transaction did abort)", ex) ;
+            // It's a bit of a mess!
+            throw new TDBTransactionException("Exception after abort point - transaction did abort", ex) ;
+        }
     }
 
     /** transaction close happens after commit/abort 

@@ -393,13 +393,12 @@ public class TransactionManager
 
     /* Signal a transaction has commited.  The journal has a commit record
      * and a sync to disk. The code here manages the inter-transaction stage
-     *  of deciding how to play the changes back to the base data. 
+     *  of deciding how to play the changes back to the base data
+     *  together with general recording of transaction details and status. 
      */ 
     synchronized
     public void notifyCommit(Transaction transaction)
     {
-        // Transaction has done the commitPrepare - can we enact it?
-        
         if ( ! activeTransactions.contains(transaction) )
             SystemTDB.errlog.warn("Transaction not active: "+transaction.getTxnId()) ;
         
@@ -409,8 +408,8 @@ public class TransactionManager
         {
             case READ: break ;
             case WRITE:
-                currentReaderView.set(null) ;      // Clear the READ transaction cache.
-                writersWaiting.release() ;  // Single writer: let another (waiting?) writer have a turn.
+                currentReaderView.set(null) ;       // Clear the READ transaction cache.
+                writersWaiting.release() ;          // Single writer: let another (waiting?) writer have a turn.
         }
     }
 
