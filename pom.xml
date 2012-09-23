@@ -202,7 +202,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
       <version>${ver.slf4j}</version>
-      <optional>true</optional>
     </dependency>
 
     <!-- Needed because the Fuseki test suite resets logging levels -->
