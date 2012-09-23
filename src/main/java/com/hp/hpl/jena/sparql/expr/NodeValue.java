@@ -87,6 +87,15 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.* ;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.ServiceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -137,6 +146,8 @@ public abstract class NodeValue extends ExprNode
      * 
      */
     
+    private static Logger log = LoggerFactory.getLogger(NodeValue.class) ;
+    
     // ---- Constants and initializers / public
     
     public static boolean VerboseWarnings = true ;
@@ -172,9 +183,63 @@ public abstract class NodeValue extends ExprNode
     public static DatatypeFactory xmlDatatypeFactory = null ;
     static
     {
-        try { xmlDatatypeFactory = DatatypeFactory.newInstance() ; }
+        try { xmlDatatypeFactory = getDatatypeFactory() ; }
         catch (DatatypeConfigurationException ex)
-        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
+        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory", ex) ; }
+    }
+    
+    /**
+     * Get a datatype factory using the correct classloader
+     * 
+     * See JENA-328. DatatypeFactory.newInstance() clashes with OSGi
+     * This is clearly crazy, but DatatypeFactory is missing a very obvious
+     * method newInstance(Classloader). The method that was added is very
+     * hard to use correctly, as we shall see...
+     * @return 
+     */
+    private static DatatypeFactory getDatatypeFactory() 
+            throws DatatypeConfigurationException {
+        ClassLoader cl = NodeValue.class.getClassLoader();
+        File jaxpPropFile = new File(
+            System.getProperty("java.home") + File.pathSeparator + 
+            "lib" + File.pathSeparator + 
+            "jaxp.properties");
+        
+        // Step 1. Try the system property
+        String dtfClass = System.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
+        
+        // Step 2. Otherwise, try property in jaxp.properties
+        if (dtfClass == null && jaxpPropFile.exists() && jaxpPropFile.canRead()) {
+            Properties jaxp = new Properties();
+            InputStream in = null;
+            try {
+                in = new FileInputStream(jaxpPropFile);
+                jaxp.load(in);
+                dtfClass = jaxp.getProperty(DatatypeFactory.DATATYPEFACTORY_PROPERTY);
+            } catch (Exception e) {
+                log.warn("Issue loading jaxp.properties", e);
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ex) {
+                        log.warn("Issue closing jaxp.properties ", ex);
+                    }
+                }
+            }
+        }
+        
+        // Step 3. Otherwise try the service approach
+        if (dtfClass == null) {
+            Iterator<DatatypeFactory> factoryIterator = 
+                ServiceLoader.load(DatatypeFactory.class, cl).iterator();
+            if (factoryIterator.hasNext()) return factoryIterator.next();
+        }
+        
+        // Step 4. Use the default
+        if (dtfClass == null) dtfClass = DatatypeFactory.DATATYPEFACTORY_IMPLEMENTATION_CLASS;
+        
+        return DatatypeFactory.newInstance(dtfClass, NodeValue.class.getClassLoader()) ;
     }
     
     // Use NodeValue.toNode(NodeValue) 
