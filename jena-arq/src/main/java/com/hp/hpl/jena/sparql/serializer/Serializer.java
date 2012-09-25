@@ -26,6 +26,8 @@ import org.openjena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
 import org.openjena.atlas.logging.Log ;
+
+import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 
 
@@ -141,18 +143,31 @@ public class Serializer
         
         Log.warn(Serializer.class, "Unknown syntax: "+outSyntax) ;
     }
-     
-    static public void serializeARQ(Query query, IndentedWriter writer)
+    
+    static public void serializeARQ(Query query, Prologue p, IndentedWriter writer)
     {
         // For the query pattern
-        SerializationContext cxt1 = new SerializationContext(query, new NodeToLabelMapBNode("b", false) ) ;
+        SerializationContext cxt1 = new SerializationContext(p, new NodeToLabelMapBNode("b", false) ) ;
         // For the construct pattern
-        SerializationContext cxt2 = new SerializationContext(query, new NodeToLabelMapBNode("c", false)  ) ;
+        SerializationContext cxt2 = new SerializationContext(p, new NodeToLabelMapBNode("c", false)  ) ;
+        
+        Prologue orig = null;
+        if ((Prologue)query != p) {
+        	orig = query.copy();
+        	query.usePrologueFrom(p);
+        }
         
         serializeARQ(query, writer, 
                      new FormatterElement(writer, cxt1),
                      new FmtExprSPARQL(writer, cxt1),
                      new FmtTemplate(writer, cxt2)) ;
+        
+        if (orig != null) query.usePrologueFrom(orig);
+    }
+     
+    static public void serializeARQ(Query query, IndentedWriter writer)
+    {
+    	serializeARQ(query, query, writer);
     }
     
     static private void serializeARQ(Query query, 
