@@ -20,6 +20,8 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.ByteArrayInputStream ;
 
+import junit.framework.Assert;
+
 import org.junit.Test ;
 import org.openjena.atlas.lib.StrUtils ;
 
@@ -131,6 +133,102 @@ public class TestResultSetFormat2
         String x = "?x\n<http://example/>    \n";
         parseTSV(x);
     }
+    
+    @Test
+    public void resultset_tsv_boolean_01()
+    {
+    	// true is valid
+    	String x = "true";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_02()
+    {
+    	// true is valid regardless of case
+    	String x = "TRUE";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_03()
+    {
+    	// true is valid regardless of case
+    	String x = "tRuE";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_04()
+    {
+    	// yes is valid
+    	String x = "yes";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_05()
+    {
+    	// yes is valid regardless of case
+    	String x = "YES";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_06()
+    {
+    	// yes is valid regardless of case
+    	String x = "yEs";
+    	parseTSVAsBoolean(x, true);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_07()
+    {
+    	// false is valid
+    	String x = "false";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_08()
+    {
+    	// false is valid regardless of case
+    	String x = "FALSE";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_09()
+    {
+    	// false is valid regardless of case
+    	String x = "fAlSe";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_10()
+    {
+    	// no is valid
+    	String x = "no";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_11()
+    {
+    	// no is valid regardless of case
+    	String x = "NO";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test
+    public void resultset_tsv_boolean_12()
+    {
+    	// no is valid regardless of case
+    	String x = "nO";
+    	parseTSVAsBoolean(x, false);
+    }
 
     @Test (expected=ResultSetException.class) 
     public void resultset_bad_tsv_01()
@@ -186,7 +284,6 @@ public class TestResultSetFormat2
         parseTSV(x);
     }
 
-
     @Test (expected=ResultSetException.class)
     public void resultset_bad_tsv_08()
     {
@@ -200,6 +297,30 @@ public class TestResultSetFormat2
     	String x = "x\n<http://example.com>";
     	parseTSV(x);
     }
+    
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_boolean_01()
+    {
+    	//Not in allowed set of true yes false no
+    	String x = "blah";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_boolean_02()
+    {
+    	//A normal result set header
+    	String x = "?x\n";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_boolean_03()
+    {
+    	//A normal result set header
+    	String x = "?x\t?y\n";
+    	parseTSVAsBoolean(x, false);
+    }
 
     public void parseTSV(String x)
     {
@@ -211,6 +332,15 @@ public class TestResultSetFormat2
         {
         	rs2.nextBinding();
         }
+    }
+    
+    public void parseTSVAsBoolean(String x, boolean expected)
+    {
+    	byte[] b = StrUtils.asUTF8bytes(x);
+    	ByteArrayInputStream in = new ByteArrayInputStream(b);
+    	boolean actual = TSVInput.booleanFromTSV(in);
+    	
+    	Assert.assertEquals(expected, actual);
     }
     
 }
