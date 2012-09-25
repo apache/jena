@@ -12,6 +12,7 @@ ChangeLog for ARQ
 + JENA-302 Add URIs for all XQuery/Xpath F&O functions for duration accessors
 + JENA-303 Add URIs for all XQuery/Xpath F&O functions where there are SPARQL functions
 + JENA-328 : implement OSGi friendly DatatypeFactory initialisation in NodeValue
++ Support for parsing boolean results from TSV and CSV inputs
 
 ==== ARQ 2.9.3
 

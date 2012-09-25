@@ -48,6 +48,7 @@ import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.CSVInput ;
 import com.hp.hpl.jena.sparql.resultset.JSONInput ;
+import com.hp.hpl.jena.sparql.resultset.TSVInput;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -98,7 +99,9 @@ public class QueryEngineHTTP implements QueryExecution
     public static String[] supportedAskContentTypes = new String []
     		{
     			WebContent.contentTypeResultsXML,
-    			WebContent.contentTypeJSON
+    			WebContent.contentTypeJSON,
+    			WebContent.contentTypeTextTSV,
+    			WebContent.contentTypeTextCSV
     		};
     
     // Releasing HTTP input streams is important. We remember this for SELECT,
@@ -327,10 +330,14 @@ public class QueryEngineHTTP implements QueryExecution
             }
         	
             //Parse the result appropriately depending on the selected content type
-            if (askContentType.equals(WebContent.contentTypeResultsXML))
+            if (actualContentType.equals(WebContent.contentTypeResultsXML))
                 return XMLInput.booleanFromXML(in) ;
-            if (askContentType.equals(WebContent.contentTypeResultsJSON))
+            if (actualContentType.equals(WebContent.contentTypeResultsJSON))
                 return JSONInput.booleanFromJSON(in) ;
+            if (actualContentType.equals(WebContent.contentTypeTextTSV))
+            	return TSVInput.booleanFromTSV(in);
+            if (actualContentType.equals(WebContent.contentTypeTextCSV))
+            	return CSVInput.booleanFromCSV(in);
             throw new QueryException("Endpoint returned Content-Type: " + actualContentType + " which is not currently supported for ASK queries");
         } finally {
             // Ensure connection is released

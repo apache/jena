@@ -43,7 +43,14 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
  *  </li>
  *  CSV is RFC 4180, but there are many variations. 
  *  </ul>
- *  This code read the file and treats everything as strings. 
+ *  This code read the file and treats everything as strings.
+ *  <p>
+ *  The code also allows for parsing boolean results where we expect the header to be a single string
+ *  from the set: true yes false no
+ *  </p>
+ *  <p>
+ *  Any other value is considered an error for parsing a boolean results and anything past the first line is ignored
+ *  </p>
  */
 public class CSVInput
 {
@@ -55,14 +62,13 @@ public class CSVInput
         List<Var> vars = new ArrayList<Var>();
         List<String> varNames = new ArrayList<String>();
 
-        boolean first = true;
         String str = null;
         try 
         {
             //Here we try to parse only the Header Row
             str = reader.readLine();
             if (str == null ) 
-                throw new ARQException("CSV Results malformed - input is empty (no header row)") ;
+                throw new ARQException("CSV Results malformed, input is empty (no header row)") ;
             
             if ( ! str.isEmpty() )
             {
@@ -84,5 +90,30 @@ public class CSVInput
         //Generate an instance of ResultSetStream using TSVInputIterator
         //This will parse actual result rows as needed thus minimising memory usage
         return new ResultSetStream(varNames, null, new CSVInputIterator(reader, vars));
+    }
+    
+    public static boolean booleanFromCSV(InputStream in)
+    {
+    	BufferedReader reader = IO.asBufferedUTF8(in);
+    	String str = null;
+    	try
+    	{
+    		str = reader.readLine();
+    		if (str == null) throw new ARQException("CSV Results malformed, input is empty");
+    		str = str.trim(); //Remove extraneous white space
+    		if (str.toLowerCase().equals("true") || str.toLowerCase().equals("yes")) {
+    			return true;
+    		} else if (str.toLowerCase().equals("false") || str.toLowerCase().equals("no")) {
+    			return false;
+    		} else if (str.startsWith("?") || str.contains(",")) {
+    			throw new ARQException("CSV Boolean Results malformed, appears to be a normal result set header, use CSVInput.fromCSV() to parse a ResultSet");
+    		} else {
+    			throw new ARQException("CSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
+    		}
+    	}
+    	catch (IOException ex)
+    	{
+    		throw new ARQException(ex);
+    	}
     }
 }
