@@ -75,6 +75,7 @@ Assumes jar made and onejar has been assembled.
         <include>config*.ttl</include>
         <include>s-*</include>
         <include>pages/*</include>
+        <include>Data/*</include>
       </includes>
     </fileSet>
   </fileSets>
