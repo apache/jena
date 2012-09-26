@@ -43,7 +43,7 @@ import com.hp.hpl.jena.sparql.engine.ResultSetStream ;
  *  </li>
  *  CSV is RFC 4180, but there are many variations. 
  *  </ul>
- *  This code read the file and treats everything as strings.
+ *  This code reads the file and treats everything as strings.
  *  <p>
  *  The code also allows for parsing boolean results where we expect the header to be a single string
  *  from the set: true yes false no
