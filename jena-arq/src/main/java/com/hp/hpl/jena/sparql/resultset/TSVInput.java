@@ -91,7 +91,7 @@ public class TSVInput {
     /**
      * Reads SPARQL Boolean result from TSV
      * @param in Input Stream
-     * @return
+     * @return boolean
      */
     public static boolean booleanFromTSV(InputStream in)
     {
