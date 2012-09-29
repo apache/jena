@@ -35,37 +35,18 @@ import org.slf4j.LoggerFactory;
 public class LocatorFile implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
-    private String altDir = null ;
-    private String altDirLogStr = "" ;
+    private String thisDir = null ;
+    private String thisDirLogStr = "" ;
     
     public LocatorFile(String dir)
     {
-//        if ( false )
-//        {
-//            if ( dir == null )
-//            {
-//                try {
-//                    //String wd = JenaRuntime.getSystemProperty("user.dir") ;
-//                    String wd = new File(".").getCanonicalPath() ;
-//                    log.debug("Base file directory: "+wd) ;
-//                } catch (IOException ex)
-//                {
-//                    log.error("Failed to discover the working directory", ex) ;
-//                }
-//                return ;
-//            }
-//            else
-//            {
-//                log.debug("Base file directory: "+dir) ;
-//            }
-//        }
         if ( dir != null )
         {
             if ( dir.endsWith("/") || dir.endsWith(java.io.File.separator) )
                 dir = dir.substring(0,dir.length()-1) ;
-            altDirLogStr = " ["+dir+"]" ;
+            thisDirLogStr = " ["+dir+"]" ;
         }
-        altDir = dir ;
+        thisDir = dir ;
     }
 
     LocatorFile()
@@ -78,7 +59,7 @@ public class LocatorFile implements Locator
     {
         return
             other instanceof LocatorFile
-            && equals( altDir, ((LocatorFile) other).altDir );
+            && equals( thisDir, ((LocatorFile) other).thisDir );
     }
     
     private boolean equals( String a, String b )
@@ -89,9 +70,9 @@ public class LocatorFile implements Locator
     @Override
     public int hashCode()
     {
-        if ( altDir == null )
+        if ( thisDir == null )
             return 157 ;
-        return altDir.hashCode();
+        return thisDir.hashCode();
     }
     
     private File toFile(String filenameOrURI)
@@ -100,8 +81,8 @@ public class LocatorFile implements Locator
         if ( fn == null )
             return null ;
         
-        if ( altDir != null && ! fn.startsWith("/") && ! fn.startsWith(FileManager.filePathSeparator) )
-            fn = altDir+java.io.File.separator+fn ;
+        if ( thisDir != null && ! fn.startsWith("/") && ! fn.startsWith(FileManager.filePathSeparator) )
+            fn = thisDir+java.io.File.separator+fn ;
                      
         return new File(fn) ;
     }
@@ -128,7 +109,7 @@ public class LocatorFile implements Locator
             if ( f == null || !f.exists() )
             {
                 if ( FileManager.logAllLookups && log.isTraceEnabled())
-                    log.trace("Not found: "+filenameOrURI+altDirLogStr) ;
+                    log.trace("Not found: "+filenameOrURI+thisDirLogStr) ;
                 return null ;
             }
         } catch (AccessControlException e) {
@@ -140,7 +121,7 @@ public class LocatorFile implements Locator
             InputStream in = new FileInputStream(f) ;
 
             if ( FileManager.logAllLookups && log.isTraceEnabled() )
-                log.trace("Found: "+filenameOrURI+altDirLogStr) ;
+                log.trace("Found: "+filenameOrURI+thisDirLogStr) ;
                 
             
             // Create base -- Java 1.4-isms
@@ -155,12 +136,15 @@ public class LocatorFile implements Locator
             return null ;
         }
     }
+    
+    public String getDir()  { return thisDir ; }
+    
     @Override
     public String getName()
     {
         String tmp = "LocatorFile" ;
-        if ( altDir != null )
-            tmp = tmp+"("+altDir+")" ;
+        if ( thisDir != null )
+            tmp = tmp+"("+thisDir+")" ;
         return tmp ;
     }
 }
