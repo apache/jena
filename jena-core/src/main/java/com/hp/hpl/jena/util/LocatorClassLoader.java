@@ -28,7 +28,7 @@ public class LocatorClassLoader  implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorClassLoader.class) ;
 
-    ClassLoader classLoader = null ;
+    private final ClassLoader classLoader ;
     public LocatorClassLoader(ClassLoader _classLoader)
     {
         classLoader =_classLoader ;
@@ -73,6 +73,12 @@ public class LocatorClassLoader  implements Locator
         // base = classLoader.getResource(fn).toExternalForm ;       
         return new TypedStream(in) ;
     }
+
+    public ClassLoader getClassLoader()
+    {
+        return classLoader ;
+    }
+
     @Override
     public String getName() { return "ClassLoaderLocator" ; }
 }
