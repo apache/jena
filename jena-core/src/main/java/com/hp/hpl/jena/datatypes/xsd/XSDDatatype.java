@@ -455,7 +455,7 @@ public class XSDDatatype extends BaseDatatype {
 
     /**
      	@param lexical
-     	@return
+     	@return Number
     */
     protected Number suitableInteger( String lexical )
         {
@@ -465,7 +465,7 @@ public class XSDDatatype extends BaseDatatype {
 
     /**
      	@param number
-     	@return
+     	@return Number
     */
     protected static Number suitableInteger( long number )
         {
