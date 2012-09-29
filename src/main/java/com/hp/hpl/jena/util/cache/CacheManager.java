@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.util.cache;
 
 /** A factory for creating cache objects
- *
- * @author bwm
  */
 
 public class CacheManager {

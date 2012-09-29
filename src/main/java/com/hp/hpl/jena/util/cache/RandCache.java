@@ -25,10 +25,6 @@ import java.util.Iterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author  bwm
- */
 public class RandCache implements Cache, CacheControl {
     int size;
     int threshhold;

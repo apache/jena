@@ -41,9 +41,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * There is a default LocationMapper which is used by the global @link{FileManager}.
  * 
  * @see FileManager
- *  
- * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
  */
 
 public class LocationMapper

@@ -28,11 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.shared.JenaException;
 
-/** Location files in a zip file
- *  
- * @author Andy Seaborne
- * @version $Id: LocatorZip.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
- */
+/** Location files in a zip file  */
  
 
 class LocatorZip implements Locator

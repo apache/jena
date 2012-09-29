@@ -25,9 +25,6 @@ import java.util.*;
  * This class provides a number of static methods which interact with
  * java.nio.charset.Charset to analyze and transform the strings identifing
  * character encodings.
- * 
- * @author Jeremy J. Carroll
- *  
  */
 abstract public class CharEncoding {
     static Set<String> macEncodings = new HashSet<String>() ;

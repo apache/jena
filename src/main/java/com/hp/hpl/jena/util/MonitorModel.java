@@ -33,7 +33,6 @@ import com.hp.hpl.jena.rdf.model.impl.ModelCom;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class MonitorModel extends ModelCom {

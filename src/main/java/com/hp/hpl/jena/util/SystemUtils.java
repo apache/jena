@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory ;
 
 /** 
  * Note: this has been copied here from ARQ.
- *  
- * @author Andy Seaborne
  */
 public class SystemUtils
 {

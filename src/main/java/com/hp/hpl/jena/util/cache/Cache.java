@@ -32,8 +32,6 @@ package com.hp.hpl.jena.util.cache;
  * <p>An object is associated with a key which is used to
  * identify the object on retrieval.  Only one object may be
  * associated with a key.</p>
- *
- * @author bwm
  */
 public interface Cache extends CacheControl {
     /** Get and object from the cache, if it is there.

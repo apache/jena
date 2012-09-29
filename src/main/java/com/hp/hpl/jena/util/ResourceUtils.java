@@ -43,7 +43,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.6 2011-03-23 14:28:24 chris-dollin Exp $
  */
 public class ResourceUtils {
 

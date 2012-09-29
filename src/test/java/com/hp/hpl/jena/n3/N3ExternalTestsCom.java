@@ -19,12 +19,12 @@
 package com.hp.hpl.jena.n3;
 
 import java.io.* ;
-import java.util.* ;
-import junit.framework.* ;
+import java.util.List ;
 
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.tuple.* ;
-import com.hp.hpl.jena.util.FileUtils;
+import junit.framework.TestSuite ;
+
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 
 /**
