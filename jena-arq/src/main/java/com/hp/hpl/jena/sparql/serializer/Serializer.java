@@ -152,7 +152,7 @@ public class Serializer
         SerializationContext cxt2 = new SerializationContext(p, new NodeToLabelMapBNode("c", false)  ) ;
         
         Prologue orig = null;
-        if ((Prologue)query != p) {
+        if ( query != p) {
         	orig = query.copy();
         	query.usePrologueFrom(p);
         }
