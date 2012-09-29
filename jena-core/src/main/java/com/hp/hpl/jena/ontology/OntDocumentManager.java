@@ -993,7 +993,7 @@ public class OntDocumentManager
       if we have a cached version get that, otherwise load from the URI but don't do the imports closure
      * @param model
      * @param importURI
-     * @return
+     * @return Model
      */
     private Model fetchPossiblyCachedImportModel( OntModel model, String importURI ) {
         Model in = getModel( importURI );
@@ -1009,7 +1009,7 @@ public class OntDocumentManager
     /**
      * @param spec
      * @param importURI
-     * @return
+     * @return Model
      */
     private Model fetchLoadedImportModel( OntModelSpec spec, String importURI ) {
         // workaround - default model maker can apparently create models that are closed
