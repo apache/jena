@@ -360,7 +360,7 @@ public class FileManager
         return readModelWorker(model, filenameOrURI, baseURI, syntax) ;
     }
     
-    private Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
+    protected Model readModelWorker(Model model, String filenameOrURI, String baseURI, String syntax)
     {
         // Doesn't call open() - we want to make the syntax guess based on the mapped URI.
         String mappedURI = mapURI(filenameOrURI) ;
