@@ -27,7 +27,6 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-08 11:25:31 $
  */
 public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 

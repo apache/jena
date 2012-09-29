@@ -26,8 +26,6 @@ import java.util.Iterator ;
  * This allows an Iterator to be passed to some other
  * code, while delaying the evaluation of what actually
  * is going to be iterated over.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:49 $'
  */
 abstract public class LateBindingIterator<T> implements Iterator<T> {
 

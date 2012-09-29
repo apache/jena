@@ -31,7 +31,6 @@ import com.hp.hpl.jena.graph.impl.*;
  * fire change notification.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class MonitorGraph extends WrappedGraph {

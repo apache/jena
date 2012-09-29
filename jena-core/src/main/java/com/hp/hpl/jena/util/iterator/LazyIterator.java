@@ -26,8 +26,6 @@ package com.hp.hpl.jena.util.iterator;
  * The sequence to be defined is defined by the subclass's definition 
  * of create().  That is called exactly once on the first attempt 
  * to interact with the LazyIterator.  
- * @author jjc, modified to use ExtendedIterators by csayers
- * @version $Revision: 1.1 $
  */
 abstract public class LazyIterator<T> implements ExtendedIterator<T> {
 

@@ -29,9 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Location files named by a URL
- * 
- * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
  */
 
 public class LocatorURL implements Locator

@@ -24,7 +24,6 @@ import java.util.Iterator;
     An iterator that consumes an underlying iterator and maps its results before
     delivering them; supports remove if the underlying iterator does.
     @author jjc + kers
-    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2009-09-28 13:27:30 $'
 */
 
 public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>

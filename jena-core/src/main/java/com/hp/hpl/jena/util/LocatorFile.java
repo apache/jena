@@ -30,9 +30,6 @@ import org.slf4j.LoggerFactory;
 /** Location files in the filing system.
  *  A FileLocator can have a "current directory" - this is separate from any
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
- * 
- * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
  */
 
 public class LocatorFile implements Locator

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.util.tuple ;
+package com.hp.hpl.jena.n3 ;
 
 import java.io.* ;
 import java.util.* ;
@@ -24,12 +24,7 @@ import java.util.* ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author  Andy Seaborne
- * @version $Id: TupleSet.java,v 1.1 2009-06-29 08:55:52 castagna Exp $
- */
-
-public class TupleSet implements Iterator<List<TupleItem>>
+class TupleSet implements Iterator<List<TupleItem>>
 {
     BufferedReader in ;
     public String line = null ;

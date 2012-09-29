@@ -16,15 +16,13 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.util.tuple;
+package com.hp.hpl.jena.n3;
 
 /**
  * The unit found in a line of a tuple.
  * Can be a string (quoted, possibly with the datatype, or unquoted) or a URI.
- * @author   Andy Seaborne
- * @version  $Id: TupleItem.java,v 1.1 2009-06-29 08:55:52 castagna Exp $
  */
-public class TupleItem
+class TupleItem
 {
     public static final int URI      = 0 ;
     public static final int STRING   = 1 ;
