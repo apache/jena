@@ -1635,7 +1635,7 @@ public class schemagen {
 
         /**
          * Return the configuration model used to hold config information
-         * @return
+         * @return Model
          */
         protected Model getConfigModel() {
             return m_config;
@@ -1643,7 +1643,7 @@ public class schemagen {
 
         /**
          * Return the root resource to which configuration information is attached
-         * @return
+         * @return Resource
          */
         protected Resource getConfigRoot() {
             if (m_root == null) {
