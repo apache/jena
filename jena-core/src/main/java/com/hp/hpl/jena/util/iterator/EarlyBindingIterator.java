@@ -20,10 +20,7 @@ package com.hp.hpl.jena.util.iterator;
 import java.util.*;
 
 /**
- * 
  * Fully execute the iterator immediately, but pretend we haven't.
- * @author jjc
- *
  */
 public class EarlyBindingIterator<T> extends WrappedIterator<T> {
 

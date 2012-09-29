@@ -34,9 +34,6 @@ import java.util.Iterator;
      was never the contract applied internally.]
 <p>
     Implementors are encouraged to dispose of resources as soon as is convenient.
- 
-    @author bwm
-    @version $Id: ClosableIterator.java,v 1.2 2009-09-28 13:47:59 chris-dollin Exp $
  */
 
 public interface ClosableIterator<T> extends Iterator<T> 

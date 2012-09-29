@@ -31,7 +31,6 @@ import java.util.*;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.2 2009-10-06 13:04:44 ian_dickinson Exp $
  */
 public class ConcatenatedIterator<T> implements Iterator<T>
 {

@@ -35,9 +35,6 @@ package com.hp.hpl.jena.util.cache;
  * variables counting the statistics, in which case, the
  * fields counting gets hits and puts are reduced
  * proportionately.</p>
- *
- * @author bwm
- * @version $Version$
  */
 public interface CacheControl {
     

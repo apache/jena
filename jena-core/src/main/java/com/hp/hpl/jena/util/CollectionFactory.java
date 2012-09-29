@@ -23,8 +23,6 @@ import java.util.*;
 /**
     CollectionFactory - a central place for allocating sets and maps, mostly so that
     it's easy to plug in new implementations (eg trove).
-    
- 	@author kers
 */
 public class CollectionFactory 
     {

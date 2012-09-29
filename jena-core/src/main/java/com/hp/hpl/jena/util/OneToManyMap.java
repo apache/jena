@@ -32,7 +32,6 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.2 2009-08-08 11:25:18 andy_seaborne Exp $
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {

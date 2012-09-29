@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.util.iterator;
 
 /** Converts an Object to another Object.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:49 $'
  */
 public interface Map1<From, To>
 {  /** Convert an object.

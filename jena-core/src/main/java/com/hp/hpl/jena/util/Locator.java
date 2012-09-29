@@ -21,15 +21,10 @@ package com.hp.hpl.jena.util;
 
 /**
  *  Interface to things that open streams by some string reference
- * 
- * @author Andy Seaborne
- * @version $Id: Locator.java,v 1.1 2009-06-29 08:55:47 castagna Exp $
  */
 
 public interface Locator
 {
     public TypedStream open(String filenameOrURI) ;
-    // Too expensive for LocatorURL - just try to open the thing!
-    //public boolean exists(String filenameOrURI) ;
     public String getName() ;
 }

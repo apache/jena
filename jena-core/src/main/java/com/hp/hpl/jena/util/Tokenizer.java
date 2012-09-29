@@ -25,7 +25,6 @@ import java.util.NoSuchElementException;
  * character strings which can include other separators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:47 $
  */
 public class Tokenizer {
     

@@ -24,8 +24,6 @@ import java.util.NoSuchElementException;
 /** Given an Iterator that returns Iterator's, this creates an
  * Iterator over the next level values.
  * Similar to list splicing in lisp.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:49 $'
  */
 public class IteratorIterator<T> implements Iterator<T>
 {

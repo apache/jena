@@ -30,7 +30,6 @@ package com.hp.hpl.jena.util;
  * in accordance with http://www.w3.org/TR/charmod/#sec-URIs .
  * The details of how the algorithms handle '%' are captured in
  * http://lists.w3.org/Archives/Public/uri/2001Sep/0009.html
- * @author  jjc
  */
 public class URIref extends Object {
     

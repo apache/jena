@@ -22,10 +22,7 @@ import java.util.Iterator;
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException ;
 
-/** An Iterator for arrays.
- * @author Jeremy Carroll
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:49 $'
- */
+/** An Iterator for arrays  */
 public class ArrayIterator<T> implements Iterator<T> {
 	private int i;
 	private T[] a;

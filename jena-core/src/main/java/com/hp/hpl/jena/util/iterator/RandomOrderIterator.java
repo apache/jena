@@ -20,11 +20,7 @@ package com.hp.hpl.jena.util.iterator;
 
 import java.util.*;
 /**
- * 
  * RandomOrderIterator - Reorders the elements returned by an Iterator.
- * 
- * @author jjc
- *
  */
 public class RandomOrderIterator<T> extends WrappedIterator<T> {
 	private Random rnd = new Random();

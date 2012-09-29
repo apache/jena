@@ -64,10 +64,6 @@ import com.hp.hpl.jena.shared.*;
  * 
  * @see LocationMapper
  * @see FileUtils
- * 
- * 
- * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.3 2010-03-08 13:23:13 andy_seaborne Exp $
  */
  
 public class FileManager
