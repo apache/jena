@@ -31,7 +31,7 @@ import com.hp.hpl.jena.shared.JenaException;
 /** Location files in a zip file  */
  
 
-class LocatorZip implements Locator
+public class LocatorZip implements Locator
 {
     static Logger log = LoggerFactory.getLogger(LocatorZip.class) ;
     String zipFileName = null ; 
@@ -80,6 +80,9 @@ class LocatorZip implements Locator
             return null;
         }
     }
+    
+    public String getZipFileName() { return zipFileName ; }
+    
     @Override
     public String getName() { return "LocatorZip("+zipFileName+")" ; } 
 
