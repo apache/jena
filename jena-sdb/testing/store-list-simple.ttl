@@ -13,10 +13,9 @@ _:x rdf:type sdb:StoreList ;
 ##       [ rdfs:label "H2/Simple" ;
 ##         sdb:description <StoreDescSimple/h2-layout1.ttl> ]
 
-##        [ rdfs:label "Derby/Simple" ;
-##          sdb:description <StoreDescSimple/derby-layout1.ttl> ]
+       [ rdfs:label "Derby/Simple" ;
+         sdb:description <StoreDescSimple/derby-layout1.ttl> ]
 
-# This is used for the maven testing.
        [ rdfs:label "HSQLDB/Simple" ;
          sdb:description <StoreDescSimple/hsqldb-layout1.ttl> ]
 

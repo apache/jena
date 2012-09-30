@@ -17,11 +17,11 @@ _:x rdf:type sdb:StoreList ;
 ##       [ rdfs:label "H2/Index" ;
 ##         sdb:description <StoreDesc/h2-index.ttl> ]
 
-##       [ rdfs:label "Derby/Hash" ;
-##         sdb:description <StoreDesc/derby-hash.ttl> ]
-## 
-##       [ rdfs:label "Derby/Index" ;
-##         sdb:description <StoreDesc/derby-index.ttl> ]
+      [ rdfs:label "Derby/Hash" ;
+        sdb:description <StoreDesc/derby-hash.ttl> ]
+
+      [ rdfs:label "Derby/Index" ;
+        sdb:description <StoreDesc/derby-index.ttl> ]
 
       [ rdfs:label "HSQLDB/Hash" ;
         sdb:description <StoreDesc/hsqldb-hash.ttl> ]

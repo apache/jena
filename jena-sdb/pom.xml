@@ -99,6 +99,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.9.1.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Choose your logging provider -->
     <!--
       <dependency>
@@ -145,7 +152,7 @@
         <version>2.9</version>
         <configuration>
           <includes>
-            <!-- Requires HSQL to be set in 
+            <!-- Requires HSQL and Apache Derbey to be set in 
                  store-list.ttl and store-list-simple.ttl
             -->
             <include>com/hp/hpl/jena/sdb/test/SDBTestAll.java</include>
