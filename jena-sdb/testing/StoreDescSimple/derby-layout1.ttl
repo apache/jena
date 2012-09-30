@@ -7,7 +7,7 @@
 
 _:c rdf:type sdb:SDBConnection ;
     sdb:sdbType        "derby" ;
-    sdb:sdbName        "DB/test1" ;
+    sdb:sdbName        "target/Derby-test/derby-simple" ;
 #    sdb:driver         "org.apache.derby.jdbc.EmbeddedDriver" ;
     .
 

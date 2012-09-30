@@ -24,10 +24,17 @@ import org.junit.runners.Suite;
 /** Not quite all, yet: Does not yet include the model tests which need to be the linked to the store descriptions */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
+    SDBTestSetup.class ,    // Must be first
     SDBTestMisc.class,
     SDBQueryTestSuite.class,
     SDBUpdateTestSuite.class
 } )
+
+/** Derby needs this before the tests;
+    sdbconfig --sdb testing/StoreDescSimple/derby-layout1.ttl --format
+    sdbconfig --sdb testing/StoreDesc/derby-hash.ttl  --format
+    sdbconfig --sdb testing/StoreDesc/derby-index.ttl  --format
+ */
 
 public class SDBTestAll
 { }
