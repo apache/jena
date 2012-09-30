@@ -18,8 +18,14 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
+import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.FileOps ;
 
-public class SDBTestSetup
+
+public class SDBTestSetup extends BaseTest
 {
     public static final String testDirSDB           = "testing/" ;
     public static final String manifestMain         = testDirSDB + "manifest-sdb.ttl" ;
@@ -30,4 +36,24 @@ public class SDBTestSetup
     
     public static final String storeList            = testDirSDB+"store-list.ttl" ;
     public static final String storeListSimple      = testDirSDB+"store-list-simple.ttl" ;
+    
+    /* Derby needs this before the tests;
+        sdbconfig --sdb testing/StoreDescSimple/derby-layout1.ttl --format
+        sdbconfig --sdb testing/StoreDesc/derby-hash.ttl  --format
+        sdbconfig --sdb testing/StoreDesc/derby-index.ttl  --format
+     */
+
+    @BeforeClass public static void beforeClass() {
+        FileOps.ensureDir("target") ;
+        FileOps.ensureDir("target/Derby-test") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDescSimple/derby-layout1.ttl", "--format") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDesc/derby-hash.ttl", "--format") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDesc/derby-index.ttl", "--format") ;
+    }
+    
+    @AfterClass public static void afterClass() {
+    }
+    
+    @Test public void dummy() {}
+    
 }
