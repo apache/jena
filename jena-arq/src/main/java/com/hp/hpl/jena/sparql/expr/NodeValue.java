@@ -57,9 +57,16 @@ import static javax.xml.datatype.DatatypeConstants.MONTHS ;
 import static javax.xml.datatype.DatatypeConstants.SECONDS ;
 import static javax.xml.datatype.DatatypeConstants.YEARS ;
 
+import java.io.File ;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.util.Calendar ;
+import java.util.Iterator ;
+import java.util.Properties ;
+import java.util.ServiceLoader ;
 
 import javax.xml.datatype.DatatypeConfigurationException ;
 import javax.xml.datatype.DatatypeFactory ;
@@ -68,6 +75,8 @@ import javax.xml.datatype.XMLGregorianCalendar ;
 
 import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.atlas.logging.Log ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
@@ -87,15 +96,6 @@ import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
 import com.hp.hpl.jena.sparql.util.* ;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.ServiceLoader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class NodeValue extends ExprNode
 {
@@ -241,17 +241,6 @@ public abstract class NodeValue extends ExprNode
         
         return DatatypeFactory.newInstance(dtfClass, NodeValue.class.getClassLoader()) ;
     }
-    
-    // Use NodeValue.toNode(NodeValue) 
-//    public static Node asNode(NodeValue nv)
-//    {
-//        if ( nv == null ) return null ;
-//        return nv.asNode() ; 
-//    }
-    
-    // Initialization
-//    static
-//    {}
     
     private Node node = null ;     // Null used when a value has not be turned into a Node.
     
@@ -706,7 +695,7 @@ public abstract class NodeValue extends ExprNode
     }
     
     // E_GreaterThan/E_LessThan/E_GreaterThanOrEqual/E_LessThanOrEqual
-    // ==> compare(nv1, nv12) => compare (nv1, nv2, false)
+    // ==> compare(nv1, nv2) => compare (nv1, nv2, false)
     
     // BindingComparator => compareAlways(nv1, nv2) => compare (nv1, nv2, true)
     
@@ -943,11 +932,6 @@ public abstract class NodeValue extends ExprNode
     // ----------------------------------------------------------------
     // ---- Subclass operations 
     
-//    // One of the known types. 
-//    public abstract boolean hasKnownValue() ;
-////    { return isBoolean() || isNumber() || isString() || isDateTime() || isDate() || isTime() ||
-////        isDuration() || isGYear() || isGYearMonth() ||  isGMonth() || isGDay() ; }
-    
     public boolean isBoolean()      { return false ; } 
     public boolean isString()       { return false ; } 
 
@@ -986,8 +970,6 @@ public abstract class NodeValue extends ExprNode
     public boolean isGMonthDay()    { return false ; }
     public boolean isGDay()         { return false ; }
     
-    // getters
-    
     public boolean     getBoolean()     { raise(new ExprEvalTypeException("Not a boolean: "+this)) ; return false ; }
     public String      getString()      { raise(new ExprEvalTypeException("Not a string: "+this)) ; return null ; }
     public BigInteger  getInteger()     { raise(new ExprEvalTypeException("Not an integer: "+this)) ; return null ; }
@@ -996,15 +978,6 @@ public abstract class NodeValue extends ExprNode
     public double      getDouble()      { raise(new ExprEvalTypeException("Not a double: "+this)) ; return Double.NaN ; }
     // Value representation for all date and time values.
     public XMLGregorianCalendar getDateTime()    { raise(new ExprEvalTypeException("No DateTime value: "+this)) ; return null ; }
-//    /*
-//        gYearMonth   dddd-mm
-//        gYear        dddd
-//        gMonthDay    --MM-DD
-//        gDay         ---DD
-//        gMonth       --MM
-//    */
-
-    
     public Duration    getDuration() { raise(new ExprEvalTypeException("Not a duration: "+this)) ; return null ; }
 
     // ----------------------------------------------------------------
