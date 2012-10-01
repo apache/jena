@@ -29,30 +29,30 @@
     <div class="moreindent">
 
       <form action="sparql" method="get">
-	<p>General SPARQL query : input query, set any options and press "Get Results"</p>
-	<p>
-	  <textarea name="query" cols="70" rows="20"></textarea>
-	  <br/>
-	  Target graph URI (or use <code>FROM</code> in the query)
-	  <input name="default-graph-uri" size="25" value="" />
-	  <br/>
+	    <p>General SPARQL query : input query, set any options and press "Get Results"</p>
+	    <p>
+	      <textarea name="query" cols="70" rows="20"></textarea>
+	      <br/>
+	      Target graph URI (or use <code>FROM</code> in the query)
+	      <input name="default-graph-uri" size="25" value="" />
+	      <br/>
 
-      Output: <select name="output">
-        <option value="json">JSON</option>
-        <option value="xml">XML</option>
-        <option value="text">Text</option>
-        <option value="csv">CSV</option>
-        <option value="tsv">TSV</option>
-      </select>
-      <br/>
-	  XSLT style sheet (blank for none): 
-      <input name="stylesheet" size="20" value="/xml-to-html.xsl" />
-      <br/>
-      <input type="checkbox" name="force-accept" value="text/plain"/>
-      Force the accept header to <tt>text/plain</tt> regardless 
-	  <br/>
-	  <input type="submit" value="Get Results" />
-	</p>
+          Output: <select name="output">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+            <option value="text">Text</option>
+            <option value="csv">CSV</option>
+            <option value="tsv">TSV</option>
+          </select>
+          <br/>
+	      XSLT style sheet (blank for none): 
+          <input name="stylesheet" size="20" value="/xml-to-html.xsl" />
+          <br/>
+          <input type="checkbox" name="force-accept" value="text/plain"/>
+          Force the accept header to <tt>text/plain</tt> regardless 
+	      <br/>
+	      <input type="submit" value="Get Results" />
+	    </p>
       </form>
     </div>
 
