@@ -297,9 +297,7 @@ public class ParserBase
     // -------- Basic Graph Patterns and Blank Node label scopes
     
     // A BasicGraphPattern is any sequence of TripleBlocks, separated by filters,
-    // but not by other graph patterns 
-    
-    // SPARQL does not have a straight syntactic unit for BGPs - but prefix does. 
+    // but not by other graph patterns. 
     
     protected void startBasicGraphPattern()
     { activeLabelMap.clear() ; }
