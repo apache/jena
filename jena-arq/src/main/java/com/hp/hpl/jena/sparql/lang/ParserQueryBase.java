@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.ArrayDeque ;
-import java.util.ArrayList ;
-import java.util.Deque ;
-import java.util.List ;
+import java.util.* ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
@@ -78,6 +75,12 @@ public class ParserQueryBase extends ParserBase
     protected void startQuery() {}
     protected void finishQuery() {}
 
+//    protected void startBasicGraphPattern()
+//    { activeLabelMap.clear() ; }
+//
+//    protected void endBasicGraphPattern()
+//    { oldLabels.addAll(activeLabelMap.getLabels()) ; }
+    
     // Move down to SPARQL 1.1 or rename as ParserBase
     protected void startUpdateOperation() {}
     protected void finishUpdateOperation() {}
@@ -90,9 +93,13 @@ public class ParserQueryBase extends ParserBase
     {
         oldBNodesAreVariables = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
+        activeLabelMap.clear() ;
     } 
+    
     protected void finishDataInsert(QuadDataAcc qd, int line, int col)
     {
+        oldLabels.addAll(activeLabelMap.getLabels()) ;
+        activeLabelMap.clear() ;
         setBNodesAreVariables(oldBNodesAreVariables) ;
     }
     
@@ -109,15 +116,23 @@ public class ParserQueryBase extends ParserBase
         setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
     
+    Set<String> oldLabels2 = null ;
+    
     protected void startInsertTemplate(QuadAcc qd, int line, int col)
     {
         oldBNodesAreVariables = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
+        // Hide used labels (INSERT DATA)
+        oldLabels2 = oldLabels ;
+        oldLabels = new HashSet<String>() ;
+        activeLabelMap.clear() ;
     }
     
     protected void finishInsertTemplate(QuadAcc qd, int line, int col)
     {
         setBNodesAreVariables(oldBNodesAreVariables) ;
+        oldLabels = oldLabels2 ;
+        activeLabelMap.clear() ;
     }
     
     protected void startDeleteTemplate(QuadAcc qd, int line, int col)
