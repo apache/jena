@@ -138,7 +138,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_01()
     {
     	// true is valid
-    	String x = "true";
+    	String x = "?_askResult\ntrue";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -146,7 +146,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_02()
     {
     	// true is valid regardless of case
-    	String x = "TRUE";
+    	String x = "?_askResult\nTRUE";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -154,7 +154,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_03()
     {
     	// true is valid regardless of case
-    	String x = "tRuE";
+    	String x = "?_askResult\ntRuE";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -162,7 +162,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_04()
     {
     	// yes is valid
-    	String x = "yes";
+    	String x = "?_askResult\nyes";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -170,7 +170,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_05()
     {
     	// yes is valid regardless of case
-    	String x = "YES";
+    	String x = "?_askResult\nYES";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -178,7 +178,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_06()
     {
     	// yes is valid regardless of case
-    	String x = "yEs";
+    	String x = "?_askResult\nyEs";
     	parseTSVAsBoolean(x, true);
     }
     
@@ -186,7 +186,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_07()
     {
     	// false is valid
-    	String x = "false";
+    	String x = "?_askResult\nfalse";
     	parseTSVAsBoolean(x, false);
     }
     
@@ -194,7 +194,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_08()
     {
     	// false is valid regardless of case
-    	String x = "FALSE";
+    	String x = "?_askResult\nFALSE";
     	parseTSVAsBoolean(x, false);
     }
     
@@ -202,7 +202,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_09()
     {
     	// false is valid regardless of case
-    	String x = "fAlSe";
+    	String x = "?_askResult\nfAlSe";
     	parseTSVAsBoolean(x, false);
     }
     
@@ -210,7 +210,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_10()
     {
     	// no is valid
-    	String x = "no";
+    	String x = "?_askResult\nno";
     	parseTSVAsBoolean(x, false);
     }
     
@@ -218,7 +218,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_11()
     {
     	// no is valid regardless of case
-    	String x = "NO";
+    	String x = "?_askResult\nNO";
     	parseTSVAsBoolean(x, false);
     }
     
@@ -226,7 +226,7 @@ public class TestResultSetFormat2
     public void resultset_tsv_boolean_12()
     {
     	// no is valid regardless of case
-    	String x = "nO";
+    	String x = "?_askResult\nnO";
     	parseTSVAsBoolean(x, false);
     }
 
@@ -302,12 +302,28 @@ public class TestResultSetFormat2
     public void resultset_bad_tsv_boolean_01()
     {
     	//Not in allowed set of true yes false no
-    	String x = "blah";
+    	String x = "?_askResults\nblah";
     	parseTSVAsBoolean(x, false);
     }
     
     @Test (expected=ARQException.class)
     public void resultset_bad_tsv_boolean_02()
+    {
+    	//Missing header
+    	String x = "true";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_boolean_03()
+    {
+    	//Missing boolean
+    	String x = "?_askResult\n";
+    	parseTSVAsBoolean(x, false);
+    }
+    
+    @Test (expected=ARQException.class)
+    public void resultset_bad_tsv_boolean_04()
     {
     	//A normal result set header
     	String x = "?x\n";
@@ -315,7 +331,7 @@ public class TestResultSetFormat2
     }
     
     @Test (expected=ARQException.class)
-    public void resultset_bad_tsv_boolean_03()
+    public void resultset_bad_tsv_boolean_05()
     {
     	//A normal result set header
     	String x = "?x\t?y\n";
