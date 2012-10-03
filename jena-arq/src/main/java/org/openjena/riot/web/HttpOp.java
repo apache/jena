@@ -132,7 +132,7 @@ public class HttpOp
      */
    //TODO Use MediaType
     public static void execHttpPost(String url, String contentType, 
-                                    InputStream input, int length)
+                                    InputStream input, long length)
     {
         execHttpPost(url, contentType, input, length, null, null ) ;
     }
@@ -158,7 +158,7 @@ public class HttpOp
      * The input stream is assumed to be UTF-8.
      */
     public static void execHttpPost(String url, String contentType, 
-                                    InputStream input, int length,
+                                    InputStream input, long length,
                                     String acceptType, Map<String, HttpResponseHandler> handlers)
     {
         
@@ -246,7 +246,7 @@ public class HttpOp
     }
     
     /** Execute an HTTP PUT operation */
-    public static void execHttpPut(String url, String contentType, InputStream input, int length)
+    public static void execHttpPut(String url, String contentType, InputStream input, long length)
     {
         InputStreamEntity e = new InputStreamEntity(input, length) ;
         e.setContentType(contentType) ;
