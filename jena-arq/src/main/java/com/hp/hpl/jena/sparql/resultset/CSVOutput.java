@@ -130,8 +130,9 @@ public class CSVOutput extends OutputBase
         return str;
     }
 
-    static final byte[] yesBytes = StrUtils.asUTF8bytes("yes") ;
-    static final byte[] noBytes = StrUtils.asUTF8bytes("no") ;
+    static final byte[] headerBytes = StrUtils.asUTF8bytes("_askResult" + NL);
+    static final byte[] yesBytes = StrUtils.asUTF8bytes("true") ;
+    static final byte[] noBytes = StrUtils.asUTF8bytes("false") ;
     static final byte[] NLBytes = StrUtils.asUTF8bytes(NL) ;
     
     @Override
@@ -139,6 +140,7 @@ public class CSVOutput extends OutputBase
     {
         try
         {
+        	out.write(headerBytes);
             if (booleanResult) 
                 out.write(yesBytes) ;
             else

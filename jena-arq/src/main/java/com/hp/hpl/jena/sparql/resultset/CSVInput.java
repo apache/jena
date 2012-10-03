@@ -75,7 +75,6 @@ public class CSVInput
                 String[] tokens = str.split(",") ;
                 for ( String token : tokens ) 
                 {
-                    if (token.startsWith("?")) token = token.substring(1);
                     Var var = Var.alloc(token);
                     vars.add(var);
                     varNames.add(var.getName());
@@ -98,15 +97,23 @@ public class CSVInput
     	String str = null;
     	try
     	{
+    		//First try to parse the header
     		str = reader.readLine();
-    		if (str == null) throw new ARQException("CSV Results malformed, input is empty");
+    		if (str == null) throw new ARQException("CSV Boolean Results malformed, input is empty");
     		str = str.trim(); //Remove extraneous white space
+    		
+    		//Expect a header row with single _askResult variable
+    		if (!str.equals("_askResult")) throw new ARQException("CSV Boolean Results malformed, did not get expected ?_askResult header row");
+    		
+    		//Then try to parse the boolean result
+    		str = reader.readLine();
+    		if (str == null) throw new ARQException("CSV Boolean Results malformed, unexpected end of input after header row");
+    		str = str.trim();
+    		
     		if (str.toLowerCase().equals("true") || str.toLowerCase().equals("yes")) {
     			return true;
     		} else if (str.toLowerCase().equals("false") || str.toLowerCase().equals("no")) {
     			return false;
-    		} else if (str.startsWith("?") || str.contains(",")) {
-    			throw new ARQException("CSV Boolean Results malformed, appears to be a normal result set header, use CSVInput.fromCSV() to parse a ResultSet");
     		} else {
     			throw new ARQException("CSV Boolean Results malformed, expected one of - true yes false no - but got " + str);
     		}
