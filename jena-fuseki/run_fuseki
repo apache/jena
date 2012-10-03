@@ -4,7 +4,7 @@
 ## Run Fuseki, include development code if it looks like it's available.
 ## Or --pages=
 
-export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Projects/Fuseki}
+export FUSEKI_HOME=${FUSEKI_HOME:-$HOME/Jena/jena-fuseki}
 if [ ! -e $FUSEKI_HOME ]
 then
      echo "$FUSEKI_HOME does not exist" 1>&2
@@ -16,25 +16,14 @@ then
     exit 1
     fi
 
-## M2_REPO="/home/afs/.m2/repo" ;
-## X=$(perl -ne 'next unless /\spath="M2_REPO([^"]*)"/ ; print "$1","\n"' .classpath)
-## 
-## CP=
-## for x in $X
-## do
-##    CP="$CP:$M2_REPO$x"
-## done
-## CP="classes$CP"
-
 CP="$(. $FUSEKI_HOME/run_cp)"
-if [ -e "$FUSEKI_HOME/target/classes" ]
-then
-    CP="$FUSEKI_HOME/target/classes:$CP"
-    fi
 if [ -e "$FUSEKI_HOME/classes" ]
 then
     CP="$FUSEKI_HOME/classes:$CP"
-    fi
+elif [ -e "$FUSEKI_HOME/target/classes" ]
+then
+    CP="$FUSEKI_HOME/target/classes:$CP"
+fi
 
 FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"

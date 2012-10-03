@@ -47,6 +47,7 @@ public abstract class ServletBase extends HttpServlet
     {
         try { response.sendError(statusCode, message) ; }
         catch (IOException ex) { errorOccurred(ex) ; }
+        catch (IllegalStateException ex) { }
     }
     
     protected void responseSendError(HttpServletResponse response, int statusCode)
