@@ -360,10 +360,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         return out.asString() ;
     }
         
-    /**
-     * @param queryURI
-     * @return
-     */
     private String getRemoteString(String queryURI)
     {
         return WebIO.exec_get(queryURI) ;
