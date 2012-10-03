@@ -37,6 +37,7 @@ import org.apache.http.client.HttpClient ;
 import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpPost ;
+import org.apache.http.client.methods.HttpPut ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
@@ -52,9 +53,12 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
-/** Simplified HTTP operations; simplification means only supporting certain needed uses of HTTP.
+/** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
  * The expectation is that the simplified operations in this class can be used by other code to
- * generate more application specific HTTP interactions (e.g. SPARQL queries).        
+ * generate more application specific HTTP interactions (e.g. SPARQL queries).
+ * For more complictaed requirments of HTTP, then the application wil need to use
+ * org.apache.http.client directly.
+ * 
  * <p>
  * For HTTP GET, the application supplies a URL, the accept header string, and a 
  * list of handlers to deal with different content type responses. 
@@ -62,6 +66,10 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
  * For HTTP POST, the application supplies a URL, content, 
  * the accept header string, and a list of handlers to deal with different content type responses,
  * or no response is expected.
+ * <p>
+ * For HTTP PUT, the application supplies a URL, content, 
+ * the accept header string
+ * </p>
  * @see HttpNames HttpNames, for HTTP related constants
  * @see WebContent WebContent, for content type name constants
  */
@@ -167,7 +175,9 @@ public class HttpOp
     {
         EntityTemplate entity = new EntityTemplate(provider) ;
         entity.setContentType(contentType) ;
-        execHttpPost(url, entity, acceptType, handlers) ;
+        try {
+            execHttpPost(url, entity, acceptType, handlers) ;
+        } finally { closeEntity(entity) ; } 
     }
                              
     /** POST with response body.
@@ -220,6 +230,54 @@ public class HttpOp
             httpclient.getConnectionManager().shutdown(); 
         } catch (IOException ex) { IO.exception(ex) ; }
     }
+    
+    /** Execute an HTTP PUT operation */
+    public static void execHttpPut(String url, String contentType, String content)
+    {
+            StringEntity e = null ;
+            try
+            {
+                e = new StringEntity(content, "UTF-8") ;
+                e.setContentType(contentType.toString()) ;
+                execHttpPut(url, e) ;
+            } catch (UnsupportedEncodingException e1)
+            { throw new ARQInternalErrorException("Platform does not support required UTF-8") ; }
+            finally { closeEntity(e) ; }
+    }
+    
+    /** Execute an HTTP PUT operation */
+    public static void execHttpPut(String url, String contentType, InputStream input, int length)
+    {
+        InputStreamEntity e = new InputStreamEntity(input, length) ;
+        e.setContentType(contentType) ;
+        e.setContentEncoding("UTF-8") ;
+        try { execHttpPut(url, e) ; }
+        finally { closeEntity(e) ; }
+    }
+    
+    /** Execute an HTTP PUT operation */
+    public static void execHttpPut(String url, HttpEntity entity)
+    {
+        try {
+            long id = counter.incrementAndGet() ;
+            String requestURI = url ;
+            String baseIRI = determineBaseIRI(requestURI) ;
+            HttpPut httpput = new HttpPut(requestURI);
+            if ( log.isDebugEnabled() )
+                log.debug(format("[%d] %s %s",id , httpput.getMethod(), httpput.getURI().toString())) ;
+            
+            httpput.setEntity(entity) ;
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpResponse response = httpclient.execute(httpput) ;
+            httpResponse(id, response, baseIRI, null) ;
+            httpclient.getConnectionManager().shutdown(); 
+        } catch (IOException ex) { IO.exception(ex) ; }
+    }
+    
+    /*
+InputStreamEntity e = new InputStreamEntity(input, length) ;
+        e.setContentType(contentType) ;
+        e.setContentEncoding("UTF-8") ;     */
     
     private static HttpEntity convertFormParams(List<Pair<String, String>> params)
     {
