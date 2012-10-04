@@ -30,6 +30,7 @@ public class DatasetAssemblerVocab
     
     public static final Resource tDataset            = ResourceFactory.createResource(NS+"RDFDataset") ;
     public static final Resource tGraphStore         = ResourceFactory.createResource(NS+"GraphStore") ;
+    public static final Resource tDatasetNull        = ResourceFactory.createResource(NS+"DatasetNull") ;
     public static final Property pDefaultGraph       = ResourceFactory.createProperty(NS, "defaultGraph") ;
     public static final Property pNamedGraph         = ResourceFactory.createProperty(NS, "namedGraph") ;
     
