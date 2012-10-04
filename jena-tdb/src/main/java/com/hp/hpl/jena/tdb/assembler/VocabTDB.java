@@ -62,7 +62,6 @@ public class VocabTDB
     public static final Property pName              = Vocab.property(getURI(), "name") ;
     public static final Property pValue             = Vocab.property(getURI(), "value") ;
     
-    
     private static boolean initialized = false ; 
     
     static { init() ; }
@@ -71,11 +70,11 @@ public class VocabTDB
     {
         if ( initialized )
             return ;
-        register(Assembler.general) ;
+        registerWith(Assembler.general) ;
         initialized = true ;
     }
     
-    static public void register(AssemblerGroup g)
+    static void registerWith(AssemblerGroup g)
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         // Domain and range for properties.
