@@ -442,8 +442,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       jj_la1[19] = jj_gen;
       ;
     }
+     startWherePattern() ;
     el = GroupGraphPattern();
-                                         getQuery().setQueryPattern(el) ;
+                              getQuery().setQueryPattern(el) ;
+     finishWherePattern() ;
   }
 
   final public void SolutionModifier() throws ParseException {
@@ -1336,6 +1338,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Update Modify() throws ParseException {
                     Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ;
+    startModifyUpdate() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WITH:
       jj_consume_token(WITH);
@@ -1379,8 +1382,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       UsingClause(up);
     }
     jj_consume_token(WHERE);
+    startWherePattern() ;
     el = GroupGraphPattern();
                              up.setElement(el) ;
+    finishWherePattern() ;
+    finishModifyUpdate() ;
     {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }

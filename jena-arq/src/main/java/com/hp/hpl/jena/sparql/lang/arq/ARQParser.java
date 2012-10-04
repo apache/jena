@@ -734,8 +734,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       jj_la1[21] = jj_gen;
       ;
     }
+     startWherePattern() ;
     el = GroupGraphPattern();
-                                         getQuery().setQueryPattern(el) ;
+                              getQuery().setQueryPattern(el) ;
+     finishWherePattern() ;
   }
 
   final public void SolutionModifier() throws ParseException {
@@ -1660,6 +1662,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Update Modify() throws ParseException {
                     Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ;
+    startModifyUpdate() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case WITH:
       jj_consume_token(WITH);
@@ -1703,8 +1706,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       UsingClause(up);
     }
     jj_consume_token(WHERE);
+    startWherePattern() ;
     el = GroupGraphPattern();
                              up.setElement(el) ;
+    finishWherePattern() ;
+    finishModifyUpdate() ;
     {if (true) return up ;}
     throw new Error("Missing return statement in function");
   }
@@ -5535,12 +5541,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_3R_109() {
-    if (jj_scan_token(NOT)) return true;
-    if (jj_scan_token(EXISTS)) return true;
-    return false;
-  }
-
   private boolean jj_3R_128() {
     if (jj_scan_token(LBRACKET)) return true;
     return false;
@@ -5584,11 +5584,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
   private boolean jj_3R_107() {
     if (jj_scan_token(REGEX)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -5597,6 +5592,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_150() {
     if (jj_scan_token(IRIref)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_40()) return true;
     return false;
   }
 
@@ -6568,6 +6568,12 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_109() {
+    if (jj_scan_token(NOT)) return true;
+    if (jj_scan_token(EXISTS)) return true;
     return false;
   }
 

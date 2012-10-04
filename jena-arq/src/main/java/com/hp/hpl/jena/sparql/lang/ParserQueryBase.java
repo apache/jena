@@ -23,12 +23,14 @@ import java.util.* ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
 import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
 import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
+import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
@@ -63,6 +65,17 @@ public class ParserQueryBase extends ParserBase
     // SPARQL Update (W3C RECommendation)
     private UpdateRequest request = null ;
 
+    // Places to push settings across points where we reset.
+    private boolean oldBNodesAreVariables ;
+    private boolean oldBNodesAreAllowed ;
+
+    // Count of subSelect nesting.
+    // Level 0 is top level.
+    // Level -1 is not in a pattern WHERE clause.
+    private int queryLevel = -1 ;
+    private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<Set<String>>() ;
+    private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<LabelToNodeMap>() ;
+
     protected UpdateRequest getUpdateRequest() { return request ; }
     public void setUpdateRequest(UpdateRequest request)
     { 
@@ -70,25 +83,27 @@ public class ParserQueryBase extends ParserBase
         this.query = new Query() ; 
         setPrologue(request) ;
     }
+
+    // Signal start/finish of units
     
-    // Move down to SPARQL 1.1 or rename as ParserBase
     protected void startQuery() {}
     protected void finishQuery() {}
 
+    protected void startUpdateRequest()    {}
+    protected void finishUpdateRequest()   {}
+    
 //    protected void startBasicGraphPattern()
 //    { activeLabelMap.clear() ; }
 //
 //    protected void endBasicGraphPattern()
 //    { oldLabels.addAll(activeLabelMap.getLabels()) ; }
     
-    // Move down to SPARQL 1.1 or rename as ParserBase
-    protected void startUpdateOperation() {}
+    protected void startUpdateOperation()  {}
     protected void finishUpdateOperation() {}
     
-    protected void startUpdateRequest() {}
-    protected void finishUpdateRequest() {}
+    protected void startModifyUpdate()     { }
+    protected void finishModifyUpdate()    {}
     
-    private boolean oldBNodesAreVariables ;
     protected void startDataInsert(QuadDataAcc qd, int line, int col) 
     {
         oldBNodesAreVariables = getBNodesAreVariables() ;
@@ -98,12 +113,10 @@ public class ParserQueryBase extends ParserBase
     
     protected void finishDataInsert(QuadDataAcc qd, int line, int col)
     {
-        oldLabels.addAll(activeLabelMap.getLabels()) ;
+        previousLabels.addAll(activeLabelMap.getLabels()) ;
         activeLabelMap.clear() ;
         setBNodesAreVariables(oldBNodesAreVariables) ;
     }
-    
-    private boolean oldBNodesAreAllowed ;
     
     protected void startDataDelete(QuadDataAcc qd,int line, int col)
     {
@@ -115,26 +128,44 @@ public class ParserQueryBase extends ParserBase
     {
         setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
+
+    // These can be nested with subSELECTs but subSELECTs share bNodeLabel state.
+    protected void startWherePattern()
+    {
+        queryLevel += 1 ;
+        if ( queryLevel == 0 )
+        {
+            pushLabelState() ;
+            clearLabelState() ;
+        }
+    }
     
-    Set<String> oldLabels2 = null ;
-    
+    protected void finishWherePattern()
+    {
+        if ( queryLevel == 0 )
+            popLabelState() ;
+        queryLevel -= 1 ;
+    }
+
+    // This holds the accumulation of labels from earlier INSERT DATA
+    // across template creation (bNode in templates get cloned before
+    // going into the data).
+
     protected void startInsertTemplate(QuadAcc qd, int line, int col)
     {
         oldBNodesAreVariables = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
-        // Hide used labels (INSERT DATA)
-        oldLabels2 = oldLabels ;
-        oldLabels = new HashSet<String>() ;
-        activeLabelMap.clear() ;
+        pushLabelState() ;
     }
-    
+
     protected void finishInsertTemplate(QuadAcc qd, int line, int col)
     {
         setBNodesAreVariables(oldBNodesAreVariables) ;
-        oldLabels = oldLabels2 ;
-        activeLabelMap.clear() ;
+        // Restore accumulated labels. 
+        popLabelState() ;
     }
     
+    // No bNodes in delete templates.
     protected void startDeleteTemplate(QuadAcc qd, int line, int col)
     {
         oldBNodesAreAllowed = getBNodesAreAllowed() ;
@@ -154,11 +185,9 @@ public class ParserQueryBase extends ParserBase
     protected void startSubSelect(int line, int col)
     {
         if ( query == null )
-            System.out.println("Null") ;
-        // Query is null in an update.
+            throw new ARQInternalErrorException("Parser query object is null") ;
         stack.push(query) ;
-        Query subQuery = new Query(getPrologue()) ;
-        query = subQuery ;
+        query = new Query(getPrologue()) ;
     }
     
     protected Query endSubSelect(int line, int column)
@@ -228,5 +257,26 @@ public class ParserQueryBase extends ParserBase
             msg = QueryParseException.formatMessage(msg, line, col) ;
             throw new QueryParseException(msg, line , col) ;
         }
+    }
+
+    private void pushLabelState()
+    { 
+        // Hide used labels already tracked.
+        stackPreviousLabels.push(previousLabels) ;
+        stackCurrentLabels.push(activeLabelMap) ;
+        previousLabels = new HashSet<String>() ;
+        activeLabelMap.clear() ;
+    }
+
+    private void popLabelState()
+    {
+        previousLabels = stackPreviousLabels.pop() ;
+        activeLabelMap = stackCurrentLabels.pop();
+    }
+
+    private void clearLabelState()
+    {
+        activeLabelMap.clear() ;
+        previousLabels.clear() ;
     }
 }

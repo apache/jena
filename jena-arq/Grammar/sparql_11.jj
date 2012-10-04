@@ -247,7 +247,10 @@ String SourceSelector() : { String iri ; }
 }
 void WhereClause() : { Element el ; }
 {
-   (<WHERE>)? el = GroupGraphPattern() { getQuery().setQueryPattern(el) ; }
+   (<WHERE>)?
+   { startWherePattern() ; }
+   el = GroupGraphPattern() { getQuery().setQueryPattern(el) ; }
+   { finishWherePattern() ; }
 }
 void SolutionModifier() : { }
 {
@@ -444,13 +447,18 @@ Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ; Token t ; }
 Update Modify() : { Element el ; String iri = null ;
                     UpdateModify up = new UpdateModify() ; }
 {
+  { startModifyUpdate() ; }
   ( <WITH> iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
   ( DeleteClause(up) ( InsertClause(up) )?
   | InsertClause(up)
   )
   (UsingClause(up))*
+  // WHERE is mandatory here.
   <WHERE>
+  { startWherePattern() ; }
   el = GroupGraphPattern() { up.setElement(el) ; }
+  { finishWherePattern() ; }
+  { finishModifyUpdate() ; }
   { return up ; }
 }
 void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; Token t ;}

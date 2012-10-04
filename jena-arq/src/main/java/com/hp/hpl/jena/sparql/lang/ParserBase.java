@@ -83,7 +83,7 @@ public class ParserBase
     //    BGP causes the map to be cleared at the start of the BGP
     
     LabelToNodeMap activeLabelMap = anonVarLabels ;
-    Set<String> oldLabels = new HashSet<String>() ; 
+    Set<String> previousLabels = new HashSet<String>() ; 
     
     //LabelToNodeMap listLabelMap = new LabelToNodeMap(true, new VarAlloc("L")) ;
     // ----
@@ -303,7 +303,7 @@ public class ParserBase
     { activeLabelMap.clear() ; }
 
     protected void endBasicGraphPattern()
-    { oldLabels.addAll(activeLabelMap.getLabels()) ; }
+    { previousLabels.addAll(activeLabelMap.getLabels()) ; }
     
     protected void startTriplesBlock()
     { }
@@ -344,8 +344,8 @@ public class ParserBase
     { 
         if ( ! bNodesAreAllowed )
             throwParseException("Blank nodes not allowed in DELETE templates: "+label, line, column) ;
-        if ( oldLabels.contains(label) )
-            throwParseException("Blank node reused across basic graph patterns: "+label,
+        if ( previousLabels.contains(label) )
+            throwParseException("Blank node label reuse not allowed at this point: "+label,
                                 line, column) ;
         
         //label = unescapeCodePoint(label, line, column) ;
