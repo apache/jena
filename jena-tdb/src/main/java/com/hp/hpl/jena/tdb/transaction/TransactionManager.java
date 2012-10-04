@@ -63,7 +63,17 @@ public class TransactionManager
      *  deciding to flush the journal to the main database.  
      */
     // Temporarily public ....
-    public static /*final*/ int QueueBatchSize = 10 ; 
+    public static /*final*/ int QueueBatchSize = setQueueBatchSize() ; 
+    
+    private static int setQueueBatchSize() 
+    {
+        if ( SystemTDB.is64bitSystem ) 
+            return 10 ;
+        // On 32bit systems are memory constrained. The Java address space is
+        // limited to about 1.5G - the heap can not be bigger.
+        // So we don't do batching (change if batching is less memory hungry).
+        return 0 ;
+    }
     
     enum TxnPoint { BEGIN, COMMIT, ABORT, CLOSE, QUEUE, UNQUEUE }
     private List<Pair<Transaction, TxnPoint>> transactionStateTransition ;
@@ -75,8 +85,7 @@ public class TransactionManager
         transactionStateTransition.add(new Pair<Transaction, TxnPoint>(txn, state)) ;
     }
     
-    // Transactions that have commited (and the journal is written) but haven't
-    // writted back to the main database. 
+    // Statcis variable to record the maximum length of the flushe queue.
     
     int maxQueue = 0 ;
     List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
