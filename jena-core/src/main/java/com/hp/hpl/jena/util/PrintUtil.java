@@ -56,7 +56,6 @@ public class PrintUtil {
         registerPrefix("rdfs", RDFS.getURI());
         registerPrefix("drdfs", "urn:x-hp-direct-predicate:http_//www.w3.org/2000/01/rdf-schema#");
         registerPrefix("owl", OWL.getURI());
-        registerPrefix("daml", DAML_OIL.NAMESPACE_DAML.getURI());
         registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
         registerPrefix("rb", ReasonerVocabulary.getRBNamespace());
         registerPrefix("eg", egNS);
