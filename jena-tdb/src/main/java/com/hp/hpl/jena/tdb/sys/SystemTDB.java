@@ -316,30 +316,6 @@ public class SystemTDB
         return b ;
     }
     
-
-//	// Not in use yet.
-//    private static void determineJVMSize()
-//    {
-//        Runtime runtime = Runtime.getRuntime() ;
-//        
-//        long totalMemory = runtime.totalMemory() ;
-//        long maxMemory = runtime.maxMemory() ;
-//        int cpus = runtime.availableProcessors() ;
-//        
-//        runtime.addShutdownHook(new Thread(new SyncCacheRunnable())) ;
-//    }
-//    
-//    static class SyncCacheRunnable implements Runnable
-//    {
-//        @Override
-//        public void run()
-//        {
-//            try {
-//                StoreConnection.killActiveTransactions() ;
-//            } catch (Exception ex) {} 
-//        }
-//    }
-    
     // ---- File mode
     
     private static FileMode fileMode = null ;
