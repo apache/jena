@@ -197,25 +197,6 @@ public class BuilderOp
         return triples ;
     }
     
-    public static Expr buildExpr(Item item)
-    {
-        return BuilderExpr.buildExpr(item) ;
-    }
-
-    // Build a list of expressions.
-    public static List<Expr> buildExpr(ItemList list)
-    {
-        List<Expr> x = new ArrayList<Expr>() ;
-        for ( int i = 0 ; i < list.size() ; i++ )
-        {
-            Item itemExpr = list.get(i) ;
-            Expr expr = buildExpr(itemExpr) ;
-            x.add(expr) ;
-        }
-        return x ;
-    }
-
-
     protected Op build(ItemList list, int idx)
     {
         return build(list.get(idx).getList()) ;
@@ -402,7 +383,7 @@ public class BuilderOp
             BuilderLib.checkLength(3, 4, list, "leftjoin: wanted 2 or 3 arguments") ;
             Op left = build(list, 1) ;
             Op right  = build(list, 2) ;
-            Expr expr = null ;
+            ExprList expr = null ;
             if ( list.size() == 4 )
             {
                 Item exprItem = list.get(3) ;
@@ -410,7 +391,7 @@ public class BuilderOp
                 if ( exprItem.isList() && exprItem.getList().isEmpty() )
                 {}
                 else
-                    expr = buildExpr(exprItem) ;
+                    expr = BuilderExpr.buildExprOrExprList(exprItem) ;
             }
             Op op = OpLeftJoin.create(left, right, expr) ;
             return op ;

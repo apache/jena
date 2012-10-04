@@ -33,6 +33,7 @@ import com.hp.hpl.jena.sparql.expr.ExprVar ;
 import com.hp.hpl.jena.sparql.expr.ExprVisitorFunction ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class WriterExpr
 {
@@ -63,10 +64,12 @@ public class WriterExpr
             return ;
         }
         
+        out.print("(") ;
         if ( withTag )
-            out.print("(exprlist ") ;
-        else
-            out.print("(") ;
+        {
+            out.print(Tags.tagExprList) ;
+            out.print(" ") ;
+        }
         
         for ( int i = 0 ; i < exprs.size() ;  i++ )
         {
