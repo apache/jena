@@ -21,12 +21,7 @@ package com.hp.hpl.jena.sparql.core.assembler;
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.QuerySolutionMap ;
-import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.rdf.model.ResourceFactory ;
@@ -59,14 +54,15 @@ public class AssemblerUtils
             return ;
         initialized = true ;
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
-        register(Assembler.general) ;
+        registerWith(Assembler.general) ;
     }
     
-    static public void register(AssemblerGroup g)
+    static public void registerWith(AssemblerGroup g)
     {
         // Wire in the extension assemblers (extensions relative to the Jena assembler framework)
         g.implementWith(DatasetAssembler.getType(), new DatasetAssembler()) ;
         g.implementWith(GraphStoreAssembler.getType(), new GraphStoreAssembler()) ;
+        g.implementWith(DatasetNullAssembler.getType(), new DatasetNullAssembler()) ;
     }
     
     private static void assemblerClass(AssemblerGroup g, Resource r, Assembler a)
