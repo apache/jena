@@ -23,10 +23,8 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.Jena ;
-import com.hp.hpl.jena.assembler.assemblers.AssemblerGroup ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.core.assembler.AssemblerUtils ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
 import com.hp.hpl.jena.sparql.expr.nodevalue.XSDFuncOp ;
 import com.hp.hpl.jena.sparql.lib.Metadata ;
@@ -462,12 +460,6 @@ public class ARQ
     // Force a call
     static { init() ; }
     
-    /** Used by Jena assemblers for registration */ 
-    public static void whenRequiredByAssembler( AssemblerGroup g )
-    {
-        AssemblerUtils.register(g) ;
-    }
-
     private static Context defaultSettings()    
     {
         Context context = new Context() ;
