@@ -249,7 +249,7 @@ public class ResponseResultSet
             proc.output(out) ;
             out.flush() ;
             // Do not call httpResponse.flushBuffer(); here - Jetty closes the stream if it is a gzip stream
-            // then the JSON callback closing deatls can't be added. 
+            // then the JSON callback closing details can't be added. 
         } catch (IOException ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
     }
 

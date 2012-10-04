@@ -21,6 +21,7 @@ package org.apache.jena.fuseki.servlets;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -113,12 +114,12 @@ public class ResponseModel
     //            SPARQL_ServletBase.errorOccurred(ex) ;
     //        }
             
-            // Managed to write it locally
             try {
                 ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
                 response.setStatus(HttpSC.OK_200) ;
-                rdfw.write(model, response.getOutputStream(), null) ;
-                response.getOutputStream().flush() ;
+                ServletOutputStream out = response.getOutputStream() ;
+                rdfw.write(model, out, null) ;
+                out.flush() ;
             }
             catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
         }
