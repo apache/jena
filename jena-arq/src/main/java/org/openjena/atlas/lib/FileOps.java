@@ -98,7 +98,7 @@ public class FileOps
     {
         File dir = new File(dirname) ;
         if ( ! dir.exists() )
-            dir.mkdir() ;
+            dir.mkdirs() ;
     }
     
     /** Split a file name into path, basename and extension.  Nulls returned if don't make sense. */
