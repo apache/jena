@@ -212,6 +212,7 @@ public interface PrefixMapping
     */
     public static final PrefixMapping Extended = PrefixMapping.Factory.create()
         .setNsPrefixes( Standard )
+        .setNsPrefix( "daml", DAMLVocabulary.NAMESPACE_DAML_2001_03_URI )
         .setNsPrefix( "rss", RSS.getURI() )
         .setNsPrefix( "vcard", VCARD.getURI() )
         .setNsPrefix( "ja", JA.getURI() )
