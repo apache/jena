@@ -225,26 +225,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <configuration>
-	  <!--
-          <finalName>${assembly.root.name}</finalName>
-          <appendAssemblyId>false</appendAssemblyId>
-	  -->
-          <descriptors>
-            <descriptor>assembly.xml</descriptor>
-	    <!--
-            <descriptor>assembly-testing.xml</descriptor>
-	    -->
-          </descriptors>
-        </configuration>
+	<configuration>
+	  <tarLongFileMode>gnu</tarLongFileMode>    
+	</configuration>
         <executions>
           <execution>
-            <id>create-assembly</id>
-            <!-- Better after package because of javadoc, source and test-jar-->
-            <phase>verify</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
+            <id>create-distribution</id>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+	    <configuration>
+	      <descriptors>
+		<descriptor>assembly.xml</descriptor>
+	      </descriptors>
+	      <tarLongFileFormat>gnu</tarLongFileFormat>
+	    </configuration>
           </execution>
         </executions>
       </plugin>
