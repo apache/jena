@@ -83,7 +83,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${ver.junit}</version>
-      <!-- <scope>test</scope> see: JENA-141 -->
+      <exclusions>
+	<exclusion>
+	  <groupId>org.hamcrest</groupId>
+	  <artifactId>hamcrest-core</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
