@@ -18,10 +18,9 @@
 
 <assembly>
   <id>distribution</id>
-  <baseDirectory>apache-${project.artifactId}-${project.version}</baseDirectory>
   <formats>
-    <!--
     <format>tar.gz</format>
+    <!--
     <format>tar.bz2</format>
     -->
     <format>zip</format>
@@ -32,6 +31,10 @@
       <unpack>false</unpack>
       <scope>test</scope>
       <outputDirectory>lib</outputDirectory>
+      <excludes>
+	<exclude>org.apache.derby:derby:</exclude>
+	<exclude>org.hsqldb:hsqldb:*</exclude>
+      </excludes>
     </dependencySet>
   </dependencySets>
 
@@ -67,17 +70,6 @@
 
     <fileSet>
       <directory>Store</directory>
-    </fileSet>
-
-    <!-- For testing the deployment -->
-    <fileSet>
-      <directory>testing</directory>
-    </fileSet>
-
-    <fileSet>
-      <includes>
-	<include>test.sh</include>
-      </includes>
     </fileSet>
 
     <fileSet>
