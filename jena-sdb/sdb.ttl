@@ -17,7 +17,6 @@
     sdb:connection     <#conn> .
 
 <#conn> rdf:type sdb:SDBConnection ;
-
 ##     sdb:sdbType        "h2:mem" ;
 ##     sdb:sdbName        "mem" ;
 
