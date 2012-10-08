@@ -138,7 +138,7 @@ public class SQLBridge2 extends SQLBridgeBase
      * alternate selection
      * @see SQLBridge2Oracle
      * @param table
-     * @return
+     * @return SqlColumn
      */
     protected SqlColumn getLexNCharSqlColumn(SqlTable table) {
         return null;
