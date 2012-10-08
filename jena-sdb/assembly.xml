@@ -38,6 +38,17 @@
     </dependencySet>
   </dependencySets>
 
+  <files>
+    <file>
+      <source>dist/LICENSE-dist</source>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>dist/NOTICE-dist</source>
+      <destName>NOTICE</destName>
+    </file>
+  </files>
+
   <fileSets>
 
     <fileSet>
@@ -50,6 +61,8 @@
         <include>pom.xml</include>
       </includes>
     </fileSet>
+
+
 
     <!-- Put sources at the top level -->
     <fileSet>
