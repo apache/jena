@@ -18,11 +18,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-
-/**
- * @author Andy Seaborne
- */
-
 public class TableDescTriples extends TableDescQuads
 {
     private static final String tableName     = "Triples" ;

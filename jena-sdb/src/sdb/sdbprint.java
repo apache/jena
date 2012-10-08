@@ -40,7 +40,6 @@ import com.hp.hpl.jena.sdb.util.PrintSDB;
 
 /**
  * Compile and print the SQL for a SPARQL query.
- * @author Andy Seaborne
  */
 
 public class sdbprint extends CmdArgsDB

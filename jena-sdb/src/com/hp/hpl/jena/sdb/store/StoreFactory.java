@@ -41,9 +41,7 @@ import com.hp.hpl.jena.sdb.sql.SDBConnectionDesc;
 import com.hp.hpl.jena.sdb.sql.SDBConnectionFactory;
 import com.hp.hpl.jena.sdb.util.Pair;
 
-/** Construct Stores
- * @author Andy Seaborne
- */
+/** Construct Stores */
 
 public class StoreFactory
 {

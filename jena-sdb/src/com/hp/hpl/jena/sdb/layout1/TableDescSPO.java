@@ -20,10 +20,6 @@ package com.hp.hpl.jena.sdb.layout1;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescTriples;
 
-/**
- * @author Andy Seaborne
- */
-
 public class TableDescSPO extends TableDescTriples
 {
     private static final String tableName    = "Triples" ;

@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.sdb.layout2;
 
-/**
- * @author Andy Seaborne
- */
-
 public abstract class TableDescNodes
 {
     // This is not a TableDesc - that only describes tables all of whose columns are Nodes.

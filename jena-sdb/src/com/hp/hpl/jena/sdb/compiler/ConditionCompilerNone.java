@@ -22,7 +22,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 
 /**
  * ConditionCompiler that does nothing, refusing to recognize any conditions  
- * @author Andy Seaborne
  */
 public class ConditionCompilerNone implements ConditionCompiler
 {

@@ -20,14 +20,8 @@ package com.hp.hpl.jena.sdb.layout2.index;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
-/**
- * @author Andy Seaborne
- */
-
 public class TableNodesIndex extends TableDescNodes
 {
-    
-    
     @Override
     public String getNodeRefColName()       { return TableDescNodes.colId ; }
     

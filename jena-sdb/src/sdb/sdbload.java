@@ -43,8 +43,6 @@ import com.hp.hpl.jena.util.FileUtils;
   *  </pre>
   *  The syntax of a file is determimed by its extension (.n3, .nt) and defaults to RDF/XML. 
   *  </p>
-  * 
-  * @author Andy Seaborne
   */ 
  
 public class sdbload extends CmdArgsDB

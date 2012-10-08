@@ -20,10 +20,7 @@ package com.hp.hpl.jena.sdb;
 
 import com.hp.hpl.jena.sparql.ARQException;
 
-/** Root of all exceptions in SDB
- * 
- * @author Andy Seaborne
- */
+/** Root of all exceptions in SDB */
 
 public class SDBException extends ARQException
 {

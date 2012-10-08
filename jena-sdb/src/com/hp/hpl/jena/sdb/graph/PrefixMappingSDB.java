@@ -36,8 +36,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 /** A prefix mapping that is backed by a database table
- * 
- * @author Andy Seaborne
  */
 
 public class PrefixMappingSDB extends PrefixMappingImpl
