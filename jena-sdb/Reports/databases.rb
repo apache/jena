@@ -1,4 +1,5 @@
 #!/bin/env jruby
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 require 'java'
 #include_class 'java.lang.Class'
