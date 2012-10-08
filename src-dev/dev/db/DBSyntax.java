@@ -25,8 +25,6 @@ import java.util.List;
 
 /** Database column descriptions.  This calls contains the SQL (or common) standard forms,
  *  to be overrided by each database type.
- *  
- * @author Andy Seaborne
  */ 
 public class DBSyntax
 {

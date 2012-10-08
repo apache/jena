@@ -21,8 +21,6 @@ package com.hp.hpl.jena.sdb.core;
 import com.hp.hpl.jena.sparql.core.Var;
 
 /** Precondition for a condition
- * 
- * @author Andy Seaborne
  */
 
 

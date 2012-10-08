@@ -29,7 +29,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Format an SDB database.  Destroys all existing data permanently.
  *  Ignores -dbName argument in favour of the command line positional parameter. 
- * @author Andy Seaborne
  */ 
 
 public class sdbtruncate extends CmdArgsDB

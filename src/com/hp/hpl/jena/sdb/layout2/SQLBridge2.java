@@ -126,7 +126,6 @@ public class SQLBridge2 extends SQLBridgeBase
      * Intended to be overridden by an Oracle-specific impl to handle nclob selection. 
      * @see SQLBridge2Oracle
      * @param table
-     * @author skagels
      * 
      */
     protected SqlColumn getLexSqlColumn(SqlTable table) {

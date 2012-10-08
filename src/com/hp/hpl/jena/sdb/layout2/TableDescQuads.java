@@ -20,10 +20,6 @@ package com.hp.hpl.jena.sdb.layout2;
 
 import com.hp.hpl.jena.sdb.store.TableDesc;
 
-/**
- * @author Andy Seaborne
- */
-
 public class TableDescQuads extends TableDesc
 {
     protected static final String graphCol      = "g" ;

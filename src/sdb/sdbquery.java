@@ -45,8 +45,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
   *    sdb.sdbquery [db spec] [ query | --query=file ]
   *  </pre>
   *  </p>
-  * 
-  * @author Andy Seaborne
   */ 
  
 public class sdbquery extends CmdArgsDB

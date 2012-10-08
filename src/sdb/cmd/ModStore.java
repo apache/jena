@@ -44,7 +44,6 @@ import com.hp.hpl.jena.util.FileManager;
 
 /** Construction of a store from a store description,
  * possibly modified by command line arguments.
- * @author Andy Seaborne
  */ 
 
 public class ModStore extends ModBase

@@ -25,8 +25,6 @@ import com.hp.hpl.jena.sdb.util.HSQLUtils;
 
 
 /** Store class for the simple layout (i.e. one triple table)
- * 
- * @author Andy Seaborne
  */
 
 public class StoreSimpleHSQL extends StoreBase1

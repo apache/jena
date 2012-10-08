@@ -22,10 +22,7 @@ import java.sql.SQLException;
 
 import com.hp.hpl.jena.sdb.SDBException;
 
-/** Wrapper SQLException 
- * 
- * @author Andy Seaborne
- */
+/** Wrapper SQLException  */
 public class SDBExceptionSQL extends SDBException
 {
     public SDBExceptionSQL(SQLException cause) { super(cause) ; }

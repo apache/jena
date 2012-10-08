@@ -51,8 +51,6 @@ import com.hp.hpl.jena.sdb.sql.*;
  * The objective here is not efficiency - it's stability of design because 
  * this may record version and layout configuration details so it needs to
  * be a design that will not change. 
- * 
- * @author Andy Seaborne
  */
 
 

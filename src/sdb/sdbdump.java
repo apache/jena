@@ -38,8 +38,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
   *    --db JDBC_url --dbUser userId --dbPassword password --dbType [--model modelName]  
   *  </pre>
   *  </p>
-  * 
-  * @author Andy Seaborne
   */ 
  
 public class sdbdump extends CmdArgsDB

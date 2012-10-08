@@ -24,7 +24,6 @@ import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 /** Source of new store objects.  Used by StoreFactory, where there is a registry
  * dtatype type + layout type => store maker.
- * @author Andy Seaborne
  */  
 
 public interface StoreMaker

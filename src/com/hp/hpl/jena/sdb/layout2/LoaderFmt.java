@@ -21,8 +21,6 @@ package com.hp.hpl.jena.sdb.layout2;
 import java.sql.SQLException;
 
 /** Interface to setting up the bulk loader environment.
- * 
- * @author Andy Seaborne
  */
 public interface LoaderFmt
 {

@@ -33,8 +33,6 @@ import com.hp.hpl.jena.sparql.util.Context;
 
 /** A collection of things to track during query compilation
  * and execution from SPARQL to SQL.
- * 
- * @author Andy Seaborne
  */
 
 public class SDBRequest extends StoreHolder
