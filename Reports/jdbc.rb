@@ -1,4 +1,5 @@
 # = Module for handling JDBC Result Sets
+# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 require 'java'
 require 'format'
