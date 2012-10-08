@@ -22,8 +22,6 @@ import com.hp.hpl.jena.sparql.expr.Expr;
 
 
 /** Don't match.
- * 
- * @author Andy Seaborne
  */
 public class ActionReject
 {

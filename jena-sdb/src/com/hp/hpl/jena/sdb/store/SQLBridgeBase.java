@@ -47,8 +47,6 @@ import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
  *  is allocated for each query execution. 
- *  
- * @author Andy Seaborne
  */  
 
 public abstract class SQLBridgeBase implements SQLBridge

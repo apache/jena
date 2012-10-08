@@ -27,8 +27,6 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
  *  is allocated for each SQL query execution. 
- *  
- * @author Andy Seaborne
  */  
 
 public interface SQLBridge

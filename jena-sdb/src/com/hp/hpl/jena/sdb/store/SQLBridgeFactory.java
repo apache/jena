@@ -29,8 +29,6 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 /** Convert from whatever results a particular layout returns into
  *  an ARQ QueryIterator of Bindings.  An SQLBridge object
  *  is allocated for each query execution. 
- *  
- * @author Andy Seaborne
  */  
 
 public interface SQLBridgeFactory

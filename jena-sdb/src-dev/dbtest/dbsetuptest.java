@@ -26,8 +26,6 @@ import java.util.Iterator;
 /** This program tests a database setup for use with Jena - it tests the JDBC
  * connection and the databse setup for internationalized usage by Jena.
  * It does notrun the RDF tests. 
- * 
- * @author Andy Seaborne
  */
 
 public class dbsetuptest

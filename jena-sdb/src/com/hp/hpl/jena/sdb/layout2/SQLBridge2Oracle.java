@@ -33,9 +33,6 @@ import com.hp.hpl.jena.sparql.core.Var;
  * Added to specialize lex column selection for Oracle.
  * The lex column is an nclob that should get converted to a string for performance 
  * reasons.
- * 
- * @author skagels (Metatomix)
- *
  */
 public class SQLBridge2Oracle extends SQLBridge2 {
     

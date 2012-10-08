@@ -38,8 +38,6 @@ import com.hp.hpl.jena.update.GraphStore;
 /** Various operations to create or connect objects to do with SDB:
  *  SDBConnections, Stores, Models, Graphs.
  *  Convenience calls.
- *  
- * @author Andy Seaborne
  */
 
 public class SDBFactory

@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-/** Common container for SDBConnections 
- *  
- * @author Andy Seaborne
- */
+/** Common container for SDBConnections */
 public class SDBConnectionHolder
 {
     // It's so common to take and keep a connection, that it is worth

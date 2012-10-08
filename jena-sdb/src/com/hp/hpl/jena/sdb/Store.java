@@ -38,8 +38,6 @@ import com.hp.hpl.jena.sdb.store.*;
  *  components that work, with database-specific code only where necessary.
  *  A common case if the formatting of the database - this is often DB-specific
  *  yet SQL generation of query is more standard.       
- * 
- * @author Andy Seaborne
  */
 
 public interface Store

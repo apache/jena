@@ -44,8 +44,6 @@ import com.hp.hpl.jena.vocabulary.DCTerms;
   *  sdb.sdbtest [db spec] [ manifest ]
   *  </pre>
   *  </p>
-  * 
-  * @author Andy Seaborne
   */ 
  
 public class sdbtest extends CmdArgsDB

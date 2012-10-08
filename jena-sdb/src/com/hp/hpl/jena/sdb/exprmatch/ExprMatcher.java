@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.expr.*;
 import com.hp.hpl.jena.sparql.util.ExprUtils;
 
 /** Matches an expression template to a query expression.  
- * @author Andy Seaborne
  */
 
 public class ExprMatcher

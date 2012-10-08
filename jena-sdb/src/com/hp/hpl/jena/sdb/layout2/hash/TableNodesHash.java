@@ -20,10 +20,6 @@ package com.hp.hpl.jena.sdb.layout2.hash;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes;
 
-/**
- * @author Andy Seaborne
- */
-
 public class TableNodesHash extends TableDescNodes
 {
     @Override

@@ -36,8 +36,6 @@ import com.hp.hpl.jena.sparql.util.Utils;
   *    sdbdelete [db spec] default | graph iri [...]
   *  </pre>
   *  </p>
-  * 
-  * @author Andy Seaborne
   */ 
  
 public class sdbdelete extends CmdArgsDB

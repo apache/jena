@@ -25,10 +25,7 @@ import com.hp.hpl.jena.sdb.sql.MySQLEngineType;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 
 
-/** Store class for the simple layout (i.e. one triple table)
- * 
- * @author Andy Seaborne
- */
+/** Store class for the simple layout (i.e. one triple table) */
 
 public class StoreSimpleMySQL extends StoreBase1
 {

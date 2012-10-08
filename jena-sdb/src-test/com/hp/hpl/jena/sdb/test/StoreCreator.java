@@ -43,9 +43,6 @@ import com.hp.hpl.jena.sdb.store.LayoutType;
 /**
  * A cheap (but not cheerful) class to give access to empty models,
  * sharing stores in the background. 
- * 
- * @author Damian Steer
- *
  */
 public class StoreCreator {
 	
