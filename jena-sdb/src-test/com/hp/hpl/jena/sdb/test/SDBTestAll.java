@@ -18,23 +18,37 @@
 
 package com.hp.hpl.jena.sdb.test;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.openjena.atlas.lib.FileOps ;
 
-/** Not quite all, yet: Does not yet include the model tests which need to be the linked to the store descriptions */
+/** Not quite all, yet: Does not yet include the model tests which need to be linked to the store descriptions */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    SDBTestSetup.class ,    // Must be first
     SDBTestMisc.class,
     SDBQueryTestSuite.class,
     SDBUpdateTestSuite.class
 } )
 
-/** Derby needs this before the tests;
-    sdbconfig --sdb testing/StoreDescSimple/derby-layout1.ttl --format
-    sdbconfig --sdb testing/StoreDesc/derby-hash.ttl  --format
-    sdbconfig --sdb testing/StoreDesc/derby-index.ttl  --format
- */
-
 public class SDBTestAll
-{ }
+{ 
+    /* Derby needs this before the tests;
+        sdbconfig --sdb testing/StoreDescSimple/derby-layout1.ttl --format
+        sdbconfig --sdb testing/StoreDesc/derby-hash.ttl  --format
+        sdbconfig --sdb testing/StoreDesc/derby-index.ttl  --format
+     */
+
+    @BeforeClass public static void beforeClass() {
+        FileOps.ensureDir("target") ;
+        FileOps.ensureDir("target/Derby-test") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDescSimple/derby-layout1.ttl", "--format") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDesc/derby-hash.ttl", "--format") ;
+        sdb.sdbconfig.main("--sdb=testing/StoreDesc/derby-index.ttl", "--format") ;
+    }
+    
+    @AfterClass public static void afterClass() {
+        FileOps.deleteSilent("derby.log") ;
+    }
+}
