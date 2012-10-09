@@ -21,6 +21,9 @@ package com.hp.hpl.jena.rdf.arp.states;
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.AbsXMLContext;
 
+/**
+ * @deprecated This DAML class will be removed from future versions of Jena because it is obsolete.
+ */
 public class DAMLCollection extends Collection {
 
     public DAMLCollection(WantsObjectFrameI s, AbsXMLContext x) {
