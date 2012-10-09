@@ -36,7 +36,8 @@
   <description>SDB is a persistence layer that uses an SQL database.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb</connection>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb/</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb/</developerConnection>
     <url>http://svn.apache.org/viewvc/jena/trunk/jena-sdb</url>
   </scm>
 
