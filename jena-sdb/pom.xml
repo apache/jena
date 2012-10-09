@@ -16,13 +16,15 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-sdb</artifactId>
   <packaging>jar</packaging>
   <name>jena-sdb</name>
-  <version>1.3.5</version>
+  <version>1.3.5-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
@@ -34,8 +36,8 @@
   <description>SDB is a persistence layer that uses an SQL database.</description>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-sdb-1.3.5</connection>
-    <url>http://svn.apache.org/viewvc/jena/tags/jena-sdb-1.3.5</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-sdb</connection>
+    <url>http://svn.apache.org/viewvc/jena/trunk/jena-sdb</url>
   </scm>
 
   <properties>
