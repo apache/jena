@@ -53,23 +53,10 @@
 
     <fileSet>
       <includes>
-        <include>Copyright.txt</include>
         <include>README*</include>
-	<include>LICENSE*</include>
-	<include>NOTICE*</include>
         <include>ChangeLog.txt</include>
         <include>pom.xml</include>
-      </includes>
-    </fileSet>
-
-
-
-    <!-- Put sources at the top level -->
-    <fileSet>
-      <directory>${project.build.directory}</directory>
-      <outputDirectory></outputDirectory>
-      <includes>
-        <include>${this.root}-sources.jar</include>
+	<include>sdb.ttl</include>
       </includes>
     </fileSet>
 
