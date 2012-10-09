@@ -37,6 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
  * @version CVS info: $Id: DAMLVocabulary.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
+ * @deprecated This vocabulary will be removed from future versions of Jena because it is obsolete.
  */
 public interface DAMLVocabulary
 {

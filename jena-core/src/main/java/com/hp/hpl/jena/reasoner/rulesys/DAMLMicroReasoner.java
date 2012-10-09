@@ -28,18 +28,19 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * We do not support DAML inference. This is a slightly extended version
  * of the RDFS reasoner to support some interesting subsets of DAML
  * that correspond roughly to what was there in Jena1. We hope.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+ * @deprecated This DAML reasoner will be removed from future versions of Jena because it is obsolete.
  */
 public class DAMLMicroReasoner  extends GenericRuleReasoner {
-   
+
     /** The location of the OWL rule definitions on the class path */
     public static final String RULE_FILE = "etc/daml-micro.rules";
-    
+
     /** The parsed rules */
     protected static List<Rule> ruleSet;
-    
+
     /**
      * Constructor
      */
@@ -48,7 +49,7 @@ public class DAMLMicroReasoner  extends GenericRuleReasoner {
         setMode(HYBRID);
         setTransitiveClosureCaching(true);
     }
-    
+
     /**
      * Return the RDFS rule set, loading it in if necessary
      */
