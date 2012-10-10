@@ -15,5 +15,5 @@ mkdir dist-sdb/sources
 find REPO -name \*.asc.md5 | xargs rm
 find REPO -name \*.asc.sha1 | xargs rm
 
-cp REPO/org/apache/jena/jena-sdb/*/jena-sdb-*-distribution.tar.gz* dist-sdb/binaries
+cp REPO/org/apache/jena/jena-sdb/*/jena-sdb-*-distribution.* dist-sdb/binaries
 cp REPO/org/apache/jena/jena-sdb/*/jena-sdb-*-source-release.zip*  dist-sdb/sources
