@@ -175,12 +175,6 @@
               <goal>jar</goal>
             </goals>
           </execution>
-          <execution>
-            <id>attach-sources-test</id>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
 
@@ -205,20 +199,6 @@
           <doctitle>${project.name}</doctitle>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>
         </configuration>
-      </plugin>
-
-      <!-- see: http://maven.apache.org/guides/mini/guide-attached-tests.html -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.2</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
