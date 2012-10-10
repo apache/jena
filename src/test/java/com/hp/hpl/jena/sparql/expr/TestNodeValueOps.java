@@ -49,7 +49,7 @@ public class TestNodeValueOps extends BaseTest
             if ( isProbablyIBMJVM() )
                 // IBM JDK causes NPE on this one.
                 // IllegalStateException is acceptable; NullPointerException is not. 
-                Log.warn(this, "**** IBM JVM does not support xsd:yearMonthDuration_xsd:dayTimeDuration") ;
+                Log.warn(this, "IBM JVM does not support xsd:yearMonthDuration + xsd:dayTimeDuration") ;
             else
                 throw ex ;
         }
@@ -95,7 +95,6 @@ public class TestNodeValueOps extends BaseTest
     @Test public void nv_sub_21() { testSub("'PT2H'^^xsd:dayTimeDuration", "'PT1H'^^xsd:dayTimeDuration", "'PT1H'^^xsd:dayTimeDuration" ) ; }
     @Test public void nv_sub_22() { testSub("'P2Y'^^xsd:yearMonthDuration", "'P1Y'^^xsd:yearMonthDuration", "'P1Y'^^xsd:yearMonthDuration" ) ; }
     @Test public void nv_sub_23() { testSub("'P3D'^^xsd:dayTimeDuration", "'PT4H'^^xsd:dayTimeDuration", "'P2DT20H'^^xsd:dayTimeDuration" ) ; }
-
     
     // Date/time - duration
     @Test public void nv_sub_30() { testSub("'2000-01-01'^^xsd:date", "'P1Y'^^xsd:duration", "'1999-01-01'^^xsd:date") ; }
