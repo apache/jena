@@ -1,0 +1,264 @@
+// Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+
+//Tokens in BNF
+// [] means will be inlined.
+// The presense of a token in the file does not mean it is actually used.
+
+[<EOF>]          ::=
+[<IRIref>]   ::= '<' ([^<>"{}|^`\]-[#x00-#x20])* '>'
+<PNAME_NS>   ::= <PN_PREFIX>? ':'
+<PNAME_LN>   ::= <PNAME_NS> <PN_LOCAL>
+<BLANK_NODE_LABEL> ::= '_:' ( <PN_CHARS_U> | [0-9] ) ((<PN_CHARS>|'.')* <PN_CHARS>)?
+
+<VAR1>       ::= '?' <VARNAME>
+<VAR2>       ::= '$' <VARNAME>
+<LANGTAG>    ::= '@' [a-zA-Z]+ ('-' [a-zA-Z0-9]+)*
+
+<INTEGER>	::= [0-9]+
+<DECIMAL>   ::= ( [0-9]* '.' [0-9]+ )
+
+// Required exponent
+<DOUBLE> ::= [0-9]+ '.' [0-9]* <EXPONENT> | '.' ([0-9])+ <EXPONENT> | ([0-9])+ <EXPONENT>
+
+<INTEGER_POSITIVE> ::= <PLUS> <INTEGER>
+<DECIMAL_POSITIVE> ::= <PLUS> <DECIMAL>
+<DOUBLE_POSITIVE> ::=  <PLUS> <DOUBLE>
+
+<INTEGER_NEGATIVE> ::= <MINUS> <INTEGER>
+<DECIMAL_NEGATIVE> ::= <MINUS> <DECIMAL>
+<DOUBLE_NEGATIVE>  ::= <MINUS> <DOUBLE>
+
+<#EXPONENT>  ::= [eE] [+-]? [0-9]+
+
+<STRING_LITERAL1> ::= "'" ( ([^#x27#x5C#xA#xD]) | <ECHAR> )* "'"
+<STRING_LITERAL2> ::= '"' ( ([^#x22#x5C#xA#xD]) | <ECHAR> )* '"'
+
+<STRING_LITERAL_LONG1> ::= "'''" ( ( "'" | "''" )? ( [^'\] | <ECHAR> ) )* "'''"
+<STRING_LITERAL_LONG2> ::= '"""' ( ( '"' | '""' )? ( [^"\] | <ECHAR> ) )* '"""'
+
+<ECHAR>           ::= '\' [tbnrf\"']
+// The print value is the whitespace trimmed value after ::=
+
+[<KW_A>]       ::= 'a'
+
+[<BASE>]       ::= 'BASE'
+[<PREFIX>]     ::= 'PREFIX'
+[<SELECT>]     ::= 'SELECT'
+[<DESCRIBE>]   ::= 'DESCRIBE'
+[<CONSTRUCT>]  ::= 'CONSTRUCT'
+//[<CONSTRUCT_WHERE>]  ::= 'CONSTRUCT WHERE'
+[<ASK>]        ::= 'ASK'
+[<DISTINCT>]   ::= 'DISTINCT'
+[<REDUCED>]    ::= 'REDUCED'
+[<WHERE>]      ::= 'WHERE'
+
+[<LIMIT>]      ::= 'LIMIT'
+[<OFFSET>]     ::= 'OFFSET'
+[<ORDER>]      ::= 'ORDER'
+[<BY>]         ::= 'BY'
+[<VALUES>]     ::= 'VALUES'
+[<UNDEF>]      ::= 'UNDEF'
+
+[<FROM>]       ::= 'FROM'
+[<NAMED>]      ::= 'NAMED'
+
+[<ASC>]        ::= 'ASC'
+[<DESC>]       ::= 'DESC'
+
+[<AS>]         ::= 'AS'
+[<EXT>]        ::= 'EXT'
+[<GROUP>]      ::= 'GROUP'
+[<HAVING>]     ::= 'HAVING'
+[<SEPARATOR>]  ::= 'SEPARATOR'
+[<AGG>]        ::= 'AGG'
+[<COUNT>]      ::= 'COUNT'
+[<MIN>]        ::= 'MIN'
+[<MAX>]        ::= 'MAX'
+[<SUM>]        ::= 'SUM'
+[<AVG>]        ::= 'AVG'
+[<SAMPLE>]     ::= 'SAMPLE'
+[<GROUP_CONCAT>]     ::= 'GROUP_CONCAT'
+
+[<SERVICE>]    ::=    'SERVICE'
+[<FETCH>]      ::=    'FETCH'
+[<MINUS_P>]    ::=    'MINUS'
+[<DIFF>]       ::=    'DIFF'
+[<EXISTS>]     ::=    'EXISTS'
+[<NOT>]        ::=    'NOT'
+[<UNSAID>]     ::=    'UNSAID'
+[<LET>]        ::=    'LET'
+[<BIND>]       ::=    'BIND'
+
+[<FILTER>]     ::= 'FILTER'
+[<REGEXP>]     ::= 'REGEXP'
+[<GRAPH>]      ::= 'GRAPH'
+[<UNION>]      ::= 'UNION'
+[<OPTIONAL>]   ::= 'OPTIONAL'
+[<BOUND>]      ::= 'BOUND'
+[<COALESCE>]   ::= 'COALESCE'
+[<IF>]         ::= 'IF'
+[<STR>]        ::= 'STR'
+[<URI>]        ::= 'URI'
+[<IRI>]        ::= 'IRI'
+[<BNODE>]      ::= 'BNODE'
+[<LITERAL>]    ::= 'LITERAL'
+[<DTYPE>]      ::= 'DATATYPE'
+[<LANG>]       ::= 'LANG'
+[<LANGMATCHES>] ::= 'LANGMATCHES'
+
+[<STRLANG>]     ::= 'STRLANG'
+[<STRDT>]       ::= 'STRDT'
+[<IN>]          ::= 'IN'
+
+[<RAND>]        ::= 'RAND'
+[<ABS>]         ::= 'ABS'
+[<CEIL>]        ::= 'CEIL'
+[<FLOOR>]       ::= 'FLOOR'
+[<ROUND>]       ::= 'ROUND'
+[<CONCAT>]      ::= 'CONCAT'
+[<SUBSTR>]      ::= 'SUBSTR'
+[<STRLEN>]      ::= 'STRLEN'
+[<REPLACE>]     ::= 'REPLACE'
+[<UCASE>]       ::= 'UCASE'
+[<LCASE>]       ::= 'LCASE'
+[<ENCODE_FOR_URI>]      ::= 'ENCODE_FOR_URI'
+[<CONTAINS>]    ::= 'CONTAINS'
+[<STRSTARTS>]   ::= 'STRSTARTS'
+[<STRENDS>]     ::= 'STRENDS'
+[<STRBEFORE>]   ::= 'STRBEFORE'
+[<STRAFTER>]    ::= 'STRAFTER'
+[<YEAR>]        ::= 'YEAR'
+[<MONTH>]       ::= 'MONTH'
+[<DAY>]         ::= 'DAY'
+[<HOURS>]       ::= 'HOURS'
+[<MINUTES>]     ::= 'MINUTES'
+[<SECONDS>]     ::= 'SECONDS'
+[<TIMEZONE>]    ::= 'TIMEZONE'
+[<TZ>]          ::= 'TZ'
+[<NOW>]         ::= 'NOW'
+[<UUID>]        ::= 'UUID'
+[<STRUUID>]     ::= 'STRUUID'
+[<VERSION>]     ::= 'VERSION'
+[<CAST>]        ::= 'CAST'
+[<CALL>]        ::= 'CALL'
+[<MULTI>]       ::= 'MULTI'
+[<SHORTEST>]    ::= 'SHORTEST'
+
+[<MD5>]         ::= 'MD5'
+[<SHA1>]        ::= 'SHA1'
+[<SHA224>]      ::= 'SHA224'
+[<SHA256>]      ::= 'SHA256'
+[<SHA384>]      ::= 'SHA384'
+[<SHA512>]      ::= 'SHA512'
+
+[<DFT>]        ::= 'DEFAULT'
+[<ALL>]        ::= 'ALL'
+
+[<IS_IRI>]     ::= 'isIRI'
+[<IS_URI>]     ::= 'isURI'
+[<IS_BLANK>]   ::= 'isBLANK'
+[<IS_LITERAL>] ::= 'isLITERAL'
+[<IS_NUMERIC>] ::= 'isNUMERIC'
+[<SAME_TERM>]  ::= 'sameTerm'
+[<REGEX>]      ::= 'REGEX'
+[<TRUE>]       ::= 'true'
+[<FALSE>]      ::= 'false'
+
+[<MODIFY>]       ::= 'MODIFY'
+[<INSERT>]       ::= 'INSERT'
+[<DELETE>]       ::= 'DELETE'
+[<DELETE_DATA>]  ::= 'DELETE DATA'
+[<DELETE_WHERE>] ::= 'DELETE WHERE'
+[<INSERT_DATA>]  ::= 'INSERT DATA'
+
+[<ADD>]         ::= 'ADD'
+[<MOVE>]        ::= 'MOVE'
+[<COPY>]        ::= 'COPY'
+[<META>]        ::= 'META'
+
+[<DATA>]        ::= 'DATA'
+[<VALUES>]      ::= 'VALUES'
+[<LOAD>]        ::= 'LOAD' 
+[<INTO>]        ::= 'INTO' 
+[<WITH>]        ::= 'WITH' 
+[<USING>]       ::= 'USING' 
+[<CLEAR>]       ::= 'CLEAR' 
+[<CREATE>]      ::= 'CREATE' 
+[<SILENT>]      ::= 'SILENT' 
+[<DROP>]        ::= 'DROP' 
+[<TO>]          ::= 'TO' 
+[<BEGIN>]       ::= 'BEGIN'
+[<COMMIT>]      ::= 'COMMIT'
+[<ABORT>]       ::= 'ABORT'
+
+//[<NIL>]        ::= '(' ')'
+<NIL>          ::= '(' <WS>* ')'
+<WS>           ::= #x20 | #x9 | #xD | #xA
+
+[<LPAREN>]     ::= '('
+[<RPAREN>]     ::= ')'
+
+[<LBRACE>]     ::= '{'
+[<RBRACE>]     ::= '}'
+
+[<LBRACKET>]   ::= '['
+[<RBRACKET>]   ::= ']'
+
+// Compound delimiters.
+
+[<BLK1_L>]     ::= '(|'
+[<BLK1_R>]     ::= '|)'
+
+[<BLK2_L>]     ::= '{|'
+[<BLK2_R>]     ::= '|}'
+
+//[<ANON>]       ::= '[' ']'
+<ANON>       ::= '['  <WS>* ']'
+
+[<SEMICOLON>]  ::= ';'
+[<COMMA>]      ::= ','
+[<DOT>]        ::= '.'
+[<GT>]         ::= '>'
+[<LT>]         ::= '<'
+[<BANG>]       ::= '!'
+[<HOOK>]       ::= '?'
+[<COLON>]      ::= ':'
+[<EQ>]         ::= '='
+[<NE>]         ::= '!='
+[<LE>]         ::= '<='
+[<GE>]         ::= '>='
+[<SC_OR>]      ::= '||'
+[<SC_AND>]     ::= '&&'
+[<INCR>]       ::= '++'
+[<DECR>]       ::= '--'
+[<PLUS>]       ::= '+'
+[<MINUS>]      ::= '-'
+[<STAR>]       ::= '*'
+[<SLASH>]      ::= '/'
+[<DATATYPE>]   ::= '^^'
+//[<AT>]         ::= '@'
+[<ASSIGN>]        ::= ':='
+[<VBAR>]          ::= '|'
+[<CARAT>]        ::= '^'
+[<FPATH>]         ::= '->'
+[<RPATH>]         ::= '<-'
+[<QMARK>]         ::= '?'
+
+
+<#PN_CHARS_BASE>     ::= [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
+
+<#PN_CHARS_U>      ::= <PN_CHARS_BASE> | '_'
+
+<#VARNAME>      ::=  ( <PN_CHARS_U>  | [0-9] ) ( <PN_CHARS_U> | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
+
+<#PN_CHARS>      ::=  <PN_CHARS_U> | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+
+<#PN_PREFIX> ::= <PN_CHARS_BASE> ((<PN_CHARS>|'.')* <PN_CHARS>)?
+
+<#PN_LOCAL>  ::= (<PN_CHARS_U> | ':' | [0-9] | <PLX> ) ((<PN_CHARS> | '.' | ':' | <PLX>)* (<PN_CHARS> | ':' | <PLX>) )?
+
+<#PLX>            ::= <PERCENT> | <PN_LOCAL_ESC>
+
+<PERCENT>         ::= '%' <HEX> <HEX>
+<HEX>             ::= [0-9] | [A-F] | [a-f]
+<PN_LOCAL_ESC>    ::= '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
