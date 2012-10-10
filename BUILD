@@ -1,27 +1,15 @@
 Apache Jena - single module instructions
 ========================================
 
-This file contain the instructions for building this module from the
-source-release artifact.  The build instructions to create the whole of
-this Jena release are in the apache-jena-VER.zip file.
-
-The build process assumes the dependencies of this module are available in
-the local maven repository.
-
-jena-top -> jena-iri -> jena-core -> jena-arq -> apache-jena (the download).
-
-jena-sdb and jena-tdb depend on jena-arq.
-
-The instructions are the same for each jena-* module.
-
-We assume you are building "jena-zzz" in these instructions.
+This file contain the instructions for building Apache Jena SDB from the
+source-release artifact.
 
 == Download
 
 Download the "source-release" zip file, and also the associated
 signatures and checksums (file extensions .asc, .md5, .sha1).
 
-http://www.apache.org/dist/jena/
+http://www.apache.org/dist/jena/sources/
 
 == Verify the signature
 
@@ -35,9 +23,7 @@ imported once.  You can check the signatures at http://pgp.mit.edu/
 
 The file with extension .asc contains the 
 
-For the zip file of the zzz module:
-
-    gpg --verify jena-zzz-VER-source-release.zip.asc
+    gpg --verify jena-sdb-VER-source-release.zip.asc
 
 == Verify a checksum
 
@@ -46,16 +32,16 @@ respectively.  Calculate the checksum on the downloaded file
 
 Example (linux):
 
-    md5sum jena-zzz-VER-source-release.zip
+    md5sum jena-sdb-VER-source-release.zip
 
 == Unpack the file.
 
-   unzip -q jena-zzz-VER-source-release.zip
+   unzip -q jena-sdb-VER-source-release.zip
 
-will create a directory "jena-zzz-VER" with the files needed to
+will create a directory "jena-sdb-VER" with the files needed to
 recreate the distribution.
 
-   cd jena-zzz-VER
+   cd jena-sdb-VER
 
 == Ensure the dependecies are available
 
