@@ -191,7 +191,6 @@ public class SPARQL_Update extends SPARQL_Protocol
 
         UpdateRequest req ;
         try {
-            
             if ( super.verbose_debug || action.verbose )
             {
                 // Verbose mode only .... capture request for logging (does not scale). 
@@ -211,7 +210,6 @@ public class SPARQL_Update extends SPARQL_Protocol
         execute(action, req) ;
         successNoContent(action) ;
     }
-
 
     private void executeForm(HttpActionUpdate action)
     {
