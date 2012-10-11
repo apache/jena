@@ -1,5 +1,9 @@
 ==== Fuseki
 
+== Fuseki 0.2.5
+
++ JENA-334 - Fix for Fuseki start script fails when invoked with full pathname
+
 == Fuseki 0.2.4
 
 + Upgrade Jetty dependency to 7.6.5.v20120716
