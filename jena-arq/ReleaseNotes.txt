@@ -11,6 +11,7 @@ ChangeLog for ARQ
 + Remove deprecated QueryExecutionBase.cancelAllowDrain (see JENA-93)
 + Implement SPARQL-WG decision on BIND : use original semantics. 
 + JENA-294 : improved optimization of sequeneces of OPTIONALs where the grouois only OPTIONAL and an equality filter
++ JENA-298 ResultSetStAX.hasNext() can now be called again after it has returned false
 + JENA-302 Add URIs for all XQuery/Xpath F&O functions for duration accessors
 + JENA-303 Add URIs for all XQuery/Xpath F&O functions where there are SPARQL functions
 + JENA-328 : implement OSGi friendly DatatypeFactory initialisation in NodeValue
