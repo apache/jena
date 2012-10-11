@@ -78,16 +78,23 @@ case "`uname`" in
 esac
 
 # Set FUSKEI_HOME to the script invocation directory if it is not specified
-# TODO Make this better, it will only really work with relative paths
 if [ -z "$FUSEKI_HOME" ]
 then
-  SCRIPT_PATH=`dirname $BASH_SOURCE`
-  if [ "$SCRIPT_PATH" == "." ]
+  SCRIPT="$0"
+  # Catch common issue: script has been symlinked
+  if [ -L "$SCRIPT" ]
   then
-    export FUSEKI_HOME="$PWD"
-  else
-    export FUSEKI_HOME="$PWD/$SCRIPT_PATH"
+    SCRIPT="$(readlink "$0")"
+    # If link is relative
+    case "$SCRIPT" in
+      /*) ;; # fine
+      *) SCRIPT=$( dirname "$0" )/$SCRIPT;; # fix
+    esac
   fi
+
+  # Work out root from script location
+  FUSEKI_HOME="$( cd "$( dirname "$SCRIPT" )" && pwd )"
+
 fi
 
 #echo "DEBUG: FUSEKI_HOME=$FUSEKI_HOME"
