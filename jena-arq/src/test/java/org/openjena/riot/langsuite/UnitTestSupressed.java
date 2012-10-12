@@ -16,27 +16,26 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
+import junit.framework.Test ;
+import junit.framework.TestResult ;
 
-import junit.framework.TestSuite ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.AllTests ;
-import org.openjena.riot.TestVocabRIOT ;
-
-@RunWith(AllTests.class)
-public class TestSuiteTrig extends TestSuite
+public class UnitTestSupressed implements Test
 {
-    private static final String manifest1 = "testing/RIOT/TriG/manifest.ttl" ;
-    private static final String manifest2 = "testing/RIOT/TriG/manifest-bad.ttl" ;
-    
-    static public TestSuite suite()
+    public UnitTestSupressed(String testName, Object object)
+    {}
+
+    @Override
+    public int countTestCases()
     {
-        TestSuite ts = new TestSuite("TriG") ;
-        // The good ..
-        ts.addTest(FactoryTestRiotTriG.make(manifest1, TestVocabRIOT.TestInOut, "TriG-")) ;
-        // .. the bad ...
-        ts.addTest(FactoryTestRiotTriG.make(manifest2, TestVocabRIOT.TestBadSyntax, "TriG-")) ;
-        return ts ;
+        return 0 ;
     }
+
+    @Override
+    public void run(TestResult arg0)
+    {
+        
+    }
+
 }

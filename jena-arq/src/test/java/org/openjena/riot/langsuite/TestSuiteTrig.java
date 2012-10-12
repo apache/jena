@@ -16,33 +16,27 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
-
-import java.io.InputStream ;
-
-import junit.framework.TestCase ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
-
-import com.hp.hpl.jena.graph.Triple ;
+package org.openjena.riot.langsuite;
 
 
-public class UnitTestTurtleBadSyntax extends TestCase
+import junit.framework.TestSuite ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.AllTests ;
+import org.openjena.riot.TestVocabRIOT ;
+
+@RunWith(AllTests.class)
+public class TestSuiteTrig extends TestSuite
 {
-    String uri ;
-    public UnitTestTurtleBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    private static final String manifest1 = "testing/RIOT/TriG/manifest.ttl" ;
+    private static final String manifest2 = "testing/RIOT/TriG/manifest-bad.ttl" ;
     
-    @Override
-    public void runTest()
+    static public TestSuite suite()
     {
-        InputStream in = IO.openFile(uri) ;
-        assertNotNull(in) ;
-        LangRIOT parser = RiotReader.createParserTurtle(in, uri, new SinkNull<Triple>()) ;
-        try {
-            parser.parse() ;
-        } catch (RiotException ex) { return ; }
-        fail("Bad syntax Turtle test succeed in parsing the file") ;
+        TestSuite ts = new TestSuite("TriG") ;
+        // The good ..
+        ts.addTest(FactoryTestRiotTriG.make(manifest1, TestVocabRIOT.TestInOut, "TriG-")) ;
+        // .. the bad ...
+        ts.addTest(FactoryTestRiotTriG.make(manifest2, TestVocabRIOT.TestBadSyntax, "TriG-")) ;
+        return ts ;
     }
 }

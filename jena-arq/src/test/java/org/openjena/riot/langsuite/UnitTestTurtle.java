@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
 
 import java.io.InputStream ;
