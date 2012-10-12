@@ -18,9 +18,15 @@
 
 package org.openjena.riot.lang;
 
+import static org.openjena.riot.ErrorHandlerFactory.errorHandlerNoLogging ;
+import static org.openjena.riot.ErrorHandlerFactory.getDefaultErrorHandler ;
+import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
+
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.junit.AfterClass ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.Sink ;
@@ -87,13 +93,25 @@ public class TestLangTurtle extends BaseTest
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
     
+    private static ErrorHandler errorhandler = null ;
+    @BeforeClass public static void beforeClass()
+    { 
+        errorhandler = getDefaultErrorHandler() ;
+        setDefaultErrorHandler(errorHandlerNoLogging) ;
+    }
+
+    @AfterClass public static void afterClass()
+    { 
+        setDefaultErrorHandler(errorhandler) ;
+    }
+    
     private void readProtected(RDFReader reader, Model m, Reader r, String base)
     {
-        ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStd ;
-        ErrorHandlerFactory.errorHandlerStd = ErrorHandlerFactory.errorHandlerNoLogging ;
+        ErrorHandler errorhandler = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerNoLogging) ;
         try {
             reader.read(m, r, base) ;
-        } finally { ErrorHandlerFactory.errorHandlerStd = errHandler ; }
+        } finally { ErrorHandlerFactory.setDefaultErrorHandler(errorhandler) ; }
     }
     
     // Call parser directly.
@@ -163,7 +181,6 @@ public class TestLangTurtle extends BaseTest
     // No check for escape sequence case.
     public void errorBadURI_3()
     { parse("<http://example/a%Aab> <http://example/p> 123 .") ; }
-
 
     @Test
     public void turtle_01()         

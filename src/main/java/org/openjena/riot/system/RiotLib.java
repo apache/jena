@@ -60,7 +60,7 @@ public class RiotLib
 
     public static ParserProfile profile(Lang lang, String baseIRI)
     {
-        return profile(lang, baseIRI, ErrorHandlerFactory.errorHandlerStd) ;
+        return profile(lang, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler()) ;
     }
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)

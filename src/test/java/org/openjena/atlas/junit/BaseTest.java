@@ -18,10 +18,44 @@
 
 package org.openjena.atlas.junit;
 
+import java.util.ArrayDeque ;
+import java.util.Deque ;
+
 import org.junit.Assert ;
+import org.openjena.atlas.logging.Log ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerFactory ;
 
 public class BaseTest extends Assert
 {
+    private static Deque<ErrorHandler> errorHandlers = new ArrayDeque<ErrorHandler>() ;
+    
+    static public void setTestLogging(ErrorHandler errorhandler)
+    {
+        errorHandlers.push(ErrorHandlerFactory.getDefaultErrorHandler()) ;
+        ErrorHandlerFactory.setDefaultErrorHandler(errorhandler) ;
+    }
+    
+    static public void setTestLogging()
+    {
+//        if ( errorHandlers.size() != 0 )
+//            Log.warn(BaseTest.class, "ErrorHandler already set for testing") ;
+        setTestLogging(ErrorHandlerFactory.errorHandlerNoLogging) ;
+    }
+
+    static public void unsetTestLogging()
+    {
+        if ( errorHandlers.size() == 0 )
+        {
+            Log.warn(BaseTest.class, "ErrorHandler not set for testing") ;
+            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerStd) ;  // Panic measures
+            return ;
+        }
+        ErrorHandler errHandler = errorHandlers.pop();
+        ErrorHandlerFactory.setDefaultErrorHandler(errHandler) ;
+    }
+
+    
     public static void assertNotEquals(Object a, Object b)
     {
          assertFalse(a.equals(b)) ;
@@ -36,4 +70,5 @@ public class BaseTest extends Assert
     {
          assertFalse(a == b ) ;
     }
+    
 }

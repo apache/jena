@@ -28,7 +28,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Tokenizer ;
@@ -43,6 +42,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderBinding ;
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 
+
 public class TestBindingStreams extends BaseTest
 {
     public static junit.framework.Test suite()
@@ -52,12 +52,12 @@ public class TestBindingStreams extends BaseTest
     
     @BeforeClass public static void beforeClass()
     { 
-        ErrorHandlerFactory.setTestLogging(false) ;
+        setTestLogging() ;
     }
 
     @AfterClass public static void afterClass()
     { 
-        ErrorHandlerFactory.setTestLogging(true) ;
+        unsetTestLogging() ;
     }
     
     static Binding b12 = build("(?a 1) (?b 2)") ;

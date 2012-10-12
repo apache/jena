@@ -18,10 +18,14 @@
 
 package org.openjena.riot;
 
+import static org.openjena.riot.ErrorHandlerFactory.errorHandlerNoLogging ;
+import static org.openjena.riot.ErrorHandlerFactory.getDefaultErrorHandler ;
+import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.langsuite.TestSuiteRDFJSON ;
 import org.openjena.riot.langsuite.TestSuiteTrig ;
@@ -74,12 +78,11 @@ public class TS_Riot
 {
     @BeforeClass public static void beforeClass()
     { 
-        ErrorHandlerFactory.setTestLogging(false) ;
+        BaseTest.setTestLogging() ;
     }
 
     @AfterClass public static void afterClass()
     { 
-        ErrorHandlerFactory.setTestLogging(true) ;
+        BaseTest.unsetTestLogging() ;
     }
-
 }
