@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang ;
+package org.openjena.riot.langsuite ;
 
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
@@ -28,18 +28,18 @@ import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-public class FactoryTestRDFJSONFactory extends TestFactoryManifest
+public class FactoryTestRiotTurtle extends TestFactoryManifest
 {
 
     public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix)
     {
-        return new FactoryTestRDFJSONFactory(dftTestType, labelPrefix).process(manifest) ;
+        return new FactoryTestRiotTurtle(dftTestType, labelPrefix).process(manifest) ;
     }
 
     private Resource dftTestType ;
     private String labelPrefix ;
 
-    public FactoryTestRDFJSONFactory(Resource dftTestType, String labelPrefix)
+    public FactoryTestRiotTurtle(Resource dftTestType, String labelPrefix)
     {
         // FileManager? 
         
@@ -69,26 +69,27 @@ public class FactoryTestRDFJSONFactory extends TestFactoryManifest
             String x = input.getLocalName() ;
             // Yuk, yuk, yuk.
             baseIRI = baseIRI+x ;
+            
 
             if (r.equals(TestVocabRIOT.TestInOut))
             {
-                return new UnitTestRDFJSON(testName, input.getURI(), output.getURI(), baseIRI) ;
+                return new UnitTestTurtle(testName, input.getURI(), output.getURI(), baseIRI) ;
             }
 
             if (r.equals(TestVocabRIOT.TestSyntax))
             {
-                return new UnitTestRDFJSONSyntax(testName, input.getURI()) ;
+                return new UnitTestTurtleSyntax(testName, input.getURI()) ;
             }
 
             if (r.equals(TestVocabRIOT.TestBadSyntax))
             {
-                return new UnitTestRDFJSONBadSyntax(testName, input.getURI()) ;
+                return new UnitTestTurtleBadSyntax(testName, input.getURI()) ;
             }
 
             // if ( r.equals(TestVocabRIOT.TestSurpeessed ))
             // return new TestSupressed(testName, null) ;
 
-            System.err.println("Unrecognized RDF/JSON test : " + testName) ;
+            System.err.println("Unrecognized turtle test : " + testName) ;
             return null ;
 
         } catch (Exception ex)

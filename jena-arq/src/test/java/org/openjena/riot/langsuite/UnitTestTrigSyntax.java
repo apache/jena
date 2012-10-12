@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
 import java.io.IOException ;
 import java.io.InputStream ;
@@ -25,6 +25,7 @@ import junit.framework.TestCase ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 

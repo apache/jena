@@ -16,26 +16,33 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
-import junit.framework.Test ;
-import junit.framework.TestResult ;
+import junit.framework.TestCase ;
+import org.openjena.riot.RiotParseException ;
+import org.openjena.riot.system.JenaReaderTurtle2 ;
 
-public class UnitTestSupressed implements Test
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+
+
+public class UnitTestRDFJSONSyntax extends TestCase
 {
-    public UnitTestSupressed(String testName, Object object)
-    {}
-
+    String uri ;
+    public UnitTestRDFJSONSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    
     @Override
-    public int countTestCases()
+    public void runTest()
     {
-        return 0 ;
-    }
-
-    @Override
-    public void run(TestResult arg0)
-    {
-        
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader t = new JenaReaderTurtle2() ;
+        try {
+            t.read(model, uri) ;
+        } catch (RiotParseException ex)
+        {
+            throw ex ;    
+        }
     }
 
 }

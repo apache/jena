@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
 import java.io.InputStream ;
 
@@ -25,24 +25,25 @@ import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
+import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.graph.Triple ;
 
 
-public class UnitTestRDFJSONBadSyntax extends TestCase
+public class UnitTestTurtleBadSyntax extends TestCase
 {
     String uri ;
-    public UnitTestRDFJSONBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    public UnitTestTurtleBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
     @Override
     public void runTest()
     {
         InputStream in = IO.openFile(uri) ;
         assertNotNull(in) ;
-        LangRIOT parser = RiotReader.createParserRdfJson(in, new SinkNull<Triple>()) ;
+        LangRIOT parser = RiotReader.createParserTurtle(in, uri, new SinkNull<Triple>()) ;
         try {
             parser.parse() ;
         } catch (RiotException ex) { return ; }
-        fail("Bad syntax RDF/JSON test succeed in parsing the file") ;
+        fail("Bad syntax Turtle test succeed in parsing the file") ;
     }
 }

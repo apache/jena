@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
+package org.openjena.riot.langsuite;
 
 
 import junit.framework.TestSuite ;
@@ -25,18 +25,20 @@ import org.junit.runners.AllTests ;
 import org.openjena.riot.TestVocabRIOT ;
 
 @RunWith(AllTests.class)
-public class TestSuiteRDFJSON extends TestSuite
+public class TestSuiteTurtle extends TestSuite
 {
-    private static final String manifest1 = "testing/RIOT/RDF-JSON/manifest.ttl" ;
-    private static final String manifest2 = "testing/RIOT/RDF-JSON/manifest-bad.ttl" ;
-    
+    // The base URI of the test directory in the submission
+    // NB The test results use http://www.w3.org/2001/sw/DataAccess/df1/tests/ in N-Triples (??!!)
+    private static final String manifest1 = "testing/RIOT/TurtleStd/manifest.ttl" ;
+    private static final String manifest2 = "testing/RIOT/TurtleStd/manifest-bad.ttl" ;
+
     static public TestSuite suite()
     {
-        TestSuite ts = new TestSuite("RDFJSON") ;
+        TestSuite ts = new TestSuite("Turtle") ;
         // The good ..
-        ts.addTest(FactoryTestRDFJSONFactory.make(manifest1, TestVocabRIOT.TestInOut, "RDF/JSON-")) ;
+        ts.addTest(FactoryTestRiotTurtle.make(manifest1, TestVocabRIOT.TestInOut, "Turtle-")) ;
         // .. the bad ...
-        ts.addTest(FactoryTestRDFJSONFactory.make(manifest2, TestVocabRIOT.TestBadSyntax, "RDF/JSON-")) ;
+        ts.addTest(FactoryTestRiotTurtle.make(manifest2, TestVocabRIOT.TestInOut, "Turtle-")) ;
         return ts ;
     }
 }
