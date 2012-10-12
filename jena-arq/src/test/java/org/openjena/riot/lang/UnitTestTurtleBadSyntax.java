@@ -43,6 +43,6 @@ public class UnitTestTurtleBadSyntax extends TestCase
         try {
             parser.parse() ;
         } catch (RiotException ex) { return ; }
-        fail("Bad syntax RDF/JSON test succeed in parsing the file") ;
+        fail("Bad syntax Turtle test succeed in parsing the file") ;
     }
 }

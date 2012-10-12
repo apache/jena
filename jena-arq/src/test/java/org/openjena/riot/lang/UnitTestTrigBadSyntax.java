@@ -43,6 +43,6 @@ public class UnitTestTrigBadSyntax extends TestCase
         try {
             parser.parse() ;
         } catch (RiotException ex) { return ; }
-        fail("Bad syntax trig test succeed in parsing the file") ;
+        fail("Bad syntax TriG test succeed in parsing the file") ;
     }
 }
