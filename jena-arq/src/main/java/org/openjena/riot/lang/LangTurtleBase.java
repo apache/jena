@@ -196,14 +196,18 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
 
     protected final void directiveBase()
     {
-        String baseStr = peekToken().getImage() ;
+        Token token = peekToken() ;
+        if ( ! lookingAt(IRI) )
+            exception(token, "@base requires an IRI (found '"+token+"')") ;
+
+        String baseStr = token.getImage() ;
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
         nextToken() ;
-        
+
         expect("Base directive not terminated by a dot", DOT) ;
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
-    
+
     // Unlike many operations in this parser suite 
     // this does not assume that we have definitely
     // entering this state.  It does checks and may 

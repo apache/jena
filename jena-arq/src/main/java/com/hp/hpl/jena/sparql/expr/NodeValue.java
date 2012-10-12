@@ -195,7 +195,6 @@ public abstract class NodeValue extends ExprNode
      * This is clearly crazy, but DatatypeFactory is missing a very obvious
      * method newInstance(Classloader). The method that was added is very
      * hard to use correctly, as we shall see...
-     * @return 
      */
     private static DatatypeFactory getDatatypeFactory() 
             throws DatatypeConfigurationException {
