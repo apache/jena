@@ -16,33 +16,33 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang;
-
-import java.io.InputStream ;
+package org.openjena.riot.langsuite;
 
 import junit.framework.TestCase ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
+import org.openjena.riot.RiotParseException ;
+import org.openjena.riot.system.JenaReaderTurtle2 ;
 
-import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
 
 
-public class UnitTestTrigBadSyntax extends TestCase
+public class UnitTestTurtleSyntax extends TestCase
 {
     String uri ;
-    public UnitTestTrigBadSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
+    public UnitTestTurtleSyntax(String name, String uri) { super(name) ; this.uri = uri ; }
     
     @Override
     public void runTest()
     {
-        InputStream in = IO.openFile(uri) ;
-        assertNotNull(in) ;
-        LangRIOT parser = RiotReader.createParserTriG(in, uri, new SinkNull<Quad>()) ;
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader t = new JenaReaderTurtle2() ;
         try {
-            parser.parse() ;
-        } catch (RiotException ex) { return ; }
-        fail("Bad syntax TriG test succeed in parsing the file") ;
+            t.read(model, uri) ;
+        } catch (RiotParseException ex)
+        {
+            throw ex ;    
+        }
     }
+
 }

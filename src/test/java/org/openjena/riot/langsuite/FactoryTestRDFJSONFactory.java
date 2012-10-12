@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.lang ;
+package org.openjena.riot.langsuite ;
 
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
@@ -28,18 +28,18 @@ import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-public class FactoryTestRiotTriG extends TestFactoryManifest
+public class FactoryTestRDFJSONFactory extends TestFactoryManifest
 {
 
     public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix)
     {
-        return new FactoryTestRiotTriG(dftTestType, labelPrefix).process(manifest) ;
+        return new FactoryTestRDFJSONFactory(dftTestType, labelPrefix).process(manifest) ;
     }
 
     private Resource dftTestType ;
     private String labelPrefix ;
 
-    public FactoryTestRiotTriG(Resource dftTestType, String labelPrefix)
+    public FactoryTestRDFJSONFactory(Resource dftTestType, String labelPrefix)
     {
         // FileManager? 
         
@@ -60,32 +60,35 @@ public class FactoryTestRiotTriG extends TestFactoryManifest
             
             Resource input = TestUtils.getResource(action, VocabTestQuery.data) ;
             Resource output = result ; 
+//            // Convert baseIRI.
+//            Resource inputIRIr = TestUtils.getResource(action, TestVocabRIOT.inputIRI) ;
+//            String baseIRI = (inputIRIr == null) ? null : inputIRIr.getURI() ;
+            // !!
             
             String baseIRI = TestVocabRIOT.assumedBaseURI ;
             String x = input.getLocalName() ;
             // Yuk, yuk, yuk.
             baseIRI = baseIRI+x ;
-            
 
             if (r.equals(TestVocabRIOT.TestInOut))
             {
-                return new UnitTestTrig(testName, input.getURI(), output.getURI(), baseIRI) ;
+                return new UnitTestRDFJSON(testName, input.getURI(), output.getURI(), baseIRI) ;
             }
 
             if (r.equals(TestVocabRIOT.TestSyntax))
             {
-                return new UnitTestTrigSyntax(testName, input.getURI()) ;
+                return new UnitTestRDFJSONSyntax(testName, input.getURI()) ;
             }
 
             if (r.equals(TestVocabRIOT.TestBadSyntax))
             {
-                return new UnitTestTrigBadSyntax(testName, input.getURI()) ;
+                return new UnitTestRDFJSONBadSyntax(testName, input.getURI()) ;
             }
 
-            if ( r.equals(TestVocabRIOT.TestSurpressed ))
-                return new UnitTestSupressed(testName, null) ;
+            // if ( r.equals(TestVocabRIOT.TestSurpeessed ))
+            // return new TestSupressed(testName, null) ;
 
-            System.err.println("Unrecognized test : " + testName) ;
+            System.err.println("Unrecognized RDF/JSON test : " + testName) ;
             return null ;
 
         } catch (Exception ex)
