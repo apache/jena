@@ -18,8 +18,8 @@
 
 package org.openjena.riot.system;
 
-import static org.openjena.riot.ErrorHandlerFactory.errorHandlerStd ;
 import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.checker.CheckerBlankNodes ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.checker.CheckerLiterals ;
@@ -50,7 +50,7 @@ public final class Checker
     public Checker(ErrorHandler handler)
     {
         if ( handler == null )
-            handler = errorHandlerStd ;
+            handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         this.handler = handler ;
         
         checkLiterals = new CheckerLiterals(handler) ;
@@ -103,33 +103,33 @@ public final class Checker
         return rc ;
     }
     
-    public static boolean validate(String msg, Triple triple)
-    {
-        return validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
-    }
-    
-    public static boolean validate(String msg, Node subject, Node predicate, Node object)
-    {
-        if ( msg == null )
-            msg = "Validation" ;
-        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
-        {
-            errorHandlerStd.error(msg+": Subject is not a URI or blank node", -1, -1) ;
-            return false ;
-        }
-            
-        if ( predicate == null || ( ! predicate.isURI() ) )
-        {
-            errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
-            return false ;
-        }
-        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
-        {
-            errorHandlerStd.error(msg+": Object is not a URI, blank node or literal", -1 ,-1) ;
-            return false ;
-        }
-        return true ;
-    }
+//    public static boolean validate(String msg, Triple triple)
+//    {
+//        return validate(msg, triple.getSubject() , triple.getPredicate() , triple.getObject() ) ;
+//    }
+//    
+//    public static boolean validate(String msg, Node subject, Node predicate, Node object)
+//    {
+//        if ( msg == null )
+//            msg = "Validation" ;
+//        if ( subject == null || ( ! subject.isURI() && ! subject.isBlank() ) )
+//        {
+//            errorHandlerStd.error(msg+": Subject is not a URI or blank node", -1, -1) ;
+//            return false ;
+//        }
+//            
+//        if ( predicate == null || ( ! predicate.isURI() ) )
+//        {
+//            errorHandlerStd.error(msg+": Predicate not a URI", -1, -1) ;
+//            return false ;
+//        }
+//        if ( object == null || ( ! object.isURI() && ! object.isBlank() && ! object.isLiteral() ) )
+//        {
+//            errorHandlerStd.error(msg+": Object is not a URI, blank node or literal", -1 ,-1) ;
+//            return false ;
+//        }
+//        return true ;
+//    }
    
     final public boolean checkVar(Node node, long line, long col)
     { return checkVars.check(node, line, col) ; }

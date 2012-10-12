@@ -75,7 +75,7 @@ public class RiotReader
         if ( lang == RDFXML )
         {
             // Fudge to make the bulk loader process RDF/XML files.
-            LangRDFXML.create(in, base, filename, ErrorHandlerFactory.errorHandlerStd, sink).parse() ;
+            LangRDFXML.create(in, base, filename, ErrorHandlerFactory.getDefaultErrorHandler(), sink).parse() ;
             IO.close(in) ;
             return ;
         }
@@ -143,7 +143,7 @@ public class RiotReader
         {
             if ( baseIRI != null )
                 baseIRI = IRIResolver.resolveString(baseIRI) ;
-            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
+            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), sink) ;
         }
         Tokenizer tokenizer = ( lang == RDFJSON ) ?
             new TokenizerJSON(PeekReader.makeUTF8(input)) :
@@ -259,7 +259,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = chooseBaseIRI() ;
-        LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.errorHandlerStd, sink) ;
+        LangRDFXML parser = LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), sink) ;
         return parser ;
     }
 

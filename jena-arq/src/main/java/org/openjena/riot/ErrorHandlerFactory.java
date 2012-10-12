@@ -27,30 +27,32 @@ public class ErrorHandlerFactory
     static public final Logger noLogger = null ;
     
     /** Standard error handler - logs to stdLogger */
-    static public ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
+    static public final ErrorHandler errorHandlerStd          = errorHandlerStd(stdLogger) ;
 
     /** Strict error handler - logs to stdLogger - exceptions for warnings */
-    static public ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
+    static public final ErrorHandler errorHandlerStrict       = errorHandlerStrict(stdLogger) ;
     
     /** Warning error handler - logs to stdLogger - mesages for warnings and some errors */
-    static public ErrorHandler errorHandlerWarn         = errorHandlerWarning(stdLogger) ;
+    static public final ErrorHandler errorHandlerWarn         = errorHandlerWarning(stdLogger) ;
     
     /** Silent error handler */
-    static public ErrorHandler errorHandlerNoLogging    = errorHandlerSimple() ;
-    
-    static public void setTestLogging(boolean visible)
-    {
-        // Reset
-        if ( visible )
-            errorHandlerStd = new ErrorHandlerStd(stdLogger) ;
-        else
-            errorHandlerStd = new ErrorHandlerSimple() ;
-    }
+    static public final ErrorHandler errorHandlerNoLogging    = errorHandlerSimple() ;
 
+    /** Silent, strict error handler */
+    static public final ErrorHandler errorHandlerStrictNoLogging    = errorHandlerStrictSilent() ;
+
+    public static ErrorHandler errorHandlerStrictSilent()       { return new ErrorHandlerStrict(null) ; }
     public static ErrorHandler errorHandlerStrict(Logger log)   { return new ErrorHandlerStrict(log) ; }
     public static ErrorHandler errorHandlerStd(Logger log)      { return new ErrorHandlerStd(log) ; }
     public static ErrorHandler errorHandlerWarning(Logger log)  { return new ErrorHandlerWarning(log) ; }
     public static ErrorHandler errorHandlerSimple()             { return new ErrorHandlerSimple() ; }
+    
+    private static ErrorHandler defaultErrorHandler = errorHandlerStd ;
+    /** Get the current default error handler */ 
+    public static ErrorHandler getDefaultErrorHandler() { return defaultErrorHandler ; }
+    
+    /** Set the current default error handler - use carefully, mainly for use in testing */  
+    public static void setDefaultErrorHandler(ErrorHandler errorHandler) { defaultErrorHandler = errorHandler ; }
     
     /** Messages to a logger. This is not an ErrorHandler */ 
     private static class ErrorLogger
@@ -65,19 +67,22 @@ public class ErrorHandlerFactory
         /** report a warning */
         public void logWarning(String message, long line, long col)
         {
-            log.warn(fmtMessage(message, line, col)) ;
+            if ( log != null )
+                log.warn(fmtMessage(message, line, col)) ;
         }
         
         /** report an error */
         public void logError(String message, long line, long col)
         {
-            log.error(fmtMessage(message, line, col)) ;
+            if ( log != null )
+                log.error(fmtMessage(message, line, col)) ;
         }
 
         /** report a catastrophic error */    
         public void logFatal(String message, long line, long col)
         { 
-            logError(message, line, col) ;
+            if ( log != null )
+                logError(message, line, col) ;
         }
     }
     
@@ -157,6 +162,31 @@ public class ErrorHandlerFactory
             throw new RiotException(fmtMessage(message, line, col)) ;
         }
     }
+    
+    /** An error handler that throw exceptions on warnings and errors but does not log */ 
+    private static class ErrorHandlerStrictSilent implements ErrorHandler
+    {
+        /** report a warning  - do not carry on */
+        @Override
+        public void warning(String message, long line, long col)
+        { 
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+        
+        /** report an error - do not carry on */
+        @Override
+        public void error(String message, long line, long col)
+        { 
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+
+        @Override
+        public void fatal(String message, long line, long col)
+        {
+            throw new RiotException(fmtMessage(message, line, col)) ;
+        }
+    } ;
+
     
     /** An error handler that logs messages for errors and warnings and attempt to carry on */ 
     private static class ErrorHandlerWarning extends ErrorLogger implements ErrorHandler
