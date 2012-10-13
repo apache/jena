@@ -23,6 +23,7 @@ import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.commons.lang.StringUtils ;
 import org.openjena.atlas.lib.MultiMap ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.Lang ;
@@ -175,6 +176,14 @@ public class FusekiLib
             }
         }
         return map ;
+    }
+    
+    public static String safeParameter(HttpServletRequest request, String pName)
+    {
+        String value = request.getParameter("dataset") ;
+        value = StringUtils.replaceChars(value, "\r", "") ;
+        value = StringUtils.replaceChars(value, "\n", "") ;
+        return value ; 
     }
 
 }

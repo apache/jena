@@ -26,6 +26,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
@@ -80,7 +81,7 @@ public class ResponseResultSet
         doResponseResultSet$(resultSet, null, request, response) ;
     }
     
-    // if we refatcor the conneg into a single function, we can split boolean and result set handling. 
+    // If we refactor the conneg into a single function, we can split boolean and result set handling. 
     
     // One or the other argument must be null
     private static void doResponseResultSet$(final ResultSet resultSet, final Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
@@ -97,7 +98,6 @@ public class ResponseResultSet
             throw new FusekiException("Both result set and boolean result are set") ;
         }
 
-        // Content negotiation
         String mimeType = null ; 
         MediaType i = ConNeg.chooseContentType(request, DEF.rsOffer, DEF.acceptRSXML) ;
         if ( i != null )
@@ -296,6 +296,8 @@ public class ResponseResultSet
     {
         try {
             String callback = ResponseOps.paramCallback(httpRequest) ;
+            callback = StringUtils.replaceChars(callback, "\r", "") ;
+            callback = StringUtils.replaceChars(callback, "\n", "") ;
             ServletOutputStream out = httpResponse.getOutputStream() ;
 
             if ( callback != null )
