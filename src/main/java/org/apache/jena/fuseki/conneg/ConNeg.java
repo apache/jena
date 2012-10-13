@@ -109,7 +109,11 @@ public class ConNeg
         AcceptList headerList = new AcceptList(headerString) ;
         
         if ( myPrefs == null )
-            return headerList.first() ;
+        {
+            MediaType i = headerList.first() ;
+            if ( i == null ) return defaultMediaType ;
+            return i ;
+        }
     
         MediaType i = AcceptList.match(headerList, myPrefs) ;
         if ( i == null )

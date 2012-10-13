@@ -61,48 +61,48 @@ public class ResponseModel
     }
 
     public static void doResponseModel(Model model, HttpServletRequest request, HttpServletResponse response)
-        {
-            String mimeType = null ;        // Header request type 
-            
-            // TODO Use MediaType throughout.
-            MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
-            if ( i != null )
-                mimeType = i.getContentType() ;
-            
-            String outputField = ResponseOps.paramOutput(request, shortNamesModel) ;
-            if ( outputField != null )
-                mimeType = outputField ;
-            
-            String writerMimeType = mimeType ;
-            
-            if ( mimeType == null )
-            {
-                Fuseki.requestLog.warn("Can't find MIME type for response") ;
-                String x = WebLib.getAccept(request) ;
-                String msg ;
-                if ( x == null )
-                    msg = "No Accept: header" ;
-                else
-                    msg = "Accept: "+x+" : Not understood" ;
-                SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
-            }
+    {
+        String mimeType = null ;        // Header request type 
 
-            String contentType = mimeType ;
-            String charset =     WebContent.charsetUTF8 ;
-            
-            String forceAccept = ResponseOps.paramForceAccept(request) ;
-            if ( forceAccept != null )
-            {
-                contentType = WebContent.contentTypeTextPlain ;
-                charset = WebContent.charsetUTF8 ;
-            }
-            
-            Lang lang = FusekiLib.langFromContentType(contentType) ; 
-            RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
-                 
-            if ( rdfw instanceof RDFXMLWriterI )
-                rdfw.setProperty("showXmlDeclaration", "true") ;
-            
+        // TODO Use MediaType throughout.
+        MediaType i = ConNeg.chooseContentType(request, DEF.rdfOffer, DEF.acceptRDFXML) ;
+        if ( i != null )
+            mimeType = i.getContentType() ;
+
+        String outputField = ResponseOps.paramOutput(request, shortNamesModel) ;
+        if ( outputField != null )
+            mimeType = outputField ;
+
+        String writerMimeType = mimeType ;
+
+        if ( mimeType == null )
+        {
+            Fuseki.requestLog.warn("Can't find MIME type for response") ;
+            String x = WebLib.getAccept(request) ;
+            String msg ;
+            if ( x == null )
+                msg = "No Accept: header" ;
+            else
+                msg = "Accept: "+x+" : Not understood" ;
+            SPARQL_ServletBase.error(HttpSC.NOT_ACCEPTABLE_406, msg) ;
+        }
+
+        String contentType = mimeType ;
+        String charset =     WebContent.charsetUTF8 ;
+
+        String forceAccept = ResponseOps.paramForceAccept(request) ;
+        if ( forceAccept != null )
+        {
+            contentType = WebContent.contentTypeTextPlain ;
+            charset = WebContent.charsetUTF8 ;
+        }
+
+        Lang lang = FusekiLib.langFromContentType(contentType) ; 
+        RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
+
+        if ( rdfw instanceof RDFXMLWriterI )
+            rdfw.setProperty("showXmlDeclaration", "true") ;
+
     //        // Write locally to check it's possible.
     //        // Time/space tradeoff.
     //        try {
@@ -113,16 +113,15 @@ public class ResponseModel
     //        {
     //            SPARQL_ServletBase.errorOccurred(ex) ;
     //        }
-            
-            try {
-                ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
-                response.setStatus(HttpSC.OK_200) ;
-                ServletOutputStream out = response.getOutputStream() ;
-                rdfw.write(model, out, null) ;
-                out.flush() ;
-            }
-            catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
-        }
 
+        try {
+            ResponseResultSet.setHttpResponse(request, response, contentType, charset) ; 
+            response.setStatus(HttpSC.OK_200) ;
+            ServletOutputStream out = response.getOutputStream() ;
+            rdfw.write(model, out, null) ;
+            out.flush() ;
+        }
+        catch (Exception ex) { SPARQL_ServletBase.errorOccurred(ex) ; }
+    }
 }
 
