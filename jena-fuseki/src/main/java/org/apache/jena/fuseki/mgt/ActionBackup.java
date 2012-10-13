@@ -165,9 +165,9 @@ public class ActionBackup extends ServletBase
     
     public static void backup(DatasetGraph dsg, String backupfile)
     {
+        OutputStream out = null ;
         try
         {
-            OutputStream out ;
             if ( false )
             {
                 // This seems to achive about the same as "gzip -6"
@@ -185,16 +185,17 @@ public class ActionBackup extends ServletBase
             
             NQuadsWriter.write(out, dsg) ;
             out.close() ;
+            out = null ;
         } 
         catch (FileNotFoundException e)
         {
             Log.warn(ActionBackup.class, "File not found: "+backupfile) ;
             throw new FusekiException("File not found: "+backupfile) ;
         } 
-        catch (IOException e)
-        { IO.exception(e) ; }
-
-        // LOG
-
+        catch (IOException e) { IO.exception(e) ; }
+        finally {
+            try { if (out != null) out.close() ; }
+            catch (IOException e) { /* ignore */ }
+        }
     }
 }
