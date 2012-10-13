@@ -44,6 +44,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
     {
         action.beginWrite() ;
         try {
+            if ( log.isDebugEnabled() )
+                log.debug("DELETE->"+action.getTarget()) ;
             boolean existedBefore = action.getTarget().exists() ; 
             if ( ! existedBefore)
             {
@@ -65,6 +67,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         boolean existedBefore = false ;
         try {
+            if ( log.isDebugEnabled() )
+                log.debug("PUT->"+action.getTarget()) ;
             existedBefore = action.getTarget().exists() ; 
             if ( existedBefore )
                 clearGraph(action.getTarget()) ;
@@ -85,6 +89,8 @@ public class SPARQL_REST_RW extends SPARQL_REST_R
         action.beginWrite() ;
         boolean existedBefore ; 
         try {
+            if ( log.isDebugEnabled() )
+                log.debug("POST->"+action.getTarget()) ;
             existedBefore = action.getTarget().exists() ; 
             addDataInto(body.getDefaultGraph(), action) ;
             action.commit() ;
