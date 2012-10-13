@@ -1,9 +1,0 @@
-# Query14
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ub: <http://www.lehigh.edu/~zhp2/2004/0401/univ-bench.owl#>
-SELECT * WHERE
-{
-	?x rdf:type ub:UndergraduateStudent .
-}
-# (type UndergraduateStudent ?X)
-# - This query is the simplest in the test set. This query represents those with large input and low selectivity and does not assume any hierarchy information or inference.
