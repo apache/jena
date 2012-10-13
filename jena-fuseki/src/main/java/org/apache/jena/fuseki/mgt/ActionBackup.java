@@ -20,12 +20,7 @@ package org.apache.jena.fuseki.mgt ;
 
 import static java.lang.String.format ;
 
-import java.io.BufferedOutputStream ;
-import java.io.FileNotFoundException ;
-import java.io.FileOutputStream ;
-import java.io.IOException ;
-import java.io.OutputStream ;
-import java.io.PrintWriter ;
+import java.io.* ;
 import java.util.concurrent.Callable ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
@@ -35,6 +30,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.FusekiException ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
@@ -66,7 +62,7 @@ public class ActionBackup extends ServletBase
         // request.getRemoteUser() ;
         // request.getUserPrincipal() ;
 
-        String dataset = request.getParameter("dataset") ;
+        String dataset = FusekiLib.safeParameter(request, "dataset") ;
         if ( dataset == null )
         {
             response.sendError(HttpSC.BAD_REQUEST_400, "Required parameter missing: ?dataset=") ;

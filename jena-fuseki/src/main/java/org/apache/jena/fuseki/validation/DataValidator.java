@@ -29,6 +29,7 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.fuseki.FusekiLib ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkWrapper ;
@@ -69,7 +70,7 @@ public class DataValidator extends ValidatorBase
             if ( tokenizer == null )
                 return ;
             
-            String syntax = httpRequest.getParameter(paramSyntax) ;
+            String syntax = FusekiLib.safeParameter(httpRequest, paramSyntax) ;
             if ( syntax == null || syntax.equals("") )
                 syntax = Lang.NQUADS.getName() ;
 

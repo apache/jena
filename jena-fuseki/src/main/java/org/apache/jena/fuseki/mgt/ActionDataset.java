@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import javax.servlet.http.HttpSession ;
 
 import org.apache.commons.codec.binary.Base64 ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
@@ -42,7 +43,7 @@ public class ActionDataset extends HttpServlet
 //        request.getRemoteUser() ;
 //        request.getUserPrincipal() ;
         
-        String dataset = request.getParameter("dataset") ;
+        String dataset = FusekiLib.safeParameter(request, "dataset") ;
         HttpSession session = request.getSession(true) ;
         session.setAttribute("dataset", dataset) ;
         session.setMaxInactiveInterval(15*60) ; // 10 mins
