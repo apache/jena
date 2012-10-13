@@ -21,11 +21,13 @@ package org.apache.jena.fuseki.servlets;
 import static java.lang.String.format ;
 
 import java.io.IOException ;
+import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
 
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
@@ -42,6 +44,39 @@ public class SPARQL_REST_R extends SPARQL_REST
 
     public SPARQL_REST_R()
     { this(false) ; }
+    
+    
+    @Override
+    protected String mapRequestToDataset(String uri) 
+    {
+        if ( uri == null )
+            return null ;
+        
+        // Mapping a request for GSP needs to find the "best"
+        // (shortest matching) unlike service matching, 
+        // which is a matter of removing the service component.
+
+        String ds = null ;
+        Iterator<String> iter = DatasetRegistry.get().keys() ;
+        while(iter.hasNext())
+        {
+            String ds2 = iter.next();
+            if ( ! uri.startsWith(ds2) )
+                continue ;
+
+            if ( ds == null )
+            {
+                ds = ds2 ;
+                continue ; 
+            }
+            if ( ds.length() > ds2.length() )
+            {
+                ds = ds2 ;
+                continue ;
+            }
+        }
+        return ds ;
+    }
 
     @Override
     protected void doGet(HttpActionREST action)
@@ -63,6 +98,8 @@ public class SPARQL_REST_R extends SPARQL_REST
 
         action.beginRead() ;
         try {
+            if ( log.isDebugEnabled() )
+                log.debug("GET->"+action.getTarget()) ;
             boolean exists = action.getTarget().exists() ;
             if ( ! exists )
                 errorNotFound("No such graph: <"+action.getTarget().name+">") ;
@@ -90,6 +127,8 @@ public class SPARQL_REST_R extends SPARQL_REST
     {
         action.beginRead() ;
         try { 
+            if ( log.isDebugEnabled() )
+                log.debug("HEAD->"+action.getTarget()) ;
             if ( ! action.getTarget().exists() )
             {
                 successNotFound(action) ;
