@@ -85,7 +85,7 @@ public class TransactionManager
         transactionStateTransition.add(new Pair<Transaction, TxnPoint>(txn, state)) ;
     }
     
-    // Statcis variable to record the maximum length of the flushe queue.
+    // Statistic variables to record the maximum length of the flush queue.
     
     int maxQueue = 0 ;
     List<Transaction> commitedAwaitingFlush = new ArrayList<Transaction>() ;    
