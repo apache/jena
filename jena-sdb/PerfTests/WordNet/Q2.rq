@@ -1,8 +1,0 @@
-PREFIX  wn20schema: <http://www.w3.org/2006/03/wn/wn20/schema/>
-PREFIX  rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-SELECT ?theSyn
-WHERE   {
-    ?theWord wn20schema:lexicalForm "Equador laurel"@en-US .
-    ?theWordSense wn20schema:word ?theWord .
-    ?theSyn wn20schema:containsWordSense ?theWordSense .
-}

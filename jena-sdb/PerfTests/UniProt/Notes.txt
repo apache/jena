@@ -1,2 +1,0 @@
-http://www.isb-sib.ch/~ejain/expasy4j-webng/query.html
-As of 6 March 2006
