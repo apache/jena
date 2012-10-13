@@ -141,6 +141,14 @@ public class IO
         try { resource.close(); } catch (IOException ex) { exception(ex) ; }
     }
     
+    public static void closeSilent(java.io.Closeable resource)
+    {
+        if ( resource == null )
+            return ;
+        try { resource.close(); } catch (IOException ex) { }
+    }
+    
+
     public static void exception(IOException ex)
     {
         throw new AtlasException(ex) ;
