@@ -30,6 +30,7 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import static org.openjena.atlas.lib.Lib.equal ;
 import org.openjena.atlas.web.AcceptList ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
@@ -114,7 +115,7 @@ public class ResponseResultSet
              
         // Stylesheet - change to application/xml.
         final String stylesheetURL = ResponseOps.paramStylesheet(request) ;
-        if ( stylesheetURL != null && serializationType.equals(WebContent.contentTypeResultsXML))
+        if ( stylesheetURL != null && equal(serializationType,WebContent.contentTypeResultsXML) )
             contentType = WebContent.contentTypeXML ;
         
         // Force to text/plain?
@@ -124,7 +125,7 @@ public class ResponseResultSet
 
         // Better : dispatch on MediaType
         // ---- Form: XML
-        if ( serializationType.equals(WebContent.contentTypeResultsXML) )
+        if ( equal(serializationType, WebContent.contentTypeResultsXML) )
         {
             try {
                 sparqlXMLOutput(contentType, new OutputContent(){
@@ -143,7 +144,7 @@ public class ResponseResultSet
         }
 
         // ---- Form: JSON
-        if ( serializationType.equals(WebContent.contentTypeResultsJSON) )
+        if ( equal(serializationType, WebContent.contentTypeResultsJSON) )
         {
             try {
                 jsonOutput(contentType, new OutputContent(){
@@ -163,7 +164,7 @@ public class ResponseResultSet
         }
 
         // ---- Form: text
-        if ( serializationType.equals(WebContent.contentTypeTextPlain) )
+        if ( equal(serializationType, WebContent.contentTypeTextPlain) )
         {
             try {
                 textOutput(contentType, new OutputContent(){
@@ -189,8 +190,8 @@ public class ResponseResultSet
             return ;
         }
         
-        if ( serializationType.equals(WebContent.contentTypeTextCSV) || 
-            serializationType.equals(WebContent.contentTypeTextTSV) )
+        if ( equal(serializationType, WebContent.contentTypeTextCSV) || 
+             equal(serializationType, WebContent.contentTypeTextTSV) )
         {
             try {
                 OutputContent output ;
