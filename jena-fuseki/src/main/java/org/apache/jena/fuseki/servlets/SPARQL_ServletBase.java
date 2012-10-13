@@ -194,6 +194,8 @@ public abstract class SPARQL_ServletBase extends ServletBase
         // Chop off trailing part - the service selector
         // e.f. /dataset/sparql => /dataset 
         int i = uri.lastIndexOf('/') ;
+        if ( i == -1 )
+            return null ;
         if ( i == 0 )
         {
             // started with '/' - leave.
