@@ -82,6 +82,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${ver.junit}</version>
+      <scope>test</scope>
       <exclusions>
 	<exclusion>
 	  <groupId>org.hamcrest</groupId>
