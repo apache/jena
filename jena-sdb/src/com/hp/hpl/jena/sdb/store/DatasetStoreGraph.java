@@ -67,13 +67,6 @@ public class DatasetStoreGraph extends DatasetGraphCaching
     }
 
     //---- Update
-    @Override @Deprecated
-    public void startRequest()
-    {}
-
-    @Override  @Deprecated
-    public void finishRequest()
-    {}
 
     @Override
     public void startRequest(UpdateRequest request)

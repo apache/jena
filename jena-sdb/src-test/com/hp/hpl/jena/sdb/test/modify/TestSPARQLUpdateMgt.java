@@ -24,10 +24,10 @@ import junit.framework.TestSuite ;
 import com.hp.hpl.jena.sdb.SDBFactory ;
 import com.hp.hpl.jena.sdb.Store ;
 import com.hp.hpl.jena.sdb.test.junit.SDBTestUtils ;
-import com.hp.hpl.jena.sparql.modify.TestUpdateGraphMgt ;
+import com.hp.hpl.jena.sparql.modify.AbstractTestUpdateGraphMgt ;
 import com.hp.hpl.jena.update.GraphStore ;
 
-public class TestSPARQLUpdateMgt extends TestUpdateGraphMgt
+public class TestSPARQLUpdateMgt extends AbstractTestUpdateGraphMgt
 {
 
     public static TestSuite suite() {

@@ -104,7 +104,7 @@ public class QueryEngineSDB extends QueryEngineBase
         
         // Do property functions.
         op = Transformer.transform(new TransformPropertyFunction(context), op) ;
-        op = Transformer.transform(new TransformFilterEquality(false), op) ;
+        op = Transformer.transform(new TransformFilterEquality(), op) ;
         
         // Quad it now so it can be passed to Compile.compile
         op = Algebra.toQuadForm(op) ;
