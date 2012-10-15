@@ -45,14 +45,14 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     final private Set<Long> iteratorBlocks = new HashSet<Long>() ;
     final private Map<Long, Block> writeBlocks = new HashMap<Long, Block>() ;
     final private Map<Long, Block> freedBlocks = new HashMap<Long, Block>() ;
-    private boolean closed = false ;
+    private boolean closed  = false ;
+    private boolean active  = false ;   // In a transaction, or preparing.
     
     public BlockMgrJournal(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         reset(txn, fileRef, underlyingBlockMgr) ;
         if ( txn.getMode() == ReadWrite.READ &&  underlyingBlockMgr instanceof BlockMgrJournal )
             System.err.println("Two level BlockMgrJournal") ;
-        
     }
 
     @Override
@@ -64,8 +64,10 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void commitPrepare(Transaction txn)
     {
+        checkActive() ;
         for ( Block blk : writeBlocks.values() )
             writeJournalEntry(blk) ;
+        this.active = false ;
     }
 
     @Override
@@ -77,6 +79,8 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     @Override
     public void abort(Transaction txn)
     {
+        checkActive() ;
+        this.active = false ;
         // Do clearup of in-memory structures in clearup().
     }
     
@@ -84,27 +88,24 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
     public void commitClearup(Transaction txn)
     {
         // Persistent state is in the system journal.
-        reset(txn) ;
+        clear(txn) ;
     }
     
-//    public Iterator<Block> updatedBlocks()  { return writeBlocks.values().iterator() ; }
-//    public Iterator<Block> freedBlocks()    { return freedBlocks.values().iterator() ; }
-
     /** Set, or reset, this BlockMgr.
-     *  Enables it to be reused when already part of a datastructure. 
      */
     private void reset(Transaction txn, FileRef fileRef, BlockMgr underlyingBlockMgr)
     {
         this.fileRef = fileRef ;
         this.blockMgr = underlyingBlockMgr ;
-        reset(txn) ;
+        this.active = true ;
+        clear(txn) ;
     }
     
-    private void reset(Transaction txn)
+    private void clear(Transaction txn)
     {
         this.transaction = txn ;
         this.readBlocks.clear() ;
-        iteratorBlocks.clear() ;
+        this.iteratorBlocks.clear() ;
         this.writeBlocks.clear() ;
         this.freedBlocks.clear() ;
     }
@@ -118,8 +119,11 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         Block block = blockMgr.allocate(blockSize) ;
         // [TxTDB:TODO]
         // But we "copy" it by allocating ByteBuffer space.
-        block = block.replicate( ) ;
-        writeBlocks.put(block.getId(), block) ;
+        if ( active ) 
+        {
+            block = block.replicate( ) ;
+            writeBlocks.put(block.getId(), block) ;
+        }
         return block ;
     }
 
@@ -130,9 +134,9 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         Block block = localBlock(id) ;
         if ( block != null )
             return block ;
-        
         block = blockMgr.getRead(id) ;
-        readBlocks.add(block.getId()) ;
+        if ( active ) 
+            readBlocks.add(block.getId()) ;
         return block ;
     }
 
@@ -146,13 +150,17 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
             block = blockMgr.getReadIterator(id) ;
         if ( block == null )
             throw new BlockException("No such block: "+getLabel()+" "+id) ;
-        iteratorBlocks.add(block.getId()) ;
+        if ( active ) 
+            iteratorBlocks.add(block.getId()) ;
         return block ;
     }
 
     @Override
     public Block getWrite(long id)
     {
+        // NB: If we are in a stack of BlockMgrs, after a transaction has committed,
+        // we would be called via getRead and the upper Blockgr does the promotion. 
+        checkActive() ;
         checkIfClosed() ;
         Block block = localBlock(id) ;
         if ( block != null )
@@ -183,6 +191,7 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
 
     private Block _promote(Block block)
     {
+        checkActive() ; 
         block = block.replicate() ;
         writeBlocks.put(block.getId(), block) ;
         return block ;
@@ -261,6 +270,16 @@ public class BlockMgrJournal implements BlockMgr, TransactionLifecycle
         if ( closed )
             Log.fatal(this, "Already closed: "+transaction.getTxnId()) ;
     }
+
+    private void checkActive()
+    {
+        if ( ! active )
+            Log.fatal(this, "Not active: "+transaction.getTxnId()) ;
+        TxnState state = transaction.getState() ; 
+        if ( state != TxnState.ACTIVE && state != TxnState.PREPARING )
+            Log.fatal(this, "**** Not active: "+transaction.getTxnId()) ;
+    }
+
 
     @Override
     public void sync()
