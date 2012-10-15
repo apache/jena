@@ -58,7 +58,7 @@ public class TestService {
 			}
 			else
 			{
-				Assert.fail( "Expected SocketTimeoutException" );
+				Assert.fail( "Expected SocketTimeoutException, instead got: " + expected.getCause().getMessage() );
 			}
 		}
 
@@ -89,7 +89,7 @@ public class TestService {
 			}
 			else
 			{
-				Assert.fail( "Expected SocketTimeoutException" );
+			    Assert.fail( "Expected SocketTimeoutException, instead got: " + expected.getCause().getMessage() );
 			}
 		}	
 	}
@@ -119,7 +119,7 @@ public class TestService {
 			}
 			else
 			{
-				Assert.fail( "Expected SocketTimeoutException" );
+			    Assert.fail( "Expected SocketTimeoutException, instead got: " + expected.getCause().getMessage() );
 			}
 		}	
 	}
