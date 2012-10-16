@@ -128,14 +128,11 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src</sourceDirectory>
-    <testSourceDirectory>src-test</testSourceDirectory>
-    
     <resources>
       <resource>
         <targetPath>com/hp/hpl/jena/sdb/</targetPath>
         <filtering>true</filtering>
-        <directory>resources</directory>
+        <directory>src/main/resources</directory>
       </resource>
     </resources>
 
