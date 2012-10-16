@@ -54,6 +54,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 
 public class FusekiCmd extends CmdARQ
 {
@@ -158,6 +159,11 @@ public class FusekiCmd extends CmdARQ
     public FusekiCmd(String...argv)
     {
         super(argv) ;
+        
+        if ( false )
+            // Consider ...
+            TransactionManager.QueueBatchSize =  TransactionManager.QueueBatchSize / 2 ;
+        
         getUsage().startCategory("Fuseki") ;
         addModule(modDataset) ;
         add(argMem,     "--mem",                "Create an in-memory, non-persistent dataset for the server") ;
