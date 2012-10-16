@@ -18,9 +18,6 @@
 
 package org.openjena.riot;
 
-import static org.openjena.riot.ErrorHandlerFactory.errorHandlerNoLogging ;
-import static org.openjena.riot.ErrorHandlerFactory.getDefaultErrorHandler ;
-import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
@@ -30,11 +27,7 @@ import org.openjena.riot.lang.* ;
 import org.openjena.riot.langsuite.TestSuiteRDFJSON ;
 import org.openjena.riot.langsuite.TestSuiteTrig ;
 import org.openjena.riot.langsuite.TestSuiteTurtle ;
-import org.openjena.riot.out.TestNodeFmt ;
-import org.openjena.riot.out.TestNodeFmtLib ;
-import org.openjena.riot.out.TestOutput ;
-import org.openjena.riot.out.TestOutputNTriples ;
-import org.openjena.riot.out.TestOutputRDFJSON;
+import org.openjena.riot.out.* ;
 import org.openjena.riot.pipeline.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
 import org.openjena.riot.tokens.TestTokenizer ;
