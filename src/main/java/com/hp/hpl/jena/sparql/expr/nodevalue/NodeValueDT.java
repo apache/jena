@@ -27,24 +27,13 @@ import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYear ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDgYearMonth ;
 import static com.hp.hpl.jena.datatypes.xsd.XSDDatatype.XSDtime ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
-import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 
 public class NodeValueDT extends NodeValue
 {
-    private static DatatypeFactory datatypefactory = null ;
-    static
-    {
-        try { datatypefactory = DatatypeFactory.newInstance() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new ARQInternalErrorException("Can't create a javax.xml DatatypeFactory") ; }
-    }
-    
     final private XMLGregorianCalendar datetime ;
     
     public NodeValueDT(String lex, Node n)
@@ -56,12 +45,12 @@ public class NodeValueDT extends NodeValue
             if ( lex.endsWith("Z") )
             {
                 lex = lex.substring(0, lex.length()-1) ;
-                datetime = datatypefactory.newXMLGregorianCalendar(lex) ;
+                datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex) ;
                 datetime.setTimezone(0) ;
                 return ;
             }
         }
-        datetime = datatypefactory.newXMLGregorianCalendar(lex) ;
+        datetime = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lex) ;
     }
 
     // Look at datatype.

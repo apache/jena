@@ -308,7 +308,6 @@ public class NodeValueOps
         GregorianCalendar gcal2 = cal2.toGregorianCalendar() ;
         long x1 = gcal1.getTimeInMillis() ;
         long x2 = gcal2.getTimeInMillis() ;
-        //return datatypefactory.newDurationDayTime(x1-x2) ;
         return NodeValue.xmlDatatypeFactory.newDuration(x1-x2) ;
     }
 
