@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.ContentType ;
@@ -304,6 +305,22 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             // lang = Lang.guess(action.request.getRequestURI()) ;
         
         ContentType ct = ContentType.parse(contentTypeHeader) ;
+        
+        // Use WebContent names
+        if ( "multipart/form-data".equalsIgnoreCase(ct.getContentType()) )
+        {
+            //log.warn("multipart/form-data not supported (yet)") ;
+            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
+            return null ;
+        }
+        
+        if ("multipart/mixed".equals(ct.getContentType()) )
+        {
+            //log.warn("multipart/mixed not supported") ;
+            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
+            return null ;
+        }
+
         int len = action.request.getContentLength() ;
         Lang lang = FusekiLib.langFromContentType(ct.getContentType()) ;
         if ( lang == null )
