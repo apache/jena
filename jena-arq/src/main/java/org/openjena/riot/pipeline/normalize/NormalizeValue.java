@@ -25,14 +25,12 @@ import java.text.DecimalFormatSymbols ;
 import java.text.NumberFormat ;
 import java.util.Locale ;
 
-import javax.xml.datatype.DatatypeConfigurationException ;
-import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.sparql.util.DateTimeStruct ;
 
@@ -58,15 +56,6 @@ class NormalizeValue
         }
     } ;
     
-    private static DatatypeFactory datatypeFactory = null ;
-    static
-    { 
-        try 
-        { datatypeFactory = DatatypeFactory.newInstance() ; }
-        catch (DatatypeConfigurationException ex)
-        { throw new ARQException("NormalizeValue", ex) ; }
-    }
-    
     static DatatypeHandler dtAnyDateTime = new DatatypeHandler() {
         @Override
         public Node handle(Node node, String lexicalForm, RDFDatatype datatype)
@@ -80,7 +69,7 @@ class NormalizeValue
             // Record for history. 
             if ( false )
             {
-                XMLGregorianCalendar xcal = datatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
+                XMLGregorianCalendar xcal = NodeValue.xmlDatatypeFactory.newXMLGregorianCalendar(lexicalForm) ;
                 if ( xcal.getFractionalSecond() != null )
                 {
                     if ( xcal.getFractionalSecond().compareTo(BigDecimal.ZERO) == 0 )
