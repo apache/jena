@@ -19,17 +19,10 @@
 package com.hp.hpl.jena.sparql;
 
 
-import static org.openjena.riot.ErrorHandlerFactory.errorHandlerNoLogging ;
-import static org.openjena.riot.ErrorHandlerFactory.getDefaultErrorHandler ;
-import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.openjena.atlas.TC_Atlas ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
