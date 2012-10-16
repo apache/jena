@@ -198,22 +198,11 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected void perform(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response)
     {
         validate(request) ;
-        
-//        // Decide on t 
-//        String uri = request.getRequestURI() ;
-//        String method = request.getMethod() ;
-//        String dsname = findDataset(uri) ;
-//        String trailing = uri.substring(dsname.length()+1) ;    // Skip the "/"
-//        String qs = request.getQueryString() ;
-
-        //Indirect
         HttpActionREST action = new HttpActionREST(id, desc, request, response, verbose_debug) ;
-        // Direct 
         dispatch(action) ;
     }
 
-    // Public for general dispatch
-    public void dispatch(HttpActionREST action)
+    private void dispatch(HttpActionREST action)
     {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
@@ -291,14 +280,10 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             errorOccurred(ex.getMessage()) ;
             return ;
         }
-        
     }
 
     protected static DatasetGraph parseBody(HttpActionREST action)
     {
-        // DRY - separate out conneg.
-        // This is reader code as for client GET.
-        // ---- ContentNeg / Webreader.
         String contentTypeHeader = action.request.getContentType() ;
         if ( contentTypeHeader == null )
             errorBadRequest("No content type: "+contentTypeHeader) ;
@@ -307,14 +292,14 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         ContentType ct = ContentType.parse(contentTypeHeader) ;
         
         // Use WebContent names
-        if ( "multipart/form-data".equalsIgnoreCase(ct.getContentType()) )
+        if ( WebContent.contentTypeMultiForm.equalsIgnoreCase(ct.getContentType()) )
         {
             //log.warn("multipart/form-data not supported (yet)") ;
             error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
             return null ;
         }
         
-        if ("multipart/mixed".equals(ct.getContentType()) )
+        if (WebContent.contentTypeMultiMixed.equals(ct.getContentType()) )
         {
             //log.warn("multipart/mixed not supported") ;
             error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/mixed not supported") ;
