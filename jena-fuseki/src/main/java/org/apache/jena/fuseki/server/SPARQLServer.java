@@ -210,6 +210,11 @@ public class SPARQLServer
         
     }
     
+    // Experimental - off by default.
+    // The überservlet sits on the dataset name and handles all requests.
+    // Includes direct naming and quad access to the dataset.
+    public static boolean überServlet = false ;
+
     private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc, boolean enableCompression)
     {
         String datasetPath = sDesc.name ;
@@ -231,10 +236,6 @@ public class SPARQLServer
         HttpServlet sparqlHttpRW    = new SPARQL_REST_RW(verboseLogging) ;
         HttpServlet sparqlDataset   = new SPARQL_UberServlet.AccessByConfig(verboseLogging) ;
 
-        // The überservlet sits on the dataset name and handles all requests.
-        // Includes direct naming and quad access to the dataset.
-        final boolean überServlet = false ;
-        
         if ( ! überServlet )
         {
             // If uberserver, these are unnecessary but can be used.
