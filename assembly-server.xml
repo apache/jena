@@ -42,7 +42,7 @@ just want -jar-with-dependences to by replaced by -sys as  classifier
           <exclude>**/DEPENDENCIES*</exclude>
           <exclude>META-INF/**</exclude>
           <!-- Exclude folders - this INFO level "skipping" messages -->
-          <!-- <exclude>%regex[.*/]</exclude> --> <!-- This isn't working in Windows -->
+          <exclude>%regex[.*/.?]</exclude> 
           <exclude>about.html</exclude>
         </excludes>
       </unpackOptions>
