@@ -124,6 +124,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
+    private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber") ;   // Use the uberservlet (experimental)
     
     private static ArgDecl argHome          = new ArgDecl(ArgDecl.HasValue, "home") ;
     private static ArgDecl argPages         = new ArgDecl(ArgDecl.HasValue, "pages") ;
@@ -181,6 +182,8 @@ public class FusekiCmd extends CmdARQ
         add(argMgtPort, "--mgt=port",           "Enable the management commands on the given port") ; 
         add(argHome, "--home=DIR",              "Root of Fuseki installation (overrides environment variable FUSEKI_HOME)") ; 
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
+        
+        add(argUber) ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -365,6 +368,9 @@ public class FusekiCmd extends CmdARQ
                 throw new CmdException(argGZip.getNames().get(0)+": Not understood: "+getValue(argGZip)) ;
             enableCompression = super.hasValueOfTrue(argGZip) ;
         }
+        
+        if ( contains(argUber) )
+            SPARQLServer.überServlet = true ;
     }
 
     private static String sort_out_dir(String path)
