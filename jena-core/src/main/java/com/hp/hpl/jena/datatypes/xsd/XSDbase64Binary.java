@@ -78,5 +78,11 @@ public class XSDbase64Binary extends XSDDatatype {
    
     @Override
     public int getHashCode( LiteralLabel lit )
-        { return getHashCode( (byte []) lit.getValue() ); }
+    {
+        // Java arrays are not equal by value.
+        if ( lit.isWellFormed() )
+            return getHashCode( (byte []) lit.getValue() );
+        else
+            return lit.getLexicalForm().hashCode() ;
+    }
 }
