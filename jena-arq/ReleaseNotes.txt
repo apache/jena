@@ -4,6 +4,8 @@ ChangeLog for ARQ
 
 ==== ARQ 2.9.4
 
++ Deprecate syntax support for SPARQL/Update (the W3C submission - this is not SPARQL 1.1 Update)
+  for several cycles of migration support only.  
 + Blank node labels can not be reused across different INSERT DATA operations in the same SPARQL Update Request
   (spec clarification) 
 + JENA-322 : Make jcl-over-slf4 a required dependency

@@ -3,6 +3,11 @@ Release Notes
 
 ==== Jena 2.7.4
 
++ Deprecation of some operations in BulkUpdateHandler
+  Long term, graph level BulkUpdateHandler wil be removed, and the necessary operations moved to Graph
+  There wil be no client API changes. 
++ Deprecate DAML+OIL support.
++ JENA-335 : Fix to XSD hexBinary and XSD base64Binary to handle illegal lexical forms. 
 + The command tool scripts for linux/unix have been rewritten so that
   no environment setting is needed.  The correct environment variable 
   is JENA_HOME - this is autmatically set unless already set.
