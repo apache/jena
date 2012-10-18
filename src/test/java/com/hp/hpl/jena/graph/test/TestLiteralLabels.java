@@ -24,63 +24,74 @@ import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
 
 import junit.framework.*;
 
-/**
-    Tests submitted By: Wolfgang Groiss (littlelui) via SF bugtracker, incorporated
-    into new test class by kers.
-    
-    @author kers
-*/
 public class TestLiteralLabels extends GraphTestBase
+{
+    public TestLiteralLabels(String name)
     {
-    public TestLiteralLabels( String name )
-        { super( name );  }
+        super(name) ;
+    }
 
     public static Test suite()
-        { return new TestSuite( TestLiteralLabels.class ); }
-    
-    public void testHashCode()  
-        {
-        LiteralLabel ll = LiteralLabelFactory.create( "test", "", null );
-        ll.hashCode();
-        }
+    {
+        return new TestSuite(TestLiteralLabels.class) ;
+    }
 
-    public void testHashCode2() 
-        {
-        LiteralLabel ll = LiteralLabelFactory.create( "test",  "", null );
-        ll.hashCode();
-        }    
-    
-    public void testHashCodesForBase64Binary()
-        {
-        LiteralLabel A = node( "'0123'http://www.w3.org/2001/XMLSchema#base64Binary" ).getLiteral();
-        LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#base64Binary" ).getLiteral();
-        assertEquals( A.hashCode(), B.hashCode() );
-        }
-    
-    public void testHashCodesForHexBinary()
-        {
-        LiteralLabel A = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
-        LiteralLabel B = node( "'0123'http://www.w3.org/2001/XMLSchema#hexBinary" ).getLiteral();
-        assertEquals( A.hashCode(), B.hashCode() );
-        }
-    
+    public void testHashCode()
+    {
+        LiteralLabel ll = LiteralLabelFactory.create("test", "", null) ;
+        ll.hashCode() ;
+    }
+
+    public void testHashCode2()
+    {
+        LiteralLabel ll1 = LiteralLabelFactory.create("test", "", null) ;
+        LiteralLabel ll2 = LiteralLabelFactory.create("test", "", null) ;
+        assertEquals(ll1.hashCode(), ll2.hashCode()) ;
+    }
+
+    public void testHashCodesForBase64Binary_1()
+    {
+        LiteralLabel A = node("'0123'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral() ;
+        LiteralLabel B = node("'0123'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral() ;
+        assertEquals(A.hashCode(), B.hashCode()) ;
+    }
+
+    public void testHashCodesForBase64Binary_2()
+    {
+        LiteralLabel A = node("'illgeal'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral() ;
+        LiteralLabel B = node("'illgeal'http://www.w3.org/2001/XMLSchema#base64Binary").getLiteral() ;
+        assertEquals(A.hashCode(), B.hashCode()) ;
+    }
+
+    public void testHashCodesForHexBinary_1()
+    {
+        LiteralLabel A = node("'0123'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral() ;
+        LiteralLabel B = node("'0123'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral() ;
+        assertEquals(A.hashCode(), B.hashCode()) ;
+    }
+
+    public void testHashCodesForHexBinary_2()
+    {
+        LiteralLabel A = node("'illegal'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral() ;
+        LiteralLabel B = node("'illegal'http://www.w3.org/2001/XMLSchema#hexBinary").getLiteral() ;
+        assertEquals(A.hashCode(), B.hashCode()) ;
+    }
+
     public void testDatatypeIsEqualsNotCalledIfSecondOperandIsNotTyped()
-        {
-        RDFDatatype d = new BaseDatatype( "eh:/FakeDataType" ) 
-            {
+    {
+        RDFDatatype d = new BaseDatatype("eh:/FakeDataType") {
             @Override
-            public boolean isEqual( LiteralLabel A, LiteralLabel B ) 
-                { 
-                fail( "RDFDatatype::isEquals should not be called if B has no datatype" ); 
-                return false; 
-                }
-            };
-        LiteralLabel A = LiteralLabelFactory.create( "17", "", d );
-        LiteralLabel B = LiteralLabelFactory.create( "17", "", null );
-        assertFalse( A.sameValueAs( B ) );
-        }
+            public boolean isEqual(LiteralLabel A, LiteralLabel B)
+            {
+                fail("RDFDatatype::isEquals should not be called if B has no datatype") ;
+                return false ;
+            }
+        } ;
+        LiteralLabel A = LiteralLabelFactory.create("17", "", d) ;
+        LiteralLabel B = LiteralLabelFactory.create("17", "", null) ;
+        assertFalse(A.sameValueAs(B)) ;
+    }
 
-    // AFS
     public void testEquality1()
     {
         LiteralLabel A = LiteralLabelFactory.create("xyz") ;
