@@ -363,7 +363,7 @@ void ValuesClause() : { Token t ; }
 void Update() : { }
 {
    Prologue()
-   ( Update1() (<SEMICOLON>)* Update() )?
+   ( Update1() (<SEMICOLON>)* Update())?
 }
 void Update1() : { Update up ; }
 {
@@ -482,6 +482,7 @@ Update ModifyOld() :
        { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
 {
     <MODIFY>
+    { warnDeprecation("Deprecated: MODIFY: Use SPARQL 1.1 syntax of WITH ... DELETE {...} INSERT {...} WHERE {...}") ; }
     ( iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
     (DeleteClause(up))?
     (InsertClause(up))?
@@ -509,9 +510,10 @@ void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t 
 }
 void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
 {
-  ( (<INTO>)?
+  ( (<INTO> )?
      iri = iri()
      { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
+     { warnDeprecation("Deprecated: INSERT INTO: Use SPARQL 1.1 syntax of INSERT { GRAPH {...} }") ; }
    )?
 }
 void OptionalFromTarget(QuadAcc qp) : { String iri ; }
@@ -519,6 +521,7 @@ void OptionalFromTarget(QuadAcc qp) : { String iri ; }
   ( (<FROM>)?
      iri = iri()
      { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
+      { warnDeprecation("Deprecated: DELETE FROM: Use SPARQL 1.1 syntax of DELETE { GRAPH {...} }") ; }
    )?
 }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }

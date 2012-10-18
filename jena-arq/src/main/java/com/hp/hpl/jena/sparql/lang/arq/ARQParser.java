@@ -1718,6 +1718,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   final public Update ModifyOld() throws ParseException {
          UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ;
     jj_consume_token(MODIFY);
+      warnDeprecation("Deprecated: MODIFY: Use SPARQL 1.1 syntax of WITH ... DELETE {...} INSERT {...} WHERE {...}") ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1789,6 +1790,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       iri = iri();
        Node gn = createNode(iri) ; setAccGraph(qp, gn) ;
+       warnDeprecation("Deprecated: INSERT INTO: Use SPARQL 1.1 syntax of INSERT { GRAPH {...} }") ;
       break;
     default:
       jj_la1[58] = jj_gen;
@@ -1813,6 +1815,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       }
       iri = iri();
        Node gn = createNode(iri) ; setAccGraph(qp, gn) ;
+        warnDeprecation("Deprecated: DELETE FROM: Use SPARQL 1.1 syntax of DELETE { GRAPH {...} }") ;
       break;
     default:
       jj_la1[60] = jj_gen;
@@ -5541,17 +5544,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(3, xla); }
   }
 
-  private boolean jj_3R_128() {
-    if (jj_scan_token(LBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_108() {
-    if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_120()) return true;
-    return false;
-  }
-
   private boolean jj_3R_124() {
     if (jj_3R_128()) return true;
     return false;
@@ -5595,13 +5587,13 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_40()) return true;
+  private boolean jj_3R_98() {
+    if (jj_3R_109()) return true;
     return false;
   }
 
-  private boolean jj_3R_98() {
-    if (jj_3R_109()) return true;
+  private boolean jj_3_1() {
+    if (jj_3R_40()) return true;
     return false;
   }
 
@@ -6574,6 +6566,17 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_109() {
     if (jj_scan_token(NOT)) return true;
     if (jj_scan_token(EXISTS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_128() {
+    if (jj_scan_token(LBRACKET)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_108() {
+    if (jj_scan_token(EXISTS)) return true;
+    if (jj_3R_120()) return true;
     return false;
   }
 

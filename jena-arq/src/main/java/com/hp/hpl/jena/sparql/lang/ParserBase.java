@@ -22,6 +22,8 @@ import java.math.BigInteger ;
 import java.util.HashSet ;
 import java.util.Set ;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
@@ -638,6 +640,12 @@ public class ParserBase
            }
         }
         return sb.toString() ;
+    }
+    
+    
+    protected void warnDeprecation(String msg)
+    {
+        Log.warn(this, msg) ;
     }
     
     public static void throwParseException(String msg, int line, int column)
