@@ -24,7 +24,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import tdb.TS_TDBLoader3 ;
 
 import com.hp.hpl.jena.sparql.engine.optimizer.reorder.ReorderLib ;
 import com.hp.hpl.jena.tdb.assembler.TS_TDBAssembler ;
@@ -61,7 +60,6 @@ import com.hp.hpl.jena.tdb.transaction.TS_Transaction ;
     , TS_Jena.class
     , TS_Transaction.class
     , TS_ObjectFile.class
-    , TS_TDBLoader3.class
 } )
 
 public class TC_TDB
