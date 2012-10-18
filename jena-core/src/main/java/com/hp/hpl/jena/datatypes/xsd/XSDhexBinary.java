@@ -78,6 +78,12 @@ public class XSDhexBinary extends XSDDatatype {
     
     @Override
     public int getHashCode( LiteralLabel lit )
-        { return getHashCode( (byte []) lit.getValue() ); }
-
+    {
+        // Can't use super.getHashCode as that does "value.hashCode"
+        // Java arrays are not equal by value and their has code of the sameValue array are different. 
+        if ( lit.isWellFormed() )
+            return getHashCode( (byte []) lit.getValue() );
+        else
+            return lit.getLexicalForm().hashCode() ;
+    }
 }

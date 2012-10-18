@@ -152,7 +152,7 @@ public class BaseDatatype implements RDFDatatype {
     protected static boolean isEqualPlain(LiteralLabel litLabel1, LiteralLabel litLabel2) {
         return litLabel1.getDatatype() == litLabel2.getDatatype()
         && litLabel1.getValue().equals(litLabel2.getValue());
-}
+    }   
     
     /**
          Default implementation of getHashCode() delegates to the default from
