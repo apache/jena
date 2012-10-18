@@ -33,13 +33,16 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.migrate.AbstractTestTransaction ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 public class TestTransactionTDB extends AbstractTestTransaction
 {
-    static final String DIR = ConfigTest.getTestingDirDB() ; 
+    static boolean nonDeleteableMMapFiles = SystemTDB.isWindows ;
+    String DIR = null ; 
     
     @Before public void before()
     {
+        DIR = nonDeleteableMMapFiles ? ConfigTest.getTestingDirUnique() : ConfigTest.getTestingDirDB() ;
         FileOps.clearDirectory(DIR) ; 
         StoreConnection.release(new Location(DIR)) ;
     }
