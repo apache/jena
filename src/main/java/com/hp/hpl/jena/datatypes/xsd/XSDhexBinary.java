@@ -32,11 +32,14 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
  */
 public class XSDhexBinary extends XSDDatatype {
-    
+    // See also XSDbase64Binary.
+    // XSDhexBinary and XSDbase64Binary could share via XSDBaseBinary.
+
     /**
      * Constructor. 
      * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
+     * used to lookup a type    
+ definition from the Xerces schema factory.
      */
     public XSDhexBinary(String typeName) {
         super(typeName, null);
@@ -80,7 +83,7 @@ public class XSDhexBinary extends XSDDatatype {
     public int getHashCode( LiteralLabel lit )
     {
         // Can't use super.getHashCode as that does "value.hashCode"
-        // Java arrays are not equal by value and their has code of the sameValue array are different. 
+        // Java arrays are not equal by value and their hash code of the sameValue array are different.
         if ( lit.isWellFormed() )
             return getHashCode( (byte []) lit.getValue() );
         else
