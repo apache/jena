@@ -22,7 +22,7 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>jena-fuseki</name>
-  <version>0.2.6-SNAPSHOT</version>
+  <version>0.2.5-SNAPSHOT</version>
   <description>Jena SPARQL Server</description>
   <url>http://jena.apache.org/</url>
 
