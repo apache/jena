@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.graph.impl.AdhocDatatype;
-import com.hp.hpl.jena.rdf.model.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.graph.impl.AdhocDatatype ;
+import com.hp.hpl.jena.rdf.model.* ;
 
 /**
 	TestLiteralImpl - minimal, this is the first time an extra test has been needed above
@@ -81,24 +81,40 @@ public class TestLiteralImpl extends ModelTestBase
         assertSame( m2, l2.getModel() );
         }    
     
+    static class UniqueValueClass1 { 
+        String value ;
+        UniqueValueClass1(String value) { this.value = value ; }
+        @Override public String toString() { return value ; } 
+    }
+    
+    static class UniqueValueClass2 { 
+        String value ;
+        UniqueValueClass2(String value) { this.value = value ; }
+        @Override public String toString() { return value ; } 
+    }
+
     public void testSameAdhocClassUS()
     	{
         Model m = ModelFactory.createDefaultModel();
-        Resource ra = m.createResource( "eh:/rhubarb" );
-        Resource rb = m.createResource( "eh:/cottage" );
-        assertNull( "not expecting ResourceImpl to have RDF Datatype get", TypeMapper.getInstance().getTypeByValue( ra ) );
-        Literal la = m.createTypedLiteral( ra ); 
+        UniqueValueClass1 ra = new UniqueValueClass1("rhubarb") ;
+        UniqueValueClass1 rb = new UniqueValueClass1("cottage") ;
+        assertNull( "not expecting registered RDF Datatype", TypeMapper.getInstance().getTypeByValue( ra ) );
+        Literal la = m.createTypedLiteral( ra );    // Sets the type mapper - contaminates it with UniqueValueClass1
         Literal lb = m.createTypedLiteral( rb );
         assertInstanceOf( AdhocDatatype.class, la.getDatatype() );
         assertSame( la.getDatatype(), lb.getDatatype() );
+        assertNotNull(TypeMapper.getInstance().getTypeByValue( ra ) );
     	}
-    
+
+    // Tests are not necessarily run in order so use UniqueValueClass2
     public void testTypedLiteralTypesAndValues()
         {
         Model m = ModelFactory.createDefaultModel();
-        Resource r = m.createResource( "eh:/rhubarb" );
-        Literal typed = m.createTypedLiteral( r ); 
-        Literal string = m.createLiteral( r.getURI() );
+        //Resource r = m.createResource( "eh:/rhubarb" );
+        UniqueValueClass2 r = new UniqueValueClass2("rhubarb") ;
+        assertNull( "not expecting registered RDF Datatype", TypeMapper.getInstance().getTypeByValue( r ) );
+        Literal typed = m.createTypedLiteral( r );      // Sets the type mapper - contaminates it with UniqueValueClass2
+        Literal string = m.createLiteral( r.value );
         assertEquals( string.getLexicalForm(), typed.getLexicalForm() );
         assertEquals( string.getLanguage(), typed.getLanguage() );
         assertDiffer( string.getDatatypeURI(), typed.getDatatypeURI() );
@@ -108,4 +124,4 @@ public class TestLiteralImpl extends ModelTestBase
         assertEquals( r, typed.getValue() );
         assertDiffer( typed.hashCode(), string.hashCode() );
         }
-    }
+}
