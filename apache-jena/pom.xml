@@ -57,15 +57,6 @@
     <url>http://svn.apache.org/viewvc//jena/tags/jena-2.7.4/trunk</url>
   </scm>
 
-  <!-- Inherit would be better-->
-  <properties>
-    <ver.jena>2.7.2</ver.jena>
-    <ver.arq>2.9.2</ver.arq>
-    <ver.tdb>0.9.2</ver.tdb>
-    <ver.fuseki>0.2.3</ver.fuseki>
-    <ver.iri>0.9.2</ver.iri>
-  </properties>
-
   <dependencies>
 
     <dependency>

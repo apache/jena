@@ -64,13 +64,13 @@ will have version numbers in them).
 # Build modules.
 mvn clean package
 
-The download will be in apache-jena/target/ and jena-fuseki/target.
+The downloads will be in apache-jena/target/ and jena-fuseki/target.
 
 == Sources from subversion
 
 Alternatively, you can build from the development codebase.
 
-The Jena2 subversion area is rooted at:
+The Jena subversion area is rooted at:
 
 https://svn.apache.org/repos/asf/jena/trunk/
 
