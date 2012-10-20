@@ -1,6 +1,10 @@
 ChangeLog for TDB
 =================
 
+==== Jena 2.10.0
+
++ Consolidation of versions numbers.
+
 ==== TDB 0.9.4
 
 + Enable batching of flushing commits to the main database - 
