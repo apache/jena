@@ -1,6 +1,10 @@
 Release Notes 
 =============
 
+==== Jena 2.10.0
+
++ Consolidation of versions numbers.
+
 ==== Jena 2.7.4
 
 + Deprecation of some operations in BulkUpdateHandler
