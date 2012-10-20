@@ -2,6 +2,11 @@ ChangeLog for ARQ
 =================
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
+
+==== Jena 2.10.0
+
++ Consolidation of versions numbers.
+
 ==== ARQ 2.9.4
 
 + Deprecate syntax support for SPARQL/Update (the W3C submission - this is not SPARQL 1.1 Update)
