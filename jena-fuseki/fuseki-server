@@ -50,7 +50,8 @@ cygwin=false
 case "`uname`" in
     CYGWIN*) cygwin=true;;
 esac
-if [ "$cygwin" == "true" ]; then
+if [ "$cygwin" = "true" ]
+then
     JAR=`cygpath -w "$JAR"`
     FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
 fi
