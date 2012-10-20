@@ -18,20 +18,21 @@
 
 <!-- POM file for Jena IRI library -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>jena-iri</name>
-  <!--<version>${ver.iri}</version>-->
-  <version>0.9.5-SNAPSHOT</version>
+  <version>0.9.4-SNAPSHOT</version>
   <description />
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>5-SNAPSHOT</version>
+    <version>4-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 

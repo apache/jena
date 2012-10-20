@@ -16,18 +16,20 @@
    limitations under the License.
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
   <name>jena-tdb</name>
-  <version>0.9.5-SNAPSHOT</version>
+  <version>0.9.4-SNAPSHOT</version>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>5-SNAPSHOT</version>
+    <version>4-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -53,55 +55,37 @@
   
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-
-    <ver.jena>2.7.2-SNAPSHOT</ver.jena>
-    <ver.arq>2.9.2-SNAPSHOT</ver.arq>
-    
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
- 
   </properties>
-
-  <!-- Testing against staged artifacts - ->
-  <repositories>
-    <repository>
-      <id>apache.jena.staging</id>
-      <name>Apache jena Staging Repository</name>
-      <url>https://repository.apache.org/content/repositories/releases/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  -->
 
   <dependencies>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.9.5-SNAPSHOT</version>
+      <version>2.9.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
       <classifier>tests</classifier>
-      <version>2.9.5-SNAPSHOT</version>
+      <version>2.9.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
      <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.7.5-SNAPSHOT</version>
+      <version>2.7.4-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
       <classifier>tests</classifier>
-      <version>2.7.5-SNAPSHOT</version>
+      <version>2.7.4-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
 
