@@ -31,6 +31,7 @@
   <url>http://jena.apache.org/</url>
 
   <properties>
+    <ver.jena-tdb>0.9.4</ver.jena-tdb>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
@@ -41,16 +42,16 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-tdb</artifactId>
+      <version>${ver.jena-tdb}</version>
+    </dependency>
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.10</version>
       <type>jar</type>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.jena</groupId>
-      <artifactId>jena-tdb</artifactId>
-      <version>0.9.3</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>

@@ -55,8 +55,8 @@
 
   <properties>
     <ver.lucene>3.6.1</ver.lucene>
-    <ver.arq>2.9.4-SNAPSHOT</ver.arq>
-    <ver.tdb>0.9.4-SNAPSHOT</ver.tdb>
+    <ver.arq>2.9.4</ver.arq>
+    <ver.tdb>0.9.4</ver.tdb>
   </properties>
 
   <dependencies>

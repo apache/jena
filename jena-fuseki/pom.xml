@@ -74,7 +74,6 @@
     <assembly.soh.name>${this.root}</assembly.soh.name>
     <assembly.zip.name>${this.root}</assembly.zip.name>
 
-    <!-- 7.6.5.v20120716 -->
     <!-- 8.1.5.v20120716 -->
     <ver.jetty>7.6.5.v20120716</ver.jetty>
     <ver.velocity>1.7</ver.velocity>
@@ -83,8 +82,6 @@
     <ver.httpcore>4.1.3</ver.httpcore>
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
     <ver.commons-codec>1.5</ver.commons-codec>
-    <ver.slf4j>1.6.4</ver.slf4j>
-    <ver.log4j>1.2.16</ver.log4j>
     
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>

@@ -24,7 +24,6 @@
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
   <name>jena-iri</name>
-  <!--<version>${ver.iri}</version>-->
   <version>0.9.4</version>
   <description />
 

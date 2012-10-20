@@ -51,11 +51,13 @@
   </scm>
 
   <properties>
-    <ver.junit>4.9</ver.junit>
     <ver.slf4j>1.6.4</ver.slf4j>
     <ver.log4j>1.2.16</ver.log4j>
+    <ver.junit>4.9</ver.junit>
+
     <jdk.version>1.6</jdk.version>
     <targetJdk>${jdk.version}</targetJdk> <!-- MPMD-86 workaround -->
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
