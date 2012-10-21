@@ -29,9 +29,6 @@ import java.util.* ;
 
 /** An N3 pretty printer.
  *  Tries to make N3 data look readable - works better on regular data.
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.6 2011-03-22 11:30:33 andy_seaborne Exp $
  */
 
 

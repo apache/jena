@@ -22,9 +22,6 @@ import com.hp.hpl.jena.shared.JenaException;
 
 /** QueryParseException is root exception for all (intentional) exceptions
  *  from the various parsers where the error is to do with the syntax of a query.
- *  
- * @author		Andy Seaborne
- * @version 	$Id: TurtleParseException.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
  */
 
 

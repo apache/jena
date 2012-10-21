@@ -74,9 +74,6 @@ NetworkInterface ni = NetworkInterface.getByInetAddress(address)
 */
 
 /** Generator for timebased UUIDs (version 1, variant 2)
- * 
- * @author		Andy Seaborne
- * @version 	$Id: UUID_V1_Gen.java,v 1.2 2011-05-05 20:48:51 andy_seaborne Exp $
  */
 
 

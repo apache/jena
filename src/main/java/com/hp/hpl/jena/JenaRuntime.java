@@ -26,9 +26,6 @@ import com.hp.hpl.jena.util.Metadata ;
 
 /** Methods and constants that define features of the current the environment.
  *  Primarily for other parts of the Jena framework. 
- * 
- * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.2 2009-10-11 16:56:52 andy_seaborne Exp $
  */
 
 public class JenaRuntime

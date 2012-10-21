@@ -20,10 +20,6 @@ package com.hp.hpl.jena.n3.turtle;
 
 import com.hp.hpl.jena.graph.Triple;
 
-/**
- * @author Andy Seaborne
- * @version $Id: TurtleEventNull.java,v 1.1 2009-06-29 08:55:45 castagna Exp $
- */
 public class TurtleEventNull implements TurtleEventHandler
 {
     @Override

@@ -20,9 +20,6 @@ package com.hp.hpl.jena.util.junit;
 
 /** TestException a root exception for all (intentional) exceptions in tests setup,
  *  not a failure of the test itself (e.g. manifest problems)
- *  
- * @author		Andy Seaborne
- * @version 	$Id: TestException.java,v 1.1 2009-06-29 08:55:57 castagna Exp $
  */
 
 

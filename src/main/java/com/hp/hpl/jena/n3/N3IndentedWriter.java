@@ -23,9 +23,6 @@ import com.hp.hpl.jena.JenaRuntime ;
 
 /** Simple class that provides output with moving left margin.
  *  Does not cope with tabs or newlines in output strings.
- * 
- * @author		Andy Seaborne
- * @version 	$Id: N3IndentedWriter.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
  */
 
 // Not robust/complete enough for public use

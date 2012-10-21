@@ -37,9 +37,6 @@ import com.hp.hpl.jena.vocabulary.TestManifestX;
 
 /**
  * A test manifest for a single manifest file.
- * 
- * @author Andy Seaborne
- * @version $Id: Manifest.java,v 1.1 2009-06-29 08:55:57 castagna Exp $
  */
 
 public class Manifest

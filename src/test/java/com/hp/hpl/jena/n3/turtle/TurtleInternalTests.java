@@ -25,10 +25,6 @@ import com.hp.hpl.jena.n3.turtle.TurtleEventNull;
 import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
 import com.hp.hpl.jena.util.junit.TestUtils;
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: TurtleInternalTests.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
- */
 public class TurtleInternalTests extends TestSuite
 {
     static public TestSuite suite() {

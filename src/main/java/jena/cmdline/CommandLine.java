@@ -49,8 +49,6 @@ import java.util.* ;
  * <li>Options may be ended with - or --</li>
  * <li>Arguments with values can use "="</li>
  * </ul>
- * @author Andy Seaborne
- * @version $Id: CommandLine.java,v 1.1 2009-06-29 08:55:59 castagna Exp $
  */
 
 

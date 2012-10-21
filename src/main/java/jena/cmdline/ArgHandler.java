@@ -19,9 +19,6 @@
 package jena.cmdline;
 
 /** Interface for processing flag arguments.
- * 
- * @author Andy Seaborne
- * @version $Id: ArgHandler.java,v 1.1 2009-06-29 08:55:59 castagna Exp $
  */
 public interface ArgHandler
 {

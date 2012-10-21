@@ -19,9 +19,6 @@
 package com.hp.hpl.jena.shared.uuid;
 
 /** The nil UUID.  There is only one in the system.
- * 
- * @author Andy Seaborne
- * @version $Id: UUID_nil.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
  */
 
 public final
@@ -66,7 +63,6 @@ class UUID_nil extends JenaUUID
     @Override
     public int getVersion() { return version ; }
     
-    // Testing only.
     public static UUID_nil getNil() { return nil ; }
     public static String  getNilString() { return nilStr ; }
 }

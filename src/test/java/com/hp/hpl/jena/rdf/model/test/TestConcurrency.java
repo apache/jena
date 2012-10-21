@@ -22,10 +22,6 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.Lock;
 
 import junit.framework.*;
-/**
- * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.2 2010-03-07 21:06:25 andy_seaborne Exp $
- */
 public class TestConcurrency  extends TestSuite
 {
 

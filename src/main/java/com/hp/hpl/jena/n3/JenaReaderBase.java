@@ -30,9 +30,6 @@ import com.hp.hpl.jena.util.FileUtils;
 
 /** Abstract class that sorts out input streams, readers and base URIs, to call a
  * single worker function with model, UTF8 reader and visated base  
- *   
- * @author		Andy Seaborne
- * @version 	$Id: JenaReaderBase.java,v 1.2 2009-07-15 11:39:50 andy_seaborne Exp $
  */
 
 public abstract class JenaReaderBase implements RDFReader

@@ -33,7 +33,6 @@ import com.hp.hpl.jena.shared.BadURIException;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.1 2009-07-04 16:41:34 andy_seaborne Exp $,
  */
 public class TestPackage extends TestCase{
 

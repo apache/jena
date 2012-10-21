@@ -40,9 +40,6 @@ import com.hp.hpl.jena.rdf.model.*;
  *  <li>N3-TRIPLES: Triples, with prefixes.</li>
  *  </ul>
  *  </p>
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
  */
 
 
