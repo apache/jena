@@ -25,9 +25,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
 /** An implementation of Resource.
- *
- * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2010-01-19 10:06:17 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -382,13 +379,16 @@ public class ResourceImpl extends EnhNode implements Resource {
         { return (ModelCom) getGraph(); }
 
     @Override
-    public Resource getPropertyResourceValue( Property p )
-        {
-        for (StmtIterator it = listProperties( p ); it.hasNext();)
+    public Resource getPropertyResourceValue(Property p)
+    {
+        StmtIterator it = listProperties(p) ;
+        try {
+            while (it.hasNext())
             {
-            RDFNode n = it.next().getObject();
-            if (n.isResource()) return (Resource) n;
+                RDFNode n = it.next().getObject() ;
+                if (n.isResource()) return (Resource)n ;
             }
-        return null;
-        }
+            return null ;
+        } finally { it.close() ; }
+    }
 }
