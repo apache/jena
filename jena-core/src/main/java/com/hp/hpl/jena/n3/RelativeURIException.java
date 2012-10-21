@@ -18,14 +18,6 @@
 
 package com.hp.hpl.jena.n3;
 
-
-
-/** 
- * 
- * @author Andy Seaborne
- * @version $Id: RelativeURIException.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
- */
-
 public class RelativeURIException extends JenaURIException
 {
     public RelativeURIException(String msg) { super(msg) ; }

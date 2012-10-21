@@ -30,12 +30,6 @@ import com.hp.hpl.jena.shared.NotFoundException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
 
-/** com.hp.hpl.jena.brql.util.test.TestFileManager
- * 
- * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
- */
-
 public class TestFileManager extends TestCase
 {
     static Logger log = LoggerFactory.getLogger(TestFileManager.class) ;

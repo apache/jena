@@ -30,9 +30,6 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
 
 /** TestLocationMapper
- * 
- * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
  */
 
 public class TestLocationMapper extends TestCase

@@ -20,10 +20,6 @@ package com.hp.hpl.jena.n3;
 
 import junit.framework.* ;
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: N3TestSuite.java,v 1.1 2009-06-29 18:42:06 andy_seaborne Exp $
- */
 public class N3TestSuite extends TestSuite
 {
 	/* JUnit swingUI needed this */

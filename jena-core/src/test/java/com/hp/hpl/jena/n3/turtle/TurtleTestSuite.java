@@ -20,10 +20,6 @@ package com.hp.hpl.jena.n3.turtle;
 
 import junit.framework.* ;
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: TurtleTestSuite.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $
- */
 public class TurtleTestSuite extends TestSuite
 {
     static public TestSuite suite() {

@@ -21,8 +21,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception thrown when an attempt is made find something and it is not found.
-    
- 	@author Andy Seaborne
 */
 
 public class NotFoundException extends JenaException

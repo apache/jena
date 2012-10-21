@@ -19,9 +19,6 @@
 package com.hp.hpl.jena.n3;
 
 /** An simple N3 writer - writes N3 out as records, one per subject in the graph.
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPlain.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
  */
 
 

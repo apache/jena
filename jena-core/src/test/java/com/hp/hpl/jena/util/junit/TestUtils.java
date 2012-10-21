@@ -23,12 +23,6 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 
-/** com.hp.hpl.jena.query.test.TestUtils
- * 
- * @author Andy Seaborne
- * @version $Id: TestUtils.java,v 1.1 2009-06-29 08:55:57 castagna Exp $
- */
-
 public class TestUtils
 {
     public static Resource getResource(Resource r, Property p)

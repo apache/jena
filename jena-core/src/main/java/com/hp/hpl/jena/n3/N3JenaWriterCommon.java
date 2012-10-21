@@ -42,9 +42,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 /** Common framework for implementing N3 writers.
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.4 2009-12-09 16:03:45 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter

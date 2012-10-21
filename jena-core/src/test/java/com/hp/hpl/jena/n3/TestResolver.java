@@ -24,12 +24,6 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.n3.IRIResolver;
 import com.hp.hpl.jena.n3.JenaURIException;
 
-/** com.hp.hpl.jena.query.util.test.TestCaseURI
- * 
- * @author Andy Seaborne
- * @version $Id: TestResolver.java,v 1.1 2009-06-29 18:42:06 andy_seaborne Exp $
- */
-
 public class TestResolver extends TestCase
 {
     public static TestSuite suite()

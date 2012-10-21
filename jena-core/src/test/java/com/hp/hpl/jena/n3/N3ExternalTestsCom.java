@@ -27,10 +27,6 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.2 2011-03-22 11:26:39 andy_seaborne Exp $
- */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
 	// List of places
