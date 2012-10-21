@@ -24,10 +24,7 @@ import org.apache.jena.iri.IRIException;
 import org.apache.jena.iri.IRIFactory;
 import com.hp.hpl.jena.util.FileUtils;
 
-/** A simple class to access IRI resolution 
- * 
- * @author Andy Seaborne, Jeremy Carroll
- * */
+/** A simple class to access IRI resolution */
 
 public class IRIResolver {
 	/**

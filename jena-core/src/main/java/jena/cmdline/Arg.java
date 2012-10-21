@@ -21,9 +21,6 @@ package jena.cmdline;
 import java.util.* ;
 
 /** A command line argument that has been foundspecification.
- *
- * @author  Andy Seaborne
- * @version $Id: Arg.java,v 1.1 2009-06-29 08:55:59 castagna Exp $
  */
 public class Arg
 {

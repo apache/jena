@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
  *   <li>Lock promotion (turning read locks into write locks) is 
  *   deteched as an error</li>
  *  <ul>
- *   
- * @author      Andy Seaborne
- * @version     $Id: LockMRSW.java,v 1.2 2009-10-01 21:59:51 andy_seaborne Exp $
  */
 
 public class LockMRSW implements Lock 

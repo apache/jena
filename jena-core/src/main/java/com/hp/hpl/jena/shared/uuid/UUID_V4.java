@@ -22,8 +22,6 @@ import java.util.* ;
 import java.security.* ;
 
 /** Random number based UUIDs
- * @author		Andy Seaborne
- * @version 	$Id: UUID_V4.java,v 1.1 2009-06-29 08:55:40 castagna Exp $
  */
 public class UUID_V4 extends JenaUUID
 {

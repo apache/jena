@@ -41,7 +41,6 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.1 2009-07-04 16:41:34 andy_seaborne Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {

@@ -24,9 +24,6 @@ import com.hp.hpl.jena.rdf.model.*;
 /** A simple N3 writer - writes N3 out as triples with prefixes done.
  *  "N3 triples" - triples with N3 abbreviations and prefixes.
  *  Very simple.  
- *
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTriples.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
  */
 
 public class N3JenaWriterTriples extends N3JenaWriterCommon

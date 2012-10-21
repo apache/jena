@@ -67,9 +67,6 @@
  * <a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/intro.html">util.concurrent</a>.
  * This is a convenience wrapper that provides nested locks, a special case of reentrant locks,
  * that does some checking.
- *
- * @author      Andy Seaborne
- * @version     $Id: Lock.java,v 1.1 2009-06-29 08:55:34 castagna Exp $
  */
 
 package com.hp.hpl.jena.shared;

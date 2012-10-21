@@ -23,10 +23,6 @@ import junit.framework.* ;
 
 import com.hp.hpl.jena.rdf.model.*;
 
-/**
- * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.1 2009-06-29 18:42:06 andy_seaborne Exp $
- */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
 	/* JUnit swingUI needed this */

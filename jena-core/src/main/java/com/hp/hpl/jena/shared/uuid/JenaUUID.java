@@ -17,8 +17,6 @@
  */
 
 /** A class to create and recreate UUIDs.
- * @author   Andy Seaborne
- * @version  $Id: JenaUUID.java,v 1.2 2011-04-18 12:38:05 andy_seaborne Exp $
  * http://www.opengroup.org/onlinepubs/009629399/apdxa.htm
  */
 

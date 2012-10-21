@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.n3.turtle ;
 
-/* CVS $Id: TurtleTestVocab.java,v 1.1 2009-06-29 18:42:05 andy_seaborne Exp $ */
- 
 import com.hp.hpl.jena.rdf.model.*;
  
 /**
