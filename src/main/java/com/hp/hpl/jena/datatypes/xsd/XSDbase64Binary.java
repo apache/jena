@@ -18,40 +18,20 @@
 
 package com.hp.hpl.jena.datatypes.xsd;
 
-import java.util.Arrays;
+import org.apache.xerces.impl.dv.util.Base64 ;
 
-import org.apache.xerces.impl.dv.util.Base64;
-import com.hp.hpl.jena.datatypes.DatatypeFormatException;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 
 /**
  * Implement base64binary type. Most of the work is done in the superclass.
  * This only needs to implement the unparsing.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
  */
-public class XSDbase64Binary extends XSDDatatype {
-    // See also XSDhexBinary.
-    // XSDhexBinary and XSDbase64Binary could share via XSDBaseBinary.
-    /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
-     */
-    public XSDbase64Binary(String typeName) {
-        super(typeName, byte[].class);
-    }
-         
-    /**
-     * Test whether the given object is a legal value form
-     * of this datatype. Brute force implementation.
-     */
-    @Override
-    public boolean isValidValue(Object valueForm) {
-        return (valueForm instanceof byte[]);
-    }
+public class XSDbase64Binary extends XSDbinary {
     
+    public XSDbase64Binary(String typeName) {
+        super(typeName);
+    }
+
     /**
      * Convert a value of this datatype out
      * to lexical form.
@@ -63,28 +43,5 @@ public class XSDbase64Binary extends XSDDatatype {
         } else {
             throw new DatatypeFormatException("base64 asked to encode an unwrapped byte array");
         }
-    }
-    
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    @Override
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        return value1.getDatatype() == value2.getDatatype()
-            && Arrays.equals((byte[])value1.getValue(), (byte[])value2.getValue());
-//      && value1.getLexicalForm().equals(value2.getLexicalForm());  // bug tracking, not real code
-    }
-   
-    @Override
-    public int getHashCode( LiteralLabel lit )
-    {
-        // Can't use super.getHashCode as that does "value.hashCode"
-        // Java arrays are not equal by value and their hash code of the sameValue array are different. 
-        if ( lit.isWellFormed() )
-            return getHashCode( (byte []) lit.getValue() );
-        else
-            return lit.getLexicalForm().hashCode() ;
     }
 }
