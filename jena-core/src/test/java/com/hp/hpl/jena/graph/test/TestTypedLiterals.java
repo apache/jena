@@ -33,10 +33,7 @@ import com.hp.hpl.jena.datatypes.BaseDatatype ;
 import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.IllegalDateTimeFieldException ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDateTime ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDuration ;
+import com.hp.hpl.jena.datatypes.xsd.* ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType ;
 import com.hp.hpl.jena.enhanced.EnhNode ;
 import com.hp.hpl.jena.graph.Factory ;
@@ -54,9 +51,6 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 /**
  * Unit test for the typed literal machinery - including RDFDatatype,
  * TypeMapper and LiteralLabel.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2010-05-09 10:22:07 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -912,82 +906,63 @@ public class TestTypedLiterals extends TestCase {
        assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Double("2.3")));
     }
     
+    private static byte[] data = new byte[]{12, 42, 99};
     /**
      * Test binary types base64 and hexbinary
      */
-    public void testBinary() {
+    public void testBinary1() {
         // Check byte[] maps onto a binary type
         byte[] data = new byte[]{12, 42, 99};
         Literal l = m.createTypedLiteral(data);
         LiteralLabel ll = l.asNode().getLiteral();
-        assertEquals("binary test 1", ll.getDatatype(), XSDDatatype.XSDbase64Binary);
-        assertEquals("binary test 2", "DCpj", ll.getLexicalForm());
         
+        assertTrue("binary test 1", ll.getDatatype() instanceof XSDbinary);
+        
+        if ( ll.getDatatype() instanceof XSDhexBinary)
+            assertEquals("binary test 2a", "0C2A63", ll.getLexicalForm());
+        else if ( ll.getDatatype() instanceof XSDbase64Binary)
+            assertEquals("binary test 2b", "DCpj", ll.getLexicalForm());
+        else
+            fail("Unrecognized binary datatype") ;
+    }
+    
+    public void testBinary2() {
         // Check round tripping from value
-        LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDbase64Binary).asNode().getLiteral();
+        LiteralLabel l2 = m.createTypedLiteral("DCpj", XSDDatatype.XSDbase64Binary).asNode().getLiteral();
         Object data2 = l2.getValue();
         assertTrue("binary test 3", data2 instanceof byte[]);
         byte[] data2b = (byte[])data2;
-        assertEquals("binary test 4", data2b[0], 12);
-        assertEquals("binary test 5", data2b[1], 42);
-        assertEquals("binary test 6", data2b[2], 99);
-        assertEquals(l2, ll);
-        
-        l2 = m.createTypedLiteral("DCpj", XSDDatatype.XSDbase64Binary).asNode().getLiteral();
-        data2 = l2.getValue();
-        assertTrue("binary test 3", data2 instanceof byte[]);
-        data2b = ((byte[])data2);
-        assertEquals("binary test 4", data2b[0], 12);
-        assertEquals("binary test 5", data2b[1], 42);
-        assertEquals("binary test 6", data2b[2], 99);
-        
+        assertEquals("binary test 4", data2b[0], data[0]);
+        assertEquals("binary test 5", data2b[1], data[1]);
+        assertEquals("binary test 6", data2b[2], data[2]);
+    }
+    
+    public void testBinary3() {
         // Check hexBinary
-        l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
-        ll = l.asNode().getLiteral();
+        Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
+        LiteralLabel ll = l.asNode().getLiteral();
         assertEquals("binary test 1b", ll.getDatatype(), XSDDatatype.XSDhexBinary);
         assertEquals("binary test 2b", HexBin.encode(data), ll.getLexicalForm());
         
         // Check round tripping from value
-        l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
-        data2 = l2.getValue();
+        LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
+        Object data2 = l2.getValue();
         assertTrue("binary test 3b", data2 instanceof byte[]);
-        data2b = ((byte[])data2);
-        assertEquals("binary test 4b", data2b[0], 12);
-        assertEquals("binary test 5b", data2b[1], 42);
-        assertEquals("binary test 6b", data2b[2], 99);
+        byte[] data2b = ((byte[])data2);
+        assertEquals("binary test 4b", data2b[0], data[0]);
+        assertEquals("binary test 5b", data2b[1], data[1]);
+        assertEquals("binary test 6b", data2b[2], data[2]);
         assertEquals(l2, ll);
-
+    }
+        
+    public void testBinary4() {   
         Literal la = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         Literal lb = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         assertTrue("equality test", la.sameValueAs(lb));
         
         data = new byte[] {15, (byte)0xB7};
-        l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
+        Literal l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
         assertEquals("hexBinary encoding", "0FB7", l.getLexicalForm());
-    }
-    
-    /**
-     * Attempt to isolate a JDK-dependent bug that only appears under 1.4.1_*.
-     * This failed to provoke the bug.
-     */
-    public void XXtestBinaryBug() throws IOException {
-        Model orig = ModelFactory.createDefaultModel();
-        Resource r = orig.createResource("http://jena.hpl.hp.com/test#r");
-        Property p = orig.createProperty("http://jena.hpl.hp.com/test#p");
-        Literal l  = orig.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
-        orig.add(r, p, l);
-        for (int i = 0; i < 150; i++) {
-            l  = orig.createTypedLiteral(new byte[]{(byte)i, (byte)i, (byte)i});
-            orig.add(orig.createResource("urn:x-hp:" + i), p, l);
-        }
-        ByteArrayOutputStream out = new ByteArrayOutputStream(1000);
-        orig.write(out, "RDF/XML-ABBREV");
-        out.close();
-        InputStream ins = new ByteArrayInputStream(out.toByteArray());
-        Model m2 = ModelFactory.createDefaultModel();
-        m2.read(ins, null);
-        ins.close();
-        assertTrue(orig.isIsomorphicWith(m2));
     }
     
     /** Test that XSD anyURI is not sameValueAs XSD string (Xerces returns a string as the value for both) */ 
@@ -1070,8 +1045,6 @@ public class TestTypedLiterals extends TestCase {
                 "11/04/2012 02:29",
                 "11/04/2012 03:29",
             };
-
-
 
             String format = "MM/dd/yyy HH:mm";
             for (String tstr : sampletimelist){
