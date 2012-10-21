@@ -20,9 +20,6 @@
 ///////////////
 package com.hp.hpl.jena.graph.compose;
 
-
-// Imports
-///////////////
 import com.hp.hpl.jena.JenaRuntime;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager;
@@ -32,7 +29,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
-
 
 /**
  * <p>
@@ -85,9 +81,6 @@ public class MultiUnion extends Polyadic
     
     private boolean optimising = JenaRuntime.getSystemProperty( "jena.union.optimise", "yes" ).equals( "yes" );
     
-    // External signature methods
-    //////////////////////////////////
-
     /**
         Unions share the reifiers of their base graphs. THIS WILL CHANGE.
     */
@@ -171,19 +164,25 @@ public class MultiUnion extends Polyadic
 
 
     /**
-     	Answer the concatenation of all the iterators from a-subGraph.find( t ).
-    */
-    private ExtendedIterator<Triple> multiGraphFind( final TripleMatch t )
-        {
-        Set<Triple> seen = CollectionFactory.createHashedSet();
-        ExtendedIterator<Triple> result = NullIterator.instance();
-        for (Iterator<Graph> graphs = m_subGraphs.iterator(); graphs.hasNext(); ) 
-            {
-            ExtendedIterator<Triple> newTriples = recording( rejecting( graphs.next().find( t ), seen ), seen );
-            result = result.andThen( newTriples );
+     * Answer the concatenation of all the iterators from a-subGraph.find( t ).
+     */
+    private ExtendedIterator<Triple> multiGraphFind(final TripleMatch t)
+    {
+        Set<Triple> seen = CollectionFactory.createHashedSet() ;
+        ExtendedIterator<Triple> result = NullIterator.instance() ;
+        boolean finished = false ;
+        try {
+            for (Iterator<Graph> graphs = m_subGraphs.iterator(); graphs.hasNext();) {
+                ExtendedIterator<Triple> newTriples = recording(rejecting(graphs.next().find(t), seen), seen) ;
+                result = result.andThen(newTriples) ;
             }
-        return result;
+            finished = true ;
+            return result ;
+        } finally { // Throwable happened.
+            if (!finished)
+                result.close() ;
         }
+    }
 
     /**
      * <p>
