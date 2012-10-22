@@ -29,7 +29,7 @@ import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 public class XSDbase64Binary extends XSDbinary {
     
     public XSDbase64Binary(String typeName) {
-        super(typeName);
+        super(typeName, true);
     }
 
     /**
