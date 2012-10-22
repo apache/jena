@@ -907,23 +907,22 @@ public class TestTypedLiterals extends TestCase {
     }
     
     private static byte[] data = new byte[]{12, 42, 99};
+    
     /**
      * Test binary types base64 and hexbinary
      */
     public void testBinary1() {
-        // Check byte[] maps onto a binary type
+        // Check byte[] maps onto a binary typex
         byte[] data = new byte[]{12, 42, 99};
         Literal l = m.createTypedLiteral(data);
         LiteralLabel ll = l.asNode().getLiteral();
         
         assertTrue("binary test 1", ll.getDatatype() instanceof XSDbinary);
         
-        if ( ll.getDatatype() instanceof XSDhexBinary)
-            assertEquals("binary test 2a", "0C2A63", ll.getLexicalForm());
-        else if ( ll.getDatatype() instanceof XSDbase64Binary)
-            assertEquals("binary test 2b", "DCpj", ll.getLexicalForm());
-        else
-            fail("Unrecognized binary datatype") ;
+        // base64 is registered for byte[] 
+        // hexBinary is not registered as a type for byte[] 
+        assertTrue("binary test 1a", ll.getDatatype() instanceof XSDbase64Binary) ;
+        assertEquals("binary test 1b", "DCpj", ll.getLexicalForm());
     }
     
     public void testBinary2() {

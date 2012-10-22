@@ -31,8 +31,8 @@ public abstract class XSDbinary extends XSDDatatype {
      * @param typeName the name of the XSD type to be instantiated, this is 
      * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDbinary(String typeName) {
-        super(typeName, byte[].class);
+    protected XSDbinary(String typeName,  boolean register) {
+        super(typeName, register ? byte[].class : null );
     }
          
     /**
