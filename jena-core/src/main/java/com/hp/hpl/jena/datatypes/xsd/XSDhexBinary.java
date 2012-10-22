@@ -29,7 +29,7 @@ import com.hp.hpl.jena.datatypes.DatatypeFormatException ;
 public class XSDhexBinary extends XSDbinary {
     
     public XSDhexBinary(String typeName) {
-        super(typeName);
+        super(typeName, false);
     }
 
     /**
