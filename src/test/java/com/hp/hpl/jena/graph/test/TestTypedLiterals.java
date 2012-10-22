@@ -912,7 +912,7 @@ public class TestTypedLiterals extends TestCase {
      * Test binary types base64 and hexbinary
      */
     public void testBinary1() {
-        // Check byte[] maps onto a binary type  - specially base64Binary.
+        // Check byte[] maps onto a binary type  - specifically base64Binary.
         byte[] data = new byte[]{12, 42, 99};
         Literal l = m.createTypedLiteral(data);
         LiteralLabel ll = l.asNode().getLiteral();
