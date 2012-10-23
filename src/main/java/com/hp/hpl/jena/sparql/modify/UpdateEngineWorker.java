@@ -28,6 +28,7 @@ import org.openjena.atlas.data.DataBag ;
 import org.openjena.atlas.data.ThresholdPolicy ;
 import org.openjena.atlas.data.ThresholdPolicyFactory ;
 import org.openjena.atlas.iterator.Iter ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -156,7 +157,10 @@ public class UpdateEngineWorker implements UpdateVisitor
 //            }
             
             // Read into temporary model to protect against parse errors.
-            Model model = FileManager.get().loadModel(source) ;
+            Model model = null ;
+            try {
+                model = FileManager.get().loadModel(source) ;
+            } catch (RuntimeException ex) { throw new UpdateException("Failed to LOAD '"+source+"'", ex) ; }     
             Graph g = graph(graphStore, dest) ;
             g.getBulkUpdateHandler().add(model.getGraph()) ;
         } catch (RuntimeException ex)

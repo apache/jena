@@ -155,8 +155,6 @@ public class qtest extends CmdARQ
             
             createEarlReport = contains(earlDecl) ;
         }
-        
-        
     }
     
     @Override
