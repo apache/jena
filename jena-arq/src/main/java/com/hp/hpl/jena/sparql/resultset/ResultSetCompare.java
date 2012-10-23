@@ -18,10 +18,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.util.ArrayList ;
-import java.util.Collection ;
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.* ;
 
 import org.openjena.atlas.iterator.Iter ;
 import org.openjena.atlas.iterator.Transform ;
@@ -101,6 +98,8 @@ public class ResultSetCompare
     
     public static boolean equalsByValue(ResultSet rs1, ResultSet rs2)
     {
+        if ( ! compareHeader(rs1, rs2) ) return false ;
+        
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
         
         // Add the isomprohism test
@@ -139,6 +138,8 @@ public class ResultSetCompare
 
     public static boolean equalsByTerm(ResultSet rs1, ResultSet rs2)
     {
+        if ( ! compareHeader(rs1, rs2) ) return false ;
+
         //return equivalent(convert(rs1), convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
         ResultSetRewindable rs1a = ResultSetFactory.makeRewindable(rs1) ;
         ResultSetRewindable rs2a = ResultSetFactory.makeRewindable(rs2) ;
@@ -165,6 +166,8 @@ public class ResultSetCompare
 
     public static boolean equalsByValueAndOrder(ResultSet rs1, ResultSet rs2)
     {
+        if ( ! compareHeader(rs1, rs2) ) return false ;
+
         return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameValue)) ;
     }
 
@@ -181,6 +184,8 @@ public class ResultSetCompare
      */
     public static boolean equalsByTermAndOrder(ResultSet rs1, ResultSet rs2)
     {
+        if ( ! compareHeader(rs1, rs2) ) return false ;
+
         return equivalentByOrder(convert(rs1) , convert(rs2), new BNodeIso(NodeUtils.sameTerm)) ;
     }
 
@@ -204,6 +209,16 @@ public class ResultSetCompare
         // They are the same size so containment is enough.
         if ( ! containedIn(bind1, bind2, test) ) return false ;
         return true ;
+    }
+    
+    static private boolean compareHeader(ResultSet rs1, ResultSet rs2)
+    {
+        if ( rs1 == null && rs2 == null ) return true ;
+        if ( rs1 == null ) return false ;
+        if ( rs2 == null ) return false ;
+        Set<String> names1 = new HashSet<String>(rs1.getResultVars()) ;
+        Set<String> names2 = new HashSet<String>(rs2.getResultVars()) ;
+        return names1.equals(names2) ;
     }
 
     static private List<Binding> convert(ResultSet rs)
