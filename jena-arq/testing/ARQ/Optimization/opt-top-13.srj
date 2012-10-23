@@ -1,6 +1,6 @@
 {
   "head": {
-    "vars": [ "x" , "v" ]
+    "vars": [ "x" ]
   } ,
   "results": {
     "bindings": [
