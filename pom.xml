@@ -21,9 +21,9 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
-  <name>jena-fuseki</name>
+  <name>Apache Jena - Fuseki (SPARQL 1.1 Server)</name>
   <version>0.2.6-SNAPSHOT</version>
-  <description>Jena SPARQL Server</description>
+  <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple store(s) over HTTP</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
