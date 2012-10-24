@@ -17,8 +17,6 @@
  */
 
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
-// UPDATE : SPARQL 1.1. Update
-// ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
 options
 {
       // \ u processed in the input stream

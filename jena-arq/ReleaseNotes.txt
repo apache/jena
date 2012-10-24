@@ -6,6 +6,7 @@ ChangeLog for ARQ
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.
++ Remove the partial migration support for old-style SPARQL submission update forms.
 
 ==== ARQ 2.9.4
 
