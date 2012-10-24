@@ -1,0 +1,6 @@
+//צהü 
+[ 
+(?x rdfs:label ?y) 
+-> 
+(?x ex:hasLabel ?y) 
+] 
