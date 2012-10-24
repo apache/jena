@@ -323,8 +323,6 @@ public class TestOptimizer extends BaseTest
     }
 
     
-
-    
     private static void check(String queryString, String opExpectedString)
     {
         queryString = "PREFIX : <http://example/>\n"+queryString ;

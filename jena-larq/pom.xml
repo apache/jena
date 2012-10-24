@@ -29,7 +29,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-larq</artifactId>
   <packaging>jar</packaging>
-  <name>LARQ</name>
+  <name>Apache Jena - LARQ (Full Text Indexing Extension)</name>
   <version>1.0.1-SNAPSHOT</version>
 
   <!-- Need if the parent is a snapshot -->
@@ -45,7 +45,7 @@
   </repositories>
 
   <description>LARQ extends ARQ with free text queries for SPARQL. Indexing and searching is done using Apache Lucene.</description>
-  <url>http://jena.apache.org//documentation/larq/</url>
+  <url>http://jena.apache.org/documentation/larq/</url>
 
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-larq</connection>

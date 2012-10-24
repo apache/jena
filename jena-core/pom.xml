@@ -21,7 +21,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-core</artifactId>
   <packaging>jar</packaging>
-  <name>jena-core</name>
+  <name>Apache Jena - CORE API</name>
   <version>2.7.5-SNAPSHOT</version>
 
   <parent>

@@ -21,7 +21,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-arq</artifactId>
   <packaging>jar</packaging>
-  <name>jena-arq</name>
+  <name>Apache Jena - ARQ (SPARQL 1.1 Query Engine)</name>
   <version>2.9.5-SNAPSHOT</version>
 
   <parent>
@@ -43,7 +43,7 @@
     </repository>
   </repositories>
 
-  <description>ARQ is a SPARQL 1.1 query engine for Jena</description>
+  <description>ARQ is a SPARQL 1.1 query engine for Apache Jena</description>
 
   <scm>
     <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-arq</connection>
