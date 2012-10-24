@@ -30,9 +30,6 @@
 #error Please define only one of ARQ and SPARQL_11
 #endif
 
-// UPDATE : SPARQL 1.1. Update
-// ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
-
 #ifdef SPARQL_11
 #define PACKAGE     lang.sparql_11
 #define CLASS       SPARQLParser11
@@ -45,7 +42,6 @@
 #define CLASS       ARQParser
 #define PARSERBASE  ARQParserBase
 #define UPDATE
-#define ARQ_UPDATE
 #endif
 
 options
@@ -447,7 +443,7 @@ void ValuesClause() : { Token t ; }
 // SPARQL Update + transitional extensions for SPARQL/Update (the W3C submission)
 // Update only entry point
 
-#ifdef ARQ_UPDATE
+#ifdef ARQ
 // Optional SEMICOLON
 void Update() : { }
 {
@@ -477,9 +473,6 @@ void Update1() : { Update up ; }
   | up = DeleteData()
   | up = DeleteWhere()
   | up = Modify()
-#ifdef ARQ_UPDATE
-  | up = ModifyOld()
-#endif
   )
   {
     emitUpdate(up) ;
@@ -491,12 +484,7 @@ Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
     //    <LOAD> ( iri() )+
     <LOAD>  (<SILENT> { silent = true ; })? url = iri()
-#ifndef ARQ_UPDATE
     (<INTO> dest = GraphRef() )?
-#else
-    { String iri ; }
-    (<INTO> (<GRAPH>)? iri = iri() { dest = createNode(iri) ; })?
-#endif
     { return new UpdateLoad(url, dest, silent) ; }
 }
 
@@ -548,12 +536,7 @@ Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t =  <INSERT_DATA>
   { startDataInsert(qd, t.beginLine, t.beginColumn) ; }
-#ifndef ARQ_UPDATE
    QuadData(qd)
-#else
-   OptionalIntoTarget(qd)
-   QuadData(qd)
-#endif
   {
     finishDataInsert(qd, t.beginLine, t.beginColumn) ;
     return new UpdateDataInsert(qd) ; 
@@ -564,12 +547,7 @@ Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <DELETE_DATA>
   { startDataDelete(qd, t.beginLine, t.beginColumn) ; }
-#ifndef ARQ_UPDATE
   QuadData(qd)
-#else
-  OptionalFromTarget(qd)
-  QuadData(qd)
-#endif
   { 
     finishDataDelete(qd, t.beginLine, t.beginColumn) ;
     return new UpdateDataDelete(qd) ;
@@ -603,31 +581,11 @@ Update Modify() : { Element el ; String iri = null ;
   { return up ; }
 }
 
-#ifdef ARQ_UPDATE
-Update ModifyOld() :
-       { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
-{
-    <MODIFY>
-    { warnDeprecation("Deprecated: MODIFY: Use SPARQL 1.1 syntax of WITH ... DELETE {...} INSERT {...} WHERE {...}") ; }
-    ( iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
-    (DeleteClause(up))?
-    (InsertClause(up))?
-    <WHERE>
-    el = GroupGraphPattern() { up.setElement(el) ; }    
-    { return up ; }
-}
-#endif
-
 void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ;  Token t ;}
 {
    t = <DELETE>
    { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
-#ifndef ARQ_UPDATE
    QuadPattern(qp)
-#else
-   OptionalFromTarget(qp)
-   QuadPattern(qp)
-#endif
    { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasDeleteClause(true) ; }
 }
@@ -636,35 +594,10 @@ void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t 
 {
    t = <INSERT>
    { startInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
-#ifndef ARQ_UPDATE
    QuadPattern(qp)
-#else
-   OptionalIntoTarget(qp)
-   QuadPattern(qp)
-#endif
    { finishInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasInsertClause(true) ; }
 }
-
-#ifdef ARQ_UPDATE
-void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
-{
-  ( (<INTO> )? 
-     iri = iri()
-     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
-     { warnDeprecation("Deprecated: INSERT INTO: Use SPARQL 1.1 syntax of INSERT { GRAPH {...} }") ; }
-   )?
-}
-
-void OptionalFromTarget(QuadAcc qp) : { String iri ; }
-{
-  ( (<FROM>)? 
-     iri = iri()
-     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
-      { warnDeprecation("Deprecated: DELETE FROM: Use SPARQL 1.1 syntax of DELETE { GRAPH {...} }") ; }
-   )?
-}
-#endif
 
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {
@@ -699,10 +632,6 @@ Target GraphRefAll() : { Node iri ; }
    | <NAMED>  { return Target.NAMED ; } 
    | <ALL>    { return Target.ALL ; } 
    )
-#ifdef ARQ_UPDATE
-   ?
-   { return Target.DEFAULT ; }
-#endif
 }
 
 void QuadPattern(QuadAcc acc) : { }
@@ -2329,9 +2258,6 @@ TOKEN [IGNORE_CASE] :
 | < DELETE_DATA:  <DELETE> (<WSC>)* <DATA> >
 | < DELETE_WHERE: <DELETE> (<WSC>)* <WHERE> >
 
-#ifdef ARQ_UPDATE
-| < MODIFY:      "modify">
-#endif
 | < LOAD:         "load" >
 | < CLEAR:        "clear" >
 | < CREATE:       "create" >

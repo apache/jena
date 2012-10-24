@@ -17,8 +17,6 @@
  */
 
 // ARQ/SPARQL 1.1 Grammar - native syntax for the query engine
-// UPDATE : SPARQL 1.1. Update
-// ARQ_UPDATE : extensions to SPARQL 1.1 Update to cover SPARQL/Update (W3C Submission)
 options
 {
       // \ u processed in the input stream
@@ -379,7 +377,6 @@ void Update1() : { Update up ; }
   | up = DeleteData()
   | up = DeleteWhere()
   | up = Modify()
-  | up = ModifyOld()
   )
   {
     emitUpdate(up) ;
@@ -390,8 +387,7 @@ Update Load() : { String url ; Node dest = null ; boolean silent = false ; }
 {
     //    <LOAD> ( iri() )+
     <LOAD> (<SILENT> { silent = true ; })? url = iri()
-    { String iri ; }
-    (<INTO> (<GRAPH>)? iri = iri() { dest = createNode(iri) ; })?
+    (<INTO> dest = GraphRef() )?
     { return new UpdateLoad(url, dest, silent) ; }
 }
 Update Clear() : { boolean silent = false ; Target target ; }
@@ -435,7 +431,6 @@ Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <INSERT_DATA>
   { startDataInsert(qd, t.beginLine, t.beginColumn) ; }
-   OptionalIntoTarget(qd)
    QuadData(qd)
   {
     finishDataInsert(qd, t.beginLine, t.beginColumn) ;
@@ -446,7 +441,6 @@ Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
 {
   t = <DELETE_DATA>
   { startDataDelete(qd, t.beginLine, t.beginColumn) ; }
-  OptionalFromTarget(qd)
   QuadData(qd)
   {
     finishDataDelete(qd, t.beginLine, t.beginColumn) ;
@@ -478,23 +472,10 @@ Update Modify() : { Element el ; String iri = null ;
   { finishModifyUpdate() ; }
   { return up ; }
 }
-Update ModifyOld() :
-       { UpdateModify up = new UpdateModify() ; String iri ; Template template ; Element el ; }
-{
-    <MODIFY>
-    { warnDeprecation("Deprecated: MODIFY: Use SPARQL 1.1 syntax of WITH ... DELETE {...} INSERT {...} WHERE {...}") ; }
-    ( iri = iri() { Node n = createNode(iri) ; up.setWithIRI(n) ; } )?
-    (DeleteClause(up))?
-    (InsertClause(up))?
-    <WHERE>
-    el = GroupGraphPattern() { up.setElement(el) ; }
-    { return up ; }
-}
 void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ; Token t ;}
 {
    t = <DELETE>
    { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
-   OptionalFromTarget(qp)
    QuadPattern(qp)
    { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasDeleteClause(true) ; }
@@ -503,26 +484,9 @@ void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t 
 {
    t = <INSERT>
    { startInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
-   OptionalIntoTarget(qp)
    QuadPattern(qp)
    { finishInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
    { up.setHasInsertClause(true) ; }
-}
-void OptionalIntoTarget(QuadAcc qp) : { String iri ; }
-{
-  ( (<INTO> )?
-     iri = iri()
-     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
-     { warnDeprecation("Deprecated: INSERT INTO: Use SPARQL 1.1 syntax of INSERT { GRAPH {...} }") ; }
-   )?
-}
-void OptionalFromTarget(QuadAcc qp) : { String iri ; }
-{
-  ( (<FROM>)?
-     iri = iri()
-     { Node gn = createNode(iri) ; setAccGraph(qp, gn) ; }
-      { warnDeprecation("Deprecated: DELETE FROM: Use SPARQL 1.1 syntax of DELETE { GRAPH {...} }") ; }
-   )?
 }
 void UsingClause(UpdateWithUsing update) : { String iri ; Node n ; }
 {
@@ -554,8 +518,6 @@ Target GraphRefAll() : { Node iri ; }
    | <NAMED> { return Target.NAMED ; }
    | <ALL> { return Target.ALL ; }
    )
-   ?
-   { return Target.DEFAULT ; }
 }
 void QuadPattern(QuadAcc acc) : { }
 {
@@ -1834,7 +1796,6 @@ TOKEN [IGNORE_CASE] :
 | < INSERT_DATA: <INSERT> (<WSC>)* <DATA> >
 | < DELETE_DATA: <DELETE> (<WSC>)* <DATA> >
 | < DELETE_WHERE: <DELETE> (<WSC>)* <WHERE> >
-| < MODIFY: "modify">
 | < LOAD: "load" >
 | < CLEAR: "clear" >
 | < CREATE: "create" >
