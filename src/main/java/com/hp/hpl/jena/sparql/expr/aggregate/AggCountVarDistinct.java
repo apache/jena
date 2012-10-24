@@ -24,6 +24,7 @@ import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
+import com.hp.hpl.jena.sparql.sse.writers.WriterExpr ;
 
 public class AggCountVarDistinct extends AggregatorBase
 {
@@ -37,7 +38,7 @@ public class AggCountVarDistinct extends AggregatorBase
     @Override
     public String toString()        { return "count(distinct "+expr+")" ; }
     @Override
-    public String toPrefixString()  { return "(count distinct "+expr+")" ; }
+    public String toPrefixString()  { return "(count distinct "+WriterExpr.asString(expr)+")" ; }
 
     @Override
     public Accumulator createAccumulator()
