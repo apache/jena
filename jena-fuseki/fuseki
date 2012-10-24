@@ -133,7 +133,7 @@ fi
 # Data directory
 if [ -z "$FUSEKI_DATA_DIR" ] 
 then
-  FUSEKI_DATA_DIR="$FUSEKI_HOME/data"
+  FUSEKI_DATA_DIR="$FUSEKI_HOME/DB"
 fi
 
 # Set up JAVA if not set
