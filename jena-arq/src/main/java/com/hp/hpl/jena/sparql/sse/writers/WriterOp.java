@@ -645,6 +645,9 @@ public class WriterOp
                     start() ;
                     out.print(v.toString()) ;
                     out.print(" ") ;
+                    
+                    String $ = WriterExpr.asString(expr) ;
+                    
                     WriterExpr.output(out, expr, sContext) ;
                     finish() ;
                 }
