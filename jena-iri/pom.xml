@@ -23,9 +23,11 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-iri</artifactId>
   <packaging>jar</packaging>
-  <name>jena-iri</name>
+  <name>Apache Jena - IRI</name>
   <version>0.9.5-SNAPSHOT</version>
-  <description />
+  <description>
+    The IRI module provides an implementation of the IRI and URI specifications (RFC 3987 and 3986) which are used across Jena in order to comply with relevant W3C specifications for RDF and SPARQL which require conformance to these specifications.
+  </description>
 
   <parent>
     <groupId>org.apache.jena</groupId>

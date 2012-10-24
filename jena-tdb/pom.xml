@@ -21,7 +21,7 @@
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-tdb</artifactId>
   <packaging>jar</packaging>
-  <name>jena-tdb</name>
+  <name>Apache Jena - TDB (Native Triple Store)</name>
   <version>0.9.5-SNAPSHOT</version>
 
   <parent>
@@ -43,7 +43,7 @@
     </repository>
   </repositories>
 
-  <description>TDB is a storage subsystem for Jena and ARQ</description>
+  <description>TDB is a storage subsystem for Jena and ARQ, it is a native triple store providing persisent disk based storage of triples/quads.</description>
 
   <scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/jena-tdb</connection>
