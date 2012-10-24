@@ -20,6 +20,7 @@ package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -481,11 +482,10 @@ public class Rule implements ClauseEntry {
     public static List<Rule> rulesFromURL( String uri ) {
         BufferedReader br = null;
         try {
-            br = FileUtils.asBufferedUTF8( FileManager.get().open(uri) );
+            InputStream in = FileManager.get().open(uri);
+            if (in == null) throw new RulesetNotFoundException( uri );
+            br = FileUtils.asBufferedUTF8( in );
             return parseRules( Rule.rulesParserFromReader( br ) );
-        }
-        catch (WrappedIOException e) {
-            throw new RulesetNotFoundException( uri ); 
         } finally {
             if (br != null) try { br.close(); } catch (IOException e2) {}
         }
