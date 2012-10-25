@@ -11,7 +11,7 @@ Release Notes
 
 + Deprecation of some operations in BulkUpdateHandler
   Long term, graph level BulkUpdateHandler wil be removed, and the necessary operations moved to Graph
-  There wil be no client API changes. 
+  There will be no client API changes. 
 + Deprecate DAML+OIL support.
 + JENA-335 : Fix to XSD hexBinary and XSD base64Binary to handle illegal lexical forms. 
 + The command tool scripts for linux/unix have been rewritten so that
