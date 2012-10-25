@@ -28,7 +28,7 @@ import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.SinkQuadOutput ;
-import org.openjena.riot.pipeline.inf.InfFactory ;
+import org.openjena.riot.process.inf.InfFactory ;
 import org.openjena.riot.system.SinkExtendTriplesToQuads ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
