@@ -28,7 +28,7 @@ import org.openjena.riot.langsuite.TestSuiteRDFJSON ;
 import org.openjena.riot.langsuite.TestSuiteTrig ;
 import org.openjena.riot.langsuite.TestSuiteTurtle ;
 import org.openjena.riot.out.* ;
-import org.openjena.riot.pipeline.TestNormalization ;
+import org.openjena.riot.process.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
 import org.openjena.riot.tokens.TestTokenizer ;
 

@@ -34,11 +34,11 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  *  <li>rdfs:range</li>
  *  </ul>
  *  
- *  Usage: call process(Node, Node, Node), outptus to derive(Node, Node, Node).
+ *  Usage: call process(Node, Node, Node), outputs to derive(Node, Node, Node).
  */
 
 
-abstract class InferenceProcessorRDFS implements Processor
+abstract class InferenceProcessorRDFS
 {
     // Calculates hierarchies (subclass, subproperty) from a model.
     // Assumes that model has no metavocabulary (use an inferencer on the model first if necessary).
@@ -65,7 +65,6 @@ abstract class InferenceProcessorRDFS implements Processor
         this.state = state ;
     }
 
-    @Override
     public void process(Node s, Node p, Node o)
     {
         subClass(s,p,o) ;
