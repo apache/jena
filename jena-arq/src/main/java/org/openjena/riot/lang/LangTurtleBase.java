@@ -94,8 +94,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     //protected final static boolean CHECKING         = true ;
     public static boolean strict                    = false ;
     
-//    protected final Prologue prologue ;
-    
     // Current graph - null for default graph
     private Node currentGraph = null ;
     
@@ -141,6 +139,12 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
                 continue ;
             }
             
+            if ( lookingAt(KEYWORD) )
+            {
+                toplevelkeyword() ;
+                continue ;
+            }
+
             oneTopLevelElement() ;
             
             if ( lookingAt(EOF) )
@@ -154,6 +158,26 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     /** Emit a triple - nodes have been checked as has legality of node type in location */
     protected abstract void emit(Node subject, Node predicate, Node object) ;
 
+    protected final void toplevelkeyword()
+    {
+        Token t = peekToken() ; 
+        String x = t.getImage() ;
+        nextToken() ;
+        
+        if ( x.equalsIgnoreCase("BASE") )
+        {
+            directiveBase() ;
+            return ;
+        }
+        
+        if ( x.equalsIgnoreCase("PREFIX") )
+        {
+            directivePrefix() ;
+            return ;
+        }
+        exception(t, "Unrecognized keyword: %s", x) ; 
+    }
+    
     protected final void directive()
     {
         // It's a directive ...
@@ -164,12 +188,14 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         if ( x.equals("base") )
         {
             directiveBase() ;
+            expect("Base directive not terminated by a dot", DOT) ;
             return ;
         }
         
         if ( x.equals("prefix") )
         {
             directivePrefix() ;
+            expect("Prefix directive not terminated by a dot", DOT) ;
             return ;
         }
         exception(t, "Unrecognized directive: %s", x) ;
@@ -191,7 +217,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         profile.getPrologue().getPrefixMap().add(prefix, iri) ;
 
         nextToken() ;
-        expect("Prefix directive not terminated by a dot", DOT) ;
     }
 
     protected final void directiveBase()
@@ -204,7 +229,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         IRI baseIRI = profile.makeIRI(baseStr, currLine, currCol) ;
         nextToken() ;
 
-        expect("Base directive not terminated by a dot", DOT) ;
         profile.getPrologue().setBaseURI(baseIRI) ;
     }
 
@@ -234,7 +258,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
             //   A DOT or EOF.
             // But if a DOT or EOF, then it can't have been () or [].
             
-            // Turtle, as spec'ed does nto allow 
+            // Turtle, as spec'ed does not allow 
             // (1 2 3 4) .
             // There must be a predicate and object.
             
