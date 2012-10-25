@@ -20,7 +20,7 @@ package org.openjena.riot.process;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.pipeline.normalize.CanonicalizeLiteral ;
+import org.openjena.riot.process.normalize.CanonicalizeLiteral ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
