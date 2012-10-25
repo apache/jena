@@ -18,15 +18,18 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
+import java.util.Iterator ;
 import java.util.List ;
 
 import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
+// Combine with Jena GraphUtils.
 public class GraphOps
 {
     
@@ -57,6 +60,30 @@ public class GraphOps
     {
         List<Node> x = Iter.toList(dsg.listGraphNodes()) ;
         return new GraphUnionRead(dsg, x) ;
+    }
+
+    public static void addAll(Graph g, Iterator<Triple> iter)
+    {
+        while(iter.hasNext())
+            g.add(iter.next()) ;
+        Iter.close(iter) ;
+    }
+
+    public static void addAll(Graph g, Iterable<Triple> iter)
+    {
+        addAll(g, iter.iterator()) ;
+    }
+
+    public static void deleteAll(Graph g, Iterator<Triple> iter)
+    {
+        while(iter.hasNext())
+            g.delete(iter.next()) ;
+        Iter.close(iter) ;
+    }
+
+    public static void deleteAll(Graph g, Iterable<Triple> iter)
+    {
+        deleteAll(g, iter.iterator()) ;
     }
 
 }

@@ -28,7 +28,6 @@ import org.openjena.atlas.data.DataBag ;
 import org.openjena.atlas.data.ThresholdPolicy ;
 import org.openjena.atlas.data.ThresholdPolicyFactory ;
 import org.openjena.atlas.iterator.Iter ;
-import org.openjena.riot.RiotException ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -38,11 +37,15 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import com.hp.hpl.jena.sparql.core.* ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
+import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.engine.Plan ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.GraphOps ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
 import com.hp.hpl.jena.sparql.modify.request.* ;
@@ -247,15 +250,9 @@ public class UpdateEngineWorker implements UpdateVisitor
             Iterator<Triple> triples = gSrc.find(null, null, null) ;
             db.addAll(triples) ;
             Iter.close(triples) ;
-            
-            Iterator<Triple> it = db.iterator() ;
-            gDest.getBulkUpdateHandler().add(it) ;
-            Iter.close(it);
+            GraphOps.addAll(gDest, db.iterator()) ;
         }
-        finally
-        {
-            db.close() ;
-        }
+        finally { db.close() ; }
     }
 
     protected static void gsClear(GraphStore gStore, Target target, boolean isSilent)
