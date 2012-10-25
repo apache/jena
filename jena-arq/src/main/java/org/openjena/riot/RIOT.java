@@ -18,6 +18,8 @@
 
 package org.openjena.riot;
 
+import org.openjena.riot.lang.LangTurtleBase ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -46,6 +48,11 @@ public class RIOT
 //   
 //    /** The date and time at which this release was built */   
 //    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
+    
+    public static void setStrictMode(boolean state)
+    {
+        LangTurtleBase.strict = state ;
+    }
     
     static boolean initialized = false ;
     public static synchronized void init()

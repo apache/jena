@@ -70,7 +70,7 @@ public class LangTriG extends LangTurtleBase<Quad>
         Node graphNode = Quad.tripleInQuad ;
         Token token = peekToken() ;
 
-        // <foo> = { ... } .
+        // <foo> = { ... } or just { ... }
         if ( token.isNode() )
         {
             Token t = token ;   // Keep for error message. 
@@ -124,7 +124,6 @@ public class LangTriG extends LangTurtleBase<Quad>
         if ( token.hasType(TokenType.DOT) )
             nextToken() ;
         
-        
         // End graph block.
         setCurrentGraph(Quad.tripleInQuad) ;
     }
@@ -135,7 +134,8 @@ public class LangTriG extends LangTurtleBase<Quad>
         // The DOT is required by Turtle (strictly).
         // It is not in N3 and SPARQL.
         
-        if ( strict )
+        // No trailing DOT is allowed by strict TriG.
+        if ( false /*strict*/ )
         {
             expect("Triples not terminated by DOT", DOT) ;
             return ;
