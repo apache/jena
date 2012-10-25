@@ -32,12 +32,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.lib.SinkCounting ;
 import org.openjena.atlas.lib.SinkNull ;
 import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
+import org.openjena.riot.* ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
@@ -52,6 +47,7 @@ import org.openjena.riot.system.SyntaxLabels ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 import arq.cmd.CmdException ;
+import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
 import arq.cmdline.ModLangParse ;
 import arq.cmdline.ModTime ;
@@ -69,6 +65,7 @@ public abstract class CmdLangParse extends CmdGeneral
     // Module.
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
+    protected ArgDecl argStrict                 = new ArgDecl(ArgDecl.NoValue, "strict") ;    
     protected InferenceSetupRDFS setup          = null ; 
     
     interface LangHandler {
@@ -166,7 +163,10 @@ public abstract class CmdLangParse extends CmdGeneral
 
     @Override
     protected void processModulesAndArgs()
-    { }
+    { 
+        if ( this.contains(argStrict) )
+            RIOT.setStrictMode(true) ;
+    }
 
     protected long totalMillis = 0 ; 
     protected long totalTuples = 0 ; 
