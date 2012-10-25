@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.pipeline;
+package org.openjena.riot.process;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
