@@ -30,7 +30,8 @@ import com.hp.hpl.jena.sparql.sse.SSE;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.tdb.TDBFactory;
 
-
+@SuppressWarnings("deprecation")
+// Bulk update handlering is on its way out from Jena.
 public class TestBulkUpdateTDB extends BaseTest
 {
     //private static PrefixMapping 

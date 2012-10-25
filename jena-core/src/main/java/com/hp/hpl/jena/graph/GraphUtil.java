@@ -18,25 +18,28 @@
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     An ad-hoc collection of useful code for graphs; starting with findAll.
  */
 public class GraphUtil
-    {
+{
     /**
-        Only static methods here - the class cannot be instantiated.
-    */
+     * Only static methods here - the class cannot be instantiated.
+     */
     private GraphUtil()
-        {}
+    {}
 
     /**
-        Answer an iterator covering all the triples in the specified graph.
-    	@param g the graph from which to extract triples
-    	@return an iterator over all the graph's triples
-    */
-    public static ExtendedIterator<Triple> findAll( Graph g )
-        { return g.find( Triple.ANY ); }
-                
+     * Answer an iterator covering all the triples in the specified graph.
+     * 
+     * @param g
+     *            the graph from which to extract triples
+     * @return an iterator over all the graph's triples
+     */
+    public static ExtendedIterator<Triple> findAll(Graph g)
+    {
+        return g.find(Triple.ANY) ;
     }
+}

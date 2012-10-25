@@ -30,6 +30,7 @@ import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
  * This is very dumb, but ensures we bulk update when we can
  */
 
+@SuppressWarnings("deprecation")
 public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 	
 	public UpdateHandlerSDB(GraphSDB graph)
