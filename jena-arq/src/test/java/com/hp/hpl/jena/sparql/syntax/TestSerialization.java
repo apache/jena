@@ -47,7 +47,7 @@ public class TestSerialization extends TestCase
 //        return ts ;
 //    }
     
-    PrefixMapping pmap1 = new PrefixMappingImpl() ;
+    static PrefixMapping pmap1 = new PrefixMappingImpl() ;
     {
         pmap1.setNsPrefix("", "http://default/") ;
         pmap1.setNsPrefix("ex", "http://example/x#") ;
@@ -191,35 +191,47 @@ public class TestSerialization extends TestCase
            false) ;
     }
     
-    @Test public void testOpToSyntax_1()
+    @Test public void testOpToSyntax_01()
     {
         testOpToSyntax("(bgp (triple ?s ?p ?o))", "SELECT * {?s ?p ?o}") ;
     }
     
-    @Test public void testOpToSyntax_2()
+    @Test public void testOpToSyntax_02()
     {
         testOpToSyntax("(bgp (triple ?s ?p ?o) (<urn:x> <urn:p> <urn:z>) )", 
                        "SELECT * {?s ?p ?o . <urn:x> <urn:p> <urn:z> }") ;
     }
 
-    @Test public void testOpToSyntax_3()
+    @Test public void testOpToSyntax_03()
     {
         testOpToSyntax("(table unit)", 
                        "SELECT * {}") ;
     }
 
-    @Test public void testOpToSyntax_4()
+    @Test public void testOpToSyntax_04()
     {
         testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)))",
                        "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c }}") ;
     }
 
-    @Test public void testOpToSyntax_5()
+    @Test public void testOpToSyntax_05()
     {
         testOpToSyntax("(leftjoin (bgp (triple ?s ?p ?o)) (bgp (triple ?a ?b ?c)) (> ?z 5))",
                        "SELECT * { ?s ?p ?o OPTIONAL { ?a ?b ?c FILTER(?z > 5) }}") ;
     }
     
+    @Test public void testOpToSyntax_06()
+    {
+        testOpToSyntax("(path ?s (path* <urn:p>) ?o)",
+                       "SELECT * { ?s <urn:p>* ?o }") ;
+    }
+    
+    @Test public void testOpToSyntax_07()
+    {
+        testOpToSyntax("(path ?s (path? (alt (path+ <urn:p1>) <urn:p2>)) ?o)" ,
+                       "SELECT * { ?s (<urn:p1>+|<urn:p2>)? ?o }") ;
+    }
+
     private void testOpToSyntax(String opStr, String queryString)
     {
         Op op = SSE.parseOp(opStr) ;
