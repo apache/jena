@@ -60,7 +60,6 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
     TS_Algebra.class ,
     TS_ResultSet.class ,
     TS_Serialization.class ,
-    
     TS_API.class ,
     TS_Core.class ,
     TS_Path.class ,
