@@ -222,7 +222,12 @@ public class OpAsQuery
 
         @Override
         public void visit(OpPath opPath)
-        { throw new ARQNotImplemented("OpPath") ; }
+        {
+            ElementPathBlock epb = new ElementPathBlock() ;
+            epb.addTriplePath(opPath.getTriplePath()) ;
+            ElementGroup g = currentGroup() ;
+            g.addElement(epb) ;
+        }
 
         @Override
         public void visit(OpJoin opJoin)
