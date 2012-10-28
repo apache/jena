@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarAlloc ;
-import com.hp.hpl.jena.sparql.expr.ExprVar ;
+import com.hp.hpl.jena.sparql.expr.* ;
 
 /** Convert an algebra expression into a quad form */
 public class AlgebraQuad extends TransformCopy
@@ -72,6 +72,7 @@ public class AlgebraQuad extends TransformCopy
             this.actualGraphName = actualGraphName ;
             this.rewriteGraphName = rewriteGraphName ;
         }
+        @Override public String toString() { return "actualGraphName="+actualGraphName+" rewriteGraphName="+rewriteGraphName ; } 
     }
     
     private static class Pusher extends OpVisitorBase
@@ -194,5 +195,15 @@ public class AlgebraQuad extends TransformCopy
         {
             return new OpQuadPattern(getNode(), opBGP.getPattern()) ;
         }
+        
+//        static class X extends ExprTransformBase
+//        {
+//            @Override public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
+//            { 
+//                System.out.println("****") ;
+//                
+//                return funcOp ; }
+//        }
+
     }    
 }

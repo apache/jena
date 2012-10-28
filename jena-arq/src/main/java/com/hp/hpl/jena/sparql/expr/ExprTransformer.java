@@ -149,6 +149,8 @@ public class ExprTransformer
             if ( funcOp.getArgs() != null )
                 x = process(funcOp.getArgs()) ;
             Op op = funcOp.getGraphPattern() ;
+            // Caution: the experssion can have a pattern inside it.
+            // See also: ExprTransformApplyTransform which does much the same in a different way.
             if ( transform instanceof ExprTransformOp )
             {
                 ExprTransformOp t = (ExprTransformOp)transform ;
