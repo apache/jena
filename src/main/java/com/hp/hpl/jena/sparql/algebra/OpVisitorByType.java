@@ -29,6 +29,9 @@ public abstract class OpVisitorByType implements OpVisitor
     
     protected abstract void visit1(Op1 op) ;
     
+    // This may be needed - Filters can have a EXISTS/NOT EXISTS expression in them. 
+    //protected abstract void visitF(OpFilter op) ;
+    
     protected abstract void visit0(Op0 op) ;    
     
     protected abstract void visitExt(OpExt op) ;    
