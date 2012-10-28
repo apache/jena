@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.expr.ExprTransformCopy ;
 /** A copying transform that applies a Transform to the algebra operator of E_Exist and E_NoExists */
 public class ExprTransformApplyTransform extends ExprTransformCopy
 {
+    // See also ExprTransformer.transform(ExprFunctionOp func, ..) and ExprTransformOp
     private final Transform transform ;
     public ExprTransformApplyTransform(Transform transform)
     {

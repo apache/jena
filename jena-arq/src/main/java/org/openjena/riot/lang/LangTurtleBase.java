@@ -83,7 +83,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
 [43]    lcharacter      ::=     echaracter | '\"' | #x9 | #xA | #xD  
      */
     
-    // Predicates
+    // Some predicates (if accepted)
     protected final static String KW_A              = "a" ;
     protected final static String KW_SAME_AS        = "=" ;
     protected final static String KW_LOG_IMPLIES    = "=>" ;
@@ -96,7 +96,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     
     // Current graph - null for default graph
     private Node currentGraph = null ;
-    
     
     public final Node getCurrentGraph()
     {
