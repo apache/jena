@@ -19,26 +19,53 @@
 package com.hp.hpl.jena.sparql.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
+/**
+ * Default implementation of an update engine
+ * <p>
+ * Developers who only want to change/extend the processing of individual updates can easily 
+ * </p>
+ */
 public class UpdateEngineMain extends UpdateEngineBase 
 {
+    /**
+     * Creates a new Update Engine
+     * @param graphStore Graph Store the updates operate over
+     * @param request Update Request
+     * @param initialBinding Initial Bindings
+     * @param context Execution Context
+     */
     public UpdateEngineMain(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)
     {
         super(graphStore, request, initialBinding, context) ;
     }
 
+    /**
+     * Executes the updates by creating a {@link UpdateVisitor} using the {@link #prepareWorker()} method and then using that to visit each update command in the Update Request
+     */
+    @SuppressWarnings("javadoc")
     @Override
     public void execute()
     {
         graphStore.startRequest(request) ;
-        UpdateEngineWorker worker = new UpdateEngineWorker(graphStore, startBinding, context) ;
-        for ( Update up : request )
+        UpdateVisitor worker = this.prepareWorker();
+        for ( Update up : request ) {
             up.visit(worker) ;
+        }
         graphStore.finishRequest(request) ;
+    }
+    
+    /**
+     * Creates the {@link UpdateVisitor} which will do the work of applying the updates
+     * @return The update visitor to be used to apply the updates
+     */
+    protected UpdateVisitor prepareWorker() {
+        return new UpdateEngineWorker(graphStore, startBinding, context) ;
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
