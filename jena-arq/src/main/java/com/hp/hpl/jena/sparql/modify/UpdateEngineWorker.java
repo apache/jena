@@ -81,7 +81,6 @@ public class UpdateEngineWorker implements UpdateVisitor
     public void visit(UpdateClear update)
     { execDropClear(update, true) ; }
 
-    // ReDo with gs* primitives
     protected void execDropClear(UpdateDropClear update, boolean isClear)
     {
         if ( update.isAll() )
@@ -349,7 +348,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 System.out.println("=======================================") ;
                 // Debug.
                 List<Binding> x = Iter.toList(bindings) ;
-                System.out.println("====") ;
+                System.out.println("==== Bindings") ;
                 Iter.asString(x, "\n") ;
                 System.out.println("====") ;
                 bindings = Iter.iter(x) ;
@@ -379,35 +378,6 @@ public class UpdateEngineWorker implements UpdateVisitor
             return null ;
      
         return DynamicDatasets.dynamicDataset(update.getUsing(), update.getUsingNamed(), graphStore, false) ;
-        
-        // Old code : remove after ARQ 2.9.4 or ealier if we're sure the replacement above is stable.
-//        Graph dftGraph = GraphFactory.createGraphMem() ;
-//        DatasetGraphMap dsg = new DatasetGraphMap(dftGraph) ;
-//        
-//        if ( update.getUsing().size() > 0  )
-//        {
-//            if ( update.getUsing().size() > 1 )
-//            {
-//                for ( Node gn : update.getUsing() )
-//                {
-//                    Graph g2 = graphOrDummy(graphStore, gn) ;
-//                    dftGraph.getBulkUpdateHandler().add(g2) ;
-//                }
-//            }
-//            else
-//            {
-//                Node gn = update.getUsing().get(0) ;
-//                Graph g = graphOrDummy(graphStore, gn) ;
-//                dsg.setDefaultGraph(g) ;
-//            }
-//        }
-//        
-//        if ( update.getUsingNamed().size() > 0  )
-//        {
-//            for ( Node gn : update.getUsingNamed() )
-//                dsg.addGraph(gn, graphOrDummy(graphStore, gn)) ;
-//        }
-//        return dsg ;
     }
     
     protected DatasetGraph processWith(UpdateModify update)
