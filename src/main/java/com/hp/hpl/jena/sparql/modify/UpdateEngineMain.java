@@ -48,7 +48,6 @@ public class UpdateEngineMain extends UpdateEngineBase
     /**
      * Executes the updates by creating a {@link UpdateVisitor} using the {@link #prepareWorker()} method and then using that to visit each update command in the Update Request
      */
-    @SuppressWarnings("javadoc")
     @Override
     public void execute()
     {
