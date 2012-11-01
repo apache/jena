@@ -21,10 +21,10 @@ import org.openjena.atlas.json.io.JSONHandler ;
 import org.openjena.atlas.json.io.JSONHandlerBase ;
 import org.openjena.atlas.lib.NotImplemented ;
 
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase ;
+import com.hp.hpl.jena.sparql.lang.SPARQLParserBase ;
 
 class ARQParserBase
-    extends ParserQueryBase
+    extends SPARQLParserBase
     implements ARQParserConstants
 {
     // JSON
