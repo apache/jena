@@ -17,10 +17,10 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.sparql_10;
-import com.hp.hpl.jena.sparql.lang.ParserQueryBase ;
+import com.hp.hpl.jena.sparql.lang.SPARQLParserBase ;
 
 class SPARQLParser10Base
-        extends ParserQueryBase
+        extends SPARQLParserBase
         implements SPARQLParser10Constants
 {
 }
