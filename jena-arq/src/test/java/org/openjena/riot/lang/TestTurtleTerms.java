@@ -65,8 +65,8 @@ public class TestTurtleTerms extends BaseTest
 	@Test public void turtle_020() { parse("a:subj a:prop 'string1'^^<uriref>.") ; }
 	        
 	        // Literals: numbers.
-	@Test public void turtle_021() { parse("a: :p 2. .") ; }
-	@Test public void turtle_022() { parse("a: :p +2. .") ; }
+	@Test public void turtle_021() { parse("a: :p 2.") ; }
+	@Test public void turtle_022() { parse("a: :p +2.") ; }
 	@Test public void turtle_023() { parse("a: :p -2 .") ; }
 	@Test public void turtle_024() { parse("a: :p 2e6.") ; }
 	@Test public void turtle_025() { parse("a: :p 2e-6.") ; }

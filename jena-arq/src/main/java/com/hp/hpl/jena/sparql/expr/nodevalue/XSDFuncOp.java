@@ -187,8 +187,8 @@ public class XSDFuncOp
         // Has a DOT.
         
         int i = x.length()-1;
-        // i+1 at least leave ".0" 
-        while ( i+1 > dotIdx && x.charAt(i) == '0' )
+        // dotIdx+1 to leave at least ".0" 
+        while ( ( i > dotIdx+1) && x.charAt(i) == '0' )
             i -- ;
         if ( i < x.length()-1)
             // And trailing zeros.

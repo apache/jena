@@ -136,7 +136,7 @@ public class TestNodeValueOps extends BaseTest
     @Test public void nv_mult_3() { testMult("'PT1H2M'^^xsd:duration", "2", "'PT2H4M'^^xsd:dayTimeDuration") ; }
     
     // ** Division
-    @Test public void nv_div_1() { testDiv("12", "2", "6." ) ; }
+    @Test public void nv_div_1() { testDiv("12", "2", "6.0" ) ; }
     @Test public void nv_div_2() { testDiv("12", "2e0", "6.0e0" ) ; }
     
     // == Workers
