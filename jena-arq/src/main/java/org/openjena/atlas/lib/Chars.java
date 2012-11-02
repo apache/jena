@@ -217,6 +217,7 @@ public class Chars
     public static final char CH_DASH         = '-' ; // Alt name
     public static final char CH_SLASH        = '/' ;
     public static final char CH_RSLASH       = '\\' ;
+    public static final char CH_PERCENT      = '%' ;
     
     // Byte versions of the above
     public static final byte B_NL            = NL ;
@@ -253,6 +254,7 @@ public class Chars
     public static final byte B_DASH          = '-' ; // Alt name
     public static final byte B_SLASH         = '/' ;
     public static final byte B_RSLASH        = '\\' ;
+    public static final byte B_PERCENT       = '%' ;
     
 
 }

@@ -476,23 +476,30 @@ public class TestTokenizer extends BaseTest
         tokenizeAndTestExact("a:xe\u0301y", TokenType.PREFIXED_NAME, "a", "xe\u0301y") ;
     }
     
-//    @Test
-//    public void tokenUnit_pname10()
-//    {
-//        Tokenizer tokenizer = tokenizer("a:b#c") ;
-//        assertTrue(tokenizer.hasNext()) ;
-//        Token token = tokenizer.next() ;
-//        pnameToken(token, "a", "b#c") ;
-//    }
-//
-//    @Test
-//    public void tokenUnit_pname11()
-//    {
-//        Tokenizer tokenizer = tokenizer("a:b/c") ;
-//        assertTrue(tokenizer.hasNext()) ;
-//        Token token = tokenizer.next() ;
-//        pnameToken(token, "a", "b/c") ;
-//    }
+    @Test
+    public void tokenUnit_pname16()
+    {
+        tokenizeAndTestExact("a:b\\#c", TokenType.PREFIXED_NAME, "a", "b#c") ;
+    }
+
+    @Test
+    public void tokenUnit_pname17()
+    {
+        tokenizeAndTestExact("a:b\\/c", TokenType.PREFIXED_NAME, "a", "b/c") ;
+    }
+
+    @Test
+    public void tokenUnit_pname18()
+    {
+        tokenizeAndTestExact("a:b:c", TokenType.PREFIXED_NAME, "a", "b:c") ;
+    }
+
+    @Test
+    public void tokenUnit_pname19()
+    {
+        tokenizeAndTestExact("a:b%AAc", TokenType.PREFIXED_NAME, "a", "b%AAc") ;
+    }
+
 
     @Test
     public void tokenUnit_25()
@@ -511,7 +518,8 @@ public class TestTokenizer extends BaseTest
     
     @Test public void tokenUnit_num2()
     {
-		tokenizeAndTestExact("123.", TokenType.DECIMAL, "123.") ;
+        // This is a chnage in Turtle (and SPARQL 1.1) 
+        tokenizeAndTestFirst("123.", TokenType.INTEGER, "123") ;
     }
 
     @Test public void tokenUnit_num3()
