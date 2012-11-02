@@ -5,8 +5,11 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.0
 
+
 + Consolidation of versions numbers.
 + Remove the partial migration support for old-style SPARQL submission update forms.
++ Update Turtle/Trig parsers for prefixed name details in RDF 1.1
+  Add %-sequences, \char sequences and ':' to local part of prefixed names.
 
 ==== ARQ 2.9.4
 
