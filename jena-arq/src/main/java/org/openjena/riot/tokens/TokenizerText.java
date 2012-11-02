@@ -47,7 +47,9 @@ import static org.openjena.riot.system.RiotChars.charInArray ;
 import static org.openjena.riot.system.RiotChars.isA2Z ;
 import static org.openjena.riot.system.RiotChars.isA2ZN ;
 import static org.openjena.riot.system.RiotChars.isAlphaNumeric ;
+import static org.openjena.riot.system.RiotChars.isHexChar ;
 import static org.openjena.riot.system.RiotChars.isNewlineChar ;
+import static org.openjena.riot.system.RiotChars.isPNChars ;
 import static org.openjena.riot.system.RiotChars.isWhitespace ;
 import static org.openjena.riot.system.RiotChars.range ;
 import static org.openjena.riot.system.RiotChars.valHexChar ;
@@ -493,7 +495,7 @@ public final class TokenizerText implements Tokenizer
     private void readPrefixedNameOrKeyword(Token token)
     {
         long posn = reader.getPosition() ;
-        String prefixPart = readPrefixPart() ; // (nameStartChar - '_') nameChar*
+        String prefixPart = readPrefixPart() ;  // Prefix part or keyword
         token.setImage(prefixPart) ;
         token.setType(TokenType.KEYWORD) ;
         int ch = reader.peekChar() ;
@@ -501,7 +503,7 @@ public final class TokenizerText implements Tokenizer
         {
             reader.readChar() ;
             token.setType(TokenType.PREFIXED_NAME) ;
-            String ln = readLocalPart() ; // nameStartChar nameChar*
+            String ln = readLocalPart() ; // Local part
             token.setImage2(ln) ;
             if ( Checking ) checkPrefixedName(token.getImage(), token.getImage2()) ;
         }
@@ -520,26 +522,32 @@ public final class TokenizerText implements Tokenizer
     PNAME_LN       ::=  PNAME_NS PN_LOCAL
     
     PN_CHARS_BASE  ::=  [A-Z] | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-    PN_CHARS_U     ::=  PN_CHARS_BASE | '_'
-    VARNAME        ::=  ( PN_CHARS_U  | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
-    PN_CHARS       ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-    PN_PREFIX      ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
-    PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
+    PN_CHARS_U  ::=  PN_CHARS_BASE | '_'
+    PN_CHARS  ::=  PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
+    
+    PN_PREFIX  ::=  PN_CHARS_BASE ((PN_CHARS|'.')* PN_CHARS)?
+    PN_LOCAL  ::=  (PN_CHARS_U | ':' | [0-9] | PLX ) ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
+    PLX  ::=  PERCENT | PN_LOCAL_ESC
+    PERCENT  ::=  '%' HEX HEX
+    HEX  ::=  [0-9] | [A-F] | [a-f]
+    PN_LOCAL_ESC  ::=  '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
+    
     */
         
     
+    
+    
     private String readPrefixPart()
-    //{ return readWordSub(false, false) ; }
     { return readSegment(false) ; }
     
     private String readLocalPart()
-    //{ return readWordSub(true, false) ; }
     { return readSegment(true) ; }
 
     private String readSegment(boolean isLocalPart)
     { 
-        // PN_CHARS_BASE          ((PN_CHARS|'.')* PN_CHARS)?
-        // ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
+        // Prefix: PN_CHARS_BASE                       ((PN_CHARS|'.')* PN_CHARS)?
+        // Local: ( PN_CHARS_U | ':' | [0-9] | PLX )   ((PN_CHARS | '.' | ':' | PLX)* (PN_CHARS | ':' | PLX) )?
+
         // RiotChars has isPNChars_U_N for   ( PN_CHARS_U | [0-9] )
         stringBuilder.setLength(0) ;
         
@@ -549,52 +557,125 @@ public final class TokenizerText implements Tokenizer
             return "" ;
         if ( isLocalPart )
         {
-            if ( ! RiotChars.isPNChars_U_N(ch) ) return "" ; 
+            if ( ch == ':' )
+            {
+                // ****
+                reader.readChar() ;
+                stringBuilder.append((char)ch) ;
+            }
+            
+            // processPLX
+            else if ( ch == '%' )
+            {
+                // ****
+                reader.readChar() ;
+                stringBuilder.append((char)ch) ;
+
+                ch = reader.peekChar() ;
+                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
+                stringBuilder.append((char)ch) ;
+                reader.readChar() ;
+
+                ch = reader.peekChar() ;
+                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
+                stringBuilder.append((char)ch) ;
+                reader.readChar() ;
+            }
+            else if ( ch == '\\' )
+            {
+                reader.readChar() ;
+                ch = readCharEscape() ;
+                stringBuilder.append((char)ch) ;
+            }            
+            else if ( RiotChars.isPNChars_U_N(ch) )
+            {
+                stringBuilder.append((char)ch) ;
+                reader.readChar() ;
+            }
+            else
+                return "" ;
         }
         else
         {
             if ( ! RiotChars.isPNCharsBase(ch) ) return "" ;
+            stringBuilder.append((char)ch) ;
+            reader.readChar() ;
         }
-        // ch is not added to the buffer until ...
-        // -- Do remainer
-        stringBuilder.append((char)ch) ;
-        reader.readChar() ;
+        // Done first character
         int chDot = 0 ;
         
         for (;;)
         {
             ch = reader.peekChar() ;
-            if ( RiotChars.isPNChars(ch) )
+            boolean valid = false ;
+            
+            
+            if ( isLocalPart && ch == '%' )
             {
                 reader.readChar() ;
-                // Was there also a DOT?
-                if ( chDot != 0 )
-                {
-                    stringBuilder.append((char)chDot) ;
-                    chDot = 0 ;
-                }
+                if ( chDot != 0 ) stringBuilder.append((char)chDot) ;
+
                 stringBuilder.append((char)ch) ;
+                ch = reader.peekChar() ;
+                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
+                stringBuilder.append((char)ch) ;
+                reader.readChar() ;
+
+                ch = reader.peekChar() ;
+                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
+                stringBuilder.append((char)ch) ;
+                reader.readChar() ;
+
+                chDot = 0 ;
                 continue ;
             }
-            // Not isPNChars
-            if ( ch != CH_DOT )
-                break ;
-            // DOT
+            if ( isLocalPart && ch == '\\' )
+            {
+                reader.readChar() ;
+                // ****
+                if ( chDot != 0 ) stringBuilder.append((char)chDot) ;
+                ch = readCharEscape() ;
+                stringBuilder.append((char)ch) ;
+                chDot = 0 ;
+                continue ;
+            }
+
+            // Singel valid characters
+            if ( isLocalPart && ch == ':' )
+                valid = true ;
+            else if ( isPNChars(ch) )
+                valid = true ;
+            else if ( ch == CH_DOT )
+                valid = true ;
+            else
+                valid = false ;
+
+            if ( ! valid )
+                break ; // Exit loop
+
+            // Valid character.
             reader.readChar() ;
-            chDot = ch ;
+            // Was there also a DOT previous loop?
+            if ( chDot != 0 )
+            {
+                stringBuilder.append((char)chDot) ;
+                chDot = 0 ;
+            }
+            
+            if ( ch != CH_DOT )
+                stringBuilder.append((char)ch) ;
+            else
+                //DOT - delay until next loop.
+                chDot = ch ;
         }
+        
         // On exit, chDot may hold a character.
 
         if ( chDot == CH_DOT )
             // Unread it.
             reader.pushbackChar(chDot) ;
-        
-        //stringBuilder.deleteCharAt(chDot)
-        
         return stringBuilder.toString() ;
     }
-
-
     
     // Get characters between two markers.
     // strEscapes may be processed
@@ -874,7 +955,7 @@ public final class TokenizerText implements Tokenizer
         {
             int ch = reader.peekChar() ;
 
-            if ( ! range(ch, '0', '9') && ! range(ch, 'a', 'f') && ! range(ch, 'A', 'F') )
+            if ( ! isHexChar(ch) )
                 break ;
             reader.readChar() ;
             sb.append((char)ch) ;
@@ -1117,6 +1198,28 @@ public final class TokenizerText implements Tokenizer
         }
     }
     
+    private final
+    int readCharEscape()
+    {
+        // PN_LOCAL_ESC  ::=  '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
+
+        int c = reader.readChar();
+        if ( c==EOF )
+            exception("Escape sequence not completed") ;
+
+        switch (c)
+        {
+            case '_': case '~': case '.':  case '-':  case '!':  case '$':  case '&': 
+            case '\'':  
+            case '(':  case ')':  case '*':  case '+':  case ',':  case ';': 
+            case '=':  case '/':  case '?':  case '#':  case '@':  case '%':
+                return c ;
+            default:
+                exception(String.format("illegal character escape value: \\%c", c));
+                return 0 ;
+        }
+    }
+    
     
     private final
     int readUnicodeEscape()
@@ -1137,19 +1240,19 @@ public final class TokenizerText implements Tokenizer
     }
     
     private final
-    int readUnicode4Escape() { return readUnicodeEscape(4) ; }
+    int readUnicode4Escape() { return readHexSequence(4) ; }
     
     private final
     int readUnicode8Escape()
     {
-        int ch8 = readUnicodeEscape(8) ;
+        int ch8 = readHexSequence(8) ;
         if ( ch8 > Character.MAX_CODE_POINT )
             exception(String.format("illegal code point in \\U sequence value: 0x%08X", ch8));
         return ch8 ;
     }
     
     private final
-    int readUnicodeEscape(int N)
+    int readHexSequence(int N)
     {
         int x = 0 ;
         for ( int i = 0 ; i < N ; i++ )

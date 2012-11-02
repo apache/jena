@@ -43,6 +43,7 @@ public final class TokenizerBytes implements Tokenizer
 {
     // UNFINISHED
     // Almost certainly out of date.
+    // Add the Turtle local prefix name stuff. 
     
     // This class works directly on bytes but can't handle some multi-byte
     // cases (e.g. start of a prefixed name).  Better to work in character space

@@ -104,6 +104,12 @@ PN_LOCAL       ::=  ( PN_CHARS_U | [0-9] ) ((PN_CHARS|'.')* PN_CHARS)?
         return isPNChars_U(ch) || isDigit(ch) || ( ch == '-' ) || ch == 0x00B7 || r(ch, 0x300, 0x036F) || r(ch, 0x203F, 0x2040) ;
     }
     
+    /** Hexadecimal character */
+    public static boolean isHexChar(int ch)
+    {
+        return range(ch, '0', '9') || range(ch, 'a', 'f') || range(ch, 'A', 'F') ;
+    }
+    
     public static int valHexChar(int ch)
     {
         if ( range(ch, '0', '9') )
