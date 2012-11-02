@@ -56,6 +56,8 @@ import static org.openjena.riot.system.RiotChars.valHexChar ;
 
 import java.util.NoSuchElementException ;
 
+import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+
 import org.openjena.atlas.AtlasException ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.io.PeekReader ;
@@ -510,7 +512,7 @@ public final class TokenizerText implements Tokenizer
 
         // If we made no progress, nothing found, not even a keyword -- it's an error.
         if ( posn == reader.getPosition() )  
-            exception(String.format("Unknown char: %c(%d)",ch,ch)) ;
+            exception("Unknown char: %c(%d)",ch,ch) ;
 
         if ( Checking ) checkKeyword(token.getImage()) ;
         
@@ -559,33 +561,15 @@ public final class TokenizerText implements Tokenizer
         {
             if ( ch == ':' )
             {
-                // ****
                 reader.readChar() ;
                 stringBuilder.append((char)ch) ;
             }
             
             // processPLX
-            else if ( ch == '%' )
-            {
-                // ****
-                reader.readChar() ;
-                stringBuilder.append((char)ch) ;
-
-                ch = reader.peekChar() ;
-                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
-                stringBuilder.append((char)ch) ;
-                reader.readChar() ;
-
-                ch = reader.peekChar() ;
-                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
-                stringBuilder.append((char)ch) ;
-                reader.readChar() ;
-            }
-            else if ( ch == '\\' )
+            else if ( ch == '%' || ch == '\\' )
             {
                 reader.readChar() ;
-                ch = readCharEscape() ;
-                stringBuilder.append((char)ch) ;
+                processPLX(ch) ;
             }            
             else if ( RiotChars.isPNChars_U_N(ch) )
             {
@@ -608,39 +592,18 @@ public final class TokenizerText implements Tokenizer
         {
             ch = reader.peekChar() ;
             boolean valid = false ;
-            
-            
-            if ( isLocalPart && ch == '%' )
+
+            if ( isLocalPart && ( ch == '%' || ch == '\\' ) )
             {
                 reader.readChar() ;
-                if ( chDot != 0 ) stringBuilder.append((char)chDot) ;
-
-                stringBuilder.append((char)ch) ;
-                ch = reader.peekChar() ;
-                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
-                stringBuilder.append((char)ch) ;
-                reader.readChar() ;
-
-                ch = reader.peekChar() ;
-                if ( ! isHexChar(ch) ) exception(String.format("Not a hex charcater: '%c'",ch)) ;
-                stringBuilder.append((char)ch) ;
-                reader.readChar() ;
-
+                if ( chDot != 0 )
+                    stringBuilder.append((char)chDot) ;
+                processPLX(ch) ;
                 chDot = 0 ;
                 continue ;
-            }
-            if ( isLocalPart && ch == '\\' )
-            {
-                reader.readChar() ;
-                // ****
-                if ( chDot != 0 ) stringBuilder.append((char)chDot) ;
-                ch = readCharEscape() ;
-                stringBuilder.append((char)ch) ;
-                chDot = 0 ;
-                continue ;
-            }
-
-            // Singel valid characters
+            }       
+            
+            // Single valid characters
             if ( isLocalPart && ch == ':' )
                 valid = true ;
             else if ( isPNChars(ch) )
@@ -675,6 +638,35 @@ public final class TokenizerText implements Tokenizer
             // Unread it.
             reader.pushbackChar(chDot) ;
         return stringBuilder.toString() ;
+    }
+
+    // Process PLX (percent or character escape for a prefixed name)
+    private void processPLX(int ch)
+    {
+        if ( ch == '%' )
+        {
+            stringBuilder.append((char)ch) ;
+
+            ch = reader.peekChar() ;
+            if ( ! isHexChar(ch) )
+                exception("Not a hex charcater: '%c'",ch) ;
+            stringBuilder.append((char)ch) ;
+            reader.readChar() ;
+
+            ch = reader.peekChar() ;
+            if ( ! isHexChar(ch) )
+                exception("Not a hex charcater: '%c'",ch) ;
+            stringBuilder.append((char)ch) ;
+            reader.readChar() ;
+        }
+        else if ( ch == '\\' )
+        {
+            reader.readChar() ;
+            ch = readCharEscape() ;
+            stringBuilder.append((char)ch) ;
+        }
+        else
+            throw new ARQInternalErrorException("Not a '\\' or a '%' character") ;
     }
     
     // Get characters between two markers.
@@ -1097,7 +1089,7 @@ public final class TokenizerText implements Tokenizer
             // Convert to UTF-16.  Note that the rest of any system this is used
             // in must also respect codepoints and surrogate pairs. 
             if ( ! Character.isDefined(ch) && ! Character.isSupplementaryCodePoint(ch) )
-                exception(String.format("Illegal codepoint: 0x%04X", ch)) ;
+                exception("Illegal codepoint: 0x%04X", ch) ;
             char[] chars = Character.toChars(ch) ;
             buffer.append(chars) ;
         }
@@ -1193,7 +1185,7 @@ public final class TokenizerText implements Tokenizer
             case 'u':   return readUnicode4Escape();
             case 'U':   return readUnicode8Escape();
             default:
-                exception(String.format("illegal escape sequence value: %c (0x%02X)", c, c));
+                exception("illegal escape sequence value: %c (0x%02X)", c, c);
                 return 0 ;
         }
     }
@@ -1215,7 +1207,7 @@ public final class TokenizerText implements Tokenizer
             case '=':  case '/':  case '?':  case '#':  case '@':  case '%':
                 return c ;
             default:
-                exception(String.format("illegal character escape value: \\%c", c));
+                exception("illegal character escape value: \\%c", c);
                 return 0 ;
         }
     }
@@ -1234,7 +1226,7 @@ public final class TokenizerText implements Tokenizer
             case 'u': return readUnicode4Escape(); 
             case 'U': return readUnicode8Escape(); 
             default:
-                exception(String.format("illegal escape sequence value: %c (0x%02X)", ch, ch));
+                exception("illegal escape sequence value: %c (0x%02X)", ch, ch);
         }
         return 0 ;
     }
@@ -1247,7 +1239,7 @@ public final class TokenizerText implements Tokenizer
     {
         int ch8 = readHexSequence(8) ;
         if ( ch8 > Character.MAX_CODE_POINT )
-            exception(String.format("illegal code point in \\U sequence value: 0x%08X", ch8));
+            exception("illegal code point in \\U sequence value: 0x%08X", ch8);
         return ch8 ;
     }
     
@@ -1297,18 +1289,18 @@ public final class TokenizerText implements Tokenizer
         return true;
     }
 
-    private void exception(String message)
+    private void exception(String message, Object... args)
     {
-        exception(message, reader.getLineNum(), reader.getColNum()) ;
+        exception$(message, reader.getLineNum(), reader.getColNum(), args) ;
     }
     
-    private static void exception(PeekReader reader, String message)
+    private static void exception(PeekReader reader, String message, Object... args)
     {
-        exception(message, reader.getLineNum(), reader.getColNum()) ;
+        exception$(message, reader.getLineNum(), reader.getColNum(), args) ;
     }
 
-    private static void exception(String message, long line, long col)
+    private static void exception$(String message, long line, long col, Object... args)
     {
-        throw new RiotParseException(message, line, col) ;
+        throw new RiotParseException(String.format(message, args), line, col) ;
     }
 }
