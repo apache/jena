@@ -18,7 +18,7 @@
 
 package org.openjena.riot.tokens;
 
-import static org.openjena.atlas.lib.Chars.CH_AT ;
+import static org.openjena.atlas.lib.Chars.* ;
 import static org.openjena.atlas.lib.Chars.CH_COLON ;
 import static org.openjena.atlas.lib.Chars.CH_COMMA ;
 import static org.openjena.atlas.lib.Chars.CH_DOT ;
@@ -559,14 +559,14 @@ public final class TokenizerText implements Tokenizer
             return "" ;
         if ( isLocalPart )
         {
-            if ( ch == ':' )
+            if ( ch == CH_COLON )
             {
                 reader.readChar() ;
                 stringBuilder.append((char)ch) ;
             }
             
             // processPLX
-            else if ( ch == '%' || ch == '\\' )
+            else if ( ch == CH_PERCENT|| ch == CH_RSLASH )
             {
                 reader.readChar() ;
                 processPLX(ch) ;
@@ -593,7 +593,7 @@ public final class TokenizerText implements Tokenizer
             ch = reader.peekChar() ;
             boolean valid = false ;
 
-            if ( isLocalPart && ( ch == '%' || ch == '\\' ) )
+            if ( isLocalPart && (  ch == CH_PERCENT|| ch == CH_RSLASH ) )
             {
                 reader.readChar() ;
                 if ( chDot != 0 )
@@ -604,7 +604,7 @@ public final class TokenizerText implements Tokenizer
             }       
             
             // Single valid characters
-            if ( isLocalPart && ch == ':' )
+            if ( isLocalPart && ch == CH_COLON )
                 valid = true ;
             else if ( isPNChars(ch) )
                 valid = true ;
@@ -643,7 +643,7 @@ public final class TokenizerText implements Tokenizer
     // Process PLX (percent or character escape for a prefixed name)
     private void processPLX(int ch)
     {
-        if ( ch == '%' )
+        if ( ch == CH_PERCENT )
         {
             stringBuilder.append((char)ch) ;
 
@@ -659,9 +659,8 @@ public final class TokenizerText implements Tokenizer
             stringBuilder.append((char)ch) ;
             reader.readChar() ;
         }
-        else if ( ch == '\\' )
+        else if ( ch == CH_RSLASH )
         {
-            reader.readChar() ;
             ch = readCharEscape() ;
             stringBuilder.append((char)ch) ;
         }
@@ -693,7 +692,7 @@ public final class TokenizerText implements Tokenizer
                 exception("Broken token: "+stringBuilder.toString(), y, x) ;
             }
 
-            if ( ch == '\n' )
+            if ( ch == NL )
                 exception("Broken token (newline): "+stringBuilder.toString(), y, x) ;
 
             if ( ch == endCh )
@@ -702,7 +701,7 @@ public final class TokenizerText implements Tokenizer
                 return stringBuilder.toString() ;
             }
 
-            if ( ch == '\\' )
+            if ( ch == CH_RSLASH )
             {
                 ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
                 // Drop through.
@@ -729,7 +728,7 @@ public final class TokenizerText implements Tokenizer
                     return stringBuilder.toString() ;
             }
             
-            if ( ch == '\\' )
+            if ( ch == CH_RSLASH )
                 ch = readLiteralEscape() ;
             insertCodepoint(stringBuilder, ch) ;
         }
@@ -845,19 +844,17 @@ public final class TokenizerText implements Tokenizer
     }
 
     // Make better!
-/*
-        [16]    integer         ::=     ('-' | '+') ? [0-9]+
-        [17]    double          ::=     ('-' | '+') ? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
-                                        0.e0, .0e0, 0e0
-        [18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
-                                        0.0 .0
-        [19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
-        []      hex             ::=     0x0123456789ABCDEFG
+    /*
+     * [146]  INTEGER  ::=  [0-9]+
+     * [147]  DECIMAL  ::=  [0-9]* '.' [0-9]+
+     * [148]  DOUBLE  ::=  [0-9]+ '.' [0-9]* EXPONENT | '.' ([0-9])+ EXPONENT | ([0-9])+ EXPONENT
+     * []     hex             ::=     0x0123456789ABCDEFG
 
  */
     private void readNumber()
     {
         // One entry, definitely a number.
+        // 
         // Beware of '.' as a (non) decimal.
         /*
         maybeSign()
@@ -870,7 +867,6 @@ public final class TokenizerText implements Tokenizer
         boolean isDouble = false ;
         boolean isDecimal = false ;
         stringBuilder.setLength(0) ;
-        
         
         /*
         readPossibleSign(stringBuilder) ;
@@ -904,7 +900,6 @@ public final class TokenizerText implements Tokenizer
             readPossibleSign(stringBuilder) ;
         }
         
-        
         x += readDigits(stringBuilder) ;
 //        if ( x == 0 )
 //        {
@@ -929,6 +924,21 @@ public final class TokenizerText implements Tokenizer
             isDecimal = false ;
             
         }
+
+        //****
+        // Final part - "decimal" 123. is an integer 123 and a DOT.
+        if ( isDecimal )
+        {
+            int len = stringBuilder.length() ;
+            if ( stringBuilder.charAt(len-1) == CH_DOT )
+            {
+                stringBuilder.setLength(len-1) ;
+                reader.pushbackChar(CH_DOT) ;
+                isDecimal = false ;
+            }
+            
+        }
+        
         
         token.setImage(stringBuilder.toString()) ;
         if ( isDouble )
