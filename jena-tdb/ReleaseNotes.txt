@@ -4,6 +4,7 @@ ChangeLog for TDB
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.
++ JENA-344 : Union default rgaph now works for SPARQL Update WHERE clauses. 
 
 ==== TDB 0.9.4
 

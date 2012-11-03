@@ -20,29 +20,19 @@ package com.hp.hpl.jena.tdb.store;
 
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.QueryFactory ;
-import com.hp.hpl.jena.query.ReadWrite ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
+import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateExecutionFactory ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateProcessor ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.* ;
 
 /**
  * Test SPARQL
@@ -172,6 +162,25 @@ public class Test_SPARQL_TDB extends BaseTest
         dataset1.end() ;
     }
 
+    @Test public void sparql_update_unionGraph()
+    {
+        // JENA-344
+        Dataset ds = TDBFactory.createDataset() ;
+        ds.asDatasetGraph().add(SSE.parseQuad("(<g> <s> <p> 123)")) ;
+        ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+        String us = StrUtils.strjoinNL(
+            "INSERT { GRAPH <http://example/g2> { ?s ?p 'NEW' } }",
+            "WHERE { ",
+                 "?s ?p 123",
+            " }" ) ;
+                                       
+        UpdateRequest req = UpdateFactory.create(us) ;
+        UpdateAction.execute(req, ds) ;
+        
+        Model m = ds.getNamedModel("http://example/g2") ;
+        assertEquals("Did not find 1 statement in named graph", 1, m.size()) ;
+    }
+    
     private int count(Dataset dataset)
     { return count(dataset, "SELECT * { ?s ?p ?o }") ; }
     
@@ -183,8 +192,6 @@ public class Test_SPARQL_TDB extends BaseTest
         ResultSet rs = qExec.execSelect() ;
         return ResultSetFormatter.consume(rs) ;
     }
-
-
     private void update(Dataset dataset, String string)
     {
         UpdateRequest req = UpdateFactory.create(string) ;
