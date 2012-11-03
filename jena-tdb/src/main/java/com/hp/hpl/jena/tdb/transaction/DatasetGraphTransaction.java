@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import com.hp.hpl.jena.query.Dataset ;
+import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphTrackActive ;
@@ -25,13 +27,15 @@ import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
+import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Transactional DatasetGraph that allows one active transaction.
  * For multiple read transactions, create multiple DatasetGraphTransaction objects.
  * This is analogous to a "connection" in JDBC.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive
+public class DatasetGraphTransaction extends DatasetGraphTrackActive implements GraphStore 
 {
     /* Initially, the app can use this DatasetGraph non-transactionally.
      * But as soon as it starts a transaction, the dataset can only be used
@@ -218,6 +222,20 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive
         txn.remove() ;
         inTransaction.remove() ;
     }
+
+    @Override
+    public Dataset toDataset()
+    {
+        return DatasetFactory.create(getDatasetGraphToQuery()) ;
+    }
+
+    @Override
+    public void startRequest(UpdateRequest request)
+    {}
+
+    @Override
+    public void finishRequest(UpdateRequest request)
+    {}
     
     
 }
