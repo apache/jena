@@ -53,12 +53,7 @@ public class GraphStoreFactory
      */
     public static GraphStore create(Dataset dataset)
     { 
-        if ( dataset.asDatasetGraph() instanceof GraphStore )
-            return (GraphStore)(dataset.asDatasetGraph()) ;
-//        if ( ( dataset instanceof DatasetImpl ) || (dataset instanceof DataSourceImpl ) )
-//            return new GraphStoreBasic(dataset) ; 
-        return new GraphStoreBasic(dataset.asDatasetGraph()) ;
-        //throw new UpdateException("Can't create a GraphStore for dataset: "+dataset) ;
+        return create(dataset.asDatasetGraph()) ;
     }
     
     /** Create a GraphStore from a dataset (graph-level) so that updates apply to the graphs in the dataset.
