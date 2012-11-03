@@ -105,7 +105,16 @@ $accept_results="#{$accept_results} , */*;q=0.1"
 $accept_charset=nil
 
 ## Who we are.
+## Two styles:
+##    s-query .....
+##    soh query .....
+
 $cmd = File.basename($0)
+if ! $cmd.start_with?('s-')
+  # "soh query ..."
+  $cmd = ARGV.shift
+  $cmd = 's-'+$cmd
+end
 
 ## -------- 
 
