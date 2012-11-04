@@ -31,6 +31,7 @@ import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
+import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -106,7 +107,8 @@ public class SPARQL_REST_R extends SPARQL_REST
             // If we want to set the Content-Length, we need to buffer.
             //response.setContentLength(??) ;
             RDFWriter writer = FusekiLib.chooseWriter(lang) ;
-            //action.response.setContentType(getServletInfo())
+            String ct = WebContent.mapLangToContentType(lang) ;
+            action.response.setContentType(ct) ;
             
             Model model = ModelFactory.createModelForGraph(action.getTarget().graph()) ;
             writer.write(model, out, null) ;

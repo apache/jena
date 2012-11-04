@@ -126,6 +126,8 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
     private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber") ;   // Use the uberservlet (experimental)
     
+    private static ArgDecl argGSP           = new ArgDecl(ArgDecl.NoValue,  "gsp") ;    // GSP compliance mode
+    
     private static ArgDecl argHome          = new ArgDecl(ArgDecl.HasValue, "home") ;
     private static ArgDecl argPages         = new ArgDecl(ArgDecl.HasValue, "pages") ;
     
@@ -184,6 +186,7 @@ public class FusekiCmd extends CmdARQ
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
         
         add(argUber) ;
+        add(argGSP) ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -371,6 +374,13 @@ public class FusekiCmd extends CmdARQ
         
         if ( contains(argUber) )
             SPARQLServer.überServlet = true ;
+        
+        if ( contains(argGSP) )
+        {
+            SPARQLServer.überServlet = true ;
+            Fuseki.graphStoreProtocolMode = true ;
+        }
+
     }
 
     private static String sort_out_dir(String path)
