@@ -25,13 +25,21 @@ import java.io.IOException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.openjena.atlas.lib.Sink ;
 import org.openjena.atlas.web.MediaType ;
 import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
+import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;
+import org.openjena.riot.lang.LangRIOT ;
+import org.openjena.riot.lang.SinkTriplesToGraph ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
@@ -100,9 +108,44 @@ public class REST_Quads extends SPARQL_REST
         } finally { action.endRead() ; }
     }
 
+    static int counter = 0 ;
     @Override
     protected void doPost(HttpActionREST action)
-    { errorMethodNotAllowed("POST") ; }
+    { 
+        if ( ! Fuseki.graphStoreProtocolMode )
+            errorMethodNotAllowed("POST") ;
+        // Code to pass the GSP test suite.
+        String x = action.request.getContentType() ;
+        
+        MediaType mediaType = MediaType.create(x) ;
+        Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+        if ( lang == null )
+            lang = Lang.TRIG ;
+
+        if ( action.verbose )
+            log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
+                                  action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
+        if ( lang.isQuads() )
+            errorBadRequest("Quads format: "+mediaType) ;
+        
+        action.beginWrite() ;
+        try {
+            DatasetGraph dsg = action.getActiveDSG() ;
+            String name = action.request.getRequestURL().append("/").append(""+(++counter)).toString() ;
+            Node gn = Node.createURI(name) ;
+            Graph g = dsg.getGraph(gn) ;
+            Sink<Triple> sink = new SinkTriplesToGraph(g) ;
+
+            LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , sink) ;
+            parser.parse() ;
+            action.response.setHeader("Location",  name) ;
+            action.commit();
+            successCreated(action) ;
+        } catch (IOException ex) { action.abort() ; } 
+        finally { action.endWrite() ; }
+        
+    }
+    
 
     @Override
     protected void doDelete(HttpActionREST action)
