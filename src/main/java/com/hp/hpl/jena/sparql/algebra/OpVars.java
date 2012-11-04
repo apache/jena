@@ -48,7 +48,7 @@ public class OpVars
     {
         //OpWalker.walk(op, new OpVarsPattern(acc)) ;
         OpVisitor visitor = new OpVarsPattern(acc) ;
-        OpWalker.walk(new WalkerVisitorSkipMinus(visitor), op, visitor) ;
+        OpWalker.walk(new WalkerVisitorSkipMinus(visitor), op) ;
     }
     
     public static Collection<Var> allVars(Op op)
