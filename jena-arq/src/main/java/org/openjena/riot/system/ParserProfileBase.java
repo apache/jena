@@ -18,8 +18,10 @@
 
 package org.openjena.riot.system;
 
+import org.apache.jena.iri.IRI ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotException ;
+import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
@@ -28,7 +30,6 @@ import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Basic profile of things, with key operations based on a simple
@@ -39,6 +40,7 @@ public class ParserProfileBase implements ParserProfile
     protected ErrorHandler errorHandler ;
     protected Prologue prologue ;
     protected LabelToNode labelMapping ;
+    protected boolean strictMode = SysRIOT.strictMode ;
 
     public ParserProfileBase(Prologue prologue, ErrorHandler errorHandler)
     { 
@@ -220,4 +222,11 @@ public class ParserProfileBase implements ParserProfile
             errorHandler.fatal("Undefined prefix: "+prefix, token.getLine(), token.getColumn()) ;
         return expansion ;
     }
+
+    @Override
+    public boolean isStrictMode()               { return strictMode ; }
+
+    @Override
+    public void    setStrictMode(boolean mode)  { strictMode = mode ; }
+
 }
