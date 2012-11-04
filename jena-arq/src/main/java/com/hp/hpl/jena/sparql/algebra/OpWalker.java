@@ -34,25 +34,20 @@ public class OpWalker
 {
     public static void walk(Op op, OpVisitor visitor)
     {
-        walk(new WalkerVisitor(visitor, null, null), op, visitor) ;
+        walk(new WalkerVisitor(visitor, null, null), op) ;
     }
     
     public static void walk(Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        walk(new WalkerVisitor(visitor, beforeVisitor, afterVisitor), op, visitor, beforeVisitor, afterVisitor) ;
+        walk(new WalkerVisitor(visitor, beforeVisitor, afterVisitor), op) ;
     }
     
-    public static void walk(WalkerVisitor walkerVisitor, Op op, OpVisitor visitor)
+    public static void walk(WalkerVisitor walkerVisitor, Op op)
     {
         op.visit(walkerVisitor) ;
     }
     
-    public static void walk(WalkerVisitor walkerVisitor, Op op, OpVisitor visitor, OpVisitor beforeVisitor, OpVisitor afterVisitor)
-    {
-        op.visit(walkerVisitor) ;
-    }
-    
-    public static class WalkerVisitor extends OpVisitorByType
+    static class WalkerVisitor extends OpVisitorByType
     {
         private final OpVisitor beforeVisitor ;
         private final OpVisitor afterVisitor ;
