@@ -18,12 +18,18 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
+import org.openjena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.AssemblerBase ;
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.modify.GraphStoreNull ;
+import com.hp.hpl.jena.sparql.modify.GraphStoreNullTransactional ;
 
 public class DatasetNullAssembler extends AssemblerBase implements Assembler
 {
@@ -32,6 +38,25 @@ public class DatasetNullAssembler extends AssemblerBase implements Assembler
     @Override
     public Object open(Assembler a, Resource root, Mode mode)
     {
-        return DatasetFactory.create(new GraphStoreNull()) ;
+        boolean transactional = true;
+        
+        if (root.hasProperty(DatasetAssemblerVocab.pTransactional))
+        {
+            Node b = root.getProperty(DatasetAssemblerVocab.pTransactional).getObject().asNode();
+            NodeValue nv = NodeValue.makeNode(b);
+            if (nv.isBoolean())
+            {
+                transactional = nv.getBoolean();
+            }
+            else
+            {
+                Log.warn(DatasetNullAssembler.class,
+                         "Failed to recognize value for transactional setting (ignored): " + b);
+            }
+        }
+        
+        DatasetGraph dsg = transactional ? new GraphStoreNullTransactional() : new GraphStoreNull();
+        
+        return DatasetFactory.create(dsg) ;
     }
 }
