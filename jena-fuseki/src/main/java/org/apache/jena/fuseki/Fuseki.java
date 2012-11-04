@@ -43,6 +43,9 @@ public class Fuseki
     
     static public String PagesStatic = "pages" ;
     
+    // TEMPORARY
+    static public boolean graphStoreProtocolMode = false ;
+    
     //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
     static private String metadataLocation = "org/apache/jena/fuseki/fuseki-properties.xml" ;
     static private Metadata metadata = initMetadata() ;
