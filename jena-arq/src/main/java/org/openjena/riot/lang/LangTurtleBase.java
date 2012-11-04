@@ -92,8 +92,6 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
     
     protected final static boolean VERBOSE          = false ;
     //protected final static boolean CHECKING         = true ;
-    public static boolean strict                    = false ;
-    
     // Current graph - null for default graph
     private Node currentGraph = null ;
     
@@ -345,6 +343,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         
         if ( t.hasType(TokenType.KEYWORD) )
         {
+            boolean strict =  profile.isStrictMode() ;
             Token tErr = peekToken() ;
             String image = peekToken().getImage() ;
             if ( image.equals(KW_A) )
@@ -368,6 +367,7 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         if ( lookingAt(TokenType.KEYWORD) )
         {
             String image = peekToken().getImage() ;
+            boolean strict =  profile.isStrictMode() ;
             if ( image.equals(KW_A) )
                 return true ;
             if ( !strict && image.equals(KW_SAME_AS) )

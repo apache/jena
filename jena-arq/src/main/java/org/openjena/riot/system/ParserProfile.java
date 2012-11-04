@@ -58,4 +58,7 @@ public interface ParserProfile
     
     public Prologue getPrologue() ;
     public void setPrologue(Prologue prologue) ;
+    
+    public boolean isStrictMode() ;
+    public void setStrictMode(boolean mode) ;
 }

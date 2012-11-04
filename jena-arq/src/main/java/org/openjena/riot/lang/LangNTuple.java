@@ -50,7 +50,6 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
 {
     private static Logger log = LoggerFactory.getLogger(LangNTuple.class) ;
     
-    public static final boolean STRICT = false ;
     protected boolean skipOnBadTerm = false ;
     
     protected LangNTuple(Tokenizer tokens,
@@ -124,7 +123,7 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
             case LITERAL_LANG:
                 return ;
             case STRING1:
-                if ( STRICT )
+                if ( profile.isStrictMode() )
                     exception(token, "Illegal single quoted string: %s", token) ;
                 break ;
             default:

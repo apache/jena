@@ -51,7 +51,7 @@ public class LangTurtle extends LangTurtleBase<Triple>
     {
         // The DOT is required by Turtle (strictly).
         // It is not in N3 and SPARQL.
-        if ( strict )
+        if ( profile.isStrictMode() )
             expect("Triples not terminated by DOT", DOT) ;
         else
             expectOrEOF("Triples not terminated by DOT", DOT) ;

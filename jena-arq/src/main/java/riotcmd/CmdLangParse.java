@@ -36,7 +36,6 @@ import org.openjena.riot.* ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.LangTurtleBase ;
 import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
@@ -177,10 +176,7 @@ public abstract class CmdLangParse extends CmdGeneral
     protected void exec()
     {
         if ( modLangParse.strictMode() )
-        {
-            SysRIOT.StrictXSDLexicialForms = true ;
-            LangTurtleBase.strict = true ;
-        }
+            RIOT.setStrictMode(true) ; 
         
         if ( modLangParse.getRDFSVocab() != null )
             setup = new InferenceSetupRDFS(modLangParse.getRDFSVocab()) ;
