@@ -76,7 +76,7 @@ public class Transformer
             // Don't transform OpService and don't walk the sub-op 
             ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform) ;
             WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
-            OpWalker.walk(walker, op, v) ;
+            OpWalker.walk(walker, op) ;
             return v.result() ;
         }
     }
@@ -151,6 +151,7 @@ public class Transformer
     
         // ----
         // Algebra operations that involve an Expr, and so might include NOT EXISTS 
+
         
         @Override
         public void visit(OpFilter opFilter)
@@ -195,12 +196,23 @@ public class Transformer
         public void visit(OpAssign opAssign)
         { 
             VarExprList varExpr = opAssign.getVarExprList() ;
-            List<Var> vars = varExpr.getVars() ;
             VarExprList varExpr2 = process(varExpr) ;
             OpAssign opAssign2 = opAssign ;
             if ( varExpr != varExpr2 )
                 opAssign2 = OpAssign.assignDirect(opAssign.getSubOp(), varExpr2) ;
             visit1(opAssign2) ;
+        }
+        
+        @Override
+        public void visit(OpExtend opExtend)
+        { 
+            
+            VarExprList varExpr = opExtend.getVarExprList() ;
+            VarExprList varExpr2 = process(varExpr) ;
+            OpExtend opExtend2 = opExtend ;
+            if ( varExpr != varExpr2 )
+                opExtend2 = OpExtend.extendDirect(opExtend.getSubOp(), varExpr2) ;
+            visit1(opExtend2) ;
         }
         
         private VarExprList process(VarExprList varExpr)
