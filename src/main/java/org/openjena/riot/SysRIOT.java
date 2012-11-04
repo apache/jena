@@ -37,6 +37,7 @@ public class SysRIOT
     public static final EventType finishRead = new EventType(SysRIOT.class, "FinishRead") ;
     
     public static boolean StrictXSDLexicialForms = false ;
+    public static boolean strictMode             = false ;
     
     public static final String BNodeGenIdPrefix = "genid" ;
 

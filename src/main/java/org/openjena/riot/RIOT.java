@@ -18,8 +18,6 @@
 
 package org.openjena.riot;
 
-import org.openjena.riot.lang.LangTurtleBase ;
-
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -51,7 +49,8 @@ public class RIOT
     
     public static void setStrictMode(boolean state)
     {
-        LangTurtleBase.strict = state ;
+        SysRIOT.strictMode = state ;
+        SysRIOT.StrictXSDLexicialForms = state ;
     }
     
     static boolean initialized = false ;
