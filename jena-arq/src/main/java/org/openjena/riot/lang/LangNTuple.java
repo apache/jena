@@ -24,6 +24,7 @@ import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
+import static org.openjena.riot.tokens.TokenType.* ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -119,8 +120,14 @@ public abstract class LangNTuple<X> extends LangBase<X> implements Iterator<X>
             case IRI:
             case BNODE:
             case STRING2:
+                return ;
             case LITERAL_DT:
+                if ( profile.isStrictMode() && ! token.getSubToken1().hasType(STRING2) )
+                    exception(token, "Illegal single quoted string: %s", token) ;
+                return ;
             case LITERAL_LANG:
+                if ( profile.isStrictMode() && ! token.getSubToken1().hasType(STRING2) )
+                    exception(token, "Illegal single quoted string: %s", token) ;
                 return ;
             case STRING1:
                 if ( profile.isStrictMode() )
