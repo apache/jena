@@ -258,8 +258,15 @@ public final class TokenizerText implements Tokenizer
             if ( reader.peekChar() == CH_AT )
             {
                 reader.readChar() ;
-                token.setImage2(langTag()) ;
-                token.setType(TokenType.LITERAL_LANG) ;
+
+                Token mainToken = new Token(token) ;
+                mainToken.setType(TokenType.LITERAL_LANG) ;
+                mainToken.setSubToken1(token) ;
+                mainToken.setImage2(langTag()) ;
+                token = mainToken ;
+                
+//                token.setImage2(langTag()) ;
+//                token.setType(TokenType.LITERAL_LANG) ;
                 if ( Checking ) checkLiteralLang(token.getImage(), token.getImage2()) ;
             }
             else if ( reader.peekChar() == '^' )
@@ -276,14 +283,18 @@ public final class TokenizerText implements Tokenizer
 //                    exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
 
                 // Stash current token.
-                Token mainToken = token ;
+                Token mainToken = new Token(token) ;
+                mainToken.setSubToken1(token) ;
+                mainToken.setImage(token.getImage()) ; 
+                
                 Token subToken = parseToken() ;
                 if ( ! subToken.isIRI() )
                     exception("Datatype URI required after ^^ - URI or prefixed name expected") ;
                 
+                mainToken.setSubToken2(subToken) ;
+                mainToken.setType(TokenType.LITERAL_DT) ;
+                
                 token = mainToken ;
-                token.setSubToken(subToken) ;
-                token.setType(TokenType.LITERAL_DT) ;
                 if ( Checking ) checkLiteralDT(token.getImage(), subToken) ;
             }
             else

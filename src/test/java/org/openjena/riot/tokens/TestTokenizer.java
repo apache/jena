@@ -40,7 +40,7 @@ public class TestTokenizer extends BaseTest
         return tokenizer ;
     }
 
-    private static void token(String string)
+    private static void tokenFirst(String string)
     {
         Tokenizer tokenizer = tokenizer(string) ;
         assertTrue(tokenizer.hasNext()) ;
@@ -51,7 +51,7 @@ public class TestTokenizer extends BaseTest
     
     
     
-    private static Token token_XX(String string)
+    private static Token tokenFor(String string)
     {
         Tokenizer tokenizer = tokenizer(string) ;
         assertTrue(tokenizer.hasNext()) ;
@@ -73,7 +73,20 @@ public class TestTokenizer extends BaseTest
         return token ;
     }
     
-
+    private static Token tokenizeAndTestExact(String input, TokenType tokenType, 
+                                              String tokenImage1, String tokenImage2,
+                                              Token subToken1, Token subToken2) 
+    {
+        Token token = tokenFor(input) ;
+        assertEquals(tokenType, token.getType()) ;
+        assertEquals(tokenImage1, token.getImage()) ;
+        assertEquals(tokenImage2, token.getImage2()) ;
+        assertEquals(subToken1, token.getSubToken1()) ;
+        assertEquals(subToken2, token.getSubToken2()) ;
+        return token ;
+    }
+    
+    
     private static Tokenizer tokenizeAndTestFirst(String input, TokenType tokenType, String tokenImage)
     {
         return tokenizeAndTestFirst(input, tokenType, tokenImage, null) ;
@@ -107,6 +120,21 @@ public class TestTokenizer extends BaseTest
         return token ;
     }
     
+    private static Token tokenizeAndTest(String input, TokenType tokenType, 
+                                         String tokenImage1, String tokenImage2,
+                                         Token subToken1, Token subToken2)
+    {
+        Token token = tokenFor(input) ;
+        assertNotNull(token) ;
+        assertEquals(tokenType, token.getType()) ;
+        assertEquals(tokenImage1, token.getImage()) ;
+        assertEquals(tokenImage2, token.getImage2()) ;
+        assertEquals(subToken1, token.getSubToken1()) ;
+        assertEquals(subToken2, token.getSubToken2()) ;
+        return token ;
+    }
+
+    
     @Test public void tokenUnit_iri1()      { tokenizeAndTestExact("<x>", TokenType.IRI, "x") ; }
 
     @Test public void tokenUnit_iri2()      { tokenizeAndTestExact("   <>   ", TokenType.IRI, "") ; }
@@ -116,7 +144,7 @@ public class TestTokenizer extends BaseTest
     {
         try {
             // That's one \
-            token("<abc\\>def>") ;
+            tokenFirst("<abc\\>def>") ;
         } catch (RiotParseException ex)
         {
             String x = ex.getMessage() ;
@@ -190,7 +218,7 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str9()
     {
-        token("'abc") ;
+        tokenFirst("'abc") ;
     }
     
     @Test
@@ -263,13 +291,13 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str_long10()
     {
-        token("\"\"\"abcdef") ;
+        tokenFirst("\"\"\"abcdef") ;
     }
     
     @Test(expected = RiotParseException.class)
     public void tokenUnit_str_long11()
     {
-        token("'''") ;
+        tokenFirst("'''") ;
     }
 
     @Test
@@ -601,7 +629,7 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenUnit_hex3()
     {
-        token("0xXYZ") ;
+        tokenFirst("0xXYZ") ;
     }
     
     @Test public void tokenUnit_hex4()
@@ -609,17 +637,30 @@ public class TestTokenizer extends BaseTest
 		tokenizeAndTestExact("0Xabc", TokenType.HEX, "0Xabc") ;
     }
     
-	private static void tokenizeAndTestLiteralDT(String input, String image, TokenType dt, String image1, String image2)
+	private static void tokenizeAndTestLiteralDT(String input, TokenType lexType, String image, TokenType dt, String dtImage1, String dtImage2)
 	{
-		Token token2 = tokenizeAndTestExact(input, TokenType.LITERAL_DT, image).getSubToken() ;
+	    Token lexToken = new Token(lexType, image) ;
+	    Token dtToken = new Token(dt, dtImage1, dtImage2) ;
+        tokenizeAndTest(input, TokenType.LITERAL_DT, image, null,  lexToken, dtToken) ;
+
+        Token expectedToken = new Token(TokenType.LITERAL_DT) ;
+	    expectedToken.setImage(image) ;
+        expectedToken.setImage2(null) ;
+        expectedToken.setSubToken1(lexToken) ;
+        expectedToken.setSubToken2(dtToken) ;
+
+        Token token = tokenFor(input) ;
+        assertEquals(expectedToken, token) ;
+        
+        Token token2 = tokenizeAndTestExact(input, TokenType.LITERAL_DT, image).getSubToken2() ;
 		assertEquals(dt, token2.getType()) ;
-        assertEquals(image1, token2.getImage()) ;
-        assertEquals(image2, token2.getImage2()) ;
+        assertEquals(dtImage1, token2.getImage()) ;
+        assertEquals(dtImage2, token2.getImage2()) ;
 	}
 
     @Test public void tokenLiteralDT_0()
     {
-		tokenizeAndTestLiteralDT("'123'^^<x> ", "123", TokenType.IRI, "x", null) ;
+		tokenizeAndTestLiteralDT("\"123\"^^<x> ", TokenType.STRING2, "123", TokenType.IRI, "x", null) ;
     }
     
     // literal test function.
@@ -627,23 +668,21 @@ public class TestTokenizer extends BaseTest
     @Test
     public void tokenLiteralDT_1()
     {
-		tokenizeAndTestLiteralDT("'123'^^x:y ", "123", TokenType.PREFIXED_NAME, "x", "y") ;
+		tokenizeAndTestLiteralDT("'123'^^x:y ", TokenType.STRING1, "123", TokenType.PREFIXED_NAME, "x", "y") ;
     }
 
     @Test
     public void tokenLiteralDT_2()
     {
-        tokenizeAndTestLiteralDT("'123'^^:y", "123", TokenType.PREFIXED_NAME, "", "y") ;
+        tokenizeAndTestLiteralDT("'123'^^:y", TokenType.STRING1, "123", TokenType.PREFIXED_NAME, "", "y") ;
     }
     
     @Test
     public void tokenLiteralDT_3()
     {
-        tokenizeAndTestLiteralDT("'''123'''^^<xyz>", "123", TokenType.IRI, "xyz", null) ;
+        tokenizeAndTestLiteralDT("'''123'''^^<xyz>", TokenType.LONG_STRING1,  "123", TokenType.IRI, "xyz", null) ;
     }
         
-
-
     @Test(expected = RiotParseException.class)
     public void tokenLiteralDT_bad_1()
     {
@@ -708,19 +747,19 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_3()
     {
-        token("''@ lang ") ;
+        tokenFirst("''@ lang ") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_4()
     {
-        token("''@lang- ") ;
+        tokenFirst("''@lang- ") ;
     }
 
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_5()
     {
-        token("'abc'@- ") ;
+        tokenFirst("'abc'@- ") ;
     }
 
     @Test
@@ -738,7 +777,7 @@ public class TestTokenizer extends BaseTest
     @Test(expected = RiotParseException.class)
     public void tokenLiteralLang_8()
     {
-        token("''@9-b") ;
+        tokenFirst("''@9-b") ;
     }
 
     @Test

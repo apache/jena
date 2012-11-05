@@ -22,10 +22,8 @@ import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import org.openjena.atlas.io.PeekInputStream ;
 import org.openjena.atlas.io.PeekReader ;
 import org.openjena.atlas.lib.StrUtils ;
-
 
 public class TokenizerFactory
 {
@@ -39,16 +37,6 @@ public class TokenizerFactory
     
     public static Tokenizer makeTokenizerUTF8(InputStream in)
     {
-        if ( false )
-        {
-            // Byte parser - historical.
-            // Might be faster. Slightly imperfect - better to convert to chars, then parse.
-            // No BOM handling.
-            PeekInputStream pin = PeekInputStream.make(in) ;
-            Tokenizer tokenizer = new TokenizerBytes(pin) ;
-            return tokenizer ;
-        }
-        
         // BOM will have been removed
         PeekReader peekReader = PeekReader.makeUTF8(in) ;
         Tokenizer tokenizer = new TokenizerText(peekReader) ;
