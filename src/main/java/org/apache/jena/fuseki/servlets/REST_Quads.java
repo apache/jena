@@ -114,7 +114,9 @@ public class REST_Quads extends SPARQL_REST
     { 
         if ( ! Fuseki.graphStoreProtocolMode )
             errorMethodNotAllowed("POST") ;
+        
         // Code to pass the GSP test suite.
+        // Not necessarily good code.
         String x = action.request.getContentType() ;
         
         MediaType mediaType = MediaType.create(x) ;
@@ -131,13 +133,20 @@ public class REST_Quads extends SPARQL_REST
         action.beginWrite() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
-            String name = action.request.getRequestURL().append("/").append(""+(++counter)).toString() ;
+            //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
+            
+            String name = action.request.getRequestURL().toString() ;
+            if ( ! name.endsWith("/") )
+                name = name+ "/"  ;
+            name = name+(++counter) ;
             Node gn = Node.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
             Sink<Triple> sink = new SinkTriplesToGraph(g) ;
 
             LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , sink) ;
             parser.parse() ;
+            //log.info(format("[%d] Location: %s  Size: %d", action.id, name, g.size())) ;
+            log.info(format("[%d] Location: %s", name)) ;
             action.response.setHeader("Location",  name) ;
             action.commit();
             successCreated(action) ;
