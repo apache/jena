@@ -61,10 +61,22 @@ import com.hp.hpl.jena.vocabulary.XSD ;
 
 public final class Token
 {
+    // Some tokens are "multipart"
+    //   A language tag is a sub-token string and token part.
+    //     It uses subToken1, and image2.
+    //   A datatype literal is two tokens
+    //     It uses subToken1, subToken2 and sets image to the lexical part.
+    //   A prefixed name is two strings. 
+    //     It uses tokenImage and tokenImage2
+    
     private TokenType tokenType = null ;
+    
     private String tokenImage = null ;
-    private String tokenImage2 = null ;     // Used for language tag and second part of prefix name
-    private Token subToken = null ;         // A related token (used for datatype literals)
+    private String tokenImage2 = null ;         // Used for language tag and second part of prefix name
+    
+    private Token subToken1 = null ;            // A related token (used for datatype literals and language tags)
+    private Token subToken2 = null ;            // A related token (used for datatype literals and language tags)
+    
     public int cntrlCode = 0 ;
     private long column ;
     private long line ;
@@ -74,20 +86,25 @@ public final class Token
     public static final String ImageTrue    = "true" ;
     public static final String ImageFalse   = "false" ;
     
-    public final TokenType getType() { return tokenType ; }
-    public final String getImage()   { return tokenImage ; }
+    public final TokenType getType()    { return tokenType ; }
+    public final String getImage()      { return tokenImage ; }
     //public final String getImage1()  { return tokenImage1 ; }
-    public final String getImage2()  { return tokenImage2 ; }
-    public final int getCntrlCode()  { return cntrlCode ; }
-    public final Token getSubToken() { return subToken ; }
+    
+    public final String getImage2()     { return tokenImage2 ; }
+    public final int getCntrlCode()     { return cntrlCode ; }
+    public final Token getSubToken1()   { return subToken1 ; }
+    public final Token getSubToken2()   { return subToken2 ; }
     
     public final Token setType(TokenType tokenType)     { this.tokenType = tokenType ; return this ; }
     public final Token setImage(String tokenImage)      { this.tokenImage = tokenImage ; return this ; }
     public final Token setImage(char tokenImage)        { this.tokenImage = String.valueOf(tokenImage) ; return this ; }
-    //public final Token setImage1(String tokenImage1)   { this.tokenImage1 = tokenImage1 ; return this ; }
+    
     public final Token setImage2(String tokenImage2)    { this.tokenImage2 = tokenImage2 ; return this ; }
+    
     public final Token setCntrlCode(int cntrlCode)      { this.cntrlCode = cntrlCode ; return this ; }
-    public final Token setSubToken(Token subToken)      { this.subToken = subToken ; return this ; }
+
+    public final Token setSubToken1(Token subToken)      { this.subToken1 = subToken ; return this ; }
+    public final Token setSubToken2(Token subToken)      { this.subToken2 = subToken ; return this ; }
     
     static Token create(String s)
     {
@@ -120,27 +137,42 @@ public final class Token
     {
         return line ;
     }
-    
-    private Token(TokenType type) { this(type, null, null, null) ; }
-    
-    private Token(TokenType type, String image1) { this(type, image1, null, null) ; }
-    
-    private Token(TokenType type, String image1, String image2)
-    { this(type, image1, image2, null) ; }
 
-    private Token(TokenType type, String image1, Token subToken)
-    { this(type, image1, null, subToken) ; }
-
-
-    private Token(TokenType type, String image1, String image2, Token subToken)
+    Token(String string) { this(STRING, string) ; } 
+    
+    Token(TokenType type) { this(type, null, null) ; }
+  
+    Token(TokenType type, String image1) { this(type, image1, null) ; }
+  
+    Token(TokenType type, String image1, String image2)
+    { 
+      this() ;
+      setType(type) ;
+      setImage(image1) ;
+      setImage2(image2) ;
+    }
+    
+    
+//    private Token(TokenType type) { this(type, null, null, null) ; }
+//    
+//    private Token(TokenType type, String image1) { this(type, image1, null, null) ; }
+//    
+//    private Token(TokenType type, String image1, String image2)
+//    { this(type, image1, image2, null) ; }
+//
+//    private Token(TokenType type, String image1, Token subToken)
+//    { this(type, image1, null, subToken) ; }
+//
+//
+    private Token(TokenType type, String image1, String image2, Token subToken1, Token subToken2)
     {
         this() ;
         setType(type) ;
         setImage(image1) ;
         setImage2(image2) ;
-        setSubToken(subToken) ;
+        setSubToken1(subToken1) ;
+        setSubToken2(subToken2) ;
     }
-
     
     private Token() { this(-1, -1) ; }
     
@@ -148,12 +180,12 @@ public final class Token
     
     public Token(Token token)
     { 
-        this.tokenType = token.tokenType ;
-        this.tokenImage = token.tokenImage ;
-        this.tokenImage2 = token.tokenImage2 ;
-        this.cntrlCode = token.cntrlCode ;
-        this.line = token.line ; 
-        this.column = token.column ;
+        this(token.tokenType, 
+             token.tokenImage, token.tokenImage2,
+             token.subToken1, token.subToken2) ;
+        this.cntrlCode      = token.cntrlCode ;
+        this.line           = token.line ; 
+        this.column         = token.column ;
     }
     
     public int asInt() {
@@ -214,23 +246,32 @@ public final class Token
             sb.append(delim1) ;
             sb.append(getImage()) ;
             sb.append(delim1) ;
-            
-            if ( getImage2() != null )
-            {
-                sb.append(":") ;
-                sb.append(delim2) ;
-                sb.append(getImage2()) ;
-                sb.append(delim2) ;
-            }
-            if ( getSubToken() != null )
-            {
-                sb.append(";") ;
-                sb.append(delim2) ;
-                sb.append(getSubToken().toString()) ;
-                sb.append(delim2) ;
-            }   
-
         }
+            
+        if ( getImage2() != null )
+        {
+            sb.append(":") ;
+            sb.append(delim2) ;
+            sb.append(getImage2()) ;
+            sb.append(delim2) ;
+        }
+        
+        if ( getSubToken1() != null )
+        {
+            sb.append(";") ;
+            sb.append(delim2) ;
+            sb.append(getSubToken1().toString()) ;
+            sb.append(delim2) ;
+        }   
+
+        if ( getSubToken2() != null )
+        {
+            sb.append(";") ;
+            sb.append(delim2) ;
+            sb.append(getSubToken2().toString()) ;
+            sb.append(delim2) ;
+        }   
+
         if ( getCntrlCode() != 0 )
         {
             sb.append(":") ; 
@@ -388,14 +429,17 @@ public final class Token
             case INTEGER:   return Node.createLiteral(tokenImage, null, XSDDatatype.XSDinteger) ;
             case LITERAL_DT :
             {
-                if ( pmap == null && getSubToken().hasType(TokenType.PREFIXED_NAME) )
+                Token lexToken = getSubToken1() ;
+                Token dtToken  = getSubToken2() ;
+                
+                if ( pmap == null && dtToken.hasType(TokenType.PREFIXED_NAME) )
                     // Must be able to resolve the datattype else we can't find it's datatype.
                     throw new RiotException("Invalid token: "+this) ;
-                Node n = getSubToken().asNode(pmap);
+                Node n = dtToken.asNode(pmap);
                 if ( ! n.isURI() )
                     throw new RiotException("Invalid token: "+this) ;
                 RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(n.getURI()) ;
-                return Node.createLiteral(tokenImage, null, dt)  ;
+                return Node.createLiteral(lexToken.getImage(), null, dt)  ;
             }
             case LITERAL_LANG : return Node.createLiteral(tokenImage, tokenImage2, null)  ;
             case STRING:
@@ -569,12 +613,19 @@ public final class Token
                     // Has datatype.
                     
                     Node dt = Node.createURI(datatype) ;
-                    Token subToken = tokenForNode(dt) ;
-                    return new Token(LITERAL_DT, s, subToken) ;
+                    Token subToken1 = new Token(STRING, s) ;
+                    Token subToken2 = tokenForNode(dt) ;
+                    Token t = new Token(LITERAL_DT, s) ;
+                    t.setSubToken1(subToken1) ;
+                    t.setSubToken2(subToken2) ;
+                    return t ;
                 }
     
                 if ( lang != null && lang.length()>0)
-                    return new Token(LITERAL_LANG, s, lang) ; 
+                {
+                    Token lex = new Token(s) ;
+                    return new Token(LITERAL_LANG, s, lang, lex, null) ;
+                }
                 
                 // Plain.
                 return new Token(STRING, s) ; 

@@ -11,6 +11,7 @@ ChangeLog for ARQ
 + Update Turtle/Trig parsers for prefixed name details in RDF 1.1
   Add %-sequences, \char sequences and ':' to local part of prefixed names.
   NB.  The characters 123. are now an integer 123 and a DOT; they were a decimal, and no DOT.  
++ RIOT tokenizing now records the subtokens for language and datatype literals.   
 
 ==== ARQ 2.9.4
 
