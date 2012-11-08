@@ -54,8 +54,8 @@ public class RunFuseki
     {
         FusekiCmd.main(
                      //"--update", "--mem", "--gsp", "--uber", "/ds"
-                     "--update", "--loc=/home/afs/tmp/DB", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
-                     //"--update", "--memtdb", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
+                     //"--update", "--loc=/home/afs/tmp/DB", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
+                     "--update", "--memtdb", "--set=tdb:unionDefaultGraph=true", "--update", "/ds"
                     //"-v", 
                     //"--debug",
                     //"--update",
