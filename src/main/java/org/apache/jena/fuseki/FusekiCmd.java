@@ -215,6 +215,7 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argFile) ) x++ ;
         if ( contains(assemblerDescDecl) ) x++ ;
         if ( contains(argTDB) ) x++ ;
+        if ( contains(argMemTDB) ) x++ ;
 
         if ( fusekiConfigFile != null )
         {
