@@ -18,9 +18,12 @@
 
 package com.hp.hpl.jena.sparql.api;
 
+import java.util.Iterator;
+
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
@@ -201,6 +204,33 @@ public class TestAPI extends BaseTest
         qs = rs.nextSolution() ;
         assertEquals(3, qs.getLiteral("c").getInt()) ;
         qExec.close() ;
+    }
+    
+    @Test public void testConstructRejectsBadTriples1()
+    {
+        String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { ?o ?p ?s }";
+        Query q = QueryFactory.create(queryString);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, m);
+        
+        Model resultModel = qExec.execConstruct();
+        assertEquals(0, resultModel.size());
+    }
+    
+    @Test public void testConstructRejectsBadTriples2()
+    {
+        String queryString = "CONSTRUCT { ?s ?p ?o } WHERE { ?o ?p ?s }";
+        Query q = QueryFactory.create(queryString);
+        
+        QueryExecution qExec = QueryExecutionFactory.create(q, m);
+        
+        Iterator<Triple> ts = qExec.execConstructTriples();
+        long count = 0;
+        while (ts.hasNext()) {
+            count++;
+            ts.next();
+        }
+        assertEquals(0, count);
     }
     
     
