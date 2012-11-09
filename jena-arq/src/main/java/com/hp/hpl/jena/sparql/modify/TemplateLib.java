@@ -29,6 +29,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Substitute ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.util.ModelUtils;
 
 public class TemplateLib
 {
@@ -84,7 +85,7 @@ public class TemplateLib
                 for (Triple triple : triples)
                 {
                     Triple q = subst(triple, b, bNodeMap) ;
-                    if ( ! q.isConcrete() )
+                    if ( ! q.isConcrete() || ! ModelUtils.isValidAsStatement(q.getSubject(), q.getPredicate(), q.getObject()) )
                     {
                         //Log.warn(TemplateLib.class, "Unbound quad: "+FmtUtils.stringForQuad(quad)) ;
                         continue ;
