@@ -69,24 +69,34 @@ public class ModelUtils
         Node pNode = t.getPredicate() ;
         Node oNode = t.getObject() ;
         
-        if ( sNode.isLiteral() || sNode.isVariable() )
-            return null ;
-        
-        if ( ! pNode.isURI() )  // Not variable, literal or blank.
-            return null ;
-
-        if ( oNode.isVariable() )
-            return null ;
+        if (!isValidAsStatement(sNode, pNode, oNode)) return null;
         
         return model.asStatement(t) ; 
-//        RDFNode s = convertGraphNodeToRDFNode(sNode, model) ;
-//        RDFNode p = convertGraphNodeToRDFNode(pNode, model) ;
-//        if ( p instanceof Resource )
-//            p = model.createProperty(((Resource)p).getURI()) ;
-//        RDFNode o = convertGraphNodeToRDFNode(oNode, model) ;
-//        
-//        Statement stmt = model.createStatement((Resource)s, (Property)p, o) ;
-//        return stmt ;
+    }
+    
+    /**
+     * Determines whether a valid Statement can be formed from the given Subject, Predicate and Object
+     * <p>
+     * This function reflects the fact that the {@link Triple} API is flexible in allowing any Node type in any position (including non-RDF node types like Variable)
+     * and as such not all Triples can be safely converted into Statements
+     * </p>
+     * @param s Subject
+     * @param p Predicate
+     * @param o Object
+     * @return True if a valid Statement can be formed
+     */
+    public static boolean isValidAsStatement(Node s, Node p, Node o)
+    {
+        if ( s.isLiteral() || s.isVariable() )
+            return false ;
+        
+        if ( ! p.isURI() )  // Not variable, literal or blank.
+            return false ;
+
+        if ( o.isVariable() )
+            return false ;
+        
+        return true;
     }
     
     
