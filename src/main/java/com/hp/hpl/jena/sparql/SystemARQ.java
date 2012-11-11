@@ -32,6 +32,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Transactional ;
 import com.hp.hpl.jena.sparql.graph.GraphWrapper ;
 import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 
@@ -75,6 +76,9 @@ public class SystemARQ
     /** Sync carefully for compound objects*/
     public static void sync(DatasetGraph dataset)
     { 
+        if ( dataset instanceof Transactional )
+            return ;
+        
         if ( dataset instanceof Sync )
         {
             ((Sync)dataset).sync() ;
