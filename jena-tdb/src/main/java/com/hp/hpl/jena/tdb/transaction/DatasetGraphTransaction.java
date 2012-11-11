@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import org.openjena.atlas.lib.Sync ;
+
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
@@ -35,7 +37,7 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  * This is analogous to a "connection" in JDBC.
  */
 
-public class DatasetGraphTransaction extends DatasetGraphTrackActive implements GraphStore 
+public class DatasetGraphTransaction extends DatasetGraphTrackActive implements GraphStore, Sync
 {
     /* Initially, the app can use this DatasetGraph non-transactionally.
      * But as soon as it starts a transaction, the dataset can only be used
@@ -236,6 +238,11 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     @Override
     public void finishRequest(UpdateRequest request)
     {}
-    
-    
+
+    @Override
+    public void sync()
+    {
+        if ( ! sConn.haveUsedInTransaction() && get() != null )
+            get().sync() ;
+    }
 }
