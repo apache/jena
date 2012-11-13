@@ -70,7 +70,7 @@ public class QueryIterCommonParent extends QueryIterConvert
                     else
                     {
                         Log.fatal(this, "Binding already for "+v+" (different values)" ) ;
-                        throw new ARQInternalErrorException("QueryIteratorResultSet: Incompatible bindings for "+v) ;
+                        throw new ARQInternalErrorException("Incompatible bindings for "+v) ;
                     }
                 }
                 b2.add(v, n) ;
