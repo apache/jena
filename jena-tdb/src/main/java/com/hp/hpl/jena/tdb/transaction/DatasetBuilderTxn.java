@@ -96,6 +96,7 @@ public class DatasetBuilderTxn
         NodeTableBuilder nodeTableBuilder = new NodeTableBuilderTx() ;
         DatasetBuilderStd x = new DatasetBuilderStd(blockMgrBuilder, nodeTableBuilder) ;
         DatasetGraphTDB dsg2 = x._build(dsg.getLocation(), dsg.getConfig().params, dsg.getReorderTransform()) ;
+        dsg2.getContext().putAll(dsg.getContext()) ;
         return dsg2 ;
     }
 
