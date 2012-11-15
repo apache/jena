@@ -20,12 +20,17 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import org.junit.* ;
 import org.openjena.atlas.junit.BaseTest ;
+import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.*  ;
+
 import static com.hp.hpl.jena.query.ReadWrite.* ;
+
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
+import com.hp.hpl.jena.update.* ;
 
 /** Tests of transactions and the TDG union graph */
 public class TestTransactionUnionGraph extends BaseTest
@@ -75,7 +80,6 @@ public class TestTransactionUnionGraph extends BaseTest
         test(ReadWrite.WRITE) ;
         ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
-
     
     // Set after a transaction.
     @Test public void uniontxn_ds_rr()
@@ -121,7 +125,31 @@ public class TestTransactionUnionGraph extends BaseTest
         test(ReadWrite.WRITE) ;
         //ds.getContext().unset(TDB.symUnionDefaultGraph) ;
     }
+    
+    @Test public void uniontxn_update()
+    {
+        String x = StrUtils.strjoinNL("BASE <http://example/>",
+                                      "CLEAR ALL ; ", 
+                                      "INSERT DATA { GRAPH <urn:g> { <s> <p> 1}} ; ",
+                                      "INSERT { GRAPH <urn:g99> { ?s ?p 99} } WHERE  { ?s ?p 1 }"
+                                      ) ;
+        Dataset ds = TDBFactory.createDataset() ; 
+        ds.getContext().setTrue(TDB.symUnionDefaultGraph) ;
+        
+        ds.begin(WRITE) ;
+        UpdateRequest req = UpdateFactory.create(x) ;
+        UpdateAction.execute(req, ds) ;
+        ds.commit() ;
+        ds.end() ;
+        
+        ds.begin(READ) ;
+        assertEquals(1, ds.getNamedModel("urn:g99").size()) ;
+        assertEquals(1, ds.getNamedModel("urn:g").size()) ;
+        assertEquals(2, ds.getNamedModel(Quad.unionGraph.getURI()).size()) ;
+        ds.end() ;
+    }
 
+    
     private void test(ReadWrite mode)
     {
         ds.begin(mode) ;
