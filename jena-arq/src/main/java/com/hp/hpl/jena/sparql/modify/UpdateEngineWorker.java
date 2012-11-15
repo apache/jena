@@ -341,12 +341,12 @@ public class UpdateEngineWorker implements UpdateVisitor
             
             if ( false )
             {   
-                System.out.println("=======================================") ;
-                System.out.println(graphStore) ;
+//                System.out.println("=======================================") ;
+//                System.out.println(graphStore) ;
                 List<Binding> x = Iter.toList(bindings) ;
-                System.out.println("==== Bindings") ;
-                Iter.asString(x, "\n") ;
-                System.out.println("=======================================") ;
+                System.out.printf("====>> Bindings (%d)\n", x.size()) ;
+                Iter.print(System.out, x.iterator()) ;
+                System.out.println("====<<") ;
                 bindings = Iter.iter(x) ;
             }
             
