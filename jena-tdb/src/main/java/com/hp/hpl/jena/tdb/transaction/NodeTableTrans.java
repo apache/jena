@@ -93,6 +93,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public NodeId getNodeIdForNode(Node node)
     {
+        if ( node == Node.ANY )
+            return NodeId.NodeIdAny ;
         if ( passthrough ) return base.getNodeIdForNode(node) ;
         NodeId nodeId = nodeTableJournal.getNodeIdForNode(node) ;
         if ( ! NodeId.isDoesNotExist(nodeId) )
@@ -104,6 +106,8 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
     @Override
     public Node getNodeForNodeId(NodeId id)
     {
+        if ( NodeId.isAny(id) ) 
+            return Node.ANY ;
         if ( passthrough ) return base.getNodeForNodeId(id) ;
         long x = id.getId() ;
         if ( x < allocOffset )
