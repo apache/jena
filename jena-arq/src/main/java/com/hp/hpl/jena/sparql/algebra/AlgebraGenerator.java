@@ -136,8 +136,23 @@ public class AlgebraGenerator
         if ( elt == null )
             return OpNull.create() ;
 
-        broken("compile(Element)/Not a structural element: "+Utils.className(elt)) ;
-        return null ;
+        return compileUnknownElement(elt, "compile(Element)/Not a structural element: "+Utils.className(elt));
+    }
+    
+    /**
+     * Future extension point to allow the algebra generator to be more easily extended to understand new {@link Element} implementations
+     * that user defined language extensions may introduce.
+     * <p>
+     * This default implementation will throw an error
+     * </p>
+     * @param elt Element
+     * @param error Error message if unable to compile the given element type
+     * @return Algebra
+     */
+    protected Op compileUnknownElement(Element elt, String error)
+    {
+        broken(error) ;
+        return null;
     }
     
     //Produce the algebra for a single group.
@@ -386,8 +401,7 @@ public class AlgebraGenerator
 //        }
         
         
-        broken("compile/Element not recognized: "+Utils.className(elt)) ;
-        return null ;
+        return compileUnknownElement(elt, "compile/Element not recognized: "+Utils.className(elt));
     }
 
     private Op compileElementUnion(ElementUnion el)
