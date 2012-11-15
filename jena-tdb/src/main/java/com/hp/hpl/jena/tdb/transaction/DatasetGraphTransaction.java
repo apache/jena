@@ -25,6 +25,7 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.JenaTransactionException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphTrackActive ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.StoreConnection ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
@@ -229,6 +230,13 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     public Dataset toDataset()
     {
         return DatasetFactory.create(getDatasetGraphToQuery()) ;
+    }
+    
+    @Override
+    public Context getContext()
+    {
+        // Not the transactional dataset.
+        return getBaseDatasetGraph().getContext() ;
     }
 
     @Override

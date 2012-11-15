@@ -24,7 +24,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.Lock ;
-import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class DatasetGraphTrackActive implements DatasetGraph, Transactional
 {
@@ -170,9 +169,12 @@ public abstract class DatasetGraphTrackActive implements DatasetGraph, Transacti
     public boolean contains(Node g, Node s, Node p, Node o)
     { return get().contains(g, s, p, o) ; }
 
-    @Override
-    public Context getContext()
-    { return get().getContext() ; }
+    // This mixes get() (which may do checking such as in/out transaction)
+    // with configuration, which is not transaction related.
+
+//    @Override
+//    public Context getContext()
+//    { return get().getContext() ; }
 
     @Override
     public long size()
