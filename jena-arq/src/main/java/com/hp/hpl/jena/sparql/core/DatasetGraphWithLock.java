@@ -24,6 +24,7 @@ import org.openjena.atlas.lib.Sync ;
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** A DatasetGraph that uses the dataset lock to give weak transactional behaviour.
  *  Only supports multiple-reader OR single-writer, and no transction abort.
@@ -111,6 +112,12 @@ public class DatasetGraphWithLock extends DatasetGraphTrackActive implements Syn
         if ( dsg != null )
             dsg.close() ;
         dsg = null ;
+    }
+
+    @Override
+    public Context getContext()
+    {
+        return get().getContext() ;
     }
 
     @Override
