@@ -55,7 +55,7 @@ public class WebContent
     public static final String contentTypeTriX              = "application/trix+xml" ;
     public static final String contentTypeOctets            = "application/octet-stream" ;
     public static final String contentTypeMultiMixed        = "multipart/mixed" ;
-    public static final String contentTypeMultiForm         = "multipart/form" ;
+    public static final String contentTypeMultiFormData     = "multipart/form-data" ;
     public static final String contentTypeMultiAlt          = "multipart/alternative" ;
 
     public static final String contentTypeRdfJson			= "application/rdf+json" ;
