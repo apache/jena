@@ -52,7 +52,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
 {
     private static ErrorHandler errorHandler = ErrorHandlerFactory.errorHandlerStd(log) ;
     
-    private class HttpActionUpload extends HttpAction {
+    private static class HttpActionUpload extends HttpAction {
         public HttpActionUpload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, boolean verbose)
         {
             super(id, desc, request, response, verbose) ;
@@ -91,18 +91,63 @@ public class SPARQL_Upload extends SPARQL_ServletBase
         if ( ! isMultipart )
             error(HttpSC.BAD_REQUEST_400 , "Not a file upload") ;
         
-        ServletFileUpload upload = new ServletFileUpload();
-        // Locking only needed over the insert into dataset
+        long tripleCount = -1 ;
+        action.beginWrite() ;
         try {
-            String graphName = null ;
-            Graph graphTmp = GraphFactory.createGraphMem() ;
-            Node gn = null ;
-            String name = null ;  
-            ContentType ct = null ;
-            Lang lang = null ;
-            int tripleCount = 0 ;
+            Graph graphTmp = GraphFactory.createDefaultGraph() ;
+            String graphName = upload(action, graphTmp, "http://example/upload-base/") ;
+            tripleCount = graphTmp.size() ;
             
-            FileItemIterator iter = upload.getItemIterator(request);
+            log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
+                            action.id, graphName,  tripleCount)) ;
+
+            if ( graphName.equals(HttpNames.valueDefault) ) 
+                action.getActiveDSG().getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
+            else
+            {
+                Node gn = Node.createURI(graphName) ;
+                action.getActiveDSG().getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
+            }
+            tripleCount = graphTmp.size();
+            action.commit() ;
+        } catch (RuntimeException ex)
+        {
+            // If anything went wrong, try to backout.
+            try { action.abort() ; } catch (Exception ex2) {}
+            errorOccurred(ex.getMessage()) ;
+        } 
+        finally { action.endWrite() ; }
+        try {
+            response.setContentType("text/plain") ;
+            response.getOutputStream().print("Triples = "+tripleCount) ;
+            success(action) ;
+        }
+        catch (Exception ex) { errorOccurred(ex) ; }
+    }
+    
+    static public Graph upload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, String destination)
+    {
+        HttpActionUpload action = new HttpActionUpload(id, desc, request, response, false) ;
+        Graph graphTmp = GraphFactory.createDefaultGraph() ;
+        String graphName = upload(action, graphTmp, destination) ;
+        return graphTmp ;
+    }
+    
+    /** @return any graph name found.
+     */
+    
+    static private String upload(HttpActionUpload action, Graph graphDst, String base)
+    {
+        ServletFileUpload upload = new ServletFileUpload();
+        // Locking only needed over the insert into the dataset
+        String graphName = null ;
+        String name = null ;  
+        ContentType ct = null ;
+        Lang lang = null ;
+        int tripleCount = 0 ;
+
+        try {
+            FileItemIterator iter = upload.getItemIterator(action.request);
             while (iter.hasNext()) {
                 FileItemStream item = iter.next();
                 String fieldName = item.getFieldName();
@@ -131,81 +176,52 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                                 if ( iri.getRawPath().charAt(0) != '/' )
                                     errorBadRequest("Bad IRI: Path does not start '/': "+graphName) ;
                             } 
-                            gn = Node.createURI(graphName) ;
                         }
                     }
                     else if ( fieldName.equals(HttpNames.paramDefaultGraphURI) )
                         graphName = null ;
                     else
                         // Add file type?
-                        log.info(format("[%d] Upload: Field="+fieldName+" - ignored")) ;
+                        log.info(format("[%d] Upload: Field=%s ignored", action.id, fieldName)) ;
                 } else {
                     // Process the input stream
                     name = item.getName() ; 
                     if ( name == null || name.equals("") || name.equals("UNSET FILE NAME") ) 
                         errorBadRequest("No name for content - can't determine RDF syntax") ;
-                    
+
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.parse(contentTypeHeader) ;
-                    
+
                     lang = FusekiLib.langFromContentType(ct.getContentType()) ;
                     if ( lang == null )
                         lang = Lang.guess(name) ;
                     if ( lang == null )
                         // Desperate.
                         lang = Lang.RDFXML ;
-                    
-                    String base = "http://example/upload-base/" ;
+
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     // This isolates errors.
-                    Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
+                    Sink<Triple> sink = new SinkTriplesToGraph(graphDst) ;
                     LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, sink) ;
                     parser.getProfile().setHandler(errorHandler) ;
+                    log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
+                                    action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
                     try {
                         parser.parse() ;
                     } 
                     catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
                     finally { sink.close() ; }
-                    
-                    tripleCount = graphTmp.size() ;
-                    //DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
                 }
             }    
-                
+
             if ( graphName == null )
                 graphName = "default" ;
-            log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => (%s,%s,%d triple(s))", 
-                                      action.id, name,  ct.getContentType(), ct.getCharset(), graphName, lang.getName(), tripleCount)) ;
-
-            // Delay updating until all form fields processed to get the graph name 
-            action.beginWrite() ;
-            try {
-                if ( graphName.equals(HttpNames.valueDefault) ) 
-                    action.getActiveDSG().getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
-                else
-                    action.getActiveDSG().getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
-                action.commit() ;
-            } catch (RuntimeException ex)
-            {
-                // If anything went wrong, try to backout.
-                action.abort() ;
-                errorOccurred(ex.getMessage()) ;
-                return ;
-            } 
-            finally { action.endWrite() ; }
-                    
-            response.setContentType("text/plain") ;
-            response.getOutputStream().print("Triples = "+tripleCount) ;
-            success(action) ;
+            return graphName ;
         }
         catch (ActionErrorException ex) { throw ex ; }
-        catch (Exception ex)
-        {
-            errorOccurred(ex) ;
-            return ;
-        }
-    }
-    
+        catch (Exception ex)            { errorOccurred(ex) ; return null ; }
+    }            
+
     @Override
     protected void validate(HttpServletRequest request)
     {}

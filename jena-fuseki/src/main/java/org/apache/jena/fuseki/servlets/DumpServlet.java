@@ -81,9 +81,10 @@ public class DumpServlet extends HttpServlet
             out.print(dumpRequest(req)) ;
             out.println() ;
                         
-            out.println("==== Body");
+            out.println(">>>> Body");
             out.println() ;
             printBody(out, req) ;
+            out.println("<<<< Body");
             
             out.println("==== ServletContext");
             out.println() ;
@@ -206,7 +207,7 @@ public class DumpServlet extends HttpServlet
             }
 
             pw.println() ;
-            printBody(pw, req) ;
+            //printBody(pw, req) ;
 
             pw.close() ;
             sw.close() ;
@@ -226,12 +227,13 @@ public class DumpServlet extends HttpServlet
             // This is a dump - try to do something that works, even if inefficient.
             in.mark(100*1024) ;
 
-
-        while(in.ready())
+        while(true)
         {
-            pw.println(in.readLine());
+            String x = in.readLine() ;
+            if ( x == null )
+                break ;
+            pw.println(x) ;
         }
-
         try { in.reset() ;} catch (IOException e) { System.out.println("DumpServlet: Reset of content failed: "+e) ; }
     }
     

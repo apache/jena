@@ -204,7 +204,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     private void dispatch(HttpActionREST action)
     {
-        HttpServletRequest req = action.request ;
+     HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
         String method = req.getMethod().toUpperCase() ;
 
@@ -285,18 +285,22 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static DatasetGraph parseBody(HttpActionREST action)
     {
         String contentTypeHeader = action.request.getContentType() ;
+        
         if ( contentTypeHeader == null )
             errorBadRequest("No content type: "+contentTypeHeader) ;
             // lang = Lang.guess(action.request.getRequestURI()) ;
         
         ContentType ct = ContentType.parse(contentTypeHeader) ;
         
+        String base = wholeRequestURL(action.request) ;
+        
         // Use WebContent names
-        if ( WebContent.contentTypeMultiForm.equalsIgnoreCase(ct.getContentType()) )
+        if ( WebContent.contentTypeMultiFormData.equalsIgnoreCase(ct.getContentType()) )
         {
-            //log.warn("multipart/form-data not supported (yet)") ;
-            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
-            return null ;
+//            //log.warn("multipart/form-data not supported (yet)") ;
+//            error(HttpSC.UNSUPPORTED_MEDIA_TYPE_415, "multipart/form-data not supported") ;
+            Graph graphTmp = SPARQL_Upload.upload(action.id,  action.getDatasetRef(), action.request, action.response, base) ;
+            return DatasetGraphFactory.create(graphTmp) ;
         }
         
         if (WebContent.contentTypeMultiMixed.equals(ct.getContentType()) )
@@ -326,8 +330,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         
         try {
             InputStream input = action.request.getInputStream() ;
-            String base = wholeRequestURL(action.request) ;
-            
             boolean buffering = false ;
             if ( buffering )
             {
