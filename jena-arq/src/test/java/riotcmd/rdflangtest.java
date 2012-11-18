@@ -20,6 +20,7 @@ package riotcmd;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
+import org.apache.jena.riot.langsuite.VocabLangRDF ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.RIOT ;
 import org.openjena.riot.SysRIOT ;
@@ -39,13 +40,11 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
-import com.hp.hpl.jena.sparql.junit.ScriptTestSuiteFactory ;
 import com.hp.hpl.jena.sparql.junit.SimpleTestRunner ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.sparql.vocabulary.DOAP ;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF ;
-import com.hp.hpl.jena.sparql.vocabulary.TestManifest ;
 import com.hp.hpl.jena.vocabulary.DC ;
 import com.hp.hpl.jena.vocabulary.DCTerms ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -153,24 +152,24 @@ public class rdflangtest extends CmdGeneral
     
     static void oneManifestEarl(String testManifest)
     {
-        String name =  "ARQ" ;
-        String releaseName =  "ARQ" ;
-        String version = ARQ.VERSION ;
+        String name =  "Apache Jena RIOT" ;
+        String releaseName =  "RIOT" ;
+        String version = RIOT.VERSION ;
         String homepage = "http://jena.apache.org/" ;
-        String systemURI = "http://jena.apache.org/#arq" ;  // Null for bNode.
+        String systemURI = "http://jena.apache.org/#riot" ;  // Null for bNode.
         
         // Include information later.
         EarlReport report = new EarlReport(systemURI, name, version, homepage) ;
-        ScriptTestSuiteFactory.results = report ;
+        FactoryTestRiot.report = report ;
         
         Model model = report.getModel() ;
-        model.setNsPrefix("dawg", TestManifest.getURI()) ;
+        model.setNsPrefix("rdft", VocabLangRDF.getURI()) ;
         
         // Update the EARL report. 
         Resource jena = model.createResource()
                     .addProperty(FOAF.homepage, model.createResource("http://jena.apache.org/")) ;
         
-        // ARQ is part fo Jena.
+        // ARQ is part of Jena.
         Resource arq = report.getSystem()
                         .addProperty(DCTerms.isPartOf, jena) ;
         
@@ -201,10 +200,10 @@ public class rdflangtest extends CmdGeneral
         release.addProperty(DOAP.created, today) ;
         release.addProperty(DOAP.name, releaseName) ;      // Again
         
-        TestSuite suite = ScriptTestSuiteFactory.make(testManifest) ;
+        TestSuite suite = FactoryTestRiot.make(testManifest, null, null) ;
         SimpleTestRunner.runSilent(suite) ;
         
-        ScriptTestSuiteFactory.results.getModel().write(System.out, "TTL") ;
+        FactoryTestRiot.report.getModel().write(System.out, "TTL") ;
         
     }
  }

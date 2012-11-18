@@ -18,14 +18,17 @@
 
 package org.apache.jena.riot.langsuite;
 
-import junit.framework.TestCase ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.SysRIOT ;
 
-public abstract class LangTestCase extends TestCase
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+import com.hp.hpl.jena.sparql.junit.EarlTestCase ;
+
+public abstract class LangTestCase extends EarlTestCase
 {
-    protected LangTestCase(String name) { super(name) ; }
+    protected LangTestCase(String name, String testURI, EarlReport earl)
+    { super(name, testURI, earl) ; }
     
     protected abstract void _setUp() ; 
     protected abstract void _tearDown() ; 

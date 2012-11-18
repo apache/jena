@@ -19,35 +19,37 @@
 package org.apache.jena.riot.langsuite;
 
 
-import junit.framework.TestCase ;
 import org.apache.jena.riot.Lang2 ;
 import org.junit.After ;
 import org.junit.Before ;
-import org.openjena.riot.* ;
+import org.openjena.riot.ErrorHandler ;
+import org.openjena.riot.ErrorHandlerFactory ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.JenaReaderTurtle2 ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
 
-public class UnitTestBadEval extends TestCase
+public class UnitTestBadEval extends LangTestCase
 {
     private final String input ;
     private final Lang2 lang ;
 
-    protected UnitTestBadEval(String name, String uri, Lang2 lang)
+    protected UnitTestBadEval(String name, String testURI, String uri, Lang2 lang, EarlReport earl)
     {
-        super(name) ;
+        super(name, testURI, earl) ;
         this.input = uri ;
         this.lang = lang ;
     }
     
-    ErrorHandler installed ;
+    protected ErrorHandler installed ;
     
     @Override
     @Before
-    public void setUp()
+    public void _setUp()
     {
         installed = ErrorHandlerFactory.getDefaultErrorHandler() ;
         ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerStrictSilent()) ;
@@ -55,19 +57,15 @@ public class UnitTestBadEval extends TestCase
     
     @Override
     @After
-    public void tearDown()
+    public void _tearDown()
     {
         ErrorHandlerFactory.setDefaultErrorHandler(installed) ;
     }
     
 
     @Override
-    public void runTest()
+    public void runTestForReal()
     {
-        // Install picky error handler.
-        
-        
-        
         Model model = ModelFactory.createDefaultModel() ;
         RDFReader rdfreader = new JenaReaderTurtle2() ;
         try {

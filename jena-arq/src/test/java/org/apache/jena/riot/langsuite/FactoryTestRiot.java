@@ -25,13 +25,15 @@ import org.openjena.riot.RiotException ;
 import org.openjena.riot.TestVocabRIOT ;
 
 import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.util.junit.TestFactoryManifest ;
 import com.hp.hpl.jena.util.junit.TestUtils ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class FactoryTestRiot extends TestFactoryManifest
 {
-
+    public static EarlReport report = null ;
+    
     public static TestSuite make(String manifest, Resource dftTestType, String labelPrefix)
     {
         return new FactoryTestRiot(dftTestType, labelPrefix).process(manifest) ;
@@ -72,45 +74,45 @@ public class FactoryTestRiot extends TestFactoryManifest
             baseIRI = baseIRI+x ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxTTL) )
-                return new UnitTestSyntax(testName, input.getURI(), Lang2.TURTLE) ;
+                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), Lang2.TURTLE, report) ;
             
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
-                return new UnitTestBadSyntax(testName, input.getURI(), Lang2.TURTLE) ;
+                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), Lang2.TURTLE, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxNT) )
-                return new UnitTestSyntax(testName, input.getURI(), Lang2.NTRIPLES) ;
+                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), Lang2.NTRIPLES, report) ;
             
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxNT) )
-                return new UnitTestBadSyntax(testName, input.getURI(), Lang2.NTRIPLES) ;
+                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), Lang2.NTRIPLES, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
-                return new UnitTestSyntax(testName, input.getURI(), Lang2.RDFJSON) ;
+                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), Lang2.RDFJSON, report) ;
             
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxRJ) )
-                return new UnitTestBadSyntax(testName, input.getURI(), Lang2.RDFJSON) ;
+                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), Lang2.RDFJSON, report) ;
             
             if ( r.equals(VocabLangRDF.TestSurpressed ))
-                return new UnitTestSurpressed(testName) ;
+                return new UnitTestSurpressed(testName, item.getURI(), report) ;
 
             // Eval.
             
             if ( r.equals(VocabLangRDF.TestEvalTTL) )
-                return new UnitTestEval(testName, input.getURI(), result.getURI(), baseIRI, Lang2.TURTLE) ;
+                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, Lang2.TURTLE, report) ;
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalTTL) )
-                return new UnitTestBadEval(testName, input.getURI(), Lang2.TURTLE) ;
+                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), Lang2.TURTLE, report) ;
             
             if ( r.equals(VocabLangRDF.TestEvalNT) )
-                return new UnitTestEval(testName, input.getURI(), result.getURI(), baseIRI, Lang2.NTRIPLES) ;
+                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, Lang2.NTRIPLES, report) ;
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalNT) )
-                return new UnitTestBadEval(testName, input.getURI(), Lang2.NTRIPLES) ;
+                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), Lang2.NTRIPLES, report) ;
             
             if ( r.equals(VocabLangRDF.TestEvalRJ) )
-                return new UnitTestEval(testName, input.getURI(), result.getURI(), baseIRI, Lang2.RDFJSON) ;
+                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, Lang2.RDFJSON, report) ;
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalRJ) )
-                return new UnitTestBadEval(testName, input.getURI(), Lang2.RDFJSON) ;
+                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), Lang2.RDFJSON, report) ;
 
             System.err.println("Unrecognized turtle test : " + testName) ;
             return null ;
