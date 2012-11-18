@@ -2,10 +2,10 @@
 ## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
 
 if [ "$ARQROOT" = "" ]
-    then 
-    echo "ARQROOT is not set" 1>&2
+then
+    echo "ARQROOT not set" 1>&2
     exit 1
-fi
+    fi
 
 INIT="$ARQROOT/bin/arq_init"
 
