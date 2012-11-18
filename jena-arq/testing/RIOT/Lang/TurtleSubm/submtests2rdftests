@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "ROOT=turtle-subm-"
+echo
+
+for n in $(nums 0 30)
+do 
+    n=$(printf "%02d" $n)
+    echo "--Eval--"
+    cat test-$n.ttl
+    echo "--Results--"
+    cat "test-$n.out"
+    echo "--End--"
+    echo 
+done

@@ -1,0 +1,2 @@
+# N-Triples is not NQuads
+<http://example/s> <http://example/p> <http://example/o> <http://example/g> .

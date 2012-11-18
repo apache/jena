@@ -1,0 +1,4 @@
+@base <http://example/> .
+
+<g> { <s> <p> <o> }
+

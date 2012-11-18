@@ -1,0 +1,2 @@
+# N-Triples does not allow [] bnodes
+[] <http://example/p> <http://example/o> .

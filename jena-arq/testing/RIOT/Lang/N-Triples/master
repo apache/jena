@@ -1,0 +1,158 @@
+#### N-Triple syntax tests
+## Syntax of this file:
+## ROOT=  -- set the root name of the tests in the next section
+## --Syntax--	 Start synatx test etc.
+## --End-- 	 End of file marker.
+
+ROOT=ntriples-syntax-file
+
+## File and comments
+
+#This is empty.
+--Syntax--
+--End--
+
+--Syntax--
+#Empty file.
+--End--
+
+--Syntax--
+#One comment, one empty line.
+
+--End--
+
+## URIs
+ROOT=ntriples-syntax-uri
+
+--Syntax--
+<http://example/s> <http://example/p> <http://example/o> .
+--End--
+
+--Syntax--
+# x53 is capital S
+<http://example/\u0053> <http://example/p> <http://example/o> .
+--End--
+
+--Syntax--
+# x53 is capital S
+<http://example/\U00000053> <http://example/p> <http://example/o> .
+--End--
+
+## # Typed literals
+ROOT=ntriples-syntax-datatypes
+--Syntax--
+<http://example/s> <http://example/p> "123"^^<http://www.w3.org/2001/XMLSchema#integer> .
+--End--
+
+--Syntax--
+<s> <p> "123"^^<http://www.w3.org/2001/XMLSchema#string> .
+--End--
+
+## Strings
+ROOT=ntriples-syntax-string
+--Syntax--
+<http://example/s> <http://example/p> "string" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "string"@en .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "string"@en-uk .
+--End--
+
+ROOT=ntriples-syntax-bad-string
+--BadSyntax--
+# N-Triples does not allow '' strings.
+<http://example/s> <http://example/p> 'string' .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow '' strings.
+<http://example/s> <http://example/p> 'string'@en .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow '' strings.
+<http://example/s> <http://example/p> 'string'^^<http://example/dt> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow """....""" strings.
+<http://example/s> <http://example/p> """abc 
+def""" .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow """....""" strings.
+<http://example/s> <http://example/p> """abc def""" .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow '''....''' strings.
+<http://example/s> <http://example/p> '''abc def''' .
+--End--
+
+# Strings and escapes
+ROOT=ntriples-syntax-str-esc
+--Syntax--
+<http://example/s> <http://example/p> "a\n" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "a\u0020b" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "a\U00000020b" .
+--End--
+
+## Bad - directives
+
+ROOT=ntriples-syntax-bad-struct
+--BadSyntax--
+# N-Triples is not TriG
+{ <http://example/s> <http://example/p> <http://example/o> }
+--End--
+
+--BadSyntax--
+# N-Triples is not N3
+<http://example/s> = <http://example/o> .
+--End--
+
+--BadSyntax--
+# N-Triples is not NQuads
+<http://example/s> <http://example/p> <http://example/o> <http://example/g> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow literals-as-subjects
+"hello" <http://example/p> <http://example/o> .
+--End--
+
+
+--BadSyntax--
+# N-Triples does not allow literals-as-predicates
+<http://example/s> "hello" <http://example/o> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow bnodes-as-predicates
+<http://example/s> [] <http://example/o> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow [] bnodes
+[] <http://example/p> <http://example/o> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow bnodes-as-predicates
+<http://example/s> _:p <http://example/o> .
+--End--
+
+--BadSyntax--
+# N-Triples does not allow short form literals.
+<http://example/s> <http://example/p> 123  .
+--End--

@@ -1,0 +1,1247 @@
+#### Turtle syntax Tests
+## Syntax of this file:
+## ROOT=  -- set the root name of the tests in the next section
+## --Syntax--	 Start syntax test etc. (--BadSyntax--)
+## --End-- 	 End of file marker.
+
+** ToDo
+** UTF-8 (strings, pnames)
+
+ROOT=turtle-syntax-file
+
+## File and comments
+
+#This is empty.
+--Syntax--
+--End--
+
+--Syntax--
+#Empty file.
+--End--
+
+--Syntax--
+#One comment, one empty line.
+
+--End--
+
+## URIs
+ROOT=turtle-syntax-uri
+
+--Syntax--
+<http://example/s> <http://example/p> <http://example/o> .
+--End--
+
+--Syntax--
+# x53 is capital S
+<http://example/\u0053> <http://example/p> <http://example/o> .
+--End--
+
+--Syntax--
+# x53 is capital S
+<http://example/\U00000053> <http://example/p> <http://example/o> .
+--End--
+
+--Syntax--
+# IRI with all chars in it.
+<http://example/s> <http://example/p>
+<scheme:!$%25&'()*+,-./0123456789:/@ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz~?#> .
+--End--
+
+## Directives
+ROOT=turtle-syntax-base
+
+--Syntax--
+@base <http://example/> .
+--End--
+
+--Syntax--
+BASE <http://example/>
+--End--
+
+--Syntax--
+@base <http://example/> .
+<s> <p> <o> .
+--End--
+
+--Syntax--
+base <http://example/>
+<s> <p> <o> .
+--End--
+
+ROOT=turtle-syntax-prefix
+
+--Syntax--
+@prefix : <http://example/> .
+--End--
+
+--Syntax--
+PreFIX : <http://example/>
+--End--
+
+--Syntax--
+PREFIX : <http://example/>
+:s :p :123 .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p :%20 .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+: : : .
+--End--
+
+--Syntax--
+# colon is a legal pname character
+@prefix : <http://example/> .
+@prefix x: <http://example/> .
+:a:b:c  x:d:e:f :::: .
+--End--
+
+--Syntax--
+# dash is a legal pname character
+@prefix x: <http://example/> .
+x:a-b-c  x:p x:o .
+--End--
+
+--Syntax--
+# dash is a legal pname character
+@prefix x: <http://example/> .
+x:_  x:p_1 x:o .
+--End--
+
+--Syntax--
+# percents
+@prefix : <http://example/> .
+@prefix x: <http://example/> .
+:a%3E  x:%25 :a%3Eb .
+--End--
+
+## Strings
+ROOT=turtle-syntax-string
+--Syntax--
+<http://example/s> <http://example/p> "string" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "string"@en .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "string"@en-uk .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> 'string' .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> 'string'@en .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> 'string'@en-uk .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> """abc""def''ghi""" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> """abc
+def""" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> '''abc
+def''' .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> """abc
+def"""@en .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> '''abc
+def'''@en .
+--End--
+
+# Strings and escapes
+ROOT=turtle-syntax-str-esc
+--Syntax--
+<http://example/s> <http://example/p> "a\n" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "a\u0020b" .
+--End--
+
+--Syntax--
+<http://example/s> <http://example/p> "a\U00000020b" .
+--End--
+
+----------------------------
+
+ROOT=turtle-syntax-pname-esc
+# ~.-!$&'()*+,;=/?#@%_
+--Syntax--
+@prefix : <http://example/> .
+:s :p :\~\.\-\!\$\&\'\(\)\*\+\,\;\=\/\?\#\@\_\%AA .
+--End--
+
+# ~.-!$&'()*+,;=/?#@%_
+--Syntax--
+@prefix : <http://example/> .
+:s :p :0123\~\.\-\!\$\&\'\(\)\*\+\,\;\=\/\?\#\@\_\%AA123 .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:xyz\~ :abc\.:  : .
+--End--
+
+# BNodes
+ROOT=turtle-syntax-bnode
+--Syntax--
+@prefix : <http://example/> .
+[] :p :o .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p [] .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p [ :q :o ] .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p [ :q1 :o1 ; :q2 :o2 ] .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+[ :q1 :o1 ; :q2 :o2 ] :p :o .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+_:a  :p :o .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s  :p _:a .
+_:a  :p :o .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+[ :p  :o ] .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+[ :p  :o1,:2 ] .
+:s :p :o  .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+
+:s1 :p :o .
+[ :p1  :o1 ; :p2 :o2 ] .
+:s2 :p :o .
+--End--
+
+# Literals
+# Numbers
+ROOT=turtle-syntax-number
+--Syntax--
+<s> <p> 123 .
+--End--
+
+--Syntax--
+<s> <p> -123 .
+--End--
+
+--Syntax--
+<s> <p> +123 .
+--End--
+
+--Syntax--
+# This is a decimal.
+<s> <p> 123.0 . 
+--End--
+
+--Syntax--
+# This is a decimal.
+<s> <p> .1 . 
+--End--
+
+--Syntax--
+# This is a decimal.
+<s> <p> -123.0 . 
+--End--
+
+--Syntax--
+# This is a decimal.
+<s> <p> +123.0 . 
+--End--
+
+--Syntax--
+# This is an integer
+<s> <p> 123.
+--End--
+
+--Syntax--
+<s> <p> 123.0e1 .
+--End--
+
+--Syntax--
+<s> <p> -123e-1 .
+--End--
+
+--Syntax--
+<s> <p> 123.E+1 .
+--End--
+
+# Typed literals
+ROOT=turtle-syntax-datatypes
+--Syntax--
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+<s> <p> "123"^^xsd:byte .
+--End--
+
+--Syntax--
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+<s> <p> "123"^^xsd:string .
+--End--
+
+# Boolean true/false
+ROOT=turtle-syntax-kw
+--Syntax--
+<s> <p> true .
+--End--
+
+--Syntax--
+<s> <p> false .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s a :C .
+--End--
+
+ROOT=turtle-syntax-struct
+--Syntax--
+@prefix : <http://example/> .
+:s :p :o1 , :o2 .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p1 :o1 ;
+   :p2 :o2 .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p1 :o1 ;
+   :p2 :o2 ;
+   .
+--End--
+
+ROOT=turtle-syntax-lists
+--Syntax--
+@prefix : <http://example/> .
+:s :p () .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+:s :p (1 "2" :o) .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+(1) :p (1) .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+(()) :p (()) .
+--End--
+
+--Syntax--
+@prefix : <http://example/> .
+(1 2 (1 2)) :p (( "a") "b" :o) .
+--End--
+
+#### BAD SYNTAX
+ROOT=turtle-syntax-bad-uri
+--BadSyntax--
+# Bad IRI : space.
+<http://example/ space> <http://example/p> <http://example/o> .
+--End--
+
+--BadSyntax--
+# Bad IRI : bad escape
+<http://example/\u00ZZ11> <http://example/p> <http://example/o> .
+--End--
+
+--BadSyntax--
+# Bad IRI : bad escape
+<http://example/\U00ZZ1111> <http://example/p> <http://example/o> .
+--End--
+
+--BadSyntax--
+# Bad IRI : character escapes not allowed.
+<http://example/\n> <http://example/p> <http://example/o> .
+--End--
+
+--BadSyntax--
+# Bad IRI : character escapes not allowed.
+<http://example/\/> <http://example/p> <http://example/o> .
+--End--
+
+## Directives
+ROOT=turtle-syntax-bad-prefix
+
+--BadSyntax--
+# No prefix
+:s <http://example/p> "x" .
+--End--
+
+--BadSyntax--
+# No prefix
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+<http://example/s> rdf:type :C .
+--End--
+
+--BadSyntax--
+# @prefix without URI.
+@prefix ex: .
+--End--
+
+--BadSyntax--
+# @prefix without prefix name .
+@prefix <http://example/> .
+--End--
+
+--BadSyntax--
+# @prefix without :
+@prefix x <http://example/> .
+--End--
+
+
+
+
+ROOT=turtle-syntax-bad-base
+--BadSyntax--
+# @base without URI.
+@base .
+--End--
+
+--BadSyntax--
+# @base in wrong case
+@BASE <http://example/> .
+--End--
+
+--BadSyntax--
+# @base without URI.
+BASE <http://example/> .
+<s> <p> <o> .
+--End--
+
+ROOT=turtle-syntax-bad-struct
+--BadSyntax--
+# Turtle is not TriG
+{ <http://example/s> <http://example/p> <http://example/o> }
+--End--
+
+--BadSyntax--
+# Turtle is not N3
+<http://example/s> = <http://example/o> .
+--End--
+
+--BadSyntax--
+# Turtle is not NQuads
+<http://example/s> <http://example/p> <http://example/o> <http://example/g> .
+--End--
+
+--BadSyntax--
+# Turtle does not allow literals-as-subjects
+"hello" <http://example/p> <http://example/o> .
+--End--
+
+
+--BadSyntax--
+# Turtle does not allow literals-as-predicates
+<http://example/s> "hello" <http://example/o> .
+--End--
+
+--BadSyntax--
+# Turtle does not allow bnodes-as-predicates
+<http://example/s> [] <http://example/o> .
+--End--
+
+--BadSyntax--
+# Turtle does not allow bnodes-as-predicates
+<http://example/s> _:p <http://example/o> .
+--End--
+
+
+# Forms
+ROOT=turtle-syntax-bad-kw
+--BadSyntax--
+@prefix : <http://example/> .
+:s A :C .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+a :p :o .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+:s :p a .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+true :p :o .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+:s true :o .
+--End--
+
+ROOT=turtle-syntax-bad-n3-extras
+
+# Various N3 syntax things that are not Turtle.
+
+--BadSyntax--
+# {} fomulae not in Turtle
+@prefix : <http://example/> .
+
+{ :a :q :c . } :p :z .
+
+--End--
+
+--BadSyntax--
+# = is not Turtle
+@prefix : <http://example/> .
+
+:a = :b .
+--End--
+
+--BadSyntax--
+# N3 paths
+@prefix : <http://example/> .
+@prefix ns: <http://example/p#> .
+
+:x.
+  ns:p.
+    ns:q :p :z .
+--End--
+
+--BadSyntax--
+# N3 paths
+@prefix : <http://example/> .
+@prefix ns: <http://example/p#> .
+
+:x^ns:p :p :z .
+--End--
+
+--BadSyntax--
+# N3 is...of
+@prefix : <http://example/> .
+
+:z is :p of :x .
+--End--
+
+--BadSyntax--
+# = is not Turtle
+@prefix : <http://example/> .
+
+:a.:b.:c .
+--End--
+
+
+--BadSyntax--
+# @keywords is not Turtle
+@keywords a .
+x a Item .
+--End--
+
+--BadSyntax--
+# @keywords is not Turtle
+@keywords a .
+x a Item .
+--End--
+
+--BadSyntax--
+# => is not Turtle
+@prefix : <http://example/> .
+:s => :o .
+--End--
+
+--BadSyntax--
+# <= is not Turtle
+@prefix : <http://example/> .
+:s <= :o .
+--End--
+
+--BadSyntax--
+# @forSome is not Turtle
+@prefix : <http://example/> .
+@forSome :x .
+--End--
+
+--BadSyntax--
+# @forAll is not Turtle
+@prefix : <http://example/> .
+@forAll :x .
+--End--
+
+--BadSyntax--
+# @keywords is not Turtle
+@keywords .
+x @a Item .
+--End--
+
+
+
+ROOT=turtle-syntax-bad-struct
+## Structure
+--BadSyntax--
+# No DOT
+<http://example/s> <http://example/p> <http://example/o>
+--End--
+
+--BadSyntax--
+# Too many DOT
+<http://example/s> <http://example/p> <http://example/o> . .
+--End--
+
+--BadSyntax--
+# Too many DOT
+<http://example/s> <http://example/p> <http://example/o> . .
+<http://example/s1> <http://example/p1> <http://example/o1> .
+--End--
+
+--BadSyntax--
+# Trailing ;
+<http://example/s> <http://example/p> <http://example/o> ;
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> 
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> 
+--End--
+
+# Literals-as-subjects, predicates
+--BadSyntax--
+# Literal as subject
+"abc" <http://example/p> <http://example/p>  .
+--End--
+
+--BadSyntax--
+# Literal as predicate
+<http://example/s> "abc" <http://example/p>  .
+--End--
+
+--BadSyntax--
+# BNode as predicate
+<http://example/s> [] <http://example/p>  .
+--End--
+
+--BadSyntax--
+# BNode as predicate
+<http://example/s> _:a <http://example/p>  .
+--End--
+
+## Literals
+ROOT=turtle-syntax-bad-lang
+--BadSyntax
+# Bad lang tag
+<http://example/s> <http://example/p> "string"@i18n .
+--End--
+
+--BadSyntax--
+# Bad lang tag
+<http://example/s> <http://example/p> "string"@1 .
+--End--
+
+## --BadSyntax--
+## @prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+## <http://example/s> <http://example/p> "string"^^rdf:LangString .
+## --End--
+
+# Bad escapes.
+ROOT=turtle-syntax-bad-esc
+--BadSyntax--
+# Bad string escape
+<http://example/s> <http://example/p> "a\zb" .
+--End--
+
+--BadSyntax--
+# Bad string escape
+<http://example/s> <http://example/p> "\uWXYZ" .
+--End--
+
+--BadSyntax--
+# Bad string escape
+<http://example/s> <http://example/p> "\U0000WXYZ" .
+--End--
+
+--BadSyntax--
+# Bad string escape
+<http://example/s> <http://example/p> "\U0000WXYZ" .
+--End--
+
+ROOT=turtle-syntax-bad-pname
+--BadSyntax--
+# ~ must be escaped.
+@prefix : <http://example/> .
+:a~b :p :o .
+--End--
+
+--BadSyntax--
+# Bad %-sequence
+@prefix : <http://example/> .
+:a%2 :p :o .
+--End--
+
+--BadSyntax--
+# No \u (x39 is "9")
+@prefix : <http://example/> .
+:a\u0039 :p :o .
+--End--
+
+# Mismatched quotes
+# Single quoted multiline strings.
+ROOT=turtle-syntax-bad-string
+--BadSyntax--
+@prefix : <http://example/> .
+:s :p "abc' .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+:s :p 'abc" .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+:s :p '''abc' .
+--End--
+
+--BadSyntax--
+@prefix : <http://example/> .
+:s :p """abc''' .
+--End--
+
+--BadSyntax--
+# Long literal with missing end
+@prefix : <http://example/> .
+:s :p """abc
+def
+--End--
+
+
+ROOT=turtle-syntax-bad-num
+--BadSyntax--
+<http://example/s> <http://example/p> 123.abc .
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> 123e .
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> 123abc .
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> 0x123 .
+--End--
+
+--BadSyntax--
+<http://example/s> <http://example/p> +-1 .
+--End--
+
+ROOT=turtle-eval-struct
+--Eval--
+<http://example/s> <http://example/p> <http://example/o> .
+--Results--
+<http://example/s> <http://example/p> <http://example/o> .
+--End--
+
+--Eval--
+<http://example/s> 
+      <http://example/p1> <http://example/o1> ;
+      <http://example/p2> <http://example/o2> ; 
+      .
+--Results--
+<http://example/s> <http://example/p1> <http://example/o1> .
+<http://example/s> <http://example/p2> <http://example/o2> .
+--End--
+
+ROOT=turtle-subm
+
+--Eval--
+@prefix : <#> .
+[] :x :y .
+--Results--
+_:genid1 <http://example/base/turtle-subm-01.ttl#x> <http://example/base/turtle-subm-01.ttl#y> .
+--End--
+
+--Eval--
+# Test @prefix and qnames
+@prefix :  <http://example.org/base1#> .
+@prefix a: <http://example.org/base2#> .
+@prefix b: <http://example.org/base3#> .
+:a :b :c .
+a:a a:b a:c .
+:a a:a b:a .
+--Results--
+<http://example.org/base1#a> <http://example.org/base1#b> <http://example.org/base1#c> .
+<http://example.org/base2#a> <http://example.org/base2#b> <http://example.org/base2#c> .
+<http://example.org/base1#a> <http://example.org/base2#a> <http://example.org/base3#a> .
+--End--
+
+--Eval--
+# Test , operator
+@prefix : <http://example.org/base#> .
+:a :b :c,
+      :d,
+      :e .
+--Results--
+<http://example.org/base#a> <http://example.org/base#b> <http://example.org/base#c> .
+<http://example.org/base#a> <http://example.org/base#b> <http://example.org/base#d> .
+<http://example.org/base#a> <http://example.org/base#b> <http://example.org/base#e> .
+--End--
+
+--Eval--
+# Test ; operator
+@prefix : <http://example.org/base#> .
+:a :b :c ;
+   :d :e ;
+   :f :g .
+--Results--
+<http://example.org/base#a> <http://example.org/base#b> <http://example.org/base#c> .
+<http://example.org/base#a> <http://example.org/base#d> <http://example.org/base#e> .
+<http://example.org/base#a> <http://example.org/base#f> <http://example.org/base#g> .
+--End--
+
+--Eval--
+# Test empty [] operator; not allowed as predicate
+@prefix : <http://example.org/base#> .
+[] :a :b .
+:c :d [] .
+--Results--
+_:genid1 <http://example.org/base#a> <http://example.org/base#b> .
+<http://example.org/base#c> <http://example.org/base#d> _:genid2 .
+--End--
+
+--Eval--
+# Test non empty [] operator; not allowed as predicate
+@prefix : <http://example.org/base#> .
+[ :a :b ] :c :d .
+:e :f [ :g :h ] .
+--Results--
+_:genid1 <http://example.org/base#a> <http://example.org/base#b> .
+_:genid1 <http://example.org/base#c> <http://example.org/base#d> .
+_:genid2 <http://example.org/base#g> <http://example.org/base#h> .
+<http://example.org/base#e> <http://example.org/base#f> _:genid2 .
+--End--
+
+--Eval--
+# 'a' only allowed as a predicate
+@prefix : <http://example.org/base#> .
+:a a :b .
+--Results--
+<http://example.org/base#a> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://example.org/base#b> .
+--End--
+
+--Eval--
+@prefix : <http://example.org/stuff/1.0/> .
+:a :b ( "apple" "banana" ) .
+
+--Results--
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "banana" .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "apple" .
+_:genid2 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:genid1 .
+<http://example.org/stuff/1.0/a> <http://example.org/stuff/1.0/b> _:genid2 .
+--End--
+
+--Eval--
+@prefix : <http://example.org/stuff/1.0/> .
+:a :b ( ) .
+
+--Results--
+<http://example.org/stuff/1.0/a> <http://example.org/stuff/1.0/b> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+--End--
+
+--Eval--
+# Test integer datatyped literals using an OWL cardinality constraint
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+# based on examples in the OWL Reference
+
+_:hasParent a owl:ObjectProperty .
+
+[] a owl:Restriction ;
+  owl:onProperty _:hasParent ;
+  owl:maxCardinality 2 .
+--Results--
+_:hasParent <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+_:genid1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:genid1 <http://www.w3.org/2002/07/owl#onProperty> _:hasParent .
+_:genid1 <http://www.w3.org/2002/07/owl#maxCardinality> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+--End--
+
+--Eval--
+<http://example.org/res1> <http://example.org/prop1> 000000 .
+<http://example.org/res2> <http://example.org/prop2> 0 .
+<http://example.org/res3> <http://example.org/prop3> 000001 .
+<http://example.org/res4> <http://example.org/prop4> 2 .
+<http://example.org/res5> <http://example.org/prop5> 4 .
+--Results--
+<http://example.org/res1> <http://example.org/prop1> "000000"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/res2> <http://example.org/prop2> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/res3> <http://example.org/prop3> "000001"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/res4> <http://example.org/prop4> "2"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org/res5> <http://example.org/prop5> "4"^^<http://www.w3.org/2001/XMLSchema#integer> .
+--End--
+
+--Eval--
+# Tests for - and _ in names, qnames
+@prefix ex1: <http://example.org/ex1#> .
+@prefix ex-2: <http://example.org/ex2#> .
+@prefix ex3_: <http://example.org/ex3#> .
+@prefix ex4-: <http://example.org/ex4#> .
+
+ex1:foo-bar ex1:foo_bar "a" .
+ex-2:foo-bar ex-2:foo_bar "b" .
+ex3_:foo-bar ex3_:foo_bar "c" .
+ex4-:foo-bar ex4-:foo_bar "d" .
+--Results--
+<http://example.org/ex1#foo-bar> <http://example.org/ex1#foo_bar> "a" .
+<http://example.org/ex2#foo-bar> <http://example.org/ex2#foo_bar> "b" .
+<http://example.org/ex3#foo-bar> <http://example.org/ex3#foo_bar> "c" .
+<http://example.org/ex4#foo-bar> <http://example.org/ex4#foo_bar> "d" .
+--End--
+
+--Eval--
+# Tests for rdf:_<numbers> and other qnames starting with _
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ex:  <http://example.org/ex#> .
+@prefix :    <http://example.org/myprop#> .
+
+ex:foo rdf:_1 "1" .
+ex:foo rdf:_2 "2" .
+ex:foo :_abc "def" .
+ex:foo :_345 "678" .
+--Results--
+<http://example.org/ex#foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_1> "1" .
+<http://example.org/ex#foo> <http://www.w3.org/1999/02/22-rdf-syntax-ns#_2> "2" .
+<http://example.org/ex#foo> <http://example.org/myprop#_abc> "def" .
+<http://example.org/ex#foo> <http://example.org/myprop#_345> "678" .
+--End--
+
+--Eval--
+# Test for : allowed
+@prefix :    <http://example.org/ron> .
+
+[] : [] .
+
+: : : .
+
+--Results--
+_:genid1 <http://example.org/ron> _:genid2 .
+<http://example.org/ron> <http://example.org/ron> <http://example.org/ron> .
+--End--
+
+
+--Eval--
+# Test long literal
+@prefix :  <http://example.org/ex#> .
+:a :b """a long
+	literal
+with
+newlines""" .
+--Results--
+<http://example.org/ex#a> <http://example.org/ex#b> "a long\n\tliteral\nwith\nnewlines" .
+--End--
+
+--Eval--
+@prefix : <http://example.org/foo#> .
+
+## \U00015678 is a not a legal codepoint
+## :a :b """\nthis \ris a \U00015678long\t
+## literal\uABCD
+## """ .
+## 
+## :d :e """\tThis \uABCDis\r \U00015678another\n
+## one
+## """ .
+
+# \U00015678 is a not a legal codepoint
+# \U00012451 in Cuneiform numeric ban 3
+:a :b """\nthis \ris a \U00012451long\t
+literal\uABCD
+""" .
+
+:d :e """\tThis \uABCDis\r \U00012451another\n
+one
+""" .
+--Results--
+## <http://example.org/foo#a> <http://example.org/foo#b> "\nthis \ris a \U00015678long\t\nliteral\uABCD\n" .
+## <http://example.org/foo#d> <http://example.org/foo#e> "\tThis \uABCDis\r \U00015678another\n\none\n" .
+
+<http://example.org/foo#a> <http://example.org/foo#b> "\nthis \ris a \U00012451long\t\nliteral\uABCD\n" .
+<http://example.org/foo#d> <http://example.org/foo#e> "\tThis \uABCDis\r \U00012451another\n\none\n" .
+--End--
+
+--Eval--
+@prefix : <http://example.org/#> .
+
+:a :b  1.0 .
+
+--Results--
+<http://example.org/#a> <http://example.org/#b> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+--End--
+
+--Eval--
+@prefix : <http://example.org/#> .
+
+:a :b "" .
+
+:c :d """""" .
+
+--Results--
+<http://example.org/#a> <http://example.org/#b> "" .
+<http://example.org/#c> <http://example.org/#d> "" .
+--End--
+
+--Eval--
+@prefix : <http://example.org#> .
+:a :b 1.0 .
+:c :d 1 .
+:e :f 1.0e0 .
+--Results--
+<http://example.org#a> <http://example.org#b> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org#c> <http://example.org#d> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org#e> <http://example.org#f> "1.0e0"^^<http://www.w3.org/2001/XMLSchema#double> .
+--End--
+
+--Eval--
+@prefix : <http://example.org#> .
+:a :b -1.0 .
+:c :d -1 .
+:e :f -1.0e0 .
+--Results--
+<http://example.org#a> <http://example.org#b> "-1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org#c> <http://example.org#d> "-1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://example.org#e> <http://example.org#f> "-1.0e0"^^<http://www.w3.org/2001/XMLSchema#double> .
+--End--
+
+--Eval--
+# Test long literal
+@prefix :  <http://example.org/ex#> .
+:a :b """John said: "Hello World!\"""" .
+--Results--
+<http://example.org/ex#a> <http://example.org/ex#b> "John said: \"Hello World!\"" .
+--End--
+
+--Eval--
+@prefix : <http://example.org#> .
+:a :b true .
+:c :d false .
+--Results--
+<http://example.org#a> <http://example.org#b> "true"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+<http://example.org#c> <http://example.org#d> "false"^^<http://www.w3.org/2001/XMLSchema#boolean> .
+--End--
+
+--Eval--
+# comment test
+@prefix : <http://example.org/#> .
+:a :b :c . # end of line comment
+:d # ignore me
+  :e # and me
+      :f # and me
+        .
+:g :h #ignore me
+     :i,  # and me
+     :j . # and me
+
+:k :l :m ; #ignore me
+   :n :o ; # and me
+   :p :q . # and me
+--Results--
+<http://example.org/#a> <http://example.org/#b> <http://example.org/#c> .
+<http://example.org/#d> <http://example.org/#e> <http://example.org/#f> .
+<http://example.org/#g> <http://example.org/#h> <http://example.org/#i> .
+<http://example.org/#g> <http://example.org/#h> <http://example.org/#j> .
+<http://example.org/#k> <http://example.org/#l> <http://example.org/#m> .
+<http://example.org/#k> <http://example.org/#n> <http://example.org/#o> .
+<http://example.org/#k> <http://example.org/#p> <http://example.org/#q> .
+--End--
+
+--Eval--
+# comment line with no final newline test
+@prefix : <http://example.org/#> .
+:a :b :c .
+#foo
+--Results--
+<http://example.org/#a> <http://example.org/#b> <http://example.org/#c> .
+--End--
+
+--Eval--
+@prefix foo: <http://example.org/foo#>  .
+@prefix foo: <http://example.org/bar#>  .
+
+foo:blah foo:blah foo:blah .
+
+--Results--
+<http://example.org/bar#blah> <http://example.org/bar#blah> <http://example.org/bar#blah> .
+--End--
+
+--Eval--
+<http://example.org/foo> <http://example.org/bar> "2.345"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1."^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.000000000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.2345678901234567890123457890"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+--Results--
+# Incomplete.
+## <http://example.org/foo> <http://example.org/bar> "2.345"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.30"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.2340000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.23400000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.2340000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.23400000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.2340000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "2.234"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+## <http://example.org/foo> <http://example.org/bar> "1.2345678901234567"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+
+#Corrected.
+<http://example.org/foo> <http://example.org/bar> "2.3"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.345"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.234000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.0"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1."^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.000000000"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.23400000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "1.2345678901234567890123457890"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+<http://example.org/foo> <http://example.org/bar> "2.2340000000000000005"^^<http://www.w3.org/2001/XMLSchema#decimal> .
+--End--
+
+--Eval--
+# In-scope base URI is http://www.w3.org/2001/sw/DataAccess/df1/tests/ at this point
+<a1> <b1> <c1> .
+@base <http://example.org/ns/> .
+# In-scope base URI is http://example.org/ns/ at this point
+<a2> <http://example.org/ns/b2> <c2> .
+@base <foo/> .
+# In-scope base URI is http://example.org/ns/foo/ at this point
+<a3> <b3> <c3> .
+@prefix : <bar#> .
+:a4 :b4 :c4 .
+@prefix : <http://example.org/ns2#> .
+:a5 :b5 :c5 .
+--Results--
+<http://example/base/a1> <http://example/base/b1> <http://example/base/c1> .
+<http://example.org/ns/a2> <http://example.org/ns/b2> <http://example.org/ns/c2> .
+<http://example.org/ns/foo/a3> <http://example.org/ns/foo/b3> <http://example.org/ns/foo/c3> .
+<http://example.org/ns/foo/bar#a4> <http://example.org/ns/foo/bar#b4> <http://example.org/ns/foo/bar#c4> .
+<http://example.org/ns2#a5> <http://example.org/ns2#b5> <http://example.org/ns2#c5> .
+--End--
+
+
+
+
+# Bad evaluation 
+# Bad URIs which pass the surface grammar
+
+ROOT=turtle-eval-bad
+
+--BadEval--
+# Bad IRI : good escape, bad charcater
+<http://example/\u0020> <http://example/p> <http://example/o> .
+--End--
+
+--BadEval--
+# Bad IRI : hex 3C is <
+<http://example/\u003C> <http://example/p> <http://example/o> .
+--End--
+
+--BadEval--
+# Bad IRI : hex 3E is >
+<http://example/\u003E> <http://example/p> <http://example/o> .
+--End--
+
+--BadEval--
+# Bad IRI
+<http://example/{abc}> <http://example/p> <http://example/o> .
+--End--
+
