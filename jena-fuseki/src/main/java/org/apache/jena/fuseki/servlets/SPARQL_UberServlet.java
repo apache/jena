@@ -123,7 +123,7 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
     @Override
     protected void validate(HttpServletRequest request)
     { 
-        // Left to the undeSPARQL_RESTrlying implementations.
+        // Left to the underlying implementations.
     }
 
     @Override
