@@ -18,15 +18,15 @@
 
 package org.apache.jena.riot.langsuite;
 
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
+
 public class UnitTestSurpressed extends LangTestCase
 {
-    public UnitTestSurpressed(String name)
-    {
-        super(name) ;
-    }
+    public UnitTestSurpressed(String name, String testURI, EarlReport earl)
+    { super(name, testURI, earl) ; }
     
     @Override
-    public void runTest()
+    public void runTestForReal()
     { }
 
     @Override
