@@ -363,6 +363,8 @@ public class WebReader2
         TypedInputStream2 in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
+        if ( base == null )
+            base = uri ;
         processTriples(sink, base, in, hintLang, context) ;
         in.close() ;
     }
@@ -520,31 +522,21 @@ public class WebReader2
 
     private static ContentType determineCT(String target, String ctStr, Lang2 hintLang)
     {
+        boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
+        
         if ( ctStr != null )
             ctStr = WebContent.contentTypeCanonical(ctStr) ;
-        
-        boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
         ContentType ct = (ctStr==null) ? null : ContentType.parse(ctStr) ;
         
-        // It's it's text plain, we ignore it because a lot of naive
+        // If it's text plain, we ignore it because a lot of naive
         // server setups return text/plain for any file type.
+        // We use the file extension.
         
         if ( ct == null || isTextPlain )
-        {
-            if ( hintLang == null )
-                ct = Langs.guessContentType(target) ;
-            else
-            {
-                ct = hintLang.getContentType() ;
-//                if ( ct == null )
-//                {
-//                    // Is the hint a content type?
-//                    Lang2 lang = Langs.contentTypeToLang(hintLang) ;
-//                    if ( lang != null )
-//                        ct = lang.getContentType() ;
-//                }
-            }
-        }
+            ct = Langs.guessContentType(target) ;
+        
+        if ( ct == null && hintLang != null ) 
+            ct = hintLang.getContentType() ;
         return ct ;
     }
 }
