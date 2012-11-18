@@ -28,15 +28,16 @@ import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
 
 public class UnitTestBadSyntax extends LangTestCase
 {
     private final String uri ;
     private final Lang2 lang ;
 
-    protected UnitTestBadSyntax(String name, String uri, Lang2 lang)
+    protected UnitTestBadSyntax(String name, String testURI, String uri, Lang2 lang, EarlReport earl)
     {
-        super(name) ;
+        super(name, testURI, earl) ;
         this.uri = uri ;
         this.lang = lang ;
     }
@@ -72,7 +73,7 @@ public class UnitTestBadSyntax extends LangTestCase
     protected void _tearDown()      { BaseTest.unsetTestLogging() ; }
 
     @Override
-    public void runTest()
+    public void runTestForReal()
     {
         Model model = ModelFactory.createDefaultModel() ;
         try {

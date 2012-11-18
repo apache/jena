@@ -27,6 +27,7 @@ import org.openjena.riot.system.JenaReaderNTriples2 ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 public class UnitTestEval extends LangTestCase
@@ -36,9 +37,9 @@ public class UnitTestEval extends LangTestCase
     String baseIRI ;
     Lang2 lang ;
     
-    public UnitTestEval(String name, String input, String output, String baseIRI, Lang2 lang)
+    public UnitTestEval(String name, String testURI, String input, String output, String baseIRI, Lang2 lang, EarlReport earl)
     {
-        super(name) ;
+        super(name, testURI, earl) ;
         this.input = input ;
         this.output = output ;
         this.baseIRI = baseIRI ;
@@ -54,7 +55,7 @@ public class UnitTestEval extends LangTestCase
     {}
 
     @Override
-    public void runTest()
+    public void runTestForReal()
     {
         Model model = ModelFactory.createDefaultModel() ;
         RDFReader rdfreader = new RDFReaderRIOT() ;
