@@ -1,0 +1,94 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.apache.jena.riot.langsuite;
+
+import org.apache.jena.riot.Lang2 ;
+import org.apache.jena.riot.RDFReaderRIOT ;
+import org.apache.jena.riot.WebReader2 ;
+import org.openjena.riot.RiotException ;
+import org.openjena.riot.system.JenaReaderNTriples2 ;
+
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFReader ;
+import com.hp.hpl.jena.util.FileUtils ;
+
+public class UnitTestEval extends LangTestCase
+{
+    String input ;
+    String output ;
+    String baseIRI ;
+    Lang2 lang ;
+    
+    public UnitTestEval(String name, String input, String output, String baseIRI, Lang2 lang)
+    {
+        super(name) ;
+        this.input = input ;
+        this.output = output ;
+        this.baseIRI = baseIRI ;
+        this.lang = lang ;
+    }
+    
+    @Override
+    protected void _setUp()
+    {}
+
+    @Override
+    protected void _tearDown()
+    {}
+
+    @Override
+    public void runTest()
+    {
+        Model model = ModelFactory.createDefaultModel() ;
+        RDFReader rdfreader = new RDFReaderRIOT() ;
+        try {
+            if ( baseIRI != null )
+                WebReader2.read(model, input, baseIRI, lang) ;
+            else
+                WebReader2.read(model, input, lang) ;
+            
+            String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
+            Model results = ModelFactory.createDefaultModel() ;
+            // Directly get an N-triples reader
+            new JenaReaderNTriples2().read(results, output) ;
+
+            boolean b = model.isIsomorphicWith(results) ;
+            if ( !b )
+            {
+                //model.isIsomorphicWith(results) ;
+                System.out.println("---- Parsed");
+                model.write(System.out, "TTL") ;
+                System.out.println("---- Expected");
+                results.write(System.out, "TTL") ;
+                System.out.println("--------");
+            }
+            
+            assertTrue("Models not isomorphic", b) ;
+        } catch (RiotException ex)
+        {
+            // Catch and rethrow - debugging.
+            throw ex ;    
+        }
+        catch (RuntimeException ex) 
+        { 
+            ex.printStackTrace(System.err) ;
+            throw ex ; }
+    }
+}
