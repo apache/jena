@@ -36,8 +36,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.MappingRegistry ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 
-/** ARQ - miscellaneous settings
- */
+/** ARQ - miscellaneous settings */
 
 public class ARQ
 {

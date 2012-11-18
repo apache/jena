@@ -18,12 +18,11 @@
 
 package com.hp.hpl.jena.sparql;
 
-
 import junit.framework.JUnit4TestAdapter ;
 import junit.framework.TestSuite ;
+import org.apache.jena.riot.TC_Riot ;
 import org.openjena.atlas.TC_Atlas ;
 import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.riot.TC_Riot ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.main.QueryEngineMain ;
