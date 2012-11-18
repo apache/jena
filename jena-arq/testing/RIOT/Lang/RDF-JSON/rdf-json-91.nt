@@ -1,0 +1,12 @@
+<http://example.org/about> <http://purl.org/dc/elements/1.1/creator> "Anna Wilder" .
+<http://example.org/about> <http://purl.org/dc/elements/1.1/title> "Anna's Homepage"@en .
+<http://example.org/about> <http://xmlns.com/foaf/0.1/maker> _:jUperson .
+_:jUperson <http://xmlns.com/foaf/0.1/homepage> <http://example.org/about> .
+_:jUperson <http://xmlns.com/foaf/0.1/made> <http://example.org/about> .
+_:jUperson <http://xmlns.com/foaf/0.1/name> "Anna Wilder" .
+_:jUperson <http://xmlns.com/foaf/0.1/firstName> "Anna" .
+_:jUperson <http://xmlns.com/foaf/0.1/surname> "Wilder" .
+_:jUperson <http://xmlns.com/foaf/0.1/depiction> <http://example.org/pic.jpg> .
+_:jUperson <http://xmlns.com/foaf/0.1/nick> "wildling" .
+_:jUperson <http://xmlns.com/foaf/0.1/nick> "wilda" .
+_:jUperson <http://xmlns.com/foaf/0.1/mbox_sha1sum> "69e31bbcf58d432950127593e292a55975bc66fd" .
