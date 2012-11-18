@@ -1,0 +1,5 @@
+{ "http://example/s" :
+ { "http://example/p" : [ 
+    		      	{ "value" : "one", "type" : "literal" } ,
+    		      	{ "value" : "two", "type" : "literal" } ]
+			}}

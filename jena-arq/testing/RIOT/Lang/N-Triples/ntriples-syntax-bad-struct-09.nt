@@ -1,0 +1,2 @@
+# N-Triples does not allow short form literals.
+<http://example/s> <http://example/p> 123  .
