@@ -24,9 +24,6 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.lang.* ;
-import org.openjena.riot.langsuite.TestSuiteRDFJSON ;
-import org.openjena.riot.langsuite.TestSuiteTrig ;
-import org.openjena.riot.langsuite.TestSuiteTurtle ;
 import org.openjena.riot.out.* ;
 import org.openjena.riot.process.TestNormalization ;
 import org.openjena.riot.tokens.TestTokenForNode ;
@@ -43,19 +40,11 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestNodeAllocator.class
     
     , TestTurtleTerms.class
-
     , TestLangNTriples.class
     , TestLangNQuads.class
-
     , TestLangTurtle.class
-    , TestSuiteTurtle.class
-
     , TestLangTrig.class
-    , TestSuiteTrig.class
-
     , TestLangRdfJson.class
-    , TestSuiteRDFJSON.class
-    
     , TestParserFactory.class
 
     , TestNodeFmt.class

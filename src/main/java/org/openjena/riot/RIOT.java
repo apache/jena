@@ -18,6 +18,8 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.riot.WebReader2 ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -65,5 +67,6 @@ public class RIOT
         SystemARQ.registerSubSystem(sysInfo2) ;
         
         SysRIOT.wireIntoJena() ;
+        WebReader2.wireIntoJena() ;
     }
 }
