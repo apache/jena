@@ -1,0 +1,201 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "N-Triples tests" ;
+    mf:entries
+    (
+    <#ntriples-syntax-file-01>
+    <#ntriples-syntax-file-02>
+    <#ntriples-syntax-file-03>
+    <#ntriples-syntax-uri-01>
+    <#ntriples-syntax-uri-02>
+    <#ntriples-syntax-uri-03>
+    <#ntriples-syntax-datatypes-01>
+    <#ntriples-syntax-datatypes-02>
+    <#ntriples-syntax-string-01>
+    <#ntriples-syntax-string-02>
+    <#ntriples-syntax-string-03>
+    <#ntriples-syntax-bad-string-01>
+    <#ntriples-syntax-bad-string-02>
+    <#ntriples-syntax-bad-string-03>
+    <#ntriples-syntax-bad-string-04>
+    <#ntriples-syntax-bad-string-05>
+    <#ntriples-syntax-bad-string-06>
+    <#ntriples-syntax-str-esc-01>
+    <#ntriples-syntax-str-esc-02>
+    <#ntriples-syntax-str-esc-03>
+    <#ntriples-syntax-bad-struct-01>
+    <#ntriples-syntax-bad-struct-02>
+    <#ntriples-syntax-bad-struct-03>
+    <#ntriples-syntax-bad-struct-04>
+    <#ntriples-syntax-bad-struct-05>
+    <#ntriples-syntax-bad-struct-06>
+    <#ntriples-syntax-bad-struct-07>
+    <#ntriples-syntax-bad-struct-08>
+    <#ntriples-syntax-bad-struct-09>
+    ) .
+
+<#ntriples-syntax-file-01> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-file-01" ;
+   mf:action    <ntriples-syntax-file-01.nt> ;
+   .
+
+<#ntriples-syntax-file-02> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-file-02" ;
+   mf:action    <ntriples-syntax-file-02.nt> ;
+   .
+
+<#ntriples-syntax-file-03> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-file-03" ;
+   mf:action    <ntriples-syntax-file-03.nt> ;
+   .
+
+<#ntriples-syntax-uri-01> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-uri-01" ;
+   mf:action    <ntriples-syntax-uri-01.nt> ;
+   .
+
+<#ntriples-syntax-uri-02> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-uri-02" ;
+   mf:action    <ntriples-syntax-uri-02.nt> ;
+   .
+
+<#ntriples-syntax-uri-03> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-uri-03" ;
+   mf:action    <ntriples-syntax-uri-03.nt> ;
+   .
+
+<#ntriples-syntax-datatypes-01> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-datatypes-01" ;
+   mf:action    <ntriples-syntax-datatypes-01.nt> ;
+   .
+
+<#ntriples-syntax-datatypes-02> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-datatypes-02" ;
+   mf:action    <ntriples-syntax-datatypes-02.nt> ;
+   .
+
+<#ntriples-syntax-string-01> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-string-01" ;
+   mf:action    <ntriples-syntax-string-01.nt> ;
+   .
+
+<#ntriples-syntax-string-02> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-string-02" ;
+   mf:action    <ntriples-syntax-string-02.nt> ;
+   .
+
+<#ntriples-syntax-string-03> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-string-03" ;
+   mf:action    <ntriples-syntax-string-03.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-01> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-01" ;
+   mf:action    <ntriples-syntax-bad-string-01.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-02> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-02" ;
+   mf:action    <ntriples-syntax-bad-string-02.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-03> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-03" ;
+   mf:action    <ntriples-syntax-bad-string-03.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-04> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-04" ;
+   mf:action    <ntriples-syntax-bad-string-04.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-05> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-05" ;
+   mf:action    <ntriples-syntax-bad-string-05.nt> ;
+   .
+
+<#ntriples-syntax-bad-string-06> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-string-06" ;
+   mf:action    <ntriples-syntax-bad-string-06.nt> ;
+   .
+
+<#ntriples-syntax-str-esc-01> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-str-esc-01" ;
+   mf:action    <ntriples-syntax-str-esc-01.nt> ;
+   .
+
+<#ntriples-syntax-str-esc-02> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-str-esc-02" ;
+   mf:action    <ntriples-syntax-str-esc-02.nt> ;
+   .
+
+<#ntriples-syntax-str-esc-03> rdf:type rdft:TestNTriplesPositiveSyntax ;
+   mf:name    "ntriples-syntax-str-esc-03" ;
+   mf:action    <ntriples-syntax-str-esc-03.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-01> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-01" ;
+   mf:action    <ntriples-syntax-bad-struct-01.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-02> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-02" ;
+   mf:action    <ntriples-syntax-bad-struct-02.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-03> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-03" ;
+   mf:action    <ntriples-syntax-bad-struct-03.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-04> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-04" ;
+   mf:action    <ntriples-syntax-bad-struct-04.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-05> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-05" ;
+   mf:action    <ntriples-syntax-bad-struct-05.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-06> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-06" ;
+   mf:action    <ntriples-syntax-bad-struct-06.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-07> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-07" ;
+   mf:action    <ntriples-syntax-bad-struct-07.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-08> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-08" ;
+   mf:action    <ntriples-syntax-bad-struct-08.nt> ;
+   .
+
+<#ntriples-syntax-bad-struct-09> rdf:type rdft:TestNTriplesNegativeSyntax ;
+   mf:name    "ntriples-syntax-bad-struct-09" ;
+   mf:action    <ntriples-syntax-bad-struct-09.nt> ;
+   .

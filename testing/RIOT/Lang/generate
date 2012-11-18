@@ -1,0 +1,174 @@
+#!/usr/bin/perl
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# Driver : usage: $0 LANG EXT master
+# ** Writes tests to current directory.
+
+use File::Slurp;
+
+if ( $#ARGV != 3 )
+{
+    print STDERR "Usage: $0 LANG EXT EXT2 FILE  > manifest.ttl\n" ;
+    print STDERR "(writes test files to current directory)\n" ;
+    exit 1 ;
+}
+
+$lang  = shift @ARGV ;
+$langt = $lang ;
+$langt =~ s/-//  ;
+$ext   = shift @ARGV ;
+$extR  = shift @ARGV ;
+
+# print STDERR "$lang $langt $ext $extR\n" ;
+
+$testsyngood = 0 ;
+$testsynbad = 0 ;
+$testevalgood = 0 ;
+$testevalbad = 0 ;
+
+$array="" ;
+$tests="" ;
+
+%rootnames = {} ;
+
+$currentRoot = "test" ;
+$rootnames{$currentRoot} = 0 ;
+
+while(<>)
+{
+    if ( /^ROOT=(.*)/ )
+    {
+	$rn = $1 ;
+	$rootnames{$rn} = 0 
+	    if ( !defined($rootnames{$rn}) ) ;
+	$currentRoot = $rn ;
+	next ;
+    }
+
+    if ( /^--Eval--/ )
+    {
+	$testType = "rdft:Test${langt}Eval" ;
+	$testevalgood ++ ;
+	$text = &testtext ;
+	($input,$output) = split(/--Results-- *\n/,$text) ;
+
+## 	print "TEST\n" ;
+## 	print $text, "\n" ;
+## 	print "--------\n" ;
+## 	print $input, "\n" ;
+## 	print "--------\n" ;
+## 	print $output, "\n" ;
+## 	print "--------\n" ;
+
+	$x = ++ $rootnames{$currentRoot} ;
+	$x = sprintf("%02d", $x) ;
+	$testname = "$currentRoot-$x" ;
+	$fileIn = "$testname.$ext" ;
+	$fileOut = "$testname.$extR" ;
+	$array .= "    <#$testname>\n" ;
+	open F,">:utf8", $fileIn ;
+	syswrite F, $input ;
+	close F ;
+	open F,">:utf8", $fileOut ;
+	syswrite F, $output ;
+	close F ;
+	$tests .= qq!
+<#$testname> rdf:type $testType ;
+   mf:name    "$testname" ;
+   mf:action    <$fileIn> ;
+   mf:result    <$fileOut> ;
+   .
+! ;
+    }
+
+    if ( /^--Syntax--/ || /^--BadSyntax--/ || /^--BadEval--/ )
+    {
+	if ( /^--Syntax--/ )
+	{
+	    $testType = "rdft:Test${langt}PositiveSyntax" ;
+	    $testsyngood ++ ;
+	}
+
+	if ( /^--BadSyntax--/ )
+	{
+	    $testType = "rdft:Test${langt}NegativeSyntax" ;
+	    $testsynbad ++ ;
+	}
+
+	if ( /^--BadEval--/ )
+	{
+	    $testType = "rdft:Test${langt}NegativeEval" ;
+	    $testsynbad ++ ;
+	}
+
+	$x = ++ $rootnames{$currentRoot} ;
+	$x = sprintf("%02d", $x) ;
+	$testname = "$currentRoot-$x" ;
+	$file = "$testname.$ext" ;
+	$text = &testtext ;
+	$array .= "    <#$testname>\n" ;
+	open F,">:utf8", $file ;
+## 	if ( $text !~ /^\s*$/s )
+## 	{
+##  	    syswrite F, "# Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0\n" ;
+## 	    syswrite F, "\n" ;
+## 	}
+	syswrite F, $text ;
+	
+	close F ;
+	$tests .= qq!
+<#$testname> rdf:type $testType ;
+   mf:name    "$testname" ;
+   mf:action    <$file> ;
+   .
+! ;
+    }
+}
+
+open MANIFEST, ">:utf8", "manifest.ttl" ;
+$LTEXT = read_file( "LICENSE" , binmode => ':utf8' ) ;
+syswrite MANIFEST, $LTEXT ;
+
+print MANIFEST q!
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+!;
+
+print MANIFEST qq!
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "${lang} tests" ;
+    mf:entries
+    (
+!;
+print MANIFEST $array ;
+print MANIFEST qq!    ) .\n! ;
+
+print MANIFEST $tests ;
+
+sub testtext
+{
+    $text = "" ;
+    while(<>)
+    {
+	last if ( /^--End--$/ ) ;
+	$text .= $_ ;
+    }
+    return $text
+}

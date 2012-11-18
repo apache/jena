@@ -1,0 +1,412 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# The tests themselves are licenced under the W3C Software License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Turtle test cases - from the Turtle submission then cleaned up" ;
+    mf:entries
+    (
+<#testeval00>
+<#testeval01>
+<#testeval02>
+<#testeval03>
+<#testeval04>
+<#testeval05>
+<#testeval06>
+<#testeval07>
+<#testeval08>
+<#testeval09>
+<#testeval10>
+<#testeval11>
+<#testeval12>
+<#testeval13>
+<#testeval14>
+<#testeval15>
+<#testeval16>
+<#testeval17>
+<#testeval18>
+<#testeval19>
+<#testeval20>
+<#testeval21>
+<#testeval22>
+<#testeval23>
+<#testeval24>
+<#testeval25>
+<#testeval26>
+<#testeval27>
+<#testeval28>
+# <#testeval29>
+<#testeval30>
+
+<#testeval-misc1>
+<#testeval-misc2>
+<#testeval-misc3>
+
+<#testsynbad00>
+<#testsynbad01>
+<#testsynbad02>
+<#testsynbad03>
+<#testsynbad04>
+<#testsynbad05>
+<#testsynbad06>
+<#testsynbad07>
+<#testsynbad08>
+<#testsynbad09>
+<#testsynbad10>
+<#testsynbad11>
+<#testsynbad12>
+<#testsynbad13>
+<#testsynbad14>
+
+    ) .
+
+<#testeval00> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-00" ;
+    rdfs:comment "Blank subject" ;
+    mf:action    <test-00.ttl> ;
+    mf:result    <test-00.out>
+    .
+
+<#testeval01> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-01" ;
+    rdfs:comment "@prefix and qnames" ;
+    mf:action    <test-01.ttl> ;
+    mf:result    <test-01.out>
+    .
+
+<#testeval02> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-02" ;
+    rdfs:comment ", operator" ;
+    mf:action    <test-02.ttl> ;
+    mf:result    <test-02.out>
+    .
+
+<#testeval03> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-03" ;
+    rdfs:comment "; operator" ;
+    mf:action    <test-03.ttl> ;
+    mf:result    <test-03.out>
+    .
+
+<#testeval04> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-04" ;
+    rdfs:comment "empty [] as subject and object" ;
+    mf:action    <test-04.ttl> ;
+    mf:result    <test-04.out>
+    .
+
+<#testeval05> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-05" ;
+    rdfs:comment "non-empty [] as subject and object" ;
+    mf:action    <test-05.ttl> ;
+    mf:result    <test-05.out>
+    .
+
+<#testeval06> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-06" ;
+    rdfs:comment "'a' as predicate" ;
+    mf:action    <test-06.ttl> ;
+    mf:result    <test-06.out>
+    .
+
+<#testeval07> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-07" ;
+    rdfs:comment "simple collection" ;
+    mf:action    <test-07.ttl> ;
+    mf:result    <test-07.out>
+    .
+
+<#testeval08> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-08" ;
+    rdfs:comment "empty collection" ;
+    mf:action    <test-08.ttl> ;
+    mf:result    <test-08.out>
+    .
+
+<#testeval09> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-09" ;
+    rdfs:comment "integer datatyped literal" ;
+    mf:action    <test-09.ttl> ;
+    mf:result    <test-09.out>
+    .
+
+<#testeval10> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-10" ;
+    rdfs:comment "decimal integer canonicalization" ;
+    mf:action    <test-10.ttl> ;
+    mf:result    <test-10.out>
+    .
+
+<#testeval11> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-11" ;
+    rdfs:comment "- and _ in names and qnames" ;
+    mf:action    <test-11.ttl> ;
+    mf:result    <test-11.out>
+    .
+
+<#testeval12> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-12" ;
+    rdfs:comment "tests for rdf:_<numbers> and other qnames starting with _" ;
+    mf:action    <test-12.ttl> ;
+    mf:result    <test-12.out>
+    .
+
+<#testeval13> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-13" ;
+    rdfs:comment "bare : allowed" ;
+    mf:action    <test-13.ttl> ;
+    mf:result    <test-13.out>
+    .
+
+<#testeval14> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-14" ;
+    rdfs:comment "10000 triples, more than the default Bison stack size" ;
+    mf:action    <test-14.ttl> ;
+    mf:result    <test-14.out>
+    .
+
+<#testeval15> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-15" ;
+    rdfs:comment "10000 triple objects (10000 triples)" ;
+    mf:action    <test-15.ttl> ;
+    mf:result    <test-15.out>
+    .
+
+<#testeval16> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-16" ;
+    rdfs:comment "10000 items (10000 triples)" ;
+    mf:action    <test-16.ttl> ;
+    mf:result    <test-16.out>
+    .
+
+<#testeval17> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-17" ;
+    rdfs:comment "simple long literal" ;
+    mf:action    <test-17.ttl> ;
+    mf:result    <test-17.out>
+    .
+
+<#testeval18> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-18" ;
+    rdfs:comment "long literals with escapes" ;
+    mf:action    <test-18.ttl> ;
+    mf:result    <test-18.out>
+    .
+
+<#testeval19> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-19" ;
+    rdfs:comment "floating point number" ;
+    mf:action    <test-19.ttl> ;
+    mf:result    <test-19.out>
+    .
+
+<#testeval20> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-20" ;
+    rdfs:comment "empty literals, normal and long variant" ;
+    mf:action    <test-20.ttl> ;
+    mf:result    <test-20.out>
+    .
+
+<#testeval21> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-21" ;
+    rdfs:comment "positive integer, decimal and doubles" ;
+    mf:action    <test-21.ttl> ;
+    mf:result    <test-21.out>
+    .
+
+<#testeval22> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-22" ;
+    rdfs:comment "negative integer, decimal and doubles" ;
+    mf:action    <test-22.ttl> ;
+    mf:result    <test-22.out>
+    .
+
+<#testeval23> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-23" ;
+    rdfs:comment "long literal ending in double quote" ;
+    mf:action    <test-23.ttl> ;
+    mf:result    <test-23.out>
+    .
+
+<#testeval24> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-24" ;
+    rdfs:comment "boolean literals" ;
+    mf:action    <test-24.ttl> ;
+    mf:result    <test-24.out>
+    .
+
+<#testeval25> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-25" ;
+    rdfs:comment "comments" ;
+    mf:action    <test-25.ttl> ;
+    mf:result    <test-25.out>
+    .
+
+<#testeval26> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-26" ;
+    rdfs:comment "no final mewline" ;
+    mf:action    <test-26.ttl> ;
+    mf:result    <test-26.out>
+    .
+
+<#testeval27> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-27" ;
+    rdfs:comment "duplicate prefix" ;
+    mf:action    <test-27.ttl> ;
+    mf:result    <test-27.out>
+    .
+
+<#testeval28> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-28" ;
+    rdfs:comment "decimal data types (serializing test)" ;
+    mf:action    <test-28.ttl> ;
+    mf:result    <test-28.out>
+    .
+
+# Includes (even after cleaning) characters not legal in an IRI.
+## <#testeval29> rdf:type rdft:TestTurtleEval ;
+##     mf:name      "subm-test-29" ;
+##     rdfs:comment "Escaping U+0001 to U+007F in a URI" ;
+##     mf:action    <test-29.ttl> ;
+##     mf:result    <test-29.out>
+##     .
+
+<#testeval30> rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-test-30" ;
+    rdfs:comment "@base" ;
+    mf:action    <test-30.ttl> ;
+    mf:result    <test-30.out>
+    .
+
+## Misc 
+
+<#testeval-misc1>  rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-rdf-schema" ;
+    rdfs:comment "RDF Namespace document converted into Turtle" ;
+    mf:action    <rdf-schema.ttl> ;
+    mf:result    <rdf-schema.out> .
+     
+<#testeval-misc2>  rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-rdfs-namespace" ;
+    rdfs:comment "RDFS Namespace document converted into Turtle" ;
+    mf:action    <rdfs-namespace.ttl> ;
+    mf:result    <rdfs-namespace.out> .
+     
+<#testeval-misc3>  rdf:type rdft:TestTurtleEval ;
+    mf:name      "subm-rdfq-results" ;
+    rdfs:comment "Example query result from http://www.w3.org/2003/03/rdfqr-tests/recording-query-results.html" ;
+    mf:action    <rdfq-results.ttl> ;
+    mf:result    <rdfq-results.out> .
+          
+## ---- Bad Syntax
+
+
+<#testsynbad00> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-00" ;
+    rdfs:comment "prefix name must end in rdf:type :" ;
+    mf:action     <bad-00.ttl>
+    .    
+
+<#testsynbad01> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-01" ;
+    rdfs:comment "blank predicate forbidden" ;
+    mf:action     <bad-01.ttl>
+    .    
+
+<#testsynbad02> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-02" ;
+    rdfs:comment "blank predicate forbidden" ;
+    mf:action     <bad-02.ttl>
+    .    
+
+<#testsynbad03> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-03" ;
+    rdfs:comment "a forbidden as subject" ;
+    mf:action     <bad-03.ttl>
+    .    
+
+<#testsynbad04> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-04" ;
+    rdfs:comment ", not allowed in collections" ;
+    mf:action     <bad-04.ttl>
+    .    
+
+<#testsynbad05> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "subm-bad-05" ;
+    rdfs:comment "{} not allowed in Turtle" ;
+    mf:action     <bad-05.ttl>
+    .    
+
+<#testsynbad06> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-06" ;
+    rdfs:comment "is and of not allowed in Turtle" ;
+    mf:action     <bad-06.ttl>
+    .    
+
+<#testsynbad07> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-07" ;
+    rdfs:comment "paths not allowed in Turtle" ;
+    mf:action     <bad-07.ttl>
+    .    
+
+<#testsynbad08> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-08" ;
+    rdfs:comment "@keywords not allowed in Turtle" ;
+    mf:action     <bad-08.ttl>
+    .    
+
+<#testsynbad09> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-09" ;
+    rdfs:comment "=> not allowed in Turtle" ;
+    mf:action     <bad-09.ttl>
+    .    
+
+<#testsynbad10> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-10" ;
+    rdfs:comment "= not allowed in Turtle" ;
+    mf:action     <bad-10.ttl>
+    .    
+
+<#testsynbad11> rdf:type rdft:TestTurtleNegativeSyntax ; 
+        mf:name  "bad-11" ;
+        rdfs:comment "@forAll not allowed in Turtle" ;
+        mf:action   <bad-11.ttl>
+        .
+
+<#testsynbad12> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-12" ;
+    rdfs:comment "@forSome not allowed in Turtle" ;
+    mf:action     <bad-12.ttl>
+    .    
+
+<#testsynbad13> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-13" ;
+    rdfs:comment "<= not allowed in Turtle" ;
+    mf:action     <bad-13.ttl>
+    .    
+
+<#testsynbad14> rdf:type rdft:TestTurtleNegativeSyntax ; 
+    mf:name      "bad-14" ;
+    rdfs:comment "long literal with missing end" ;
+    mf:action     <bad-14.ttl>
+    .    

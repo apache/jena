@@ -1,0 +1,60 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "RDF/JSON test cases" ;
+    mf:entries 
+    (
+    <#rj0>
+    <#rj_90>
+    <#rj_91>
+    <#bad-01>
+    <#bad-02>
+    ) .
+
+<#rj0>  rdf:type    rdft:TestRDFJSONEval ;
+        mf:name     "rdf-json-00" ;
+        mf:action   <rdf-json-00.rj> ;
+        mf:result   <rdf-json-00.nt>
+        .
+
+<#rj_90>  rdf:type  rdft:TestRDFJSONEval ;
+        mf:name     "rdf-json-90" ;
+        mf:action   <rdf-json-90.rj> ;
+        mf:result   <rdf-json-90.nt>
+        .
+
+<#rj_91>  rdf:type  rdft:TestRDFJSONEval ;
+        mf:name     "rdf-json-91" ;
+        mf:action   <rdf-json-91.rj> ;
+        mf:result   <rdf-json-91.nt>
+        .
+
+
+<#bad-01> rdf:type  rdft:TestRDFJSONNegativeSyntax ;
+         mf:name    "String where JSON object expected for predicates" ;
+         mf:action  <rdf-json-bad-01.rj> ;
+         .
+<#bad-02> rdf:type  rdft:TestRDFJSONNegativeSyntax ;
+         mf:name    "String where JSON array expected for objects" ;
+         mf:action  <rdf-json-bad-02.rj> ;
+         .

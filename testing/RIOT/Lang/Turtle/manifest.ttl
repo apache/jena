@@ -1,0 +1,1078 @@
+#  Licensed to the Apache Software Foundation (ASF) under one or more
+#  contributor license agreements.  See the NOTICE file distributed with
+#  this work for additional information regarding copyright ownership.
+#  The ASF licenses this file to You under the Apache License, Version 2.0
+#  (the "License"); you may not use this file except in compliance with
+#  the License.  You may obtain a copy of the License at
+# 
+#       http://www.apache.org/licenses/LICENSE-2.0
+# 
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+
+# Test named *subm* are (c) W3C and taken from the Trutle submission.
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Turtle tests" ;
+    mf:entries
+    (
+    <#turtle-syntax-file-01>
+    <#turtle-syntax-file-02>
+    <#turtle-syntax-file-03>
+    <#turtle-syntax-uri-01>
+    <#turtle-syntax-uri-02>
+    <#turtle-syntax-uri-03>
+    <#turtle-syntax-uri-04>
+    <#turtle-syntax-base-01>
+    <#turtle-syntax-base-02>
+    <#turtle-syntax-base-03>
+    <#turtle-syntax-base-04>
+    <#turtle-syntax-prefix-01>
+    <#turtle-syntax-prefix-02>
+    <#turtle-syntax-prefix-03>
+    <#turtle-syntax-prefix-04>
+    <#turtle-syntax-prefix-05>
+    <#turtle-syntax-prefix-06>
+    <#turtle-syntax-prefix-07>
+    <#turtle-syntax-prefix-08>
+    <#turtle-syntax-prefix-09>
+    <#turtle-syntax-string-01>
+    <#turtle-syntax-string-02>
+    <#turtle-syntax-string-03>
+    <#turtle-syntax-string-04>
+    <#turtle-syntax-string-05>
+    <#turtle-syntax-string-06>
+    <#turtle-syntax-string-07>
+    <#turtle-syntax-string-08>
+    <#turtle-syntax-string-09>
+    <#turtle-syntax-string-10>
+    <#turtle-syntax-string-11>
+    <#turtle-syntax-str-esc-01>
+    <#turtle-syntax-str-esc-02>
+    <#turtle-syntax-str-esc-03>
+    <#turtle-syntax-pname-esc-01>
+    <#turtle-syntax-pname-esc-02>
+    <#turtle-syntax-pname-esc-03>
+    <#turtle-syntax-bnode-01>
+    <#turtle-syntax-bnode-02>
+    <#turtle-syntax-bnode-03>
+    <#turtle-syntax-bnode-04>
+    <#turtle-syntax-bnode-05>
+    <#turtle-syntax-bnode-06>
+    <#turtle-syntax-bnode-07>
+    <#turtle-syntax-bnode-08>
+    <#turtle-syntax-bnode-09>
+    <#turtle-syntax-bnode-10>
+    <#turtle-syntax-number-01>
+    <#turtle-syntax-number-02>
+    <#turtle-syntax-number-03>
+    <#turtle-syntax-number-04>
+    <#turtle-syntax-number-05>
+    <#turtle-syntax-number-06>
+    <#turtle-syntax-number-07>
+    <#turtle-syntax-number-08>
+    <#turtle-syntax-number-09>
+    <#turtle-syntax-number-10>
+    <#turtle-syntax-number-11>
+    <#turtle-syntax-datatypes-01>
+    <#turtle-syntax-datatypes-02>
+    <#turtle-syntax-kw-01>
+    <#turtle-syntax-kw-02>
+    <#turtle-syntax-kw-03>
+    <#turtle-syntax-struct-01>
+    <#turtle-syntax-struct-02>
+    <#turtle-syntax-struct-03>
+    <#turtle-syntax-lists-01>
+    <#turtle-syntax-lists-02>
+    <#turtle-syntax-lists-03>
+    <#turtle-syntax-lists-04>
+    <#turtle-syntax-lists-05>
+    <#turtle-syntax-bad-uri-01>
+    <#turtle-syntax-bad-uri-02>
+    <#turtle-syntax-bad-uri-03>
+    <#turtle-syntax-bad-uri-04>
+    <#turtle-syntax-bad-uri-05>
+    <#turtle-syntax-bad-prefix-01>
+    <#turtle-syntax-bad-prefix-02>
+    <#turtle-syntax-bad-prefix-03>
+    <#turtle-syntax-bad-prefix-04>
+    <#turtle-syntax-bad-prefix-05>
+    <#turtle-syntax-bad-base-01>
+    <#turtle-syntax-bad-base-02>
+    <#turtle-syntax-bad-base-03>
+    <#turtle-syntax-bad-struct-01>
+    <#turtle-syntax-bad-struct-02>
+    <#turtle-syntax-bad-struct-03>
+    <#turtle-syntax-bad-struct-04>
+    <#turtle-syntax-bad-struct-05>
+    <#turtle-syntax-bad-struct-06>
+    <#turtle-syntax-bad-struct-07>
+    <#turtle-syntax-bad-kw-01>
+    <#turtle-syntax-bad-kw-02>
+    <#turtle-syntax-bad-kw-03>
+    <#turtle-syntax-bad-kw-04>
+    <#turtle-syntax-bad-kw-05>
+    <#turtle-syntax-bad-n3-extras-01>
+    <#turtle-syntax-bad-n3-extras-02>
+    <#turtle-syntax-bad-n3-extras-03>
+    <#turtle-syntax-bad-n3-extras-04>
+    <#turtle-syntax-bad-n3-extras-05>
+    <#turtle-syntax-bad-n3-extras-06>
+    <#turtle-syntax-bad-n3-extras-07>
+    <#turtle-syntax-bad-n3-extras-08>
+    <#turtle-syntax-bad-n3-extras-09>
+    <#turtle-syntax-bad-n3-extras-10>
+    <#turtle-syntax-bad-n3-extras-11>
+    <#turtle-syntax-bad-n3-extras-12>
+    <#turtle-syntax-bad-n3-extras-13>
+    <#turtle-syntax-bad-struct-08>
+    <#turtle-syntax-bad-struct-09>
+    <#turtle-syntax-bad-struct-10>
+    <#turtle-syntax-bad-struct-11>
+    <#turtle-syntax-bad-struct-12>
+    <#turtle-syntax-bad-struct-13>
+    <#turtle-syntax-bad-struct-14>
+    <#turtle-syntax-bad-struct-15>
+    <#turtle-syntax-bad-struct-16>
+    <#turtle-syntax-bad-struct-17>
+    <#turtle-syntax-bad-lang-01>
+    <#turtle-syntax-bad-esc-01>
+    <#turtle-syntax-bad-esc-02>
+    <#turtle-syntax-bad-esc-03>
+    <#turtle-syntax-bad-esc-04>
+    <#turtle-syntax-bad-pname-01>
+    <#turtle-syntax-bad-pname-02>
+    <#turtle-syntax-bad-pname-03>
+    <#turtle-syntax-bad-string-01>
+    <#turtle-syntax-bad-string-02>
+    <#turtle-syntax-bad-string-03>
+    <#turtle-syntax-bad-string-04>
+    <#turtle-syntax-bad-string-05>
+    <#turtle-syntax-bad-num-01>
+    <#turtle-syntax-bad-num-02>
+    <#turtle-syntax-bad-num-03>
+    <#turtle-syntax-bad-num-04>
+    <#turtle-syntax-bad-num-05>
+    <#turtle-eval-struct-01>
+    <#turtle-eval-struct-02>
+    <#turtle-subm-01>
+    <#turtle-subm-02>
+    <#turtle-subm-03>
+    <#turtle-subm-04>
+    <#turtle-subm-05>
+    <#turtle-subm-06>
+    <#turtle-subm-07>
+    <#turtle-subm-08>
+    <#turtle-subm-09>
+    <#turtle-subm-10>
+    <#turtle-subm-11>
+    <#turtle-subm-12>
+    <#turtle-subm-13>
+    <#turtle-subm-14>
+    <#turtle-subm-15>
+    <#turtle-subm-16>
+    <#turtle-subm-17>
+    <#turtle-subm-18>
+    <#turtle-subm-19>
+    <#turtle-subm-20>
+    <#turtle-subm-21>
+    <#turtle-subm-22>
+    <#turtle-subm-23>
+    <#turtle-subm-24>
+    <#turtle-subm-25>
+    <#turtle-subm-26>
+    <#turtle-subm-27>
+    <#turtle-eval-bad-01>
+    <#turtle-eval-bad-02>
+    <#turtle-eval-bad-03>
+    <#turtle-eval-bad-04>
+    ) .
+
+<#turtle-syntax-file-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-file-01" ;
+   mf:action    <turtle-syntax-file-01.ttl> ;
+   .
+
+<#turtle-syntax-file-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-file-02" ;
+   mf:action    <turtle-syntax-file-02.ttl> ;
+   .
+
+<#turtle-syntax-file-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-file-03" ;
+   mf:action    <turtle-syntax-file-03.ttl> ;
+   .
+
+<#turtle-syntax-uri-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-uri-01" ;
+   mf:action    <turtle-syntax-uri-01.ttl> ;
+   .
+
+<#turtle-syntax-uri-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-uri-02" ;
+   mf:action    <turtle-syntax-uri-02.ttl> ;
+   .
+
+<#turtle-syntax-uri-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-uri-03" ;
+   mf:action    <turtle-syntax-uri-03.ttl> ;
+   .
+
+<#turtle-syntax-uri-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-uri-04" ;
+   mf:action    <turtle-syntax-uri-04.ttl> ;
+   .
+
+<#turtle-syntax-base-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-base-01" ;
+   mf:action    <turtle-syntax-base-01.ttl> ;
+   .
+
+<#turtle-syntax-base-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-base-02" ;
+   mf:action    <turtle-syntax-base-02.ttl> ;
+   .
+
+<#turtle-syntax-base-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-base-03" ;
+   mf:action    <turtle-syntax-base-03.ttl> ;
+   .
+
+<#turtle-syntax-base-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-base-04" ;
+   mf:action    <turtle-syntax-base-04.ttl> ;
+   .
+
+<#turtle-syntax-prefix-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-01" ;
+   mf:action    <turtle-syntax-prefix-01.ttl> ;
+   .
+
+<#turtle-syntax-prefix-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-02" ;
+   mf:action    <turtle-syntax-prefix-02.ttl> ;
+   .
+
+<#turtle-syntax-prefix-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-03" ;
+   mf:action    <turtle-syntax-prefix-03.ttl> ;
+   .
+
+<#turtle-syntax-prefix-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-04" ;
+   mf:action    <turtle-syntax-prefix-04.ttl> ;
+   .
+
+<#turtle-syntax-prefix-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-05" ;
+   mf:action    <turtle-syntax-prefix-05.ttl> ;
+   .
+
+<#turtle-syntax-prefix-06> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-06" ;
+   mf:action    <turtle-syntax-prefix-06.ttl> ;
+   .
+
+<#turtle-syntax-prefix-07> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-07" ;
+   mf:action    <turtle-syntax-prefix-07.ttl> ;
+   .
+
+<#turtle-syntax-prefix-08> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-08" ;
+   mf:action    <turtle-syntax-prefix-08.ttl> ;
+   .
+
+<#turtle-syntax-prefix-09> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-prefix-09" ;
+   mf:action    <turtle-syntax-prefix-09.ttl> ;
+   .
+
+<#turtle-syntax-string-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-01" ;
+   mf:action    <turtle-syntax-string-01.ttl> ;
+   .
+
+<#turtle-syntax-string-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-02" ;
+   mf:action    <turtle-syntax-string-02.ttl> ;
+   .
+
+<#turtle-syntax-string-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-03" ;
+   mf:action    <turtle-syntax-string-03.ttl> ;
+   .
+
+<#turtle-syntax-string-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-04" ;
+   mf:action    <turtle-syntax-string-04.ttl> ;
+   .
+
+<#turtle-syntax-string-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-05" ;
+   mf:action    <turtle-syntax-string-05.ttl> ;
+   .
+
+<#turtle-syntax-string-06> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-06" ;
+   mf:action    <turtle-syntax-string-06.ttl> ;
+   .
+
+<#turtle-syntax-string-07> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-07" ;
+   mf:action    <turtle-syntax-string-07.ttl> ;
+   .
+
+<#turtle-syntax-string-08> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-08" ;
+   mf:action    <turtle-syntax-string-08.ttl> ;
+   .
+
+<#turtle-syntax-string-09> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-09" ;
+   mf:action    <turtle-syntax-string-09.ttl> ;
+   .
+
+<#turtle-syntax-string-10> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-10" ;
+   mf:action    <turtle-syntax-string-10.ttl> ;
+   .
+
+<#turtle-syntax-string-11> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-string-11" ;
+   mf:action    <turtle-syntax-string-11.ttl> ;
+   .
+
+<#turtle-syntax-str-esc-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-str-esc-01" ;
+   mf:action    <turtle-syntax-str-esc-01.ttl> ;
+   .
+
+<#turtle-syntax-str-esc-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-str-esc-02" ;
+   mf:action    <turtle-syntax-str-esc-02.ttl> ;
+   .
+
+<#turtle-syntax-str-esc-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-str-esc-03" ;
+   mf:action    <turtle-syntax-str-esc-03.ttl> ;
+   .
+
+<#turtle-syntax-pname-esc-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-pname-esc-01" ;
+   mf:action    <turtle-syntax-pname-esc-01.ttl> ;
+   .
+
+<#turtle-syntax-pname-esc-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-pname-esc-02" ;
+   mf:action    <turtle-syntax-pname-esc-02.ttl> ;
+   .
+
+<#turtle-syntax-pname-esc-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-pname-esc-03" ;
+   mf:action    <turtle-syntax-pname-esc-03.ttl> ;
+   .
+
+<#turtle-syntax-bnode-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-01" ;
+   mf:action    <turtle-syntax-bnode-01.ttl> ;
+   .
+
+<#turtle-syntax-bnode-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-02" ;
+   mf:action    <turtle-syntax-bnode-02.ttl> ;
+   .
+
+<#turtle-syntax-bnode-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-03" ;
+   mf:action    <turtle-syntax-bnode-03.ttl> ;
+   .
+
+<#turtle-syntax-bnode-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-04" ;
+   mf:action    <turtle-syntax-bnode-04.ttl> ;
+   .
+
+<#turtle-syntax-bnode-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-05" ;
+   mf:action    <turtle-syntax-bnode-05.ttl> ;
+   .
+
+<#turtle-syntax-bnode-06> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-06" ;
+   mf:action    <turtle-syntax-bnode-06.ttl> ;
+   .
+
+<#turtle-syntax-bnode-07> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-07" ;
+   mf:action    <turtle-syntax-bnode-07.ttl> ;
+   .
+
+<#turtle-syntax-bnode-08> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-08" ;
+   mf:action    <turtle-syntax-bnode-08.ttl> ;
+   .
+
+<#turtle-syntax-bnode-09> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-09" ;
+   mf:action    <turtle-syntax-bnode-09.ttl> ;
+   .
+
+<#turtle-syntax-bnode-10> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-bnode-10" ;
+   mf:action    <turtle-syntax-bnode-10.ttl> ;
+   .
+
+<#turtle-syntax-number-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-01" ;
+   mf:action    <turtle-syntax-number-01.ttl> ;
+   .
+
+<#turtle-syntax-number-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-02" ;
+   mf:action    <turtle-syntax-number-02.ttl> ;
+   .
+
+<#turtle-syntax-number-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-03" ;
+   mf:action    <turtle-syntax-number-03.ttl> ;
+   .
+
+<#turtle-syntax-number-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-04" ;
+   mf:action    <turtle-syntax-number-04.ttl> ;
+   .
+
+<#turtle-syntax-number-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-05" ;
+   mf:action    <turtle-syntax-number-05.ttl> ;
+   .
+
+<#turtle-syntax-number-06> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-06" ;
+   mf:action    <turtle-syntax-number-06.ttl> ;
+   .
+
+<#turtle-syntax-number-07> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-07" ;
+   mf:action    <turtle-syntax-number-07.ttl> ;
+   .
+
+<#turtle-syntax-number-08> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-08" ;
+   mf:action    <turtle-syntax-number-08.ttl> ;
+   .
+
+<#turtle-syntax-number-09> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-09" ;
+   mf:action    <turtle-syntax-number-09.ttl> ;
+   .
+
+<#turtle-syntax-number-10> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-10" ;
+   mf:action    <turtle-syntax-number-10.ttl> ;
+   .
+
+<#turtle-syntax-number-11> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-number-11" ;
+   mf:action    <turtle-syntax-number-11.ttl> ;
+   .
+
+<#turtle-syntax-datatypes-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-datatypes-01" ;
+   mf:action    <turtle-syntax-datatypes-01.ttl> ;
+   .
+
+<#turtle-syntax-datatypes-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-datatypes-02" ;
+   mf:action    <turtle-syntax-datatypes-02.ttl> ;
+   .
+
+<#turtle-syntax-kw-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-kw-01" ;
+   mf:action    <turtle-syntax-kw-01.ttl> ;
+   .
+
+<#turtle-syntax-kw-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-kw-02" ;
+   mf:action    <turtle-syntax-kw-02.ttl> ;
+   .
+
+<#turtle-syntax-kw-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-kw-03" ;
+   mf:action    <turtle-syntax-kw-03.ttl> ;
+   .
+
+<#turtle-syntax-struct-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-struct-01" ;
+   mf:action    <turtle-syntax-struct-01.ttl> ;
+   .
+
+<#turtle-syntax-struct-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-struct-02" ;
+   mf:action    <turtle-syntax-struct-02.ttl> ;
+   .
+
+<#turtle-syntax-struct-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-struct-03" ;
+   mf:action    <turtle-syntax-struct-03.ttl> ;
+   .
+
+<#turtle-syntax-lists-01> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-lists-01" ;
+   mf:action    <turtle-syntax-lists-01.ttl> ;
+   .
+
+<#turtle-syntax-lists-02> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-lists-02" ;
+   mf:action    <turtle-syntax-lists-02.ttl> ;
+   .
+
+<#turtle-syntax-lists-03> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-lists-03" ;
+   mf:action    <turtle-syntax-lists-03.ttl> ;
+   .
+
+<#turtle-syntax-lists-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-lists-04" ;
+   mf:action    <turtle-syntax-lists-04.ttl> ;
+   .
+
+<#turtle-syntax-lists-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-lists-05" ;
+   mf:action    <turtle-syntax-lists-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-uri-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-uri-01" ;
+   mf:action    <turtle-syntax-bad-uri-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-uri-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-uri-02" ;
+   mf:action    <turtle-syntax-bad-uri-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-uri-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-uri-03" ;
+   mf:action    <turtle-syntax-bad-uri-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-uri-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-uri-04" ;
+   mf:action    <turtle-syntax-bad-uri-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-uri-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-uri-05" ;
+   mf:action    <turtle-syntax-bad-uri-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-prefix-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-prefix-01" ;
+   mf:action    <turtle-syntax-bad-prefix-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-prefix-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-prefix-02" ;
+   mf:action    <turtle-syntax-bad-prefix-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-prefix-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-prefix-03" ;
+   mf:action    <turtle-syntax-bad-prefix-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-prefix-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-prefix-04" ;
+   mf:action    <turtle-syntax-bad-prefix-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-prefix-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-prefix-05" ;
+   mf:action    <turtle-syntax-bad-prefix-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-base-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-base-01" ;
+   mf:action    <turtle-syntax-bad-base-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-base-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-base-02" ;
+   mf:action    <turtle-syntax-bad-base-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-base-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-base-03" ;
+   mf:action    <turtle-syntax-bad-base-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-01" ;
+   mf:action    <turtle-syntax-bad-struct-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-02" ;
+   mf:action    <turtle-syntax-bad-struct-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-03" ;
+   mf:action    <turtle-syntax-bad-struct-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-04" ;
+   mf:action    <turtle-syntax-bad-struct-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-05" ;
+   mf:action    <turtle-syntax-bad-struct-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-06> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-06" ;
+   mf:action    <turtle-syntax-bad-struct-06.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-07> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-07" ;
+   mf:action    <turtle-syntax-bad-struct-07.ttl> ;
+   .
+
+<#turtle-syntax-bad-kw-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-kw-01" ;
+   mf:action    <turtle-syntax-bad-kw-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-kw-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-kw-02" ;
+   mf:action    <turtle-syntax-bad-kw-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-kw-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-kw-03" ;
+   mf:action    <turtle-syntax-bad-kw-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-kw-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-kw-04" ;
+   mf:action    <turtle-syntax-bad-kw-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-kw-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-kw-05" ;
+   mf:action    <turtle-syntax-bad-kw-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-01" ;
+   mf:action    <turtle-syntax-bad-n3-extras-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-02" ;
+   mf:action    <turtle-syntax-bad-n3-extras-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-03" ;
+   mf:action    <turtle-syntax-bad-n3-extras-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-04" ;
+   mf:action    <turtle-syntax-bad-n3-extras-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-05" ;
+   mf:action    <turtle-syntax-bad-n3-extras-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-06> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-06" ;
+   mf:action    <turtle-syntax-bad-n3-extras-06.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-07> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-07" ;
+   mf:action    <turtle-syntax-bad-n3-extras-07.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-08> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-08" ;
+   mf:action    <turtle-syntax-bad-n3-extras-08.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-09> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-09" ;
+   mf:action    <turtle-syntax-bad-n3-extras-09.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-10> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-10" ;
+   mf:action    <turtle-syntax-bad-n3-extras-10.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-11> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-11" ;
+   mf:action    <turtle-syntax-bad-n3-extras-11.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-12> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-12" ;
+   mf:action    <turtle-syntax-bad-n3-extras-12.ttl> ;
+   .
+
+<#turtle-syntax-bad-n3-extras-13> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-n3-extras-13" ;
+   mf:action    <turtle-syntax-bad-n3-extras-13.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-08> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-08" ;
+   mf:action    <turtle-syntax-bad-struct-08.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-09> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-09" ;
+   mf:action    <turtle-syntax-bad-struct-09.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-10> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-10" ;
+   mf:action    <turtle-syntax-bad-struct-10.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-11> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-11" ;
+   mf:action    <turtle-syntax-bad-struct-11.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-12> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-12" ;
+   mf:action    <turtle-syntax-bad-struct-12.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-13> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-13" ;
+   mf:action    <turtle-syntax-bad-struct-13.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-14> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-14" ;
+   mf:action    <turtle-syntax-bad-struct-14.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-15> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-15" ;
+   mf:action    <turtle-syntax-bad-struct-15.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-16> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-16" ;
+   mf:action    <turtle-syntax-bad-struct-16.ttl> ;
+   .
+
+<#turtle-syntax-bad-struct-17> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-struct-17" ;
+   mf:action    <turtle-syntax-bad-struct-17.ttl> ;
+   .
+
+<#turtle-syntax-bad-lang-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-lang-01" ;
+   mf:action    <turtle-syntax-bad-lang-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-esc-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-esc-01" ;
+   mf:action    <turtle-syntax-bad-esc-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-esc-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-esc-02" ;
+   mf:action    <turtle-syntax-bad-esc-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-esc-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-esc-03" ;
+   mf:action    <turtle-syntax-bad-esc-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-esc-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-esc-04" ;
+   mf:action    <turtle-syntax-bad-esc-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-pname-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-pname-01" ;
+   mf:action    <turtle-syntax-bad-pname-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-pname-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-pname-02" ;
+   mf:action    <turtle-syntax-bad-pname-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-pname-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-pname-03" ;
+   mf:action    <turtle-syntax-bad-pname-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-01" ;
+   mf:action    <turtle-syntax-bad-string-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-02" ;
+   mf:action    <turtle-syntax-bad-string-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-03" ;
+   mf:action    <turtle-syntax-bad-string-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-04" ;
+   mf:action    <turtle-syntax-bad-string-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-05" ;
+   mf:action    <turtle-syntax-bad-string-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-num-01> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-num-01" ;
+   mf:action    <turtle-syntax-bad-num-01.ttl> ;
+   .
+
+<#turtle-syntax-bad-num-02> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-num-02" ;
+   mf:action    <turtle-syntax-bad-num-02.ttl> ;
+   .
+
+<#turtle-syntax-bad-num-03> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-num-03" ;
+   mf:action    <turtle-syntax-bad-num-03.ttl> ;
+   .
+
+<#turtle-syntax-bad-num-04> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-num-04" ;
+   mf:action    <turtle-syntax-bad-num-04.ttl> ;
+   .
+
+<#turtle-syntax-bad-num-05> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-num-05" ;
+   mf:action    <turtle-syntax-bad-num-05.ttl> ;
+   .
+
+<#turtle-eval-struct-01> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-eval-struct-01" ;
+   mf:action    <turtle-eval-struct-01.ttl> ;
+   mf:result    <turtle-eval-struct-01.nt> ;
+   .
+
+<#turtle-eval-struct-02> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-eval-struct-02" ;
+   mf:action    <turtle-eval-struct-02.ttl> ;
+   mf:result    <turtle-eval-struct-02.nt> ;
+   .
+
+<#turtle-subm-01> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-01" ;
+   mf:action    <turtle-subm-01.ttl> ;
+   mf:result    <turtle-subm-01.nt> ;
+   .
+
+<#turtle-subm-02> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-02" ;
+   mf:action    <turtle-subm-02.ttl> ;
+   mf:result    <turtle-subm-02.nt> ;
+   .
+
+<#turtle-subm-03> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-03" ;
+   mf:action    <turtle-subm-03.ttl> ;
+   mf:result    <turtle-subm-03.nt> ;
+   .
+
+<#turtle-subm-04> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-04" ;
+   mf:action    <turtle-subm-04.ttl> ;
+   mf:result    <turtle-subm-04.nt> ;
+   .
+
+<#turtle-subm-05> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-05" ;
+   mf:action    <turtle-subm-05.ttl> ;
+   mf:result    <turtle-subm-05.nt> ;
+   .
+
+<#turtle-subm-06> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-06" ;
+   mf:action    <turtle-subm-06.ttl> ;
+   mf:result    <turtle-subm-06.nt> ;
+   .
+
+<#turtle-subm-07> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-07" ;
+   mf:action    <turtle-subm-07.ttl> ;
+   mf:result    <turtle-subm-07.nt> ;
+   .
+
+<#turtle-subm-08> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-08" ;
+   mf:action    <turtle-subm-08.ttl> ;
+   mf:result    <turtle-subm-08.nt> ;
+   .
+
+<#turtle-subm-09> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-09" ;
+   mf:action    <turtle-subm-09.ttl> ;
+   mf:result    <turtle-subm-09.nt> ;
+   .
+
+<#turtle-subm-10> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-10" ;
+   mf:action    <turtle-subm-10.ttl> ;
+   mf:result    <turtle-subm-10.nt> ;
+   .
+
+<#turtle-subm-11> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-11" ;
+   mf:action    <turtle-subm-11.ttl> ;
+   mf:result    <turtle-subm-11.nt> ;
+   .
+
+<#turtle-subm-12> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-12" ;
+   mf:action    <turtle-subm-12.ttl> ;
+   mf:result    <turtle-subm-12.nt> ;
+   .
+
+<#turtle-subm-13> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-13" ;
+   mf:action    <turtle-subm-13.ttl> ;
+   mf:result    <turtle-subm-13.nt> ;
+   .
+
+<#turtle-subm-14> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-14" ;
+   mf:action    <turtle-subm-14.ttl> ;
+   mf:result    <turtle-subm-14.nt> ;
+   .
+
+<#turtle-subm-15> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-15" ;
+   mf:action    <turtle-subm-15.ttl> ;
+   mf:result    <turtle-subm-15.nt> ;
+   .
+
+<#turtle-subm-16> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-16" ;
+   mf:action    <turtle-subm-16.ttl> ;
+   mf:result    <turtle-subm-16.nt> ;
+   .
+
+<#turtle-subm-17> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-17" ;
+   mf:action    <turtle-subm-17.ttl> ;
+   mf:result    <turtle-subm-17.nt> ;
+   .
+
+<#turtle-subm-18> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-18" ;
+   mf:action    <turtle-subm-18.ttl> ;
+   mf:result    <turtle-subm-18.nt> ;
+   .
+
+<#turtle-subm-19> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-19" ;
+   mf:action    <turtle-subm-19.ttl> ;
+   mf:result    <turtle-subm-19.nt> ;
+   .
+
+<#turtle-subm-20> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-20" ;
+   mf:action    <turtle-subm-20.ttl> ;
+   mf:result    <turtle-subm-20.nt> ;
+   .
+
+<#turtle-subm-21> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-21" ;
+   mf:action    <turtle-subm-21.ttl> ;
+   mf:result    <turtle-subm-21.nt> ;
+   .
+
+<#turtle-subm-22> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-22" ;
+   mf:action    <turtle-subm-22.ttl> ;
+   mf:result    <turtle-subm-22.nt> ;
+   .
+
+<#turtle-subm-23> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-23" ;
+   mf:action    <turtle-subm-23.ttl> ;
+   mf:result    <turtle-subm-23.nt> ;
+   .
+
+<#turtle-subm-24> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-24" ;
+   mf:action    <turtle-subm-24.ttl> ;
+   mf:result    <turtle-subm-24.nt> ;
+   .
+
+<#turtle-subm-25> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-25" ;
+   mf:action    <turtle-subm-25.ttl> ;
+   mf:result    <turtle-subm-25.nt> ;
+   .
+
+<#turtle-subm-26> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-26" ;
+   mf:action    <turtle-subm-26.ttl> ;
+   mf:result    <turtle-subm-26.nt> ;
+   .
+
+<#turtle-subm-27> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-subm-27" ;
+   mf:action    <turtle-subm-27.ttl> ;
+   mf:result    <turtle-subm-27.nt> ;
+   .
+
+<#turtle-eval-bad-01> rdf:type rdft:TestTurtleNegativeEval ;
+   mf:name    "turtle-eval-bad-01" ;
+   mf:action    <turtle-eval-bad-01.ttl> ;
+   .
+
+<#turtle-eval-bad-02> rdf:type rdft:TestTurtleNegativeEval ;
+   mf:name    "turtle-eval-bad-02" ;
+   mf:action    <turtle-eval-bad-02.ttl> ;
+   .
+
+<#turtle-eval-bad-03> rdf:type rdft:TestTurtleNegativeEval ;
+   mf:name    "turtle-eval-bad-03" ;
+   mf:action    <turtle-eval-bad-03.ttl> ;
+   .
+
+<#turtle-eval-bad-04> rdf:type rdft:TestTurtleNegativeEval ;
+   mf:name    "turtle-eval-bad-04" ;
+   mf:action    <turtle-eval-bad-04.ttl> ;
+   .

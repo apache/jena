@@ -1,0 +1,42 @@
+## These tests are taken from 
+## http://www.w3.org/TeamSubmission/turtle/tests/
+## and are licesned under the W3C 
+## http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231
+## 
+## The manifest files are added by Apache Jena 
+## and are licensed under the Apache Software License:
+## http://www.apache.org/licenses/LICENSE-2.0.html
+
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	<http://www.w3.org/2000/01/rdf-schema#> .
+@prefix mf:     <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+@prefix qt:     <http://www.w3.org/2001/sw/DataAccess/tests/test-query#> .
+
+@prefix rdft:   <http://www.w3.org/ns/rdftest#> .
+
+<>  rdf:type mf:Manifest ;
+    rdfs:comment "Turtle tests" ;
+    mf:entries
+    (
+    <#turtle-eval-extra-01>
+    <#turtle-eval-extra-02>
+    <#turtle-eval-extra-03>
+    ) .
+
+<#turtle-eval-extra-01> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-eval-extra-01" ;
+   mf:action    <turtle-eval-extra-01.ttl> ;
+   mf:result    <turtle-eval-extra-01.nt> ;
+   .
+
+<#turtle-eval-extra-02> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-eval-extra-02" ;
+   mf:action    <turtle-eval-extra-02.ttl> ;
+   mf:result    <turtle-eval-extra-02.nt> ;
+   .
+
+<#turtle-eval-extra-03> rdf:type rdft:TestTurtleEval ;
+   mf:name    "turtle-eval-extra-03" ;
+   mf:action    <turtle-eval-extra-03.ttl> ;
+   mf:result    <turtle-eval-extra-03.nt> ;
+   .

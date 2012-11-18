@@ -1,0 +1,2 @@
+# Turtle does not allow literals-as-predicates
+<http://example/s> "hello" <http://example/o> .

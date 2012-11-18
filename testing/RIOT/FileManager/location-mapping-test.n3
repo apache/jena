@@ -1,0 +1,12 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix lm:         <http://jena.hpl.hp.com/2004/08/location-mapping#> .
+
+[] lm:mapping
+   [ lm:name "file:test" ; lm:altName "file:testing/FileManager/location-mapping-test-file" ] ,
+   [ lm:name "http://example.org/file" ;
+     lm:altName "file:testing/FileManager/location-mapping-test-file" ] ,
+   [ lm:prefix "file:etc/" ; lm:altPrefix "file:ETC/" ] ,
+   [ lm:name "file:etc/foo.n3" ; lm:altName "file:DIR/foo.n3" ]
+   .
