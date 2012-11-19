@@ -18,19 +18,26 @@
 
 package com.hp.hpl.jena.sparql.function.user;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.junit.AfterClass ;
-import org.junit.Assert ;
-import org.junit.BeforeClass ;
-import org.junit.Test ;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.expr.* ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble ;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
+import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.E_Add;
+import com.hp.hpl.jena.sparql.expr.E_Function;
+import com.hp.hpl.jena.sparql.expr.E_Multiply;
+import com.hp.hpl.jena.sparql.expr.E_Subtract;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprList;
+import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments
@@ -194,8 +201,11 @@ public class TestFunctionExpansion {
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("a"));
         altArgs.add(new ExprVar("b"));
+        ArrayList<Var> defArgs = new ArrayList<Var>();
+        defArgs.add(Var.alloc("a"));
+        defArgs.add(Var.alloc("b"));
         Expr test = new E_Function("http://example/takeaway", altArgs);
-        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, new ArrayList<Var>());
+        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, defArgs);
         
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
@@ -219,8 +229,11 @@ public class TestFunctionExpansion {
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("b"));
         altArgs.add(new ExprVar("a"));
+        ArrayList<Var> defArgs = new ArrayList<Var>();
+        defArgs.add(Var.alloc("a"));
+        defArgs.add(Var.alloc("b"));
         Expr test = new E_Function("http://example/takeaway", altArgs);
-        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, new ArrayList<Var>());
+        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, defArgs);
         
         UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
         Expr base = def.getBaseExpr();
@@ -230,5 +243,100 @@ public class TestFunctionExpansion {
         Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
         Assert.assertEquals(subtract.getArg1().getVarName(), "b");
         Assert.assertEquals(subtract.getArg2().getVarName(), "a");
+    }
+    
+    @Test
+    public void test_function_expansion_10() {
+        Expr single = new ExprVar("x");
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        
+        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //when the outer function has differing numbers of arguments
+        List<Var> args = new ArrayList<Var>();
+        args.add(Var.alloc("x"));
+        args.add(Var.alloc("y"));
+        Expr add = new E_Add(new E_Function("http://example/single", new ExprList(new ExprVar("x"))), new ExprVar("y"));
+        UserDefinedFunctionFactory.getFactory().add("http://example/add", add, args);
+        
+        UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/add");
+        Expr base = def.getBaseExpr();
+        Assert.assertTrue(base instanceof E_Add);
+        E_Add actual = (E_Add)base;
+        Assert.assertTrue(actual.getArg1() instanceof ExprVar);
+        Assert.assertTrue(actual.getArg2() instanceof ExprVar);
+        Assert.assertEquals("x", actual.getArg1().getVarName());
+        Assert.assertEquals("y", actual.getArg2().getVarName());
+    }
+    
+    @Test
+    public void test_function_expansion_11() {
+        Expr single = new ExprVar("x");
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        
+        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //when the outer function has differing numbers of arguments
+        List<Var> args = new ArrayList<Var>();
+        args.add(Var.alloc("x"));
+        args.add(Var.alloc("y"));
+        Expr add = new E_Add(new E_Function("http://example/single", new ExprList(new ExprVar("y"))), new ExprVar("y"));
+        UserDefinedFunctionFactory.getFactory().add("http://example/add", add, args);
+        
+        UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/add");
+        Expr base = def.getBaseExpr();
+        Assert.assertTrue(base instanceof E_Add);
+        E_Add actual = (E_Add)base;
+        Assert.assertTrue(actual.getArg1() instanceof ExprVar);
+        Assert.assertTrue(actual.getArg2() instanceof ExprVar);
+        Assert.assertEquals("y", actual.getArg1().getVarName());
+        Assert.assertEquals("y", actual.getArg2().getVarName());
+    }
+    
+    @Test
+    public void test_function_expansion_12() {
+        Expr takeaway = new E_Subtract(new ExprVar("x"), new ExprVar("y"));
+        List<Var> args = new ArrayList<Var>();
+        args.add(Var.alloc("x"));
+        args.add(Var.alloc("y"));
+        UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
+        
+        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        ExprList altArgs = new ExprList();
+        altArgs.add(new ExprVar("a"));
+        altArgs.add(new ExprVar("a"));
+        ArrayList<Var> defArgs = new ArrayList<Var>();
+        defArgs.add(Var.alloc("a"));
+        defArgs.add(Var.alloc("b"));
+        Expr test = new E_Function("http://example/takeaway", altArgs);
+        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, defArgs);
+        
+        UserDefinedFunctionDefinition def = UserDefinedFunctionFactory.getFactory().get("http://example/test");
+        Expr base = def.getBaseExpr();
+        Assert.assertTrue(base instanceof E_Subtract);
+        E_Subtract subtract = (E_Subtract)base;
+        Assert.assertTrue(subtract.getArg1() instanceof ExprVar);
+        Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
+        Assert.assertEquals(subtract.getArg1().getVarName(), "a");
+        Assert.assertEquals(subtract.getArg2().getVarName(), "a");
+    }
+    
+    @Test(expected=ExprBuildException.class)
+    public void test_function_expansion_bad_01() {
+        List<Var> args = new ArrayList<Var>();
+        args.add(Var.alloc("x"));
+        args.add(Var.alloc("y"));
+        Expr add = new E_Add(new ExprVar("x"), new ExprVar("y"));
+        
+        //It's an error to use a variable which is not mentioned in the argument list
+        UserDefinedFunctionFactory.getFactory().add("http://example/add", add, new ArrayList<Var>());
+    }
+    
+    @Test(expected=ExprBuildException.class)
+    public void test_function_expansion_bad_02() {
+        Expr single = new ExprVar("x");
+        UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
+        
+        //It's an error to use a variable which is not mentioned in the argument list, even in a call to a dependent function
+        Expr test = new E_Function("http://example/single", new ExprList(new ExprVar("x")));
+        UserDefinedFunctionFactory.getFactory().add("http://example/test", test, new ArrayList<Var>());
     }
 }
