@@ -284,7 +284,7 @@ public interface OntModel
      * <p>Answer an iterator over the classes in this ontology model that represent
      * the uppermost nodes of the class hierarchy.  Depending on the underlying
      * reasoner configuration, if any, these will be calculated as the classes
-     * that have Top (i.e. <code>owl:Thing</code> or <code>daml:Thing</code>)
+     * that have Top (i.e. <code>owl:Thing</code>)
      * as a direct super-class, or the classes which have no declared super-class.</p>
      * @return An iterator of the root classes in the local class hierarchy
      */

@@ -24,7 +24,6 @@ import java.io.Writer;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -46,27 +45,18 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
 	private Resource types[] =
 		new Resource[] {
-			DAML_OIL.Ontology,
 			OWL.Ontology,
-			DAML_OIL.Datatype,
 			//OWL.DataRange, named or orphaned dataranges unusual.      
 			RDFS.Datatype,
-			DAML_OIL.Class,
 			RDFS.Class,
 			OWL.Class,
-			DAML_OIL.Property,
 			OWL.ObjectProperty,
 			RDF.Property,
-			DAML_OIL.ObjectProperty,
 			OWL.DatatypeProperty,
-			DAML_OIL.DatatypeProperty,
 			OWL.TransitiveProperty,
 			OWL.SymmetricProperty,
 			OWL.FunctionalProperty,
 			OWL.InverseFunctionalProperty,
-			DAML_OIL.TransitiveProperty,
-			DAML_OIL.UnambiguousProperty,
-			DAML_OIL.UniqueProperty,
 			};
             
 	boolean sReification;
@@ -113,7 +103,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
             sReification = true;
         }
         else if (r.equals(RDFSyntax.propertyAttr)) sPropertyAttr=true;
-        else if (r.equals(DAML_OIL.collection)) sDamlCollection=true;
+        //else if (r.equals(DAML_OIL.collection)) sDamlCollection=true;
         else {
             logger.warn("Cannot block rule <"+r.getURI()+">");
         }

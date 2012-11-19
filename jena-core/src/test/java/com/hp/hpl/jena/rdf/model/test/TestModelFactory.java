@@ -18,29 +18,27 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.graph.compose.Union;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.compose.Union ;
+import com.hp.hpl.jena.rdf.model.InfModel ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner ;
+import com.hp.hpl.jena.reasoner.rulesys.Rule ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /**
     Tests the ModelFactory code. Very skeletal at the moment. It's really
     testing that the methods actually exists, but it doesn't check much in
     the way of behaviour.
-    
-    @author kers
 */
 
 public class TestModelFactory extends ModelTestBase
     {
-    public static final Resource DAMLLangResource = resource( ProfileRegistry.DAML_LANG );
-    
     public TestModelFactory(String name)
         { super(name); }
         

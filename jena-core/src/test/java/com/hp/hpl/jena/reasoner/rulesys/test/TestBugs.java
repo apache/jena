@@ -18,44 +18,34 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.io.FileReader ;
+import java.io.IOException ;
+import java.io.StringReader ;
+import java.util.* ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.listeners.StatementListener;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.ReasonerException;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.reasoner.ValidityReport;
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
+import com.hp.hpl.jena.ontology.* ;
+import com.hp.hpl.jena.rdf.listeners.StatementListener ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.* ;
+import com.hp.hpl.jena.reasoner.rulesys.* ;
+import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin ;
+import com.hp.hpl.jena.reasoner.test.TestUtil ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.util.PrintUtil ;
+import com.hp.hpl.jena.util.iterator.ClosableIterator ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 
 /**
@@ -160,27 +150,6 @@ public class TestBugs extends TestCase {
         "    <ex:cls2 rdf:ID=\"test\"/>" +
         "</rdf:RDF>";
 
-    /**
-     * This test exposes an apparent problem in the reasoners.  If the input data is
-     * changed from daml:subClassOf to rdfs:subClassOf, the asserts all pass.  As is,
-     * the assert for res has rdf:type cls1 fails.
-     */
-    public void testSubClass() {
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
-        model.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
-
-        String base = "http://localhost:8080/axis/daml/a.daml#";
-        model.read( new ByteArrayInputStream( INPUT_SUBCLASS.getBytes() ), base );
-        OntResource res = model.getResource( base+"test").as(OntResource.class);
-
-        OntClass cls1 = model.getResource(base+"cls1").as(OntClass.class);
-        OntClass cls2 = model.getResource(base+"cls2").as(OntClass.class);
-
-        assertTrue( "cls2 should be a super-class of cls1", cls2.hasSuperClass( cls1 ) );
-        assertTrue( "res should have rdf:type cls1", res.hasRDFType( cls1 ) );
-        assertTrue( "res should have rdf:type cls2", res.hasRDFType( cls2 ) );
-    }
-
     public static final String INPUT_SUBPROPERTY =
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
         "" +
@@ -207,29 +176,6 @@ public class TestBugs extends TestCase {
         "       <q rdf:resource=\"#a0\" />" +
         "    </A>" +
         "</rdf:RDF>";
-
-    /**
-     * This test exposes an apparent problem in the reasoners.  If the input data is
-     * changed from daml:subPropertyOf to rdfs:subPropertyOf, the asserts all pass.  As is,
-     * the assert for a1 p a0 fails.
-     */
-    public void testSubProperty() {
-        OntModel model = ModelFactory.createOntologyModel(OntModelSpec.DAML_MEM_RDFS_INF, null);
-        model.getDocumentManager().setMetadataSearchPath( "file:etc/ont-policy-test.rdf", true );
-
-        String base = "urn:x-hp-jena:test#";
-        model.read( new ByteArrayInputStream( INPUT_SUBPROPERTY.getBytes() ), base );
-
-        OntResource a0 = model.getResource( base+"a0").as(OntResource.class);
-        OntResource a1 = model.getResource( base+"a1").as(OntResource.class);
-
-        ObjectProperty p = model.getObjectProperty( base+"p" );
-        ObjectProperty q = model.getObjectProperty( base+"q" );
-
-        assertTrue("subProp relation present", q.hasProperty(RDFS.subPropertyOf, p));
-        assertTrue( "a1 q a0", a1.hasProperty( q, a0 ) );   // asserted
-        assertTrue( "a1 p a0", a1.hasProperty( p, a0 ) );   // entailed
-    }
 
     /**
      * Test for a reported bug in delete
@@ -404,39 +350,6 @@ public class TestBugs extends TestCase {
         InfModel inf = ModelFactory.createInfModel(r, data);
         StmtIterator things = inf.listStatements(null, RDF.type, OWL.Thing);
         TestUtil.assertIteratorLength(things, 0);
-    }
-
-    /**
-     * Limitation of someValuesFrom applied to datatype properties.
-     */
-    public void testSomeDatatype() throws IOException {
-        String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
-        String filename = "testing/xsd/daml+oil-ex-dt.xsd";
-        TypeMapper tm = TypeMapper.getInstance();
-        XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
-
-        Model data = ModelFactory.createDefaultModel();
-        data.read("file:testing/reasoners/bugs/userDatatypes.owl");
-        InfModel inf = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
-
-        String egNS = "http://jena.hpl.hp.com/eg#";
-        Resource meR = inf.getResource(egNS + "me");
-        Resource TestR = inf.getResource(egNS + "Test");
-        assertTrue("somevalues inf for datatypes", inf.contains(meR, RDF.type, TestR));
-
-        Resource Test2R = inf.getResource(egNS + "Test2");
-        Resource me2R = inf.getResource(egNS + "me2");
-        assertTrue("somevalues inf for datatypes", inf.contains(me2R, RDF.type, Test2R));
-        assertTrue("somevalues inf for user datatypes", inf.contains(meR, RDF.type, Test2R));
-    }
-
-    /* Report on jena-dev that DAMLMicroReasoner infmodels don't support daml:subClassOf, etc */
-    public void testDAMLMicroReasonerSupports() {
-        Reasoner r = DAMLMicroReasonerFactory.theInstance().create( null );
-        assertTrue( "Should support daml:subClassOf", r.supportsProperty( DAML_OIL.subClassOf ));
-        assertTrue( "Should support daml:subPropertyOf", r.supportsProperty( DAML_OIL.subPropertyOf));
-        assertTrue( "Should support daml:domain", r.supportsProperty( DAML_OIL.domain ));
-        assertTrue( "Should support daml:range", r.supportsProperty( DAML_OIL.range ));
     }
 
     /**

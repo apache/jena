@@ -140,7 +140,7 @@ public class TestOntModelAssembler extends AssemblerTestBase
         {
         Assembler a = new OntModelAssembler();
         Resource root = resourceInModel( "x rdf:type ja:OntModel; x ja:ontModelSpec y" );
-        OntModelSpec spec = new OntModelSpec( OntModelSpec.DAML_MEM );
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM ) ;
         Assembler mock = new NamedObjectAssembler( resource( "y" ), spec );
         OntModel om = (OntModel) a.open( mock, root );
         assertSame( spec, om.getSpecification() );

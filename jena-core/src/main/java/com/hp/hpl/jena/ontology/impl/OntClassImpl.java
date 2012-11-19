@@ -24,16 +24,25 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
+import java.util.* ;
 
-import java.util.*;
+import com.hp.hpl.jena.enhanced.EnhGraph ;
+import com.hp.hpl.jena.enhanced.EnhNode ;
+import com.hp.hpl.jena.enhanced.Implementation ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.query.BindingQueryPlan ;
+import com.hp.hpl.jena.graph.query.GraphQuery ;
+import com.hp.hpl.jena.ontology.* ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 
 /**
@@ -55,7 +64,6 @@ public class OntClassImpl
     /* LDP never returns properties in these namespaces */
     private static final String[] IGNORE_NAMESPACES = new String[] {
             OWL.NS,
-            DAMLVocabulary.NAMESPACE_DAML_2001_03_URI,
             RDF.getURI(),
             RDFS.getURI(),
             ReasonerVocabulary.RBNamespace
@@ -736,7 +744,7 @@ public class OntClassImpl
     /**
      * <p>Answer true if this class is one of the roots of the class hierarchy.
      * This will be true if either (i) this class has <code>owl:Thing</code>
-     * (or <code>daml:Thing</code>) as a direct super-class, or (ii) it has
+     * as a direct super-class, or (ii) it has
      * no declared super-classes (including anonymous class expressions).</p>
      * @return True if this class is the root of the class hierarchy in the
      * model it is attached to
@@ -989,7 +997,7 @@ public class OntClassImpl
      * @return True if this class in the domain of property <code>p</code>
      */
     protected boolean testDomain( Property p, boolean direct ) {
-        // we ignore any property in the DAML, OWL, etc namespace
+        // we ignore any property in the OWL, etc namespace
         String namespace = p.getNameSpace();
         for (int i = 0; i < IGNORE_NAMESPACES.length; i++) {
             if (namespace.equals( IGNORE_NAMESPACES[i] )) {
@@ -1049,8 +1057,7 @@ public class OntClassImpl
         // check reasoner capabilities - major performance improvement for inf models
         if (mOnt.getReasoner() != null) {
             Model caps = mOnt.getReasoner().getReasonerCapabilities();
-            if (caps.contains( null, ReasonerVocabulary.supportsP, OWL.ObjectProperty) ||
-                caps.contains( null, ReasonerVocabulary.supportsP, DAML_OIL.ObjectProperty))
+            if (caps.contains( null, ReasonerVocabulary.supportsP, OWL.ObjectProperty) )
             {
                 // we conclude that the reasoner can do the necessary work to infer that
                 // all owl:ObjectProperty, owl:DatatypeProperty, etc, are rdf:Property resources

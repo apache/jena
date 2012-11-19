@@ -57,7 +57,7 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.CharEncoding;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
+//import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -790,10 +790,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			while (tkn.hasMoreElements()) {
 				String frag = tkn.nextToken();
 				//  System.err.println("Blocking " + frag);
-				if (frag.equals("daml:collection"))
-					v.add(DAML_OIL.collection);
-				else
-					v.add(new ResourceImpl(RDFSyntax.getURI() + frag));
+				v.add(new ResourceImpl(RDFSyntax.getURI() + frag));
 			}
 
 			blockedRules = new Resource[v.size()];

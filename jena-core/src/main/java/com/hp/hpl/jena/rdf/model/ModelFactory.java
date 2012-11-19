@@ -286,7 +286,7 @@ public class ModelFactory extends ModelFactoryBase
      * The default document manager
      * will be used to load the ontology's included documents.
      * </p>
-     * <p><strong>Note:</strong>The default model chosen for OWL, RDFS and DAML+OIL
+     * <p><strong>Note:</strong>The default model chosen for OWL and RDFS
      * includes a weak reasoner that includes some entailments (such as
      * transitive closure on the sub-class and sub-property hierarchies). Users
      * who want either no inference at all, or alternatively

@@ -71,7 +71,7 @@ public class TestOntology
     @Override
     public OntTestCase[] getTests() {
         return new OntTestCase[] {
-            new OntTestCase( "Ontology.imports", true, true, true, false ) {
+            new OntTestCase( "Ontology.imports", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
@@ -97,7 +97,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.IMPORTS() ) );
                 }
             },
-            new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false, false ) {
+            new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
@@ -123,7 +123,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
                 }
             },
-            new OntTestCase( "Ontology.priorVersion", true, true, false, false ) {
+            new OntTestCase( "Ontology.priorVersion", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();
@@ -149,7 +149,7 @@ public class TestOntology
                     assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.PRIOR_VERSION() ) );
                 }
             },
-            new OntTestCase( "Ontology.incompatibleWith", true, true, false, false ) {
+            new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
                 @Override
                 public void ontTest( OntModel m ) throws Exception {
                     Profile prof = m.getProfile();

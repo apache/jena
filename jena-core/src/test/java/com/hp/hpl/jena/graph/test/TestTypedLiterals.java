@@ -487,66 +487,6 @@ public class TestTypedLiterals extends TestCase {
     }
     
     /**
-     * Test user defined data types using the DAML+OIL standard example.
-     * N.B. The file on daml.org is not legal (wrong namespace for XMLSchema, missed
-     * qualifiers  onsome restriction base types) so we actually load a locally cached
-     * correct version but pretend it is from the real URI. 
-     */
-    public void testUserDefined() throws IOException {
-        String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
-        String filename = "testing/xsd/daml+oil-ex-dt.xsd";
-        TypeMapper tm = TypeMapper.getInstance();
-        List<String> typenames = XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
-        assertIteratorValues(typenames.iterator(), new Object[] {
-            uri + "#XSDEnumerationHeight",
-            uri + "#over12",
-            uri + "#over17",
-            uri + "#over59",
-            uri + "#clothingsize"   });
-        
-        // Check the string restriction
-        RDFDatatype heightType = tm.getSafeTypeByName(uri + "#XSDEnumerationHeight");
-        checkLegalLiteral("short", heightType, String.class, "short");
-        checkLegalLiteral("tall", heightType, String.class, "tall");
-        checkIllegalLiteral("shortish", heightType);
-
-        // Check the numeric restriction
-        RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
-        checkLegalLiteral("15", over12Type, Integer.class, new Integer(15));
-        checkIllegalLiteral("12", over12Type);
-        
-        // Check the union type
-        RDFDatatype clothingsize = tm.getSafeTypeByName(uri + "#clothingsize");
-        checkLegalLiteral("42", clothingsize, Integer.class, new Integer(42));
-        checkLegalLiteral("short", clothingsize, String.class, "short");
-        
-        // Check use of isValidLiteral for base versus derived combinations
-        LiteralLabel iOver12 = m.createTypedLiteral("13", over12Type).asNode().getLiteral();
-        LiteralLabel iDecimal14 = m.createTypedLiteral("14", XSDDatatype.XSDdecimal).asNode().getLiteral();
-        LiteralLabel iDecimal10 = m.createTypedLiteral("10", XSDDatatype.XSDdecimal).asNode().getLiteral();
-        LiteralLabel iString = m.createTypedLiteral("15", XSDDatatype.XSDstring).asNode().getLiteral();
-        LiteralLabel iPlain = m.createLiteral("foo").asNode().getLiteral();
-        
-        assertTrue(over12Type.isValidLiteral(iOver12));
-        assertTrue(over12Type.isValidLiteral(iDecimal14));
-        assertTrue( ! over12Type.isValidLiteral(iDecimal10));
-        assertTrue( ! over12Type.isValidLiteral(iString));
-        assertTrue( ! over12Type.isValidLiteral(iPlain));
-        
-        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iOver12));
-        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iDecimal14));
-        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iDecimal10));
-        assertTrue( ! XSDDatatype.XSDdecimal.isValidLiteral(iString));
-        assertTrue( ! XSDDatatype.XSDdecimal.isValidLiteral(iPlain));
-        
-        assertTrue(XSDDatatype.XSDstring.isValidLiteral(iString));
-        assertTrue(XSDDatatype.XSDstring.isValidLiteral(iPlain));
-        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iOver12));
-        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iDecimal10));
-        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iDecimal14));
-    }
-
-    /**
      * Test data/time wrappers
      */
     public void testDateTime() {

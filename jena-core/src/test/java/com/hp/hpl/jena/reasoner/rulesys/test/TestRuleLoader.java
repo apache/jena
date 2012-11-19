@@ -4,8 +4,6 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.io.FileNotFoundException;
-
 import org.junit.Test;
 
 import com.hp.hpl.jena.reasoner.rulesys.Rule;

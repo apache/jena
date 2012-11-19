@@ -69,12 +69,6 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof Ontology;}
         },
-        new CreateTestCase( "DAML create ontology", ProfileRegistry.DAML_LANG, BASE ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createOntology( BASE ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof Ontology;}
-        },
 
         new CreateTestCase( "OWL create class", ProfileRegistry.OWL_LANG, NS + "C" ) {
             @Override
@@ -136,65 +130,6 @@ public class TestCreate
             public boolean test( OntResource r )        { return r instanceof OntClass;}
         },
 
-        new CreateTestCase( "DAML create class", ProfileRegistry.DAML_LANG, NS + "C" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createClass( NS + "C" ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass;}
-        },
-        new CreateTestCase( "DAML create anon class", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createClass(); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass;}
-        },
-
-        new CreateTestCase( "DAML create anon complement class", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createComplementClass( null, m.createClass( NS + "A" ) ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof ComplementClass; }
-        },
-        new CreateTestCase( "DAML create anon enumeration class", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" );
-                Individual a0 = m.createIndividual( A );
-                Individual a1 = m.createIndividual( A );
-                Individual a2 = m.createIndividual( A );
-                RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createEnumeratedClass( null, l );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof EnumeratedClass; }
-        },
-        new CreateTestCase( "DAML create anon union class", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" );
-                Individual a0 = m.createIndividual( A );
-                Individual a1 = m.createIndividual( A );
-                Individual a2 = m.createIndividual( A );
-                RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createUnionClass( null, l );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof UnionClass; }
-        },
-        new CreateTestCase( "DAML create anon intersection class", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                OntClass A = m.createClass( NS + "A" );
-                Individual a0 = m.createIndividual( A );
-                Individual a1 = m.createIndividual( A );
-                Individual a2 = m.createIndividual( A );
-                RDFList l = m.createList( new OntResource[] {a0, a1, a2} );
-                return m.createIntersectionClass( null, l );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof OntClass && r instanceof IntersectionClass; }
-        },
-
         new CreateTestCase( "OWL create individual", ProfileRegistry.OWL_LANG, NS + "a" ) {
             @Override
             public OntResource doCreate( OntModel m )   {
@@ -205,24 +140,6 @@ public class TestCreate
             public boolean test( OntResource r )        { return r instanceof Individual;}
         },
         new CreateTestCase( "OWL create anon individual", ProfileRegistry.OWL_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( c );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof Individual;}
-        },
-        new CreateTestCase( "DAML create individual", ProfileRegistry.DAML_LANG, NS + "a" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                OntClass c = m.createClass( NS + "C" );
-                return m.createIndividual( NS + "a", c );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof Individual;}
-        },
-        new CreateTestCase( "DAML create anon individual", ProfileRegistry.DAML_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   {
                 OntClass c = m.createClass( NS + "C" );
@@ -357,98 +274,6 @@ public class TestCreate
             public boolean test( OntResource r )        { return r instanceof AnnotationProperty;}
         },
 
-        // DAML property types
-        new CreateTestCase( "DAML create object property", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p" ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty;}
-        },
-        new CreateTestCase( "DAML create object property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", false ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  !r.canAs( FunctionalProperty.class );}
-        },
-        new CreateTestCase( "DAML create object property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createObjectProperty( NS + "p", true ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty  &&  r.canAs( FunctionalProperty.class );}
-        },
-
-        new CreateTestCase( "DAML create transitive property", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createTransitiveProperty( NS + "p" ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof TransitiveProperty;
-                                                        }
-        },
-        new CreateTestCase( "DAML create transitive property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createTransitiveProperty( NS + "p", false ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof TransitiveProperty &&
-                                                                 !r.canAs( FunctionalProperty.class );
-                                                        }
-        },
-        new CreateTestCase( "DAML create transitive property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createTransitiveProperty( NS + "p", true ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof TransitiveProperty &&
-                                                                 r.canAs( FunctionalProperty.class );
-                                                        }
-        },
-        new CreateTestCase( "DAML create inverse functional property", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createInverseFunctionalProperty( NS + "p" ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof InverseFunctionalProperty;
-                                                        }
-        },
-        new CreateTestCase( "DAML create inverse functional property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createInverseFunctionalProperty( NS + "p", false ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof InverseFunctionalProperty &&
-                                                                 !r.canAs( FunctionalProperty.class );
-                                                        }
-        },
-        new CreateTestCase( "DAML create inverse functional property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createInverseFunctionalProperty( NS + "p", true ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof ObjectProperty &&
-                                                                 r instanceof InverseFunctionalProperty &&
-                                                                 r.canAs( FunctionalProperty.class );
-                                                        }
-        },
-
-        new CreateTestCase( "DAML create datatype property", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p" ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof DatatypeProperty;}
-        },
-        new CreateTestCase( "DAML create datatype property non-F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", false ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  !r.canAs( FunctionalProperty.class );}
-        },
-        new CreateTestCase( "DAML create datatype property F", ProfileRegistry.DAML_LANG, NS + "p" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createDatatypeProperty( NS + "p", true ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof DatatypeProperty  &&  r.canAs( FunctionalProperty.class );}
-        },
-
         new CreateTestCase( "OWL create allDifferent", ProfileRegistry.OWL_LANG, null ) {
             @Override
             public OntResource doCreate( OntModel m )   { return m.createAllDifferent(); }
@@ -538,88 +363,6 @@ public class TestCreate
             @Override
             public boolean test( OntResource r )        { return r instanceof MaxCardinalityRestriction;}
         },
-
-        new CreateTestCase( "DAML create restriction", ProfileRegistry.DAML_LANG, NS + "C" ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C", null ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof Restriction;}
-        },
-        new CreateTestCase( "DAML create anon restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   { return m.createRestriction( null ); }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof Restriction;}
-        },
-
-        new CreateTestCase( "DAML create has value restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                Resource x = m.createResource( NS + "x" );
-                return m.createHasValueRestriction( null, p,  x );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
-        },
-        new CreateTestCase( "DAML create has value restriction (literal)", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createDatatypeProperty( NS + "p" );
-                Literal x = m.createTypedLiteral( new Integer( 42 ) );
-                return m.createHasValueRestriction( null, p,  x );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof HasValueRestriction;}
-        },
-        new CreateTestCase( "DAML create all values from restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                OntClass c = m.createClass( NS + "C" );
-                return m.createAllValuesFromRestriction( null, p,  c );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof AllValuesFromRestriction;}
-        },
-        new CreateTestCase( "DAML create some values from restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                OntClass c = m.createClass( NS + "C" );
-                return m.createSomeValuesFromRestriction( null, p,  c );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof SomeValuesFromRestriction;}
-        },
-        new CreateTestCase( "DAML create cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                return m.createCardinalityRestriction( null, p,  17 );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof CardinalityRestriction;}
-        },
-        new CreateTestCase( "DAML create min cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                return m.createMinCardinalityRestriction( null, p,  1 );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof MinCardinalityRestriction;}
-        },
-        new CreateTestCase( "DAML create max cardinality restriction", ProfileRegistry.DAML_LANG, null ) {
-            @Override
-            public OntResource doCreate( OntModel m )   {
-                Property p = m.createObjectProperty( NS + "p" );
-                return m.createMaxCardinalityRestriction( null, p,  4 );
-            }
-            @Override
-            public boolean test( OntResource r )        { return r instanceof MaxCardinalityRestriction;}
-        },
-
     };
 
     // Instance variables

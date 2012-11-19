@@ -180,8 +180,6 @@ public class TestData implements ARPErrorNumbers{
                 new Object[] { testFrame, xmlContext });
         add("tl", "typed-literal", WantTypedLiteral.class, new Object[] {
                 testFrame, "http://ex/dt", xmlContext });
-        add("dl", "daml:collection", DAMLCollection.class, new Object[] {
-                testFrame, xmlContext });
         add("cl", "collection", RDFCollection.class, new Object[] {
                 testFrame, xmlContext });
         add("tp", "top-level", WantTopLevelDescription.class,
@@ -193,7 +191,6 @@ public class TestData implements ARPErrorNumbers{
         add("RD", "looking-for-RDF", LookingForRDF.class, new Object[] {
                 testFrame, ap });
     }
-
 
     int localCount;
 

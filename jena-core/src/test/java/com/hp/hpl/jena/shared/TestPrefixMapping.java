@@ -18,17 +18,11 @@
 
 package com.hp.hpl.jena.shared;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.assembler.JA;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
-import com.hp.hpl.jena.vocabulary.DC_11;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.RSS;
-import com.hp.hpl.jena.vocabulary.VCARD;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.vocabulary.* ;
 
 /**
     Tests PrefixMappingImpl by subclassing AbstractTestPrefixMapping, qv.
@@ -64,7 +58,6 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping
     public void testExtended( PrefixMapping st )
         {
         testStandard( st );
-        assertEquals( DAMLVocabulary.NAMESPACE_DAML_2001_03_URI, st.getNsPrefixURI( "daml" ) );
         assertEquals( RSS.getURI(), st.getNsPrefixURI( "rss" ) );
         assertEquals( VCARD.getURI(), st.getNsPrefixURI( "vcard" ) );
         assertEquals( JA.getURI(), st.getNsPrefixURI( "ja" ) );

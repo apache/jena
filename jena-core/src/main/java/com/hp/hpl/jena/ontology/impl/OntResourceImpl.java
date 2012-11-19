@@ -62,7 +62,6 @@ public class OntResourceImpl
     public static final String[] KNOWN_LANGUAGES = new String[] {OWL.NS,
                                                                  RDF.getURI(),
                                                                  RDFS.getURI(),
-                                                                 DAMLVocabulary.NAMESPACE_DAML_2001_03_URI,
                                                                  XSDDatatype.XSD};
 
     // Static variables

@@ -3,6 +3,11 @@ Release Notes
 
 ==== Jena 2.10.0
 
++ removed support for DAML+OIL
+      ARP : transition support for daml:collection removed
+      Vocabulary files removed
+      OntModelSpec for DMAL+OIL modes removed
+      DAMLMicroReasoner removed
 + Consolidation of versions numbers.
 + JENA-338 : Fix for RulesetNotFoundException thrown when arbitrary IO errors occur
              in rules parsing and NPE thrown when non-existent ruleset referenced

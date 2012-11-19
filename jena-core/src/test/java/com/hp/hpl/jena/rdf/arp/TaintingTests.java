@@ -39,10 +39,6 @@ import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-/**
- * @author jjc
- *  
- */
 public class TaintingTests extends TestCase implements ErrorHandler,
 		ARPErrorNumbers {
 	 
@@ -123,7 +119,6 @@ public class TaintingTests extends TestCase implements ErrorHandler,
         
         "testing/arp/tainting/base.rdf",
         
-        "testing/arp/tainting/damlcollection.rdf",
         "testing/arp/tainting/lang.rdf",
         "testing/arp/tainting/ptUnknown.rdf",
         "testing/arp/tainting/typedLiteral.rdf",

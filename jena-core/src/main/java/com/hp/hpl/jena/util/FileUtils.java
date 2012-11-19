@@ -168,9 +168,6 @@ public class FileUtils
         int len = s.length();
         StringBuffer sbuff = new StringBuffer(len) ;
 
-        // This is URIRef.decode()? Is that code used?
-        // Just decode % escapes.
-        // Not http://www.daml.org/2001/03/daml+oil
         for ( int i =0 ; i < len ; i++ )
         {
             char c = s.charAt(i);

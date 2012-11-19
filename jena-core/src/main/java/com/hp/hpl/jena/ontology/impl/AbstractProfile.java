@@ -126,7 +126,7 @@ public abstract class AbstractProfile
 
     /**
      * Answer a table of binary mappings denoting that one resource is the
-     * alias for another (for example daml:Class and rdfs:Class).
+     * alias for another (for example rdfs:Class).
      */
     protected abstract Resource[][] aliasTable();
     
