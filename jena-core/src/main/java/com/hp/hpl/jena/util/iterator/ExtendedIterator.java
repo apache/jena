@@ -77,7 +77,7 @@ public interface ExtendedIterator<T> extends ClosableIterator<T>
     public List<T> toList();
 
     /**
-        Answer a set of the [remaining] elements of this iterator, in order,
+        Answer a set of the [remaining] elements of this iterator,
         consuming this iterator.
     */
     public Set<T> toSet();
