@@ -18,16 +18,12 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.io.FileReader ;
-import java.io.IOException ;
 import java.io.StringReader ;
 import java.util.* ;
 
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.datatypes.TypeMapper ;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;

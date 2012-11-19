@@ -18,36 +18,28 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Iterator;
+import java.io.StringReader ;
+import java.util.Iterator ;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.TestCase ;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
-import com.hp.hpl.jena.ontology.OntDocumentManager;
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.InfModel;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.reasoner.ValidityReport;
-import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.ontology.DatatypeProperty ;
+import com.hp.hpl.jena.ontology.OntDocumentManager ;
+import com.hp.hpl.jena.ontology.OntModel ;
+import com.hp.hpl.jena.ontology.OntModelSpec ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry ;
+import com.hp.hpl.jena.reasoner.ValidityReport ;
+import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 /**
  * Misc. tests of the OWL rule engine configurations which 
