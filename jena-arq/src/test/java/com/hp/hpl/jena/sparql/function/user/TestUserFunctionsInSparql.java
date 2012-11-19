@@ -28,7 +28,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /**
  * Tests that user functions are properly wired in and usable from SPARQL
- * @author rvesse
  *
  */
 public class TestUserFunctionsInSparql {
