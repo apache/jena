@@ -18,10 +18,18 @@
 
 package com.hp.hpl.jena.sparql.function;
 
+import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
-/** Interface for function factories. */ 
-
+/**
+ *  Interface for function factories. 
+ */ 
 public interface FunctionFactory
 {
+    /**
+     * Create a function with the given URI
+     * @param uri URI
+     * @return Function
+     * @throws ExprBuildException May be thrown if there is a problem creating a function
+     */
     public Function create(String uri) ;
 }
