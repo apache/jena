@@ -30,7 +30,7 @@ public interface Function
     /** Called during query plan construction immediately after the
      * construction of the extension instance.
      * Can throw ExprBuildException if something is wrong (like wrong number of arguments). 
-     * @param args The parsed arguements
+     * @param args The parsed arguments
      */ 
     public void build(String uri, ExprList args) ;
 
