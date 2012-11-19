@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import java.io.* ;
 import java.math.BigDecimal ;
 import java.math.BigInteger ;
 import java.text.SimpleDateFormat ;
