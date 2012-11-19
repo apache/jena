@@ -44,17 +44,6 @@ public class TestXMLAbbrev extends XMLOutputTestBase
             );
         }    
     
-    public void testNoDamlCollection() throws IOException 
-        {
-        check
-            (
-            "testing/abbreviated/daml.rdf",
-            null,
-            "[\"']daml:collection[\"']",
-            Change.blockRules( "daml:collection" )
-            );
-        }
-
     public void testNoRdfCollection() throws IOException 
         {
         check

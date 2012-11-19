@@ -73,10 +73,10 @@ public interface OntResource
 
     /**
      * <p>Answer true if this resource is a symbol in one of the standard ontology
-     * languages supported by Jena: RDF, RDFS, OWL or DAML+OIL. Since these languages
+     * languages supported by Jena: RDF, RDFS or OWL. Since these languages
      * have restricted namespaces, this check is simply a convenient way of testing whether
      * this resource is in one of those pre-declared namespaces.</p>
-     * @return True if this is a term in the language namespace for OWL, RDF, RDFS or DAML+OIL.
+     * @return True if this is a term in the language namespace for OWL, RDF or RDFS.
      */
     public boolean isOntLanguageTerm();
 

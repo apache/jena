@@ -70,18 +70,7 @@ public class TestListSyntaxCategories
                 return r instanceof Ontology;
             }
         },
-        new DoListTest( "DAML list ontologies",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {"http://jena.hpl.hp.com/testing/ontology"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listOntologies();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof Ontology;
-            }
-        },
+
         // Properties
         new DoListTest( "OWL list properties",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  2,
                         new String[] {NS+"p",NS+"karma"} )
@@ -178,87 +167,6 @@ public class TestListSyntaxCategories
             }
         },
         new DoListTest( "OWL list inverse functional properties",  "file:testing/ontology/owl/list-syntax/test-proptypes.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
-                        new String[] {NS+"ifp"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listInverseFunctionalProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof InverseFunctionalProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  5,
-                        new String[] {NS+"p", NS+"rdf-p", NS+"dp", NS+"op", NS+"op1"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listOntProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list object properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  2,
-                        new String[] {NS+"op", NS+"op1"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listObjectProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list datatype properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"dp"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listDatatypeProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"fp"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listFunctionalProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof FunctionalProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list transitive properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"tp"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listTransitiveProperties();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntProperty &&
-                       r instanceof TransitiveProperty &&
-                       r instanceof Property;
-            }
-        },
-        new DoListTest( "DAML list inverse functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         new String[] {NS+"ifp"} )
         {
             @Override
@@ -426,29 +334,6 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
-        new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  6,
-                        new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a1", NS+"a2", NS+"a0"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listIndividuals();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof Individual;
-            }
-        },
-        new DoListTest( "empty DAML+rule list individuals",  null,  OntModelSpec.DAML_MEM_RULE_INF,  0, new String[] {} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listIndividuals();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof Individual;
-            }
-        },
         new DoListTest( "OWL list individuals with inference",  "file:testing/ontology/owl/list-syntax/owlDemoSchema.xml",  OntModelSpec.OWL_LITE_MEM_RULES_INF,  6, null )
         {
             @Override
@@ -483,18 +368,6 @@ public class TestListSyntaxCategories
 
         new DoListTest( "OWL list all different",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
                         null )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listAllDifferent();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof AllDifferent;
-            }
-        },
-        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  0,  null,
-                        true /* exception expected */ )
         {
             @Override
             public Iterator< ? extends Resource> doList( OntModel m ) {
@@ -580,90 +453,6 @@ public class TestListSyntaxCategories
             }
         },
         new DoListTest( "OWL list restrictions",  "file:testing/ontology/owl/list-syntax/test.rdf",  OntModelSpec.OWL_MEM_TRANS_INF,  1,
-                        null )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listRestrictions();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof Restriction;
-            }
-        },
-        new DoListTest( "DAML list classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  12,
-                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  11,
-                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listNamedClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"A" } )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listIntersectionClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"B"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listUnionClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"C"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listComplementClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
-                        new String[] {NS+"D"} )
-        {
-            @Override
-            public Iterator< ? extends Resource> doList( OntModel m ) {
-                return m.listEnumeratedClasses();
-            }
-            @Override
-            public boolean test( Resource r ) {
-                return r instanceof OntClass;
-            }
-        },
-        new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,
                         null )
         {
             @Override

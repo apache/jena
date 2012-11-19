@@ -2,20 +2,16 @@ WantPropertyElement <RDF:li> RDF:parseType='Literal' RDF:parseType='Resource' $ 
 WantPropertyElement <eg:Goo> RDF:parseType='Literal' RDF:parseType='Resource' $ ?
 LookingForRDF <RDF:RDF> RDF:parseType='Resource' $ ?
 RDFCollection <RDF:Description> RDF:parseType='Resource' $ ?
-DAMLCollection <RDF:Description> RDF:parseType='Resource' $ ?
 WantTopLevelDescription <RDF:Description> RDF:parseType='Resource' $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:parseType='Resource' $ ?
 RDFCollection <eg:Goo> RDF:parseType='Resource' $ ?
-DAMLCollection <eg:Goo> RDF:parseType='Resource' $ ?
 WantTopLevelDescription <eg:Goo> RDF:parseType='Resource' $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:parseType='Resource' $ ?
 LookingForRDF <RDF:RDF> RDF:parseType='Literal' $ ?
 RDFCollection <RDF:Description> RDF:parseType='Literal' $ ?
-DAMLCollection <RDF:Description> RDF:parseType='Literal' $ ?
 WantTopLevelDescription <RDF:Description> RDF:parseType='Literal' $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:parseType='Literal' $ ?
 RDFCollection <eg:Goo> RDF:parseType='Literal' $ ?
-DAMLCollection <eg:Goo> RDF:parseType='Literal' $ ?
 WantTopLevelDescription <eg:Goo> RDF:parseType='Literal' $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:parseType='Literal' $ ?
 WantPropertyElement <RDF:li> RDF:parseType='Resource' RDF:parseType='Collection' $ ?
@@ -24,23 +20,19 @@ WantPropertyElement <RDF:li> RDF:parseType='Literal' RDF:parseType='Collection' 
 WantPropertyElement <eg:Goo> RDF:parseType='Literal' RDF:parseType='Collection' $ ?
 LookingForRDF <RDF:RDF> RDF:parseType='Collection' $ ?
 RDFCollection <RDF:Description> RDF:parseType='Collection' $ ?
-DAMLCollection <RDF:Description> RDF:parseType='Collection' $ ?
 WantTopLevelDescription <RDF:Description> RDF:parseType='Collection' $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:parseType='Collection' $ ?
 RDFCollection <eg:Goo> RDF:parseType='Collection' $ ?
-DAMLCollection <eg:Goo> RDF:parseType='Collection' $ ?
 WantTopLevelDescription <eg:Goo> RDF:parseType='Collection' $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:parseType='Collection' $ ?
 WantTypedLiteral <RDF:RDF> $ ?
 RDFCollection <RDF:RDF> $ ?
-DAMLCollection <RDF:RDF> $ ?
 WantTopLevelDescription <RDF:RDF> $ ?
 WantLiteralValueOrDescription <RDF:RDF> $ ?
 WantPropertyElement <RDF:RDF> $ ?
 WantEmpty <RDF:RDF> $ ?
 WantTypedLiteral <RDF:li> $ ?
 RDFCollection <RDF:li> $ ?
-DAMLCollection <RDF:li> $ ?
 WantTopLevelDescription <RDF:li> $ ?
 WantLiteralValueOrDescription <RDF:li> $ ?
 WantEmpty <RDF:li> $ ?
@@ -51,11 +43,9 @@ WantTypedLiteral <eg:Goo> $ ?
 WantEmpty <eg:Goo> $ ?
 LookingForRDF <RDF:RDF> RDF:ID $ ?
 RDFCollection <RDF:Description> RDF:about RDF:ID $ ?
-DAMLCollection <RDF:Description> RDF:about RDF:ID $ ?
 WantTopLevelDescription <RDF:Description> RDF:about RDF:ID $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:about RDF:ID $ ?
 RDFCollection <eg:Goo> RDF:about RDF:ID $ ?
-DAMLCollection <eg:Goo> RDF:about RDF:ID $ ?
 WantTopLevelDescription <eg:Goo> RDF:about RDF:ID $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:about RDF:ID $ ?
 WantPropertyElement <RDF:li> RDF:parseType='Resource' RDF:nodeID $ ?
@@ -66,29 +56,23 @@ WantPropertyElement <RDF:li> RDF:parseType='Collection' RDF:nodeID $ ?
 WantPropertyElement <eg:Goo> RDF:parseType='Collection' RDF:nodeID $ ?
 LookingForRDF <RDF:RDF> RDF:nodeID $ ?
 RDFCollection <RDF:Description> RDF:ID RDF:nodeID $ ?
-DAMLCollection <RDF:Description> RDF:ID RDF:nodeID $ ?
 WantTopLevelDescription <RDF:Description> RDF:ID RDF:nodeID $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:ID RDF:nodeID $ ?
 RDFCollection <eg:Goo> RDF:ID RDF:nodeID $ ?
-DAMLCollection <eg:Goo> RDF:ID RDF:nodeID $ ?
 WantTopLevelDescription <eg:Goo> RDF:ID RDF:nodeID $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:ID RDF:nodeID $ ?
 RDFCollection <RDF:Description> RDF:about RDF:nodeID $ ?
-DAMLCollection <RDF:Description> RDF:about RDF:nodeID $ ?
 WantTopLevelDescription <RDF:Description> RDF:about RDF:nodeID $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:about RDF:nodeID $ ?
 RDFCollection <eg:Goo> RDF:about RDF:nodeID $ ?
-DAMLCollection <eg:Goo> RDF:about RDF:nodeID $ ?
 WantTopLevelDescription <eg:Goo> RDF:about RDF:nodeID $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:about RDF:nodeID $ ?
 LookingForRDF <RDF:RDF> RDF:bagID $ ?
 WantPropertyElement <RDF:li> RDF:bagID $ ?
 RDFCollection <RDF:Description> RDF:bagID $ ?
-DAMLCollection <RDF:Description> RDF:bagID $ ?
 WantTopLevelDescription <RDF:Description> RDF:bagID $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:bagID $ ?
 RDFCollection <eg:Goo> RDF:bagID $ ?
-DAMLCollection <eg:Goo> RDF:bagID $ ?
 WantTopLevelDescription <eg:Goo> RDF:bagID $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:bagID $ ?
 WantPropertyElement <eg:Goo> RDF:bagID $ ?
@@ -100,11 +84,9 @@ WantPropertyElement <RDF:li> RDF:parseType='Collection' RDF:resource $ ?
 WantPropertyElement <eg:Goo> RDF:parseType='Collection' RDF:resource $ ?
 LookingForRDF <RDF:RDF> RDF:resource $ ?
 RDFCollection <RDF:Description> RDF:resource $ ?
-DAMLCollection <RDF:Description> RDF:resource $ ?
 WantTopLevelDescription <RDF:Description> RDF:resource $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:resource $ ?
 RDFCollection <eg:Goo> RDF:resource $ ?
-DAMLCollection <eg:Goo> RDF:resource $ ?
 WantTopLevelDescription <eg:Goo> RDF:resource $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:resource $ ?
 WantPropertyElement <RDF:li> RDF:nodeID RDF:resource $ ?
@@ -126,11 +108,9 @@ WantPropertyElement <RDF:li> RDF:parseType='Collection' RDF:datatype $ ?
 WantPropertyElement <eg:Goo> RDF:parseType='Collection' RDF:datatype $ ?
 LookingForRDF <RDF:RDF> RDF:datatype $ ?
 RDFCollection <RDF:Description> RDF:datatype $ ?
-DAMLCollection <RDF:Description> RDF:datatype $ ?
 WantTopLevelDescription <RDF:Description> RDF:datatype $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:datatype $ ?
 RDFCollection <eg:Goo> RDF:datatype $ ?
-DAMLCollection <eg:Goo> RDF:datatype $ ?
 WantTopLevelDescription <eg:Goo> RDF:datatype $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:datatype $ ?
 WantPropertyElement <RDF:li> RDF:nodeID RDF:datatype $ ?
@@ -142,11 +122,9 @@ WantPropertyElement <eg:Goo> eg:foo RDF:datatype $ ?
 LookingForRDF <RDF:RDF> RDF:aboutEach $ ?
 WantPropertyElement <RDF:li> RDF:aboutEach $ ?
 RDFCollection <RDF:Description> RDF:aboutEach $ ?
-DAMLCollection <RDF:Description> RDF:aboutEach $ ?
 WantTopLevelDescription <RDF:Description> RDF:aboutEach $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:aboutEach $ ?
 RDFCollection <eg:Goo> RDF:aboutEach $ ?
-DAMLCollection <eg:Goo> RDF:aboutEach $ ?
 WantTopLevelDescription <eg:Goo> RDF:aboutEach $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:aboutEach $ ?
 WantPropertyElement <eg:Goo> RDF:aboutEach $ ?
@@ -163,11 +141,9 @@ WantPropertyElement <eg:Goo> RDF:about $ ?
 LookingForRDF <RDF:RDF> RDF:aboutEachPrefix $ ?
 WantPropertyElement <RDF:li> RDF:aboutEachPrefix $ ?
 RDFCollection <RDF:Description> RDF:aboutEachPrefix $ ?
-DAMLCollection <RDF:Description> RDF:aboutEachPrefix $ ?
 WantTopLevelDescription <RDF:Description> RDF:aboutEachPrefix $ ?
 WantLiteralValueOrDescription <RDF:Description> RDF:aboutEachPrefix $ ?
 RDFCollection <eg:Goo> RDF:aboutEachPrefix $ ?
-DAMLCollection <eg:Goo> RDF:aboutEachPrefix $ ?
 WantTopLevelDescription <eg:Goo> RDF:aboutEachPrefix $ ?
 WantLiteralValueOrDescription <eg:Goo> RDF:aboutEachPrefix $ ?
 WantPropertyElement <eg:Goo> RDF:aboutEachPrefix $ ?
@@ -246,11 +222,8 @@ WantLiteralValueOrDescription <RDF:Description> RDF:ID RDF:type eg:foo $ WantPro
 WantLiteralValueOrDescription <RDF:Description> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ * T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ * T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 WantLiteralValueOrDescription <RDF:Description> RDF:about RDF:type eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ * T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ * T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 WantLiteralValueOrDescription <eg:Goo> RDF:about eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ * T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ * T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:ID $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:about xml:space $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <RDF:Description> RDF:type $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
@@ -260,8 +233,6 @@ RDFCollection <RDF:Description> RDF:about RDF:type $ WantPropertyElement T2 O1  
 RDFCollection <RDF:Description> RDF:type xml:base $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:about xml:base $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <RDF:Description> RDF:ID RDF:type xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <RDF:Description> RDF:nodeID RDF:type xml:lang $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
@@ -273,7 +244,6 @@ RDFCollection <RDF:Description> eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $
 RDFCollection <RDF:Description> RDF:ID eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <RDF:Description> RDF:nodeID eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <RDF:Description> RDF:about eg:foo $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
-DAMLCollection <RDF:Description> RDF:about $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 RDFCollection <eg:Goo> RDF:about $ WantPropertyElement T2 O1  { <eg:Goo> $ WantLiteralValueOrDescription T2 O1  ; <eg:Goo> </end> $ WantPropertyElement T3 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; 'abcde' $ ? ; </end> $ * T2 O1  ; pred-object $ WantPropertyElement T3 O1  ; object $ WantPropertyElement T3 O1  ; }
 WantLiteralValueOrDescription <eg:Goo> RDF:nodeID RDF:type eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ * T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ * T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 WantLiteralValueOrDescription <eg:Goo> RDF:nodeID RDF:type eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ * T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ * T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
@@ -282,100 +252,46 @@ WantLiteralValueOrDescription <eg:Goo> RDF:type eg:foo $ WantPropertyElement T3 
 WantLiteralValueOrDescription <eg:Goo> RDF:ID RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ * T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ * T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 WantLiteralValueOrDescription <eg:Goo> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ * T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ * T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 WantLiteralValueOrDescription <eg:Goo> RDF:about RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ * T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ * T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about xml:space RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:about RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about RDF:type $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:type xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:about RDF:type xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about RDF:type xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:type eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:ID RDF:type eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:about RDF:type eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about eg:foo xml:base $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:type xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:type xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID RDF:type xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID RDF:type xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about RDF:type xml:base xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:about RDF:type eg:foo xml:base xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:nodeID RDF:type eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:about RDF:type eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about eg:foo xml:lang $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:ID eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about xml:space eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:ID RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <RDF:Description> RDF:about RDF:type eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <RDF:Description> RDF:about eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
 RDFCollection <eg:Goo> RDF:about eg:foo $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> RDF:about $ WantPropertyElement T3 O1  { <eg:Goo> $ WantLiteralValueOrDescription T3 O1  ; <eg:Goo> </end> $ WantPropertyElement T4 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; 'abcde' $ ? ; </end> $ * T3 O1  ; pred-object $ WantPropertyElement T4 O1  ; object $ WantPropertyElement T4 O1  ; }
-DAMLCollection <eg:Goo> RDF:type $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID RDF:type $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:about RDF:type $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID RDF:type xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:type eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:about RDF:type eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:about eg:foo xml:base $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:about RDF:type xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type xml:base xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID eg:foo xml:base xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type eg:foo xml:base xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <RDF:Description> RDF:type eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type eg:foo xml:lang $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <RDF:Description> RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <RDF:Description> RDF:ID RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:ID RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <RDF:Description> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <RDF:Description> RDF:about RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
 RDFCollection <eg:Goo> RDF:about RDF:type eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:about eg:foo $ WantPropertyElement T4 O1  { <eg:Goo> $ WantLiteralValueOrDescription T4 O1  ; <eg:Goo> </end> $ WantPropertyElement T5 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; 'abcde' $ ? ; </end> $ * T4 O1  ; pred-object $ WantPropertyElement T5 O1  ; object $ WantPropertyElement T5 O1  ; }
-DAMLCollection <eg:Goo> RDF:type eg:foo xml:base $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type eg:foo xml:base $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type eg:foo xml:lang $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:type eg:foo $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:ID RDF:type eg:foo $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:nodeID RDF:type eg:foo $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
-DAMLCollection <eg:Goo> RDF:about RDF:type eg:foo $ WantPropertyElement T5 O1  { <eg:Goo> $ WantLiteralValueOrDescription T5 O1  ; <eg:Goo> </end> $ WantPropertyElement T6 O1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T6 O1  ; 'abcde' $ ? ; </end> $ * T5 O1  ; pred-object $ WantPropertyElement T6 O1  ; object $ WantPropertyElement T6 O1  ; }
 WantPropertyElement <RDF:li> RDF:parseType='Resource' $ *  P1  { <eg:Goo> $ WantLiteralValueOrDescription  P1  ; <eg:Goo> </end> $ * T1 P1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T1 P1  ; 'abcde' $ ? ; </end> $ *  P1  ; pred-object $ * T1 P1  ; object $ * T1 P1  ; }
 WantPropertyElement <eg:Goo> RDF:parseType='Resource' $ *  P1  { <eg:Goo> $ WantLiteralValueOrDescription  P1  ; <eg:Goo> </end> $ * T1 P1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T1 P1  ; 'abcde' $ ? ; </end> $ *  P1  ; pred-object $ * T1 P1  ; object $ * T1 P1  ; }
 WantPropertyElement <RDF:li> xml:space RDF:parseType='Resource' $ *  P1  { <eg:Goo> $ WantLiteralValueOrDescription  P1  ; <eg:Goo> </end> $ * T1 P1  ; <eg:Goo> </end> <eg:Goo> $ WantLiteralValueOrDescription T1 P1  ; 'abcde' $ ? ; </end> $ *  P1  ; pred-object $ * T1 P1  ; object $ * T1 P1  ; }

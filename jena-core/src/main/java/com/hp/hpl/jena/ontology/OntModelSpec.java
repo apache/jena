@@ -91,18 +91,6 @@ public class OntModelSpec {
     /** A specification for OWL Lite models that are stored in memory and use the OWL rules inference engine for additional entailments */
     public static final OntModelSpec OWL_LITE_MEM_RULES_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, OWLFBRuleReasonerFactory.theInstance(), ProfileRegistry.OWL_LITE_LANG );
 
-    /** A specification for DAML models that are stored in memory and do no additional entailment reasoning */
-    public static final OntModelSpec DAML_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, null, ProfileRegistry.DAML_LANG );
-
-    /** A specification for DAML models that are stored in memory and use the transitive reasoner for entailments */
-    public static final OntModelSpec DAML_MEM_TRANS_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, TransitiveReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
-
-    /** A specification for DAML models that are stored in memory and use the RDFS inferencer for additional entailments */
-    public static final OntModelSpec DAML_MEM_RDFS_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, RDFSRuleReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
-
-    /** A specification for DAML models that are stored in memory and use a subset of the DAML semantic model additional entailments */
-    public static final OntModelSpec DAML_MEM_RULE_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, DAMLMicroReasonerFactory.theInstance(), ProfileRegistry.DAML_LANG );
-
     /** A specification for RDFS ontology models that are stored in memory and do no additional entailment reasoning */
     public static final OntModelSpec RDFS_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, null, ProfileRegistry.RDFS_LANG );
 
@@ -296,7 +284,7 @@ public class OntModelSpec {
      * will typically use a memory model and have minimal inferencing capabilities.
      * Specifically, OWL and RDFS languages will have RDFS level inferencing
      * capability (chosen to give a reasonable balance between power and efficiency
-     * of computation), and DAML language will have the minimal DAML rule reasoner.
+     * of computation).
      * To get other (more powerful or less powerful) reasoning capabilities, users
      * should create ontology models by passing an explicit <code>OntModelSpec</code>
      * parameter to the
@@ -315,9 +303,6 @@ public class OntModelSpec {
         }
         else if (languageURI.equals( ProfileRegistry.OWL_LITE_LANG )) {
             return OWL_LITE_MEM_RDFS_INF;
-        }
-        else if (languageURI.equals( ProfileRegistry.DAML_LANG )) {
-            return DAML_MEM_RULE_INF;
         }
         else if (languageURI.equals( ProfileRegistry.RDFS_LANG )) {
             return RDFS_MEM_RDFS_INF;

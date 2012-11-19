@@ -52,9 +52,6 @@ public class ProfileRegistry {
     /** The URI that maps to the language profile for OWL-Lite */
     public static final String OWL_LITE_LANG = OWL.LITE_LANG.getURI();
 
-    /** The URI that maps to the language profile for DAML+OIL */
-    public static final String DAML_LANG = DAMLVocabulary.NAMESPACE_DAML_2001_03_URI;
-
     /** The URI that maps to the language profile for RDFS */
     public static final String RDFS_LANG = RDFS.getURI();
 
@@ -66,7 +63,6 @@ public class ProfileRegistry {
         {OWL_LANG,      new OWLProfile()},
         {OWL_DL_LANG,   new OWLDLProfile()},
         {OWL_LITE_LANG, new OWLLiteProfile()},
-        {DAML_LANG,     new DAML_OILProfile()},
         {RDFS_LANG,     new RDFSProfile()}
     };
 

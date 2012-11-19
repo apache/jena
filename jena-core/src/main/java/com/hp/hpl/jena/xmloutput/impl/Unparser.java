@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.xmloutput.impl;
 
 /*
- * @author Jeremy Carroll
- * 
  * Want todo List - easy efficiency gains in listSubjects() and
  * modelListSubjects() by removing those subjects that we have already
  * considered.
@@ -32,6 +30,8 @@ package com.hp.hpl.jena.xmloutput.impl;
  * and use rule 6.12 with an idAttr. If the Stating is anonymous or non-local
  * then we construct the reification explicitly.
  * 
+ *
+ * [[The numbering here seems to refer to a old working draft]]
  * 
  * Notes: The following rules are not supported by the current Jena RDF parser:
  * 6.8
@@ -66,8 +66,9 @@ package com.hp.hpl.jena.xmloutput.impl;
  * parseResource '>' propertyElt* '</' propName '>' | '<' propName idRefAttr?
  * bagIdAttr? propAttr* '/>'
  * 
- * [daml.1 - 6.12 cont.] | '<' propName idAttr? parseDamlCollection '>' obj* '</'
- * propName '>' [daml.2] parseDamlCollection ::= ' parseType="daml:collection"'
+ * 
+ * | '<' propName idAttr? parseCollection '>' obj* '</'
+ * propName '>' [daml.2] parseCollection ::= ' parseType="rdf:collection"'
  * 
  * [6.13] typedNode ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>' | '<'
  * typeName idAboutAttr? bagIdAttr? propAttr* '>' propertyElt* '</' typeName * '>'
@@ -129,7 +130,6 @@ import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.PropertyNotFoundException;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -372,11 +372,11 @@ class Unparser {
      * [6.12] propertyElt ::= '<' propName idAttr? '>' value '</' propName '>' | '<'
      * propName idAttr? parseLiteral '>' literal '</' propName '>' | '<'
      * propName idAttr? parseResource '>' propertyElt* '</' propName '>' | '<'
-     * propName idRefAttr? bagIdAttr? propAttr* '/>' [daml.1 - 6.12 cont.] | '<'
-     * propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
-     * parseDamlCollection ::= ' parseType="daml:collection"'
+     * propName idRefAttr? bagIdAttr? propAttr* '/>' 
+     *  | '<' * propName idAttr? parseDamlCollection '>' obj* '</' propName '>' [daml.2]
+     *    parseDamlCollection ::= ' parseType="rdf:collection"'
      * 
-     * For daml collections we prefer the special syntax otherwise: We prefer
+     * For RDF collections we prefer the special syntax otherwise: We prefer
      * choice 4 where possible, except in the case where the statement is
      * reified and the object is not anonymous in which case we use one of the
      * others (e.g. choice 1). For embedded XML choice 2 is obligatory. For
@@ -386,11 +386,11 @@ class Unparser {
     private boolean wPropertyElt(WType wt, Property prop, Statement s,
             RDFNode val) {
         return wPropertyEltCompact(wt, prop, s, val) || // choice 4
-                wPropertyEltDamlCollection(wt, prop, s, val) || // choice daml.1
+               wPropertyEltCollection(wt, prop, s, val) || // choice RDF collections
                 wPropertyEltLiteral(wt, prop, s, val) || // choice 2
                 wPropertyEltResource(wt, prop, s, val) || // choice 3
-                wPropertyEltDatatype(wt, prop, s, val)
-                || wPropertyEltValue(wt, prop, s, val);
+                wPropertyEltDatatype(wt, prop, s, val) ||
+                wPropertyEltValue(wt, prop, s, val);
         // choice 1.
     }
 
@@ -589,17 +589,12 @@ class Unparser {
     }
 
     /*
-     * [daml.1 - 6.12 cont.] | '<' propName idAttr? parseDamlCollection '>'
+     *  '<' propName idAttr? parseCollection '>'
      * obj* '</' propName '>'
      */
-    private boolean wPropertyEltDamlCollection(WType wt, Property prop,
+    private boolean wPropertyEltCollection(WType wt, Property prop,
             Statement s, RDFNode r) {
-        boolean daml = true;
-        Statement list[][] = getDamlList(r);
-        if (list == null) {
-            daml = false;
-            list = getRDFList(r);
-        }
+        Statement list[][] = getRDFList(r);
         if (list == null)
             return false;
         // print out.
@@ -609,18 +604,13 @@ class Unparser {
         for (int i = 0; i < list.length; i++) {
             done(list[i][0]);
             done(list[i][1]);
-            if (daml)
-                done(list[i][2]);
         }
         tab();
         print("<");
         wt.wTypeStart(prop);
         indentPlus();
         wIdAttrReified(s);
-        if (daml)
-            wParseDamlCollection();
-        else
-            wParseCollection();
+        wParseCollection();
 
         print(">");
         for (int i = 0; i < list.length; i++) {
@@ -1047,15 +1037,6 @@ class Unparser {
     }
 
     /*
-     * [daml.2] parseDamlCollection ::= ' parseType="daml:collection"'
-     */
-    private void wParseDamlCollection() {
-        print(" ");
-        printRdfAt("parseType");
-        print("=" + q("daml:collection"));
-    }
-
-    /*
      * [List.2] parseCollection ::= ' parseType="Collection"'
      */
     private void wParseCollection() {
@@ -1396,20 +1377,6 @@ class Unparser {
         // return false;
     }
 
-    /**
-     * If r represent a daml:collection return a 2D array of its statements. For
-     * each member there are three statements the first gives the DAML.first
-     * statement, the second the DAML.rest statement and the third the RDF.type
-     * statement.
-     * 
-     * @return null on failure or the elements of the collection.
-     * 
-     */
-    private Statement[][] getDamlList(RDFNode r) {
-        return prettyWriter.sDamlCollection ? null : getList(r, DAML_OIL.List,
-                DAML_OIL.first, DAML_OIL.rest, DAML_OIL.nil);
-    }
-
     private Statement[][] getRDFList(RDFNode r) {
         return prettyWriter.sParseTypeCollectionPropertyElt ? null : getList(r,
                 null, RDF.first, RDF.rest, RDF.nil);
@@ -1429,7 +1396,7 @@ class Unparser {
                 if (next instanceof Literal)
                     return null;
                 Resource res = (Resource) next;
-                // We cannot label the nodes in the daml:collection
+                // We cannot label the nodes in the rdf:collection
                 // construction.
                 if (!isGenuineAnon(res))
                     return null;
@@ -1625,7 +1592,7 @@ class Unparser {
      * listSubjects - generates a list of subjects for the wObjStar rule. We
      * wish to order these elegantly. The current implementation goes for:
      * <ul>
-     * <li> The current file - mainly intended for good DAML.
+     * <li> The current file - mainly intended for good OWL.
      * <li> Subjects that are not objects of anything, excluding reifications
      * <li> At these stage we evaluate a dependency graph of the remaining
      * resources.
@@ -1644,7 +1611,6 @@ class Unparser {
      * allow us to manage the closing issue.
      */
     private Iterator<Resource> listSubjects() {
-        // The current file - mainly intended for good DAML.
         Iterator<Resource> currentFile = new SingletonIterator<Resource>( model.createResource( this.localName ) );
         // The pleasing types
         Iterator<Resource> pleasing = pleasingTypeIterator();

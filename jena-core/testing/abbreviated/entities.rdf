@@ -1,4 +1,3 @@
-<!-- $Id: entities.rdf,v 1.1 2007-04-16 15:28:25 jeremy_carroll Exp $ -->
 <!-- A variety of URIs that cause problems when they are entities. -->
 
 <rdf:RDF

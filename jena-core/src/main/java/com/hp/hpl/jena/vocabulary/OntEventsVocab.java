@@ -95,7 +95,7 @@ public class OntEventsVocab {
      */
     public static final Individual inverseOf = m_model.createIndividual( "http://jena.hpl.hp.com/schemas/2003/03/ont-event#inverseOf", OntEvent );
     
-    /** <p>Event representing the declaration of a resource of type owl:Ontology or daml:Ontology, 
+    /** <p>Event representing the declaration of a resource of type owl:Ontology, 
      *  representing meta-data about the ontology.</p>
      */
     public static final Individual ontologyDeclaration = m_model.createIndividual( "http://jena.hpl.hp.com/schemas/2003/03/ont-event#ontologyDeclaration", OntEvent );

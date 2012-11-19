@@ -219,16 +219,7 @@ public class schemagen {
     /** Create the source model after determining which input language */
     protected void determineLanguage() {
         OntModelSpec s = null;
-        if (m_options.hasLangDamlOption()) {
-            // DAML language specified
-            if (m_options.hasUseInfOption()) {
-                s = OntModelSpec.DAML_MEM_RULE_INF;
-            }
-            else {
-                s = OntModelSpec.DAML_MEM;
-            }
-        }
-        else if (m_options.hasLangRdfsOption()) {
+        if (m_options.hasLangRdfsOption()) {
             // RDFS language specified
             if (m_options.hasUseInfOption()) {
                 s = OntModelSpec.RDFS_MEM_RDFS_INF;
@@ -607,10 +598,7 @@ public class schemagen {
     protected void writeModelDeclaration() {
         if (useOntology()) {
             String lang = "OWL";
-            if (m_options.hasLangDamlOption()) {
-                lang = "DAML";
-            }
-            else if (m_options.hasLangRdfsOption()) {
+            if (m_options.hasLangRdfsOption()) {
                 lang = "RDFS";
             }
             writeln( 1, "/** <p>The ontology model that holds the vocabulary terms</p> */" );
@@ -930,9 +918,6 @@ public class schemagen {
         if (m_options.hasLangOwlOption()) {
             props = new Resource[] {OWL.ObjectProperty, OWL.DatatypeProperty, RDF.Property};
         }
-        else if (m_options.hasLangDamlOption()) {
-            props = new Resource[] {DAML_OIL.ObjectProperty, DAML_OIL.DatatypeProperty, RDF.Property};
-        }
         else {
             props = new Resource[] {RDF.Property};
         }
@@ -984,10 +969,7 @@ public class schemagen {
 
         // make sure we're looking for the appropriate type of class
         Resource cls = OWL.Class;
-        if (m_options.hasLangDamlOption()) {
-            cls = DAML_OIL.Class;
-        }
-        else if (m_options.hasLangRdfsOption()) {
+        if (m_options.hasLangRdfsOption()) {
             cls = RDFS.Class;
         }
 
@@ -1125,9 +1107,9 @@ public class schemagen {
         }
     }
 
-    /** Answer true if the given resource has an rdf:comment or daml:comment */
+    /** Answer true if the given resource has an rdf:comment */
     protected boolean hasComment( Resource r ) {
-        return r.hasProperty( RDFS.comment )  || r.hasProperty( DAML_OIL.comment );
+        return r.hasProperty( RDFS.comment ) ;
     }
 
     /** Answer all of the commentary on the given resource, as a string */
@@ -1143,10 +1125,6 @@ public class schemagen {
             else {
                 LoggerFactory.getLogger( getClass() ).debug( "Not a literal: " + n );
             }
-        }
-
-        for (NodeIterator ni = m_source.listObjectsOfProperty( r, DAML_OIL.comment );  ni.hasNext(); ) {
-            comment.append( ((Literal) ni.nextNode()).getLexicalForm().trim() );
         }
 
         return comment.toString();
@@ -1535,8 +1513,6 @@ public class schemagen {
         public String getNoCommentsOption();
         public boolean hasInputOption();
         public Resource getInputOption();
-        public boolean hasLangDamlOption();
-        public String getLangDamlOption();
         public boolean hasLangOwlOption();
         public String getLangOwlOption();
         public boolean hasLangRdfsOption();
@@ -1760,10 +1736,6 @@ public class schemagen {
         public boolean hasInputOption() { return hasValue( OPT.INPUT ); }
         @Override
         public Resource getInputOption() { return getResource( OPT.INPUT ); }
-        @Override
-        public boolean hasLangDamlOption() { return isTrue( OPT.LANG_DAML ); }
-        @Override
-        public String getLangDamlOption() { return getStringValue( OPT.LANG_DAML ); }
         @Override
         public boolean hasLangOwlOption() { return isTrue( OPT.LANG_OWL ); }
         @Override

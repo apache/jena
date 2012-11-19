@@ -1,6 +1,3 @@
-<!-- $Id: relative-uris.rdf,v 1.2 2003-03-29 21:33:28 jeremy_carroll Exp $ -->
-
-
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:eg="http://www.example.org/2001/03/#"

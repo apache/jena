@@ -48,8 +48,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * <p>
- * Implementation of a model that can process general ontologies in OWL,
- * DAML and similar languages.
+ * Implementation of a model that can process general ontologies in OWL
+ * and similar languages.
  * </p>
  *
  * @author Ian Dickinson, HP Labs

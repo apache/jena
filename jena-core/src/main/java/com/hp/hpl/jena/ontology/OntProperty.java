@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * <p>
  * Interface encapsulating a property in an ontology. This is an extension to the
  * standard {@link Property} interface, adding a collection of convenience methods
- * for accessing the additional semantic features of properties in OWL, RDFS and DAML+OIL,
+ * for accessing the additional semantic features of properties in OWL and RDFS
  * such as domain, range, inverse, etc.  Not all such capabilities exist in all
  * supported ontology languages.
  * </p>

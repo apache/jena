@@ -37,12 +37,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
-/**
- * JUnit regression tests for the Jena DAML model.
- *
- * @author Jeremy Carroll
- */
-
 public class PrettyWriterTest extends ModelTestBase {
 
 	/**
@@ -105,12 +99,6 @@ public class PrettyWriterTest extends ModelTestBase {
 	            "rdf:resource");
 	}
 
-
-	public void testAnonDamlClass() throws IOException {
-		check(
-			"file:testing/abbreviated/daml.rdf",
-            "rdf:parseType=[\"']daml:collection[\"']");
-	}
 
 	public void testRDFCollection() throws IOException {
 		check(

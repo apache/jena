@@ -49,9 +49,6 @@ import junit.framework.*;
  *
  *These tests only test EnhNode polymorphism and not EnhGraph polymorphism.
  *EnhGraph polymorphism currently will not work.
- *(For Jena2.0 I am imagining that there will be ModelCom and DAMLModelImpl as
- *the only two implementations, and they can inherit one from the other).
- * @author  jjc
  */
 public class TestPackage extends GraphTestBase  {
     

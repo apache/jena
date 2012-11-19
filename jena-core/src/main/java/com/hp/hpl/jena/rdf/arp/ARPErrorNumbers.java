@@ -92,15 +92,6 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      @see #IGN_XMLBASE_USED
      */
     public int IGN_XMLBASE_SIGNIFICANT = 3;
-    /**
-     The use of rdf:parseType="daml:collection" does
-     not conform with RDF2004.
-     This is ignored in default mode.
-     In strict mode the parser follows the conformant behaviour 
-     which is to silently
-     treat this as rdf:parseType="Literal" (W004).
-   */
-    public int IGN_DAML_COLLECTION = 4;
     
 	/**
 	 Indicates that no name is known for the current file being parsed.
@@ -306,8 +297,6 @@ For input involving no errors, ARP creates triples in accordance with the RDF/XM
      * In particular, specifically setting the error mode for this
      * error should be avoided.
      * Errors with this error code cannot happen. (W125)
-     * When this warning is treated as an error, the non-RDF compliant
-     * daml:collection production is surpressed.
      **/
     public int WARN_IN_STRICT_MODE = 125;
 

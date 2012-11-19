@@ -24,7 +24,6 @@ public interface Names {
             .intern();
 
     String xmlns = "http://www.w3.org/XML/1998/namespace".intern();
-    String damlns = "http://www.daml.org/2001/03/daml+oil#";
     String xmlnsns = "http://www.w3.org/2000/xmlns/";
     
     int A_XMLBASE = 1;
@@ -79,10 +78,4 @@ public interface Names {
     
     ANode RDF_FIRST = URIReference.createNoChecks(rdfns+"first");
     ANode RDF_REST       = URIReference.createNoChecks(rdfns+"rest");
-
-    ANode DAML_NIL        = URIReference.createNoChecks(damlns+"nil");
-        
-    ANode DAML_FIRST = URIReference.createNoChecks(damlns+"first");
-    ANode DAML_REST   = URIReference.createNoChecks(damlns+"rest");
-    ANode DAML_LIST  = URIReference.createNoChecks(damlns+"List");
 }

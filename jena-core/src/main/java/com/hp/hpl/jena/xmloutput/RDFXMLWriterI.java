@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.xmloutput;
 
 import com.hp.hpl.jena.rdf.model.RDFWriter;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 
 /**

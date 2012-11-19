@@ -186,7 +186,6 @@ public class ARPOptions implements ARPErrorNumbers {
         // setErrorMode(WARN_QNAME_AS_ID, error);
         //      setErrorMode(WARN_BAD_XML, error);
         setErrorMode(WARN_SAX_WARNING, warning);
-        setErrorMode(IGN_DAML_COLLECTION, error);
     }
 
     /**
