@@ -18,29 +18,19 @@
 
 package com.hp.hpl.jena.xmloutput;
 
-import java.io.*;
-import java.util.Random;
-import java.util.Vector;
+import java.io.* ;
+import java.util.Random ;
+import java.util.Vector ;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.Test ;
+import junit.framework.TestSuite ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.vocabulary.RDFSyntax ;
 
 /**
  * This will test any Writer and Reader pair.
@@ -197,7 +187,6 @@ public class testWriterAndReader
 		RDFSyntax.sectionReification,
 		RDFSyntax.sectionListExpand,
 		RDFSyntax.parseTypeResourcePropertyElt,
-		DAML_OIL.collection 
         };
     
 	public void testOptions() throws IOException 
@@ -220,9 +209,6 @@ public class testWriterAndReader
 	static final String baseUris[] =
 		{
 		"http://foo.com/Hello",
-		"http://foo.com/Hello",
-		"http://daml.umbc.edu/ontologies/calendar-ont",
-		"http://www.daml.org/2001/03/daml+oil-ex" 
         };
             
     ByteArrayOutputStream tmpOut;

@@ -45,7 +45,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Data structures used in controlling the formatting
 
     protected Set<Resource> rdfLists      	= null ; 		// Heads of lists
-    protected Set<Resource> rdfListsAll   	= null ;		// Any resources in a daml lists
+    protected Set<Resource> rdfListsAll   	= null ;		// Any resources in a collection
     protected Set<Resource> rdfListsDone  	= null ;		// RDF lists written
     protected Set<RDFNode>  oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
     protected Set<Resource> oneRefDone   	= null ;		// Things done - so we can check for missed items
@@ -93,7 +93,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 				if ( ! isOK )
 					break ;
 
-				// At this point the element is exactly a DAML list element.
+				// At this point the element is exactly a collection element.
 				if ( N3JenaWriter.DEBUG ) out.println("# RDF list all: "+formatResource(listElement)) ;
 				validListHead = listElement ;
 				thisListAll.add(listElement) ;
@@ -102,7 +102,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 				StmtIterator sPrev = model.listStatements(null, RDF.rest, listElement) ;
 
 				if ( ! sPrev.hasNext() )
-					// No daml:rest link
+					// No rdf:rest link
 					break ;
 
 				// Valid pretty-able list.  Might be longer.
@@ -114,7 +114,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 				}
 			}
 			// At head of a pretty-able list - add its elements and its head.
-			if ( N3JenaWriter.DEBUG ) out.println("# DAML list head: "+formatResource(validListHead)) ;
+			if ( N3JenaWriter.DEBUG ) out.println("# Collection list head: "+formatResource(validListHead)) ;
 			rdfListsAll.addAll(thisListAll) ;
 			if ( validListHead != null )
 				rdfLists.add(validListHead) ;

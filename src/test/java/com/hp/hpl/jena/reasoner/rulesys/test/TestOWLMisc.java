@@ -103,23 +103,6 @@ public class TestOWLMisc extends TestCase  {
         assertTrue( inf.contains(l4, OWL.differentFrom, l3) );
     }
     
-    /**
-     * Check datatype range checking using OWL reasoners
-     */
-    public void testDatatypeRangeValidation() throws IOException {
-        String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
-        String filename = "testing/xsd/daml+oil-ex-dt.xsd";
-        TypeMapper tm = TypeMapper.getInstance();
-        XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
-        
-//        Model m = ModelFactory.createDefaultModel();
-        RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
-
-        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_MICRO_RULE_INF);
-        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_MINI_RULE_INF);
-        doTestDatatypeRangeValidation(over12Type, OntModelSpec.OWL_MEM_RULE_INF);
-    }
-    
     private void doTestDatatypeRangeValidation(RDFDatatype over12Type, OntModelSpec spec) {
         String NS = "http://jena.hpl.hp.com/example#";
         OntModel ont = ModelFactory.createOntologyModel(spec);

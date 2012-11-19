@@ -53,7 +53,6 @@ public class TestReasonerFactoryAssembler extends AssemblerTestBase
         testReasonerURL( TransitiveReasonerFactory.class, TransitiveReasonerFactory.URI );
         testReasonerURL( RDFSRuleReasonerFactory.class, RDFSRuleReasonerFactory.URI );
         testReasonerURL( OWLFBRuleReasonerFactory.class, OWLFBRuleReasonerFactory.URI );
-        testReasonerURL( DAMLMicroReasonerFactory.class, DAMLMicroReasonerFactory.URI );
         testReasonerURL( OWLMicroReasonerFactory.class, OWLMicroReasonerFactory.URI );
         testReasonerURL( OWLMiniReasonerFactory.class, OWLMiniReasonerFactory.URI );
         }

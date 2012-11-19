@@ -148,7 +148,6 @@ public class TestOntModelSpecAssembler extends AssemblerTestBase
     
     public void testUseSpecifiedLanguage()
         {
-        testSpecifiedLanguage( ProfileRegistry.DAML_LANG );
         testSpecifiedLanguage( ProfileRegistry.OWL_DL_LANG );
         testSpecifiedLanguage( ProfileRegistry.OWL_LANG );
         testSpecifiedLanguage( ProfileRegistry.OWL_LITE_LANG );

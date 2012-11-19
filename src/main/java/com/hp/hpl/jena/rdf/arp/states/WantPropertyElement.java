@@ -171,11 +171,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         if (pt.equals("Collection")) {
             return new RDFCollection(this, x);
         }
-        if (pt.equals("daml:collection") && !arp.isError(WARN_IN_STRICT_MODE)) {
-            warning(IGN_DAML_COLLECTION,
-                    "'daml:collection' is not really a legal value for rdf:parseType");
-            return new DAMLCollection(this, x);
-        }
         if (pt.equals("Resource")) {
             if (object == null) {
                 // in some error cases the object has already been set.

@@ -50,7 +50,6 @@ public class TestOntModelSpec extends ModelTestBase
     private void testEqualityAndDifference( OntModelSpec os )
         {
         assertEquals( os, new OntModelSpec( os ) );
-        assertDiffer( os, OntModelSpec.DAML_MEM );
         }
     
     public void testAssembleRoot()

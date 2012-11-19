@@ -144,24 +144,6 @@ public class TestOntClass
         assertFalse( b.isHierarchyRoot() );
     }
 
-    public void testIsHierarchyRoot6() {
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM );
-        OntClass a = m.createClass( NS + "A" );
-        OntClass b = m.createClass( NS + "B" );
-        a.addSubClass( b );
-        assertTrue( a.isHierarchyRoot() );
-        assertFalse( b.isHierarchyRoot() );
-    }
-
-    public void testIsHierarchyRoot7() {
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF );
-        OntClass a = m.createClass( NS + "A" );
-        OntClass b = m.createClass( NS + "B" );
-        a.addSubClass( b );
-        assertTrue( a.isHierarchyRoot() );
-        assertFalse( b.isHierarchyRoot() );
-    }
-
     public void testIsHierarchyRoot8() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM );
         OntClass a = m.createClass( NS + "A" );
