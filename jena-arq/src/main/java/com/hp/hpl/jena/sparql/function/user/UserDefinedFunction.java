@@ -20,7 +20,6 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 
 /**
  * Represents a user defined function
- * @author rvesse
  *
  */
 public class UserDefinedFunction extends UserDefinedFunctionDefinition implements Function {

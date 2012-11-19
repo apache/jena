@@ -13,7 +13,6 @@ import com.hp.hpl.jena.sparql.function.Function;
 
 /**
  * Represents the definition of a user defined function
- * @author rvesse
  *
  */
 public class UserDefinedFunctionDefinition {

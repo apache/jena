@@ -1,6 +1,20 @@
 /*
- * Copyright 2012 YarcData LLC All Rights Reserved.
- */ 
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.hp.hpl.jena.sparql.function.user;
 
@@ -12,6 +26,7 @@ import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprTransformer;
 import com.hp.hpl.jena.sparql.function.Function;
 import com.hp.hpl.jena.sparql.function.FunctionFactory;
 import com.hp.hpl.jena.sparql.function.FunctionRegistry;
@@ -42,7 +57,6 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
  * <p>
  * Internally the call to the <strong>square</strong> function is translated into it's equivalent SPARQL expression and executed in that form.
  * </p>
- * @author rvesse
  *
  */
 public class UserDefinedFunctionFactory implements FunctionFactory {
@@ -58,11 +72,38 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
     }
 
     private Map<String, UserDefinedFunctionDefinition> definitions = new HashMap<String, UserDefinedFunctionDefinition>();
+    private boolean allowDependencies = false;
     
     /**
      * Private constructor prevents instantiation
      */
     private UserDefinedFunctionFactory() { }
+    
+    /**
+     * Gets whether user defined functions may explicitly rely on each other (default false)
+     * <p>
+     * When this is disabled (as it is by default) function definitions are fully expanded at registration time, so if
+     * you add a function that references an existing user defined function it will be expanded to include the
+     * resulting expression rather than left with a reference to another function.  This protects the user from
+     * depending on other functions whose definitions are removed or changed.
+     * </p>
+     * <p>
+     * However it may sometimes be desirable to have functions explicitly depend on each in which case this option may be 
+     * disabled with the corresponding {@link #setAllowDependencies(boolean)} setter
+     * </p>
+     * @return Whether explicit dependencies are allowed
+     */
+    public boolean getAllowDependencies() {
+        return this.allowDependencies;
+    }
+    
+    /**
+     * Sets whether user functions may explicitly depend on each other, see {@link #getAllowDependencies()} for explanation of this behaviour
+     * @param allow Whether to allow explicit dependencies
+     */
+    public void setAllowDependencies(boolean allow) {
+        this.allowDependencies = allow;
+    }
         
     /**
      * Creates a function for the given URI
@@ -82,6 +123,11 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      * @param args Arguments
      */
     public void add(String uri, Expr e, List<Var> args) {
+        if (!allowDependencies) {
+            //If not allowing dependencies expand expression fully
+            e = ExprTransformer.transform(new ExprTransformExpand(this.definitions), e);
+        }        
+        
         UserDefinedFunctionDefinition def = new UserDefinedFunctionDefinition(uri, e, args);
         this.definitions.put(uri, def);
         FunctionRegistry.get().put(uri, this);
@@ -102,6 +148,11 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      */
     public void add(String uri, String expr, List<Var> args) throws ParseException {
         Expr e = new SPARQLParser11(new StringReader(expr)).Expression();
+        if (!allowDependencies) {
+            //If not allowing dependencies expand expression fully
+            e = ExprTransformer.transform(new ExprTransformExpand(this.definitions), e);
+        }  
+        
         UserDefinedFunctionDefinition def = new UserDefinedFunctionDefinition(uri, e, args);
         this.definitions.put(uri, def);
         FunctionRegistry.get().put(uri, this);
