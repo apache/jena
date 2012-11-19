@@ -18,25 +18,19 @@
 
 package com.hp.hpl.jena.sparql.function.user;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.AfterClass ;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.expr.E_Function;
-import com.hp.hpl.jena.sparql.expr.E_Multiply;
-import com.hp.hpl.jena.sparql.expr.E_Subtract;
-import com.hp.hpl.jena.sparql.expr.Expr;
-import com.hp.hpl.jena.sparql.expr.ExprList;
-import com.hp.hpl.jena.sparql.expr.ExprVar;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDecimal;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
-import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.expr.* ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble ;
+import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger ;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments

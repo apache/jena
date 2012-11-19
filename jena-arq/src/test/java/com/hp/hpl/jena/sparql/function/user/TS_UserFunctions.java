@@ -18,14 +18,12 @@
 
 package com.hp.hpl.jena.sparql.function.user;
 
-import junit.framework.JUnit4TestAdapter;
+import junit.framework.JUnit4TestAdapter ;
+import org.junit.runner.RunWith ;
+import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import com.hp.hpl.jena.sparql.expr.TS_Expr;
+import com.hp.hpl.jena.sparql.expr.TS_Expr ;
 
 @RunWith(Suite.class)
 @SuiteClasses( {
