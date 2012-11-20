@@ -182,9 +182,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
         if ( mustHaveQueryParam )
         {
-            if ( countParamOccurences(request, paramQuery) != 1 )
-                // We checked for zero already.
-                errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
+            int N = countParamOccurences(request, paramQuery) ; 
+            
+            if ( N == 0 ) errorBadRequest("SPARQL Query: No 'query=' parameter") ;
+            if ( N > 1 ) errorBadRequest("SPARQL Query: Multiple 'query=' parameters") ;
             
             // application/sparql-query does not use a query param.
             String queryStr = request.getParameter(HttpNames.paramQuery) ;
