@@ -81,7 +81,7 @@
     <p><b>File upload</b></p>
     <div class="moreindent">
       <form action="${ds}/${srvUpload}" enctype="multipart/form-data" method="post">
-        File: <input type="file" name="UNSET FILE NAME" size="40"><br/>
+        File: <input type="file" name="UNSET FILE NAME" size="40" multiple=""><br/>
         Graph: <input name="graph" size="20" value="default"/><br/>
         <input type="submit" value="Upload">
       </form>
