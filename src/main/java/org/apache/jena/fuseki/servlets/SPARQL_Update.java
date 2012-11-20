@@ -153,6 +153,8 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( WebContent.contentTypeForm.equals(ctStr) )
         {
             int x = countParamOccurences(request,paramUpdate) + countParamOccurences(request, paramRequest) ;
+            if ( x == 0 )
+                errorBadRequest("SPARQL Update: No 'update=' parameter") ;
             if ( x != 1 )
                 errorBadRequest("SPARQL Update: Multiple 'update=' parameters") ;
             
