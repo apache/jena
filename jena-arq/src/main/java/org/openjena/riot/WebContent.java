@@ -45,7 +45,8 @@ public class WebContent
     public static final String contentTypeNTriples          = "application/n-triples" ;
     public static final String contentTypeNTriplesAlt       = contentTypeTextPlain ;
     
-    public static final String contentTypeXML               = "application/xml" ;
+    public static final String contentTypeXML1               = "application/xml" ;
+    public static final String contentTypeXML2               = "text/xml" ;
 
     public static final String contentTypeTriG              = "application/trig" ;
     public static final String contentTypeNQuads            = "text/nquads" ;
