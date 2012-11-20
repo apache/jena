@@ -33,6 +33,7 @@ import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
@@ -109,8 +110,8 @@ public class SPARQL_REST_R extends SPARQL_REST
             RDFWriter writer = FusekiLib.chooseWriter(lang) ;
             String ct = WebContent.mapLangToContentType(lang) ;
             action.response.setContentType(ct) ;
-            
-            Model model = ModelFactory.createModelForGraph(action.getTarget().graph()) ;
+            Graph g = action.getTarget().graph() ;
+            Model model = ModelFactory.createModelForGraph(g) ;
             writer.write(model, out, null) ;
             success(action) ;
         } finally { action.endRead() ; }

@@ -145,8 +145,7 @@ public class REST_Quads extends SPARQL_REST
 
             LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , sink) ;
             parser.parse() ;
-            //log.info(format("[%d] Location: %s  Size: %d", action.id, name, g.size())) ;
-            log.info(format("[%d] Location: %s", name)) ;
+            log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;
             action.commit();
             successCreated(action) ;
