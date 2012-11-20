@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.expr.TS_Expr;
 @SuiteClasses( {
     TestUserDefinedFunctionFactory.class,
     TestFunctionExpansion.class,
+    TestFunctionNonExpansion.class,
     TestUserFunctionsInSparql.class
 })
 public class TS_UserFunctions {
