@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
  * An expression transformer that will expand user defined function expressions
  * so they do not explicitly rely on other user defined functions.
  * <p>
- * See {@link UserDefinedFunctionFactory#getAllowDependencies()} for discussion of what this means in practise
+ * See {@link UserDefinedFunctionFactory#getPreserveDependencies()} for discussion of what this means in practise
  * </p>
  */
 public class ExprTransformExpand extends ExprTransformCopy {

@@ -45,20 +45,20 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments
- *
+ * and the default behavior of not preserving dependencies is enabled
  */
 public class TestFunctionExpansion {
     
     @BeforeClass
     public static void setup() {
         UserDefinedFunctionFactory.getFactory().clear();
-        UserDefinedFunctionFactory.getFactory().setAllowDependencies(false);
+        UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
     }
     
     @AfterClass
     public static void teardown() {
         UserDefinedFunctionFactory.getFactory().clear();
-        UserDefinedFunctionFactory.getFactory().setAllowDependencies(false);
+        UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
     }
 
     @Test
@@ -114,7 +114,7 @@ public class TestFunctionExpansion {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
         
-        //Test that with allowDependencies set to false (the default) that the definition of cube is actually
+        //Test that with preserveDependencies set to false (the default) that the definition of cube is actually
         //expanded to include the definition of square
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
@@ -133,7 +133,7 @@ public class TestFunctionExpansion {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
         
-        //Test that with allowDependencies set to false (the default) that the definition of cube is actually
+        //Test that with preserveDependencies set to false (the default) that the definition of cube is actually
         //expanded to include the definition of square
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("y"))), new ExprVar("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
@@ -155,7 +155,7 @@ public class TestFunctionExpansion {
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         ExprList numArgs = new ExprList();
         numArgs.add(new NodeValueInteger(1));
         numArgs.add(new NodeValueDouble(2.3));
@@ -178,7 +178,7 @@ public class TestFunctionExpansion {
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         ExprList numArgs = new ExprList();
         numArgs.add(new NodeValueDouble(2.3));
         numArgs.add(new NodeValueInteger(1));
@@ -201,7 +201,7 @@ public class TestFunctionExpansion {
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("a"));
         altArgs.add(new ExprVar("b"));
@@ -229,7 +229,7 @@ public class TestFunctionExpansion {
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("b"));
         altArgs.add(new ExprVar("a"));
@@ -254,7 +254,7 @@ public class TestFunctionExpansion {
         Expr single = new ExprVar("x");
         UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         //when the outer function has differing numbers of arguments
         List<Var> args = new ArrayList<Var>();
         args.add(Var.alloc("x"));
@@ -277,7 +277,7 @@ public class TestFunctionExpansion {
         Expr single = new ExprVar("x");
         UserDefinedFunctionFactory.getFactory().add("http://example/single", single, new ArrayList<Var>(single.getVarsMentioned()));
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         //when the outer function has differing numbers of arguments
         List<Var> args = new ArrayList<Var>();
         args.add(Var.alloc("x"));
@@ -303,7 +303,7 @@ public class TestFunctionExpansion {
         args.add(Var.alloc("y"));
         UserDefinedFunctionFactory.getFactory().add("http://example/takeaway", takeaway, args);
         
-        //Test that with allowDependencies set to false (the default) that the definition is expanded appropriately
+        //Test that with preserveDependencies set to false (the default) that the definition is expanded appropriately
         ExprList altArgs = new ExprList();
         altArgs.add(new ExprVar("a"));
         altArgs.add(new ExprVar("a"));
@@ -329,7 +329,7 @@ public class TestFunctionExpansion {
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
         
         //This test illustrates that if we change the definition of square and call our function again we always
-        //get the same result with dependencies disallowed (false) because even though the definition of the dependent function 
+        //get the same result with dependencies not preserved because even though the definition of the dependent function 
         //can change the definition of our function is fully expanded when first defined
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
@@ -342,7 +342,7 @@ public class TestFunctionExpansion {
         Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
         
         //Change the definition of the function we depend on
-        //This has no effect with allowDependencies set to false (the default) since we fully expanded the call to the dependent
+        //This has no effect with preserveDependencies set to false (the default) since we fully expanded the call to the dependent
         //function when our outer function was defined
         square = new ExprVar("x");
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));

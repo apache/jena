@@ -38,7 +38,7 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
 import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /**
- * Tests which check that functions are not expanded when {@link UserDefinedFunctionFactory#setAllowDependencies(boolean)} is set to true
+ * Tests which check that functions are not expanded when {@link UserDefinedFunctionFactory#setPreserveDependencies(boolean)} is set to true
  *
  */
 public class TestFunctionNonExpansion {
@@ -46,13 +46,13 @@ public class TestFunctionNonExpansion {
     @BeforeClass
     public static void setup() {
         UserDefinedFunctionFactory.getFactory().clear();
-        UserDefinedFunctionFactory.getFactory().setAllowDependencies(true);
+        UserDefinedFunctionFactory.getFactory().setPreserveDependencies(true);
     }
     
     @AfterClass
     public static void teardown() {
         UserDefinedFunctionFactory.getFactory().clear();
-        UserDefinedFunctionFactory.getFactory().setAllowDependencies(false);
+        UserDefinedFunctionFactory.getFactory().setPreserveDependencies(false);
     }
     
     @Test
@@ -60,7 +60,7 @@ public class TestFunctionNonExpansion {
         Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
         
-        //Test that with allowDependencies set to true that the definition of cube is not expanded
+        //Test that with preserveDependencies set to true that the definition of cube is not expanded
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
         
@@ -81,7 +81,7 @@ public class TestFunctionNonExpansion {
         UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
         
         //This test illustrates that if we change the definition of square and call our function again we can
-        //get a different result with dependencies allowed because the definition of the dependent function can change
+        //get a different result with dependencies preserved because the definition of the dependent function can change
         Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
         UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
         
