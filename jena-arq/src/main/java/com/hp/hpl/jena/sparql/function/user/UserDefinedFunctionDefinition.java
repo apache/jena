@@ -37,6 +37,11 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
 public class UserDefinedFunctionDefinition {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(UserDefinedFunctionDefinition.class);
+	
+	/**
+	 * Whether to log warnings for unused variables
+	 */
+	public static boolean warnOnUnusedVariable = true;
 
     private String uri;
     private Expr expr;
@@ -63,7 +68,7 @@ public class UserDefinedFunctionDefinition {
         //May have more arguments than used, however this only gives warning(s)
         if (mentioned.size() < this.argList.size()) {
         	for (Var v : this.argList) {
-        		if (!mentioned.contains(v)) LOG.warn("Function <" + uri + "> has argument " + v + " which is never used in the expression");
+        		if (!mentioned.contains(v) && warnOnUnusedVariable) LOG.warn("Function <" + uri + "> has argument " + v + " which is never used in the expression");
         	}
         }
     }
