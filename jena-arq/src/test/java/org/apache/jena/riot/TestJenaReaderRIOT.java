@@ -128,7 +128,8 @@ public class TestJenaReaderRIOT extends BaseTest
     }
 
     // Stream opening is hardwired into jena!
-    @Test public void read_base_1() { jenaread("D-no-base.ttl", "http://baseuri/", "TTL") ; }
+    @Test public void read_base_1() 
+    { jenaread("D-no-base.ttl", "TTL", "http://baseuri/") ; }
     
     @Test public void read_input_1() throws IOException
     { jenaread_stream("D.ttl", "TTL") ; }
@@ -205,15 +206,18 @@ public class TestJenaReaderRIOT extends BaseTest
     private static void jenaread(String dataurl, String lang, String base)
     {
         dataurl = filename(dataurl) ;
-        Model m = ModelFactory.createDefaultModel() ;
+        Model m1 = ModelFactory.createDefaultModel() ;
+        Model m2 = ModelFactory.createDefaultModel() ;
         
-        // This 
-        WebReader2.read(m, dataurl, base, Langs.nameToLang(lang)) ;
-        // should be implementation of:
-        m.read("file:"+dataurl, lang, base) ;
-        assertTrue(m.size() != 0 ) ;
-        
-        Resource s = m.listStatements().next().getSubject() ;
+        // This call
+        WebReader2.read(m1, dataurl, base, Langs.nameToLang(lang)) ;
+        // should be an implementation of:
+        m2.read("file:"+dataurl, base, lang) ;
+        assertTrue(m1.size() != 0 ) ;
+        assertTrue(m2.size() != 0 ) ;
+        assertTrue(m1.isIsomorphicWith(m2)) ;
+        // and check base processing ...
+        Resource s = m1.listStatements().next().getSubject() ;
         assertTrue(s.getURI().startsWith("http://")) ;
         assertTrue(s.getURI().equals("http://baseuri/s")) ;
     }
