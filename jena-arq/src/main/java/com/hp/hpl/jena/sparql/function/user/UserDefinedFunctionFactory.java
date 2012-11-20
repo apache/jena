@@ -57,7 +57,11 @@ import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
  * <p>
  * Internally the call to the <strong>square</strong> function is translated into it's equivalent SPARQL expression and executed in that form.
  * </p>
- *
+ * <p>
+ * User defined functions may rely on each other but this has some risks, therefore the default behaviour is to not preserve these dependencies
+ * but rather to expand the function definitions to give the resulting expression associated with a function.  Please see {@link #getPreserveDependencies()}
+ * for more information on this.
+ * </p>
  */
 public class UserDefinedFunctionFactory implements FunctionFactory {
     
@@ -72,7 +76,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
     }
 
     private Map<String, UserDefinedFunctionDefinition> definitions = new HashMap<String, UserDefinedFunctionDefinition>();
-    private boolean allowDependencies = false;
+    private boolean preserveDependencies = false;
     
     /**
      * Private constructor prevents instantiation
@@ -80,29 +84,29 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
     private UserDefinedFunctionFactory() { }
     
     /**
-     * Gets whether user defined functions may explicitly rely on each other (default false)
+     * Gets whether user defined functions may preserve dependencies on each other (default false)
      * <p>
-     * When this is disabled (as it is by default) function definitions are fully expanded at registration time, so if
+     * When this is disabled (as it is by default) function definitions are fully expanded at registration time.  So if
      * you add a function that references an existing user defined function it will be expanded to include the
      * resulting expression rather than left with a reference to another function.  This protects the user from
-     * depending on other functions whose definitions are removed or changed.
+     * depending on other functions whose definitions are later removed or changed.
      * </p>
      * <p>
-     * However it may sometimes be desirable to have functions explicitly depend on each in which case this option may be 
-     * disabled with the corresponding {@link #setAllowDependencies(boolean)} setter
+     * However it may sometimes be desirable to have dependencies preserved which case this option may be 
+     * disabled with the corresponding {@link #setPreserveDependencies(boolean)} setter
      * </p>
      * @return Whether explicit dependencies are allowed
      */
-    public boolean getAllowDependencies() {
-        return this.allowDependencies;
+    public boolean getPreserveDependencies() {
+        return this.preserveDependencies;
     }
     
     /**
-     * Sets whether user functions may explicitly depend on each other, see {@link #getAllowDependencies()} for explanation of this behaviour
-     * @param allow Whether to allow explicit dependencies
+     * Sets whether user functions may explicitly depend on each other, see {@link #getPreserveDependencies()} for explanation of this behavior
+     * @param allow Whether to preserve dependencies
      */
-    public void setAllowDependencies(boolean allow) {
-        this.allowDependencies = allow;
+    public void setPreserveDependencies(boolean allow) {
+        this.preserveDependencies = allow;
     }
         
     /**
@@ -123,7 +127,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      * @param args Arguments
      */
     public void add(String uri, Expr e, List<Var> args) {
-        if (!allowDependencies) {
+        if (!preserveDependencies) {
             //If not allowing dependencies expand expression fully
             e = ExprTransformer.transform(new ExprTransformExpand(this.definitions), e);
         }        
@@ -148,7 +152,7 @@ public class UserDefinedFunctionFactory implements FunctionFactory {
      */
     public void add(String uri, String expr, List<Var> args) throws ParseException {
         Expr e = new SPARQLParser11(new StringReader(expr)).Expression();
-        if (!allowDependencies) {
+        if (!preserveDependencies) {
             //If not allowing dependencies expand expression fully
             e = ExprTransformer.transform(new ExprTransformExpand(this.definitions), e);
         }  
