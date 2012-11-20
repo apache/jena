@@ -34,6 +34,7 @@ import com.hp.hpl.jena.sparql.engine.binding.TS_Binding ;
 import com.hp.hpl.jena.sparql.expr.E_Function ;
 import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.expr.TS_Expr ;
+import com.hp.hpl.jena.sparql.function.user.TS_UserFunctions ;
 import com.hp.hpl.jena.sparql.graph.TS_Graph ;
 import com.hp.hpl.jena.sparql.lang.TS_Lang ;
 import com.hp.hpl.jena.sparql.modify.TS_Update ;
@@ -47,24 +48,26 @@ import com.hp.hpl.jena.sparql.util.TS_Util ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-    TS_SSE.class ,
-    TS_Lang.class ,
-    TS_Graph.class,
-    TS_Util.class ,
+    TS_SSE.class
+    , TS_Lang.class
+    , TS_Graph.class
+    , TS_Util.class
     
-    TS_Expr.class ,
-    TS_ResultSet.class ,
-    TS_Binding.class ,
-    TS_Engine.class ,
-    TS_Solver.class ,
-    TS_Algebra.class ,
-    TS_ResultSet.class ,
-    TS_Serialization.class ,
-    TS_API.class ,
-    TS_Core.class ,
-    TS_Path.class ,
-    TS_ParamString.class ,
-    TS_Update.class
+    , TS_Expr.class
+    , TS_UserFunctions.class
+    
+    , TS_ResultSet.class
+    , TS_Binding.class
+    , TS_Engine.class
+    , TS_Solver.class
+    , TS_Algebra.class
+    , TS_ResultSet.class
+    , TS_Serialization.class
+    , TS_API.class
+    , TS_Core.class
+    , TS_Path.class
+    , TS_ParamString.class
+    , TS_Update.class
 })
 
 public class TC_General extends TestSuite
