@@ -55,7 +55,7 @@ import com.hp.hpl.jena.sparql.util.Context ;
  *  Extensible - a new syntax can be added to the framework. 
  *  </p>
  *  
- *  @See WebReader2
+ *  @see WebReader2
  */
 
 public class IO_Dataset
