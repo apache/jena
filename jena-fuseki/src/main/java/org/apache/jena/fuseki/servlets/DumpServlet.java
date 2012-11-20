@@ -232,6 +232,9 @@ public class DumpServlet extends HttpServlet
             String x = in.readLine() ;
             if ( x == null )
                 break ;
+            x = x.replaceAll("&", "&amp;") ;
+            x = x.replaceAll("<", "&lt;") ;
+            x = x.replaceAll(">", "&gt;") ;
             pw.println(x) ;
         }
         try { in.reset() ;} catch (IOException e) { System.out.println("DumpServlet: Reset of content failed: "+e) ; }
