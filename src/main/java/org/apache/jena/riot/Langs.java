@@ -195,7 +195,10 @@ public class Langs
     {
         // RDF/XML
         addTripleSyntax$(langRDFXML, WebContent.contentTypeRDFXML, pfTriples,       "rdf", "owl", "xml") ;
-        
+        // ?? Add application/xml and text/xml -- not sure if that's a good idea or not.
+//        addContentTypeLang$(WebContent.contentTypeXML1, langRDFXML) ;
+//        addContentTypeLang$(WebContent.contentTypeXML2, langRDFXML) ;
+                            
         // Turtle
         addTripleSyntax$(langTurtle, WebContent.contentTypeTurtle, pfTriples,       "ttl") ;
         addContentTypeLang$(WebContent.contentTypeTurtleAlt1, langTurtle) ;
