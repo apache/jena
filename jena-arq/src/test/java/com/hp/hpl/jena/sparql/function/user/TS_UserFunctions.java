@@ -20,6 +20,8 @@ package com.hp.hpl.jena.sparql.function.user;
 
 import junit.framework.JUnit4TestAdapter;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -34,6 +36,20 @@ import com.hp.hpl.jena.sparql.expr.TS_Expr;
     TestUserFunctionsInSparql.class
 })
 public class TS_UserFunctions {
+	
+	//Expected warnings off
+	private static boolean bWarnOnUnusedVar;
+	
+	@BeforeClass
+	public static void setup() {
+		bWarnOnUnusedVar = UserDefinedFunctionDefinition.warnOnUnusedVariable;
+		UserDefinedFunctionDefinition.warnOnUnusedVariable = false;
+	}
+	
+	@AfterClass
+	public static void teardown() {
+		UserDefinedFunctionDefinition.warnOnUnusedVariable = bWarnOnUnusedVar;
+	}
     
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(TS_Expr.class);
