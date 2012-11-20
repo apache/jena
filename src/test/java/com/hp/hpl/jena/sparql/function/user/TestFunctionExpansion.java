@@ -27,6 +27,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory;
 import com.hp.hpl.jena.sparql.expr.E_Add;
 import com.hp.hpl.jena.sparql.expr.E_Function;
 import com.hp.hpl.jena.sparql.expr.E_Multiply;
@@ -34,10 +35,13 @@ import com.hp.hpl.jena.sparql.expr.E_Subtract;
 import com.hp.hpl.jena.sparql.expr.Expr;
 import com.hp.hpl.jena.sparql.expr.ExprList;
 import com.hp.hpl.jena.sparql.expr.ExprVar;
+import com.hp.hpl.jena.sparql.expr.NodeValue;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueBoolean;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueDouble;
 import com.hp.hpl.jena.sparql.expr.nodevalue.NodeValueInteger;
+import com.hp.hpl.jena.sparql.function.FunctionEnvBase;
 import com.hp.hpl.jena.sparql.sse.builders.ExprBuildException;
+import com.hp.hpl.jena.sparql.util.NodeFactory;
 
 /**
  * Test for checking that functions are appropriately expanded when supplied with actual arguments
@@ -317,6 +321,36 @@ public class TestFunctionExpansion {
         Assert.assertTrue(subtract.getArg2() instanceof ExprVar);
         Assert.assertEquals(subtract.getArg1().getVarName(), "a");
         Assert.assertEquals(subtract.getArg2().getVarName(), "a");
+    }
+    
+    @Test
+    public void test_function_expansion_13() {
+        Expr square = new E_Multiply(new ExprVar("x"), new ExprVar("x"));
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        
+        //This test illustrates that if we change the definition of square and call our function again we always
+        //get the same result with dependencies disallowed (false) because even though the definition of the dependent function 
+        //can change the definition of our function is fully expanded when first defined
+        Expr cube = new E_Multiply(new E_Function("http://example/square", new ExprList(new ExprVar("x"))), new ExprVar("x"));
+        UserDefinedFunctionFactory.getFactory().add("http://example/cube", cube, new ArrayList<Var>(cube.getVarsMentioned()));
+        
+        UserDefinedFunction f = (UserDefinedFunction) UserDefinedFunctionFactory.getFactory().create("http://example/cube");
+        f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
+        
+        Expr actual = f.getActualExpr();
+        NodeValue result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
+        Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
+        
+        //Change the definition of the function we depend on
+        //This has no effect with allowDependencies set to false (the default) since we fully expanded the call to the dependent
+        //function when our outer function was defined
+        square = new ExprVar("x");
+        UserDefinedFunctionFactory.getFactory().add("http://example/square", square, new ArrayList<Var>(square.getVarsMentioned()));
+        f.build("http://example/cube", new ExprList(new NodeValueInteger(2)));
+        
+        actual = f.getActualExpr();
+        result = actual.eval(BindingFactory.create(), FunctionEnvBase.createTest());
+        Assert.assertEquals(8, NodeFactory.nodeToInt(result.asNode()));
     }
     
     @Test(expected=ExprBuildException.class)
