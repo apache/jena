@@ -48,10 +48,13 @@ public class WebContent
     public static final String contentTypeXML               = "application/xml" ;
     public static final String contentTypeXMLAlt            = "text/xml" ;
 
-    public static final String contentTypeTriG              = "application/trig" ;
-    public static final String contentTypeNQuads            = "text/nquads" ;
-    public static final String contentTypeTriGAlt           = "application/x-trig" ;
-    public static final String contentTypeNQuadsAlt         = "text/x-nquads" ;
+    public static final String contentTypeTriG              = "text/trig" ;
+    public static final String contentTypeNQuads            = "application/n-quads" ;
+    
+    public static final String contentTypeTriGAlt1          = "application/x-trig" ;
+    public static final String contentTypeTriGAlt2          = "application/trig" ;
+    public static final String contentTypeNQuadsAlt1        = "text/n-quads" ;
+    public static final String contentTypeNQuadsAlt2        = "text/nquads" ;
 
     public static final String contentTypeTriX              = "application/trix+xml" ;
     public static final String contentTypeOctets            = "application/octet-stream" ;
@@ -110,9 +113,11 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeRdfJson,		Lang.RDFJSON) ;
 
         mapContentTypeToLang.put(contentTypeNQuads,         Lang.NQUADS) ;
-        mapContentTypeToLang.put(contentTypeNQuadsAlt,      Lang.NQUADS) ;
+        mapContentTypeToLang.put(contentTypeNQuadsAlt1,     Lang.NQUADS) ;
+        mapContentTypeToLang.put(contentTypeNQuadsAlt2,     Lang.NQUADS) ;
         mapContentTypeToLang.put(contentTypeTriG,           Lang.TRIG) ;
-        mapContentTypeToLang.put(contentTypeTriGAlt,        Lang.TRIG) ;
+        mapContentTypeToLang.put(contentTypeTriGAlt1,       Lang.TRIG) ;
+        mapContentTypeToLang.put(contentTypeTriGAlt2,       Lang.TRIG) ;
         
     }
     
@@ -150,10 +155,11 @@ public class WebContent
             return ct.getCharset() ;
         
         String mt = ct.getContentType() ;
-        if ( contentTypeNTriples.equals(mt) )       return charsetASCII ;
+        if ( contentTypeNTriples.equals(mt) )       return charsetUTF8 ;
         if ( contentTypeNTriplesAlt.equals(mt) )    return charsetASCII ;
-        if ( contentTypeNQuads.equals(mt) )         return charsetASCII ;
-        if ( contentTypeNQuadsAlt.equals(mt) )      return charsetASCII ;
+        if ( contentTypeNQuads.equals(mt) )         return charsetUTF8 ;
+        if ( contentTypeNQuadsAlt1.equals(mt) )      return charsetASCII ;
+        if ( contentTypeNQuadsAlt2.equals(mt) )      return charsetASCII ;
         return charsetUTF8 ;
     }
 

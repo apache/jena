@@ -51,14 +51,16 @@ public class TestWebContent {
 	public void testCanonicaliseMimeTypes4()
 	{
 		testCanonicalise(WebContent.contentTypeNQuads, WebContent.contentTypeNQuads);
-		testCanonicalise(WebContent.contentTypeNQuadsAlt, WebContent.contentTypeNQuads);
+		testCanonicalise(WebContent.contentTypeNQuadsAlt1, WebContent.contentTypeNQuads);
+		testCanonicalise(WebContent.contentTypeNQuadsAlt2, WebContent.contentTypeNQuads);
 	}
 	
 	@Test
 	public void testCanonicaliseMimeTypes5()
 	{
 		testCanonicalise(WebContent.contentTypeTriG, WebContent.contentTypeTriG);
-		testCanonicalise(WebContent.contentTypeTriGAlt, WebContent.contentTypeTriG);
+		testCanonicalise(WebContent.contentTypeTriGAlt1, WebContent.contentTypeTriG);
+		testCanonicalise(WebContent.contentTypeTriGAlt2, WebContent.contentTypeTriG);
 	}
 	
 	private void testCanonicalise(String input, String expected)

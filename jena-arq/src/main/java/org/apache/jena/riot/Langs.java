@@ -216,11 +216,13 @@ public class Langs
         
         // TriG
         addQuadSyntax$(langTriG, WebContent.contentTypeTriG, pfQuads,               "trig") ;
-        addContentTypeLang$(WebContent.contentTypeTriGAlt, langTriG) ;
+        addContentTypeLang$(WebContent.contentTypeTriGAlt1, langTriG) ;
+        addContentTypeLang$(WebContent.contentTypeTriGAlt2, langTriG) ;
 
         // N-Quads
         addQuadSyntax$(langNQuads, WebContent.contentTypeNQuads, pfQuads,           "nq") ;
-        addContentTypeLang$(WebContent.contentTypeNQuadsAlt, langNQuads) ;
+        addContentTypeLang$(WebContent.contentTypeNQuadsAlt1, langNQuads) ;
+        addContentTypeLang$(WebContent.contentTypeNQuadsAlt2, langNQuads) ;
         
         // Reader name and variations to lang - must include Jena old-name.
         registerShortNameForLang("RDF/XML",         langRDFXML) ;

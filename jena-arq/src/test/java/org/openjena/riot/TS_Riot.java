@@ -31,7 +31,9 @@ import org.openjena.riot.tokens.TestTokenizer ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestTokenizer.class
+    TestWebContent.class
+    
+    , TestTokenizer.class
     , TestTokenForNode.class
     , TestPrefixMap.class
     , TestIRI.class
