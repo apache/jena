@@ -332,12 +332,12 @@ public class WebReader2
 
 //    public static void addTripleSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Triple> factory, String ... fileExt )
 //    { 
-//        Langs.addTripleSyntax$(language, contentType, factory, fileExt) ;
+//        RDFLanguages.addTripleSyntax$(language, contentType, factory, fileExt) ;
 //    } 
 //    
 //    public static void addQuadSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Quad> factory, String ... fileExt )
 //    {
-//        Langs.addQuadSyntax$(language, contentType, factory, fileExt) ;
+//        RDFLanguages.addQuadSyntax$(language, contentType, factory, fileExt) ;
 //    }
     
     /** Read triples - send to a sink.
@@ -462,8 +462,8 @@ public class WebReader2
 
     private static ReaderRIOT<Triple> getReaderTriples(ContentType ct)
     {
-        Lang2 lang = Langs.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Triple> r = Langs.getFactoryTriples(lang) ;
+        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
+        ReaderRIOTFactory<Triple> r = RDFParserRegistry.getFactoryTriples(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -481,7 +481,7 @@ public class WebReader2
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         if ( hintLang == null )
             throw new RiotException("No language specificied") ;
-        Lang lang = Langs.convert(hintLang) ;
+        Lang lang = RDFLanguages.convert(hintLang) ;
         LangRIOT parser ;
         if ( lang == Lang.RDFXML )
             parser = LangRDFXML.create(in, base, base, ErrorHandlerFactory.errorHandlerStd, sink) ;
@@ -504,8 +504,8 @@ public class WebReader2
 
     private static ReaderRIOT<Quad> getReaderQuads(ContentType ct)
     {
-        Lang2 lang = Langs.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Quad> r = Langs.getFactoryQuads(lang) ;
+        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
+        ReaderRIOTFactory<Quad> r = RDFParserRegistry.getFactoryQuads(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -515,7 +515,7 @@ public class WebReader2
     private static void processQuads(Sink<Quad> sink, String base, Reader in, Lang2 hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
-        Lang lang = Langs.convert(hintLang) ;
+        Lang lang = RDFLanguages.convert(hintLang) ;
         LangRIOT parser = RiotReader.createParserQuads(tokenizer, lang, base, sink) ;
         parser.parse() ;
     }
@@ -533,7 +533,7 @@ public class WebReader2
         // We use the file extension.
         
         if ( ct == null || isTextPlain )
-            ct = Langs.guessContentType(target) ;
+            ct = RDFLanguages.guessContentType(target) ;
         
         if ( ct == null && hintLang != null ) 
             ct = hintLang.getContentType() ;

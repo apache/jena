@@ -138,14 +138,14 @@ abstract class IO_Jena
         if ( ct == null || isTextPlain )
         {
             if ( hintLang == null )
-                ct = Langs.guessContentType(target) ;
+                ct = RDFLanguages.guessContentType(target) ;
             else
             {
                 ct = hintLang.getContentType() ;
 //                if ( ct == null )
 //                {
 //                    // Is the hint a content type?
-//                    Lang2 lang = Langs.contentTypeToLang(hintLang) ;
+//                    Lang2 lang = RDFLanguages.contentTypeToLang(hintLang) ;
 //                    if ( lang != null )
 //                        ct = lang.getContentType() ;
 //                }
@@ -157,12 +157,12 @@ abstract class IO_Jena
     // --- Syntax framework
 //  public static void addTripleSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Triple> factory, String ... fileExt )
 //  { 
-//      Langs.addTripleSyntax$(language, contentType, factory, fileExt) ;
+//      RDFLanguages.addTripleSyntax$(language, contentType, factory, fileExt) ;
 //  } 
 //  
 //  public static void addQuadSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Quad> factory, String ... fileExt )
 //  {
-//      Langs.addQuadSyntax$(language, contentType, factory, fileExt) ;
+//      RDFLanguages.addQuadSyntax$(language, contentType, factory, fileExt) ;
 //  }
 
     

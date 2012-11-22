@@ -23,7 +23,7 @@ import java.io.InputStream ;
 import java.util.zip.ZipEntry ;
 import java.util.zip.ZipFile ;
 
-import org.apache.jena.riot.Langs ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.TypedInputStream2 ;
 import org.openjena.atlas.web.ContentType ;
 import org.slf4j.Logger ;
@@ -76,7 +76,7 @@ public class LocatorZip implements Locator
             if ( StreamManager.logAllLookups  && log.isTraceEnabled() )
                 log.trace("Found: "+filenameOrURI) ;
             
-            ContentType ct = Langs.guessContentType(filenameOrURI) ;
+            ContentType ct = RDFLanguages.guessContentType(filenameOrURI) ;
             return new TypedInputStream2(in, ct, filenameOrURI) ;
         }
         catch (IOException ex)
