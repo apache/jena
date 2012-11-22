@@ -18,13 +18,11 @@
 
 package org.openjena.riot;
 
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RDFParserRegistry ;
 import org.openjena.atlas.event.EventType ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
 import org.openjena.riot.system.JenaReaderTurtle2 ;
-import org.openjena.riot.system.JenaWriterRdfJson;
+import org.openjena.riot.system.JenaWriterRdfJson ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -42,7 +40,6 @@ public class SysRIOT
     public static boolean strictMode             = false ;
     
     public static final String BNodeGenIdPrefix = "genid" ;
-
     
     static public String fmtMessage(String message, long line, long col)
     {
@@ -67,10 +64,7 @@ public class SysRIOT
     
     public static void wireIntoJena()
     {
-        RDFLanguages.init() ;
-        RDFParserRegistry.init() ;
-
-        
+        RIOT.init() ;
         /* No getter (!!)
          * Standard:
             com.hp.hpl.jena.rdf.model.impl.NTripleReader

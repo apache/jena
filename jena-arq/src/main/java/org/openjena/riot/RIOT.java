@@ -18,6 +18,8 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.riot.ParserRegistry ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebReader2 ;
 
 import com.hp.hpl.jena.query.ARQ ;
@@ -65,6 +67,9 @@ public class RIOT
         SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
         SystemARQ.registerSubSystem(sysInfo2) ;
+        
+        RDFLanguages.init() ;
+        ParserRegistry.init() ;
         
         SysRIOT.wireIntoJena() ;
         WebReader2.wireIntoJena() ;
