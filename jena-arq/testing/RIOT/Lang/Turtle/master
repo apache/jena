@@ -762,6 +762,17 @@ ROOT=turtle-syntax-bad-string
 def
 --End--
 
+--BadSyntax--
+# Long literal with 4"
+@prefix : <http://example/> .
+:s :p """abc""""@en .
+--End--
+
+--BadSyntax--
+# Long literal with 4'
+@prefix : <http://example/> .
+:s :p '''abc''''@en .
+--End--
 
 ROOT=turtle-syntax-bad-num
 --BadSyntax--

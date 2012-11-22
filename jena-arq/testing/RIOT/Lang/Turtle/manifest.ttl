@@ -158,6 +158,8 @@
     <#turtle-syntax-bad-string-03>
     <#turtle-syntax-bad-string-04>
     <#turtle-syntax-bad-string-05>
+    <#turtle-syntax-bad-string-06>
+    <#turtle-syntax-bad-string-07>
     <#turtle-syntax-bad-num-01>
     <#turtle-syntax-bad-num-02>
     <#turtle-syntax-bad-num-03>
@@ -856,6 +858,16 @@
 <#turtle-syntax-bad-string-05> rdf:type rdft:TestTurtleNegativeSyntax ;
    mf:name    "turtle-syntax-bad-string-05" ;
    mf:action    <turtle-syntax-bad-string-05.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-06> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-06" ;
+   mf:action    <turtle-syntax-bad-string-06.ttl> ;
+   .
+
+<#turtle-syntax-bad-string-07> rdf:type rdft:TestTurtleNegativeSyntax ;
+   mf:name    "turtle-syntax-bad-string-07" ;
+   mf:action    <turtle-syntax-bad-string-07.ttl> ;
    .
 
 <#turtle-syntax-bad-num-01> rdf:type rdft:TestTurtleNegativeSyntax ;
