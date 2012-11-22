@@ -20,7 +20,7 @@ package org.apache.jena.riot.stream;
 
 import java.io.InputStream ;
 
-import org.apache.jena.riot.Langs ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.TypedInputStream2 ;
 import org.openjena.atlas.web.ContentType ;
 import org.slf4j.Logger ;
@@ -65,7 +65,7 @@ public class LocatorClassLoader  implements Locator
         if ( StreamManager.logAllLookups  && log.isTraceEnabled() )
             log.trace("Found: "+resourceName) ;
         
-        ContentType ct = Langs.guessContentType(resourceName) ;
+        ContentType ct = RDFLanguages.guessContentType(resourceName) ;
         // No sensible base URI.
         return new TypedInputStream2(in, ct, null) ;
     }

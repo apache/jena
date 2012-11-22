@@ -18,59 +18,60 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.Langs ;
+import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 
 public class TestLangRIOT extends BaseTest
 {
-    @Test public void lang_01() { test(Langs.langNTriples, "NT") ; }
-    @Test public void lang_02() { test(Langs.langNTriples, "N-Triples") ; }
-    @Test public void lang_03() { test(Langs.langNTriples, "N-TRIPLES") ; }
-    @Test public void lang_04() { test(Langs.langNTriples, "NTRIPLE") ; }
-    @Test public void lang_05() { test(Langs.langNTriples, "NTRIPLES") ; }
+    @BeforeClass public static void beforeClass() { RDFLanguages.init() ; } 
     
-    @Test public void lang_11() { test(Langs.langTurtle, "TTL") ; }
-    @Test public void lang_12() { test(Langs.langTurtle, "TUrtLE") ; }
-
-    @Test public void lang_21() { test(Langs.langRDFXML, "RDF/XML") ; }
-    @Test public void lang_22() { test(Langs.langRDFXML, "RDFXML") ; }
-    @Test public void lang_23() { test(Langs.langRDFXML, "RDF/XML-ABBREV") ; }
+    @Test public void lang_01() { test(RDFLanguages.langNTriples, "NT") ; }
+    @Test public void lang_02() { test(RDFLanguages.langNTriples, "N-Triples") ; }
+    @Test public void lang_03() { test(RDFLanguages.langNTriples, "N-TRIPLES") ; }
+    @Test public void lang_04() { test(RDFLanguages.langNTriples, "NTRIPLE") ; }
+    @Test public void lang_05() { test(RDFLanguages.langNTriples, "NTRIPLES") ; }
     
-    @Test public void lang_30() { test(Langs.langRDFJSON, "RDFJSON") ; }
-    @Test public void lang_31() { test(Langs.langRDFJSON, "RDF/json") ; }
+    @Test public void lang_11() { test(RDFLanguages.langTurtle, "TTL") ; }
+    @Test public void lang_12() { test(RDFLanguages.langTurtle, "TUrtLE") ; }
 
-    @Test public void lang_40() { test(Langs.langNQuads,  "N-QUADS") ; }
-    @Test public void lang_41() { test(Langs.langNQuads, "NQuads") ; }
+    @Test public void lang_21() { test(RDFLanguages.langRDFXML, "RDF/XML") ; }
+    @Test public void lang_22() { test(RDFLanguages.langRDFXML, "RDFXML") ; }
+    @Test public void lang_23() { test(RDFLanguages.langRDFXML, "RDF/XML-ABBREV") ; }
     
-    @Test public void lang_50() { test(Langs.langTriG,  "TriG") ; }
-    @Test public void lang_51() { test(Langs.langTriG, "trig") ; }
-    @Test public void lang_52() { test(Langs.langTriG, "TRIG") ; }
+    @Test public void lang_30() { test(RDFLanguages.langRDFJSON, "RDFJSON") ; }
+    @Test public void lang_31() { test(RDFLanguages.langRDFJSON, "RDF/json") ; }
+
+    @Test public void lang_40() { test(RDFLanguages.langNQuads,  "N-QUADS") ; }
+    @Test public void lang_41() { test(RDFLanguages.langNQuads, "NQuads") ; }
     
-    @Test public void guess_01() { guess("D.nt", Langs.langNTriples) ; }
-    @Test public void guess_02() { guess("D.ttl.nt", Langs.langNTriples) ; }
-
-    @Test public void guess_03() { guess("D.ttl", Langs.langTurtle) ; }
-
-    @Test public void guess_04() { guess("D.rdf", Langs.langRDFXML) ; }
-    @Test public void guess_05() { guess("D.owl", Langs.langRDFXML) ; }
+    @Test public void lang_50() { test(RDFLanguages.langTriG,  "TriG") ; }
+    @Test public void lang_51() { test(RDFLanguages.langTriG, "trig") ; }
+    @Test public void lang_52() { test(RDFLanguages.langTriG, "TRIG") ; }
     
-    @Test public void guess_06() { guess("D.rj", Langs.langRDFJSON) ; }
-    @Test public void guess_07() { guess("D.json", Langs.langRDFJSON) ; }
+    @Test public void guess_01() { guess("D.nt", RDFLanguages.langNTriples) ; }
+    @Test public void guess_02() { guess("D.ttl.nt", RDFLanguages.langNTriples) ; }
 
-    @Test public void guess_08() { guess("D.nq", Langs.langNQuads) ; }
-    @Test public void guess_09() { guess("D.trig", Langs.langTriG) ; }
+    @Test public void guess_03() { guess("D.ttl", RDFLanguages.langTurtle) ; }
+
+    @Test public void guess_04() { guess("D.rdf", RDFLanguages.langRDFXML) ; }
+    @Test public void guess_05() { guess("D.owl", RDFLanguages.langRDFXML) ; }
+    
+    @Test public void guess_06() { guess("D.rj", RDFLanguages.langRDFJSON) ; }
+    @Test public void guess_07() { guess("D.json", RDFLanguages.langRDFJSON) ; }
+
+    @Test public void guess_08() { guess("D.nq", RDFLanguages.langNQuads) ; }
+    @Test public void guess_09() { guess("D.trig", RDFLanguages.langTriG) ; }
     
     private void test(Lang2 expected, String string)
     {
-        Lang2 lang = Langs.nameToLang(string) ;
+        Lang2 lang = RDFLanguages.nameToLang(string) ;
         assertEquals(expected, lang) ;
     }
 
-    private void guess(String string, Lang2 expected)
+    private void guess(String filename, Lang2 expected)
     {
-        Lang2 lang = Langs.guess(string) ;
+        Lang2 lang = RDFLanguages.filenameToLang(filename) ;
         assertEquals(expected, lang) ;
     }
 

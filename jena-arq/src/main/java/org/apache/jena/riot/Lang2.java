@@ -18,42 +18,54 @@
 
 package org.apache.jena.riot;
 
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.List ;
+
 import org.openjena.atlas.web.ContentType ;
 
+/** A "language" (syntax) */
 public class Lang2 
 {
-    public static final Lang2 RDFXML    = Langs.langRDFXML ;
-    public static final Lang2 NTRIPLES  = Langs.langNTriples ;
-    public static final Lang2 N3        = Langs.langN3 ;
-    public static final Lang2 TURTLE    = Langs.langTurtle ;
-    public static final Lang2 RDFJSON   = Langs.langRDFJSON ;
-   
-    public static final Lang2 NQUADS    = Langs.langNQuads ;
-    public static final Lang2 TRIG      = Langs.langTriG ;
-    
     private final String label ;
-    private final ContentType contentType ;
+    private final ContentType contentType ;     // Primary content type.
+    private final List<String> altLabels ;
+    private final List<String> altContentTypes ;
+    private final List<String> fileExtensions ;
 
-    /** Create a language with a well-known name,
-     * All languages with the same name will be treated as the same language.
-     */
-    static public Lang2 create(String label, String mediaType)
+    protected Lang2(String langlabel, String mainContentType, List<String> altLangLabels, List<String> otherContentTypes, List<String> fileExt)
     {
-        return new Lang2(label, mediaType) ;
-    }
-    
-    protected Lang2(String label, String mediaType)
-    { 
-        if ( label == null )
+        if ( langlabel == null )
             throw new IllegalArgumentException("Null not allowed for language name") ;
         else
-            label = label.intern();
-        this.label = label ;
-        this.contentType = mediaType==null ? null : ContentType.parse(mediaType) ;
+            langlabel = langlabel.intern();
+        label = langlabel ;
+        
+        String mediaType = mainContentType ;
+
+        contentType = mediaType==null ? null : ContentType.parse(mediaType) ;
+        
+        List<String> _altContentTypes = copy(otherContentTypes) ;
+        if ( ! _altContentTypes.contains(mainContentType) )
+            _altContentTypes.add(mainContentType) ;
+        altContentTypes = Collections.unmodifiableList(_altContentTypes) ;
+        
+        List<String> _altLabels = copy(altLangLabels) ;
+        altLabels = Collections.unmodifiableList(_altLabels) ;
+        
+        List<String> _fileExtensions = copy(fileExt) ;
+        fileExtensions = Collections.unmodifiableList(_fileExtensions) ;
     }
     
-    public boolean isTriples()  { return Langs.isTriples(this) ; }
-    public boolean isQuads()    { return Langs.isQuads(this) ; }
+    static <T> List<T> copy(List<T> original)
+    {
+        List<T> x = new ArrayList<T>() ;
+        x.addAll(original) ;
+        return x ;
+    }
+    
+//    public boolean isTriples()  { return RDFLanguages.isTriples(this) ; }
+//    public boolean isQuads()    { return RDFLanguages.isQuads(this) ; }
     
     @Override
     public int hashCode() { return label.hashCode() ; } 
@@ -62,17 +74,41 @@ public class Lang2
     public boolean equals(Object other)
     {
         if ( this == other ) return true ;
-
+        if ( other == null ) return false ;
         if ( ! ( other instanceof Lang2 ) )
             return false ;
 
         Lang2 otherLang = (Lang2)other ;
-        return this.label == otherLang.label ; // String interning.
+        // Just label should be enough.
+        return 
+            this.label == otherLang.label &&
+            this.contentType.equals(otherLang.contentType) &&
+            this.altContentTypes.equals(otherLang.altContentTypes) &&
+            this.fileExtensions.equals(otherLang.fileExtensions) ;
+        // File extensions and alt 
     }
 
-    public String getName()             { return label ; }
-    public ContentType getContentType() { return contentType ; }
+    public String getName()                     { return label ; }
+    public ContentType getContentType()         { return contentType ; }
+    public String getLabel()                    { return label ; }
+    public List<String> getAltNames()           { return altLabels ; }
+    public List<String> getAltContentTypes()    { return altContentTypes ; }
+    public List<String> getFileExtensions()     { return fileExtensions ; }
+
     @Override
     public String toString()  { return "Lang:"+label ; }
+    
+    public String toLongString()
+    { 
+        String x = "Lang:" + label + " " + getContentType() ;
+        if (getAltNames().size() > 0)
+            x = " " + getAltNames() ;
+        if (getAltContentTypes().size() > 0)
+            x = " " + getAltContentTypes() ;
+        if (getFileExtensions().size() > 0)
+            x = " " + getFileExtensions() ;
+
+        return x ;
+    }
 }
 

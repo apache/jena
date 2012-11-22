@@ -21,9 +21,6 @@ package org.apache.jena.riot;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.Langs ;
-import org.apache.jena.riot.WebReader2 ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -51,8 +48,8 @@ public class TestReadDataset extends BaseTest
 
     @Test public void read_01() { read("D.nq") ; }
     @Test public void read_02() { read("D.trig") ; }
-    @Test public void read_03() { read("D.nq",   Langs.langNQuads) ; }
-    @Test public void read_04() { read("D.trig", Langs.langTriG) ; }
+    @Test public void read_03() { read("D.nq",   RDFLanguages.langNQuads) ; }
+    @Test public void read_04() { read("D.trig", RDFLanguages.langTriG) ; }
     
     @Test public void read_11() { read("D.nq", "N-Quads") ; }
 
@@ -61,8 +58,8 @@ public class TestReadDataset extends BaseTest
     @Test public void read_14() { read("D.trig", "TriG") ; }
     @Test public void read_15() { read("D.trig", "trig") ; } 
 
-    @Test public void read_21() { read("D-nq",  Langs.langNQuads) ; }
-    @Test public void read_22() { read("D-trig", Langs.langTriG) ; }
+    @Test public void read_21() { read("D-nq",  RDFLanguages.langNQuads) ; }
+    @Test public void read_22() { read("D-trig", RDFLanguages.langTriG) ; }
     @Test public void read_23() { read("D-nq",  "NQuads") ; }
     @Test public void read_24() { read("D-trig", "TRIG") ; }
 
@@ -80,7 +77,7 @@ public class TestReadDataset extends BaseTest
     
     private static void read(String dataurl, String lang)
     {
-        read(dataurl, Langs.nameToLang(lang)) ;
+        read(dataurl, RDFLanguages.nameToLang(lang)) ;
     }
     
     private static void read(String dataurl, Lang2 lang)
@@ -92,7 +89,7 @@ public class TestReadDataset extends BaseTest
 
     private static void read_stream(String filename, String lang) throws IOException
     {
-        read_stream(filename, Langs.nameToLang(lang)) ;
+        read_stream(filename, RDFLanguages.nameToLang(lang)) ;
     }
     
     private static void read_stream(String filename, Lang2 lang) throws IOException
