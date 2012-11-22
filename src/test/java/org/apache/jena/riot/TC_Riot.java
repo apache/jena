@@ -20,8 +20,10 @@ package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.stream.TS_IO2 ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.openjena.riot.RIOT ;
 import org.openjena.riot.TS_Riot ;
 
 @RunWith(Suite.class)
@@ -33,5 +35,11 @@ import org.openjena.riot.TS_Riot ;
       , TS_RIOTAdapters.class
 })
 
+
 public class TC_Riot
-{}
+{
+    @BeforeClass public static void beforeClass()
+    { 
+        RIOT.init() ;
+    }
+}

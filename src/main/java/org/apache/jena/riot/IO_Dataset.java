@@ -198,7 +198,7 @@ public class IO_Dataset
     private static ReaderRIOT<Quad> getReaderQuads(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Quad> r = RDFParserRegistry.getFactoryQuads(lang) ;
+        ReaderRIOTFactory<Quad> r = ParserRegistry.getFactoryQuads(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;

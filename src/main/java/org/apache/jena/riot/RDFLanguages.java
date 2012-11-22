@@ -43,12 +43,10 @@ import org.openjena.riot.RiotException ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Central registry of RDF langauges and syntaxes.
- * @see RDFParserRegistry
+ * @see ParserRegistry
  */
 public class RDFLanguages
 {
-    public static  void init () { initStandard() ; }
-    
     public static final String strLangRDFXML     = "RDF/XML" ;
     public static final String strLangTurtle     = "Turtle" ;
     public static final String strLangNTriples   = "N-Triples" ;
@@ -109,6 +107,14 @@ public class RDFLanguages
     private static Map<String, Lang2> mapLabelToLang                    = DS.map() ;
     
     // ----------------------
+    private static boolean initialized = false ;
+    public static synchronized void init ()
+    {
+        if ( initialized ) return ;
+        initialized = true ;
+        initStandard() ;
+    }
+    // ----------------------
     
     /** Standard built-in languages */  
     public static void initStandard()
@@ -124,11 +130,11 @@ public class RDFLanguages
     /** Register a language.
      * To create a {@link Lang2} object use {@link LangBuilder}.
      * See also 
-     * {@link RDFParserRegistry#registerLangTriples} and 
-     * {@link RDFParserRegistry#registerLangQuads}
+     * {@link ParserRegistry#registerLangTriples} and 
+     * {@link ParserRegistry#registerLangQuads}
      * for registering a language and it's RDF parser fatory.
      * 
-     * @see RDFParserRegistry
+     * @see ParserRegistry
      */
     public static void register(Lang2 lang)
     {
@@ -181,10 +187,10 @@ public class RDFLanguages
     }
     
     /** return true if the language is registered with the triples parser factories */
-    public static boolean isTriples(Lang2 lang) { return RDFParserRegistry.isTriples(lang) ; }
+    public static boolean isTriples(Lang2 lang) { return ParserRegistry.isTriples(lang) ; }
     
     /** return true if the language is registered with the quads parser factories */
-    public static boolean isQuads(Lang2 lang)   { return RDFParserRegistry.isQuads(lang) ; }
+    public static boolean isQuads(Lang2 lang)   { return ParserRegistry.isQuads(lang) ; }
     
     /** Map a content type (without charset) to a {@link Lang2} */
     public static Lang2 contentTypeToLang(String contentType)

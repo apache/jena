@@ -43,7 +43,7 @@ import static org.apache.jena.riot.RDFLanguages.* ;
  * 
  */
 
-public class RDFParserRegistry
+public class ParserRegistry
 {
     /** Map Jena I/O names to language */
     private static Map<String, Lang2> mapJenaNameToLang                 = DS.map() ;
@@ -53,15 +53,22 @@ public class RDFParserRegistry
     /** map language to a quads parser */ 
     private static Map<Lang2, ReaderRIOTFactory<Quad>> langToQuads      = DS.map() ;
 
-    static { init() ; }
-    
     /** Register a Jena IO name */
     private static void registerShortNameForLang(String name, Lang2 lang)
     {
         mapJenaNameToLang.put(RDFLanguages.canonicalKey(name), lang) ;
     }
 
-    public static void init()
+    private static boolean initialized = false ;
+    public static synchronized void init ()
+    {
+        if ( initialized ) return ;
+        initialized = true ;
+        initStandard() ;
+        
+    }
+    
+    private static void initStandard()
     {
         // Make sure the constants are initialized.
         RDFLanguages.init() ;
@@ -91,13 +98,13 @@ public class RDFParserRegistry
             
         registerShortNameForLang("TRIG",            langTriG) ;
         
-        registerLangTriples(langRDFXML, pfTriples) ;
-        registerLangTriples(langNTriples, pfTriples) ;
-        registerLangTriples(langTurtle, pfTriples) ;
-        registerLangTriples(langRDFJSON, pfTriples) ;
+        registerLangTriples(langRDFXML,     pfTriples) ;
+        registerLangTriples(langNTriples,   pfTriples) ;
+        registerLangTriples(langTurtle,     pfTriples) ;
+        registerLangTriples(langRDFJSON,    pfTriples) ;
         
-        registerLangQuads(langNQuads, pfQuads) ;
-        registerLangQuads(langTriG,   pfQuads) ;
+        registerLangQuads(langNQuads,       pfQuads) ;
+        registerLangQuads(langTriG,         pfQuads) ;
     }
 
     // ****
