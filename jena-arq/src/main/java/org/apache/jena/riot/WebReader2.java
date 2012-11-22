@@ -455,7 +455,10 @@ public class WebReader2
 
         ReaderRIOT<Triple> reader = getReaderTriples(ct) ;
         if ( reader == null )
+        {
+            getReaderTriples(ct) ;
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
+        }
         
         reader.read(in.getInput(), baseUri, ct, sink, context) ;
     }
@@ -463,7 +466,7 @@ public class WebReader2
     private static ReaderRIOT<Triple> getReaderTriples(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Triple> r = RDFParserRegistry.getFactoryTriples(lang) ;
+        ReaderRIOTFactory<Triple> r = ParserRegistry.getFactoryTriples(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -505,7 +508,7 @@ public class WebReader2
     private static ReaderRIOT<Quad> getReaderQuads(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Quad> r = RDFParserRegistry.getFactoryQuads(lang) ;
+        ReaderRIOTFactory<Quad> r = ParserRegistry.getFactoryQuads(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;

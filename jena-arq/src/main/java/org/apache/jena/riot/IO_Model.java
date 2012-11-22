@@ -237,7 +237,7 @@ public class IO_Model
     private static ReaderRIOT<Triple> getReaderTriples(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Triple> r = RDFParserRegistry.getFactoryTriples(lang) ;
+        ReaderRIOTFactory<Triple> r = ParserRegistry.getFactoryTriples(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
