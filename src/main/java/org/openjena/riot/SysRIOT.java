@@ -18,6 +18,8 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFParserRegistry ;
 import org.openjena.atlas.event.EventType ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
@@ -65,6 +67,10 @@ public class SysRIOT
     
     public static void wireIntoJena()
     {
+        RDFLanguages.init() ;
+        RDFParserRegistry.init() ;
+
+        
         /* No getter (!!)
          * Standard:
             com.hp.hpl.jena.rdf.model.impl.NTripleReader

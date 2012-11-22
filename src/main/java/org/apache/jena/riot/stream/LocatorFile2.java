@@ -23,7 +23,7 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.security.AccessControlException ;
 
-import org.apache.jena.riot.Langs ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.TypedInputStream2 ;
 import org.openjena.atlas.io.IO ;
 import org.openjena.atlas.lib.IRILib ;
@@ -135,7 +135,7 @@ public class LocatorFile2 implements Locator
             if ( StreamManager.logAllLookups && log.isTraceEnabled() )
                 log.trace("Found: "+filenameIRI+thisDirLogStr) ;
             
-            ContentType ct = Langs.guessContentType(filenameIRI) ;
+            ContentType ct = RDFLanguages.guessContentType(filenameIRI) ;
             return new TypedInputStream2(in, ct, filenameIRI) ;
         } catch (IOException ioEx)
         {

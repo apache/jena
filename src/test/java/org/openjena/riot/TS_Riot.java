@@ -63,6 +63,7 @@ public class TS_Riot
     @BeforeClass public static void beforeClass()
     { 
         BaseTest.setTestLogging() ;
+        SysRIOT.wireIntoJena() ;
     }
 
     @AfterClass public static void afterClass()

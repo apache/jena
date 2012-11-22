@@ -30,7 +30,7 @@ public abstract class ReaderRIOTBase<T> implements ReaderRIOT<T>
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, Sink<T> sink, Context context)
     {
-        Lang2 lang = Langs.contentTypeToLang(ct) ;
+        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
         read(in, baseURI,lang, sink, context) ;
     }
 

@@ -236,8 +236,8 @@ public class IO_Model
 
     private static ReaderRIOT<Triple> getReaderTriples(ContentType ct)
     {
-        Lang2 lang = Langs.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Triple> r = Langs.getFactoryTriples(lang) ;
+        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
+        ReaderRIOTFactory<Triple> r = RDFParserRegistry.getFactoryTriples(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -255,7 +255,7 @@ public class IO_Model
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         if ( hintLang == null )
             throw new RiotException("No language specificied") ;
-        Lang lang = Langs.convert(hintLang) ;
+        Lang lang = RDFLanguages.convert(hintLang) ;
         LangRIOT parser ;
         if ( lang == Lang.RDFXML )
             parser = LangRDFXML.create(in, base, base, ErrorHandlerFactory.errorHandlerStd, sink) ;

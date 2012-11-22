@@ -197,8 +197,8 @@ public class IO_Dataset
 
     private static ReaderRIOT<Quad> getReaderQuads(ContentType ct)
     {
-        Lang2 lang = Langs.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Quad> r = Langs.getFactoryQuads(lang) ;
+        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
+        ReaderRIOTFactory<Quad> r = RDFParserRegistry.getFactoryQuads(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -208,7 +208,7 @@ public class IO_Dataset
     private static void processQuads(Sink<Quad> sink, String base, Reader in, Lang2 hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
-        Lang lang = Langs.convert(hintLang) ;
+        Lang lang = RDFLanguages.convert(hintLang) ;
         LangRIOT parser = RiotReader.createParserQuads(tokenizer, lang, base, sink) ;
         parser.parse() ;
     }

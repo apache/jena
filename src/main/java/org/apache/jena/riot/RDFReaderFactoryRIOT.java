@@ -18,8 +18,6 @@
 
 package org.apache.jena.riot;
 
-import org.openjena.riot.WebContent ;
-
 import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.rdf.model.RDFReaderF ;
 
@@ -36,13 +34,14 @@ public class RDFReaderFactoryRIOT implements RDFReaderF
     }
 
     @Override
-    public RDFReader getReader(String lang)
+    public RDFReader getReader(String langname)
     {
         // If RDF/XML, then return an ARP 
-        if (WebContent.contentTypeRDFXML.equals(Langs.shortNameToContentType(lang)) )
-            return new RDFReaderRIOT_ARP() ;
         
-        return new RDFReaderRIOT(lang) ; 
+        Lang2 lang = RDFLanguages.nameToLang(langname) ;
+        if ( lang == RDFLanguages.langRDFXML )
+            return new RDFReaderRIOT_ARP() ;
+        return new RDFReaderRIOT(langname) ; 
     }
 
     @Override
@@ -50,6 +49,5 @@ public class RDFReaderFactoryRIOT implements RDFReaderF
     {
         return null ;
     }
-
 }
 
