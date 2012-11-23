@@ -23,6 +23,7 @@ import org.openjena.riot.web.HttpOp ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -60,6 +61,12 @@ public class UpdateProcessRemote implements UpdateProcessor
             throw new ARQException("Null endpoint for remote update") ;
         String reqStr = request.toString() ;
         HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr) ;
+    }
+
+    @Override
+    public Context getContext()
+    {
+        return null ;
     }
     
 }
