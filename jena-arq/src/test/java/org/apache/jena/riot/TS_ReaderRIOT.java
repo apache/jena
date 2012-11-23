@@ -19,9 +19,11 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.riot.stream.TestStreamManager ;
+import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
+import org.openjena.riot.RIOT ;
 
 @RunWith(Suite.class)
 @SuiteClasses(
@@ -34,6 +36,9 @@ import org.junit.runners.Suite.SuiteClasses ;
 
 public class TS_ReaderRIOT
 {
-
+    @BeforeClass public static void beforeClass()
+    { 
+        RIOT.init() ;
+    }
 }
 
