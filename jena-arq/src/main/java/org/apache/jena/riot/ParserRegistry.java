@@ -53,11 +53,11 @@ public class ParserRegistry
     /** map language to a quads parser */ 
     private static Map<Lang2, ReaderRIOTFactory<Quad>> langToQuads      = DS.map() ;
 
-    /** Register a Jena IO name */
-    private static void registerShortNameForLang(String name, Lang2 lang)
-    {
-        mapJenaNameToLang.put(RDFLanguages.canonicalKey(name), lang) ;
-    }
+    /** Triples : Generic parser factory. */
+    private static ReaderRIOTFactory<Triple> pfTriples = new ReaderRIOTFactoryTriple() ;
+
+    /** Quads : Generic parser factory. */
+    private static ReaderRIOTFactory<Quad> pfQuads = new ReaderRIOTFactoryQuads() ;
 
     private static boolean initialized = false ;
     public static synchronized void init ()
@@ -65,7 +65,6 @@ public class ParserRegistry
         if ( initialized ) return ;
         initialized = true ;
         initStandard() ;
-        
     }
     
     private static void initStandard()
@@ -107,10 +106,12 @@ public class ParserRegistry
         registerLangQuads(langTriG,         pfQuads) ;
     }
 
-    // ****
-    // getParserFor
-    // triples vs quads
-    
+    /** Register a Jena IO name */
+    private static void registerShortNameForLang(String name, Lang2 lang)
+    {
+        mapJenaNameToLang.put(RDFLanguages.canonicalKey(name), lang) ;
+    }
+
     /** Register a language that parses to produces triples.
      * To create a {@link Lang2} object use {@link LangBuilder}.
      */
@@ -127,6 +128,7 @@ public class ParserRegistry
         langToQuads.put(lang, factory) ;
     }
     
+    /** Remove registration */
     public static void removeRegistration(Lang2 lang)
     {
         RDFLanguages.unregister(lang) ;
@@ -152,8 +154,10 @@ public class ParserRegistry
     /** return true if the language is registered with the quads parser factories */
     public static boolean isQuads(Lang2 lang)   { return langToQuads.containsKey(lang) ; }
 
-    // Triples : Generic parser factory.
-    private static ReaderRIOTFactory<Triple> pfTriples = new ReaderRIOTFactory<Triple>() {
+    // Parser factories
+    
+    private static class ReaderRIOTFactoryTriple implements ReaderRIOTFactory<Triple>
+    {
         @Override
         public ReaderRIOT<Triple> create(final Lang2 language)
         {
@@ -170,8 +174,7 @@ public class ParserRegistry
         }
     } ;
 
-    // Quads : Generic parser factory.
-    private static ReaderRIOTFactory<Quad> pfQuads = new ReaderRIOTFactory<Quad>() {
+    private static class ReaderRIOTFactoryQuads implements ReaderRIOTFactory<Quad> {
         @Override
         public ReaderRIOT<Quad> create(final Lang2 language)
         {
@@ -187,12 +190,7 @@ public class ParserRegistry
             } ;
         }
     } ;
-    
-    // Kludge for now.
-    private static Lang convert(Lang2 language)
-    {
-        return null ;
-    }
+
 
 }
 

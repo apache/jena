@@ -58,7 +58,7 @@ import org.openjena.riot.tokens.TestTokenizer ;
     , TestNormalization.class
 })
 
-public class TS_Riot
+public class TS_Riot1
 {
     @BeforeClass public static void beforeClass()
     { 
