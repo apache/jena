@@ -93,6 +93,18 @@ public class UpdateExecutionFactory
         return make(updateRequest, graphStore, initialBinding, null) ;
     }
 
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param updateRequest
+     * @param graphStore
+     * @param initialBinding (may be null for none)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessor create(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
+    {        
+        return make(updateRequest, graphStore, initialBinding, context) ;
+    }
+
     // Everything comes through here
     private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
     {
