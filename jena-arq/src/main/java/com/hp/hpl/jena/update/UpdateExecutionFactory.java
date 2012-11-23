@@ -97,7 +97,10 @@ public class UpdateExecutionFactory
     private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
     {
         if ( context == null )
+        {
             context = ARQ.getContext().copy();
+            context.putAll(graphStore.getContext()) ;
+        }
         
         UpdateEngineFactory f = UpdateEngineRegistry.get().find(updateRequest, graphStore, context) ;
         if ( f == null )

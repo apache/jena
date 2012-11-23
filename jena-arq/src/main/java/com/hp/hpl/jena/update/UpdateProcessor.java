@@ -19,14 +19,18 @@
 package com.hp.hpl.jena.update;
 
 import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.sparql.util.Context ;
 
 /** An instance of a execution of an UpdateRequest */ 
 public interface UpdateProcessor
 {
-//    /** Set the FileManger that might be used to load files.
-//     *  May not be supported by all implementations.  
-//     */
-//    public void setFileManager(FileManager fm) ;
+    /** The properties associated with a query execution -  
+     *  implementation specific parameters  This includes
+     *  Java objects (so it is not an RDF graph).
+     *  Keys should be URIs as strings.  
+     *  May be null (this implementation does not provide any configuration).
+     */ 
+    public Context getContext() ;
     
     /** Set the initial association of variables and values.
      * May not be supported by all UpdateProcessor implementations.
