@@ -24,7 +24,12 @@ import java.util.List ;
 
 import org.openjena.atlas.web.ContentType ;
 
-/** A "language" (syntax) */
+/** A "language" (syntax).
+ *  A language has a name, some alternative names,
+ *  a content type,  some alternative content types,
+ *  and a list of associated file extensions.
+ *  Names content types and file extensions must be unique to one language. 
+ */
 public class Lang2 
 {
     private final String label ;

@@ -27,6 +27,7 @@ import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.atlas.lib.StrUtils ;
+import org.openjena.riot.RIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -42,6 +43,7 @@ public class TestJenaReaderRIOT extends BaseTest
     
     @BeforeClass static public void beforeClass()
     { 
+        RIOT.init() ;
         WebReader2.wireIntoJena() ;
     }
     

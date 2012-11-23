@@ -22,6 +22,7 @@ import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
+import org.openjena.riot.RIOT ;
 
 /** The test suites - these are driven by a manifest file and use external files for tests */
 
@@ -32,6 +33,7 @@ public class TS_LangSuite extends TestSuite
 
     static public TestSuite suite()
     {
+        RIOT.init() ;
         TestSuite ts = new TestSuite("RIOT Lang") ;
         ts.addTest(FactoryTestRiot.make(manifest1, null, null)) ;
         return ts ;
