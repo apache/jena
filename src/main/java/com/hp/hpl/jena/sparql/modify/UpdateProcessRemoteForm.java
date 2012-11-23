@@ -30,6 +30,7 @@ import org.openjena.riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -74,6 +75,11 @@ public class UpdateProcessRemoteForm implements UpdateProcessor
         handlers.put("*", HttpResponseLib.nullResponse) ;
         HttpOp.execHttpPostForm(endpoint, params, handlers) ;
     }
-    
+
+    @Override
+    public Context getContext()
+    {
+        return null ;
+    }
 }
 

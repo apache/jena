@@ -52,6 +52,10 @@ public class MapWithScope<A, B, S>
     public B get(S scope, A item)
     {
         Map<A, B> map = scopePolicy.getScope(scope) ;
+        if ( map == null )
+            // No map - no item->allocation tracking.
+            return allocator.create(item) ;
+
         B mappedItem = map.get(item) ;
         if ( mappedItem == null )
         {
