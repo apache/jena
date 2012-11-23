@@ -171,8 +171,7 @@ to false write the declaration to an OutputStream before calling
  <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#propertyAttr">propertyAttr</a>
  ({@link RDFSyntax#propertyAttr})</li>
  </ul>
- In addition "daml:collection" ({@link DAML_OIL#collection})
- can be blocked. Blocking <a href=
+ Blocking <a href=
  "http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a>  also blocks
  <a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
  >section-Reification</a>.
@@ -195,27 +194,18 @@ This is a list of
   <pre>
  w.setProperty("prettyTypes",
       new Resource[]{
-			DAML_OIL.Ontology,
 			OWL.Ontology,
-			DAML_OIL.Datatype,
 			OWL.Datatype,
 			RDFS.Datatype,
-			DAML_OIL.Class,
 			RDFS.Class,
 			OWL.Class,
-			DAML_OIL.Property,
 			OWL.ObjectProperty,
 			RDF.Property,
-			DAML_OIL.ObjectProperty,
 			OWL.DatatypeProperty,
-			DAML_OIL.DatatypeProperty,
 			OWL.TransitiveProperty,
 			OWL.SymmetricProperty,
 			OWL.FunctionalProperty,
 			OWL.InverseFunctionalProperty,
-			DAML_OIL.TransitiveProperty,
-			DAML_OIL.UnambiguousProperty,
-			DAML_OIL.UniqueProperty,
           });
   </pre>
   </td><td>Resource[]</td><td></td>
