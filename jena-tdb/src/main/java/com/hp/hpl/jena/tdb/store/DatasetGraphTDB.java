@@ -173,9 +173,6 @@ public class DatasetGraphTDB extends DatasetGraphCaching
         tripleTable.close() ;
         quadTable.close() ;
         prefixes.close();
-        // Break when in transaction mode?  Why?
-        // StoreConnection.release(getLocation()) ;
-        
         // Which will cause reuse to throw exceptions early.
         tripleTable = null ;
         quadTable = null ;
