@@ -212,6 +212,7 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
             DatasetGraphTDB dsg = get() ;
             dsg.sync() ;
             dsg.close() ;
+            StoreConnection.release(dsg.getLocation()) ;
             isClosed = true ;
             return ;
         }
