@@ -77,6 +77,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
         
     @Override
+    @Deprecated
     public void add( Graph g )
         { add( g, false ); }
         
@@ -151,6 +152,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
             
     @Override
+    @Deprecated
     public void delete( Graph g )
         { delete( g, false ); }
         
@@ -167,6 +169,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
     
     @Override
+    @Deprecated
     public void removeAll()
         { removeAll( graph ); 
         notifyRemoveAll(); }
@@ -175,6 +178,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         { manager.notifyEvent( graph, GraphEvents.removeAll ); }
 
     @Override
+    @Deprecated
     public void remove( Node s, Node p, Node o )
         { removeAll( graph, s, p, o ); 
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) ); }

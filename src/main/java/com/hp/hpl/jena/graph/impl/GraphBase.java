@@ -18,12 +18,13 @@
 
 package com.hp.hpl.jena.graph.impl;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.iterator.*;
-
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
+import com.hp.hpl.jena.shared.* ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
+import com.hp.hpl.jena.util.iterator.ClosableIterator ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     GraphBase is an implementation of Graph that provides some convenient
@@ -155,7 +156,7 @@ public abstract class GraphBase implements GraphWithPerform
     */
     public void notifyDelete( Triple t )
         { getEventManager().notifyDeleteTriple( this, t ); }
-        
+    
     /**
          Answer a transaction handler bound to this graph. The default is
          SimpleTransactionHandler, which handles <i>no</i> transactions.
@@ -254,6 +255,26 @@ public abstract class GraphBase implements GraphWithPerform
     public void performDelete( Triple t ) 
         { throw new DeleteDeniedException( "GraphBase::delete" ); }
 
+    /**
+        Remove all the statements from this graph.
+     */
+	@Override
+    public void removeAll()
+	{
+	    GraphUtil.remove(this, Node.ANY, Node.ANY, Node.ANY) ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;	
+	}
+
+	/**
+       Remove all triples that match by find(s, p, o)
+	 */
+	@Override
+    public void remove( Node s, Node p, Node o )
+	{
+	    GraphUtil.remove(this, s, p, o) ;
+	    getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+	}
+	
 	/**
 	     Answer an (extended) iterator over all the triples in this Graph matching
          <code>m</code>. Subclasses cannot over-ride this, because it implements

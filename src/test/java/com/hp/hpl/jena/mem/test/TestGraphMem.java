@@ -36,14 +36,15 @@ public class TestGraphMem extends AbstractTestGraph
     
     @Override public Graph getGraph()
         { return new GraphMem(); }   
-    
-    public void testRemoveAllDoesntUseFind()
-        {
-        Graph g = new GraphMemWithoutFind();
-        graphAdd( g, "x P y; a Q b" );
-        g.getBulkUpdateHandler().removeAll();
-        assertEquals( 0, g.size() );
-        }
+
+    // g.removalAll may use find (carefully)
+//    public void testRemoveAllDoesntUseFind()
+//        {
+//        Graph g = new GraphMemWithoutFind();
+//        graphAdd( g, "x P y; a Q b" );
+//        g.removeAll();
+//        assertEquals( 0, g.size() );
+//        }
     
     public void testSizeAfterRemove() 
         {

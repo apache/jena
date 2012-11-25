@@ -90,6 +90,20 @@ public class WrappedGraph implements GraphWithPerform
         getEventManager().notifyDeleteTriple( this, t ); }
 
     @Override
+    public void removeAll()
+    {
+        base.removeAll() ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
+    }
+
+    @Override
+    public void remove(Node s, Node p, Node o)
+    {
+        base.remove(s,p,o) ;
+        getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+    }
+
+    @Override
     public ExtendedIterator<Triple> find( TripleMatch m )
         { return SimpleEventManager.notifyingRemove( this, base.find( m ) ); }
 

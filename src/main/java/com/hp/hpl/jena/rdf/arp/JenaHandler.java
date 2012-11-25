@@ -18,27 +18,22 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import java.util.Arrays;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.arp.impl.ARPSaxErrorHandler;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
-
-final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
-        NamespaceHandler
+final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
-    static private final int BULK_UPDATE_SIZE = 1000;
-
-    private final BulkUpdateHandler bulk;
-
     private final PrefixMapping prefixMapping;
 
-    protected final Triple triples[];
-
     protected int here = 0;
+
+    private final Graph graph ;
 
     public JenaHandler( Model m, RDFErrorHandler e )
         { this( m.getGraph(), e ); }
@@ -52,8 +47,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
     private JenaHandler( Graph graph, PrefixMapping prefixMapping, RDFErrorHandler errorHandler )
         {
         super( errorHandler );
-        this.bulk = graph.getBulkUpdateHandler();
-        this.triples = new Triple[BULK_UPDATE_SIZE];
+        this.graph = graph ;
         this.prefixMapping = prefixMapping; 
         }
     
@@ -73,37 +67,30 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
         }
 
     @Override
-    public void statement( AResource subj, AResource pred, AResource obj )
-        {
+    public void statement(AResource subj, AResource pred, AResource obj)
+    {
         try
-            { triples[here++] = JenaReader.convert( subj, pred, obj ); }
-        catch (JenaException e)
-            { errorHandler.error( e ); }
-        if (here == BULK_UPDATE_SIZE) bulkUpdate();
+        {
+            Triple t = JenaReader.convert(subj, pred, obj) ;
+            graph.add(t) ;
+        } catch (JenaException e)
+        {
+            errorHandler.error(e) ;
         }
+    }
 
     @Override
-    public void statement( AResource subj, AResource pred, ALiteral lit )
-        {
+    public void statement(AResource subj, AResource pred, ALiteral lit)
+    {
         try
-            { triples[here++] = JenaReader.convert( subj, pred, lit ); }
-        catch (JenaException e)
-            { errorHandler.error( e ); }
-        if (here == BULK_UPDATE_SIZE) bulkUpdate();
-        }
-
-    public void bulkUpdate()
         {
-        try
-            {
-            if (here == BULK_UPDATE_SIZE) bulk.add( triples );
-            else bulk.add( Arrays.asList( triples ).subList( 0, here ) );
-            }
-        catch (JenaException e)
-            { errorHandler.error( e ); }
-        finally
-            { here = 0; }
+            Triple t = JenaReader.convert(subj, pred, lit) ;
+            graph.add(t) ;
+        } catch (JenaException e)
+        {
+            errorHandler.error(e) ;
         }
+    }
 
     @Override
     public void startPrefixMapping( String prefix, String uri )

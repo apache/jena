@@ -70,7 +70,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         FileGraphMaker A = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         FileGraphMaker B = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
         FileGraph gA = (FileGraph) A.createGraph( "already", true );
-        gA.getBulkUpdateHandler().add( content );
+        GraphUtil.addInto( gA, content );
         gA.close();
         FileGraph gB = (FileGraph) B.openGraph( "already", false );
         assertIsomorphic( content, gB );

@@ -35,8 +35,6 @@ import java.util.*;
     AbstractTestGraph provides a bunch of basic tests for something that
     purports to be a Graph. The abstract method getGraph must be overridden
     in subclasses to deliver a Graph of interest. 
-    
- 	@author kers
 */
 public/* abstract */class AbstractTestGraph extends GraphTestBase
     {
@@ -304,48 +302,47 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testBulkUpdate()
         {
         Graph g = getGraph();
-        BulkUpdateHandler bu = g.getBulkUpdateHandler();
         Graph items = graphWith( "pigs might fly; dead can dance" );
         int initialSize = g.size();
     /* */
-        bu.add( tripleArray );
+        GraphUtil.add( g,  tripleArray );
         testContains( g, tripleArray );
         testOmits( g, tripleList );
     /* */
-        bu.add( tripleList );
+        GraphUtil.add( g,  tripleList );
         testContains( g, tripleList );
         testContains( g, tripleArray );
     /* */
-        bu.add( tripleSet.iterator() );
+        GraphUtil.add( g, tripleSet.iterator() );
         testContains( g, tripleSet.iterator() );
         testContains( g, tripleList );
         testContains( g, tripleArray );
     /* */
-        bu.add( items );
+        GraphUtil.addInto( g, items );
         testContains( g, items );
         testContains( g, tripleSet.iterator() );
         testContains( g, tripleArray );
         testContains( g, tripleList );
     /* */
-        bu.delete( tripleArray );
+        GraphUtil.delete( g, tripleArray );
         testOmits( g, tripleArray );
         testContains( g, tripleList );
         testContains( g, tripleSet.iterator() );
         testContains( g, items );
     /* */
-        bu.delete( tripleSet.iterator() );
+        GraphUtil.delete( g, tripleSet.iterator() );
         testOmits( g, tripleSet.iterator() );
         testOmits( g, tripleArray );
         testContains( g, tripleList );
         testContains( g, items );
     /* */
-        bu.delete( items );
+        GraphUtil.deleteFrom( g, items );
         testOmits( g, tripleSet.iterator() );
         testOmits( g, tripleArray );
         testContains( g, tripleList );
         testOmits( g, items ); 
     /* */
-        bu.delete( tripleList );
+        GraphUtil.delete( g, tripleList );
         assertEquals( "graph has original size", initialSize, g.size() );
         }
         
@@ -365,12 +362,11 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testBulkAddWithReification( boolean withReifications )
         {
         Graph graphToUpdate = getGraph();
-        BulkUpdateHandler bu = graphToUpdate.getBulkUpdateHandler();
         Graph graphToAdd = graphWith( "pigs might fly; dead can dance" );
         Reifier updatedReifier = graphToUpdate.getReifier();
         Reifier addedReifier = graphToAdd.getReifier();
         xSPOyXYZ( addedReifier );
-        bu.add( graphToAdd, withReifications );
+        GraphUtil.addInto( graphToUpdate, graphToAdd, withReifications );
         assertIsomorphic
             ( 
             withReifications ? getReificationTriples( addedReifier ) : graphWith( "" ), 
@@ -430,12 +426,11 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testBulkUpdateRemoveWithReification( boolean withReifications )
         {
         Graph g = getGraph();
-        BulkUpdateHandler bu = g.getBulkUpdateHandler();
         Graph items = graphWith( "pigs might fly; dead can dance" );
         Reifier gr = g.getReifier(), ir = items.getReifier();
         xSPOyXYZ( ir );
         xSPO( gr ); aABC( gr ); 
-        bu.delete( items, withReifications );
+        GraphUtil.deleteFrom( g, items, withReifications );
         Graph answer = graphWith( "" );
         Reifier ar = answer.getReifier();
         if (withReifications)
@@ -628,7 +623,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "x R y; a P b" );
-        g.getBulkUpdateHandler().add( triples );
+        GraphUtil.add(g, triples );
         L.assertHas( new Object[] {"add[]", g, triples} );
         }
       
@@ -636,7 +631,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         List<Triple> elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
-        g.getBulkUpdateHandler().add( elems );
+        GraphUtil.add(g, elems) ;
         L.assertHas( new Object[] {"addList", g, elems} );
         }
     
@@ -644,7 +639,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "x R y; a P b" );
-        g.getBulkUpdateHandler().delete( triples );
+        GraphUtil.delete( g, triples );
         L.assertHas( new Object[] {"delete[]", g, triples} );
         }
         
@@ -652,7 +647,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         List<Triple> elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
-        g.getBulkUpdateHandler().delete( elems );
+        GraphUtil.delete( g, elems );
         L.assertHas( new Object[] {"deleteList", g, elems} );
         }
         
@@ -660,7 +655,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L ); 
         Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
-        g.getBulkUpdateHandler().add( asIterator( triples ) );
+        GraphUtil.add(g, asIterator( triples ) );
         L.assertHas( new Object[] {"addIterator", g, Arrays.asList( triples )} );
         }
         
@@ -668,7 +663,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
-        g.getBulkUpdateHandler().delete( asIterator( triples ) );
+        GraphUtil.delete( g, asIterator( triples ) );
         L.assertHas( new Object[] {"deleteIterator", g, Arrays.asList( triples )} );
         }
         
@@ -679,7 +674,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
-        g.getBulkUpdateHandler().add( triples );
+        GraphUtil.addInto( g, triples );
         L.assertHas( new Object[] {"addGraph", g, triples} );
         }
         
@@ -687,7 +682,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {        
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
-        g.getBulkUpdateHandler().delete( triples );
+        GraphUtil.deleteFrom( g, triples );
         L.assertHas( new Object[] {"deleteGraph", g, triples} );
         }
     
@@ -702,7 +697,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     public void testRemoveAllEvent()
         {
         Graph g = getAndRegister( L );
-        g.getBulkUpdateHandler().removeAll();
+        g.removeAll();
         L.assertHas( new Object[] { "someEvent", g, GraphEvents.removeAll } );        
         }
     
@@ -710,7 +705,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getAndRegister( L );
         Node S = node( "S" ), P = node( "??" ), O = node( "??" );
-        g.getBulkUpdateHandler().remove( S, P, O );
+        g.remove( S, P, O );
         Object event = GraphEvents.remove( S, P, O );
         L.assertHas( new Object[] { "someEvent", g, event } );        
         }
@@ -837,7 +832,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         graphAdd( g, triples );
-        g.getBulkUpdateHandler().removeAll();
+        g.removeAll();
         assertTrue( g.isEmpty() );
         }
     
@@ -902,7 +897,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
                 graphAdd( content, cases[i][0] );
                 Triple remove = triple( cases[i][1] );
                 Graph expected = graphWith( cases[i][2] );
-                content.getBulkUpdateHandler().remove( remove.getSubject(), remove.getPredicate(), remove.getObject() );
+                content.remove( remove.getSubject(), remove.getPredicate(), remove.getObject() );
                 Graph finalContent = remove( copy( content ), baseContent );
                 assertIsomorphic( cases[i][1], expected, finalContent );
                 }
@@ -957,12 +952,12 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
 
 	protected void add( Graph toUpdate, Graph toAdd )
         {
-        toUpdate.getBulkUpdateHandler().add( toAdd );
+	    GraphUtil.addInto( toUpdate, toAdd) ;
         }
     
     protected Graph remove( Graph toUpdate, Graph toRemove )
         {
-        toUpdate.getBulkUpdateHandler().delete( toRemove );
+        GraphUtil.deleteFrom(toUpdate, toRemove) ;
         return toUpdate;
         }
     
@@ -970,7 +965,7 @@ public/* abstract */class AbstractTestGraph extends GraphTestBase
     protected Graph copy( Graph g )
         {
         Graph result = Factory.createDefaultGraph();
-        result.getBulkUpdateHandler().add( g );
+        GraphUtil.addInto(result, g) ;
         return result;
         }
     

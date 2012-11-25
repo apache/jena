@@ -139,8 +139,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
         InfBulkUpdateHandler - a bulk update handler specialised for inference
         graphs by code for <code>removeAll()</code>.
-
-        @author kers
     */
     static class InfBulkUpdateHandler extends SimpleBulkUpdateHandler
     	{
@@ -148,6 +146,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
             { super(graph); }
 
         @Override
+        @Deprecated
         public void remove( Node s, Node p, Node o )
             {
             BaseInfGraph g = (BaseInfGraph) graph;
@@ -158,6 +157,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
             }
 
         @Override
+        @Deprecated
         public void removeAll()
             {
             BaseInfGraph g = (BaseInfGraph) graph;
@@ -167,7 +167,26 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
             g.getEventManager().notifyEvent( g, GraphEvents.removeAll );
             }
     	}
+    
+    @Override
+    public void remove( Node s, Node p, Node o )
+    {
+        getRawGraph().remove( s, p, o );
+        discardState();
+        rebind();
+        getEventManager().notifyEvent( this, GraphEvents.remove( s, p, o ) );
+    }
+    
+    @Override
+    public void removeAll()
+    {
+        getRawGraph().removeAll() ;
+        discardState();
+        rebind();
+        getEventManager().notifyEvent( this, GraphEvents.removeAll );
+    }
 
+    
     @Override
     public TransactionHandler getTransactionHandler()
         { return new InfTransactionHandler( this ); }

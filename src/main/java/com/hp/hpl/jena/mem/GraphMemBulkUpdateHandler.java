@@ -32,6 +32,7 @@ public class GraphMemBulkUpdateHandler extends SimpleBulkUpdateHandler
 	    { super( graph ); }
 	
 	@Override
+	@Deprecated
     public void removeAll()
 	    {
 	    clearComponents();

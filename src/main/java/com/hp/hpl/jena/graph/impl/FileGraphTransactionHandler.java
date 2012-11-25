@@ -67,7 +67,7 @@ public class FileGraphTransactionHandler
     
     @Override
     public void abort()
-        { fileGraph.getBulkUpdateHandler().removeAll();
+        { fileGraph.removeAll();
         fileGraph.readModelFrom( fileGraph.model, true, checkPointFile );
         checkPointFile.delete();
         inTransaction = false; }

@@ -188,7 +188,7 @@ public class ModelCom extends EnhGraph
 
     @Override
     public Model add( StmtIterator iter )  {
-        try { getBulkUpdateHandler().add( asTriples( iter ) ); }
+        try { GraphUtil.add( getGraph(), asTriples( iter ) ); }
         finally { iter.close(); }
         return this;
     }
@@ -199,7 +199,7 @@ public class ModelCom extends EnhGraph
         
     @Override
     public Model add( Model m, boolean suppressReifications ) {
-        getBulkUpdateHandler().add( m.getGraph(), !suppressReifications );
+        GraphUtil.addInto( getGraph(), m.getGraph(), !suppressReifications );
         return this;
     }
     
@@ -351,7 +351,7 @@ public class ModelCom extends EnhGraph
     @Override
     public Model remove( StmtIterator iter ) 
         {
-        getBulkUpdateHandler().delete( asTriples( iter ) );
+        GraphUtil.delete( getGraph(), asTriples( iter ) );
         return this;
         }
     
@@ -362,21 +362,21 @@ public class ModelCom extends EnhGraph
     @Override
     public Model remove( Model m, boolean suppressReifications ) 
         {
-        getBulkUpdateHandler().delete( m.getGraph(), !suppressReifications );
+        GraphUtil.deleteFrom( getGraph(), m.getGraph(), !suppressReifications );
         return this;
         }
     
     @Override
     public Model removeAll()
         { 
-        getGraph().getBulkUpdateHandler().removeAll();
+        getGraph().removeAll();
         return this; 
         }
     
     @Override
     public Model removeAll( Resource s, Property p, RDFNode o )
         {
-        getGraph().getBulkUpdateHandler().remove( asNode( s ), asNode( p ), asNode( o ) );
+        getGraph().remove( asNode( s ), asNode( p ), asNode( o ) );
         return this;
         }
         
@@ -1028,12 +1028,9 @@ public class ModelCom extends EnhGraph
     @Override
     public Model add( Statement [] statements )
         {
-        getBulkUpdateHandler().add( StatementImpl.asTriples( statements ) );
+        GraphUtil.add(getGraph(), StatementImpl.asTriples( statements ) );
         return this;
         }
-        
-    protected BulkUpdateHandler getBulkUpdateHandler()
-        { return getGraph().getBulkUpdateHandler(); }
         
     /**
         Add all the statements to the model by converting the list to an array of
@@ -1042,7 +1039,7 @@ public class ModelCom extends EnhGraph
     @Override
     public Model add( List<Statement> statements )
         {
-        getBulkUpdateHandler().add( asTriples( statements ) );
+        GraphUtil.add(getGraph(), asTriples( statements ) );
         return this;
         }
         
@@ -1068,7 +1065,7 @@ public class ModelCom extends EnhGraph
     @Override
     public Model remove( Statement [] statements )
         {
-        getBulkUpdateHandler().delete( StatementImpl.asTriples( statements ) );        
+        GraphUtil.delete( getGraph(), StatementImpl.asTriples( statements ) );        
         return this;
         }
      
@@ -1079,7 +1076,7 @@ public class ModelCom extends EnhGraph
     @Override
     public Model remove( List<Statement> statements )
         {
-        getBulkUpdateHandler().delete( asTriples( statements ) );
+        GraphUtil.delete( getGraph(), asTriples( statements ) );
         return this;
         }
            

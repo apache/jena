@@ -509,14 +509,14 @@ public abstract class AbstractTestReifier extends GraphTestBase
     public void testBulkClearReificationTriples()
         {
         Graph g = getGraphWith( "x rdf:subject S" );
-        g.getBulkUpdateHandler().removeAll();
+        g.removeAll();
         assertEquals( "oops: " + g.getClass(), Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
         }
     
     public void testBulkClearReificationTriples2()
         {
         Graph g = getGraphWith( "x rdf:subject S; x rdf:predicate P; x rdf:object O; x rdf:type rdf:Statement" );
-        g.getBulkUpdateHandler().removeAll();
+        g.removeAll();
         assertEquals( Collections.EMPTY_SET, g.find( Node.ANY, Node.ANY, Node.ANY ).toSet() );        
         }
     
