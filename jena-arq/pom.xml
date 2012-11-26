@@ -141,8 +141,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <includes>
-	    <!-- Test collections -->
-	    <!-- TC_General, TC_Riot, TC_Atlas-->
+	    <!-- The test collections TC_General, TC_Riot, TC_Atlas
+	    are development support that collect the relavent tests for
+	    partial testing during development.
+	    -->
 	    <include>**/TS_*.java</include>
             <include>**/TC_Scripted.java</include>
             <include>**/TC_DAWG.java</include>
