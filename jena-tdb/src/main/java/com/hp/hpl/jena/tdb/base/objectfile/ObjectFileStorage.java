@@ -24,10 +24,10 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfInt ;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorSlotted ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

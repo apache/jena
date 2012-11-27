@@ -32,7 +32,7 @@ import java.text.MessageFormat ;
 import java.util.Date ;
 import java.util.concurrent.TimeUnit ;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.* ;

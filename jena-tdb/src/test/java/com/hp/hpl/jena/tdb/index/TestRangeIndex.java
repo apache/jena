@@ -28,9 +28,9 @@ import static com.hp.hpl.jena.tdb.index.IndexTestLib.testInsertDelete;
 import java.util.List;
 
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.After;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.record.RecordLib;
 

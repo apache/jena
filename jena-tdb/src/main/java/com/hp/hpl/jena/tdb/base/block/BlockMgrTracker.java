@@ -24,8 +24,8 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.MultiSet ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.MultiSet ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

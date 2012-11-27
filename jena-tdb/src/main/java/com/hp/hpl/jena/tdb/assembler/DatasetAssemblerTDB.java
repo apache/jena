@@ -22,7 +22,7 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty ;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getStringValue ;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pLocation ;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pUnionDefaultGraph ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;

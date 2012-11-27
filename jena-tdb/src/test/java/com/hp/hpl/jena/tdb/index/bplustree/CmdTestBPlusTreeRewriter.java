@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
-import org.openjena.atlas.lib.RandomLib ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;

@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.tdb.index.ext;
 
-import static org.openjena.atlas.lib.Alg.decodeIndex ;
+import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.NotImplemented ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.block.Block ;

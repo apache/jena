@@ -24,10 +24,10 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.ByteBufferLib ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.Tuple ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.graph.Node ;

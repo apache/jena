@@ -20,7 +20,7 @@ package tdb;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;

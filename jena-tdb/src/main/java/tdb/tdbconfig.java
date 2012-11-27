@@ -22,7 +22,7 @@ package tdb;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import tdb.cmdline.CmdSub ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;

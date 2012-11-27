@@ -20,10 +20,10 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;

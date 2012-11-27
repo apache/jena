@@ -23,7 +23,7 @@ import static java.lang.String.format ;
 import java.io.IOException ;
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

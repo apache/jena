@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki.migrate;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkWrapper ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.SinkWrapper ;
 import org.openjena.riot.RiotException ;
 
 public class SinkLimited<T> extends SinkWrapper<T>

@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

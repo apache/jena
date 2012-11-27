@@ -20,9 +20,9 @@ package com.hp.hpl.jena.tdb.base.objectfile;
 
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 
 import com.hp.hpl.jena.tdb.base.block.Block ;

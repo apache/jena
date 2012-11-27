@@ -18,6 +18,7 @@
 
 package org.apache.jena.fuseki;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.http.TestDatasetAccessorHTTP ;
 import org.apache.jena.fuseki.http.TestDatasetGraphAccessorHTTP ;
@@ -27,7 +28,6 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.atlas.logging.Log ;
 
 
 @RunWith(Suite.class)

@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.sys ;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.LenNodeHash ;
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.tdb.TDB ;

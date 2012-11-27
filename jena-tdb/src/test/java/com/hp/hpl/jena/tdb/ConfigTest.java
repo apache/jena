@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 public class ConfigTest
 {

@@ -20,11 +20,11 @@ package com.hp.hpl.jena.tdb.migrate;
 
 import static com.hp.hpl.jena.query.ReadWrite.READ ;
 import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.logging.Log ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;

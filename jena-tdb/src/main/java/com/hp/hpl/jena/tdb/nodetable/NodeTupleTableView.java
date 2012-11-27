@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.ArrayUtils ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.ArrayUtils ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;

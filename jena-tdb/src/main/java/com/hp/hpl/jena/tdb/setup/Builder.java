@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.setup;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfNodeId ;
-import org.openjena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.ColumnMap ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

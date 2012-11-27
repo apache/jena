@@ -22,12 +22,12 @@ import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfLong;
 
 import java.util.Iterator;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.InternalErrorException ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 
 

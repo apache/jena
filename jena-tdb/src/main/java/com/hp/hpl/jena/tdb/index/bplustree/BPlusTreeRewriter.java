@@ -24,10 +24,10 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeRewriterUtils.summari
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorWithBuffer ;
-import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorWithBuffer ;
+import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

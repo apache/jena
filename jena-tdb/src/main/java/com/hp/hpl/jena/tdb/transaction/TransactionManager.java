@@ -34,8 +34,8 @@ import java.util.concurrent.Semaphore ;
 import java.util.concurrent.atomic.AtomicLong ;
 import java.util.concurrent.atomic.AtomicReference ;
 
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -23,9 +23,9 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
 import tdb.cmdline.ModLocation ;
 import arq.cmdline.CmdGeneral ;
 

@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccess ;

@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.tdb.base.recordbuffer;
 
-import static org.openjena.atlas.lib.Alg.decodeIndex ;
+import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.tdb.base.StorageException ;
 import com.hp.hpl.jena.tdb.base.block.BlockException ;

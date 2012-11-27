@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 
 
 public interface Destination<T> extends Sink<T>

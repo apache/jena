@@ -29,11 +29,7 @@ import java.util.Properties ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.PropertiesSorted ;
-import org.openjena.atlas.lib.PropertyUtils ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

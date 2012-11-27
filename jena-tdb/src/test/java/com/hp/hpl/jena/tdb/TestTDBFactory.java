@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.tdb;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;

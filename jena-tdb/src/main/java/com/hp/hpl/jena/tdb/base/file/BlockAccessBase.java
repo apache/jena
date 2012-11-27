@@ -23,7 +23,7 @@ import static java.lang.String.format ;
 import java.nio.ByteBuffer ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;

@@ -26,10 +26,10 @@ import com.hp.hpl.jena.tdb.base.buffer.PtrBuffer;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestPtrBuffer extends BaseTest
 {

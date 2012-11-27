@@ -20,12 +20,12 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
-import org.openjena.atlas.lib.CacheSet ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.CacheSet ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
 
 
 import com.hp.hpl.jena.graph.Node ;

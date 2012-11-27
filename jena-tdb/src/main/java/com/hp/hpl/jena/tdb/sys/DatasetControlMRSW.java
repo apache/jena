@@ -25,8 +25,8 @@ import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 import java.util.concurrent.atomic.AtomicLong ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 /** A policy that checks, but does not enforce, single writer or multiple writer locking policy */ 
 public class DatasetControlMRSW implements DatasetControl

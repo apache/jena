@@ -22,7 +22,7 @@ package com.hp.hpl.jena.tdb.lib;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 
 public class Lib2

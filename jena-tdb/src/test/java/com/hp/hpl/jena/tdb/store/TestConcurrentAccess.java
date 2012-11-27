@@ -21,9 +21,9 @@ package com.hp.hpl.jena.tdb.store;
 import java.util.ConcurrentModificationException ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;

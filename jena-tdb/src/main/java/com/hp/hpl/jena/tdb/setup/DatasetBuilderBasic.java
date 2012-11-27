@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.setup;
 
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

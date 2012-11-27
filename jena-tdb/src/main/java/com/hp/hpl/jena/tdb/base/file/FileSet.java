@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.base.file ;
 
 import java.io.File ;
 
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

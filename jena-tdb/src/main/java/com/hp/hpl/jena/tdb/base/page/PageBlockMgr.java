@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 import com.hp.hpl.jena.tdb.base.block.BlockConverter ;

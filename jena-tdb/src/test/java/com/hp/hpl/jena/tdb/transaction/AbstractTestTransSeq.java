@@ -19,11 +19,11 @@
 package com.hp.hpl.jena.tdb.transaction;
 
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.logging.Log ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

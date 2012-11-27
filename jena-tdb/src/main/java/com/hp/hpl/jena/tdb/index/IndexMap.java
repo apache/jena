@@ -23,7 +23,7 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;

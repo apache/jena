@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.tdb.assembler;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.exceptions.AssemblerException ;

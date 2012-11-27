@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.base.file;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 

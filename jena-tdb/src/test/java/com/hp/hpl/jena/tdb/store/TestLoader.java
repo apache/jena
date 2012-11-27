@@ -21,13 +21,13 @@ package com.hp.hpl.jena.tdb.store;
 import java.io.InputStream ;
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.logging.Log ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 
 public interface BlockMgr extends Sync, Closeable /*UnitMgr<Block>*/

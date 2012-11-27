@@ -19,8 +19,8 @@
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
 import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
-import org.openjena.atlas.event.Event ;
-import org.openjena.atlas.event.EventManager ;
+import org.apache.jena.atlas.event.Event ;
+import org.apache.jena.atlas.event.EventManager ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

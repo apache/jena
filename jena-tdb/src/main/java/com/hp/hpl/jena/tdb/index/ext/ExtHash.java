@@ -28,10 +28,10 @@ import java.util.Iterator;
 import java.util.Set;
 
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.BitsLong ;
-import org.openjena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.Bytes ;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

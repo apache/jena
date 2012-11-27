@@ -21,7 +21,7 @@ package tdb.cmdline;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdArgModule ;

@@ -21,10 +21,10 @@ package com.hp.hpl.jena.tdb.base.file;
 import java.io.File;
 
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.sys.Names ;

@@ -24,8 +24,8 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.commons.lang.StringUtils ;
-import org.openjena.atlas.lib.MultiMap ;
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.WebContent ;

@@ -18,7 +18,7 @@
 
 package tdb.cmdline;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import arq.cmdline.CmdARQ ;
 
 import com.hp.hpl.jena.Jena ;

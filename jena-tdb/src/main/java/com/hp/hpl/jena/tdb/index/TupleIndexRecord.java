@@ -23,10 +23,10 @@ import static java.lang.String.format;
 
 import java.util.Iterator;
 
-import org.openjena.atlas.iterator.* ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.iterator.* ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 
 

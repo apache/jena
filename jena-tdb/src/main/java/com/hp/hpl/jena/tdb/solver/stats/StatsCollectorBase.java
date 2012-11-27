@@ -22,7 +22,7 @@ package com.hp.hpl.jena.tdb.solver.stats;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.MapUtils ;
+import org.apache.jena.atlas.lib.MapUtils ;
 
 /** Statistics collector, general purpose */
 public class StatsCollectorBase<T>

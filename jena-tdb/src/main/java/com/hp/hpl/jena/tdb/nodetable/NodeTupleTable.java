@@ -20,9 +20,9 @@ package com.hp.hpl.jena.tdb.nodetable ;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.index.TupleTable ;

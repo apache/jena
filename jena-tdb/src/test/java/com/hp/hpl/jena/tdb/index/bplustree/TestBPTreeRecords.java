@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.tdb.index.bplustree;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.After ;
 import org.junit.AfterClass;
 import org.junit.Before ;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory;

@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.base.recordbuffer;
 
 import java.nio.ByteBuffer;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 
 import com.hp.hpl.jena.tdb.base.block.Block ;

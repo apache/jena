@@ -24,7 +24,7 @@ import static org.openjena.riot.Lang.NTRIPLES ;
 import java.io.InputStream ;
 import java.util.List ;
 
-import org.openjena.atlas.event.EventType ;
+import org.apache.jena.atlas.event.EventType ;
 import org.openjena.riot.RiotReader ;
 import org.slf4j.Logger ;
 

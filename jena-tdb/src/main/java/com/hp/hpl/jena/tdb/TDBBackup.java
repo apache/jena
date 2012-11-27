@@ -24,8 +24,8 @@ import java.io.FileOutputStream ;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.logging.Log ;
 import org.openjena.riot.out.NQuadsWriter ;
 
 import com.hp.hpl.jena.query.Dataset ;

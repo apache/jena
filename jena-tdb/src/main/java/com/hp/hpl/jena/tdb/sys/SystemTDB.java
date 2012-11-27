@@ -23,8 +23,8 @@ import java.io.IOException ;
 import java.nio.ByteOrder ;
 import java.util.Properties ;
 
-import org.openjena.atlas.lib.PropertyUtils ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.PropertyUtils ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

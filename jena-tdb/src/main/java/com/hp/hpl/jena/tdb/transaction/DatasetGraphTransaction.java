@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;

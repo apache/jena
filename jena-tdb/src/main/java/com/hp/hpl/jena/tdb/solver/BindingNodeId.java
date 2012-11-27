@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator ;
 import java.util.Map;
 
-import org.openjena.atlas.lib.Map2 ;
+import org.apache.jena.atlas.lib.Map2 ;
 
 
 

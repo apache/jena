@@ -23,7 +23,7 @@ import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;
 import com.hp.hpl.jena.tdb.base.block.BlockMgrFactory ;

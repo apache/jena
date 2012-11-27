@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.TDBException ;

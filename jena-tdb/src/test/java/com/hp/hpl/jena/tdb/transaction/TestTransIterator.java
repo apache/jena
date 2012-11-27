@@ -20,9 +20,9 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;

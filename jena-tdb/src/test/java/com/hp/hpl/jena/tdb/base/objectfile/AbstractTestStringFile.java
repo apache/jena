@@ -18,10 +18,10 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.objectfile.StringFile ;
 

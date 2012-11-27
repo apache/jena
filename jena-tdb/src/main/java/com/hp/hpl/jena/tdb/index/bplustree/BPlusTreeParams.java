@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.index.bplustree;
 
 import static com.hp.hpl.jena.tdb.sys.SystemTDB.SizeOfPointer;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger;
 
 import com.hp.hpl.jena.tdb.TDBException;

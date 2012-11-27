@@ -26,6 +26,9 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
@@ -33,9 +36,6 @@ import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 /** This servlet can be attached to a dataset location

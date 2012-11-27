@@ -21,8 +21,8 @@ package com.hp.hpl.jena.tdb.setup;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.query.ARQ ;

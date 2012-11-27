@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Date ;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.sparql.util.StringUtils ;
 import com.hp.hpl.jena.sparql.util.Timer ;

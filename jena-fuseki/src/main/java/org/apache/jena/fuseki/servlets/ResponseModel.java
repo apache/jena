@@ -25,13 +25,13 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
-import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 

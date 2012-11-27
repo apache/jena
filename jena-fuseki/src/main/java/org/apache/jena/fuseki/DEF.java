@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki;
 
-import org.openjena.atlas.web.AcceptList ;
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.AcceptList ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 public class DEF

@@ -23,8 +23,8 @@ import static com.hp.hpl.jena.tdb.base.record.RecordLib.recordToInt;
 
 import com.hp.hpl.jena.tdb.base.record.Record;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestRecord extends BaseTest
 {

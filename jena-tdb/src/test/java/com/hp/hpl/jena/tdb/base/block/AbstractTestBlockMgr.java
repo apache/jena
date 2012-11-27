@@ -21,12 +21,12 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.nio.ByteBuffer ;
 
-import static org.openjena.atlas.lib.ByteBufferLib.fill ;
+import static org.apache.jena.atlas.lib.ByteBufferLib.fill ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 public abstract class AbstractTestBlockMgr extends BaseTest
 {

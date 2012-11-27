@@ -21,8 +21,8 @@ package com.hp.hpl.jena.tdb.store.bulkloader2;
 import java.io.IOException ;
 import java.io.OutputStream ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.lib.Hex ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.Hex ;
 
 /** Buffered writer of rows of longs, in hex. */
 public class WriteRows

@@ -21,9 +21,9 @@ package com.hp.hpl.jena.tdb.store;
 import java.math.BigDecimal ;
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.BitsLong ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
