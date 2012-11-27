@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.tdb.base.buffer;
 
 import static java.lang.String.format;
-import static org.openjena.atlas.lib.Alg.encodeIndex ;
+import static org.apache.jena.atlas.lib.Alg.encodeIndex ;
 
 import java.nio.ByteBuffer;
 import java.util.Iterator;

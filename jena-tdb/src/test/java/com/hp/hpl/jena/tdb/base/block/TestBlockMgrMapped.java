@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.logging.Log ;
 import org.junit.After ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.BlockAccess ;

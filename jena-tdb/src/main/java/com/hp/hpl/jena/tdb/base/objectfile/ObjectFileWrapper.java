@@ -23,7 +23,7 @@ import java.util.Iterator ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.Pair ;
 
 /** 
  * An ObjectFile is an append-read file, that is you can append data

@@ -22,7 +22,7 @@ import static com.hp.hpl.jena.sparql.core.Quad.isUnionGraph ;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.* ;

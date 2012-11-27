@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Arrays;
 
-import org.openjena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Bytes ;
 
 
 /** Hash values. */ 

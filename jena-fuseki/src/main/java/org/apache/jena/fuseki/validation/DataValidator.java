@@ -29,10 +29,10 @@ import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.SinkWrapper ;
 import org.apache.jena.fuseki.FusekiLib ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkWrapper ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;

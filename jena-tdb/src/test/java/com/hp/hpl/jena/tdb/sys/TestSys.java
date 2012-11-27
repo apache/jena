@@ -21,8 +21,8 @@ package com.hp.hpl.jena.tdb.sys;
 
 import com.hp.hpl.jena.tdb.TDB;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestSys extends BaseTest
 {

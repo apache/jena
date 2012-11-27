@@ -30,10 +30,10 @@ import com.hp.hpl.jena.tdb.index.TupleTable;
 import com.hp.hpl.jena.tdb.store.NodeId;
 import com.hp.hpl.jena.tdb.sys.SystemTDB;
 
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Tuple ;
 import org.junit.Test;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Tuple ;
 
 
 public class TestTupleTable extends BaseTest

@@ -22,12 +22,12 @@ import java.nio.ByteBuffer ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.ByteBufferLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

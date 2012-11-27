@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import org.openjena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.BitsLong ;
 
 public class IntegerNode
 {

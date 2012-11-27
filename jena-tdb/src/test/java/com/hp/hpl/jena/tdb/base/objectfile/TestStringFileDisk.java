@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.base.objectfile;
 
-import static org.openjena.atlas.lib.FileOps.clearDirectory ;
-import org.openjena.atlas.lib.FileOps ;
+import static org.apache.jena.atlas.lib.FileOps.clearDirectory ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.base.file.FileFactory ;

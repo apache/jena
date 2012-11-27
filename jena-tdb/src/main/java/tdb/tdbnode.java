@@ -20,7 +20,7 @@ package tdb;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Bytes ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.graph.Node ;

@@ -18,14 +18,14 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import static org.openjena.atlas.logging.Log.warn ;
+import static org.apache.jena.atlas.logging.Log.warn ;
 
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.ByteBufferLib ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

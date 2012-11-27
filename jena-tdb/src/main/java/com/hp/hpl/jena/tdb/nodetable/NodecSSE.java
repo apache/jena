@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.nodetable;
 
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.io.BlockUTF8 ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.io.BlockUTF8 ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.openjena.riot.LangTag ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.tokens.Token ;

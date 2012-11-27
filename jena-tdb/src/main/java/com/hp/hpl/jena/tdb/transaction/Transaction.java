@@ -23,7 +23,7 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;

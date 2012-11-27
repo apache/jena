@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.tdb.store;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.sparql.graph.AbstractTestGraph2 ;

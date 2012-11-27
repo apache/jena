@@ -25,11 +25,11 @@ import java.util.Iterator ;
 
 import javax.servlet.ServletOutputStream ;
 
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.openjena.atlas.web.MediaType ;
-import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 

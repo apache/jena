@@ -27,12 +27,12 @@ import java.util.Iterator ;
 import java.util.concurrent.* ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.RandomLib ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -57,7 +57,7 @@ import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
 /** System testing of the transactions. */
 public class T_TransSystem
 {
-    static { org.openjena.atlas.logging.Log.setLog4j() ; }
+    static { org.apache.jena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(T_TransSystem.class) ;
 
     /* Notes:

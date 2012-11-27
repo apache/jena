@@ -21,8 +21,8 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;

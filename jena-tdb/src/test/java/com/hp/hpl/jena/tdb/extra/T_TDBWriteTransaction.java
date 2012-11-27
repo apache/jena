@@ -32,8 +32,8 @@ package com.hp.hpl.jena.tdb.extra ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;

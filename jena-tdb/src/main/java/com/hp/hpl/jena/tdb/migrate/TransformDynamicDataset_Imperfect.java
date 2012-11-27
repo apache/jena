@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.migrate;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

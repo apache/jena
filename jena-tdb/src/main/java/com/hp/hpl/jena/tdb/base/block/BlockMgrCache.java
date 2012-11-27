@@ -20,9 +20,9 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.ActionKeyValue ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.ActionKeyValue ;
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -27,12 +27,12 @@ import java.io.OutputStream ;
 import java.util.Arrays ;
 import java.util.List ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.logging.Log ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.system.SinkExtendTriplesToQuads ;

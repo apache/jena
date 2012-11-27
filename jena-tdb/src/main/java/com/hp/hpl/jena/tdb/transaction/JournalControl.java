@@ -27,8 +27,8 @@ import java.nio.ByteBuffer ;
 import java.util.Collection ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

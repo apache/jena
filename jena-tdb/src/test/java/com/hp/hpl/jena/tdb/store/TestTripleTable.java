@@ -20,10 +20,10 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.log4j.Level ;
 import org.apache.log4j.Logger ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -22,9 +22,9 @@ import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 import tdb.cmdline.CmdTDB ;

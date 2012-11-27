@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Sync ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.slf4j.Logger ;

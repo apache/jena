@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Iterator;
 
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 
 

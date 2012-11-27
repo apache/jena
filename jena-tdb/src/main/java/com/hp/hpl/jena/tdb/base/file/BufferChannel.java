@@ -21,8 +21,8 @@ package com.hp.hpl.jena.tdb.base.file;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 
 /** Interface to storage : a simplified version of FileChannel.

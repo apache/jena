@@ -24,10 +24,10 @@ import java.io.PrintStream ;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.Hex ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Hex ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordFactory ;

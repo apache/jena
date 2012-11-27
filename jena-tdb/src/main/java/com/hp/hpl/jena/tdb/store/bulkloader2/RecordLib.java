@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader2;
 
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.ColumnMap ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordException ;

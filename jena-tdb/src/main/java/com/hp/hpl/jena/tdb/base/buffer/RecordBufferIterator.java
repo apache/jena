@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.base.buffer;
 
-import static org.openjena.atlas.lib.Alg.decodeIndex ;
+import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

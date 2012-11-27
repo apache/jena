@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
-import org.openjena.atlas.lib.InternalErrorException ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.InternalErrorException ;
+import org.apache.jena.atlas.logging.Log ;
 
 public enum JournalEntryType 
 { 

@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.tdb.base.block;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest;
 import com.hp.hpl.jena.tdb.base.file.BlockAccess ;

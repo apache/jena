@@ -21,8 +21,8 @@ package org.apache.jena.fuseki.migrate;
 
 import java.io.InputStream ;
 
+import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;

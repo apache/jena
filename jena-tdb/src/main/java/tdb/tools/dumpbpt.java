@@ -23,9 +23,9 @@ import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.lib.Tuple ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.logging.Log ;
 import tdb.cmdline.ModLocation ;
 import arq.cmdline.CmdGeneral ;
 

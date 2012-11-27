@@ -22,8 +22,8 @@ package com.hp.hpl.jena.tdb.junit;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

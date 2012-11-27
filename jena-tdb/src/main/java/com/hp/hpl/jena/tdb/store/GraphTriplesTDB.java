@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.store;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

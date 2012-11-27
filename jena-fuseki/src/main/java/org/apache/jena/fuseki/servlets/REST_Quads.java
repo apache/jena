@@ -25,12 +25,12 @@ import java.io.IOException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.MediaType ;
-import org.openjena.atlas.web.TypedOutputStream ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;

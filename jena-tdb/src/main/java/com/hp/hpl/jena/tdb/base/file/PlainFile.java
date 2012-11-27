@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.base.file;
 
 import java.nio.ByteBuffer;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 /** Single file, single ByteBuffer */
 public abstract class PlainFile implements Sync, Closeable

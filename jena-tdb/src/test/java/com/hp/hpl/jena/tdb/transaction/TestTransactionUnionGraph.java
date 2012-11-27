@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.tdb.transaction;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.* ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.*  ;
 

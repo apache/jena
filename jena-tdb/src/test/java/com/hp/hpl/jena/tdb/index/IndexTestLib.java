@@ -22,22 +22,22 @@ import static com.hp.hpl.jena.tdb.base.record.RecordLib.intToRecord ;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.r ;
 import static com.hp.hpl.jena.tdb.base.record.RecordLib.toIntList ;
 import static java.lang.String.format ;
+import static org.apache.jena.atlas.lib.ListUtils.asList ;
+import static org.apache.jena.atlas.lib.ListUtils.unique ;
+import static org.apache.jena.atlas.lib.RandomLib.random ;
+import static org.apache.jena.atlas.test.Gen.permute ;
+import static org.apache.jena.atlas.test.Gen.rand ;
+import static org.apache.jena.atlas.test.Gen.strings ;
 import static org.junit.Assert.assertEquals ;
 import static org.junit.Assert.assertNotNull ;
 import static org.junit.Assert.fail ;
-import static org.openjena.atlas.lib.ListUtils.asList ;
-import static org.openjena.atlas.lib.ListUtils.unique ;
-import static org.openjena.atlas.lib.RandomLib.random ;
-import static org.openjena.atlas.test.Gen.permute ;
-import static org.openjena.atlas.test.Gen.rand ;
-import static org.openjena.atlas.test.Gen.strings ;
 
 import java.util.ArrayList ;
 import java.util.List ;
 import java.util.SortedSet ;
 import java.util.TreeSet ;
 
-import org.openjena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.tdb.base.record.Record ;
 import com.hp.hpl.jena.tdb.base.record.RecordLib ;

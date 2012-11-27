@@ -18,7 +18,7 @@
 
 package tdb;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 import tdb.cmdline.CmdTDB;
 
 public class tdbclean extends CmdTDB

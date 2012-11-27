@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.index.bplustree;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.openjena.atlas.iterator.PeekIterator;
+import org.apache.jena.atlas.iterator.PeekIterator ;
 
 import com.hp.hpl.jena.tdb.base.recordbuffer.RecordBufferPage ;
 

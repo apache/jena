@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.tdb.index;
 
-import org.openjena.atlas.lib.RandomLib ;
-import org.openjena.atlas.test.ExecGenerator ;
+import org.apache.jena.atlas.lib.RandomLib ;
+import org.apache.jena.atlas.test.ExecGenerator ;
 
 public class IndexTestGenerator implements ExecGenerator
 {

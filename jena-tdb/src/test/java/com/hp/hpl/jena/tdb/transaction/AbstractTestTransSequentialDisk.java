@@ -20,9 +20,9 @@ package com.hp.hpl.jena.tdb.transaction;
 
 import java.io.File ;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.After ;
 import org.junit.Before ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.tdb.ConfigTest ;
 import com.hp.hpl.jena.tdb.StoreConnection ;

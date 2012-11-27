@@ -21,12 +21,12 @@ package com.hp.hpl.jena.tdb.transaction;
 import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.tdb.base.objectfile.ObjectFile ;

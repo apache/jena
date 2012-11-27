@@ -21,9 +21,9 @@ package com.hp.hpl.jena.tdb.base.file;
 import java.io.IOException ;
 import java.nio.channels.FileChannel ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

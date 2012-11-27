@@ -21,7 +21,7 @@ package com.hp.hpl.jena.tdb.store;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.openjena.atlas.lib.BitsLong ;
+import org.apache.jena.atlas.lib.BitsLong ;
 
 
 

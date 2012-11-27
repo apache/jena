@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.base.page;
 
-import org.openjena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.tdb.base.block.Block ;
 

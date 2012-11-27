@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.base.block;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 import org.slf4j.Logger ;
 
 public abstract class BlockMgrBase implements BlockMgr

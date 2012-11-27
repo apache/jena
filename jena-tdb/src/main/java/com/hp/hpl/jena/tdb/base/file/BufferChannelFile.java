@@ -24,8 +24,8 @@ import java.io.RandomAccessFile ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 
 public class BufferChannelFile implements BufferChannel

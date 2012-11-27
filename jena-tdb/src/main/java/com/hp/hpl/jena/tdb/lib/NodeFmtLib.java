@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.lib;
 
-import org.openjena.atlas.lib.Chars ;
+import org.apache.jena.atlas.lib.Chars ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.RiotChars ;

@@ -22,7 +22,7 @@ import java.io.ByteArrayOutputStream ;
 import java.io.PrintStream ;
 import java.nio.ByteBuffer ;
 
-import org.openjena.atlas.lib.ByteBufferLib ;
+import org.apache.jena.atlas.lib.ByteBufferLib ;
 
 // import tx.base.BlockRef ;
 

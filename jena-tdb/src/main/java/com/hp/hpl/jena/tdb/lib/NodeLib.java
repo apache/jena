@@ -26,13 +26,13 @@ import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Pool ;
-import org.openjena.atlas.lib.PoolBase ;
-import org.openjena.atlas.lib.PoolSync ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Pool ;
+import org.apache.jena.atlas.lib.PoolBase ;
+import org.apache.jena.atlas.lib.PoolSync ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.tdb.TDBException ;

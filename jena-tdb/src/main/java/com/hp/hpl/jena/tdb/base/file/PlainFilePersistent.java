@@ -22,7 +22,7 @@ import java.io.IOException ;
 import java.nio.ByteBuffer ;
 import java.nio.channels.FileChannel ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

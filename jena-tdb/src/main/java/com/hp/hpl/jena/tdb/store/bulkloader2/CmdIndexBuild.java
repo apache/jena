@@ -22,10 +22,10 @@ import java.io.InputStream ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.ColumnMap ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.logging.Log ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.tdb.base.block.BlockMgr ;

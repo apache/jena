@@ -25,7 +25,7 @@ import java.util.Map ;
 import javax.servlet.http.HttpServletResponse ;
 import javax.servlet.http.HttpServletResponseWrapper ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 /** Intercepting wrapper so we can track the response settings for logging purposes */
 

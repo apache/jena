@@ -30,11 +30,11 @@ import java.util.concurrent.Executors ;
 import java.util.concurrent.TimeUnit ;
 import java.util.concurrent.atomic.AtomicInteger ;
 
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.RandomLib ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.RandomLib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -60,7 +60,7 @@ public class T_TransSystemMultiDatasets
 {
     // Use this to flip between FileMode.direct and FileMode.mapped
     static { SystemTDB.setFileMode(FileMode.mapped) ; }
-    static { org.openjena.atlas.logging.Log.setLog4j() ; }
+    static { org.apache.jena.atlas.logging.Log.setLog4j() ; }
     private static Logger log = LoggerFactory.getLogger(T_TransSystemMultiDatasets.class) ;
 
     static boolean MEM = false ;

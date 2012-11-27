@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader2;
 
-import org.openjena.atlas.lib.ColumnMap ;
+import org.apache.jena.atlas.lib.ColumnMap ;
 
 import com.hp.hpl.jena.tdb.base.file.FileSet ;
 import com.hp.hpl.jena.tdb.base.file.Location ;

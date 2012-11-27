@@ -20,7 +20,7 @@ package com.hp.hpl.jena.tdb.solver;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;

@@ -20,8 +20,8 @@ package com.hp.hpl.jena.tdb.graph;
 
 import java.util.Map ;
 
+import org.apache.jena.atlas.lib.FileOps ;
 import org.junit.* ;
-import org.openjena.atlas.lib.FileOps ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.shared.PrefixMapping ;

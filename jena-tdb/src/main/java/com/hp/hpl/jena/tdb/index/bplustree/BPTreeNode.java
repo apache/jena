@@ -25,9 +25,9 @@ import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingNode ;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.CheckingTree ;
 import static com.hp.hpl.jena.tdb.index.bplustree.BPlusTreeParams.DumpTree ;
 import static java.lang.String.format ;
-import static org.openjena.atlas.lib.Alg.decodeIndex ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
+import static org.apache.jena.atlas.lib.Alg.decodeIndex ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

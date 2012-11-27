@@ -24,11 +24,11 @@ import java.nio.ByteBuffer ;
 import java.util.Iterator ;
 import java.util.zip.Adler32 ;
 
-import org.openjena.atlas.iterator.IteratorSlotted ;
-import org.openjena.atlas.lib.Bytes ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.apache.jena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.Sync ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

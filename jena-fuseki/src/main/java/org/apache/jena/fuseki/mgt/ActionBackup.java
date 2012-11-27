@@ -29,6 +29,9 @@ import java.util.zip.GZIPOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
@@ -36,9 +39,6 @@ import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.FileOps ;
-import org.openjena.atlas.logging.Log ;
 import org.openjena.riot.out.NQuadsWriter ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
