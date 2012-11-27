@@ -23,12 +23,12 @@ import java.io.ByteArrayOutputStream ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Assert;
 import org.junit.Test ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Parameterized ;
 import org.junit.runners.Parameterized.Parameters ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;

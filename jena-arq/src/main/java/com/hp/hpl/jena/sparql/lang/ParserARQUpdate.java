@@ -22,8 +22,8 @@ import java.io.FileReader ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
-import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryException ;

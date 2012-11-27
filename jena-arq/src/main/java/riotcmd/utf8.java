@@ -21,10 +21,10 @@ package riotcmd;
 import java.io.IOException ;
 import java.io.InputStream ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.InputStreamBuffered ;
-import org.openjena.atlas.io.InStreamUTF8 ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.InStreamUTF8 ;
+import org.apache.jena.atlas.io.InputStreamBuffered ;
 
 public class utf8
 {

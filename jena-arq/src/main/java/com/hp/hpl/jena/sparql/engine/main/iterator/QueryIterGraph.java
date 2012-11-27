@@ -21,8 +21,8 @@ package com.hp.hpl.jena.sparql.engine.main.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.SingletonIterator ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.SingletonIterator ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

@@ -21,9 +21,9 @@ package org.openjena.riot.system;
 import java.io.InputStream;
 import java.io.Reader;
 
-import org.openjena.atlas.io.PeekReader;
-import org.openjena.atlas.json.io.parser.TokenizerJSON;
-import org.openjena.atlas.lib.Sink;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.RiotLoader;
 import org.openjena.riot.RiotReader;
 import org.openjena.riot.lang.LangRIOT;

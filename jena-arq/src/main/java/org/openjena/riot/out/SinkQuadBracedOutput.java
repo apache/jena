@@ -20,10 +20,10 @@ package org.openjena.riot.out;
 
 import java.io.OutputStream;
 
-import org.openjena.atlas.io.IndentedWriter;
-import org.openjena.atlas.lib.Closeable;
-import org.openjena.atlas.lib.Lib;
-import org.openjena.atlas.lib.Sink;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

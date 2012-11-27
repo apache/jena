@@ -20,10 +20,10 @@ package org.apache.jena.riot.stream;
 
 import java.io.File ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.TypedInputStream2 ;
 import org.apache.jena.riot.stream.LocatorFile2 ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.WebContent ;
 
 public class TestLocators extends BaseTest 

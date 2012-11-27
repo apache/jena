@@ -18,31 +18,7 @@
 
 package org.openjena.riot.tokens;
 
-import static org.openjena.atlas.lib.Chars.* ;
-import static org.openjena.atlas.lib.Chars.CH_COLON ;
-import static org.openjena.atlas.lib.Chars.CH_COMMA ;
-import static org.openjena.atlas.lib.Chars.CH_DOT ;
-import static org.openjena.atlas.lib.Chars.CH_EQUALS ;
-import static org.openjena.atlas.lib.Chars.CH_GT ;
-import static org.openjena.atlas.lib.Chars.CH_HASH ;
-import static org.openjena.atlas.lib.Chars.CH_LBRACE ;
-import static org.openjena.atlas.lib.Chars.CH_LBRACKET ;
-import static org.openjena.atlas.lib.Chars.CH_LPAREN ;
-import static org.openjena.atlas.lib.Chars.CH_LT ;
-import static org.openjena.atlas.lib.Chars.CH_MINUS ;
-import static org.openjena.atlas.lib.Chars.CH_PLUS ;
-import static org.openjena.atlas.lib.Chars.CH_QMARK ;
-import static org.openjena.atlas.lib.Chars.CH_QUOTE1 ;
-import static org.openjena.atlas.lib.Chars.CH_QUOTE2 ;
-import static org.openjena.atlas.lib.Chars.CH_RBRACE ;
-import static org.openjena.atlas.lib.Chars.CH_RBRACKET ;
-import static org.openjena.atlas.lib.Chars.CH_RPAREN ;
-import static org.openjena.atlas.lib.Chars.CH_SEMICOLON ;
-import static org.openjena.atlas.lib.Chars.CH_STAR ;
-import static org.openjena.atlas.lib.Chars.CH_UNDERSCORE ;
-import static org.openjena.atlas.lib.Chars.CR ;
-import static org.openjena.atlas.lib.Chars.EOF ;
-import static org.openjena.atlas.lib.Chars.NL ;
+import static org.apache.jena.atlas.lib.Chars.* ;
 import static org.openjena.riot.system.RiotChars.charInArray ;
 import static org.openjena.riot.system.RiotChars.isA2Z ;
 import static org.openjena.riot.system.RiotChars.isA2ZN ;
@@ -58,9 +34,9 @@ import java.util.NoSuchElementException ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.PeekReader ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.RiotChars ;
 

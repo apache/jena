@@ -22,7 +22,8 @@ import java.io.ByteArrayOutputStream ;
 import java.io.UnsupportedEncodingException ;
 
 import com.hp.hpl.jena.query.ResultSet ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 
 
 public abstract class OutputBase implements OutputFormatter

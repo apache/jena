@@ -26,7 +26,7 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 /** Datastructure factory - allows indirecly to other implementations */ 
 

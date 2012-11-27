@@ -23,10 +23,10 @@ import static com.hp.hpl.jena.sparql.util.StringUtils.printAbbrev ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.AccString ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.iterator.AccString ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

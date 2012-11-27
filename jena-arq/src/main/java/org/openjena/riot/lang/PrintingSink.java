@@ -18,7 +18,7 @@
 
 package org.openjena.riot.lang;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.out.NodeFmtLib ;
 import org.slf4j.Logger ;
 

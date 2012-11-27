@@ -18,7 +18,7 @@
 
 package arq.cmdline;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 

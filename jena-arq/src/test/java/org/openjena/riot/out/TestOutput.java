@@ -24,8 +24,8 @@ import java.io.OutputStreamWriter ;
 import java.io.UnsupportedEncodingException ;
 import java.io.Writer ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;

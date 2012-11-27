@@ -19,9 +19,9 @@
 package riotcmd;
 
 import junit.framework.TestSuite ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.RIOT ;
 import org.openjena.riot.SysRIOT ;
 import arq.cmd.CmdException ;

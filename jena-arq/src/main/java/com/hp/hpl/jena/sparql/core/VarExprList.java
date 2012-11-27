@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

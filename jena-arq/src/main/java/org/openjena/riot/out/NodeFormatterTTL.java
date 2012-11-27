@@ -22,12 +22,13 @@ import java.io.IOException ;
 import java.io.Writer ;
 import java.net.MalformedURLException ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Pair ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;

@@ -19,9 +19,9 @@
 package org.apache.jena.riot.langsuite;
 
 import static org.openjena.riot.SysRIOT.fmtMessage ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.Lang2 ;
 import org.apache.jena.riot.WebReader2 ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotException ;

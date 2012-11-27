@@ -23,8 +23,8 @@ import java.util.Collection ;
 import java.util.List ;
 import java.util.Set ;
 
-import static org.openjena.atlas.lib.CollectionUtils.disjoint ;
-import org.openjena.atlas.lib.Pair ;
+import static org.apache.jena.atlas.lib.CollectionUtils.disjoint ;
+import org.apache.jena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;

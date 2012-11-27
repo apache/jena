@@ -26,7 +26,7 @@ import java.util.List ;
 import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;

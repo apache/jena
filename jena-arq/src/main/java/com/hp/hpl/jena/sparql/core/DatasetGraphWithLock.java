@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.shared.JenaException ;

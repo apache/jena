@@ -20,8 +20,8 @@ package com.hp.hpl.jena.sparql.graph;
 
 import java.util.Collection ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorConcat ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorConcat ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

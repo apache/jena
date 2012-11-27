@@ -22,8 +22,8 @@ import java.io.ByteArrayInputStream ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 public class TokenizerFactory
 {

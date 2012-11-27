@@ -22,8 +22,9 @@ import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.util.PrefixMapping2 ;
 
 //** Prologues - combines with PrefixMapping (the RIOT Prologue uses PrefixMap) */

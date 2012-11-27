@@ -21,7 +21,7 @@ package org.openjena.riot;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
-import org.openjena.atlas.lib.Chars ;
+import org.apache.jena.atlas.lib.Chars ;
 import org.openjena.riot.system.RiotChars ;
 
 

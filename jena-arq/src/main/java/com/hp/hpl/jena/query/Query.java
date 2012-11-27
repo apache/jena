@@ -27,10 +27,10 @@ import java.util.LinkedHashSet ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.Printable ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQConstants ;

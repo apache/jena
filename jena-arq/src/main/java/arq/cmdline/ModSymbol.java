@@ -21,7 +21,7 @@ package arq.cmdline;
 import java.io.PrintStream ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.util.Context ;

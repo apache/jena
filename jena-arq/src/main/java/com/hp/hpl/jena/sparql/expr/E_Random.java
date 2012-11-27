@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import org.openjena.atlas.lib.RandomLib ;
+import org.apache.jena.atlas.lib.RandomLib ;
 
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 

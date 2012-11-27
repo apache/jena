@@ -21,7 +21,7 @@ package org.openjena.riot.out;
 import java.io.IOException ;
 import java.io.Writer ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

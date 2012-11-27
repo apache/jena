@@ -23,11 +23,12 @@ import java.util.HashSet ;
 import java.util.Iterator ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.expr.Expr ;

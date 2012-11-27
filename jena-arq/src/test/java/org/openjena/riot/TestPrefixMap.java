@@ -19,9 +19,9 @@
 package org.openjena.riot;
 
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.system.PrefixMap ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.iri.IRIFactory ;
 
 public class TestPrefixMap extends BaseTest

@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.serializer;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

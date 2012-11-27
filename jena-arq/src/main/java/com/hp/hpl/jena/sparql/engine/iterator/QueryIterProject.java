@@ -20,8 +20,8 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.ListUtils ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.ListUtils ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;

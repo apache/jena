@@ -26,9 +26,9 @@ import java.util.Date ;
 import java.util.List ;
 import java.util.regex.Pattern ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
-/** @see org.openjena.atlas.lib.StrUtils */
+/** @see org.apache.jena.atlas.lib.StrUtils */
 public class StringUtils
 {
     static NumberFormat integerFormat = NumberFormat.getNumberInstance() ;

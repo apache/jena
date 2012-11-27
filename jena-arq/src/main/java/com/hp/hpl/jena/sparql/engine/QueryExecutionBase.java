@@ -24,10 +24,10 @@ import java.util.List ;
 import java.util.Set ;
 import java.util.concurrent.TimeUnit ;
 
-import org.openjena.atlas.lib.AlarmClock ;
-import org.openjena.atlas.lib.Callback ;
-import org.openjena.atlas.lib.Pingback ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.AlarmClock ;
+import org.apache.jena.atlas.lib.Callback ;
+import org.apache.jena.atlas.lib.Pingback ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.query;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

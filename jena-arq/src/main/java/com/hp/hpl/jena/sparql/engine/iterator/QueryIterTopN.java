@@ -24,10 +24,10 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.PriorityQueue ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorArray ;
-import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
-import org.openjena.atlas.lib.ReverseComparator ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorArray ;
+import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
+import org.apache.jena.atlas.lib.ReverseComparator ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecException ;

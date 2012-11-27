@@ -18,9 +18,9 @@
 
 package org.openjena.riot.process.normalize;
 
-import static org.openjena.atlas.lib.Chars.CH_DOT ;
-import static org.openjena.atlas.lib.Chars.CH_MINUS ;
-import static org.openjena.atlas.lib.Chars.CH_PLUS ;
+import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
+import static org.apache.jena.atlas.lib.Chars.CH_MINUS ;
+import static org.apache.jena.atlas.lib.Chars.CH_PLUS ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;

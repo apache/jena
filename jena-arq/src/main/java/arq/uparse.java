@@ -22,7 +22,7 @@ import java.io.IOException ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;

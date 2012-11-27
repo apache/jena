@@ -20,8 +20,8 @@ package org.openjena.riot.lang;
 
 import static org.openjena.riot.tokens.TokenType.EOF ;
 import static org.openjena.riot.tokens.TokenType.NODE ;
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.iterator.PeekIterator ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.ParserProfile ;

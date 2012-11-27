@@ -20,9 +20,9 @@ package org.openjena.riot.lang;
 
 import java.io.ByteArrayInputStream ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.ErrorHandlerTestLib.ExError ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;

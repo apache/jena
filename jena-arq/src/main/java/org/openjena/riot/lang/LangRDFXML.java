@@ -22,8 +22,8 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.io.Reader ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.checker.CheckerLiterals ;

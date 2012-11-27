@@ -23,9 +23,9 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.PrintUtils ;
-import org.openjena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWriter ;

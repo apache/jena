@@ -25,9 +25,9 @@ import java.util.Map ;
 
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;
 import org.openjena.riot.lang.LangRIOT ;

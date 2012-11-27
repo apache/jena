@@ -20,8 +20,8 @@ package org.apache.jena.riot;
 
 import java.io.InputStream;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.web.ContentType ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.web.ContentType ;
 
 public class TypedInputStream2
 { 

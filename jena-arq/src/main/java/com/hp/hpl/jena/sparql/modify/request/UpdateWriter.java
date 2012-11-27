@@ -21,9 +21,9 @@ package com.hp.hpl.jena.sparql.modify.request;
 import java.util.Iterator;
 import java.util.List;
 
-import org.openjena.atlas.io.IndentedWriter;
-import org.openjena.atlas.iterator.Iter;
-import org.openjena.atlas.lib.Closeable;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Closeable ;
 import org.openjena.riot.out.SinkQuadBracedOutput;
 
 import com.hp.hpl.jena.graph.Node;

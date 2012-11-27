@@ -18,13 +18,13 @@
 
 package org.openjena.riot.system;
 
+import org.apache.jena.atlas.lib.Cache ;
+import org.apache.jena.atlas.lib.CacheFactory ;
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
-import org.openjena.atlas.lib.Cache ;
-import org.openjena.atlas.lib.CacheFactory ;
-import org.openjena.atlas.lib.IRILib ;
 import org.openjena.riot.RiotException ;
 
 /** Package up IRI reolver functionality. */

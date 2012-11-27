@@ -18,10 +18,10 @@
 
 package riotcmd;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonParseException ;
-import org.openjena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonParseException ;
+import org.apache.jena.atlas.json.JsonValue ;
 
 /** Command to read and print JSON */
 public class json

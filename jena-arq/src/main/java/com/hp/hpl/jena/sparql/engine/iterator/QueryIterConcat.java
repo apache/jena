@@ -23,7 +23,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;

@@ -22,9 +22,9 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Iterator ;
 
+import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.riot.TypedInputStream2 ;
 import org.apache.jena.riot.stream.* ;
-import org.openjena.atlas.lib.IRILib ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

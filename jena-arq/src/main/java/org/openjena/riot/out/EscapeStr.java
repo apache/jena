@@ -24,8 +24,8 @@ import java.io.Writer ;
 
 import com.hp.hpl.jena.sparql.lang.ParserBase ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.OutputUtils ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.OutputUtils ;
 
 public class EscapeStr
 {

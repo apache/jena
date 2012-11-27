@@ -20,8 +20,8 @@ package com.hp.hpl.jena.sparql.expr;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestExprTransform extends BaseTest
 {

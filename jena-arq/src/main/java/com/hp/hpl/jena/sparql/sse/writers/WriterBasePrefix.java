@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.sse.writers;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Prologue ;

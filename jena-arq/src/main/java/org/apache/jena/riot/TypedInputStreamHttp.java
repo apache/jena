@@ -21,7 +21,7 @@ package org.apache.jena.riot;
 import java.io.InputStream ;
 
 import org.apache.http.conn.ClientConnectionManager ;
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.MediaType ;
 
 /** Type streams for HTTP connections - includes Apache HTTP client specific cleanup */
 public class TypedInputStreamHttp extends TypedInputStream2 

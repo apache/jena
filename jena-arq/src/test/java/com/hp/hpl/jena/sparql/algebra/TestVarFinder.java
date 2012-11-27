@@ -24,8 +24,8 @@ import java.util.List ;
 import java.util.Set ;
 
 import junit.framework.JUnit4TestAdapter ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.main.VarFinder ;

@@ -53,7 +53,9 @@ import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.syntax.ElementFilter ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.util.NodeUtils ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 

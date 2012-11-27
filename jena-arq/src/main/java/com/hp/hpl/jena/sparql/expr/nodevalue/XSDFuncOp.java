@@ -44,9 +44,9 @@ import javax.xml.datatype.DatatypeConstants.Field ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
-import org.openjena.atlas.lib.IRILib ;
-import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;

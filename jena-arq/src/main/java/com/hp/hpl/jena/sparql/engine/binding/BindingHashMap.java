@@ -22,7 +22,7 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

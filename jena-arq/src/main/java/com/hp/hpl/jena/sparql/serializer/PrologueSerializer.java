@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;

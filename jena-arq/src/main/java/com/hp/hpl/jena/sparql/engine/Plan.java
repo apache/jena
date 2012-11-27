@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;

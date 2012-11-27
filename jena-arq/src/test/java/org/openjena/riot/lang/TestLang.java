@@ -22,9 +22,9 @@ import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Collection ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Assert ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.WebContent ;
 
