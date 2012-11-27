@@ -5,7 +5,6 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.0
 
-
 + Consolidation of versions numbers.
 + Remove the partial migration support for old-style SPARQL submission update forms.
 + Update Turtle/Trig parsers for prefixed name details in RDF 1.1
@@ -13,6 +12,8 @@ ChangeLog for ARQ
   NB.  The characters 123. are now an integer 123 and a DOT; they were a decimal, and no DOT.  
 + RIOT tokenizing now records the subtokens for language and datatype literals.   
 + JENA-345 : execConstructTriples() now excludes malformed triples (e.g. literal subjects) from it's output
++ Internal reorgansiation of packages
+  org.openjena.atlas moved to org.apache.jena.atlas
 
 ==== ARQ 2.9.4
 
