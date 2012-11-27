@@ -22,7 +22,7 @@ import java.sql.SQLException ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;

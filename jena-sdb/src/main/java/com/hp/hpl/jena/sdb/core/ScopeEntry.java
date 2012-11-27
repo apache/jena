@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.sdb.core;
 
-import org.openjena.atlas.iterator.Action ;
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Action ;
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn ;
 import com.hp.hpl.jena.sparql.core.Var ;

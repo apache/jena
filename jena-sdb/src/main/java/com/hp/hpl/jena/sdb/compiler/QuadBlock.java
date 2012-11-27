@@ -18,14 +18,14 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static org.openjena.atlas.iterator.Iter.apply ;
+import static org.apache.jena.atlas.iterator.Iter.apply ;
 
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.PrintUtils ;
-import org.openjena.atlas.iterator.Action ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.iterator.Action ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.PrefixMapping ;

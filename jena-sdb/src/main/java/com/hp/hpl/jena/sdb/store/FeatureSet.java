@@ -22,10 +22,10 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.Printable ;
-import org.openjena.atlas.io.PrintableBase ;
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.PrintableBase ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 /** A set of features (order retained */
 

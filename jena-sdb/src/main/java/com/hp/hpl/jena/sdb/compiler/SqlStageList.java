@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 public class SqlStageList extends ArrayList<SqlStage>
 {

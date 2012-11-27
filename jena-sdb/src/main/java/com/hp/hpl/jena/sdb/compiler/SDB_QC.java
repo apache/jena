@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static org.openjena.atlas.iterator.Iter.* ;
+import static org.apache.jena.atlas.iterator.Iter.* ;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext;
 import com.hp.hpl.jena.sparql.engine.QueryIterator;
 import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import org.openjena.atlas.iterator.Transform;
+import org.apache.jena.atlas.iterator.Transform;
 
 public class SDB_QC
 {

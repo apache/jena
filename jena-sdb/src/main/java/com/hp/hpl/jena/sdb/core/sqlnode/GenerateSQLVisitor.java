@@ -21,8 +21,8 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 import java.util.List ;
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sdb.core.sqlexpr.SqlExprList ;
 import com.hp.hpl.jena.sdb.shared.SDBInternalError ;
 import com.hp.hpl.jena.sdb.shared.SDBNotImplemented ;
 import com.hp.hpl.jena.sparql.core.Var ;
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 // This is not a general purpose SQL writer - it needs only work with the

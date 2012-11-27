@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sdb.sql;
 
-import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
+import static org.apache.jena.atlas.lib.StrUtils.strjoinNL ;
 
 public class SQLUtils
 {

@@ -22,7 +22,7 @@ import java.sql.Connection ;
 import java.sql.DriverManager ;
 import java.sql.SQLException ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
