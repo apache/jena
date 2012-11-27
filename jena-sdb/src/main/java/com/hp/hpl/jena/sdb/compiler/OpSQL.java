@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest ;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode ;

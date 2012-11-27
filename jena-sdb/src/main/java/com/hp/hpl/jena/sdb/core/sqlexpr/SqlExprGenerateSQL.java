@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sdb.core.sqlexpr;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sdb.sql.SQLUtils;
 import com.hp.hpl.jena.sdb.util.RegexUtils;

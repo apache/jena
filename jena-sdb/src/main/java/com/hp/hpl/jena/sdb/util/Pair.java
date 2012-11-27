@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.sdb.util;
 
-import static org.openjena.atlas.lib.Lib.hashCodeObject ;
-import static org.openjena.atlas.lib.StrUtils.str ;
-import org.openjena.atlas.lib.Lib ;
+import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
+import static org.apache.jena.atlas.lib.StrUtils.str ;
+import org.apache.jena.atlas.lib.Lib ;
 
 public class Pair<A, B>
 {

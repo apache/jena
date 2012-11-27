@@ -19,7 +19,7 @@
 package dev.db;
 
 import static java.lang.String.format ;
-import static org.openjena.atlas.lib.StrUtils.strjoin ;
+import static org.apache.jena.atlas.lib.StrUtils.strjoin ;
 
 import java.util.List;
 

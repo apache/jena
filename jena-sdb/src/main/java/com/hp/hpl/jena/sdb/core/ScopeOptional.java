@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.core;
 
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 

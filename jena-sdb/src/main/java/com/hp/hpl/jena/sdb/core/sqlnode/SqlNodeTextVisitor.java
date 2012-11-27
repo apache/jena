@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.hp.hpl.jena.sparql.core.Var;
-import org.openjena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.sdb.core.Annotations;
 import com.hp.hpl.jena.sdb.core.sqlexpr.SqlColumn;

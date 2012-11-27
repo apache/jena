@@ -18,15 +18,15 @@
 
 package com.hp.hpl.jena.sdb.compiler;
 
-import static org.openjena.atlas.iterator.Iter.filter ;
-import static org.openjena.atlas.iterator.Iter.map ;
-import static org.openjena.atlas.iterator.Iter.toSet ;
-import static org.openjena.atlas.lib.SetUtils.intersection ;
+import static org.apache.jena.atlas.iterator.Iter.filter ;
+import static org.apache.jena.atlas.iterator.Iter.map ;
+import static org.apache.jena.atlas.iterator.Iter.toSet ;
+import static org.apache.jena.atlas.lib.SetUtils.intersection ;
 
 import java.util.List ;
 import java.util.Set ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

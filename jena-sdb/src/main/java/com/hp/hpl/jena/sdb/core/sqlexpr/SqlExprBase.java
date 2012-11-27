@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.sdb.core.AnnotationsBase;
-import org.openjena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 
 public abstract class SqlExprBase extends AnnotationsBase implements SqlExpr
 {

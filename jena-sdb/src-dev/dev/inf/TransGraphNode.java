@@ -21,7 +21,7 @@ package dev.inf;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkLength ;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkList ;
 import static com.hp.hpl.jena.sparql.sse.builders.BuilderLib.checkNode ;
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.sse.Item ;

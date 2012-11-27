@@ -23,8 +23,8 @@ import static dev.db.DBSyntax.col ;
 
 import java.sql.SQLException ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.sdb.layout2.TableDescNodes ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection ;
