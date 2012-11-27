@@ -18,7 +18,7 @@
 
 package arq.examples.update;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotWriter ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;

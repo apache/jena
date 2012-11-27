@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.Collection ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

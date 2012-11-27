@@ -24,7 +24,7 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;

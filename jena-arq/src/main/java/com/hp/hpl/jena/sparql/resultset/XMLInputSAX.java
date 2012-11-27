@@ -23,7 +23,7 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import org.xml.sax.Attributes ;
 import org.xml.sax.ContentHandler ;
 import org.xml.sax.InputSource ;

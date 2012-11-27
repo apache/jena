@@ -24,9 +24,9 @@ import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 
 /** Test translation of syntax to algebra - no otpimization */ 
 public class TestAlgebraTranslate extends BaseTest 

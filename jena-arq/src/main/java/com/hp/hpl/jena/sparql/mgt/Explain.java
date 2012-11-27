@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.mgt;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;

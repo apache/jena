@@ -25,8 +25,8 @@ import java.io.IOException ;
 import java.util.List ;
 import java.util.NoSuchElementException ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;

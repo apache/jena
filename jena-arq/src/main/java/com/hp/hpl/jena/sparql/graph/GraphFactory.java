@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
-import org.openjena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.data.ThresholdPolicy ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;

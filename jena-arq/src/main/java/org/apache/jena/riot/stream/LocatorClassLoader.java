@@ -20,9 +20,9 @@ package org.apache.jena.riot.stream;
 
 import java.io.InputStream ;
 
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.TypedInputStream2 ;
-import org.openjena.atlas.web.ContentType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

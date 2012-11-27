@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.core.assembler;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.assembler.Assembler ;
 import com.hp.hpl.jena.assembler.Mode ;

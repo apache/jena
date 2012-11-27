@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.graph;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import static org.openjena.atlas.lib.Lib.equal ;
+import static org.apache.jena.atlas.lib.Lib.equal ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

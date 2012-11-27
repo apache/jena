@@ -30,7 +30,7 @@ import javax.management.MalformedObjectNameException ;
 import javax.management.NotCompliantMBeanException ;
 import javax.management.ObjectName ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

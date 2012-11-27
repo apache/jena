@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.engine.main ;
 
 import java.util.Set ;
 
-import org.openjena.atlas.lib.SetUtils ;
+import org.apache.jena.atlas.lib.SetUtils ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.op.OpDiff ;

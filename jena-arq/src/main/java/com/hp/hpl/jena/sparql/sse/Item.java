@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.sse;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

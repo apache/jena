@@ -28,8 +28,6 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.IteratorSlotted ;
-import org.openjena.atlas.lib.Closeable ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.lang.LabelToNode ;
@@ -46,6 +44,9 @@ import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.iterator.IteratorSlotted ;
+import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;

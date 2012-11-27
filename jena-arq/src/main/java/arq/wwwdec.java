@@ -20,7 +20,7 @@ package arq;
 
 import java.io.UnsupportedEncodingException ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 
 public class wwwdec

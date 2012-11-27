@@ -73,8 +73,8 @@ import javax.xml.datatype.DatatypeFactory ;
 import javax.xml.datatype.Duration ;
 import javax.xml.datatype.XMLGregorianCalendar ;
 
-import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -18,9 +18,9 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestLangRIOT extends BaseTest
 {

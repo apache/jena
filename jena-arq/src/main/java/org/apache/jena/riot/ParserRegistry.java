@@ -25,12 +25,12 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
+import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.Lang2 ;
 import org.apache.jena.riot.ReaderRIOT ;
 import org.apache.jena.riot.ReaderRIOTFactory ;
-import org.openjena.atlas.lib.DS ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.ContentType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;

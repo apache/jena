@@ -25,7 +25,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.regex.Pattern ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;

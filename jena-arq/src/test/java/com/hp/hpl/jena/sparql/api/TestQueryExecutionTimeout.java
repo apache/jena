@@ -18,14 +18,14 @@
 
 package com.hp.hpl.jena.sparql.api ;
 
-import static org.openjena.atlas.lib.Lib.sleep ;
+import static org.apache.jena.atlas.lib.Lib.sleep ;
 
 import java.util.concurrent.TimeUnit ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ARQ ;

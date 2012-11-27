@@ -26,7 +26,8 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -40,7 +41,6 @@ import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.ItemException ;
 import com.hp.hpl.jena.sparql.sse.ItemList ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import org.openjena.atlas.logging.Log ;
 
 /** Stats format:<pre>(stats
  *    (meta ...)

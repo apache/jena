@@ -20,8 +20,8 @@ package arq;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.Log ;
 import arq.cmd.CmdException ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;

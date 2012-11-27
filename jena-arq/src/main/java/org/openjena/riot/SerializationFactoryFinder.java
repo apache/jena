@@ -22,8 +22,8 @@ import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.data.SerializationFactory ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.data.SerializationFactory ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangNQuads ;
 import org.openjena.riot.lang.LangNTriples ;

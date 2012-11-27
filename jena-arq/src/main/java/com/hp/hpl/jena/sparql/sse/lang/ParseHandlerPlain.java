@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.sse.lang;
 import java.util.ArrayDeque ;
 import java.util.Deque ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

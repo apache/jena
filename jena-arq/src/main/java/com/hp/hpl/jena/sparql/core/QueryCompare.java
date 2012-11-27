@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.core ;
 
-import org.openjena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryVisitor ;

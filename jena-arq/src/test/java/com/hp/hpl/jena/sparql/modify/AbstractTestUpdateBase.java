@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.openjena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

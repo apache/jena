@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.expr;
 import java.security.MessageDigest ;
 import java.security.NoSuchAlgorithmException ;
 
-import org.openjena.atlas.lib.Bytes ;
+import org.apache.jena.atlas.lib.Bytes ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;

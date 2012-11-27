@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.engine;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.util.PrintSerializable ;

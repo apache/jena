@@ -20,12 +20,12 @@ package com.hp.hpl.jena.sparql.engine.binding;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.IteratorConcat ;
+import org.apache.jena.atlas.iterator.IteratorConcat ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
-import org.openjena.atlas.lib.Lib ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 

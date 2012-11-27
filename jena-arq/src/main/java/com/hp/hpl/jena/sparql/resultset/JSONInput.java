@@ -36,11 +36,11 @@ import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.kXmlLang ;
 import java.io.InputStream ;
 import java.util.* ;
 
-import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonArray ;
-import org.openjena.atlas.json.JsonObject ;
-import org.openjena.atlas.json.JsonValue ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonArray ;
+import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.atlas.json.JsonValue ;
+import org.apache.jena.atlas.logging.Log ;
 import org.openjena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;

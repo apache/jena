@@ -20,8 +20,8 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.util.* ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QuerySolution ;

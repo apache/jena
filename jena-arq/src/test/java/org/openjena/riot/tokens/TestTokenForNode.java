@@ -18,9 +18,9 @@
 
 package org.openjena.riot.tokens;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;

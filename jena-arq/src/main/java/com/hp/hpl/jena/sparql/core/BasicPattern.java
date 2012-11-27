@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext ;

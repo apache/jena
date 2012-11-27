@@ -18,8 +18,8 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 
 public class TestLangTag extends BaseTest

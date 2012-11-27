@@ -18,8 +18,8 @@
 
 package org.openjena.riot.process;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.process.normalize.CanonicalizeLiteral ;
 
 import com.hp.hpl.jena.graph.Node ;

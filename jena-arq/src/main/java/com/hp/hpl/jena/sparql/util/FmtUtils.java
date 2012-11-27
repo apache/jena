@@ -20,12 +20,13 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.regex.Pattern ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;
 import com.hp.hpl.jena.graph.Triple ;
+
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;

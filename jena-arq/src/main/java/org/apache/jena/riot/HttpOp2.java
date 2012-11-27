@@ -29,9 +29,9 @@ import org.apache.http.StatusLine ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.impl.client.DefaultHttpClient ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.web.HttpException ;
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.web.HttpException ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.openjena.riot.web.HttpNames ;
 
 public class HttpOp2

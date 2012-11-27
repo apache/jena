@@ -18,7 +18,7 @@
 
 package org.openjena.riot;
 
-import org.openjena.atlas.event.EventType ;
+import org.apache.jena.atlas.event.EventType ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
 import org.openjena.riot.system.JenaReaderTurtle2 ;

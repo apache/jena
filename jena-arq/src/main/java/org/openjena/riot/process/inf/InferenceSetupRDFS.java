@@ -23,7 +23,7 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;

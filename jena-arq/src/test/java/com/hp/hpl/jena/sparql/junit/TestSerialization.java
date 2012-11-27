@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.sparql.junit;
 
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;

@@ -20,11 +20,12 @@ package com.hp.hpl.jena.sparql.expr.nodevalue;
 import java.util.Iterator ;
 import java.util.UUID ;
 
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;

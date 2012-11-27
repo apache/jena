@@ -25,8 +25,8 @@ import java.util.HashSet ;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
 

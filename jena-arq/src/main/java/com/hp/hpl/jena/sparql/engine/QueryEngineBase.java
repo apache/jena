@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.ARQConstants ;

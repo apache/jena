@@ -25,7 +25,7 @@ import java.io.Writer ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;

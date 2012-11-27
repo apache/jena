@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.lang;
 
 import java.io.InputStream ;
 
-import org.openjena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.io.PeekReader ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;

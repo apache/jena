@@ -22,7 +22,7 @@ import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Prologue ;

@@ -22,8 +22,8 @@ import java.io.ByteArrayInputStream ;
 
 import junit.framework.Assert;
 
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;

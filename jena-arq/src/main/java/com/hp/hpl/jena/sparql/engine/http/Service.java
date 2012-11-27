@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.engine.http;
 import java.io.InputStream ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.Query ;

@@ -25,8 +25,9 @@ import java.util.HashMap ;
 import java.util.Iterator ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.json.io.JSWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.json.io.JSWriter ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QuerySolution ;
@@ -34,7 +35,6 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.rdf.model.Literal ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import org.openjena.atlas.logging.Log ;
 
 /**
  * A JSON writer for SPARQL Result Sets.  Uses Jena Atlas JSON support. 

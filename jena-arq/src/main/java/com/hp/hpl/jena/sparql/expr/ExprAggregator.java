@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import static org.openjena.atlas.lib.Lib.equal ;
-import org.openjena.atlas.logging.Log ;
+import static org.apache.jena.atlas.lib.Lib.equal ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

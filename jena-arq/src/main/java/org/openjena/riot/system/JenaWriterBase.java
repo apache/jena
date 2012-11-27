@@ -25,8 +25,8 @@ import java.io.Writer ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Chars ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;

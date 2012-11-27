@@ -18,17 +18,17 @@
 
 package org.openjena.riot.tokens;
 
-import static org.openjena.atlas.lib.Chars.CH_COMMA ;
-import static org.openjena.atlas.lib.Chars.CH_DOT ;
-import static org.openjena.atlas.lib.Chars.CH_LBRACE ;
-import static org.openjena.atlas.lib.Chars.CH_LBRACKET ;
-import static org.openjena.atlas.lib.Chars.CH_LPAREN ;
-import static org.openjena.atlas.lib.Chars.CH_RBRACE ;
-import static org.openjena.atlas.lib.Chars.CH_RBRACKET ;
-import static org.openjena.atlas.lib.Chars.CH_RPAREN ;
-import static org.openjena.atlas.lib.Chars.CH_SEMICOLON ;
-import static org.openjena.atlas.lib.Lib.equal ;
-import static org.openjena.atlas.lib.Lib.hashCodeObject ;
+import static org.apache.jena.atlas.lib.Chars.CH_COMMA ;
+import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
+import static org.apache.jena.atlas.lib.Chars.CH_LBRACE ;
+import static org.apache.jena.atlas.lib.Chars.CH_LBRACKET ;
+import static org.apache.jena.atlas.lib.Chars.CH_LPAREN ;
+import static org.apache.jena.atlas.lib.Chars.CH_RBRACE ;
+import static org.apache.jena.atlas.lib.Chars.CH_RBRACKET ;
+import static org.apache.jena.atlas.lib.Chars.CH_RPAREN ;
+import static org.apache.jena.atlas.lib.Chars.CH_SEMICOLON ;
+import static org.apache.jena.atlas.lib.Lib.equal ;
+import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
 import static org.openjena.riot.tokens.TokenType.BNODE ;
 import static org.openjena.riot.tokens.TokenType.DECIMAL ;
 import static org.openjena.riot.tokens.TokenType.DOUBLE ;
@@ -42,9 +42,9 @@ import static org.openjena.riot.tokens.TokenType.VAR ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.system.Prologue ;

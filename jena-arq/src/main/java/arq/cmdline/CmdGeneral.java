@@ -20,7 +20,7 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
 

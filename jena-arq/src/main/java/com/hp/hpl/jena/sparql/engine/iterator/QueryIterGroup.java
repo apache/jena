@@ -23,9 +23,9 @@ import java.util.Collection ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
-import org.openjena.atlas.lib.MultiMap ;
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
+import org.apache.jena.atlas.lib.MultiMap ;
+import org.apache.jena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

@@ -17,9 +17,9 @@
  */
 
 package com.hp.hpl.jena.sparql.lang.arq;
-import org.openjena.atlas.json.io.JSONHandler ;
-import org.openjena.atlas.json.io.JSONHandlerBase ;
-import org.openjena.atlas.lib.NotImplemented ;
+import org.apache.jena.atlas.json.io.JSONHandler ;
+import org.apache.jena.atlas.json.io.JSONHandlerBase ;
+import org.apache.jena.atlas.lib.NotImplemented ;
 
 import com.hp.hpl.jena.sparql.lang.SPARQLParserBase ;
 

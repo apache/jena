@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.serializer;
 import java.io.OutputStream ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;

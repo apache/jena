@@ -40,9 +40,9 @@ import java.io.InputStream ;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.TypedInputStream ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

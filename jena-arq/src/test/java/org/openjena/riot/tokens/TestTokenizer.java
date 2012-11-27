@@ -23,10 +23,10 @@ import java.io.ByteArrayInputStream ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotParseException ;
 
 

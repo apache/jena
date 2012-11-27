@@ -23,7 +23,7 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.Pair ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.openjena.riot.web.HttpOp ;
 import org.openjena.riot.web.HttpResponseHandler ;
 import org.openjena.riot.web.HttpResponseLib ;

@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.sparql.engine.optimizer;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.PrintUtils ;
-import org.openjena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.sparql.sse.Item ;
 
