@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.store.SQLGenerator;
-import org.openjena.atlas.io.IndentedLineBuffer;
+import org.apache.jena.atlas.io.IndentedLineBuffer;
 
 public class GenerateSQL implements SQLGenerator 
 {

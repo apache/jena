@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.sdb.store;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.Printable ;
-import org.openjena.atlas.io.PrintableBase ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.PrintableBase ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -22,7 +22,7 @@ import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.openjena.atlas.lib.FileOps ;
+import org.apache.jena.atlas.lib.FileOps ;
 
 /** Not quite all, yet: Does not yet include the model tests which need to be linked to the store descriptions */
 @RunWith(Suite.class)

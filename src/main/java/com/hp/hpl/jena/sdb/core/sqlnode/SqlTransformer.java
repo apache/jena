@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Stack;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 
 public class SqlTransformer

@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.sdb.print;
 
-import static org.openjena.atlas.iterator.Iter.apply ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.Printable ;
-import org.openjena.atlas.iterator.ActionPrint ;
+import static org.apache.jena.atlas.iterator.Iter.apply ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.Printable ;
+import org.apache.jena.atlas.iterator.ActionPrint ;
 
 
 public class StreamsPrint

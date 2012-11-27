@@ -26,7 +26,7 @@ import com.hp.hpl.jena.sparql.algebra.OpPrefixesUsed;
 import com.hp.hpl.jena.sparql.algebra.OpVisitorBase;
 import com.hp.hpl.jena.sparql.algebra.OpWalker;
 import com.hp.hpl.jena.sparql.algebra.op.OpExt;
-import org.openjena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 import com.hp.hpl.jena.query.Query;
 

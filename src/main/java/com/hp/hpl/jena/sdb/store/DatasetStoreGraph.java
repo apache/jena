@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.store;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

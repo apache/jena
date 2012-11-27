@@ -18,13 +18,13 @@
 
 package com.hp.hpl.jena.sdb.test.junit;
 
-import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
+import static org.apache.jena.atlas.lib.StrUtils.strjoinNL ;
 
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;

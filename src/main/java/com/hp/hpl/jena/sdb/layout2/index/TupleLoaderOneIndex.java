@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sdb.layout2.index;
 
-import static org.openjena.atlas.lib.StrUtils.strjoinNL ;
+import static org.apache.jena.atlas.lib.StrUtils.strjoinNL ;
 
 import java.sql.ResultSet ;
 import java.sql.SQLException ;

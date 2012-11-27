@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sdb.util;
 import java.util.List;
 import java.util.Map;
 
-import static org.openjena.atlas.lib.StrUtils.* ;
+import static org.apache.jena.atlas.lib.StrUtils.* ;
 
 
 public class StrUtils

@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sdb.compiler;
 import com.hp.hpl.jena.sdb.core.SDBRequest;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 
-public interface SqlStage extends org.openjena.atlas.io.Printable
+public interface SqlStage extends org.apache.jena.atlas.io.Printable
 {
     public SqlNode build(SDBRequest request, SlotCompiler slotCompiler) ; 
 }

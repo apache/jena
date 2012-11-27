@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.core.sqlnode;
 
 import java.util.Set ;
 
-import org.openjena.atlas.io.Printable ;
+import org.apache.jena.atlas.io.Printable ;
 
 import com.hp.hpl.jena.sdb.core.Annotations ;
 import com.hp.hpl.jena.sdb.core.Scope ;

@@ -35,7 +35,7 @@ import com.hp.hpl.jena.sdb.core.sqlnode.SqlNode;
 import com.hp.hpl.jena.sdb.core.sqlnode.SqlTable;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sparql.core.Quad;
-import org.openjena.atlas.io.IndentedWriter;
+import org.apache.jena.atlas.io.IndentedWriter;
 
 /** A (description of a) table that holds a cached/optimized
  * version of a pattern.

@@ -23,8 +23,8 @@ import java.util.Collection ;
 import java.util.List ;
 
 import org.junit.runners.Parameterized.Parameters ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.sdb.StoreDesc ;
 import com.hp.hpl.jena.sdb.test.SDBTestSetup ;
