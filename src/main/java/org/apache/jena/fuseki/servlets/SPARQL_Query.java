@@ -38,15 +38,15 @@ import java.util.* ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.migrate.WebIO ;
 import org.apache.jena.fuseki.server.DatasetRef ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.web.MediaType ;
 import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.* ;

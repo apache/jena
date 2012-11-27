@@ -23,11 +23,11 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpSession ;
 
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

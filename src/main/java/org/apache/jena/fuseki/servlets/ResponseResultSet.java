@@ -27,13 +27,13 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.commons.lang.StringUtils ;
+import org.apache.jena.atlas.web.AcceptList ;
+import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
-import static org.openjena.atlas.lib.Lib.equal ;
-import org.openjena.atlas.web.AcceptList ;
-import org.openjena.atlas.web.MediaType ;
+import static org.apache.jena.atlas.lib.Lib.equal ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;

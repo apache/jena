@@ -28,11 +28,11 @@ import java.util.List ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.servlets.SPARQL_Query.HttpActionQuery ;
-import org.openjena.atlas.iterator.Filter ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryParseException ;
