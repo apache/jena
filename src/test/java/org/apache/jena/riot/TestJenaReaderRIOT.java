@@ -22,11 +22,11 @@ import java.io.FileInputStream ;
 import java.io.IOException ;
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;

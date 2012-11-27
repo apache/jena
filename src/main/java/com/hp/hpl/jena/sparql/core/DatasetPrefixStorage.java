@@ -21,8 +21,8 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Map ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sync ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sync ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 

@@ -27,10 +27,10 @@ import java.util.concurrent.BlockingQueue ;
 import java.util.concurrent.CancellationException ;
 import java.util.concurrent.TimeUnit ;
 
-import org.openjena.atlas.AtlasException ;
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkToQueue ;
+import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.SinkToQueue ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.system.ParserProfile ;
 

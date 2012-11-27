@@ -28,7 +28,8 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 
 /**
  * Yield new bindings, with a fixed parent, with values from an iterator. 

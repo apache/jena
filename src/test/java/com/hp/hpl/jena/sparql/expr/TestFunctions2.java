@@ -28,10 +28,10 @@ import com.hp.hpl.jena.sparql.function.FunctionEnvBase ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 public class TestFunctions2 extends BaseTest
 {

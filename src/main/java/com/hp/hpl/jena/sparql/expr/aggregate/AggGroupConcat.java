@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.expr.aggregate;
 
-import org.openjena.atlas.lib.Lib ;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;

@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.update;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.io.PrintUtils ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.PrintUtils ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;

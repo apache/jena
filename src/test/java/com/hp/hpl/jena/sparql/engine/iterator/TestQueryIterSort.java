@@ -27,10 +27,10 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Random ;
 
+import org.apache.jena.atlas.data.DataBagExaminer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.data.DataBagExaminer ;
-import org.openjena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Graph ;

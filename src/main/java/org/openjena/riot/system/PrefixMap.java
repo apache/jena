@@ -23,11 +23,11 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Map.Entry ;
 
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.ActionKeyValue ;
+import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.ActionKeyValue ;
-import org.openjena.atlas.lib.Pair ;
 
 import com.hp.hpl.jena.shared.PrefixMapping ;
 

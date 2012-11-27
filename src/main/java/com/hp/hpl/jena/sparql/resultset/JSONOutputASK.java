@@ -23,8 +23,8 @@ import static com.hp.hpl.jena.sparql.resultset.JSONResultsKW.* ;
 
 import java.io.OutputStream ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.json.io.JSWriter ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.json.io.JSWriter ;
 
 /** JSON Output (ASK format) */
 

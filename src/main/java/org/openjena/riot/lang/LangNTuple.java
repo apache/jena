@@ -20,7 +20,7 @@ package org.openjena.riot.lang;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.Node ;
  * 
  * <ul>
  * <li>The {@link #parse} method processes the whole stream of tokens, 
- *   sending each to a {@link org.openjena.atlas.lib.Sink} object.</li>
+ *   sending each to a {@link org.apache.jena.atlas.lib.Sink} object.</li>
  * <li>The <tt>Iterator&lt;X&gt;</tt> interface yields triples one-by-one.</li>
  *  </ul> 
  * 

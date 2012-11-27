@@ -30,9 +30,9 @@ import javax.xml.stream.XMLStreamConstants ;
 import javax.xml.stream.XMLStreamException ;
 import javax.xml.stream.XMLStreamReader ;
 
-import org.openjena.atlas.lib.Closeable ;
-import org.openjena.atlas.lib.StrUtils ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

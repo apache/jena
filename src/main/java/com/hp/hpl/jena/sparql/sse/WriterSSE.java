@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.sse;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

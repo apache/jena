@@ -24,10 +24,10 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import junit.framework.JUnit4TestAdapter ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
 import org.openjena.riot.tokens.Tokenizer ;

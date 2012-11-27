@@ -20,12 +20,12 @@ package com.hp.hpl.jena.sparql.serializer;
 
 import java.io.OutputStream ;
 
-import org.openjena.atlas.io.IndentedLineBuffer ;
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.Syntax ;
-import org.openjena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.core.Prologue;
 import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;

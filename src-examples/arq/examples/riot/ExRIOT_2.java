@@ -22,8 +22,8 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkNull ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.SinkNull ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;

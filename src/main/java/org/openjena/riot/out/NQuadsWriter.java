@@ -21,8 +21,8 @@ package org.openjena.riot.out;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
 

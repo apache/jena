@@ -18,7 +18,7 @@
 
 package arq.examples.bgpmatching;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Query ;

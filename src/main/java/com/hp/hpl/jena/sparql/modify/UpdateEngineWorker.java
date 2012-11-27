@@ -23,11 +23,11 @@ import static com.hp.hpl.jena.sparql.modify.TemplateLib.template ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.data.BagFactory ;
-import org.openjena.atlas.data.DataBag ;
-import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyFactory ;
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.data.BagFactory ;
+import org.apache.jena.atlas.data.DataBag ;
+import org.apache.jena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;

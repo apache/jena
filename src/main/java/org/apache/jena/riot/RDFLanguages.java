@@ -35,8 +35,8 @@ import static org.openjena.riot.WebContent.contentTypeTurtleAlt2 ;
 import java.util.Locale ;
 import java.util.Map ;
 
-import org.openjena.atlas.lib.DS ;
-import org.openjena.atlas.web.ContentType ;
+import org.apache.jena.atlas.lib.DS ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 

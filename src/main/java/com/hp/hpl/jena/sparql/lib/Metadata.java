@@ -25,10 +25,10 @@ import java.util.InvalidPropertiesFormatException ;
 import java.util.List ;
 import java.util.Properties ;
 
-import org.openjena.atlas.lib.SystemUtils ;
+import org.apache.jena.atlas.lib.SystemUtils ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.ARQException ;
-import org.openjena.atlas.logging.Log ;
 
 /** Simple wrapper for reading metadata, once, from a system resource.
  *  Note that in some environments, it's tricky to get a class loader.  

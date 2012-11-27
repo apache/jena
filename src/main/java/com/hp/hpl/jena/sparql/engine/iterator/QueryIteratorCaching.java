@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.engine.iterator;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;

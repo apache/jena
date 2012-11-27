@@ -26,12 +26,12 @@ import static org.openjena.riot.Lang.RDFXML ;
 import java.io.InputStream ;
 import java.util.Iterator;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.io.PeekReader ;
-import org.openjena.atlas.iterator.IteratorResourceClosing;
-import org.openjena.atlas.json.io.parser.TokenizerJSON ;
-import org.openjena.atlas.lib.IRILib ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
+import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.RiotLib ;

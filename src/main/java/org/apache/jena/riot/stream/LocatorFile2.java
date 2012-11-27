@@ -23,11 +23,11 @@ import java.io.IOException ;
 import java.io.InputStream ;
 import java.security.AccessControlException ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.TypedInputStream2 ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.IRILib ;
-import org.openjena.atlas.web.ContentType ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

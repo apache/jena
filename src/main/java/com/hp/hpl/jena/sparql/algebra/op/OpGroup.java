@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.algebra.op;
 
 import java.util.List ;
 
-import org.openjena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.OpVisitor ;

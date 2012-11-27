@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
-import org.openjena.atlas.lib.Lib ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;

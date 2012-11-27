@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.openjena.atlas.web.ContentType ;
 import org.openjena.riot.RiotNotFoundException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.WebContent ;

@@ -22,7 +22,7 @@ import java.math.BigInteger ;
 import java.util.HashSet ;
 import java.util.Set ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

@@ -23,7 +23,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 /** Manage version information for subsystems */
 public class Version

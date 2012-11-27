@@ -21,7 +21,8 @@ package com.hp.hpl.jena.sparql.engine.optimizer.reorder;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 
 public class ReorderProcIndexes implements ReorderProc
 {

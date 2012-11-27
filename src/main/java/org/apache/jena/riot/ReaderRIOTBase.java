@@ -20,8 +20,8 @@ package org.apache.jena.riot;
 
 import java.io.InputStream ;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.ContentType ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.ContentType ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 

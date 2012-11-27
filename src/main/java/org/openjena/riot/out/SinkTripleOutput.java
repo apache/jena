@@ -23,8 +23,8 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 import java.nio.charset.CharsetEncoder ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
 

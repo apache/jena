@@ -20,7 +20,7 @@ package org.openjena.riot;
 
 import java.io.InputStream ;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.lang.LangRIOT ;
 
 import com.hp.hpl.jena.graph.Triple ;

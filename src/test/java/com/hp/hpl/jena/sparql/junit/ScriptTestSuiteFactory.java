@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.junit;
 import junit.framework.Test ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Resource ;

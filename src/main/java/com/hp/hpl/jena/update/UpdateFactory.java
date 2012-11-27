@@ -24,7 +24,7 @@ import static com.hp.hpl.jena.query.Syntax.syntaxSPARQL_11 ;
 
 import java.io.InputStream ;
 
-import org.openjena.atlas.io.IO ;
+import org.apache.jena.atlas.io.IO ;
 
 import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Syntax ;

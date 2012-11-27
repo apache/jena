@@ -23,8 +23,8 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryExecException ;

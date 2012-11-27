@@ -21,13 +21,16 @@ package org.openjena.riot;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.atlas.web.MediaType ;
+import org.apache.jena.atlas.web.MediaType ;
 
 public class WebContent
 {
     // Names for things.
     
     // contentType => ctStr
+    
+    // Rename as: 
+    // TEXT_TURTLE etc etc.
     
     public static final String contentTypeN3                = "text/rdf+n3" ;
     public static final String contentTypeN3Alt1            = "application/n3" ;

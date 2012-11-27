@@ -22,8 +22,8 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple ;
 
-import org.openjena.atlas.json.io.parser.TokenizerJSON;
-import org.openjena.atlas.lib.*;
+import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.atlas.lib.* ;
 
 import org.openjena.riot.Lang;
 import org.openjena.riot.tokens.Token;

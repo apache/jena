@@ -22,7 +22,8 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.path.P_Link ;
 import com.hp.hpl.jena.sparql.path.Path ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 
 /** Like a triple except it can be a path or a triple.  
  * The triple can have a variable predicate.  

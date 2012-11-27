@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.function.FunctionEnv ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 public class AggCount extends AggregatorBase
 {

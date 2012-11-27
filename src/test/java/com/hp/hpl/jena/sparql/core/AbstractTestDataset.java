@@ -20,9 +20,9 @@ package com.hp.hpl.jena.sparql.core;
 
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;

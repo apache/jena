@@ -22,12 +22,12 @@ import java.util.Comparator ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.data.BagFactory ;
-import org.openjena.atlas.data.SortedDataBag ;
-import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyFactory ;
-import org.openjena.atlas.iterator.IteratorDelayedInitialization ;
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.data.BagFactory ;
+import org.apache.jena.atlas.data.SortedDataBag ;
+import org.apache.jena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.iterator.IteratorDelayedInitialization ;
+import org.apache.jena.atlas.lib.Closeable ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.query.QueryCancelledException ;

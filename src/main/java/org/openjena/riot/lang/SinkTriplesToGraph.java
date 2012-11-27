@@ -18,11 +18,11 @@
 
 package org.openjena.riot.lang;
 
-import org.openjena.atlas.event.Event ;
-import org.openjena.atlas.event.EventListener ;
-import org.openjena.atlas.event.EventManager ;
-import org.openjena.atlas.event.EventType ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.event.Event ;
+import org.apache.jena.atlas.event.EventListener ;
+import org.apache.jena.atlas.event.EventManager ;
+import org.apache.jena.atlas.event.EventType ;
+import org.apache.jena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphEvents ;

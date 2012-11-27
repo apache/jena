@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;

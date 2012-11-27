@@ -19,13 +19,14 @@
 package org.openjena.riot.lang;
 
 import static org.openjena.riot.tokens.TokenType.* ;
-import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Token ;
 import org.openjena.riot.tokens.TokenType ;
 import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
 import com.hp.hpl.jena.vocabulary.OWL ;

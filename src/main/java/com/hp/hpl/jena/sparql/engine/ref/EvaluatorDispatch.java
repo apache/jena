@@ -22,7 +22,7 @@ import java.util.ArrayDeque ;
 import java.util.Deque ;
 import java.util.Iterator ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryExecException ;

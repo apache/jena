@@ -28,7 +28,8 @@ import java.util.Map ;
 
 import arq.cmd.CmdException ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.util.FileManager ;
 
 

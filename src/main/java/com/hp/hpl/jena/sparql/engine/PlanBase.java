@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.engine;
 
-import org.openjena.atlas.io.IndentedWriter ;
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

@@ -21,8 +21,8 @@ package com.hp.hpl.jena.sparql.expr.aggregate;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 
-import org.openjena.atlas.lib.NotImplemented ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.NotImplemented ;
+import org.apache.jena.atlas.logging.Log ;
 
 public class AggregatorFactory
 {

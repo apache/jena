@@ -20,7 +20,7 @@ package org.openjena.riot.tokens;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 
 public interface Tokenizer extends Iterator<Token>, Closeable

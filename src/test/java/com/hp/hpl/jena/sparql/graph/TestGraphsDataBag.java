@@ -18,12 +18,12 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
+import org.apache.jena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
-import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyFactory ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

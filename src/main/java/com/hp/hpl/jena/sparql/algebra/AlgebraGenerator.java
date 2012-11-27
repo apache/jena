@@ -20,8 +20,8 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.* ;
 
-import org.openjena.atlas.lib.Pair ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

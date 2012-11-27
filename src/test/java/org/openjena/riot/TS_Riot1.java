@@ -18,11 +18,11 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.atlas.junit.BaseTest ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.out.* ;
 import org.openjena.riot.process.TestNormalization ;

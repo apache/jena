@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;

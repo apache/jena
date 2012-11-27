@@ -26,12 +26,12 @@ import java.util.HashMap ;
 import java.util.Map ;
 import java.util.Properties ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.SinkCounting ;
+import org.apache.jena.atlas.lib.SinkNull ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.log4j.PropertyConfigurator ;
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.SinkNull ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangRDFXML ;
@@ -315,12 +315,8 @@ public abstract class CmdLangParse extends CmdGeneral
             sink = sink2 ;
         }
         
-        // Pending log message having he filename in them.
-        // output(filename) ;
         try
         {
-            // Default behaviour is "check":
-            
             if ( checking )
             {
                 if ( parser.getLang() == Lang.NTRIPLES ||  parser.getLang() == Lang.NQUADS )
@@ -347,7 +343,7 @@ public abstract class CmdLangParse extends CmdGeneral
         }
         finally {
             IO.close(in) ;
-            // Not close - we may write again to the underlying ouytptu stream in another call to parse a file.  
+            // Not close - we may write again to the underlying output stream in another call to parse a file.  
             sink.flush() ;
         }
         long x = modTime.endTimer() ;

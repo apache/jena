@@ -32,7 +32,9 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.vocabulary.ResultSetGraphVocab ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 

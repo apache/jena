@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.* ;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.query.SortCondition ;
 import com.hp.hpl.jena.sparql.algebra.OpWalker.WalkerVisitor ;

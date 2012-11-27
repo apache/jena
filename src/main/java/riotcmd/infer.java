@@ -21,9 +21,9 @@ package riotcmd;
 import java.io.InputStream ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.lib.IRILib ;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;

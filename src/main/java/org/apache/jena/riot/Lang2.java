@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
-import org.openjena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.ContentType ;
 
 /** A "language" (syntax).
  *  A language has a name, some alternative names,

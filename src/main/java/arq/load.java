@@ -21,7 +21,7 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;

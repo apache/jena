@@ -24,7 +24,7 @@ import java.util.Iterator ;
 import java.util.List ;
 import java.util.Set ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

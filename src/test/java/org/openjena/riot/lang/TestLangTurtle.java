@@ -25,12 +25,12 @@ import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.RiotLoader ;

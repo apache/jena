@@ -30,7 +30,8 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFNode ;
 import com.hp.hpl.jena.rdf.model.Resource ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

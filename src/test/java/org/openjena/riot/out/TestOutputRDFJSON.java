@@ -21,12 +21,12 @@ package org.openjena.riot.out;
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
 
+import org.apache.jena.atlas.json.JSON ;
+import org.apache.jena.atlas.json.JsonObject ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.json.JSON ;
-import org.openjena.atlas.json.JsonObject ;
-import org.openjena.atlas.junit.BaseTest ;
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;

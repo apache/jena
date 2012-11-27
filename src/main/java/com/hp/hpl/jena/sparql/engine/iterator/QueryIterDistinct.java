@@ -21,10 +21,10 @@ package com.hp.hpl.jena.sparql.engine.iterator ;
 import java.util.ArrayList ;
 import java.util.Comparator ;
 
-import org.openjena.atlas.data.BagFactory ;
-import org.openjena.atlas.data.DistinctDataNet ;
-import org.openjena.atlas.data.ThresholdPolicy ;
-import org.openjena.atlas.data.ThresholdPolicyFactory ;
+import org.apache.jena.atlas.data.BagFactory ;
+import org.apache.jena.atlas.data.DistinctDataNet ;
+import org.apache.jena.atlas.data.ThresholdPolicy ;
+import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.query.SortCondition ;

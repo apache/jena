@@ -17,7 +17,7 @@
  */
 
 package org.openjena.riot.lang;
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.tokens.Token ;

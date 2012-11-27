@@ -21,7 +21,7 @@ package com.hp.hpl.jena.sparql.junit;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.Iter ;
 import org.openjena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.query.Dataset ;

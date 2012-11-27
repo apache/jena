@@ -22,7 +22,9 @@ import java.util.NoSuchElementException ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
+
 import com.hp.hpl.jena.sparql.util.Utils ;
 
 /** Repeatedly execute the subclass operation for each Binding in the input iterator. */

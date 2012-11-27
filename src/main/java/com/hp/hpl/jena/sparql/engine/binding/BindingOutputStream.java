@@ -22,15 +22,16 @@ import java.io.* ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.atlas.io.IO ;
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.lib.Sink ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.out.NodeFormatter ;
 import org.openjena.riot.out.NodeFormatterTTL ;
 import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.sparql.core.Var ;
 

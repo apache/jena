@@ -24,7 +24,7 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.QueryBuildException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

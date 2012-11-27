@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.engine.iterator;
 
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 

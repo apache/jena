@@ -20,10 +20,10 @@ package com.hp.hpl.jena.sparql.util;
 
 import java.util.Iterator ;
 
-import org.openjena.atlas.iterator.Iter ;
-import org.openjena.atlas.iterator.IteratorResourceClosing ;
-import org.openjena.atlas.iterator.Transform ;
-import org.openjena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
+import org.apache.jena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

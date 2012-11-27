@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.sse.writers;
 
-import org.openjena.atlas.io.IndentedWriter ;
+import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.sse.Tags ;

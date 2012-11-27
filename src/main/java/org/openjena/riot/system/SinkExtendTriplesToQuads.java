@@ -18,7 +18,7 @@
 
 package org.openjena.riot.system;
 
-import org.openjena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Sink ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

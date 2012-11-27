@@ -29,7 +29,8 @@ import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
-import org.openjena.atlas.logging.Log ;
+
+import org.apache.jena.atlas.logging.Log ;
 
 
 public class ParserARQ extends Parser

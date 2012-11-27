@@ -25,8 +25,8 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
-import org.openjena.atlas.lib.Sink ;
-import org.openjena.atlas.web.ContentType ;
+import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.web.ContentType ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotNotFoundException ;

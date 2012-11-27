@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;

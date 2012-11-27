@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.sparql.engine.main;
 
 import static com.hp.hpl.jena.sparql.engine.optimizer.reorder.PatternElements.TERM ;
-import org.openjena.atlas.logging.Log ;
+import org.apache.jena.atlas.logging.Log ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphStatisticsHandler ;

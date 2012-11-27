@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.graph;
 
-import org.openjena.atlas.iterator.Transform ;
+import org.apache.jena.atlas.iterator.Transform ;
 
 import com.hp.hpl.jena.graph.Node ;
 

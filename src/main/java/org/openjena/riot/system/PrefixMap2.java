@@ -18,8 +18,8 @@
 
 package org.openjena.riot.system;
 
-import org.openjena.atlas.logging.Log ;
 
+import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.iri.IRI ;
 
 // UNUSED

@@ -20,9 +20,9 @@ package org.openjena.riot.lang;
 
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.lib.SinkCounting ;
+import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
-import org.openjena.atlas.lib.SinkCounting ;
-import org.openjena.atlas.lib.StrUtils ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;

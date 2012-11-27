@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
-import org.openjena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
