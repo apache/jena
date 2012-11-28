@@ -92,6 +92,7 @@ public abstract class GraphMemBase extends GraphBase
     public abstract void clear();
 
     @Override
+    @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );

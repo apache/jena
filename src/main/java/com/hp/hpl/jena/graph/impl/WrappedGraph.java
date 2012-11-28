@@ -50,6 +50,7 @@ public class WrappedGraph implements GraphWithPerform
         { return base.getTransactionHandler(); }
 
     @Override
+    @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bud == null)  bud = new WrappedBulkUpdateHandler( this, base.getBulkUpdateHandler() );

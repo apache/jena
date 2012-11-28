@@ -57,7 +57,11 @@ public interface Graph  extends GraphAdd
     /** returns this Graph's transaction handler */
     TransactionHandler getTransactionHandler();
     
-    /** returns this Graph's bulk-update handler */
+    /** returns this Graph's bulk-update handler
+     * @deprecated Bulk update operations are going to be removed.  
+     * @see GraphUtil for convenience helpers.
+     */
+    @Deprecated
     BulkUpdateHandler getBulkUpdateHandler();
     
     /** returns this Graph's capabilities */

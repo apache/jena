@@ -129,7 +129,13 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public boolean findContractSafe() { return true; }
         }
 
+    /**
+        @deprecated Bulk update operations are going to be removed.  
+        @see GraphUtil for convenience helpers.
+    */
+    
     @Override
+    @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler()
         {
         if (bulkHandler == null) bulkHandler = new InfBulkUpdateHandler( this );

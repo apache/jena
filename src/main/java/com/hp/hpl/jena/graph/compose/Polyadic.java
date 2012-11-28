@@ -260,6 +260,7 @@ public abstract class Polyadic extends CompositionBase
     }
 
     @Override
+    @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler() {
         if (bulkHandler == null)
             bulkHandler = new WrappedBulkUpdateHandler( this, getRequiredBaseGraph().getBulkUpdateHandler() );

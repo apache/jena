@@ -170,8 +170,11 @@ public abstract class GraphBase implements GraphWithPerform
          SimpleBulkUpdateHandler, which does bulk update by repeated simple
          (add/delete) updates; the same handler is returned on each call. Subclasses
          may override if they have specialised implementations.
+         @deprecated Bulk update operations are going to be removed.  
+         @see GraphUtil for convenience helpers.
     */
     @Override
+    @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler()
         { 
         if (bulkHandler == null) bulkHandler = new SimpleBulkUpdateHandler( this ); 
