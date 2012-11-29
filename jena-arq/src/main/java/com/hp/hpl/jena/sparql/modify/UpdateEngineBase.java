@@ -30,12 +30,13 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public abstract class UpdateEngineBase implements UpdateEngine
+public abstract class UpdateEngineBase implements UpdateEngine, UpdateEngineStreaming
 {
     protected final GraphStore graphStore ;
     protected final Context context ;
     protected final Binding startBinding ;
-    protected UpdateRequest request ;
+    protected final UpdateRequest request ;
+    protected final UsingList usingList ;
 
     public UpdateEngineBase(GraphStore graphStore, 
                             UpdateRequest request,
@@ -53,10 +54,26 @@ public abstract class UpdateEngineBase implements UpdateEngine
         }
         this.startBinding = input ;
         this.context.put(ARQConstants.sysCurrentUpdateRequest, request) ;
+        this.usingList = null;
     }
     
-    @Override
-    public abstract void execute() ;
+    public UpdateEngineBase(GraphStore graphStore,
+                            UsingList usingList,
+                            Binding input,
+                            Context context)
+    {
+        this.graphStore = graphStore ;
+        this.usingList = usingList ;
+        this.context = setupContext(context, graphStore) ;
+        
+        if ( input == null )
+        {
+            Log.warn(this, "Null initial input") ;
+            input = BindingRoot.create() ;
+        }
+        this.startBinding = input ;
+        this.request = null;
+    }
     
     // Put any 
     private static Context setupContext(Context context, DatasetGraph dataset)

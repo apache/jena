@@ -18,7 +18,12 @@
 
 package com.hp.hpl.jena.sparql.lang;
 
-import java.util.* ;
+import java.util.ArrayDeque ;
+import java.util.ArrayList ;
+import java.util.Deque ;
+import java.util.HashSet ;
+import java.util.List ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.Query ;
@@ -28,11 +33,11 @@ import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
-import com.hp.hpl.jena.sparql.modify.request.QuadDataAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadDataAccSink ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Class that has all the parse event operations and other query/update specific things */  
 public class SPARQLParserBase extends ParserBase 
@@ -65,7 +70,7 @@ public class SPARQLParserBase extends ParserBase
 //    }
 
     // SPARQL Update (W3C RECommendation)
-    private UpdateRequest request = null ;
+    private UpdateSink sink = null ;
 
     // Places to push settings across points where we reset.
     private boolean oldBNodesAreVariables ;
@@ -78,12 +83,12 @@ public class SPARQLParserBase extends ParserBase
     private Deque<Set<String>>    stackPreviousLabels = new ArrayDeque<Set<String>>() ;
     private Deque<LabelToNodeMap> stackCurrentLabels = new ArrayDeque<LabelToNodeMap>() ;
 
-    protected UpdateRequest getUpdateRequest() { return request ; }
-    public void setUpdateRequest(UpdateRequest request)
+//    protected UpdateSink getUpdateSink() { return sink ; }
+    public void setUpdateSink(UpdateSink sink)
     { 
-        this.request = request ;
+        this.sink = sink ;
         this.query = new Query() ; 
-        setPrologue(request) ;
+        setPrologue(sink.getPrologue()) ;
     }
 
     // Signal start/finish of units
@@ -106,27 +111,27 @@ public class SPARQLParserBase extends ParserBase
     protected void startModifyUpdate()     { }
     protected void finishModifyUpdate()    { }
     
-    protected void startDataInsert(QuadDataAcc qd, int line, int col) 
+    protected void startDataInsert(QuadDataAccSink qd, int line, int col) 
     {
         oldBNodesAreVariables = getBNodesAreVariables() ;
         setBNodesAreVariables(false) ;
         activeLabelMap.clear() ;
     } 
     
-    protected void finishDataInsert(QuadDataAcc qd, int line, int col)
+    protected void finishDataInsert(QuadDataAccSink qd, int line, int col)
     {
         previousLabels.addAll(activeLabelMap.getLabels()) ;
         activeLabelMap.clear() ;
         setBNodesAreVariables(oldBNodesAreVariables) ;
     }
     
-    protected void startDataDelete(QuadDataAcc qd,int line, int col)
+    protected void startDataDelete(QuadDataAccSink qd,int line, int col)
     {
         oldBNodesAreAllowed = getBNodesAreAllowed() ;
         setBNodesAreAllowed(false) ;
     } 
     
-    protected void finishDataDelete(QuadDataAcc qd, int line, int col)
+    protected void finishDataDelete(QuadDataAccSink qd, int line, int col)
     {
         setBNodesAreAllowed(oldBNodesAreAllowed) ;
     }
@@ -182,7 +187,21 @@ public class SPARQLParserBase extends ParserBase
     
     protected void emitUpdate(Update update)
     {
-        request.add(update) ;
+        // The parser can send null if it already performed an INSERT_DATA or DELETE_DATA
+        if (null != update)
+        {
+            sink.send(update);
+        }
+    }
+    
+    protected QuadDataAccSink getInsertDataSink()
+    {
+        return sink.getInsertDataSink();
+    }
+    
+    protected QuadDataAccSink getDeleteDataSink()
+    {
+        return sink.getDeleteDataSink();
     }
     
     protected void startSubSelect(int line, int col)

@@ -47,23 +47,12 @@ public class ElementPathBlock extends Element implements TripleCollector
     { pattern.add(tp) ; }
     
     @Override
-    public int mark() { return pattern.size() ; }
-    
-    @Override
     public void addTriple(Triple t)
     { addTriplePath(new TriplePath(t)) ; }
 
     @Override
-    public void addTriple(int index, Triple t)
-    { addTriplePath(index, new TriplePath(t)) ; }
-
-    @Override
     public void addTriplePath(TriplePath tPath)
     { pattern.add(tPath) ; }
-
-    @Override
-    public void addTriplePath(int index, TriplePath tPath)
-    { pattern.add(index, tPath) ; }
     
     public PathBlock getPattern() { return pattern ; }
     public Iterator<TriplePath> patternElts() { return pattern.iterator(); }

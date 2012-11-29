@@ -18,34 +18,45 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.QueryParseException ;
+import java.util.ArrayList ;
+import java.util.Collections ;
+import java.util.List ;
+
+import org.apache.jena.atlas.lib.SinkToCollection ;
+
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Accumulate quads (excluding allowing variables) during parsing. */
-public class QuadDataAcc extends QuadAcc
+public class QuadDataAcc extends QuadDataAccSink
 {
-    @Override
-    protected void check(Triple t)
+    private final List<Quad> quads ;
+    private final List<Quad> quadsView ;
+    
+    public QuadDataAcc()
     {
-        if ( Var.isVar(getGraph()) )
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
-        if ( Var.isVar(t.getSubject()) || Var.isVar(t.getPredicate()) || Var.isVar(t.getObject())) 
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;  
-        if ( t.getSubject().isLiteral() )
-            throw new QueryParseException("Literals not allowed as subjects in data", -1, -1) ;
+        this(new ArrayList<Quad>());
+    }
+    
+    public QuadDataAcc(List<Quad> quads)
+    {
+        super(new SinkToCollection<Quad>(quads));
+        this.quads = quads;
+        this.quadsView = Collections.unmodifiableList(quads) ;
+    }
+    
+    public List<Quad> getQuads()
+    {
+        return quadsView ;
     }
     
     @Override
-    protected void check(Quad quad)
+    public int hashCode() { return quads.hashCode() ; }
+
+    @Override
+    public boolean equals(Object other)
     {
-        if ( Var.isVar(quad.getGraph()) || 
-             Var.isVar(quad.getSubject()) || 
-             Var.isVar(quad.getPredicate()) || 
-             Var.isVar(quad.getObject())) 
-            throw new QueryParseException("Variables not permitted in data quad", -1, -1) ;   
-        if ( quad.getSubject().isLiteral() )
-            throw new QueryParseException("Literals not allowed as subjects in quad data", -1, -1) ;
+        if ( ! ( other instanceof QuadDataAcc ) ) return false ;
+        QuadDataAcc acc = (QuadDataAcc)other ;
+        return quads.equals(acc.quads) ; 
     }
 }

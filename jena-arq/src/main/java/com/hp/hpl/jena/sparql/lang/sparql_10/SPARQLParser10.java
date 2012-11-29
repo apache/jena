@@ -1076,9 +1076,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
   final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                Node o ;
-      int mark = acc.mark() ;
     o = GraphNode(acc);
-    insert(acc, mark, s, p, path, o) ;
+    insert(acc, s, p, path, o) ;
   }
 
   final public Node Verb() throws ParseException {
@@ -1142,7 +1141,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // ------- RDF collections
   final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
+      Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     label_15:
     while (true) {
@@ -1151,9 +1150,8 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
-      mark = acc.mark() ;
       n = GraphNode(acc);
-      insert(acc, mark, cell, nRDFfirst, n) ;
+      insert(acc, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:

@@ -18,26 +18,27 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.Iterator ;
+import java.util.List ;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.openjena.riot.out.SinkQuadBracedOutput;
+import org.apache.jena.atlas.lib.Sink ;
+import org.openjena.riot.out.SinkQuadBracedOutput ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.sparql.ARQException;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext;
-import com.hp.hpl.jena.sparql.syntax.Element;
-import com.hp.hpl.jena.sparql.util.FmtUtils;
-import com.hp.hpl.jena.update.Update;
-import com.hp.hpl.jena.update.UpdateRequest;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.ARQException ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode ;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
+import com.hp.hpl.jena.sparql.syntax.Element ;
+import com.hp.hpl.jena.sparql.util.FmtUtils ;
+import com.hp.hpl.jena.update.Update ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateWriter implements Closeable
 {
@@ -391,19 +392,30 @@ public class UpdateWriter implements Closeable
         { printUpdate2(update, "MOVE") ; }
 
         @Override
-        public void visit(UpdateDataInsert update)
+        public Sink<Quad> getInsertDataSink()
         {
             UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
             udw.open();
-            Iter.sendToSink(update.getQuads(), udw);  // udw.close() is called by Iter.sendToSink()
+            return udw;
+        }
+
+        @Override
+        public void visit(UpdateDataInsert update)
+        {
+            Iter.sendToSink(update.getQuads(), getInsertDataSink());  // Iter.sendToSink() will call close() on the sink
+        }
+        
+        public Sink<Quad> getDeleteDataSink()
+        {
+            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
+            udw.open();
+            return udw;
         }
 
         @Override
         public void visit(UpdateDataDelete update)
         {
-            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
-            udw.open();
-            Iter.sendToSink(update.getQuads(), udw);
+            Iter.sendToSink(update.getQuads(), getDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
         }
 
         // Prettier later.
