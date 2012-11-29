@@ -46,10 +46,7 @@ import org.openjena.riot.system.SyntaxLabels ;
 import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 import arq.cmd.CmdException ;
-import arq.cmdline.ArgDecl ;
-import arq.cmdline.CmdGeneral ;
-import arq.cmdline.ModLangParse ;
-import arq.cmdline.ModTime ;
+import arq.cmdline.* ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -64,6 +61,7 @@ public abstract class CmdLangParse extends CmdGeneral
     // Module.
     protected ModTime modTime                   = new ModTime() ;
     protected ModLangParse modLangParse         = new ModLangParse() ;
+    protected ModSymbol modSymbol               = new ModSymbol() ;
     protected ArgDecl argStrict                 = new ArgDecl(ArgDecl.NoValue, "strict") ;    
     protected InferenceSetupRDFS setup          = null ; 
     
@@ -147,6 +145,7 @@ public abstract class CmdLangParse extends CmdGeneral
         setLogging() ;
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
+        super.addModule(modSymbol) ;
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
