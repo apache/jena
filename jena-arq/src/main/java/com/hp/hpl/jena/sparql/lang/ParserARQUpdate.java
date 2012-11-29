@@ -23,47 +23,44 @@ import java.io.Reader ;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.io.PeekReader ;
-import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.arq.ARQParser ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 
 public class ParserARQUpdate extends UpdateParser
 {
     @Override
-    protected UpdateRequest parse$(UpdateRequest update, String queryString)
+    protected void parse$(UpdateSink sink, String queryString)
     {
         Reader r = new StringReader(queryString) ;
-        return _parse(update, r) ;
+        _parse(sink, r) ;
     }
     
     @Override
-    protected UpdateRequest parse$(UpdateRequest update, PeekReader pr)
+    protected void parse$(UpdateSink sink, PeekReader pr)
     {
-        return _parse(update, pr) ;
+        _parse(sink, pr) ;
     }
 
     /** Use with care - Reader must be UTF-8 */ 
-    public UpdateRequest parse(UpdateRequest update, Reader r)
+    public void parse(UpdateSink sink, Reader r)
     {
         if ( r instanceof FileReader )
             LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQLUpdate.parse - use a FileInputStream") ;
-        return _parse(update, r) ;
+        _parse(sink, r) ;
     }
     
-    private UpdateRequest _parse(UpdateRequest update, Reader r)
+    private void _parse(UpdateSink sink, Reader r)
     {
         ARQParser parser = null ;
         try {
             parser = new ARQParser(r) ;
-            parser.setUpdateRequest(update) ;
+            parser.setUpdateSink(sink) ;
             parser.UpdateUnit() ;
-            validateParsedUpdate(update) ;
-            return update ;
         }
         catch (com.hp.hpl.jena.sparql.lang.arq.ParseException ex)
         { 
@@ -80,16 +77,16 @@ public class ParserARQUpdate extends UpdateParser
 
         catch (QueryException ex) { throw ex ; }
         catch (JenaException ex)  { throw new QueryException(ex.getMessage(), ex) ; }
-        catch (Error err)
-        {
-            // The token stream can throw errors.
-            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
-        }
-        catch (Throwable th)
-        {
-            Log.fatal(this, "Unexpected throwable: ",th) ;
-            throw new QueryException(th.getMessage(), th) ;
-        }
+//        catch (Error err)
+//        {
+//            // The token stream can throw errors.
+//            throw new QueryParseException(err.getMessage(), err, -1, -1) ;
+//        }
+//        catch (Throwable th)
+//        {
+//            Log.fatal(this, "Unexpected throwable: ",th) ;
+//            throw new QueryException(th.getMessage(), th) ;
+//        }
     }
 
 

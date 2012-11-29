@@ -23,7 +23,11 @@ import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-/** Interface for factories that accept and process SPARQL update requests */
+/** 
+ * Interface for factories that accept and process SPARQL update requests.
+ * <p/>
+ * The streaming methods may be the only methods called when inside of a streaming-capable container, such as Fuseki.  (TODO is this fair to implementers?)
+ */
 public interface UpdateEngineFactory
 {
     /** Answer whether this factory can produce an UpdateEngine for the UpdateRequest and GraphStore */
@@ -31,4 +35,10 @@ public interface UpdateEngineFactory
     
     /** Create the request - having returned true to accept, should not fail */  
     public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context) ;
+
+    /** Answer whether this factory can produce an UpdateEngineStreaming for the specified GraphStore */
+    public boolean acceptStreaming(GraphStore graphStore, Context context) ;
+    
+    /** Create the streaming engine - having returned true to accept, should not fail */
+    public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding inputBinding, Context context);
 }

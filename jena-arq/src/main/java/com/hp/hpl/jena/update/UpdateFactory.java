@@ -28,7 +28,11 @@ import org.apache.jena.atlas.io.IO ;
 
 import com.hp.hpl.jena.n3.IRIResolver ;
 import com.hp.hpl.jena.query.Syntax ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
+import com.hp.hpl.jena.sparql.modify.UpdateRequestSink ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.sparql.modify.UsingList ;
 
 public class UpdateFactory
 {
@@ -82,7 +86,7 @@ public class UpdateFactory
     private static void make(UpdateRequest request, String input,  String baseURI, Syntax syntax)
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        parser.parse(request, input) ;
+        parser.parse(new UpdateRequestSink(request, null), input) ;
     }
     
     /* Parse operations and add to an UpdateRequest */ 
@@ -110,7 +114,7 @@ public class UpdateFactory
     }
     
     /** Append update operations to a request */
-    private static UpdateParser setupParser(UpdateRequest request, String baseURI, Syntax syntax)
+    protected static UpdateParser setupParser(Prologue prologue, String baseURI, Syntax syntax)
     {
         if ( syntax != syntaxSPARQL_11 && syntax != syntaxARQ ) 
             throw new UnsupportedOperationException("Unrecognized syntax for parsing update: "+syntax) ;
@@ -120,16 +124,22 @@ public class UpdateFactory
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing update: "+syntax) ;
         
-        if ( request.getResolver() == null )
+        if ( prologue.getResolver() == null )
         {
             // Sort out the baseURI - if that fails, dump in a dummy one and continue.
             try { baseURI = IRIResolver.chooseBaseURI(baseURI) ; }
             catch (Exception ex)
             { baseURI = "http://localhost/defaultBase#" ; }
-            request.setResolver(new IRIResolver(baseURI)) ;
+            prologue.setResolver(new IRIResolver(baseURI)) ;
         }
         
         return parser ;
+    }
+    
+    /** Create an UpdateRequest by reading it from a file */
+    public static UpdateRequest read(UsingList usingList, String fileName)
+    { 
+        return read(usingList, fileName, null, defaultUpdateSyntax) ;
     }
     
     /** Create an UpdateRequest by reading it from a file */
@@ -143,9 +153,21 @@ public class UpdateFactory
     {
         return read(fileName, null, syntax) ;
     }
+    
+    /** Create an UpdateRequest by reading it from a file */
+    public static UpdateRequest read(UsingList usingList, String fileName, Syntax syntax)
+    {
+        return read(usingList, fileName, null, syntax) ;
+    }
 
     /** Create an UpdateRequest by reading it from a file */
     public static UpdateRequest read(String fileName, String baseURI, Syntax syntax)
+    { 
+        return read(null, fileName, baseURI, syntax);
+    }
+    
+    /** Create an UpdateRequest by reading it from a file */
+    public static UpdateRequest read(UsingList usingList, String fileName, String baseURI, Syntax syntax)
     { 
         InputStream in = null ;
         if ( fileName.equals("-") )
@@ -156,10 +178,10 @@ public class UpdateFactory
             if ( in == null )
                 throw new UpdateException("File could not be opened: "+fileName) ;
         }
-        return read(in, baseURI, syntax) ;
+        return read(usingList, in, baseURI, syntax) ;
     }
     
-    /**  Create an UpdateRequest by parsing from a string.
+    /**  Create an UpdateRequest by parsing from an InputStream.
      * See also <tt>read</tt> operations for parsing contents of a file.
      * @param input     The source of the update request (must be UTF-8). 
      */
@@ -167,8 +189,18 @@ public class UpdateFactory
     {
         return read(input, defaultUpdateSyntax) ;
     }
+    
+    /**  Create an UpdateRequest by parsing from an InputStream.
+     * See also <tt>read</tt> operations for parsing contents of a file.
+     * @param usingList The list of externally defined USING statements
+     * @param input     The source of the update request (must be UTF-8). 
+     */
+    public static UpdateRequest read(UsingList usingList, InputStream input)
+    {
+        return read(usingList, input, defaultUpdateSyntax) ;
+    }
 
-    /**  Create an UpdateRequest by parsing from a string.
+    /**  Create an UpdateRequest by parsing from an InputStream.
      * See also <tt>read</tt> operations for parsing contents of a file.
      * @param input     The source of the update request (must be UTF-8). 
      * @param syntax    The update language syntax 
@@ -178,7 +210,18 @@ public class UpdateFactory
         return read(input, null, syntax) ;
     }
     
-    /**  Create an UpdateRequest by parsing from a string.
+    /**  Create an UpdateRequest by parsing from an InputStream.
+     * See also <tt>read</tt> operations for parsing contents of a file.
+     * @param usingList The list of externally defined USING statements
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param syntax    The update language syntax 
+     */
+    public static UpdateRequest read(UsingList usingList, InputStream input, Syntax syntax)
+    {
+        return read(usingList, input, null, syntax) ;
+    }
+    
+    /**  Create an UpdateRequest by parsing from an InputStream.
      * See also <tt>read</tt> operations for parsing contents of a file.
      * @param input     The source of the update request (must be UTF-8). 
      * @param baseURI   The base URI for resolving relative URIs. 
@@ -188,7 +231,18 @@ public class UpdateFactory
         return read(input, baseURI, defaultUpdateSyntax) ;
     }
     
-    /**  Create an UpdateRequest by parsing from a string.
+    /**  Create an UpdateRequest by parsing from an InputStream.
+     * See also <tt>read</tt> operations for parsing contents of a file.
+     * @param usingList The list of externally defined USING statements
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param baseURI   The base URI for resolving relative URIs. 
+     */
+    public static UpdateRequest read(UsingList usingList, InputStream input, String baseURI)
+    { 
+        return read(usingList, input, baseURI, defaultUpdateSyntax) ;
+    }
+    
+    /**  Create an UpdateRequest by parsing from an InputStream.
      * See also <tt>read</tt> operations for parsing contents of a file.
      * @param input     The source of the update request (must be UTF-8). 
      * @param baseURI   The base URI for resolving relative URIs. 
@@ -196,15 +250,35 @@ public class UpdateFactory
      */
     public static UpdateRequest read(InputStream input, String baseURI, Syntax syntax)
     {
+        return read(null, input, baseURI, syntax);
+    }
+    
+    /**  Create an UpdateRequest by parsing from an InputStream.
+     * See also <tt>read</tt> operations for parsing contents of a file.
+     * @param usingList The list of externally defined USING statements
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param baseURI   The base URI for resolving relative URIs. 
+     * @param syntax    The update language syntax 
+     */
+    public static UpdateRequest read(UsingList usingList, InputStream input, String baseURI, Syntax syntax)
+    {
         UpdateRequest request = new UpdateRequest() ;
-        make(request, input, baseURI, syntax) ;
+        make(request, usingList, input, baseURI, syntax) ;
         return request ;
     }
     
     /** Append update operations to a request */
-    private static void make(UpdateRequest request, InputStream input,  String baseURI, Syntax syntax)
+    private static void make(UpdateRequest request, UsingList usingList, InputStream input,  String baseURI, Syntax syntax)
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        parser.parse(request, input) ;
+        UpdateSink sink = new UpdateRequestSink(request, usingList) ;
+        try
+        {
+            parser.parse(sink, input) ;
+        }
+        finally
+        {
+            sink.close() ;
+        }
     }
 }

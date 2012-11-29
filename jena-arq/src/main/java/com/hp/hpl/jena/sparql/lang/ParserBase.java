@@ -41,7 +41,7 @@ import com.hp.hpl.jena.sparql.expr.E_Exists ;
 import com.hp.hpl.jena.sparql.expr.E_NotExists ;
 import com.hp.hpl.jena.sparql.expr.Expr ;
 import com.hp.hpl.jena.sparql.graph.NodeConst ;
-import com.hp.hpl.jena.sparql.modify.request.QuadAcc ;
+import com.hp.hpl.jena.sparql.modify.request.QuadAccSink ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
@@ -373,7 +373,7 @@ public class ParserBase
         return prefix ; 
     }
     
-    protected void setAccGraph(QuadAcc acc, Node gn)
+    protected void setAccGraph(QuadAccSink acc, Node gn)
     {
         acc.setGraph(gn) ;
     }
@@ -383,25 +383,12 @@ public class ParserBase
         acc.addTriple(new Triple(s, p, o)) ;
     }
     
-    protected void insert(TripleCollector acc, int index, Node s, Node p, Node o)
-    {
-        acc.addTriple(index, new Triple(s, p, o)) ;
-    }
-    
     protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o)
     {
         if ( p == null )
             acc.addTriplePath(new TriplePath(s, path, o)) ;
         else
             acc.addTriple(new Triple(s, p, o)) ;
-    }
-    
-    protected void insert(TripleCollector acc, int index, Node s, Node p, Path path, Node o)
-    {
-        if ( p == null )
-            acc.addTriplePath(index, new TriplePath(s, path, o)) ;
-        else
-            acc.addTriple(index, new Triple(s, p, o)) ;
     }
 
     protected Expr asExpr(Node n)

@@ -22,70 +22,33 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
+import org.apache.jena.atlas.lib.SinkToCollection ;
+
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.core.TriplePath ;
-import com.hp.hpl.jena.sparql.syntax.TripleCollector ;
 
 /** Accumulate quads (including allowing variables) during parsing. */
-public class QuadAcc implements TripleCollector
+public class QuadAcc extends QuadAccSink
 {
     // A lists of Pairs: Node and Triple connector
     
-    private Node graphNode = Quad.defaultGraphNodeGenerated ;
-    private List<Quad> quads = new ArrayList<Quad>() ;
-    private List<Quad> quadsView = Collections.unmodifiableList(quads) ;
+    private final List<Quad> quads ;
+    private final List<Quad> quadsView ;
     
-    public QuadAcc()     {}
-    
-    protected void check(Triple triple) {} 
-    protected void check(Quad quad) {} 
-    
-    public void setGraph(Node n) 
-    { 
-        graphNode = n ;
+    public QuadAcc()
+    {
+        this(new ArrayList<Quad>());
     }
     
-    public Node getGraph()    { return graphNode ; }
+    public QuadAcc(List<Quad> quads)
+    {
+        super(new SinkToCollection<Quad>(quads)) ;
+        this.quads = quads ;
+        this.quadsView = Collections.unmodifiableList(quads) ;
+    }
     
     public List<Quad> getQuads()
     {
         return quadsView ;
-    }
-    
-    public void addQuad(Quad quad)
-    {
-        check(quad) ;
-        quads.add(quad) ;
-    }
-
-    @Override
-    public void addTriple(Triple triple)
-    {
-        check(triple) ;
-        quads.add(new Quad(graphNode, triple)) ;
-    }
-
-    @Override
-    public void addTriple(int index, Triple triple)
-    {
-        check(triple) ;
-        quads.add(index, new Quad(graphNode, triple)) ;
-    }
-
-    @Override
-    public void addTriplePath(TriplePath tPath)
-    { throw new UnsupportedOperationException("Can't add paths to quads") ; }
-
-    @Override
-    public void addTriplePath(int index, TriplePath tPath)
-    { throw new UnsupportedOperationException("Can't add paths to quads") ; }
-
-    @Override
-    public int mark()
-    {
-        return quads.size() ;
     }
     
     @Override

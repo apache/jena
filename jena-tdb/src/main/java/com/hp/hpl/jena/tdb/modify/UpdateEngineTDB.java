@@ -23,6 +23,8 @@ import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineStreaming ;
+import com.hp.hpl.jena.sparql.modify.UsingList ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -33,9 +35,9 @@ public class UpdateEngineTDB extends UpdateEngineMain
     public UpdateEngineTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding, Context context)
     { super(graphStore, request, inputBinding, context) ; }
     
-    @Override
-    public void execute()
-    { super.execute() ; }
+    public UpdateEngineTDB(DatasetGraphTDB graphStore, UsingList usingList, Binding inputBinding, Context context)
+    { super(graphStore, usingList, inputBinding, context) ; }
+    
 
     // ---- Factory
     public static UpdateEngineFactory getFactory() { 
@@ -53,6 +55,17 @@ public class UpdateEngineTDB extends UpdateEngineMain
                 return new UpdateEngineTDB((DatasetGraphTDB)graphStore, request, inputBinding, context) ;
             }
 
+            @Override
+            public boolean acceptStreaming(GraphStore graphStore, Context context)
+            {
+                return (graphStore instanceof DatasetGraphTDB) ;
+            }
+            
+            @Override
+            public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding inputBinding, Context context)
+            {
+                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, usingList, inputBinding, context);
+            }
         } ;
     }
 

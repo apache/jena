@@ -53,9 +53,16 @@ public class UpdateEngineRegistry
      * @param graphStore The graph store
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    
     public static UpdateEngineFactory findFactory(UpdateRequest request, GraphStore graphStore, Context context)
     { return get().find(request, graphStore, context) ; }
+    
+    /** Locate a suitable factory for this dataset from the default registry
+     * 
+     * @param graphStore The graph store
+     * @return A QueryExecutionFactory or null if none accept the request
+     */
+    public static UpdateEngineFactory findStreamingFactory(GraphStore graphStore, Context context)
+    { return get().findStreaming(graphStore, context) ; }
     
     /** Locate a suitable factory for this query and dataset
      * 
@@ -63,12 +70,26 @@ public class UpdateEngineRegistry
      * @param graphStore    A GraphStore
      * @return A UpdateProcessorFactroy or null if none accept the request
      */
-    
     public UpdateEngineFactory find(UpdateRequest request, GraphStore graphStore, Context context)
     {
         for ( UpdateEngineFactory f : factories )
         {
             if ( f.accept(request, graphStore, context) )
+                return f ;
+        }
+        return null ;
+    }
+    
+    /** Locate a suitable factory for this dataset
+     * 
+     * @param graphStore    A GraphStore
+     * @return A UpdateProcessorFactroy or null if none accept the request
+     */
+    public UpdateEngineFactory findStreaming(GraphStore graphStore, Context context)
+    {
+        for ( UpdateEngineFactory f : factories )
+        {
+            if ( f.acceptStreaming(graphStore, context) )
                 return f ;
         }
         return null ;

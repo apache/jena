@@ -25,12 +25,6 @@ import com.hp.hpl.jena.sparql.core.TriplePath ;
 public interface TripleCollector
 {
     public void addTriple(Triple t) ;
-    // The contract with the mark is that there should be no disturbing
-    // triples 0..(mark-1) before using a mark. That is, use marks in
-    // LIFO (stack) order.
-    public int mark() ;
-    public void addTriple(int index, Triple t) ;
     
     public void addTriplePath(TriplePath tPath) ;
-    public void addTriplePath(int index, TriplePath tPath) ;
 }

@@ -31,49 +31,47 @@ import com.hp.hpl.jena.query.QueryException ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.lang.sparql_11.SPARQLParser11 ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.update.UpdateException ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 
 public class ParserSPARQL11Update extends UpdateParser
 {
     @Override
-    protected UpdateRequest parse$(UpdateRequest update, String updateString)
+    protected void parse$(UpdateSink sink, String updateString)
     {
         Reader r = new StringReader(updateString) ;
-        return _parse(update, r) ;
+        _parse(sink, r) ;
     }
     
     @Override
-    protected UpdateRequest parse$(UpdateRequest update, PeekReader pr)
+    protected void parse$(UpdateSink sink, PeekReader pr)
     {
-        return _parse(update, pr) ;
+        _parse(sink, pr) ;
     }
     
     @Override
-    public UpdateRequest parse(UpdateRequest update, InputStream in)
+    public void parse(UpdateSink sink, InputStream in)
     {
         Reader r = FileUtils.asBufferedUTF8(in) ;
-        return _parse(update, r) ;
+        _parse(sink, r) ;
     }
 
-    public UpdateRequest parse(UpdateRequest update, Reader r)
+    public void parse(UpdateSink sink, Reader r)
     {
         if ( r instanceof FileReader )
             LoggerFactory.getLogger(this.getClass()).warn("FileReader passed to ParserSPARQL11Update.parse - use a FileInputStream") ;
-        return _parse(update, r) ;
+        _parse(sink, r) ;
     }
     
-    private UpdateRequest _parse(UpdateRequest update, Reader r)
+    private void _parse(UpdateSink sink, Reader r)
     {
         SPARQLParser11 parser = null ;
         try {
             parser = new SPARQLParser11(r) ;
-            parser.setUpdateRequest(update) ;
+            parser.setUpdateSink(sink) ;
             parser.UpdateUnit() ;
-            validateParsedUpdate(update) ;
-            return update ;
         }
         catch (com.hp.hpl.jena.sparql.lang.sparql_11.ParseException ex)
         { 
