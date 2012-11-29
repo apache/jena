@@ -19,39 +19,16 @@
 package com.hp.hpl.jena.sparql.graph;
 
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Reifier ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryFactory ;
+import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.shared.AlreadyReifiedException ;
 import com.hp.hpl.jena.shared.CannotReifyException ;
 import com.hp.hpl.jena.shared.ReificationStyle ;
-import com.hp.hpl.jena.sparql.algebra.Algebra ;
-import com.hp.hpl.jena.sparql.algebra.Op ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Var ;
-import com.hp.hpl.jena.sparql.engine.Plan ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineFactory ;
-import com.hp.hpl.jena.sparql.engine.QueryEngineRegistry ;
-import com.hp.hpl.jena.sparql.engine.QueryIterator ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingMap ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.NiceIterator ;
 import com.hp.hpl.jena.util.iterator.NullIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -63,16 +40,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 public class Reifier2 implements Reifier
 {
-    private final static String qs = "PREFIX rdf: <"+RDF.getURI()+">\n" +
-    		"SELECT * \n" +
-    		"{ ?x rdf:type rdf:Statement ; rdf:subject ?S ; rdf:predicate ?P ; rdf:object ?O }" ;
-    private final static Query query = QueryFactory.create(qs) ;
-    private final static Op op = Algebra.compile(query) ; 
-    private final static Var reifNodeVar = Var.alloc("x") ; 
-    private final static Var varS = Var.alloc("S") ; 
-    private final static Var varP = Var.alloc("P") ; 
-    private final static Var varO = Var.alloc("O") ; 
-    
     private final static Node rdfType      = RDF.Nodes.type ;
     private final static Node statement    = RDF.Nodes.Statement ;
     private final static Node subject      = RDF.Nodes.subject ;
@@ -80,14 +47,10 @@ public class Reifier2 implements Reifier
     private final static Node object       = RDF.Nodes.object ;
 
     private final Graph graph ;
-    private final DatasetGraph ds  ;
-    private final QueryEngineFactory factory ;
 
     public Reifier2(Graph graph)
     {
         this.graph = graph ;
-        this.ds = DatasetGraphFactory.createOneGraph(graph) ;
-        this.factory = QueryEngineRegistry.findFactory(op, ds, null) ;
     }
     
     @Override
@@ -96,88 +59,14 @@ public class Reifier2 implements Reifier
         return allNodes(null) ;
     }
 
-    private static class MapperToNode extends NiceIterator<Node>
-    {
-        private final QueryIterator iter ;
-        private final Var var ;
-        MapperToNode(QueryIterator iter, Var var) { this.iter = iter ; this.var = var ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Node next()
-        { 
-            Binding b = iter.nextBinding();
-            Node n = b.get(var) ;
-            return n ;
-        }
-        @Override public void close() { iter.close() ; } 
-    }
-
-    @Override
-    public ExtendedIterator<Node> allNodes(Triple triple)
-    {
-        QueryIterator qIter = nodesReifTriple(null, triple) ;
-        return new MapperToNode(qIter, reifNodeVar) ;
-    }
-    
-    private QueryIterator nodesReifTriple(Node node, TripleMatch triple)
-    {
-        Binding b = BindingRoot.create() ;
-        
-        if ( node == Node.ANY )
-            node = null ;
-        
-        if ( node != null || triple != null )
-        {
-            BindingMap b2 = BindingFactory.create(b) ;
-            if ( node != null )
-                bind(b2, reifNodeVar, node) ; 
-            if ( triple != null )
-            {
-                bind(b2, varS, triple.getMatchSubject()) ;
-                bind(b2, varP, triple.getMatchPredicate()) ;
-                bind(b2, varO, triple.getMatchObject()) ;
-            }
-            b = b2 ;
-        }
-        
-        Plan plan = factory.create(op, ds, b, null) ;
-        QueryIterator qIter = plan.iterator() ;
-        return qIter ;
-    }
-    
-    private static void bind(BindingMap b, Var var, Node node)
-    {
-        if ( node == null || node == Node.ANY )
-            return ;
-        b.add(var, node) ;
-    }
-
     @Override
     public void close()
     {}
 
-    private static class MapperToTriple extends NiceIterator<Triple>
-    {
-        private final QueryIterator iter ;
-        MapperToTriple(QueryIterator iter) { this.iter = iter  ; }
-        @Override public boolean hasNext() { return iter.hasNext() ; } 
-        @Override public Triple next()
-        { 
-            Binding b = iter.nextBinding();
-            Node S = b.get(varS) ;
-            Node P = b.get(varP) ;
-            Node O = b.get(varO) ;
-            return new Triple(S,P,O) ;
-        }
-        @Override public void close() { iter.close() ; } 
-    }
-    
     @Override
     public ExtendedIterator<Triple> find(TripleMatch match)
     {
         return graph.find(match) ; 
-//        QueryIterator qIter = nodesReifTriple(null, match) ; 
-//        // To ExtendedIterator.
-//        return new MapperToTriple(qIter) ;
     }
 
     @Override
@@ -188,7 +77,6 @@ public class Reifier2 implements Reifier
         else
             return graph.find(match) ;
     }
-
     
     static Filter<Triple> filterReif = new Filter<Triple>() {
         @Override
@@ -219,6 +107,115 @@ public class Reifier2 implements Reifier
     {
         return ReificationStyle.Standard ;
     }
+    
+    @Override
+    public Triple getTriple(Node n)
+    {
+        Node s = getObject(n, subject) ;
+        if ( s == null ) return null ;
+        Node p = getObject(n, predicate) ;
+        if ( p == null ) return null ;
+        Node o = getObject(n, object) ;
+        if ( o == null ) return null ;
+        return new Triple(s,p,o) ;
+    }
+    
+    private Node getObject(Node n, Node predicate)
+    {
+        ExtendedIterator<Triple> iter = graph.find(n, predicate, Node.ANY) ;
+        try {
+            if ( ! iter.hasNext() )
+                // None.
+                return null ;
+            Triple t = iter.next() ;
+            if ( iter.hasNext() )
+                // Too many.
+                return null ;
+            return t.getObject() ;
+        } finally { iter.close() ; }
+    }
+
+    @Override
+    public boolean hasTriple(Triple t)
+    {
+        ExtendedIterator<Node> iter = findNodesForTriple(t, false) ;
+        try {
+            return iter.hasNext() ;
+        } finally { iter.close() ; }
+    }
+
+    @Override
+    public boolean hasTriple(Node node)
+    {
+        return getTriple(node) != null ;
+    }
+
+    @Override
+    public ExtendedIterator<Node> allNodes(Triple t)
+    {
+        return findNodesForTriple(t, false) ;
+    }
+    
+    private ExtendedIterator<Node> findNodesForTriple(Triple t, boolean oneWillDo)
+    {
+        ExtendedIterator<Triple> iter = graph.find(Node.ANY, rdfType, statement) ;
+        List<Node> nodes = new ArrayList<Node>() ;
+        try
+        {
+            while (iter.hasNext())
+            {
+                Triple typeTriple = iter.next() ;
+                Node n = typeTriple.getSubject() ;
+                
+                // Check.
+                if ( t != null )
+                {
+                    if ( ! exactlyOne(n, subject, t.getSubject()) )
+                        continue ;
+                    if ( ! exactlyOne(n, predicate, t.getPredicate()) )
+                        continue ;
+                    if ( ! exactlyOne(n, object, t.getObject()) )
+                        continue ;
+                }
+                nodes.add(n) ;
+                if ( oneWillDo )
+                    break ;
+            }
+        } finally { iter.close() ; }
+        return WrappedIterator.create(nodes.iterator()) ;
+    }
+    // ----
+
+    // check whether there is exactly the triple expected, and no others with same S and P but different O. 
+    private boolean exactlyOne(Node n, Node predicate, Node object)
+    {
+        ExtendedIterator<Triple> iter = graph.find(n, predicate, Node.ANY) ;
+        try {
+            if ( ! iter.hasNext() )
+                return false ;
+            
+            while (iter.hasNext())
+            {
+                Node obj = iter.next().getObject() ;
+                if  ( ! obj.equals(object) )
+                    return false ;
+            }
+            return true ;
+        } finally { iter.close() ; }
+    }
+
+    private static Iterator<Triple> generate(ExtendedIterator<Triple> iterSubj, 
+                                             ExtendedIterator<Triple> iterPred,
+                                             ExtendedIterator<Triple> iterObj)
+    {
+        try {
+            return null ;
+        } finally {
+            iterSubj.close() ;
+            iterPred.close() ;
+            iterObj.close() ;
+        }
+    }
 
     @Override
     public boolean handledAdd(Triple triple)
@@ -235,29 +232,6 @@ public class Reifier2 implements Reifier
     }
 
     @Override
-    public boolean hasTriple(Node node)
-    {
-        return getTriple(node) != null ;
-    }
-
-    @Override
-    public boolean hasTriple(Triple triple)
-    {
-        QueryIterator qIter = nodesReifTriple(null, triple) ;
-        try {
-            if ( ! qIter.hasNext() )
-                return false ;
-            Binding b = qIter.nextBinding() ;
-            Node x = b.get(reifNodeVar) ;
-            if ( qIter.hasNext() )
-                // Over specified
-                return false ;
-            // This checks there are no fragments
-            return getTriple(x) != null ;
-        } finally { qIter.close(); }
-    }
-
-    @Override
     public Node reifyAs(Node node, Triple triple)
     {
         if ( node == null )
@@ -265,12 +239,21 @@ public class Reifier2 implements Reifier
         else
         {
             Triple t = getTriple(node) ; 
-            
+
             if ( t != null && ! t.equals(triple) )
                 throw new AlreadyReifiedException(node) ;
             if ( t != null )
                 // Already there
                 return node ;
+
+            // Check it's a well-formed reification by Jena's uniqueness rules
+            // No fragments (we checked for exact match by getTriple(node))
+            if ( graph.contains(node, subject, Node.ANY) )
+                throw new CannotReifyException(node) ;
+            if ( graph.contains(node, predicate, Node.ANY) )
+                throw new CannotReifyException(node) ;
+            if ( graph.contains(node, object, Node.ANY) )
+                throw new CannotReifyException(node) ;
         }
         
         graph.add(new Triple(node, rdfType, statement)) ;
@@ -278,10 +261,6 @@ public class Reifier2 implements Reifier
         graph.add(new Triple(node, predicate, triple.getPredicate())) ;
         graph.add(new Triple(node, object, triple.getObject())) ;
 
-        // Check it's a well-formed reification by Jena's uniqueness rules 
-        Triple t = getTriple(node) ;
-        if ( t == null )
-            throw new CannotReifyException(node) ;
         return node ;
     }
 
@@ -296,7 +275,6 @@ public class Reifier2 implements Reifier
     @Override
     public void remove(Node node, Triple triple)
     {
-        //QueryIterator qIter = nodesReifTriple(node, triple) ;
         Set<Triple> triples = new HashSet<Triple>();
         triplesToZap(triples, node, rdfType, statement) ;
         triplesToZap(triples, node, subject, triple.getSubject()) ;
@@ -317,34 +295,5 @@ public class Reifier2 implements Reifier
     public int size()
     {
         return 0 ;
-    }
-
-    @Override
-    public Triple getTriple(Node node)
-    {
-        
-        QueryIterator qIter = nodesReifTriple(node, null) ;
-        try {
-            if ( ! qIter.hasNext() )
-                return null ;
-            Binding b = qIter.nextBinding() ;
-            if ( qIter.hasNext() )
-                // Over specificied
-                return null ;
-            // Just right
-            Node S = b.get(varS) ;
-            Node P = b.get(varP) ;
-            Node O = b.get(varO) ;
-            return new Triple(S,P,O) ;
-        } finally { qIter.close() ; }
-    }
-
-    private Node getNode(Node S, Node P)
-    {
-        ExtendedIterator<Triple> it = graph.find(S,P, Node.ANY) ;
-        if ( ! it.hasNext() ) return null ;
-        Triple t = it.next() ;
-        it.close() ;
-        return t.getObject() ;
     }
 }
