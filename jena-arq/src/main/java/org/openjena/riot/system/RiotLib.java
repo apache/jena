@@ -27,11 +27,38 @@ import org.openjena.riot.tokens.Tokenizer ;
 import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 
 /** Misc RIOT code */
 public class RiotLib
 {
+    final static String bNodeLabelStart = "_:" ;
+    final static boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
+    
+    /** Implement <_:....> as a 2bNode IRI"
+     * that is, use the given label as the BNode internal label.
+     * Use with care.
+     */
+    public static Node createIRIorBNode(String iri)
+    {
+        // Is it a bNode label? i.e. <_:xyz>
+        if ( isBNodeIRI(iri) )
+        {
+            String s = iri.substring(bNodeLabelStart.length()) ;
+            Node n = Node.createAnon(new AnonId(s)) ;
+            return n ;
+        }
+        return Node.createURI(iri) ;
+    }
+
+    /** Test whether  */
+    public static boolean isBNodeIRI(String iri)
+    {
+        return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
+    }
+    
     static ParserProfile profile = profile(Lang.TURTLE, null, null) ;
     static {
         PrefixMap pmap = profile.getPrologue().getPrefixMap() ;

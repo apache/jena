@@ -100,7 +100,7 @@ public class ParserProfileBase implements ParserProfile
     @Override
     public Node createURI(String uriStr, long line, long col)
     {
-        return Node.createURI(uriStr) ;
+        return RiotLib.createIRIorBNode(uriStr) ;
     }
 
     @Override

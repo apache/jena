@@ -102,8 +102,13 @@ public class ParserProfileChecker extends ParserProfileBase //implements ParserP
     public Node createURI(String x, long line, long col)
     { 
         try {
-            String resolvedIRI = resolveIRI(x, line, col) ;
-            return Node.createURI(resolvedIRI) ;
+            if ( RiotLib.isBNodeIRI(x) )
+                return RiotLib.createIRIorBNode(x) ;
+            else
+            {
+                String resolvedIRI = resolveIRI(x, line, col) ;
+                return Node.createURI(resolvedIRI) ;
+            }
         } catch (RiotException ex)
         {
             // Error was handled.
