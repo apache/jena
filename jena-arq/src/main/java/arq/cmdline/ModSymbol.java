@@ -51,6 +51,8 @@ public class ModSymbol implements ArgModuleGeneral
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
+        ARQ.init();
+        
         if ( cmdLine.getValues(setDecl) == null || cmdLine.getValues(setDecl).size() == 0 )
             return ;
         

@@ -18,17 +18,20 @@
 
 package org.openjena.riot.lang;
 
+import com.hp.hpl.jena.graph.Node ;
+
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
 import org.junit.Test ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerTestLib ;
-import static org.openjena.riot.ErrorHandlerTestLib.* ;
+import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.system.Checker ;
+import org.openjena.riot.system.RiotLib ;
 
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
-
-public class TestIRI
+public class TestIRI extends BaseTest
 {
     static protected final ErrorHandler handler = new ErrorHandlerTestLib.ErrorHandlerEx() ;
     static protected final Checker checker = new Checker(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
@@ -49,12 +52,25 @@ public class TestIRI
 
     @Test(expected=ExWarning.class) 
     public void iriErr3()  { test("http://example/.") ; }
-
     
     private void test(String uriStr)
     {
         IRI iri = factory.create(uriStr) ;
         CheckerIRI.iriViolations(iri, handler) ;
+    }
+    
+    @Test public void bNodeIRI_1()
+    {
+        Node n = RiotLib.createIRIorBNode("_:abc") ;
+        assertTrue(n.isBlank()) ;
+        assertEquals("abc", n.getBlankNodeLabel()) ;
+    }
+    
+    @Test public void bNodeIRI_2()
+    {
+        Node n = RiotLib.createIRIorBNode("abc") ;
+        assertTrue(n.isURI()) ;
+        assertEquals("abc", n.getURI()) ;
     }
     
 }

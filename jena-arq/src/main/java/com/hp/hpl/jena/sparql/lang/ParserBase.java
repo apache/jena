@@ -23,6 +23,7 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.openjena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
@@ -32,7 +33,6 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.n3.JenaURIException ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryParseException ;
-import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
@@ -232,10 +232,8 @@ public class ParserBase
     }
 
     // ---- IRIs and Nodes
-    
-    final static String bNodeLabelStart = "_:" ;
-    
-    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
+    // See RiotLib re bNode IRIs.
+    // Merge sometime.
     
     protected String resolveQuotedIRI(String iriStr ,int line, int column)
     {
@@ -278,23 +276,19 @@ public class ParserBase
         return s ;
     }
     
+    boolean skolomizedBNodes = ARQ.isTrue(ARQ.constantBNodeLabels) ;
     protected Node createNode(String iri)
     {
-        // Is it a bNode label? i.e. <_:xyz>
-        if ( isBNodeIRI(iri) )
-        {
-            String s = iri.substring(bNodeLabelStart.length()) ;
-            Node n = Node.createAnon(new AnonId(s)) ;
-            return n ;
-        }
-        return Node.createURI(iri) ;
+        if ( skolomizedBNodes )
+            return RiotLib.createIRIorBNode(iri) ;
+        else
+            return Node.createURI(iri) ;
     }
     
     protected boolean isBNodeIRI(String iri)
     {
-        return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
+        return skolomizedBNodes && RiotLib.isBNodeIRI(iri) ;
     }
-    
     
     // -------- Basic Graph Patterns and Blank Node label scopes
     
