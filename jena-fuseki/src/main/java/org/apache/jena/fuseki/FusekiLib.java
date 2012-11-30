@@ -181,7 +181,7 @@ public class FusekiLib
     
     public static String safeParameter(HttpServletRequest request, String pName)
     {
-        String value = request.getParameter("dataset") ;
+        String value = request.getParameter(pName) ;
         value = StringUtils.replaceChars(value, "\r", "") ;
         value = StringUtils.replaceChars(value, "\n", "") ;
         return value ; 
