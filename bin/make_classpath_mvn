@@ -38,6 +38,7 @@ done
 
 if [ -e "$DIRROOT/classes" ]
 then
+    CP="$DIRROOT/../jena-core/classes${SEP}$CP"
     CP="$DIRROOT/classes${SEP}$CP"
 elif [ -e "$DIRROOT/target/classes" ]
 then
