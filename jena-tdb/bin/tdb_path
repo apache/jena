@@ -34,6 +34,8 @@ if [ -e "$TDBROOT/classes" ]
 then
     [ -z "$CP" ] || CP="${CP}${SEP}"
     CP="${CP}$TDBROOT/classes"
+    CP="${CP}${SEP}$TDBROOT/../jena-arq/classes"
+    CP="${CP}${SEP}$TDBROOT/../jena-core/classes"
 elif [ -e "$TDBROOT/target/classes" ]
 then
     [ -z "$CP" ] || CP="${CP}${SEP}"
