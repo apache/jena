@@ -25,19 +25,13 @@ package com.hp.hpl.jena.graph.test;
     @author kers
 */
 
-import java.util.Set ;
-
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.impl.WrappedGraph ;
 import com.hp.hpl.jena.mem.GraphMem ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
-import com.hp.hpl.jena.util.CollectionFactory ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class TestGraph extends GraphTestBase
     { 
@@ -45,7 +39,7 @@ public class TestGraph extends GraphTestBase
 		{ super( name ); }
         
     /**
-        Answer a test suite that runs the Graph and Reifier tests on GraphMem and on
+        Answer a test suite that runs the Graph tests on GraphMem and on
         WrappedGraphMem, the latter standing in for testing WrappedGraph.
      */
     public static TestSuite suite()
@@ -79,41 +73,10 @@ public class TestGraph extends GraphTestBase
         
     /**
         Class to provide a constructor that produces a wrapper round a GraphMem.    
-    	@author kers
     */
     public static class WrappedGraphMem extends WrappedGraph
         {
-        public WrappedGraphMem( ReificationStyle style ) 
-            { super( Factory.createGraphMem( style ) ); }  
+        public WrappedGraphMem( ) 
+            { super( Factory.createGraphMem( ) ); }  
         }    
-    
-    public void testListSubjectsDoesntUseFind()
-        {
-        final boolean [] called = {false};
-        Graph g = Factory.createGraphMem();
-        ExtendedIterator<Node> subjects = g.queryHandler().subjectsFor( null, null );
-        Set<Node> s = CollectionFactory.createHashedSet();
-        while (subjects.hasNext()) s.add( subjects.next() );
-        assertFalse( "find should not have been called", called[0] );
-        }   
-    
-    public void testListPredicatesDoesntUseFind()
-        {
-        final boolean [] called = {false};
-        Graph g = Factory.createGraphMem();
-        ExtendedIterator<Node> predicates = g.queryHandler().predicatesFor( null, null );
-        Set<Node> s = CollectionFactory.createHashedSet();
-        while (predicates.hasNext()) s.add( predicates.next() );
-        assertFalse( "find should not have been called", called[0] );
-        }
-    
-    public void testListObjectsDoesntUseFind()
-        {
-        final boolean [] called = {false};
-        Graph g = Factory.createGraphMem();
-        ExtendedIterator<Node> subjects = g.queryHandler().objectsFor( null, null );
-        Set<Node> s = CollectionFactory.createHashedSet();
-        while (subjects.hasNext()) s.add( subjects.next() );
-        assertFalse( "find should not have been called", called[0] );
-        }   
     }

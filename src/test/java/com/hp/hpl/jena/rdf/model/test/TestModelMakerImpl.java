@@ -18,16 +18,21 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.*;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.util.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphMaker ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.test.GraphTestBase ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelMaker ;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
     Test ModelMakerImpl using a mock GraphMaker. This is as much an
@@ -147,6 +152,7 @@ public class TestModelMakerImpl extends ModelTestBase
             { this.graph = graph; }
 
         @Override
+        @Deprecated
         public ReificationStyle getReificationStyle()
             {
             history.add( "getReificationStyle()" );

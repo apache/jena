@@ -18,9 +18,13 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import java.lang.management.ManagementFactory ;
+import java.lang.management.ThreadInfo ;
+import java.lang.management.ThreadMXBean ;
 import java.util.concurrent.ExecutorService ;
 import java.util.concurrent.Executors ;
 
+import junit.framework.Assert ;
 import junit.framework.TestCase ;
 import junit.framework.TestSuite ;
 
@@ -117,6 +121,11 @@ public class ConcurrencyTest  extends TestCase {
                     try {
                         // Iterate over all statements
                         StmtIterator it = model.listStatements();
+                        
+//                        // Debug
+//                        List<Statement> s = it.toList();
+//                        it = new StmtIteratorImpl(s.iterator()) ;
+                        
                         while(it.hasNext()) it.nextStatement();
                         it.close();
                         
@@ -155,26 +164,26 @@ public class ConcurrencyTest  extends TestCase {
         
         if(!executorService.isTerminated()) {
             /* uncomment this block to perform deadlock checking, only on java 1.6 */
-//            // Check for deadlock
-//            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
-//            long[] ids = tmx.findDeadlockedThreads();
-//            if (ids != null) {
-//                ThreadInfo[] infos = tmx.getThreadInfo(ids, true, true);
-//                
-//                System.err.println("*** Deadlocked threads");
-//                for (ThreadInfo ti : infos) {
-//                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " " 
-//                            + ti.getThreadState().toString());
-//                    System.err.println("Lock name: " + ti.getLockName() + " owned by \""
-//                            + ti.getLockOwnerName() + "\" id=" + ti.getLockOwnerId());
-//                    System.err.println("\nStack trace:");
-//                    for(StackTraceElement st : ti.getStackTrace())
-//                        System.err.println("   " + st.getClassName() + "." + st.getMethodName() 
-//                                + " (" + st.getFileName() + ":" + st.getLineNumber() + ")" );
-//                    System.err.println();
-//                }
-//            }
-//            Assert.assertTrue("Deadlock detected!", false);
+            // Check for deadlock
+            ThreadMXBean tmx = ManagementFactory.getThreadMXBean();
+            long[] ids = tmx.findDeadlockedThreads();
+            if (ids != null) {
+                ThreadInfo[] infos = tmx.getThreadInfo(ids, true, true);
+                
+                System.err.println("*** Deadlocked threads");
+                for (ThreadInfo ti : infos) {
+                    System.err.println("Thread \"" + ti.getThreadName() + "\" id=" + ti.getThreadId() + " " 
+                            + ti.getThreadState().toString());
+                    System.err.println("Lock name: " + ti.getLockName() + " owned by \""
+                            + ti.getLockOwnerName() + "\" id=" + ti.getLockOwnerId());
+                    System.err.println("\nStack trace:");
+                    for(StackTraceElement st : ti.getStackTrace())
+                        System.err.println("   " + st.getClassName() + "." + st.getMethodName() 
+                                + " (" + st.getFileName() + ":" + st.getLineNumber() + ")" );
+                    System.err.println();
+                }
+            }
+            Assert.assertTrue("Deadlock detected!", false);
             /* end deadlock block */
             assertTrue("Failed to terminate execution", false);
         }

@@ -20,10 +20,13 @@ package com.hp.hpl.jena.graph;
 
 import java.util.Iterator ;
 import java.util.List ;
+import java.util.Set ;
 
 import com.hp.hpl.jena.graph.impl.GraphWithPerform ;
 import com.hp.hpl.jena.util.IteratorCollection ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Map1 ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /**
     An ad-hoc collection of useful code for graphs
@@ -35,7 +38,82 @@ public class GraphUtil
      */
     private GraphUtil()
     {}
+    
+    private static Map1<Triple, Node> mapSubject   = new Map1<Triple, Node>() {
+        @Override
+        public Node map1(Triple triple)
+        {
+            return triple.getSubject() ;
+        }
+    } ;
+    private static Map1<Triple, Node> mapPredicate = new Map1<Triple, Node>() {
+        @Override
+        public Node map1(Triple triple)
+        {
+            return triple.getPredicate() ;
+        }
+    } ;
+    private static Map1<Triple, Node> mapObject    = new Map1<Triple, Node>() {
+        @Override
+        public Node map1(Triple triple)
+        {
+            return triple.getObject() ;
+        }
+    } ;
 
+    /** Return an iterator over the unique subjects with predciate p and object o.
+     * p and o can be wildcards (Node.ANY)
+     * @param g Graph  
+     * @param p Predicate - may be Node.ANY
+     * @param o Object  - may be Node.ANY
+     * @returns  ExtendedIterator
+     */
+    public static ExtendedIterator<Node> listSubjects(Graph g, Node p, Node o)
+    {
+        // Restore a minimal QueryHandler?
+        ExtendedIterator<Triple> iter = g.find(Node.ANY, p, o) ;
+        Set<Node> nodes = iter.mapWith(mapSubject).toSet() ;
+        return WrappedIterator.createNoRemove(nodes.iterator()) ;
+    }
+    
+    /** Return an iterator over the unique predicate between s and o.
+     * s and o can be wildcards (Node.ANY)
+     * @param g Graph  
+     * @param s Subject - may be Node.ANY
+     * @param o Object  - may be Node.ANY
+     * @returns  ExtendedIterator
+     */
+    public static ExtendedIterator<Node> listPredicates(Graph g, Node s, Node o)
+    {
+        ExtendedIterator<Triple> iter = g.find(s,Node.ANY, o) ;
+        Set<Node> nodes = iter.mapWith(mapPredicate).toSet() ;
+        return WrappedIterator.createNoRemove(nodes.iterator()) ;
+    }
+    
+    /** Return an iterator over the unique objects with a given subject and object.
+     * s and p can be wildcards (Node.ANY)
+     * @param g Graph  
+     * @param s Subject - may be Node.ANY
+     * @param p Predicate  - may be Node.ANY
+     * @returns  ExtendedIterator
+     */
+    public static ExtendedIterator<Node> listObjects(Graph g, Node s, Node p)
+    {
+        ExtendedIterator<Triple> iter = g.find(s, p, Node.ANY) ;
+        Set<Node> nodes = iter.mapWith(mapObject).toSet() ;
+        return WrappedIterator.createNoRemove(nodes.iterator()) ;
+    }
+    
+    /** Does the graph use the node anywhere as a subject, predciate or object? */
+    public static boolean containsNode(Graph graph, Node node)
+    {
+        return
+            graph.contains(node, Node.ANY, Node.ANY) ||
+            graph.contains(Node.ANY, Node.ANY, node) ||
+            graph.contains(Node.ANY, node, Node.ANY) ;
+    }
+    
+    /* Control how events are dealt with in bulk */
     private static final boolean OldStyle = true ; 
     
     /**
@@ -102,14 +180,7 @@ public class GraphUtil
     /** Add triples into the destination (arg 1) from the source (arg 2)*/
     public static void addInto(Graph dstGraph, Graph srcGraph )
     {
-        addInto(dstGraph, srcGraph, false) ;
-    }
-    
-    /** Add triples into the destination (arg 1) from the source (arg 2)*/
-    public static void addInto(Graph dstGraph, Graph srcGraph, boolean withReifications )
-    { 
         addIteratorWorker(dstGraph, GraphUtil.findAll( srcGraph ));  
-        if (withReifications) addReificationsInto(  dstGraph, srcGraph );
         dstGraph.getEventManager().notifyAddGraph( dstGraph, srcGraph );
     }
     
@@ -129,17 +200,6 @@ public class GraphUtil
         }
     }
 
-    private static void addReificationsInto( Graph dstGraph, Graph srcGraph )
-    {
-        Reifier r = srcGraph.getReifier();
-        Iterator<Node> it = r.allNodes();
-        while (it.hasNext())
-        {
-            Node node = it.next();
-            dstGraph.getReifier().reifyAs( node, r.getTriple( node ) );
-        }
-    }
-    
     public static void delete(Graph graph, Triple[] triples)
     {
         if ( OldStyle && graph instanceof GraphWithPerform )
@@ -193,14 +253,7 @@ public class GraphUtil
     /** Delete triples the destination (arg 1) as given in the source (arg 2) */
     public static void deleteFrom(Graph dstGraph, Graph srcGraph)
     {
-        deleteFrom(dstGraph, srcGraph, false) ;
-    }
-    
-    /** Delete triples the destination (arg 1) as given in the source (arg 2) */
-    public static void deleteFrom(Graph dstGraph, Graph srcGraph, boolean withReifications )
-    { 
         deleteIteratorWorker(dstGraph, GraphUtil.findAll( srcGraph ));  
-        if (withReifications) deleteReificationsFrom(  dstGraph, srcGraph );
         dstGraph.getEventManager().notifyDeleteGraph( dstGraph, srcGraph );
     }
     
@@ -217,17 +270,6 @@ public class GraphUtil
         {
             for (Triple t : s )
                 graph.delete(t) ;
-        }
-    }
-    
-    private static void deleteReificationsFrom( Graph dstGraph, Graph srcGraph )
-    {
-        Reifier r = srcGraph.getReifier();
-        Iterator<Node> it = r.allNodes();
-        while (it.hasNext())
-        {
-            Node node = it.next();
-            dstGraph.getReifier().remove( node, r.getTriple( node ) );
         }
     }
     

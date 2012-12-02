@@ -18,24 +18,31 @@
 
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.arp.ARPTests;
+import java.io.BufferedInputStream ;
+import java.io.FileInputStream ;
+import java.io.IOException ;
+import java.io.InputStream ;
+import java.net.URL ;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.shared.*;
+import junit.framework.Assert ;
+import junit.framework.TestCase ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import junit.framework.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.*;
-import java.net.*;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.rdf.arp.ARPTests ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl ;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerFactory ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * A utility to support execution of the RDFCode working group entailment
@@ -364,62 +371,27 @@ public class WGReasonerTester {
         
         // Signal the results        
         if (testcase != null) {
+//            if ( !correct )
+//            {
+//                boolean b = testConclusions(conclusions.getGraph(), result.getGraph());
+//                System.out.println("**** actual") ;
+//                result.write(System.out, "TTL") ; 
+//                System.out.println("**** expected") ;
+//                conclusions.write(System.out, "TTL") ;
+//            }
             Assert.assertTrue("Test: " + test + "\n" +  description, correct);
         }
         return correct?goodResult:FAIL;
     }
     
     /**
-     * Test a conclusions graph against a result graph. This works by
+     * Test a conclusions graph against a result graph.
+    * This works by
      * translating the conclusions graph into a find query which contains one
      * variable for each distinct bNode in the conclusions graph.
      */
-    private boolean testConclusions(Graph conclusions, Graph result) {
-        QueryHandler qh = result.queryHandler();
-        GraphQuery query = graphToQuery(conclusions);
-        Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
-        return i.hasNext();
+    public static boolean testConclusions(Graph conclusions, Graph result) {
+        return Matcher.subgraphInferred(conclusions, result) ;
     }
 
- 
-    /**
-     * Translate a conclusions graph into a query pattern
-     */
-    public static GraphQuery graphToQuery(Graph graph) {
-        HashMap<Node, Node> bnodeToVar = new HashMap<Node, Node>();
-        GraphQuery query = new GraphQuery();
-        for (Iterator<Triple> i = graph.find(null, null, null); i.hasNext(); ) {
-            Triple triple = i.next();
-            query.addMatch(
-                translate(triple.getSubject(), bnodeToVar),
-                translate(triple.getPredicate(), bnodeToVar),
-                translate(triple.getObject(), bnodeToVar) );
-        }
-        return query;
-    }
-   
-    /**
-     * Translate a blank node to a variable node
-     * @param node the bNode to translate
-     * @param bnodeToVar a map of translations already known about
-     * @return a variable node
-     */
-    private static Node translate(Node node, HashMap<Node, Node> bnodeToVar) {
-        String varnames = "abcdefghijklmnopqrstuvwxyz";
-        if (node.isBlank()) {
-            Node t = bnodeToVar.get(node);
-            if (t == null) {
-               int i = bnodeToVar.size();
-               if (i > varnames.length()) {
-                   throw new ReasonerException("Too many bnodes in query");
-               }
-               t = Node.createVariable(varnames.substring(i, i+1));
-               bnodeToVar.put(node, t);
-            } 
-            return t;
-        } else {
-            return node;
-        }
-    }
- 
 }

@@ -50,11 +50,7 @@ public class TestInferenceReification extends AbstractTestReifier
     
     @Override
     public Graph getGraph()
-        { return getGraph( ReificationStyle.Minimal ); }
-
-    @Override
-    public Graph getGraph( ReificationStyle style )
-        { return makeInfGraph( "", "", style ); }
+        { return makeInfGraph( "", "" ); }
 
     /**
      * Case 1: Rules construct a reified statement, is that
@@ -64,50 +60,12 @@ public class TestInferenceReification extends AbstractTestReifier
         String rules =  
             "[r1: (?x eh:p ?o) -> (?o rdf:type rdf:Statement) (?o rdf:subject ?x)" +
             "                         (?o rdf:predicate eh:q) (?o rdf:object 42)]";
-        Model m = makeInfModel( rules, "r1 p r", ReificationStyle.Standard );
+        Model m = makeInfModel( rules, "r1 p r" );
         TestUtil.assertIteratorLength( m.listReifiedStatements(), 1 );
     }
     
-    public void testBindFixesStyle()
-        {
-        testBindCopiesStyle( ruleBaseReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getRDFSReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getTransitiveReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getOWLMicroReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getOWLMiniReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getOWLReasoner() );
-        testBindCopiesStyle( ReasonerRegistry.getRDFSSimpleReasoner() );
-        }
-
-    private void testBindCopiesStyle( Reasoner r )
-        {
-        testCopiesStyle( r, ReificationStyle.Minimal );
-        testCopiesStyle( r, ReificationStyle.Standard );
-        testCopiesStyle( r, ReificationStyle.Convenient );
-        }
-
-    private void testCopiesStyle( Reasoner r, ReificationStyle style )
-        {
-        assertEquals( style, r.bind( graphWith( "", style ) ).getReifier().getStyle() );
-        }
-
     private Reasoner ruleBaseReasoner()
         { return new FBRuleReasoner( Rule.parseRules( "" ) ); }
-    
-    public void testRetainsStyle()
-        {
-        testRetainsStyle( ReificationStyle.Standard );
-        testRetainsStyle( ReificationStyle.Convenient );
-        testRetainsStyle( ReificationStyle.Minimal );
-        }
-
-    private void testRetainsStyle( ReificationStyle style )
-        {
-        BasicForwardRuleInfGraph g = (BasicForwardRuleInfGraph) getGraph( style );
-        assertEquals( style, g.getReifier().getStyle() );
-        assertEquals( style, g.getRawGraph().getReifier().getStyle() );
-        assertEquals( style, g.getDeductionsGraph().getReifier().getStyle() );
-        }
     
     public void testConstructingModelDoesntForcePreparation()
         {
@@ -132,27 +90,23 @@ public class TestInferenceReification extends AbstractTestReifier
      * Internal helper: create an InfGraph with given rule set and base data.
      * The base data is encoded in kers-special RDF syntax.
      */    
-    private InfGraph makeInfGraph(String rules, String data, ReificationStyle style ) {
+    private InfGraph makeInfGraph(String rules, String data) {
         PrintUtil.registerPrefix("eh", "eh:/");
-        Graph base = graphWith( data, style );
+        Graph base = graphWith( data );
         List<Rule> ruleList = Rule.parseRules(rules);
         return new FBRuleReasoner(ruleList).bind( base );
     }
     
     private Graph graphWith( String data, ReificationStyle style )
-        { return graphAdd( Factory.createDefaultGraph( style ), data ); }
+        { return graphAdd( Factory.createDefaultGraph( ), data ); }
 
     /**
      * Internal helper: create a Model which wraps an InfGraph with given rule set and base data.
      * The base data is encoded in kers-special RDF syntax.
-     * @param style TODO
      */
-    private Model makeInfModel( String rules, String data, ReificationStyle style ) {
-        return ModelFactory.createModelForGraph( makeInfGraph(rules, data, style ) );
-    }
         
     private Model makeInfModel( String rules, String data ) {
-        return makeInfModel( rules, data, ReificationStyle.Minimal );
+        return ModelFactory.createModelForGraph( makeInfGraph(rules, data ) );
     }
     
 }

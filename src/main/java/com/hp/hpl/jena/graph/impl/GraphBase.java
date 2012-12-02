@@ -19,9 +19,10 @@
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
-import com.hp.hpl.jena.shared.* ;
+import com.hp.hpl.jena.shared.AddDeniedException ;
+import com.hp.hpl.jena.shared.ClosedException ;
+import com.hp.hpl.jena.shared.DeleteDeniedException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
@@ -43,12 +44,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 public abstract class GraphBase implements GraphWithPerform 
 	{
     /**
-         The reification style of this graph, used when the reifier is created (and
-         nowhere else, as it happens, which is good).
-    */
-    protected final ReificationStyle style;
-    
-    /**
          Whether or not this graph has been closed - used to report ClosedExceptions
          when an operation is attempted on a closed graph.
     */
@@ -57,16 +52,13 @@ public abstract class GraphBase implements GraphWithPerform
     /**
          Initialise this graph as one with reification style Minimal.
     */
-    public GraphBase()
-        { this( ReificationStyle.Minimal ); }
+    public GraphBase()  {}
     
     /**
          Initialise this graph with the given reification style (which will be supplied to
          the reifier when it is created).
     */
-    public GraphBase( ReificationStyle style )
-        { this.style = style; }
-        
+    
     /**
          Utility method: throw a ClosedException if this graph has been closed.
     */
@@ -77,11 +69,10 @@ public abstract class GraphBase implements GraphWithPerform
          Close this graph. Subgraphs may extend to discard resources.
     */
     @Override
-    public void close() 
-        { 
-        closed = true;
-        if (reifier != null) reifier.close(); 
-        }
+    public void close()
+    {
+        closed = true ;
+    }
     
     @Override
     public boolean isClosed()
@@ -95,24 +86,6 @@ public abstract class GraphBase implements GraphWithPerform
     public boolean dependsOn( Graph other ) 
         { return this == other; }
 
-	/**
-		Answer a QueryHandler bound to this graph. The default implementation
-        returns the same SimpleQueryHandler each time it is called; sub-classes
-        may override if they need specialised query handlers.
-	*/
-	@Override
-    public QueryHandler queryHandler() 
-        { 
-        if (queryHandler == null) queryHandler = new SimpleQueryHandler(this);
-        return queryHandler;
-        }
-    
-    /**
-         The query handler for this graph, or null if queryHandler() has not been
-         called yet. 
-    */
-    protected QueryHandler queryHandler;
-    
     @Override
     public GraphStatisticsHandler getStatisticsHandler()
         {
@@ -284,10 +257,12 @@ public abstract class GraphBase implements GraphWithPerform
          the appending of reification quadlets; instead they must implement
          graphBaseFind(TripleMatch).
 	*/
-	@Override
-    public final ExtendedIterator<Triple> find( TripleMatch m )
-        { checkOpen(); 
-        return reifierTriples( m ) .andThen( graphBaseFind( m ) ); }
+    @Override
+    public final ExtendedIterator<Triple> find(TripleMatch m)
+    {
+        checkOpen() ;
+        return graphBaseFind(m) ;
+    }
 
     /**
         Answer an iterator over all the triples held in this graph's non-reified triple store
@@ -319,17 +294,7 @@ public abstract class GraphBase implements GraphWithPerform
 	@Override
     public final boolean contains( Triple t ) 
         { checkOpen();
-		return reifierContains( t ) || graphBaseContains( t );	}
-    
-    /**
-         Answer true if the reifier contains a quad matching <code>t</code>. The
-         default implementation uses the reifier's <code>findExposed</code> method.
-         Subclasses probably don't need to override (if they're interested, they
-         probably have specialised reifiers).
-    */
-    protected boolean reifierContains( Triple t )
-        { ClosableIterator<Triple> it = getReifier().findExposed( t );
-        try { return it.hasNext(); } finally { it.close(); } }
+		return graphBaseContains( t );	}
 
 	/**
          Answer true if the graph contains any triple matching <code>t</code>.
@@ -362,68 +327,19 @@ public abstract class GraphBase implements GraphWithPerform
         try { return it.hasNext(); } finally { it.close(); }
         }
     
-    /**
-         Answer an iterator over all the triples exposed in this graph's reifier that 
-        match <code>m</code>. The default implementation delegates this to
-        the reifier; subclasses probably don't need to override this.
-    */
-    protected ExtendedIterator<Triple> reifierTriples( TripleMatch m )
-        { return getReifier().findExposed( m ); }
-
-    /**
-         Answer this graph's reifier. The reifier may be lazily constructed, and it
-         must be the same reifier on each call. The default implementation is a
-         SimpleReifier. Generally DO NOT override this method: override
-         <code>constructReifier</code> instead.
-    */
-	@Override
-    public Reifier getReifier() 
-        {
-		if (reifier == null) reifier = constructReifier();
-		return reifier;
-	    }
-
-    /**
-         Answer a reifier appropriate to this graph. Subclasses override if
-         they need non-SimpleReifiers.
-    */
-    protected Reifier constructReifier()
-        { return new SimpleReifier( this, style ); }
-    
-    /**
-         The cache variable for the allocated Reifier.
-    */
-    protected Reifier reifier = null;
-    
 	/**
 	     Answer the size of this graph (ie the number of exposed triples). Defined as
          the size of the triple store plus the size of the reification store. Subclasses
          must override graphBaseSize() to reimplement (and reifierSize if they have
          some special reason for redefined that).
 	*/
-	@Override
-    public final int size() 
-        { checkOpen();
-        int baseSize = graphBaseSize();
-        int reifierSize = reifierSize();
-//        String className = leafName( this.getClass().getName() );
-//        System.err.println( ">> GB(" + className + ")::size = " + baseSize + "(base) + " + reifierSize + "(reifier)" );
-        return baseSize + reifierSize; }
+    @Override
+    public final int size()
+    {
+        checkOpen() ;
+        return graphBaseSize() ;
+    }
     
-//    private String leafName( String name )
-//        {
-//        int dot = name.lastIndexOf( '.' );
-//        return name.substring( dot + 1 );
-//        }
-
-    /**
-         Answer the number of visible reification quads. Subclasses will not normally
-         need to override this, since it just invokes the reifier's size() method, and
-         they can implement their own reifier.
-    */
-    protected int reifierSize()
-        { return getReifier().size(); }
-
     /**
          Answer the number of triples in this graph. Default implementation counts its
          way through the results of a findAll. Subclasses must override if they want

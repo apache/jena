@@ -23,13 +23,14 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.query.BindingQueryPlan;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.io.OutputStream ;
+import java.io.Writer ;
+import java.util.List ;
+import java.util.Set ;
 
-import java.io.*;
-import java.util.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 
 
@@ -1533,23 +1534,6 @@ public interface OntModel
      * @return An ont model spec instance.
      */
     public OntModelSpec getSpecification();
-
-
-    /**
-     * <p>
-     * Answer the iterator over the resources from the graph that satisfy the given
-     * query, followed by the answers to the alternative queries (if specified). A
-     * typical scenario is that the main query gets resources of a given class (say,
-     * <code>rdfs:Class</code>), while the altQueries query for aliases for that
-     * type (such as <code>daml:Class</code>).
-     * </p>
-     *
-     * @param query A query to run against the model
-     * @param altQueries An optional list of subsidiary queries to chain on to the first
-     * @return ExtendedIterator An iterator over the (assumed single) results of
-     * executing the queries.
-     */
-    public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey );
 
 
     // output operations

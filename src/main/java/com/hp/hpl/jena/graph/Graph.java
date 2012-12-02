@@ -18,10 +18,11 @@
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
+import com.hp.hpl.jena.shared.AddDeniedException ;
+import com.hp.hpl.jena.shared.DeleteDeniedException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     The interface to be satisfied by implementations maintaining collections
@@ -51,9 +52,6 @@ public interface Graph  extends GraphAdd
     */
     boolean dependsOn( Graph other );
     
-    /** returns this Graph's query handler */
-    QueryHandler queryHandler();
-    
     /** returns this Graph's transaction handler */
     TransactionHandler getTransactionHandler();
     
@@ -77,12 +75,6 @@ public interface Graph  extends GraphAdd
         call to this method on a particular graph delivers the same (==) answer.
     */
     GraphStatisticsHandler getStatisticsHandler();
-    
-    /** 
-        returns this Graph's reifier. Each call on a given Graph gets the same
-        Reifier object.
-    */
-    Reifier getReifier();
     
     /**
         returns this Graph's prefix mapping. Each call on a given Graph gets the

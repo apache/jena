@@ -20,15 +20,16 @@
 ///////////////
 package com.hp.hpl.jena.graph.compose;
 
-import com.hp.hpl.jena.JenaRuntime;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleEventManager;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.CollectionFactory;
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.Iterator ;
+import java.util.Set ;
 
-import java.util.*;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.util.CollectionFactory ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
  * <p>
@@ -81,13 +82,6 @@ public class MultiUnion extends Polyadic
     
     private boolean optimising = JenaRuntime.getSystemProperty( "jena.union.optimise", "yes" ).equals( "yes" );
     
-    /**
-        Unions share the reifiers of their base graphs. THIS WILL CHANGE.
-    */
-    @Override  public Reifier getReifier()
-        { Graph base = getBaseGraph();
-        return base == null ? super.getReifier() : base.getReifier(); }
-
     @Override  protected GraphStatisticsHandler createStatisticsHandler()
         { return new MultiUnionStatisticsHandler( this ); }
     
@@ -132,12 +126,6 @@ public class MultiUnion extends Polyadic
             if (i.next().contains( t )) return true;
         return false;
         }
-
-    @Override public QueryHandler queryHandler()
-        { return optimiseOne() ? singleGraphQueryHandler() : super.queryHandler(); }
-    
-    private QueryHandler singleGraphQueryHandler()
-        { return (m_subGraphs.get( 0 )).queryHandler(); }
 
     /**
      * <p>

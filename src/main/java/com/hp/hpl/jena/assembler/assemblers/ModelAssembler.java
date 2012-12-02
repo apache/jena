@@ -64,6 +64,7 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
         return r == null ? ReificationStyle.Standard : styleFor( root, r );
         }
     
+    @SuppressWarnings("deprecation")
     public static ReificationStyle styleFor( Resource root, Resource r )
         {
         if (r.equals( JA.minimal )) return ReificationStyle.Minimal;

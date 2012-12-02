@@ -18,29 +18,35 @@
 
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
-import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import java.util.* ;
 
-import java.util.*;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper ;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
+import com.hp.hpl.jena.reasoner.* ;
+import com.hp.hpl.jena.reasoner.rulesys.impl.* ;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveEngine ;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache ;
+import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner ;
+import com.hp.hpl.jena.shared.impl.JenaParameters ;
+import com.hp.hpl.jena.util.OneToManyMap ;
+import com.hp.hpl.jena.util.PrintUtil ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Filter ;
+import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 //import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.OneToManyMap;
-import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An inference graph that uses a mixture of forward and backward
@@ -116,11 +122,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * @param schema the (optional) schema graph to be included
      */
     public FBRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
-        this( reasoner, rules, schema, ReificationStyle.Minimal );
-    }
-
-    public FBRuleInfGraph( Reasoner reasoner, List<Rule> rules, Graph schema, ReificationStyle style ) {
-        super( reasoner, rules, schema, style );
+        super( reasoner, rules, schema );
         this.rawRules = rules;
         constructorInit( schema ); 
     }

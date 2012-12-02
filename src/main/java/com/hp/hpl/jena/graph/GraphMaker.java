@@ -34,7 +34,9 @@ public interface GraphMaker
     /**
         Answer the reification style of all the graphs that this GraphMaker constructs.
         @return the reification style given to all created graphs
+        @deprecated Only style "Standard" is supported.
     */
+    @Deprecated
     public ReificationStyle getReificationStyle();
     
     /**

@@ -18,15 +18,17 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import java.io.File;
-import java.util.HashSet;
+import java.io.File ;
+import java.util.HashSet ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileUtils;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphMaker ;
+import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.impl.FileGraph ;
+import com.hp.hpl.jena.graph.impl.FileGraphMaker ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /**
     Test a FileGraphMaker; use the abstract tests, plus specialised ones for the name
@@ -45,7 +47,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
     @Override
     public GraphMaker getGraphMaker()
         { String scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker" ).getPath();
-        return new FileGraphMaker( scratch, ReificationStyle.Minimal, true ); }
+        return new FileGraphMaker( scratch, true ); }
 
     public void testToFilename()
         { assertEquals( "plain", FileGraphMaker.toFilename( "plain" ) );
@@ -67,8 +69,8 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-already" );
         Graph content = graphWith( "something hasProperty someValue" );
-        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
-        FileGraphMaker B = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), true );
+        FileGraphMaker B = new FileGraphMaker( scratch.getPath(), true );
         FileGraph gA = (FileGraph) A.createGraph( "already", true );
         GraphUtil.addInto( gA, content );
         gA.close();
@@ -82,7 +84,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
     public void testDeletesFilesOfClosedMaker()
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
-        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        FileGraphMaker A = new FileGraphMaker( scratch.getPath(), true );
         A.createGraph( "empty" ).close();
         assertTrue( "file 'empty' should exist in '" + scratch + "'", new File( scratch, "empty" ) .exists() );
         A.close();
@@ -92,7 +94,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
     public void testForgetsClosedGraphs()
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-forgets" );
-        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), true );
         m.createGraph( "example" ).close();
         assertEquals( new HashSet<String>(), m.listGraphs().toSet() );
         m.close();
@@ -101,7 +103,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
     public void testDoesntReusedClosedGraphs()
         {
         File scratch = FileUtils.getScratchDirectory( "jena-test-FileGraphMaker-noReuse" );
-        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), ReificationStyle.Minimal, true );
+        FileGraphMaker m = new FileGraphMaker( scratch.getPath(), true );
         Graph m1 = m.createGraph( "hello" );
         m1.close();
         Graph m2 = m.createGraph( "hello" );

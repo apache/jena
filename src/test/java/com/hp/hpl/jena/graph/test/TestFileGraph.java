@@ -18,16 +18,18 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.FileUtils;
+import java.io.File ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.io.*;
-import java.util.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.impl.FileGraph ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /**
     Test FileGraph by seeing if we can make some file graphs and then read
@@ -143,7 +145,7 @@ public class TestFileGraph extends GraphTestBase
                 { history.add( f ); }
             };
         File file = FileUtils.tempFileName( "fileGraph", ".nt" );
-        Graph g = new FileGraph( n, file, true, true, ReificationStyle.Minimal );
+        Graph g = new FileGraph( n, file, true, true );
         assertEquals( new ArrayList<File>(), history );
         g.close();
         assertEquals( oneElementList( file ), history );

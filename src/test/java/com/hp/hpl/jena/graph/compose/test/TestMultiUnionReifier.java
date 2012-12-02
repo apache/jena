@@ -18,12 +18,15 @@
 
 package com.hp.hpl.jena.graph.compose.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
-import com.hp.hpl.jena.graph.test.NodeCreateUtils;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.compose.MultiUnion ;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils ;
+import com.hp.hpl.jena.rdf.model.impl.ReifierStd ;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     Test the reifier for multi-unions.
@@ -54,7 +57,7 @@ public class TestMultiUnionReifier extends ModelTestBase
     
     private Graph graph( String facts )
         {
-        Graph result = Factory.createDefaultGraph( ReificationStyle.Standard );
+        Graph result = Factory.createDefaultGraph( );
         String [] factArray = facts.split( ";" );
         for (int i = 0; i < factArray.length; i += 1)
             {
@@ -65,12 +68,12 @@ public class TestMultiUnionReifier extends ModelTestBase
                 {
                 Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
                 result.add( t );
-                result.getReifier().reifyAs( NodeCreateUtils.create( "_r" + ++count ), t );
+                ReifierStd.reifyAs(result, NodeCreateUtils.create( "_r" + ++count ), t );
                 }
             else if (fact.charAt( 0 ) == '~')
                 {
                 Triple t = NodeCreateUtils.createTriple( fact.substring( 1 ) );
-                result.getReifier().reifyAs( NodeCreateUtils.create( "_r" + ++count ), t );
+                ReifierStd.reifyAs( result, NodeCreateUtils.create( "_r" + ++count ), t );
                 }
             else
                 result.add( NodeCreateUtils.createTriple( fact ) );

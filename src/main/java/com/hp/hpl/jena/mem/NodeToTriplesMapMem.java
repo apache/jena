@@ -23,10 +23,6 @@ import java.util.Iterator ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.Triple.Field ;
-import com.hp.hpl.jena.graph.query.Applyer ;
-import com.hp.hpl.jena.graph.query.Domain ;
-import com.hp.hpl.jena.graph.query.Matcher ;
-import com.hp.hpl.jena.graph.query.StageElement ;
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.NullIterator ;
@@ -133,69 +129,6 @@ public class NodeToTriplesMapMem extends NodeToTriplesMapBase
            ;
        }    
 
-    public Applyer createFixedOApplyer( final ProcessedTriple Q )
-        {        
-        final TripleBunch ss = bunchMap.get( Q.O.node.getIndexingValue() );
-        if (ss == null)
-            return Applyer.empty;
-        else
-            {
-            return new Applyer() 
-                {
-                final MatchOrBind x = MatchOrBind.createSP( Q );
-                
-                @Override
-                public void applyToTriples( Domain d, Matcher m, StageElement next )
-                    { ss.app( d, next, x.reset( d ) ); }
-                };
-            }
-        }
-
-    public Applyer createBoundOApplyer( final ProcessedTriple pt )
-        {        
-        return new Applyer()
-            {
-            final MatchOrBind x = MatchOrBind.createSP( pt );
-            
-            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
-                {
-                TripleBunch c = bunchMap.get( pt.O.finder( d ).getIndexingValue() );
-                if (c != null) c.app( d, next, x.reset( d ) );
-                }
-            };
-        }
-    
-    public Applyer createBoundSApplyer( final ProcessedTriple pt )
-        {
-        return new Applyer()
-            {
-            final MatchOrBind x = MatchOrBind.createPO( pt );
-            
-            @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
-                {
-                TripleBunch c = bunchMap.get( pt.S.finder( d ) );
-                if (c != null) c.app( d, next, x.reset( d ) );
-                }
-            };
-        }
-
-    public Applyer createFixedSApplyer( final ProcessedTriple Q )
-        {
-        final TripleBunch ss = bunchMap.get( Q.S.node );
-        if (ss == null)
-            return Applyer.empty;
-        else
-            {
-            return new Applyer() 
-                {
-                final MatchOrBind x = MatchOrBind.createPO( Q );
-                
-                @Override public void applyToTriples( Domain d, Matcher m, StageElement next )
-                    { ss.app( d, next, x.reset( d ) ); }
-                };
-            }
-        }
-       
     protected TripleBunch get( Object index )
         { return bunchMap.get( index ); }
     

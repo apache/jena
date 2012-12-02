@@ -27,7 +27,9 @@ package com.hp.hpl.jena.shared;
 public class ReificationStyle
     {
     public static final ReificationStyle Standard = new ReificationStyle( true, false );
+    @Deprecated
     public static final ReificationStyle Convenient = new ReificationStyle( true, true );
+    @Deprecated
     public static final ReificationStyle Minimal = new ReificationStyle( false, true );
     
     private boolean intercept;

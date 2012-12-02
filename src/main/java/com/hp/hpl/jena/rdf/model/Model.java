@@ -364,7 +364,9 @@ public interface Model
         @param m the model containing the statements to add
         @param suppressReifications true to suppress adding reified statements
         @return this model for cascading
+        @deprecated suppressReifications no longer has any effect.
     */
+	@Deprecated
     Model add( Model m, boolean suppressReifications );
 
 	/** Add the RDF statements from an XML document.

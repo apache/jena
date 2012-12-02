@@ -18,9 +18,10 @@
 
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.graph.BulkUpdateHandler ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
+import com.hp.hpl.jena.graph.impl.TripleStore ;
 
 /**
      GraphMemBase - a common base class for GraphMem and SmallGraphMem.
@@ -45,14 +46,13 @@ public abstract class GraphMemBase extends GraphBase
     public final TripleStore store;
     
     /**
-         initialise a GraphMemBase withn its count set to 1.
+         initialise a GraphMemBase with its count set to 1.
     */
-    public GraphMemBase( ReificationStyle style )
-        { 
-        super( style );
+    public GraphMemBase( )
+    {
         store = createTripleStore();
         count = 1; 
-        }
+    }
     
     protected abstract TripleStore createTripleStore();
     

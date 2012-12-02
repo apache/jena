@@ -19,37 +19,27 @@
 package com.hp.hpl.jena.graph.test;
 
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import junit.framework.TestSuite;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.graph.Factory;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.GraphEvents;
-import com.hp.hpl.jena.graph.GraphListener;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
 import com.hp.hpl.jena.mem.GraphMem ;
-import com.hp.hpl.jena.shared.ReificationStyle;
 
 /**
  * Version of graph tests that set up a listener that copies all changes
  * and verifies that after every notification modified graph
  * and original are isomorphic.
- * @author Jeremy Carroll
- *
  */
 public class TestGraphListener extends MetaTestGraph {
-
-	
-
 	public TestGraphListener(String name) {
 		super(name);
 	}
-    public TestGraphListener( Class<? extends Graph> graphClass, String name, ReificationStyle style ) 
-    { super( graphClass, name, style ); }
+    public TestGraphListener( Class<? extends Graph> graphClass, String name) 
+    { super( graphClass, name); }
     
     public static TestSuite suite()
     { return MetaTestGraph.suite( TestGraphListener.class, GraphMem.class ); }

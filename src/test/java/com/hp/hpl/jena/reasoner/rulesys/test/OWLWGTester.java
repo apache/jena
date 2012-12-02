@@ -18,23 +18,26 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
-import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
+import java.io.BufferedReader ;
+import java.io.FileReader ;
+import java.io.IOException ;
+import java.io.Reader ;
 
-import com.hp.hpl.jena.shared.*;
+import junit.framework.Assert ;
+import junit.framework.TestCase ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import junit.framework.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.*;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerFactory ;
+import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph ;
+import com.hp.hpl.jena.reasoner.test.WGReasonerTester ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 
 /**
@@ -195,10 +198,10 @@ public class OWLWGTester {
         // Check the results against the official conclusions
         boolean correct = true;
         if (testType.equals(PositiveEntailmentTest)) {
-            correct = testConclusions(conclusions.getGraph(), result.getGraph());
+            correct = WGReasonerTester.testConclusions(conclusions.getGraph(), result.getGraph());
         } else {
             // A negative entailment check
-            correct = !testConclusions(conclusions.getGraph(), result.getGraph());
+            correct = !WGReasonerTester.testConclusions(conclusions.getGraph(), result.getGraph());
         }
         long t2 = System.currentTimeMillis();
         timeCost += (t2-t1);
@@ -252,17 +255,6 @@ public class OWLWGTester {
         return result;
     }
     
-    /**
-     * Test a conclusions graph against a result graph. This works by
-     * translating the conclusions graph into a find query which contains one
-     * variable for each distinct bNode in the conclusions graph.
-     */
-    private boolean testConclusions(Graph conclusions, Graph result) {
-        QueryHandler qh = result.queryHandler();
-        GraphQuery query = WGReasonerTester.graphToQuery(conclusions);
-        Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
-        return i.hasNext();
-    }
     
     /**
      * Log (info level) some summary information on the timecost of the tests.

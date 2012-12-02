@@ -87,6 +87,7 @@ public class TestModelAssembler extends AssemblerTestBase
         assertEquals( listOfOne( ReificationStyle.Standard ), style );
         }
     
+    @SuppressWarnings("deprecation")
     public void testGetsExplicitReificationMode()
         {
         testGetsStyle( "ja:minimal", ReificationStyle.Minimal );

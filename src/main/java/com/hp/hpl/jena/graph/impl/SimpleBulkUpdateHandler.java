@@ -78,40 +78,22 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         
     @Override
     @Deprecated
-    public void add( Graph g )
-        { add( g, false ); }
-        
+    public void add(Graph g)
+    {
+        addIterator(GraphUtil.findAll(g), false) ;
+        manager.notifyAddGraph(graph, g) ;
+    }
+    
+
     @Override
     @Deprecated
-    public void add( Graph g, boolean withReifications )
-        { 
-        addIterator( GraphUtil.findAll( g ), false );  
-        if (withReifications) addReifications( graph, g );
-        manager.notifyAddGraph( graph, g );
-        }
-        
-    public static void addReifications( Graph ours, Graph g )
-        {
-        Reifier r = g.getReifier();
-        Iterator<Node> it = r.allNodes();
-        while (it.hasNext())
-            {
-            Node node = it.next();
-            ours.getReifier().reifyAs( node, r.getTriple( node ) );
-            }
-        }
-        
-    public static void deleteReifications( Graph ours, Graph g )
-        {
-        Reifier r = g.getReifier();
-        Iterator<Node> it = r.allNodes();
-        while (it.hasNext())
-            {
-            Node node = it.next();
-            ours.getReifier().remove( node, r.getTriple( node ) );
-            }
-        }
+    public void add(Graph g, boolean withReifications)
+    {
+        // Now Standard reification is the only mode, just add into the graph.   
+        add(g) ;
+    }
 
+   
     @Override
     @Deprecated
     public void delete( Triple [] triples )
@@ -164,7 +146,6 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
             delete( triplesOf( g ) );
         else
             deleteIterator( GraphUtil.findAll( g ), false );
-        if (withReifications) deleteReifications( graph, g );
         manager.notifyDeleteGraph( graph, g );
         }
     

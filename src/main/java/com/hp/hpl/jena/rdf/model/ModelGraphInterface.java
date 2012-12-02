@@ -18,15 +18,14 @@
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /**
     ModelGraphInterface - this interface mediates between the API Model level
     and the SPI Graph level. It may change if the SPI changes, is more fluid than
     Model and ModelCon, so don't use if it you don't *need* to.
-    
-    @author kers
 */
 public interface ModelGraphInterface
     {
@@ -40,11 +39,6 @@ public interface ModelGraphInterface
     */
     Graph getGraph();
 
-    /** 
-       Answer the QueryHandler of the Graph this Model is presenting.
-    */
-    QueryHandler queryHandler();
-    
     /**
        Answer an RDF node wrapping <code>n</code> suitably; URI nodes
        become Resources with the same URI, blank nodes become Resources

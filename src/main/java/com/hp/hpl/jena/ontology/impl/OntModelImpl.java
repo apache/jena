@@ -23,26 +23,35 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.io.*;
-import java.util.*;
+import java.io.InputStream ;
+import java.io.OutputStream ;
+import java.io.Reader ;
+import java.io.Writer ;
+import java.util.* ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
-import com.hp.hpl.jena.enhanced.EnhNode;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.MultiUnion;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.rdf.listeners.StatementListener;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.IteratorFactory;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.shared.ConfigException;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.enhanced.BuiltinPersonalities ;
+import com.hp.hpl.jena.enhanced.EnhNode ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.compose.MultiUnion ;
+import com.hp.hpl.jena.ontology.* ;
+import com.hp.hpl.jena.rdf.listeners.StatementListener ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.IteratorFactory ;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
+import com.hp.hpl.jena.reasoner.Derivation ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ValidityReport ;
+import com.hp.hpl.jena.shared.ConfigException ;
+import com.hp.hpl.jena.util.iterator.* ;
+import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 
 
@@ -51,10 +60,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * Implementation of a model that can process general ontologies in OWL
  * and similar languages.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class OntModelImpl extends ModelCom implements OntModel
 {
@@ -2618,41 +2623,6 @@ public class OntModelImpl extends ModelCom implements OntModel
         return m_spec;
     }
 
-
-    /**
-     * <p>
-     * Answer the iterator over the resources from the graph that satisfy the given
-     * query, followed by the answers to the alternative queries (if specified). A
-     * typical scenario is that the main query gets resources of a given class (say,
-     * <code>rdfs:Class</code>), while the altQueries query for aliases for that
-     * type (such as <code>daml:Class</code>).
-     * </p>
-     *
-     * @param query A query to run against the model
-     * @param altQueries An optional list of subsidiary queries to chain on to the first
-     * @return ExtendedIterator An iterator over the (assumed single) results of
-     * executing the queries.
-     */
-    @Override
-    public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey ) {
-        GetBinding firstBinding  = new GetBinding( 0 );
-
-        // get the results from the main query
-        ExtendedIterator<Node> mainQuery = query.executeBindings().mapWith( firstBinding );
-
-        // now add the alternate queries, if defined
-        if (altQueries != null) {
-            for (Iterator<BindingQueryPlan> i = altQueries.iterator();  i.hasNext();  ) {
-                ExtendedIterator<Node> altQuery = i.next().executeBindings().mapWith( firstBinding );
-                mainQuery = mainQuery.andThen( altQuery );
-            }
-        }
-
-        // map each answer value to the appropriate ehnanced node
-        return mainQuery.filterKeep( new NodeCanAs<T>( asKey ) )
-                        .mapWith( new NodeAs<T>( asKey ) );
-    }
-
     // output operations - delegate to base model
 
     @Override
@@ -2990,31 +2960,6 @@ public class OntModelImpl extends ModelCom implements OntModel
         return findByType( type ).mapWith( new SubjectNodeAs<T>( asKey ) );
     }
 
-
-    /**
-     * <p>
-     * Answer a binding query that will search for 'an X that has an
-     * rdf:type whose rdf:type is C' for some given resource C.
-     * </p>
-     *
-     * @param type The type of the type of the resources we're searching for
-     * @return BindingQueryPlan A binding query for the X resources.
-     */
-    protected BindingQueryPlan queryXTypeOfType( Resource type ) {
-        if (type != null) {
-            GraphQuery q = new GraphQuery();
-            // kers: this non-intuitive order should improve search performance
-            q.addMatch( GraphQuery.Y, RDF.type.asNode(), type.asNode() );
-            q.addMatch( GraphQuery.X, RDF.type.asNode(), GraphQuery.Y );
-
-            return queryHandler().prepareBindings( q, new Node[] {GraphQuery.X} );
-        }
-        else {
-            return null;
-        }
-    }
-
-
     /**
      * <p>
      * Answer an iterator over nodes that have p as a subject
@@ -3218,15 +3163,6 @@ public class OntModelImpl extends ModelCom implements OntModel
             }
             return true;
         }
-    }
-
-    /** Project out the first element of a list of bindings */
-    protected class GetBinding implements Map1<Domain, Node>
-    {
-        protected int m_index;
-        protected GetBinding( int index ) { m_index = index; }
-        @Override
-        public Node map1( Domain x ) { return x.get( m_index );  }
     }
 
     /** Function to test the rdf type of a list */

@@ -27,9 +27,6 @@ import java.util.Iterator;
 
 /**
  * A base level implementation of the InfGraph interface.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -57,28 +54,13 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         { return getRawGraph().getPrefixMapping(); }
 
     /**
-        Inference graphs share the reifiers of their underlying raw graphs. This may
-        be too simplistic - they won't see quads flying past.
-        TODO write a test case that reveals this.
-     	@see com.hp.hpl.jena.graph.Graph#getReifier()
-    */    
-    @Override
-    public Reifier constructReifier()
-        {  return getRawGraph().getReifier(); }
-
-    /**
      * Constructor
      * @param data the raw data file to be augmented with entailments
      * @param reasoner the engine, with associated tbox data, whose find interface
      * can be used to extract all entailments from the data.
      */
     public BaseInfGraph(Graph data, Reasoner reasoner) {
-       this( data, reasoner, ReificationStyle.Minimal ); // should pick style from data? TODO
-    }
-
-    public BaseInfGraph( Graph data, Reasoner reasoner, ReificationStyle style )
-        {
-        super( style );
+        super( );
         this.fdata = new FGraph( data );
         this.reasoner = reasoner;
         }
@@ -100,8 +82,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         triples may be irremovable.
 
         TODO accomodate the properties of the base graph, too.
-
-        @author hedgehog
     */
     public static class InfCapabilities extends AllCapabilities
         {

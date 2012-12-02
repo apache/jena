@@ -18,18 +18,23 @@
 
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.graph.*;
+import java.util.Iterator ;
+import java.util.List ;
 
-import java.util.*;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.util.OneToManyMap;
-import com.hp.hpl.jena.util.iterator.*;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.reasoner.* ;
+import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine ;
+import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngineI ;
+import com.hp.hpl.jena.reasoner.rulesys.impl.SafeGraph ;
+import com.hp.hpl.jena.util.OneToManyMap ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NullIterator ;
 
 /**
  * An inference graph interface that runs a set of forward chaining
@@ -39,14 +44,9 @@ import org.slf4j.LoggerFactory;
  * This implementation has a horribly inefficient rule chainer built in.
  * Once we have this working generalize this to an interface than
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2009-10-06 07:59:55 $
  */
-public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
-//=======================================================================
-// variables
+public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
     
     /** Table of derivation records, maps from triple to RuleDerivation */
     protected OneToManyMap<Triple, Derivation> derivations;
@@ -104,17 +104,13 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     * @param rules the list of rules to use this time
     * @param schema the (optional) schema or preload data which is being processed
     */
-   public BasicForwardRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema) {
-       this( reasoner, rules, schema, ReificationStyle.Minimal );
-   }    
-
-   public BasicForwardRuleInfGraph( Reasoner reasoner, List<Rule> rules, Graph schema, ReificationStyle style )
-       {       
-       super( null, reasoner, style );
+   public BasicForwardRuleInfGraph(Reasoner reasoner, List<Rule> rules, Graph schema)
+   {       
+       super( null, reasoner );
        instantiateRuleEngine( rules );
        this.rules = rules;
        this.schemaGraph = schema;
-       }
+   }
    
     /**
      * Constructor. Creates a new inference graph based on the given rule set
@@ -421,7 +417,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 return dg;
             }
         }
-        Graph dg = Factory.createGraphMem( style ); 
+        Graph dg = Factory.createGraphMem( ); 
         safeDeductions = new SafeGraph( dg );
         return dg;
     }
@@ -528,15 +524,4 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         return engine.getNRulesFired();
     }
     
-    @Override
-    public Reifier constructReifier()
-        { 
-        BasicFBReifier.GetReifier deductionsReifier = new BasicFBReifier.GetReifier()
-            {
-            @Override
-            public Reifier getReifier() { return getDeductionsGraph().getReifier(); }
-            };
-        return new BasicFBReifier( this, getRawGraph().getReifier(), deductionsReifier, style ); 
-        }
-            
 }

@@ -48,14 +48,17 @@ public class TestReificationStyle extends ModelTestBase
         assertEquals( true, new ReificationStyle( true, true ).conceals() );
         assertEquals( true, new ReificationStyle( false, true ).conceals() ); }
         
+    @SuppressWarnings("deprecation")
     public void testConstants()
-        { assertEquals( false, ReificationStyle.Minimal.intercepts() );
+        { 
+        assertEquals( false, ReificationStyle.Minimal.intercepts() );
         assertEquals( true, ReificationStyle.Minimal.conceals() );
         assertEquals( true, ReificationStyle.Standard.intercepts() );
         assertEquals( false, ReificationStyle.Standard.conceals() );
         assertEquals( true, ReificationStyle.Convenient.intercepts() );
         assertEquals( true, ReificationStyle.Convenient.conceals() ); }
     
+    @SuppressWarnings("deprecation")
     public void testPrettyPrinting()
         { assertEquals( "Minimal", ReificationStyle.Minimal.toString() );
         assertEquals( "Convenient", ReificationStyle.Convenient.toString() );

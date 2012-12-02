@@ -18,8 +18,7 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
+import junit.framework.TestSuite ;
 
 /**
     Collected test suite for the .graph package.
@@ -41,15 +40,9 @@ public class TestPackage extends TestSuite {
         addTest( TestTriple.suite() );
         addTest( TestTripleField.suite() );
         addTest( TestNodeToTriplesMap.suite() );
-        addTest( TestSimpleReifierTripleMap.suite() );   
-        addTest( TestSimpleReifierFragmentsMap.suite() );   
         addTest( TestReifier.suite() );   
-        addTestSuite( TestReifierSearch.class );
-        addTest( TestReificationWrapper.suite() );
-        addTest( TestReificationPredicates.suite() );
         addTest( TestTypedLiterals.suite() );
         addTest( TestDateTime.suite() );
-        addTest( TestGraphQueryPackage.suite() );
         addTest( TestFactory.suite() );
         addTest( TestGraph.suite() );
         addTest( TestSimpleGraphMaker.suite() );

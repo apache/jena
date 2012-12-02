@@ -18,25 +18,24 @@
 
 package com.hp.hpl.jena.mem.test;
 
-import java.util.Iterator;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleReifier;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import junit.framework.TestSuite ;
 
-public class AbstractTestGraphMem extends AbstractTestGraph
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+
+public class TestGraphMem2 extends AbstractTestGraph
     {
-    public AbstractTestGraphMem(String name)
+    public TestGraphMem2(String name)
         { super( name ); }
     
-    public void testClosesReifier()
-        {
-        Graph g = getGraph();
-        SimpleReifier r = (SimpleReifier) g.getReifier();
-        g.close();
-        assertTrue( r.isClosed() );
-        }
+    public static TestSuite suite()
+    { return new TestSuite( TestGraphMem2.class ); }
+    
+    @Override
+    public Graph getGraph() { return Factory.createGraphMem(); }
     
     public void testBrokenIndexes()
         {
