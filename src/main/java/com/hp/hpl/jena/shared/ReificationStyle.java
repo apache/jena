@@ -28,10 +28,10 @@ package com.hp.hpl.jena.shared;
 public class ReificationStyle
     {
     public static final ReificationStyle Standard = new ReificationStyle( true, false );
-    /** @deprecated Only "Standard" is supported -- use of this constant wil be ignored */
+    /** @deprecated Only "Standard" is supported -- use of this constant will be ignored */
     @Deprecated
     public static final ReificationStyle Convenient = new ReificationStyle( true, true );
-    /** @deprecated Only "Standard" is supported -- use of this constant wil be ignored */
+    /** @deprecated Only "Standard" is supported -- use of this constant will be ignored */
     @Deprecated
     public static final ReificationStyle Minimal = new ReificationStyle( false, true );
     

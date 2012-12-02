@@ -78,9 +78,6 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * lookahead buffer.
      */
     private void moveForward() {
-        // Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
-        // Ensure we do that lock order here as well as just synchronized on the method
-        // reverses the locks.
         LPBRuleEngine lpEngine ;
         synchronized(this)
         {
