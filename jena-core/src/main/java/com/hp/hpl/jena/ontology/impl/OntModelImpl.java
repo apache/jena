@@ -2632,6 +2632,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      * @param altQueries An optional list of subsidiary queries to chain on to the first
      * @return ExtendedIterator An iterator over the (assumed single) results of
      * executing the queries.
+     *
+     * @deprecated This functionality is obsolete, and will be removed in a future version of Jena
      */
     @Override
     public <T extends RDFNode> ExtendedIterator<T> queryFor( BindingQueryPlan query, List<BindingQueryPlan> altQueries, Class<T> asKey ) {
