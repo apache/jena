@@ -124,7 +124,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         return 
             getModel() == m ? this 
             : isAnon() ? m.createResource( getId() ) 
-            : asNode().isConcrete() == false ? (Resource) ((ModelCom) m).getRDFNode( asNode() )
+            : asNode().isConcrete() == false ? (Resource) m.getRDFNode( asNode() )
             : m.createResource( getURI() ); 
         }
     
