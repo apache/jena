@@ -216,7 +216,6 @@ public class TestFileModelAssembler extends AssemblerTestBase
         {
         final Model model = ModelFactory.createDefaultModel();
         final File wantedFullName = new File( expectedName );
-        final ReificationStyle wantedStyle = ReificationStyle.Standard;
         final boolean wantedCreate = Mode.DEFAULT.permitCreateNew( null, null );
         final boolean wantedStrict = Mode.DEFAULT.permitUseExisting( null, null );
         Resource root = resourceInModel( "x rdf:type ja:FileModel; x ja:modelName '" + modelName + "'; x ja:directory file:" + directoryName );

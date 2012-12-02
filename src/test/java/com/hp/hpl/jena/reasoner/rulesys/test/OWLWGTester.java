@@ -167,7 +167,7 @@ public class OWLWGTester {
         logger.debug("WG test " + test.getURI() + " - " + status);
         
         // Load up the premise documents
-        Model premises = ModelFactory.createNonreifyingModel();
+        Model premises = ModelFactory.createDefaultModel();
         for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
             premises.add(loadFile(premisesI.nextStatement().getObject().toString() + ".rdf"));
         }
@@ -245,7 +245,7 @@ public class OWLWGTester {
         } else if (file.endsWith("n3")) {
             langType = "N3";
         }
-        Model result = ModelFactory.createNonreifyingModel();
+        Model result = ModelFactory.createDefaultModel();
         String fname = file;
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());

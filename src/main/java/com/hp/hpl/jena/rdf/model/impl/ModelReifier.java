@@ -49,6 +49,7 @@ public class ModelReifier
         this.model = model; 
         }
         
+    @Deprecated
     public ReificationStyle getReificationStyle()
         { return ReificationStyle.Standard ; }
         

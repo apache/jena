@@ -58,21 +58,21 @@ public abstract class ModelAssembler extends AssemblerBase implements Assembler
             c.fill( m );
         }
     
-    public static ReificationStyle getReificationStyle( Resource root )
-        {
-        Resource r = getUniqueResource( root, JA.reificationMode );
-        return r == null ? ReificationStyle.Standard : styleFor( root, r );
-        }
-    
-    @SuppressWarnings("deprecation")
-    public static ReificationStyle styleFor( Resource root, Resource r )
-        {
-        if (r.equals( JA.minimal )) return ReificationStyle.Minimal;
-        if (r.equals( JA.standard )) return ReificationStyle.Standard;
-        if (r.equals( JA.convenient )) return ReificationStyle.Convenient;
-        throw new UnknownStyleException( root, r );
-        }
-
+//    public static ReificationStyle xgetReificationStyle( Resource root )
+//        {
+//        Resource r = getUniqueResource( root, JA.reificationMode );
+//        return r == null ? ReificationStyle.Standard : styleFor( root, r );
+//        }
+//    
+//    @SuppressWarnings("deprecation")
+//    public static ReificationStyle styleFor( Resource root, Resource r )
+//        {
+//        if (r.equals( JA.minimal )) return ReificationStyle.Minimal;
+//        if (r.equals( JA.standard )) return ReificationStyle.Standard;
+//        if (r.equals( JA.convenient )) return ReificationStyle.Convenient;
+//        throw new UnknownStyleException( root, r );
+//        }
+//
     private PrefixMapping getPrefixMapping( Assembler a, Resource root )
         {
         return PrefixMappingAssembler.getPrefixes

@@ -159,7 +159,7 @@ public class ConcurrencyTest  extends TestCase {
         
         // Possibly in deadlock, wait a little longer to be sure
         for(int i = 0; i < 50 && !executorService.isTerminated(); i++) {
-            Thread.sleep(100);
+            Thread.sleep(20);
         }
         
         if(!executorService.isTerminated()) {

@@ -18,13 +18,15 @@
 
 package com.hp.hpl.jena.assembler.test;
 
-import java.util.*;
-
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.assembler.assemblers.*;
-import com.hp.hpl.jena.assembler.exceptions.UnknownStyleException;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.assembler.assemblers.ContentAssembler ;
+import com.hp.hpl.jena.assembler.assemblers.ModelAssembler ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 public class TestModelAssembler extends AssemblerTestBase
     {
@@ -70,58 +72,4 @@ public class TestModelAssembler extends AssemblerTestBase
         Model m = (Model) a.open( Assembler.prefixMapping, root );
         assertSamePrefixMapping( wanted, m );
         }
-    
-    public void testGetsStandardReificationMode()
-        {
-        final List<ReificationStyle> style = new ArrayList<ReificationStyle>();
-        Assembler a = new ModelAssembler() 
-            {
-            @Override
-            protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
-                {
-                style.add( getReificationStyle( root ) );
-                return ModelFactory.createDefaultModel(); 
-                }
-            };
-        a.openModel( resourceInModel( "a rdf:type ja:Model" ) );
-        assertEquals( listOfOne( ReificationStyle.Standard ), style );
-        }
-    
-    @SuppressWarnings("deprecation")
-    public void testGetsExplicitReificationMode()
-        {
-        testGetsStyle( "ja:minimal", ReificationStyle.Minimal );
-        testGetsStyle( "ja:standard", ReificationStyle.Standard );
-        testGetsStyle( "ja:convenient", ReificationStyle.Convenient );
-        }
-    
-    public void testUnknownStyleFails()
-        {
-        try
-            { 
-            testGetsStyle( "unknown", ReificationStyle.Standard );
-            fail( "should trap unknown reification style" );
-            }
-        catch (UnknownStyleException e)
-            {
-            assertEquals( resource( "unknown" ), e.getStyle() );
-            assertEquals( resource( "a" ), e.getRoot() );
-            }
-        }
-
-    private void testGetsStyle( String styleString, ReificationStyle style )
-        {
-        final List<ReificationStyle> styles = new ArrayList<ReificationStyle>();
-        Assembler a = new ModelAssembler() 
-            {
-            @Override
-            protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
-                {
-                styles.add( getReificationStyle( root ) );
-                return ModelFactory.createDefaultModel(); 
-                }
-            };
-        a.openModel( resourceInModel( "a rdf:type ja:Model; a ja:reificationMode " + styleString ) );
-        assertEquals( listOfOne( style ), styles );
-        }
-    }
+    }    

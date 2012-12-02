@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.PrintUtil;
 
 import junit.framework.TestSuite;
@@ -97,9 +96,6 @@ public class TestInferenceReification extends AbstractTestReifier
         return new FBRuleReasoner(ruleList).bind( base );
     }
     
-    private Graph graphWith( String data, ReificationStyle style )
-        { return graphAdd( Factory.createDefaultGraph( ), data ); }
-
     /**
      * Internal helper: create a Model which wraps an InfGraph with given rule set and base data.
      * The base data is encoded in kers-special RDF syntax.

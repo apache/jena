@@ -274,7 +274,7 @@ public class TestRDFSReasoners extends ReasonerTestBase {
             } else if (file.endsWith("n3")) {
                 langType = "N3";
             }
-            Model m = ModelFactory.createNonreifyingModel();
+            Model m = ModelFactory.createDefaultModel();
             Reader reader = new BufferedReader(new FileReader("testing/reasoners/rdfs/"+file));
             m.read(reader, WGReasonerTester.BASE_URI + file, langType);
             InfGraph g = rf.create(null).bind(m.getGraph());

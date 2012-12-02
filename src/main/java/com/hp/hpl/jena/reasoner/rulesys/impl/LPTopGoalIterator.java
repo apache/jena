@@ -77,30 +77,44 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * Find the next result in the goal state and put it in the
      * lookahead buffer.
      */
-    private synchronized void moveForward() {
-        checkClosed();
-        LPBRuleEngine lpEngine = interpreter.getEngine();
+    private void moveForward() {
+        // Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
+        // Ensure we do that lock order here as well as just synchronized on the method
+        // reverses the locks.
+        LPBRuleEngine lpEngine ;
+        synchronized(this)
+        {
+            checkClosed();
+            lpEngine = interpreter.getEngine();
+        }
         synchronized (lpEngine) {
+            // Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
+            // Ensure we do that lock order here as well as just synchronized 
+            // on the method reverses the locks takne, leading to deadlock.
+            synchronized(this)
+            {
+                checkClosed();
 
-            lookaheadValid = true;
+                lookaheadValid = true;
 
-            // TODO nasty dynamic typing here.
-            Object next = interpreter.next();
-            lookAhead = next instanceof Triple ? (Triple) next : null;
-            if (next == StateFlag.FAIL) {
-                if (choicePoints.isEmpty()) {
-                    // Nothing left to try
-                    close();
-                } else {
-                    // Some options open, continue pumping
-                    nextToRun = null;
-                    lpEngine.pump(this);
-                    if (nextToRun == null) {
-                        // Reached final closure
+                // TODO nasty dynamic typing here.
+                Object next = interpreter.next();
+                lookAhead = next instanceof Triple ? (Triple) next : null;
+                if (next == StateFlag.FAIL) {
+                    if (choicePoints.isEmpty()) {
+                        // Nothing left to try
                         close();
                     } else {
-                        interpreter.setState(nextToRun);
-                        moveForward();
+                        // Some options open, continue pumping
+                        nextToRun = null;
+                        lpEngine.pump(this);
+                        if (nextToRun == null) {
+                            // Reached final closure
+                            close();
+                        } else {
+                            interpreter.setState(nextToRun);
+                            moveForward();
+                        }
                     }
                 }
             }

@@ -46,6 +46,7 @@ import com.hp.hpl.jena.shared.ReificationStyle ;
     (ModelFactoryBase is helper functions for it).
 */
 
+@SuppressWarnings("deprecation")
 public class ModelFactory extends ModelFactoryBase
 {
     /**
@@ -57,12 +58,15 @@ public class ModelFactory extends ModelFactoryBase
     /**
         The standard reification style; quadlets contribute to reified statements,
         and are visible to listStatements().
+        @deprecated All models are ReificationStyle.Standard by default and there is no other supported style.
     */
+    @Deprecated
     public static final ReificationStyle Standard = ReificationStyle.Standard;
 
     /**
         The convenient reification style; quadlets contribute to reified statements,
         but are invisible to listStatements().
+        @deprecated All models are ReificationStyle.Standard by default and there is no other supported style.
     */
     @Deprecated
     public static final ReificationStyle Convenient = ReificationStyle.Convenient;
@@ -70,6 +74,7 @@ public class ModelFactory extends ModelFactoryBase
     /**
         The minimal reification style; quadlets do not contribute to reified statements,
         and are visible to listStatements().
+        @deprecated All models are ReificationStyle.Standard by default and there is no other supported style.
     */
     @Deprecated
     public static final ReificationStyle Minimal = ReificationStyle.Minimal;
@@ -130,16 +135,14 @@ public class ModelFactory extends ModelFactoryBase
         { return Assembler.general.openModel( root ); }
 
     /**
-        Answer a fresh Model with the default specification and Standard reification style
-        [reification triples contribute to ReifiedStatements, and are visible to listStatements,
-        etc].
+        Answer a fresh Model with the default specification.
     */
     public static Model createDefaultModel()
-        { return createDefaultModel( Standard ); }
+        { return new ModelCom( Factory.createGraphMem( ) ); }
 
     /**
         Answer a new memory-based model with the given reification style
-        @deprecated     Hidden partial reifications not support -- only style "Standard" 
+        @deprecated     Hidden partial reifications not supported -- only style "Standard" 
     */
     @Deprecated 
     public static Model createDefaultModel( ReificationStyle style )
@@ -156,9 +159,11 @@ public class ModelFactory extends ModelFactoryBase
     /**
         construct a new memory-based model that does not capture reification triples
         (but still handles reifyAs() and .as(ReifiedStatement).
+        @deprecated All models are ReificationStyle.Standard by default and there is no other supported style.
     */
+    @Deprecated
     public static Model createNonreifyingModel()
-        { return createDefaultModel( Minimal ); }
+        { return createDefaultModel( ); }
 
     /**
         Answer a model that encapsulates the given graph. Existing prefixes are
@@ -174,13 +179,12 @@ public class ModelFactory extends ModelFactoryBase
         Answer a ModelMaker that constructs memory-based Models that
         are backed by files in the root directory. The Model is loaded from the
         file when it is opened, and when the Model is closed it is written back.
-        The model is given the Standard reification style.
 
         @param root the name of the directory in which the backing files are held
         @return a ModelMaker linked to the files in the root
     */
     public static ModelMaker createFileModelMaker( String root )
-        { return createFileModelMaker( root, Standard ); }
+        { return new ModelMakerImpl( new FileGraphMaker( root ) ); }
 
     /**
         Answer a ModelMaker that constructs memory-based Models that
@@ -197,13 +201,12 @@ public class ModelFactory extends ModelFactoryBase
 
     /**
         Answer a ModelMaker that constructs memory-based Models that do
-        not persist past JVM termination. The model has the Standard reification
-        style.
+        not persist past JVM termination.
 
         @return a ModelMaker that constructs memory-based models
     */
     public static ModelMaker createMemModelMaker()
-        { return createMemModelMaker( Standard ); }
+        { return new ModelMakerImpl( new SimpleGraphMaker( ) );  }
 
     /**
         Answer a ModelMaker that constructs memory-based Models that do
@@ -215,7 +218,7 @@ public class ModelFactory extends ModelFactoryBase
     */
     @Deprecated 
     public static ModelMaker createMemModelMaker( ReificationStyle style )
-    { return new ModelMakerImpl( new SimpleGraphMaker( ) ); }
+    { return createMemModelMaker() ; }
 
     /**
      * Return a Model through which all the RDFS entailments

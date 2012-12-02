@@ -37,9 +37,8 @@ import com.hp.hpl.jena.util.iterator.NullIterator ;
 /**
     Test ModelMakerImpl using a mock GraphMaker. This is as much an
     exercise in learning testing technique as it is in actually doing the test ....
-
- 	@author hedgehog
 */
+@SuppressWarnings("deprecation")
 public class TestModelMakerImpl extends ModelTestBase
     {
     public TestModelMakerImpl(String name)

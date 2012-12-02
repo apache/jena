@@ -811,7 +811,9 @@ public interface Model
     /**
         Answer the reification style of the model.
      	@return the reification style
+     	createMemModelMaker()
     */
+    @Deprecated
     ReificationStyle getReificationStyle();
 
 	/** Create a new model containing the statements matching a query.

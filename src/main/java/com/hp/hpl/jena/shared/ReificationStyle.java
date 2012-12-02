@@ -24,11 +24,14 @@ package com.hp.hpl.jena.shared;
     in-Jena reification is through the reifyAs operation], and whether or
     not reification triples will be visible in the graph.
 */
+@Deprecated
 public class ReificationStyle
     {
     public static final ReificationStyle Standard = new ReificationStyle( true, false );
+    /** @deprecated Only "Standard" is supported -- use of this constant wil be ignored */
     @Deprecated
     public static final ReificationStyle Convenient = new ReificationStyle( true, true );
+    /** @deprecated Only "Standard" is supported -- use of this constant wil be ignored */
     @Deprecated
     public static final ReificationStyle Minimal = new ReificationStyle( false, true );
     

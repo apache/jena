@@ -1091,6 +1091,7 @@ implements Model, PrefixMapping, Lock
     }
 
     @Override
+    @Deprecated
     public ReificationStyle getReificationStyle()
     { return modelReifier.getReificationStyle(); }
 
