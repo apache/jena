@@ -1117,25 +1117,33 @@ public class RDFListImpl
         Property tail = listRest();
         Resource cellType = listType();
         
-        while (i.hasNext()){
-            // create a list cell to hold the next value from the existing list
-            Resource cell = getModel().createResource( cellType );
-            cell.addProperty( head, i.next() );
-                
-            // point the previous list cell to this one
-            if (list != null) {
-                list.addProperty( tail, cell ); 
-            }
-            else {
-                // must be the first cell we're adding
-                start = cell;
-            }
-                
-            list = cell;
+        if (i.hasNext())
+        {
+	        while (i.hasNext()){
+	            // create a list cell to hold the next value from the existing list
+	            Resource cell = getModel().createResource( cellType );
+	            cell.addProperty( head, i.next() );
+	                
+	            // point the previous list cell to this one
+	            if (list != null) {
+	                list.addProperty( tail, cell ); 
+	            }
+	            else {
+	                // must be the first cell we're adding
+	                start = cell;
+	            }
+	                
+	            list = cell;
+	        }
+	            
+	        // finally close the list
+	        list.addProperty( tail, listNil() );
         }
-            
-        // finally close the list
-        list.addProperty( tail, listNil() );
+        else
+        {
+        	// create an empty list
+        	start = getModel().createList();
+        }
             
         return start.as( listAbstractionClass() );
     }
