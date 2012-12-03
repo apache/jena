@@ -41,7 +41,6 @@ import org.apache.http.client.methods.HttpPut ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
-import org.apache.http.impl.client.DefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -52,6 +51,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
 
 /** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
  * The expectation is that the simplified operations in this class can be used by other code to
@@ -107,7 +107,7 @@ public class HttpOp
                 httpget.addHeader(HttpNames.hAccept, acceptHeader) ;
             
             // Execute
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new SystemDefaultHttpClient();
             HttpResponse response = httpclient.execute(httpget) ;
             // Handle response
             httpResponse(id, response, baseIRI, handlers) ;
@@ -201,7 +201,7 @@ public class HttpOp
                 log.debug(format("[%d] No content type")) ;
 
             // Execute
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new SystemDefaultHttpClient();
             httppost.setEntity(provider) ;
             HttpResponse response = httpclient.execute(httppost) ;
             httpResponse(id, response, baseIRI, handlers) ;
@@ -224,7 +224,7 @@ public class HttpOp
             if ( log.isDebugEnabled() )
                 log.debug(format("[%d] %s %s",id ,httppost.getMethod(),httppost.getURI().toString())) ;
 
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new SystemDefaultHttpClient();
             HttpResponse response = httpclient.execute(httppost) ;
             httpResponse(id, response, baseIRI, handlers) ;
             httpclient.getConnectionManager().shutdown(); 
@@ -267,7 +267,7 @@ public class HttpOp
                 log.debug(format("[%d] %s %s",id , httpput.getMethod(), httpput.getURI().toString())) ;
             
             httpput.setEntity(entity) ;
-            HttpClient httpclient = new DefaultHttpClient();
+            HttpClient httpclient = new SystemDefaultHttpClient();
             HttpResponse response = httpclient.execute(httpput) ;
             httpResponse(id, response, baseIRI, null) ;
             httpclient.getConnectionManager().shutdown(); 
