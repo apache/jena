@@ -28,7 +28,7 @@ import org.apache.http.HttpResponse ;
 import org.apache.http.StatusLine ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpGet ;
-import org.apache.http.impl.client.DefaultHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.MediaType ;
@@ -54,7 +54,7 @@ public class HttpOp2
                 httpget.addHeader(HttpNames.hAccept, acceptHeader) ;
             
             // Execute
-            HttpClient httpclient = new DefaultHttpClient();        // Pool?
+            HttpClient httpclient = new SystemDefaultHttpClient();        // Pool?
             HttpResponse response = httpclient.execute(httpget) ;
             
             // Response
