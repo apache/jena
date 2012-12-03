@@ -106,7 +106,7 @@ public class TestList
         s.addTest( new ListEqualsTest() );
         s.addTest( new ListSubclassTest() );
         s.addTest( new UserDefinedListTest() );
-        
+        s.addTest( new CopyTest() );
         return s;
     }
     
@@ -674,6 +674,19 @@ public class TestList
             
             RDFList root = getListRoot( m );
             assertTrue( "Constructed and loaded lists should be the same", aList.sameListAs( root ) );
+       }
+    }
+    
+    protected static class CopyTest extends ListTest {
+        public CopyTest() {super("CopyTest");}
+        
+        @Override
+        public void runTest() {
+            Model m = ModelFactory.createDefaultModel();
+            // check for empty copy error (JENA-360)
+            RDFList list = m.createList().copy();
+            assertEquals( "Should be a 0 length list", 0, list.size() );
+  
        }
     }
     
