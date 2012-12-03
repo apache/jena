@@ -73,6 +73,14 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
         engine.setTopInterpreter(this);
     }
 
+    /* A Note on lock ordering:
+     * 
+     * Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
+     * Ensure we do that lock order here as well as just synchronized 
+     * on the method reverses the lock ordering, leading to deadlock.
+     */
+    
+    
     /**
      * Find the next result in the goal state and put it in the
      * lookahead buffer.
@@ -85,9 +93,6 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
             lpEngine = interpreter.getEngine();
         }
         synchronized (lpEngine) {
-            // Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
-            // Ensure we do that lock order here as well as just synchronized 
-            // on the method reverses the locks takne, leading to deadlock.
             synchronized(this)
             {
                 checkClosed();
@@ -176,24 +181,37 @@ public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterprete
      * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
      */
     @Override
-    public synchronized void close() {
-        if (interpreter != null) {
-            synchronized (interpreter.getEngine()) {
-                // LogFactory.getLog( getClass() ).debug( "Entering close sync block on " + interpreter.getEngine() );
+    public void close() {
+        LPBRuleEngine lpEngine ;
+        synchronized(this)
+        {
+            if ( interpreter == null ) return ;
+            lpEngine = interpreter.getEngine();
+        }
 
-                // Check for any dangling generators which are complete
-                interpreter.getEngine().checkForCompletions();
-                // Close this top goal
-                lookAhead = null;
-                //LogFactory.getLog( getClass() ).debug( "Nulling and closing LPTopGoalIterator " + interpreter );
-                interpreter.close();
-                // was TEMP experiment: interpreter.getEngine().detach(interpreter);
-                interpreter = null;
-                isReady = false;
-                checkReadyNeeded = false;
-                nextToRun = null;
-//                choicePoints = null;  // disabled to prevent async close causing problems
-                //LogFactory.getLog( getClass() ).debug( "Leaving close sync block " );
+        synchronized (lpEngine) {
+            // Elsewhere code takes an LPBRuleEngine then an LPTopGoalIterator
+            // Ensure we do that lock order here as well as just synchronized 
+            // on the method reverses the locks takne, leading to deadlock.
+            synchronized(this)
+            {
+                if (interpreter != null) {
+                    // LogFactory.getLog( getClass() ).debug( "Entering close sync block on " + interpreter.getEngine() );
+
+                    // Check for any dangling generators which are complete
+                    interpreter.getEngine().checkForCompletions();
+                    // Close this top goal
+                    lookAhead = null;
+                    //LogFactory.getLog( getClass() ).debug( "Nulling and closing LPTopGoalIterator " + interpreter );
+                    interpreter.close();
+                    // was TEMP experiment: interpreter.getEngine().detach(interpreter);
+                    interpreter = null;
+                    isReady = false;
+                    checkReadyNeeded = false;
+                    nextToRun = null;
+                    //                choicePoints = null;  // disabled to prevent async close causing problems
+                    //LogFactory.getLog( getClass() ).debug( "Leaving close sync block " );
+                }
             }
         }
     }
