@@ -26,7 +26,7 @@ import org.apache.http.HttpResponse ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpUriRequest ;
-import org.apache.http.impl.client.DefaultHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.fuseki.FusekiRequestException ;
 
@@ -36,7 +36,7 @@ public class WebIO
     public static String exec_get(String url)
     {
         HttpUriRequest httpGet = new HttpGet(url) ;
-        HttpClient httpclient = new DefaultHttpClient() ;
+        HttpClient httpclient = new SystemDefaultHttpClient() ;
         try {
             HttpResponse response = httpclient.execute(httpGet) ;
             int responseCode = response.getStatusLine().getStatusCode() ;
