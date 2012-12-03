@@ -30,12 +30,11 @@ import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.* ;
 import org.apache.http.entity.InputStreamEntity ;
-import org.apache.http.impl.client.DefaultHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.params.BasicHttpParams ;
 import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
-import org.apache.http.protocol.HTTP ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.Sink ;
@@ -176,7 +175,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         HttpParams httpParams$ = new BasicHttpParams() ;
         // See DefaultHttpClient.createHttpParams
         HttpProtocolParams.setVersion(httpParams$,               HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(httpParams$,        HTTP.DEFAULT_CONTENT_CHARSET);
+        HttpProtocolParams.setContentCharset(httpParams$,        WebContent.charsetUTF8);
         HttpProtocolParams.setUseExpectContinue(httpParams$,     true);
         HttpConnectionParams.setTcpNoDelay(httpParams$,          true);
         HttpConnectionParams.setSocketBufferSize(httpParams$,    32*1024);
@@ -194,7 +193,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private Graph exec(String targetStr, Graph graphToSend, HttpUriRequest httpRequest, boolean processBody)
     {
-        HttpClient httpclient = new DefaultHttpClient(httpParams) ;
+        HttpClient httpclient = new SystemDefaultHttpClient(httpParams) ;
         
         if ( graphToSend != null )
         {
@@ -207,7 +206,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
             InputStreamEntity reqEntity = new InputStreamEntity(in, bytes.length) ;
             reqEntity.setContentType(WebContent.contentTypeRDFXML) ;
-            reqEntity.setContentEncoding(HTTP.UTF_8) ;
+            reqEntity.setContentEncoding(WebContent.charsetUTF8) ;
             HttpEntity entity = reqEntity ;
             ((HttpEntityEnclosingRequestBase)httpRequest).setEntity(entity) ;
         }

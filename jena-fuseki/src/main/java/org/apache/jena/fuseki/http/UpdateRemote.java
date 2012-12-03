@@ -48,36 +48,5 @@ public class UpdateRemote
     {
         UpdateProcessor proc = UpdateExecutionFactory.createRemote(request, serviceURL) ;
         proc.execute() ;
-
-//        HttpPost httpPost = new HttpPost(serviceURL) ;
-//        ByteArrayOutputStream b_out = new ByteArrayOutputStream() ;
-//        IndentedWriter out = new IndentedWriter(b_out) ; 
-//        UpdateWriter.output(request, out) ;
-//        out.flush() ;
-//        byte[] bytes = b_out.toByteArray() ;
-//        AbstractHttpEntity reqEntity = new ByteArrayEntity(bytes) ;
-//        reqEntity.setContentType(WebContent.contentTypeSPARQLUpdate) ;
-//        reqEntity.setContentEncoding(HTTP.UTF_8) ;
-//        httpPost.setEntity(reqEntity) ;
-//        HttpClient httpclient = new DefaultHttpClient() ;
-//
-//        try
-//        {
-//            HttpResponse response = httpclient.execute(httpPost) ;
-//            int responseCode = response.getStatusLine().getStatusCode() ;
-//            String responseMessage = response.getStatusLine().getReasonPhrase() ;
-//            
-//            if ( responseCode == HttpSC.NO_CONTENT_204 )
-//                return ;
-//            if ( responseCode == HttpSC.OK_200 )
-//                // But what was the content?
-//                // TODO read body 
-//                return ; 
-//            throw new UpdateException(responseCode+" "+responseMessage) ;
-//        } catch (IOException ex)
-//        {
-//            throw new UpdateException(ex) ;
-//        }
-            
     }
 }
