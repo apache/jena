@@ -34,56 +34,7 @@ import com.hp.hpl.jena.vocabulary.OWL ;
 /** The main engine for all things Turtle-ish (Turtle, TriG). */
 public abstract class LangTurtleBase<X> extends LangBase<X>
 {
-    /* See http://www.w3.org/TeamSubmission/turtle/
-     * http://www.w3.org/TR/turtle/
-     */
-    /*
-[1]     turtleDoc       ::=     statement*
-[2]     statement       ::=     directive '.' | triples '.' | ws+
-[3]     directive       ::=     prefixID | base
-[4]     prefixID        ::=     '@prefix' ws+ prefixName? ':' uriref
-[5]     base            ::=     '@base'   ws+ uriref
-[6]     triples         ::=     subject predicateObjectList
-[7]     predicateObjectList     ::=     verb objectList ( ';' verb objectList )* ( ';')?
-[8]     objectList      ::=     object ( ',' object)*
-[9]     verb            ::=     predicate | 'a'
-[10]    comment         ::=     '#' ( [^#xA#xD] )*
-[11]    subject         ::=     resource | blank
-[12]    predicate       ::=     resource
-[13]    object          ::=     resource | blank | literal
-[14]    literal         ::=     quotedString ( '@' language )? | datatypeString | integer | double | decimal | boolean
-[15]    datatypeString  ::=     quotedString '^^' resource
-[16]    integer         ::=     ('-' | '+')? [0-9]+
-[17]    double          ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* exponent | '.' ([0-9])+ exponent | ([0-9])+ exponent )
-[18]    decimal         ::=     ('-' | '+')? ( [0-9]+ '.' [0-9]* | '.' ([0-9])+ | ([0-9])+ )
-[19]    exponent        ::=     [eE] ('-' | '+')? [0-9]+
-[20]    boolean         ::=     'true' | 'false'
-[21]    blank           ::=     nodeID | '[]' | '[' predicateObjectList ']' | collection
-[22]    itemList        ::=     object+
-[23]    collection      ::=     '(' itemList? ')'
-[24]    ws              ::=     #x9 | #xA | #xD | #x20 | comment
-[25]    resource        ::=     uriref | qname
-[26]    nodeID          ::=     '_:' name
-[27]    qname           ::=     prefixName? ':' name?
-[28]    uriref          ::=     '<' relativeURI '>'
-[29]    language        ::=     [a-z]+ ('-' [a-z0-9]+ )*
-[30]    nameStartChar   ::=     [A-Z] | "_" | [a-z] | [#x00C0-#x00D6] | [#x00D8-#x00F6] | [#x00F8-#x02FF] | [#x0370-#x037D] | [#x037F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-[31]    nameChar        ::=     nameStartChar | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-[32]    name            ::=     nameStartChar nameChar*
-[33]    prefixName      ::=     ( nameStartChar - '_' ) nameChar*
-[34]    relativeURI     ::=     ucharacter*
-[35]    quotedString    ::=     string | longString
-[36]    string          ::=     #x22 scharacter* #x22
-[37]    longString      ::=     #x22 #x22 #x22 lcharacter* #x22 #x22 #x22
-[38]    character       ::=     '\' 'u' hex hex hex hex | '\' 'U' hex hex hex hex hex hex hex hex |
-                                '\\' | [#x20-#x5B] | [#x5D-#x10FFFF]
-[39]    echaracter      ::=     character | '\t' | '\n' | '\r'
-[40]    hex             ::=     [#x30-#x39] | [#x41-#x46]
-[41]    ucharacter      ::=     ( character - #x3E ) | '\>'
-[42]    scharacter      ::=     ( echaracter - #x22 ) | '\"'
-[43]    lcharacter      ::=     echaracter | '\"' | #x9 | #xA | #xD  
-     */
-    
+    // See http://www.w3.org/TR/turtle/
     // Some predicates (if accepted)
     protected final static String KW_A              = "a" ;
     protected final static String KW_SAME_AS        = "=" ;
@@ -318,10 +269,11 @@ public abstract class LangTurtleBase<X> extends LangBase<X>
         {
             if ( ! lookingAt(SEMICOLON) )
                 break ;
-            // list continues - move over the ";"
-            nextToken() ;
+            // predicatelist continues - move over all ";"
+            while ( lookingAt(SEMICOLON) )
+                nextToken() ;
             if ( ! peekPredicate() )
-                // Trailing (pointless) SEMICOLON, no following predicate/object list.
+                // Trailing (pointless) SEMICOLONs, no following predicate/object list.
                 break ;
             predicateObjectItem(subject) ;
         }
