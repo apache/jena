@@ -33,7 +33,18 @@ do
    CP="${CP}$M2_REPO$x"
 done
 
+# Add development systems
+
 [ -e "$DIRROOT/classes" ] && CP="$DIRROOT/classes:$CP"
 [ -e "$DIRROOT/target/classes" ] && CP="$DIRROOT/target/classes:$CP"
+
+for P in jena-core jena-arq
+do
+    [ -e "$DIRROOT/../$P/classes" ] && CP="$DIRROOT/../$P/classes:$CP"
+    [ -e "$DIRROOT/../$P/target/classes" ] && CP="$DIRROOT/../$P/target/classes:$CP"
+done
+
+
+
 
 echo "$CP"

@@ -29,7 +29,7 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>4</version>
+    <version>5-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
