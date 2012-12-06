@@ -26,9 +26,9 @@ import com.hp.hpl.jena.sparql.util.FmtUtils ;
 
 public abstract class FormatterBase
 {
-    IndentedWriter out ;
-    SerializationContext context ;
-    FormatterBase(IndentedWriter _out, SerializationContext _context)
+    protected IndentedWriter out ;
+    protected SerializationContext context ;
+    protected FormatterBase(IndentedWriter _out, SerializationContext _context)
     {
         out = _out ;
         context = _context ; 

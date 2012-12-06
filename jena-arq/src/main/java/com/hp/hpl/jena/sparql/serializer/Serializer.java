@@ -170,11 +170,11 @@ public class Serializer
     	serializeARQ(query, query, writer);
     }
     
-    static private void serializeARQ(Query query, 
-                                     IndentedWriter writer, 
-                                     FormatterElement eltFmt,
-                                     FmtExprSPARQL    exprFmt,
-                                     FormatterTemplate templateFmt)
+    static void serializeARQ(Query query, 
+                             IndentedWriter writer, 
+                             FormatterElement eltFmt,
+                             FmtExprSPARQL    exprFmt,
+                             FormatterTemplate templateFmt)
     {
         QuerySerializer serilizer = new QuerySerializer(writer, eltFmt, exprFmt, templateFmt) ;
         query.visit(serilizer) ;

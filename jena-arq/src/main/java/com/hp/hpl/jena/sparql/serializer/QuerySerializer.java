@@ -46,19 +46,19 @@ public class QuerySerializer implements QueryVisitor
     protected FmtExprSPARQL fmtExpr ;
     protected IndentedWriter out = null ;
 
-    QuerySerializer(OutputStream _out,
-                    FormatterElement   formatterElement, 
-                    FmtExprSPARQL            formatterExpr,
-                    FormatterTemplate  formatterTemplate)
+    QuerySerializer(OutputStream        _out,
+                    FormatterElement    formatterElement, 
+                    FmtExprSPARQL       formatterExpr,
+                    FormatterTemplate   formatterTemplate)
     {
         this(new IndentedWriter(_out),
              formatterElement, formatterExpr, formatterTemplate) ;
     }
 
-    QuerySerializer(IndentedWriter iwriter,
-                    FormatterElement   formatterElement, 
-                    FmtExprSPARQL            formatterExpr,
-                    FormatterTemplate  formatterTemplate)
+    QuerySerializer(IndentedWriter      iwriter,
+                    FormatterElement    formatterElement, 
+                    FmtExprSPARQL       formatterExpr,
+                    FormatterTemplate   formatterTemplate)
     {
         out = iwriter ;
         fmtTemplate = formatterTemplate ;
