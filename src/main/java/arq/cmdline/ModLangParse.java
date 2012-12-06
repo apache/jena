@@ -18,10 +18,11 @@
 
 package arq.cmdline;
 
+import org.apache.jena.iri.IRI ;
+import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.IRIResolver ;
 import arq.cmd.CmdException ;
 
-import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.util.FileManager ;
 
@@ -62,7 +63,7 @@ public class ModLangParse implements ArgModuleGeneral
         cmdLine.add(argCheck,   "--check",          "Addition checking of RDF terms") ; // (default: off for N-triples, N-Quads, on for Turtle and TriG)") ;
         cmdLine.add(argStrict,  "--strict",         "Run with in strict mode") ;
         cmdLine.add(argValidate,"--validate",       "Same as --sink --check=true --strict") ;
-//        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
+        cmdLine.add(argRDFS,    "--rdfs=file",      "Apply some RDFS inference using the vocabulary in the file") ;
         
         cmdLine.add(argNoCheck, "--nocheck",        "Turn off checking of RDF terms") ;
 //        cmdLine.add(argSkip,    "--noSkip",         "Skip (do not output) triples failing the RDF term tests") ;
@@ -113,8 +114,15 @@ public class ModLangParse implements ArgModuleGeneral
         
         if ( cmdLine.contains(argRDFS) )
         {
-            rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
-            rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
+            try {
+                rdfsVocabFilename = cmdLine.getArg(argRDFS).getValue() ;
+                rdfsVocab = FileManager.get().loadModel(rdfsVocabFilename) ;
+            } 
+            catch (RiotException ex)
+            { throw new CmdException("Error in RDFS vocabulary: "+rdfsVocabFilename) ; }
+            catch (Exception ex)
+            { throw new CmdException("Error: "+ex.getMessage()) ; }
+            
         }
     }
 
