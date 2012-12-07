@@ -338,7 +338,7 @@ public class TestResultSetFormat2
     	parseTSVAsBoolean(x, false);
     }
 
-    public void parseTSV(String x)
+    private void parseTSV(String x)
     {
         byte[] b = StrUtils.asUTF8bytes(x) ;
         ByteArrayInputStream in = new ByteArrayInputStream(b) ;
@@ -350,13 +350,12 @@ public class TestResultSetFormat2
         }
     }
     
-    public void parseTSVAsBoolean(String x, boolean expected)
+    private void parseTSVAsBoolean(String x, boolean expected)
     {
     	byte[] b = StrUtils.asUTF8bytes(x);
     	ByteArrayInputStream in = new ByteArrayInputStream(b);
     	boolean actual = TSVInput.booleanFromTSV(in);
     	
     	Assert.assertEquals(expected, actual);
-    }
-    
+    }    
 }
