@@ -32,8 +32,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
-
-
 /**
  * <p>
  * An enhanced view of a Jena model that is known to contain ontology

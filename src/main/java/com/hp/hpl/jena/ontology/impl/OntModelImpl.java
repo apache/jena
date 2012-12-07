@@ -53,8 +53,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
-
-
 /**
  * <p>
  * Implementation of a model that can process general ontologies in OWL
