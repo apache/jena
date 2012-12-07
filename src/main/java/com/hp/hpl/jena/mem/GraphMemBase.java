@@ -86,11 +86,6 @@ public abstract class GraphMemBase extends GraphBase
             }
         }
     
-    /**
-         Remove all triples from this graph; used to implement removeAll.
-    */
-    public abstract void clear();
-
     @Override
     @Deprecated
     public BulkUpdateHandler getBulkUpdateHandler()

@@ -413,7 +413,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             Graph dg = fdeductions.getGraph();
             if (dg != null) {
                 // Reuse the old graph in order to preserve any listeners
-                safeDeductions.removeAll();
+                safeDeductions.clear();
                 return dg;
             }
         }

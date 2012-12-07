@@ -137,7 +137,7 @@ public interface Graph  extends GraphAdd
     /**
         Remove all the statements from this graph.
     */
-    void removeAll();
+    void clear();
     
     /**
        Remove all triples that match by find(s, p, o)

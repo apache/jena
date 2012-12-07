@@ -235,7 +235,7 @@ public abstract class GraphBase implements GraphWithPerform
         Remove all the statements from this graph.
      */
 	@Override
-    public void removeAll()
+    public void clear()
 	{
 	    GraphUtil.remove(this, Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;	

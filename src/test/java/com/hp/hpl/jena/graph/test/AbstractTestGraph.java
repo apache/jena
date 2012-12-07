@@ -647,7 +647,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testRemoveAllEvent()
     {
         Graph g = getAndRegister( L );
-        g.removeAll();
+        g.clear();
         L.assertHas( new Object[] { "someEvent", g, GraphEvents.removeAll } );        
     }
 
@@ -816,7 +816,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     {
         Graph g = getGraph();
         graphAdd( g, triples );
-        g.removeAll();
+        g.clear();
         assertTrue( g.isEmpty() );
     }
 

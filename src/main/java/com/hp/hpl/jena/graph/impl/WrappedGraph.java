@@ -84,9 +84,9 @@ public class WrappedGraph implements GraphWithPerform
     }
 
     @Override
-    public void removeAll()
+    public void clear()
     {
-        base.removeAll() ;
+        base.clear() ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
 

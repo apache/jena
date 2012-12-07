@@ -409,7 +409,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             // initilize the deductions graph
             if (fdeductions != null) {
                 Graph oldDeductions = (fdeductions).getGraph();
-                oldDeductions.removeAll();
+                oldDeductions.clear();
             } else {
                 fdeductions = new FGraph( createDeductionsGraph() );
             }

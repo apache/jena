@@ -371,7 +371,7 @@ implements Model, PrefixMapping, Lock
     @Override
     public Model removeAll()
     { 
-        getGraph().removeAll();
+        getGraph().clear();
         return this; 
     }
 

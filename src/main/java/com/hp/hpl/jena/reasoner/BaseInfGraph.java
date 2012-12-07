@@ -147,7 +147,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         public void removeAll()
             {
             BaseInfGraph g = (BaseInfGraph) graph;
-            g.getRawGraph().removeAll();
+            g.getRawGraph().clear();
             g.discardState();
             g.rebind();
             g.getEventManager().notifyEvent( g, GraphEvents.removeAll );
@@ -164,9 +164,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     }
     
     @Override
-    public void removeAll()
+    public void clear()
     {
-        getRawGraph().removeAll() ;
+        getRawGraph().clear() ;
         discardState();
         rebind();
         getEventManager().notifyEvent( this, GraphEvents.removeAll );
