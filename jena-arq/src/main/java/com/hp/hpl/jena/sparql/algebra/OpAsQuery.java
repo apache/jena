@@ -30,14 +30,13 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
-import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.pfunction.PropFuncArg ;
 import com.hp.hpl.jena.sparql.syntax.* ;
-import com.hp.hpl.jena.sparql.util.DatasetUtils;
 import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
