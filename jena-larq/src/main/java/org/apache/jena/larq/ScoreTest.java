@@ -18,7 +18,7 @@
 
 package org.apache.jena.larq;
 
-import org.openjena.atlas.iterator.IteratorTruncate;
+import org.apache.jena.atlas.iterator.IteratorTruncate;
 
 /** Class to provide the truncation limit based on hit score */
 
