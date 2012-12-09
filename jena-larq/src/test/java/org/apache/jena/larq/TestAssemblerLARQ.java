@@ -37,8 +37,8 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openjena.atlas.lib.FileOps;
-import org.openjena.atlas.logging.Log;
+import org.apache.jena.atlas.lib.FileOps;
+import org.apache.jena.atlas.logging.Log;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
