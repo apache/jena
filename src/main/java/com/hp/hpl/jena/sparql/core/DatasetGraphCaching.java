@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.Cache ;
 import org.apache.jena.atlas.lib.CacheFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 
@@ -107,7 +108,7 @@ abstract public class DatasetGraphCaching extends DatasetGraphTriplesQuads
     public void addGraph(Node graphName, Graph graph)
     {
         removeGraph(graphName) ;
-        getGraph(graphName).getBulkUpdateHandler().add(graph) ;
+        GraphUtil.addInto(getGraph(graphName), graph) ;
     }
     
     @Override
