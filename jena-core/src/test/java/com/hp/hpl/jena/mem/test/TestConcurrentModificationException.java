@@ -23,8 +23,6 @@ import java.util.*;
 import junit.framework.*;
 
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.StageElement;
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
@@ -96,35 +94,5 @@ public abstract class TestConcurrentModificationException extends ModelTestBase
         b.remove( NodeCreateUtils.createTriple( "a P b" ) );
         try { it.next(); fail( "should have thrown ConcurrentModificationException" ); }
         catch (ConcurrentModificationException e) { pass(); } 
-        }
-
-    private static final MatchOrBind mob = new MatchOrBind() 
-        {
-        @Override
-        public boolean matches( Triple t )
-            {
-            return true;
-            }
-        
-        @Override
-        public MatchOrBind reset( Domain d )
-            {
-            return null;
-            }
-        };
-
-    public void testAddDuringAppThrowsCME()
-        {
-        final TripleBunch b = getBunch();
-        b.add( NodeCreateUtils.createTriple( "a P b" ) );
-        b.add( NodeCreateUtils.createTriple( "c Q d" ) );
-        StageElement se = new StageElement() 
-            {
-            @Override
-            public void run( Domain current )
-                { b.add( NodeCreateUtils.createTriple(  "S P O"  ) ); }
-            };
-        try { b.app(  new Domain( 0 ), se, mob ); fail(" should throw CME" ); }
-        catch (ConcurrentModificationException e) { pass(); }
         }
     }

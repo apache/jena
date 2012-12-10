@@ -57,7 +57,7 @@ public class TestStores2Connections1
                 store1.getConnection().getTransactionHandler().begin() ;
             
             Graph graph1 = SDBFactory.connectDefaultGraph(store1) ;
-            graph1.getBulkUpdateHandler().removeAll() ;
+            graph1.clear() ;
             SSE.write(graph1) ; System.out.println();
             graph1.add(t1) ;
             SSE.write(graph1) ; System.out.println();

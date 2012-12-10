@@ -20,14 +20,12 @@ package com.hp.hpl.jena.tdb.junit;
 
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 
-public class AbstractTestGraphTDB extends AbstractTestGraph
+public abstract class AbstractTestGraphTDB extends AbstractTestGraph
 {
     public AbstractTestGraphTDB(String name)
     {
         super(name) ;
     }
-    
-    @Override public void testBulkAddWithReification() {}
     
     @Override public void testIsomorphismFile() {}
     

@@ -18,15 +18,17 @@
 
 package com.hp.hpl.jena.assembler.assemblers;
 
-import java.io.File;
+import java.io.File ;
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.graph.impl.FileGraph.NotifyOnClose;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.impl.FileGraph ;
+import com.hp.hpl.jena.graph.impl.FileGraph.NotifyOnClose ;
+import com.hp.hpl.jena.graph.impl.FileGraphMaker ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class FileModelAssembler extends NamedModelAssembler implements Assembler
     {
@@ -40,14 +42,13 @@ public class FileModelAssembler extends NamedModelAssembler implements Assembler
         boolean create = getBoolean( root, JA.create, mayCreate );
         boolean strict = getBoolean( root, JA.strict, mayCreate != mayReuse );
         String lang = getLanguage( root, fullName );
-        ReificationStyle style = getReificationStyle( root );
-        return createFileModel( fullName, lang, create, strict, style );
+        return createFileModel( fullName, lang, create, strict );
         }
     
-    public Model createFileModel( File fullName, String lang, boolean create, boolean strict, ReificationStyle style )
+    public Model createFileModel( File fullName, String lang, boolean create, boolean strict )
         {
         NotifyOnClose notify = NotifyOnClose.ignore;
-        Graph fileGraph = new FileGraph( notify, fullName, lang, create, strict, style );
+        Graph fileGraph = new FileGraph( notify, fullName, lang, create, strict );
         return ModelFactory.createModelForGraph( fileGraph );
         }
 

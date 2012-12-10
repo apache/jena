@@ -55,6 +55,7 @@ public class GraphReadOnly extends WrappedGraph
         return new SimpleTransactionHandler() ;
     }
 
+    @Deprecated
     @Override
     public BulkUpdateHandler getBulkUpdateHandler()
     {

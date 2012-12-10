@@ -100,7 +100,7 @@ public class TestDatasetTDBPersist extends BaseTest
         // Sometimes, under windows, deleting the files by 
         // graphLocation.clearDirectory does not work.  
         // Needed for safe tests on windows.
-        g1.getBulkUpdateHandler().removeAll() ;
+        g1.clear() ;
         
         Graph g2 = ds.getNamedModel("http://example/").getGraph() ;
         g2.add(new Triple(n0,n1,n2) ) ;

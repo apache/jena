@@ -31,9 +31,9 @@ import org.openjena.riot.system.Prologue ;
 import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class RDFJSONWriter {
@@ -53,8 +53,7 @@ public class RDFJSONWriter {
 	}
 
 	private static void write (Sink<Pair<Node, Map<Node, Set<Node>>>> sink, Graph graph) {
-		QueryHandler queryHandler = graph.queryHandler() ;
-		ExtendedIterator<Node> subjects = queryHandler.subjectsFor(Node.ANY, Node.ANY) ;
+		ExtendedIterator<Node> subjects = GraphUtil.listSubjects(graph, Node.ANY, Node.ANY) ;
 		try {
 			Map<Node, Set<Node>> predicates = new HashMap<Node, Set<Node>>() ;
 			while ( subjects.hasNext() ) {

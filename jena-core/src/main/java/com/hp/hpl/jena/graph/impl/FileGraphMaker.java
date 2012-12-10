@@ -49,17 +49,18 @@ public class FileGraphMaker
      	@param root the directory to keep the files in.
      */
     public FileGraphMaker( String root )
-        { this( root, ReificationStyle.Minimal ); }
-        
-    /**
-        Construct a file graph factory whose files will appear in root. The files 
-        will be retained when the maker is closed.
-    
-        @param root the directory to keep the files in.
-        @param style the reification style of the resulting graph
-     */
-    public FileGraphMaker( String root, ReificationStyle style )
-        { this( root, style, false ); }
+    { this ( root, false ) ; }
+//        { this( root, ReificationStyle.Minimal ); }
+//        
+//    /**
+//        Construct a file graph factory whose files will appear in root. The files 
+//        will be retained when the maker is closed.
+//    
+//        @param root the directory to keep the files in.
+//        @param style the reification style of the resulting graph
+//     */
+//    public FileGraphMaker( String root, ReificationStyle style )
+//        { this( root, style, false ); }
  
     /**
         Construct a file graph factory whose files will appear in root.
@@ -70,9 +71,9 @@ public class FileGraphMaker
         @param style the reification style of the graph
      	@param deleteOnClose iff true, delete created files on close
      */
-    public FileGraphMaker( String root, ReificationStyle style, boolean deleteOnClose )
+    public FileGraphMaker( String root, boolean deleteOnClose )
         {
-        super( style );
+        super( );
         this.fileBase = root;
         this.deleteOnClose = deleteOnClose;       
         }
@@ -98,7 +99,7 @@ public class FileGraphMaker
         File f = withRoot( name );
         FileGraph already = created.get( f );
         if (already == null)
-            return remember( f, new FileGraph( this, f, true, strict, style ) ); 
+            return remember( f, new FileGraph( this, f, true, strict ) ); 
         else
             {
             if (strict) throw new AlreadyExistsException( name );
@@ -112,7 +113,7 @@ public class FileGraphMaker
         File f = withRoot( name );
         return created.containsKey( f )  
             ? created.get( f ).openAgain()
-            : remember( f, new FileGraph( this, f, false, strict, style ) )
+            : remember( f, new FileGraph( this, f, false, strict ) )
             ;
         }
 

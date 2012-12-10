@@ -23,15 +23,16 @@ package com.hp.hpl.jena.graph.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.util.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.test.*;
+import java.lang.reflect.Constructor ;
+import java.util.* ;
 
-import java.lang.reflect.Constructor;
-import java.util.*;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.test.JenaTestBase ;
+import com.hp.hpl.jena.util.CollectionFactory ;
+import com.hp.hpl.jena.util.IteratorCollection ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class GraphTestBase extends JenaTestBase
     {
@@ -383,18 +384,17 @@ public class GraphTestBase extends JenaTestBase
         
         @param wrap the outer class instance if graphClass is an inner class
         @param graphClass a class implementing Graph
-        @param style the reification style to use
         @return an instance of graphClass with the given style
         @throws RuntimeException or JenaException if construction fails
      */
-    public static Graph getGraph( Object wrap, Class<? extends Graph> graphClass, ReificationStyle style ) 
+    public static Graph getGraph( Object wrap, Class<? extends Graph> graphClass) 
         {
         try
             {
-            Constructor<?> cons = getConstructor( graphClass, new Class[] {ReificationStyle.class} );
-            if (cons != null) return (Graph) cons.newInstance( new Object[] { style } );
-            Constructor<?> cons2 = getConstructor( graphClass, new Class [] {wrap.getClass(), ReificationStyle.class} );
-            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { wrap, style } );
+            Constructor<?> cons = getConstructor( graphClass, new Class[] {} );
+            if (cons != null) return (Graph) cons.newInstance( new Object[] { } );
+            Constructor<?> cons2 = getConstructor( graphClass, new Class [] {wrap.getClass()} );
+            if (cons2 != null) return (Graph) cons2.newInstance( new Object[] { wrap} );
             throw new JenaException( "no suitable graph constructor found for " + graphClass );
             }
         catch (RuntimeException e)
@@ -402,15 +402,4 @@ public class GraphTestBase extends JenaTestBase
         catch (Exception e)
             { throw new JenaException( e ); }
         }
-
-    protected static Graph getReificationTriples( final Reifier r )
-        {
-        return new GraphBase( ReificationStyle.Minimal )
-            {
-            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
-                { return r.find( m ); }
-            };
-        }
-
-        
     }

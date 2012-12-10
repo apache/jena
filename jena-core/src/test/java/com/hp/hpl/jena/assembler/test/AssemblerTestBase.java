@@ -32,10 +32,8 @@ import com.hp.hpl.jena.vocabulary.*;
     may be over-ridden in subclasses to control the parser that is used to
     construct models and the prefixes added to the model (these features
     added for Eyeball).
-    
-    @author kers
 */
-public abstract class AssemblerTestBase extends ModelTestBase
+public class AssemblerTestBase extends ModelTestBase
     {
     protected Class<? extends Assembler> getAssemblerClass()
         { throw new BrokenException( "this class must define getAssemblerClass" ); }
@@ -89,7 +87,7 @@ public abstract class AssemblerTestBase extends ModelTestBase
     
     protected Model model( String string )
         { 
-        Model result = createModel( ReificationStyle.Standard );
+        Model result = createModel( );
         setRequiredPrefixes( result );
         return modelAddFacts( result, string );
         }

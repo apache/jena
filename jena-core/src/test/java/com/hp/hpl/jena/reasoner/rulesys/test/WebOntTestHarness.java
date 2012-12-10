@@ -18,18 +18,18 @@
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.*;
+import java.io.* ;
+import java.util.* ;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
-import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
-import com.hp.hpl.jena.vocabulary.*;
-
-import java.io.*;
-import java.util.*;
+import com.hp.hpl.jena.ontology.OntModelSpec ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerException ;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry ;
+import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph ;
+import com.hp.hpl.jena.reasoner.test.WGReasonerTester ;
+import com.hp.hpl.jena.vocabulary.* ;
 
 /**
  * Test harness for running the WebOnt working group tests relevant 
@@ -377,7 +377,7 @@ public class WebOntTestHarness {
                 ((FBRuleInfGraph)graph).resetLPProfile(true);
             }
             Model result = ModelFactory.createModelForGraph(graph);
-            boolean correct = testEntailment(conclusions.getGraph(), result.getGraph());
+            boolean correct = WGReasonerTester.testConclusions(conclusions.getGraph(), result.getGraph());
             long t2 = System.currentTimeMillis();
             lastTestDuration = t2 - t1; 
             if (printProfile) {
@@ -465,18 +465,6 @@ public class WebOntTestHarness {
         Reader reader = new BufferedReader(new FileReader(BASE_TESTDIR + fname));
         model.read(reader, BASE_URI + fname, langType);
         return model;
-    }
-    
-    /**
-     * Test a conclusions graph against a result graph. This works by
-     * translating the conclusions graph into a find query which contains one
-     * variable for each distinct bNode in the conclusions graph.
-     */
-    public boolean testEntailment(Graph conclusions, Graph result) {
-        QueryHandler qh = result.queryHandler();
-        GraphQuery query = WGReasonerTester.graphToQuery(conclusions);
-        Iterator<Domain> i = qh.prepareBindings(query, new Node[] {}).executeBindings();
-        return i.hasNext();
     }
     
     /**

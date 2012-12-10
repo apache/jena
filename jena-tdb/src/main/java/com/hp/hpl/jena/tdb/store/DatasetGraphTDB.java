@@ -28,6 +28,7 @@ import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -305,7 +306,7 @@ public class DatasetGraphTDB extends DatasetGraphCaching
     public void addGraph(Node graphName, Graph graph)
     {
         Graph g = getGraph(graphName) ;
-        g.getBulkUpdateHandler().add(graph) ;
+        GraphUtil.addInto(g, graph) ;
     }
     
     @Override

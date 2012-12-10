@@ -617,8 +617,10 @@ public interface ModelCon {
         If suppressreifications is true, remove the reified statements of m as well.
         @param m the model containing the statements to remove
         @param suppressReifications true to remove reified statements too
-        @return this model for cascading 
+        @return this model for cascading
+        @deprecated suppressReifications now longer has any meaning or effect
     */
+    @Deprecated
     Model remove( Model m, boolean suppressReifications );
 
     /** 

@@ -24,7 +24,6 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.sparql.util.TripleComparator ;
 
 /**
@@ -35,11 +34,6 @@ public class GraphDistinctDataBag extends GraphDataBag
     public GraphDistinctDataBag(ThresholdPolicy<Triple> thresholdPolicy)
     {
         super(thresholdPolicy) ;
-    }
-    
-    public GraphDistinctDataBag(ThresholdPolicy<Triple> thresholdPolicy, ReificationStyle style)
-    {
-        super(thresholdPolicy, style) ;
     }
     
     @Override

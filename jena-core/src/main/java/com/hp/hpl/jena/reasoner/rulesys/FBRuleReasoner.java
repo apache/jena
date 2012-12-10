@@ -231,9 +231,8 @@ public class FBRuleReasoner implements RuleReasoner {
      */
     @Override
     public InfGraph bind( Graph data ) throws ReasonerException {
-        ReificationStyle style = data.getReifier().getStyle();
         Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph) schemaGraph; 
-        FBRuleInfGraph graph = new FBRuleInfGraph( this, rules, schemaArg, style );
+        FBRuleInfGraph graph = new FBRuleInfGraph( this, rules, schemaArg );
         graph.setDerivationLogging( recordDerivations );
         graph.setTraceOn( traceOn );
         graph.rebind( data );

@@ -30,8 +30,6 @@ import com.hp.hpl.jena.enhanced.EnhGraph ;
 import com.hp.hpl.jena.enhanced.EnhNode ;
 import com.hp.hpl.jena.enhanced.Implementation ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.query.BindingQueryPlan ;
-import com.hp.hpl.jena.graph.query.GraphQuery ;
 import com.hp.hpl.jena.ontology.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
@@ -102,11 +100,6 @@ public class OntClassImpl
     // Instance variables
     //////////////////////////////////
 
-    /** Query for properties with this class as domain */
-    protected BindingQueryPlan m_domainQuery;
-
-    /** Query for properties restricted by this class */
-    protected BindingQueryPlan m_restrictionPropQuery = null;
 
 
     // Constructors
@@ -122,24 +115,7 @@ public class OntClassImpl
      */
     public OntClassImpl( Node n, EnhGraph g ) {
         super( n, g );
-
-        // pre-built queries
-        // ?x a rdf:Property ; rdfs:domain this.
-        GraphQuery q = new GraphQuery();
-        q.addMatch( GraphQuery.X, getProfile().DOMAIN().asNode(), asNode() );
-
-        m_domainQuery = getModel().queryHandler().prepareBindings( q, new Node[] {GraphQuery.X} );
-
-        // this rdfs:subClassOf ?x. ?x owl:onProperty ?y.
-        if (getProfile().ON_PROPERTY() != null) {
-            q = new GraphQuery();
-            q.addMatch( asNode(), getProfile().SUB_CLASS_OF().asNode(), GraphQuery.X );
-            q.addMatch( GraphQuery.X, getProfile().ON_PROPERTY().asNode(), GraphQuery.Y );
-
-            m_restrictionPropQuery = getModel().queryHandler().prepareBindings( q, new Node[] {GraphQuery.Y} );
-        }
     }
-
 
     // External signature methods
     //////////////////////////////////

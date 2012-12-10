@@ -23,6 +23,7 @@ import org.apache.jena.fuseki.http.DatasetGraphAccessor ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
@@ -83,8 +84,8 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
         Graph graph = updater.httpGet() ;
         
         Graph graph3 = GraphFactory.createDefaultGraph() ;
-        graph3.getBulkUpdateHandler().add(graph1) ;
-        graph3.getBulkUpdateHandler().add(graph2) ;
+        GraphUtil.addInto(graph3, graph1) ;
+        GraphUtil.addInto(graph3, graph2) ;
         assertTrue(graph.isIsomorphicWith(graph3)) ;
         assertFalse(graph.isIsomorphicWith(graph1)) ;
         assertFalse(graph.isIsomorphicWith(graph2)) ;
@@ -97,8 +98,8 @@ public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
         updater.httpPost(n1, graph2) ;
         Graph graph = updater.httpGet(n1) ;
         Graph graph3 = GraphFactory.createDefaultGraph() ;
-        graph3.getBulkUpdateHandler().add(graph1) ;
-        graph3.getBulkUpdateHandler().add(graph2) ;
+        GraphUtil.addInto(graph3, graph1) ;
+        GraphUtil.addInto(graph3, graph2) ;
         assertTrue(graph.isIsomorphicWith(graph3)) ;
         assertFalse(graph.isIsomorphicWith(graph1)) ;
         assertFalse(graph.isIsomorphicWith(graph2)) ;
