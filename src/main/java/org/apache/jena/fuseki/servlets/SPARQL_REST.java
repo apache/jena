@@ -52,6 +52,7 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -243,7 +244,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static void deleteGraph(HttpActionREST action)
     {
         if ( action.getTarget().isDefault )
-            action.getTarget().graph().getBulkUpdateHandler().removeAll() ;
+            action.getTarget().graph().clear() ;
         else
             action.getActiveDSG().removeGraph(action.getTarget().graphName) ;
     }
@@ -253,7 +254,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( ! target.isGraphSet() )
         {
             Graph g = target.graph() ;
-            g.getBulkUpdateHandler().removeAll() ;
+            g.clear() ;
         }
     }
 
@@ -272,7 +273,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                 g = GraphFactory.createDefaultGraph() ;
                 dest.dsg.addGraph(dest.graphName, g) ;
             }
-            g.getBulkUpdateHandler().add(data) ;
+            GraphUtil.addInto(g, data) ;
         } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
