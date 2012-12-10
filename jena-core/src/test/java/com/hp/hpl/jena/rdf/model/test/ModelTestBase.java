@@ -18,13 +18,14 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.CollectionFactory;
+import java.util.* ;
 
-import java.util.*;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.test.GraphTestBase ;
+import com.hp.hpl.jena.graph.test.NodeCreateUtils ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.util.CollectionFactory ;
 
 /**
     provides useful functionality for testing models, eg building small models
@@ -159,25 +160,14 @@ public class ModelTestBase extends GraphTestBase
         @return a model containing those facts
     */
     public static Model modelWithStatements( String facts )
-        { return modelWithStatements( ReificationStyle.Standard, facts ); }
-
-    /**
-        makes a model with a given reiifcation style, initialised with statements parsed 
-        from a string.
-        
-        @param style the required reification style
-        @param facts a string in semicolon-separated "S P O" format
-        @return a model containing those facts
-    */        
-    public static Model modelWithStatements( ReificationStyle style, String facts )
-        { return modelAdd( createModel( style ), facts ); }
+    { return modelAdd( createModel( ), facts ); }
         
     /**
-        make a model with a given reification style, give it Extended prefixes
+        make a model, give it Extended prefixes
     */
-    public static Model createModel( ReificationStyle style )
+    public static Model createModel( )
         {
-    	Model result = ModelFactory.createDefaultModel( style );
+    	Model result = ModelFactory.createDefaultModel( );
         result.setNsPrefixes( PrefixMapping.Extended );
         return result;
         }

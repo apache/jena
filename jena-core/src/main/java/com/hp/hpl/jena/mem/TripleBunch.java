@@ -18,11 +18,8 @@
 
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.StageElement;
-
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     A bunch of triples - a stripped-down set with specialized methods. A
@@ -76,14 +73,4 @@ public interface TripleBunch
     */
     public abstract ExtendedIterator<Triple> iterator( HashCommon.NotifyEmpty container );
     
-    /**
-         For every triple t in this bunch that matches <code>s<code>, invoke
-         <code>next.run(d)</code>. <code>d</code> may have been 
-         side-effected by the match. <code>app</code> is the main reason
-         that TripleBunch exists at all: it's a way to iterate as fast as possible
-         over the triples in the context of a graph query, without having to
-         construct an Iterator object which has to maintain the iteration state
-         in instance variables.
-    */
-    public abstract void app( Domain d, StageElement next, MatchOrBind s );
     }

@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sdb.test.graph;
 
 import com.hp.hpl.jena.graph.test.AbstractTestGraph;
 
-public class AbstractTestGraphSDB extends AbstractTestGraph
+public abstract class AbstractTestGraphSDB extends AbstractTestGraph
 {
     public AbstractTestGraphSDB(String x) { super(x); }
     // Tests to skip.

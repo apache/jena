@@ -206,7 +206,7 @@ public abstract class AbstractTestGraph2 extends BaseTest
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(any, any, any) ;
+        g.remove(any, any, any) ;
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }
@@ -216,7 +216,7 @@ public abstract class AbstractTestGraph2 extends BaseTest
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(s2, any, any) ;
+        g.remove(s2, any, any) ;
         assertEquals(1, g.size()) ;
         assertTrue(g.contains(t1)) ;
         returnGraph(g) ;
@@ -227,7 +227,7 @@ public abstract class AbstractTestGraph2 extends BaseTest
         Graph g = emptyGraph() ;
         Triple t1 = triple(s1, p1, o1) ;
         g.add(t1) ;
-        g.getBulkUpdateHandler().remove(s1, any, any) ;
+        g.remove(s1, any, any) ;
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }
@@ -243,7 +243,7 @@ public abstract class AbstractTestGraph2 extends BaseTest
         g.add(t2) ;
         g.add(t3) ;
         g.add(t4) ;
-        g.getBulkUpdateHandler().removeAll() ;
+        g.clear() ;
         assertEquals(0, g.size()) ;
         returnGraph(g) ;
     }

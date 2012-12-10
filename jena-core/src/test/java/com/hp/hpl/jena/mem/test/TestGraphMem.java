@@ -36,15 +36,7 @@ public class TestGraphMem extends AbstractTestGraph
     
     @Override public Graph getGraph()
         { return new GraphMem(); }   
-    
-    public void testRemoveAllDoesntUseFind()
-        {
-        Graph g = new GraphMemWithoutFind();
-        graphAdd( g, "x P y; a Q b" );
-        g.getBulkUpdateHandler().removeAll();
-        assertEquals( 0, g.size() );
-        }
-    
+
     public void testSizeAfterRemove() 
         {
         Graph g = getGraphWith( "x p y" );
@@ -127,16 +119,7 @@ public class TestGraphMem extends AbstractTestGraph
         {
         testStatsWithConcreteTriple( 0, "x P y", "" );
         }
-    
-    public void testStatsWithreification()
-        {
-        ReificationStyle style = ReificationStyle.Standard;
-        Graph g = new GraphMem( style );
-        GraphStatisticsHandler h = g.getStatisticsHandler();
-        graphAdd( g, "x rdf:subject A" );
-        assertEquals( -1L, h.getStatistic( node( "x" ), Node.ANY, Node.ANY ) );
-        }
-    
+
     private void testStatsWithConcreteTriple( int expect, String triple, String graph )
         {
         Graph g = getGraphWith( graph );

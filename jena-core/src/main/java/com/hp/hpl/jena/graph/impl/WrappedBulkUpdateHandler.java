@@ -77,6 +77,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
     
     @Override
+    @Deprecated
     public void add( Graph g )
         {
 	    base.add( g );
@@ -109,6 +110,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void delete( Graph g )
         {
         base.delete( g );
@@ -124,6 +126,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void removeAll()
         {
         base.removeAll();
@@ -131,6 +134,7 @@ public class WrappedBulkUpdateHandler implements BulkUpdateHandler
         }
 
     @Override
+    @Deprecated
     public void remove( Node s, Node p, Node o )
         {
         base.remove( s, p, o );

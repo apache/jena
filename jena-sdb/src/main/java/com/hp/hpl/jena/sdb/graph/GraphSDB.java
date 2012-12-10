@@ -18,40 +18,37 @@
 
 package com.hp.hpl.jena.sdb.graph;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.AllCapabilities;
-import com.hp.hpl.jena.graph.query.QueryHandler;
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.sdb.SDB;
-import com.hp.hpl.jena.sdb.Store;
-import com.hp.hpl.jena.sdb.core.SDBRequest;
-import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
-import com.hp.hpl.jena.sdb.sql.SDBConnection;
-import com.hp.hpl.jena.sdb.store.DatasetStoreGraph;
-import com.hp.hpl.jena.sdb.store.StoreLoader;
-import com.hp.hpl.jena.sdb.store.StoreLoaderPlus;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.sparql.algebra.Op;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern;
-import com.hp.hpl.jena.sparql.core.BasicPattern;
-import com.hp.hpl.jena.sparql.core.Quad;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.sparql.engine.Plan;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.impl.AllCapabilities ;
+import com.hp.hpl.jena.query.Query ;
+import com.hp.hpl.jena.sdb.SDB ;
+import com.hp.hpl.jena.sdb.Store ;
+import com.hp.hpl.jena.sdb.core.SDBRequest ;
+import com.hp.hpl.jena.sdb.engine.QueryEngineSDB ;
+import com.hp.hpl.jena.sdb.sql.SDBConnection ;
+import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
+import com.hp.hpl.jena.sdb.store.StoreLoader ;
+import com.hp.hpl.jena.sdb.store.StoreLoaderPlus ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
+import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.Plan ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
-
-
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
 public class GraphSDB extends GraphBase2 implements Graph
 {
@@ -255,17 +252,12 @@ public class GraphSDB extends GraphBase2 implements Graph
     
     public StoreLoader getBulkLoader() { return store.getLoader() ; }
     
+    @Deprecated
     @Override
     public BulkUpdateHandler getBulkUpdateHandler()
     {
     	if (bulkHandler == null) bulkHandler = new UpdateHandlerSDB(this);
     	return bulkHandler;
-    }
-    
-    @Override
-    public QueryHandler queryHandler()
-    {
-        return new GraphQueryHandlerSDB(this, graphNode, datasetStore) ;
     }
     
     @Override

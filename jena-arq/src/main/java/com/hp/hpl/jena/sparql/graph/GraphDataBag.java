@@ -25,10 +25,8 @@ import com.hp.hpl.jena.graph.Capabilities ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.graph.TripleMatchIterator ;
-import com.hp.hpl.jena.graph.impl.SimpleReifier ;
 import com.hp.hpl.jena.graph.impl.TripleStore ;
 import com.hp.hpl.jena.mem.GraphMemBase ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
@@ -48,12 +46,7 @@ public abstract class GraphDataBag extends GraphMemBase
     
     public GraphDataBag(ThresholdPolicy<Triple> thresholdPolicy)
     {
-        this(thresholdPolicy, ReificationStyle.Minimal) ;
-    }
-
-    public GraphDataBag(ThresholdPolicy<Triple> thresholdPolicy, ReificationStyle style)
-    {
-        super(style) ;
+        super() ;
         
         this.thresholdPolicy = thresholdPolicy;
         
@@ -99,10 +92,7 @@ public abstract class GraphDataBag extends GraphMemBase
     @Override
     public void performAdd(Triple t)
     {
-        if ( !getReifier().handledAdd(t) )
-        {
-            db.add(t) ;
-        }
+        db.add(t) ;
     }
 
     @Override
@@ -121,7 +111,6 @@ public abstract class GraphDataBag extends GraphMemBase
     public void clear()
     {
         db.close() ;
-        ((SimpleReifier) getReifier()).clear() ;
         db = createDataBag() ;
     }
 

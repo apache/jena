@@ -18,11 +18,10 @@
 
 package com.hp.hpl.jena.mem;
 
-import java.util.*;
+import java.util.Iterator ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     {    
@@ -106,15 +105,4 @@ public class HashedTripleBunch extends HashCommon<Triple> implements TripleBunch
     public ExtendedIterator<Triple> iterator( final NotifyEmpty container )
         { return keyIterator( container ); }
     
-    @Override
-    public void app( Domain d, StageElement next, MatchOrBind s )
-        {
-        int i = capacity, initialChanges = changes;
-        while (i > 0)
-            {
-            if (changes > initialChanges) throw new ConcurrentModificationException();
-            Object t = keys[--i];
-            if (t != null  && s.matches( (Triple) t )) next.run( d );
-            }
-        }
-    }
+}

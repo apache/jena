@@ -29,20 +29,18 @@ public abstract class BaseGraphMaker implements GraphMaker
     {
     /**
         Construct the base level of a graph maker.
-     	@param style the reification style for all the graphs it makes
      */
-    public BaseGraphMaker( ReificationStyle style )
-        { this.style = style; }
+    public BaseGraphMaker( ) { }
         
     private int counter = 0;
-    protected ReificationStyle style;
     
     /**
         Answer our reification style.
     */
     @Override
+    @Deprecated
     public ReificationStyle getReificationStyle()
-        { return style; }
+        { return ReificationStyle.Standard ; }
         
     /**
         Answer the default graph for this maker. If we haven't already made it, make it

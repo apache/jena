@@ -26,6 +26,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.Query ;
@@ -76,7 +77,7 @@ public class TestConcurrentAccess extends BaseTest
     {
         Graph g = buildGraph() ;
         Dataset ds = TDBFactory.createDataset() ;
-        ds.getDefaultModel().getGraph().getBulkUpdateHandler().add(g) ;
+        GraphUtil.addInto(ds.getDefaultModel().getGraph(), g) ;
         return ds ;
     }
     
@@ -146,7 +147,7 @@ public class TestConcurrentAccess extends BaseTest
     {
         Dataset d = TDBFactory.createDataset() ;
         Model m = d.getNamedModel("http://example") ;
-        m.getGraph().getBulkUpdateHandler().add(buildGraph()) ;
+        GraphUtil.addInto(m.getGraph(), buildGraph()) ;
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         while(iter1.hasNext()) 
@@ -161,7 +162,7 @@ public class TestConcurrentAccess extends BaseTest
     {
         Dataset d = TDBFactory.createDataset() ;
         Model m = d.getNamedModel("http://example") ;
-        m.getGraph().getBulkUpdateHandler().add(buildGraph()) ;
+        GraphUtil.addInto(m.getGraph(), buildGraph()) ;
         Resource r = m.createResource("x") ;
         ExtendedIterator<Statement> iter1 = m.listStatements(r, null, (RDFNode)null) ;
         assertNotNull(iter1.next()) ;

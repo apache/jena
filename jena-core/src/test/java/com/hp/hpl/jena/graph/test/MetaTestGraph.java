@@ -31,17 +31,15 @@ import com.hp.hpl.jena.shared.*;
 public class MetaTestGraph extends AbstractTestGraph 
     {
     protected final Class<? extends Graph> graphClass;
-    protected final ReificationStyle style;
     
-	public MetaTestGraph( Class<? extends Graph> graphClass, String name, ReificationStyle style ) 
+	public MetaTestGraph( Class<? extends Graph> graphClass, String name) 
         {
 		super( name );
         this.graphClass = graphClass;
-        this.style = style;
         }
         
     public MetaTestGraph( String name )
-        { super( name ); graphClass = null; style = null; }
+        { super( name ); graphClass = null; }
      
     /**
         Construct a suite of tests from the test class <code>testClass</code>
@@ -51,42 +49,40 @@ public class MetaTestGraph extends AbstractTestGraph
     public static TestSuite suite( Class<? extends Test> testClass, Class<? extends Graph> graphClass )
         {
         TestSuite result = new TestSuite();
-        result.addTest( suite( testClass, graphClass, ReificationStyle.Minimal ) ); 
-        result.addTest( suite( testClass, graphClass, ReificationStyle.Standard ) ); 
-        result.addTest( suite( testClass, graphClass, ReificationStyle.Convenient ) ); 
+        result.addTest( suiteX( testClass, graphClass)); 
         result.setName("Meta "+testClass.getName());
         return result;    
         }
         
-    public static TestSuite suite( Class<? extends Test> testClass, Class<? extends Graph> graphClass, ReificationStyle style )
+    public static TestSuite suiteX( Class<? extends Test> testClass, Class<? extends Graph> graphClass)
         {
         TestSuite result = new TestSuite();
         for (Class<?> c = testClass; Test.class.isAssignableFrom( c ); c = c.getSuperclass())
             {
             Method [] methods = c.getDeclaredMethods();
-            addTestMethods( result, testClass, methods, graphClass, style );  
+            addTestMethods( result, testClass, methods, graphClass );  
             }
-        result.setName(testClass.getName()+" "+style.toString());
+        result.setName(testClass.getName());
         return result;    
         }
         
     public static void addTestMethods
-        ( TestSuite result, Class<? extends Test> testClass, Method [] methods, Class<? extends Graph> graphClass, ReificationStyle style  )
+        ( TestSuite result, Class<? extends Test> testClass, Method [] methods, Class<? extends Graph> graphClass)
         {
         for (int i = 0; i < methods.length; i += 1)
             if (isPublicTestMethod( methods[i] )) 
-                result.addTest( makeTest( testClass, graphClass, methods[i].getName(), style ) );  
+                result.addTest( makeTest( testClass, graphClass, methods[i].getName()) );  
         }
         
-    public static TestCase makeTest( Class<? extends Test> testClass, Class<? extends Graph> graphClass, String name, ReificationStyle style )
+    public static TestCase makeTest( Class<? extends Test> testClass, Class<? extends Graph> graphClass, String name)
         {
-        Constructor<?> cons = getConstructor( testClass, new Class[] {Class.class, String.class, ReificationStyle.class} );
+        Constructor<?> cons = getConstructor( testClass, new Class[] {Class.class, String.class} );
         if (cons == null) throw new JenaException( "cannot find MetaTestGraph constructor" );
-        try { return (TestCase) cons.newInstance( new Object [] {graphClass, name, style} ); }
+        try { return (TestCase) cons.newInstance( new Object [] {graphClass, name} ); }
         catch (Exception e) { throw new JenaException( e ); }
         }
 
 	@Override public Graph getGraph() 
-        { return getGraph( this, graphClass, style ); }
+        { return getGraph( this, graphClass); }
         
     }

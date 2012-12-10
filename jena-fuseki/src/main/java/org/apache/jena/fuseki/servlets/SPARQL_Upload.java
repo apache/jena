@@ -44,6 +44,7 @@ import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -101,13 +102,15 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
                             action.id, graphName,  tripleCount)) ;
 
+            Graph target ; 
             if ( graphName.equals(HttpNames.valueDefault) ) 
-                action.getActiveDSG().getDefaultGraph().getBulkUpdateHandler().add(graphTmp) ;
+                target = action.getActiveDSG().getDefaultGraph() ;
             else
             {
                 Node gn = Node.createURI(graphName) ;
-                action.getActiveDSG().getGraph(gn).getBulkUpdateHandler().add(graphTmp) ;
+                target = action.getActiveDSG().getGraph(gn) ;
             }
+            GraphUtil.addInto(target, graphTmp) ;
             tripleCount = graphTmp.size();
             action.commit() ;
         } catch (RuntimeException ex)

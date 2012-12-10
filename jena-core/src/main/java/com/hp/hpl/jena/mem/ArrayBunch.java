@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.mem;
 
-import java.util.ConcurrentModificationException;
+import java.util.ConcurrentModificationException ;
 
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
 /**
     An ArrayBunch implements TripleBunch with a linear search of a short-ish
@@ -92,18 +92,7 @@ public class ArrayBunch implements TripleBunch
                 return; }
             }
         }
-    
-    @Override
-    public void app( Domain d, StageElement next, MatchOrBind s )
-        {
-        int i = size, initialChanges = changes;
-        while (i > 0) 
-            {
-            if (changes > initialChanges) throw new ConcurrentModificationException();
-            if (s.matches( elements[--i] )) next.run( d );
-            }
-        }
-    
+
     @Override
     public ExtendedIterator<Triple> iterator()
         {

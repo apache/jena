@@ -18,10 +18,11 @@
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
+import com.hp.hpl.jena.shared.AddDeniedException ;
+import com.hp.hpl.jena.shared.DeleteDeniedException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     The interface to be satisfied by implementations maintaining collections
@@ -31,8 +32,6 @@ import com.hp.hpl.jena.util.iterator.*;
     and transaction handling.
 <p>
     For <code>add(Triple)</code> see GraphAdd.
-    
-    @author Jeremy Carroll, Chris Dollin
 */
 public interface Graph  extends GraphAdd
     {
@@ -53,13 +52,14 @@ public interface Graph  extends GraphAdd
     */
     boolean dependsOn( Graph other );
     
-    /** returns this Graph's query handler */
-    QueryHandler queryHandler();
-    
     /** returns this Graph's transaction handler */
     TransactionHandler getTransactionHandler();
     
-    /** returns this Graph's bulk-update handler */
+    /** returns this Graph's bulk-update handler
+     * @deprecated Bulk update operations are going to be removed.  
+     * @see GraphUtil for convenience helpers.
+     */
+    @Deprecated
     BulkUpdateHandler getBulkUpdateHandler();
     
     /** returns this Graph's capabilities */
@@ -76,12 +76,6 @@ public interface Graph  extends GraphAdd
     */
     GraphStatisticsHandler getStatisticsHandler();
     
-    /** 
-        returns this Graph's reifier. Each call on a given Graph gets the same
-        Reifier object.
-    */
-    Reifier getReifier();
-    
     /**
         returns this Graph's prefix mapping. Each call on a given Graph gets the
         same PrefixMapping object, which is the one used by the Graph.
@@ -89,9 +83,17 @@ public interface Graph  extends GraphAdd
     PrefixMapping getPrefixMapping();
 
     /** 
-        Remove the triple t (if possible) from the set belonging to this graph 
+        Add the triple t (if possible) to the set belonging to this graph 
+        @param t the triple to add to the graph
+        @throws AddDeniedException if the triple cannot be added 
+     */
+    @Override
+    void add( Triple t ) throws AddDeniedException;
+
+    /** 
+        Delete the triple t (if possible) from the set belonging to this graph 
     
-        @param  t the triple to add to the graph
+        @param  t the triple to delete to the graph
         @throws DeleteDeniedException if the triple cannot be removed  
     */   
 	void delete(Triple t) throws DeleteDeniedException;
@@ -131,6 +133,16 @@ public interface Graph  extends GraphAdd
         fluid.
     */
     boolean contains( Triple t );
+    
+    /**
+        Remove all the statements from this graph.
+    */
+    void clear();
+    
+    /**
+       Remove all triples that match by find(s, p, o)
+    */
+    void remove( Node s, Node p, Node o );
     
 	/** Free all resources, any further use of this Graph is an error.
 	 */
