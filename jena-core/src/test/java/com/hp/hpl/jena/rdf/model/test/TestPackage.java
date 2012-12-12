@@ -20,11 +20,6 @@ package com.hp.hpl.jena.rdf.model.test;
 
 import junit.framework.*;
 
-/**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
-*/
-
 public class TestPackage extends TestSuite {
 
     static public TestSuite suite() {
@@ -35,6 +30,8 @@ public class TestPackage extends TestSuite {
     private TestPackage() {
         super("Model");
         addTest( "TestModel", TestModelFactory.suite() );
+        addTest(TestListStatements.suite() );
+        
         addTest( "TestModelFactory", TestModelFactory.suite() );
         addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
         addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );

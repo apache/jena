@@ -3,7 +3,9 @@ Release Notes
 
 ==== Jena 2.10.0
 
-+ removed support for DAML+OIL
++ Remove OntModel.queryFor 9exposed graph level abstractions which have been removed) 
++ JENA-362 : Fix for listStatements with a nul object but speciifying a language string.
++ Removed support for DAML+OIL
       ARP : transition support for daml:collection removed
       Vocabulary files removed
       OntModelSpec for DMAL+OIL modes removed

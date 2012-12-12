@@ -464,9 +464,53 @@ implements Model, PrefixMapping, Lock
 
     @Override
     public StmtIterator listStatements( Resource S, Property P, String O, String L ) {
-        return O == null ? listStatements(S, P, Node.ANY) 
-                         :  listStatements( S, P, Node.createLiteral( O, L, false ) ); 
+        if (O != null) {
+            // this is not OK when L is null: returns only the statements whose lang is ""
+            // return listStatements( S, P, Node.createLiteral( O, L, false ) );
+            if (L != null) return listStatements( S, P, Node.createLiteral( O, L, false ) );
+            // there's maybe a better way
+            return new StringFilteredStmtIterator(O, listStatements(S, P, Node.ANY));
+        } else {
+            return new LangFilteredStmtIterator(L, listStatements(S, P, Node.ANY));
+        }
     }
+    
+    private class StringFilteredStmtIterator extends FilterKeepIterator<Statement> implements StmtIterator {
+        public StringFilteredStmtIterator(final String str, Iterator<Statement> it ) {
+            super(
+                    new Filter<Statement>() {
+                        @Override public boolean accept(Statement s) {
+                            RDFNode o = s.getObject();
+                            if (o instanceof Literal) {
+                                if (str == null) return true; // should not happen
+                                return (str.equals(((Literal) o).getString()));
+                            } 
+                            return false;
+                        }
+              }, 
+              it );
+        }
+        @Override public Statement nextStatement() { return next(); }
+    }
+    
+    private class LangFilteredStmtIterator extends FilterKeepIterator<Statement> implements StmtIterator {
+        public LangFilteredStmtIterator(final String l, Iterator<Statement> it ) {
+            super(
+                    new Filter<Statement>() {
+                        @Override public boolean accept(Statement s) {
+                            RDFNode o = s.getObject();
+                            if (o instanceof Literal) {
+                                if (l == null) return true;
+                                return (l.equals(((Literal) o).getLanguage()));
+                            } 
+                            return false;
+                        }
+              }, 
+              it );
+        }
+        @Override public Statement nextStatement() { return next(); }
+    }
+  
 
     @Override
     public StmtIterator listLiteralStatements( Resource S, Property P, boolean O )
