@@ -1,8 +1,11 @@
 ChangeLog for TDB
 =================
 
-==== Jena 2.10.0
+==== TDB 0.10.0
 
+** TDB 0.10.0 depends on Jena 2.10.0 (ARQ 2.10.0)
+
++ JENA-363 : Fix to handling of integers with absolute values between 2^56 and 2^63.  
 + JENA-346 : Further fixes for default union graph + write transactions.
 + Consolidation of versions numbers.
 + JENA-344 : Union default graph now works for SPARQL Update WHERE clauses. 
@@ -18,7 +21,7 @@ ChangeLog for TDB
 + Bug fix: out-of-range derived integers (e.g. xsd:int)
 + Cache read transaction datastructures and reuse view when possible.
 + Add StoreConnection flush() operation to push delayed writer-commits if possible.    
-+ JENA-290 - TDB txn creation touched stats unnecessarily, causing slow down. 
++ JENA-290 : TDB txn creation touched stats unnecessarily, causing slow down. 
 
 ==== TDB 0.9.3
 
