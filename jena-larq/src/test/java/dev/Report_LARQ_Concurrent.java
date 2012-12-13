@@ -18,27 +18,18 @@
 
 package dev ;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.* ;
 
-import org.apache.jena.larq.IndexBuilderString;
-import org.apache.jena.larq.IndexLARQ;
-import org.apache.jena.larq.LARQ;
-import org.apache.log4j.Logger;
-import org.apache.lucene.queryParser.ParseException;
-import org.junit.Test;
+import org.apache.jena.larq.IndexBuilderString ;
+import org.apache.jena.larq.IndexLARQ ;
+import org.apache.jena.larq.LARQ ;
+import org.apache.log4j.Logger ;
+import org.junit.Test ;
 
-import com.hp.hpl.jena.query.Query;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.QueryExecutionFactory;
-import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.shared.Lock;
+import com.hp.hpl.jena.query.* ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.Lock ;
 
 public class Report_LARQ_Concurrent {
     
@@ -49,7 +40,7 @@ public class Report_LARQ_Concurrent {
     Model model;
 
     @Test
-    public void test_concurrent_larq_query() throws ParseException, InterruptedException, ExecutionException {
+    public void test_concurrent_larq_query() throws InterruptedException, ExecutionException {
         endTime = startTime + duration * 1000; 
         model = ModelFactory.createDefaultModel();
         
@@ -88,7 +79,7 @@ public class Report_LARQ_Concurrent {
             "   ?doc ?p ?lit\n" +
             "}\n";
 
-        //@Override
+        @Override
         public void run() {
             while (System.currentTimeMillis() < endTime) {
                 model.enterCriticalSection(Lock.READ);

@@ -165,7 +165,7 @@ public class TestLuceneNRT {
         reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(0, count(reader, term));
         
-        writer.expungeDeletes();
+        writer.forceMergeDeletes();
         assertEquals(1, writer.maxDoc());
         assertEquals(0, count(reader, term));
     }
@@ -281,7 +281,7 @@ public class TestLuceneNRT {
         reader = TestLARQUtils.openIfChanged(reader);
         assertEquals(0, count(reader, term));
         
-        writer.expungeDeletes();
+        writer.forceMergeDeletes();
         assertEquals(1, writer.maxDoc());
         assertEquals(0, count(reader, term));
     }
