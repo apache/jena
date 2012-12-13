@@ -113,6 +113,7 @@ public class IndexBuilderBase implements IndexBuilder
     
     /** Close the writing index permanently.  Optimizes the index. */ 
     
+    @Override
     public void closeWriter()    { closeWriter(true) ; }
 
     /** Close the writing index permanently.
@@ -130,6 +131,8 @@ public class IndexBuilderBase implements IndexBuilder
         indexWriter = null ;
    }
     
+    @Override
+    @SuppressWarnings("deprecation")
     public void flushWriter()
     { 
         try { if ( indexWriter != null ) indexWriter.optimize(); }
@@ -138,6 +141,7 @@ public class IndexBuilderBase implements IndexBuilder
     
     /** Get a search index used by LARQ */
     
+    @Override
     public IndexLARQ getIndex()
     {
         //ARQ 2.2 : no longer close the index.  closeForWriting() ;

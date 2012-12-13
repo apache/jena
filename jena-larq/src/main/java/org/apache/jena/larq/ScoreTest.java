@@ -26,6 +26,7 @@ class ScoreTest implements IteratorTruncate.Test
 {
     private float scoreLimit ;
     ScoreTest(float scoreLimit) { this.scoreLimit = scoreLimit ; }
+    @Override
     public boolean accept(Object object)
     {
         HitLARQ hit = (HitLARQ)object ;

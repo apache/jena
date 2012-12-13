@@ -18,31 +18,22 @@
 
 package org.apache.jena.larq;
 
-import java.io.IOException;
-import java.io.StringReader;
+import java.io.StringReader ;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.TestCase;
+import junit.framework.JUnit4TestAdapter ;
+import junit.framework.TestCase ;
+import org.apache.lucene.index.IndexWriter ;
+import org.apache.lucene.store.Directory ;
+import org.apache.lucene.store.RAMDirectory ;
+import org.junit.Test ;
 
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
-import org.junit.Test;
-
-import com.hp.hpl.jena.query.ARQ;
-import com.hp.hpl.jena.query.QueryExecution;
-import com.hp.hpl.jena.query.ResultSet;
-import com.hp.hpl.jena.rdf.model.Literal;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.query.ARQ ;
+import com.hp.hpl.jena.query.QueryExecution ;
+import com.hp.hpl.jena.query.ResultSet ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.vocabulary.DC ;
+import com.hp.hpl.jena.vocabulary.RDFS ;
 
 public class TestLARQ_Code extends TestCase
 {
@@ -370,7 +361,7 @@ public class TestLARQ_Code extends TestCase
         assertFalse(index.searchModelByIndex("keyword").hasNext()) ;    	
     }
 
-    @Test public void test_remove_3() throws IOException 
+    @Test public void test_remove_3() //throws IOException 
     {
         IndexBuilderNode b = new IndexBuilderNode() ;
         Resource r = ResourceFactory.createResource("http://example/r") ;

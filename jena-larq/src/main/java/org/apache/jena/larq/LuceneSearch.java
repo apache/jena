@@ -235,6 +235,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             this.score = score ;
         }
         
+        @Override
         public Binding map1(HitLARQ hit)
         {
             BindingMap b = BindingFactory.create(binding) ;

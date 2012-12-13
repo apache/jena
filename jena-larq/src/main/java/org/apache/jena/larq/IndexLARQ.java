@@ -132,6 +132,7 @@ public class IndexLARQ
     public NodeIterator searchModelByIndex(final Model model, String queryString, final float scoreLimit)
     {
         Map1<HitLARQ, RDFNode> converter = new Map1<HitLARQ, RDFNode>(){
+            @Override
             public RDFNode map1(HitLARQ x)
             {
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
@@ -168,6 +169,7 @@ public class IndexLARQ
             TopDocs topDocs = searcher.search(query, (Filter)null, LARQ.NUM_RESULTS ) ;
             
             Map1<ScoreDoc,HitLARQ> converter = new Map1<ScoreDoc,HitLARQ>(){
+                @Override
                 public HitLARQ map1(ScoreDoc object)
                 {
                     return new HitLARQ(searcher, object) ;
