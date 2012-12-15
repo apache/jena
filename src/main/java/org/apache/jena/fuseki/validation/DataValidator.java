@@ -33,14 +33,14 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkWrapper ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.system.RiotLib ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
