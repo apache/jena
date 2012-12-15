@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.openjena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;

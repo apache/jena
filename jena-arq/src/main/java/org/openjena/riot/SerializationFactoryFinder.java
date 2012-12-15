@@ -24,6 +24,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.data.SerializationFactory ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.lang.LabelToNode ;
 import org.openjena.riot.lang.LangNQuads ;
 import org.openjena.riot.lang.LangNTriples ;
@@ -33,8 +35,6 @@ import org.openjena.riot.out.SinkTripleOutput ;
 import org.openjena.riot.system.IRIResolver ;
 import org.openjena.riot.system.ParserProfileBase ;
 import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;

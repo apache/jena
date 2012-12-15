@@ -27,12 +27,12 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

@@ -25,13 +25,13 @@ import java.util.List ;
 
 import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

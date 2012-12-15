@@ -24,9 +24,9 @@ import java.io.Reader ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
-import org.openjena.riot.checker.CheckerLiterals ;
 import org.openjena.riot.system.ParserProfile ;
 import org.openjena.riot.system.RiotLib ;
 import org.xml.sax.SAXException ;

@@ -22,13 +22,13 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.SinkNull ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.system.RiotLib ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

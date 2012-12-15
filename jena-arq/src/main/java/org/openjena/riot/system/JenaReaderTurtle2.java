@@ -23,12 +23,13 @@ import java.util.Map ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.lang.LangTurtle ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Triple ;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+
 import com.hp.hpl.jena.rdf.model.Model ;
 
 

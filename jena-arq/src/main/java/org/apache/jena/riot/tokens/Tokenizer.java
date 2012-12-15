@@ -16,14 +16,29 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.web ;
+package org.apache.jena.riot.tokens;
 
-import java.io.IOException ;
+import java.util.Iterator ;
 
-import org.apache.http.HttpResponse ;
+import org.apache.jena.atlas.lib.Closeable ;
 
-/** General act-on-HTTP-response interface.*/
-public interface HttpResponseHandler
+
+public interface Tokenizer extends Iterator<Token>, Closeable
 {
-    void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ;
+    /** Is there another token? */
+    @Override
+    public boolean hasNext() ;
+
+    /** Move to next token */
+    @Override
+    public Token next() ;
+    
+    /** Peek next token : null for no token. */
+    public Token peek() ;
+    
+    /** End of tokens? */
+    public boolean eof() ;
+
+    public long getLine() ;
+    public long getColumn() ;
 }

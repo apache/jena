@@ -22,6 +22,7 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
@@ -29,7 +30,6 @@ import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.RiotLib ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;

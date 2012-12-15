@@ -22,13 +22,13 @@ import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.ErrorHandlerTestLib.ExError ;
 import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 

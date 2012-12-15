@@ -20,6 +20,8 @@ package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.stream.TS_IO2 ;
+import org.apache.jena.riot.tokens.TestTokenForNode ;
+import org.apache.jena.riot.tokens.TestTokenizer ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
@@ -29,6 +31,9 @@ import org.openjena.riot.TS_Riot1 ;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
       TS_Riot1.class
+      , TestTokenizer.class
+      , TestTokenForNode.class
+
       , TS_LangSuite.class
       , TS_ReaderRIOT.class
       , TS_IO2.class

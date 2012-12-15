@@ -16,9 +16,11 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 import org.openjena.riot.system.PrefixMap ;

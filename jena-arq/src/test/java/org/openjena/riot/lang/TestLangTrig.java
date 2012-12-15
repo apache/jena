@@ -21,13 +21,13 @@ package org.openjena.riot.lang;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 import org.openjena.riot.RiotLoader ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

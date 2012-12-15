@@ -16,8 +16,14 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.web;
+package org.apache.jena.riot.web ;
 
-/** Interface for sending content over HTTP POST.
- *  Simply avoid client code needing to always pull in org.apache.http. packages. */
-public interface ContentProducer extends org.apache.http.entity.ContentProducer {}
+import java.io.IOException ;
+
+import org.apache.http.HttpResponse ;
+
+/** General act-on-HTTP-response interface.*/
+public interface HttpResponseHandler
+{
+    void handle(String contentType, String baseIRI, HttpResponse response) throws IOException ;
+}
