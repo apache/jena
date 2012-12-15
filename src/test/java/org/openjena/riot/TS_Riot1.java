@@ -26,15 +26,11 @@ import org.junit.runners.Suite ;
 import org.openjena.riot.lang.* ;
 import org.openjena.riot.out.* ;
 import org.openjena.riot.process.TestNormalization ;
-import org.openjena.riot.tokens.TestTokenForNode ;
-import org.openjena.riot.tokens.TestTokenizer ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestWebContent.class
     
-    , TestTokenizer.class
-    , TestTokenForNode.class
     , TestPrefixMap.class
     , TestIRI.class
     , TestChecker.class

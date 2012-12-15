@@ -24,9 +24,9 @@ import java.util.List ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.Pair ;
-import org.openjena.riot.web.HttpOp ;
-import org.openjena.riot.web.HttpResponseHandler ;
-import org.openjena.riot.web.HttpResponseLib ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.riot.web.HttpResponseHandler ;
+import org.apache.jena.riot.web.HttpResponseLib ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;

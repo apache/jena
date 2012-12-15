@@ -24,10 +24,10 @@ import java.io.Reader;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.openjena.riot.RiotLoader;
 import org.openjena.riot.RiotReader;
 import org.openjena.riot.lang.LangRIOT;
-import org.openjena.riot.tokens.Tokenizer;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;

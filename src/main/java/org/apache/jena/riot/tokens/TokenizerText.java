@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
 import static org.apache.jena.atlas.lib.Chars.* ;
 import static org.openjena.riot.system.RiotChars.charInArray ;

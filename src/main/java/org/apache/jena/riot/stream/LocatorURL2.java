@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot.stream;
 
-import com.hp.hpl.jena.util.FileUtils ;
-
-import org.apache.jena.riot.HttpOp2 ;
 import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
+
+import com.hp.hpl.jena.util.FileUtils ;
 
 public class LocatorURL2 implements Locator
 {
@@ -42,7 +42,7 @@ public class LocatorURL2 implements Locator
             return null;
         }
         if ( uri.startsWith("http://") || uri.startsWith("https://"))
-            return HttpOp2.execHttpGet(uri, acceptTriples) ;
+            return HttpOp.execHttpGet(uri, acceptTriples) ;
         return null ;
     }
 

@@ -21,9 +21,9 @@ package riotcmd;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.sparql.util.Timer ;
 

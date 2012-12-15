@@ -16,24 +16,10 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.web;
 
-/** Various algorithms */
-public class TokenCheckerLib
+/** Act-on-HTTP-response and produce some object */
+public interface HttpCaptureResponse<T> extends HttpResponseHandler
 {
-    public boolean checkPrefixedName_CURIE()
-    {
-        return false ;
-    }
-
-    public boolean checkPrefixedName_XML()
-    {
-        return false ;
-    }
-
-    public boolean checkPrefixedName_Turtle() 
-    {
-        return false ;  
-    }
-
+    public T get() ;
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,65 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.tokens;
 
-import java.io.InputStream ;
-
-import org.apache.http.conn.ClientConnectionManager ;
-import org.apache.jena.atlas.web.MediaType ;
-
-/** Type streams for HTTP connections - includes Apache HTTP client specific cleanup */
-public class TypedInputStreamHttp extends TypedInputStream2 
+public class TokenizerWrapper implements Tokenizer
 {
-    private ClientConnectionManager connectMgr ;
 
-    TypedInputStreamHttp(InputStream input, MediaType mt, ClientConnectionManager connectMgr)
+    private final Tokenizer other ;
+
+    public TokenizerWrapper(Tokenizer other)
     {
-        super(input, mt.getContentType(), mt.getCharset(), null) ;
-        this.connectMgr = connectMgr ;
+        this.other = other ;
     }
     
     @Override
+    public long getColumn()
+    {
+        return other.getColumn() ;
+    }
+
+    @Override
+    public long getLine()
+    {
+        return other.getLine() ;
+    }
+
+    @Override
+    public boolean hasNext()
+    {
+        return other.hasNext() ;
+    }
+
+    @Override
+    public boolean eof()
+    {
+        return other.eof() ;
+    }
+
+    @Override
+    public Token next()
+    {
+        return other.next();
+    }
+
+    @Override
+    public Token peek()
+    {
+        return other.peek() ;
+    }
+
+    // @Override
+    @Override
+    public void remove()
+    {
+        other.remove() ;
+    }
+
+    // @Override
+    @Override
     public void close()
     {
-        super.close() ;
-        if ( connectMgr != null )
-            connectMgr.shutdown() ;
+        other.close() ;
     }
-    
 }

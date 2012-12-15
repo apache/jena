@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
 import static org.apache.jena.atlas.lib.Chars.CH_COMMA ;
 import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
@@ -29,15 +29,15 @@ import static org.apache.jena.atlas.lib.Chars.CH_RPAREN ;
 import static org.apache.jena.atlas.lib.Chars.CH_SEMICOLON ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
 import static org.apache.jena.atlas.lib.Lib.hashCodeObject ;
-import static org.openjena.riot.tokens.TokenType.BNODE ;
-import static org.openjena.riot.tokens.TokenType.DECIMAL ;
-import static org.openjena.riot.tokens.TokenType.DOUBLE ;
-import static org.openjena.riot.tokens.TokenType.INTEGER ;
-import static org.openjena.riot.tokens.TokenType.IRI ;
-import static org.openjena.riot.tokens.TokenType.LITERAL_DT ;
-import static org.openjena.riot.tokens.TokenType.LITERAL_LANG ;
-import static org.openjena.riot.tokens.TokenType.STRING ;
-import static org.openjena.riot.tokens.TokenType.VAR ;
+import static org.apache.jena.riot.tokens.TokenType.BNODE ;
+import static org.apache.jena.riot.tokens.TokenType.DECIMAL ;
+import static org.apache.jena.riot.tokens.TokenType.DOUBLE ;
+import static org.apache.jena.riot.tokens.TokenType.INTEGER ;
+import static org.apache.jena.riot.tokens.TokenType.IRI ;
+import static org.apache.jena.riot.tokens.TokenType.LITERAL_DT ;
+import static org.apache.jena.riot.tokens.TokenType.LITERAL_LANG ;
+import static org.apache.jena.riot.tokens.TokenType.STRING ;
+import static org.apache.jena.riot.tokens.TokenType.VAR ;
 
 import java.util.ArrayList ;
 import java.util.List ;

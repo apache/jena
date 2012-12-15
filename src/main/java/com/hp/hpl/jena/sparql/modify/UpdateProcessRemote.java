@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.apache.jena.riot.web.HttpOp ;
 import org.openjena.riot.WebContent ;
-import org.openjena.riot.web.HttpOp ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;

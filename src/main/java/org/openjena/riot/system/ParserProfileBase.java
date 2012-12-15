@@ -19,12 +19,12 @@
 package org.openjena.riot.system;
 
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;

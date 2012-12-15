@@ -26,9 +26,9 @@ import java.util.NoSuchElementException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.JsonParseException ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import org.openjena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 
 
 

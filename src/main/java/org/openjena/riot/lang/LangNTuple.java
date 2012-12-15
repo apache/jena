@@ -21,11 +21,11 @@ package org.openjena.riot.lang;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import static org.openjena.riot.tokens.TokenType.* ;
-import org.openjena.riot.tokens.Tokenizer ;
+import static org.apache.jena.riot.tokens.TokenType.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

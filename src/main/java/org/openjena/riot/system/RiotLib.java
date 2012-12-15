@@ -19,12 +19,12 @@
 package org.openjena.riot.system;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
 import org.openjena.riot.Lang ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;

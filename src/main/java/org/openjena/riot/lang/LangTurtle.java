@@ -18,11 +18,11 @@
 
 package org.openjena.riot.lang;
 
-import static org.openjena.riot.tokens.TokenType.DOT ;
+import static org.apache.jena.riot.tokens.TokenType.DOT ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

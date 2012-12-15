@@ -16,18 +16,18 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens ;
+package org.apache.jena.riot.tokens ;
 
 
 import java.io.ByteArrayInputStream ;
-
-import com.hp.hpl.jena.sparql.ARQConstants ;
 
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
 import org.openjena.riot.RiotParseException ;
+
+import com.hp.hpl.jena.sparql.ARQConstants ;
 
 
 public class TestTokenizer extends BaseTest

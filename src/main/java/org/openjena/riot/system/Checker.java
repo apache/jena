@@ -20,15 +20,11 @@ package org.openjena.riot.system;
 
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.checker.CheckerBlankNodes ;
-import org.openjena.riot.checker.CheckerIRI ;
-import org.openjena.riot.checker.CheckerLiterals ;
-import org.openjena.riot.checker.CheckerVar ;
-import org.openjena.riot.checker.NodeChecker ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.checker.* ;
 
 /** A checker validates RDF terms. */
 public final class Checker

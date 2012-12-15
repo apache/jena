@@ -25,13 +25,13 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.stream.StreamManager ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.* ;
 import org.openjena.riot.lang.LangRDFXML ;
 import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.lang.SinkQuadsToDataset ;
 import org.openjena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
