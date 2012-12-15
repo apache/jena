@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,31 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.system;
+package org.apache.jena.riot.web;
 
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
+import java.io.InputStream ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.rdf.model.Model ;
+import org.apache.http.conn.ClientConnectionManager ;
+import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.riot.TypedInputStream2 ;
 
-/** Jena reader for RIOT N-Triples */
-public class JenaReaderNTriples2 extends JenaReaderRIOT
+/** Type streams for HTTP connections - includes Apache HTTP client specific cleanup */
+public class TypedInputStreamHttp extends TypedInputStream2 
 {
-    @Override
-    protected void readWorker(Model model, Tokenizer tokenizer, String base)
+    private ClientConnectionManager connectMgr ;
+
+    TypedInputStreamHttp(InputStream input, MediaType mt, ClientConnectionManager connectMgr)
     {
-        Sink<Triple> sink = RiotLoader.graphSink(model.getGraph()) ;
-        try {
-            LangRIOT parser = RiotReader.createParserNTriples(tokenizer, sink) ;
-            parser.parse() ;
-        } finally {
-            sink.close();
-            tokenizer.close();
-        }
+        super(input, mt.getContentType(), mt.getCharset(), null) ;
+        this.connectMgr = connectMgr ;
     }
+    
+    @Override
+    public void close()
+    {
+        super.close() ;
+        if ( connectMgr != null )
+            connectMgr.shutdown() ;
+    }
+    
 }

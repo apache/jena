@@ -16,65 +16,54 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
-public class TokenizerWrapper implements Tokenizer
+/** Do nothing checker */
+public class TokenCheckerBase implements TokenChecker
 {
 
-    private final Tokenizer other ;
-
-    public TokenizerWrapper(Tokenizer other)
-    {
-        this.other = other ;
-    }
-    
     @Override
-    public long getColumn()
-    {
-        return other.getColumn() ;
-    }
+    public void checkBlankNode(String blankNodeLabel)
+    {}
 
     @Override
-    public long getLine()
-    {
-        return other.getLine() ;
-    }
+    public void checkControl(int code)
+    {}
 
     @Override
-    public boolean hasNext()
-    {
-        return other.hasNext() ;
-    }
+    public void checkDirective(int cntrlCode)
+    {}
 
     @Override
-    public boolean eof()
-    {
-        return other.eof() ;
-    }
+    public void checkKeyword(String lexical)
+    {}
 
     @Override
-    public Token next()
-    {
-        return other.next();
-    }
+    public void checkLiteralDT(String lexicalForm, Token datatype)
+    {}
 
     @Override
-    public Token peek()
-    {
-        return other.peek() ;
-    }
+    public void checkLiteralLang(String lexicalForm, String langTag)
+    {}
 
-    // @Override
     @Override
-    public void remove()
-    {
-        other.remove() ;
-    }
+    public void checkNumber(String lexical, String datatypeURI)
+    {}
 
-    // @Override
     @Override
-    public void close()
-    {
-        other.close() ;
-    }
+    public void checkPrefixedName(String prefixName, String localName)
+    {}
+
+    @Override
+    public void checkString(String string)
+    {}
+
+    @Override
+    public void checkURI(String uriStr)
+    {}
+
+    @Override
+    public void checkVariable(String tokenImage)
+    {}
+
 }

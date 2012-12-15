@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.web;
+package org.apache.jena.riot.web;
 
 import static java.lang.String.format ;
 
@@ -41,6 +41,7 @@ import org.apache.http.client.methods.HttpPut ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
@@ -51,7 +52,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
-import org.apache.http.impl.client.SystemDefaultHttpClient;
 
 /** Simplified HTTP operations; simplification means only supporting certain uses of HTTP.
  * The expectation is that the simplified operations in this class can be used by other code to
@@ -114,6 +114,57 @@ public class HttpOp
             httpclient.getConnectionManager().shutdown(); 
         } catch (IOException ex) { IO.exception(ex) ; }
     }
+    
+    public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader)
+    {
+        try {
+            long id = counter.incrementAndGet() ;
+            String requestURI = determineRequestURI(url) ;
+            String baseIRI = determineBaseIRI(requestURI) ;
+    
+            HttpGet httpget = new HttpGet(requestURI);
+            if ( log.isDebugEnabled() )
+                log.debug(format("[%d] %s %s",id ,httpget.getMethod(),httpget.getURI().toString())) ;
+            // Accept
+            if ( acceptHeader != null )
+                httpget.addHeader(HttpNames.hAccept, acceptHeader) ;
+            
+            // Execute
+            HttpClient httpclient = new SystemDefaultHttpClient();        // Pool?
+            HttpResponse response = httpclient.execute(httpget) ;
+            
+            // Response
+            StatusLine statusLine = response.getStatusLine() ;
+            if ( statusLine.getStatusCode() == 404 )
+            {
+                log.debug(format("[%d] %s %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
+                return null ;
+            }
+            if ( statusLine.getStatusCode() >= 400 )
+            {
+                log.debug(format("[%d] %s %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
+                throw new HttpException(statusLine.getStatusCode()+" "+statusLine.getReasonPhrase()) ;
+            }
+    
+            HttpEntity entity = response.getEntity() ;
+            if ( entity == null )
+            {
+                // No content in the return.  Probably a mistake, but not guaranteed.
+                if ( log.isDebugEnabled() )
+                    log.debug(format("[%d] %d %s :: (empty)",id, statusLine.getStatusCode(), statusLine.getReasonPhrase())) ;
+                return null ;
+            }
+                
+            MediaType mt = MediaType.create(entity.getContentType().getValue()) ;
+            if ( log.isDebugEnabled() )
+                log.debug(format("[%d] %d %s :: %s",id, statusLine.getStatusCode(), statusLine.getReasonPhrase() , mt)) ;
+                
+            return new TypedInputStreamHttp(entity.getContent(), mt,
+                                       httpclient.getConnectionManager()) ;
+        }
+        catch (IOException ex) { IO.exception(ex) ; return null ; }
+    }
+
     
     /** POST a string without response body.
      * <p>Execute an HTTP POST, with the string as content.

@@ -21,9 +21,9 @@ package org.openjena.riot.lang;
 import org.apache.jena.atlas.event.Event ;
 import org.apache.jena.atlas.event.EventManager ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 
 public abstract class LangBase<X> extends LangEngine implements LangRIOT

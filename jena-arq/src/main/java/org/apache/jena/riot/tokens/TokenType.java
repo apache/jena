@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
 public enum TokenType
 {

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.checker;
+package org.apache.jena.riot.checker;
 
 import java.util.regex.Pattern ;
 

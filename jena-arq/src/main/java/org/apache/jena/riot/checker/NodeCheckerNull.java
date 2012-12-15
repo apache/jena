@@ -16,38 +16,12 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.checker;
 
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
+import com.hp.hpl.jena.graph.Node ;
 
-/** Print a logging message on every token */
-public class PrintTokenizer extends TokenizerWrapper
+public class NodeCheckerNull implements NodeChecker
 {
-    static private int counter = 0 ;
-    static private Logger log = LoggerFactory.getLogger("Token") ;
-    private String label ;
-    
-//    public PrintTokenizer(Tokenizer other)
-//    {
-//        this(Integer.toString(++counter), other) ;
-//    }
-//    
-    public PrintTokenizer(String label, Tokenizer other)
-    {
-        super(other) ;
-        this.label = label ;
-    }
-
     @Override
-    public Token next()
-    {
-        Token t = super.next() ;
-        if ( label != null )
-            log.info(label+": "+t.toString()) ;
-        else
-            log.info(t.toString()) ;
-        return t ;
-    }
-    
+    public boolean check(Node node, long line, long col) { return true ; }
 }

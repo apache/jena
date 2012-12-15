@@ -18,16 +18,16 @@
 
 package org.openjena.riot.lang;
 
-import static org.openjena.riot.tokens.TokenType.EOF ;
-import static org.openjena.riot.tokens.TokenType.NODE ;
+import static org.apache.jena.riot.tokens.TokenType.EOF ;
+import static org.apache.jena.riot.tokens.TokenType.NODE ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.RiotParseException ;
 import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import org.openjena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
 

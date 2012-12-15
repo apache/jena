@@ -16,26 +16,24 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.checker;
+package org.apache.jena.riot.tokens;
 
-import org.openjena.riot.ErrorHandler ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.sparql.core.Var ;
-
-public class CheckerVar implements NodeChecker
+/** Various algorithms */
+public class TokenCheckerLib
 {
-    private ErrorHandler handler ;
-
-    public CheckerVar(ErrorHandler handler)
+    public boolean checkPrefixedName_CURIE()
     {
-        this.handler = handler ;
-    } 
-    
-    @Override
-    public boolean check(Node node, long line, long col)
-    { return Var.isVar(node) && checkVar(node, line, col) ; }
-    
-    public boolean checkVar(Node node, long line, long col)
-    { return true ; }
+        return false ;
+    }
+
+    public boolean checkPrefixedName_XML()
+    {
+        return false ;
+    }
+
+    public boolean checkPrefixedName_Turtle() 
+    {
+        return false ;  
+    }
+
 }

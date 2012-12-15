@@ -23,11 +23,11 @@ import com.hp.hpl.jena.graph.Node ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.riot.checker.CheckerIRI ;
 import org.junit.Test ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerTestLib ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.openjena.riot.checker.CheckerIRI ;
 import org.openjena.riot.system.Checker ;
 import org.openjena.riot.system.RiotLib ;
 

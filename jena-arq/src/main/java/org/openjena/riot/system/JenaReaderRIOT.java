@@ -25,8 +25,8 @@ import java.io.Reader ;
 import java.net.URL ;
 import java.net.URLConnection ;
 
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.GraphEvents ;

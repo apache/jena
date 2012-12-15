@@ -26,6 +26,8 @@ import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test ;
@@ -35,8 +37,6 @@ import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.openjena.riot.SysRIOT;
 import org.openjena.riot.system.JenaReaderNTriples2 ;
 import org.openjena.riot.system.JenaReaderRdfJson ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;

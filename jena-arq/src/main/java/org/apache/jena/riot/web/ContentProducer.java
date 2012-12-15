@@ -16,11 +16,8 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.checker;
+package org.apache.jena.riot.web;
 
-import com.hp.hpl.jena.graph.Node ;
-
-public interface NodeChecker
-{
-    public boolean check(Node node, long line, long col) ;
-}
+/** Interface for sending content over HTTP POST.
+ *  Simply avoid client code needing to always pull in org.apache.http. packages. */
+public interface ContentProducer extends org.apache.http.entity.ContentProducer {}

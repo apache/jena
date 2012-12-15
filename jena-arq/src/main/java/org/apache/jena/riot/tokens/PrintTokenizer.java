@@ -16,29 +16,38 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.tokens;
+package org.apache.jena.riot.tokens;
 
-import java.util.Iterator ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import org.apache.jena.atlas.lib.Closeable ;
-
-
-public interface Tokenizer extends Iterator<Token>, Closeable
+/** Print a logging message on every token */
+public class PrintTokenizer extends TokenizerWrapper
 {
-    /** Is there another token? */
-    @Override
-    public boolean hasNext() ;
-
-    /** Move to next token */
-    @Override
-    public Token next() ;
+    static private int counter = 0 ;
+    static private Logger log = LoggerFactory.getLogger("Token") ;
+    private String label ;
     
-    /** Peek next token : null for no token. */
-    public Token peek() ;
-    
-    /** End of tokens? */
-    public boolean eof() ;
+//    public PrintTokenizer(Tokenizer other)
+//    {
+//        this(Integer.toString(++counter), other) ;
+//    }
+//    
+    public PrintTokenizer(String label, Tokenizer other)
+    {
+        super(other) ;
+        this.label = label ;
+    }
 
-    public long getLine() ;
-    public long getColumn() ;
+    @Override
+    public Token next()
+    {
+        Token t = super.next() ;
+        if ( label != null )
+            log.info(label+": "+t.toString()) ;
+        else
+            log.info(t.toString()) ;
+        return t ;
+    }
+    
 }

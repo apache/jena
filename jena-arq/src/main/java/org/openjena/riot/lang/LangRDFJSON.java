@@ -24,11 +24,11 @@ import com.hp.hpl.jena.graph.Triple ;
 
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.* ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 
 import org.openjena.riot.Lang;
-import org.openjena.riot.tokens.Token;
-import org.openjena.riot.tokens.TokenType;
-import org.openjena.riot.tokens.Tokenizer;
 
 import org.openjena.riot.system.ParserProfile;
 

@@ -16,10 +16,11 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.web;
+package org.apache.jena.riot.checker;
 
-/** Act-on-HTTP-response and produce some object */
-public interface HttpCaptureResponse<T> extends HttpResponseHandler
+import com.hp.hpl.jena.graph.Node ;
+
+public interface NodeChecker
 {
-    public T get() ;
+    public boolean check(Node node, long line, long col) ;
 }

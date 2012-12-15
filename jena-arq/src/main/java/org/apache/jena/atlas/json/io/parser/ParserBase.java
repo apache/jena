@@ -18,12 +18,12 @@
 
 package org.apache.jena.atlas.json.io.parser;
 
-import static org.openjena.riot.tokens.TokenType.EOF ;
+import static org.apache.jena.riot.tokens.TokenType.EOF ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
 import org.apache.jena.atlas.json.JsonParseException ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import org.openjena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
 
 
 public class ParserBase

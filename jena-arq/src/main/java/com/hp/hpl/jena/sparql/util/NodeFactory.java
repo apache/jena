@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

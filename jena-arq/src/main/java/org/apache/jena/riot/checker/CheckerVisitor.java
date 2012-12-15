@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.checker;
+package org.apache.jena.riot.checker;
 
 import com.hp.hpl.jena.graph.NodeVisitor ;
 import com.hp.hpl.jena.graph.Node_ANY ;
