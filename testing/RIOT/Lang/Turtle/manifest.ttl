@@ -92,6 +92,8 @@
     <#turtle-syntax-struct-01>
     <#turtle-syntax-struct-02>
     <#turtle-syntax-struct-03>
+    <#turtle-syntax-struct-04>
+    <#turtle-syntax-struct-05>
     <#turtle-syntax-lists-01>
     <#turtle-syntax-lists-02>
     <#turtle-syntax-lists-03>
@@ -528,6 +530,16 @@
 <#turtle-syntax-struct-03> rdf:type rdft:TestTurtlePositiveSyntax ;
    mf:name    "turtle-syntax-struct-03" ;
    mf:action    <turtle-syntax-struct-03.ttl> ;
+   .
+
+<#turtle-syntax-struct-04> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-struct-04" ;
+   mf:action    <turtle-syntax-struct-04.ttl> ;
+   .
+
+<#turtle-syntax-struct-05> rdf:type rdft:TestTurtlePositiveSyntax ;
+   mf:name    "turtle-syntax-struct-05" ;
+   mf:action    <turtle-syntax-struct-05.ttl> ;
    .
 
 <#turtle-syntax-lists-01> rdf:type rdft:TestTurtlePositiveSyntax ;
