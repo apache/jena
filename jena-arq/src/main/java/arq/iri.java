@@ -20,11 +20,11 @@ package arq;
 
 import java.util.Iterator ;
 
-import org.openjena.riot.system.IRIResolver ;
 
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+import org.apache.jena.riot.system.IRIResolver ;
 
 public class iri
 {

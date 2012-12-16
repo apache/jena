@@ -21,8 +21,8 @@ package org.openjena.riot.out;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.riot.system.MapWithScope ;
-import org.openjena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.system.MapWithScope ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Node_Literal ;

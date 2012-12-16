@@ -31,22 +31,21 @@ import org.apache.commons.fileupload.FileItemIterator ;
 import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.openjena.riot.* ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
@@ -204,16 +203,13 @@ public class SPARQL_Upload extends SPARQL_ServletBase
 
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     // This isolates errors.
-                    Sink<Triple> sink = new SinkTriplesToGraph(graphDst) ;
-                    LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, sink) ;
+                    RDFParserOutput dest = RDFParserOutputLib.graph(graphDst) ;
+                    LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, dest) ;
                     parser.getProfile().setHandler(errorHandler) ;
                     log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
                                     action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
-                    try {
-                        parser.parse() ;
-                    } 
+                    try { parser.parse() ; }
                     catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-                    finally { sink.close() ; }
                 }
             }    
 

@@ -31,8 +31,8 @@ import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkToQueue ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.system.ParserProfile ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.ParserProfile ;
 
 /**
  * A wrapper that converts the RIOT parsing API from push to pull.  It does this by starting up a

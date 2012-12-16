@@ -22,8 +22,8 @@ import java.io.ByteArrayOutputStream ;
 import java.io.OutputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.system.JenaWriterNTriples2 ;
 import org.junit.Test ;
-import org.openjena.riot.system.JenaWriterNTriples2 ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;

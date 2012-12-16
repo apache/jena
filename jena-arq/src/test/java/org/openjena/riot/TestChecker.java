@@ -18,12 +18,12 @@
 
 package org.openjena.riot;
 
+import org.apache.jena.riot.system.Checker ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;
 import org.openjena.riot.ErrorHandlerTestLib.ExError ;
 import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.openjena.riot.system.Checker ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;

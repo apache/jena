@@ -44,7 +44,6 @@ public class TestJenaReaderRIOT extends BaseTest
     @BeforeClass static public void beforeClass()
     { 
         RIOT.init() ;
-        WebReader2.wireIntoJena() ;
     }
     
     @AfterClass static public void afterClass()

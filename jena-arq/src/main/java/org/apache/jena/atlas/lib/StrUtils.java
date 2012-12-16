@@ -23,7 +23,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.riot.system.RiotChars ;
+import org.apache.jena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.n3.turtle.ParserBase ;
 import com.hp.hpl.jena.sparql.util.FmtUtils ;

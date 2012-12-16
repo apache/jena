@@ -20,20 +20,20 @@ package org.apache.jena.riot;
 
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 
-public abstract class ReaderRIOTBase<T> implements ReaderRIOT<T>
+public abstract class ReaderRIOTBase implements ReaderRIOT
 {
     @Override
-    public void read(InputStream in, String baseURI, ContentType ct, Sink<T> sink, Context context)
+    public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        read(in, baseURI,lang, sink, context) ;
+        read(in, baseURI,lang, output, context) ;
     }
 
-    public abstract void read(InputStream in, String baseURI, Lang2 lang, Sink<T> sink, Context context) ;
+    public abstract void read(InputStream in, String baseURI, Lang2 lang, RDFParserOutput output, Context context) ;
 }
 

@@ -22,16 +22,15 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.* ;
-import org.openjena.riot.lang.LangRDFXML ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkQuadsToDataset ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -39,7 +38,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
@@ -72,32 +70,6 @@ public class WebReader2
     private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
     public static Symbol streamManagerSymbol = Symbol.create(streamManagerSymbolStr) ; 
 
-    public static void wireIntoJena()
-    {
-//        // Wire in generic 
-//        String readerRDF = RDFReaderRIOT.class.getName() ;
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/XML",    readerRDF) ;           // And default
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", readerRDF) ;
-//
-//        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES",  readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",   readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("N3",         readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("TURTLE",     readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("Turtle",     readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("TTL",        readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",   readerRDF) ;
-        
-      RDFReaderFImpl.setBaseReaderClassName("RDF/XML",    RDFReaderRIOT_RDFXML.class.getName()) ;           // And default
-      RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", RDFReaderRIOT_RDFXML.class.getName()) ;
-
-      RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES",  RDFReaderRIOT_NT.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",   RDFReaderRIOT_NT.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("N3",         RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("TURTLE",     RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("Turtle",     RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("TTL",        RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",   RDFReaderRIOT_RDFJSON.class.getName()) ;
-    }
     
     // Yukky hack to integrate into current jena-core where the structure of model.read assumes
     // the language is determined before the reading process starts.
@@ -172,8 +144,8 @@ public class WebReader2
     public static void read(Model model, String uri, String base, Lang2 hintLang, Context context)
     {
         Graph g = model.getGraph() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-        readTriples(sink, uri, base, hintLang, context) ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+        readTriples(dest, uri, base, hintLang, context) ;
     }
 
     /** Read triples into a Model with bytes from an InputStream.
@@ -202,8 +174,9 @@ public class WebReader2
     public static void read(Model model, InputStream in, String base, Lang2 lang)
     {
         Graph g = model.getGraph() ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
         Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-        processTriples(sink, base, new TypedInputStream2(in), lang, null) ;
+        processTriples(dest, base, new TypedInputStream2(in), lang, null) ;
     }
 
     /** Read triples into a model with chars from an Reader.
@@ -219,8 +192,8 @@ public class WebReader2
     public static void read(Model model, Reader in, String base, Lang2 lang)
     {
         Graph g = model.getGraph() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-        processTriples(sink, base, in, lang, null) ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+        processTriples(dest, base, in, lang, null) ;
     }
 
     /** Read triples into a model with chars from a StringReader.
@@ -232,8 +205,8 @@ public class WebReader2
     public static void read(Model model, StringReader in, String base, Lang2 lang)
     {
         Graph g = model.getGraph() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-        processTriples(sink, base, in, lang, null) ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+        processTriples(dest, base, in, lang, null) ;
     }
 
     
@@ -294,8 +267,8 @@ public class WebReader2
     public static void read(Dataset dataset, InputStream in, String base, Lang2 lang)
     {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
-        Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
-        processQuads(sink, base, new TypedInputStream2(in), lang, null) ;
+        RDFParserOutput dest = RDFParserOutputLib.dataset(dsg) ;
+        processQuads(dest, base, new TypedInputStream2(in), lang, null) ;
     }
     
     /** Read quads into a dataset with chars from an Reader.
@@ -311,8 +284,8 @@ public class WebReader2
     public static void read(Dataset dataset, Reader in, String base, Lang2 lang)
     {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
-        Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
-        processQuads(sink, base, in, lang, null) ;
+        RDFParserOutput dest = RDFParserOutputLib.dataset(dsg) ;
+        processQuads(dest, base, in, lang, null) ;
     }
 
     /** Read quads into a dataset with chars from a StringReader.
@@ -326,8 +299,8 @@ public class WebReader2
     public static void read(Dataset dataset, StringReader in, String base, Lang2 lang)
     {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
-        Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
-        processQuads(sink, base, in, lang, null) ;
+        RDFParserOutput dest = RDFParserOutputLib.dataset(dsg) ;
+        processQuads(dest, base, in, lang, null) ;
     }
 
 //    public static void addTripleSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Triple> factory, String ... fileExt )
@@ -340,13 +313,16 @@ public class WebReader2
 //        RDFLanguages.addQuadSyntax$(language, contentType, factory, fileExt) ;
 //    }
     
+    //{ParserOut]
+    // Add ParserOutput in public versionss.
+    
     /** Read triples - send to a sink.
      * @param sink     Destination for the RDF read.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void readTriples(Sink<Triple> sink, String uri, Lang2 hintLang, Context context)
+    public static void readTriples(RDFParserOutput sink, String uri, Lang2 hintLang, Context context)
     {
         readTriples(sink, uri, uri, hintLang, context) ;
     }
@@ -358,7 +334,7 @@ public class WebReader2
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void readTriples(Sink<Triple> sink, String uri, String base, Lang2 hintLang, Context context)
+    public static void readTriples(RDFParserOutput sink, String uri, String base, Lang2 hintLang, Context context)
     {
         TypedInputStream2 in = open(uri, context) ;
         if ( in == null )
@@ -392,7 +368,8 @@ public class WebReader2
         TypedInputStream2 in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
-        processQuads(sink, base, in, hintLang, context) ;
+        RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
+        processQuads(dest, base, in, hintLang, context) ;
         in.close() ;
     }
 
@@ -446,80 +423,85 @@ public class WebReader2
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void processTriples(Sink<Triple> sink, String baseUri, TypedInputStream2 in, Lang2 hintLang, Context context)
+    private static void processTriples(RDFParserOutput destination, String baseUri, TypedInputStream2 in, Lang2 hintLang, Context context)
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         
         if ( ct == null )
             throw new RiotException("Failed to determine the triples content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
 
-        ReaderRIOT<Triple> reader = getReaderTriples(ct) ;
+        ReaderRIOT reader = getReaderTriples(ct) ;
         if ( reader == null )
         {
-            getReaderTriples(ct) ;
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
         }
         
-        reader.read(in.getInput(), baseUri, ct, sink, context) ;
+        reader.read(in.getInput(), baseUri, ct, destination, context) ;
     }
 
-    private static ReaderRIOT<Triple> getReaderTriples(ContentType ct)
+    private static ReaderRIOT getReaderTriples(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Triple> r = ParserRegistry.getFactoryTriples(lang) ;
+        ReaderRIOTFactory r = ParserRegistry.getFactoryTriples(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
     }
 
+    // With sink and ither ParserOutput
+    
     // java.io.Readers are NOT preferred.
     @SuppressWarnings("deprecation")
-    private static void processTriples(Sink<Triple> sink, String base, Reader in, Lang2 hintLang, Context context)
+    private static void processTriples(RDFParserOutput output, String base, Reader in, Lang2 hintLang, Context context)
     {
         // Not as good as from an InputStream - RDF/XML not supported 
         ContentType ct = determineCT(base, null, hintLang) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the triples content type: (URI="+base+" : hint="+hintLang+")") ;
         
-        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
+        Tokenizer tokenizer =
+            hintLang == RDFLanguages.langRDFJSON ?
+                                                  new TokenizerJSON(PeekReader.make(in)) :   
+                                                  TokenizerFactory.makeTokenizer(in) ;
+        
         if ( hintLang == null )
             throw new RiotException("No language specificied") ;
         Lang lang = RDFLanguages.convert(hintLang) ;
         LangRIOT parser ;
         if ( lang == Lang.RDFXML )
-            parser = LangRDFXML.create(in, base, base, ErrorHandlerFactory.errorHandlerStd, sink) ;
+            parser = LangRDFXML.create(in, base, base, ErrorHandlerFactory.errorHandlerStd, output) ;
         else
-            parser = RiotReader.createParserTriples(tokenizer, lang, base, sink) ;
+            parser = RiotReader.createParserTriples(tokenizer, lang, base, output) ;
         parser.parse() ;
     }
     
-    private static void processQuads(Sink<Quad> sink, String uri, TypedInputStream2 in, Lang2 hintLang, Context context)
+    private static void processQuads(RDFParserOutput destination, String uri, TypedInputStream2 in, Lang2 hintLang, Context context)
     {
         ContentType ct = determineCT(uri, in.getContentType(), hintLang ) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the quads content type: (URI="+uri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
-        ReaderRIOT<Quad> reader = getReaderQuads(ct) ;
+        ReaderRIOT reader = getReaderQuads(ct) ;
         if ( reader == null )
             throw new RiotException("No quads reader for content type: "+ct) ;
         
-        reader.read(in.getInput(), uri, ct, sink, context) ;
+        reader.read(in.getInput(), uri, ct, destination, context) ;
     }
 
-    private static ReaderRIOT<Quad> getReaderQuads(ContentType ct)
+    private static ReaderRIOT getReaderQuads(ContentType ct)
     {
         Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory<Quad> r = ParserRegistry.getFactoryQuads(lang) ;
+        ReaderRIOTFactory r = ParserRegistry.getFactoryQuads(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
     }
     
     // java.io.Readers are NOT preferred.
-    private static void processQuads(Sink<Quad> sink, String base, Reader in, Lang2 hintLang, Context context)
+    private static void processQuads(RDFParserOutput dest, String base, Reader in, Lang2 hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         Lang lang = RDFLanguages.convert(hintLang) ;
-        LangRIOT parser = RiotReader.createParserQuads(tokenizer, lang, base, sink) ;
+        LangRIOT parser = RiotReader.createParserQuads(tokenizer, lang, base, dest) ;
         parser.parse() ;
     }
 

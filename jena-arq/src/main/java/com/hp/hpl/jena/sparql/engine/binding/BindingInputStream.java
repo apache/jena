@@ -30,20 +30,16 @@ import java.util.List ;
 
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.lang.LangEngine ;
 import org.openjena.riot.out.NodeFmtLib ;
-import org.openjena.riot.system.IRIResolver ;
-import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.ParserProfileBase ;
-import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.lang.LangEngine ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
