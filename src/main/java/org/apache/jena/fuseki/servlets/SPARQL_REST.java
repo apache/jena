@@ -38,23 +38,22 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.openjena.riot.* ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.system.IRIResolver ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -358,16 +357,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     private static DatasetGraph parse(HttpActionREST action, Lang lang, String base, InputStream input)
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
-        LangRIOT parser = RiotReader.createParserTriples(input, lang, base, sink) ;
-        parser.getProfile().setHandler(errorHandler) ;
-        try {
-            parser.parse() ;
-        } 
-        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        finally { sink.close() ; }
-        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
         
+        RDFParserOutput dest = RDFParserOutputLib.graph(graphTmp) ;
+        LangRIOT parser = RiotReader.createParserTriples(input, lang, base, dest) ;
+        parser.getProfile().setHandler(errorHandler) ;
+        try { parser.parse() ; } 
+        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
         return dsgTmp ;
     }
     

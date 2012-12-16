@@ -23,11 +23,13 @@ import java.io.InputStream ;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.lang.SinkTriplesToGraph ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
@@ -79,7 +81,8 @@ public class GraphLoadUtils
         // TODO Conneg - awaiting RIOT code upgrade.
         InputStream input = Fuseki.webFileManager.open(uri) ;
         
-        LangRIOT parser = RiotReader.createParserTriples(input, lang, uri, sink) ;
+        RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
+        LangRIOT parser = RiotReader.createParserTriples(input, lang, uri, dest) ;
         try {
             parser.parse() ;
         } catch (RiotException ex) { throw ex ; }

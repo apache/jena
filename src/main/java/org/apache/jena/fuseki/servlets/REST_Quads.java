@@ -25,21 +25,20 @@ import java.io.IOException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.RiotWriter ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
@@ -141,9 +140,8 @@ public class REST_Quads extends SPARQL_REST
             name = name+(++counter) ;
             Node gn = Node.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
-            Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-
-            LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , sink) ;
+            RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+            LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;

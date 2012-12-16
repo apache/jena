@@ -31,16 +31,17 @@ import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.SinkWrapper ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.ErrorHandler ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -163,22 +164,9 @@ public class DataValidator extends ValidatorBase
             public void flush() {}
             String formatNode(Node n) { return FmtUtils.stringForNode(n, sCxt) ; }
         } ;
-        
-        Sink<Quad> sink2 = new SinkWrapper<Quad>(sink){
-            long count = 0 ;
-            @Override public void close() {}
-            @Override public void flush() {}
-            @Override 
-            public void send(Quad quad)
-            { 
-                super.send(quad) ;
-                count++ ;
-                if ( count > LIMIT )
-                    throw new RiotException("Limit exceeded") ;
-            }
-        } ;
-        // Language?
-        LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, null, sink) ;
+
+        RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
+        LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
         parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
         return parser ;

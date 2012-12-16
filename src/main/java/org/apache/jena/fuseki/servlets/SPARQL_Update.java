@@ -43,8 +43,8 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.openjena.riot.WebContent ;
-import org.openjena.riot.system.IRIResolver ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryParseException ;
