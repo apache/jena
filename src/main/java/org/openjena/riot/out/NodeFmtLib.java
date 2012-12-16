@@ -23,9 +23,6 @@ import java.io.Writer ;
 import java.net.MalformedURLException ;
 import java.util.Map ;
 
-import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -35,6 +32,10 @@ import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.Prologue ;
+import org.apache.jena.riot.system.RiotChars ;
+
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.Quad ;

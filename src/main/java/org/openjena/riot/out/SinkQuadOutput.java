@@ -24,8 +24,8 @@ import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.system.Prologue ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;

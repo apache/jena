@@ -20,17 +20,17 @@ package org.apache.jena.riot;
 
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 
-/** Interface to parsing processes that takes an input stream and emit T items.
- *  The "read" operation may be called repeatedly for a single Reader, with different
- *  arguments but calsl are not overlapping.
+/** Interface to parsing processes that takes an input stream and emit items.
+ *  The "read" operation may be called repeatedly for a single ReaderRIOT, with different
+ *  arguments but calls are not overlapping.
  */
 
-public interface ReaderRIOT<T>
+public interface ReaderRIOT
 {
-    public void read(InputStream in, String baseURI, ContentType ct, Sink<T> sink, Context context) ;
+    public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context) ;
 }

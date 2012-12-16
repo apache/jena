@@ -19,11 +19,11 @@
 package org.apache.jena.riot.tokens;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

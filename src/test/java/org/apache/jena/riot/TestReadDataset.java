@@ -25,6 +25,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
+import org.openjena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
@@ -38,7 +39,7 @@ public class TestReadDataset extends BaseTest
     
     @BeforeClass static public void beforeClass()
     { 
-        WebReader2.wireIntoJena() ;
+        RIOT.init() ;
     }
     
     @AfterClass static public void afterClass()

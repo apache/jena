@@ -22,8 +22,6 @@ import java.io.IOException ;
 import java.io.Writer ;
 import java.net.MalformedURLException ;
 
-import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.system.RiotChars ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 
@@ -32,6 +30,8 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.RiotChars ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
 {

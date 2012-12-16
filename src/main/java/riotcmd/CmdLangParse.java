@@ -31,20 +31,18 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.SinkNull ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.openjena.riot.* ;
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.lang.LangRDFXML ;
-import org.openjena.riot.lang.LangRIOT ;
 import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
 import org.openjena.riot.process.inf.InfFactory ;
 import org.openjena.riot.process.inf.InferenceSetupRDFS ;
-import org.openjena.riot.system.RiotLib ;
-import org.openjena.riot.system.SyntaxLabels ;
 import arq.cmd.CmdException ;
 import arq.cmdline.* ;
 
@@ -292,12 +290,8 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infTriples(s, setup) ;
             
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            
-            if ( lang.equals(Lang.RDFXML) )
-                // Adapter round ARP RDF/XML reader.
-                parser = LangRDFXML.create(in, baseURI, filename, errHandler, sink2) ;
-            else
-                parser = RiotReader.createParserTriples(in, lang, baseURI, sink2) ;
+            RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink2) ;
+            parser = RiotReader.createParserTriples(in, lang, baseURI, dest) ;
             
             sink = sink2 ;
         }
@@ -310,7 +304,8 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infQuads(s, setup) ;
             
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            parser = RiotReader.createParserQuads(in, lang, baseURI, sink2) ;
+            RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink2) ;
+            parser = RiotReader.createParserQuads(in, lang, baseURI, dest) ;
             sink = sink2 ;
         }
         

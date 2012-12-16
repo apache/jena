@@ -26,15 +26,14 @@ import java.util.Map ;
 import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -58,9 +57,9 @@ public class HttpResponseLib
                 HttpEntity entity = response.getEntity() ;
                 MediaType mt = MediaType.create(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
                 mt.getCharset() ;
-                Sink<Triple> sink = new SinkTriplesToGraph(g) ; 
+                RDFParserOutput dest = RDFParserOutputLib.graph(g) ; 
                 InputStream in = entity.getContent() ;
-                LangRIOT parser = createParser(in, baseIRI, sink) ;
+                LangRIOT parser = createParser(in, baseIRI, dest) ;
                 parser.parse() ;
                 in.close() ;
                 this.graph = g ; 
@@ -70,7 +69,7 @@ public class HttpResponseLib
         @Override
         public Graph get() { return graph ; }
         
-        abstract protected LangRIOT createParser(InputStream in, String baseIRI, Sink<Triple> sink) ;
+        abstract protected LangRIOT createParser(InputStream in, String baseIRI, RDFParserOutput dest) ;
     }
 
     public static HttpResponseHandler httpDumpResponse = new HttpResponseHandler()
@@ -106,25 +105,25 @@ public class HttpResponseLib
     public static HttpCaptureResponse<Graph> graphReaderTurtle = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, Sink<Triple> sink)
+        protected LangRIOT createParser(InputStream in, String baseIRI, RDFParserOutput dest)
         {
-            return RiotReader.createParserTurtle(in, baseIRI, sink) ;
+            return RiotReader.createParserTurtle(in, baseIRI, dest) ;
         }
     } ;
     public static HttpCaptureResponse<Graph> graphReaderNTriples = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, Sink<Triple> sink)
+        protected LangRIOT createParser(InputStream in, String baseIRI, RDFParserOutput dest)
         {
-            return RiotReader.createParserNTriples(in, sink) ;
+            return RiotReader.createParserNTriples(in, dest) ;
         }
     } ;
     public static HttpCaptureResponse<Graph> graphReaderRDFXML = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, Sink<Triple> sink)
+        protected LangRIOT createParser(InputStream in, String baseIRI, RDFParserOutput dest)
         {
-            return RiotReader.createParserRDFXML(in, baseIRI, sink) ;
+            return RiotReader.createParserRDFXML(in, baseIRI, dest) ;
         }
     } ;
     

@@ -19,16 +19,16 @@
 package org.apache.jena.riot.tokens;
 
 import static org.apache.jena.atlas.lib.Chars.* ;
-import static org.openjena.riot.system.RiotChars.charInArray ;
-import static org.openjena.riot.system.RiotChars.isA2Z ;
-import static org.openjena.riot.system.RiotChars.isA2ZN ;
-import static org.openjena.riot.system.RiotChars.isAlphaNumeric ;
-import static org.openjena.riot.system.RiotChars.isHexChar ;
-import static org.openjena.riot.system.RiotChars.isNewlineChar ;
-import static org.openjena.riot.system.RiotChars.isPNChars ;
-import static org.openjena.riot.system.RiotChars.isWhitespace ;
-import static org.openjena.riot.system.RiotChars.range ;
-import static org.openjena.riot.system.RiotChars.valHexChar ;
+import static org.apache.jena.riot.system.RiotChars.charInArray ;
+import static org.apache.jena.riot.system.RiotChars.isA2Z ;
+import static org.apache.jena.riot.system.RiotChars.isA2ZN ;
+import static org.apache.jena.riot.system.RiotChars.isAlphaNumeric ;
+import static org.apache.jena.riot.system.RiotChars.isHexChar ;
+import static org.apache.jena.riot.system.RiotChars.isNewlineChar ;
+import static org.apache.jena.riot.system.RiotChars.isPNChars ;
+import static org.apache.jena.riot.system.RiotChars.isWhitespace ;
+import static org.apache.jena.riot.system.RiotChars.range ;
+import static org.apache.jena.riot.system.RiotChars.valHexChar ;
 
 import java.util.NoSuchElementException ;
 
@@ -37,8 +37,8 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
+import org.apache.jena.riot.system.RiotChars ;
 import org.openjena.riot.RiotParseException ;
-import org.openjena.riot.system.RiotChars ;
 
 /** Tokenizer for all sorts of things RDF-ish */
 

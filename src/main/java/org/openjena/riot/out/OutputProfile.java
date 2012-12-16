@@ -18,8 +18,8 @@
 
 package org.openjena.riot.out;
 
-import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.system.Prologue ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.Prologue ;
 
 public class OutputProfile
 {

@@ -24,17 +24,17 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.data.SerializationFactory ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.lang.LangNQuads ;
+import org.apache.jena.riot.lang.LangNTriples ;
+import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.ParserProfileBase ;
+import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.lang.LangNQuads ;
-import org.openjena.riot.lang.LangNTriples ;
 import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
-import org.openjena.riot.system.IRIResolver ;
-import org.openjena.riot.system.ParserProfileBase ;
-import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
