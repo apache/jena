@@ -23,8 +23,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.system.Prologue ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

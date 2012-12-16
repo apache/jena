@@ -22,18 +22,12 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.SinkNull ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.openjena.riot.* ;
 
 /** Example of using RIOT directly.
  */
@@ -44,14 +38,13 @@ public class ExRIOT_2
         // Ensure RIOT loaded.
         SysRIOT.wireIntoJena() ;
 
-        Sink<Quad> noWhere = new SinkNull<Quad>() ;
+        RDFParserOutput noWhere = RDFParserOutputLib.sinkNull() ;
 
         // ---- Parse to a Sink.
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
         RiotReader.parseQuads(in, Lang.TRIG, "http://example/base", noWhere) ;
-        
         
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;

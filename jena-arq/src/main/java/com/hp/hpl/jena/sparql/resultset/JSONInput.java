@@ -41,7 +41,7 @@ import org.apache.jena.atlas.json.JsonArray ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.json.JsonValue ;
 import org.apache.jena.atlas.logging.Log ;
-import org.openjena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.lang.LabelToNode ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;

@@ -22,8 +22,8 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sync ;
+import org.apache.jena.riot.lang.LangRDFXML ;
 import org.openjena.riot.SysRIOT ;
-import org.openjena.riot.lang.LangRDFXML ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

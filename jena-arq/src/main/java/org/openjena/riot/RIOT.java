@@ -20,7 +20,6 @@ package org.openjena.riot;
 
 import org.apache.jena.riot.ParserRegistry ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebReader2 ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
@@ -72,6 +71,5 @@ public class RIOT
         ParserRegistry.init() ;
         
         SysRIOT.wireIntoJena() ;
-        WebReader2.wireIntoJena() ;
     }
 }

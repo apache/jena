@@ -21,8 +21,8 @@ package org.openjena.riot.out;
 import java.io.StringWriter ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.system.PrefixMap ;
 import org.junit.Test ;
-import org.openjena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

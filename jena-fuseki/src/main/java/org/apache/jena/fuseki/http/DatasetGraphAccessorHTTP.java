@@ -37,20 +37,19 @@ import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.* ;
 import org.apache.jena.fuseki.migrate.UnmodifiableGraph ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.openjena.riot.Lang ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.WebContent ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -296,8 +295,8 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
-        LangRIOT parser = RiotReader.createParserTriples(ts, lang, base, sink) ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
+        LangRIOT parser = RiotReader.createParserTriples(ts, lang, base, dest) ;
         parser.parse() ;
         IO.close(ts) ;
     }    

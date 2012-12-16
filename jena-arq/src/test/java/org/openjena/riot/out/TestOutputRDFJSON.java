@@ -24,12 +24,12 @@ import java.io.ByteArrayOutputStream ;
 import org.apache.jena.atlas.json.JSON ;
 import org.apache.jena.atlas.json.JsonObject ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.junit.Test ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -169,8 +169,8 @@ public class TestOutputRDFJSON extends BaseTest
     {
         ByteArrayInputStream bin = new ByteArrayInputStream(bout.toByteArray()) ;
         Graph graph = GraphFactory.createGraphMem() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(graph) ; 
-        LangRIOT parser = RiotReader.createParserRdfJson(bin, sink) ;
+        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ; 
+        LangRIOT parser = RiotReader.createParserRdfJson(bin, dest) ;
         parser.parse() ;
         return graph ;
     }

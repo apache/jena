@@ -18,7 +18,7 @@
 
 package org.openjena.riot.out;
 
-import org.openjena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMap ;
 
 public class OutputPolicy
 {

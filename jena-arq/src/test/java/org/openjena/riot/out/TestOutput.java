@@ -25,8 +25,8 @@ import java.io.UnsupportedEncodingException ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.system.Prologue ;
 import org.junit.Test ;
-import org.openjena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;

@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
-import org.openjena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.IRIResolver ;
 
 public class IRIValidator extends ValidatorBase
 {

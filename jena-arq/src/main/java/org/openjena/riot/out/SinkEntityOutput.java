@@ -27,9 +27,9 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.json.io.JSWriter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.system.Prologue ;
+import org.apache.jena.riot.system.SyntaxLabels ;
 import org.openjena.riot.RiotException ;
-import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.system.SyntaxLabels ;
 
 import com.hp.hpl.jena.graph.Node;
 

@@ -18,11 +18,14 @@
 
 package org.apache.jena.riot.langsuite;
 
+import java.io.InputStream ;
+
 import org.apache.jena.riot.Lang2 ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFReaderRIOT ;
 import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.stream.StreamManager ;
 import org.openjena.riot.RiotException ;
-import org.openjena.riot.system.JenaReaderNTriples2 ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -68,7 +71,8 @@ public class UnitTestEval extends LangTestCase
             String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
             Model results = ModelFactory.createDefaultModel() ;
             // Directly get an N-triples reader
-            new JenaReaderNTriples2().read(results, output) ;
+            InputStream in = StreamManager.get().open(output).getInput() ;
+            WebReader2.read(results, in, null, RDFLanguages.langNTriples) ;
 
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )

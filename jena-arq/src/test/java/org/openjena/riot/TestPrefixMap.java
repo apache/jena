@@ -19,10 +19,10 @@
 package org.openjena.riot;
 
 import org.junit.Test ;
-import org.openjena.riot.system.PrefixMap ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.riot.system.PrefixMap ;
 
 public class TestPrefixMap extends BaseTest
 {

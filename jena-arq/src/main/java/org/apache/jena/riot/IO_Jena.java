@@ -19,23 +19,26 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.riot.WebReader2.RDFReaderRIOT_NT ;
+import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFJSON ;
+import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFXML ;
+import org.apache.jena.riot.WebReader2.RDFReaderRIOT_TTL ;
 import org.apache.jena.riot.stream.StreamManager ;
+import org.apache.jena.riot.system.JenaWriterRdfJson ;
 import org.openjena.riot.RiotNotFoundException ;
-import org.openjena.riot.SysRIOT ;
 import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
+import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 
-/** common material between ModelIO and DatasetIO */ 
- 
-abstract class IO_Jena
+public class IO_Jena
 {
-    static Logger log = LoggerFactory.getLogger(IO_Model.class) ;
+    static Logger log = LoggerFactory.getLogger(IO_Jena.class) ;
     
     private static String riotBase = "http://jena.apache.org/riot/" ; 
     private static String streamManagerSymbolStr = riotBase+"streammanager" ; 
@@ -66,20 +69,37 @@ abstract class IO_Jena
       RDFReaderFImpl.setBaseReaderClassName("Turtle",     RDFReaderRIOT_TTL.class.getName()) ;
       RDFReaderFImpl.setBaseReaderClassName("TTL",        RDFReaderRIOT_TTL.class.getName()) ;
       RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",   RDFReaderRIOT_RDFJSON.class.getName()) ;
+      
+      // Old style Jena writers.
+      String writerRdfJson = JenaWriterRdfJson.class.getName() ;
+      RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", writerRdfJson) ;
     }
     
-    // Yukky hack to integrate into current jena-core where the structure of model.read assumes
-    // the language is determined before the reading process starts.
-    
-    static class RDFReaderRIOT_RDFXML extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML() { super("RDF/XML") ; } }
-    static class RDFReaderRIOT_TTL extends RDFReaderRIOT      { public RDFReaderRIOT_TTL() { super("TTL") ; } }
-    static class RDFReaderRIOT_NT extends RDFReaderRIOT       { public RDFReaderRIOT_NT() { super("N-TRIPLE") ; } }
-    static class RDFReaderRIOT_RDFJSON extends RDFReaderRIOT  { public RDFReaderRIOT_RDFJSON() { super("RDF/JSON") ; } }
+//    // Yukky hack to integrate into current jena-core where the structure of model.read assumes
+//    // the language is determined before the reading process starts.
+//    
+//    static class RDFReaderRIOT_RDFXML extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML() { super("RDF/XML") ; } }
+//    static class RDFReaderRIOT_TTL extends RDFReaderRIOT      { public RDFReaderRIOT_TTL() { super("TTL") ; } }
+//    static class RDFReaderRIOT_NT extends RDFReaderRIOT       { public RDFReaderRIOT_NT() { super("N-TRIPLE") ; } }
+//    static class RDFReaderRIOT_RDFJSON extends RDFReaderRIOT  { public RDFReaderRIOT_RDFJSON() { super("RDF/JSON") ; } }
 
+    static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
+    static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
+    static String jenaN3Reader = jenaTurtleReader ; 
     
     public static void resetJenaReaders()
     {
-        SysRIOT.resetJenaReaders() ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES", jenaNTriplesReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",  jenaNTriplesReader) ;
+        
+        RDFReaderFImpl.setBaseReaderClassName("N3",     jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TURTLE", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("Turtle", jenaTurtleReader) ;
+        RDFReaderFImpl.setBaseReaderClassName("TTL",    jenaTurtleReader) ;
+
+        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
+        RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", "") ;
+
     }
     
     // --- IO

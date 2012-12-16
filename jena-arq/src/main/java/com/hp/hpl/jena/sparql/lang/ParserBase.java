@@ -23,7 +23,7 @@ import java.util.HashSet ;
 import java.util.Set ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.openjena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.RiotLib ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.TypeMapper ;
