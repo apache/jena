@@ -24,9 +24,7 @@ import com.hp.hpl.jena.graph.test.*;
 
 import junit.framework.*;
 
-/**
-	@author kers
-*/
+@SuppressWarnings("deprecation")
 public class TestDifference extends GraphTestBase 
 	{
 	public TestDifference( String name )
