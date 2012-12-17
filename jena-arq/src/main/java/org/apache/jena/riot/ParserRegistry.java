@@ -18,12 +18,12 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.langNQuads ;
-import static org.apache.jena.riot.RDFLanguages.langNTriples ;
-import static org.apache.jena.riot.RDFLanguages.langRDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.langRDFXML ;
-import static org.apache.jena.riot.RDFLanguages.langTriG ;
-import static org.apache.jena.riot.RDFLanguages.langTurtle ;
+import static org.apache.jena.riot.RDFLanguages.NQuads ;
+import static org.apache.jena.riot.RDFLanguages.NTriples ;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
+import static org.apache.jena.riot.RDFLanguages.RDFXML ;
+import static org.apache.jena.riot.RDFLanguages.TriG ;
+import static org.apache.jena.riot.RDFLanguages.Turtle ;
 
 import java.io.InputStream ;
 import java.util.Map ;
@@ -74,37 +74,37 @@ public class ParserRegistry
         RDFLanguages.init() ;
         
         // Reader name and variations to lang - must include Jena old-name.
-        registerShortNameForLang("RDF/XML",         langRDFXML) ;
-        registerShortNameForLang("RDFXML",          langRDFXML) ;
-        registerShortNameForLang("RDF/XML-ABBREV",  langRDFXML) ;
+        registerShortNameForLang("RDF/XML",         RDFXML) ;
+        registerShortNameForLang("RDFXML",          RDFXML) ;
+        registerShortNameForLang("RDF/XML-ABBREV",  RDFXML) ;
         
-        registerShortNameForLang("N-TRIPLE",        langNTriples) ;
-        registerShortNameForLang("N-TRIPLES",       langNTriples) ;
-        registerShortNameForLang("NTRIPLE",         langNTriples) ;
-        registerShortNameForLang("NTRIPLES",        langNTriples) ;
-        registerShortNameForLang("NT",              langNTriples) ;
+        registerShortNameForLang("N-TRIPLE",        NTriples) ;
+        registerShortNameForLang("N-TRIPLES",       NTriples) ;
+        registerShortNameForLang("NTRIPLE",         NTriples) ;
+        registerShortNameForLang("NTRIPLES",        NTriples) ;
+        registerShortNameForLang("NT",              NTriples) ;
             
-        registerShortNameForLang("TURTLE",          langTurtle) ;
-        registerShortNameForLang("TTL",             langTurtle) ;
+        registerShortNameForLang("TURTLE",          Turtle) ;
+        registerShortNameForLang("TTL",             Turtle) ;
 
-        registerShortNameForLang("RDF/JSON",        langRDFJSON) ;
-        registerShortNameForLang("RDFJSON",         langRDFJSON) ;
+        registerShortNameForLang("RDF/JSON",        RDFJSON) ;
+        registerShortNameForLang("RDFJSON",         RDFJSON) ;
         
-        registerShortNameForLang("N-QUADS",         langNQuads) ;
-        registerShortNameForLang("NQUADS",          langNQuads) ;
-        registerShortNameForLang("N-QUAD",          langNQuads) ;
-        registerShortNameForLang("NQUAD",           langNQuads) ;
-        registerShortNameForLang("NQ",              langNQuads) ;
+        registerShortNameForLang("N-QUADS",         NQuads) ;
+        registerShortNameForLang("NQUADS",          NQuads) ;
+        registerShortNameForLang("N-QUAD",          NQuads) ;
+        registerShortNameForLang("NQUAD",           NQuads) ;
+        registerShortNameForLang("NQ",              NQuads) ;
             
-        registerShortNameForLang("TRIG",            langTriG) ;
+        registerShortNameForLang("TRIG",            TriG) ;
         
-        registerLangTriples(langRDFXML,     pfTriples) ;
-        registerLangTriples(langNTriples,   pfTriples) ;
-        registerLangTriples(langTurtle,     pfTriples) ;
-        registerLangTriples(langRDFJSON,    pfTriples) ;
+        registerLangTriples(RDFXML,     pfTriples) ;
+        registerLangTriples(NTriples,   pfTriples) ;
+        registerLangTriples(Turtle,     pfTriples) ;
+        registerLangTriples(RDFJSON,    pfTriples) ;
         
-        registerLangQuads(langNQuads,       pfQuads) ;
-        registerLangQuads(langTriG,         pfQuads) ;
+        registerLangQuads(NQuads,       pfQuads) ;
+        registerLangQuads(TriG,         pfQuads) ;
     }
 
     /** Register a Jena IO name */
