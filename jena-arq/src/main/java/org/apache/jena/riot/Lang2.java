@@ -69,9 +69,6 @@ public class Lang2
         return x ;
     }
     
-//    public boolean isTriples()  { return RDFLanguages.isTriples(this) ; }
-//    public boolean isQuads()    { return RDFLanguages.isQuads(this) ; }
-    
     @Override
     public int hashCode() { return label.hashCode() ; } 
 
@@ -107,11 +104,11 @@ public class Lang2
     { 
         String x = "Lang:" + label + " " + getContentType() ;
         if (getAltNames().size() > 0)
-            x = " " + getAltNames() ;
+            x = x + " " + getAltNames() ;
         if (getAltContentTypes().size() > 0)
-            x = " " + getAltContentTypes() ;
+            x = x + " " + getAltContentTypes() ;
         if (getFileExtensions().size() > 0)
-            x = " " + getFileExtensions() ;
+            x = x + " " + getFileExtensions() ;
 
         return x ;
     }

@@ -56,7 +56,7 @@ public class TestLangTurtle extends BaseTest
         String s = "_:a <http://example/p> 'foo' . " ;
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m, r, null, RDFLanguages.langTurtle) ;
+        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(1, m.size()) ;
         
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
@@ -64,7 +64,7 @@ public class TestLangTurtle extends BaseTest
 
         // reset - reread - new bNode.
         r = new StringReader(s) ;
-        WebReader2.read(m, r, null, RDFLanguages.langTurtle) ;
+        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(2, m.size()) ;
     }
     
@@ -74,7 +74,7 @@ public class TestLangTurtle extends BaseTest
         String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' ." ;
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m, r, null, RDFLanguages.langTurtle) ;
+        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(1, m.size()) ;
     }
 
@@ -83,7 +83,7 @@ public class TestLangTurtle extends BaseTest
     {
         Model model = ModelFactory.createDefaultModel() ;
         StringReader reader = new StringReader("@prefix x: <http://example/x>.") ;
-        WebReader2.read(model, reader, null, RDFLanguages.langTurtle) ;
+        WebReader2.read(model, reader, null, RDFLanguages.Turtle) ;
         assertEquals(1, model.getNsPrefixMap().size()) ;
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }

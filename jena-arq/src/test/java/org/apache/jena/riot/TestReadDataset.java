@@ -49,8 +49,8 @@ public class TestReadDataset extends BaseTest
 
     @Test public void read_01() { read("D.nq") ; }
     @Test public void read_02() { read("D.trig") ; }
-    @Test public void read_03() { read("D.nq",   RDFLanguages.langNQuads) ; }
-    @Test public void read_04() { read("D.trig", RDFLanguages.langTriG) ; }
+    @Test public void read_03() { read("D.nq",   RDFLanguages.NQuads) ; }
+    @Test public void read_04() { read("D.trig", RDFLanguages.TriG) ; }
     
     @Test public void read_11() { read("D.nq", "N-Quads") ; }
 
@@ -59,8 +59,8 @@ public class TestReadDataset extends BaseTest
     @Test public void read_14() { read("D.trig", "TriG") ; }
     @Test public void read_15() { read("D.trig", "trig") ; } 
 
-    @Test public void read_21() { read("D-nq",  RDFLanguages.langNQuads) ; }
-    @Test public void read_22() { read("D-trig", RDFLanguages.langTriG) ; }
+    @Test public void read_21() { read("D-nq",  RDFLanguages.NQuads) ; }
+    @Test public void read_22() { read("D-trig", RDFLanguages.TriG) ; }
     @Test public void read_23() { read("D-nq",  "NQuads") ; }
     @Test public void read_24() { read("D-trig", "TRIG") ; }
 

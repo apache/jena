@@ -522,7 +522,7 @@ public class TestLangRdfJson extends BaseTest
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, r, null, RDFLanguages.langNTriples) ;
+        WebReader2.read(model, r, null, RDFLanguages.NTriples) ;
         return model ;
     }
 
@@ -530,7 +530,7 @@ public class TestLangRdfJson extends BaseTest
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, r, null, RDFLanguages.langRDFJSON) ;
+        WebReader2.read(model, r, null, RDFLanguages.RDFJSON) ;
         return model ;
     }
 
