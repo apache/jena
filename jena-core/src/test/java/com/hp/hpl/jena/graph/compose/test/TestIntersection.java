@@ -23,6 +23,7 @@ import com.hp.hpl.jena.graph.compose.Intersection;
 import com.hp.hpl.jena.graph.test.*;
 import junit.framework.*;
 
+@SuppressWarnings("deprecation")
 public class TestIntersection extends GraphTestBase 
 	{
 	public TestIntersection( String name )

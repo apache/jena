@@ -23,9 +23,6 @@ import java.lang.reflect.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-/**
-     @author  bwm, kers
-*/
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic 
 	{
     private Class<? extends Graph> graphClass;
