@@ -92,9 +92,32 @@ public class ResourceFactory {
         return instance.createResource(uriref);
     }
     
+    /**
+    Answer a plain (untyped) literal with no language and the given content.
+    @param string the string which forms the value of the literal
+    @return a Literal node with that string as value
+     */
     public static Literal createPlainLiteral( String string ) {
         return instance.createPlainLiteral( string );
     }
+    
+    /**
+    Answer a plain (untyped) literal with no language and the given content.
+    @param string the string which forms the value of the literal
+    @param lang The language tag to be used
+    @return a Literal node with that string as value
+     */
+
+    public static Literal createLangLiteral( String string , String lang ) {
+        return instance.createLangLiteral( string , lang );
+    }
+
+    /**
+    Answer a typed literal.
+    @param string the string which forms the value of the literal
+    @param datatype RDFDatatype of the type literal
+    @return a Literal node with that string as value
+    */
 
     public static Literal createTypedLiteral( String string , RDFDatatype dType)
     {
@@ -173,6 +196,15 @@ public class ResourceFactory {
         public Literal createPlainLiteral( String string );
 
         /**
+        Answer a plain (untyped) literal with no language and the given content.
+        @param string the string which forms the value of the literal
+        @param lang The language tag to be used
+        @return a Literal node with that string as value
+         */
+
+        public Literal createLangLiteral( String string , String lang );
+
+        /**
         Answer a typed literal.
         @param string the string which forms the value of the literal
         @param datatype RDFDatatype of the type literal
@@ -236,6 +268,11 @@ public class ResourceFactory {
             return new LiteralImpl(  Node.createLiteral( string, "", false ), null );
         }
 
+        @Override
+        public Literal createLangLiteral( String string , String lang ) {
+            return new LiteralImpl(  Node.createLiteral( string, lang, false ), null );
+        }
+        
         @Override
         public Literal createTypedLiteral( String string , RDFDatatype dType)
         {
