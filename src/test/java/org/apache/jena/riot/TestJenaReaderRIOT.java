@@ -79,7 +79,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             TypedInputStream2 in = WebReader2.open(filename("D-not-TTL.ttl") );
             Model m0 = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m0, in.getInput(), RDFLanguages.langRDFXML) ;
+            WebReader2.read(m0, in.getInput(), RDFLanguages.RDFXML) ;
         }
 
         TypedInputStream2 in1 = WebReader2.open(filename("D-not-TTL.ttl") );
@@ -96,7 +96,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m, s, null, RDFLanguages.langNTriples) ;
+            WebReader2.read(m, s, null, RDFLanguages.NTriples) ;
         }
         
         StringReader s1 = new StringReader("<s> <p> <p> .") ;
@@ -117,7 +117,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m, s, null, RDFLanguages.langRDFXML) ;
+            WebReader2.read(m, s, null, RDFLanguages.RDFXML) ;
         }
         StringReader s1 = new StringReader(x) ;
         Model m = ModelFactory.createDefaultModel() ;

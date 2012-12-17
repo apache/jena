@@ -460,9 +460,9 @@ public class WebReader2
             throw new RiotException("Failed to determine the triples content type: (URI="+base+" : hint="+hintLang+")") ;
         
         Tokenizer tokenizer =
-            hintLang == RDFLanguages.langRDFJSON ?
-                                                  new TokenizerJSON(PeekReader.make(in)) :   
-                                                  TokenizerFactory.makeTokenizer(in) ;
+            RDFLanguages.RDFJSON.equals(hintLang)?
+                          new TokenizerJSON(PeekReader.make(in)) :   
+                          TokenizerFactory.makeTokenizer(in) ;
         
         if ( hintLang == null )
             throw new RiotException("No language specificied") ;

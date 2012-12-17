@@ -47,6 +47,7 @@ import com.hp.hpl.jena.util.FileUtils ;
  */
 public class RDFLanguages
 {
+    // Display names
     public static final String strLangRDFXML     = "RDF/XML" ;
     public static final String strLangTurtle     = "Turtle" ;
     public static final String strLangNTriples   = "N-Triples" ;
@@ -56,13 +57,13 @@ public class RDFLanguages
     public static final String strLangTriG       = "TriG" ;
     
     /** RDF/XML */
-    public static final Lang2 langRDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
+    public static final Lang2 RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
                                                 .addFileExtensions("rdf","owl","xml")
                                                 .build() ;
     
     /** Turtle */
-    public static final Lang2 langTurtle   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
+    public static final Lang2 Turtle   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                 .addAltNames("TTL")
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
@@ -70,26 +71,26 @@ public class RDFLanguages
                                                 .build() ;
     
     /** N-Triples */
-    public static final Lang2 langNTriples = LangBuilder.create(strLangNTriples, contentTypeNTriples)
+    public static final Lang2 NTriples = LangBuilder.create(strLangNTriples, contentTypeNTriples)
                                                 .addAltNames("NT", "NTriples", "NTriple", "N-Triple")
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
 
     /** RDF/JSON (this is not JSON-LD) */
-    public static final Lang2 langRDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
+    public static final Lang2 RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
                                                 .addAltNames("RDFJSON")
                                                 .addFileExtensions("rj", "json")
                                                 .build() ;
     
     /** TriG */
-    public static final Lang2 langTriG     = LangBuilder.create(strLangTriG, contentTypeTriG)
+    public static final Lang2 TriG     = LangBuilder.create(strLangTriG, contentTypeTriG)
                                                 .addAltContentTypes(contentTypeTriGAlt1, contentTypeTriGAlt2)
                                                 .addFileExtensions("trig")
                                                 .build() ;
     
     /** N-Quads */
-    public static final Lang2 langNQuads   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
+    public static final Lang2 NQuads   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
                                                 .addAltNames("NQ", "NQuads", "NQuad", "N-Quad")   
                                                 .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
                                                 .addFileExtensions("nq")
@@ -119,12 +120,12 @@ public class RDFLanguages
     /** Standard built-in languages */  
     private static void initStandard()
     {
-        register(langRDFXML) ;
-        register(langTurtle) ;
-        register(langNTriples) ;
-        register(langRDFJSON) ;
-        register(langTriG) ;
-        register(langNQuads) ;
+        register(RDFXML) ;
+        register(Turtle) ;
+        register(NTriples) ;
+        register(RDFJSON) ;
+        register(TriG) ;
+        register(NQuads) ;
     }
 
     /** Register a language.
@@ -280,12 +281,12 @@ public class RDFLanguages
     // TEMPORARY
     public static Lang convert(Lang2 lang2)
     {
-        if ( lang2 == langRDFXML )      return Lang.RDFXML ;
-        if ( lang2 == langTurtle )      return Lang.TURTLE ;
-        if ( lang2 == langNTriples )    return Lang.NTRIPLES ;
-        if ( lang2 == langRDFJSON )     return Lang.RDFJSON ;
-        if ( lang2 == langTriG )        return Lang.TRIG ;
-        if ( lang2 == langNQuads )      return Lang.NQUADS ;
+        if ( lang2 == RDFXML )      return Lang.RDFXML ;
+        if ( lang2 == Turtle )      return Lang.TURTLE ;
+        if ( lang2 == NTriples )    return Lang.NTRIPLES ;
+        if ( lang2 == RDFJSON )     return Lang.RDFJSON ;
+        if ( lang2 == TriG )        return Lang.TRIG ;
+        if ( lang2 == NQuads )      return Lang.NQUADS ;
         throw new RiotException("No such language to convert: "+lang2) ;
     }
 

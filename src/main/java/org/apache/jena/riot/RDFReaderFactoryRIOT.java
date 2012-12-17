@@ -39,7 +39,7 @@ public class RDFReaderFactoryRIOT implements RDFReaderF
         // If RDF/XML, then return an ARP 
         
         Lang2 lang = RDFLanguages.nameToLang(langname) ;
-        if ( lang == RDFLanguages.langRDFXML )
+        if ( RDFLanguages.RDFXML.equals(lang) )
             return new RDFReaderRIOT_ARP() ;
         return new RDFReaderRIOT(langname) ; 
     }
