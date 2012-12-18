@@ -24,6 +24,7 @@ open(X, "mvn -f $POM dependency:build-classpath |") ;
 while(<X>)
 {
     next if /\[INFO\]/ ;
+    next if /^Download/ ;
     chop ;
     print "$_" ;
 }
