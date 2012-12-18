@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.stream;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 
 /**
  *  Interface to things that open TypedStreams from a place
@@ -27,6 +27,6 @@ import org.apache.jena.riot.TypedInputStream2 ;
 public interface Locator
 {
     // Open a stream given a name of some kind (not necessarily an IRI).
-    public TypedInputStream2 open(String uri) ;
+    public TypedInputStream open(String uri) ;
     public String getName() ;
 }

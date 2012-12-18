@@ -26,8 +26,8 @@ import java.security.AccessControlException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.TypedInputStream2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -111,7 +111,7 @@ public class LocatorFile2 implements Locator
 
     /** Open anything that looks a bit like a file name */ 
     @Override
-    public TypedInputStream2 open(String filenameIRI)
+    public TypedInputStream open(String filenameIRI)
     {
         String fn = toFileName(filenameIRI) ;
         if ( fn == null )
@@ -136,7 +136,7 @@ public class LocatorFile2 implements Locator
                 log.trace("Found: "+filenameIRI+thisDirLogStr) ;
             
             ContentType ct = RDFLanguages.guessContentType(filenameIRI) ;
-            return new TypedInputStream2(in, ct, filenameIRI) ;
+            return new TypedInputStream(in, ct, filenameIRI) ;
         } catch (IOException ioEx)
         {
             // Includes FileNotFoundException

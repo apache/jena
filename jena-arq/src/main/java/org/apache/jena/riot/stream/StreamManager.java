@@ -22,7 +22,7 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.openjena.riot.RiotNotFoundException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -66,7 +66,7 @@ public class StreamManager
     /** Open a file using the locators of this FileManager.
      *  Returns null if not found.
      */
-    public TypedInputStream2 open(String filenameOrURI)
+    public TypedInputStream open(String filenameOrURI)
     {
         if ( log.isDebugEnabled())
             log.debug("open("+filenameOrURI+")") ;
@@ -103,9 +103,9 @@ public class StreamManager
 
     /** Open a file using the locators of this FileManager 
      *  but without location mapping.  Throws RiotNotFoundException if not found.*/ 
-    public TypedInputStream2 openNoMap(String filenameOrURI)
+    public TypedInputStream openNoMap(String filenameOrURI)
     {
-        TypedInputStream2 in = openNoMapOrNull(filenameOrURI) ;
+        TypedInputStream in = openNoMapOrNull(filenameOrURI) ;
         if ( in == null )
             throw new RiotNotFoundException(filenameOrURI) ;
         return in ;
@@ -115,11 +115,11 @@ public class StreamManager
      *  without location mapping. Return null if not found
      */ 
     
-    public TypedInputStream2 openNoMapOrNull(String filenameOrURI)
+    public TypedInputStream openNoMapOrNull(String filenameOrURI)
     {
         for (Locator loc : handlers)
         {
-            TypedInputStream2 in = loc.open(filenameOrURI) ;
+            TypedInputStream in = loc.open(filenameOrURI) ;
             if ( in != null )
             {
                 if ( log.isDebugEnabled() )

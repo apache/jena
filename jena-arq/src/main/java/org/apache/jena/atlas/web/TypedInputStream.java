@@ -19,35 +19,41 @@
 package org.apache.jena.atlas.web;
 
 import java.io.FilterInputStream ;
-import java.io.IOException ;
-import java.io.InputStream;
-
-import org.apache.jena.atlas.io.IO ;
+import java.io.InputStream ;
 
 public class TypedInputStream extends FilterInputStream
 { 
-    private final MediaType mediaType ;
+    private ContentType mediaType ;
+    // The URI to use when parsing.
+    // May be different from the URI used to access the resource 
+    // e.g. 303 redirection, mapped URI redirection 
+    private String baseURI ;
     
     public TypedInputStream(InputStream in)
-    { this(in, null, null) ; }
-    
-    public TypedInputStream(InputStream in, MediaType mediaType)
-    {
-        super(in) ;
-        this.mediaType = mediaType ;
-    }
+    { this(in, (ContentType)null, null) ; }
     
     public TypedInputStream(InputStream in, String mediaType, String charset)
+    { this(in, mediaType, charset, null) ; }
+    
+    public TypedInputStream(InputStream in, String mediaType, String charset, String baseURI)
+    { this(in, ContentType.create(mediaType, charset), baseURI) ; }
+    
+    public TypedInputStream(InputStream in, ContentType ct)
+    { this(in, ct, null) ; }
+    
+    public TypedInputStream(InputStream in, ContentType ct, String baseURI)
     {
-        this(in, MediaType.create(mediaType, charset)) ;
+        super(in) ;
+        this.mediaType = ct ;
+        this.baseURI = baseURI ;
     }
     
-    public String getMediaType()                { return mediaType.getContentType() ; }
-    public String getCharset()                  { return mediaType.getCharset() ; }
+    /** @deprecated Use {@link #getContentType} */
+    @Deprecated 
+    public String getMimeType()                 { return getContentType()  ; }
     
-    @Override
-    public void close()
-    {
-        try { super.close() ; } catch (IOException ex) { IO.exception(ex) ; }
-    }
+    public String getContentType()          { return mediaType == null ? null : mediaType.getContentType() ; }
+    public String getCharset()              { return mediaType == null ? null : mediaType.getCharset() ; }
+    public ContentType getMediaType()       { return mediaType ; }
+    public String getBaseURI()              { return baseURI ; }
 }

@@ -21,8 +21,7 @@ package org.apache.jena.riot.stream;
 import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.TypedInputStream2 ;
-import org.apache.jena.riot.stream.LocatorFile2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.junit.Test ;
 import org.openjena.riot.WebContent ;
 
@@ -69,7 +68,7 @@ public class TestLocators extends BaseTest
     @Test public void locatorFile_05()
     {
         LocatorFile2 loc = new LocatorFile2() ;
-        TypedInputStream2 ts = loc.open(testingDir+"data.ttl") ;
+        TypedInputStream ts = loc.open(testingDir+"data.ttl") ;
         assertTrue("Not equal: "+WebContent.contentTypeTurtle+" != "+ts.getMediaType(), 
                    WebContent.contentTypeTurtle.equalsIgnoreCase(ts.getContentType())) ;
     }

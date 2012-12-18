@@ -24,6 +24,7 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -77,15 +78,15 @@ public class TestJenaReaderRIOT extends BaseTest
     @Test public void read_30()
     {
         {
-            TypedInputStream2 in = WebReader2.open(filename("D-not-TTL.ttl") );
+            TypedInputStream in = WebReader2.open(filename("D-not-TTL.ttl") );
             Model m0 = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m0, in.getInput(), RDFLanguages.RDFXML) ;
+            WebReader2.read(m0, in, RDFLanguages.RDFXML) ;
         }
 
-        TypedInputStream2 in1 = WebReader2.open(filename("D-not-TTL.ttl") );
+        TypedInputStream in1 = WebReader2.open(filename("D-not-TTL.ttl") );
         Model m1 = ModelFactory.createDefaultModel() ;
         // Fails until integration with jena-core as hintlang gets lost.
-        m1.read(in1.getInput(), null, "RDF/XML") ;
+        m1.read(in1, null, "RDF/XML") ;
     }
     
     // test read from StringReader..

@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.stream;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -33,7 +33,7 @@ public class LocatorURL2 implements Locator
     public final String acceptTriples = "text/turtle,application/rdf+xml;q=0.9,application/xml;q=0.8,*/*;q=0.5" ; 
 
     @Override
-    public TypedInputStream2 open(String uri)
+    public TypedInputStream open(String uri)
     {
         if ( ! acceptByScheme(uri) )
         {

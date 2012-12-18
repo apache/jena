@@ -23,7 +23,7 @@ import java.io.InputStream ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.stream.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -278,7 +278,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
-        TypedInputStream2 in = streamManager.openNoMapOrNull(mappedURI) ;
+        TypedInputStream in = streamManager.openNoMapOrNull(mappedURI) ;
         if ( in == null )
         {
             if ( log.isDebugEnabled() )
@@ -290,8 +290,8 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
             // XXX
             //syntax
         }
-        model.read(in.getInput(), baseURI, syntax) ;
-        try { in.getInput().close(); } catch (IOException ex) {}
+        model.read(in, baseURI, syntax) ;
+        try { in.close(); } catch (IOException ex) {}
         return model ;
     }
 
@@ -312,7 +312,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     @Override
     public InputStream open(String filenameOrURI)
     { 
-        return streamManager.open(filenameOrURI).getInput() ;
+        return streamManager.open(filenameOrURI) ;
     }
     
     /** Apply the mapping of a filename or URI */
@@ -322,7 +322,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     /** Open a file using the locators of this FileManager 
      *  but without location mapping.  Throws RiotNotFoundException if not found.*/ 
     @Override
-    public InputStream openNoMap(String filenameOrURI)          { return streamManager.openNoMap(filenameOrURI).getInput() ; }
+    public InputStream openNoMap(String filenameOrURI)          { return streamManager.openNoMap(filenameOrURI) ; }
 
     /** Open a file using the locators of this FileManager 
      *  without location mapping. Return null if not found
