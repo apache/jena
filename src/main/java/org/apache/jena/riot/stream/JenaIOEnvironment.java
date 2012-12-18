@@ -20,7 +20,7 @@ package org.apache.jena.riot.stream;
 
 import java.util.StringTokenizer ;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -164,7 +164,7 @@ class JenaIOEnvironment
         
         try {
             String uriConfig = null ; 
-            TypedInputStream2 in = null ;
+            TypedInputStream in = null ;
             
             StringTokenizer pathElems = new StringTokenizer( configPath, AdapterFileManager.PATH_DELIMITER );
             while (pathElems.hasMoreTokens()) {
@@ -187,7 +187,7 @@ class JenaIOEnvironment
             }
             String syntax = FileUtils.guessLang(uriConfig) ;
             Model model = ModelFactory.createDefaultModel() ;
-            model.read(in.getInput(), uriConfig, syntax) ;
+            model.read(in, uriConfig, syntax) ;
             processConfig(model) ;
         } catch (JenaException ex)
         {

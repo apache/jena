@@ -20,12 +20,10 @@ package org.apache.jena.riot.stream;
 
 import java.io.File ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebReader2 ;
-import org.apache.jena.riot.stream.LocatorFile2 ;
-import org.apache.jena.riot.stream.LocatorURL2 ;
-import org.apache.jena.riot.stream.StreamManager ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -94,13 +92,12 @@ public class TestStreamManager extends BaseTest
     
     private static void open(String dataName, Context context)
     {
-        TypedInputStream2 in ;
-        if ( context != null )
-            in = WebReader2.open(dataName, context) ;
-        else
-            in = WebReader2.open(dataName) ;
+        TypedInputStream in = 
+            ( context != null ) ?
+                 WebReader2.open(dataName, context) :
+                 WebReader2.open(dataName) ;
         assertNotNull(in) ;
-        in.close() ;
+        IO.close(in) ;
     }
     
     private static void read(String dataName)

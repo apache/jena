@@ -22,10 +22,12 @@ import java.io.InputStream ;
 import java.io.Reader ;
 import java.io.StringReader ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -176,7 +178,7 @@ public class WebReader2
         Graph g = model.getGraph() ;
         RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
         Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-        processTriples(dest, base, new TypedInputStream2(in), lang, null) ;
+        processTriples(dest, base, new TypedInputStream(in), lang, null) ;
     }
 
     /** Read triples into a model with chars from an Reader.
@@ -268,7 +270,7 @@ public class WebReader2
     {
         DatasetGraph dsg = dataset.asDatasetGraph() ;
         RDFParserOutput dest = RDFParserOutputLib.dataset(dsg) ;
-        processQuads(dest, base, new TypedInputStream2(in), lang, null) ;
+        processQuads(dest, base, new TypedInputStream(in), lang, null) ;
     }
     
     /** Read quads into a dataset with chars from an Reader.
@@ -336,13 +338,13 @@ public class WebReader2
      */
     public static void readTriples(RDFParserOutput sink, String uri, String base, Lang2 hintLang, Context context)
     {
-        TypedInputStream2 in = open(uri, context) ;
+        TypedInputStream in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
         if ( base == null )
             base = uri ;
         processTriples(sink, base, in, hintLang, context) ;
-        in.close() ;
+        IO.close(in) ;
     }
     
     /** Read quads - send to a sink.
@@ -365,24 +367,24 @@ public class WebReader2
      */
     public static void readQuads(Sink<Quad> sink, String uri, String base, Lang2 hintLang, Context context)
     {
-        TypedInputStream2 in = open(uri, context) ;
+        TypedInputStream in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
         RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
         processQuads(dest, base, in, hintLang, context) ;
-        in.close() ;
+        IO.close(in) ;
     }
 
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
      */
-    public static TypedInputStream2 open(String filenameOrURI)
+    public static TypedInputStream open(String filenameOrURI)
     { return open(filenameOrURI, (Context)null) ; }
     
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
      */
-    public static TypedInputStream2 open(String filenameOrURI, Context context)
+    public static TypedInputStream open(String filenameOrURI, Context context)
     {
         StreamManager sMgr = StreamManager.get() ;
         if ( context != null )
@@ -395,9 +397,9 @@ public class WebReader2
         return open(filenameOrURI, sMgr) ;
     }
     
-    public static TypedInputStream2 open(String filenameOrURI, StreamManager sMgr)
+    public static TypedInputStream open(String filenameOrURI, StreamManager sMgr)
     {
-        TypedInputStream2 in = sMgr.open(filenameOrURI) ;
+        TypedInputStream in = sMgr.open(filenameOrURI) ;
             
         if ( in == null )
         {
@@ -423,7 +425,7 @@ public class WebReader2
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void processTriples(RDFParserOutput destination, String baseUri, TypedInputStream2 in, Lang2 hintLang, Context context)
+    private static void processTriples(RDFParserOutput destination, String baseUri, TypedInputStream in, Lang2 hintLang, Context context)
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         
@@ -436,7 +438,7 @@ public class WebReader2
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
         }
         
-        reader.read(in.getInput(), baseUri, ct, destination, context) ;
+        reader.read(in, baseUri, ct, destination, context) ;
     }
 
     private static ReaderRIOT getReaderTriples(ContentType ct)
@@ -475,7 +477,7 @@ public class WebReader2
         parser.parse() ;
     }
     
-    private static void processQuads(RDFParserOutput destination, String uri, TypedInputStream2 in, Lang2 hintLang, Context context)
+    private static void processQuads(RDFParserOutput destination, String uri, TypedInputStream in, Lang2 hintLang, Context context)
     {
         ContentType ct = determineCT(uri, in.getContentType(), hintLang ) ;
         if ( ct == null )
@@ -484,7 +486,7 @@ public class WebReader2
         if ( reader == null )
             throw new RiotException("No quads reader for content type: "+ct) ;
         
-        reader.read(in.getInput(), uri, ct, destination, context) ;
+        reader.read(in, uri, ct, destination, context) ;
     }
 
     private static ReaderRIOT getReaderQuads(ContentType ct)
