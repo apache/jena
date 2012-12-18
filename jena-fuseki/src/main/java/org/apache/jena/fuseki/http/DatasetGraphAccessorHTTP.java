@@ -268,7 +268,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
                 InputStream instream = entity.getContent() ;
 //                String mimeType = ConNeg.chooseContentType(request, rdfOffer, ConNeg.acceptRDFXML).getAcceptType() ;
 //                String charset = ConNeg.chooseCharset(request, charsetOffer, ConNeg.charsetUTF8).getAcceptType() ;
-                ts = new TypedInputStream(instream, contentType, charset) ;
+                ts = new TypedInputStream(instream, contentType, charset, null) ;
             }
             Graph graph = GraphFactory.createGraphMem() ;
             if ( processBody )
@@ -292,7 +292,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         // Either it's XML and so the XML parser deals with it, or the 
         // language determines the charset and the parsers offer InputStreams.   
        
-        Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ;
+        Lang lang = FusekiLib.langFromContentType(ts.getContentType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
         RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
