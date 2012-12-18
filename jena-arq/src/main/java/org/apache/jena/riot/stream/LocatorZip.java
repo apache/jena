@@ -24,8 +24,8 @@ import java.util.zip.ZipEntry ;
 import java.util.zip.ZipFile ;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.TypedInputStream2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -52,7 +52,7 @@ public class LocatorZip implements Locator
     }
     
     @Override
-    public TypedInputStream2 open(String filenameOrURI)
+    public TypedInputStream open(String filenameOrURI)
     {
         ZipEntry entry = zipFile.getEntry(filenameOrURI) ;
         if ( entry == null )
@@ -77,7 +77,7 @@ public class LocatorZip implements Locator
                 log.trace("Found: "+filenameOrURI) ;
             
             ContentType ct = RDFLanguages.guessContentType(filenameOrURI) ;
-            return new TypedInputStream2(in, ct, filenameOrURI) ;
+            return new TypedInputStream(in, ct, filenameOrURI) ;
         }
         catch (IOException ex)
         {

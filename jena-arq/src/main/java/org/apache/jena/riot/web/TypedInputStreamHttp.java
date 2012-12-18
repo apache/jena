@@ -18,14 +18,15 @@
 
 package org.apache.jena.riot.web;
 
+import java.io.IOException ;
 import java.io.InputStream ;
 
 import org.apache.http.conn.ClientConnectionManager ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 
 /** Type streams for HTTP connections - includes Apache HTTP client specific cleanup */
-public class TypedInputStreamHttp extends TypedInputStream2 
+public class TypedInputStreamHttp extends TypedInputStream
 {
     private ClientConnectionManager connectMgr ;
 
@@ -36,7 +37,7 @@ public class TypedInputStreamHttp extends TypedInputStream2
     }
     
     @Override
-    public void close()
+    public void close() throws IOException
     {
         super.close() ;
         if ( connectMgr != null )

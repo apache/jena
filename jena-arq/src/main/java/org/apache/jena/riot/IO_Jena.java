@@ -19,6 +19,7 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.WebReader2.RDFReaderRIOT_NT ;
 import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFJSON ;
 import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFXML ;
@@ -107,13 +108,13 @@ public class IO_Jena
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
      */
-    public static TypedInputStream2 open(String filenameOrURI)
+    public static TypedInputStream open(String filenameOrURI)
     { return open(filenameOrURI, (Context)null) ; }
     
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
      */
-    public static TypedInputStream2 open(String filenameOrURI, Context context)
+    public static TypedInputStream open(String filenameOrURI, Context context)
     {
         StreamManager sMgr = StreamManager.get() ;
         if ( context != null )
@@ -126,9 +127,9 @@ public class IO_Jena
         return open(filenameOrURI, sMgr) ;
     }
     
-    public static TypedInputStream2 open(String filenameOrURI, StreamManager sMgr)
+    public static TypedInputStream open(String filenameOrURI, StreamManager sMgr)
     {
-        TypedInputStream2 in = sMgr.open(filenameOrURI) ;
+        TypedInputStream in = sMgr.open(filenameOrURI) ;
             
         if ( in == null )
         {

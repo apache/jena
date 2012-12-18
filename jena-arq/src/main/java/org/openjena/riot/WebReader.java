@@ -66,7 +66,7 @@ public class WebReader
     public static void readGraph(Graph graph, String uri, Lang lang)
     {
         TypedInputStream typedInput = open(uri, lang) ;
-        String contentType = typedInput.getMediaType() ;
+        String contentType = typedInput.getContentType() ;
         lang = chooseLang(contentType, lang) ;
 
         if ( lang == null )
@@ -94,7 +94,7 @@ public class WebReader
     public static void readDataset(DatasetGraph dataset, String uri, Lang lang)
     {
         TypedInputStream typedInput = open(uri, lang) ;
-        String contentType = typedInput.getMediaType() ;
+        String contentType = typedInput.getContentType() ;
         lang = chooseLang(contentType, lang) ;
 
         if ( lang == null )

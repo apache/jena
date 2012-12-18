@@ -21,8 +21,8 @@ package org.apache.jena.riot.stream;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.TypedInputStream2 ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -49,7 +49,7 @@ public class LocatorClassLoader  implements Locator
         { return classLoader.hashCode(); }
     
     @Override
-    public TypedInputStream2 open(String resourceName)
+    public TypedInputStream open(String resourceName)
     {
         if ( classLoader == null )
             return null ;
@@ -67,7 +67,7 @@ public class LocatorClassLoader  implements Locator
         
         ContentType ct = RDFLanguages.guessContentType(resourceName) ;
         // No sensible base URI.
-        return new TypedInputStream2(in, ct, null) ;
+        return new TypedInputStream(in, ct, null) ;
     }
     
     public ClassLoader getClassLoader()

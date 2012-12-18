@@ -20,18 +20,18 @@ package org.apache.jena.riot.adapters;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.util.Utils ;
-
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.stream.* ;
 import org.openjena.riot.RiotException ;
+
+import com.hp.hpl.jena.sparql.util.Utils ;
 
 
 class AdapterLib
 {
-    public static com.hp.hpl.jena.util.TypedStream convert(TypedInputStream2 in)
+    public static com.hp.hpl.jena.util.TypedStream convert(TypedInputStream in)
     {
-        return new com.hp.hpl.jena.util.TypedStream(in.getInput(), in.getContentType(), in.getCharset()) ;
+        return new com.hp.hpl.jena.util.TypedStream(in, in.getContentType(), in.getCharset()) ;
     }
     
     
