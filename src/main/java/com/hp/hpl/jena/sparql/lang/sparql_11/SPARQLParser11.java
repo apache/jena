@@ -2733,7 +2733,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
           jj_consume_token(-1);
           throw new ParseException();
         }
-        ObjectList(s, p, path, acc);
+        ObjectListPath(s, p, path, acc);
         break;
       default:
         jj_la1[100] = jj_gen;
