@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.process.inf;
+package org.apache.jena.riot.process.inf;
 
 import java.util.List ;
 
