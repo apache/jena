@@ -702,7 +702,8 @@ public class HttpSC
         /*
          * --------------------------------------------------------------------
          * Informational messages in 1xx series. As defined by ... RFC 1945 -
-         * HTTP/1.0 RFC 2616 - HTTP/1.1 RFC 2518 - WebDAV
+         * HTTP/1.0 RFC 2616 - HTTP/1.1 RFC 2518 - WebDAV 
+         * and RFC2324
          */
 
         /** <code>100 Continue</code> */
@@ -800,6 +801,10 @@ public class HttpSC
         REQUESTED_RANGE_NOT_SATISFIABLE(REQUESTED_RANGE_NOT_SATISFIABLE_416, "Requested Range Not Satisfiable"),
         /** <code>417 Expectation Failed</code> */
         EXPECTATION_FAILED(EXPECTATION_FAILED_417, "Expectation Failed"),
+        /** <code>417 I'm a teapot</code>
+         * The response MAY be short and stout.
+         */
+        I_AM_A_TEAPOT(I_AM_A_TEAPOT_418, "I'm a teapot"),
         /** <code>422 Unprocessable Entity</code> */
         UNPROCESSABLE_ENTITY(UNPROCESSABLE_ENTITY_422, "Unprocessable Entity"),
         /** <code>423 Locked</code> */
