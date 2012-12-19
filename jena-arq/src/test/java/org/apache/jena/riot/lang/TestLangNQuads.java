@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.lang;
 
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
-import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Node ;

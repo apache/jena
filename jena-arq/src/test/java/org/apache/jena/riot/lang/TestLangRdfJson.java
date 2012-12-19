@@ -27,6 +27,8 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRDFJSON ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
@@ -35,8 +37,6 @@ import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.RiotReader ;
 import org.openjena.riot.SysRIOT ;
 

@@ -22,6 +22,10 @@ import java.io.ByteArrayInputStream ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
@@ -32,10 +36,6 @@ import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
-import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.openjena.riot.ErrorHandlerTestLib.ExError ;
-import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
-import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 
 /** Test of syntax by a tuples parser (does not include node validitiy checking) */ 
 
