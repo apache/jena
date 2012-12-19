@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.process.normalize;
+package org.apache.jena.riot.process.normalize;
 
 import static org.apache.jena.atlas.lib.Chars.CH_DOT ;
 import static org.apache.jena.atlas.lib.Chars.CH_MINUS ;

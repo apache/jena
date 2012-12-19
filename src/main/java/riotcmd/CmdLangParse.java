@@ -32,6 +32,8 @@ import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.SinkNull ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.process.inf.InfFactory ;
+import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -41,8 +43,6 @@ import org.openjena.riot.* ;
 import org.openjena.riot.out.NodeToLabel ;
 import org.openjena.riot.out.SinkQuadOutput ;
 import org.openjena.riot.out.SinkTripleOutput ;
-import org.openjena.riot.process.inf.InfFactory ;
-import org.openjena.riot.process.inf.InferenceSetupRDFS ;
 import arq.cmd.CmdException ;
 import arq.cmdline.* ;
 
