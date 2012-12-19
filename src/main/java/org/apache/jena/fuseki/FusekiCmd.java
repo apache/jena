@@ -230,6 +230,9 @@ public class FusekiCmd extends CmdARQ
 
         
         TDB.setOptimizerWarningFlag(false) ;
+        // Don't get TDB batch commits.
+        // This is slower but less memory hungry. 
+        TransactionManager.QueueBatchSize = 0 ;
         
         if ( contains(argMem) )
         {
