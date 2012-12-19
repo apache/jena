@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.process.normalize;
+package org.apache.jena.riot.process.normalize;
 
 import java.util.HashMap ;
 import java.util.Map ;

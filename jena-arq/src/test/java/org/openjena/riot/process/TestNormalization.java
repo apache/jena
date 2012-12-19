@@ -19,8 +19,8 @@
 package org.openjena.riot.process;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.process.normalize.CanonicalizeLiteral ;
 import org.junit.Test ;
-import org.openjena.riot.process.normalize.CanonicalizeLiteral ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
