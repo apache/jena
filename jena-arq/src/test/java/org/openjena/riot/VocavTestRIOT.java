@@ -23,7 +23,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-public class TestVocabRIOT
+public class VocavTestRIOT
 {
     public static String assumedBaseURI = "http://example/base/" ;
     

@@ -16,10 +16,12 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot;
 
 import java.util.ArrayList ;
 import java.util.List ;
+
+import org.openjena.riot.ErrorHandler ;
 
 public class ErrorHandlerTestLib
 {

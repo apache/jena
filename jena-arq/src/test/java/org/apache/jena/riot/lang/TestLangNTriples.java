@@ -23,10 +23,10 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
-import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.openjena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.openjena.riot.RiotException ;
 import org.openjena.riot.RiotReader ;
 

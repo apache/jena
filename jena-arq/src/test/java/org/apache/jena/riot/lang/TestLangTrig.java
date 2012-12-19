@@ -20,14 +20,14 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangTriG ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
-import org.openjena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
-import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Triple ;

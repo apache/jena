@@ -21,7 +21,6 @@ package org.openjena.riot;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Test ;
 
-
 public class TestLangTag extends BaseTest
 {
     @Test public void parse_01() 
