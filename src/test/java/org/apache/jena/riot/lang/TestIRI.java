@@ -23,13 +23,13 @@ import com.hp.hpl.jena.graph.Node ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.riot.ErrorHandlerTestLib ;
+import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.system.Checker ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
 import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerTestLib ;
-import org.openjena.riot.ErrorHandlerTestLib.ExWarning ;
 
 public class TestIRI extends BaseTest
 {

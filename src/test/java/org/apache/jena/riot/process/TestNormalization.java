@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot.process;
+package org.apache.jena.riot.process;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.process.normalize.CanonicalizeLiteral ;
