@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot.web;
 
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;

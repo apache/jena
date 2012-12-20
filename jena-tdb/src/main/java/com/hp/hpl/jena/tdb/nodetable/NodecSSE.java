@@ -25,7 +25,7 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.openjena.riot.LangTag ;
+import org.apache.jena.riot.web.LangTag ;
 import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;
