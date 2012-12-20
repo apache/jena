@@ -21,8 +21,8 @@ package org.apache.jena.riot.langsuite ;
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.VocabTestRIOT ;
 import org.openjena.riot.RiotException ;
-import org.openjena.riot.VocavTestRIOT ;
 
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
@@ -68,7 +68,7 @@ public class FactoryTestRiot extends TestFactoryManifest
             Resource input = action ;
             Resource output = result ; 
             
-            String baseIRI = VocavTestRIOT.assumedBaseURI ;
+            String baseIRI = VocabTestRIOT.assumedBaseURI ;
             String x = input.getLocalName() ;
             // Yuk, yuk, yuk.
             baseIRI = baseIRI+x ;

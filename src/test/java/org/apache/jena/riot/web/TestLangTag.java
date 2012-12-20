@@ -16,9 +16,10 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot.web;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.web.LangTag ;
 import org.junit.Test ;
 
 public class TestLangTag extends BaseTest

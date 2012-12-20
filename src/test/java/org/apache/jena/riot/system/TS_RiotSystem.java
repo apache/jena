@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,30 +16,17 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.junit.AfterClass ;
-import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
+import org.junit.runners.Suite.SuiteClasses ;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestWebContent.class
+@SuiteClasses({ 
+    TestChecker.class
     , TestPrefixMap.class
-    , TestLangTag.class
 })
 
-public class TS_Riot1
-{
-    @BeforeClass public static void beforeClass()
-    { 
-        BaseTest.setTestLogging() ;
-    }
-
-    @AfterClass public static void afterClass()
-    { 
-        BaseTest.unsetTestLogging() ;
-    }
-}
+public class TS_RiotSystem
+{}

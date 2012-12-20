@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot.system;
 
 import org.junit.Test ;
 

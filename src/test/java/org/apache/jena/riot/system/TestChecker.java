@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.system;
 
+import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.system.Checker ;
 import org.junit.After ;
 import org.junit.Before ;
 import org.junit.Test ;

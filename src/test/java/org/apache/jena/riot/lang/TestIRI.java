@@ -45,7 +45,8 @@ public class TestIRI extends BaseTest
     public void iri2()  { test("example") ; }
     
     @Test(expected=ExWarning.class) 
-    public void iriErr1()  { test("http:") ; }
+    public void iriErr1()  
+    { test("http:") ; }
 
     @Test(expected=ExWarning.class) 
     public void iriErr2()  { test("http:///::") ; }
