@@ -16,20 +16,19 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.web;
 
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 
-
 @RunWith(Suite.class)
 @SuiteClasses({ 
-    TestChecker.class
+    TestLangTag.class
+    , TestWebContent.class
 })
 
-public class TS_RiotMisc
+public class TS_RiotWeb
 {
-
 }
 

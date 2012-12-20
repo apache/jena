@@ -18,33 +18,17 @@
 
 package org.openjena.riot.out;
 
-import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.process.TestNormalization ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestIRI.class
-    , TestLang.class
-    , TestNodeAllocator.class
-    
-    , TestTurtleTerms.class
-    , TestLangNTriples.class
-    , TestLangNQuads.class
-    , TestLangTurtle.class
-    , TestLangTrig.class
-    , TestLangRdfJson.class
-    , TestParserFactory.class
-
-    , TestNodeFmt.class
+      TestNodeFmt.class
     , TestNodeFmtLib.class
     , TestOutput.class
     , TestOutputNTriples.class
     , TestOutputRDFJSON.class
-    , TestNormalization.class
-
 })
 
 public class TS_Out

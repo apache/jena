@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package org.apache.jena.riot;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.Property ;
 import com.hp.hpl.jena.rdf.model.Resource ;
 
-public class VocavTestRIOT
+public class VocabTestRIOT
 {
     public static String assumedBaseURI = "http://example/base/" ;
     

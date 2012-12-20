@@ -21,7 +21,7 @@ package org.apache.jena.riot.process.normalize;
 import java.util.HashMap ;
 import java.util.Map ;
 
-import org.openjena.riot.LangTag ;
+import org.apache.jena.riot.web.LangTag ;
 
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
