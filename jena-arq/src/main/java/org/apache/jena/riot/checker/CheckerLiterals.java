@@ -50,7 +50,7 @@ public class CheckerLiterals implements NodeChecker
     public boolean check(Node node, long line, long col)
     { return node.isLiteral() && checkLiteral(node, handler, line, col) ; }
     
-    final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z]{1,8})*") ;
+    final static private Pattern langPattern = Pattern.compile("[a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})*") ;
 
     public static boolean checkLiteral(Node node, ErrorHandler handler, long line, long col)
     {
