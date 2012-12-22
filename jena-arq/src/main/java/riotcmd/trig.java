@@ -18,8 +18,8 @@
 
 package riotcmd;
 
-import org.openjena.riot.Lang ;
-
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -43,6 +43,6 @@ public class trig extends CmdLangParse
     }
 
     @Override
-    protected Lang selectLang(String filename, Lang nquads) 
-    { return Lang.TRIG ; }
+    protected Lang selectLang(String filename, Lang lang) 
+    { return RDFLanguages.TriG ; }
 }

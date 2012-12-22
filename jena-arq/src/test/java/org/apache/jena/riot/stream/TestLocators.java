@@ -22,8 +22,8 @@ import java.io.File ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.WebContent ;
 import org.junit.Test ;
-import org.openjena.riot.WebContent ;
 
 public class TestLocators extends BaseTest 
 {

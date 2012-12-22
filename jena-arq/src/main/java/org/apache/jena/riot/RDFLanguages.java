@@ -18,27 +18,30 @@
 
 package org.apache.jena.riot;
 
-import static org.openjena.riot.WebContent.contentTypeNQuads ;
-import static org.openjena.riot.WebContent.contentTypeNQuadsAlt1 ;
-import static org.openjena.riot.WebContent.contentTypeNQuadsAlt2 ;
-import static org.openjena.riot.WebContent.contentTypeNTriples ;
-import static org.openjena.riot.WebContent.contentTypeNTriplesAlt ;
-import static org.openjena.riot.WebContent.contentTypeRDFJSON ;
-import static org.openjena.riot.WebContent.contentTypeRDFXML ;
-import static org.openjena.riot.WebContent.contentTypeTriG ;
-import static org.openjena.riot.WebContent.contentTypeTriGAlt1 ;
-import static org.openjena.riot.WebContent.contentTypeTriGAlt2 ;
-import static org.openjena.riot.WebContent.contentTypeTurtle ;
-import static org.openjena.riot.WebContent.contentTypeTurtleAlt1 ;
-import static org.openjena.riot.WebContent.contentTypeTurtleAlt2 ;
+import static org.apache.jena.riot.WebContent.contentTypeN3 ;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt1 ;
+import static org.apache.jena.riot.WebContent.contentTypeN3Alt2 ;
+import static org.apache.jena.riot.WebContent.contentTypeNQuads ;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt1 ;
+import static org.apache.jena.riot.WebContent.contentTypeNQuadsAlt2 ;
+import static org.apache.jena.riot.WebContent.contentTypeNTriples ;
+import static org.apache.jena.riot.WebContent.contentTypeNTriplesAlt ;
+import static org.apache.jena.riot.WebContent.contentTypeRDFJSON ;
+import static org.apache.jena.riot.WebContent.contentTypeRDFXML ;
+import static org.apache.jena.riot.WebContent.contentTypeTriG ;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt1 ;
+import static org.apache.jena.riot.WebContent.contentTypeTriGAlt2 ;
+import static org.apache.jena.riot.WebContent.contentTypeTurtle ;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt1 ;
+import static org.apache.jena.riot.WebContent.contentTypeTurtleAlt2 ;
 
+import java.util.Collection ;
+import java.util.Collections ;
 import java.util.Locale ;
 import java.util.Map ;
 
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -57,41 +60,46 @@ public class RDFLanguages
     public static final String strLangTriG       = "TriG" ;
     
     /** RDF/XML */
-    public static final Lang2 RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
+    public static final Lang RDFXML   = LangBuilder.create(strLangRDFXML, contentTypeRDFXML)
                                                 .addAltNames("RDFXML", "RDF/XML-ABBREV", "RDFXML-ABBREV")
                                                 .addFileExtensions("rdf","owl","xml")
                                                 .build() ;
     
     /** Turtle */
-    public static final Lang2 Turtle   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
+    public static final Lang Turtle   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                 .addAltNames("TTL")
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
                                                 //.addFileExtensions("n3")
                                                 .build() ;
+    /** N3 (treat as Turtle) */
+    public static final Lang N3   = LangBuilder.create(strLangN3, contentTypeN3)
+                                                .addAltContentTypes(contentTypeN3, contentTypeN3Alt1, contentTypeN3Alt2)
+                                                .addFileExtensions("n3")
+                                                .build() ;
     
     /** N-Triples */
-    public static final Lang2 NTriples = LangBuilder.create(strLangNTriples, contentTypeNTriples)
-                                                .addAltNames("NT", "NTriples", "NTriple", "N-Triple")
+    public static final Lang NTriples = LangBuilder.create(strLangNTriples, contentTypeNTriples)
+                                                .addAltNames("NT", "NTriples", "NTriple", "N-Triple", "N-Triples")
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
 
     /** RDF/JSON (this is not JSON-LD) */
-    public static final Lang2 RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
+    public static final Lang RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
                                                 .addAltNames("RDFJSON")
                                                 .addFileExtensions("rj", "json")
                                                 .build() ;
     
     /** TriG */
-    public static final Lang2 TriG     = LangBuilder.create(strLangTriG, contentTypeTriG)
+    public static final Lang TriG     = LangBuilder.create(strLangTriG, contentTypeTriG)
                                                 .addAltContentTypes(contentTypeTriGAlt1, contentTypeTriGAlt2)
                                                 .addFileExtensions("trig")
                                                 .build() ;
     
     /** N-Quads */
-    public static final Lang2 NQuads   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
-                                                .addAltNames("NQ", "NQuads", "NQuad", "N-Quad")   
+    public static final Lang NQuads   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
+                                                .addAltNames("NQ", "NQuads", "NQuad", "N-Quad", "N-Quads")   
                                                 .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
                                                 .addFileExtensions("nq")
                                                 .build() ;
@@ -99,21 +107,34 @@ public class RDFLanguages
     // ---- Central registry
     
     /** Mapping of colloquial name to language */
-    private static Map<String, Lang2> mapLabelToLang                    = DS.map() ;
+    private static Map<String, Lang> mapLabelToLang                    = DS.map() ;
+    
+    // For testing mainly.
+    public static Collection<Lang> getRegisteredLanguages()     { return Collections.unmodifiableCollection(mapLabelToLang.values()); }
     
     /** Mapping of content type (main and alternatives) to language */  
-    private static Map<String, Lang2> mapContentTypeToLang              = DS.map() ;
+    private static Map<String, Lang> mapContentTypeToLang              = DS.map() ;
 
     /** Mapping of file extension to language */
-    private static Map<String, Lang2> mapFileExtToLang                  = DS.map() ;
+    private static Map<String, Lang> mapFileExtToLang                  = DS.map() ;
 
     // ----------------------
+    static { init() ; }
     private static boolean initialized = false ;
     public static synchronized void init ()
     {
         if ( initialized ) return ;
         initialized = true ;
         initStandard() ;
+        Lang.RDFXML = RDFLanguages.RDFXML ; 
+        Lang.NTRIPLES = RDFLanguages.NTriples ; 
+        Lang.N3 = RDFLanguages.N3 ; 
+        Lang.TURTLE = RDFLanguages.Turtle ; 
+        Lang.RDFJSON = RDFLanguages.RDFJSON ; 
+        Lang.NQUADS = RDFLanguages.NQuads ; 
+        Lang.TRIG = RDFLanguages.TriG ; 
+
+        
     }
     // ----------------------
     
@@ -129,7 +150,7 @@ public class RDFLanguages
     }
 
     /** Register a language.
-     * To create a {@link Lang2} object use {@link LangBuilder}.
+     * To create a {@link Lang} object use {@link LangBuilder}.
      * See also 
      * {@link ParserRegistry#registerLangTriples} and 
      * {@link ParserRegistry#registerLangQuads}
@@ -137,7 +158,7 @@ public class RDFLanguages
      * 
      * @see ParserRegistry
      */
-    public static void register(Lang2 lang)
+    public static void register(Lang lang)
     {
         if ( lang == null )
             throw new IllegalArgumentException("null for language") ;
@@ -159,12 +180,12 @@ public class RDFLanguages
         }
     }
 
-    private static void checkRegistration(Lang2 lang)
+    private static void checkRegistration(Lang lang)
     {
         if ( lang == null )
             return ;
         String label = canonicalKey(lang.getLabel()) ;
-        Lang2 lang2 = mapLabelToLang.get(label) ;
+        Lang lang2 = mapLabelToLang.get(label) ;
         if ( lang2 == null )
             return ;
         if ( lang.equals(lang2) )
@@ -191,7 +212,7 @@ public class RDFLanguages
      * of content types and file extensions. 
      */
     
-    public static void unregister(Lang2 lang)
+    public static void unregister(Lang lang)
     {
         if ( lang == null )
             throw new IllegalArgumentException("null for language") ;
@@ -205,12 +226,12 @@ public class RDFLanguages
             mapFileExtToLang.remove(canonicalKey(ext)) ;
     }
     
-    public static boolean isRegistered(Lang2 lang)
+    public static boolean isRegistered(Lang lang)
     {
         if ( lang == null )
             throw new IllegalArgumentException("null for language") ;
         String label = canonicalKey(lang.getLabel()) ;
-        Lang2 lang2 = mapLabelToLang.get(label) ;
+        Lang lang2 = mapLabelToLang.get(label) ;
         if ( lang2 == null )
             return false ;
         checkRegistration(lang) ;
@@ -218,35 +239,34 @@ public class RDFLanguages
     }
 
     /** return true if the language is registered with the triples parser factories */
-    public static boolean isTriples(Lang2 lang) { return ParserRegistry.isTriples(lang) ; }
+    public static boolean isTriples(Lang lang) { return ParserRegistry.isTriples(lang) ; }
     
     /** return true if the language is registered with the quads parser factories */
-    public static boolean isQuads(Lang2 lang)   { return ParserRegistry.isQuads(lang) ; }
+    public static boolean isQuads(Lang lang)   { return ParserRegistry.isQuads(lang) ; }
     
-    /** Map a content type (without charset) to a {@link Lang2} */
-    public static Lang2 contentTypeToLang(String contentType)
+    /** Map a content type (without charset) to a {@link Lang} */
+    public static Lang contentTypeToLang(String contentType)
     {
         String key = canonicalKey(contentType) ;
         return mapContentTypeToLang.get(key) ;
     }
 
-    /** Map a content type (without charset) to a {@link Lang2} */
-    public static Lang2 contentTypeToLang(ContentType ct)
+    /** Map a content type (without charset) to a {@link Lang} */
+    public static Lang contentTypeToLang(ContentType ct)
     {
         String key = canonicalKey(ct.getContentType()) ;
         return mapContentTypeToLang.get(key) ;
     }
 
-
-    /** Map a colloquial name (e.g. "Turtle") to a {@link Lang2} */
-    public static Lang2 shortnameToLang(String label)
+    /** Map a colloquial name (e.g. "Turtle") to a {@link Lang} */
+    public static Lang shortnameToLang(String label)
     {
         String key = canonicalKey(label) ;
         return mapLabelToLang.get(key) ;
     }
     
-    /** Try to map a file extension to a {@link Lang2}; return null on no registered mapping */
-    public static Lang2 fileExtToLang(String ext)
+    /** Try to map a file extension to a {@link Lang}; return null on no registered mapping */
+    public static Lang fileExtToLang(String ext)
     {
         if ( ext == null ) return null ;
         if ( ext.startsWith(".") ) 
@@ -255,21 +275,29 @@ public class RDFLanguages
         return mapFileExtToLang.get(ext) ;
     }
 
-    /** Try to map a file name to a {@link Lang2}; return null on no registered mapping */
-    public static Lang2 filenameToLang(String filename)
+    /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
+    public static Lang filenameToLang(String filename)
     {
         return fileExtToLang(FileUtils.getFilenameExt(filename)) ;
     }
 
-    /** Turn a name for a language into a {@link Lang2} object.
+    /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
+    public static Lang filenameToLang(String filename, Lang dftLang)
+    {
+        Lang lang = filenameToLang(filename) ;
+        return (lang == null) ? dftLang : lang ;
+    }
+
+
+    /** Turn a name for a language into a {@link Lang} object.
      *  The name can be a label, or a content type.
      */
-    public static Lang2 nameToLang(String langName)
+    public static Lang nameToLang(String langName)
     {
         if ( langName == null )
             return null ;
         
-        Lang2 lang = shortnameToLang(langName) ;
+        Lang lang = shortnameToLang(langName) ;
         if ( lang != null )
             return lang ;
         lang = contentTypeToLang(langName) ;
@@ -278,23 +306,11 @@ public class RDFLanguages
     
     static String canonicalKey(String x) { return x.toLowerCase(Locale.US) ; }
 
-    // TEMPORARY
-    public static Lang convert(Lang2 lang2)
-    {
-        if ( lang2 == RDFXML )      return Lang.RDFXML ;
-        if ( lang2 == Turtle )      return Lang.TURTLE ;
-        if ( lang2 == NTriples )    return Lang.NTRIPLES ;
-        if ( lang2 == RDFJSON )     return Lang.RDFJSON ;
-        if ( lang2 == TriG )        return Lang.TRIG ;
-        if ( lang2 == NQuads )      return Lang.NQUADS ;
-        throw new RiotException("No such language to convert: "+lang2) ;
-    }
-
     public static ContentType guessContentType(String resourceName)
     {
         if ( resourceName == null )
             return null ;
-        Lang2 lang = filenameToLang(resourceName) ;
+        Lang lang = filenameToLang(resourceName) ;
         if ( lang == null )
             return null ;
         return lang.getContentType() ;
@@ -303,6 +319,13 @@ public class RDFLanguages
     private static void error(String message)
     {
         throw new RiotException(message) ; 
+    }
+
+    public static boolean sameLang(Lang lang1, Lang lang2)
+    {
+        if ( lang1 == null || lang2 == null ) return false ; 
+        if ( lang1 == lang2 ) return true ;
+        return lang1.getLabel() == lang2.getLabel() ;
     }
 }
 

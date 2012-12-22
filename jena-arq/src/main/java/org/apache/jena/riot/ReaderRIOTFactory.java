@@ -20,5 +20,5 @@ package org.apache.jena.riot;
 
 public interface ReaderRIOTFactory
 {
-    public ReaderRIOT create(Lang2 language) ;
+    public ReaderRIOT create(Lang language) ;
 }

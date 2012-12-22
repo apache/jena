@@ -27,9 +27,9 @@ import java.util.Properties ;
 
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.log4j.PropertyConfigurator ;
 import org.apache.log4j.xml.DOMConfigurator ;
-import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

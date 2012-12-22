@@ -18,13 +18,12 @@
 
 package org.apache.jena.riot.system;
 
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
 

@@ -18,11 +18,12 @@
 
 package org.apache.jena.riot.lang;
 
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.Lang ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -41,7 +42,7 @@ public final class LangNTriples extends LangNTuple<Triple>
     }
     
     @Override
-    public Lang getLang()   { return Lang.NTRIPLES ; }
+    public Lang getLang()   { return RDFLanguages.NTriples ; }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
     @Override

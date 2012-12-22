@@ -24,13 +24,14 @@ import java.util.List ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.out.SinkQuadOutput ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -143,11 +144,11 @@ public class infer extends CmdGeneral
 
     private void processFile(String filename, Sink<Quad> qsink)
     {
-        Lang lang = filename.equals("-") ? Lang.NQUADS : Lang.guess(filename, Lang.NQUADS) ;
+        Lang lang = filename.equals("-") ? RDFLanguages.NQuads : RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
         String baseURI = IRILib.filenameToIRI(filename) ;
         RDFParserOutput sink = RDFParserOutputLib.sinkQuads(qsink) ;
         
-        if ( lang.isTriples() )
+        if ( RDFLanguages.isTriples(lang) )
         {
             InputStream in = IO.openFile(filename) ;
             sink = RDFParserOutputLib.extendTriplesToQuads(sink) ;

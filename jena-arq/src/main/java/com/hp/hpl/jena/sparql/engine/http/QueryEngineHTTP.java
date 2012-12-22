@@ -27,28 +27,21 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.query.Dataset ;
-import com.hp.hpl.jena.query.Query ;
-import com.hp.hpl.jena.query.QueryException ;
-import com.hp.hpl.jena.query.QueryExecException ;
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFactory ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.resultset.CSVInput ;
 import com.hp.hpl.jena.sparql.resultset.JSONInput ;
-import com.hp.hpl.jena.sparql.resultset.TSVInput;
+import com.hp.hpl.jena.sparql.resultset.TSVInput ;
 import com.hp.hpl.jena.sparql.resultset.XMLInput ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -281,8 +274,8 @@ public class QueryEngineHTTP implements QueryExecution
         
         //Try to select language appropriately here based on the model content type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (!lang.isTriples()) 
-            throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
+        if (! RDFLanguages.isTriples(lang)) 
+           throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
         model.read(in, null, lang.getName()) ;
         this.close() ; 
         return model ;
@@ -306,7 +299,8 @@ public class QueryEngineHTTP implements QueryExecution
         
         //Try to select language appropriately here based on the model content type
         Lang lang = WebContent.contentTypeToLang(actualContentType);
-        if (!lang.isTriples()) throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
+        if (! RDFLanguages.isTriples(lang)) 
+            throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
         
         return RiotReader.createIteratorTriples(in, lang, null);
     }
@@ -328,7 +322,9 @@ public class QueryEngineHTTP implements QueryExecution
             {
             	actualContentType = askContentType;
             }
-        	
+            Lang lang = WebContent.contentTypeToLang(actualContentType);
+            if (! RDFLanguages.isTriples(lang)) 
+
             //Parse the result appropriately depending on the selected content type
             if (actualContentType.equals(WebContent.contentTypeResultsXML))
                 return XMLInput.booleanFromXML(in) ;
@@ -528,11 +524,12 @@ public class QueryEngineHTTP implements QueryExecution
      */
     public void setModelContentType(String contentType)
     {
-    	//Check that this is a valid setting
-    	Lang lang = WebContent.contentTypeToLang(contentType);
-    	if (lang == null) throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT");
-    	if (!lang.isTriples()) throw new IllegalArgumentException("Given Content Type '" + contentType + " is not a RDF Graph format");
-    	
-    	modelContentType = contentType;
+        // Check that this is a valid setting
+        Lang lang = WebContent.contentTypeToLang(contentType) ;
+        if (lang == null) 
+            throw new IllegalArgumentException("Given Content Type '" + contentType + "' is not supported by RIOT") ;
+        if (!RDFLanguages.isTriples(lang)) 
+            throw new IllegalArgumentException("Given Content Type '" + contentType + " is not a RDF Graph format") ;
+        modelContentType = contentType ;
     }
 }

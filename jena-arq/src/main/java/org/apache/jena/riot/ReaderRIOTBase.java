@@ -30,10 +30,10 @@ public abstract class ReaderRIOTBase implements ReaderRIOT
     @Override
     public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context)
     {
-        Lang2 lang = RDFLanguages.contentTypeToLang(ct) ;
+        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
         read(in, baseURI,lang, output, context) ;
     }
 
-    public abstract void read(InputStream in, String baseURI, Lang2 lang, RDFParserOutput output, Context context) ;
+    public abstract void read(InputStream in, String baseURI, Lang lang, RDFParserOutput output, Context context) ;
 }
 

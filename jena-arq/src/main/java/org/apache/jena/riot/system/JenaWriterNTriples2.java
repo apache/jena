@@ -21,8 +21,8 @@ package org.apache.jena.riot.system;
 import java.io.Writer ;
 import java.util.Iterator ;
 
-import org.openjena.riot.out.NodeToLabel ;
-import org.openjena.riot.out.OutputLangUtils ;
+import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.out.OutputLangUtils ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

@@ -21,7 +21,7 @@ package arq;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.riot.out.NQuadsWriter ;
+import org.apache.jena.riot.out.NQuadsWriter ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdUpdate ;

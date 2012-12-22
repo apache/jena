@@ -18,77 +18,79 @@
 
 package org.apache.jena.riot.lang;
 
-import java.util.ArrayList ;
-import java.util.Arrays ;
-import java.util.Collection ;
+import java.util.HashMap ;
+import java.util.Map ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.WebContent ;
 import org.junit.Assert ;
 import org.junit.Test ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
 public class TestLang extends BaseTest
 {
+    static { RDFLanguages.init() ; }
+    
     @Test public void lang_01()
-    { assertEquals(Lang.TURTLE, Lang.get("TTL")) ; }
+    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("TTL")) ; }
 
     @Test public void lang_02()
-    { assertEquals(Lang.TURTLE, Lang.get("ttl")) ; }
+    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("ttl")) ; }
 
     @Test public void lang_03()
-    { assertEquals(Lang.TURTLE, Lang.get("Turtle")) ; }
+    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("Turtle")) ; }
 
     @Test public void lang_04()
-    { assertEquals(Lang.RDFXML, Lang.get(FileUtils.langXML)) ; }
+    { assertEquals(RDFLanguages.RDFXML, RDFLanguages.shortnameToLang(FileUtils.langXML)) ; }
 
     @Test public void lang_05()
-    { assertEquals(Lang.RDFXML, Lang.get(FileUtils.langXMLAbbrev)) ; }
+    { assertEquals(RDFLanguages.RDFXML, RDFLanguages.shortnameToLang(FileUtils.langXMLAbbrev)) ; }
 
     @Test public void lang_06()
-    { assertEquals(Lang.NTRIPLES, Lang.get(FileUtils.langNTriple)) ; }
+    { assertEquals(RDFLanguages.NTriples, RDFLanguages.shortnameToLang(FileUtils.langNTriple)) ; }
+    
     
     @Test public void lang_07()
-    { assertEquals(Lang.NTRIPLES, Lang.get(WebContent.langNTriples)) ; }
+    { assertEquals(RDFLanguages.NTriples, RDFLanguages.shortnameToLang(WebContent.langNTriples)) ; }
     
     @Test public void lang_08()
-    { assertEquals(Lang.NQUADS, Lang.get(WebContent.langNQuads)) ; }
+    { assertEquals(RDFLanguages.NQuads, RDFLanguages.shortnameToLang(WebContent.langNQuads)) ; }
     
     @Test public void lang_09()
-    { assertEquals(Lang.TRIG, Lang.get(WebContent.langTriG)) ; }
+    { assertEquals(RDFLanguages.TriG, RDFLanguages.shortnameToLang(WebContent.langTriG)) ; }
 
     @Test public void lang_10()
-    { assertEquals(Lang.RDFJSON, Lang.get("RDF/JSON")) ; }
+    { assertEquals(RDFLanguages.RDFJSON, RDFLanguages.shortnameToLang("RDF/JSON")) ; }
 
     @Test public void lang_11()
-    { assertEquals(Lang.RDFJSON, Lang.get(WebContent.langRdfJson)) ; }
+    { assertEquals(RDFLanguages.RDFJSON, RDFLanguages.shortnameToLang(WebContent.langRdfJson)) ; }
 
     @Test
     public void testFileExtensionsProvided()
     {
-        for (Lang l : Lang.values())
+        for (Lang l : RDFLanguages.getRegisteredLanguages() )
         {
-            String ext = l.getDefaultFileExtension();
-            Assert.assertFalse( l+" does not have default extension defined",  ext==null||ext.isEmpty() );
             Assert.assertNotNull( l+" does not have file extensions defined", l.getFileExtensions());
-            Assert.assertTrue( l+" does not have file extensions defined", l.getFileExtensions().length > 0);
+            Assert.assertTrue( l+" does not have file extensions defined", l.getFileExtensions().size() > 0);
         }
     }
     
     @Test
     public void testFileExtensionUnique()
     {
-        Collection<String> exts = new ArrayList<String>();
-        for (Lang l : Lang.values())
+        Map<String, Lang> exts = new HashMap<String, Lang>();
+        
+        for (Lang lang1 : RDFLanguages.getRegisteredLanguages() )
         {
-            for (String ext : l.getFileExtensions())
+            for (String ext : lang1.getFileExtensions())
             {
-                Assert.assertFalse( "The "+ext+" file extensions in "+l+" was already used",
-                        exts.contains(ext));
+                Lang lang2 = exts.get(ext) ;
+                Assert.assertTrue( "The "+ext+" file extensions in "+lang1+" was already used", lang2 == null || lang1 == lang2) ;
+                exts.put(ext, lang1) ;
             }
-            exts.addAll( Arrays.asList(l.getFileExtensions()));
         }
         
     }
@@ -96,18 +98,16 @@ public class TestLang extends BaseTest
     @Test
     public void testDefaultInExtensions()
     {
-        for (Lang l : Lang.values())
-        {
-            Assert.assertTrue( l+" default extension not in file extensions list", Arrays.asList( l.getFileExtensions()).contains( l.getDefaultFileExtension())  );
-        }
+        for (Lang l : RDFLanguages.getRegisteredLanguages() )
+            Assert.assertTrue( l+" default extension not in file extensions list", l.getFileExtensions().contains( l.getFileExtensions().get(0))  );
     }
     
     @Test
     public void testGet()
     {
-        for (Lang l : Lang.values())
+        for (Lang l : RDFLanguages.getRegisteredLanguages() )
         {
-            Assert.assertNotNull( l+" can not be parsed by name", Lang.get( l.getName(), null )  );
+            Assert.assertNotNull( l+" can not be parsed by name", RDFLanguages.shortnameToLang( l.getName())  );
         }
     }
 

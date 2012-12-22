@@ -20,11 +20,12 @@ package org.apache.jena.riot.lang;
 
 import static org.apache.jena.riot.tokens.TokenType.DOT ;
 import static org.apache.jena.riot.tokens.TokenType.RBRACE ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -55,7 +56,7 @@ public class LangTriG extends LangTurtleBase<Quad>
     }
     
     @Override
-    public Lang getLang()   { return Lang.TRIG ; }
+    public Lang getLang()   { return RDFLanguages.TriG ; }
 
     @Override
     protected final void oneTopLevelElement()

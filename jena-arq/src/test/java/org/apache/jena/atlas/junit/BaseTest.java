@@ -22,9 +22,9 @@ import java.util.ArrayDeque ;
 import java.util.Deque ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.junit.Assert ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
 
 public class BaseTest extends Assert
 {

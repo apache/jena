@@ -18,7 +18,7 @@
 
 package arq.examples.riot;
 
-import org.openjena.riot.SysRIOT ;
+import org.apache.jena.riot.IO_Jena ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -32,7 +32,7 @@ public class ExRIOT_1
         // Ensure RIOT loaded.
         // This is only needed to be sure - touching any ARQ code will load RIOT.
         // This operation can be called several times.
-        SysRIOT.wireIntoJena() ;
+        IO_Jena.wireIntoJena() ;
 
         Model m = null ;
         
@@ -43,10 +43,10 @@ public class ExRIOT_1
         FileManager.get().readModel(m, "D2.ttl") ;
         
         // Or use Model.read
-        m.read("file:D3.nt", "TTL") ;
+        m.read("D3.nt", "TTL") ;
         
         // Go back to using the old Jena readers.  
-        SysRIOT.resetJenaReaders() ;
+        IO_Jena.resetJenaReaders() ;
         m = FileManager.get().loadModel("D.nt") ;
     }
 }

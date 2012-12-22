@@ -18,7 +18,7 @@
 
 package arq.examples.update;
 
-import org.openjena.riot.RiotWriter ;
+import org.apache.jena.riot.RiotWriter ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.update.GraphStore ;

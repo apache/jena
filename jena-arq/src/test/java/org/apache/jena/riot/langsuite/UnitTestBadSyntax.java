@@ -18,13 +18,13 @@
 
 package org.apache.jena.riot.langsuite;
 
-import static org.openjena.riot.SysRIOT.fmtMessage ;
+import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.WebReader2 ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -33,9 +33,9 @@ import com.hp.hpl.jena.sparql.junit.EarlReport ;
 public class UnitTestBadSyntax extends LangTestCase
 {
     private final String uri ;
-    private final Lang2 lang ;
+    private final Lang lang ;
 
-    protected UnitTestBadSyntax(String name, String testURI, String uri, Lang2 lang, EarlReport earl)
+    protected UnitTestBadSyntax(String name, String testURI, String uri, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
         this.uri = uri ;
@@ -77,7 +77,7 @@ public class UnitTestBadSyntax extends LangTestCase
     {
         Model model = ModelFactory.createDefaultModel() ;
         try {
-            WebReader2.read(model, uri, uri, lang) ;
+            RDFDataMgr.read(model, uri, uri, lang) ;
         } catch (RiotException ex) { return ; }
         catch (RuntimeException ex) {
             ex.printStackTrace(System.err) ;
