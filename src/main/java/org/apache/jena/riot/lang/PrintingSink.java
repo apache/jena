@@ -19,7 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.lib.Sink ;
-import org.openjena.riot.out.NodeFmtLib ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Triple ;

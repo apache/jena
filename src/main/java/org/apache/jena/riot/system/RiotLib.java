@@ -18,13 +18,16 @@
 
 package org.apache.jena.riot.system;
 
+import static org.apache.jena.riot.RDFLanguages.NQuads ;
+import static org.apache.jena.riot.RDFLanguages.NTriples ;
+import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
+import static org.apache.jena.riot.RDFLanguages.sameLang ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ARQ ;
@@ -59,7 +62,7 @@ public class RiotLib
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
-    static ParserProfile profile = profile(Lang.TURTLE, null, null) ;
+    static ParserProfile profile = profile(RDFLanguages.Turtle, null, null) ;
     static {
         PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
@@ -92,21 +95,11 @@ public class RiotLib
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
     {
-        switch (lang)
-        {
-            case NQUADS :
-            case NTRIPLES :
-                return profile(baseIRI, false, false, handler) ;
-            case RDFJSON:
-            	return profile(baseIRI, false, true, handler) ;
-            case N3 :
-            case TURTLE :
-            case TRIG :
-            case RDFXML :
-                return profile(baseIRI, true, true, handler) ;
-            
-        }
-        return null ;
+        if ( sameLang(NTriples, lang) || sameLang(NQuads, lang) )
+            return profile(baseIRI, false, false, handler) ;
+        if ( sameLang(RDFJSON, lang) )
+            return profile(baseIRI, false, true, handler) ;
+        return profile(baseIRI, true, true, handler) ;
     }
 
     public static ParserProfile profile(String baseIRI, boolean resolveIRIs, boolean checking, ErrorHandler handler)

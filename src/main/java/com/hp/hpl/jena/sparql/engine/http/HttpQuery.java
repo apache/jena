@@ -33,7 +33,7 @@ import java.util.zip.GZIPInputStream ;
 
 import org.apache.commons.codec.binary.Base64 ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

@@ -63,15 +63,15 @@ public class TestLangRIOT extends BaseTest
     @Test public void guess_08() { guess("D.nq", RDFLanguages.NQuads) ; }
     @Test public void guess_09() { guess("D.trig", RDFLanguages.TriG) ; }
     
-    private void test(Lang2 expected, String string)
+    private void test(Lang expected, String string)
     {
-        Lang2 lang = RDFLanguages.nameToLang(string) ;
+        Lang lang = RDFLanguages.nameToLang(string) ;
         assertEquals(expected, lang) ;
     }
 
-    private void guess(String filename, Lang2 expected)
+    private void guess(String filename, Lang expected)
     {
-        Lang2 lang = RDFLanguages.filenameToLang(filename) ;
+        Lang lang = RDFLanguages.filenameToLang(filename) ;
         assertEquals(expected, lang) ;
     }
 

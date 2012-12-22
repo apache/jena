@@ -22,12 +22,16 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.openjena.riot.* ;
 
 /** Example of using RIOT directly.
  */
@@ -36,7 +40,7 @@ public class ExRIOT_2
     public static void main(String...argv) throws FileNotFoundException
     {
         // Ensure RIOT loaded.
-        SysRIOT.wireIntoJena() ;
+        RIOT.init() ;
 
         RDFParserOutput noWhere = RDFParserOutputLib.sinkNull() ;
 
@@ -44,13 +48,13 @@ public class ExRIOT_2
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
-        RiotReader.parseQuads(in, Lang.TRIG, "http://example/base", noWhere) ;
+        RiotReader.parseQuads(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
         
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
             
         in = new FileInputStream("data.trig") ;
-        LangRIOT parser = RiotReader.createParserQuads(in, Lang.TRIG, "http://example/base", noWhere) ;
+        LangRIOT parser = RiotReader.createParserQuads(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
         
         // Parser to first error or warning.
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStrict ;

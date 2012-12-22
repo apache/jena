@@ -19,7 +19,7 @@
 package com.hp.hpl.jena.sparql.modify.request;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.openjena.riot.out.SinkQuadBracedOutput;
+import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 

@@ -18,7 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import org.openjena.riot.ErrorHandler ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.graph.Node ;

@@ -18,8 +18,8 @@
 
 package riotcmd;
 
-import org.openjena.riot.Lang ;
-
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -43,6 +43,6 @@ public class turtle extends CmdLangParse
     }
 
     @Override
-    protected Lang selectLang(String filename, Lang nquads) 
-    { return Lang.TURTLE ; }
+    protected Lang selectLang(String filename, Lang dftLang) 
+    { return RDFLanguages.Turtle ; }
 }

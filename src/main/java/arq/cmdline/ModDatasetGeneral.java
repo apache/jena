@@ -21,9 +21,9 @@ package arq.cmdline;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
-
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFDataMgr ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.query.Dataset ;
@@ -113,20 +113,19 @@ public class ModDatasetGeneral extends ModDataset
                 
                 for ( String fn : graphURLs )
                 {
-                    if ( Lang.guess(fn).isQuads() )
+                    Lang lang = RDFLanguages.filenameToLang(fn) ; 
+                    
+                    if ( RDFLanguages.isQuads(lang) )
                         quads.add(fn) ;
                     else
                         triples.add(fn) ;
                 }
                 
                 for ( String fn : quads )
-                    RiotLoader.read(fn, ds.asDatasetGraph()) ;
-                
+                    RDFDataMgr.read(ds.asDatasetGraph(), fn) ;
                 dataset = 
                     DatasetUtils.addInGraphs(ds, triples, namedGraphURLs, fileManager, null) ;
             }
-                
-                
         } 
         catch (LabelExistsException ex)
         { throw new CmdException(ex.getMessage()) ; }

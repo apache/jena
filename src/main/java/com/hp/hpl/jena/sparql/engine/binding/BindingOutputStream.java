@@ -22,9 +22,6 @@ import java.io.* ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.out.NodeFormatter ;
-import org.openjena.riot.out.NodeFormatterTTL ;
 
 import com.hp.hpl.jena.graph.Node ;
 
@@ -32,6 +29,9 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.out.NodeFormatter ;
+import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.system.PrefixMap ;
 
 import com.hp.hpl.jena.sparql.core.Var ;

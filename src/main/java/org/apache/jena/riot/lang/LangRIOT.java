@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.lang;
 
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.openjena.riot.Lang ;
 
 public interface LangRIOT
 {

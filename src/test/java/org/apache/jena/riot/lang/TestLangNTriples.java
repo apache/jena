@@ -22,13 +22,13 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -47,7 +47,7 @@ public class TestLangNTriples extends TestLangNTuples
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
         
-        WebReader2.read(m, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTriples) ;
         assertEquals(1, m.size()) ;
         
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
@@ -55,7 +55,7 @@ public class TestLangNTriples extends TestLangNTuples
         
         // reset - reread -  new bNode.
         r = new StringReader(s) ;
-        WebReader2.read(m, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTriples) ;
         assertEquals(2, m.size()) ;
     }
 
@@ -110,7 +110,7 @@ public class TestLangNTriples extends TestLangNTuples
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(model, r, null, RDFLanguages.NTriples) ;
         return model ;
     }
 }

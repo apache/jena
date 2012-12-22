@@ -27,9 +27,9 @@ import org.apache.jena.riot.ErrorHandlerTestLib ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.checker.CheckerIRI ;
 import org.apache.jena.riot.system.Checker ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.junit.Test ;
-import org.openjena.riot.ErrorHandler ;
 
 public class TestIRI extends BaseTest
 {

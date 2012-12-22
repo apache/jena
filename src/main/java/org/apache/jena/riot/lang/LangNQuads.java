@@ -17,11 +17,12 @@
  */
 
 package org.apache.jena.riot.lang;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -41,7 +42,7 @@ public class LangNQuads extends LangNTuple<Quad>
     }
 
     @Override
-    public Lang getLang()   { return Lang.NQUADS ; }
+    public Lang getLang()   { return RDFLanguages.NQuads ; }
     
     /** Method to parse the whole stream of triples, sending each to the sink */ 
     @Override

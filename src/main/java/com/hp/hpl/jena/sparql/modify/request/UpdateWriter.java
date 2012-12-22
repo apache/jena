@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
-import org.openjena.riot.out.SinkQuadBracedOutput;
+import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;

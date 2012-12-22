@@ -26,11 +26,12 @@ import java.io.InputStream ;
 import java.io.Reader ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.Lang ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -102,7 +103,7 @@ public class LangRDFXML implements LangRIOT
     }
     
     @Override
-    public Lang getLang()   { return Lang.RDFXML ; }
+    public Lang getLang()   { return RDFLanguages.RDFXML ; }
 
     public static boolean RiotUniformCompatibility = false ;
     // Warnings in ARP that should be errors to be compatible with

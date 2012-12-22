@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.checker;
 
-import org.openjena.riot.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandler ;
 
 import com.hp.hpl.jena.graph.Node ;
 

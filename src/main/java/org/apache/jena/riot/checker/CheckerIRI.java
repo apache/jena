@@ -20,8 +20,6 @@ package org.apache.jena.riot.checker;
 
 import java.util.Iterator ;
 
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 
@@ -30,6 +28,8 @@ import org.apache.jena.atlas.lib.CacheFactory ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 
 public class CheckerIRI implements NodeChecker

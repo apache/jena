@@ -31,18 +31,23 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkCounting ;
 import org.apache.jena.atlas.lib.SinkNull ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.lang.* ;
+import org.apache.jena.riot.* ;
+import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.out.SinkQuadOutput ;
+import org.apache.jena.riot.out.SinkTripleOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.log4j.PropertyConfigurator ;
-import org.openjena.riot.* ;
-import org.openjena.riot.out.NodeToLabel ;
-import org.openjena.riot.out.SinkQuadOutput ;
-import org.openjena.riot.out.SinkTripleOutput ;
 import arq.cmd.CmdException ;
 import arq.cmdline.* ;
 
@@ -92,9 +97,9 @@ public abstract class CmdLangParse extends CmdGeneral
     
     protected static Map<Lang, LangHandler> dispatch = new HashMap<Lang, LangHandler>() ; 
     static {
-        for ( Lang lang : Lang.values())
+        for ( Lang lang : RDFLanguages.getRegisteredLanguages() )
         {
-            if ( lang.isQuads() )
+            if ( RDFLanguages.isQuads(lang) )
                 dispatch.put(lang, langHandlerQuads) ;
             else
                 dispatch.put(lang, langHandlerTriples) ;
@@ -222,7 +227,7 @@ public abstract class CmdLangParse extends CmdGeneral
         parseRIOT(baseURI, filename, in) ;
     }
     
-    protected abstract Lang selectLang(String filename, Lang lang) ;
+    protected abstract Lang selectLang(String filename, Lang dftLang) ;
 
     protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
@@ -247,7 +252,7 @@ public abstract class CmdLangParse extends CmdGeneral
             // TODO skipOnBadterm
         }
         
-        Lang lang = selectLang(filename, Lang.NQUADS) ;  
+        Lang lang = selectLang(filename, RDFLanguages.NQuads) ;  
         LangHandler handler = dispatch.get(lang) ;
         if ( handler == null )
             throw new CmdException("Undefined language: "+lang) ; 
@@ -281,7 +286,7 @@ public abstract class CmdLangParse extends CmdGeneral
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
         // That would change a lot (Triples came several years before Quads). 
         
-        if ( lang.isTriples() )
+        if ( RDFLanguages.isTriples(lang) )
         {
             Sink<Triple> s = SinkNull.create() ;
             if ( ! modLangParse.toBitBucket() )
@@ -313,7 +318,7 @@ public abstract class CmdLangParse extends CmdGeneral
         {
             if ( checking )
             {
-                if ( parser.getLang() == Lang.NTRIPLES ||  parser.getLang() == Lang.NQUADS )
+                if ( parser.getLang() == RDFLanguages.NTriples ||  parser.getLang() == RDFLanguages.NQuads )
                     parser.setProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
                 else
                     parser.setProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;

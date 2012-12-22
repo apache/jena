@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import org.apache.jena.riot.adapters.TS_RIOTAdapters ;
 import org.apache.jena.riot.lang.TS_Lang ;
+import org.apache.jena.riot.out.TS_Out ;
 import org.apache.jena.riot.process.TS_Process ;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
@@ -27,8 +28,6 @@ import org.apache.jena.riot.web.TS_RiotWeb ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
-import org.openjena.riot.RIOT ;
-import org.openjena.riot.out.TS_Out ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {

@@ -27,7 +27,7 @@ import java.util.NoSuchElementException ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.IndentedWriter ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;

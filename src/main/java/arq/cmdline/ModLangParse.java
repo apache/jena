@@ -19,8 +19,8 @@
 package arq.cmdline;
 
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.openjena.riot.RiotException ;
 import arq.cmd.CmdException ;
 
 import com.hp.hpl.jena.rdf.model.Model ;

@@ -18,29 +18,25 @@
 
 package org.apache.jena.riot.lang;
 
-import static org.openjena.riot.ErrorHandlerFactory.errorHandlerNoLogging ;
-import static org.openjena.riot.ErrorHandlerFactory.getDefaultErrorHandler ;
-import static org.openjena.riot.ErrorHandlerFactory.setDefaultErrorHandler ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.errorHandlerNoLogging ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.getDefaultErrorHandler ;
+import static org.apache.jena.riot.system.ErrorHandlerFactory.setDefaultErrorHandler ;
 
 import java.io.Reader ;
 import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebReader2 ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
-import org.apache.jena.riot.lang.LangTurtle ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.* ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
@@ -56,7 +52,7 @@ public class TestLangTurtle extends BaseTest
         String s = "_:a <http://example/p> 'foo' . " ;
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(1, m.size()) ;
         
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
@@ -64,7 +60,7 @@ public class TestLangTurtle extends BaseTest
 
         // reset - reread - new bNode.
         r = new StringReader(s) ;
-        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(2, m.size()) ;
     }
     
@@ -74,7 +70,7 @@ public class TestLangTurtle extends BaseTest
         String s = "_:a <http://example/p> 'foo' . _:a <http://example/p> 'foo' ." ;
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m, r, null, RDFLanguages.Turtle) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.Turtle) ;
         assertEquals(1, m.size()) ;
     }
 
@@ -83,7 +79,7 @@ public class TestLangTurtle extends BaseTest
     {
         Model model = ModelFactory.createDefaultModel() ;
         StringReader reader = new StringReader("@prefix x: <http://example/x>.") ;
-        WebReader2.read(model, reader, null, RDFLanguages.Turtle) ;
+        RDFDataMgr.read(model, reader, null, RDFLanguages.Turtle) ;
         assertEquals(1, model.getNsPrefixMap().size()) ;
         assertEquals("http://example/x", model.getNsPrefixURI("x")) ;
     }
@@ -130,7 +126,7 @@ public class TestLangTurtle extends BaseTest
 //        Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
 //        String baseIRI = "http://base/" ;
 //        LangTurtle parser = RiotReader.createParserTurtle(tokenizer, baseIRI, new SinkNull<Triple>()) ;
-//        parser.setProfile(RiotReader.profile(Lang.TURTLE, baseIRI, ErrorHandlerLib.errorHandlerNoLogging)) ;
+//        parser.setProfile(RiotReader.profile(RDFLanguages.Turtle, baseIRI, ErrorHandlerLib.errorHandlerNoLogging)) ;
 //        parser.parse() ;
 //    }
 

@@ -22,11 +22,11 @@ import static java.lang.String.format ;
 import java.util.HashMap ;
 import java.util.Map ;
 
+import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.system.MapWithScope ;
 import org.apache.jena.riot.system.SyntaxLabels ;
-import org.openjena.riot.SysRIOT ;
-import org.openjena.riot.out.NodeFmtLib ;
-import org.openjena.riot.out.NodeToLabel ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

@@ -18,46 +18,23 @@
 
 package org.openjena.riot;
 
-import org.apache.jena.riot.IO_Jena ;
-import org.slf4j.Logger ;
-import org.slf4j.LoggerFactory ;
 
+/** @deprecated */
+@Deprecated
 public class SysRIOT
 {
-    public static final String riotLoggerName = "org.openjena.riot" ;
-    private static Logger riotLogger = LoggerFactory.getLogger(riotLoggerName) ;
-    
-    public static boolean StrictXSDLexicialForms = false ;
-    public static boolean strictMode             = false ;
-    
-    public static final String BNodeGenIdPrefix = "genid" ;
-    
-    static public String fmtMessage(String message, long line, long col)
-    {
-        if ( col == -1 && line == -1 )
-                return message ;
-        if ( col == -1 && line != -1 )
-            return String.format("[line: %d] %s", line, message) ;
-        if ( col != -1 && line == -1 )
-            return String.format("[col: %d] %s", col, message) ;
-        // Mild attempt to keep some alignment
-        return String.format("[line: %d, col: %-2d] %s", line, col, message) ;
-    }
-
-    public static Logger getLogger()
-    {
-        return riotLogger ;
-    }
-    
+    /** @deprecated Use {@link org.apache.jena.riot.IO_Jena#wireIntoJena} if necessary */
+    @Deprecated
     public static void wireIntoJena()
     {
-        RIOT.init() ;
-        IO_Jena.wireIntoJena() ;
+        org.apache.jena.riot.IO_Jena.wireIntoJena() ;
     }
     
+    /** @deprecated Use {@link org.apache.jena.riot.IO_Jena#wireIntoJena} if necessary */
+    @Deprecated
     public static void resetJenaReaders()
     {
-        IO_Jena.resetJenaReaders() ;
+        org.apache.jena.riot.IO_Jena.wireIntoJena() ;
     }
 
 }

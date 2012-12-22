@@ -20,8 +20,8 @@ package org.apache.jena.riot.web;
 
 import junit.framework.Assert;
 
+import org.apache.jena.riot.WebContent ;
 import org.junit.Test;
-import org.openjena.riot.WebContent ;
 
 public class TestWebContent {
 

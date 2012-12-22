@@ -19,7 +19,7 @@
 package org.apache.jena.riot.system;
 
 import org.apache.jena.riot.lang.LabelToNode ;
-import org.openjena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.out.NodeToLabel ;
 
 /** Factory for default policies for syntax labels to and from nodes */  
 public class SyntaxLabels

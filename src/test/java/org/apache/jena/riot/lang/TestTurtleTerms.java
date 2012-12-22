@@ -19,6 +19,7 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangTurtle ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
@@ -26,7 +27,6 @@ import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
-import org.openjena.riot.RiotReader ;
 
 public class TestTurtleTerms extends BaseTest
 {

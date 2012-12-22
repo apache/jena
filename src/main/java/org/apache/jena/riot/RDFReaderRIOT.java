@@ -55,15 +55,15 @@ public class RDFReaderRIOT implements RDFReader
     @SuppressWarnings("deprecation")
     @Override
     public void read(Model model, Reader r, String base)
-    { WebReader2.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
+    { RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
 
     @Override
     public void read(Model model, InputStream r, String base)
-    { WebReader2.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
+    { RDFDataMgr.read(model, r, base, RDFLanguages.nameToLang(hintlang)) ; }
     
     @Override
     public void read(Model model, String url)
-    { WebReader2.read(model, url, RDFLanguages.nameToLang(hintlang)) ; }
+    { RDFDataMgr.read(model, url, RDFLanguages.nameToLang(hintlang)) ; }
 
     @Override
     public Object setProperty(String propName, Object propValue)

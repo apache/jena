@@ -21,8 +21,8 @@ package org.apache.jena.riot.adapters;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.stream.* ;
-import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 

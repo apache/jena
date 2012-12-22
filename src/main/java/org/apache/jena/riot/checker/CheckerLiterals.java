@@ -20,13 +20,13 @@ package org.apache.jena.riot.checker;
 
 import java.util.regex.Pattern ;
 
+import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException ;
 import org.apache.xerces.impl.dv.ValidatedInfo ;
 import org.apache.xerces.impl.dv.ValidationContext ;
 import org.apache.xerces.impl.dv.XSSimpleType ;
 import org.apache.xerces.impl.validation.ValidationState ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.SysRIOT ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
 import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType ;

@@ -205,7 +205,7 @@
             </group>
             <group>
               <title>RIOT</title>
-              <packages>org.openjena.riot</packages>
+              <packages>org.apache.jena.riot</packages>
             </group>
           </groups>
           <bottom>Licenced under the Apache License, Version 2.0</bottom>

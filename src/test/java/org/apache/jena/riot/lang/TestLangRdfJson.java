@@ -25,8 +25,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRDFJSON ;
@@ -37,8 +36,6 @@ import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -48,13 +45,13 @@ public class TestLangRdfJson extends BaseTest
 	@BeforeClass
 	public static void setup()
 	{
-		SysRIOT.wireIntoJena();
+		IO_Jena.wireIntoJena();
 	}
 	
 	@AfterClass
 	public static void teardown()
 	{
-		SysRIOT.resetJenaReaders();
+	    IO_Jena.resetJenaReaders();
 	}
 	
 	@Test
@@ -522,7 +519,7 @@ public class TestLangRdfJson extends BaseTest
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(model, r, null, RDFLanguages.NTriples) ;
         return model ;
     }
 
@@ -530,7 +527,7 @@ public class TestLangRdfJson extends BaseTest
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, r, null, RDFLanguages.RDFJSON) ;
+        RDFDataMgr.read(model, r, null, RDFLanguages.RDFJSON) ;
         return model ;
     }
 

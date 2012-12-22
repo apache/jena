@@ -22,7 +22,6 @@ import junit.framework.TestSuite ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.AllTests ;
-import org.openjena.riot.RIOT ;
 
 /** The test suites - these are driven by a manifest file and use external files for tests */
 

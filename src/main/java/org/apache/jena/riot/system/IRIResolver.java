@@ -25,7 +25,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIException ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.ViolationCodes ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.RiotException ;
 
 /** Package up IRI reolver functionality. */
 
