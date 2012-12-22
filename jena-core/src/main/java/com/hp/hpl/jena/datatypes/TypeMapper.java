@@ -54,6 +54,10 @@ public class TypeMapper {
         return theTypeMap;
     }
 
+    public static void setInstance(TypeMapper typeMapper) {
+        theTypeMap = typeMapper ;
+    }
+
     /**
      * The single global instance of the TypeMapper
      */
@@ -62,7 +66,8 @@ public class TypeMapper {
     /**
      * Static initializer. Adds builtin datatypes to the mapper.
      */
-    static {
+    static { reset() ; }
+    public static void reset() {
         theTypeMap = new TypeMapper();
         theTypeMap.registerDatatype(XMLLiteralType.theXMLLiteralType);
         XSDDatatype.loadXSDSimpleTypes(theTypeMap);
