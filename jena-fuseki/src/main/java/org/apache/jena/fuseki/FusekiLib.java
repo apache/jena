@@ -26,9 +26,10 @@ import javax.servlet.http.HttpServletRequest ;
 import org.apache.commons.lang.StringUtils ;
 import org.apache.jena.atlas.lib.MultiMap ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.WebContent ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -45,31 +46,9 @@ public class FusekiLib
     { 
         if ( mimeType == null )
             return null ;
-        return mapContentTypeToLang.get(mimeType.toLowerCase()) ;
+        return WebContent.contentTypeToLang(mimeType.toLowerCase()) ;
     }
     
-    private static Model dummy = ModelFactory.createDefaultModel() ;
-    private static Map<String, Lang> mapContentTypeToLang = new HashMap<String, Lang>() ;
-    // Use riot.WebContent on next ARQ update.
-    static {
-        mapContentTypeToLang.put(WebContent.contentTypeRDFXML, Lang.RDFXML) ;
-        mapContentTypeToLang.put(WebContent.contentTypeRDFJSON, Lang.RDFJSON) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtle, Lang.TURTLE) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt1, Lang.TURTLE) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTurtleAlt2, Lang.TURTLE) ;
-        mapContentTypeToLang.put(WebContent.contentTypeNTriples, Lang.NTRIPLES) ;   // text/plain
-        mapContentTypeToLang.put(WebContent.contentTypeNTriplesAlt, Lang.NTRIPLES) ;
-        
-        
-        mapContentTypeToLang.put(WebContent.contentTypeTriG, Lang.TRIG) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTriGAlt1, Lang.TRIG) ;
-        mapContentTypeToLang.put(WebContent.contentTypeTriGAlt2, Lang.TRIG) ;
-        mapContentTypeToLang.put(WebContent.contentTypeNQuads, Lang.NQUADS) ;
-        mapContentTypeToLang.put(WebContent.contentTypeNQuadsAlt1, Lang.NQUADS) ;
-        mapContentTypeToLang.put(WebContent.contentTypeNQuadsAlt2, Lang.NQUADS) ;
-    }
-    // ---- 
-
     public static MediaType contentType(HttpServletRequest request)
     {
         String x = request.getHeader(HttpNames.hContentType) ;
@@ -80,47 +59,23 @@ public class FusekiLib
 
     private static Map<Lang, String> mapLangToWriterName =  new HashMap<Lang, String>() ;
     static {
-        mapLangToWriterName.put(Lang.N3, WebContent.langN3) ;
-        mapLangToWriterName.put(Lang.RDFJSON, WebContent.langRdfJson) ;
-        mapLangToWriterName.put(Lang.TURTLE, WebContent.langTurtle) ;
-        mapLangToWriterName.put(Lang.NTRIPLES, WebContent.langNTriples) ;
-        mapLangToWriterName.put(Lang.RDFXML, WebContent.langRDFXML) ;
+        mapLangToWriterName.put(RDFLanguages.N3, WebContent.langN3) ;
+        mapLangToWriterName.put(RDFLanguages.RDFJSON, WebContent.langRdfJson) ;
+        mapLangToWriterName.put(RDFLanguages.Turtle, WebContent.langTurtle) ;
+        mapLangToWriterName.put(RDFLanguages.NTriples, WebContent.langNTriples) ;
+        mapLangToWriterName.put(RDFLanguages.RDFXML, WebContent.langRDFXML) ;
     }
     
+    private static Model dummy = ModelFactory.createDefaultModel() ;
     public static RDFWriter chooseWriter(Lang lang)        
     {
         if ( lang == null )
-            lang = Lang.RDFXML ;
+            lang = RDFLanguages.RDFXML ;
         String name = mapLangToWriterName.get(lang) ;
-        
         if ( name == null )
             throw new RiotException("Not a triples language: "+lang) ;
         return dummy.getWriter(name) ;
     }
-
-//    static public MediaType match(String headerString, AcceptList offerList)
-//    {
-//        AcceptList l = new AcceptList(headerString) ;
-//        return AcceptList.match(l, offerList) ;
-//    }
-//
-//    public static String match(String headerString, String str)
-//    {
-//        AcceptList l = new AcceptList(headerString) ;
-//        MediaType aItem = new MediaType(str) ;   
-//    
-//        MediaType m = l.match(aItem) ;
-//        if ( m == null )
-//            return null ;
-//        return m.toHeaderString() ;
-//    }
-//
-//    public static boolean accept(String headerString, String str)
-//    {
-//        AcceptList l = new AcceptList(headerString) ;
-//        MediaType aItem = new MediaType(str) ;
-//        return l.accepts(aItem) ;
-//    }
 
     static String fmtRequest(HttpServletRequest request)
     {

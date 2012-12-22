@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki.validation;
 
-import static org.openjena.riot.SysRIOT.fmtMessage ;
+import static org.apache.jena.riot.SysRIOT.fmtMessage ;
 
 import java.io.IOException ;
 import java.io.PrintStream ;
@@ -32,16 +32,17 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.FusekiLib ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -73,9 +74,9 @@ public class DataValidator extends ValidatorBase
             
             String syntax = FusekiLib.safeParameter(httpRequest, paramSyntax) ;
             if ( syntax == null || syntax.equals("") )
-                syntax = Lang.NQUADS.getName() ;
+                syntax = RDFLanguages.NQuads.getName() ;
 
-            Lang language = Lang.get(syntax) ;
+            Lang language = RDFLanguages.shortnameToLang(syntax) ;
             if ( language == null )
             {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unknown syntax: "+syntax) ;

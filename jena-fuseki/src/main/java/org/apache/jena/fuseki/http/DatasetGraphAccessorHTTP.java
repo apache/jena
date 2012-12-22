@@ -41,12 +41,12 @@ import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.* ;
 import org.apache.jena.fuseki.migrate.UnmodifiableGraph ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

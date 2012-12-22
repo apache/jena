@@ -27,31 +27,27 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
-import org.apache.jena.riot.lang.SinkQuadsToDataset ;
-import org.apache.jena.riot.lang.SinkTriplesToGraph ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.SysRIOT ;
 import org.eclipse.jetty.server.Server ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.SysRIOT ;
 import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -248,21 +244,15 @@ public class FusekiCmd extends CmdARQ
             if ( ! FileOps.exists(filename) )
                 throw new CmdException("File not found: "+filename) ;
 
-            Lang language = Lang.guess(filename) ;
+            Lang language = RDFLanguages.filenameToLang(filename) ;
             if ( language == null )
                 throw new CmdException("Can't guess language for file: "+filename) ;
             InputStream input = IO.openFile(filename) ; 
             
-            if ( language.isQuads() )
-            {
-                Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
-                RiotLoader.readQuads(input, language, filename, sink) ;
-            }
+            if ( RDFLanguages.isQuads(language) )
+                RDFDataMgr.read(dsg, filename) ;
             else
-            {
-                Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
-                RiotLoader.readTriples(input, language, filename, sink) ;
-            }
+                RDFDataMgr.read(dsg.getDefaultGraph(), filename) ;
         }
         
         if ( contains(argMemTDB) )
