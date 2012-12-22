@@ -23,13 +23,14 @@ import java.io.InputStream ;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.Fuseki ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
@@ -73,7 +74,7 @@ public class GraphLoadUtils
     // ** Worker.
     private static void readUtil(Graph graph, String uri, int limit)
     {
-        Lang lang = Lang.guess(uri, Lang.RDFXML) ;
+        Lang lang = RDFLanguages.filenameToLang(uri, RDFLanguages.RDFXML) ;
         
         Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
         sink = new SinkLimited<Triple>(sink, limit) ;

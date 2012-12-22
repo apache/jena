@@ -33,9 +33,10 @@ import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.system.SinkExtendTriplesToQuads ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
 import org.slf4j.Logger ;
 import tdb.cmdline.CmdTDB ;
 import arq.cmd.CmdException ;
@@ -119,7 +120,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         for( String filename : datafiles)
         {
-            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
+            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
             if ( lang == null )
                 // Does not happen due to default above.
                 cmdError("File suffix not recognized: " +filename) ;
@@ -161,11 +162,11 @@ public class CmdNodeTableBuilder extends CmdGeneral
                 cmdLog.info("Load: "+filename+" -- "+Utils.nowAsString()) ;
             
             InputStream in = IO.openFile(filename) ;
-            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
-            if ( lang.isTriples() )
-                RiotLoader.readTriples(in, lang, null, sink2) ;
+            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
+            if ( RDFLanguages.isTriples(lang) )
+                RiotReader.parseTriples(in, lang, null, sink2) ;
             else
-                RiotLoader.readQuads(in, lang, null, sink) ;
+                RiotReader.parseQuads(in, lang, null, sink) ;
         }
         sink.close() ;
         IO.close(outputTriples) ;

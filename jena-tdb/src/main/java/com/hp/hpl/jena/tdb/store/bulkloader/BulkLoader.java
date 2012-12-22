@@ -18,14 +18,12 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import static org.openjena.riot.Lang.NQUADS ;
-import static org.openjena.riot.Lang.NTRIPLES ;
-
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.event.EventType ;
-import org.openjena.riot.RiotReader ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -146,7 +144,7 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.start() ;
-        RiotReader.parseTriples(input, NTRIPLES, null, dest) ;
+        RiotReader.parseTriples(input, RDFLanguages.NTriples, null, dest) ;
         dest.finish() ;
     }
     
@@ -167,7 +165,7 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.start() ;
-        RiotReader.parseQuads(input, NQUADS, null, dest) ;
+        RiotReader.parseQuads(input, RDFLanguages.NQuads, null, dest) ;
         dest.finish() ;
     }
     

@@ -22,7 +22,8 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.riot.Lang ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -234,8 +235,8 @@ public class TDBLoader
         {
             for ( String url : urls )
             {
-                Lang lang = Lang.guess(url) ;
-                if ( lang != null && ! lang.isQuads() )
+                Lang lang = RDFLanguages.filenameToLang(url) ;
+                if ( lang != null && RDFLanguages.isQuads(lang) )
                     throw new TDBException("Not a triples language") ;
             }
         }

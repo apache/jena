@@ -30,12 +30,13 @@ import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.RiotWriter ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.RiotWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -67,21 +68,21 @@ public class REST_Quads extends SPARQL_REST
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = Lang.TRIG ;
+            lang = RDFLanguages.TriG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( ! lang.isQuads() )
+        if ( ! RDFLanguages.isQuads(lang) )
             errorBadRequest("Not a quads format: "+mediaType) ;
         
         action.beginRead() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
             
-            if ( lang == Lang.NQUADS )
+            if ( lang == RDFLanguages.NQuads )
                 RiotWriter.writeNQuads(out, dsg) ;
-            else if ( lang == Lang.TRIG )
+            else if ( lang == RDFLanguages.TriG )
                 errorBadRequest("TriG - Not implemented (yet) : "+mediaType) ;
             else
                 errorBadRequest("No handled: "+mediaType) ;
@@ -121,13 +122,13 @@ public class REST_Quads extends SPARQL_REST
         MediaType mediaType = MediaType.create(x) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = Lang.TRIG ;
+            lang = RDFLanguages.TriG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( lang.isQuads() )
-            errorBadRequest("Quads format: "+mediaType) ;
+        if ( ! RDFLanguages.isQuads(lang) )
+            errorBadRequest("Not a quads format: "+mediaType) ;
         
         action.beginWrite() ;
         try {
