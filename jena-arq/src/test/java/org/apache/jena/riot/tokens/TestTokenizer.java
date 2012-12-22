@@ -24,8 +24,8 @@ import java.io.ByteArrayInputStream ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.riot.RiotParseException ;
 import org.junit.Test ;
-import org.openjena.riot.RiotParseException ;
 
 import com.hp.hpl.jena.sparql.ARQConstants ;
 

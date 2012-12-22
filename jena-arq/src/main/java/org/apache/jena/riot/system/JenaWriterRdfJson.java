@@ -20,7 +20,7 @@ package org.apache.jena.riot.system;
 
 import java.io.Writer ;
 
-import org.openjena.riot.out.RDFJSONWriter ;
+import org.apache.jena.riot.out.RDFJSONWriter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 

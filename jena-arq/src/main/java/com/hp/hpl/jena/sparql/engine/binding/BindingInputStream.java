@@ -28,9 +28,6 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.out.NodeFmtLib ;
 
 import com.hp.hpl.jena.graph.Node ;
 
@@ -39,6 +36,7 @@ import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangEngine ;
+import org.apache.jena.riot.out.NodeFmtLib ;
 import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;

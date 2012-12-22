@@ -18,7 +18,12 @@
 
 package org.openjena.riot;
 
-public class RiotParseException extends RiotException
+import org.apache.jena.riot.SysRIOT ;
+
+
+/** @deprecated use org.apache.jena.riot.RiotParseException */
+@Deprecated
+public class RiotParseException extends org.apache.jena.riot.RiotException
 {
     final private long line ;
     final private long column ;

@@ -47,7 +47,7 @@ import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

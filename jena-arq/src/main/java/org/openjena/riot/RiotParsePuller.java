@@ -31,6 +31,7 @@ import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkToQueue ;
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ParserProfile ;
 

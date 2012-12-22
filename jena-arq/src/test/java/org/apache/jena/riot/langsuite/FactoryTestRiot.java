@@ -21,8 +21,8 @@ package org.apache.jena.riot.langsuite ;
 import junit.framework.Test ;
 import junit.framework.TestSuite ;
 import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.VocabTestRIOT ;
-import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;

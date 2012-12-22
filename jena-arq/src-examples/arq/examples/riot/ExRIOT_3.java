@@ -18,15 +18,13 @@
 
 package arq.examples.riot;
 
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.SysRIOT ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** Example of using RIOT : reading dada into datasets.
- */
+/** Example of using RIOT : reading dada into datasets. */
 public class ExRIOT_3
 {
     public static void main(String...argv)
@@ -34,19 +32,19 @@ public class ExRIOT_3
         // Ensure RIOT loaded.
         // This is only needed to be sure - touching any ARQ code will load RIOT.
         // This operation can be called several times.
-        SysRIOT.wireIntoJena() ;
-        DatasetGraph dsg = null ;
+        RIOT.init() ;
+        Dataset ds = null ;
         
         // Read a TriG file into quad storage in-memory.
-        dsg = RiotLoader.load("data.trig") ;
+        ds = RDFDataMgr.loadDataset("data.trig") ;
         
         // read some (more) data into a dataset graph.
-        RiotLoader.read("data2.trig", dsg) ;
+        RDFDataMgr.read(ds, "data2.trig") ;
         
         // Create a dataset,
-        Dataset ds = DatasetFactory.createMem() ;
+        Dataset ds2 = DatasetFactory.createMem() ;
         // read in data.
-        RiotLoader.read("data2.trig", ds.asDatasetGraph()) ;
+        RDFDataMgr.read(ds2, "data2.trig") ;
 
     }
 }

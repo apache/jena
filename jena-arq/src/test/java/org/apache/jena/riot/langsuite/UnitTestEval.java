@@ -20,12 +20,8 @@ package org.apache.jena.riot.langsuite;
 
 import java.io.InputStream ;
 
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RDFReaderRIOT ;
-import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.stream.StreamManager ;
-import org.openjena.riot.RiotException ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -38,9 +34,9 @@ public class UnitTestEval extends LangTestCase
     String input ;
     String output ;
     String baseIRI ;
-    Lang2 lang ;
+    Lang lang ;
     
-    public UnitTestEval(String name, String testURI, String input, String output, String baseIRI, Lang2 lang, EarlReport earl)
+    public UnitTestEval(String name, String testURI, String input, String output, String baseIRI, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
         this.input = input ;
@@ -64,15 +60,15 @@ public class UnitTestEval extends LangTestCase
         RDFReader rdfreader = new RDFReaderRIOT() ;
         try {
             if ( baseIRI != null )
-                WebReader2.read(model, input, baseIRI, lang) ;
+                RDFDataMgr.read(model, input, baseIRI, lang) ;
             else
-                WebReader2.read(model, input, lang) ;
+                RDFDataMgr.read(model, input, lang) ;
             
             String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
             Model results = ModelFactory.createDefaultModel() ;
             // Directly get an N-triples reader
             InputStream in = StreamManager.get().open(output) ;
-            WebReader2.read(results, in, null, RDFLanguages.NTriples) ;
+            RDFDataMgr.read(results, in, null, RDFLanguages.NTriples) ;
 
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )

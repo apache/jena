@@ -24,12 +24,12 @@ import java.util.List ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
-import org.openjena.riot.RiotReader ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;

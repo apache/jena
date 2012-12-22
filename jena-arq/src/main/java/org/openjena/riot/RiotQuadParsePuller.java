@@ -21,6 +21,8 @@ package org.openjena.riot;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;

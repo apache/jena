@@ -18,8 +18,8 @@
 
 package riotcmd;
 
-import org.openjena.riot.Lang ;
-
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 
 import com.hp.hpl.jena.sparql.util.Utils ;
 
@@ -39,9 +39,9 @@ public class riot extends CmdLangParse
     }
     
     @Override
-    protected Lang selectLang(String filename, Lang nquads)
+    protected Lang selectLang(String filename, Lang dftLang)
     {
-        return Lang.guess(filename, Lang.NQUADS) ;
+        return RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
     }
 
     @Override

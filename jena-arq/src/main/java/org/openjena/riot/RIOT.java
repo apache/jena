@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,58 +18,13 @@
 
 package org.openjena.riot;
 
-import org.apache.jena.riot.ParserRegistry ;
-import org.apache.jena.riot.RDFLanguages ;
 
-import com.hp.hpl.jena.query.ARQ ;
-import com.hp.hpl.jena.sparql.SystemARQ ;
-import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
-import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
-
+/** @deprecated Use org.apache.jena.riot.RIOT */
+@Deprecated
 public class RIOT
 {
-    /** IRI for ARQ */  
-    public static final String riotIRI = "http://openjena.org/#riot" ;
-
-    /** The product name */   
-    public static final String NAME = "RIOT";
-    
-    /** The root package name for RIOT */   
-    public static final String PATH = "org.openjena.riot";
-
-    public static final String VERSION = "ARQ/"+ARQ.VERSION ;
-    public static final String BUILD_DATE = ARQ.BUILD_DATE ;
-    
-//    static private String metadataLocation = "com/hp/hpl/jena/sparql/arq-properties.xml" ;
-//
-//    static private Metadata metadata = new Metadata(metadataLocation) ;
-//    
-//    /** The full name of the current version */   
-//    public static final String VERSION = metadata.get(PATH+".version", "unset") ;
-//   
-//    /** The date and time at which this release was built */   
-//    public static final String BUILD_DATE = metadata.get(PATH+".build.datetime", "unset") ;
-    
-    public static void setStrictMode(boolean state)
-    {
-        SysRIOT.strictMode = state ;
-        SysRIOT.StrictXSDLexicialForms = state ;
-    }
-    
-    static boolean initialized = false ;
-    public static synchronized void init()
-    {
-        if ( initialized ) return ;
-        initialized = true ;
-        
-        String NS = RIOT.PATH ;
-        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
-        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
-        SystemARQ.registerSubSystem(sysInfo2) ;
-        
-        RDFLanguages.init() ;
-        ParserRegistry.init() ;
-        
-        SysRIOT.wireIntoJena() ;
-    }
+    /** @deprecated Use org.apache.jena.riot.RIOT#init() */
+    @Deprecated
+    public static void init() { org.apache.jena.riot.RIOT.init() ; }
 }
+

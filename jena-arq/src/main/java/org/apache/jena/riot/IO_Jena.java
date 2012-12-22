@@ -20,14 +20,8 @@ package org.apache.jena.riot;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.riot.WebReader2.RDFReaderRIOT_NT ;
-import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFJSON ;
-import org.apache.jena.riot.WebReader2.RDFReaderRIOT_RDFXML ;
-import org.apache.jena.riot.WebReader2.RDFReaderRIOT_TTL ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.JenaWriterRdfJson ;
-import org.openjena.riot.RiotNotFoundException ;
-import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -76,14 +70,15 @@ public class IO_Jena
       RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", writerRdfJson) ;
     }
     
-//    // Yukky hack to integrate into current jena-core where the structure of model.read assumes
-//    // the language is determined before the reading process starts.
-//    
-//    static class RDFReaderRIOT_RDFXML extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML() { super("RDF/XML") ; } }
-//    static class RDFReaderRIOT_TTL extends RDFReaderRIOT      { public RDFReaderRIOT_TTL() { super("TTL") ; } }
-//    static class RDFReaderRIOT_NT extends RDFReaderRIOT       { public RDFReaderRIOT_NT() { super("N-TRIPLE") ; } }
-//    static class RDFReaderRIOT_RDFJSON extends RDFReaderRIOT  { public RDFReaderRIOT_RDFJSON() { super("RDF/JSON") ; } }
-
+    // Yukky hack to integrate into current jena-core where the structure of model.read assumes
+    // the language is determined before the reading process starts.
+    // Temporary - eventually, replace all model.read calls with the correct call to RIOT
+    // and then the common RDFReaderRIOT can be used.
+    public static class RDFReaderRIOT_RDFXML extends RDFReaderRIOT   { public RDFReaderRIOT_RDFXML() { super("RDF/XML") ; } }
+    public static class RDFReaderRIOT_TTL extends RDFReaderRIOT      { public RDFReaderRIOT_TTL() { super("TTL") ; } }
+    public static class RDFReaderRIOT_NT extends RDFReaderRIOT       { public RDFReaderRIOT_NT() { super("N-TRIPLE") ; } }
+    public static class RDFReaderRIOT_RDFJSON extends RDFReaderRIOT  { public RDFReaderRIOT_RDFJSON() { super("RDF/JSON") ; } }
+    
     static String jenaNTriplesReader = "com.hp.hpl.jena.rdf.model.impl.NTripleReader" ; 
     static String jenaTurtleReader = "com.hp.hpl.jena.n3.turtle.TurtleReader" ; 
     static String jenaN3Reader = jenaTurtleReader ; 
@@ -145,7 +140,7 @@ public class IO_Jena
         return in ;
     }
     
-    protected static ContentType determineCT(String target, String ctStr, Lang2 hintLang)
+    protected static ContentType determineCT(String target, String ctStr, Lang hintLang)
     {
         if ( ctStr != null )
             ctStr = WebContent.contentTypeCanonical(ctStr) ;

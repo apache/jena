@@ -18,7 +18,11 @@
 
 package org.openjena.riot;
 
-public class RiotException extends RuntimeException
+import com.hp.hpl.jena.shared.JenaException ;
+
+/** @deprecated use org.pache.jena.riot.RiotExpection */
+@Deprecated 
+public class RiotException extends JenaException
 {
     public RiotException()                          { super() ; }
     public RiotException(String msg)                { super(msg) ; }

@@ -19,11 +19,12 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.Lang ;
 
 import com.hp.hpl.jena.datatypes.TypeMapper ;
 import com.hp.hpl.jena.graph.Node ;
@@ -45,10 +46,7 @@ public class LangRDFJSON extends LangBase
 	}
 
 	@Override
-    public Lang getLang()
-	{
-		return Lang.RDFJSON ;
-	}
+	public Lang getLang()   { return RDFLanguages.RDFJSON ; }
 
 	@Override
 	protected void runParser()

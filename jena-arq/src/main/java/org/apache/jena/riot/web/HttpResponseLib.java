@@ -27,11 +27,11 @@ import org.apache.http.HttpEntity ;
 import org.apache.http.HttpResponse ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.web.MediaType ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.WebContent ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ResultSet ;

@@ -22,12 +22,12 @@ import static org.apache.jena.riot.tokens.TokenType.EOF ;
 import static org.apache.jena.riot.tokens.TokenType.NODE ;
 import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.iterator.PeekIterator ;
+import org.apache.jena.riot.RiotParseException ;
+import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.RiotParseException ;
 
 import com.hp.hpl.jena.graph.Node ;
 
