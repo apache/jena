@@ -20,7 +20,7 @@ package org.apache.jena.fuseki.migrate;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.SinkWrapper ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.RiotException ;
 
 public class SinkLimited<T> extends SinkWrapper<T>
 {

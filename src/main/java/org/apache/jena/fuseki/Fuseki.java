@@ -19,7 +19,7 @@
 package org.apache.jena.fuseki;
 
 import org.apache.jena.fuseki.server.SPARQLServer ;
-import org.openjena.riot.RIOT ;
+import org.apache.jena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -46,7 +46,6 @@ public class Fuseki
     // TEMPORARY
     static public boolean graphStoreProtocolMode = false ;
     
-    //static private String metadataDevLocation = "org/openjena/fuseki/fuseki-properties-dev.xml" ;
     static private String metadataLocation = "org/apache/jena/fuseki/fuseki-properties.xml" ;
     static private Metadata metadata = initMetadata() ;
     private static Metadata initMetadata()

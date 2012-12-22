@@ -37,11 +37,16 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.openjena.riot.* ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
@@ -196,10 +201,10 @@ public class SPARQL_Upload extends SPARQL_ServletBase
 
                     lang = FusekiLib.langFromContentType(ct.getContentType()) ;
                     if ( lang == null )
-                        lang = Lang.guess(name) ;
+                        lang = RDFLanguages.filenameToLang(name) ;
                     if ( lang == null )
                         // Desperate.
-                        lang = Lang.RDFXML ;
+                        lang = RDFLanguages.RDFXML ;
 
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     // This isolates errors.

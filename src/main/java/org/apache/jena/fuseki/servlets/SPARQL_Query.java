@@ -47,7 +47,7 @@ import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.migrate.WebIO ;
 import org.apache.jena.fuseki.server.DatasetRef ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;

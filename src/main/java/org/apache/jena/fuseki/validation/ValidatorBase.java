@@ -64,7 +64,7 @@ public abstract class ValidatorBase extends HttpServlet
     {
         httpResponse.setCharacterEncoding("UTF-8") ;
         httpResponse.setContentType("text/html") ;
-        httpResponse.setHeader(respService, "Fuseki/ARQ SPARQL Query Validator: http://openjena.org/ARQ") ;
+        httpResponse.setHeader(respService, "Fuseki/ARQ SPARQL Query Validator: http://jena.apache.org/") ;
     }
     
     protected static String htmlQuote(String str)

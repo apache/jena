@@ -43,11 +43,16 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
-import org.openjena.riot.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

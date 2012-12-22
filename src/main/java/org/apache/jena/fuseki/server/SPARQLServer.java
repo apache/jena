@@ -36,6 +36,7 @@ import org.apache.jena.fuseki.validation.DataValidator ;
 import org.apache.jena.fuseki.validation.IRIValidator ;
 import org.apache.jena.fuseki.validation.QueryValidator ;
 import org.apache.jena.fuseki.validation.UpdateValidator ;
+import org.apache.jena.riot.WebContent ;
 import org.eclipse.jetty.http.MimeTypes ;
 import org.eclipse.jetty.server.Connector ;
 import org.eclipse.jetty.server.Server ;
@@ -44,7 +45,6 @@ import org.eclipse.jetty.servlet.DefaultServlet ;
 import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
-import org.openjena.riot.WebContent ;
 
 import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.servlets.GzipFilter;

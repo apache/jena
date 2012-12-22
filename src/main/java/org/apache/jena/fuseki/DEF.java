@@ -20,7 +20,7 @@ package org.apache.jena.fuseki;
 
 import org.apache.jena.atlas.web.AcceptList ;
 import org.apache.jena.atlas.web.MediaType ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 
 public class DEF
 {
