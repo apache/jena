@@ -20,14 +20,11 @@ package com.hp.hpl.jena.tdb.solver;
 
 import static com.hp.hpl.jena.tdb.lib.Lib2.printAbbrev ;
 
-import java.util.Collection ;
-import java.util.HashSet ;
-import java.util.Iterator ;
-import java.util.List ;
-import java.util.Set ;
+import java.util.* ;
 
 import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.iterator.IteratorWrapper ;
 import org.apache.jena.atlas.iterator.Transform ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
@@ -35,6 +32,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.QueryCancelledException ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
@@ -94,7 +92,6 @@ public class SolverLib
     
     public static Iterator<Binding> convertToNodes(Iterator<BindingNodeId> iterBindingIds, NodeTable nodeTable)
     { return Iter.map(iterBindingIds, convToBinding(nodeTable)) ; }
-
     
     // The worker.  Callers choose the NodeTupleTable.  
     //     graphNode may be Node.ANY, meaning we should make triples unique.
@@ -120,6 +117,7 @@ public class SolverLib
         NodeTable nodeTable = nodeTupleTable.getNodeTable() ;
         
         Iterator<BindingNodeId> chain = Iter.map(input, SolverLib.convFromBinding(nodeTable)) ;
+        List<Abortable> killList = new ArrayList<Abortable>() ;
         
         for ( Triple triple : triples )
         {
@@ -131,6 +129,7 @@ public class SolverLib
                 // 4-tuples.
                 tuple = Tuple.create(graphNode, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
             chain = solve(nodeTupleTable, tuple, anyGraph, chain, filter, execCxt) ;
+            chain = makeAbortable(chain, killList) ; 
         }
         
         // DEBUG POINT
@@ -142,13 +141,67 @@ public class SolverLib
                 System.out.println("No results") ;
         }
         
-        // XXX
+        // Timeout wrapper ****
+        // QueryIterTDB gets called async.
+        // Iter.abortable?
+        // Or each iterator has a place to test.
+        // or pass in a thing to test?
+        
         
         // Need to make sure the bindings here point to parent.
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         
         // "input" will be closed by QueryIterTDB but is otherwise unused.
-        return new QueryIterTDB(iterBinding, input, execCxt) ;
+        // "killList" wil be aborted on timeout.
+        return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
+    }
+    
+    /** Create an abortable iterator, storing it in the killList.
+     *  Just return the input iterator if kilList is null. 
+     */
+    static <T> Iterator<T> makeAbortable(Iterator<T> iter, List<Abortable> killList)
+    {
+        if ( killList == null )
+            return iter ;
+        IterAbortable<T> k = new IterAbortable<T>(iter) ;
+        killList.add(k) ;
+        return k ;
+    }
+    
+    /** Iterator that adds an abort operation which can be called
+     *  at any time, including from another thread, and causes the
+     *  iterator to throw an exception when next touched (hasNext, next).  
+     */
+    static class IterAbortable<T> extends IteratorWrapper<T> implements Abortable
+    {
+        volatile boolean abortFlag = false ;
+        
+        public IterAbortable(Iterator<T> iterator)
+        {
+            super(iterator) ;
+        }
+        
+        /** Can call asynchronously at anytime */
+        @Override
+        public void abort() { 
+            abortFlag = true ;
+        }
+        
+        @Override
+        public boolean hasNext()
+        {
+            if ( abortFlag )
+                throw new QueryCancelledException() ;
+            return iterator.hasNext() ; 
+        }
+        
+        @Override
+        public T next()
+        {
+            if ( abortFlag )
+                throw new QueryCancelledException() ;
+            return iterator.next() ; 
+        }
     }
     
     private static Iterator<BindingNodeId> solve(NodeTupleTable nodeTupleTable, 
@@ -231,11 +284,18 @@ public class SolverLib
                                            QueryIterator input, Filter<Tuple<NodeId>> filter,
                                            ExecutionContext execCxt)
     {
+        List<Abortable> killList = new ArrayList<Abortable>() ;
         Iterator<Tuple<NodeId>> iter1 = ds.getQuadTable().getNodeTupleTable().find(NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny, NodeId.NodeIdAny) ;
         if ( filter != null )
             iter1 = Iter.filter(iter1, filter) ;
+        
         Iterator<NodeId> iter2 = Tuple.project(0, iter1) ;
+        // Project is cheap - don't brother wrapping iter1 
+        iter2 = makeAbortable(iter2, killList) ;
+        
         Iterator<NodeId> iter3 = Iter.distinct(iter2) ;
+        iter3 = makeAbortable(iter3, killList) ;
+        
         Iterator<Node> iter4 = NodeLib.nodes(ds.getQuadTable().getNodeTupleTable().getNodeTable(), iter3) ;
         
         final Var var = Var.alloc(graphNode) ;
@@ -248,8 +308,8 @@ public class SolverLib
         } ;
         
         Iterator<Binding> iterBinding = Iter.map(iter4, bindGraphName) ;
-        
-        return new QueryIterTDB(iterBinding, input, execCxt) ;
+        // Not abortable.
+        return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
     }
     
     /** Turn a BasicPattern into an abbreviated string for debugging */  

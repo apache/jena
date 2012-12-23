@@ -18,23 +18,26 @@
 
 package com.hp.hpl.jena.tdb.solver;
 
-import java.util.Iterator;
+import java.util.Iterator ;
+import java.util.List ;
 
-import com.hp.hpl.jena.sparql.engine.ExecutionContext;
-import com.hp.hpl.jena.sparql.engine.QueryIterator;
-import com.hp.hpl.jena.sparql.engine.binding.Binding;
-import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 
 public class QueryIterTDB extends QueryIterPlainWrapper
 {
     // Rename as QueryIterCloseOther?
     final private QueryIterator originalInput ;
+    private List<Abortable> killList ;
     
     // The original input needs closing as well.
-    public QueryIterTDB(Iterator<Binding> iterBinding, QueryIterator originalInput, ExecutionContext execCxt)
+    public QueryIterTDB(Iterator<Binding> iterBinding, List<Abortable> killList , QueryIterator originalInput, ExecutionContext execCxt)
     {
         super(iterBinding, execCxt) ;
         this.originalInput = originalInput ;
+        this.killList = killList ;
     }
     
     @Override
@@ -43,5 +46,13 @@ public class QueryIterTDB extends QueryIterPlainWrapper
         if ( originalInput != null )
             originalInput.close();
         super.closeIterator() ;
+    }
+
+    @Override
+    protected void requestCancel()
+    { 
+        if ( killList != null )
+            for ( Abortable it : killList )
+                it.abort() ;
     }
 }
