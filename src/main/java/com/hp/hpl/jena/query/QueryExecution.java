@@ -152,13 +152,17 @@ public interface QueryExecution
 	 * A timeout of less than zero means no timeout; this can be used for timeout1 or timeout2.
 	 */
 
-	//public void setTimeout(long timeout1, long timeout2) ;
 	public void setTimeout(long timeout1, TimeUnit timeUnit1, long timeout2, TimeUnit timeUnit2) ;
 
     /** Set time, in milliseconds
      *  @see #setTimeout(long, TimeUnit, long, TimeUnit)
      */
     public void setTimeout(long timeout1, long timeout2) ;
+
+    /** Return the first timeout (time to first result), in millseconds: negative if unset */
+    public long getTimeout1() ;
+    /** Return the second timeout (overall query execution after first result), in millseconds: negative if unset */
+    public long getTimeout2() ;
     
     //	/** Say whether this QueryExecution is useable or not.
 //	 * An active execution is one that has not been closed, ended or aborted yet.

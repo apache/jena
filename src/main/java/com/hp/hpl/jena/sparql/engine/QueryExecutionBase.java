@@ -385,6 +385,11 @@ public class QueryExecutionBase implements QueryExecution
         return (duration < 0 ) ? duration : timeUnit.toMillis(duration) ;
     }
     
+    @Override
+    public long getTimeout1() { return timeout1 ; }
+    @Override
+    public long getTimeout2() { return timeout2 ; }
+    
     private static final long TIMEOUT_UNSET = -1 ;
     private static final long TIMEOUT_INF = -2 ;
     private long timeout1 = TIMEOUT_UNSET ;
