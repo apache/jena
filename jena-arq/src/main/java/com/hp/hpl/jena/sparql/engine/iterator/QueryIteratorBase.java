@@ -200,7 +200,7 @@ public abstract class QueryIteratorBase
                 // Need to set the flags before allowing subclasses to handle requestCancel() in order
                 // to prevent a race condition.  We want to be sure that calls to hasNext()/nextBinding()
                 // will definitely throw a QueryCancelledException in this class and not allow a
-                // situation in which a subclass component thinks it is canceled, while this class does not.
+                // situation in which a subclass component thinks it is cancelled, while this class does not.
                 this.abortIterator = true ;
                 this.requestingCancel = true;
                 this.requestCancel() ;

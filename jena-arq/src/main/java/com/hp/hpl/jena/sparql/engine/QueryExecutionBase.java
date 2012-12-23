@@ -397,7 +397,6 @@ public class QueryExecutionBase implements QueryExecution
             public void proc(QueryExecution qExec)
             {
                 qExec.abort() ;
-                
             }
         } ;
         
