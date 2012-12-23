@@ -69,9 +69,9 @@ public class QueryEngineHTTP implements QueryExecution
     private boolean finished = false ;
     
     //Timeouts
-    private long connectTimeout = 0;
+    private long connectTimeout = -1 ;
     private TimeUnit connectTimeoutUnit = TimeUnit.MILLISECONDS;
-    private long readTimeout = 0;
+    private long readTimeout = -1 ;
     private TimeUnit readTimeoutUnit = TimeUnit.MILLISECONDS;
     
     //Compression Support
@@ -383,6 +383,17 @@ public class QueryEngineHTTP implements QueryExecution
         this.readTimeoutUnit = timeUnit1;
         this.connectTimeout = timeout2;
         this.connectTimeoutUnit = timeUnit2;
+    }
+    
+    @Override
+    public long getTimeout1() { return asMillis(readTimeout, readTimeoutUnit) ; } 
+    
+    @Override
+    public long getTimeout2() { return asMillis(connectTimeout, connectTimeoutUnit) ; } 
+
+    private static long asMillis(long duration, TimeUnit timeUnit)
+    {
+        return (duration < 0 ) ? duration : timeUnit.toMillis(duration) ;
     }
     
     private HttpQuery makeHttpQuery()
