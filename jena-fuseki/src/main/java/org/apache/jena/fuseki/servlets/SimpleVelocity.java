@@ -47,7 +47,12 @@ public class SimpleVelocity
         velocity.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8") ;
         velocity.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, base) ;
         velocity.init() ;
-        VelocityContext context = new VelocityContext(params) ;
+        
+        // Velocity requires a mutable map.
+        VelocityContext context = new VelocityContext() ;
+        for ( Map.Entry<String, Object> e : params.entrySet() )
+            context.put(e.getKey(), e.getValue()) ;
+        
         try {
             Template temp = velocity.getTemplate(path) ;
             temp.merge(context, out) ;
