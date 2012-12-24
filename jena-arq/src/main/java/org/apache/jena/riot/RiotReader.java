@@ -383,21 +383,6 @@ public class RiotReader
     
     public static String chooseBaseIRI(String baseIRI, String filename)
     {
-//      private static void checkTriplesLanguage(String filename, Lang2 lang)
-//      {
-//          
-//          
-//          if ( lang != null )
-//          {
-//              if ( ! lang.isTriples() )
-//                  throw new RiotException("Can only parse triples languages to a triples sink: "+lang.getName()) ;
-//              return ;
-//          }
-  //    
-//          lang = filenameToLang(filename) ;
-//          if ( lang != null && ! lang.isTriples() )
-//      }
-
         if ( baseIRI != null )
             return baseIRI ;
         if ( filename == null || filename.equals("-") )
