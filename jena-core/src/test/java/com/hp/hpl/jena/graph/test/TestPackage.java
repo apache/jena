@@ -22,7 +22,6 @@ import junit.framework.TestSuite ;
 
 /**
     Collected test suite for the .graph package.
-    @author  jjc + kers
 */
 
 public class TestPackage extends TestSuite {

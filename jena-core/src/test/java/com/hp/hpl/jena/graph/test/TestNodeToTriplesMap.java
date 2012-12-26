@@ -30,8 +30,6 @@ import junit.framework.TestSuite;
  	TestNodeToTriplesMap: added, post-hoc, by kers once NTM got
  	rather complicated. So these tests may be (are, at the moment)
  	incomplete.
- 	
- 	@author kers
 */
 public class TestNodeToTriplesMap extends GraphTestBase
     {

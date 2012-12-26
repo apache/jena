@@ -26,7 +26,6 @@ import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**
      TestDisjointUnion - test that DisjointUnion works, as well as we can.
-     @author kers
 */
 public class TestDisjointUnion extends GraphTestBase
     {

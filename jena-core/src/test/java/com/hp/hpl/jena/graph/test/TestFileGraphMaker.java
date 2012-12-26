@@ -33,8 +33,6 @@ import com.hp.hpl.jena.util.FileUtils ;
 /**
     Test a FileGraphMaker; use the abstract tests, plus specialised ones for the name
     conversion routines.
-
- 	@author hedgehog
 */
 public class TestFileGraphMaker extends AbstractTestGraphMaker
     {

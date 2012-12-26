@@ -25,9 +25,6 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-/**
- 	@author kers
-*/
 public class TestGraphPrefixMapping extends GraphTestBase
     {
     public TestGraphPrefixMapping( String name )

@@ -23,7 +23,6 @@ import junit.framework.*;
 
 /**
     Test graph capabilities.
- 	@author kers
 */
 public class TestCapabilities extends GraphTestBase
     {

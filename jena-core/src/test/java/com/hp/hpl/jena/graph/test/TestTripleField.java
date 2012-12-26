@@ -23,9 +23,6 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
 
-/**
-    @author kers
-*/
 public class TestTripleField extends GraphTestBase
     {
     public TestTripleField( String name )

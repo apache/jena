@@ -21,8 +21,6 @@ package com.hp.hpl.jena.graph.test;
 /**
     Tests that check GraphMem and WrappedGraph for correctness against the Graph
     and reifier test suites.
- 
-    @author kers
 */
 
 import junit.framework.Test ;

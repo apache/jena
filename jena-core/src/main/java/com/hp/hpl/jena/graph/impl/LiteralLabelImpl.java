@@ -30,8 +30,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * Represents the "contents" of a Node_Literal.
  * These contents comprise a lexical form, an optional language tag,
  * and optional datatype structure and a value.
- * 
- * @author Jeremy Carroll and Dave Reynolds
  */
 final /*public*/ class LiteralLabelImpl implements LiteralLabel {
 

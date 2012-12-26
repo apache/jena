@@ -25,8 +25,6 @@ import junit.framework.*;
 /**
     Test that an inferred graph and an identical concrete graph 
     compare as equal.
-
- 	@author jjc
 */
 
 public class TestGraphMatchWithInference extends GraphTestBase

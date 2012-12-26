@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 
 /**
      AbstractTestTripleStore - post-hoc tests for TripleStores.
-     @author kers
 */
 public abstract class AbstractTestTripleStore extends GraphTestBase
     {
