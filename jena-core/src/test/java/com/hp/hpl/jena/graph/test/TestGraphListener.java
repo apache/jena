@@ -46,8 +46,6 @@ public class TestGraphListener extends MetaTestGraph {
 	/**
 	 * A listener to check that a graph is being tracked
 	 * correctly by its events.
-	 * @author Jeremy
-	 *
 	 */
 	protected class CheckChanges implements GraphListener {
 

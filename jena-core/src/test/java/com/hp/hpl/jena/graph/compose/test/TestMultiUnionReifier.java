@@ -30,8 +30,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /**
     Test the reifier for multi-unions.
-    
- 	@author kers
 */
 public class TestMultiUnionReifier extends ModelTestBase
     {

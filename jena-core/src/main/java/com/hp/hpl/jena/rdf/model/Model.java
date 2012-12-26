@@ -71,9 +71,6 @@ import java.util.*;
  *   System.getProperties().put("proxyHost","proxy.hostname");
  *   System.getProperties().put("proxyPort",port_number);
  * </pre></code>
- *
- * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $Date: 2009/07/04 16:27:41 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,

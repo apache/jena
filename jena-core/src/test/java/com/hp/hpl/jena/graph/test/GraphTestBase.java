@@ -20,7 +20,6 @@ package com.hp.hpl.jena.graph.test;
 
 /**
     An extension of JenaTestBase (which see) with Graph-specific methods.
-	@author kers
 */
 
 import java.lang.reflect.Constructor ;

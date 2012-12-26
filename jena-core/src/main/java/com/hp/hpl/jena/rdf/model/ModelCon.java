@@ -42,10 +42,6 @@ import com.hp.hpl.jena.graph.Node;
  *    resource created by an implementation in another class which adds
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.2 $'
-            Date='$Date: 2009-09-28 10:45:11 $'
  */
 public interface ModelCon {
 

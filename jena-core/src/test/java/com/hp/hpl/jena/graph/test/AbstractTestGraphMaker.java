@@ -32,8 +32,6 @@ import com.hp.hpl.jena.shared.*;
     This bunch of tests is not remotely exhaustive, but it was sufficent to
     drive the development of the first full graph factory. (Although at the time
     it wasn't abstract.)
-    
- 	@author hedgehog
 */
 
 public abstract class AbstractTestGraphMaker extends GraphTestBase

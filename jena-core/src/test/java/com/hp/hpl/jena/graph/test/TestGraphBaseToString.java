@@ -30,8 +30,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     Tests for the revisions to GraphBase.toString() to see that it's compact,
     ie outputs no more than LIMIT triples.
-    
-    @author chris
 */
 public class TestGraphBaseToString extends GraphTestBase
     {

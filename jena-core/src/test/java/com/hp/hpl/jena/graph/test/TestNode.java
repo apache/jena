@@ -36,7 +36,6 @@ import com.hp.hpl.jena.vocabulary.RSS ;
 import com.hp.hpl.jena.vocabulary.VCARD ;
 
 /**
-    @author bwm out of kers
     Exercise nodes. Make sure that the different node types do not overlap
     and that the test predicates work properly on the different node kinds.
 */

@@ -27,9 +27,6 @@ import com.hp.hpl.jena.graph.test.*;
 import java.util.*;
 import junit.framework.*;
 
-/**
-	@author kers
-*/
 public class TestDyadic extends GraphTestBase
 	{
 	public TestDyadic( String name )

@@ -38,9 +38,6 @@ import junit.framework.TestSuite;
  * Tests behaviour of the AbstractDateTime support, specifically for 
  * comparison operations. This complements the main tests in
  * TestTypedLiterals.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
  */
 public class TestDateTime extends TestCase {
     /**

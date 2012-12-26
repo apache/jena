@@ -29,7 +29,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
     Abstract base class for reification tests. 
- 	@author kers
  */
 public abstract class AbstractTestReifier extends GraphTestBase
 {

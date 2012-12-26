@@ -24,9 +24,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestGraphUtils extends GraphTestBase
     {
     public TestGraphUtils(String name)
