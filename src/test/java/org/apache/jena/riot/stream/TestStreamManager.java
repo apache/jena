@@ -48,9 +48,9 @@ public class TestStreamManager extends BaseTest
     { 
         streamMgrStd = StreamManager.get() ;
         streamMgr = new StreamManager() ;
-        streamMgr.addLocator(new LocatorFile2()) ;
-        streamMgr.addLocator(new LocatorFile2(directory)) ;
-        streamMgr.addLocator(new LocatorURL2()) ;
+        streamMgr.addLocator(new LocatorFile()) ;
+        streamMgr.addLocator(new LocatorFile(directory)) ;
+        streamMgr.addLocator(new LocatorURL()) ;
         
         streamManagerContextValue = context.get(RDFDataMgr.streamManagerSymbol) ;
         context.put(RDFDataMgr.streamManagerSymbol, streamMgr) ;

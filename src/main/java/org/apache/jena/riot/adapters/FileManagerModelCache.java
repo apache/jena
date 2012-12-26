@@ -25,6 +25,9 @@ import com.hp.hpl.jena.rdf.model.Model ;
 
 // Legacy support.
 class FileManagerModelCache {
+    
+    public FileManagerModelCache() {}
+    
     boolean cacheModelLoads = false ;
     Map<String, Model> modelCache = null ;
     // -------- Cache operations

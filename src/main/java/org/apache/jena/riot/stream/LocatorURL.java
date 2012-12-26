@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.util.FileUtils ;
 
-public class LocatorURL2 implements Locator
+public class LocatorURL implements Locator
 {
-    private static Logger log = LoggerFactory.getLogger(LocatorURL2.class) ;
+    private static Logger log = LoggerFactory.getLogger(LocatorURL.class) ;
     private static final String[] schemeNames = { "http" , "https" } ;    // Must be lower case and not include the ":"
     
     public final String acceptTriples = "text/turtle,application/rdf+xml;q=0.9,application/xml;q=0.8,*/*;q=0.5" ; 
@@ -81,7 +81,7 @@ public class LocatorURL2 implements Locator
         if (this == obj) return true ;
         if (obj == null) return false ;
         if (getClass() != obj.getClass()) return false ;
-        LocatorURL2 other = (LocatorURL2)obj ;
+        LocatorURL other = (LocatorURL)obj ;
         if (acceptTriples == null)
         {
             if (other.acceptTriples != null) return false ;

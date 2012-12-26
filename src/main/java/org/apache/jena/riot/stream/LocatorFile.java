@@ -38,20 +38,20 @@ import com.hp.hpl.jena.util.FileUtils ;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  */
 
-public class LocatorFile2 implements Locator
+public class LocatorFile implements Locator
 {
-    static Logger log = LoggerFactory.getLogger(LocatorFile2.class) ;
+    static Logger log = LoggerFactory.getLogger(LocatorFile.class) ;
     private final String thisDir ;
     private final String thisDirLogStr ;
 
     /** Create a LocatorFile */
-    public LocatorFile2() { this(null) ; }
+    public LocatorFile() { this(null) ; }
     
     /** Create a LocatorFile that uses the argument as it's working directory
      * The working directory should be a UNIX style file name,
      * (relative or absolute), not a URI.
      */
-    public LocatorFile2(String dir)
+    public LocatorFile(String dir)
     {
         if ( dir != null )
         {
@@ -171,7 +171,7 @@ public class LocatorFile2 implements Locator
         if (this == obj) return true ;
         if (obj == null) return false ;
         if (getClass() != obj.getClass()) return false ;
-        LocatorFile2 other = (LocatorFile2)obj ;
+        LocatorFile other = (LocatorFile)obj ;
         if (thisDir == null)
         {
             if (other.thisDir != null) return false ;
