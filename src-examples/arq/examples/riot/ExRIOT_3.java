@@ -18,13 +18,14 @@
 
 package arq.examples.riot;
 
+import static org.apache.jena.riot.RDFLanguages.TriG ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
-/** Example of using RIOT : reading dada into datasets. */
+/** Example of using RIOT : reading data into datasets. */
 public class ExRIOT_3
 {
     public static void main(String...argv)
@@ -43,8 +44,8 @@ public class ExRIOT_3
         
         // Create a dataset,
         Dataset ds2 = DatasetFactory.createMem() ;
-        // read in data.
-        RDFDataMgr.read(ds2, "data2.trig") ;
-
+        // read in data, indicating the syntax in case the remote end does not
+        // correctly provide the HTTP content type.
+        RDFDataMgr.read(ds2, "http://host/data2.unknown", TriG) ;
     }
 }
