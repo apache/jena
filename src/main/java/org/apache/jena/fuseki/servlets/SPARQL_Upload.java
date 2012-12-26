@@ -209,7 +209,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     // We read into a in-memory graph, then (if successful) update the dataset.
                     // This isolates errors.
                     RDFParserOutput dest = RDFParserOutputLib.graph(graphDst) ;
-                    LangRIOT parser = RiotReader.createParserTriples(stream, lang, base, dest) ;
+                    LangRIOT parser = RiotReader.createParser(stream, lang, base, dest) ;
                     parser.getProfile().setHandler(errorHandler) ;
                     log.info(format("[%d] Upload: Filename: %s, Content-Type=%s, Charset=%s => %s", 
                                     action.id, name,  ct.getContentType(), ct.getCharset(), lang.getName())) ;
