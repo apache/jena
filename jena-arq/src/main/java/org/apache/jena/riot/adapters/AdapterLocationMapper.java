@@ -20,16 +20,16 @@ package org.apache.jena.riot.adapters;
 
 import java.util.Iterator ;
 
-import org.apache.jena.riot.stream.LocationMapper2 ;
+import org.apache.jena.riot.stream.LocationMapper ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
 /** Adapter from Jena2 LocationMapper to RIOT LocationMapper */ 
 public class AdapterLocationMapper extends com.hp.hpl.jena.util.LocationMapper 
 {
-    private final LocationMapper2 mapper ;
+    private final LocationMapper mapper ;
 
-    public AdapterLocationMapper(LocationMapper2 mapper) {  this.mapper = mapper ; }
+    public AdapterLocationMapper(LocationMapper mapper) {  this.mapper = mapper ; }
     
     @Override
     public String altMapping(String uri, String otherwise)  { return mapper.altMapping(uri, otherwise) ; }

@@ -41,20 +41,20 @@ public class StreamManager
     public static boolean logAllLookups = true ; 
     
     private List<Locator> handlers = new ArrayList<Locator>() ;
-    private LocationMapper2 mapper = null ;
+    private LocationMapper mapper = null ;
     
     private static StreamManager globalStreamManager ;
     
     /** Return a default configuration StreamManager 
-     *  with a {@link LocatorFile2}, 
-     *  {@link LocatorURL2},
+     *  with a {@link LocatorFile}, 
+     *  {@link LocatorURL},
      *  and {@link LocatorClassLoader}
      */
     public static StreamManager makeDefaultStreamManager()
     {
         StreamManager streamManager = new StreamManager() ;
-        streamManager.addLocator(new LocatorFile2(null)) ;
-        streamManager.addLocator(new LocatorURL2()) ;
+        streamManager.addLocator(new LocatorFile(null)) ;
+        streamManager.addLocator(new LocatorURL()) ;
         streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
         return streamManager ;
     }
@@ -132,10 +132,10 @@ public class StreamManager
     
 
     /** Set the location mapping */
-    public void setLocationMapper(LocationMapper2 _mapper) { mapper = _mapper ; }
+    public void setLocationMapper(LocationMapper _mapper) { mapper = _mapper ; }
     
     /** Get the location mapping */
-    public LocationMapper2 getLocationMapper() { return mapper ; }
+    public LocationMapper getLocationMapper() { return mapper ; }
     
     /** Return an immutable list of all the handlers */
     public List<Locator> locators() { return Collections.unmodifiableList(handlers) ; }

@@ -31,7 +31,7 @@ public class TestLocators extends BaseTest
     
     @Test public void locatorFile_01()
     {
-        LocatorFile2 loc = new LocatorFile2() ;
+        LocatorFile loc = new LocatorFile() ;
         assertTrue(loc.exists("pom.xml")) ;
         assertTrue(loc.exists(testingDir+"data.ttl")) ;
         assertFalse(loc.exists("IDoNotExist")) ;
@@ -39,7 +39,7 @@ public class TestLocators extends BaseTest
     
     @Test public void locatorFile_02()
     {
-        LocatorFile2 loc = new LocatorFile2(".") ;
+        LocatorFile loc = new LocatorFile(".") ;
         assertTrue(loc.exists("pom.xml")) ;
         assertTrue(loc.exists(testingDir+"data.ttl")) ;
         assertFalse(loc.exists("IDoNotExist")) ;
@@ -48,7 +48,7 @@ public class TestLocators extends BaseTest
     @Test public void locatorFile_03()
     {
         String dir = new File(".").getAbsolutePath() ;
-        LocatorFile2 loc = new LocatorFile2(dir) ;
+        LocatorFile loc = new LocatorFile(dir) ;
         assertTrue(loc.exists("pom.xml")) ;
         assertFalse(loc.exists("IDoNotExist")) ;
     }
@@ -56,7 +56,7 @@ public class TestLocators extends BaseTest
     @Test public void locatorFile_04()
     {
         String dir = new File("src").getAbsolutePath() ;
-        LocatorFile2 loc = new LocatorFile2(dir) ;
+        LocatorFile loc = new LocatorFile(dir) ;
         
         assertFalse(loc.exists("pom.xml")) ;
         assertTrue(loc.exists("main")) ;
@@ -67,7 +67,7 @@ public class TestLocators extends BaseTest
     
     @Test public void locatorFile_05()
     {
-        LocatorFile2 loc = new LocatorFile2() ;
+        LocatorFile loc = new LocatorFile() ;
         TypedInputStream ts = loc.open(testingDir+"data.ttl") ;
         assertTrue("Not equal: "+WebContent.contentTypeTurtle+" != "+ts.getMediaType(), 
                    WebContent.contentTypeTurtle.equalsIgnoreCase(ts.getContentType())) ;

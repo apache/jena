@@ -42,46 +42,24 @@ import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
  * There is a default LocationMapper which is used by the global @link{FileManager}.
  */
 
-public class LocationMapper2
+public class LocationMapper
 {
-    static Logger log = LoggerFactory.getLogger(LocationMapper2.class)  ;
+    static Logger log = LoggerFactory.getLogger(LocationMapper.class)  ;
     Map<String, String> altLocations = new HashMap<String, String>() ;
     Map<String, String> altPrefixes = new HashMap<String, String>() ;
     
     /** Create a LocationMapper with no mapping yet */
-    public LocationMapper2() { }
+    public LocationMapper() { }
     
     /** Create a LocationMapper made like another one
      * This is a deep copy of the location and prefix maps..*/
-    public LocationMapper2(LocationMapper2 locMapper)
+    public LocationMapper(LocationMapper locMapper)
     {
         altLocations.putAll(locMapper.altLocations) ;
         altPrefixes.putAll(locMapper.altPrefixes) ;
     }
     
-    // Moved to Jena IO environment setup.
-//    /** Create a LocationMapper from an existing model
-//     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab
-//     */
-//    public LocationMapper(Model model)
-//    {
-//        LocationMapper lm = JenaIOEnvironment.processConfig(model) ;
-//        if ( lm == null )
-//            throw new AtlasException("Model does not provide a location mapping") ;
-//        copyFrom(lm) ;
-//         
-//    }
-//    
-//    /** Create a LocationMapper from a config file */
-//    public LocationMapper(String config)
-//    {
-//        LocationMapper lm = JenaIOEnvironment.createLocationMapper(config) ;
-//        if ( lm == null )
-//            throw new AtlasException("Config does not provide a location mapping") ;
-//        copyFrom(lm) ;
-//    }
-    
-    public void copyFrom(LocationMapper2 lmap2)
+    public void copyFrom(LocationMapper lmap2)
     {
         this.altLocations.putAll(lmap2.altLocations) ;
         this.altPrefixes.putAll(lmap2.altPrefixes) ;
@@ -172,9 +150,9 @@ public class LocationMapper2
     @Override
     public boolean equals(Object obj)
     {
-        if ( ! ( obj instanceof LocationMapper2 ) )
+        if ( ! ( obj instanceof LocationMapper ) )
             return false ;
-        LocationMapper2 other = (LocationMapper2)obj ;
+        LocationMapper other = (LocationMapper)obj ;
         
         if ( ! this.altLocations.equals(other.altLocations) )
             return false ;
