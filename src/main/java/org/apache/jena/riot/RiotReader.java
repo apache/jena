@@ -196,10 +196,6 @@ public class RiotReader
         parse(in, lang, baseIRI, dest) ;
     }
 
-    
-    
-    // -------- Parsers
-    
     // TODO create a Tokenizer version of this method
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
     {
@@ -280,8 +276,6 @@ public class RiotReader
     /** Create a parser for TriG, with default behaviour */
     public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, RDFParserOutput dest)
     {
-        if ( baseIRI == null )
-            baseIRI = chooseBaseIRI() ;
         LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(RDFLanguages.TriG, baseIRI), dest) ;
         return parser ;
     }
@@ -328,12 +322,4 @@ public class RiotReader
         String x = IRILib.filenameToIRI(filename) ;
         return x ;
     }
-
-    private static String nameForFile(String filename)
-    {
-        if ( filename == null || filename.equals("-") )
-            return "stdin" ;
-        return filename ;
-    }
-        
 }
