@@ -55,7 +55,7 @@ public class ExRIOT_2
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
-        RiotReader.parseQuads(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
+        RiotReader.parse(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
         
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
@@ -63,7 +63,7 @@ public class ExRIOT_2
         // It is always better to use an  InputStream, rather than a Java Reader.
         // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
-        LangRIOT parser = RiotReader.createParserQuads(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
+        LangRIOT parser = RiotReader.createParser(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
         
         // Parser to first error or warning.
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStrict ;

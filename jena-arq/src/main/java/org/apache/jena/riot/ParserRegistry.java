@@ -27,6 +27,7 @@ import static org.apache.jena.riot.RDFLanguages.Turtle ;
 
 import java.io.InputStream ;
 import java.util.Map ;
+import java.util.Set ;
 
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.web.ContentType ;
@@ -47,16 +48,17 @@ public class ParserRegistry
     /** Map Jena I/O names to language */
     private static Map<String, Lang> mapJenaNameToLang                 = DS.map() ;
 
-    /** map language to a triples parser */ 
-    private static Map<Lang, ReaderRIOTFactory> langToTriples  = DS.map() ;
-    /** map language to a quads parser */ 
-    private static Map<Lang, ReaderRIOTFactory> langToQuads      = DS.map() ;
+    /** map language to a parser factory */ 
+    private static Map<Lang, ReaderRIOTFactory> langToParserFactory  = DS.map() ;
+    
+    /** Known triples languages */
+    private static Set<Lang> langTriples  = DS.set() ;
 
-    /** Triples : Generic parser factory. */
-    private static ReaderRIOTFactory pfTriples = new ReaderRIOTFactoryTriple() ;
+    /** Known quads languages */
+    private static Set<Lang> langQuads    = DS.set() ;
 
-    /** Quads : Generic parser factory. */
-    private static ReaderRIOTFactory pfQuads = new ReaderRIOTFactoryQuads() ;
+    /** Generic parser factory. */
+    private static ReaderRIOTFactory parserFactory = new ReaderRIOTFactoryImpl() ;
 
     private static boolean initialized = false ;
     public static synchronized void init ()
@@ -96,13 +98,13 @@ public class ParserRegistry
             
         registerShortNameForLang("TRIG",            TriG) ;
         
-        registerLangTriples(RDFXML,     pfTriples) ;
-        registerLangTriples(NTriples,   pfTriples) ;
-        registerLangTriples(Turtle,     pfTriples) ;
-        registerLangTriples(RDFJSON,    pfTriples) ;
+        registerLangTriples(RDFXML,     parserFactory) ;
+        registerLangTriples(NTriples,   parserFactory) ;
+        registerLangTriples(Turtle,     parserFactory) ;
+        registerLangTriples(RDFJSON,    parserFactory) ;
         
-        registerLangQuads(NQuads,       pfQuads) ;
-        registerLangQuads(TriG,         pfQuads) ;
+        registerLangQuads(NQuads,       parserFactory) ;
+        registerLangQuads(TriG,         parserFactory) ;
     }
 
     /** Register a Jena IO name */
@@ -111,83 +113,68 @@ public class ParserRegistry
         mapJenaNameToLang.put(RDFLanguages.canonicalKey(name), lang) ;
     }
 
-    /** Register a language that parses to produces triples.
+    /** Register a language and it's parser factory.
+     * To create a {@link Lang} object use {@link LangBuilder}.
+     */
+    private static void registerLang(Lang lang, ReaderRIOTFactory factory)
+    {
+        RDFLanguages.register(lang) ;
+        langToParserFactory.put(lang, factory) ;
+    }
+    
+    /** Register a language and it's parser factory.
      * To create a {@link Lang} object use {@link LangBuilder}.
      */
     public static void registerLangTriples(Lang lang, ReaderRIOTFactory factory)
     {
-        RDFLanguages.register(lang) ;
-        langToTriples.put(lang, factory) ;
-    }
-        
-    /** Register a language that parses to produces quads */
-    public static void registerLangQuads(Lang lang, ReaderRIOTFactory factory)
-    {
-        RDFLanguages.register(lang) ;
-        langToQuads.put(lang, factory) ;
+        langTriples.add(lang) ;
+        registerLang(lang, factory) ;
     }
     
+    /** Register a language and it's parser factory.
+     * To create a {@link Lang} object use {@link LangBuilder}.
+     */
+    public static void registerLangQuads(Lang lang, ReaderRIOTFactory factory)
+    {
+        langQuads.add(lang) ;
+        registerLang(lang, factory) ;
+    }
+
     /** Remove registration */
     public static void removeRegistration(Lang lang)
     {
         RDFLanguages.unregister(lang) ;
-        langToTriples.remove(lang) ;
-        langToQuads.remove(lang) ;
+        langToParserFactory.remove(lang) ;
     }
     
-    /** Return the triples parser factory for the language, or null if not registered */
-    public static ReaderRIOTFactory getFactoryTriples(Lang language)
+    /** Return the parser factory for the language, or null if not registered */
+    public static ReaderRIOTFactory getFactory(Lang language)
     {
-        return langToTriples.get(language) ;
+        return langToParserFactory.get(language) ;
     }
-    
-    /** Return the quads parser factory for the language, or null if not registered */
-    public static ReaderRIOTFactory getFactoryQuads(Lang language)
-    {
-        return langToQuads.get(language) ;
-    }
-    
+
     /** return true if the language is registered with the triples parser factories */
-    public static boolean isTriples(Lang lang) { return langToTriples.containsKey(lang) ; }
+    public static boolean isTriples(Lang lang) { return langTriples.contains(lang) ; }
     
     /** return true if the language is registered with the quads parser factories */
-    public static boolean isQuads(Lang lang)   { return langToQuads.containsKey(lang) ; }
+    public static boolean isQuads(Lang lang)   { return langQuads.contains(lang) ; }
 
     // Parser factories
     
-    private static class ReaderRIOTFactoryTriple implements ReaderRIOTFactory
+    private static class ReaderRIOTFactoryImpl implements ReaderRIOTFactory
     {
         @Override
         public ReaderRIOT create(final Lang lang)
         {
             return new ReaderRIOT() {
-                // Needs sorting out
                 @Override
                 public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context)
                 {
-                    LangRIOT parser = RiotReader.createParserTriples(in, lang, baseURI, output) ;
+                    LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
                     parser.parse() ;
                 }
             } ;
         }
     } ;
-
-    private static class ReaderRIOTFactoryQuads implements ReaderRIOTFactory {
-        @Override
-        public ReaderRIOT create(final Lang lang)
-        {
-            return new ReaderRIOT() {
-                // Needs sorting out
-                @Override
-                public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context)
-                {
-                    LangRIOT parser = RiotReader.createParserQuads(in, lang, baseURI, output) ;
-                    parser.parse() ;
-                }
-            } ;
-        }
-    } ;
-
-
 }
 

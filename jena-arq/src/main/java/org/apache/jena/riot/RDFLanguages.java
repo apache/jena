@@ -152,8 +152,7 @@ public class RDFLanguages
     /** Register a language.
      * To create a {@link Lang} object use {@link LangBuilder}.
      * See also 
-     * {@link ParserRegistry#registerLangTriples} and 
-     * {@link ParserRegistry#registerLangQuads}
+     * {@link ParserRegistry#registerLang}
      * for registering a language and it's RDF parser fatory.
      * 
      * @see ParserRegistry
@@ -237,13 +236,13 @@ public class RDFLanguages
         checkRegistration(lang) ;
         return true ;
     }
-
-    /** return true if the language is registered with the triples parser factories */
+    
+    /** return true if the language is registered as a triples language */
     public static boolean isTriples(Lang lang) { return ParserRegistry.isTriples(lang) ; }
     
-    /** return true if the language is registered with the quads parser factories */
-    public static boolean isQuads(Lang lang)   { return ParserRegistry.isQuads(lang) ; }
-    
+    /** return true if the language is registered as a quads language */
+    public static boolean isQuads(Lang lang) { return ParserRegistry.isQuads(lang) ; }
+
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(String contentType)
     {
