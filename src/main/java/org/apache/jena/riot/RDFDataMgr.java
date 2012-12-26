@@ -199,7 +199,7 @@ public class RDFDataMgr
     public static void read(Graph graph, String uri, String base, Lang hintLang, Context context)
     {
         RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
-        readTriples(dest, uri, base, hintLang, context) ;
+        read(dest, uri, base, hintLang, context) ;
     }
 
     /** Read triples into a Model with bytes from an InputStream.
@@ -246,7 +246,7 @@ public class RDFDataMgr
     public static void read(Graph graph, InputStream in, String base, Lang lang)
     {
         RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
-        processTriples(dest, base, new TypedInputStream(in), lang, null) ;
+        process(dest, base, new TypedInputStream(in), lang, null) ;
     }
 
     /** Read triples into a model with chars from an Reader.
@@ -498,7 +498,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context)
     {
         RDFParserOutput sink = RDFParserOutputLib.dataset(dataset) ;
-        readQuads(sink, uri, base, hintLang, context) ;
+        read(sink, uri, base, hintLang, context) ;
     }
 
     /** Read quads or triples into a dataset with bytes from an input stream.
@@ -541,7 +541,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang)
     {
         RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
-        processQuads(dest, base, new TypedInputStream(in), lang, null) ;
+        process(dest, base, new TypedInputStream(in), lang, null) ;
     }
     
     /** Read quads into a dataset with chars from an Reader.
@@ -572,7 +572,7 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, Reader in, String base, Lang lang)
     {
         RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
-        processQuads(dest, base, in, lang, null) ;
+        process(dest, base, in, lang, null) ;
     }
 
     /** Read quads into a dataset with chars from a StringReader.
@@ -599,47 +599,18 @@ public class RDFDataMgr
     public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang)
     {
         RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
-        processQuads(dest, base, in, lang, null) ;
+        process(dest, base, in, lang, null) ;
     }
 
-    /** Read triples
+    /** Read RDF data.
      * @param sink     Destination for the RDF read.
      * @param uri       URI to read from (includes file: and a plain file name).
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void readTriples(RDFParserOutput sink, String uri, Lang hintLang, Context context)
+    public static void read(RDFParserOutput sink, String uri, Lang hintLang, Context context)
     {
-        readTriples(sink, uri, uri, hintLang, context) ;
-    }
-    
-    /** Read triples.
-     * @param sink     Destination for the RDF read.
-     * @param uri       URI to read from (includes file: and a plain file name).
-     * @param base      Base URI (defaults to uri).
-     * @param hintLang  Hint for the syntax
-     * @param context   Content object to control reading process.
-     */
-    public static void readTriples(RDFParserOutput sink, String uri, String base, Lang hintLang, Context context)
-    {
-        TypedInputStream in = open(uri, context) ;
-        if ( in == null )
-            throw new RiotException("Not found: "+uri) ;
-        if ( base == null )
-            base = uri ;
-        processTriples(sink, base, in, hintLang, context) ;
-        IO.close(in) ;
-    }
-    
-    /** Read quads.
-     * @param sink     Destination for the RDF read.
-     * @param uri       URI to read from (includes file: and a plain file name).
-     * @param hintLang  Hint for the syntax
-     * @param context   Content object to control reading process.
-     */
-    public static void readQuads(RDFParserOutput sink, String uri, Lang hintLang, Context context)
-    {
-        readQuads(sink, uri, uri, hintLang, context) ;
+        read(sink, uri, uri, hintLang, context) ;
     }
 
     /** Read quads,.
@@ -649,12 +620,12 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void readQuads(RDFParserOutput sink, String uri, String base, Lang hintLang, Context context)
+    public static void read(RDFParserOutput sink, String uri, String base, Lang hintLang, Context context)
     {
         TypedInputStream in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
-        processQuads(sink, base, in, hintLang, context) ;
+        process(sink, base, in, hintLang, context) ;
         IO.close(in) ;
     }
 
@@ -708,22 +679,22 @@ public class RDFDataMgr
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void processTriples(RDFParserOutput destination, String baseUri, TypedInputStream in, Lang hintLang, Context context)
+    private static void process(RDFParserOutput destination, String baseUri, TypedInputStream in, Lang hintLang, Context context)
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the triples content type: (URI="+baseUri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
 
-        ReaderRIOT reader = getReaderTriples(ct) ;
+        ReaderRIOT reader = getReader(ct) ;
         if ( reader == null )
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
         reader.read(in, baseUri, ct, destination, context) ;
     }
 
-    private static ReaderRIOT getReaderTriples(ContentType ct)
+    private static ReaderRIOT getReader(ContentType ct)
     {
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory r = ParserRegistry.getFactoryTriples(lang) ;
+        ReaderRIOTFactory r = ParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;
@@ -752,37 +723,16 @@ public class RDFDataMgr
                 RDFLanguages.RDFJSON.equals(lang)?
                               new TokenizerJSON(PeekReader.make(in)) :   
                               TokenizerFactory.makeTokenizer(in) ;
-            parser = RiotReader.createParserTriples(tokenizer, lang, base, output) ;
+            parser = RiotReader.createParser(tokenizer, lang, base, output) ;
         }
         parser.parse() ;
     }
     
-    private static void processQuads(RDFParserOutput destination, String uri, TypedInputStream in, Lang hintLang, Context context)
-    {
-        ContentType ct = determineCT(uri, in.getContentType(), hintLang ) ;
-        if ( ct == null )
-            throw new RiotException("Failed to determine the quads content type: (URI="+uri+" : stream="+in.getContentType()+" : hint="+hintLang+")") ;
-        ReaderRIOT reader = getReaderQuads(ct) ;
-        if ( reader == null )
-            throw new RiotException("No quads reader for content type: "+ct) ;
-        
-        reader.read(in, uri, ct, destination, context) ;
-    }
-
-    private static ReaderRIOT getReaderQuads(ContentType ct)
-    {
-        Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory r = ParserRegistry.getFactoryQuads(lang) ;
-        if ( r == null )
-            return null ;
-        return r.create(lang) ;
-    }
-    
     // java.io.Readers are NOT preferred.
-    private static void processQuads(RDFParserOutput dest, String base, Reader in, Lang hintLang, Context context)
+    private static void process(RDFParserOutput dest, String base, Reader in, Lang hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
-        LangRIOT parser = RiotReader.createParserQuads(tokenizer, hintLang, base, dest) ;
+        LangRIOT parser = RiotReader.createParser(tokenizer, hintLang, base, dest) ;
         parser.parse() ;
     }
 

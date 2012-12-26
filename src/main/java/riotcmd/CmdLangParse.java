@@ -296,7 +296,7 @@ public abstract class CmdLangParse extends CmdGeneral
             
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
             RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink2) ;
-            parser = RiotReader.createParserTriples(in, lang, baseURI, dest) ;
+            parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             
             sink = sink2 ;
         }
@@ -310,7 +310,7 @@ public abstract class CmdLangParse extends CmdGeneral
             
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
             RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink2) ;
-            parser = RiotReader.createParserQuads(in, lang, baseURI, dest) ;
+            parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             sink = sink2 ;
         }
         
