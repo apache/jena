@@ -142,7 +142,7 @@ public class REST_Quads extends SPARQL_REST
             Node gn = Node.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
             RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
-            LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , dest) ;
+            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;

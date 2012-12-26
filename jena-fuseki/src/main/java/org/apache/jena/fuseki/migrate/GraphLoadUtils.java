@@ -83,7 +83,7 @@ public class GraphLoadUtils
         InputStream input = Fuseki.webFileManager.open(uri) ;
         
         RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
-        LangRIOT parser = RiotReader.createParserTriples(input, lang, uri, dest) ;
+        LangRIOT parser = RiotReader.createParser(input, lang, uri, dest) ;
         try {
             parser.parse() ;
         } catch (RiotException ex) { throw ex ; }

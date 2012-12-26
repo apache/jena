@@ -296,7 +296,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
         RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
-        LangRIOT parser = RiotReader.createParserTriples(ts, lang, base, dest) ;
+        LangRIOT parser = RiotReader.createParser(ts, lang, base, dest) ;
         parser.parse() ;
         IO.close(ts) ;
     }    

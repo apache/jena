@@ -167,7 +167,7 @@ public class DataValidator extends ValidatorBase
         } ;
 
         RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
-        LangRIOT parser = RiotReader.createParserQuads(tokenizer, language, null, dest) ;
+        LangRIOT parser = RiotReader.createParser(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
         parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
         return parser ;
