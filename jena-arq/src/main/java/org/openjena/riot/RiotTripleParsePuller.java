@@ -45,7 +45,7 @@ public class RiotTripleParsePuller extends RiotParsePuller<Triple>
     protected LangRIOT createParser(Sink<Triple> sink)
     {
         RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
-        return RiotReader.createParserTriples(in, lang, baseIRI, dest) ;
+        return RiotReader.createParser(in, lang, baseIRI, dest) ;
     }
 }
 

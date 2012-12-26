@@ -18,24 +18,18 @@
 
 package org.openjena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.N3 ;
 import static org.apache.jena.riot.RDFLanguages.NQuads ;
-import static org.apache.jena.riot.RDFLanguages.NTriples ;
-import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFXML ;
 import static org.apache.jena.riot.RDFLanguages.TriG ;
-import static org.apache.jena.riot.RDFLanguages.Turtle ;
-import static org.apache.jena.riot.RDFLanguages.filenameToLang ;
-import org.apache.jena.riot.Lang ;
+
 import java.io.InputStream ;
 import java.util.Iterator ;
 
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.lang.* ;
@@ -62,7 +56,7 @@ public class RiotReader
      * Must be in a triples syntax.
      * @param filename 
      * @param sink  Where to send the triples from the parser.
-     * @see      RDFDataMgr#readTriples
+     * @see      RDFDataMgr#read
      */  
     public static void parseTriples(String filename, Sink<Triple> sink)
     { parseTriples(filename, null, null, sink) ; }
@@ -73,8 +67,8 @@ public class RiotReader
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
      * @param baseIRI   Base IRI, or null for based on input filename
      * @param sink      Where to send the triples from the parser.
-     * @see     RDFDataMgr#readTriples
-     */  
+     * @see     RDFDataMgr#read
+     */
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
         RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
@@ -86,7 +80,7 @@ public class RiotReader
      * @param lang      Language.
      * @param baseIRI   Base IRI. 
      * @param sink      Where to send the triples from the parser.
-     * @see             RDFDataMgr#readTriples
+     * @see             RDFDataMgr#read
      */  
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
     {
@@ -99,7 +93,7 @@ public class RiotReader
     /** Parse a file, sending quads to a sink.
      * @param filename
      * @param sink  Where to send the quads from the parser.
-     * @see          RDFDataMgr#readQuads
+     * @see          RDFDataMgr#read
      */
     public static void parseQuads(String filename, Sink<Quad> sink)
     { parseQuads(filename, null, null, sink) ; }
@@ -109,7 +103,7 @@ public class RiotReader
      * @param lang      Language, or null for "guess from filename" (e.g. extension)
      * @param baseIRI   Base IRI, or null for base on input filename
      * @param sink      Where to send the quads from the parser.
-     * @see             RDFDataMgr#readQuads
+     * @see             RDFDataMgr#read
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
@@ -119,10 +113,10 @@ public class RiotReader
 
     /** Parse an InputStream, sending quads to a sink.
      * @param in        Source for bytes to parse.
-     * @param lang      Language.
+     * @param lang      Language.org.apache.jena.riot.RiotReader
      * @param baseIRI   Base IRI. 
      * @param sink      Where to send the quads from the parser.
-     * @see              RDFDataMgr#readQuads
+     * @see              RDFDataMgr#read
      */
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
     {
@@ -147,25 +141,7 @@ public class RiotReader
      */  
     public static void parseTriples(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        if ( lang == null )
-            lang = filenameToLang(filename, NTriples) ;
-        
-        if ( ! RDFLanguages.isTriples(lang) )
-            throw new RiotException("Not a triples language: "+lang.getName()) ; 
-        
-        InputStream in = IO.openFile(filename) ; 
-        String base = chooseBaseIRI(baseIRI, filename) ;
-
-        if ( RDFXML.equals(lang) )
-        {
-            // Fudge to make the bulk loader process RDF/XML files.
-            LangRDFXML.create(in, base, filename, ErrorHandlerFactory.getDefaultErrorHandler(), dest).parse() ;
-            IO.close(in) ;
-            return ;
-        }
-
-        parseTriples(in, lang, base, dest) ;
-        IO.close(in) ;
+        org.apache.jena.riot.RiotReader.parse(filename, lang, baseIRI, dest) ;
     }
 
     /** Parse an InputStream, sending triples to a sink.
@@ -176,9 +152,7 @@ public class RiotReader
      */  
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        LangRIOT parser = RiotReader.createParserTriples(in, lang, baseIRI, dest) ;
-        parser.parse() ;
-        // Prefixes.
+        org.apache.jena.riot.RiotReader.parse(in, lang, baseIRI, dest) ;
     }
     
     // -------- Quads
@@ -198,12 +172,7 @@ public class RiotReader
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        InputStream in = IO.openFile(filename) ; 
-        String base = chooseBaseIRI(baseIRI, filename) ;
-        if ( lang == null )
-            lang = filenameToLang(filename, NQuads) ;     // ** N-Quads
-        parseQuads(in, lang, base, dest) ;
-        IO.close(in) ;
+        org.apache.jena.riot.RiotReader.parse(filename, lang, baseIRI, dest) ;
     }
 
     /** Parse an InputStream, sending quads to a sink.
@@ -214,8 +183,7 @@ public class RiotReader
      */
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        LangRIOT parser = RiotReader.createParserQuads(in, lang, baseIRI, dest) ;
-        parser.parse() ;
+        org.apache.jena.riot.RiotReader.parse(in, lang, baseIRI, dest) ;
     }
 
     // -------- Parsers
@@ -223,33 +191,13 @@ public class RiotReader
     /** Create a parser for a triples language */  
     public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        if ( lang == RDFXML )
-        {
-            if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveString(baseIRI) ;
-            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
-        }
-        Tokenizer tokenizer = ( lang == RDFJSON ) ?
-            new TokenizerJSON(PeekReader.makeUTF8(input)) :
-                TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParserTriples(tokenizer, lang, baseIRI, dest) ;
+        return org.apache.jena.riot.RiotReader.createParser(input, lang, baseIRI, dest) ;
     }
     
     /** Create a parser for a triples language */  
     public static LangRIOT createParserTriples(Tokenizer tokenizer, Lang lang, String baseIRI, RDFParserOutput dest)
     {
-        if ( RDFLanguages.sameLang(RDFXML, lang) )
-            throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
-        if ( RDFLanguages.sameLang(Turtle, lang) || RDFLanguages.sameLang(N3,  lang) ) 
-                return createParserTurtle(tokenizer, baseIRI, dest) ;
-        if ( RDFLanguages.sameLang(NTriples, lang) )
-                return createParserNTriples(tokenizer, dest) ;
-        if ( RDFLanguages.sameLang(RDFJSON, lang) )
-                // But it must be a JSON tokenizer ...
-            return createParserRdfJson(tokenizer, dest) ;
-        if ( RDFLanguages.sameLang(NQuads, lang) || RDFLanguages.sameLang(TriG, lang) )
-            throw new RiotException("Not a triples language: "+lang) ;
-        return null ;
+        return org.apache.jena.riot.RiotReader.createParser(tokenizer, lang, baseIRI, dest) ;
     }
     
     // TODO create a Tokenizer version of this method

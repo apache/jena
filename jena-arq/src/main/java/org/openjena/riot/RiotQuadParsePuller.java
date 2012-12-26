@@ -45,7 +45,7 @@ public class RiotQuadParsePuller extends RiotParsePuller<Quad>
     protected LangRIOT createParser(Sink<Quad> sink)
     {
         RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
-        return RiotReader.createParserQuads(in, lang, baseIRI, dest) ;
+        return RiotReader.createParser(in, lang, baseIRI, dest) ;
     }
 }
 

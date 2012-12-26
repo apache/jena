@@ -152,14 +152,14 @@ public class infer extends CmdGeneral
         {
             InputStream in = IO.openFile(filename) ;
             sink = RDFParserOutputLib.extendTriplesToQuads(sink) ;
-            LangRIOT parser = RiotReader.createParserTriples(in, lang, baseURI, sink) ;
+            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ;
             parser.parse() ;
             return ;
         }
         else
         {
             InputStream in = IO.openFile(filename) ;
-            LangRIOT parser = RiotReader.createParserQuads(in, lang, baseURI, sink) ; 
+            LangRIOT parser = RiotReader.createParser(in, lang, baseURI, sink) ; 
             parser.parse() ;
         }        
     }
