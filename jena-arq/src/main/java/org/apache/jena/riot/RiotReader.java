@@ -48,6 +48,82 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class RiotReader
 {
+    /** Parse a file, sending output to a RDFParserOutput sink.
+     * Must be in a triples syntax.
+     * @param filename 
+     * @param dest  Where to send the triples from the parser.
+     */
+    public static void parse(String filename, RDFParserOutput dest)
+    { parse(filename, null, null, dest) ; }
+
+    /** Parse a file, sending output to a RDFParserOutput sink.
+     * Must be in a triples syntax.
+     * @param filename 
+     * @param lang      Language, or null for "guess from URL" (e.g. file extension)
+     * @param baseIRI   Base IRI, or null for based on input filename
+     * @param dest      Where to send the triples from the parser.
+     */  
+    public static void parse(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
+    {
+        if ( lang == null )
+            lang = filenameToLang(filename, NTriples) ;
+        
+        InputStream in = IO.openFile(filename) ; 
+        String base = chooseBaseIRI(baseIRI, filename) ;
+        parse(in, lang, base, dest) ;
+        IO.close(in) ;
+    }
+
+    /** Parse an InputStream, using RDFParserOutput as the destination for the parser output.
+     * @param in        Source for bytes to parse.
+     * @param lang      Language.
+     * @param baseIRI   Base IRI. 
+     * @param dest      Where to send the triples from the parser.
+     */  
+    public static void parse(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
+    {
+        LangRIOT parser = RiotReader.createParser(in, lang, baseIRI, dest) ;
+        parser.parse() ;
+    }
+
+    // -------- Parsers
+    
+    /** Create a parser */  
+    public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, RDFParserOutput dest)
+    {
+        if ( lang == RDFXML )
+        {
+            if ( baseIRI != null )
+                baseIRI = IRIResolver.resolveString(baseIRI) ;
+            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
+        }
+        Tokenizer tokenizer = ( lang == RDFJSON ) ?
+            new TokenizerJSON(PeekReader.makeUTF8(input)) :
+                TokenizerFactory.makeTokenizerUTF8(input) ;
+        return createParser(tokenizer, lang, baseIRI, dest) ;
+    }
+
+    /** Create a parser */  
+    public static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, RDFParserOutput dest)
+    {
+        if ( RDFLanguages.sameLang(RDFXML, lang) )
+            throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
+        if ( RDFLanguages.sameLang(Turtle, lang) || RDFLanguages.sameLang(N3,  lang) ) 
+                return createParserTurtle(tokenizer, baseIRI, dest) ;
+        if ( RDFLanguages.sameLang(NTriples, lang) )
+                return createParserNTriples(tokenizer, dest) ;
+        if ( RDFLanguages.sameLang(RDFJSON, lang) )
+            // But it must be a JSON tokenizer ...
+            return createParserRdfJson(tokenizer, dest) ;
+        
+        if ( RDFLanguages.sameLang(NQuads, lang) )
+            return createParserNQuads(tokenizer, dest) ;
+        if ( RDFLanguages.sameLang(TriG, lang) )
+            return createParserTriG(tokenizer, baseIRI, dest) ;
+        
+        return null ;
+    }
+
     /** Parse a file, sending triples to a sink.
      * Must be in a triples syntax.
      * @param filename 
@@ -120,82 +196,10 @@ public class RiotReader
         parse(in, lang, baseIRI, dest) ;
     }
 
-    /** Parse a file, sending output to a RDFParserOutput sink.
-     * Must be in a triples syntax.
-     * @param filename 
-     * @param dest  Where to send the triples from the parser.
-     */
-    public static void parse(String filename, RDFParserOutput dest)
-    { parse(filename, null, null, dest) ; }
     
-    /** Parse a file, sending output to a RDFParserOutput sink.
-     * Must be in a triples syntax.
-     * @param filename 
-     * @param lang      Language, or null for "guess from URL" (e.g. file extension)
-     * @param baseIRI   Base IRI, or null for based on input filename
-     * @param dest      Where to send the triples from the parser.
-     */  
-    public static void parse(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
-    {
-        if ( lang == null )
-            lang = filenameToLang(filename, NTriples) ;
-        
-        InputStream in = IO.openFile(filename) ; 
-        String base = chooseBaseIRI(baseIRI, filename) ;
-        parse(in, lang, base, dest) ;
-        IO.close(in) ;
-    }
-
-    /** Parse an InputStream, using RDFParserOutput as the destination for the parser output.
-     * @param in        Source for bytes to parse.
-     * @param lang      Language.
-     * @param baseIRI   Base IRI. 
-     * @param dest      Where to send the triples from the parser.
-     */  
-    public static void parse(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
-    {
-        LangRIOT parser = RiotReader.createParser(in, lang, baseIRI, dest) ;
-        parser.parse() ;
-    }
     
     // -------- Parsers
     
-    /** Create a parser */  
-    public static LangRIOT createParser(InputStream input, Lang lang, String baseIRI, RDFParserOutput dest)
-    {
-        if ( lang == RDFXML )
-        {
-            if ( baseIRI != null )
-                baseIRI = IRIResolver.resolveString(baseIRI) ;
-            return LangRDFXML.create(input, baseIRI, baseIRI, ErrorHandlerFactory.getDefaultErrorHandler(), dest) ;
-        }
-        Tokenizer tokenizer = ( lang == RDFJSON ) ?
-            new TokenizerJSON(PeekReader.makeUTF8(input)) :
-                TokenizerFactory.makeTokenizerUTF8(input) ;
-        return createParser(tokenizer, lang, baseIRI, dest) ;
-    }
-    /** Create a parser */  
-    public static LangRIOT createParser(Tokenizer tokenizer, Lang lang, String baseIRI, RDFParserOutput dest)
-    {
-        if ( RDFLanguages.sameLang(RDFXML, lang) )
-            throw new RiotException("Not possible - can't parse RDF/XML from a RIOT token stream") ;
-        if ( RDFLanguages.sameLang(Turtle, lang) || RDFLanguages.sameLang(N3,  lang) ) 
-                return createParserTurtle(tokenizer, baseIRI, dest) ;
-        if ( RDFLanguages.sameLang(NTriples, lang) )
-                return createParserNTriples(tokenizer, dest) ;
-        if ( RDFLanguages.sameLang(RDFJSON, lang) )
-            // But it must be a JSON tokenizer ...
-            return createParserRdfJson(tokenizer, dest) ;
-        
-        if ( RDFLanguages.sameLang(NQuads, lang) )
-            return createParserNQuads(tokenizer, dest) ;
-        if ( RDFLanguages.sameLang(TriG, lang) )
-            return createParserTriG(tokenizer, baseIRI, dest) ;
-        
-        return null ;
-    }
-
-
     // TODO create a Tokenizer version of this method
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
     {
