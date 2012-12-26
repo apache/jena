@@ -364,7 +364,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         Graph graphTmp = GraphFactory.createGraphMem() ;
         
         RDFParserOutput dest = RDFParserOutputLib.graph(graphTmp) ;
-        LangRIOT parser = RiotReader.createParserTriples(input, lang, base, dest) ;
+        LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 
         catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
