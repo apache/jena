@@ -18,12 +18,16 @@
 
 package arq.examples.riot;
 
-import org.apache.jena.riot.IO_Jena ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.util.FileManager ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Example of using RIOT with Jena readers.
+ * Normally, the application just needs to call model.read and
+ * not interact with RIOT directly. 
  */
 public class ExRIOT_1
 {
@@ -32,21 +36,25 @@ public class ExRIOT_1
         // Ensure RIOT loaded.
         // This is only needed to be sure - touching any ARQ code will load RIOT.
         // This operation can be called several times.
-        IO_Jena.wireIntoJena() ;
-
-        Model m = null ;
+        RIOT.init() ;
+                  
+        Model m = ModelFactory.createDefaultModel() ;
+        // read into the model.
+        m.read("data.ttl") ;
         
-        // Load data, creating the model
-        m = FileManager.get().loadModel("D.ttl") ;
+        // Alternatively, use the RDFDataMgr, which reads from the web,
+        // with content negotiation.  Plain names are assumed to be 
+        // local files where file extension indicates the syntax.  
         
-        // Or read into an existing model.
-        FileManager.get().readModel(m, "D2.ttl") ;
+        Model m2 = RDFDataMgr.loadModel("data.ttl") ;
         
-        // Or use Model.read
-        m.read("D3.nt", "TTL") ;
+        // read in more data, the remote server serves up the data
+        // with the right MIME type.
+        RDFDataMgr.read(m2, "http://host/some-published-data") ;
         
-        // Go back to using the old Jena readers.  
-        IO_Jena.resetJenaReaders() ;
-        m = FileManager.get().loadModel("D.nt") ;
+        
+        // Read some data but also give a hint for the synatx if it is not
+        // discovered by inspectying the file or by HTTP content negotiation.  
+        RDFDataMgr.read(m2, "some-more-data.out", RDFLanguages.Turtle) ;
     }
 }

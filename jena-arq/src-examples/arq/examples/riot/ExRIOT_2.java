@@ -34,6 +34,13 @@ import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.RiotLib ;
 
 /** Example of using RIOT directly.
+ * 
+ * RDFDataMgr is the general place to read data - see {@link ExRIOT_1}  
+ * 
+ * RiotReader is the place for making parsers and can be used to read
+ * from files or InputStreams. It can give more detailed control of error handling
+ * and specialised destination of parser output.
+ * It does not perform HTTP content negotiation.  
  */
 public class ExRIOT_2
 {
@@ -42,9 +49,9 @@ public class ExRIOT_2
         // Ensure RIOT loaded.
         RIOT.init() ;
 
+        // ---- Parse to a Sink.
         RDFParserOutput noWhere = RDFParserOutputLib.sinkNull() ;
 
-        // ---- Parse to a Sink.
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
@@ -53,6 +60,8 @@ public class ExRIOT_2
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
             
+        // It is always better to use an  InputStream, rather than a Java Reader.
+        // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
         LangRIOT parser = RiotReader.createParserQuads(in, RDFLanguages.TriG, "http://example/base", noWhere) ;
         
@@ -65,7 +74,7 @@ public class ExRIOT_2
         // Just set the error handler.
         parser.getProfile().setHandler(errHandler) ;
         
-        // Or replave the whole parser profile.
+        // Or replace the whole parser profile.
         parser.setProfile(profile) ;
 
         // Do the work.
