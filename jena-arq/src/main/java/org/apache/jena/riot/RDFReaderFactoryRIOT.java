@@ -23,9 +23,7 @@ import com.hp.hpl.jena.rdf.model.RDFReaderF ;
 
 public class RDFReaderFactoryRIOT implements RDFReaderF
 {
-
-    // Map language to base.
-    // .. crudely ... 
+    public RDFReaderFactoryRIOT() {}
     
     @Override
     public RDFReader getReader()
