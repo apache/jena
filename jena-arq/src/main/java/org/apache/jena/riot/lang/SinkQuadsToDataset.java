@@ -31,7 +31,7 @@ public class SinkQuadsToDataset implements Sink<Quad>
 {
     private final DatasetGraph dataset ;
 
-    public SinkQuadsToDataset(DatasetGraph dataset)
+    public SinkQuadsToDataset(boolean x , DatasetGraph dataset)
     {
         this.dataset = dataset ;
     }

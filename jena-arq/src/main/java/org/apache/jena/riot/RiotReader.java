@@ -30,10 +30,7 @@ import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.openjena.riot.RiotQuadParsePuller ;
@@ -165,7 +162,7 @@ public class RiotReader
      */  
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkTriples(sink) ;
         parse(filename, lang, baseIRI, dest) ;
     }
 
@@ -178,7 +175,7 @@ public class RiotReader
      */  
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkTriples(sink) ;
         parse(in, lang, baseIRI, dest) ;
     }
     
@@ -201,7 +198,7 @@ public class RiotReader
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
         parse(filename, lang, baseIRI, dest) ;
     }
 
@@ -214,7 +211,7 @@ public class RiotReader
      */
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
         parse(in, lang, baseIRI, dest) ;
     }
 

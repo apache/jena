@@ -28,6 +28,7 @@ import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
 
@@ -94,7 +95,7 @@ public class TestLangNTriples extends TestLangNTuples
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = RDFParserOutputLib.count() ;
+        RDFParserOutputCounting sink = SinkRDFLib.count() ;
         LangNTriples x = RiotReader.createParserNTriples(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
         x.parse() ;
