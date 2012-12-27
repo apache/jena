@@ -33,10 +33,7 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 
@@ -72,7 +69,7 @@ public class RiotReader
      */
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkTriples(sink) ;
         parseTriples(filename, lang, baseIRI, dest) ;
     }
 
@@ -85,7 +82,7 @@ public class RiotReader
      */  
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkTriples(sink) ;
         parseTriples(in, lang, baseIRI, dest) ;
     }
     
@@ -108,7 +105,7 @@ public class RiotReader
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
         parseQuads(filename, lang, baseIRI, dest) ;
     }
 
@@ -121,7 +118,7 @@ public class RiotReader
      */
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
         parseQuads(in, lang, baseIRI, dest) ;
     }
 
@@ -234,7 +231,7 @@ public class RiotReader
             return createParserTriG(tokenizer, baseIRI, dest) ;
 
         // try to do via triples to quads extension. 
-        dest = RDFParserOutputLib.extendTriplesToQuads(dest) ;
+        dest = SinkRDFLib.extendTriplesToQuads(dest) ;
         return createParserTriples(tokenizer, lang, baseIRI, dest) ;
     }
     

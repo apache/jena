@@ -24,35 +24,37 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** The interface for the output of RDF, such as the RIOT parsers.
- *  The parser event model is that items are emitted for signficant events.
- *  The events are start/finish, emitting triples/quads/tuples as necessary, prefixes and base directives.
- *  Tuples are generalized triples or quads.  A triple language will call triple(),
- *  quad language quad() in preference.    
- * 
- * @see ParserProfile for the lower level machinary for creation of nodes triples and quads. 
- */
-public interface SinkRDFWrapper
+public class SinkRDFWrapper implements SinkRDF
 {
-    /** Start parsing */
-    public void start() ;
+    protected final SinkRDF sink ;
+
+    public SinkRDFWrapper(SinkRDF sink) { this.sink = sink ; }
     
-    /** Triple emitted */
-    public void triple(Triple triple) ;
+    @Override
+    public void start()
+    { sink.start() ; }
 
-    /** Quad emitted */
-    public void quad(Quad quad) ;
+    @Override
+    public void triple(Triple triple)
+    { sink.triple(triple) ; }
 
-    /** Generalized emitted */
-    public void tuple(Tuple<Node> tuple) ;
+    @Override
+    public void quad(Quad quad)
+    { sink.quad(quad) ; }
 
-    /** base declaration seen */
-    public void base(String base) ;
+    @Override
+    public void tuple(Tuple<Node> tuple)
+    { sink.tuple(tuple) ; }
 
-    /** prefix declaration seen */
-    public void prefix(String prefix, String iri) ;
+    @Override
+    public void base(String base)
+    { sink.base(base) ; }
 
-    /** Finish parsing */
-    public void finish() ;
+    @Override
+    public void prefix(String prefix, String iri)
+    { sink.prefix(prefix, iri) ; }
 
+    @Override
+    public void finish()
+    { sink.finish() ; }
 }

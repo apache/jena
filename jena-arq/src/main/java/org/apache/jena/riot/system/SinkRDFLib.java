@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Various Common RDFParserOutput set ups */
-public class RDFParserOutputLib
+public class SinkRDFLib
 {
     /** Send everything to nowhere ... efficiently */
     public static SinkRDF sinkNull()                       { return new ParserOutputSink() ; }
@@ -37,7 +37,6 @@ public class RDFParserOutputLib
     public static SinkRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
     public static SinkRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
-
     
     /** 
      * Outpout to a sink; prefix and base handled only within the parser.

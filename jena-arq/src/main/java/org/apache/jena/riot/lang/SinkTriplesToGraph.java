@@ -42,7 +42,7 @@ public class SinkTriplesToGraph implements Sink<Triple>
     private EventListener el1 ;
     private EventListener el2 ;
 
-    public SinkTriplesToGraph(Graph g)
+    public SinkTriplesToGraph(boolean x , Graph g)
     { 
         this.graph = g ;
         // Convert between the new global event system (EventManager)

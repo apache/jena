@@ -16,36 +16,12 @@
  * limitations under the License.
  */
 
-package org.openjena.riot;
+package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import java.io.InputStream ;
-
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
 
-import com.hp.hpl.jena.sparql.core.Quad ;
-
-/**
- * A RiotParsePuller that operates on Quads.
- * 
- * @see RiotParsePuller
- */
-public class RiotQuadParsePuller extends RiotParsePuller<Quad>
+public interface BulkSinkRDF extends SinkRDF
 {
-    public RiotQuadParsePuller(InputStream in, Lang lang, String baseIRI)
-    {
-        super(in, lang, baseIRI) ;
-    }
-    
-    @Override
-    protected LangRIOT createParser(Sink<Quad> sink)
-    {
-        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
-        return RiotReader.createParser(in, lang, baseIRI, dest) ;
-    }
+    public void startBulk() ;
+    public void finishBulk() ;
 }
-

@@ -30,8 +30,8 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ResultSet ;
@@ -57,7 +57,7 @@ public class HttpResponseLib
                 HttpEntity entity = response.getEntity() ;
                 MediaType mt = MediaType.create(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
                 mt.getCharset() ;
-                SinkRDF dest = RDFParserOutputLib.graph(g) ; 
+                SinkRDF dest = SinkRDFLib.graph(g) ; 
                 InputStream in = entity.getContent() ;
                 LangRIOT parser = createParser(in, baseIRI, dest) ;
                 parser.parse() ;

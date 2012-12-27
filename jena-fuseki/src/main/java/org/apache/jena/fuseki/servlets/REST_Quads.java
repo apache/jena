@@ -35,8 +35,8 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.RiotWriter ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -141,7 +141,7 @@ public class REST_Quads extends SPARQL_REST
             name = name+(++counter) ;
             Node gn = Node.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
-            RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+            SinkRDF dest = SinkRDFLib.graph(g) ;
             LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             log.info(format("[%d] Location: %s", action.id, name)) ;
