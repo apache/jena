@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,49 +18,39 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Tuple ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Take a stream of triples and send down a Sink&lt;Quad>
- *  The quad will have <code>Quad.tripleInQuad</code> in the G field or a specified node..
- *  @see Quad#tripleInQuad
- */   
-public class SinkExtendTriplesToQuads implements Sink<Triple>
+public class SinkRDFBase implements SinkRDF
 {
-    private final Sink<Quad> quadSink ;
-    private final Node graph ;
-
-    public SinkExtendTriplesToQuads(Sink<Quad> quadSink)
-    {
-        this(Quad.tripleInQuad, quadSink) ;
-    }
-    
-    public SinkExtendTriplesToQuads(Node gn, Sink<Quad> quadSink)
-    {
-        this.quadSink = quadSink ;
-        this.graph = gn ;
-    }
-    
     @Override
-    public void send(Triple triple)
-    {
-        Quad q = new Quad(graph, triple) ;
-        quadSink.send(q) ;
-    }
+    public void start()
+    {}
 
     @Override
-    public void flush()
-    {
-        quadSink.flush() ;
-    }
-    
+    public void triple(Triple triple)
+    {}
+
     @Override
-    public void close()
-    {
-        // Don't close - the underlying sink may be reused. 
-        //quadSink.close() ;
-    }
+    public void quad(Quad quad)
+    {}
+
+    @Override
+    public void tuple(Tuple<Node> tuple)
+    {}
+
+    @Override
+    public void base(String base)
+    {}
+
+    @Override
+    public void prefix(String prefix, String iri)
+    {}
+
+    @Override
+    public void finish()
+    {}
 }

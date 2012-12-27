@@ -36,6 +36,7 @@ import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 
@@ -71,7 +72,7 @@ public class RiotReader
      */
     public static void parseTriples(String filename, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
         parseTriples(filename, lang, baseIRI, dest) ;
     }
 
@@ -84,7 +85,7 @@ public class RiotReader
      */  
     public static void parseTriples(InputStream in, Lang lang, String baseIRI, Sink<Triple> sink)
     {
-        RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
+        SinkRDF dest = RDFParserOutputLib.sinkTriples(sink) ;
         parseTriples(in, lang, baseIRI, dest) ;
     }
     
@@ -107,7 +108,7 @@ public class RiotReader
      */
     public static void parseQuads(String filename, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
         parseQuads(filename, lang, baseIRI, dest) ;
     }
 
@@ -120,7 +121,7 @@ public class RiotReader
      */
     public static void parseQuads(InputStream in, Lang lang, String baseIRI, Sink<Quad> sink)
     {
-        RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
         parseQuads(in, lang, baseIRI, dest) ;
     }
 
@@ -129,7 +130,7 @@ public class RiotReader
      * @param filename 
      * @param dest  Where to send the triples from the parser.
      */
-    public static void parseTriples(String filename, RDFParserOutput dest)
+    public static void parseTriples(String filename, SinkRDF dest)
     { parseTriples(filename, null, null, dest) ; }
     
     /** Parse a file, sending triples to a sink.
@@ -139,7 +140,7 @@ public class RiotReader
      * @param baseIRI   Base IRI, or null for based on input filename
      * @param dest      Where to send the triples from the parser.
      */  
-    public static void parseTriples(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static void parseTriples(String filename, Lang lang, String baseIRI, SinkRDF dest)
     {
         org.apache.jena.riot.RiotReader.parse(filename, lang, baseIRI, dest) ;
     }
@@ -150,7 +151,7 @@ public class RiotReader
      * @param baseIRI   Base IRI. 
      * @param dest      Where to send the triples from the parser.
      */  
-    public static void parseTriples(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static void parseTriples(InputStream in, Lang lang, String baseIRI, SinkRDF dest)
     {
         org.apache.jena.riot.RiotReader.parse(in, lang, baseIRI, dest) ;
     }
@@ -161,7 +162,7 @@ public class RiotReader
      * @param filename
      * @param dest  Where to send the quads from the parser.
      */
-    public static void parseQuads(String filename, RDFParserOutput dest)
+    public static void parseQuads(String filename, SinkRDF dest)
     { parseQuads(filename, null, null, dest) ; }
     
     /** Parse a file, sending quads to a sink.
@@ -170,7 +171,7 @@ public class RiotReader
      * @param baseIRI   Base IRI, or null for base on input filename
      * @param dest      Where to send the quads from the parser.
      */
-    public static void parseQuads(String filename, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static void parseQuads(String filename, Lang lang, String baseIRI, SinkRDF dest)
     {
         org.apache.jena.riot.RiotReader.parse(filename, lang, baseIRI, dest) ;
     }
@@ -181,7 +182,7 @@ public class RiotReader
      * @param baseIRI   Base IRI. 
      * @param dest      Where to send the quads from the parser.
      */
-    public static void parseQuads(InputStream in, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static void parseQuads(InputStream in, Lang lang, String baseIRI, SinkRDF dest)
     {
         org.apache.jena.riot.RiotReader.parse(in, lang, baseIRI, dest) ;
     }
@@ -189,13 +190,13 @@ public class RiotReader
     // -------- Parsers
     
     /** Create a parser for a triples language */  
-    public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static LangRIOT createParserTriples(InputStream input, Lang lang, String baseIRI, SinkRDF dest)
     {
         return org.apache.jena.riot.RiotReader.createParser(input, lang, baseIRI, dest) ;
     }
     
     /** Create a parser for a triples language */  
-    public static LangRIOT createParserTriples(Tokenizer tokenizer, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static LangRIOT createParserTriples(Tokenizer tokenizer, Lang lang, String baseIRI, SinkRDF dest)
     {
         return org.apache.jena.riot.RiotReader.createParser(tokenizer, lang, baseIRI, dest) ;
     }
@@ -218,14 +219,14 @@ public class RiotReader
     }
     
     /** Create a parser for a quads (or triples) language */  
-    public static LangRIOT createParserQuads(InputStream input, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static LangRIOT createParserQuads(InputStream input, Lang lang, String baseIRI, SinkRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserQuads(tokenizer, lang, baseIRI, dest) ;
     }
     
     /** Create a parser for a quads language */  
-    public static LangRIOT createParserQuads(Tokenizer tokenizer, Lang lang, String baseIRI, RDFParserOutput dest)
+    public static LangRIOT createParserQuads(Tokenizer tokenizer, Lang lang, String baseIRI, SinkRDF dest)
     {
         if ( RDFLanguages.sameLang(NQuads, lang) )
             return createParserNQuads(tokenizer, dest) ;
@@ -255,21 +256,21 @@ public class RiotReader
     }
     
     /** Create a parser for Turtle, with default behaviour */
-    public static LangTurtle createParserTurtle(InputStream input, String baseIRI, RDFParserOutput dest)
+    public static LangTurtle createParserTurtle(InputStream input, String baseIRI, SinkRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTurtle(tokenizer, baseIRI, dest) ;
     }
     
     /** Create a parser for Turtle, with default behaviour */
-    public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, RDFParserOutput dest)
+    public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, SinkRDF dest)
     {
         LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.Turtle, baseIRI), dest) ;
         return parser ;
     }
 
     /** Create a parser for RDF/XML */
-    public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, RDFParserOutput dest)
+    public static LangRDFXML createParserRDFXML(InputStream input, String baseIRI, SinkRDF dest)
     {
         if ( baseIRI == null )
             baseIRI = chooseBaseIRI() ;
@@ -278,27 +279,27 @@ public class RiotReader
     }
 
     /** Create parsers for RDF/JSON */
-    public static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, RDFParserOutput dest)
+    public static LangRDFJSON createParserRdfJson(Tokenizer tokenizer, SinkRDF dest)
     {
     	LangRDFJSON parser = new LangRDFJSON(tokenizer, RiotLib.profile(RDFLanguages.RDFJSON, null), dest) ;
     	return parser;
     }
 
-    public static LangRDFJSON createParserRdfJson(InputStream input, RDFParserOutput dest)
+    public static LangRDFJSON createParserRdfJson(InputStream input, SinkRDF dest)
     {
     	TokenizerJSON tokenizer = new TokenizerJSON(PeekReader.makeUTF8(input)) ;
     	return createParserRdfJson(tokenizer, dest) ;
     }
     
     /** Create a parser for TriG, with default behaviour */
-    public static LangTriG createParserTriG(InputStream input, String baseIRI, RDFParserOutput dest)
+    public static LangTriG createParserTriG(InputStream input, String baseIRI, SinkRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(input) ;
         return createParserTriG(tokenizer, baseIRI, dest) ;
     }
     
     /** Create a parser for TriG, with default behaviour */
-    public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, RDFParserOutput dest)
+    public static LangTriG createParserTriG(Tokenizer tokenizer, String baseIRI, SinkRDF dest)
     {
         if ( baseIRI == null )
             baseIRI = chooseBaseIRI() ;
@@ -307,28 +308,28 @@ public class RiotReader
     }
 
     /** Create a parser for N-Triples, with default behaviour */
-    public static LangNTriples createParserNTriples(InputStream input, RDFParserOutput dest)
+    public static LangNTriples createParserNTriples(InputStream input, SinkRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNTriples(tokenizer, dest) ;
     }
     
     /** Create a parser for N-Triples, with default behaviour */
-    public static LangNTriples createParserNTriples(Tokenizer tokenizer, RDFParserOutput dest)
+    public static LangNTriples createParserNTriples(Tokenizer tokenizer, SinkRDF dest)
     {
         LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTriples, null), dest) ;
         return parser ;
     }
     
     /** Create a parser for NQuads, with default behaviour */
-    public static LangNQuads createParserNQuads(InputStream input, RDFParserOutput dest)
+    public static LangNQuads createParserNQuads(InputStream input, SinkRDF dest)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerASCII(input) ;
         return createParserNQuads(tokenizer, dest) ;
     }
     
     /** Create a parser for NQuads, with default behaviour */
-    public static LangNQuads createParserNQuads(Tokenizer tokenizer, RDFParserOutput dest)
+    public static LangNQuads createParserNQuads(Tokenizer tokenizer, SinkRDF dest)
     {
         LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQuads, null), dest) ;
         return parser ;

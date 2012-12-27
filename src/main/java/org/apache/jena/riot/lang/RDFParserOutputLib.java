@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.system.SinkRDF ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -31,11 +32,11 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class RDFParserOutputLib
 {
     /** Send everything to nowhere ... efficiently */
-    public static RDFParserOutput sinkNull()                       { return new ParserOutputSink() ; }
+    public static SinkRDF sinkNull()                       { return new ParserOutputSink() ; }
 
-    public static RDFParserOutput graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
+    public static SinkRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
-    public static RDFParserOutput dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
+    public static SinkRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
 
     
     /** 
@@ -43,31 +44,31 @@ public class RDFParserOutputLib
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
-    public static RDFParserOutput sinkTriples(Sink<Triple> sink)   { return new ParserOutputSinkTriples(sink) ; }
+    public static SinkRDF sinkTriples(Sink<Triple> sink)   { return new ParserOutputSinkTriples(sink) ; }
 
     /** 
      * Output to a sink; prefix and base handled only within the parser.
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
-    public static RDFParserOutput sinkQuads(Sink<Quad> sink)       { return new ParserOutputSinkQuads(sink) ; }
+    public static SinkRDF sinkQuads(Sink<Quad> sink)       { return new ParserOutputSinkQuads(sink) ; }
     
     /** Convert any triples seen to a quads, adding a graph node of {@link Quad#tripleInQuad} */
-    public static RDFParserOutput extendTriplesToQuads(RDFParserOutput base)
+    public static SinkRDF extendTriplesToQuads(SinkRDF base)
     { return extendTriplesToQuads(Quad.tripleInQuad, base) ; }
     
     /** Convert any triples seen to a quads, adding the specified graph node */
-    public static RDFParserOutput extendTriplesToQuads(Node graphNode, RDFParserOutput base)
+    public static SinkRDF extendTriplesToQuads(Node graphNode, SinkRDF base)
     { return new ParserOutputSinkTriplesToQuads(graphNode, base) ; }
     
     public static RDFParserOutputCounting count()
     { return new ParserOutputCountingBase(sinkNull()) ; }
 
-    public static RDFParserOutputCounting count(RDFParserOutput other)
+    public static RDFParserOutputCounting count(SinkRDF other)
     { return new ParserOutputCountingBase(other) ; }
 
     
-    private static class ParserOutputSink implements RDFParserOutput
+    private static class ParserOutputSink implements SinkRDF
     {
         public ParserOutputSink ()                      {}
         @Override public void start()                   {}
@@ -79,10 +80,10 @@ public class RDFParserOutputLib
         @Override public void finish()                  {}
     }
 
-    private static class ParserOutputWrapper implements RDFParserOutput
+    private static class ParserOutputWrapper implements SinkRDF
     {
-        protected final RDFParserOutput other ;
-        public ParserOutputWrapper (RDFParserOutput base)  { this.other = base ;}
+        protected final SinkRDF other ;
+        public ParserOutputWrapper (SinkRDF base)  { this.other = base ;}
         @Override public void start()                   { other.start() ; }
         @Override public void triple(Triple triple)     { other.triple(triple) ; }
         @Override public void quad(Quad quad)           { other.quad(quad); } 
@@ -95,7 +96,7 @@ public class RDFParserOutputLib
     private static class ParserOutputSinkTriplesToQuads extends ParserOutputWrapper
     {
         private final Node gn ;
-        ParserOutputSinkTriplesToQuads(Node gn, RDFParserOutput base)
+        ParserOutputSinkTriplesToQuads(Node gn, SinkRDF base)
         { super(base) ; this.gn = gn ; }
         
         @Override public void triple(Triple triple)
@@ -182,7 +183,7 @@ public class RDFParserOutputLib
         }
     }
 
-    private  static class ParserOutputCountingBase extends ParserOutputWrapper implements RDFParserOutput, RDFParserOutputCounting
+    private  static class ParserOutputCountingBase extends ParserOutputWrapper implements SinkRDF, RDFParserOutputCounting
     {
         private long countTriples = 0 ;
         private long countQuads = 0 ;
@@ -190,7 +191,7 @@ public class RDFParserOutputLib
         private long countBase = 0 ;
         private long countPrefixes = 0 ;
         
-        public ParserOutputCountingBase (RDFParserOutput other)     { super(other) ; }
+        public ParserOutputCountingBase (SinkRDF other)     { super(other) ; }
 
         @Override
         public void triple(Triple triple)

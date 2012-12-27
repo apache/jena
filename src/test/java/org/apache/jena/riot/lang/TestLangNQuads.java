@@ -21,9 +21,9 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.junit.Test ;
 
@@ -83,13 +83,13 @@ public class TestLangNQuads extends TestLangNTuples
     private DatasetGraph parseToDataset(String string)
     {
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        RDFParserOutput dest = RDFParserOutputLib.dataset(dsg) ;
+        SinkRDF dest = RDFParserOutputLib.dataset(dsg) ;
         parse(dest, string) ;
         return dsg ;
     }
 
     @Override
-    protected LangRIOT createParser(Tokenizer tokenizer, RDFParserOutput sink)
+    protected LangRIOT createParser(Tokenizer tokenizer, SinkRDF sink)
     {
         return RiotReader.createParserNQuads(tokenizer, sink) ;
     }

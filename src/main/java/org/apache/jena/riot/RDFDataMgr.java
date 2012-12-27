@@ -29,10 +29,10 @@ import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
@@ -198,7 +198,7 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, String uri, String base, Lang hintLang, Context context)
     {
-        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
+        SinkRDF dest = RDFParserOutputLib.graph(graph) ;
         read(dest, uri, base, hintLang, context) ;
     }
 
@@ -245,7 +245,7 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, InputStream in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
+        SinkRDF dest = RDFParserOutputLib.graph(graph) ;
         process(dest, base, new TypedInputStream(in), lang, null) ;
     }
 
@@ -276,7 +276,7 @@ public class RDFDataMgr
     @Deprecated
     public static void read(Graph graph, Reader in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
+        SinkRDF dest = RDFParserOutputLib.graph(graph) ;
         processTriples(dest, base, in, lang, null) ;
     }
 
@@ -289,7 +289,7 @@ public class RDFDataMgr
     public static void read(Model model, StringReader in, String base, Lang lang)
     {
         Graph g = model.getGraph() ;
-        RDFParserOutput dest = RDFParserOutputLib.graph(g) ;
+        SinkRDF dest = RDFParserOutputLib.graph(g) ;
         processTriples(dest, base, in, lang, null) ;
     }
 
@@ -301,7 +301,7 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, StringReader in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.graph(graph) ;
+        SinkRDF dest = RDFParserOutputLib.graph(graph) ;
         processTriples(dest, base, in, lang, null) ;
     }
     
@@ -497,7 +497,7 @@ public class RDFDataMgr
 
     public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context)
     {
-        RDFParserOutput sink = RDFParserOutputLib.dataset(dataset) ;
+        SinkRDF sink = RDFParserOutputLib.dataset(dataset) ;
         read(sink, uri, base, hintLang, context) ;
     }
 
@@ -540,7 +540,7 @@ public class RDFDataMgr
      */
     public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
+        SinkRDF dest = RDFParserOutputLib.dataset(dataset) ;
         process(dest, base, new TypedInputStream(in), lang, null) ;
     }
     
@@ -571,7 +571,7 @@ public class RDFDataMgr
     @Deprecated
     public static void read(DatasetGraph dataset, Reader in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
+        SinkRDF dest = RDFParserOutputLib.dataset(dataset) ;
         process(dest, base, in, lang, null) ;
     }
 
@@ -598,7 +598,7 @@ public class RDFDataMgr
      */
     public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang)
     {
-        RDFParserOutput dest = RDFParserOutputLib.dataset(dataset) ;
+        SinkRDF dest = RDFParserOutputLib.dataset(dataset) ;
         process(dest, base, in, lang, null) ;
     }
 
@@ -608,7 +608,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void read(RDFParserOutput sink, String uri, Lang hintLang, Context context)
+    public static void read(SinkRDF sink, String uri, Lang hintLang, Context context)
     {
         read(sink, uri, uri, hintLang, context) ;
     }
@@ -620,7 +620,7 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void read(RDFParserOutput sink, String uri, String base, Lang hintLang, Context context)
+    public static void read(SinkRDF sink, String uri, String base, Lang hintLang, Context context)
     {
         TypedInputStream in = open(uri, context) ;
         if ( in == null )
@@ -679,7 +679,7 @@ public class RDFDataMgr
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void process(RDFParserOutput destination, String baseUri, TypedInputStream in, Lang hintLang, Context context)
+    private static void process(SinkRDF destination, String baseUri, TypedInputStream in, Lang hintLang, Context context)
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         if ( ct == null )
@@ -704,7 +704,7 @@ public class RDFDataMgr
     
     // java.io.Readers are NOT preferred.
     @SuppressWarnings("deprecation")
-    private static void processTriples(RDFParserOutput output, String base, Reader in, Lang lang, Context context)
+    private static void processTriples(SinkRDF output, String base, Reader in, Lang lang, Context context)
     {
         // Not as good as from an InputStream - RDF/XML not supported 
         //****
@@ -729,7 +729,7 @@ public class RDFDataMgr
     }
     
     // java.io.Readers are NOT preferred.
-    private static void process(RDFParserOutput dest, String base, Reader in, Lang hintLang, Context context)
+    private static void process(SinkRDF dest, String base, Reader in, Lang hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         LangRIOT parser = RiotReader.createParser(tokenizer, hintLang, base, dest) ;
