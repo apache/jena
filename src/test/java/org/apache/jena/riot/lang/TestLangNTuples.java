@@ -30,9 +30,9 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.system.RiotLib ;
 import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -182,7 +182,7 @@ abstract public class TestLangNTuples extends BaseTest
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = RDFParserOutputLib.count() ;
+        RDFParserOutputCounting sink = SinkRDFLib.count() ;
         LangRIOT x = RiotReader.createParserNQuads(tokenizer, sink) ;
         x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         x.parse() ;

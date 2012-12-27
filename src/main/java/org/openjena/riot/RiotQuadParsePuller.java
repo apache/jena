@@ -24,8 +24,8 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -44,7 +44,7 @@ public class RiotQuadParsePuller extends RiotParsePuller<Quad>
     @Override
     protected LangRIOT createParser(Sink<Quad> sink)
     {
-        SinkRDF dest = RDFParserOutputLib.sinkQuads(sink) ;
+        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
         return RiotReader.createParser(in, lang, baseIRI, dest) ;
     }
 }

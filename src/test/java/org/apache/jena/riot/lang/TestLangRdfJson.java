@@ -30,7 +30,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.lang.LangRDFJSON ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
@@ -501,14 +501,14 @@ public class TestLangRdfJson extends BaseTest
 		byte b[] = StrUtils.asUTF8bytes("") ;
 		ByteArrayInputStream in = new ByteArrayInputStream(b);
 		Tokenizer tokenizer = TokenizerFactory.makeTokenizerUTF8(in) ;
-        RDFParserOutputCounting sink = RDFParserOutputLib.count() ;
+        RDFParserOutputCounting sink = SinkRDFLib.count() ;
 		LangRDFJSON parser = RiotReader.createParserRdfJson(tokenizer, sink) ;
 	}
 
     private long parseCount(String string)
     {
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = RDFParserOutputLib.count() ;
+        RDFParserOutputCounting sink = SinkRDFLib.count() ;
         LangRDFJSON x = RiotReader.createParserRdfJson(tokenizer, sink) ;
         x.getProfile().setHandler(new ErrorHandlerEx()) ;
         x.parse() ;

@@ -33,6 +33,7 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
@@ -107,7 +108,7 @@ public class TestLangTurtle extends BaseTest
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(reader) ;
         
         Graph graph = GraphFactory.createDefaultGraph() ;
-        SinkRDF sink = RDFParserOutputLib.graph(graph) ;
+        SinkRDF sink = SinkRDFLib.graph(graph) ;
         LangTurtle parser = RiotReader.createParserTurtle(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
         parser.parse() ; 

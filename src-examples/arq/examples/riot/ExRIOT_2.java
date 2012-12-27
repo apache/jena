@@ -26,7 +26,6 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.system.* ;
 
 /** Example of using RIOT directly.
@@ -46,7 +45,7 @@ public class ExRIOT_2
         RIOT.init() ;
 
         // ---- Parse to a Sink.
-        SinkRDF noWhere = RDFParserOutputLib.sinkNull() ;
+        SinkRDF noWhere = SinkRDFLib.sinkNull() ;
 
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
