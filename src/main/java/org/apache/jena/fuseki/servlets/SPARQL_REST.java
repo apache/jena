@@ -48,11 +48,7 @@ import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -363,7 +359,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         
-        RDFParserOutput dest = RDFParserOutputLib.graph(graphTmp) ;
+        SinkRDF dest = SinkRDFLib.graph(graphTmp) ;
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 

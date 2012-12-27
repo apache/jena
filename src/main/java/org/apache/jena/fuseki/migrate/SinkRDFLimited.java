@@ -18,29 +18,46 @@
 
 package org.apache.jena.fuseki.migrate;
 
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.SinkWrapper ;
-import org.apache.jena.riot.RiotException ;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFWrapper ;
 
-public class SinkLimited<T> extends SinkWrapper<T>
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.sparql.core.Quad ;
+
+public class SinkRDFLimited extends SinkRDFWrapper
 {
    private long count = 0 ;
    private final long limit ;
     
-    public SinkLimited(Sink<T> output, long limit)
+    public SinkRDFLimited(SinkRDF output, long limit)
     {
         super(output) ;
         this.limit = limit ;
     }
 
     @Override
-    public void send(T thing)
-    {
+    public void triple(Triple triple)
+    { 
         count++ ;
-        if ( count > limit )
-            throw new RiotException("Limit "+limit+" exceeded") ; 
-        super.send(thing) ;
+        super.triple(triple) ;
     }
+
+    @Override
+    public void quad(Quad quad)
+    { 
+        count++ ;
+        super.quad(quad) ;
+    }
+
+    @Override
+    public void tuple(Tuple<Node> tuple)
+    { 
+        count++ ;
+        super.tuple(tuple) ;
+    }
+
     
     public long getCount() { return count ; } 
     public long getLimit() { return limit ; }

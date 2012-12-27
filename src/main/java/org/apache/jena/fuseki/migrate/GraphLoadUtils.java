@@ -21,20 +21,15 @@ package org.apache.jena.fuseki.migrate;
 
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
-import org.apache.jena.riot.lang.RDFParserOutputLib ;
-import org.apache.jena.riot.lang.SinkTriplesToGraph ;
+import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.SinkRDFLib ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
@@ -75,17 +70,10 @@ public class GraphLoadUtils
     private static void readUtil(Graph graph, String uri, int limit)
     {
         Lang lang = RDFLanguages.filenameToLang(uri, RDFLanguages.RDFXML) ;
-        
-        Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
-        sink = new SinkLimited<Triple>(sink, limit) ;
-        
-        // TODO Conneg - awaiting RIOT code upgrade.
+        SinkRDF sink = SinkRDFLib.graph(graph) ;
+        sink = new SinkRDFLimited(sink, limit) ;
+
         InputStream input = Fuseki.webFileManager.open(uri) ;
-        
-        RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink) ;
-        LangRIOT parser = RiotReader.createParser(input, lang, uri, dest) ;
-        try {
-            parser.parse() ;
-        } catch (RiotException ex) { throw ex ; }
+        RDFDataMgr.read(sink, input, uri, lang, null) ;
     }
 }
