@@ -21,19 +21,19 @@ package org.apache.jena.riot;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.system.SinkRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 
 public abstract class ReaderRIOTBase implements ReaderRIOT
 {
     @Override
-    public void read(InputStream in, String baseURI, ContentType ct, RDFParserOutput output, Context context)
+    public void read(InputStream in, String baseURI, ContentType ct, SinkRDF output, Context context)
     {
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
         read(in, baseURI,lang, output, context) ;
     }
 
-    public abstract void read(InputStream in, String baseURI, Lang lang, RDFParserOutput output, Context context) ;
+    public abstract void read(InputStream in, String baseURI, Lang lang, SinkRDF output, Context context) ;
 }
 

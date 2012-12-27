@@ -26,7 +26,7 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 /** System-level testing of the parsers - testing the parser plumbing, not the language details */
 public class TestParserFactory extends BaseTest
 {
-    static class CatchParserOutput implements RDFParserOutput
+    static class CatchParserOutput implements SinkRDF
     {
         List<Triple>      triples     = new ArrayList<Triple>() ;
         List<Quad>        quads       = new ArrayList<Quad>() ;

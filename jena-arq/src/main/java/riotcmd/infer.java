@@ -28,10 +28,10 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
+import org.apache.jena.riot.system.SinkRDF ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdGeneral ;
@@ -146,7 +146,7 @@ public class infer extends CmdGeneral
     {
         Lang lang = filename.equals("-") ? RDFLanguages.NQuads : RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
         String baseURI = IRILib.filenameToIRI(filename) ;
-        RDFParserOutput sink = RDFParserOutputLib.sinkQuads(qsink) ;
+        SinkRDF sink = RDFParserOutputLib.sinkQuads(qsink) ;
         
         if ( RDFLanguages.isTriples(lang) )
         {

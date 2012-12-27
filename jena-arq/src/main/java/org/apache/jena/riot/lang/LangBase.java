@@ -19,14 +19,15 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 
 public abstract class LangBase extends LangEngine implements LangRIOT
 {
-    protected final RDFParserOutput dest ; 
+    protected final SinkRDF dest ; 
 
-    protected LangBase(Tokenizer tokens, ParserProfile profile, RDFParserOutput dest)
+    protected LangBase(Tokenizer tokens, ParserProfile profile, SinkRDF dest)
     {
         super(tokens, profile) ;
         this.dest = dest ;
@@ -35,6 +36,7 @@ public abstract class LangBase extends LangEngine implements LangRIOT
     @Override
     public void parse()
     {
+        dest.base(profile.getPrologue().getBaseURI()) ;
         dest.start() ;
         try { 
             runParser() ;
