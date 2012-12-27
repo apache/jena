@@ -24,7 +24,7 @@ import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_StrUUID extends ExprFunction0
 {
-    static private String fName = Tags.tagUUID ;
+    static private String fName = Tags.tagStrUUID ;
     
     public E_StrUUID()
     {
