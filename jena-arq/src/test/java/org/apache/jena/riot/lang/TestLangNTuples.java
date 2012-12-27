@@ -29,10 +29,10 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExError ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExFatal ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -167,7 +167,7 @@ abstract public class TestLangNTuples extends BaseTest
         return tokenizer ;
     }
     
-    protected void parse(RDFParserOutput sink, String... strings ) 
+    protected void parse(SinkRDF sink, String... strings ) 
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
@@ -176,7 +176,7 @@ abstract public class TestLangNTuples extends BaseTest
         parser.parse() ;
     }
     
-    protected abstract LangRIOT createParser(Tokenizer tokenizer, RDFParserOutput sink) ;
+    protected abstract LangRIOT createParser(Tokenizer tokenizer, SinkRDF sink) ;
 
     final protected void parseCheck(String... strings)
     {

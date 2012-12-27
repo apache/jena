@@ -34,17 +34,13 @@ import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LabelToNode ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.RDFParserOutput ;
 import org.apache.jena.riot.lang.RDFParserOutputLib ;
 import org.apache.jena.riot.out.NodeToLabel ;
 import org.apache.jena.riot.out.SinkQuadOutput ;
 import org.apache.jena.riot.out.SinkTripleOutput ;
 import org.apache.jena.riot.process.inf.InfFactory ;
 import org.apache.jena.riot.process.inf.InferenceSetupRDFS ;
-import org.apache.jena.riot.system.ErrorHandler ;
-import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.SyntaxLabels ;
+import org.apache.jena.riot.system.* ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.apache.log4j.PropertyConfigurator ;
@@ -295,7 +291,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infTriples(s, setup) ;
             
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            RDFParserOutput dest = RDFParserOutputLib.sinkTriples(sink2) ;
+            SinkRDF dest = RDFParserOutputLib.sinkTriples(sink2) ;
             parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             
             sink = sink2 ;
@@ -309,7 +305,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infQuads(s, setup) ;
             
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            RDFParserOutput dest = RDFParserOutputLib.sinkQuads(sink2) ;
+            SinkRDF dest = RDFParserOutputLib.sinkQuads(sink2) ;
             parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             sink = sink2 ;
         }

@@ -20,6 +20,7 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -36,7 +37,7 @@ public class LangNQuads extends LangNTuple<Quad>
     // Null for no graph.
     private Node currentGraph = null ;
     
-    public LangNQuads(Tokenizer tokens, ParserProfile profile, RDFParserOutput dest)
+    public LangNQuads(Tokenizer tokens, ParserProfile profile, SinkRDF dest)
     {
         super(tokens, profile, dest) ;
     }

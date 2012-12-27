@@ -16,25 +16,25 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.lang;
+package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.system.ParserProfile ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** The interface for the output of RIOT parsers.
- * The parser event model is that items are emitted for signficant events.
- * The events are start/finish, emittingtriples/quads/tuples as necessary, prefixes and base directives.
- * Tuples are generalized triples or quads.  a triple language will call triple(),
- * quad language quad() in preference.    
+/** The interface for the output of RDF, such as the RIOT parsers.
+ *  The parser event model is that items are emitted for signficant events.
+ *  The events are start/finish, emitting triples/quads/tuples as necessary, prefixes and base directives.
+ *  Tuples are generalized triples or quads.  A triple language will call triple(),
+ *  quad language quad() in preference.    
  * 
  * @see ParserProfile for the lower level machinary for creation of nodes triples and quads. 
  */
-public interface RDFParserOutput
+public interface SinkRDF
 {
+    // Java does not allow us to say "extends Sink<Triple>, Sink<Quad> because of type erasure
     /** Start parsing */
     public void start() ;
     
@@ -57,4 +57,3 @@ public interface RDFParserOutput
     public void finish() ;
 
 }
-

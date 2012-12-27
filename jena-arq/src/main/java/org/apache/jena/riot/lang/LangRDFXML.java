@@ -32,6 +32,7 @@ import org.apache.jena.riot.checker.CheckerLiterals ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.ParserProfile ;
 import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.SinkRDF ;
 import org.xml.sax.SAXException ;
 import org.xml.sax.SAXParseException ;
 
@@ -54,7 +55,7 @@ public class LangRDFXML implements LangRIOT
     private Reader reader = null ;
     private String xmlBase ;
     private String filename ;
-    private RDFParserOutput sink ;
+    private SinkRDF sink ;
     private ParserProfile profile ;             // Warning - we don't use all of this.
     
     @Override
@@ -67,24 +68,24 @@ public class LangRDFXML implements LangRIOT
     public void setProfile(ParserProfile profile)
     { this.profile = profile ; }
 
-    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, RDFParserOutput sink)
+    public static LangRDFXML create(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, SinkRDF sink)
     {
         return new LangRDFXML(in, xmlBase, filename, errorHandler, sink) ;
     }
     
     @Deprecated
-    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, RDFParserOutput sink)
+    public static LangRDFXML create(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, SinkRDF sink)
     {
         return new LangRDFXML(reader, xmlBase, filename, errorHandler, sink) ;
     }
     
 
-    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, RDFParserOutput sink)
+    public static LangRDFXML create(String xmlBase, String filename, ErrorHandler errorHandler, SinkRDF sink)
     {
         return create(IO.openFile(filename), xmlBase, filename, errorHandler, sink) ;
     }
     
-    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, RDFParserOutput sink)
+    private LangRDFXML(Reader reader, String xmlBase, String filename, ErrorHandler errorHandler, SinkRDF sink)
     {
         this.reader = reader ;
         this.xmlBase = xmlBase ;
@@ -93,7 +94,7 @@ public class LangRDFXML implements LangRIOT
         this.profile = RiotLib.profile(getLang(), xmlBase, errorHandler) ;
     }
     
-    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, RDFParserOutput sink)
+    private LangRDFXML(InputStream in, String xmlBase, String filename, ErrorHandler errorHandler, SinkRDF sink)
     {
         this.input = in ;
         this.xmlBase = xmlBase ;
@@ -151,11 +152,11 @@ public class LangRDFXML implements LangRIOT
     
     private static class HandlerSink extends ARPSaxErrorHandler implements StatementHandler, NamespaceHandler
     {
-        private RDFParserOutput output ;
+        private SinkRDF output ;
         private ErrorHandler errHandler ;
         private CheckerLiterals checker ;
 
-        HandlerSink(RDFParserOutput output, ErrorHandler errHandler)
+        HandlerSink(SinkRDF output, ErrorHandler errHandler)
         {
             super(new ErrorHandlerBridge(errHandler)) ;
             this.output = output ;
