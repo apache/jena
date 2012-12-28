@@ -432,9 +432,6 @@ public final class TokenizerText implements Tokenizer
         //   Can't start with a number due to numeric test above.
         //   Can't start with a '_' due to blank node test above.
         // If we see a :, the first time it means a prefixed name else it's a token break.
-
-        // (eventually) Make this a very wide definition, including symbols like <= 
-        // Prefixed names are the difficulty.
         
         readPrefixedNameOrKeyword(token) ;
         
@@ -442,6 +439,8 @@ public final class TokenizerText implements Tokenizer
         return token ;
     }
 
+    private static final boolean VeryVeryLax = false ;
+    
     //static char[] badIRIchars = { '<', '>', '{', '}', '|', '\\', '`', '^', ' ' } ; 
     private String readIRI()
     {
@@ -471,13 +470,35 @@ public final class TokenizerText implements Tokenizer
             {
                 // N-Triples strictly allows \t\n etc in IRIs (grammar says "string escapes")
                 // ch = strEscapes ? readLiteralEscape() : readUnicodeEscape() ;
-                ch = readUnicodeEscape() ;
+                
+                if ( VeryVeryLax )
+                    ch = readCharEscapeAnyURI() ;
+                else
+                    // NORMAL 
+                    ch = readUnicodeEscape() ;
                 // Drop through.
             }
             // Ban certain very bad characters
-            if ( ch == '<' )
+            if ( !VeryVeryLax && ch == '<' )
                 exception("Broken IRI (bad character: '"+(char)ch+"'): "+stringBuilder.toString(), y, x) ;
             insertCodepoint(stringBuilder, ch) ;
+        }
+    }
+    
+    private final
+    int readCharEscapeAnyURI()
+    {
+        int c = reader.readChar();
+        if ( c==EOF )
+            exception("Escape sequence not completed") ;
+
+        switch (c)
+        {
+            case 'u': return readUnicode4Escape(); 
+            case 'U': return readUnicode8Escape(); 
+            default:
+                // Anything \X
+                return c ;
         }
     }
     
