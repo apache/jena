@@ -22,7 +22,7 @@ import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.graph.Triple ;
 public class LangRDFJSON extends LangBase
 {
 
-	public LangRDFJSON(Tokenizer tokenizer, ParserProfile profile, SinkRDF dest)
+	public LangRDFJSON(Tokenizer tokenizer, ParserProfile profile, StreamRDF dest)
 	{
 		super(tokenizer, profile, dest) ;
 		if (!(tokenizer instanceof TokenizerJSON))

@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,27 +16,40 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot.system;
+package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class SinkRDFBase implements SinkRDF
+public class PrintingStreamRDF implements StreamRDF
 {
+    private Logger log ;
+
+    public PrintingStreamRDF(boolean x , Logger log) { this.log = log ; }
+
     @Override
     public void start()
     {}
 
     @Override
     public void triple(Triple triple)
-    {}
+    {
+        String string = NodeFmtLib.str(triple) ;
+        log.info(string) ;
+    }
 
     @Override
     public void quad(Quad quad)
-    {}
+    {
+        String string = NodeFmtLib.str(quad) ;
+        log.info(string) ;
+    }
 
     @Override
     public void tuple(Tuple<Node> tuple)
@@ -44,13 +57,18 @@ public class SinkRDFBase implements SinkRDF
 
     @Override
     public void base(String base)
-    {}
+    {
+        log.info("BASE -- "+base) ;
+    }
 
     @Override
     public void prefix(String prefix, String iri)
-    {}
+    {
+        log.info("Prefix ("+prefix+","+iri+")")  ;
+    }
 
     @Override
     public void finish()
     {}
+
 }

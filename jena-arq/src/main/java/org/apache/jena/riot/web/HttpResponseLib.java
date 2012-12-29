@@ -30,8 +30,8 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.ResultSet ;
@@ -57,7 +57,7 @@ public class HttpResponseLib
                 HttpEntity entity = response.getEntity() ;
                 MediaType mt = MediaType.create(response.getFirstHeader(HttpNames.hContentType).getValue()) ;
                 mt.getCharset() ;
-                SinkRDF dest = SinkRDFLib.graph(g) ; 
+                StreamRDF dest = StreamRDFLib.graph(g) ; 
                 InputStream in = entity.getContent() ;
                 LangRIOT parser = createParser(in, baseIRI, dest) ;
                 parser.parse() ;
@@ -69,7 +69,7 @@ public class HttpResponseLib
         @Override
         public Graph get() { return graph ; }
         
-        abstract protected LangRIOT createParser(InputStream in, String baseIRI, SinkRDF dest) ;
+        abstract protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest) ;
     }
 
     public static HttpResponseHandler httpDumpResponse = new HttpResponseHandler()
@@ -105,7 +105,7 @@ public class HttpResponseLib
     public static HttpCaptureResponse<Graph> graphReaderTurtle = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, SinkRDF dest)
+        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
         {
             return RiotReader.createParserTurtle(in, baseIRI, dest) ;
         }
@@ -113,7 +113,7 @@ public class HttpResponseLib
     public static HttpCaptureResponse<Graph> graphReaderNTriples = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, SinkRDF dest)
+        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
         {
             return RiotReader.createParserNTriples(in, dest) ;
         }
@@ -121,7 +121,7 @@ public class HttpResponseLib
     public static HttpCaptureResponse<Graph> graphReaderRDFXML = new AbstractGraphReader()
     {
         @Override
-        protected LangRIOT createParser(InputStream in, String baseIRI, SinkRDF dest)
+        protected LangRIOT createParser(InputStream in, String baseIRI, StreamRDF dest)
         {
             return RiotReader.createParserRDFXML(in, baseIRI, dest) ;
         }

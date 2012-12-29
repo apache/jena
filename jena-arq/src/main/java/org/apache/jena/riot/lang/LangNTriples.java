@@ -21,7 +21,7 @@ package org.apache.jena.riot.lang;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -37,7 +37,7 @@ public final class LangNTriples extends LangNTuple<Triple>
     
     public LangNTriples(Tokenizer tokens,
                         ParserProfile profile,
-                        SinkRDF dest)
+                        StreamRDF dest)
     {
         super(tokens, profile, dest) ;
     }

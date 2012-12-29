@@ -24,8 +24,8 @@ import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ErrorHandlerEx ;
 import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangTriG ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -88,7 +88,7 @@ public class TestLangTrig extends BaseTest
     {
         String string = StrUtils.strjoin("\n", strings) ;
         DatasetGraph dsg = DatasetLib.createDatasetGraphMem() ;
-        SinkRDF sink = SinkRDFLib.dataset(dsg) ;
+        StreamRDF sink = StreamRDFLib.dataset(dsg) ;
         Tokenizer tokenizer = TokenizerFactory.makeTokenizerString(string) ;
         LangTriG parser = RiotReader.createParserTriG(tokenizer, "http://base/", sink) ;
         parser.getProfile().setHandler(new ErrorHandlerEx()) ;
