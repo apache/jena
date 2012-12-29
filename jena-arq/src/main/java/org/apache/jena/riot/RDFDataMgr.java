@@ -31,8 +31,9 @@ import org.apache.jena.riot.lang.LangRDFXML ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.slf4j.Logger ;
@@ -67,6 +68,7 @@ import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class RDFDataMgr
 {
+    static { RIOT.init() ; }
     /* Maybe:
      * static for global (singleton) and locally tailored. 
      */
@@ -198,8 +200,8 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, String uri, String base, Lang hintLang, Context context)
     {
-        SinkRDF dest = SinkRDFLib.graph(graph) ;
-        read(dest, uri, base, hintLang, context) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
+        parse(dest, uri, base, hintLang, context) ;
     }
 
     /** Read triples into a Model with bytes from an InputStream.
@@ -245,7 +247,7 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, InputStream in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.graph(graph) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
         process(dest, new TypedInputStream(in), base, lang, null) ;
     }
 
@@ -276,7 +278,7 @@ public class RDFDataMgr
     @Deprecated
     public static void read(Graph graph, Reader in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.graph(graph) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
         processTriples(dest, base, in, lang, null) ;
     }
 
@@ -289,7 +291,7 @@ public class RDFDataMgr
     public static void read(Model model, StringReader in, String base, Lang lang)
     {
         Graph g = model.getGraph() ;
-        SinkRDF dest = SinkRDFLib.graph(g) ;
+        StreamRDF dest = StreamRDFLib.graph(g) ;
         processTriples(dest, base, in, lang, null) ;
     }
 
@@ -301,7 +303,7 @@ public class RDFDataMgr
      */
     public static void read(Graph graph, StringReader in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.graph(graph) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
         processTriples(dest, base, in, lang, null) ;
     }
     
@@ -497,8 +499,8 @@ public class RDFDataMgr
 
     public static void read(DatasetGraph dataset, String uri, String base, Lang hintLang, Context context)
     {
-        SinkRDF sink = SinkRDFLib.dataset(dataset) ;
-        read(sink, uri, base, hintLang, context) ;
+        StreamRDF sink = StreamRDFLib.dataset(dataset) ;
+        parse(sink, uri, base, hintLang, context) ;
     }
 
     /** Read quads or triples into a dataset with bytes from an input stream.
@@ -540,7 +542,7 @@ public class RDFDataMgr
      */
     public static void read(DatasetGraph dataset, InputStream in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.dataset(dataset) ;
+        StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, new TypedInputStream(in), base, lang, null) ;
     }
     
@@ -571,7 +573,7 @@ public class RDFDataMgr
     @Deprecated
     public static void read(DatasetGraph dataset, Reader in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.dataset(dataset) ;
+        StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, base, in, lang, null) ;
     }
 
@@ -598,8 +600,17 @@ public class RDFDataMgr
      */
     public static void read(DatasetGraph dataset, StringReader in, String base, Lang lang)
     {
-        SinkRDF dest = SinkRDFLib.dataset(dataset) ;
+        StreamRDF dest = StreamRDFLib.dataset(dataset) ;
         process(dest, base, in, lang, null) ;
+    }
+
+    /** Read RDF data.
+     * @param sink     Destination for the RDF read.
+     * @param uri       URI to read from (includes file: and a plain file name).
+     */
+    public static void parse(StreamRDF sink, String uri)
+    {
+        parse(sink, uri, null, null) ;
     }
 
     /** Read RDF data.
@@ -608,9 +619,9 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void read(SinkRDF sink, String uri, Lang hintLang, Context context)
+    public static void parse(StreamRDF sink, String uri, Lang hintLang, Context context)
     {
-        read(sink, uri, uri, hintLang, context) ;
+        parse(sink, uri, uri, hintLang, context) ;
     }
 
     /** Read RDF data.
@@ -620,8 +631,12 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void read(SinkRDF sink, String uri, String base, Lang hintLang, Context context)
+    public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context)
     {
+        if ( base == null )
+            base = IRIResolver.resolveFileURL(uri) ;
+        if ( hintLang == null )
+            hintLang = RDFLanguages.filenameToLang(uri) ;
         TypedInputStream in = open(uri, context) ;
         if ( in == null )
             throw new RiotException("Not found: "+uri) ;
@@ -636,11 +651,21 @@ public class RDFDataMgr
      * @param hintLang  Hint for the syntax
      * @param context   Content object to control reading process.
      */
-    public static void read(SinkRDF sink, InputStream in, String base, Lang hintLang, Context context)
+    public static void parse(StreamRDF sink, InputStream in, String base, Lang hintLang, Context context)
     {
         process(sink, new TypedInputStream(in), base, hintLang, context) ;
     }
 
+    /** Read RDF data.
+     * @param sink      Destination for the RDF read.
+     * @param in        Bytes to read.
+     * @param base      Base URI
+     */
+    public static void parse(StreamRDF sink, TypedInputStream in, String base)
+    {
+        Lang hintLang = RDFLanguages.contentTypeToLang(in.getMediaType()) ;
+        process(sink, new TypedInputStream(in), base, hintLang, null) ;
+    }
 
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
@@ -692,7 +717,7 @@ public class RDFDataMgr
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void process(SinkRDF destination , TypedInputStream in , String baseUri , Lang hintLang , Context context )
+    private static void process(StreamRDF destination , TypedInputStream in , String baseUri , Lang hintLang , Context context )
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         if ( ct == null )
@@ -700,7 +725,9 @@ public class RDFDataMgr
 
         ReaderRIOT reader = getReader(ct) ;
         if ( reader == null )
+        {
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
+        }
         reader.read(in, baseUri, ct, destination, context) ;
     }
 
@@ -717,7 +744,7 @@ public class RDFDataMgr
     
     // java.io.Readers are NOT preferred.
     @SuppressWarnings("deprecation")
-    private static void processTriples(SinkRDF output, String base, Reader in, Lang lang, Context context)
+    private static void processTriples(StreamRDF output, String base, Reader in, Lang lang, Context context)
     {
         // Not as good as from an InputStream - RDF/XML not supported 
         //****
@@ -742,7 +769,7 @@ public class RDFDataMgr
     }
     
     // java.io.Readers are NOT preferred.
-    private static void process(SinkRDF dest, String base, Reader in, Lang hintLang, Context context)
+    private static void process(StreamRDF dest, String base, Reader in, Lang hintLang, Context context)
     {
         Tokenizer tokenizer = TokenizerFactory.makeTokenizer(in) ;
         LangRIOT parser = RiotReader.createParser(tokenizer, hintLang, base, dest) ;

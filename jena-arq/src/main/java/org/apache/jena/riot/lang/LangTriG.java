@@ -23,7 +23,7 @@ import static org.apache.jena.riot.tokens.TokenType.RBRACE ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -51,7 +51,7 @@ public class LangTriG extends LangTurtleBase<Quad>
           (i.e. raw inline nquads except with preifx names.
         
      */
-    public LangTriG(Tokenizer tokens, ParserProfile profile, SinkRDF dest) 
+    public LangTriG(Tokenizer tokens, ParserProfile profile, StreamRDF dest) 
     {
         super(tokens, profile, dest) ;
     }

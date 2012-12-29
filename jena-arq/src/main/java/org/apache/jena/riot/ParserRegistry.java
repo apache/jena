@@ -32,7 +32,7 @@ import java.util.Set ;
 import org.apache.jena.atlas.lib.DS ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 //import org.apache.jena.atlas.lib.Sink ;
@@ -168,7 +168,7 @@ public class ParserRegistry
         {
             return new ReaderRIOT() {
                 @Override
-                public void read(InputStream in, String baseURI, ContentType ct, SinkRDF output, Context context)
+                public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context)
                 {
                     LangRIOT parser = RiotReader.createParser(in, lang, baseURI, output) ;
                     parser.parse() ;

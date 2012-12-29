@@ -23,7 +23,7 @@ import static org.apache.jena.riot.tokens.TokenType.STRING2 ;
 import java.util.Iterator ;
 
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -56,7 +56,7 @@ public abstract class LangNTuple<X> extends LangBase implements Iterator<X>
     
     protected LangNTuple(Tokenizer tokens,
                          ParserProfile profile,
-                         SinkRDF dest)
+                         StreamRDF dest)
     { 
         super(tokens, profile, dest) ;
     }

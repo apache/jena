@@ -28,82 +28,68 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Various Common RDFParserOutput set ups */
-public class SinkRDFLib
+/** Various Common StreamRDF setups */
+public class StreamRDFLib
 {
     /** Send everything to nowhere ... efficiently */
-    public static SinkRDF sinkNull()                       { return new ParserOutputSink() ; }
+    public static StreamRDF sinkNull()                       { return new StreamRDFBase() ; }
 
-    public static SinkRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
+    public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
-    public static SinkRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
+    public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
     /** 
      * Outpout to a sink; prefix and base handled only within the parser.
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
-    public static SinkRDF sinkTriples(Sink<Triple> sink)   { return new ParserOutputSinkTriples(sink) ; }
+    public static StreamRDF sinkTriples(Sink<Triple> sink)   { return new ParserOutputSinkTriples(sink) ; }
 
     /** 
      * Output to a sink; prefix and base handled only within the parser.
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
-    public static SinkRDF sinkQuads(Sink<Quad> sink)       { return new ParserOutputSinkQuads(sink) ; }
+    public static StreamRDF sinkQuads(Sink<Quad> sink)       { return new ParserOutputSinkQuads(sink) ; }
     
     /** Convert any triples seen to a quads, adding a graph node of {@link Quad#tripleInQuad} */
-    public static SinkRDF extendTriplesToQuads(SinkRDF base)
+    public static StreamRDF extendTriplesToQuads(StreamRDF base)
     { return extendTriplesToQuads(Quad.tripleInQuad, base) ; }
     
     /** Convert any triples seen to a quads, adding the specified graph node */
-    public static SinkRDF extendTriplesToQuads(Node graphNode, SinkRDF base)
+    public static StreamRDF extendTriplesToQuads(Node graphNode, StreamRDF base)
     { return new ParserOutputSinkTriplesToQuads(graphNode, base) ; }
     
     public static RDFParserOutputCounting count()
     { return new ParserOutputCountingBase(sinkNull()) ; }
 
-    public static RDFParserOutputCounting count(SinkRDF other)
+    public static RDFParserOutputCounting count(StreamRDF other)
     { return new ParserOutputCountingBase(other) ; }
 
-    
-    private static class ParserOutputSink implements SinkRDF
-    {
-        public ParserOutputSink ()                      {}
-        @Override public void start()                   {}
-        @Override public void triple(Triple triple)     {}
-        @Override public void quad(Quad quad)           {}
-        @Override public void tuple(Tuple<Node> tuple)  {}
-        @Override public void base(String base)         {}
-        @Override public void prefix(String prefix, String iri) {}
-        @Override public void finish()                  {}
-    }
+//    private static class ParserOutputSink implements StreamRDF
+//    {
+//        public ParserOutputSink ()                      {}
+//        @Override public void start()                   {}
+//        @Override public void triple(Triple triple)     {}
+//        @Override public void quad(Quad quad)           {}
+//        @Override public void tuple(Tuple<Node> tuple)  {}
+//        @Override public void base(String base)         {}
+//        @Override public void prefix(String prefix, String iri) {}
+//        @Override public void finish()                  {}
+//    }
 
-    private static class ParserOutputWrapper implements SinkRDF
-    {
-        protected final SinkRDF other ;
-        public ParserOutputWrapper (SinkRDF base)  { this.other = base ;}
-        @Override public void start()                   { other.start() ; }
-        @Override public void triple(Triple triple)     { other.triple(triple) ; }
-        @Override public void quad(Quad quad)           { other.quad(quad); } 
-        @Override public void tuple(Tuple<Node> tuple)  { other.tuple(tuple) ; }
-        @Override public void base(String base)         { other.base(base) ; }
-        @Override public void prefix(String prefix, String iri) { other.prefix(prefix, iri) ; }
-        @Override public void finish()                  { other.finish() ; }
-    }
-
-    private static class ParserOutputSinkTriplesToQuads extends ParserOutputWrapper
+    private static class ParserOutputSinkTriplesToQuads extends StreamRDFWarpper
     {
         private final Node gn ;
-        ParserOutputSinkTriplesToQuads(Node gn, SinkRDF base)
+        ParserOutputSinkTriplesToQuads(Node gn, StreamRDF base)
         { super(base) ; this.gn = gn ; }
         
         @Override public void triple(Triple triple)
-        { other.quad(new Quad(gn, triple)) ; }
+        { sink.quad(new Quad(gn, triple)) ; }
     }
     
 
-    private static class ParserOutputSinkTriples extends ParserOutputSink
+    private static class ParserOutputSinkTriples extends StreamRDFBase
     {
         private final Sink<Triple> sink ;
 
@@ -119,7 +105,7 @@ public class SinkRDFLib
         { sink.flush() ; }
     }
     
-    private static class ParserOutputSinkQuads extends ParserOutputSink
+    private static class ParserOutputSinkQuads extends StreamRDFBase
     {
         private final Sink<Quad> sink ;
 
@@ -135,7 +121,7 @@ public class SinkRDFLib
         { sink.flush() ; }
     }
     
-    private static class ParserOutputGraph extends ParserOutputSink
+    private static class ParserOutputGraph extends StreamRDFBase
     {
         protected final Graph graph ;
         public ParserOutputGraph(Graph graph) { this.graph = graph ; }
@@ -155,7 +141,7 @@ public class SinkRDFLib
         }
     }
 
-    private static class ParserOutputDataset extends ParserOutputSink
+    private static class ParserOutputDataset extends StreamRDFBase
     {
         protected final DatasetGraph dsg ;
         public ParserOutputDataset(DatasetGraph dsg) { this.dsg = dsg ; }
@@ -182,7 +168,7 @@ public class SinkRDFLib
         }
     }
 
-    private  static class ParserOutputCountingBase extends ParserOutputWrapper implements SinkRDF, RDFParserOutputCounting
+    private  static class ParserOutputCountingBase extends StreamRDFWarpper implements StreamRDF, RDFParserOutputCounting
     {
         private long countTriples = 0 ;
         private long countQuads = 0 ;
@@ -190,7 +176,7 @@ public class SinkRDFLib
         private long countBase = 0 ;
         private long countPrefixes = 0 ;
         
-        public ParserOutputCountingBase (SinkRDF other)     { super(other) ; }
+        public ParserOutputCountingBase (StreamRDF other)     { super(other) ; }
 
         @Override
         public void triple(Triple triple)

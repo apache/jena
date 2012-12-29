@@ -24,8 +24,8 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Triple ;
 
@@ -44,7 +44,7 @@ public class RiotTripleParsePuller extends RiotParsePuller<Triple>
     @Override
     protected LangRIOT createParser(Sink<Triple> sink)
     {
-        SinkRDF dest = SinkRDFLib.sinkTriples(sink) ;
+        StreamRDF dest = StreamRDFLib.sinkTriples(sink) ;
         return RiotReader.createParser(in, lang, baseIRI, dest) ;
     }
 }

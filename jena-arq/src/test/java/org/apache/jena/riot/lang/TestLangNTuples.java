@@ -31,8 +31,8 @@ import org.apache.jena.riot.ErrorHandlerTestLib.ExWarning ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.Test ;
@@ -167,7 +167,7 @@ abstract public class TestLangNTuples extends BaseTest
         return tokenizer ;
     }
     
-    protected void parse(SinkRDF sink, String... strings ) 
+    protected void parse(StreamRDF sink, String... strings ) 
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
@@ -176,13 +176,13 @@ abstract public class TestLangNTuples extends BaseTest
         parser.parse() ;
     }
     
-    protected abstract LangRIOT createParser(Tokenizer tokenizer, SinkRDF sink) ;
+    protected abstract LangRIOT createParser(Tokenizer tokenizer, StreamRDF sink) ;
 
     final protected void parseCheck(String... strings)
     {
         String string = StrUtils.strjoin("\n", strings) ;
         Tokenizer tokenizer = tokenizer(string) ;
-        RDFParserOutputCounting sink = SinkRDFLib.count() ;
+        RDFParserOutputCounting sink = StreamRDFLib.count() ;
         LangRIOT x = RiotReader.createParserNQuads(tokenizer, sink) ;
         x.setProfile(RiotLib.profile(null, false, true, new ErrorHandlerEx())) ;
         x.parse() ;
