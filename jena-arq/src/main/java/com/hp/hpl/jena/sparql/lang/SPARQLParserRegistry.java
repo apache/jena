@@ -23,49 +23,46 @@ import java.util.Map ;
 
 import com.hp.hpl.jena.query.Syntax ;
 
-/** original code - contribution from Olaf Hartig */
-
-
-public class ParserRegistry
+public class SPARQLParserRegistry
 {
     // the map contains the registered factories hashed by the syntaxes
-    Map<Syntax, ParserFactory> factories = new HashMap<Syntax, ParserFactory>() ;
+    Map<Syntax, SPARQLParserFactory> factories = new HashMap<Syntax, SPARQLParserFactory>() ;
     
     // Singleton
-    static ParserRegistry registry = null ;
-    static synchronized public ParserRegistry get()
+    static SPARQLParserRegistry registry = null ;
+    static synchronized public SPARQLParserRegistry get()
     {
         if ( registry == null )
             init() ;
         return registry;
     }
     
-    private ParserRegistry() { }
+    private SPARQLParserRegistry() { }
     
     private static synchronized void init()
     {
-        ParserRegistry reg = new ParserRegistry() ;
+        SPARQLParserRegistry reg = new SPARQLParserRegistry() ;
         
         reg.add(Syntax.syntaxSPARQL_10, 
-                new ParserFactory() {
+                new SPARQLParserFactory() {
             @Override
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_10.equals(syntax) ; } 
             @Override
-            public Parser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
+            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL10() ; } }) ;
         
         reg.add(Syntax.syntaxSPARQL_11, 
-                new ParserFactory() {
+                new SPARQLParserFactory() {
             @Override
             public boolean accept( Syntax syntax ) { return Syntax.syntaxSPARQL_11.equals(syntax) ; } 
             @Override
-            public Parser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
+            public SPARQLParser create( Syntax syntax ) { return new ParserSPARQL11() ; } }) ;
    
         reg.add(Syntax.syntaxARQ, 
-                new ParserFactory() {
+                new SPARQLParserFactory() {
             @Override
             public boolean accept(Syntax syntax ) { return Syntax.syntaxARQ.equals(syntax) ; } 
             @Override
-            public Parser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
+            public SPARQLParser create ( Syntax syntax ) { return new ParserARQ() ; } }) ;
 
         // Defend against concurrent start up (even if not synchronised).
         // Protects against, not fixes, the problem.
@@ -78,7 +75,7 @@ public class ParserRegistry
      * @return a parser factory or null if none accept the request
      */
     
-    public static ParserFactory findFactory(Syntax syntax)
+    public static SPARQLParserFactory findFactory(Syntax syntax)
     { return get().getFactory(syntax) ; }
     
     /** Return a suitable parser for the given syntax
@@ -87,7 +84,7 @@ public class ParserRegistry
      * @return a parser or null if none accept the request
      */
     
-    public static Parser parser(Syntax syntax)
+    public static SPARQLParser parser(Syntax syntax)
     { return get().createParser(syntax) ; }
     
     /** Return a suitable parser factory for the given syntax
@@ -96,7 +93,7 @@ public class ParserRegistry
      * @return a parser factory or null if none accept the request
      */
     
-    public ParserFactory getFactory(Syntax syntax)
+    public SPARQLParserFactory getFactory(Syntax syntax)
     { return factories.get(syntax) ; }
     
     /** Return a suitable parser for the given syntax
@@ -105,9 +102,9 @@ public class ParserRegistry
      * @return a parser or null if none accept the request
      */
     
-    public Parser createParser(Syntax syntax)
+    public SPARQLParser createParser(Syntax syntax)
     {
-        ParserFactory f = getFactory(syntax) ;
+        SPARQLParserFactory f = getFactory(syntax) ;
         return ( f != null ) ? f.create(syntax) : null ;
     }
     
@@ -115,14 +112,14 @@ public class ParserRegistry
      *  If another factory is registered for the syntax it is replaced by the
      *  given one.
      */
-    public static void addFactory(Syntax syntax, ParserFactory f)
+    public static void addFactory(Syntax syntax, SPARQLParserFactory f)
     { get().add(syntax, f) ; }
     
     /** Register the given parser factory for the specified syntax.
      *  If another factory is registered for the syntax it is replaced by the
      *  given one.
      */
-    public void add(Syntax syntax, ParserFactory f)
+    public void add(Syntax syntax, SPARQLParserFactory f)
     {
         if ( ! f.accept(syntax) )
             throw new IllegalArgumentException( "The given parser factory does not accept the specified syntax." );

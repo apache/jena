@@ -734,7 +734,7 @@ public class RDFDataMgr
     private static ReaderRIOT getReader(ContentType ct)
     {
         Lang lang = RDFLanguages.contentTypeToLang(ct) ;
-        ReaderRIOTFactory r = ParserRegistry.getFactory(lang) ;
+        ReaderRIOTFactory r = RDFParserRegistry.getFactory(lang) ;
         if ( r == null )
             return null ;
         return r.create(lang) ;

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.query.Syntax ;
  *  javacc details to provide a methods that deal with setting up Query objects
  *  and using QueryException exceptions for problems. */
 
-public abstract class Parser
+public abstract class SPARQLParser
 {
     public final Query parse(Query query, String queryString) throws QueryParseException
     {
@@ -42,12 +42,12 @@ public abstract class Parser
     
     public static boolean canParse(Syntax syntaxURI)
     {
-        return ParserRegistry.get().containsFactory(syntaxURI) ;
+        return SPARQLParserRegistry.get().containsFactory(syntaxURI) ;
     }
     
-    public static Parser createParser(Syntax syntaxURI)
+    public static SPARQLParser createParser(Syntax syntaxURI)
     {
-        return ParserRegistry.get().createParser(syntaxURI) ;
+        return SPARQLParserRegistry.get().createParser(syntaxURI) ;
     }
 
     // Do any testing of queries after the construction of the parse tree.

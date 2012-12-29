@@ -20,12 +20,11 @@ package com.hp.hpl.jena.sparql.lang;
 
 import com.hp.hpl.jena.query.Syntax ;
 
-/** original code - contribution from Olaf Hartig */
-public interface ParserFactory
+public interface SPARQLParserFactory
 {
     /** Return true if this factory can create a parser for the given syntax */
     public boolean accept ( Syntax syntax );
     
     /** Return a parser for the given syntax */
-    public Parser create ( Syntax syntax );
+    public SPARQLParser create ( Syntax syntax );
 }

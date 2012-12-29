@@ -50,7 +50,7 @@ import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
-/** Base class for RDF related parsers */ 
+/** Base class parsers, mainly SPARQL related */ 
 public class ParserBase
 {
     // NodeConst

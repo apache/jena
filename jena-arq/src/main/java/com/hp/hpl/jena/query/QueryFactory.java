@@ -19,9 +19,9 @@
 package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.n3.IRIResolver ;
-import com.hp.hpl.jena.sparql.lang.Parser ;
+import com.hp.hpl.jena.sparql.lang.SPARQLParser ;
 import com.hp.hpl.jena.sparql.lang.ParserARQ ;
-import com.hp.hpl.jena.sparql.lang.ParserRegistry ;
+import com.hp.hpl.jena.sparql.lang.SPARQLParserRegistry ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.Template ;
 import com.hp.hpl.jena.util.FileManager ;
@@ -138,7 +138,7 @@ public class QueryFactory
         else
             query.setSyntax(syntaxURI) ;
 
-        Parser parser = Parser.createParser(syntaxURI) ;
+        SPARQLParser parser = SPARQLParser.createParser(syntaxURI) ;
         
         if ( parser == null )
             throw new UnsupportedOperationException("Unrecognized syntax for parsing: "+syntaxURI) ;
@@ -158,7 +158,7 @@ public class QueryFactory
     
     static boolean knownParserSyntax(Syntax syntaxURI)
     {
-        return ParserRegistry.get().containsFactory(syntaxURI) ;
+        return SPARQLParserRegistry.get().containsFactory(syntaxURI) ;
     }
 
 
