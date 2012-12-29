@@ -445,8 +445,6 @@ public final class TokenizerText implements Tokenizer
     private String readIRI()
     {
         //token.setImage(readString(CH_LT, CH_GT, false)) ;
-        long y = getLine() ;
-        long x = getColumn() ;
         stringBuilder.setLength(0) ;
         for(;;)
         {
@@ -454,11 +452,11 @@ public final class TokenizerText implements Tokenizer
             if ( ch == EOF )
             {
                 //if ( endNL ) return stringBuilder.toString() ; 
-                exception("Broken IRI: "+stringBuilder.toString(), y, x) ;
+                exception("Broken IRI: "+stringBuilder.toString()) ;
             }
 
             if ( ch == '\n' )
-                exception("Broken IRI (newline): "+stringBuilder.toString(), y, x) ;
+                exception("Broken IRI (newline): "+stringBuilder.toString()) ;
             
             if ( ch == CH_GT )
             {
@@ -480,7 +478,7 @@ public final class TokenizerText implements Tokenizer
             }
             // Ban certain very bad characters
             if ( !VeryVeryLax && ch == '<' )
-                exception("Broken IRI (bad character: '"+(char)ch+"'): "+stringBuilder.toString(), y, x) ;
+                exception("Broken IRI (bad character: '%c'): %s",ch,stringBuilder.toString()) ;
             insertCodepoint(stringBuilder, ch) ;
         }
     }
