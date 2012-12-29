@@ -44,7 +44,7 @@ public class ExRIOT_5
         
         // Register the parser factory.
         ReaderRIOTFactory factory = new Factory() ;
-        ParserRegistry.registerLangTriples(lang, factory) ;
+        RDFParserRegistry.registerLangTriples(lang, factory) ;
         
         String filename = "data.rsse" ;
         Model model = RDFDataMgr.loadModel(filename) ;

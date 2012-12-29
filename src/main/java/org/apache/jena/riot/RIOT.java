@@ -56,7 +56,7 @@ public class RIOT
         SystemARQ.registerSubSystem(sysInfo2) ;
         
         RDFLanguages.init() ;
-        ParserRegistry.init() ;
+        RDFParserRegistry.init() ;
         IO_Jena.wireIntoJena() ;
     }
 }

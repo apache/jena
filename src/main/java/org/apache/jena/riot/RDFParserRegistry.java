@@ -39,11 +39,13 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 /** The registry of languages and parsers.
  * To register a new parser:
- * 
- * 
+ * <ul>
+ * <li>Register the language with {@link RDFLanguages}</li>
+ * <li>Register the parser factory with {@link RDFParserRegistry}</li>
+ * </ul>
  */
 
-public class ParserRegistry
+public class RDFParserRegistry
 {
     /** Map Jena I/O names to language */
     private static Map<String, Lang> mapJenaNameToLang                 = DS.map() ;

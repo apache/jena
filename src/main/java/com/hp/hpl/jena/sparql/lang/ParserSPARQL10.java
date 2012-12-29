@@ -33,7 +33,7 @@ import com.hp.hpl.jena.sparql.syntax.Template ;
 import org.apache.jena.atlas.logging.Log ;
 
 
-public class ParserSPARQL10 extends Parser
+public class ParserSPARQL10 extends SPARQLParser
 {
     private interface Action { void exec(SPARQLParser10 parser) throws Exception ; }
     
