@@ -359,7 +359,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
         
-        SinkRDF dest = SinkRDFLib.graph(graphTmp) ;
+        StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
         LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
         parser.getProfile().setHandler(errorHandler) ;
         try { parser.parse() ; } 

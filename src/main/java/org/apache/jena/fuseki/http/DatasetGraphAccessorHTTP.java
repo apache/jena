@@ -45,8 +45,8 @@ import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -295,7 +295,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         Lang lang = FusekiLib.langFromContentType(ts.getContentType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        SinkRDF dest = SinkRDFLib.graph(graph) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
         LangRIOT parser = RiotReader.createParser(ts, lang, base, dest) ;
         parser.parse() ;
         IO.close(ts) ;
