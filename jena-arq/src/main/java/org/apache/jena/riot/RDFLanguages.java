@@ -46,7 +46,7 @@ import org.apache.jena.atlas.web.ContentType ;
 import com.hp.hpl.jena.util.FileUtils ;
 
 /** Central registry of RDF langauges and syntaxes.
- * @see ParserRegistry
+ * @see RDFParserRegistry
  */
 public class RDFLanguages
 {
@@ -152,10 +152,10 @@ public class RDFLanguages
     /** Register a language.
      * To create a {@link Lang} object use {@link LangBuilder}.
      * See also 
-     * {@link ParserRegistry#registerLang}
+     * {@link RDFParserRegistry#registerLang}
      * for registering a language and it's RDF parser fatory.
      * 
-     * @see ParserRegistry
+     * @see RDFParserRegistry
      */
     public static void register(Lang lang)
     {
@@ -238,10 +238,10 @@ public class RDFLanguages
     }
     
     /** return true if the language is registered as a triples language */
-    public static boolean isTriples(Lang lang) { return ParserRegistry.isTriples(lang) ; }
+    public static boolean isTriples(Lang lang) { return RDFParserRegistry.isTriples(lang) ; }
     
     /** return true if the language is registered as a quads language */
-    public static boolean isQuads(Lang lang) { return ParserRegistry.isQuads(lang) ; }
+    public static boolean isQuads(Lang lang) { return RDFParserRegistry.isQuads(lang) ; }
 
     /** Map a content type (without charset) to a {@link Lang} */
     public static Lang contentTypeToLang(String contentType)
