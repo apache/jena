@@ -25,8 +25,8 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Factory ;
 import com.hp.hpl.jena.graph.Graph ;
@@ -70,10 +70,10 @@ public class GraphLoadUtils
     private static void readUtil(Graph graph, String uri, int limit)
     {
         Lang lang = RDFLanguages.filenameToLang(uri, RDFLanguages.RDFXML) ;
-        SinkRDF sink = SinkRDFLib.graph(graph) ;
+        StreamRDF sink = StreamRDFLib.graph(graph) ;
         sink = new SinkRDFLimited(sink, limit) ;
 
         InputStream input = Fuseki.webFileManager.open(uri) ;
-        RDFDataMgr.read(sink, input, uri, lang, null) ;
+        RDFDataMgr.parse(sink, input, uri, lang, null) ;
     }
 }

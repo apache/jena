@@ -39,8 +39,8 @@ import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.ErrorHandler ;
 import org.apache.jena.riot.system.RiotLib ;
-import org.apache.jena.riot.system.SinkRDF ;
-import org.apache.jena.riot.system.SinkRDFLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 
@@ -166,7 +166,7 @@ public class DataValidator extends ValidatorBase
             String formatNode(Node n) { return FmtUtils.stringForNode(n, sCxt) ; }
         } ;
 
-        SinkRDF dest = SinkRDFLib.sinkQuads(sink) ;
+        StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
         LangRIOT parser = RiotReader.createParser(tokenizer, language, null, dest) ;
         // Don't resolve IRIs.  Do checking.
         parser.setProfile(RiotLib.profile(null, false, true, errorHandler)) ;
