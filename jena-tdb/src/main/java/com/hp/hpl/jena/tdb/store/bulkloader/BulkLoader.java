@@ -83,18 +83,18 @@ public class BulkLoader
     /** Load into default graph */
     public static void loadDefaultGraph(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationDefaultGraph(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
         loadTriples$(dest, urls) ;
     }
 
     /** Load into default graph */
     public static void loadDefaultGraph(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationDefaultGraph(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
         loadTriples$(dest, input) ;
     }
 
-    private static BulkSinkRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
+    private static BulkStreamRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
     {
         NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
         return destinationGraph(dsg, ntt, showProgress) ;
@@ -103,34 +103,34 @@ public class BulkLoader
     /** Load into named graph */
     public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, List<String> urls, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
         loadTriples$(dest, urls) ;
     }
     
     /** Load into named graph */
     public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, InputStream input, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
         loadTriples$(dest, input) ;
     }
 
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationDataset(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
         loadQuads$(dest, urls) ;
     }
     
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
     {
-        BulkSinkRDF dest = destinationDataset(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
         loadQuads$(dest, input) ;
     }
     
 
     /** Load into a graph */
-    private static void loadTriples$(BulkSinkRDF dest, List<String> urls)
+    private static void loadTriples$(BulkStreamRDF dest, List<String> urls)
     {
         dest.startBulk() ;
         for ( String url : urls )
@@ -142,7 +142,7 @@ public class BulkLoader
     }
 
     /** Load into a graph */
-    private static void loadTriples$(BulkSinkRDF dest, InputStream input)
+    private static void loadTriples$(BulkStreamRDF dest, InputStream input)
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.startBulk() ;
@@ -151,7 +151,7 @@ public class BulkLoader
     }
     
     /** Load quads into a dataset */
-    private static void loadQuads$(BulkSinkRDF dest, List<String> urls)
+    private static void loadQuads$(BulkStreamRDF dest, List<String> urls)
     {
         dest.startBulk() ;
         for ( String url : urls )
@@ -163,7 +163,7 @@ public class BulkLoader
     }
 
     /** Load quads into a dataset */
-    private static void loadQuads$(BulkSinkRDF dest, InputStream input)
+    private static void loadQuads$(BulkStreamRDF dest, InputStream input)
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.startBulk() ;
@@ -171,7 +171,7 @@ public class BulkLoader
         dest.finishBulk() ;
     }
     
-    private static BulkSinkRDF destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
+    private static BulkStreamRDF destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
         if ( graphName == null )
             return destinationDefaultGraph(dsg,showProgress) ;
@@ -189,18 +189,18 @@ public class BulkLoader
             return new LoadMonitor(dsg, null, itemName, DataTickPoint, IndexTickPoint) ; 
     }
 
-    private static BulkSinkRDF destinationDataset(DatasetGraphTDB dsg, boolean showProgress)
+    private static BulkStreamRDF destinationDataset(DatasetGraphTDB dsg, boolean showProgress)
     {
         return new DestinationDSG(dsg, showProgress) ;
     }
     
-    private static BulkSinkRDF destinationGraph(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
+    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
     {
         return new DestinationGraph(dsg, nodeTupleTable, showProgress) ;
     }
 
     // Load triples and quads into a dataset.
-    private static final class DestinationDSG implements BulkSinkRDF
+    private static final class DestinationDSG implements BulkStreamRDF
     {
         final private DatasetGraphTDB dsg ; 
         final private boolean startedEmpty ;
@@ -302,7 +302,7 @@ public class BulkLoader
     }
 
     // Load triples into a specific NodeTupleTable
-    private static final class DestinationGraph implements BulkSinkRDF
+    private static final class DestinationGraph implements BulkStreamRDF
     {
         final private DatasetGraphTDB dsg ;
         final private LoadMonitor monitor ;

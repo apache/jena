@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 
-public interface BulkSinkRDF extends SinkRDF
+public interface BulkStreamRDF extends StreamRDF
 {
     public void startBulk() ;
     public void finishBulk() ;

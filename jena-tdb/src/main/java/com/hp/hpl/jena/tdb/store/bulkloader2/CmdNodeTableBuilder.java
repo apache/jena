@@ -56,7 +56,7 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
-import com.hp.hpl.jena.tdb.store.bulkloader.BulkSinkRDF ;
+import com.hp.hpl.jena.tdb.store.bulkloader.BulkStreamRDF ;
 
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
@@ -181,7 +181,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         cmdLog.info(str) ;
     }
 
-    static class NodeTableBuilder implements BulkSinkRDF
+    static class NodeTableBuilder implements BulkStreamRDF
     {
         private DatasetGraphTDB dsg ;
         private NodeTable nodeTable ;
