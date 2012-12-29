@@ -21,7 +21,7 @@ package org.apache.jena.riot;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 
@@ -32,5 +32,5 @@ import com.hp.hpl.jena.sparql.util.Context ;
 
 public interface ReaderRIOT
 {
-    public void read(InputStream in, String baseURI, ContentType ct, SinkRDF output, Context context) ;
+    public void read(InputStream in, String baseURI, ContentType ct, StreamRDF output, Context context) ;
 }

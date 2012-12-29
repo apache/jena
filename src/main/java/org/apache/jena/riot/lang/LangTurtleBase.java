@@ -34,7 +34,7 @@ import static org.apache.jena.riot.tokens.TokenType.RPAREN ;
 import static org.apache.jena.riot.tokens.TokenType.SEMICOLON ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.TokenType ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -83,7 +83,7 @@ public abstract class LangTurtleBase<X> extends LangBase
 //     */
 //    public PrefixMap getPrefixMap()        { return prologue.getPrefixMap() ; }
     
-    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, SinkRDF dest)
+    protected LangTurtleBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
     { 
         super(tokens, profile, dest) ;
     }

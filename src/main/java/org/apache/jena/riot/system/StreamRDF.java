@@ -32,7 +32,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  * 
  * @see ParserProfile for the lower level machinary for creation of nodes triples and quads. 
  */
-public interface SinkRDF
+public interface StreamRDF
 {
     // Java does not allow us to say "extends Sink<Triple>, Sink<Quad> because of type erasure
     /** Start parsing */

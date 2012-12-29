@@ -290,7 +290,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infTriples(s, setup) ;
             
             SinkCounting<Triple> sink2 = new SinkCounting<Triple>(s) ;
-            SinkRDF dest = SinkRDFLib.sinkTriples(sink2) ;
+            StreamRDF dest = StreamRDFLib.sinkTriples(sink2) ;
             parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             
             sink = sink2 ;
@@ -304,7 +304,7 @@ public abstract class CmdLangParse extends CmdGeneral
                 s = InfFactory.infQuads(s, setup) ;
             
             SinkCounting<Quad> sink2 = new SinkCounting<Quad>(s) ;
-            SinkRDF dest = SinkRDFLib.sinkQuads(sink2) ;
+            StreamRDF dest = StreamRDFLib.sinkQuads(sink2) ;
             parser = RiotReader.createParser(in, lang, baseURI, dest) ;
             sink = sink2 ;
         }

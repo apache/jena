@@ -22,7 +22,7 @@ import static org.apache.jena.riot.tokens.TokenType.DOT ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -32,7 +32,7 @@ public class LangTurtle extends LangTurtleBase<Triple>
 {
     public LangTurtle(Tokenizer tokens, 
                       ParserProfile profile, 
-                      SinkRDF dest) 
+                      StreamRDF dest) 
     {
         super(tokens, profile, dest) ;
         setCurrentGraph(null) ;

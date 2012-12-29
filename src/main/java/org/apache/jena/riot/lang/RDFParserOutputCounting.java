@@ -18,9 +18,9 @@
 
 package org.apache.jena.riot.lang;
 
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 
-public interface RDFParserOutputCounting extends SinkRDF
+public interface RDFParserOutputCounting extends StreamRDF
 {
     /** Count of triples, quads or tuples */
     public long count() ;

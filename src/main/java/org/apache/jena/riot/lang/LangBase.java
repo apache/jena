@@ -19,15 +19,15 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.riot.system.ParserProfile ;
-import org.apache.jena.riot.system.SinkRDF ;
+import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 
 
 public abstract class LangBase extends LangEngine implements LangRIOT
 {
-    protected final SinkRDF dest ; 
+    protected final StreamRDF dest ; 
 
-    protected LangBase(Tokenizer tokens, ParserProfile profile, SinkRDF dest)
+    protected LangBase(Tokenizer tokens, ParserProfile profile, StreamRDF dest)
     {
         super(tokens, profile) ;
         this.dest = dest ;

@@ -45,7 +45,7 @@ public class ExRIOT_2
         RIOT.init() ;
 
         // ---- Parse to a Sink.
-        SinkRDF noWhere = SinkRDFLib.sinkNull() ;
+        StreamRDF noWhere = StreamRDFLib.sinkNull() ;
 
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
