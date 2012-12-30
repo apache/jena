@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.assembler.test;
 
 import com.hp.hpl.jena.assembler.Assembler ;
-import com.hp.hpl.jena.assembler.JA ;
 import com.hp.hpl.jena.assembler.Mode ;
 import com.hp.hpl.jena.assembler.assemblers.ContentAssembler ;
 import com.hp.hpl.jena.assembler.assemblers.ModelAssembler ;
@@ -42,15 +41,6 @@ public class TestModelAssembler extends AssemblerTestBase
     @Override protected Class<? extends Assembler> getAssemblerClass()
         { return null; }
     
-    public void testModelAssemblerVocabulary()
-        {
-        assertDomain( JA.Model, JA.reificationMode );
-        assertRange( JA.ReificationMode, JA.reificationMode );
-        assertType( JA.ReificationMode, JA.minimal );
-        assertType( JA.ReificationMode, JA.standard );
-        assertType( JA.ReificationMode, JA.convenient );
-        }
-
     public void testContent()
         {
         Resource root = resourceInModel( "x rdf:type ja:DefaultModel; x ja:initialContent c; c ja:quotedContent A; A P B" );
