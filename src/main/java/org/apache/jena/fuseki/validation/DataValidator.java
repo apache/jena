@@ -74,7 +74,7 @@ public class DataValidator extends ValidatorBase
             
             String syntax = FusekiLib.safeParameter(httpRequest, paramSyntax) ;
             if ( syntax == null || syntax.equals("") )
-                syntax = RDFLanguages.NQuads.getName() ;
+                syntax = RDFLanguages.NQUADS.getName() ;
 
             Lang language = RDFLanguages.shortnameToLang(syntax) ;
             if ( language == null )

@@ -68,7 +68,7 @@ public class REST_Quads extends SPARQL_REST
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = RDFLanguages.TriG ;
+            lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
@@ -80,9 +80,9 @@ public class REST_Quads extends SPARQL_REST
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
             
-            if ( lang == RDFLanguages.NQuads )
+            if ( lang == RDFLanguages.NQUADS )
                 RiotWriter.writeNQuads(out, dsg) ;
-            else if ( lang == RDFLanguages.TriG )
+            else if ( lang == RDFLanguages.TRIG )
                 errorBadRequest("TriG - Not implemented (yet) : "+mediaType) ;
             else
                 errorBadRequest("No handled: "+mediaType) ;
@@ -122,7 +122,7 @@ public class REST_Quads extends SPARQL_REST
         MediaType mediaType = MediaType.create(x) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = RDFLanguages.TriG ;
+            lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
