@@ -519,7 +519,7 @@ public class TestLangRdfJson extends BaseTest
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(model, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(model, r, null, RDFLanguages.NTRIPLES) ;
         return model ;
     }
 

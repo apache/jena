@@ -226,7 +226,7 @@ public abstract class CmdLangParse extends CmdGeneral
 
     protected void parseRIOT(String baseURI, String filename, InputStream in)
     {
-        baseURI = RiotReader.chooseBaseIRI(baseURI, filename) ;
+        baseURI = SysRIOT.chooseBaseIRI(baseURI, filename) ;
         
         boolean checking = true ;
         if ( modLangParse.explicitChecking() )  checking = true ;
@@ -247,7 +247,7 @@ public abstract class CmdLangParse extends CmdGeneral
             // TODO skipOnBadterm
         }
         
-        Lang lang = selectLang(filename, RDFLanguages.NQuads) ;  
+        Lang lang = selectLang(filename, RDFLanguages.NQUADS) ;  
         LangHandler handler = dispatch.get(lang) ;
         if ( handler == null )
             throw new CmdException("Undefined language: "+lang) ; 
@@ -313,7 +313,7 @@ public abstract class CmdLangParse extends CmdGeneral
         {
             if ( checking )
             {
-                if ( parser.getLang() == RDFLanguages.NTriples ||  parser.getLang() == RDFLanguages.NQuads )
+                if ( parser.getLang() == RDFLanguages.NTRIPLES ||  parser.getLang() == RDFLanguages.NQUADS )
                     parser.setProfile(RiotLib.profile(baseURI, false, true, errHandler)) ;
                 else
                     parser.setProfile(RiotLib.profile(baseURI, true, true, errHandler)) ;

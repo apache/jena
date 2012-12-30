@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot;
 
+import org.apache.jena.atlas.lib.IRILib ;
+import org.apache.jena.riot.system.IRIResolver ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -48,15 +50,26 @@ public class SysRIOT
         return riotLogger ;
     }
     
-//    public static void wireIntoJena()
-//    {
-//        RIOT.init() ;
-//        IO_Jena.wireIntoJena() ;
-//    }
-//    
-//    public static void resetJenaReaders()
-//    {
-//        IO_Jena.resetJenaReaders() ;
-//    }
+    public static String chooseBaseIRI()
+    {
+        return IRIResolver.chooseBaseURI().toString() ;
+    }
+    
+    public static String filename2baseIRI(String filename)
+    {
+        if ( filename == null || filename.equals("-") )
+            return "http://localhost/stdin/" ;
+        String x = IRILib.filenameToIRI(filename) ;
+        return x ;
+    }
 
+    /** Choose base IRI, from a given one and a filename.
+     *  Prefer the given base ; turn any filename into an IRI.   
+     */
+    public static String chooseBaseIRI(String baseIRI, String filename)
+    {
+        if ( baseIRI != null )
+            return baseIRI ;
+        return filename2baseIRI(filename) ;
+    }
 }

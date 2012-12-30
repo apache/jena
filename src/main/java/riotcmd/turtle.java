@@ -44,5 +44,5 @@ public class turtle extends CmdLangParse
 
     @Override
     protected Lang selectLang(String filename, Lang dftLang) 
-    { return RDFLanguages.Turtle ; }
+    { return RDFLanguages.TURTLE ; }
 }

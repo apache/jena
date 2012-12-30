@@ -54,8 +54,8 @@ public class TestReadData extends BaseTest
     
     @Test public void read_01() { read("D.nq") ; }
     @Test public void read_02() { read("D.trig") ; }
-    @Test public void read_03() { read("D.nq",   RDFLanguages.NQuads) ; }
-    @Test public void read_04() { read("D.trig", RDFLanguages.TriG) ; }
+    @Test public void read_03() { read("D.nq",   RDFLanguages.NQUADS) ; }
+    @Test public void read_04() { read("D.trig", RDFLanguages.TRIG) ; }
     
     @Test public void read_11() { read("D.nq", "N-Quads") ; }
 
@@ -64,8 +64,8 @@ public class TestReadData extends BaseTest
     @Test public void read_14() { read("D.trig", "TriG") ; }
     @Test public void read_15() { read("D.trig", "trig") ; } 
 
-    @Test public void read_21() { read("D-nq",  RDFLanguages.NQuads) ; }
-    @Test public void read_22() { read("D-trig", RDFLanguages.TriG) ; }
+    @Test public void read_21() { read("D-nq",  RDFLanguages.NQUADS) ; }
+    @Test public void read_22() { read("D-trig", RDFLanguages.TRIG) ; }
     @Test public void read_23() { read("D-nq",  "NQuads") ; }
     @Test public void read_24() { read("D-trig", "TRIG") ; }
 
@@ -76,20 +76,20 @@ public class TestReadData extends BaseTest
     { read_stream("D.trig", "trig") ; }
     
     @Test public void load_01() { RDFDataMgr.loadModel(filename("D.nt")) ; }
-    @Test public void load_02() { RDFDataMgr.loadModel(filename("D.nt"), RDFLanguages.NTriples)  ; }
-    @Test public void load_03() { RDFDataMgr.loadModel(filename("D-nt"), RDFLanguages.NTriples)  ; }
+    @Test public void load_02() { RDFDataMgr.loadModel(filename("D.nt"), RDFLanguages.NTRIPLES)  ; }
+    @Test public void load_03() { RDFDataMgr.loadModel(filename("D-nt"), RDFLanguages.NTRIPLES)  ; }
 
     @Test public void load_04() { RDFDataMgr.loadDataset(filename("D.nq")) ; }
-    @Test public void load_05() { RDFDataMgr.loadDataset(filename("D.nq"), RDFLanguages.NQuads)  ; }
-    @Test public void load_06() { RDFDataMgr.loadDataset(filename("D-nq"), RDFLanguages.NQuads)  ; }
+    @Test public void load_05() { RDFDataMgr.loadDataset(filename("D.nq"), RDFLanguages.NQUADS)  ; }
+    @Test public void load_06() { RDFDataMgr.loadDataset(filename("D-nq"), RDFLanguages.NQUADS)  ; }
     
     @Test public void load_11() { RDFDataMgr.loadGraph(filename("D.nt")) ; }
-    @Test public void load_12() { RDFDataMgr.loadGraph(filename("D.nt"), RDFLanguages.NTriples)  ; }
-    @Test public void load_13() { RDFDataMgr.loadGraph(filename("D-nt"), RDFLanguages.NTriples)  ; }
+    @Test public void load_12() { RDFDataMgr.loadGraph(filename("D.nt"), RDFLanguages.NTRIPLES)  ; }
+    @Test public void load_13() { RDFDataMgr.loadGraph(filename("D-nt"), RDFLanguages.NTRIPLES)  ; }
 
     @Test public void load_14() { RDFDataMgr.loadDatasetGraph(filename("D.nq")) ; }
-    @Test public void load_15() { RDFDataMgr.loadDatasetGraph(filename("D.nq"), RDFLanguages.NQuads)  ; }
-    @Test public void load_16() { RDFDataMgr.loadDatasetGraph(filename("D-nq"), RDFLanguages.NQuads)  ; }
+    @Test public void load_15() { RDFDataMgr.loadDatasetGraph(filename("D.nq"), RDFLanguages.NQUADS)  ; }
+    @Test public void load_16() { RDFDataMgr.loadDatasetGraph(filename("D-nq"), RDFLanguages.NQUADS)  ; }
     
     private static String filename(String filename) { return directory+"/"+filename ; }
 

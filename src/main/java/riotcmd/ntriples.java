@@ -44,5 +44,5 @@ public class ntriples extends CmdLangParse
     
     @Override
     protected Lang selectLang(String filename, Lang lang) 
-    { return RDFLanguages.NTriples ; }
+    { return RDFLanguages.NTRIPLES ; }
 }

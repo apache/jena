@@ -39,7 +39,7 @@ public class LangTurtle extends LangTurtleBase<Triple>
     }
 
     @Override
-    public Lang getLang()   { return RDFLanguages.Turtle ; }
+    public Lang getLang()   { return RDFLanguages.TURTLE ; }
     
     @Override
     protected final void oneTopLevelElement()

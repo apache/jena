@@ -29,6 +29,8 @@ import org.apache.jena.atlas.web.ContentType ;
  *  a content type,  some alternative content types,
  *  and a list of associated file extensions.
  *  Names, content types and file extensions must be unique to one language. 
+ *  To create a Lang constant, use {@link LangBuilder} and 
+ *  register with {@link RDFLanguages}.
  */
 public class Lang 
 {

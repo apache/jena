@@ -27,15 +27,15 @@ public class Lang
     /** @deprecated Use constant from {@link RDFLanguages} */
     @Deprecated public static final org.apache.jena.riot.Lang RDFXML = RDFLanguages.RDFXML ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
-    @Deprecated public static final org.apache.jena.riot.Lang NTRIPLES = RDFLanguages.NTriples ; 
+    @Deprecated public static final org.apache.jena.riot.Lang NTRIPLES = RDFLanguages.NTRIPLES ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
     @Deprecated public static final org.apache.jena.riot.Lang N3 = RDFLanguages.N3 ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
-    @Deprecated public static final org.apache.jena.riot.Lang TURTLE = RDFLanguages.Turtle ; 
+    @Deprecated public static final org.apache.jena.riot.Lang TURTLE = RDFLanguages.TURTLE ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
     @Deprecated public static final org.apache.jena.riot.Lang RDFJSON = RDFLanguages.RDFJSON ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
-    @Deprecated public static final org.apache.jena.riot.Lang NQUADS = RDFLanguages.NQuads ; 
+    @Deprecated public static final org.apache.jena.riot.Lang NQUADS = RDFLanguages.NQUADS ; 
     /** @deprecated Use constant from {@link RDFLanguages} */
-    @Deprecated public static final org.apache.jena.riot.Lang TRIG = RDFLanguages.TriG ; 
+    @Deprecated public static final org.apache.jena.riot.Lang TRIG = RDFLanguages.TRIG ; 
 }
