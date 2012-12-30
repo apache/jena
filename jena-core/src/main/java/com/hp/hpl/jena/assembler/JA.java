@@ -147,6 +147,7 @@ public class JA
 
     public static final Property rootModel = property( "rootModel" );
 
+    @Deprecated
     public static final Property reificationMode = property( "reificationMode" );
 
     public static final Resource minimal = resource( "minimal" );
@@ -155,6 +156,7 @@ public class JA
 
     public static final Resource standard = resource( "standard" );
 
+    @Deprecated
     public static final Resource ReificationMode = resource( "ReificationMode" );
 
     public static final Property fileEncoding = property( "fileEncoding" );
