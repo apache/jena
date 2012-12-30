@@ -43,7 +43,7 @@ public class LangNQuads extends LangNTuple<Quad>
     }
 
     @Override
-    public Lang getLang()   { return RDFLanguages.NQuads ; }
+    public Lang getLang()   { return RDFLanguages.NQUADS ; }
     
     /** Method to parse the whole stream of triples, sending each to the sink */ 
     @Override

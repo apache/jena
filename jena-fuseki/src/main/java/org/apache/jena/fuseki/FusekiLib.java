@@ -61,8 +61,8 @@ public class FusekiLib
     static {
         mapLangToWriterName.put(RDFLanguages.N3, WebContent.langN3) ;
         mapLangToWriterName.put(RDFLanguages.RDFJSON, WebContent.langRdfJson) ;
-        mapLangToWriterName.put(RDFLanguages.Turtle, WebContent.langTurtle) ;
-        mapLangToWriterName.put(RDFLanguages.NTriples, WebContent.langNTriples) ;
+        mapLangToWriterName.put(RDFLanguages.TURTLE, WebContent.langTurtle) ;
+        mapLangToWriterName.put(RDFLanguages.NTRIPLES, WebContent.langNTriples) ;
         mapLangToWriterName.put(RDFLanguages.RDFXML, WebContent.langRDFXML) ;
     }
     

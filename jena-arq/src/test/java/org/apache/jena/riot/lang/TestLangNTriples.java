@@ -49,7 +49,7 @@ public class TestLangNTriples extends TestLangNTuples
         StringReader r = new StringReader(s) ;
         Model m = ModelFactory.createDefaultModel() ;
         
-        RDFDataMgr.read(m, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES) ;
         assertEquals(1, m.size()) ;
         
         String x = m.listStatements().next().getSubject().getId().getLabelString() ;
@@ -57,7 +57,7 @@ public class TestLangNTriples extends TestLangNTuples
         
         // reset - reread -  new bNode.
         r = new StringReader(s) ;
-        RDFDataMgr.read(m, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(m, r, null, RDFLanguages.NTRIPLES) ;
         assertEquals(2, m.size()) ;
     }
 
@@ -112,7 +112,7 @@ public class TestLangNTriples extends TestLangNTuples
     {
         StringReader r = new StringReader(string) ;
         Model model = ModelFactory.createDefaultModel() ;
-        RDFDataMgr.read(model, r, null, RDFLanguages.NTriples) ;
+        RDFDataMgr.read(model, r, null, RDFLanguages.NTRIPLES) ;
         return model ;
     }
 }

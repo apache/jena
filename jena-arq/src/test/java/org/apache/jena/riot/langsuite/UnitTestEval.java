@@ -20,12 +20,14 @@ package org.apache.jena.riot.langsuite;
 
 import java.io.InputStream ;
 
-import org.apache.jena.riot.* ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.stream.StreamManager ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -57,7 +59,6 @@ public class UnitTestEval extends LangTestCase
     public void runTestForReal()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader rdfreader = new RDFReaderRIOT() ;
         try {
             if ( baseIRI != null )
                 RDFDataMgr.read(model, input, baseIRI, lang) ;
@@ -68,7 +69,7 @@ public class UnitTestEval extends LangTestCase
             Model results = ModelFactory.createDefaultModel() ;
             // Directly get an N-triples reader
             InputStream in = StreamManager.get().open(output) ;
-            RDFDataMgr.read(results, in, null, RDFLanguages.NTriples) ;
+            RDFDataMgr.read(results, in, null, RDFLanguages.NTRIPLES) ;
 
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )

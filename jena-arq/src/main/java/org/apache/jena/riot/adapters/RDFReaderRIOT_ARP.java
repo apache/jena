@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.adapters;
 
 import java.io.File ;
 import java.io.InputStream ;

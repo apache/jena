@@ -108,19 +108,19 @@ public class WebContent
         mapContentTypeToLang.put(contentTypeN3,             RDFLanguages.N3);
         mapContentTypeToLang.put(contentTypeN3Alt1,         RDFLanguages.N3);
         mapContentTypeToLang.put(contentTypeN3Alt2,         RDFLanguages.N3);
-        mapContentTypeToLang.put(contentTypeTurtle,         RDFLanguages.Turtle) ;
-        mapContentTypeToLang.put(contentTypeTurtleAlt1,     RDFLanguages.Turtle) ;
-        mapContentTypeToLang.put(contentTypeTurtleAlt2,     RDFLanguages.Turtle) ;
-        mapContentTypeToLang.put(contentTypeNTriples,       RDFLanguages.NTriples) ;   // text/plain
-        mapContentTypeToLang.put(contentTypeNTriplesAlt,    RDFLanguages.NTriples) ;
+        mapContentTypeToLang.put(contentTypeTurtle,         RDFLanguages.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeTurtleAlt1,     RDFLanguages.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeTurtleAlt2,     RDFLanguages.TURTLE) ;
+        mapContentTypeToLang.put(contentTypeNTriples,       RDFLanguages.NTRIPLES) ;   // text/plain
+        mapContentTypeToLang.put(contentTypeNTriplesAlt,    RDFLanguages.NTRIPLES) ;
         mapContentTypeToLang.put(contentTypeRdfJson,        RDFLanguages.RDFJSON) ;
 
-        mapContentTypeToLang.put(contentTypeNQuads,         RDFLanguages.NQuads) ;
-        mapContentTypeToLang.put(contentTypeNQuadsAlt1,     RDFLanguages.NQuads) ;
-        mapContentTypeToLang.put(contentTypeNQuadsAlt2,     RDFLanguages.NQuads) ;
-        mapContentTypeToLang.put(contentTypeTriG,           RDFLanguages.TriG) ;
-        mapContentTypeToLang.put(contentTypeTriGAlt1,       RDFLanguages.TriG) ;
-        mapContentTypeToLang.put(contentTypeTriGAlt2,       RDFLanguages.TriG) ;
+        mapContentTypeToLang.put(contentTypeNQuads,         RDFLanguages.NQUADS) ;
+        mapContentTypeToLang.put(contentTypeNQuadsAlt1,     RDFLanguages.NQUADS) ;
+        mapContentTypeToLang.put(contentTypeNQuadsAlt2,     RDFLanguages.NQUADS) ;
+        mapContentTypeToLang.put(contentTypeTriG,           RDFLanguages.TRIG) ;
+        mapContentTypeToLang.put(contentTypeTriGAlt1,       RDFLanguages.TRIG) ;
+        mapContentTypeToLang.put(contentTypeTriGAlt2,       RDFLanguages.TRIG) ;
         
     }
     
@@ -141,13 +141,13 @@ public class WebContent
     private static Map<Lang, String> mapLangToContentType =  new HashMap<Lang, String>() ;
     static {
         mapLangToContentType.put(RDFLanguages.N3,           contentTypeN3) ;
-        mapLangToContentType.put(RDFLanguages.Turtle,       contentTypeTurtle) ;
-        mapLangToContentType.put(RDFLanguages.NTriples,     contentTypeNTriples) ;
+        mapLangToContentType.put(RDFLanguages.TURTLE,       contentTypeTurtle) ;
+        mapLangToContentType.put(RDFLanguages.NTRIPLES,     contentTypeNTriples) ;
         mapLangToContentType.put(RDFLanguages.RDFXML,       contentTypeRDFXML) ;
         mapLangToContentType.put(RDFLanguages.RDFJSON,		contentTypeRdfJson) ;
         
-        mapLangToContentType.put(RDFLanguages.NQuads,       contentTypeNQuads) ;
-        mapLangToContentType.put(RDFLanguages.TriG,         contentTypeTriG) ;
+        mapLangToContentType.put(RDFLanguages.NQUADS,       contentTypeNQuads) ;
+        mapLangToContentType.put(RDFLanguages.TRIG,         contentTypeTriG) ;
     }
     public static String mapLangToContentType(Lang lang) { return mapLangToContentType.get(lang) ; }
     

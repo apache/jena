@@ -144,7 +144,7 @@ public class infer extends CmdGeneral
 
     private void processFile(String filename, Sink<Quad> qsink)
     {
-        Lang lang = filename.equals("-") ? RDFLanguages.NQuads : RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
+        Lang lang = filename.equals("-") ? RDFLanguages.NQUADS : RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
         String baseURI = IRILib.filenameToIRI(filename) ;
         StreamRDF sink = StreamRDFLib.sinkQuads(qsink) ;
         

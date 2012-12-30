@@ -16,11 +16,14 @@
  * limitations under the License.
  */
 
-package org.apache.jena.riot;
+package org.apache.jena.riot.adapters;
 
 import java.io.InputStream ;
 import java.io.Reader ;
 import java.util.Locale ;
+
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler ;

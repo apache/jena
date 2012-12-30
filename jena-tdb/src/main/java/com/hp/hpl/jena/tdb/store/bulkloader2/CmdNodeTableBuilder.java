@@ -120,7 +120,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         for( String filename : datafiles)
         {
-            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
+            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
             if ( lang == null )
                 // Does not happen due to default above.
                 cmdError("File suffix not recognized: " +filename) ;

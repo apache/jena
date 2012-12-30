@@ -25,6 +25,7 @@ import java.io.StringReader ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -98,7 +99,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
-            RDFDataMgr.read(m, s, null, RDFLanguages.NTriples) ;
+            RDFDataMgr.read(m, s, null, RDFLanguages.NTRIPLES) ;
         }
         
         StringReader s1 = new StringReader("<s> <p> <p> .") ;

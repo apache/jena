@@ -104,7 +104,7 @@ public class tdbloader extends CmdTDBGraph
         boolean allTriples = true ;
         for ( String url : urls )
         {
-            Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQuads) ;
+            Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
             if ( lang != null && RDFLanguages.isQuads(lang) )
             {
                 allTriples = false ;
@@ -129,7 +129,7 @@ public class tdbloader extends CmdTDBGraph
         {
             for ( String url : urls )
             {
-                Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQuads) ;
+                Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
                 if ( lang == null )
                     // Does not happen due to default above.
                     cmdError("File suffix not recognized: " +url) ;

@@ -74,16 +74,16 @@ public class FactoryTestRiot extends TestFactoryManifest
             baseIRI = baseIRI+x ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxTTL) )
-                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.Turtle, report) ;
+                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
             
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxTTL) )
-                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.Turtle, report) ;
+                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxNT) )
-                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTriples, report) ;
+                return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
             
             if ( r.equals(VocabLangRDF.TestNegativeSyntaxNT) )
-                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTriples, report) ;
+                return new UnitTestBadSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
 
             if ( r.equals(VocabLangRDF.TestPositiveSyntaxRJ) )
                 return new UnitTestSyntax(testName, item.getURI(), input.getURI(), RDFLanguages.RDFJSON, report) ;
@@ -97,16 +97,16 @@ public class FactoryTestRiot extends TestFactoryManifest
             // Eval.
             
             if ( r.equals(VocabLangRDF.TestEvalTTL) )
-                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, RDFLanguages.Turtle, report) ;
+                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, RDFLanguages.TURTLE, report) ;
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalTTL) )
-                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.Turtle, report) ;
+                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.TURTLE, report) ;
             
             if ( r.equals(VocabLangRDF.TestEvalNT) )
-                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, RDFLanguages.NTriples, report) ;
+                return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, RDFLanguages.NTRIPLES, report) ;
 
             if ( r.equals(VocabLangRDF.TestNegativeEvalNT) )
-                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.NTriples, report) ;
+                return new UnitTestBadEval(testName, item.getURI(), input.getURI(), RDFLanguages.NTRIPLES, report) ;
             
             if ( r.equals(VocabLangRDF.TestEvalRJ) )
                 return new UnitTestEval(testName, item.getURI(), input.getURI(), result.getURI(), baseIRI, RDFLanguages.RDFJSON, report) ;

@@ -20,6 +20,7 @@ package org.apache.jena.riot;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.adapters.RDFReaderRIOT ;
 import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.JenaWriterRdfJson ;
 import org.slf4j.Logger ;
