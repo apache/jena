@@ -18,7 +18,7 @@
 
 package org.openjena.riot;
 
-/** @deprecated use org.apache.jena.riot.RiotExpection */
+/** @deprecated use org.apache.jena.riot.RiotNotFoundException */
 @Deprecated
 public class RiotNotFoundException extends org.apache.jena.riot.RiotException
 {
