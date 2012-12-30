@@ -146,7 +146,7 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.startBulk() ;
-        RiotReader.parse(input, RDFLanguages.NTriples, null, dest) ;
+        RiotReader.parse(input, RDFLanguages.NTRIPLES, null, dest) ;
         dest.finishBulk() ;
     }
     
@@ -167,7 +167,7 @@ public class BulkLoader
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
         dest.startBulk() ;
-        RiotReader.parse(input, RDFLanguages.NQuads, null, dest) ;
+        RiotReader.parse(input, RDFLanguages.NQUADS, null, dest) ;
         dest.finishBulk() ;
     }
     

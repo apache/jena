@@ -43,7 +43,7 @@ public final class LangNTriples extends LangNTuple<Triple>
     }
     
     @Override
-    public Lang getLang()   { return RDFLanguages.NTriples ; }
+    public Lang getLang()   { return RDFLanguages.NTRIPLES ; }
 
     /** Method to parse the whole stream of triples, sending each to the sink */ 
     @Override

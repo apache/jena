@@ -18,7 +18,7 @@
 
 package arq.examples.riot;
 
-import static org.apache.jena.riot.RDFLanguages.TriG ;
+import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RIOT ;
 
@@ -46,6 +46,6 @@ public class ExRIOT_3
         Dataset ds2 = DatasetFactory.createMem() ;
         // read in data, indicating the syntax in case the remote end does not
         // correctly provide the HTTP content type.
-        RDFDataMgr.read(ds2, "http://host/data2.unknown", TriG) ;
+        RDFDataMgr.read(ds2, "http://host/data2.unknown", TRIG) ;
     }
 }

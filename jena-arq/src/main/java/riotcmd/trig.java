@@ -44,5 +44,5 @@ public class trig extends CmdLangParse
 
     @Override
     protected Lang selectLang(String filename, Lang lang) 
-    { return RDFLanguages.TriG ; }
+    { return RDFLanguages.TRIG ; }
 }

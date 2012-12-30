@@ -57,7 +57,7 @@ public class LangTriG extends LangTurtleBase<Quad>
     }
     
     @Override
-    public Lang getLang()   { return RDFLanguages.TriG ; }
+    public Lang getLang()   { return RDFLanguages.TRIG ; }
 
     @Override
     protected final void oneTopLevelElement()

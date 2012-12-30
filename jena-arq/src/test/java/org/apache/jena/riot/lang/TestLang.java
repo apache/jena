@@ -35,13 +35,13 @@ public class TestLang extends BaseTest
     static { RDFLanguages.init() ; }
     
     @Test public void lang_01()
-    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("TTL")) ; }
+    { assertEquals(RDFLanguages.TURTLE, RDFLanguages.shortnameToLang("TTL")) ; }
 
     @Test public void lang_02()
-    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("ttl")) ; }
+    { assertEquals(RDFLanguages.TURTLE, RDFLanguages.shortnameToLang("ttl")) ; }
 
     @Test public void lang_03()
-    { assertEquals(RDFLanguages.Turtle, RDFLanguages.shortnameToLang("Turtle")) ; }
+    { assertEquals(RDFLanguages.TURTLE, RDFLanguages.shortnameToLang("Turtle")) ; }
 
     @Test public void lang_04()
     { assertEquals(RDFLanguages.RDFXML, RDFLanguages.shortnameToLang(FileUtils.langXML)) ; }
@@ -50,17 +50,17 @@ public class TestLang extends BaseTest
     { assertEquals(RDFLanguages.RDFXML, RDFLanguages.shortnameToLang(FileUtils.langXMLAbbrev)) ; }
 
     @Test public void lang_06()
-    { assertEquals(RDFLanguages.NTriples, RDFLanguages.shortnameToLang(FileUtils.langNTriple)) ; }
+    { assertEquals(RDFLanguages.NTRIPLES, RDFLanguages.shortnameToLang(FileUtils.langNTriple)) ; }
     
     
     @Test public void lang_07()
-    { assertEquals(RDFLanguages.NTriples, RDFLanguages.shortnameToLang(WebContent.langNTriples)) ; }
+    { assertEquals(RDFLanguages.NTRIPLES, RDFLanguages.shortnameToLang(WebContent.langNTriples)) ; }
     
     @Test public void lang_08()
-    { assertEquals(RDFLanguages.NQuads, RDFLanguages.shortnameToLang(WebContent.langNQuads)) ; }
+    { assertEquals(RDFLanguages.NQUADS, RDFLanguages.shortnameToLang(WebContent.langNQuads)) ; }
     
     @Test public void lang_09()
-    { assertEquals(RDFLanguages.TriG, RDFLanguages.shortnameToLang(WebContent.langTriG)) ; }
+    { assertEquals(RDFLanguages.TRIG, RDFLanguages.shortnameToLang(WebContent.langTriG)) ; }
 
     @Test public void lang_10()
     { assertEquals(RDFLanguages.RDFJSON, RDFLanguages.shortnameToLang("RDF/JSON")) ; }

@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.system;
 
-import static org.apache.jena.riot.RDFLanguages.NQuads ;
-import static org.apache.jena.riot.RDFLanguages.NTriples ;
+import static org.apache.jena.riot.RDFLanguages.NQUADS ;
+import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
 import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
 import static org.apache.jena.riot.RDFLanguages.sameLang ;
 import org.apache.jena.atlas.logging.Log ;
@@ -62,7 +62,7 @@ public class RiotLib
         return skolomizedBNodes && iri.startsWith(bNodeLabelStart) ;
     }
     
-    static ParserProfile profile = profile(RDFLanguages.Turtle, null, null) ;
+    static ParserProfile profile = profile(RDFLanguages.TURTLE, null, null) ;
     static {
         PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
@@ -95,7 +95,7 @@ public class RiotLib
 
     public static ParserProfile profile(Lang lang, String baseIRI, ErrorHandler handler)
     {
-        if ( sameLang(NTriples, lang) || sameLang(NQuads, lang) )
+        if ( sameLang(NTRIPLES, lang) || sameLang(NQUADS, lang) )
             return profile(baseIRI, false, false, handler) ;
         if ( sameLang(RDFJSON, lang) )
             return profile(baseIRI, false, true, handler) ;

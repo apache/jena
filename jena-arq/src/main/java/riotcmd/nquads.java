@@ -44,5 +44,5 @@ public class nquads extends CmdLangParse
     
     @Override
     protected Lang selectLang(String filename, Lang lang) 
-    { return RDFLanguages.NQuads ; }
+    { return RDFLanguages.NQUADS ; }
 }

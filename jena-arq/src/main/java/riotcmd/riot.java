@@ -41,7 +41,7 @@ public class riot extends CmdLangParse
     @Override
     protected Lang selectLang(String filename, Lang dftLang)
     {
-        return RDFLanguages.filenameToLang(filename, RDFLanguages.NQuads) ;
+        return RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
     }
 
     @Override

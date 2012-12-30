@@ -18,8 +18,8 @@
 
 package org.openjena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.NQuads ;
-import static org.apache.jena.riot.RDFLanguages.TriG ;
+import static org.apache.jena.riot.RDFLanguages.NQUADS ;
+import static org.apache.jena.riot.RDFLanguages.TRIG ;
 
 import java.io.InputStream ;
 import java.util.Iterator ;
@@ -202,7 +202,7 @@ public class RiotReader
     public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
     {
         // Special case N-Triples, because the RIOT reader has a pull interface
-        if ( RDFLanguages.sameLang(RDFLanguages.NTriples, lang) )
+        if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
         {
             return new IteratorResourceClosing<Triple>(createParserNTriples(input, null), input);
         }
@@ -225,9 +225,9 @@ public class RiotReader
     /** Create a parser for a quads language */  
     public static LangRIOT createParserQuads(Tokenizer tokenizer, Lang lang, String baseIRI, StreamRDF dest)
     {
-        if ( RDFLanguages.sameLang(NQuads, lang) )
+        if ( RDFLanguages.sameLang(NQUADS, lang) )
             return createParserNQuads(tokenizer, dest) ;
-        if ( RDFLanguages.sameLang(TriG, lang) )
+        if ( RDFLanguages.sameLang(TRIG, lang) )
             return createParserTriG(tokenizer, baseIRI, dest) ;
 
         // try to do via triples to quads extension. 
@@ -239,7 +239,7 @@ public class RiotReader
     public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
     {
         // Special case N-Quads, because the RIOT reader has a pull interface
-        if (  RDFLanguages.sameLang(RDFLanguages.NTriples, lang) )
+        if (  RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
         {
             return new IteratorResourceClosing<Quad>(createParserNQuads(input, null), input);
         }
@@ -262,7 +262,7 @@ public class RiotReader
     /** Create a parser for Turtle, with default behaviour */
     public static LangTurtle createParserTurtle(Tokenizer tokenizer, String baseIRI, StreamRDF dest)
     {
-        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.Turtle, baseIRI), dest) ;
+        LangTurtle parser = new LangTurtle(tokenizer, RiotLib.profile(RDFLanguages.TURTLE, baseIRI), dest) ;
         return parser ;
     }
 
@@ -300,7 +300,7 @@ public class RiotReader
     {
         if ( baseIRI == null )
             baseIRI = chooseBaseIRI() ;
-        LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(RDFLanguages.TriG, baseIRI), dest) ;
+        LangTriG parser = new LangTriG(tokenizer, RiotLib.profile(RDFLanguages.TRIG, baseIRI), dest) ;
         return parser ;
     }
 
@@ -314,7 +314,7 @@ public class RiotReader
     /** Create a parser for N-Triples, with default behaviour */
     public static LangNTriples createParserNTriples(Tokenizer tokenizer, StreamRDF dest)
     {
-        LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTriples, null), dest) ;
+        LangNTriples parser = new LangNTriples(tokenizer, RiotLib.profile(RDFLanguages.NTRIPLES, null), dest) ;
         return parser ;
     }
     
@@ -328,7 +328,7 @@ public class RiotReader
     /** Create a parser for NQuads, with default behaviour */
     public static LangNQuads createParserNQuads(Tokenizer tokenizer, StreamRDF dest)
     {
-        LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQuads, null), dest) ;
+        LangNQuads parser = new LangNQuads(tokenizer, RiotLib.profile(RDFLanguages.NQUADS, null), dest) ;
         return parser ;
     }
     

@@ -66,7 +66,7 @@ public class RDFLanguages
                                                 .build() ;
     
     /** Turtle */
-    public static final Lang Turtle   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
+    public static final Lang TURTLE   = LangBuilder.create(strLangTurtle, contentTypeTurtle)
                                                 .addAltNames("TTL")
                                                 .addAltContentTypes(contentTypeTurtleAlt1, contentTypeTurtleAlt2)
                                                 .addFileExtensions("ttl")
@@ -79,7 +79,7 @@ public class RDFLanguages
                                                 .build() ;
     
     /** N-Triples */
-    public static final Lang NTriples = LangBuilder.create(strLangNTriples, contentTypeNTriples)
+    public static final Lang NTRIPLES = LangBuilder.create(strLangNTriples, contentTypeNTriples)
                                                 .addAltNames("NT", "NTriples", "NTriple", "N-Triple", "N-Triples")
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
@@ -92,13 +92,13 @@ public class RDFLanguages
                                                 .build() ;
     
     /** TriG */
-    public static final Lang TriG     = LangBuilder.create(strLangTriG, contentTypeTriG)
+    public static final Lang TRIG     = LangBuilder.create(strLangTriG, contentTypeTriG)
                                                 .addAltContentTypes(contentTypeTriGAlt1, contentTypeTriGAlt2)
                                                 .addFileExtensions("trig")
                                                 .build() ;
     
     /** N-Quads */
-    public static final Lang NQuads   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
+    public static final Lang NQUADS   = LangBuilder.create(strLangNQuads, contentTypeNQuads)
                                                 .addAltNames("NQ", "NQuads", "NQuad", "N-Quad", "N-Quads")   
                                                 .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
                                                 .addFileExtensions("nq")
@@ -127,14 +127,12 @@ public class RDFLanguages
         initialized = true ;
         initStandard() ;
         Lang.RDFXML = RDFLanguages.RDFXML ; 
-        Lang.NTRIPLES = RDFLanguages.NTriples ; 
+        Lang.NTRIPLES = RDFLanguages.NTRIPLES ; 
         Lang.N3 = RDFLanguages.N3 ; 
-        Lang.TURTLE = RDFLanguages.Turtle ; 
+        Lang.TURTLE = RDFLanguages.TURTLE ; 
         Lang.RDFJSON = RDFLanguages.RDFJSON ; 
-        Lang.NQUADS = RDFLanguages.NQuads ; 
-        Lang.TRIG = RDFLanguages.TriG ; 
-
-        
+        Lang.NQUADS = RDFLanguages.NQUADS ; 
+        Lang.TRIG = RDFLanguages.TRIG ; 
     }
     // ----------------------
     
@@ -142,11 +140,12 @@ public class RDFLanguages
     private static void initStandard()
     {
         register(RDFXML) ;
-        register(Turtle) ;
-        register(NTriples) ;
+        register(TURTLE) ;
+        register(N3) ;
+        register(NTRIPLES) ;
         register(RDFJSON) ;
-        register(TriG) ;
-        register(NQuads) ;
+        register(TRIG) ;
+        register(NQUADS) ;
     }
 
     /** Register a language.
