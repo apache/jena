@@ -18,8 +18,7 @@
 
 package org.apache.jena.riot;
 
-@SuppressWarnings("deprecation")
-public class RiotNotFoundException extends org.openjena.riot.RiotNotFoundException //extends RiotException
+public class RiotNotFoundException extends RiotException
 {
     public RiotNotFoundException()                          { super() ; }
     public RiotNotFoundException(String msg)                { super(msg) ; }

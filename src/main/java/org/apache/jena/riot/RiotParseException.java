@@ -18,18 +18,21 @@
 
 package org.apache.jena.riot;
 
-@SuppressWarnings("deprecation")
-public class RiotParseException extends org.openjena.riot.RiotParseException
+public class RiotParseException extends RiotException
 {
+    final private long line ;
+    final private long column ;
+    final private String message ;
+
     public RiotParseException(String msg, long line, long column)
     {
-        super(msg, line, column); 
+        super(SysRIOT.fmtMessage(msg,line,column)); 
+        this.message = msg ; 
+        this.line = line ;
+        this.column = column ;
     }
     
-    @Override
-    public long getLine()   { return super.getLine() ; }
-    @Override
-    public long getCol()    { return super.getCol() ; }
-    @Override
-    public String getOriginalMessage()    { return super.getOriginalMessage() ; }
+    public long getLine()   { return line ; }
+    public long getCol()    { return column ; }
+    public String getOriginalMessage()    { return message ; }
 }
