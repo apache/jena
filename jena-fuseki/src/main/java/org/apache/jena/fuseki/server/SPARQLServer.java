@@ -24,6 +24,7 @@ import static org.apache.jena.fuseki.Fuseki.serverLog ;
 import java.io.FileInputStream ;
 import java.util.* ;
 
+import javax.servlet.DispatcherType ;
 import javax.servlet.http.HttpServlet ;
 
 import org.apache.jena.fuseki.Fuseki ;
@@ -46,7 +47,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler ;
 import org.eclipse.jetty.servlet.ServletHolder ;
 import org.eclipse.jetty.xml.XmlConfiguration ;
 
-import org.eclipse.jetty.server.DispatcherType;
 import org.eclipse.jetty.servlets.GzipFilter;
 
 
