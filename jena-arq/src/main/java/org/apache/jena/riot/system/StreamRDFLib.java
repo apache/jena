@@ -20,6 +20,7 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -124,12 +125,21 @@ public class StreamRDFLib
     private static class ParserOutputGraph extends StreamRDFBase
     {
         protected final Graph graph ;
+        protected boolean warningIssued = false ;
         public ParserOutputGraph(Graph graph) { this.graph = graph ; }
         
         @Override public void triple(Triple triple)     { graph.add(triple) ; }
         @Override public void quad(Quad quad)
         {
-            throw new IllegalStateException("Quad passed to graph parsing") ;
+            if ( quad.isTriple() || quad.isDefaultGraph() )
+                graph.add(quad.asTriple()) ;
+            else
+            {
+                if ( ! warningIssued )
+                    SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                warningIssued = true ;
+            }
+            //throw new IllegalStateException("Quad passed to graph parsing") ;
         }
         
         @Override public void base(String base)
