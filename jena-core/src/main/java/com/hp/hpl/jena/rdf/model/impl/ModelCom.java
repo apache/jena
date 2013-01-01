@@ -1502,12 +1502,14 @@ implements Model, PrefixMapping, Lock
               return b.toString();
           }
           /**
-		a read-only Model with all the statements of this Model and any
+		A Model with all the statements of this Model and any
 		statements "hidden" by reification. That model is dynamic, ie
 		any changes this model will be reflected that one.
+		@deprecated Reifiying triples are already visible.
            */    
+        @Deprecated
           public Model getHiddenStatements()
-          { return modelReifier.getHiddenStatements(); }
+          { return this ; }
 
           /**
         Answer whether or not these two graphs are isomorphic, taking the
@@ -1516,8 +1518,8 @@ implements Model, PrefixMapping, Lock
           @Override
           public boolean isIsomorphicWith( Model m )
           {
-              Graph L = ModelFactory.withHiddenStatements( this ).getGraph();            
-              Graph R = ModelFactory.withHiddenStatements( m ).getGraph();
+              Graph L = this.getGraph();  
+              Graph R = m.getGraph();
               return L.isIsomorphicWith( R );
           }
 
