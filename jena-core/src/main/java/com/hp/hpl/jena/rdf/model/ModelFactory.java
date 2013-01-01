@@ -34,7 +34,6 @@ import com.hp.hpl.jena.ontology.impl.OntModelImpl ;
 import com.hp.hpl.jena.rdf.model.impl.InfModelImpl ;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl ;
-import com.hp.hpl.jena.rdf.model.impl.ModelReifier ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.reasoner.Reasoner ;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry ;
@@ -152,9 +151,11 @@ public class ModelFactory extends ModelFactoryBase
         Answer a read-only Model with all the statements of this Model and any
         statements "hidden" by reification. That model is dynamic, ie
         any changes this model will be reflected that one.
+        @deprecated Hidden partial reifications not supported -- only style "Standard" 
     */
+    @Deprecated
     public static Model withHiddenStatements( Model m )
-        { return ModelReifier.withHiddenStatements( m ); }
+        { return m ; }
 
     /**
         construct a new memory-based model that does not capture reification triples

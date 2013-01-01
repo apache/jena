@@ -232,10 +232,9 @@ public class N3JenaWriterCommon implements RDFWriter
     protected void finishWriting() {}
     protected void prepare(Model model) {}
     
-    protected void processModel(Model baseModel)
+    protected void processModel(Model model)
     {
-        prefixMap = baseModel.getNsPrefixMap() ;
-        Model model = ModelFactory.withHiddenStatements( baseModel );
+        prefixMap = model.getNsPrefixMap() ;
         bNodesMap = new HashMap<Resource, String>() ;
 
         // PrefixMapping (to Jena 2.5.7 at least)
