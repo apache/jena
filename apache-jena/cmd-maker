@@ -53,6 +53,7 @@ riotcmd.turtle
 riotcmd.trig
 riotcmd.infer
 riotcmd.utf8
+riotcmd.rdfxml
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader

@@ -1,41 +1,39 @@
-#!/bin/sh
-## Licensed under the terms of http://www.apache.org/licenses/LICENSE-2.0
+#!/bin/bash
 
-# If JENA_HOME is empty
-if [ -z "$JENA_HOME" ]
-	then
-    SCRIPT="$0"
-    # Catch common issue: script has been symlinked
-	if [ -L "$SCRIPT" ]
-		then
-		SCRIPT="$(readlink "$0")"
-		# If link is relative
-		case "$SCRIPT" in
-   			/*) ;; # fine
-			*) SCRIPT=$( dirname "$0" )/$SCRIPT;; # fix
-		esac
-	fi
+## Licensed to the Apache Software Foundation (ASF) under one
+## or more contributor license agreements.  See the NOTICE file
+## distributed with this work for additional information
+## regarding copyright ownership.  The ASF licenses this file
+## to you under the Apache License, Version 2.0 (the
+## "License"); you may not use this file except in compliance
+## with the License.  You may obtain a copy of the License at
+##
+##     http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
 
-    # Work out root from script location
-    JENA_HOME="$( cd "$( dirname "$SCRIPT" )/.." && pwd )"
+if [ "$TDBROOT" = "" ]
+    then 
+    echo "TDBROOT is not set" 1>&2
+    exit 1
 fi
 
-# ---- Setup
-JVM_ARGS=${JVM_ARGS:--Xmx1024M}
-# Expand JENA_HOME but literal *
-JENA_CP="$JENA_HOME"'/lib/*'
-SOCKS=
-LOGGING="-Dlog4j.configuration=file:$JENA_HOME/jena-log4j.properties"
+INIT="$TDBROOT/bin/tdb_init"
 
-# Platform specific fixup
-# On CYGWIN convert path and end with a ';' 
-case "$(uname)" in
-   CYGWIN*) JENA_CP="$(cygpath -wp "$JENA_CP");";;
-esac
+if [ ! -r "$INIT" ] 
+then 
+    echo "Script $INIT (\$TDBROOT/bin/tdb_init) does not exist or is not readable"
+    exit 1
+fi
 
-export JENA_CP
+. "$INIT"
 
+#echo "$TDB_CP"
+export JENA_CP="$TDB_CP"
 ## And --parallel=3 if available.
 export SORT_ARGS="${SORT_ARGS:---buffer-size=50%}"
-
-exec "$JENA_HOME/bin/tdbloader2worker" "$@"
+exec "$TDBROOT/bin/tdbloader2worker" "$@"
