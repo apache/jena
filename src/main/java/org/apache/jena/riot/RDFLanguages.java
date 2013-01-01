@@ -276,6 +276,9 @@ public class RDFLanguages
     /** Try to map a file name to a {@link Lang}; return null on no registered mapping */
     public static Lang filenameToLang(String filename)
     {
+        if ( filename == null ) return null ;
+        if ( filename.endsWith(".gz") )
+            filename = filename.substring(0, filename.length()-3) ;
         return fileExtToLang(FileUtils.getFilenameExt(filename)) ;
     }
 
