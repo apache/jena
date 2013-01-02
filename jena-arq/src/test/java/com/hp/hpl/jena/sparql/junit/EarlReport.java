@@ -40,7 +40,7 @@ public class EarlReport
          earl:assertedBy [ ...] 
          earl:result [ 
                  rdf:type earl:TestResult;
-                 earl:outcome earl:pass ];
+                 earl:outcome earl:passed ];
          earl:subject <thingBeingTested>;
          earl:test <testPerformed> ;
          earl:mode .... ].
@@ -97,22 +97,26 @@ public class EarlReport
     
     public void success(String testURI)
     { 
-        createAssertionResult(testURI, EARL.pass) ;
+        createAssertionResult(testURI, EARL.passed) ;
+        //Old -- createAssertionResult(testURI, EARL.pass) ;
     }
     
     public void failure(String testURI)
     {
-        createAssertionResult(testURI, EARL.fail) ;
+        createAssertionResult(testURI, EARL.failed) ;
+        //Old -- createAssertionResult(testURI, EARL.fail) ;
     }
 
     public void notApplicable(String testURI)
     {
-        createAssertionResult(testURI, EARL.notApplicable);
+        createAssertionResult(testURI, EARL.inapplicable);
+        // Old --  createAssertionResult(testURI, EARL.notApplicable);
     }
     
     public void notTested(String testURI)
     {
-        createAssertionResult(testURI, EARL.notTested);
+        createAssertionResult(testURI, EARL.untested);
+        // Old -- createAssertionResult(testURI, EARL.notTested);
     }
     
     private void createAssertionResult(String testURI, Resource outcome)
