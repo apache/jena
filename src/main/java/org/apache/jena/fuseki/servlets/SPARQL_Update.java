@@ -174,7 +174,6 @@ public class SPARQL_Update extends SPARQL_Protocol
     {
         if ( params != null )
         {
-            @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
