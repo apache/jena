@@ -393,7 +393,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( x2 > 1 )
             errorBadRequest("Multiple ?graph in the query string of the request") ;
         
-        @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
         {
