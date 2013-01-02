@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding='UTF-8'?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#">
+
+  <rdf:Description rdf:about="http://www.w3.org/ns/earl#">
+    <rdfs:label xml:lang="en">EARL 1.0 Schema</rdfs:label>
+    <rdfs:comment xml:lang="en">Evaluation And Report Language (EARL) 1.0 Schema as defined by http://www.w3.org/TR/EARL10-Schema/</rdfs:comment>
+  </rdf:Description>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#Assertion">
+    <rdfs:label xml:lang="en">An assertion</rdfs:label>
+    <rdfs:comment xml:lang="en">Parent node that contains all parts of an assertion</rdfs:comment>
+    <rdfs:subClassOf rdf:parseType="Collection">
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#assertedBy"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#subject"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#test"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#result"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#mode"/>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#assertedBy">
+    <rdfs:label xml:lang="en">Is Asserted By</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Assertion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#Assertor"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#subject">
+    <rdfs:label xml:lang="en">Has Test Subject</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Assertion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#TestSubject"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#test">
+    <rdfs:label xml:lang="en">Has Test Criterion</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Assertion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#TestCriterion"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#result">
+    <rdfs:label xml:lang="en">Has Test Result</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Assertion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#TestResult"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#mode">
+    <rdfs:label xml:lang="en">Has Test Mode</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Assertion"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#TestMode"/>
+  </rdf:Property>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#Assertor">
+    <rdfs:label xml:lang="en">Assertor</rdfs:label>
+    <rdfs:comment xml:lang="en">Persons or evaluation tools that claim assertions</rdfs:comment>
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#SingleAssertor"/>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#CompoundAssertor"/>
+    </owl:oneOf>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#SingleAssertor">
+    <rdfs:label xml:lang="en">Single Assertor</rdfs:label>
+    <rdfs:comment xml:lang="en">One person or evaluation tool that claims assertions</rdfs:comment>
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:type="http://www.w3.org/ns/earl#Software"/>
+      <owl:Thing rdf:type="http://xmlns.com/foaf/0.1/Agent"/>
+    </owl:oneOf>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#CompoundAssertor">
+    <rdfs:label xml:lang="en">Compound Assertor</rdfs:label>
+    <rdfs:comment xml:lang="en">Group of persons or evaluation tools that claim assertions</rdfs:comment>
+    <rdfs:subClassOf rdf:parseType="Collection">
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#mainAssertor"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#mainAssertor">
+    <rdfs:label xml:lang="en">Has Main Assertor</rdfs:label>
+    <rdfs:comment xml:lang="en">Assertor mainly responsible for determining assertion result</rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#CompoundAssertor"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#Assertor"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#helpAssertor">
+    <rdfs:label xml:lang="en">Has Help Assertor</rdfs:label>
+    <rdfs:comment xml:lang="en">Assertor assisting to determine assertion result</rdfs:comment>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#CompoundAssertor"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#Assertor"/>
+  </rdf:Property>
+	
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestSubject">
+    <rdfs:label xml:lang="en">Test Subject</rdfs:label>
+    <rdfs:comment xml:lang="en">Subject of the assertion</rdfs:comment>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestCriterion">
+    <rdfs:label xml:lang="en">Test Criterion</rdfs:label>
+    <rdfs:comment xml:lang="en">A testable statement against which subjects are tested</rdfs:comment>
+  </rdfs:Class> 
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestRequirement">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/earl#TestCriterion"/>
+    <rdfs:label xml:lang="en">Test Requirement</rdfs:label>
+    <rdfs:comment xml:lang="en">A requirement against which subjects are tested</rdfs:comment>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestCase">
+    <rdfs:subClassOf rdf:resource="http://www.w3.org/ns/earl#TestCriterion"/>
+    <rdfs:label xml:lang="en">Test Case</rdfs:label>
+    <rdfs:comment xml:lang="en">A test case against which subjects are tested</rdfs:comment>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestMode">
+    <rdfs:label xml:lang="en">Test Mode</rdfs:label>
+    <rdfs:comment xml:lang="en">Mode in which tests were conducted</rdfs:comment>
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#manual">
+        <rdfs:label xml:lang="en">Manual</rdfs:label>
+        <rdfs:comment xml:lang="en">Test was performed by a human only</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#automatic">
+        <rdfs:label xml:lang="en">Automatic</rdfs:label>
+        <rdfs:comment xml:lang="en">Test was performed by a tool only</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#semiAutomatic">
+        <rdfs:label xml:lang="en">Semi-Automatic</rdfs:label>
+        <rdfs:comment xml:lang="en">Test was performed primarily by a tool, and human assistance</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#notAvailable">
+        <rdfs:label xml:lang="en">Not Available</rdfs:label>
+        <rdfs:comment xml:lang="en">Test was performed by a combination of persons and tools</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#heuristic">
+        <rdfs:label xml:lang="en">Heuristic</rdfs:label>
+        <rdfs:comment xml:lang="en">Result was derived from other results</rdfs:comment>
+      </owl:Thing>
+    </owl:oneOf>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#TestResult">
+    <rdfs:label xml:lang="en">Test Result</rdfs:label>
+    <rdfs:comment xml:lang="en">Result from conducting test cases on subjects</rdfs:comment>
+    <rdfs:subClassOf rdf:parseType="Collection">
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.w3.org/ns/earl#outcome"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+        <owl:maxCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:maxCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#outcome">
+    <rdfs:label xml:lang="en">Has Outcome</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#TestResult"/>
+    <rdfs:range rdf:resource="http://www.w3.org/ns/earl#OutcomeValue"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#pointer">
+    <rdfs:label xml:lang="en">Has Location Pointer</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#TestResult"/>
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#info">
+    <rdfs:label xml:lang="en">Has Additional Information</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#TestResult"/>
+  </rdf:Property>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#OutcomeValue">
+    <rdfs:label xml:lang="en">Outcome Value</rdfs:label>
+    <rdfs:comment xml:lang="en">Nominal value of the result</rdfs:comment>
+    <owl:oneOf rdf:parseType="Collection">
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#pass">
+        <rdfs:label xml:lang="en">Pass</rdfs:label>
+        <rdfs:comment xml:lang="en">Test passed</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#fail">
+        <rdfs:label xml:lang="en">Fail</rdfs:label>
+        <rdfs:comment xml:lang="en">Test failed</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#cannotTell">
+        <rdfs:label xml:lang="en">Can Not Tell</rdfs:label>
+        <rdfs:comment xml:lang="en">Outcome of the test is uncertain</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#notApplicable">
+        <rdfs:label xml:lang="en">Not Applicable</rdfs:label>
+        <rdfs:comment xml:lang="en">Test is not applicable to the subject</rdfs:comment>
+      </owl:Thing>
+      <owl:Thing rdf:about="http://www.w3.org/ns/earl#notTested">
+        <rdfs:label xml:lang="en">Not Tested</rdfs:label>
+        <rdfs:comment xml:lang="en">Test has not been carried out</rdfs:comment>
+      </owl:Thing>
+    </owl:oneOf>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#Software">
+    <rdfs:label xml:lang="en">Software Tool</rdfs:label>
+    <rdfs:comment xml:lang="en">A tool that can perform tests or be the subject of testing</rdfs:comment>
+    <rdfs:subClassOf rdf:parseType="Collection">
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.org/dc/elements/1.1/title"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+
+  <rdfs:Class rdf:about="http://www.w3.org/ns/earl#Content">
+    <rdfs:label xml:lang="en">Content</rdfs:label>
+    <rdfs:comment xml:lang="en">Subjects that are available on the Web</rdfs:comment>
+    <rdfs:subClassOf rdf:parseType="Collection">
+      <owl:Restriction>
+        <owl:onProperty rdf:resource="http://purl.org/dc/elements/1.1/date"/>
+        <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+      </owl:Restriction>
+    </rdfs:subClassOf>
+  </rdfs:Class>
+
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#sourceCopy">
+    <rdfs:label xml:lang="en">Has Copy of Source</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Content"/> 
+  </rdf:Property>
+  <rdf:Property rdf:about="http://www.w3.org/ns/earl#context">
+    <rdfs:label xml:lang="en">Has Context</rdfs:label>
+    <rdfs:domain rdf:resource="http://www.w3.org/ns/earl#Content"/> 
+  </rdf:Property>
+
+</rdf:RDF>

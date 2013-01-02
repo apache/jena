@@ -4,7 +4,7 @@ function syntaxCheck
 {
     FILE="$1"
     echo "Syntax check: $FILE"
-    turtle --sink "$FILE"
+    riot --validate --sink "$FILE"
 }
 
 function proc
@@ -18,7 +18,8 @@ function proc
     shift
     echo "Schemagen: $FILE"
 
-    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java -e N3 "$@" 
+    # -e syntax
+    schemagen --rdfs -i "$FILE" -n "$CLASS" -a "$NS" -o "$CLASS".java  "$@" 
     # Add imports
     echo "package com.hp.hpl.jena.sparql.vocabulary ;" >> "$TMP"
     echo >>"$TMP"
@@ -41,9 +42,9 @@ function proc
 ## proc test-manifest.ttl TestManifest \
 ##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
-syntaxCheck test-manifest-1_1.ttl
-proc test-manifest-1_1.ttl TestManifest_11 \
-    "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
+## syntaxCheck test-manifest-1_1.ttl
+## proc test-manifest-1_1.ttl TestManifest_11 \
+##     "http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#"
 
 ## syntaxCheck test-update.n3
 ## proc test-update.n3 TestManifestUpdate_11 \
@@ -65,8 +66,8 @@ proc test-manifest-1_1.ttl TestManifest_11 \
 
 ##java jena.schemagen -i schema.rdf -o Earl.java -a http://www.w3.org/ns/earl# --inference
 
-## syntaxCheck  EARL.ttl
-## proc EARL.ttl VocabEARL "http://www.w3.org/ns/earl#" --inference
+syntaxCheck  EARL.rdf
+proc EARL.rdf VocabEARL "http://www.w3.org/ns/earl#"
 
 ## syntaxCheck  FOAF.ttl
 ## proc FOAF.ttl FOAF "http://xmlns.com/foaf/0.1/"
