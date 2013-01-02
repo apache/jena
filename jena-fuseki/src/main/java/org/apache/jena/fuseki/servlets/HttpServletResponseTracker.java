@@ -79,6 +79,7 @@ public class HttpServletResponseTracker extends HttpServletResponseWrapper
     }
 
     @Override
+    @Deprecated
     public void setStatus(int sc, String sm)
     {
         statusCode = sc ;

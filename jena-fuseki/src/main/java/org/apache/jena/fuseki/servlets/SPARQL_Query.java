@@ -198,7 +198,6 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
         if ( params != null )
         {
-            @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getParameterNames() ;
             for ( ; en.hasMoreElements() ; )
             {
