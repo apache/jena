@@ -200,3 +200,25 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
+
+- - - - - - - - - - - - - - - - - - - - - - - 
+
+==============================================================
+ Jetty Web Container
+ Copyright 1995-2012 Mort Bay Consulting Pty Ltd.
+==============================================================
+
+The Jetty Web Container is Copyright Mort Bay Consulting Pty Ltd
+unless otherwise noted.
+
+Jetty is dual licensed under both
+
+  * The Apache 2.0 License
+    http://www.apache.org/licenses/LICENSE-2.0.html
+
+      and
+
+  * The Eclipse Public 1.0 License
+    http://www.eclipse.org/legal/epl-v10.html
+
+Jetty may be distributed under either license.
