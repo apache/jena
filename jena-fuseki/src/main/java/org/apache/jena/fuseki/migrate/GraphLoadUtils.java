@@ -73,7 +73,7 @@ public class GraphLoadUtils
         StreamRDF sink = StreamRDFLib.graph(graph) ;
         sink = new SinkRDFLimited(sink, limit) ;
 
-        InputStream input = Fuseki.webFileManager.open(uri) ;
+        InputStream input = Fuseki.webStreamManager.open(uri) ;
         RDFDataMgr.parse(sink, input, uri, lang, null) ;
     }
 }
