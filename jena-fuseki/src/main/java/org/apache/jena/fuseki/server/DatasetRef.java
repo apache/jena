@@ -26,6 +26,7 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 public class DatasetRef
 {
     public String name                          = null ;
+    
     public List<String> queryEP                 = new ArrayList<String>() ;
     public List<String> updateEP                = new ArrayList<String>() ;
     public List<String> uploadEP                = new ArrayList<String>() ;
@@ -33,6 +34,9 @@ public class DatasetRef
     public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
     public DatasetGraph dataset                 = null ;
 
+    //TODO Need to be able to set this from the config file.  
+    public boolean allowDatasetUpdate              = false;
+    
     public boolean allowTimeoutOverride         = false;
     public long maximumTimeoutOverride          = Long.MAX_VALUE;
 }

@@ -120,7 +120,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
-    private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber") ;   // Use the uberservlet (experimental)
+    private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber", "über") ;   // Use the überservlet (experimental)
     
     private static ArgDecl argGSP           = new ArgDecl(ArgDecl.NoValue,  "gsp") ;    // GSP compliance mode
     
@@ -141,19 +141,19 @@ public class FusekiCmd extends CmdARQ
         new FusekiCmd(argv).mainRun() ;
     }
     
-    private int port            = 3030 ;
-    private int mgtPort         = -1 ;
-    private String clientHost   = null;
+    private int port                    = 3030 ;
+    private int mgtPort                 = -1 ;
+    private String clientHost           = null;
 
-    private DatasetGraph dsg ;
-    private String datasetPath ;
-    private boolean allowUpdate = false ;
+    private DatasetGraph dsg            = null ; 
+    private String datasetPath          = null ;
+    private boolean allowUpdate         = false ;
     
-    private String fusekiConfigFile = null ;
-    private boolean enableCompression = true ;
-    private String jettyConfigFile = null ;
-    private String homeDir = null ;
-    private String pagesDir ;
+    private String fusekiConfigFile     = null ;
+    private boolean enableCompression   = true ;
+    private String jettyConfigFile      = null ;
+    private String homeDir              = null ;
+    private String pagesDir             = null ;
     
     public FusekiCmd(String...argv)
     {
@@ -182,7 +182,7 @@ public class FusekiCmd extends CmdARQ
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
         
         add(argUber) ;
-        add(argGSP) ;
+        //add(argGSP) ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -372,7 +372,7 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argGSP) )
         {
             SPARQLServer.überServlet = true ;
-            Fuseki.graphStoreProtocolMode = true ;
+            Fuseki.graphStoreProtocolPostCreate = true ;
         }
 
     }

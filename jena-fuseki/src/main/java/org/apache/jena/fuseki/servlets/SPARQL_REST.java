@@ -205,7 +205,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     private void dispatch(HttpActionREST action)
     {
-     HttpServletRequest req = action.request ;
+        HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
         String method = req.getMethod().toUpperCase() ;
 
