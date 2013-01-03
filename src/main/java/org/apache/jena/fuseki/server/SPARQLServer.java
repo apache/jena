@@ -215,7 +215,8 @@ public class SPARQLServer
     // The überservlet sits on the dataset name and handles all requests.
     // Includes direct naming and quad access to the dataset.
     public static boolean überServlet = false ;
-
+    private static List<String> ListOfEmptyString = Arrays.asList("") ;
+    
     private void configureOneDataset(ServletContextHandler context, DatasetRef sDesc, boolean enableCompression)
     {
         String datasetPath = sDesc.name ;
@@ -246,14 +247,14 @@ public class SPARQLServer
             addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ;    // No point - no results of any size.
             addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
             addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
-            List<String> x = Arrays.asList("") ;
-            addServlet(context, datasetPath, sparqlDataset, x, enableCompression) ;
+            // This adds direct operations on the dataset itself. 
+            //addServlet(context, datasetPath, sparqlDataset, ListOfEmptyString, enableCompression) ;
         }
         else
         {
             // This is the servlet that analyses requests and dispatches them to the appropriate servlet.
             //    SPARQL Query, SPARQL Update -- handles dataset?query=  dataset?update=
-            //    Graph Store Protocol (direct and indirect naming).
+            //    Graph Store Protocol (direct and indirect naming) if enabled.
             //    GET/PUT/POST on the dataset itself.
             // It also checks for a request that looks like a service request and passes it
             // on to the service (this takes precedence over direct naming).
