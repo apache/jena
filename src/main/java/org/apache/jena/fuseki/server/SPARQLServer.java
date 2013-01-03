@@ -246,6 +246,8 @@ public class SPARQLServer
             addServlet(context, datasetPath, sparqlUpload,  sDesc.uploadEP,   false) ;    // No point - no results of any size.
             addServlet(context, datasetPath, sparqlHttpR,   sDesc.readGraphStoreEP,       enableCompression) ;
             addServlet(context, datasetPath, sparqlHttpRW,  sDesc.readWriteGraphStoreEP,  enableCompression) ;
+            List<String> x = Arrays.asList("") ;
+            addServlet(context, datasetPath, sparqlDataset, x, enableCompression) ;
         }
         else
         {

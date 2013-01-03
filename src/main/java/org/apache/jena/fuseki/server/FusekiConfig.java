@@ -97,6 +97,7 @@ public class FusekiConfig
             sDesc.updateEP.add(HttpNames.ServiceUpdate) ;
             sDesc.uploadEP.add(HttpNames.ServiceUpload) ;
             sDesc.readWriteGraphStoreEP.add(HttpNames.ServiceData) ;
+            sDesc.allowDatasetUpdate = true ;
         }
         else
             sDesc.readGraphStoreEP.add(HttpNames.ServiceData) ;
