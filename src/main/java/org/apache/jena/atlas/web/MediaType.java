@@ -92,6 +92,8 @@ public class MediaType
     
     public static MediaType create(String string)
     {
+        if ( string == null )
+            return null ;
         return new MediaType(parse(string)) ;
     }
     
