@@ -44,7 +44,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  *  a ParserOutput (triples or quads as appropriate).
  *  Operations to send to a sink (special case of a ParserOutput).
  *  @see RDFDataMgr for reading from a location, including web access and content negotation.
- *  @depreacted Use {@link org.apache.jena.riot.RiotReader}
+ *  @deprecated Use {@link org.apache.jena.riot.RiotReader}
  */
 
 @Deprecated

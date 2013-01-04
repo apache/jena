@@ -29,28 +29,28 @@ import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 @Deprecated
 public class WebReader
 {
-    /** @depreated Use org.apache.jena.riot.WebReader.read */
+    /** @deprecated Use org.apache.jena.riot.WebReader.read */
     @Deprecated
     public static void readGraph(Graph graph, String uri)
     {
         org.apache.jena.riot.RDFDataMgr.read(graph, uri) ;
     }
     
-    /** @depreated Use org.apache.jena.riot.WebReader.read */
+    /** @deprecated Use org.apache.jena.riot.WebReader.read */
     @Deprecated
     public static void readGraph(Graph graph, String uri, Lang lang)
     {
         org.apache.jena.riot.RDFDataMgr.read(graph, uri, lang) ;
     }
     
-    /** @depreated Use org.apache.jena.riot.WebReader.read */
+    /** @deprecated Use org.apache.jena.riot.WebReader.read */
     @Deprecated
     public static void readDataset(DatasetGraph dataset, String uri)
     {
         org.apache.jena.riot.RDFDataMgr.read(dataset, uri) ;
     }
     
-    /** @depreated Use org.apache.jena.riot.WebReader.read */
+    /** @deprecated Use org.apache.jena.riot.WebReader.read */
     @Deprecated
     public static void readDataset(DatasetGraph dataset, String uri, Lang lang)
     {
