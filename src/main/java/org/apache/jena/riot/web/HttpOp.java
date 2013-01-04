@@ -241,7 +241,7 @@ public class HttpOp
     {
         try {
             long id = counter.incrementAndGet() ;
-            String requestURI = determineBaseIRI(url) ;
+            String requestURI = determineRequestURI(url) ;
             String baseIRI = determineBaseIRI(requestURI) ;
             
             HttpPost httppost = new HttpPost(requestURI);
