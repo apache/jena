@@ -34,7 +34,6 @@ public class DynamicDatasets
 {
     /** Given a Dataset and a query, form a Dataset that 
      * is the dynamic dataset from the query.
-     * Returns the original Dataset if the query has no dataset description.
      */ 
     public static Dataset dynamicDataset(DatasetDescription description, Dataset ds, boolean defaultUnionGraph)
     {
