@@ -20,7 +20,6 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -40,7 +39,7 @@ public class StreamRDFLib
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
     /** 
-     * Outpout to a sink; prefix and base handled only within the parser.
+     * Output to a sink; prefix and base handled only within the parser.
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
@@ -136,7 +135,11 @@ public class StreamRDFLib
             else
             {
                 if ( ! warningIssued )
-                    SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                {
+                    //SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                    // Not ideal - assumes the global default.
+                    ErrorHandlerFactory.getDefaultErrorHandler().warning("Only triples or default graph data expected : named graph data ignored", -1, -1) ;
+                }
                 warningIssued = true ;
             }
             //throw new IllegalStateException("Quad passed to graph parsing") ;
