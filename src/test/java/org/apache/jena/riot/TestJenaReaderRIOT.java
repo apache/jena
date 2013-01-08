@@ -170,9 +170,7 @@ public class TestJenaReaderRIOT extends BaseTest
         m2.read(new StringReader(x), "http://example/base4", lang) ;
     }
 
-    // Web.
-    // TriG
-    // NQ
+    // See also TestDataRead
     
     private static void jenaread(String dataurl)
     {
