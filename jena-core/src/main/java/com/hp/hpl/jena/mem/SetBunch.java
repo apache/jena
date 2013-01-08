@@ -18,15 +18,14 @@
 
 package com.hp.hpl.jena.mem;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.HashSet ;
+import java.util.Iterator ;
+import java.util.Set ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.StageElement;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 public class SetBunch implements TripleBunch
     {
@@ -82,11 +81,4 @@ public class SetBunch implements TripleBunch
     public ExtendedIterator<Triple> iterator()
         { return WrappedIterator.create( elements.iterator() ); }        
     
-    @Override
-    public void app( Domain d, StageElement next, MatchOrBind s )
-        {
-        Iterator<Triple> it = iterator();
-        while (it.hasNext())
-            if (s.matches( it.next() )) next.run( d );
-        }
     }

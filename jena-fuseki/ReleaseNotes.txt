@@ -1,5 +1,10 @@
 ==== Fuseki
 
+== Fuseki 0.2.6
+
++ Upgrade to Jetty 8.1.8.v20121106
++ Uses Jena 2.10.0.
+
 == Fuseki 0.2.5
 
 + JENA-334 - Fix for Fuseki start script fails when invoked with full pathname

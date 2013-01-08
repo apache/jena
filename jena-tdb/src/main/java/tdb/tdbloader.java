@@ -20,7 +20,8 @@ package tdb;
 
 import java.util.List ;
 
-import org.openjena.riot.Lang ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import tdb.cmdline.CmdTDB ;
 import tdb.cmdline.CmdTDBGraph ;
 import tdb.cmdline.ModModel ;
@@ -103,8 +104,8 @@ public class tdbloader extends CmdTDBGraph
         boolean allTriples = true ;
         for ( String url : urls )
         {
-            Lang lang = Lang.guess(url, Lang.NQUADS) ;
-            if ( lang != null && lang.isQuads() )
+            Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
+            if ( lang != null && RDFLanguages.isQuads(lang) )
             {
                 allTriples = false ;
                 break ; 
@@ -128,11 +129,11 @@ public class tdbloader extends CmdTDBGraph
         {
             for ( String url : urls )
             {
-                Lang lang = Lang.guess(url, Lang.NQUADS) ;
+                Lang lang = RDFLanguages.filenameToLang(url, RDFLanguages.NQUADS) ;
                 if ( lang == null )
                     // Does not happen due to default above.
                     cmdError("File suffix not recognized: " +url) ;
-                if ( lang != null && ! lang.isTriples() )
+                if ( lang != null && ! RDFLanguages.isTriples(lang) )
                     cmdError("Can only load triples into a named model: "+url) ;
             }
             cmdError("Internal error: deteched quad input but can't find it again") ;

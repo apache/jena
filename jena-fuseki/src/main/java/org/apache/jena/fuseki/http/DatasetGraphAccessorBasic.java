@@ -20,6 +20,7 @@ package org.apache.jena.fuseki.http;
 
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
@@ -113,12 +114,12 @@ public class DatasetGraphAccessorBasic implements DatasetGraphAccessor
     private void clearGraph(Graph graph)
     {
         if ( ! graph.isEmpty() )
-            graph.getBulkUpdateHandler().removeAll() ;
+            graph.clear() ;
     }
 
     private void mergeGraph(Graph graph, Graph data)
     {
-        graph.getBulkUpdateHandler().add(data) ;
+        GraphUtil.addInto(graph, data) ;
     }
 
 }

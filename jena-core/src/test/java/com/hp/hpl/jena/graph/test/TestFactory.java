@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.graph.test;
 
-/**
- 	@author kers
-*/
-
 import com.hp.hpl.jena.graph.*;
 
 import junit.framework.*;

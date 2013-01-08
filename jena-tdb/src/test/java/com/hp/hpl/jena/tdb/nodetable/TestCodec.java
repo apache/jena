@@ -55,7 +55,6 @@ public class TestCodec extends BaseTest
                                         ) ;                                        
     }
 
-
     private Nodec nodec ;
     
     public TestCodec(Nodec nodec) { this.nodec = nodec ; }

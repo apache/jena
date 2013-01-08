@@ -85,7 +85,7 @@ public class RecordingListener implements GraphListener
         { history.clear(); }
 
     public boolean has( List<Object> things )
-        { return history.equals( things ); } 
+        { return Arrays.deepEquals(history.toArray(), things.toArray() ); } 
     
     public boolean hasStart( List<Object> L )
         { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
@@ -94,7 +94,7 @@ public class RecordingListener implements GraphListener
         { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
     
     public boolean has( Object [] things )
-        { return has( Arrays.asList( things ) ); } 
+        { return Arrays.deepEquals(history.toArray(), things ); } 
         
     public void assertHas( List<Object> things )
         { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }  

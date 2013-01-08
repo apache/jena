@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.mem.GraphMem ;
-import com.hp.hpl.jena.shared.*;
 
 /**
     A factory class for creating Graphs.
@@ -35,19 +34,10 @@ public class Factory
         Answer a memory-based Graph with the Standard reification style.
     */
     public static Graph createDefaultGraph()
-        { return createDefaultGraph( ReificationStyle.Standard ); }
-        
-    /**
-        Answer a memory-based Graph with the given reification style.
-    */
-    public static Graph createDefaultGraph( ReificationStyle style )
-        { return Factory.createGraphMem( style ); }
+        { return Factory.createGraphMem( ); }
               
     public static Graph createGraphMem()
         { return new GraphMem(); }
-
-    public static Graph createGraphMem( ReificationStyle style )
-        { return new GraphMem( style ); }
 
     public static Graph createGraphMemWithTransactionHandler( final TransactionHandler th )
         {

@@ -22,7 +22,6 @@ import static com.hp.hpl.jena.sparql.util.Utils.nowAsString ;
 
 import java.io.FileNotFoundException ;
 import java.io.FileOutputStream ;
-import java.io.InputStream ;
 import java.io.OutputStream ;
 import java.util.Arrays ;
 import java.util.List ;
@@ -31,11 +30,11 @@ import org.apache.jena.atlas.AtlasException ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
 import org.apache.jena.atlas.lib.Lib ;
-import org.apache.jena.atlas.lib.Sink ;
+import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.atlas.logging.Log ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.system.SinkExtendTriplesToQuads ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
 import org.slf4j.Logger ;
 import tdb.cmdline.CmdTDB ;
 import arq.cmd.CmdException ;
@@ -47,6 +46,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
@@ -56,6 +56,7 @@ import com.hp.hpl.jena.tdb.solver.stats.StatsCollectorNodeId ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
 import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
+import com.hp.hpl.jena.tdb.store.bulkloader.BulkStreamRDF ;
 
 /** Build node table - write triples/quads as text file */
 public class CmdNodeTableBuilder extends CmdGeneral
@@ -119,7 +120,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
 
         for( String filename : datafiles)
         {
-            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
+            Lang lang = RDFLanguages.filenameToLang(filename, RDFLanguages.NQUADS) ;
             if ( lang == null )
                 // Does not happen due to default above.
                 cmdError("File suffix not recognized: " +filename) ;
@@ -152,22 +153,15 @@ public class CmdNodeTableBuilder extends CmdGeneral
         catch (FileNotFoundException e) { throw new AtlasException(e) ; }
         
         NodeTableBuilder sink = new NodeTableBuilder(dsg, monitor, outputTriples, outputQuads) ; 
-        Sink<Triple> sink2 = new SinkExtendTriplesToQuads(sink) ;
-        
         monitor.start() ;
+        sink.startBulk() ;
         for( String filename : datafiles)
         {
             if ( datafiles.size() > 0 )
                 cmdLog.info("Load: "+filename+" -- "+Utils.nowAsString()) ;
-            
-            InputStream in = IO.openFile(filename) ;
-            Lang lang = Lang.guess(filename, Lang.NQUADS) ;
-            if ( lang.isTriples() )
-                RiotLoader.readTriples(in, lang, null, sink2) ;
-            else
-                RiotLoader.readQuads(in, lang, null, sink) ;
+            RiotReader.parse(filename, sink) ;
         }
-        sink.close() ;
+        sink.finishBulk() ;
         IO.close(outputTriples) ;
         IO.close(outputQuads) ;
         
@@ -187,7 +181,7 @@ public class CmdNodeTableBuilder extends CmdGeneral
         cmdLog.info(str) ;
     }
 
-    static class NodeTableBuilder implements Sink<Quad>
+    static class NodeTableBuilder implements BulkStreamRDF
     {
         private DatasetGraphTDB dsg ;
         private NodeTable nodeTable ;
@@ -208,7 +202,36 @@ public class CmdNodeTableBuilder extends CmdGeneral
         }
         
         @Override
-        public void send(Quad quad)
+        public void startBulk()
+        {}
+
+        @Override
+        public void start()
+        {}
+
+        @Override
+        public void finish()
+        {}
+
+        @Override
+        public void finishBulk()
+        {
+            writerTriples.flush() ;
+            writerQuads.flush() ;
+            nodeTable.sync() ;
+        }
+            
+        @Override
+        public void triple(Triple triple)
+        {
+            Node s = triple.getSubject() ;
+            Node p = triple.getPredicate() ;
+            Node o = triple.getObject() ;
+            process(Quad.tripleInQuad,s,p,o);
+        }
+
+        @Override
+        public void quad(Quad quad)
         {
             Node s = quad.getSubject() ;
             Node p = quad.getPredicate() ;
@@ -217,7 +240,12 @@ public class CmdNodeTableBuilder extends CmdGeneral
             // Union graph?!
             if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
                 g = quad.getGraph() ;
-            
+            process(g,s,p,o);
+        }
+
+       
+        private void process(Node g, Node s, Node p, Node o)
+        {
             NodeId sId = nodeTable.getAllocateNodeId(s) ; 
             NodeId pId = nodeTable.getAllocateNodeId(p) ;
             NodeId oId = nodeTable.getAllocateNodeId(o) ;
@@ -243,19 +271,19 @@ public class CmdNodeTableBuilder extends CmdGeneral
             monitor.tick() ;
         }
 
-        @Override
-        public void flush()
-        {
-            writerTriples.flush() ;
-            writerQuads.flush() ;
-            nodeTable.sync() ;
-        }
+        public StatsCollectorNodeId getCollector() { return stats ; }
 
         @Override
-        public void close()
-        { flush() ; }
-        
-        public StatsCollectorNodeId getCollector() { return stats ; }
+        public void tuple(Tuple<Node> tuple)
+        { throw new TDBException("Unexpected: tuple in bulk load (expected quads or triples)") ; }
+
+        @Override
+        public void base(String base)
+        {}
+
+        @Override
+        public void prefix(String prefix, String iri)
+        {}
     }
 
     @Override

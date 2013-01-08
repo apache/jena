@@ -22,8 +22,6 @@ package com.hp.hpl.jena.graph;
     Interface for triple matching; may become obsolete. <i>do not assume this is
     stable</i>. Triple matches are defined by subject, predicate, and object, and
     may be converted to triples [which in fact subsume the work of TripleMatch].
-    
-    @author Jeremy Carroll
 */
 public interface TripleMatch {
     

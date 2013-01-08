@@ -23,19 +23,18 @@ import static com.hp.hpl.jena.sparql.core.Quad.isUnionGraph ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
-import com.hp.hpl.jena.sparql.graph.Reifier2 ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
-import com.hp.hpl.jena.tdb.graph.QueryHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
+import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
@@ -43,8 +42,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
 public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
 {
-    @SuppressWarnings("hiding")
-    private final QueryHandlerTDB queryHandler = new QueryHandlerTDB(this) ;
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
     protected final DatasetGraphTDB dataset ;
@@ -134,12 +131,6 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         return WrappedIterator.createNoRemove(iterTriples) ;
     }
     
-    @Override
-    protected Reifier constructReifier()
-    {
-        return new Reifier2(this) ;
-    }
-    
     protected abstract Logger getLog() ;
     
     /** Iterator over something that, when counted, is the graph size. */
@@ -184,6 +175,7 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
         public void remove() { iter.remove(); }
     }
     
+    @Deprecated
     @Override
     public BulkUpdateHandler getBulkUpdateHandler() { return bulkUpdateHandler ; }
 
@@ -216,10 +208,74 @@ public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
     }
     
     @Override
-    public QueryHandler queryHandler()
-    { return queryHandler ; }
-    
-    @Override
     public TransactionHandler getTransactionHandler()
     { return transactionHandler ; }
+
+    @Override
+    public void clear()
+    {
+        removeWorker(this, Node.ANY, Node.ANY, Node.ANY) ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
+    }
+
+    @Override
+    public void remove( Node s, Node p, Node o )
+    {
+        removeWorker(this, s, p, o) ;
+        getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+    }
+
+    
+    private static final int sliceSize = 1000 ;
+
+    public static void removeWorker(GraphTDBBase g, Node s, Node p, Node o)
+    {
+        g.startUpdate() ;
+        
+        // Delete in batches.
+        // That way, there is no active iterator when a delete 
+        // from the indexes happens.
+        
+        NodeTupleTable t = g.getNodeTupleTable() ;
+        Node gn = g.getGraphNode() ;
+        
+        @SuppressWarnings("unchecked")
+        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
+        
+        while (true)
+        {
+            // Convert/cache s,p,o?
+            // The Node Cache will catch these so don't worry unduely. 
+            Iterator<Tuple<NodeId>> iter = null ;
+            if ( gn == null )
+                iter = t.findAsNodeIds(s, p, o) ;
+            else
+                iter = t.findAsNodeIds(gn, s, p, o) ;
+            
+            if ( iter == null )
+                // Finished?
+                return ;
+            
+            // Get a slice
+            int len = 0 ;
+            for ( ; len < sliceSize ; len++ )
+            {
+                if ( !iter.hasNext() ) break ;
+                array[len] = iter.next() ;
+            }
+            
+            // Delete them.
+            for ( int i = 0 ; i < len ; i++ )
+            {
+                t.getTupleTable().delete(array[i]) ;
+                array[i] = null ;
+            }
+            // Finished?
+            if ( len < sliceSize )
+                break ;
+        }
+        
+        g.finishUpdate() ;
+    }
+
 }

@@ -155,7 +155,6 @@ public class DumpServlet extends HttpServlet
             
             {
                 // To do: create a string for the output so can send to console and return it.
-                @SuppressWarnings("unchecked")
                 Enumeration<String> en = req.getHeaderNames() ;
 
                 for ( ; en.hasMoreElements() ; )
@@ -166,7 +165,6 @@ public class DumpServlet extends HttpServlet
                 }
             }
             
-            @SuppressWarnings("unchecked")
             Enumeration<String> en2 = req.getAttributeNames() ;
             if ( en2.hasMoreElements() )
                 pw.println();
@@ -196,7 +194,6 @@ public class DumpServlet extends HttpServlet
 //                for ( String value : map.get(name) )
 //                    pw.println("Param: "+name + " = " + value) ;
             
-            @SuppressWarnings("unchecked")
             Enumeration<Locale> en = req.getLocales() ;
             if ( en.hasMoreElements() )
                 pw.println();
@@ -282,7 +279,6 @@ the value has
         pw.println("serverInfo:  '"+sc.getServerInfo()+"'");
 
         {
-            @SuppressWarnings("unchecked")
             Enumeration<String> en = sc.getInitParameterNames();
             if (en != null) {
                 pw.println("initParameters: ");
@@ -295,7 +291,6 @@ the value has
         }
         
         {
-            @SuppressWarnings("unchecked")
             Enumeration<String> en = sc.getAttributeNames();
             if (en != null) {
                 pw.println("attributes: ");

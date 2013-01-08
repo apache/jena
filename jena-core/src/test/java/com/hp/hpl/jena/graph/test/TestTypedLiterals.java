@@ -41,8 +41,6 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory ;
-import com.hp.hpl.jena.graph.query.Domain ;
-import com.hp.hpl.jena.graph.query.GraphQuery ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.impl.JenaParameters ;
 import com.hp.hpl.jena.vocabulary.XSD ;
@@ -754,30 +752,6 @@ public class TestTypedLiterals extends TestCase {
         assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
     }
       
-    /**
-     * Test query applied to graphs containing typed values
-     */
-    public void testTypedQueries() {
-        Model model = ModelFactory.createDefaultModel();
-        Property p = model.createProperty("urn:x-eg/p");
-        Literal l1 = model.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
-        Literal l2 = model.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
-        assertSameValueAs("sameas test", l1, l2);
-        Resource a = model.createResource("urn:x-eg/a");
-        a.addProperty(p, l1);
-        assertTrue(model.getGraph().find(null, p.asNode(), l1.asNode()).hasNext());
-        assertTrue(model.getGraph().find(null, p.asNode(), l2.asNode()).hasNext());
-        assertTrue(model.getGraph().find(a.asNode(), p.asNode(), l2.asNode()).hasNext());
-        assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
-        GraphQuery q = new GraphQuery();
-        q.addMatch(a.asNode(), p.asNode(), l2.asNode());
-        Iterator<Domain> qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
-        assertTrue(qi.hasNext());
-        // Similar tests at Model API level
-        // Selector s1 = new SimpleSelector(a, p, l2);
-        assertTrue(model.listStatements( a, p, l2 ).hasNext());
-    }
-    
     /**
      * Test the isValidLiteral machinery
      */

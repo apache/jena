@@ -65,16 +65,15 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         we can get a ReifiedStatement that represents the reified statement.
     */ 
     public void testBasicReification()
-        {
-        if (model.getReificationStyle() != ModelFactory.Minimal) 
-            { Resource R = model.createResource( aURI );
-            model.add( R, RDF.type, RDF.Statement );
-            model.add( R, RDF.subject, S );
-            model.add( R, RDF.predicate, P );
-            model.add( R, RDF.object, O );
-            RDFNode rs = R.as( ReifiedStatement.class );
-            assertEquals( "can recover statement", SPO, ((ReifiedStatement) rs).getStatement() ); }
-        }    
+    {
+        Resource R = model.createResource(aURI) ;
+        model.add(R, RDF.type, RDF.Statement) ;
+        model.add(R, RDF.subject, S) ;
+        model.add(R, RDF.predicate, P) ;
+        model.add(R, RDF.object, O) ;
+        RDFNode rs = R.as(ReifiedStatement.class) ;
+        assertEquals("can recover statement", SPO, ((ReifiedStatement)rs).getStatement()) ;
+    }            
         
     /**
         check that, from a model with any combination of the statements given,
@@ -98,8 +97,7 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
                 { model.createStatement( SS, RDF.object, O ), new Integer(256) },
                 { model.createStatement( SS, RDF.type, RDF.Statement ), new Integer(512) }
             };
-        if (model.getReificationStyle() != ModelFactory.Minimal)
-            testCombinations( model, RR, 0, statements, statements.length );
+        testCombinations( model, RR, 0, statements, statements.length );
         }
 
     /**
@@ -118,6 +116,10 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
                 // System.err.println( "| hello. mask = " + mask );
                 ReifiedStatement rs = R.as( ReifiedStatement.class );
                 // System.err.println( "+  we constructed " + rs );
+                
+                if ( (mask & 15) != 15 )
+                    m.write(System.out, "TTL") ;
+                
                 assertTrue( "should not reify: not all components present [" + mask + "]: " + rs, (mask & 15) == 15 );
                 // System.err.println( "+  and we passed the assertion." );
                 }

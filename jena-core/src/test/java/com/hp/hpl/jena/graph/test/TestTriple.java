@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.graph.test;
 
-/**
-	@author bwm out of kers, then kers updates
-*/
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.graph.impl.LiteralLabelFactory;

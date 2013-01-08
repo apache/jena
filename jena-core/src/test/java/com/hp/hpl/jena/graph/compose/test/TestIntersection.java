@@ -23,6 +23,7 @@ import com.hp.hpl.jena.graph.compose.Intersection;
 import com.hp.hpl.jena.graph.test.*;
 import junit.framework.*;
 
+@SuppressWarnings("deprecation")
 public class TestIntersection extends GraphTestBase 
 	{
 	public TestIntersection( String name )
@@ -51,7 +52,7 @@ public class TestIntersection extends GraphTestBase
     	Graph L = graphWith( "a pings b; b pings c; c pings a" );
     	Graph R = graphWith( "c pings a; b pings c; x captures y" );
     	Graph join = new Intersection( L, R );
-        L.getBulkUpdateHandler().delete( join );
+    	GraphUtil.deleteFrom(L, R) ;
         assertIsomorphic( "R should not change", graphWith( "c pings a; b pings c; x captures y" ), R );
         assertIsomorphic( graphWith( "a pings b" ), L );
 		}

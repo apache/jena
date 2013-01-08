@@ -53,6 +53,7 @@ riotcmd.turtle
 riotcmd.trig
 riotcmd.infer
 riotcmd.utf8
+riotcmd.rdfxml
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader
@@ -88,4 +89,4 @@ do
 done
 
 ## Specials
-cp ../jena-tdb/bin/tdbloader2 bin
+cp ../jena-tdb/bin/tdbloader2 bin/tdbloader2worker

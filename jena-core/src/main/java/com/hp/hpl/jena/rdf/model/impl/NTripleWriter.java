@@ -59,10 +59,9 @@ public class NTripleWriter extends Object implements RDFWriter {
         }
     }
     @Override
-    public void write(Model baseModel, Writer writer, String base)
+    public void write(Model model, Writer writer, String base)
          {
         try {
-            Model model = ModelFactory.withHiddenStatements(baseModel);
             PrintWriter pw;
             if (writer instanceof PrintWriter) {
                 pw = (PrintWriter) writer;

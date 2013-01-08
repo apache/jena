@@ -66,7 +66,7 @@ public class LiteralImpl extends EnhNode implements Literal {
         {
         return getModel() == m 
             ? this 
-            : (Literal) ((ModelCom) m).getRDFNode( asNode() )
+            : (Literal) m.getRDFNode( asNode() )
             ;
          }
     

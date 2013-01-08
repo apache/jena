@@ -38,22 +38,23 @@ import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
-import org.openjena.riot.* ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
-import org.openjena.riot.system.IRIResolver ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -204,7 +205,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
 
     private void dispatch(HttpActionREST action)
     {
-     HttpServletRequest req = action.request ;
+        HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
         String method = req.getMethod().toUpperCase() ;
 
@@ -243,7 +244,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     protected static void deleteGraph(HttpActionREST action)
     {
         if ( action.getTarget().isDefault )
-            action.getTarget().graph().getBulkUpdateHandler().removeAll() ;
+            action.getTarget().graph().clear() ;
         else
             action.getActiveDSG().removeGraph(action.getTarget().graphName) ;
     }
@@ -253,7 +254,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( ! target.isGraphSet() )
         {
             Graph g = target.graph() ;
-            g.getBulkUpdateHandler().removeAll() ;
+            g.clear() ;
         }
     }
 
@@ -272,7 +273,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
                 g = GraphFactory.createDefaultGraph() ;
                 dest.dsg.addGraph(dest.graphName, g) ;
             }
-            g.getBulkUpdateHandler().add(data) ;
+            GraphUtil.addInto(g, data) ;
         } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
@@ -357,16 +358,13 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     private static DatasetGraph parse(HttpActionREST action, Lang lang, String base, InputStream input)
     {
         Graph graphTmp = GraphFactory.createGraphMem() ;
-        Sink<Triple> sink = new SinkTriplesToGraph(graphTmp) ;
-        LangRIOT parser = RiotReader.createParserTriples(input, lang, base, sink) ;
-        parser.getProfile().setHandler(errorHandler) ;
-        try {
-            parser.parse() ;
-        } 
-        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
-        finally { sink.close() ; }
-        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
         
+        StreamRDF dest = StreamRDFLib.graph(graphTmp) ;
+        LangRIOT parser = RiotReader.createParser(input, lang, base, dest) ;
+        parser.getProfile().setHandler(errorHandler) ;
+        try { parser.parse() ; } 
+        catch (RiotException ex) { errorBadRequest("Parse error: "+ex.getMessage()) ; }
+        DatasetGraph dsgTmp = DatasetGraphFactory.create(graphTmp) ;
         return dsgTmp ;
     }
     
@@ -395,7 +393,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         if ( x2 > 1 )
             errorBadRequest("Multiple ?graph in the query string of the request") ;
         
-        @SuppressWarnings("unchecked")
         Enumeration<String> en = request.getParameterNames() ;
         for ( ; en.hasMoreElements() ; )
         {

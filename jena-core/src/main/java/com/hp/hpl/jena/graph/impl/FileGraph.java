@@ -43,11 +43,8 @@ public class FileGraph extends GraphMem
             public void notifyClosed( File f ) {} };
         }
 
-    /**
-        See FileGraph( f, create, strict, Reifier.ReificationStyle ).
-    */
     public FileGraph( File f, boolean create, boolean strict )
-        { this( NotifyOnClose.ignore, f, create, strict, ReificationStyle.Minimal ); }
+        { this( NotifyOnClose.ignore, f, create, strict ); }
     
     /**
         The File-name of this graph, used to name it in the filing system 
@@ -79,8 +76,8 @@ public class FileGraph extends GraphMem
         @param strict true to throw exceptions for create: existing, open: not found
         @param style the reification style for the graph
     */
-    public FileGraph( NotifyOnClose notify, File f, boolean create, boolean strict, ReificationStyle style )
-        { this( notify, f, FileUtils.guessLang( f.toString() ), create, strict, style ); }
+    public FileGraph( NotifyOnClose notify, File f, boolean create, boolean strict )
+        { this( notify, f, FileUtils.guessLang( f.toString() ), create, strict ); }
 
     /**
         Construct a new FileGraph who's name is given by the specified File,
@@ -94,9 +91,8 @@ public class FileGraph extends GraphMem
         @param strict true to throw exceptions for create: existing, open: not found
         @param style the reification style for the graph
     */
-    public FileGraph( NotifyOnClose notify, File f, String lang, boolean create, boolean strict, ReificationStyle style )
+    public FileGraph( NotifyOnClose notify, File f, String lang, boolean create, boolean strict )
         {
-        super( style );
         this.name = f;
         this.notify = notify;
         this.model = new ModelCom( this );

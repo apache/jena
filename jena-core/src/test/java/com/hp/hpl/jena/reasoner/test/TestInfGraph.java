@@ -18,13 +18,12 @@
 
 package com.hp.hpl.jena.reasoner.test;
 
-import junit.framework.*;
+import junit.framework.TestSuite ;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.test.AbstractTestGraph;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.BasicFBReifier;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
 
 /**
      Needs extending; relys on knowing that the only InfGraph currently used is
@@ -54,12 +53,6 @@ public class TestInfGraph extends AbstractTestGraph
         {
         InfGraph ig = getInfGraph();
         assertSame( ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
-        }
-    
-    public void testInfReification()
-        {
-        InfGraph ig = getInfGraph();
-        assertInstanceOf( BasicFBReifier.class, ig.getReifier() );
         }
     
     /**

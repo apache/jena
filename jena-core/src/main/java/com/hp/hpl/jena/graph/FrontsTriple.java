@@ -21,8 +21,6 @@ package com.hp.hpl.jena.graph;
 /**
  	FrontsTriple (see also FrontsNode) is an interface for things that can
  	be seen as wrappers round triples.
- 	
- 	@author hedgehog
 */
 public interface FrontsTriple
 	{

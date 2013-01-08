@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest ;
 
 import org.apache.jena.atlas.lib.InternalErrorException ;
 import org.apache.jena.fuseki.migrate.GraphLoadUtils ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.RiotException ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;

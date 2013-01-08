@@ -33,7 +33,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
     Nodes are only constructed by the node factory methods, and they will
     attempt to re-use existing nodes with the same label if they are recent
     enough.    
-    @author Jeremy Carroll and Chris Dollin
 */
 
 public abstract class Node {

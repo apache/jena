@@ -110,7 +110,4 @@ public class UpdateHandlerSDB extends SimpleBulkUpdateHandler {
 		try { ((GraphSDB) graph).startBulkUpdate(); ((GraphSDB) graph).deleteAll(); }
 		finally { ((GraphSDB) graph).finishBulkUpdate(); }
 	}
-	
-	
-	
 }

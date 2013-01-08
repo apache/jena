@@ -20,8 +20,8 @@ package org.apache.jena.larq;
 
 import java.util.Iterator;
 
-import org.openjena.atlas.iterator.IteratorTruncate;
-import org.openjena.atlas.logging.Log;
+import org.apache.jena.atlas.iterator.IteratorTruncate;
+import org.apache.jena.atlas.logging.Log;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Node;
@@ -235,6 +235,7 @@ public abstract class LuceneSearch extends PropertyFunctionEval
             this.score = score ;
         }
         
+        @Override
         public Binding map1(HitLARQ hit)
         {
             BindingMap b = BindingFactory.create(binding) ;

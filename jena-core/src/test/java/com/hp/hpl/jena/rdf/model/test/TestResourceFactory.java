@@ -68,6 +68,15 @@ public class TestResourceFactory extends TestCase {
         assertNull(l.getDatatypeURI()) ;
     }
     
+    public void testCreateLangLiteral()
+    {
+        Literal l = ResourceFactory.createLangLiteral("lex", "en") ;
+        assertTrue(l.getLexicalForm().equals("lex")) ;
+        assertTrue(l.getLanguage().equals("en")) ;
+        assertNull(l.getDatatype()) ;
+        assertNull(l.getDatatypeURI()) ;
+    }
+    
     public void testCreateTypedLiteral()
     {
         Literal l = ResourceFactory.createTypedLiteral("22", XSDDatatype.XSDinteger) ;
@@ -115,14 +124,17 @@ public class TestResourceFactory extends TestCase {
         assertTrue(!r1.equals(r2));
     }
 
-    public void testSetInstance() {
-        Resource r = ResourceFactory.createResource();
-        ResourceFactory.Interface factory = new TestFactory(r);
-        ResourceFactory.setInstance(factory);
-        assertTrue(factory.equals(ResourceFactory.getInstance()));
-        assertTrue(ResourceFactory.createResource() == r);
+    public void testSetInstance()
+    {
+        ResourceFactory.Interface original = ResourceFactory.getInstance() ;
+        try {
+            Resource r = ResourceFactory.createResource() ;
+            ResourceFactory.Interface factory = new TestFactory(r) ;
+            ResourceFactory.setInstance(factory) ;
+            assertTrue(factory.equals(ResourceFactory.getInstance())) ;
+            assertTrue(ResourceFactory.createResource() == r) ;
+        } finally { ResourceFactory.setInstance(original) ; }
     }
-
     class TestFactory implements ResourceFactory.Interface {
 
         Resource resource;
@@ -145,6 +157,12 @@ public class TestResourceFactory extends TestCase {
         public Literal createPlainLiteral( String string ) {
             return null;
         }
+
+        @Override
+        public Literal createLangLiteral( String string, String lang ) {
+            return null;
+        }
+
 
         @Override
         public Literal createTypedLiteral(String string, RDFDatatype datatype)

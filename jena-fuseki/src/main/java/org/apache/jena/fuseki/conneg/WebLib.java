@@ -43,7 +43,6 @@ public class WebLib
     public static String getAccept(HttpServletRequest httpRequest)
     {
         // There can be multiple accept headers -- note many tools don't allow these to be this way (e.g. wget, curl)
-        @SuppressWarnings("unchecked")
         Enumeration<String> en = httpRequest.getHeaders(HttpNames.hAccept) ;
         if ( ! en.hasMoreElements() )
             return null ;

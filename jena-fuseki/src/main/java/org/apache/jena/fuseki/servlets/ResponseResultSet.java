@@ -33,8 +33,8 @@ import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
+import org.apache.jena.riot.WebContent ;
 import static org.apache.jena.atlas.lib.Lib.equal ;
-import org.openjena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

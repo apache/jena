@@ -26,7 +26,7 @@ import java.io.OutputStream ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.logging.Log ;
-import org.openjena.riot.out.NQuadsWriter ;
+import org.apache.jena.riot.out.NQuadsWriter ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.ReadWrite ;

@@ -26,12 +26,7 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
-import org.apache.velocity.Template ;
-import org.apache.velocity.VelocityContext ;
 import org.apache.velocity.app.VelocityEngine ;
-import org.apache.velocity.exception.MethodInvocationException ;
-import org.apache.velocity.exception.ParseErrorException ;
-import org.apache.velocity.exception.ResourceNotFoundException ;
 import org.apache.velocity.runtime.RuntimeConstants ;
 import org.apache.velocity.runtime.RuntimeServices ;
 import org.apache.velocity.runtime.log.LogChute ;
@@ -89,22 +84,16 @@ public class SimpleVelocityServlet extends HttpServlet
 
     private void process(HttpServletRequest req, HttpServletResponse resp)
     { 
-        VelocityContext context = new VelocityContext(datamodel) ;
+        try { 
+        resp.setContentType("text/html") ;
+        resp.setCharacterEncoding("UTF-8") ;
+        Writer out = resp.getWriter() ;
         String path = path(req) ;
-        try
+        SimpleVelocity.process(docbase, path, out, datamodel) ;
+        } catch (IOException ex)
         {
-            Template temp = velocity.getTemplate(path) ;        // ResourceNotFoundException, ParseErrorException
-            context.put("request", req) ;
-            resp.setContentType("text/html") ;
-            resp.setCharacterEncoding("UTF-8") ;
-            Writer out = resp.getWriter() ;
-            temp.merge(context, out);                           // ResourceNotFoundException, ParseErrorException, MethodInvocationException
-            out.flush();
+            vlog.warn("IOException", ex) ;
         }
-        catch (ResourceNotFoundException ex)    { vlog.error("Resource not found: "+ex.getMessage()) ; }
-        catch (ParseErrorException ex)          { vlog.error("Parse error ("+path+") : "+ex.getMessage()) ; }
-        catch (MethodInvocationException ex)    { vlog.error("Method invocation exception ("+path+") : "+ex.getMessage()) ; }
-        catch (IOException ex)                  { vlog.warn ("IOException", ex) ; }
     }
     
     private String path(HttpServletRequest request)
@@ -119,7 +108,7 @@ public class SimpleVelocityServlet extends HttpServlet
     @Override
     public String getServletInfo()
     {
-        return "Lightweight FreeMarker Servlet";
+        return "Lightweight Velocity Servlet";
     }
     
     /** Velocity logger to SLF4J */ 
