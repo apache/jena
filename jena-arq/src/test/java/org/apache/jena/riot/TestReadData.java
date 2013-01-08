@@ -21,14 +21,19 @@ package org.apache.jena.riot;
 import java.io.FileInputStream ;
 import java.io.IOException ;
 
+import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.system.ErrorHandler ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /* Tests of RDFDataMgr.
@@ -91,6 +96,35 @@ public class TestReadData extends BaseTest
     @Test public void load_15() { RDFDataMgr.loadDatasetGraph(filename("D.nq"), RDFLanguages.NQUADS)  ; }
     @Test public void load_16() { RDFDataMgr.loadDatasetGraph(filename("D-nq"), RDFLanguages.NQUADS)  ; }
     
+    // Load triples into DSG 
+    @Test public void load_17() { 
+        DatasetGraph dsg = RDFDataMgr.loadDatasetGraph(filename("D.ttl")) ;
+        assertFalse(dsg.getDefaultGraph().isEmpty()) ;
+        assertEquals(0, Iter.count(dsg.listGraphNodes())) ;
+    }
+    
+    // Load quads into graph - warning on named graphs
+    @Test
+    public void load_18()
+    {
+        ErrorHandler err = ErrorHandlerFactory.getDefaultErrorHandler() ;
+        try
+        {
+            ErrorHandlerFactory.setDefaultErrorHandler(new ErrorHandlerTestLib.ErrorHandlerEx()) ;
+            try {
+                Graph g = RDFDataMgr.loadGraph(filename("D.trig")) ;
+                fail("No expection generated") ;
+            } catch (ErrorHandlerTestLib.ExWarning e) { }
+            ErrorHandlerFactory.setDefaultErrorHandler(ErrorHandlerFactory.errorHandlerNoLogging) ;
+            Graph g = RDFDataMgr.loadGraph(filename("D.trig")) ;
+            assertFalse(g.isEmpty()) ;
+            assertEquals(1, g.size()) ;
+        } finally
+        {
+            ErrorHandlerFactory.setDefaultErrorHandler(err) ;
+        }
+    }
+
     private static String filename(String filename) { return directory+"/"+filename ; }
 
     // Base.
