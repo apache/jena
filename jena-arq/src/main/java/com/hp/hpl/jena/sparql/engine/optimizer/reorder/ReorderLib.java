@@ -35,7 +35,7 @@ public class ReorderLib
         {
             return "identity reorder" ;
         }
-    } ;
+    }
     private static ReorderProc _identityProc = new ReorderProcIdentity() ;
 
     private static class ReorderTransformationIdentity implements ReorderTransformation
@@ -51,7 +51,7 @@ public class ReorderLib
         {
             return _identityProc ;
         }
-    } ;
+    }
     private static ReorderTransformation _identity = new ReorderTransformationIdentity() ;
 
     /** Return a  ReorderProc that does no reordering  (leaving the query writer in-control)*/
