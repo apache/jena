@@ -23,7 +23,6 @@ import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
-import org.openjena.riot.RIOT ;
 
 @RunWith(Suite.class)
 @SuiteClasses(
@@ -31,7 +30,7 @@ import org.openjena.riot.RIOT ;
     TestLangRIOT.class
     , TestStreamManager.class 
     , TestJenaReaderRIOT.class
-    , TestReadDataset.class
+    , TestReadData.class
 })
 
 public class TS_ReaderRIOT

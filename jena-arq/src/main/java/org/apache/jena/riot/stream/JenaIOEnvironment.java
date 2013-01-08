@@ -20,7 +20,7 @@ package org.apache.jena.riot.stream;
 
 import java.util.StringTokenizer ;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.adapters.AdapterFileManager ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -36,13 +36,13 @@ import com.hp.hpl.jena.vocabulary.LocationMappingVocab ;
  */
 class JenaIOEnvironment
 {
-    static LocationMapper2 theMapper = null ;
+    static LocationMapper theMapper = null ;
     /** Get the global LocationMapper */
-    public static LocationMapper2 getLocationMapper()
+    public static LocationMapper getLocationMapper()
     {
         if ( theMapper == null )
         {
-            theMapper = new LocationMapper2() ;
+            theMapper = new LocationMapper() ;
             if ( getGlobalConfigPath() != null )
                 JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
         }
@@ -76,27 +76,27 @@ class JenaIOEnvironment
      * If called before any call to get(), then the usual default global location mapper is not created 
      * @param globalLocationMapper
      */
-    public static void setGlobalLocationMapper(LocationMapper2 globalLocationMapper)
+    public static void setGlobalLocationMapper(LocationMapper globalLocationMapper)
     {
         theMapper = globalLocationMapper ;
     }
 
     /** Make a location mapper from the path settings */ 
-    static public LocationMapper2 makeGlobal()
+    static public LocationMapper makeGlobal()
     {
-        LocationMapper2 lMap = new LocationMapper2() ;
+        LocationMapper lMap = new LocationMapper() ;
         if ( getGlobalConfigPath() != null )
         {
-            LocationMapper2 lMap2 = JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
+            LocationMapper lMap2 = JenaIOEnvironment.createLocationMapper(getGlobalConfigPath()) ;
             lMap.copyFrom(lMap2) ;
         }
         return lMap ;
     }
   
     /** Create a LocationMapper based on Model */
-    public static LocationMapper2 processConfig(Model m)
+    public static LocationMapper processConfig(Model m)
     {
-        LocationMapper2 locMap = new LocationMapper2() ; 
+        LocationMapper locMap = new LocationMapper() ; 
         StmtIterator mappings =
             m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null) ;
     
@@ -146,11 +146,11 @@ class JenaIOEnvironment
      *  to find a description of a LocationMapper, then create and return a
      *  LocationMapper based on the description.
      */
-    public static LocationMapper2 createLocationMapper(String configPath)
+    public static LocationMapper createLocationMapper(String configPath)
     {
         // Old code : maintenance: use Webreader to open the model. 
         
-        LocationMapper2 locMap = new LocationMapper2() ;
+        LocationMapper locMap = new LocationMapper() ;
         if ( configPath == null || configPath.length() == 0 )
         {
             log.warn("Null configuration") ;
@@ -159,12 +159,12 @@ class JenaIOEnvironment
         
         // Make a file manager to look for the location mapping file
         StreamManager smgr = new StreamManager() ;
-        smgr.addLocator(new LocatorFile2()) ;
+        smgr.addLocator(new LocatorFile()) ;
         smgr.addLocator(new LocatorClassLoader(smgr.getClass().getClassLoader())) ;
         
         try {
             String uriConfig = null ; 
-            TypedInputStream2 in = null ;
+            TypedInputStream in = null ;
             
             StringTokenizer pathElems = new StringTokenizer( configPath, AdapterFileManager.PATH_DELIMITER );
             while (pathElems.hasMoreTokens()) {
@@ -187,11 +187,11 @@ class JenaIOEnvironment
             }
             String syntax = FileUtils.guessLang(uriConfig) ;
             Model model = ModelFactory.createDefaultModel() ;
-            model.read(in.getInput(), uriConfig, syntax) ;
+            model.read(in, uriConfig, syntax) ;
             processConfig(model) ;
         } catch (JenaException ex)
         {
-            LoggerFactory.getLogger(LocationMapper2.class).warn("Error in configuration file: "+ex.getMessage()) ;
+            LoggerFactory.getLogger(LocationMapper.class).warn("Error in configuration file: "+ex.getMessage()) ;
         }
         return locMap ;
     }

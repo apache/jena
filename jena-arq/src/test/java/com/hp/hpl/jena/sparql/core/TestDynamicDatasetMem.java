@@ -18,12 +18,18 @@
 
 package com.hp.hpl.jena.sparql.core;
 
+import org.junit.After ;
+import org.junit.Before ;
+
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
 public class TestDynamicDatasetMem extends AbstractTestDynamicDataset
 {
 
+    @Before public void before1() {}
+    @After public void after1() {}
+    
     @Override
     protected Dataset createDataset()
     {

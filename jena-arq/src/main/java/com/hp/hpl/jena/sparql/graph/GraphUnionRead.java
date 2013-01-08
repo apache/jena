@@ -27,8 +27,6 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
@@ -48,12 +46,6 @@ public class GraphUnionRead extends GraphBase2
         this.graphs = graphs ; 
     }
     
-    @Override
-    public QueryHandler queryHandler()
-    {
-        return new SimpleQueryHandler(this) ;
-    }
-
     @Override
     protected PrefixMapping createPrefixMapping()
     {

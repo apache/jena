@@ -21,7 +21,7 @@ package org.apache.jena.riot;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.riot.RiotException ;
+
 
 /** Builder for RDF langauges (Syntaxes).
  * 
@@ -91,14 +91,14 @@ public class LangBuilder {
                 dst.add(str) ;
     }
     
-    /** Construct the {@link Lang2} */
-    public Lang2 build()
+    /** Construct the {@link Lang} */
+    public Lang build()
     {
         if ( lang == null )
             error("No language name") ;
         if ( officialContentType == null )
             error("No content types") ;
-        return new Lang2(lang, officialContentType, altNames, contentTypes, fileExtensions) ;
+        return new Lang(lang, officialContentType, altNames, contentTypes, fileExtensions) ;
     }
 
     private void error(String message)

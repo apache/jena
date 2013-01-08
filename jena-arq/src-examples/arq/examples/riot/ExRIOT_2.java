@@ -22,42 +22,43 @@ import java.io.FileInputStream ;
 import java.io.FileNotFoundException ;
 import java.io.InputStream ;
 
-import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.atlas.lib.SinkNull ;
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.SysRIOT ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.RiotLib ;
-
-import com.hp.hpl.jena.sparql.core.Quad ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RIOT ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.* ;
 
 /** Example of using RIOT directly.
+ * 
+ * RDFDataMgr is the general place to read data - see {@link ExRIOT_1}  
+ * 
+ * RiotReader is the place for making parsers and can be used to read
+ * from files or InputStreams. It can give more detailed control of error handling
+ * and specialised destination of parser output.
+ * It does not perform HTTP content negotiation.  
  */
 public class ExRIOT_2
 {
     public static void main(String...argv) throws FileNotFoundException
     {
         // Ensure RIOT loaded.
-        SysRIOT.wireIntoJena() ;
-
-        Sink<Quad> noWhere = new SinkNull<Quad>() ;
+        RIOT.init() ;
 
         // ---- Parse to a Sink.
+        StreamRDF noWhere = StreamRDFLib.sinkNull() ;
+
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
-        RiotReader.parseQuads(in, Lang.TRIG, "http://example/base", noWhere) ;
-        
+        RiotReader.parse(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
         
         // --- Or create a parser and do the parsing as separate steps.
         String baseURI = "http://example/base" ;
             
+        // It is always better to use an  InputStream, rather than a Java Reader.
+        // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
-        LangRIOT parser = RiotReader.createParserQuads(in, Lang.TRIG, "http://example/base", noWhere) ;
+        LangRIOT parser = RiotReader.createParser(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
         
         // Parser to first error or warning.
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStrict ;
@@ -68,7 +69,7 @@ public class ExRIOT_2
         // Just set the error handler.
         parser.getProfile().setHandler(errHandler) ;
         
-        // Or replave the whole parser profile.
+        // Or replace the whole parser profile.
         parser.setProfile(profile) ;
 
         // Do the work.

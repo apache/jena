@@ -24,10 +24,11 @@ import java.io.StringReader ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.adapters.RDFReaderFactoryRIOT ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.RIOT ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -35,6 +36,8 @@ import com.hp.hpl.jena.rdf.model.Resource ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.util.FileUtils ;
 
+/* Test of integration with Jena via model.read.
+ * Also tests triples format reading of RDFDataMgr */
 public class TestJenaReaderRIOT extends BaseTest
 {
     private static final String directory = "testing/RIOT/Reader" ;
@@ -44,7 +47,6 @@ public class TestJenaReaderRIOT extends BaseTest
     @BeforeClass static public void beforeClass()
     { 
         RIOT.init() ;
-        WebReader2.wireIntoJena() ;
     }
     
     @AfterClass static public void afterClass()
@@ -78,15 +80,15 @@ public class TestJenaReaderRIOT extends BaseTest
     @Test public void read_30()
     {
         {
-            TypedInputStream2 in = WebReader2.open(filename("D-not-TTL.ttl") );
+            TypedInputStream in = RDFDataMgr.open(filename("D-not-TTL.ttl") );
             Model m0 = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m0, in.getInput(), RDFLanguages.langRDFXML) ;
+            RDFDataMgr.read(m0, in, RDFLanguages.RDFXML) ;
         }
 
-        TypedInputStream2 in1 = WebReader2.open(filename("D-not-TTL.ttl") );
+        TypedInputStream in1 = RDFDataMgr.open(filename("D-not-TTL.ttl") );
         Model m1 = ModelFactory.createDefaultModel() ;
         // Fails until integration with jena-core as hintlang gets lost.
-        m1.read(in1.getInput(), null, "RDF/XML") ;
+        m1.read(in1, null, "RDF/XML") ;
     }
     
     // test read from StringReader..
@@ -97,7 +99,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m, s, null, RDFLanguages.langNTriples) ;
+            RDFDataMgr.read(m, s, null, RDFLanguages.NTRIPLES) ;
         }
         
         StringReader s1 = new StringReader("<s> <p> <p> .") ;
@@ -118,7 +120,7 @@ public class TestJenaReaderRIOT extends BaseTest
         {
             StringReader s = new StringReader(x) ;
             Model m = ModelFactory.createDefaultModel() ;
-            WebReader2.read(m, s, null, RDFLanguages.langRDFXML) ;
+            RDFDataMgr.read(m, s, null, RDFLanguages.RDFXML) ;
         }
         StringReader s1 = new StringReader(x) ;
         Model m = ModelFactory.createDefaultModel() ;
@@ -144,13 +146,13 @@ public class TestJenaReaderRIOT extends BaseTest
         // Read with a base
         FileInputStream in0 = new FileInputStream(filename) ;
         Model m0 = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang)) ;
+        RDFDataMgr.read(m0, in0, "http://example/base2", RDFLanguages.nameToLang(lang)) ;
         in0.close() ;
 
         // Read again, but without base
         FileInputStream in1 = new FileInputStream(filename) ;
         Model m1 = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m1, in1, RDFLanguages.nameToLang(lang)) ;
+        RDFDataMgr.read(m1, in1, RDFLanguages.nameToLang(lang)) ;
         in1.close() ;
         
         // Fail because Jena core does a look up of lang with ModelCom builtin in RDFReaderF, then calls RIOReader().
@@ -188,7 +190,7 @@ public class TestJenaReaderRIOT extends BaseTest
         dataurl = filename(dataurl) ;
         
         Model m0 = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m0, dataurl, RDFLanguages.nameToLang(lang)) ;
+        RDFDataMgr.read(m0, dataurl, RDFLanguages.nameToLang(lang)) ;
         assertTrue(m0.size() != 0 ) ;
         
         Model m1 = ModelFactory.createDefaultModel() ;
@@ -208,7 +210,7 @@ public class TestJenaReaderRIOT extends BaseTest
         Model m2 = ModelFactory.createDefaultModel() ;
         
         // This call
-        WebReader2.read(m1, dataurl, base, RDFLanguages.nameToLang(lang)) ;
+        RDFDataMgr.read(m1, dataurl, base, RDFLanguages.nameToLang(lang)) ;
         // should be an implementation of:
         m2.read("file:"+dataurl, base, lang) ;
         assertTrue(m1.size() != 0 ) ;

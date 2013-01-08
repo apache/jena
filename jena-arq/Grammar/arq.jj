@@ -364,6 +364,7 @@ void Update() : { }
   (
     Update1()
     (
+      // This syntactic lookahead is necessitated by the optional trailing semicolon and prologue
       LOOKAHEAD( <SEMICOLON> Prologue() ( <LOAD> | <CLEAR> | <DROP> | <ADD> |
                    <MOVE> | <COPY> | <CREATE> | <WITH> | <DELETE> | <INSERT> |
                    <USING> | <INSERT_DATA> | <DELETE_DATA> | <DELETE_WHERE> ) )
@@ -951,7 +952,7 @@ void PropertyListPathNotEmpty(Node s, TripleCollector acc) :
       ( path = VerbPath()
       | p = VerbSimple()
       )
-      ObjectList(s, p, path, acc)
+      ObjectListPath(s, p, path, acc)
     )?
   )*
 }

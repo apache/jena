@@ -18,27 +18,27 @@
 
 package com.hp.hpl.jena.sparql.modify.request;
 
-import java.util.Iterator ;
-import java.util.List ;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.openjena.riot.out.SinkQuadBracedOutput ;
+import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.sparql.ARQException ;
-import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode ;
-import com.hp.hpl.jena.sparql.serializer.FormatterElement ;
-import com.hp.hpl.jena.sparql.serializer.PrologueSerializer ;
-import com.hp.hpl.jena.sparql.serializer.SerializationContext ;
-import com.hp.hpl.jena.sparql.syntax.Element ;
-import com.hp.hpl.jena.sparql.util.FmtUtils ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Quad;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode;
+import com.hp.hpl.jena.sparql.serializer.FormatterElement;
+import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
+import com.hp.hpl.jena.sparql.serializer.SerializationContext;
+import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.update.Update;
+import com.hp.hpl.jena.update.UpdateRequest;
 
 public class UpdateWriter implements Closeable
 {
@@ -260,7 +260,6 @@ public class UpdateWriter implements Closeable
         uw.update(update);
         uw.close();
     }
-    
 
     // newline policy - don't add until needed.
     private static class Writer implements UpdateVisitor
@@ -391,6 +390,7 @@ public class UpdateWriter implements Closeable
         public void visit(UpdateMove update)
         { printUpdate2(update, "MOVE") ; }
 
+
         @Override
         public Sink<Quad> getInsertDataSink()
         {
@@ -405,6 +405,7 @@ public class UpdateWriter implements Closeable
             Iter.sendToSink(update.getQuads(), getInsertDataSink());  // Iter.sendToSink() will call close() on the sink
         }
         
+        @Override
         public Sink<Quad> getDeleteDataSink()
         {
             UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);

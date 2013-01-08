@@ -18,9 +18,9 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import static org.openjena.riot.tokens.TokenType.DOT ;
-import static org.openjena.riot.tokens.TokenType.IRI ;
-import static org.openjena.riot.tokens.TokenType.PREFIXED_NAME ;
+import static org.apache.jena.riot.tokens.TokenType.DOT ;
+import static org.apache.jena.riot.tokens.TokenType.IRI ;
+import static org.apache.jena.riot.tokens.TokenType.PREFIXED_NAME ;
 
 import java.io.InputStream ;
 import java.util.ArrayList ;
@@ -28,26 +28,21 @@ import java.util.Collections ;
 import java.util.Iterator ;
 import java.util.List ;
 
-import org.openjena.riot.ErrorHandler ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.lang.LabelToNode ;
-import org.openjena.riot.lang.LangEngine ;
-import org.openjena.riot.out.NodeFmtLib ;
-import org.openjena.riot.system.IRIResolver ;
-import org.openjena.riot.system.ParserProfile ;
-import org.openjena.riot.system.ParserProfileBase ;
-import org.openjena.riot.system.PrefixMap ;
-import org.openjena.riot.system.Prologue ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.TokenType ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
 
 import org.apache.jena.atlas.iterator.IteratorSlotted ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.iri.IRI ;
+import org.apache.jena.riot.lang.LabelToNode ;
+import org.apache.jena.riot.lang.LangEngine ;
+import org.apache.jena.riot.out.NodeFmtLib ;
+import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
+
 import com.hp.hpl.jena.rdf.model.AnonId ;
 import com.hp.hpl.jena.sparql.core.Var ;
 

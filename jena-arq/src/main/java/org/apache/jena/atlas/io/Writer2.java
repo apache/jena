@@ -40,13 +40,13 @@ public final class Writer2 implements Closeable
     public void output(String string)
     { try { writer.write(string) ; } catch (IOException ex) { IO.exception(ex) ; } }
 
-    public void output(String string, int off, int len) throws IOException
+    public void output(String string, int off, int len)
     { try { writer.write(string, off, len) ; } catch (IOException ex) { IO.exception(ex) ; } }
     
-    public void output(char[] cbuf) throws IOException
+    public void output(char[] cbuf)
     { try { writer.write(cbuf) ; } catch (IOException ex) { IO.exception(ex) ; } }
 
-    public void output(char[] cbuf, int off, int len) throws IOException
+    public void output(char[] cbuf, int off, int len)
     { try { writer.write(cbuf, off, len) ; } catch (IOException ex) { IO.exception(ex) ; } }
     
     public void flush()

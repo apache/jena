@@ -6,6 +6,9 @@ ChangeLog for ARQ
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.
+
++ Introduce RDFParserOutput as output interface for parsers (was Sink<Triple> or Sink<Quad>)
++ RIOT - internal reorganisation moving to org.apache.jena.riot.
 + Remove the partial migration support for old-style SPARQL submission update forms.
 + Update Turtle/Trig parsers for prefixed name details in RDF 1.1
   Add %-sequences, \char sequences and ':' to local part of prefixed names.

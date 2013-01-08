@@ -26,12 +26,9 @@ import org.junit.runners.Suite ;
     TestContext.class
     , TestDatasetGraphMem.class
     , TestDatasetGraphMemTriplesQuads.class
-    , TestDatasetGraphMem.class
     // Not ready , TestDynamicDatasetMem.class
 })
 
 public class TS_Core
-{
-
-}
+{}
 

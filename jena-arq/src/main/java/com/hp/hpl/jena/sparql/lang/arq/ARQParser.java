@@ -3066,7 +3066,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
           jj_consume_token(-1);
           throw new ParseException();
         }
-        ObjectList(s, p, path, acc);
+        ObjectListPath(s, p, path, acc);
         break;
       default:
         jj_la1[100] = jj_gen;
@@ -5646,11 +5646,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_113() {
-    if (jj_3R_126()) return true;
-    return false;
-  }
-
   private boolean jj_3R_147() {
     if (jj_3R_131()) return true;
     return false;
@@ -5663,6 +5658,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     jj_scanpos = xsp;
     if (jj_3R_148()) return true;
     }
+    return false;
+  }
+
+  private boolean jj_3R_113() {
+    if (jj_3R_126()) return true;
     return false;
   }
 
@@ -5699,15 +5699,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_125() {
-    if (jj_scan_token(BASE)) return true;
-    if (jj_3R_131()) return true;
-    return false;
-  }
-
   private boolean jj_3R_87() {
     if (jj_scan_token(CALL)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_125() {
+    if (jj_scan_token(BASE)) return true;
+    if (jj_3R_131()) return true;
     return false;
   }
 

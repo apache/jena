@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.adapters;
 
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.stream.Locator ;
 
 public class AdapterLocator implements com.hp.hpl.jena.util.Locator
@@ -30,7 +30,7 @@ public class AdapterLocator implements com.hp.hpl.jena.util.Locator
     @Override
     public com.hp.hpl.jena.util.TypedStream open(String filenameOrURI)
     {
-        TypedInputStream2 in = locator.open(filenameOrURI) ;
+        TypedInputStream in = locator.open(filenameOrURI) ;
         return AdapterLib.convert(in) ;
     }
 

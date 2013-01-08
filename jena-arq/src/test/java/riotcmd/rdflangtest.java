@@ -20,10 +20,9 @@ package riotcmd;
 
 import junit.framework.TestSuite ;
 import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.riot.RIOT ;
 import org.apache.jena.riot.langsuite.FactoryTestRiot ;
 import org.apache.jena.riot.langsuite.VocabLangRDF ;
-import org.openjena.riot.RIOT ;
-import org.openjena.riot.SysRIOT ;
 import arq.cmd.CmdException ;
 import arq.cmd.TerminationException ;
 import arq.cmdline.ArgDecl ;
@@ -74,7 +73,7 @@ public class rdflangtest extends CmdGeneral
     
     public static void main (String... argv)
     {
-        SysRIOT.wireIntoJena() ;
+        RIOT.init() ;
         try { new rdflangtest(argv).mainRun() ; }
         catch (TerminationException ex) { System.exit(ex.getCode()) ; }
     }

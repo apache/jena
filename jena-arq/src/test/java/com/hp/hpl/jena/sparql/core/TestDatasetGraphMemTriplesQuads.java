@@ -18,15 +18,9 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import junit.framework.JUnit4TestAdapter ;
 
 public class TestDatasetGraphMemTriplesQuads extends AbstractDatasetGraphTests
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestDatasetGraphMemTriplesQuads.class) ;
-    }
-    
     @Override
     protected DatasetGraph emptyDataset()
     {

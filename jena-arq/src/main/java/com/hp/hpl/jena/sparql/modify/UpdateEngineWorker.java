@@ -32,6 +32,7 @@ import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.Query ;
@@ -125,7 +126,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         if ( isClear )
         {
             if ( g == null || graphStore.containsGraph(g) )
-                graph(graphStore, g).getBulkUpdateHandler().removeAll() ;
+                graph(graphStore, g).clear() ;
         }
         else
             graphStore.removeGraph(g) ;
@@ -180,7 +181,7 @@ public class UpdateEngineWorker implements UpdateVisitor
                 model = FileManager.get().loadModel(source) ;
             } catch (RuntimeException ex) { throw new UpdateException("Failed to LOAD '"+source+"'", ex) ; }     
             Graph g = graph(graphStore, dest) ;
-            g.getBulkUpdateHandler().add(model.getGraph()) ;
+            GraphUtil.addInto(g, model.getGraph()) ;
         } catch (RuntimeException ex)
         {
             if ( ! update.getSilent() )
@@ -274,13 +275,13 @@ public class UpdateEngineWorker implements UpdateVisitor
     {
         // No create - we tested earlier.
         Graph g = graph(gStore, target) ;
-        g.getBulkUpdateHandler().removeAll() ;
+        g.clear() ;
     }
 
     protected static void gsDrop(GraphStore gStore, Target target, boolean isSilent)
     {
         if ( target.isDefault() )
-            gStore.getDefaultGraph().getBulkUpdateHandler().removeAll() ;
+            gStore.getDefaultGraph().clear() ;
         else
             gStore.removeGraph(target.getGraph()) ;
     }

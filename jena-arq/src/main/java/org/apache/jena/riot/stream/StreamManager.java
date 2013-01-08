@@ -22,8 +22,8 @@ import java.util.ArrayList ;
 import java.util.Collections ;
 import java.util.List ;
 
-import org.apache.jena.riot.TypedInputStream2 ;
-import org.openjena.riot.RiotNotFoundException ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.RiotNotFoundException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -41,20 +41,20 @@ public class StreamManager
     public static boolean logAllLookups = true ; 
     
     private List<Locator> handlers = new ArrayList<Locator>() ;
-    private LocationMapper2 mapper = null ;
+    private LocationMapper mapper = null ;
     
     private static StreamManager globalStreamManager ;
     
     /** Return a default configuration StreamManager 
-     *  with a {@link LocatorFile2}, 
-     *  {@link LocatorURL2},
+     *  with a {@link LocatorFile}, 
+     *  {@link LocatorURL},
      *  and {@link LocatorClassLoader}
      */
     public static StreamManager makeDefaultStreamManager()
     {
         StreamManager streamManager = new StreamManager() ;
-        streamManager.addLocator(new LocatorFile2(null)) ;
-        streamManager.addLocator(new LocatorURL2()) ;
+        streamManager.addLocator(new LocatorFile(null)) ;
+        streamManager.addLocator(new LocatorURL()) ;
         streamManager.addLocator(new LocatorClassLoader(streamManager.getClass().getClassLoader())) ;
         return streamManager ;
     }
@@ -66,7 +66,7 @@ public class StreamManager
     /** Open a file using the locators of this FileManager.
      *  Returns null if not found.
      */
-    public TypedInputStream2 open(String filenameOrURI)
+    public TypedInputStream open(String filenameOrURI)
     {
         if ( log.isDebugEnabled())
             log.debug("open("+filenameOrURI+")") ;
@@ -103,9 +103,9 @@ public class StreamManager
 
     /** Open a file using the locators of this FileManager 
      *  but without location mapping.  Throws RiotNotFoundException if not found.*/ 
-    public TypedInputStream2 openNoMap(String filenameOrURI)
+    public TypedInputStream openNoMap(String filenameOrURI)
     {
-        TypedInputStream2 in = openNoMapOrNull(filenameOrURI) ;
+        TypedInputStream in = openNoMapOrNull(filenameOrURI) ;
         if ( in == null )
             throw new RiotNotFoundException(filenameOrURI) ;
         return in ;
@@ -115,11 +115,11 @@ public class StreamManager
      *  without location mapping. Return null if not found
      */ 
     
-    public TypedInputStream2 openNoMapOrNull(String filenameOrURI)
+    public TypedInputStream openNoMapOrNull(String filenameOrURI)
     {
         for (Locator loc : handlers)
         {
-            TypedInputStream2 in = loc.open(filenameOrURI) ;
+            TypedInputStream in = loc.open(filenameOrURI) ;
             if ( in != null )
             {
                 if ( log.isDebugEnabled() )
@@ -132,10 +132,10 @@ public class StreamManager
     
 
     /** Set the location mapping */
-    public void setLocationMapper(LocationMapper2 _mapper) { mapper = _mapper ; }
+    public void setLocationMapper(LocationMapper _mapper) { mapper = _mapper ; }
     
     /** Get the location mapping */
-    public LocationMapper2 getLocationMapper() { return mapper ; }
+    public LocationMapper getLocationMapper() { return mapper ; }
     
     /** Return an immutable list of all the handlers */
     public List<Locator> locators() { return Collections.unmodifiableList(handlers) ; }

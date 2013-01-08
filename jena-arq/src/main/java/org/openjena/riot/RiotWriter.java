@@ -21,44 +21,48 @@ package org.openjena.riot;
 import java.io.OutputStream ;
 import java.util.Iterator ;
 
-import org.openjena.riot.out.NQuadsWriter ;
-import org.openjena.riot.out.NTriplesWriter ;
-import org.openjena.riot.out.RDFJSONWriter ;
-
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-/** Output RDF in various formats (unfinished) */
+/** Output RDF in various formats (unfinished)
+ * @deprecated Use {@link org.apache.jena.riot.RiotWriter}
+ */
+@Deprecated
 public class RiotWriter
 {
     // Work in progress
     // A class of all the ways to write things - just jumps to right place in code. 
     
+    /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
+    @Deprecated
     public static void writeNQuads(OutputStream out, DatasetGraph dsg)
     {
-        NQuadsWriter.write(out, dsg) ;
+        org.apache.jena.riot.RiotWriter.writeNQuads(out, dsg) ;
     }
-    
+    /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
+    @Deprecated
     public static void writeNQuads(OutputStream out, Iterator<Quad> it)
     {
-        NQuadsWriter.write(out, it) ;
+        org.apache.jena.riot.RiotWriter.writeNQuads(out, it) ;
     }
-    
+    /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
+    @Deprecated
     public static void writeTriples(OutputStream out, Graph graph)
     {
-        NTriplesWriter.write(out, graph) ;
+        org.apache.jena.riot.RiotWriter.writeTriples(out, graph) ;
     }
-    
+    /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
+    @Deprecated
     public static void writeTriples(OutputStream out, Iterator<Triple> it)
     {
-        NTriplesWriter.write(out, it) ;
+        org.apache.jena.riot.RiotWriter.writeTriples(out, it) ;
     }
-
+    /** @deprecated Use {@link org.apache.jena.riot.RiotWriter} */
+    @Deprecated
     public static void writeRDFJSON(OutputStream out, Graph graph)
     {
-    	RDFJSONWriter.write(out, graph) ;
+        org.apache.jena.riot.RiotWriter.writeRDFJSON(out, graph) ;
     }
-
 }

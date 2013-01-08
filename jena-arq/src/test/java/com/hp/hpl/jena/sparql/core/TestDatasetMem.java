@@ -18,18 +18,11 @@
 
 package com.hp.hpl.jena.sparql.core;
 
-import junit.framework.JUnit4TestAdapter ;
-
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.DatasetFactory ;
 
 public class TestDatasetMem extends AbstractTestDataset 
 {
-    public static junit.framework.Test suite()
-    {
-        return new JUnit4TestAdapter(TestDatasetMem.class) ;
-    }
-    
     @Override
     protected Dataset createFixed() { return DatasetFactory.createMem() ; }
 }

@@ -24,7 +24,6 @@ import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
 
 /**
  * An implementation of {@link GraphDataBag} that may return duplicate triples from the find() operation.
@@ -34,11 +33,6 @@ public class GraphDefaultDataBag extends GraphDataBag
     public GraphDefaultDataBag(ThresholdPolicy<Triple> thresholdPolicy)
     {
         super(thresholdPolicy) ;
-    }
-    
-    public GraphDefaultDataBag(ThresholdPolicy<Triple> thresholdPolicy, ReificationStyle style)
-    {
-        super(thresholdPolicy, style) ;
     }
     
     @Override
