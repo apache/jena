@@ -158,7 +158,8 @@ public class StreamRDFLib
         
         @Override public void triple(Triple triple) 
         {
-            throw new IllegalStateException("Triple passed to dataset parsing") ;
+            dsg.add(Quad.defaultGraphNodeGenerated, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            //throw new IllegalStateException("Triple passed to dataset parsing") ;
         }
         
         @Override public void quad(Quad quad) 
