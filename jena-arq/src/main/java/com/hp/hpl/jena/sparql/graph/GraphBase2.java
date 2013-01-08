@@ -29,8 +29,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public abstract class GraphBase2 implements GraphWithPerform
 {
-    // *** BECOME GraphBase
-    
     // Like GraphBase but no reificiation handling in normal operations.
     // AKA Hard coded ReificationStyle.Standard
 
@@ -71,12 +69,6 @@ public abstract class GraphBase2 implements GraphWithPerform
     @Override
     public boolean dependsOn( Graph other ) 
     { return this == other; }
-
-    /**
-          Answer a QueryHandler bound to this graph. The default implementation
-          returns the same SimpleQueryHandler each time it is called; sub-classes
-          may override if they need specialised query handlers.
-     */
 
     @Override
     public GraphStatisticsHandler getStatisticsHandler()
