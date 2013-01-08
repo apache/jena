@@ -27,6 +27,7 @@ import org.apache.jena.atlas.io.IndentedWriter ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
 import com.hp.hpl.jena.sparql.core.PathBlock ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
@@ -457,8 +458,12 @@ public class FormatterElement extends FormatterBase
     {
         out.print("{ ") ;
         out.incIndent(INDENT) ;
-        // Messy - prefixes.
-        el.getQuery().serialize(out) ;
+        Query q = el.getQuery() ; 
+        // It's SELECT query so no template formatter needed.
+        Serializer.serializeARQ(q, out, 
+                                new FormatterElement(out, context),
+                                new FmtExprSPARQL(out, context),
+                                null) ;
         out.decIndent(INDENT) ;
         out.print("}") ;
     }

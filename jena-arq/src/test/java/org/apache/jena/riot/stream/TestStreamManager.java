@@ -20,16 +20,14 @@ package org.apache.jena.riot.stream;
 
 import java.io.File ;
 
+import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.TypedInputStream2 ;
-import org.apache.jena.riot.WebReader2 ;
-import org.apache.jena.riot.stream.LocatorFile2 ;
-import org.apache.jena.riot.stream.LocatorURL2 ;
-import org.apache.jena.riot.stream.StreamManager ;
+import org.apache.jena.atlas.web.TypedInputStream ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RiotNotFoundException ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
-import org.openjena.riot.RiotNotFoundException ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -50,21 +48,21 @@ public class TestStreamManager extends BaseTest
     { 
         streamMgrStd = StreamManager.get() ;
         streamMgr = new StreamManager() ;
-        streamMgr.addLocator(new LocatorFile2()) ;
-        streamMgr.addLocator(new LocatorFile2(directory)) ;
-        streamMgr.addLocator(new LocatorURL2()) ;
+        streamMgr.addLocator(new LocatorFile()) ;
+        streamMgr.addLocator(new LocatorFile(directory)) ;
+        streamMgr.addLocator(new LocatorURL()) ;
         
-        streamManagerContextValue = context.get(WebReader2.streamManagerSymbol) ;
-        context.put(WebReader2.streamManagerSymbol, streamMgr) ;
+        streamManagerContextValue = context.get(RDFDataMgr.streamManagerSymbol) ;
+        context.put(RDFDataMgr.streamManagerSymbol, streamMgr) ;
     }
     
     @AfterClass static public void afterClass()
     { 
         StreamManager.setGlobal(streamMgrStd) ;
         if ( streamManagerContextValue == null )
-            context.remove(WebReader2.streamManagerSymbol) ;
+            context.remove(RDFDataMgr.streamManagerSymbol) ;
         else
-            context.put(WebReader2.streamManagerSymbol, streamManagerContextValue) ;
+            context.put(RDFDataMgr.streamManagerSymbol, streamManagerContextValue) ;
     }
     
     @Test public void fm_open_01() { open(directory+"/D.ttl", context) ; }
@@ -94,20 +92,19 @@ public class TestStreamManager extends BaseTest
     
     private static void open(String dataName, Context context)
     {
-        TypedInputStream2 in ;
-        if ( context != null )
-            in = WebReader2.open(dataName, context) ;
-        else
-            in = WebReader2.open(dataName) ;
+        TypedInputStream in = 
+            ( context != null ) ?
+                 RDFDataMgr.open(dataName, context) :
+                 RDFDataMgr.open(dataName) ;
         assertNotNull(in) ;
-        in.close() ;
+        IO.close(in) ;
     }
     
     private static void read(String dataName)
     {
         StreamManager.setGlobal(streamMgr) ;
         Model m = ModelFactory.createDefaultModel() ;
-        WebReader2.read(m, dataName) ;
+        RDFDataMgr.read(m, dataName) ;
         assertTrue(m.size() != 0 ) ;
         StreamManager.setGlobal(streamMgrStd) ;
     }

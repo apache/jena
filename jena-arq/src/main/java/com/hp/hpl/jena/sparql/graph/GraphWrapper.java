@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.sparql.graph;
 
 import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
 import com.hp.hpl.jena.shared.AddDeniedException ;
 import com.hp.hpl.jena.shared.DeleteDeniedException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
@@ -28,6 +27,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 /** Graph wrapper */
 public class GraphWrapper implements Graph
 {
+    // Like WrappedGraph but pure wrapper - use this?
     final private Graph graph ;
 
     public GraphWrapper(Graph graph) { this.graph = graph ; }
@@ -45,17 +45,12 @@ public class GraphWrapper implements Graph
     }
 
     @Override
-    public QueryHandler queryHandler()
-    {
-        return graph.queryHandler() ;
-    }
-
-    @Override
     public TransactionHandler getTransactionHandler()
     {
         return graph.getTransactionHandler() ;
     }
 
+    @Deprecated
     @Override
     public BulkUpdateHandler getBulkUpdateHandler()
     {
@@ -78,12 +73,6 @@ public class GraphWrapper implements Graph
     public GraphStatisticsHandler getStatisticsHandler()
     {
         return graph.getStatisticsHandler() ;
-    }
-
-    @Override
-    public Reifier getReifier()
-    {
-        return graph.getReifier() ;
     }
 
     @Override
@@ -151,6 +140,14 @@ public class GraphWrapper implements Graph
     {
         return graph.isClosed() ;
     }
+
+    @Override
+    public void clear()
+    { graph.clear() ; }
+
+    @Override
+    public void remove(Node s, Node p, Node o)
+    { graph.remove(s, p, o) ; }
 
 }
 

@@ -53,7 +53,7 @@ public class DatasetImpl implements Dataset
     protected DatasetGraph dsg = null ;
     private Transactional transactional = null ;
     // Cache of graph -> model so that we don't churn model creation.
-    private Cache<Graph, Model> cache = CacheFactory.createCache(0.75f, 20) ;
+    private Cache<Graph, Model> cache = createCache() ;
     private Object internalLock = new Object() ;
 
     //private DatasetImpl() {}
@@ -243,7 +243,9 @@ public class DatasetImpl implements Dataset
         cache = null ;
     }
 
-    private void removeFromCache(Graph graph)
+    protected Cache<Graph, Model> createCache() { return CacheFactory.createCache(0.75f, 20) ; }
+    
+    protected void removeFromCache(Graph graph)
     {
         // Assume MRSW - no synchronized needed.
         if ( graph == null )
@@ -251,13 +253,13 @@ public class DatasetImpl implements Dataset
         cache.remove(graph) ;
     }
 
-    private void addToCache(Model model)
+    protected void addToCache(Model model)
     {
         // Assume MRSW - no synchronized needed.
         cache.put(model.getGraph(), model) ;
     }
 
-    private Model graph2model(Graph graph)
+    protected Model graph2model(Graph graph)
     { 
         // Called from readers -- outer synchronation needed.
         Model model = cache.get(graph) ;
@@ -269,7 +271,7 @@ public class DatasetImpl implements Dataset
         return model ;
     }
     
-    private static void checkGraphName(String uri)
+    protected static void checkGraphName(String uri)
     {
         if ( uri == null )
             throw new ARQException("null for graph name") ; 

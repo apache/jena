@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import static org.openjena.riot.WebContent.* ;
+import static org.apache.jena.riot.WebContent.* ;
 
 import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.sparql.util.TranslationTable ;

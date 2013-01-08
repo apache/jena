@@ -18,8 +18,8 @@
 
 package org.apache.jena.riot.langsuite;
 
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.WebReader2 ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
@@ -28,9 +28,9 @@ import com.hp.hpl.jena.sparql.junit.EarlReport ;
 public class UnitTestSyntax extends LangTestCase
 {
     private final String uri ;
-    private final Lang2 lang ;
+    private final Lang lang ;
 
-    public UnitTestSyntax(String name, String testURI, String uri, Lang2 lang, EarlReport earl)
+    public UnitTestSyntax(String name, String testURI, String uri, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
         this.uri = uri ;
@@ -41,7 +41,7 @@ public class UnitTestSyntax extends LangTestCase
     public void runTestForReal()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        WebReader2.read(model, uri, uri, lang) ;
+        RDFDataMgr.read(model, uri, uri, lang) ;
     }
 
     @Override

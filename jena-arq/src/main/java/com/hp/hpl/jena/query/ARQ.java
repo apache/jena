@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.query;
 
-import org.openjena.riot.RIOT ;
+import org.apache.jena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 

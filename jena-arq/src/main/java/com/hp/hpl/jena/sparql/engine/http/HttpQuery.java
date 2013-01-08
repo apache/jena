@@ -33,7 +33,7 @@ import java.util.zip.GZIPInputStream ;
 
 import org.apache.commons.codec.binary.Base64 ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -407,10 +407,15 @@ public class HttpQuery extends Params
 
     private InputStream execCommon() throws QueryExceptionHTTP
     {
-        try {        
-            responseCode = httpConnection.getResponseCode() ;
-            responseMessage = Convert.decWWWForm(httpConnection.getResponseMessage()) ;
-            
+        try {
+            try {
+                responseCode = httpConnection.getResponseCode() ;
+                responseMessage = Convert.decWWWForm(httpConnection.getResponseMessage()) ;
+            } catch (NullPointerException ex) {
+                // This happens if you talk to a non-HTTP port.
+                // e.g. memcached!
+                throw new QueryExceptionHTTP("Problems with HTTP response (was it an HTTP server?)", ex) ;
+            }
             // 1xx: Informational 
             // 2xx: Success 
             // 3xx: Redirection 

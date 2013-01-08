@@ -23,7 +23,7 @@ import java.io.InputStream ;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.riot.TypedInputStream2 ;
+import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.stream.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.shared.NotFoundException ;
 import com.hp.hpl.jena.util.FileUtils ;
-import com.hp.hpl.jena.util.LocationMapper ;
 import com.hp.hpl.jena.util.TypedStream ;
 
 /** FileManager
@@ -44,8 +43,8 @@ import com.hp.hpl.jena.util.TypedStream ;
  * resources: applications may also create specialised FileManagers.
  * 
  * A FileManager contains a list of location functions to try: the global
- * FileManger has one {@link LocatorFile2}, one {@link LocatorClassLoader} and
- * one {@link LocatorURL2}
+ * FileManger has one {@link LocatorFile}, one {@link LocatorClassLoader} and
+ * one {@link LocatorURL}
  * 
  * Main operations:
  * <ul>
@@ -65,7 +64,7 @@ import com.hp.hpl.jena.util.TypedStream ;
  * copy of a common RDF dataset may be used whenever the usual URL is used by
  * the application.
  *
- * The {@link LocatorFile2} also supports the idea of "current directory".
+ * The {@link LocatorFile} also supports the idea of "current directory".
  * 
  * @see StreamManager
  * @see LocationMapper
@@ -134,17 +133,17 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
         while ( iter.hasNext() )
             streamManager.addLocator(AdapterLib.convert(iter.next())) ;
 
-        LocationMapper locmap = filemanager.getLocationMapper() ;
+        com.hp.hpl.jena.util.LocationMapper locmap = filemanager.getLocationMapper() ;
         streamManager.setLocationMapper(AdapterLib.copyConvert(locmap)) ;
     }
 
     public AdapterFileManager(StreamManager streamManager)
     {
-        this(streamManager, (LocationMapper2)null) ;
+        this(streamManager, (LocationMapper)null) ;
     }
     
     /** Create a FileManger using a RIOT StreamManager and RIOT LocationMapper  */
-    public AdapterFileManager(StreamManager streamManager, LocationMapper2 mapper)
+    public AdapterFileManager(StreamManager streamManager, LocationMapper mapper)
     { 
         if ( streamManager == null )
             streamManager = new StreamManager() ;
@@ -155,7 +154,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     /** Create a "standard" FileManager. */
     public static AdapterFileManager makeGlobal()
     {
-        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get(), (LocationMapper2)null) ;
+        AdapterFileManager fMgr = new AdapterFileManager(StreamManager.get(), (LocationMapper)null) ;
         return fMgr ;
     }
     
@@ -164,11 +163,11 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     
     /** Set the location mapping */
     @Override
-    public void setLocationMapper(LocationMapper mapper)   { streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ; }
+    public void setLocationMapper(com.hp.hpl.jena.util.LocationMapper mapper)   { streamManager.setLocationMapper(AdapterLib.copyConvert(mapper)) ; }
     
     /** Get the location mapping */
     @Override
-    public LocationMapper getLocationMapper()               { return new AdapterLocationMapper(streamManager.getLocationMapper()) ; }
+    public com.hp.hpl.jena.util.LocationMapper getLocationMapper()               { return new AdapterLocationMapper(streamManager.getLocationMapper()) ; }
     
     /** Return an iterator over all the handlers */
     @Override
@@ -194,7 +193,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     @Override
     public void addLocatorFile(String dir)
     {
-        LocatorFile2 fLoc = new LocatorFile2(dir) ;
+        LocatorFile fLoc = new LocatorFile(dir) ;
         streamManager.addLocator(fLoc) ;
     }
     
@@ -210,7 +209,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     @Override
     public void addLocatorURL()
     {
-        Locator loc = new LocatorURL2() ;
+        Locator loc = new LocatorURL() ;
         streamManager.addLocator(loc) ;
     }
 
@@ -278,7 +277,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
-        TypedInputStream2 in = streamManager.openNoMapOrNull(mappedURI) ;
+        TypedInputStream in = streamManager.openNoMapOrNull(mappedURI) ;
         if ( in == null )
         {
             if ( log.isDebugEnabled() )
@@ -290,8 +289,8 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
             // XXX
             //syntax
         }
-        model.read(in.getInput(), baseURI, syntax) ;
-        try { in.getInput().close(); } catch (IOException ex) {}
+        model.read(in, baseURI, syntax) ;
+        try { in.close(); } catch (IOException ex) {}
         return model ;
     }
 
@@ -312,7 +311,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     @Override
     public InputStream open(String filenameOrURI)
     { 
-        return streamManager.open(filenameOrURI).getInput() ;
+        return streamManager.open(filenameOrURI) ;
     }
     
     /** Apply the mapping of a filename or URI */
@@ -322,7 +321,7 @@ public class AdapterFileManager extends com.hp.hpl.jena.util.FileManager
     /** Open a file using the locators of this FileManager 
      *  but without location mapping.  Throws RiotNotFoundException if not found.*/ 
     @Override
-    public InputStream openNoMap(String filenameOrURI)          { return streamManager.openNoMap(filenameOrURI).getInput() ; }
+    public InputStream openNoMap(String filenameOrURI)          { return streamManager.openNoMap(filenameOrURI) ; }
 
     /** Open a file using the locators of this FileManager 
      *  without location mapping. Return null if not found

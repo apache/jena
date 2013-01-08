@@ -20,6 +20,8 @@ package arq.cmdline;
 
 import java.io.PrintStream ;
 
+import com.hp.hpl.jena.query.ARQ ;
+
 import org.apache.jena.atlas.io.IndentedWriter ;
 import arq.cmd.CmdUtils ;
 import arq.cmd.TerminationException ;
@@ -29,7 +31,7 @@ import arq.cmd.TerminationException ;
 
 public abstract class CmdGeneral extends CmdArgModule implements CallbackHelp//, VersionCallback
 {
-    static { CmdUtils.setN3Params() ; }
+    static { CmdUtils.setN3Params() ; ARQ.init() ; }
 
     protected ModGeneral modGeneral = new ModGeneral(this) ;
     protected ModVersion modVersion = new ModVersion(true) ;

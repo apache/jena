@@ -25,8 +25,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
- * @author Damian Steer <d.steer@bris.ac.uk>
+ * Tests for {@link OpAsQuery}
  */
 public class OpAsQueryTest {
 
@@ -103,9 +102,56 @@ public class OpAsQueryTest {
         assertEquals(result[0], result[1]);
     }
     
+    @Test
+    public void testQuadPatternInDefaultGraph() {
+        Object[] result = checkQuadQuery("SELECT * WHERE { ?s a ?type }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testGraphClauseUri() {
+        Object[] result = checkQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testGraphClauseComplex() {
+        Object[] result = checkQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testQuadPatternInGraph() {
+        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } }");
+        assertEquals(result[0], result[1]);
+    }
+    
+    @Test
+    public void testQuadPatternInGraphComplex01() {
+        //This fails because OpQuadPattern's are converted back to individual GRAPH clauses
+        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type . OPTIONAL { ?s <http://label> ?label } } }");
+        assertFalse(result[0].equals(result[1]));
+    }
+    
+    @Test
+    public void testQuadPatternInGraphComplex02() {
+        //This succeeds since each OpQuadPattern is from a single simple GRAPH clause
+        Object[] result = checkQuadQuery("SELECT * WHERE { GRAPH <http://example> { ?s a ?type } OPTIONAL { GRAPH <http://example> { ?s <http://label> ?label } } }");
+        assertEquals(result[0], result[1]);
+    }
+    
     public Object[] checkQuery(String query) {
         Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
         Op toReconstruct = Algebra.compile(orig);
+        Query got = OpAsQuery.asQuery(toReconstruct);
+        Object[] r = { orig, got };
+        return r;
+    }
+    
+    public Object[] checkQuadQuery(String query) {
+        Query orig = QueryFactory.create(query, Syntax.syntaxSPARQL_11);
+        Op toReconstruct = Algebra.compile(orig);
+        toReconstruct = Algebra.toQuadForm(toReconstruct);
         Query got = OpAsQuery.asQuery(toReconstruct);
         Object[] r = { orig, got };
         return r;

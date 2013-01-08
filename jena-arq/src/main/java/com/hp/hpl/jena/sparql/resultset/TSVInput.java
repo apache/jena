@@ -26,7 +26,7 @@ import java.util.List ;
 import java.util.regex.Pattern ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.openjena.riot.RiotException ;
+import org.apache.jena.riot.RiotException ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.ResultSet ;

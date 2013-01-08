@@ -21,7 +21,11 @@ package org.openjena.riot;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.lib.Sink ;
-import org.openjena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.sparql.core.Quad ;
 
@@ -40,7 +44,8 @@ public class RiotQuadParsePuller extends RiotParsePuller<Quad>
     @Override
     protected LangRIOT createParser(Sink<Quad> sink)
     {
-        return RiotReader.createParserQuads(in, lang, baseIRI, sink) ;
+        StreamRDF dest = StreamRDFLib.sinkQuads(sink) ;
+        return RiotReader.createParser(in, lang, baseIRI, dest) ;
     }
 }
 

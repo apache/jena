@@ -421,7 +421,7 @@ class XMLInputStAX extends SPARQLResult
     
     // -------- Result Set
     
-    private void processResults() throws XMLStreamException
+    private void processResults()
     { return ; }
     
     private Binding getOneSolution() throws XMLStreamException

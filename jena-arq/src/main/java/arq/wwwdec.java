@@ -18,14 +18,11 @@
 
 package arq;
 
-import java.io.UnsupportedEncodingException ;
-
 import org.apache.jena.atlas.lib.StrUtils ;
-
 
 public class wwwdec
 {
-    public static void main(String...args) throws UnsupportedEncodingException
+    public static void main(String...args)
     {
         for ( String x : args)
         {

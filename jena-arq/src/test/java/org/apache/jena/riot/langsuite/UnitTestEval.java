@@ -18,15 +18,16 @@
 
 package org.apache.jena.riot.langsuite;
 
-import org.apache.jena.riot.Lang2 ;
-import org.apache.jena.riot.RDFReaderRIOT ;
-import org.apache.jena.riot.WebReader2 ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.system.JenaReaderNTriples2 ;
+import java.io.InputStream ;
+
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.stream.StreamManager ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.RDFReader ;
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.util.FileUtils ;
 
@@ -35,9 +36,9 @@ public class UnitTestEval extends LangTestCase
     String input ;
     String output ;
     String baseIRI ;
-    Lang2 lang ;
+    Lang lang ;
     
-    public UnitTestEval(String name, String testURI, String input, String output, String baseIRI, Lang2 lang, EarlReport earl)
+    public UnitTestEval(String name, String testURI, String input, String output, String baseIRI, Lang lang, EarlReport earl)
     {
         super(name, testURI, earl) ;
         this.input = input ;
@@ -58,17 +59,17 @@ public class UnitTestEval extends LangTestCase
     public void runTestForReal()
     {
         Model model = ModelFactory.createDefaultModel() ;
-        RDFReader rdfreader = new RDFReaderRIOT() ;
         try {
             if ( baseIRI != null )
-                WebReader2.read(model, input, baseIRI, lang) ;
+                RDFDataMgr.read(model, input, baseIRI, lang) ;
             else
-                WebReader2.read(model, input, lang) ;
+                RDFDataMgr.read(model, input, lang) ;
             
             String syntax = FileUtils.guessLang(output, FileUtils.langNTriple) ;
             Model results = ModelFactory.createDefaultModel() ;
             // Directly get an N-triples reader
-            new JenaReaderNTriples2().read(results, output) ;
+            InputStream in = StreamManager.get().open(output) ;
+            RDFDataMgr.read(results, in, null, RDFLanguages.NTRIPLES) ;
 
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )

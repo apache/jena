@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.modify;
 import org.apache.jena.atlas.junit.BaseTest ;
 
 import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.ARQTestSuite ;
@@ -35,8 +36,8 @@ public abstract class AbstractTestUpdateBase extends BaseTest
     protected void defaultGraphData(GraphStore gStore, Graph data)
     {
         Graph g = gStore.getDefaultGraph() ;
-        g.getBulkUpdateHandler().removeAll() ;
-        g.getBulkUpdateHandler().add(data) ;
+        g.clear() ;
+        GraphUtil.addInto(g, data) ;
     }
     
     protected void namedGraphData(GraphStore gStore, Node uri, Graph data)
@@ -48,8 +49,8 @@ public abstract class AbstractTestUpdateBase extends BaseTest
             g = gStore.getGraph(uri) ;
         }
         else
-            g.getBulkUpdateHandler().removeAll() ;
-        g.getBulkUpdateHandler().add(data) ;
+            g.clear() ;
+        GraphUtil.addInto(g,data) ;
     }
     
     protected static final String FileBase = ARQTestSuite.testDirUpdate ;

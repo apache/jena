@@ -24,7 +24,7 @@ import java.io.PrintWriter ;
 import java.util.* ;
 
 import org.apache.jena.atlas.logging.Log ;
-import org.openjena.riot.checker.CheckerLiterals ;
+import org.apache.jena.riot.checker.CheckerLiterals ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.* ;

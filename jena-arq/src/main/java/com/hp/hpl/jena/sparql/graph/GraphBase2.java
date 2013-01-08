@@ -19,14 +19,7 @@
 package com.hp.hpl.jena.sparql.graph;
 
 import com.hp.hpl.jena.graph.* ;
-import com.hp.hpl.jena.graph.impl.AllCapabilities ;
-import com.hp.hpl.jena.graph.impl.GraphBase ;
-import com.hp.hpl.jena.graph.impl.GraphMatcher ;
-import com.hp.hpl.jena.graph.impl.GraphWithPerform ;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
-import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
-import com.hp.hpl.jena.graph.impl.SimpleTransactionHandler ;
-import com.hp.hpl.jena.graph.query.QueryHandler ;
+import com.hp.hpl.jena.graph.impl.* ;
 import com.hp.hpl.jena.shared.AddDeniedException ;
 import com.hp.hpl.jena.shared.ClosedException ;
 import com.hp.hpl.jena.shared.DeleteDeniedException ;
@@ -36,6 +29,8 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 public abstract class GraphBase2 implements GraphWithPerform
 {
+    // *** BECOME GraphBase
+    
     // Like GraphBase but no reificiation handling in normal operations.
     // AKA Hard coded ReificationStyle.Standard
 
@@ -63,7 +58,6 @@ public abstract class GraphBase2 implements GraphWithPerform
     public void close() 
     { 
         closed = true;
-        if (reifier != null) reifier.close(); 
     }
 
     @Override
@@ -83,18 +77,6 @@ public abstract class GraphBase2 implements GraphWithPerform
           returns the same SimpleQueryHandler each time it is called; sub-classes
           may override if they need specialised query handlers.
      */
-    @Override
-    public abstract QueryHandler queryHandler() ; 
-//    { 
-//        if (queryHandler == null) queryHandler = new SimpleQueryHandler(this);
-//        return queryHandler;
-//    }
-
-    /**
-           The query handler for this graph, or null if queryHandler() has not been
-           called yet. 
-     */
-    protected QueryHandler queryHandler;
 
     @Override
     public GraphStatisticsHandler getStatisticsHandler()
@@ -153,7 +135,9 @@ public abstract class GraphBase2 implements GraphWithPerform
            SimpleBulkUpdateHandler, which does bulk update by repeated simple
            (add/delete) updates; the same handler is returned on each call. Subclasses
            may override if they have specialised implementations.
+     * @deprecated
      */
+    @Deprecated
     @Override
     public BulkUpdateHandler getBulkUpdateHandler()
     { 
@@ -333,47 +317,27 @@ public abstract class GraphBase2 implements GraphWithPerform
         ClosableIterator<Triple> it = find( t );
         try { return it.hasNext(); } finally { it.close(); }
     }
-
-//    /**
-//           Answer an iterator over all the triples exposed in this graph's reifier that 
-//          match <code>m</code>. The default implementation delegates this to
-//          the reifier; subclasses probably don't need to override this.
-//     */
-//    protected ExtendedIterator reifierTriples( TripleMatch m )
-//    { return getReifier().findExposed( m ); }
-
+    
     /**
-           Answer this graph's reifier. The reifier may be lazily constructed, and it
-           must be the same reifier on each call. The default implementation is a
-           SimpleReifier. Generally DO NOT override this method: override
-           <code>constructReifier</code> instead.
+    Remove all the statements from this graph.
      */
     @Override
-    public Reifier getReifier() 
+    public void clear()
     {
-        if (reifier == null) reifier = constructReifier();
-        return reifier;
+        GraphUtil.remove(this, Node.ANY, Node.ANY, Node.ANY) ;
+        getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
 
     /**
-           Answer a reifier appropriate to this graph. Subclasses override if
-           they need non-SimpleReifiers.
+   Remove all triples that match by find(s, p, o)
      */
-    
-    protected Reifier constructReifier()
-    { return  new Reifier2(this) ; }
+    @Override
+    public void remove( Node s, Node p, Node o )
+    {
+        GraphUtil.remove(this, s, p, o) ;
+        getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+    }
 
-    /**
-           The cache variable for the allocated Reifier.
-     */
-    protected Reifier reifier = null;
-
-    /**
-           Answer the size of this graph (ie the number of exposed triples). Defined as
-           the size of the triple store plus the size of the reification store. Subclasses
-           must override graphBaseSize() to reimplement (and reifierSize if they have
-           some special reason for redefined that).
-     */
     @Override
     public final int size() 
     {

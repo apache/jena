@@ -19,8 +19,8 @@
 package org.apache.jena.riot.langsuite;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.openjena.riot.ErrorHandlerFactory ;
-import org.openjena.riot.SysRIOT ;
+import org.apache.jena.riot.SysRIOT ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
 
 import com.hp.hpl.jena.sparql.junit.EarlReport ;
 import com.hp.hpl.jena.sparql.junit.EarlTestCase ;

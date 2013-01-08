@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.ARQNotImplemented ;
 import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.core.BasicPattern ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
 import com.hp.hpl.jena.sparql.engine.QueryIterator ;
@@ -218,7 +219,26 @@ public class OpAsQuery
         
         @Override
         public void visit(OpQuadPattern quadPattern)
-        { throw new ARQNotImplemented("OpQuadPattern") ; }
+        {
+            Node graphNode = quadPattern.getGraphNode();
+            if (graphNode.equals(Quad.defaultGraphNodeGenerated)) {
+                currentGroup().addElement(process(quadPattern.getBasicPattern())) ;
+            } else {
+                startSubGroup();
+                Element e = asElement(new OpBGP(quadPattern.getBasicPattern())) ;
+                endSubGroup();
+                
+                //If not element group make it one
+                if (!(e instanceof ElementGroup)) {
+                    ElementGroup g = new ElementGroup();
+                    g.addElement(e);
+                    e = g;
+                }
+                
+                Element graphElt = new ElementNamedGraph(graphNode, e) ;
+                currentGroup().addElement(graphElt) ;
+            }
+        }
 
         @Override
         public void visit(OpPath opPath)
@@ -331,7 +351,14 @@ public class OpAsQuery
         {
             startSubGroup() ;
             Element e = asElement(opGraph.getSubOp()) ;
-            ElementGroup g = endSubGroup() ;
+            endSubGroup() ;
+            
+            //If not element group make it one
+            if (!(e instanceof ElementGroup)) {
+                ElementGroup g = new ElementGroup();
+                g.addElement(e);
+                e = g;
+            }
             
             Element graphElt = new ElementNamedGraph(opGraph.getNode(), e) ;
             currentGroup().addElement(graphElt) ;
