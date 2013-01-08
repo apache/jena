@@ -26,97 +26,89 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
-	@author hedgehog
-    
     A SimpleGraphFactory produces memory-based graphs and records them
     in a local map.
-*/
+ */
 
 public class SimpleGraphMaker extends BaseGraphMaker
-	{
-    /**
-        Initialise a SimpleGraphMaker with the given style.
-        @param style the reification style of all the graphs we create
-    */
-    public SimpleGraphMaker( ReificationStyle style )
-        { super( style ); }
-       
+{
+
     /**
         Initialise a SimpleGraphMaker with reification style Minimal
-    */ 
+     */ 
     public SimpleGraphMaker()
-        { this( ReificationStyle.Minimal ); }
-    
+    { super() ; }
+
     /**
         The mapping from the names of graphs to the Graphs themselves.
-    */    
+     */    
     private Map<String, Graph> graphs = new HashMap<String, Graph>();
-    
+
     public Graph create()
-        { return Factory.createGraphMem(); }
-    
+    { return Factory.createGraphMem(); }
+
     /**
         Create a graph and record it with the given name in the local map.
      */
     @Override
     public Graph createGraph( String name, boolean strict )
-        {
+    {
         GraphMemBase already = (GraphMemBase) graphs.get( name );
         if (already == null)
-            {
-            Graph result = Factory.createGraphMem( style );
+        {
+            Graph result = Factory.createGraphMem( );
             graphs.put( name, result );
             return result;            
-            }
+        }
         else if (strict)
             throw new AlreadyExistsException( name );
         else
             return already.openAgain();
-        }
-        
+    }
+
     /**
         Open (aka find) a graph with the given name in the local map.
      */
     @Override
     public Graph openGraph( String name, boolean strict )
-        {
+    {
         GraphMemBase already = (GraphMemBase) graphs.get( name );
         if (already == null) 
             if (strict) throw new DoesNotExistException( name );
             else return createGraph( name, true );
         else
             return already.openAgain();
-        }
-        
+    }
+
     @Override
     public Graph openGraph()
-        { return getGraph(); }
-    
+    { return getGraph(); }
+
     /**
         Remove the mapping from name to any graph from the local map.
      */
     @Override
     public void removeGraph( String name )
-        {
+    {
         if (!graphs.containsKey( name )) throw new DoesNotExistException( name );
         graphs.remove( name );
-        }
-        
+    }
+
     /**
         Return true iff we have a graph with the given name
-    */
+     */
     @Override
     public boolean hasGraph( String name )
-        { return graphs.containsKey( name ); }
-             
+    { return graphs.containsKey( name ); }
+
     /**
         Close this factory - we choose to do nothing.
      */
     @Override
     public void close()
-        { /* nothing to do */ }
-        
+    { /* nothing to do */ }
+
     @Override
     public ExtendedIterator<String> listGraphs()
-        { return WrappedIterator.create( graphs.keySet().iterator() ); }
-	}
+    { return WrappedIterator.create( graphs.keySet().iterator() ); }
+}

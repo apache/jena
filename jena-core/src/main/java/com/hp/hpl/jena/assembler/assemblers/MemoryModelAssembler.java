@@ -19,8 +19,12 @@
 package com.hp.hpl.jena.assembler.assemblers;
 
 
-import com.hp.hpl.jena.assembler.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.assembler.Assembler ;
+import com.hp.hpl.jena.assembler.JA ;
+import com.hp.hpl.jena.assembler.Mode ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.rdf.model.Resource ;
 
 public class MemoryModelAssembler extends ModelAssembler implements Assembler
     {
@@ -33,5 +37,5 @@ public class MemoryModelAssembler extends ModelAssembler implements Assembler
     
     @Override
     protected Model openEmptyModel( Assembler a, Resource root, Mode irrelevant )
-        { return ModelFactory.createDefaultModel( getReificationStyle( root )); }
+        { return ModelFactory.createDefaultModel( ); }
     }

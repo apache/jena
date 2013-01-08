@@ -42,10 +42,6 @@ import com.hp.hpl.jena.graph.Node;
  *    resource created by an implementation in another class which adds
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.2 $'
-            Date='$Date: 2009-09-28 10:45:11 $'
  */
 public interface ModelCon {
 
@@ -617,8 +613,10 @@ public interface ModelCon {
         If suppressreifications is true, remove the reified statements of m as well.
         @param m the model containing the statements to remove
         @param suppressReifications true to remove reified statements too
-        @return this model for cascading 
+        @return this model for cascading
+        @deprecated suppressReifications now longer has any meaning or effect
     */
+    @Deprecated
     Model remove( Model m, boolean suppressReifications );
 
     /** 

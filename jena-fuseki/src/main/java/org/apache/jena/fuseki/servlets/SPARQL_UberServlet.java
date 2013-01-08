@@ -30,13 +30,12 @@ import org.apache.jena.atlas.iterator.Filter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
-import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.WebContent ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a falserouter for all SPARQL operations
@@ -163,14 +162,6 @@ public abstract class SPARQL_UberServlet extends SPARQL_ServletBase
         
         if ( ! hasTrailing && ! hasParams )
         {
-            // Action on the dataset URI.
-            if ( ! Fuseki.graphStoreProtocolMode )
-            {
-                // Security checking?
-                //executeRequest(desc, restQuads, id, request, response) ;
-                errorBadRequest("Request not support (quad operation)") ;
-                return ;
-            }
             restQuads.doCommonWorker(id, request, response) ;
             return ;
         }

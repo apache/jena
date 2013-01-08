@@ -33,7 +33,6 @@ public class TestSharedPackage extends TestCase
         TestSuite result = new TestSuite();
         result.addTest( TestPrefixMapping.suite() );
         result.addTest( TestJenaException.suite() );
-        result.addTest( TestReificationStyle.suite() );
         result.addTest( RandomizedTestSuiteRegression.suite() );
         return result;
         }

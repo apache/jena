@@ -22,11 +22,11 @@ import java.nio.ByteBuffer ;
 
 import org.apache.jena.atlas.io.BlockUTF8 ;
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.openjena.riot.LangTag ;
-import org.openjena.riot.RiotException ;
-import org.openjena.riot.tokens.Token ;
-import org.openjena.riot.tokens.Tokenizer ;
-import org.openjena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.tokens.Token ;
+import org.apache.jena.riot.tokens.Tokenizer ;
+import org.apache.jena.riot.tokens.TokenizerFactory ;
+import org.apache.jena.riot.web.LangTag ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.AnonId ;

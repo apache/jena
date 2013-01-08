@@ -33,7 +33,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
-import org.openjena.atlas.iterator.IteratorTruncate;
+import org.apache.jena.atlas.iterator.IteratorTruncate;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -132,6 +132,7 @@ public class IndexLARQ
     public NodeIterator searchModelByIndex(final Model model, String queryString, final float scoreLimit)
     {
         Map1<HitLARQ, RDFNode> converter = new Map1<HitLARQ, RDFNode>(){
+            @Override
             public RDFNode map1(HitLARQ x)
             {
                 return ModelUtils.convertGraphNodeToRDFNode(x.getNode(), model) ;
@@ -168,6 +169,7 @@ public class IndexLARQ
             TopDocs topDocs = searcher.search(query, (Filter)null, LARQ.NUM_RESULTS ) ;
             
             Map1<ScoreDoc,HitLARQ> converter = new Map1<ScoreDoc,HitLARQ>(){
+                @Override
                 public HitLARQ map1(ScoreDoc object)
                 {
                     return new HitLARQ(searcher, object) ;

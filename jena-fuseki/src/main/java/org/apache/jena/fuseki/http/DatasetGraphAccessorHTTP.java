@@ -30,28 +30,26 @@ import org.apache.http.HttpVersion ;
 import org.apache.http.client.HttpClient ;
 import org.apache.http.client.methods.* ;
 import org.apache.http.entity.InputStreamEntity ;
-import org.apache.http.impl.client.DefaultHttpClient ;
+import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.params.BasicHttpParams ;
 import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
-import org.apache.http.protocol.HTTP ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.* ;
 import org.apache.jena.fuseki.migrate.UnmodifiableGraph ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.WebContent ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
@@ -176,7 +174,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         HttpParams httpParams$ = new BasicHttpParams() ;
         // See DefaultHttpClient.createHttpParams
         HttpProtocolParams.setVersion(httpParams$,               HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setContentCharset(httpParams$,        HTTP.DEFAULT_CONTENT_CHARSET);
+        HttpProtocolParams.setContentCharset(httpParams$,        WebContent.charsetUTF8);
         HttpProtocolParams.setUseExpectContinue(httpParams$,     true);
         HttpConnectionParams.setTcpNoDelay(httpParams$,          true);
         HttpConnectionParams.setSocketBufferSize(httpParams$,    32*1024);
@@ -194,7 +192,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private Graph exec(String targetStr, Graph graphToSend, HttpUriRequest httpRequest, boolean processBody)
     {
-        HttpClient httpclient = new DefaultHttpClient(httpParams) ;
+        HttpClient httpclient = new SystemDefaultHttpClient(httpParams) ;
         
         if ( graphToSend != null )
         {
@@ -207,7 +205,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray()) ;
             InputStreamEntity reqEntity = new InputStreamEntity(in, bytes.length) ;
             reqEntity.setContentType(WebContent.contentTypeRDFXML) ;
-            reqEntity.setContentEncoding(HTTP.UTF_8) ;
+            reqEntity.setContentEncoding(WebContent.charsetUTF8) ;
             HttpEntity entity = reqEntity ;
             ((HttpEntityEnclosingRequestBase)httpRequest).setEntity(entity) ;
         }
@@ -270,7 +268,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
                 InputStream instream = entity.getContent() ;
 //                String mimeType = ConNeg.chooseContentType(request, rdfOffer, ConNeg.acceptRDFXML).getAcceptType() ;
 //                String charset = ConNeg.chooseCharset(request, charsetOffer, ConNeg.charsetUTF8).getAcceptType() ;
-                ts = new TypedInputStream(instream, contentType, charset) ;
+                ts = new TypedInputStream(instream, contentType, charset, null) ;
             }
             Graph graph = GraphFactory.createGraphMem() ;
             if ( processBody )
@@ -294,11 +292,11 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         // Either it's XML and so the XML parser deals with it, or the 
         // language determines the charset and the parsers offer InputStreams.   
        
-        Lang lang = FusekiLib.langFromContentType(ts.getMediaType()) ;
+        Lang lang = FusekiLib.langFromContentType(ts.getContentType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        Sink<Triple> sink = new SinkTriplesToGraph(graph) ;
-        LangRIOT parser = RiotReader.createParserTriples(ts, lang, base, sink) ;
+        StreamRDF dest = StreamRDFLib.graph(graph) ;
+        LangRIOT parser = RiotReader.createParser(ts, lang, base, dest) ;
         parser.parse() ;
         IO.close(ts) ;
     }    

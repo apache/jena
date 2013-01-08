@@ -30,8 +30,6 @@ import com.hp.hpl.jena.graph.Triple;
  * other listeners.
  * It motivates the use of, e.g. CopyOnWriteArrayList
  * for storing listeners.
- * @author Jeremy
- *
  */
 public class TestRegisterGraphListener extends GraphTestBase {
 

@@ -18,19 +18,11 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import java.util.Iterator;
-
-import org.apache.jena.atlas.lib.Tuple ;
-
-
-
-import com.hp.hpl.jena.graph.BulkUpdateHandler;
-import com.hp.hpl.jena.graph.GraphEvents;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler;
-import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.tdb.store.GraphTDBBase;
-import com.hp.hpl.jena.tdb.store.NodeId;
+import com.hp.hpl.jena.graph.BulkUpdateHandler ;
+import com.hp.hpl.jena.graph.GraphEvents ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
+import com.hp.hpl.jena.tdb.store.GraphTDBBase ;
 
 public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements BulkUpdateHandler
 {
@@ -42,75 +34,24 @@ public class BulkUpdateHandlerTDB extends SimpleBulkUpdateHandler implements Bul
         this.graphTDB = graph ;
     }
 
+    @Deprecated
     @Override
     public void remove(Node s, Node p, Node o)
     {
         s = fix(s) ;
         p = fix(p) ;
         o = fix(o) ;
-        removeWorker(s,p,o) ;
+        GraphTDBBase.removeWorker(graphTDB, s,p,o) ;
         manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
     }
 
     private static Node fix(Node n) { return (n!=null)? n : Node.ANY ; }
     
+    @Deprecated
     @Override
     public void removeAll()
     {
-         removeWorker(null, null, null) ;
+        GraphTDBBase.removeWorker(graphTDB, null, null, null) ;
          notifyRemoveAll(); 
-    }
-    
-    private static final int sliceSize = 1000 ;
-    
-    private void removeWorker(Node s, Node p, Node o)
-    {
-        graphTDB.startUpdate() ;
-        
-        // Delete in batches.
-        // That way, there is no active iterator when a delete 
-        // from the indexes happens.
-        
-        NodeTupleTable t = graphTDB.getNodeTupleTable() ;
-        Node gn = graphTDB.getGraphNode() ;
-        
-        @SuppressWarnings("unchecked")
-        Tuple<NodeId>[] array = (Tuple<NodeId>[])new Tuple<?>[sliceSize] ;
-        
-        while (true)
-        {
-            // Convert/cache s,p,o?
-            // The Node Cache will catch these so don't worry unduely. 
-            Iterator<Tuple<NodeId>> iter = null ;
-            if ( gn == null )
-                iter = t.findAsNodeIds(s, p, o) ;
-            else
-                iter = t.findAsNodeIds(gn, s, p, o) ;
-            
-            if ( iter == null )
-                // Finished?
-                return ;
-            
-            // Get a slice
-            int len = 0 ;
-            for ( ; len < sliceSize ; len++ )
-            {
-                if ( !iter.hasNext() ) break ;
-                array[len] = iter.next() ;
-            }
-            
-            // Delete them.
-            for ( int i = 0 ; i < len ; i++ )
-            {
-                t.getTupleTable().delete(array[i]) ;
-                array[i] = null ;
-            }
-            // Finished?
-            if ( len < sliceSize )
-                break ;
-        }
-        
-        graphTDB.finishUpdate() ;
-
     }
 }

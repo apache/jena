@@ -32,6 +32,7 @@ import com.hp.hpl.jena.util.iterator.*;
     an implementation of a dynamic intersection of two models.
 */
 
+@Deprecated
 public class Intersection extends Dyadic implements Graph
 	{
 	public Intersection( Graph L, Graph R )

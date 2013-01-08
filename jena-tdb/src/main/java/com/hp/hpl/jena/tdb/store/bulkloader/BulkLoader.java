@@ -18,14 +18,13 @@
 
 package com.hp.hpl.jena.tdb.store.bulkloader;
 
-import static org.openjena.riot.Lang.NQUADS ;
-import static org.openjena.riot.Lang.NTRIPLES ;
-
 import java.io.InputStream ;
 import java.util.List ;
 
 import org.apache.jena.atlas.event.EventType ;
-import org.openjena.riot.RiotReader ;
+import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -33,6 +32,7 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTableView ;
 import com.hp.hpl.jena.tdb.solver.stats.Stats ;
@@ -83,102 +83,102 @@ public class BulkLoader
     /** Load into default graph */
     public static void loadDefaultGraph(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
-        Destination<Triple> dest = destinationDefaultGraph(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
         loadTriples$(dest, urls) ;
     }
 
     /** Load into default graph */
     public static void loadDefaultGraph(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
     {
-        Destination<Triple> dest = destinationDefaultGraph(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDefaultGraph(dsg, showProgress) ;
         loadTriples$(dest, input) ;
     }
 
-    private static Destination<Triple> destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
+    private static BulkStreamRDF destinationDefaultGraph(DatasetGraphTDB dsg, boolean showProgress)
     {
         NodeTupleTable ntt = dsg.getTripleTable().getNodeTupleTable() ;
-        return destination(dsg, ntt, showProgress) ;
+        return destinationGraph(dsg, ntt, showProgress) ;
     }
 
     /** Load into named graph */
     public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, List<String> urls, boolean showProgress)
     {
-        Destination<Triple> dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
         loadTriples$(dest, urls) ;
     }
     
     /** Load into named graph */
     public static void loadNamedGraph(DatasetGraphTDB dsg, Node graphNode, InputStream input, boolean showProgress)
     {
-        Destination<Triple> dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
+        BulkStreamRDF dest = destinationNamedGraph(dsg, graphNode, showProgress) ;
         loadTriples$(dest, input) ;
     }
 
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, List<String> urls, boolean showProgress)
     {
-        Destination<Quad> dest = destinationDataset(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
         loadQuads$(dest, urls) ;
     }
     
     /** Load into a dataset */
     public static void loadDataset(DatasetGraphTDB dsg, InputStream input, boolean showProgress)
     {
-        Destination<Quad> dest = destinationDataset(dsg, showProgress) ;
+        BulkStreamRDF dest = destinationDataset(dsg, showProgress) ;
         loadQuads$(dest, input) ;
     }
     
 
     /** Load into a graph */
-    private static void loadTriples$(Destination<Triple> dest, List<String> urls)
+    private static void loadTriples$(BulkStreamRDF dest, List<String> urls)
     {
-        dest.start() ;
+        dest.startBulk() ;
         for ( String url : urls )
         {
             loadLogger.info("Load: "+url+" -- "+Utils.nowAsString()) ;
-            RiotReader.parseTriples(url, dest) ;
+            RiotReader.parse(url, dest) ;
         }            
-        dest.finish() ;
+        dest.finishBulk() ;
     }
 
     /** Load into a graph */
-    private static void loadTriples$(Destination<Triple> dest, InputStream input)
+    private static void loadTriples$(BulkStreamRDF dest, InputStream input)
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
-        dest.start() ;
-        RiotReader.parseTriples(input, NTRIPLES, null, dest) ;
-        dest.finish() ;
+        dest.startBulk() ;
+        RiotReader.parse(input, RDFLanguages.NTRIPLES, null, dest) ;
+        dest.finishBulk() ;
     }
     
     /** Load quads into a dataset */
-    private static void loadQuads$(Destination<Quad> dest, List<String> urls)
+    private static void loadQuads$(BulkStreamRDF dest, List<String> urls)
     {
-        dest.start() ;
+        dest.startBulk() ;
         for ( String url : urls )
         {
             loadLogger.info("Load: "+url+" -- "+Utils.nowAsString()) ;
-            RiotReader.parseQuads(url, dest) ;
+            RiotReader.parse(url, dest) ;
         }
-        dest.finish() ;
+        dest.finishBulk() ;
     }
 
     /** Load quads into a dataset */
-    private static void loadQuads$(Destination<Quad> dest, InputStream input)
+    private static void loadQuads$(BulkStreamRDF dest, InputStream input)
     {
         loadLogger.info("Load: from input stream -- "+Utils.nowAsString()) ;
-        dest.start() ;
-        RiotReader.parseQuads(input, NQUADS, null, dest) ;
-        dest.finish() ;
+        dest.startBulk() ;
+        RiotReader.parse(input, RDFLanguages.NQUADS, null, dest) ;
+        dest.finishBulk() ;
     }
     
-    private static Destination<Triple> destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
+    private static BulkStreamRDF destinationNamedGraph(DatasetGraphTDB dsg, Node graphName, boolean showProgress)
     {
         if ( graphName == null )
             return destinationDefaultGraph(dsg,showProgress) ;
         
         NodeTupleTable ntt = dsg.getQuadTable().getNodeTupleTable() ;
         NodeTupleTable ntt2 = new NodeTupleTableView(ntt, graphName) ;
-        return destination(dsg, ntt2, showProgress) ;
+        return destinationGraph(dsg, ntt2, showProgress) ;
     }
 
     public static LoadMonitor createLoadMonitor(DatasetGraphTDB dsg, String itemName, boolean showProgress)
@@ -188,141 +188,187 @@ public class BulkLoader
         else
             return new LoadMonitor(dsg, null, itemName, DataTickPoint, IndexTickPoint) ; 
     }
-    
-    private static Destination<Triple> destination(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, final boolean showProgress)
+
+    private static BulkStreamRDF destinationDataset(DatasetGraphTDB dsg, boolean showProgress)
     {
-        LoadMonitor monitor = createLoadMonitor(dsg, "triples", showProgress) ;
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(nodeTupleTable, "triples", monitor) ;
-        
-        Destination<Triple> sink = new Destination<Triple>() {
-            long count = 0 ;
-            private StatsCollector stats ;
-            private boolean startedEmpty = dsg.isEmpty() ;
-            
-            @Override
-            final public void start()
-            {
-                loaderTriples.loadStart() ;
-                loaderTriples.loadDataStart() ;
-                
-                this.stats = new StatsCollector() ;
-            }
-            @Override
-            final public void send(Triple triple)
-            {
-                Node s = triple.getSubject() ;
-                Node p = triple.getPredicate() ;
-                Node o = triple.getObject() ;
-                
-                loaderTriples.load(s, p, o)  ;
-                stats.record(null, s, p, o) ; 
-                
-                count++ ;
-            }
-
-            @Override
-            final public void flush() { }
-            @Override
-            public void close() { }
-
-            @Override
-            final public void finish()
-            {
-                loaderTriples.loadDataFinish() ;
-                loaderTriples.loadIndexStart() ;
-                loaderTriples.loadIndexFinish() ;
-                loaderTriples.loadFinish() ;
-                
-                if ( ! dsg.getLocation().isMem() && startedEmpty )
-                {
-                    String filename = dsg.getLocation().getPath(Names.optStats) ;
-                    Stats.write(filename, stats) ;
-                }
-                
-                forceSync(dsg) ;
-            }
-        } ;
-        return sink ;
-    }
-
-    private static Destination<Quad> destinationDataset(final DatasetGraphTDB dsg, boolean showProgress)
-    {
-        LoadMonitor monitor1 = createLoadMonitor(dsg, "triples", showProgress) ;
-        LoadMonitor monitor2 = createLoadMonitor(dsg, "quads", showProgress) ;
-        
-        final LoaderNodeTupleTable loaderTriples = new LoaderNodeTupleTable(
-                                                                dsg.getTripleTable().getNodeTupleTable(),
-                                                                "triples",
-                                                                monitor1) ;
-        final LoaderNodeTupleTable loaderQuads = new LoaderNodeTupleTable( 
-                                                                 dsg.getQuadTable().getNodeTupleTable(),
-                                                                 "quads",
-                                                                 monitor2) ;
-        Destination<Quad> sink = new Destination<Quad>() {
-            long count = 0 ;
-            private StatsCollector stats ;
-            private boolean startedEmpty = dsg.isEmpty() ;
-            
-            @Override
-            final public void start()
-            {
-                loaderTriples.loadStart() ;
-                loaderQuads.loadStart() ;
-
-                loaderTriples.loadDataStart() ;
-                loaderQuads.loadDataStart() ;
-                this.stats = new StatsCollector() ;
-            }
-            
-            @Override
-            final public void send(Quad quad)
-            {
-                Node s = quad.getSubject() ;
-                Node p = quad.getPredicate() ;
-                Node o = quad.getObject() ;
-                Node g = null ;
-                // Union graph?!
-                if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
-                    g = quad.getGraph() ;
-                
-                if ( g == null ) 
-                    loaderTriples.load(s, p, o) ;
-                else
-                    loaderQuads.load(g, s, p, o) ;
-                count++ ;
-                stats.record(g, s, p, o) ; 
-            }
-
-            @Override
-            final public void finish()
-            {
-                loaderTriples.loadDataFinish() ;
-                loaderQuads.loadDataFinish() ;
-                
-                loaderTriples.loadIndexStart() ;
-                loaderQuads.loadIndexStart() ;
-
-                loaderTriples.loadIndexFinish() ;
-                loaderQuads.loadIndexFinish() ;
-
-                loaderTriples.loadFinish() ;
-                loaderQuads.loadFinish() ;
-                if ( ! dsg.getLocation().isMem() && startedEmpty )
-                {
-                    String filename = dsg.getLocation().getPath(Names.optStats) ;
-                    Stats.write(filename, stats) ;
-                }
-                forceSync(dsg) ;
-            }
-            
-            @Override
-            final public void flush() { }
-            @Override
-            final public void close() { }
-        } ;
-        return sink ;
+        return new DestinationDSG(dsg, showProgress) ;
     }
     
+    private static BulkStreamRDF destinationGraph(DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
+    {
+        return new DestinationGraph(dsg, nodeTupleTable, showProgress) ;
+    }
+
+    // Load triples and quads into a dataset.
+    private static final class DestinationDSG implements BulkStreamRDF
+    {
+        final private DatasetGraphTDB dsg ; 
+        final private boolean startedEmpty ;
+        final private LoadMonitor monitor1 ; 
+        final private LoadMonitor monitor2 ;
+        final private LoaderNodeTupleTable loaderTriples ;
+        final private LoaderNodeTupleTable loaderQuads ;
+        final private boolean showProgress ;
+        private long count = 0 ;
+        private StatsCollector stats ;
+    
+        DestinationDSG(final DatasetGraphTDB dsg, boolean showProgress)
+        {
+            this.dsg = dsg ;
+            startedEmpty = dsg.isEmpty() ;
+            monitor1 = createLoadMonitor(dsg, "triples", showProgress) ;
+            monitor2 = createLoadMonitor(dsg, "quads", showProgress) ;
+    
+            loaderTriples = new LoaderNodeTupleTable(dsg.getTripleTable().getNodeTupleTable(), "triples", monitor1) ;
+            loaderQuads = new LoaderNodeTupleTable(dsg.getQuadTable().getNodeTupleTable(), "quads", monitor2) ;
+            this.showProgress = showProgress ;
+        }
+        
+        @Override
+        final public void startBulk()
+        {
+            loaderTriples.loadStart() ;
+            loaderQuads.loadStart() ;
+    
+            loaderTriples.loadDataStart() ;
+            loaderQuads.loadDataStart() ;
+            this.stats = new StatsCollector() ;
+        }
+    
+        @Override
+        public void triple(Triple triple)
+        {
+            Node s = triple.getSubject() ;
+            Node p = triple.getPredicate() ;
+            Node o = triple.getObject() ;
+            process(Quad.tripleInQuad, s, p, o ) ;
+        }
+    
+        @Override
+        public void quad(Quad quad)
+        {
+            Node s = quad.getSubject() ;
+            Node p = quad.getPredicate() ;
+            Node o = quad.getObject() ;
+            Node g = null ;
+            // Union graph?!
+            if ( ! quad.isTriple() && ! quad.isDefaultGraph() )
+                g = quad.getGraph() ;
+            process(g,s,p,o) ;
+        }
+    
+        private void process(Node g, Node s, Node p, Node o)
+        {
+            if ( g == null ) 
+                loaderTriples.load(s, p, o) ;
+            else
+                loaderQuads.load(g, s, p, o) ;
+            count++ ;
+            stats.record(g, s, p, o) ; 
+        }
+    
+        @Override
+        public void finishBulk()
+        {
+            loaderTriples.loadDataFinish() ;
+            loaderQuads.loadDataFinish() ;
+    
+            loaderTriples.loadIndexStart() ;
+            loaderQuads.loadIndexStart() ;
+    
+            loaderTriples.loadIndexFinish() ;
+            loaderQuads.loadIndexFinish() ;
+    
+            loaderTriples.loadFinish() ;
+            loaderQuads.loadFinish() ;
+            if ( ! dsg.getLocation().isMem() && startedEmpty )
+            {
+                String filename = dsg.getLocation().getPath(Names.optStats) ;
+                Stats.write(filename, stats) ;
+            }
+            forceSync(dsg) ;
+        }
+    
+        @Override
+        public void start()                     {}
+        @Override
+        public void tuple(Tuple<Node> tuple)    { throw new TDBException("Tuple encountered while loading a dataset") ; }
+        @Override
+        public void base(String base)           {}
+        @Override
+        public void prefix(String prefix, String iri)   {} // TODO
+        @Override
+        public void finish()                    {}
+    }
+
+    // Load triples into a specific NodeTupleTable
+    private static final class DestinationGraph implements BulkStreamRDF
+    {
+        final private DatasetGraphTDB dsg ;
+        final private LoadMonitor monitor ;
+        final private LoaderNodeTupleTable loaderTriples ;
+        final private boolean startedEmpty ;
+        private long count = 0 ;
+        private StatsCollector stats ;
+
+        DestinationGraph(final DatasetGraphTDB dsg, NodeTupleTable nodeTupleTable, boolean showProgress)
+        {
+            this.dsg = dsg ;
+            startedEmpty = dsg.isEmpty() ;
+            monitor = createLoadMonitor(dsg, "triples", showProgress) ;
+            loaderTriples = new LoaderNodeTupleTable(nodeTupleTable, "triples", monitor) ;
+        }
+
+        @Override
+        final public void startBulk()
+        {
+            loaderTriples.loadStart() ;
+            loaderTriples.loadDataStart() ;
+
+            this.stats = new StatsCollector() ;
+        }
+        @Override
+        final public void triple(Triple triple)
+        {
+            Node s = triple.getSubject() ;
+            Node p = triple.getPredicate() ;
+            Node o = triple.getObject() ;
+
+            loaderTriples.load(s, p, o)  ;
+            stats.record(null, s, p, o) ; 
+            count++ ;
+        }
+
+        @Override
+        final public void finishBulk()
+        {
+            loaderTriples.loadDataFinish() ;
+            loaderTriples.loadIndexStart() ;
+            loaderTriples.loadIndexFinish() ;
+            loaderTriples.loadFinish() ;
+
+            if ( ! dsg.getLocation().isMem() && startedEmpty )
+            {
+                String filename = dsg.getLocation().getPath(Names.optStats) ;
+                Stats.write(filename, stats) ;
+            }
+            forceSync(dsg) ;
+        }
+
+        @Override
+        public void start()                     {}
+        @Override
+        public void quad(Quad quad)             { throw new TDBException("Quad encountered while loading a single graph") ; }
+        @Override
+        public void tuple(Tuple<Node> tuple)    { throw new TDBException("Tuple encountered while loading a single graph") ; }
+        @Override
+        public void base(String base)           { }
+        @Override
+        public void prefix(String prefix, String iri)  { } // TODO
+        @Override
+        public void finish()                    {}
+    }
+
     static void forceSync(DatasetGraphTDB dsg)
     {
         // Force sync - we have been bypassing DSG tables.
@@ -331,8 +377,7 @@ public class BulkLoader
         dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync();
         dsg.getQuadTable().getNodeTupleTable().getNodeTable().sync();
         dsg.getPrefixes().getNodeTupleTable().getNodeTable().sync();                
-
-        // This is not enough -- modules whether sync needed.
+        // This is not enough -- modules check whether sync needed.
         dsg.sync() ;
         
     }

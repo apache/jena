@@ -28,8 +28,6 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
     Triples are the basis for RDF statements; they have a subject, predicate, and
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
-    
-    @author Jeremy Carroll, kers
  */
 public class Triple implements TripleMatch 
     {    

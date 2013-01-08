@@ -25,7 +25,7 @@ import org.apache.jena.larq.IndexBuilderModel;
 import org.apache.jena.larq.IndexLARQ;
 import org.apache.jena.larq.LARQ;
 import org.apache.lucene.index.IndexReader;
-import org.openjena.atlas.lib.StrUtils ;
+import org.apache.jena.atlas.lib.StrUtils ;
 
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecution ;

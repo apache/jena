@@ -24,7 +24,6 @@ import junit.framework.TestSuite;
 
 /**
      Tests for recursive sub-graph extraction.
-     @author hedgehog
 */
 public class TestGraphExtract extends GraphTestBase
 	{

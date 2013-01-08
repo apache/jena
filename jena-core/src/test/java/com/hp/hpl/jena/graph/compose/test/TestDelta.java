@@ -18,15 +18,13 @@
 
 package com.hp.hpl.jena.graph.compose.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Delta;
-import com.hp.hpl.jena.graph.test.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.compose.Delta ;
+import com.hp.hpl.jena.graph.test.GraphTestBase ;
 
-/**
-	@author kers
-*/
+@SuppressWarnings("deprecation")
 public class TestDelta extends GraphTestBase 
 	{
 		
@@ -45,7 +43,7 @@ public class TestDelta extends GraphTestBase
 	/* */	
 		Graph base = graphWith( "x R y; p S q; I like cheese; pins pop balloons" );
 		Graph save = graphWith( "x R y; p S q; I like cheese; pins pop balloons" );
-		Delta delta = new Delta( base );
+        Delta delta = new Delta( base );
 		assertContainsAll( "Delta", delta, "x R y; p S q; I like cheese; pins pop balloons" );
 		assertContainsAll( "Delta", base, "x R y; p S q; I like cheese; pins pop balloons" );
 	/* */

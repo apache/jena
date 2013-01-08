@@ -20,7 +20,7 @@ package org.apache.jena.larq.examples;
 
 
 import org.apache.jena.larq.IndexLARQ;
-import org.openjena.atlas.lib.StrUtils;
+import org.apache.jena.atlas.lib.StrUtils;
 
 import com.hp.hpl.jena.query.ARQ;
 import com.hp.hpl.jena.rdf.model.Model;

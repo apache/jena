@@ -18,7 +18,7 @@
 
 package tdb;
 
-import org.openjena.riot.RiotWriter ;
+import org.apache.jena.riot.RiotWriter ;
 import tdb.cmdline.CmdTDB ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;

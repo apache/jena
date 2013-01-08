@@ -111,6 +111,8 @@ $accept_charset=nil
 
 $cmd = File.basename($0)
 if ! $cmd.start_with?('s-')
+# If you don't have start_with? ...
+# if ! $cmd.match(/^s-/)
   # "soh query ..."
   $cmd = ARGV.shift
   $cmd = 's-'+$cmd

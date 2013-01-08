@@ -22,8 +22,8 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
     Exception used to report an unknown reification mode.
-    @author kers
 */
+@Deprecated
 public class UnknownStyleException extends AssemblerException
     {
     protected final Resource style;

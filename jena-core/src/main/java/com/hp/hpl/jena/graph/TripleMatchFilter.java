@@ -23,8 +23,6 @@ import com.hp.hpl.jena.util.iterator.Filter;
 /**
     A class to turn a triple (treated as a pattern) into a Filter.
     It used to take a TripleMatch but those are obsolete.
-    
-    @author  bwm, kers
 */
 public class TripleMatchFilter extends Filter<Triple> 
     {

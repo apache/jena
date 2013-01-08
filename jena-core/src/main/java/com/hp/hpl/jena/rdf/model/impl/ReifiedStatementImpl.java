@@ -96,18 +96,18 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
             @return the associated triple if any, otherwise null
         */
         private Triple getTriple( EnhGraph eg, Node n )
-            { return eg.asGraph().getReifier().getTriple( n ); }
+            { return ReifierStd.getTriple(eg.asGraph(), n ); }
         };
         
-    /**
-        Answer our Reifier (ie our Model's Graph's Reifier).
-    */
-    protected Reifier getReifier()
-        { return getModel().getGraph().getReifier(); }
+//    /**
+//        Answer our Reifier (ie our Model's Graph's Reifier).
+//    */
+//    protected Reifier getReifier()
+//        { return getModel().getGraph().getReifier(); }
         
     @Override
     public boolean isValid()
-        { return getModel().getGraph().getReifier().getTriple( this.asNode() ) != null; }
+        { return ReifierStd.getTriple(getModel().getGraph(), this.asNode() ) != null; }
         
     /**
         tell the underlying graph's reifier that this ReifiedStatement's node
@@ -116,7 +116,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
     */        
     private ReifiedStatementImpl installInReifier()
         {
-        getReifier().reifyAs( this.asNode(), statement.asTriple() );
+        ReifierStd.reifyAs(getModel().getGraph(), this.asNode(), statement.asTriple() );
         return this;
         }
       
@@ -143,7 +143,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
 
     public static ReifiedStatement createExistingReifiedStatement( ModelCom model, Node n )
         {
-        Triple t = model.getGraph().getReifier().getTriple( n );
+        Triple t = ReifierStd.getTriple(model.getGraph(), n );
         return new ReifiedStatementImpl( model, n, model.asStatement( t ) );
         }
     }

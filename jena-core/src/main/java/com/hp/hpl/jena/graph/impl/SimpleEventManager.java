@@ -37,8 +37,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     This class also holds the utility method notifyingRemove, which wraps 
     iterators so that their .remove() operation notifies the specified graph of
     the removal.    
-    
-    @author hedgehog, Jeremy Carroll
 */
 
 public class SimpleEventManager implements GraphEventManager

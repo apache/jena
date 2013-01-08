@@ -25,12 +25,12 @@ public class IntegerNode
     // 56 bits of value, including sign bit.
     public static int LEN = 56 ;
     public static int LBITS = Long.SIZE ;
-    public static long MAX = (1L<< (LEN-1) ) ;
-    public static long MIN = (1L<< (LEN-1) ) ;
+    public static long MAX = (1L<< (LEN-1) )-1;
+    public static long MIN = -(1L<< (LEN-1) ) ;
 
     public static long pack(long v) 
     {
-        if ( v < MIN || v > MAX )
+        if ( v >= MIN && v <= MAX )
         {
             v = BitsLong.clear(v, LEN, LBITS) ;
             v = NodeId.setType(v, NodeId.INTEGER) ;

@@ -22,7 +22,8 @@ import java.io.InputStream ;
 import java.util.ArrayList ;
 import java.util.List ;
 
-import org.openjena.riot.Lang ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -38,8 +39,8 @@ import com.hp.hpl.jena.tdb.store.bulkloader.BulkLoader ;
 public class TDBLoader
 {
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To a triples format, use @link{#load(GraphTDB, String)}
-     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)}
+     *  To a triples format, use {@link #load(GraphTDB, String)}
+     *  or {@link #load(DatasetGraphTDB, List, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url)
     {
@@ -47,8 +48,8 @@ public class TDBLoader
     }
 
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To a triples format, use @link{#load(GraphTDB, String, boolean)} 
-     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)}
+     *  To a triples format, use {@link #load(GraphTDB, String, boolean)} 
+     *  or {@link #load(DatasetGraphTDB, List, boolean)}
     */
     public static void load(DatasetGraphTDB dataset, String url, boolean showProgress)
     {
@@ -56,8 +57,8 @@ public class TDBLoader
     }
 
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
-     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
+     *  To load a triples format, use {@link #load(GraphTDB, List, boolean)} 
+     *  or {@link #load(DatasetGraphTDB, List, boolean)} 
     */
     public static void load(DatasetGraphTDB dataset, List<String> urls)
     {
@@ -65,8 +66,8 @@ public class TDBLoader
     }
     
     /** Load the contents of URL into a dataset.  URL must name a quads format file (NQuads or TriG - NTriples is also accepted).
-     *  To load a triples format, use @link{#load(GraphTDB, List<String>, boolean)} 
-     *  or @link{#loadTriples(DatasetGraphTDB, List<String>, boolean)} 
+     *  To load a triples format, use {@link #load(GraphTDB, List, boolean)} 
+     *  or {@link #load(DatasetGraphTDB, List, boolean)} 
     */
     public static void load(DatasetGraphTDB dataset, List<String> urls, boolean showProgress)
     {
@@ -234,8 +235,8 @@ public class TDBLoader
         {
             for ( String url : urls )
             {
-                Lang lang = Lang.guess(url) ;
-                if ( lang != null && ! lang.isQuads() )
+                Lang lang = RDFLanguages.filenameToLang(url) ;
+                if ( lang != null && RDFLanguages.isQuads(lang) )
                     throw new TDBException("Not a triples language") ;
             }
         }

@@ -25,10 +25,6 @@ import com.hp.hpl.jena.graph.test.*;
 
 import junit.framework.*;
 
-/**
-	@author kers.
-*/
-
 public class TestUnion extends GraphTestBase 
 	{
 	public TestUnion( String name )

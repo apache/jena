@@ -132,12 +132,10 @@ public abstract class SPARQL_ServletBase extends ServletBase
         log.info(format("[%d] %s %s", id, method, url)) ; 
         if ( verbose_debug )
         {
-            @SuppressWarnings("unchecked")
             Enumeration<String> en = request.getHeaderNames() ;
             for ( ; en.hasMoreElements() ; )
             {
                 String h = en.nextElement() ;
-                @SuppressWarnings("unchecked")
                 Enumeration<String> vals = request.getHeaders(h) ;
                 if ( ! vals.hasMoreElements() )
                     log.info(format("[%d]   ",id, h)) ;

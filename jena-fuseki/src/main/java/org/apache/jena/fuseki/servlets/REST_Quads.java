@@ -25,21 +25,21 @@ import java.io.IOException ;
 import javax.servlet.ServletOutputStream ;
 import javax.servlet.http.HttpServletRequest ;
 
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotReader ;
-import org.openjena.riot.RiotWriter ;
-import org.openjena.riot.lang.LangRIOT ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** 
@@ -68,21 +68,21 @@ public class REST_Quads extends SPARQL_REST
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = Lang.TRIG ;
+            lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( ! lang.isQuads() )
+        if ( ! RDFLanguages.isQuads(lang) )
             errorBadRequest("Not a quads format: "+mediaType) ;
         
         action.beginRead() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
             
-            if ( lang == Lang.NQUADS )
+            if ( lang == RDFLanguages.NQUADS )
                 RiotWriter.writeNQuads(out, dsg) ;
-            else if ( lang == Lang.TRIG )
+            else if ( lang == RDFLanguages.TRIG )
                 errorBadRequest("TriG - Not implemented (yet) : "+mediaType) ;
             else
                 errorBadRequest("No handled: "+mediaType) ;
@@ -112,24 +112,77 @@ public class REST_Quads extends SPARQL_REST
     @Override
     protected void doPost(HttpActionREST action)
     { 
-        if ( ! Fuseki.graphStoreProtocolMode )
+        if ( ! action.getDatasetRef().allowDatasetUpdate )
             errorMethodNotAllowed("POST") ;
+
+        // Graph Store Protocol mode - POST triples to dataset causes
+        // a new graph to be created and the new URI returned via Location.
+        // Normally off.  
+        // When off, POST of triples goes to default graph.
+        boolean gspMode = Fuseki.graphStoreProtocolPostCreate ;
         
         // Code to pass the GSP test suite.
         // Not necessarily good code.
         String x = action.request.getContentType() ;
+        if ( x == null )
+            errorBadRequest("Content-type required for data format") ;
         
         MediaType mediaType = MediaType.create(x) ;
         Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
         if ( lang == null )
-            lang = Lang.TRIG ;
+            lang = RDFLanguages.TRIG ;
 
         if ( action.verbose )
             log.info(format("[%d]   Post: Content-Type=%s, Charset=%s => %s", 
                                   action.id, mediaType.getContentType(), mediaType.getCharset(), lang.getName())) ;
-        if ( lang.isQuads() )
-            errorBadRequest("Quads format: "+mediaType) ;
         
+        if ( RDFLanguages.isQuads(lang) )
+            doPostQuads(action, lang) ;
+        else if ( gspMode && RDFLanguages.isTriples(lang) )
+            doPostTriplesGSP(action, lang) ;
+        else if ( RDFLanguages.isTriples(lang) )
+            doPostTriples(action, lang) ;
+        else
+            errorBadRequest("Not a triples or quads format: "+mediaType) ;
+    }
+        
+    protected void doPostQuads(HttpActionREST action, Lang lang)
+    {
+        action.beginWrite() ;
+        try {
+            String name = action.request.getRequestURL().toString() ;
+            DatasetGraph dsg = action.getActiveDSG() ;
+            StreamRDF dest = StreamRDFLib.dataset(dsg) ;
+            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
+            parser.parse() ;
+            action.commit();
+            success(action) ;
+        } catch (IOException ex) { action.abort() ; } 
+        finally { action.endWrite() ; }
+    }
+    
+  
+    // POST triples to dataset -- send to default graph.  
+    protected void doPostTriples(HttpActionREST action, Lang lang) 
+    {
+        action.beginWrite() ;
+        try {
+            DatasetGraph dsg = action.getActiveDSG() ;
+            // This should not be anythign other than the datasets name via this route.  
+            String name = action.request.getRequestURL().toString() ;
+            //log.info(format("[%d] ** Content-length: %d", action.id, action.request.getContentLength())) ;  
+            Graph g = dsg.getDefaultGraph() ;
+            StreamRDF dest = StreamRDFLib.graph(g) ;
+            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
+            parser.parse() ;
+            action.commit();
+            success(action) ;
+        } catch (IOException ex) { action.abort() ; } 
+        finally { action.endWrite() ; }
+    }
+    
+    protected void doPostTriplesGSP(HttpActionREST action, Lang lang) 
+    {
         action.beginWrite() ;
         try {
             DatasetGraph dsg = action.getActiveDSG() ;
@@ -141,9 +194,8 @@ public class REST_Quads extends SPARQL_REST
             name = name+(++counter) ;
             Node gn = Node.createURI(name) ;
             Graph g = dsg.getGraph(gn) ;
-            Sink<Triple> sink = new SinkTriplesToGraph(g) ;
-
-            LangRIOT parser = RiotReader.createParserTriples(action.request.getInputStream(), lang, name , sink) ;
+            StreamRDF dest = StreamRDFLib.graph(g) ;
+            LangRIOT parser = RiotReader.createParser(action.request.getInputStream(), lang, name , dest) ;
             parser.parse() ;
             log.info(format("[%d] Location: %s", action.id, name)) ;
             action.response.setHeader("Location",  name) ;
@@ -151,9 +203,7 @@ public class REST_Quads extends SPARQL_REST
             successCreated(action) ;
         } catch (IOException ex) { action.abort() ; } 
         finally { action.endWrite() ; }
-        
     }
-    
 
     @Override
     protected void doDelete(HttpActionREST action)

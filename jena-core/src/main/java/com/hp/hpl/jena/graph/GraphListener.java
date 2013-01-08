@@ -51,10 +51,6 @@ import java.util.*;
     <p>To track all changes to a graph it is necessary to consider all the methods
     in this interface, including {@link #notifyEvent(Graph, Object)}.
     </p>
-    
-    
-    
-    @author Jeremy Carroll, extensions by kers
 */
 
 public interface GraphListener 

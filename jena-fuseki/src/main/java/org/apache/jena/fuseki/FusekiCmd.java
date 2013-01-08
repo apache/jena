@@ -27,31 +27,27 @@ import java.util.List ;
 
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.FileOps ;
-import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.fuseki.mgt.ManagementServer ;
 import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFLanguages ;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.SysRIOT ;
 import org.eclipse.jetty.server.Server ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.RiotLoader ;
-import org.openjena.riot.SysRIOT ;
-import org.openjena.riot.lang.SinkQuadsToDataset ;
-import org.openjena.riot.lang.SinkTriplesToGraph ;
 import org.slf4j.Logger ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdARQ ;
 import arq.cmdline.ModDatasetAssembler ;
 
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 import com.hp.hpl.jena.tdb.transaction.TransactionManager ;
@@ -124,7 +120,7 @@ public class FusekiCmd extends CmdARQ
     private static ArgDecl argFusekiConfig  = new ArgDecl(ArgDecl.HasValue, "config", "conf") ;
     private static ArgDecl argJettyConfig   = new ArgDecl(ArgDecl.HasValue, "jetty-config") ;
     private static ArgDecl argGZip          = new ArgDecl(ArgDecl.HasValue, "gzip") ;
-    private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber") ;   // Use the uberservlet (experimental)
+    private static ArgDecl argUber          = new ArgDecl(ArgDecl.NoValue,  "uber", "über") ;   // Use the überservlet (experimental)
     
     private static ArgDecl argGSP           = new ArgDecl(ArgDecl.NoValue,  "gsp") ;    // GSP compliance mode
     
@@ -145,19 +141,19 @@ public class FusekiCmd extends CmdARQ
         new FusekiCmd(argv).mainRun() ;
     }
     
-    private int port            = 3030 ;
-    private int mgtPort         = -1 ;
-    private String clientHost   = null;
+    private int port                    = 3030 ;
+    private int mgtPort                 = -1 ;
+    private String clientHost           = null;
 
-    private DatasetGraph dsg ;
-    private String datasetPath ;
-    private boolean allowUpdate = false ;
+    private DatasetGraph dsg            = null ; 
+    private String datasetPath          = null ;
+    private boolean allowUpdate         = false ;
     
-    private String fusekiConfigFile = null ;
-    private boolean enableCompression = true ;
-    private String jettyConfigFile = null ;
-    private String homeDir = null ;
-    private String pagesDir ;
+    private String fusekiConfigFile     = null ;
+    private boolean enableCompression   = true ;
+    private String jettyConfigFile      = null ;
+    private String homeDir              = null ;
+    private String pagesDir             = null ;
     
     public FusekiCmd(String...argv)
     {
@@ -186,7 +182,7 @@ public class FusekiCmd extends CmdARQ
         add(argGZip, "--gzip=on|off",           "Enable GZip compression (HTTP Accept-Encoding) if request header set") ;
         
         add(argUber) ;
-        add(argGSP) ;
+        //add(argGSP) ;
         
         super.modVersion.addClass(TDB.class) ;
         super.modVersion.addClass(Fuseki.class) ;
@@ -230,6 +226,9 @@ public class FusekiCmd extends CmdARQ
 
         
         TDB.setOptimizerWarningFlag(false) ;
+        // Don't get TDB batch commits.
+        // This is slower but less memory hungry. 
+        TransactionManager.QueueBatchSize = 0 ;
         
         if ( contains(argMem) )
         {
@@ -245,21 +244,15 @@ public class FusekiCmd extends CmdARQ
             if ( ! FileOps.exists(filename) )
                 throw new CmdException("File not found: "+filename) ;
 
-            Lang language = Lang.guess(filename) ;
+            Lang language = RDFLanguages.filenameToLang(filename) ;
             if ( language == null )
                 throw new CmdException("Can't guess language for file: "+filename) ;
             InputStream input = IO.openFile(filename) ; 
             
-            if ( language.isQuads() )
-            {
-                Sink<Quad> sink = new SinkQuadsToDataset(dsg) ;
-                RiotLoader.readQuads(input, language, filename, sink) ;
-            }
+            if ( RDFLanguages.isQuads(language) )
+                RDFDataMgr.read(dsg, filename) ;
             else
-            {
-                Sink<Triple> sink = new SinkTriplesToGraph(dsg.getDefaultGraph()) ;
-                RiotLoader.readTriples(input, language, filename, sink) ;
-            }
+                RDFDataMgr.read(dsg.getDefaultGraph(), filename) ;
         }
         
         if ( contains(argMemTDB) )
@@ -379,7 +372,7 @@ public class FusekiCmd extends CmdARQ
         if ( contains(argGSP) )
         {
             SPARQLServer.überServlet = true ;
-            Fuseki.graphStoreProtocolMode = true ;
+            Fuseki.graphStoreProtocolPostCreate = true ;
         }
 
     }

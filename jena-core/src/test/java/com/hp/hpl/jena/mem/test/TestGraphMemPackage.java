@@ -27,7 +27,7 @@ public class TestGraphMemPackage extends TestCase
         { 
         TestSuite result = new TestSuite();
         result.addTest( TestGraphMem.suite() );
-        result.addTest( TestMemQuery.suite() );
+        result.addTest( TestGraphMem2.suite() );
         result.addTest( TestConcurrentModificationException.suite() );
         return result;
         }

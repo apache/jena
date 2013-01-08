@@ -23,6 +23,7 @@ import org.junit.Test ;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.expr.NodeValue ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNodeId extends BaseTest
@@ -69,9 +70,33 @@ public class TestNodeId extends BaseTest
     // More than Long.MAX_VALUE
     { test("92233720368547758070",  (Node)null) ; }
 
+    // On the edge.
+    
+    static long X = 1L<<55 ;        // Just too large 
+    static long Y = -((1L<<55) +1) ;   // Just too small 
+    
     @Test public void nodeId_int_10()
+    { test("\""+Long.toString(X)+"\"^^xsd:integer",  (Node)null) ; }
+
+    @Test public void nodeId_int_11()
+    { 
+        Node n = NodeValue.makeInteger(X-1).asNode() ;
+        test("\""+Long.toString(X-1)+"\"^^xsd:integer",  n) ; 
+    }
+
+    @Test public void nodeId_int_12()
+    { test("\""+Long.toString(Y)+"\"^^xsd:integer",  (Node)null) ; }
+
+    @Test public void nodeId_int_13()
+    { 
+        Node n = NodeValue.makeInteger(Y+1).asNode() ;
+        test("\""+Long.toString(Y+1)+"\"^^xsd:integer",  n) ; 
+    }
+
+    @Test public void nodeId_int_20()
     { test("'300'^^xsd:byte",  (Node)null) ; }
     
+
     @Test public void nodeId_decimal_1()
     { test("3.14", NodeFactory.parseNode("3.14")) ; }
 

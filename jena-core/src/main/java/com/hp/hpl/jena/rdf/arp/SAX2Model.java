@@ -145,8 +145,6 @@ public class SAX2Model extends SAX2RDF {
         // System.err.println("closing;");
         if (!closed) {
             super.close();
-            if (handler != null)
-              handler.bulkUpdate();
             closed = true;
         }
     }

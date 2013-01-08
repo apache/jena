@@ -16,71 +16,86 @@
  * limitations under the License.
  */
 
-package com.hp.hpl.jena.graph.compose;
+package com.hp.hpl.jena.graph.compose ;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.util.iterator.* ;
 
 /**
-    Graph operation for wrapping a base graph and leaving it unchanged while recording
-    all the attempted updates for later access.
-*/
+ * Graph operation for wrapping a base graph and leaving it unchanged while
+ * recording all the attempted updates for later access.
+ */
 
-public class Delta extends Dyadic implements Graph 
-	{
-	private Graph base;
-	
-	public Delta( Graph base )
-		{
-		super( Factory.createGraphMem(), Factory.createGraphMem() );
-		this.base = base;
-		}
-		
-    /**
-        Answer the graph of all triples added
-    */
-	public Graph getAdditions()
-		{ return L; }
-		
-    /**
-        Answer the graph of all triples removed
-    */
-	public Graph getDeletions()
-		{ return R; }
-		
-    /**
-        Add the triple to the graph, ie add it to the additions, remove it from the removals.
-    */
-	@Override public void performAdd( Triple t )
-		{
-		L.add( t );
-		R.delete( t );
-		}
+@Deprecated
+public class Delta extends Dyadic implements Graph
+{
+    private Graph base ;
+
+    public Delta(Graph base)
+    {
+        super(Factory.createGraphMem(), Factory.createGraphMem()) ;
+        this.base = base ;
+    }
 
     /**
-        Remove the triple, ie, remove it from the adds, add it to the removals.
-    */
-	@Override public void performDelete( Triple t )
-		{
-		L.delete( t );
-		R.add( t );
-		}
-		 
+     * Answer the graph of all triples added
+     */
+    public Graph getAdditions()
+    {
+        return L ;
+    }
+
     /**
-        Find all the base triples matching tm, exclude the ones that are deleted, add the ones
-        that  have been added.
-    */
-	@Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch tm ) 
-		{
-        return base.find( tm ) .filterDrop( ifIn( GraphUtil.findAll( R ) ) ) .andThen( L.find( tm ) );
-		}
+     * Answer the graph of all triples removed
+     */
+    public Graph getDeletions()
+    {
+        return R ;
+    }
 
-	@Override public void close() 
-		{
-		super.close();
-		base.close();
-		}
+    /**
+     * Add the triple to the graph, ie add it to the additions, remove it from
+     * the removals.
+     */
+    @Override
+    public void performAdd(Triple t)
+    {
+        if (!base.contains(t)) 
+            L.add(t) ;
+        R.delete(t) ;
+    }
 
-	@Override public int graphBaseSize()
-		{ return base.size() + L.size() - R.size(); }
-	}
+    /**
+     * Remove the triple, ie, remove it from the adds, add it to the removals.
+     */
+    @Override
+    public void performDelete(Triple t)
+    {
+        L.delete(t) ;
+        if (base.contains(t)) 
+            R.add(t) ;
+    }
+
+    /**
+     * Find all the base triples matching tm, exclude the ones that are deleted,
+     * add the ones that have been added.
+     */
+    @Override
+    public ExtendedIterator<Triple> graphBaseFind(TripleMatch tm)
+    {
+        return base.find(tm).filterDrop(ifIn(GraphUtil.findAll(R))).andThen(L.find(tm)) ;
+    }
+
+    @Override
+    public void close()
+    {
+        super.close() ;
+        base.close() ;
+    }
+
+    @Override
+    public int graphBaseSize()
+    {
+        return base.size() + L.size() - R.size() ;
+    }
+}

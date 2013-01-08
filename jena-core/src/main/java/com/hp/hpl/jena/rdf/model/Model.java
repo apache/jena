@@ -71,9 +71,6 @@ import java.util.*;
  *   System.getProperties().put("proxyHost","proxy.hostname");
  *   System.getProperties().put("proxyPort",port_number);
  * </pre></code>
- *
- * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $Date: 2009/07/04 16:27:41 $'
  */
 public interface Model
     extends ModelCon, ModelGraphInterface,
@@ -364,7 +361,9 @@ public interface Model
         @param m the model containing the statements to add
         @param suppressReifications true to suppress adding reified statements
         @return this model for cascading
+        @deprecated suppressReifications no longer has any effect.
     */
+	@Deprecated
     Model add( Model m, boolean suppressReifications );
 
 	/** Add the RDF statements from an XML document.
@@ -809,7 +808,9 @@ public interface Model
     /**
         Answer the reification style of the model.
      	@return the reification style
+     	createMemModelMaker()
     */
+    @Deprecated
     ReificationStyle getReificationStyle();
 
 	/** Create a new model containing the statements matching a query.

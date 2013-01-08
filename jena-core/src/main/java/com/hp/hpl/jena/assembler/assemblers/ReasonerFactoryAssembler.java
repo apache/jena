@@ -89,7 +89,7 @@ public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     private void loadSchema( Graph result, Assembler a, Resource root )
         {
         Model m = a.openModel( root );
-        result.getBulkUpdateHandler().add( m.getGraph() );
+        GraphUtil.addInto(result, m.getGraph()) ;
         }
 
     private ReasonerFactory addRules( Resource root, Assembler a, final ReasonerFactory r )

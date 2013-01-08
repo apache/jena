@@ -32,8 +32,8 @@ import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
 import org.apache.jena.fuseki.http.HttpSC ;
-import org.openjena.riot.Lang ;
-import org.openjena.riot.WebContent ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.WebContent ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;

@@ -18,54 +18,27 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /**
     test the properties required of ReifiedStatement objects.
-    @author kers 
 */
-public class TestReifiedStatements extends ModelTestBase
+public class TestReifiedStatements extends AbstractTestReifiedStatements
     {
-    public TestReifiedStatements( String name )
-        { super( name ); }
     
+    public TestReifiedStatements(String name)
+    {
+        super(name) ;
+    }
+
     public static TestSuite suite()
-        { TestSuite result = new TestSuite();
-        result.addTest( new TestSuite( TestStandard.class ) );
-        result.addTest( new TestSuite( TestConvenient.class ) );
-        result.addTest( new TestSuite( TestMinimal.class ) );
-        return result; }   
+        { return new TestSuite(TestReifiedStatements.class, "TestReifiedStatements" ) ; }
         
+    @Override
     public Model getModel()
         { return ModelFactory.createDefaultModel(); }
         
-    public static class TestStandard extends AbstractTestReifiedStatements
-        {
-        public TestStandard( String name ) { super( name ); }
-        public static final ReificationStyle style = ModelFactory.Standard;
-        @Override
-        public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
-        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
-        }
-        
-    public static class TestConvenient extends AbstractTestReifiedStatements
-        {
-        public TestConvenient( String name ) { super( name ); }
-        public static final ReificationStyle style = ModelFactory.Convenient;
-        @Override
-        public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
-        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
-        }
-        
-    public static class TestMinimal extends AbstractTestReifiedStatements
-        {
-        public TestMinimal( String name ) { super( name ); }
-        public static final ReificationStyle style = ModelFactory.Minimal;
-        @Override
-        public Model getModel() { return ModelFactory.createDefaultModel( style); } 
-        public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
-        }
     }

@@ -18,22 +18,22 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.FileUtils;
+import java.io.File ;
+import java.util.ArrayList ;
+import java.util.List ;
 
-import java.io.*;
-import java.util.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.impl.FileGraph ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /**
     Test FileGraph by seeing if we can make some file graphs and then read
     them back.
-
- 	@author hedgehog
 */
 
 public class TestFileGraph extends GraphTestBase
@@ -91,13 +91,13 @@ public class TestFileGraph extends GraphTestBase
         File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
         
         Graph g = new FileGraph( foo, true, true );
-        g.getBulkUpdateHandler().add( initial );
+        GraphUtil.addInto( g, initial );
         g.getTransactionHandler().begin();
-        g.getBulkUpdateHandler().add( extra );
+        GraphUtil.addInto( g, extra );
         g.getTransactionHandler().commit();
         Graph union = graphWith( "" );
-        union.getBulkUpdateHandler().add( initial );
-        union.getBulkUpdateHandler().add( extra );
+        GraphUtil.addInto(union, initial );
+        GraphUtil.addInto(union, extra );
         assertIsomorphic( union, g );
         Model inFile = ModelFactory.createDefaultModel();
         inFile.read( "file:///" + foo, "N-TRIPLES" );
@@ -110,9 +110,9 @@ public class TestFileGraph extends GraphTestBase
         Graph extra = graphWith( "extra hasValue 17; also hasURI world" );
         File foo = FileUtils.tempFileName( "fileGraph", ".n3" );
         Graph g = new FileGraph( foo, true, true );
-        g.getBulkUpdateHandler().add( initial );
+        GraphUtil.addInto( g, initial );
         g.getTransactionHandler().begin();
-        g.getBulkUpdateHandler().add( extra );
+        GraphUtil.addInto( g, extra );
         g.getTransactionHandler().abort();
         assertIsomorphic( initial, g );
         }
@@ -124,10 +124,10 @@ public class TestFileGraph extends GraphTestBase
         File foo = FileUtils.tempFileName( "fileGraph", ".nt" );
         Graph g = new FileGraph( foo, true, true );
         g.getTransactionHandler().begin();
-        g.getBulkUpdateHandler().add( initial );
+        GraphUtil.addInto( g, initial );
         g.getTransactionHandler().commit();
         g.getTransactionHandler().begin();
-        g.getBulkUpdateHandler().add( extra );
+        GraphUtil.addInto( g, extra );
         g.getTransactionHandler().abort();
         assertIsomorphic( initial, g );
         Model inFile = ModelFactory.createDefaultModel();
@@ -145,7 +145,7 @@ public class TestFileGraph extends GraphTestBase
                 { history.add( f ); }
             };
         File file = FileUtils.tempFileName( "fileGraph", ".nt" );
-        Graph g = new FileGraph( n, file, true, true, ReificationStyle.Minimal );
+        Graph g = new FileGraph( n, file, true, true );
         assertEquals( new ArrayList<File>(), history );
         g.close();
         assertEquals( oneElementList( file ), history );
@@ -184,7 +184,7 @@ public class TestFileGraph extends GraphTestBase
             File foo = FileUtils.tempFileName( prefix, suffix );
             Graph original = graphWith( content );
             Graph g = new FileGraph( foo, true, true );
-            g.getBulkUpdateHandler().add( original );
+            GraphUtil.addInto( g, original );
             g.close();
             Graph g2 = new FileGraph( foo, false, true );
             assertIsomorphic( original, g2 );

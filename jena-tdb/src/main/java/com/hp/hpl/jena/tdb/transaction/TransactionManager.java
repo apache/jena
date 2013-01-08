@@ -63,6 +63,7 @@ public class TransactionManager
      *  deciding to flush the journal to the main database.  
      */
     // Temporarily public ....
+    // When improved, rename to chase down any systems directly setting it. 
     public static /*final*/ int QueueBatchSize = setQueueBatchSize() ; 
     
     private static int setQueueBatchSize() 

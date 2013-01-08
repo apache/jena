@@ -41,6 +41,7 @@ class HitConverter implements Map1<HitLARQ,Binding>
         this.score = score ;
     }
     
+    @Override
     public Binding map1(HitLARQ hit)
     {
         BindingMap b = BindingFactory.create(binding) ;

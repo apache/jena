@@ -18,9 +18,6 @@
 
 package com.hp.hpl.jena.graph.compose.test;
 
-/**
-	@author kers
-*/
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.*;
@@ -28,13 +25,9 @@ import com.hp.hpl.jena.mem.test.TestSuiteRegression;
 
 import junit.framework.*;
 
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:42 $
- */
 public class TestPackage extends TestCase {
     
+    @SuppressWarnings("deprecation")
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
         suite( result, Intersection.class );

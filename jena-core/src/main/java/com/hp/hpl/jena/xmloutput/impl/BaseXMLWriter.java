@@ -18,53 +18,31 @@
 
 package com.hp.hpl.jena.xmloutput.impl;
 
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
+import java.io.OutputStream ;
+import java.io.OutputStreamWriter ;
+import java.io.PrintWriter ;
+import java.io.Writer ;
+import java.util.* ;
+import java.util.Map.Entry ;
+import java.util.regex.Pattern ;
 
-import org.apache.xerces.util.XMLChar;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
+import org.apache.xerces.util.XMLChar ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.JenaRuntime;
-import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
-import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.NsIterator;
-import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
-import com.hp.hpl.jena.rdf.model.RDFWriter;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.BadBooleanException;
-import com.hp.hpl.jena.shared.BadURIException;
-import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.shared.InvalidPropertyURIException;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.util.CharEncoding;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler ;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.rdf.model.impl.Util ;
+import com.hp.hpl.jena.shared.* ;
+import com.hp.hpl.jena.util.CharEncoding ;
+import com.hp.hpl.jena.util.FileUtils ;
+import com.hp.hpl.jena.vocabulary.* ;
+import com.hp.hpl.jena.xmloutput.RDFXMLWriterI ;
 //import com.hp.hpl.jena.vocabulary.DAML_OIL;
-import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
-import com.hp.hpl.jena.vocabulary.RSS;
-import com.hp.hpl.jena.vocabulary.VCARD;
-import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
 
 /** 
  * This is not part of the public API.
@@ -478,10 +456,9 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * null</code> means use only absolute URI's.
 	 */
 	@Override
-    synchronized public void write(Model baseModel, Writer out, String base)
+    synchronized public void write(Model model, Writer out, String base)
 		 {        
-        Model model = ModelFactory.withHiddenStatements( baseModel );
-		setupNamespaces( baseModel, model );
+		setupNamespaces( model );
 		PrintWriter pw = out instanceof PrintWriter ? (PrintWriter) out : new PrintWriter( out );
 		if (!Boolean.FALSE.equals(showXmlDeclaration)) writeXMLDeclaration( out, pw );
 		writeXMLBody( model, pw, base );
@@ -492,12 +469,12 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
      	@param baseModel
      	@param model
     */
-    private void setupNamespaces( Model baseModel, Model model )
+    private void setupNamespaces( Model model )
         {
         this.namespacesNeeded = new HashSet<String>();
         this.ns = null;
-        this.modelPrefixMapping = baseModel;
-        primeNamespace( baseModel );
+        this.modelPrefixMapping = model;
+        primeNamespace( model );
         addNameSpace( RDF.getURI() );
         addNameSpaces(model);
         jenaPrefixCount = 0;

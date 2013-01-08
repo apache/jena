@@ -18,23 +18,23 @@
 
 package com.hp.hpl.jena.rdf.model.impl;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.*;
-import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.FrontsTriple ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.AlreadyReifiedException ;
+import com.hp.hpl.jena.shared.ReificationStyle ;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.Map1 ;
 
 /**
     This class impedance-matches the reification requests of Model[Com] to the operations
     supplied by it's Graph's Reifier.
-    
-    @author kers 
 */
+@SuppressWarnings("deprecation")
 public class ModelReifier
     {
     private ModelCom model;
-    public Reifier reifier;
     
     /**
         DEVEL. setting this _true_ means that nodes that reify statements
@@ -50,46 +50,34 @@ public class ModelReifier
     public ModelReifier( ModelCom model )
         {
         this.model = model; 
-        this.reifier = model.asGraph().getReifier();
         }
         
+    @Deprecated
     public ReificationStyle getReificationStyle()
-        { return reifier.getStyle(); }
+        { return ReificationStyle.Standard ; }
         
     /**
         Answer a version of the model, but with all its reifiying statements
         added.
         @param m a model that may have reified statements
         @return a new model, the union of m and the reification statements of m
+        @deprecated Reifiying triples are already visible.
     */
+    @Deprecated
     public static Model withHiddenStatements( Model m )
-        { 
-        Graph mGraph = m.getGraph();
-        Graph hiddenTriples = getHiddenTriples( m );
-        return new ModelCom( new DisjointUnion( mGraph, hiddenTriples ) );
-        }
-    
-    /**
-    	@param mGraph
-    	@return
-    */
-    protected static Graph getHiddenTriples( Model m )
-        {
-        Graph mGraph = m.getGraph();
-        final Reifier r = mGraph.getReifier();
-        return new GraphBase()
-            {
-            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) 
-                { return r.findEither( m, true ); }
-            };
-        }
+    {
+        // With Reification standard, reifiying triples are already visible.
+        return m ;
+    }
 
     /**
         Answer a model that consists of the hidden reification statements of this model.
         @return a new model containing the hidden statements of this model
+        @deprecated Reifiying triples are already visible.
     */    
+    @Deprecated
     public Model getHiddenStatements()
-        { return new ModelCom( getHiddenTriples( model ) ); }
+    { return model ; } 
         
     /**
         Answer a fresh reification of a statement associated with a fresh bnode.
@@ -131,7 +119,7 @@ public class ModelReifier
         @return true iff s has a reification in this model
     */
     public boolean isReified( FrontsTriple s ) 
-        { return reifier.hasTriple( s.asTriple() ); }
+        { return ReifierStd.hasTriple(model.getGraph(), s.asTriple() ); }
 
     /**
         Remove all the reifications of a given statement in this model, whatever
@@ -139,7 +127,7 @@ public class ModelReifier
         @param s the statement whose reifications are to be removed
     */
     public void removeAllReifications( FrontsTriple s ) 
-        { reifier.remove( s.asTriple() ); }
+        { ReifierStd.remove( model.getGraph(), s.asTriple() ); }
       
     /**
         Remove a given reification from this model. Other reifications of the same statement
@@ -147,7 +135,7 @@ public class ModelReifier
         @param rs the reified statement to be removed
     */  
     public void removeReification( ReifiedStatement rs )
-        { reifier.remove( rs.asNode(), rs.getStatement().asTriple() ); }
+        { ReifierStd.remove( model.getGraph(), rs.asNode(), rs.getStatement().asTriple() ); }
         
     /**
         Answer an iterator that iterates over all the reified statements
@@ -204,10 +192,10 @@ public class ModelReifier
         };
 
     private ExtendedIterator<ReifiedStatement> findReifiedStatements()
-        { return reifier .allNodes() .mapWith( mapToRS ); }
+        { return ReifierStd .allNodes(model.getGraph()) .mapWith( mapToRS ); }
 
     private ExtendedIterator<ReifiedStatement> findReifiedStatements( Triple t )
-        { return reifier .allNodes( t ) .mapWith( mapToRS ); }
+        { return ReifierStd .allNodes(model.getGraph(), t ) .mapWith( mapToRS ); }
         
     /**
         Answer a ReifiedStatement that is based on the given node. 

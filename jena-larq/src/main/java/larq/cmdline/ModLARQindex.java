@@ -39,13 +39,14 @@ public class ModLARQindex implements ArgModuleGeneral
     ArgDecl argIndex = new ArgDecl(ArgDecl.HasValue, "larq", "lucene", "index")  ;
     File luceneDir ;
     
-
+    @Override
     public void registerWith(CmdGeneral cmdLine)
     {
         cmdLine.getUsage().startCategory("LARQ") ;
         cmdLine.add(argIndex, "--larq=DIR", "Index directory") ;
     }
 
+    @Override
     public void processArgs(CmdArgModule cmdLine)
     {
         if ( ! cmdLine.contains(argIndex) )

@@ -58,7 +58,7 @@ public class TestGraphTDB extends AbstractTestGraph2
     @Before public void before()
     { 
         try {
-            graph.getBulkUpdateHandler().removeAll() ;
+            graph.clear() ;
         } catch (Exception ex)
         {
             Log.warn(this, "before() : "+ex.getMessage(), ex) ;
