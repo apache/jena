@@ -7,6 +7,7 @@ ChangeLog for ARQ
 
 + Consolidation of versions numbers.
 
+* JENA-379 : Incorrect results from a property paths with same subject and object variable.  
 + Introduce RDFParserOutput as output interface for parsers (was Sink<Triple> or Sink<Quad>)
 + RIOT - internal reorganisation moving to org.apache.jena.riot.
 + Remove the partial migration support for old-style SPARQL submission update forms.

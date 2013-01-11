@@ -18,26 +18,29 @@
 
 package com.hp.hpl.jena.sparql.path;
 
-import static org.junit.Assert.assertEquals ;
-import static org.junit.Assert.fail ;
-
 import java.util.ArrayList ;
 import java.util.Arrays ;
 import java.util.Iterator ;
 import java.util.List ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.junit.BaseTest ;
 import org.junit.Assert ;
-import org.junit.Ignore ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Var ;
+import com.hp.hpl.jena.sparql.engine.ExecutionContext ;
+import com.hp.hpl.jena.sparql.engine.QueryIterator ;
+import com.hp.hpl.jena.sparql.engine.binding.Binding ;
+import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.path.eval.PathEval ;
 import com.hp.hpl.jena.sparql.sse.Item ;
@@ -45,13 +48,15 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderPath ;
 import com.hp.hpl.jena.sparql.sse.writers.WriterPath ;
 
-public class TestPath
+public class TestPath extends BaseTest
 {
     static Graph graph1 = GraphFactory.createDefaultGraph() ;
     static Graph graph2 = GraphFactory.createDefaultGraph() ;
     static Graph graph3 = GraphFactory.createDefaultGraph() ;
     static Graph graph4 = GraphFactory.createDefaultGraph() ;
     static Graph graph5 = GraphFactory.createDefaultGraph() ;
+    static Graph graph6 = GraphFactory.createDefaultGraph() ;
+    static Graph graph7 = GraphFactory.createDefaultGraph() ;
     
     static Node n1 = Node.createURI("n1") ;
     static Node n2 = Node.createURI("n2") ;
@@ -96,6 +101,15 @@ public class TestPath
         graph5.add(new Triple(n1, p, n3)) ;
         graph5.add(new Triple(n2, q, n4)) ;
         graph5.add(new Triple(n3, q, n5)) ;
+        
+        // Loop
+        graph6.add(new Triple(n1, p, n2)) ;
+        graph6.add(new Triple(n2, p, n1)) ;
+        
+        // Loop + tail
+        graph7.add(new Triple(n1, p, n2)) ;
+        graph7.add(new Triple(n2, p, n1)) ;
+        graph7.add(new Triple(n2, p, n3)) ;
     }
     
     // ----
@@ -235,15 +249,72 @@ public class TestPath
     @Test public void path_32()   { test(graph3, n1,   ":p{*}",     n1,n2,n3,n4,n4) ; }
     @Test public void path_33()   { test(graph3, n1,   ":p*",       n1,n2,n3,n4) ; }
     @Test public void path_34()   { test(graph3, n1,   ":p+",       n2,n3,n4) ; }
+
     
+    private static List<Binding> eval(Graph graph, String start$, String pathStr, String finish$)
+    {
+        return eval(graph, SSE.parseNode(start$, pmap), pathStr, SSE.parseNode(finish$, pmap)) ;
+    }
+    
+    private static List<Binding> eval(Graph graph, Node start, String pathStr, Node finish)
+    {
+        Path path = SSE.parsePath(pathStr, pmap) ;
+        QueryIterator qIter = PathLib.execTriplePath(BindingFactory.root(), start, path, finish, new ExecutionContext(ARQ.getContext(), graph, null, null)) ;
+        return Iter.toList(qIter) ;
+    }
+    
+    @Test public void path_35()
+    { 
+        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?y" ) ;
+        assertEquals(4, x.size()) ;
+    }
+    
+    @Test public void path_36()
+    { 
+        // Same end points.
+        List<Binding> x = eval(graph6, "?x", "(path+ :p)", "?x" ) ;
+        assertEquals(2, x.size()) ;
+    }
+
+    @Test public void path_37()
+    { 
+        List<Binding> x = eval(graph6, "?x", "(path* :p)", "?x" ) ;
+        assertEquals(2, x.size()) ;
+        Node node1 = x.get(0).get(Var.alloc("x")) ;
+        Node node2 = x.get(1).get(Var.alloc("x")) ;
+        assertFalse(node1.equals(node2)) ;
+        assertTrue(node1.equals(n1) || node1.equals(n2)) ;
+        assertTrue(node2.equals(n1) || node2.equals(n2)) ;
+    }
+
+    @Test public void path_38()
+    { 
+        // Same end points.
+        List<Binding> x = eval(graph6, "?x", "(pathN+ :p)", "?x" ) ;
+        
+        assertEquals(2, x.size()) ;
+        Node node1 = x.get(0).get(Var.alloc("x")) ;
+        Node node2 = x.get(1).get(Var.alloc("x")) ;
+        assertFalse(node1.equals(node2)) ;
+        assertTrue(node1.equals(n1) || node1.equals(n2)) ;
+        assertTrue(node2.equals(n1) || node2.equals(n2)) ;
+    }
+
+    @Test public void path_39()
+    { 
+        List<Binding> x = eval(graph6, "?x", "(pathN* :p)", "?x" ) ;
+        assertEquals(2, x.size()) ;
+    }
+
     // TODO Shortest path is not implemented yet.  These also need to be verified that they are correct.
-    @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
-    @Ignore @Test public void path_41()   { test(graph1, n1,   "shortest(:p+)",       n2) ; }
-    @Ignore @Test public void path_42()   { test(graph2, n1,   "shortest(:p*/:q)",    n4) ; }
-    @Ignore @Test public void path_43()   { test(graph2, n1,   "shortest(:p{*}/:q)",  n4, n4) ; }
-    @Ignore @Test public void path_44()   { test(graph4, n1,   "shortest(:p*/:q)",    n5) ; }
-    @Ignore @Test public void path_45()   { test(graph4, n1,   "shortest(:p{2,}/:q)", n6) ; }
-    @Ignore @Test public void path_46()   { test(graph5, n1,   "shortest(:p*/:q)",    n4, n5) ; }
+//    @Ignore @Test public void path_40()   { test(graph1, n1,   "shortest(:p*)",       n1) ; }
+//    @Ignore @Test public void path_41()   { test(graph1, n1,   "shortest(:p+)",       n2) ; }
+//    @Ignore @Test public void path_42()   { test(graph2, n1,   "shortest(:p*/:q)",    n4) ; }
+//    @Ignore @Test public void path_43()   { test(graph2, n1,   "shortest(:p{*}/:q)",  n4, n4) ; }
+//    @Ignore @Test public void path_44()   { test(graph4, n1,   "shortest(:p*/:q)",    n5) ; }
+//    @Ignore @Test public void path_45()   { test(graph4, n1,   "shortest(:p{2,}/:q)", n6) ; }
+//    @Ignore @Test public void path_46()   { test(graph5, n1,   "shortest(:p*/:q)",    n4, n5) ; }
+    
     
 
     // ----
