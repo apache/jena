@@ -41,7 +41,6 @@ public class query
     
     public static void invokeCmd(String className, String[] args)
     {
-        
         Class<?> cmd = null ;
         try { cmd = Class.forName(className) ; }
         catch (ClassNotFoundException ex)

@@ -18,82 +18,11 @@
 
 package jena;
 
-import static jena.cmdline.CmdLineUtils.setLog4jConfiguration;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.Reader;
-
-import com.hp.hpl.jena.n3.turtle.Turtle2NTriples;
-import com.hp.hpl.jena.n3.turtle.TurtleParseException;
-import com.hp.hpl.jena.n3.turtle.parser.ParseException;
-import com.hp.hpl.jena.n3.turtle.parser.TokenMgrError;
-import com.hp.hpl.jena.n3.turtle.parser.TurtleParser;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.FileUtils;
 
 public class turtle
 {
-	static { setLog4jConfiguration() ; }
-	
-    /** Run the Turtle parser - produce N-triples */
     public static void main(String... args)
     {
-        if ( args.length == 0 )
-        {
-            parse("http://example/BASE", System.in) ;
-            return ;
-        }
-        
-        
-        for ( int i = 0 ; i < args.length ; i++ )
-        {
-            String fn = args[i] ;
-            parse("http://base/", fn) ;
-        }
-    }        
-
-
-    public static void parse(String baseURI, String filename)
-    {
-        InputStream in = null ;
-        try {
-            in = new FileInputStream(filename) ;
-        } catch (FileNotFoundException ex)
-        {
-            System.err.println("File not found: "+filename) ;
-            return ;
-        }
-        parse(baseURI, in) ;
-    }
-
-
-    public static void parse(String baseURI, InputStream in)
-    {
-        Reader reader = FileUtils.asUTF8(in) ;
-        try {
-            TurtleParser parser = new TurtleParser(reader) ;
-            //parser.setEventHandler(new TurtleEventDump()) ;
-            parser.setEventHandler(new Turtle2NTriples(System.out)) ;
-            parser.setBaseURI(baseURI) ;
-            parser.parse() ;
-        }
-        catch (ParseException ex)
-        { throw new TurtleParseException(ex.getMessage()) ; }
-        catch (TokenMgrError tErr)
-        { throw new TurtleParseException(tErr.getMessage()) ; }
-
-        catch (TurtleParseException ex) { throw ex ; }
-
-        catch (JenaException ex)  { throw new TurtleParseException(ex.getMessage(), ex) ; }
-        catch (Error err)
-        {
-            throw new TurtleParseException(err.getMessage() , err) ;
-        }
-        catch (Throwable th)
-        {
-            throw new TurtleParseException(th.getMessage(), th) ;
-        }
+        query.invokeCmd("riotcmd.turtle",args) ;
     }
 }
