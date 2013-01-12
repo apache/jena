@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.enhanced;
 
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.JenaException ;
 
 /**
     Exception to throw if an enhanced graph does not support polymorphism
@@ -28,31 +28,25 @@ import com.hp.hpl.jena.shared.JenaException;
 public class UnsupportedPolymorphismException extends JenaException
     {
     private final Class<?> type;
-    private final EnhNode node;
+    private final Object node;
         
     /**
         Initialise this exception with the node that couldn't be polymorphed and
         the class it couldn't be polymorphed to.
     */
-    public UnsupportedPolymorphismException( EnhNode node, Class<?> type )
+    public UnsupportedPolymorphismException( Object node, boolean hasModel, Class<?> type )
         {
-        super( constructMessage( node, type ) );
+        super( constructMessage( node, hasModel, type ) );
         this.node = node;
         this.type = type;
         }
 
-    private static String constructMessage( EnhNode node, Class<?> type )
+    private static String constructMessage( Object node, boolean hasModel, Class<?> type )
         {
         String mainMessage = "cannot convert " + node + " to " + type;
-        return node.getGraph() == null ? mainMessage : mainMessage + " -- it has no model";
+        return hasModel ? mainMessage : mainMessage + " -- it has no model";
         }
 
-    /** 
-        Answer the (enhanced) Graph of the node that couldn't be polymorphed;
-        may be null if that node had no attached model.   
-    */
-    public EnhGraph getBadGraph() 
-        { return node.getGraph(); }
     
     /** 
         Answer the class that the node couldn't be polymorphed to
