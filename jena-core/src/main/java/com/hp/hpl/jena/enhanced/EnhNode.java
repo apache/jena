@@ -149,9 +149,9 @@ public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
     @Override protected <X extends RDFNode> X convertTo( Class<X> t ) 
         {
         EnhGraph eg = getGraph();
-        if (eg == null) throw new UnsupportedPolymorphismException( this, t );
+        if (eg == null) throw new UnsupportedPolymorphismException( this, false, t );
         Implementation imp = getPersonality().getImplementation( t );
-        if (imp == null) throw new UnsupportedPolymorphismException( this, t );
+        if (imp == null) throw new UnsupportedPolymorphismException( this, true, t );
         EnhNode result = imp.wrap( asNode(), eg );          
         this.addView( result );
         return t.cast( result );
