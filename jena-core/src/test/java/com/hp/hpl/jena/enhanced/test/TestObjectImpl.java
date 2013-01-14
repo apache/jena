@@ -23,7 +23,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * See {@link TestObject} for more detailed documentation.
- * @author  jjc
  */
 public class TestObjectImpl extends TestCommonImpl implements TestObject {
 

@@ -30,9 +30,6 @@ import junit.framework.TestSuite;
 
 /**
  * The JUnit test suite for ARP.
- *
- * @author  jjc
-
  */
 public class ARPTests extends java.lang.Object {
 	/**

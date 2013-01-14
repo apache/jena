@@ -20,9 +20,6 @@ package com.hp.hpl.jena.shared;
 
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestSharedPackage extends TestCase
     {
     public TestSharedPackage()

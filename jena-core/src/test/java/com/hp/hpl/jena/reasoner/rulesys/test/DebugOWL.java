@@ -39,9 +39,6 @@ import java.util.*;
  * Test harnness for investigating OWL reasoner correctness and performance
  * on specific local test files. Unit testing is done using OWLWGTester or simplar,
  * this code is a debugging tools rather than a tester.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class DebugOWL {
 

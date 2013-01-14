@@ -44,7 +44,7 @@ import junit.framework.Assert;
  * provides useful functionality for testing models, eg building small models
  * from strings, testing equality, etc.
  */
-@Deprecated
+
 public class ModelTestBase extends GraphTestBase
 {
 	protected static Model aModel = ModelTestBase.extendedModel();

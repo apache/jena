@@ -37,9 +37,6 @@ import com.hp.hpl.jena.vocabulary.RDFSyntax ;
  * It writes out a random model, and reads it back in.
  * The test fails if the models are not 'the same'.
  * Quite what 'the same' means is debatable.
- * @author  jjc
- 
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-07-04 16:41:34 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -113,8 +110,8 @@ public class testWriterAndReader
         {
         TestSuite langsuite = new TestSuite();
         langsuite.setName( lang );
-        langsuite.addTest( new testWriterInterface( "testWriting", lang ) );
-        langsuite.addTest( new testWriterInterface( "testLineSeparator", lang ) );
+        langsuite.addTest( new TestWriterInterface( "testWriting", lang ) );
+        langsuite.addTest( new TestWriterInterface( "testLineSeparator", lang ) );
         return langsuite;
         }
     

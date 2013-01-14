@@ -27,7 +27,6 @@ import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 
 /**
     Tests for entities being created corresponding to prefixes.
-    @author kers
 */
 public class TestEntityOutput extends ModelTestBase
     {

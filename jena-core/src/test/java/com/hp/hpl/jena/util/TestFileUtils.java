@@ -24,8 +24,6 @@ import junit.framework.*;
 
 /**
  * TestFileUtils
- * 
- * @author kers
  */
 public class TestFileUtils extends TestCase {
 	public TestFileUtils(String name) {

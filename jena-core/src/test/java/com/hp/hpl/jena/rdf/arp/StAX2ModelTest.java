@@ -35,10 +35,6 @@ import javax.xml.stream.XMLInputFactory;
 
 /**
  * Derived from {@link SAX2RDFTest}
- * 
- * @author Jeremy J. Carroll
- * @author Damian Steer
- *  
  */
 public class StAX2ModelTest extends TestCase {
 

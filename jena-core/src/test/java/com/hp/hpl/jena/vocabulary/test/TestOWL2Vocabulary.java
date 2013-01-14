@@ -26,8 +26,6 @@ import com.hp.hpl.jena.vocabulary.OWL2;
 /**
     Tests for spellings of OWL2 terms and their relationship with OWL[1]
     terms.
-    
-    @author chris.dollin
 */
 public class TestOWL2Vocabulary extends VocabTestBase
     {

@@ -24,10 +24,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 //import java.net.*;
-/**
- * @author jjc
- *
- */
 public class URITests
 	extends TestCase {
     // TODO: not for 2.3 relative/absolute tests

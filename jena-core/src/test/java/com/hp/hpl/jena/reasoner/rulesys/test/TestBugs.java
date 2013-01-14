@@ -46,9 +46,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 
 /**
  * Unit tests for reported bugs in the rule system.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2010-05-09 11:02:30 $
  */
 public class TestBugs extends TestCase {
 

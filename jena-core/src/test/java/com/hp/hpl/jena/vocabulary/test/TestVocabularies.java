@@ -22,7 +22,6 @@ import junit.framework.*;
 
 /**
     Collect together all the vocabulary tests.
- 	@author kers
 */
 public class TestVocabularies extends TestCase
     {

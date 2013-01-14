@@ -30,9 +30,6 @@ import java.io.IOException;
 
 /**
  * Version of the OWL unit tests used during development of the mini ruleset.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class OWLUnitTest extends TestCase {
     

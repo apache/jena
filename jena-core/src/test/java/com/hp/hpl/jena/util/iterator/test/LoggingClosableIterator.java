@@ -25,8 +25,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
     A closable iterator that wraps a base iterator and reports whether or not it
     has been closed.
-    
- 	@author kers
 */
 public class LoggingClosableIterator<T> extends WrappedIterator<T> implements ClosableIterator<T>
     {

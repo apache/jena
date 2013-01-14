@@ -32,9 +32,6 @@ import java.util.*;
 
 /**
  *  Test an FB hyrid using the emerging LP engine on the basic RDFS tests.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestLPRDFS extends TestCase {
     

@@ -25,10 +25,6 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.test.AbstractTestTripleStore;
 import com.hp.hpl.jena.mem.GraphTripleStore;
 
-/**
-     TestGraphTripleStore
-     @author kers
-*/
 public class TestGraphTripleStore extends AbstractTestTripleStore
     {
     public TestGraphTripleStore( String name )

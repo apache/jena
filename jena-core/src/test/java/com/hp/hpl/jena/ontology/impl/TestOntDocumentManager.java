@@ -46,10 +46,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * <p>
  * Unit tests for document manager
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.4 2011-03-09 10:18:42 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase

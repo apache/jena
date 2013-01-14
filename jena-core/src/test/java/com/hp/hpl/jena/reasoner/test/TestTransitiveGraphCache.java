@@ -29,9 +29,6 @@ import junit.framework.TestSuite;
 /**
  * A purely temporary test suite just used during development and kept
  * off the main unit test paths.
- *  
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class TestTransitiveGraphCache extends TestCase {

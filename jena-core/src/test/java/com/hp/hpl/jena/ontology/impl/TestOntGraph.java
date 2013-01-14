@@ -27,8 +27,6 @@ import junit.framework.*;
 /**
     Ensure that an OntGraph passes the graph tests. Clunky because it has to go
     via OntModel - there doesn't appear to be an OntGraph class.
-    
- 	@author kers
 */
 
 public class TestOntGraph extends AbstractTestGraph

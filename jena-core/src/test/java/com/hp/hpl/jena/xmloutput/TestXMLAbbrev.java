@@ -25,8 +25,6 @@ import java.io.IOException;
     "RDF/XML-ABBREV". Extracted from TestXMLFeatures as part 
     of a clarification exercise intended to extend the testing to
     allow for the entity-including option.
-    
-    @author eh
 */
 public class TestXMLAbbrev extends XMLOutputTestBase
     {

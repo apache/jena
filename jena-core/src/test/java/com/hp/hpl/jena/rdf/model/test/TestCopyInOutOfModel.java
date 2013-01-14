@@ -52,7 +52,7 @@ public class TestCopyInOutOfModel extends AbstractModelTestBase
 	/**
 	 * test moving things between models
 	 * 
-	 * @param model
+	 * @param lockModel
 	 *            the model implementation under test
 	 */
 	public void testCopyStatement()

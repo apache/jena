@@ -28,7 +28,6 @@ import com.hp.hpl.jena.reasoner.InfGraph;
      Needs extending; relys on knowing that the only InfGraph currently used is
      the Jena-provided base. Needs to be made into an abstract test and
      parametrised with the InfGraph being tested (hence getInfGraph).
- 	@author hedgehog
 */
 public class TestInfPrefixMapping extends ModelTestBase
     {

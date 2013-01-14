@@ -314,7 +314,7 @@ public class TestReifiedStatements extends AbstractModelTestBase
 	 * we can convert R into a ReifiedStatement iff the four components of the
 	 * quad are in the model.
 	 */
-	public void testReificationCombinations()
+    public void testReificationCombinations()
 	{
 		final Resource RR = model.createResource(TestReifiedStatements.aURI), SS = model
 				.createResource(TestReifiedStatements.anotherURI);
@@ -333,10 +333,7 @@ public class TestReifiedStatements extends AbstractModelTestBase
 				{ model.createStatement(SS, RDF.object, O), new Integer(256) },
 				{ model.createStatement(SS, RDF.type, RDF.Statement),
 						new Integer(512) } };
-		if (model.getReificationStyle() != ModelFactory.Minimal)
-		{
-			testCombinations(model, RR, 0, statements, statements.length);
-		}
+		testCombinations(model, RR, 0, statements, statements.length);
 	}
 
 	public void testRemoveReificationWorks()

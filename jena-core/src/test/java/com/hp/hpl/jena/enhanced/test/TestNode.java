@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.enhanced.test;
 
-/**
- *
- * @author  jjc
- */
 public interface TestNode {
 	// Convenience routines for converting between different 
 	// views using the subinterfaces,

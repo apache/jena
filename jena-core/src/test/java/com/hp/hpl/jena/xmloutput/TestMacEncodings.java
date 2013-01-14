@@ -35,10 +35,6 @@ import com.hp.hpl.jena.rdf.arp.MoreTests;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
-/**
- * @author Jeremy J. Carroll
- *
- */
 public class TestMacEncodings  extends ModelTestBase
 {
 	private static Logger logger = LoggerFactory.getLogger( TestMacEncodings.class );

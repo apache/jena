@@ -21,9 +21,6 @@ package com.hp.hpl.jena.vocabulary.test;
 import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestVocabDB extends VocabTestBase
     {
     public TestVocabDB(String name)

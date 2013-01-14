@@ -43,9 +43,6 @@ import junit.framework.TestSuite;
  * Some Jena reasoners support extended graphs which relax the RDF syntactic constraints
  * against literals in the subject position. By default getDeductionsModel in those
  * cases will return a SafeModel 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
  */
 public class TestSafeModel  extends TestCase {
     

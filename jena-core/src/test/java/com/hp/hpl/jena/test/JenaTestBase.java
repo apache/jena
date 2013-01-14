@@ -29,8 +29,6 @@ import com.hp.hpl.jena.util.iterator.*;
     A basis for Jena test cases which provides assertFalse and assertDiffer.
     Often the logic of the names is clearer than using a negation (well, Chris
     thinks so anyway).
-    
- 	@author kers
 */
 public class JenaTestBase extends TestCase
     {

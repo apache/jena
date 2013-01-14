@@ -102,7 +102,8 @@ public class RecordingModelListener implements ModelChangedListener
 		}
 	}
 
-	public static boolean checkEquality( final Object o1, final Object o2)
+	@SuppressWarnings("unchecked")
+    public static boolean checkEquality( final Object o1, final Object o2)
 	{
 		if (o1 == o2)
 		{
@@ -126,7 +127,7 @@ public class RecordingModelListener implements ModelChangedListener
 			}
 			return false;
 		}
-		else if ((o1 instanceof Collection) && (o2 instanceof Collection))
+		else if ( (o1 instanceof Collection<?>) && (o2 instanceof Collection<?>) )
 		{
 			return checkEquality( ((Collection<Object>)o1).toArray(), ((Collection<Object>)o2).toArray() );
 

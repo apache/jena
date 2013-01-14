@@ -20,12 +20,6 @@ package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:51 $
- */
-
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
 
     public TestCaseBasic(String name) {

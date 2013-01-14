@@ -44,9 +44,6 @@ import com.hp.hpl.jena.vocabulary.RDFS ;
 /**
  * Misc. tests of the OWL rule engine configurations which 
  * have arisen from bug reports or user questions.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
  */
 public class TestOWLMisc extends TestCase  {
 

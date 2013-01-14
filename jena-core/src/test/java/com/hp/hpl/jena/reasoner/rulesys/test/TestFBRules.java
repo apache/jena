@@ -42,9 +42,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test suite for the hybrid forward/backward rule system.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2010-03-28 11:59:36 $
  */
 public class TestFBRules extends TestCase {
     

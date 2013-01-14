@@ -23,8 +23,6 @@ import com.hp.hpl.jena.rdf.model.test.*;
 
 /**
 	ReasonerTestBase - provide common base code for reasoner tests
-
-	@author kers
 */
 
 public class ReasonerTestBase extends ModelTestBase 

@@ -175,12 +175,13 @@ public abstract class AbstractTestPackage extends TestSuite
 			}
 		}
 		parameterTypes.add(String.class);
-		@SuppressWarnings( "unchecked" )
 		Constructor<TestCase> c;
 		try
 		{
-			c = (Constructor<TestCase>) testClass.getConstructor(parameterTypes
+		    @SuppressWarnings( "unchecked" )
+		    Constructor<TestCase> cc = (Constructor<TestCase>) testClass.getConstructor(parameterTypes
 					.toArray(new Class[parameterTypes.size()]));
+		    c = cc ;
 		}
 		catch (final SecurityException e)
 		{

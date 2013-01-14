@@ -51,9 +51,6 @@ import java.io.*;
  * Within the query file each triple is treated as a triple pattern
  * to be searched for. Variables are indicated by resources in of the
  * form "var:x".</p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:56 $
  */
 public class ReasonerTester {
 

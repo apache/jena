@@ -12,8 +12,6 @@ import com.hp.hpl.jena.shared.WrappedIOException;
 
 /**
  * Tests for the rule loader
- * @author rvesse
- *
  */
 public class TestRuleLoader  {
     

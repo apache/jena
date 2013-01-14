@@ -30,19 +30,14 @@ import com.hp.hpl.jena.shared.NoWriterForLangException;
 import com.hp.hpl.jena.xmloutput.impl.Abbreviated;
 import com.hp.hpl.jena.xmloutput.impl.Basic;
 
-/**
- *
- * @author  bwm, jjc
- * @version $Revision: 1.1 $
- */
-public class testWriterInterface extends ModelTestBase {
+public class TestWriterInterface extends ModelTestBase {
     private String lang;
     /**
      * Constructor requires that all tests be named
      *
      * @param name The name of this test
      */
-    public testWriterInterface(String name, String lang) {
+    public TestWriterInterface(String name, String lang) {
         super(name);
         this.lang = lang;
         //if ( lang!=null)

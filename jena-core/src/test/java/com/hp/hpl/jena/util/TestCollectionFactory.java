@@ -27,7 +27,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
  	TestHashUtils - test that the hash utility returns a map.
- 	@author kers
 */
 public class TestCollectionFactory extends ModelTestBase
     {

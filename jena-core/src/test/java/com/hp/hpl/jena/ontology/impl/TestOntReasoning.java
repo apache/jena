@@ -43,10 +43,6 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
  * <p>
  * Unit tests on ont models with reasoning
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class TestOntReasoning
     extends TestCase

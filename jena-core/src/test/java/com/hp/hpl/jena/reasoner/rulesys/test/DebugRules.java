@@ -29,7 +29,7 @@ import java.io.*;
 /** * Using during debuging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
  * lists all the resulting entailments.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $ */
+ */
 public class DebugRules {
 
     /** The name of the rule set to load */

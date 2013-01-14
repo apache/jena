@@ -25,9 +25,6 @@ import junit.framework.TestSuite;
 
 /**
  * Test for the trivial tokenizer utility.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 18:42:05 $
  */
 public class TestTokenizer extends TestCase {
          

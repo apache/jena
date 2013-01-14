@@ -32,9 +32,6 @@ import junit.framework.TestSuite;
 /**
  * Test harness used in debugging some issues with execution
  * of modified versions of rule rdfs9.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestRDFS9 extends TestCase {
     
