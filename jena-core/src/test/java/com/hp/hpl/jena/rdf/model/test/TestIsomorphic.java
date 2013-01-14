@@ -252,14 +252,15 @@ public class TestIsomorphic extends AbstractModelTestBase
 		super.tearDown();
 	}
 
-	private void test2DiHyperCube( final boolean type )
+	private void test2DiHyperCube( int quantity, final boolean type )
 	{
 		if (TestIsomorphic.QUANTITY < 6)
 		{
 			// not sure why but this was in the original test suite -- CW
+		    // Me neither - AFS
 			return;
 		}
-		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
+		for (int i = 0; i < quantity; i++)
 		{
 			int a1, b1;
 			do
@@ -280,12 +281,12 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test2DiHyperCubeFalse()
 	{
-		test2DiHyperCube(false);
+		test2DiHyperCube(TestIsomorphic.QUANTITY, false);
 	}
 
 	public void test2DiHyperCubeTrue()
 	{
-		test2DiHyperCube(true);
+		test2DiHyperCube(TestIsomorphic.QUANTITY, true);
 	}
 
 	public void test2HyperCube()
@@ -305,10 +306,10 @@ public class TestIsomorphic extends AbstractModelTestBase
 		}
 	}
 
-	private void test4DiHyperCube( final boolean type )
+	private void test4DiHyperCube( int quantity, final boolean type )
 	{
 
-		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
+		for (int i = 0; i < quantity; i++)
 		{
 			int a1, b1, a2, b2;
 			do
@@ -333,15 +334,15 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4DiHyperCubeFalse()
 	{
-		test4DiHyperCube(false);
+		test4DiHyperCube(TestIsomorphic.QUANTITY, false);
 	}
 
 	public void test4DiHyperCubeTrue()
 	{
-		test4DiHyperCube(true);
+		test4DiHyperCube(TestIsomorphic.QUANTITY, true);
 	}
 
-	private void test4HyperCube( final boolean type )
+	private void test4HyperCube( int quantity, final boolean type )
 	{
 
 		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
@@ -368,18 +369,19 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4HyperCubeFalse()
 	{
-		test4HyperCube(false);
+	    // Pragmatically, needs more loops
+		test4HyperCube(2 * TestIsomorphic.QUANTITY, false);
 	}
 
 	public void test4HyperCubeTrue()
 	{
-		test4HyperCube(true);
+		test4HyperCube(TestIsomorphic.QUANTITY, true);
 	}
 
-	private void test4ToggleHyperCube( final boolean type )
+	private void test4ToggleHyperCube( int quantity, final boolean type )
 	{
 
-		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
+		for (int i = 0; i < quantity; i++)
 		{
 			int a1, b1, a2, b2;
 			do
@@ -401,12 +403,12 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4ToggleHyperCubeFalse()
 	{
-		test4ToggleHyperCube(false);
+		test4ToggleHyperCube(TestIsomorphic.QUANTITY, false);
 	}
 
 	public void test4ToggleHyperCubeTrue()
 	{
-		test4ToggleHyperCube(true);
+		test4ToggleHyperCube(TestIsomorphic.QUANTITY, true);
 	}
 
 }
