@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
-import com.hp.hpl.jena.regression.testReaderInterface;
 import javax.xml.stream.XMLInputFactory;
 
 /**
@@ -43,7 +42,7 @@ import javax.xml.stream.XMLInputFactory;
  */
 public class StAX2ModelTest extends TestCase {
 
-    protected static Logger logger = LoggerFactory.getLogger(testReaderInterface.class);
+    protected static Logger logger = LoggerFactory.getLogger(StAX2ModelTest.class);
     static private String all[] = {
         "arp/dom/domtest.rdf",
         //"abbreviated/collection.rdf", 

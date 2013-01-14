@@ -49,6 +49,7 @@ public abstract class Dyadic extends CompositionBase
     	{
     	L.close();
     	R.close();
+    	this.closed = true;
         }
         
     /**

@@ -27,14 +27,17 @@ import com.hp.hpl.jena.graph.test.*;
 import java.util.*;
 import junit.framework.*;
 
-public class TestDyadic extends GraphTestBase
+public abstract class TestDyadic extends AbstractTestGraph
 	{
 	public TestDyadic( String name )
 		{ super( name ); }
 		
+	
 	public static TestSuite suite()
     	{ return new TestSuite( TestDyadic.class ); }
-    	
+    
+	
+	
 	static private ExtendedIterator<String> things( final String x ) 
 		{
 		return new NiceIterator<String>()
@@ -44,7 +47,7 @@ public class TestDyadic extends GraphTestBase
 			@Override public String next() { return tokens.nextToken(); }
 			};
 		}
-		
+	
 	public void testDyadic() 
 		{
 		ExtendedIterator<String> it1 = things( "now is the time" );
@@ -69,4 +72,7 @@ public class TestDyadic extends GraphTestBase
         assertSame( g, d.getL() );
         assertSame( h, d.getR() );
         }
+
+
+	
 	}

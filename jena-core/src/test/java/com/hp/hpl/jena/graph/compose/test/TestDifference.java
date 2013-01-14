@@ -20,12 +20,13 @@ package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Difference;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.test.*;
 
 import junit.framework.*;
 
 @SuppressWarnings("deprecation")
-public class TestDifference extends GraphTestBase 
+public class TestDifference extends TestDyadic 
 	{
 	public TestDifference( String name )
 		{ super( name ); }
@@ -33,6 +34,13 @@ public class TestDifference extends GraphTestBase
 	public static TestSuite suite()
     	{ return new TestSuite( TestDifference.class ); }	
     	
+	@Override
+	public Graph getGraph()
+	{
+		Graph gBase = graphWith( "" ), g1 = graphWith( "" );
+        return new Difference( gBase, g1 ); 
+	}
+	
     public void testDifference()
 		{
         Graph g1 = graphWith( "x R y; p R q" );
