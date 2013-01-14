@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,166 +18,193 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.rdf.model.LiteralRequiredException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.RDFVisitor;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.ResourceRequiredException;
+import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
+import com.hp.hpl.jena.test.JenaTestBase;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import junit.framework.*;
+import junit.framework.Assert;
 
 /**
- 	@author kers
-    This class tests various properties of RDFNodes, to start with the
-    new Visitor stuff.
-*/
-public class TestRDFNodes extends ModelTestBase
-    {
-    public TestRDFNodes(String name)
-        { super(name); }
+ * This class tests various properties of RDFNodes.
+ */
+public class TestRDFNodes extends AbstractModelTestBase
+{
 
-    public static TestSuite suite()
-        { return new TestSuite( TestRDFNodes.class ); }
-        
-    public void testRDFVisitor()
-        {
-        final List<String> history = new ArrayList<String>();
-        Model m = ModelFactory.createDefaultModel();
-        final RDFNode S = m.createResource();
-        final RDFNode P = m.createProperty( "eh:PP" );
-        final RDFNode O = m.createLiteral( "LL" );
-    /* */
-        RDFVisitor rv = new RDFVisitor() 
-            {
-            @Override
-            public Object visitBlank( Resource R, AnonId id )
-                { 
-                history.add( "blank" ); 
-                assertTrue( "must visit correct node", R == S );
-                assertEquals( "must have correct field", R.getId(), id );
-                return "blank result"; 
-                }
-            @Override
-            public Object visitURI( Resource R, String uri )
-                { 
-                history.add( "uri" ); 
-                assertTrue( "must visit correct node", R == P );
-                assertEquals( "must have correct field", R.getURI(), uri );
-                return "uri result"; 
-                }
-            @Override
-            public Object visitLiteral( Literal L )
-                { 
-                history.add( "literal" );
-                assertTrue( "must visit correct node", L == O ); 
-                return "literal result"; 
-                }
-            };
-    /* */
-        assertEquals( "blank result", S.visitWith( rv ) );
-        assertEquals( "uri result", P.visitWith( rv ) );
-        assertEquals( "literal result", O.visitWith( rv ) );
-        assertEquals( listOfStrings( "blank uri literal" ), history );
-        }
-        
-    public void testRemoveAllRemoves()
-        {
-        String ps = "x P a; x P b", rest = "x Q c; y P a; y Q b";
-        Model m = modelWithStatements( ps + "; " + rest );
-        Resource r = resource( m, "x" );
-        Resource r2 = r.removeAll( property( m, "P" ) );
-        assertSame( "removeAll should deliver its receiver", r, r2 );
-        assertIsoModels( "x's P-values should go", modelWithStatements( rest ), m );
-        }
-        
-    public void testRemoveAllBoring()
-        {
-        Model m1 = modelWithStatements( "x P a; y Q b" );
-        Model m2 = modelWithStatements( "x P a; y Q b" );
-        resource( m2, "x" ).removeAll( property( m2, "Z" ) );
-        assertIsoModels( "m2 should be unchanged", m1, m2 );
-        }
-        
-    public void testInModel()
-        {
-        Model m1 = modelWithStatements( "" );
-        Model m2 = modelWithStatements( "" );
-        Resource r1 = resource( m1, "r1" );
-        Resource r2 = resource( m1, "_r2" );
-    /* */
-        assertTrue( r1.getModel() == m1 );
-        assertTrue( r2.getModel() == m1 );
-        assertFalse( r1.isAnon() );
-        assertTrue( r2.isAnon() );
-    /* */
-        assertTrue( r1.inModel( m2 ).getModel() == m2 );
-        assertTrue( r2.inModel( m2 ).getModel() == m2 );
-    /* */
-        assertEquals( r1, r1.inModel( m2 ) );
-        assertEquals( r2, r2.inModel( m2 ) );
-        }
-    
-    public void testIsAnon()
-        {
-        Model m = modelWithStatements( "" );
-        assertEquals( false, m.createResource( "eh:/foo" ).isAnon() );
-        assertEquals( true, m.createResource().isAnon() );
-        assertEquals( false, m.createTypedLiteral( 17 ).isAnon() );
-        assertEquals( false, m.createTypedLiteral( "hello" ).isAnon() );
-        }  
-    
-    public void testIsLiteral()
-        {
-        Model m = modelWithStatements( "" );
-        assertEquals( false, m.createResource( "eh:/foo" ).isLiteral() );
-        assertEquals( false, m.createResource().isLiteral() );
-        assertEquals( true, m.createTypedLiteral( 17 ).isLiteral() );
-        assertEquals( true, m.createTypedLiteral( "hello" ).isLiteral() );
-        }
-    
-    public void testIsURIResource()
-        {
-        Model m = modelWithStatements( "" );
-        assertEquals( true, m.createResource( "eh:/foo" ).isURIResource() );
-        assertEquals( false, m.createResource().isURIResource() );
-        assertEquals( false, m.createTypedLiteral( 17 ).isURIResource() );
-        assertEquals( false, m.createTypedLiteral( "hello" ).isURIResource() );
-        }
-    
-    public void testIsResource()
-        {
-        Model m = modelWithStatements( "" );
-        assertEquals( true, m.createResource( "eh:/foo" ).isResource() );
-        assertEquals( true, m.createResource().isResource() );
-        assertEquals( false, m.createTypedLiteral( 17 ).isResource() );
-        assertEquals( false, m.createTypedLiteral( "hello" ).isResource() );
-        }
-    
-    public void testRDFNodeAsResource()
-        {
-        Model m = modelWithStatements( "" );
-        Resource r = m.createResource( "eh:/spoo" );
-        assertSame( r, ((RDFNode) r).asResource() );
-        }
-    
-    public void testLiteralAsResourceThrows()
-        {
-        Model m = modelWithStatements( "" );
-        Resource r = m.createResource( "eh:/spoo" );
-        try { r.asLiteral(); fail( "should not be able to do Resource.asLiteral()" ); }
-        catch (LiteralRequiredException e) {}
-        }
-    
-    public void testRDFNodeAsLiteral()
-        {
-        Model m = modelWithStatements( "" );
-        Literal l = m.createLiteral( "hello, world" );
-        assertSame( l, ((RDFNode) l).asLiteral() );
-        }
-    
-    public void testResourceAsLiteralThrows()
-        {
-        Model m = modelWithStatements( "" );
-        Literal l = m.createLiteral( "hello, world" );
-        try { l.asResource(); fail( "should not be able to do Literal.asResource()" ); }
-        catch (ResourceRequiredException e) {}
-        }
-    }
+	public TestRDFNodes( final TestingModelFactory modelFactory,
+			final String name )
+	{
+		super(modelFactory, name);
+	}
+
+	public void testInModel()
+	{
+		final Model m1 = ModelHelper.modelWithStatements(this, "");
+		final Model m2 = ModelHelper.modelWithStatements(this, "");
+		final Resource r1 = ModelHelper.resource(m1, "r1");
+		final Resource r2 = ModelHelper.resource(m1, "_r2");
+		/* */
+		Assert.assertEquals(r1.getModel(), m1);
+		Assert.assertEquals(r2.getModel(), m1);
+		Assert.assertFalse(r1.isAnon());
+		Assert.assertTrue(r2.isAnon());
+		/* */
+		Assert.assertEquals(r1.inModel(m2).getModel(), m2);
+		Assert.assertEquals(r2.inModel(m2).getModel(), m2);
+		/* */
+		Assert.assertEquals(r1, r1.inModel(m2));
+		Assert.assertEquals(r2, r2.inModel(m2));
+	}
+
+	public void testIsAnon()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		Assert.assertEquals(false, m.createResource("eh:/foo").isAnon());
+		Assert.assertEquals(true, m.createResource().isAnon());
+		Assert.assertEquals(false, m.createTypedLiteral(17).isAnon());
+		Assert.assertEquals(false, m.createTypedLiteral("hello").isAnon());
+	}
+
+	public void testIsLiteral()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		Assert.assertEquals(false, m.createResource("eh:/foo").isLiteral());
+		Assert.assertEquals(false, m.createResource().isLiteral());
+		Assert.assertEquals(true, m.createTypedLiteral(17).isLiteral());
+		Assert.assertEquals(true, m.createTypedLiteral("hello").isLiteral());
+	}
+
+	public void testIsResource()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		Assert.assertEquals(true, m.createResource("eh:/foo").isResource());
+		Assert.assertEquals(true, m.createResource().isResource());
+		Assert.assertEquals(false, m.createTypedLiteral(17).isResource());
+		Assert.assertEquals(false, m.createTypedLiteral("hello").isResource());
+	}
+
+	public void testIsURIResource()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		Assert.assertEquals(true, m.createResource("eh:/foo").isURIResource());
+		Assert.assertEquals(false, m.createResource().isURIResource());
+		Assert.assertEquals(false, m.createTypedLiteral(17).isURIResource());
+		Assert.assertEquals(false, m.createTypedLiteral("hello")
+				.isURIResource());
+	}
+
+	public void testLiteralAsResourceThrows()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		final Resource r = m.createResource("eh:/spoo");
+		try
+		{
+			r.asLiteral();
+			Assert.fail("should not be able to do Resource.asLiteral()");
+		}
+		catch (final LiteralRequiredException e)
+		{
+		}
+	}
+
+	public void testRDFNodeAsLiteral()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		final Literal l = m.createLiteral("hello, world");
+		Assert.assertSame(l, ((RDFNode) l).asLiteral());
+	}
+
+	public void testRDFNodeAsResource()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		final Resource r = m.createResource("eh:/spoo");
+		Assert.assertSame(r, ((RDFNode) r).asResource());
+	}
+
+	public void testRDFVisitor()
+	{
+		final List<String> history = new ArrayList<String>();
+		final Model m = ModelFactory.createDefaultModel();
+		final RDFNode S = m.createResource();
+		final RDFNode P = m.createProperty("eh:PP");
+		final RDFNode O = m.createLiteral("LL");
+		/* */
+		final RDFVisitor rv = new RDFVisitor() {
+			@Override
+			public Object visitBlank( final Resource R, final AnonId id )
+			{
+				history.add("blank");
+				Assert.assertTrue("must visit correct node", R == S);
+				Assert.assertEquals("must have correct field", R.getId(), id);
+				return "blank result";
+			}
+
+			@Override
+			public Object visitLiteral( final Literal L )
+			{
+				history.add("literal");
+				Assert.assertTrue("must visit correct node", L == O);
+				return "literal result";
+			}
+
+			@Override
+			public Object visitURI( final Resource R, final String uri )
+			{
+				history.add("uri");
+				Assert.assertTrue("must visit correct node", R == P);
+				Assert.assertEquals("must have correct field", R.getURI(), uri);
+				return "uri result";
+			}
+		};
+		/* */
+		Assert.assertEquals("blank result", S.visitWith(rv));
+		Assert.assertEquals("uri result", P.visitWith(rv));
+		Assert.assertEquals("literal result", O.visitWith(rv));
+		Assert.assertEquals(JenaTestBase.listOfStrings("blank uri literal"),
+				history);
+	}
+
+	public void testRemoveAllBoring()
+	{
+		final Model m1 = ModelHelper.modelWithStatements(this, "x P a; y Q b");
+		final Model m2 = ModelHelper.modelWithStatements(this, "x P a; y Q b");
+		ModelHelper.resource(m2, "x").removeAll(ModelHelper.property(m2, "Z"));
+		ModelHelper.assertIsoModels("m2 should be unchanged", m1, m2);
+	}
+
+	public void testRemoveAllRemoves()
+	{
+		final String ps = "x P a; x P b", rest = "x Q c; y P a; y Q b";
+		final Model m = ModelHelper.modelWithStatements(this, ps + "; " + rest);
+		final Resource r = ModelHelper.resource(m, "x");
+		final Resource r2 = r.removeAll(ModelHelper.property(m, "P"));
+		Assert.assertSame("removeAll should deliver its receiver", r, r2);
+		ModelHelper.assertIsoModels("x's P-values should go",
+				ModelHelper.modelWithStatements(this, rest), m);
+	}
+
+	public void testResourceAsLiteralThrows()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "");
+		final Literal l = m.createLiteral("hello, world");
+		try
+		{
+			l.asResource();
+			Assert.fail("should not be able to do Literal.asResource()");
+		}
+		catch (final ResourceRequiredException e)
+		{
+		}
+	}
+}

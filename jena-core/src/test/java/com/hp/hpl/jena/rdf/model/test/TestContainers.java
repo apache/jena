@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,31 +18,34 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Container;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Seq;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.TestSuite;
+import junit.framework.Assert;
 
 /**
-     @author kers
-*/
-public class TestContainers extends ModelTestBase
-    {
-    public TestContainers( String name )
-        { super( name ); }
-    
-    public static TestSuite suite()
-        { return new TestSuite( TestContainers.class ); }
+ * Tests for containers.
+ */
+public class TestContainers extends AbstractModelTestBase
+{
 
-    /**
-        Contributed by Damian, turned into a test case by Chris.
-    */
-    public void testCanAsContainer()
-        {
-        String seqUri = "http://example.com/#seq";
-        Model model = ModelFactory.createDefaultModel();
-        Seq seq = model.createSeq( seqUri );
-        Resource res = model.createResource( seqUri );
-        assertTrue( res.canAs( Seq.class ) );
-        assertTrue( res.canAs( Container.class ) );
-        }
-    }
+	public TestContainers( final TestingModelFactory modelFactory,
+			final String name )
+	{
+		super(modelFactory, name);
+	}
+
+	/**
+	 * Contributed by Damian, turned into a test case by Chris.
+	 */
+	public void testCanAsContainer()
+	{
+		final String seqUri = "http://example.com/#seq";
+		model.createSeq(seqUri);
+		final Resource res = model.createResource(seqUri);
+		Assert.assertTrue(res.canAs(Seq.class));
+		Assert.assertTrue(res.canAs(Container.class));
+	}
+}

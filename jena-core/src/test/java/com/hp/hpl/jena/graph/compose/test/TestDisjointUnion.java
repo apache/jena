@@ -22,18 +22,28 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.DisjointUnion;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**
      TestDisjointUnion - test that DisjointUnion works, as well as we can.
 */
-public class TestDisjointUnion extends GraphTestBase
+public class TestDisjointUnion extends TestDyadic
     {
     public TestDisjointUnion( String name )
         { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( TestDisjointUnion.class ); }
+    
+    
+    @Override
+	public Graph getGraph()
+	{
+		Graph gBase = graphWith( "" ), g1 = graphWith( "" );
+        return new DisjointUnion( gBase, g1 ); 
+	}
+	
     
     public void testEmptyUnion()
         { 

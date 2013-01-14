@@ -19,13 +19,14 @@
 package com.hp.hpl.jena.graph.compose.test;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.Intersection;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.test.*;
 
 
 import junit.framework.*;
 
-public class TestUnion extends GraphTestBase 
+public class TestUnion extends TestDyadic 
 	{
 	public TestUnion( String name )
 		{ super( name ); }
@@ -33,6 +34,13 @@ public class TestUnion extends GraphTestBase
 	public static TestSuite suite()
     	{ return new TestSuite( TestUnion.class ); }
     	
+	@Override
+	public Graph getGraph()
+	{
+		Graph gBase = graphWith( "" ), g1 = graphWith( "" );
+        return new Union( gBase, g1 ); 
+	}
+	
 	public void testUnion() 
 		{
         Graph g1 = graphWith( "x R y; p R q" );

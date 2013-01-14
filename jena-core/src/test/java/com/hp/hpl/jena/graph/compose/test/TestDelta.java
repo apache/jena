@@ -22,10 +22,11 @@ import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.compose.Delta ;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.test.GraphTestBase ;
 
 @SuppressWarnings("deprecation")
-public class TestDelta extends GraphTestBase 
+public class TestDelta extends TestDyadic 
 	{
 		
 	public TestDelta( String name )
@@ -34,6 +35,13 @@ public class TestDelta extends GraphTestBase
 	public static TestSuite suite()
     	{ return new TestSuite( TestDelta.class ); }			
     	
+	@Override
+	public Graph getGraph()
+	{
+		Graph gBase = graphWith( "" );
+        return new Delta( gBase ); 
+	}
+	
 	public void testDelta() 
 		{
 		Graph x = graphWith( "x R y" );

@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,237 +18,241 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.util.ArrayList ;
-import java.util.List ;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphMaker;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.test.GraphTestBase;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelMaker;
+import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
+import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.test.JenaTestBase;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 
-import junit.framework.TestSuite ;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphMaker ;
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.test.GraphTestBase ;
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelMaker ;
-import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl ;
-import com.hp.hpl.jena.shared.ReificationStyle ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
-import com.hp.hpl.jena.util.iterator.NullIterator ;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
-    Test ModelMakerImpl using a mock GraphMaker. This is as much an
-    exercise in learning testing technique as it is in actually doing the test ....
-*/
-@SuppressWarnings("deprecation")
-public class TestModelMakerImpl extends ModelTestBase
-    {
-    public TestModelMakerImpl(String name)
-        { super(name); }
+ * Test ModelMakerImpl using a mock GraphMaker.
+ */
+public class TestModelMakerImpl extends TestCase
+{
+	static class MockGraphMaker implements GraphMaker
+	{
+		List<String> history = new ArrayList<String>();
+		Graph graph;
 
-    public static TestSuite suite()
-        { return new TestSuite( TestModelMakerImpl.class ); }
+		public MockGraphMaker( final Graph graph )
+		{
+			this.graph = graph;
+		}
 
-    private ModelMaker maker;
-    private Graph graph;
-    private GraphMaker graphMaker;
+		public Graph addDescription( final Graph desc, final Node self )
+		{
+			history.add("addDescription()");
+			return desc;
+		}
 
-    @Override
-    public void setUp()
-        {
-        graph = GraphTestBase.graphWith( "" );
-        graphMaker = new MockGraphMaker( graph );
-        maker = new ModelMakerImpl( graphMaker );
-        }
+		@Override
+		public void close()
+		{
+			history.add("close()");
+		}
 
-    public void testClose()
-        {
-        maker.close();
-        checkHistory( listOfOne( "close()") );
-        }
+		@Override
+		public Graph createGraph()
+		{
+			history.add("create()");
+			return graph;
+		}
 
-    public void testRemove()
-        {
-        maker.removeModel( "London" );
-        checkHistory( listOfOne( "remove(London)" ) );
-        }
+		@Override
+		public Graph createGraph( final String name )
+		{
+			history.add("create(" + name + ")");
+			return graph;
+		}
 
-    public void testCreateFreshModel()
-        {
-        maker.createFreshModel();
-        checkHistory( listOfOne( "create()" ) );
-        }
+		@Override
+		public Graph createGraph( final String name, final boolean strict )
+		{
+			history.add("create(" + name + "," + strict + ")");
+			return graph;
+		}
 
-    public void testCreateDefaultModel()
-        {
-        maker.createDefaultModel();
-        checkHistory( listOfOne( "get()" ) );
-        }
+		public Graph getDescription()
+		{
+			history.add("getDescription()");
+			return GraphTestBase.graphWith("");
+		}
 
-    public void testCreateNamed()
-        {
-        Model m = maker.createModel( "petal" );
-        checkHistory( listOfOne("create(petal,false)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		public Graph getDescription( final Node root )
+		{
+			history.add("getDescription(Node)");
+			return GraphTestBase.graphWith("");
+		}
 
-    public void testCreateTrue()
-        {
-        Model m = maker.createModel( "stem", true );
-        checkHistory( listOfOne("create(stem,true)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		@Override
+		public Graph getGraph()
+		{
+			history.add("get()");
+			return graph;
+		}
 
-    public void testCreateFalse()
-        {
-        Model m = maker.createModel( "leaf", false );
-        checkHistory( listOfOne("create(leaf,false)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		@Override
+		public ReificationStyle getReificationStyle()
+		{
+			history.add("getReificationStyle()");
+			return null;
+		}
 
-    public void testOpen()
-        {
-        Model m = maker.openModel( "trunk" );
-        checkHistory( listOfOne("open(trunk,false)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		@Override
+		public boolean hasGraph( final String name )
+		{
+			history.add("has(" + name + ")");
+			return false;
+		}
 
-    public void testOpenFalse()
-        {
-        Model m = maker.openModel( "branch", false );
-        checkHistory( listOfOne("open(branch,false)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		@Override
+		public ExtendedIterator<String> listGraphs()
+		{
+			history.add("listModels()");
+			return NullIterator.instance();
+		}
 
-    public void testOpenTrue()
-        {
-        Model m = maker.openModel( "bark", true );
-        checkHistory( listOfOne("open(bark,true)" ) );
-        assertTrue( m.getGraph() == graph );
-        }
+		@Override
+		public Graph openGraph()
+		{
 
-    public void testListGraphs()
-        {
-        maker.listModels().close();
-        checkHistory( listOfOne("listModels()" ) );
-        }
+			return null;
+		}
 
-    public void testGetGraphMaker()
-        {
-        assertTrue( maker.getGraphMaker() == graphMaker );
-        }
+		@Override
+		public Graph openGraph( final String name )
+		{
+			history.add("open(" + name + ")");
+			return graph;
+		}
 
-    private void checkHistory( List<String> expected )
-        { assertEquals( expected, history() ); }
+		@Override
+		public Graph openGraph( final String name, final boolean strict )
+		{
+			history.add("open(" + name + "," + strict + ")");
+			return graph;
+		}
 
-    private List<String> history()
-        { return ((MockGraphMaker) maker.getGraphMaker()).history; }
+		@Override
+		public void removeGraph( final String name )
+		{
+			history.add("remove(" + name + ")");
+		}
+	}
 
-    static class MockGraphMaker implements GraphMaker
-        {
-        List<String> history = new ArrayList<String>();
-        Graph graph;
+	private ModelMaker maker;
+	private Graph graph;
+	private GraphMaker graphMaker;
 
-        public MockGraphMaker( Graph graph )
-            { this.graph = graph; }
+	public TestModelMakerImpl( final String name )
+	{
+		super(name);
+	}
 
-        @Override
-        @Deprecated
-        public ReificationStyle getReificationStyle()
-            {
-            history.add( "getReificationStyle()" );
-            return null;
-            }
+	private void checkHistory( final List<String> expected )
+	{
+		Assert.assertEquals(expected, history());
+	}
 
-        @Override
-        public Graph getGraph()
-            {
-            history.add( "get()" );
-            return graph;
-            }
+	private List<String> history()
+	{
+		return ((MockGraphMaker) maker.getGraphMaker()).history;
+	}
 
-        @Override
-        public Graph createGraph()
-            {
-            history.add( "create()" );
-            return graph;
-            }
+	@Override
+	public void setUp()
+	{
+		graph = GraphTestBase.graphWith("");
+		graphMaker = new MockGraphMaker(graph);
+		maker = new ModelMakerImpl(graphMaker);
+	}
 
-        @Override
-        public Graph createGraph( String name, boolean strict )
-            {
-            history.add( "create(" + name + "," + strict + ")" );
-            return graph;
-            }
+	public void testClose()
+	{
+		maker.close();
+		checkHistory(JenaTestBase.listOfOne("close()"));
+	}
 
-        @Override
-        public Graph createGraph( String name )
-            {
-            history.add( "create(" + name + ")" );
-            return graph;
-            }
+	public void testCreateDefaultModel()
+	{
+		maker.createDefaultModel();
+		checkHistory(JenaTestBase.listOfOne("get()"));
+	}
 
-        @Override
-        public Graph openGraph( String name, boolean strict )
-            {
-            history.add( "open(" + name + "," + strict + ")" );
-            return graph;
-            }
+	public void testCreateFalse()
+	{
+		final Model m = maker.createModel("leaf", false);
+		checkHistory(JenaTestBase.listOfOne("create(leaf,false)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        @Override
-        public Graph openGraph( String name )
-            {
-            history.add( "open(" + name + ")" );
-            return graph;
-            }
+	public void testCreateFreshModel()
+	{
+		maker.createFreshModel();
+		checkHistory(JenaTestBase.listOfOne("create()"));
+	}
 
-        @Override
-        public void removeGraph( String name )
-            {
-            history.add( "remove(" + name + ")" );
-            }
+	public void testCreateNamed()
+	{
+		final Model m = maker.createModel("petal");
+		checkHistory(JenaTestBase.listOfOne("create(petal,false)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        @Override
-        public boolean hasGraph( String name )
-            {
-            history.add( "has(" + name + ")" );
-            return false;
-            }
+	public void testCreateTrue()
+	{
+		final Model m = maker.createModel("stem", true);
+		checkHistory(JenaTestBase.listOfOne("create(stem,true)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        public Graph getDescription()
-            {
-            history.add( "getDescription()" );
-            return graphWith( "" );
-            }
+	public void testGetGraphMaker()
+	{
+		Assert.assertTrue(maker.getGraphMaker() == graphMaker);
+	}
 
-        public Graph getDescription( Node root )
-            {
-            history.add( "getDescription(Node)" );
-            return graphWith( "" );
-            }
+	public void testListGraphs()
+	{
+		maker.listModels().close();
+		checkHistory(JenaTestBase.listOfOne("listModels()"));
+	}
 
-        public Graph addDescription( Graph desc, Node self )
-            {
-            history.add( "addDescription()" );
-            return desc;
-            }
+	public void testOpen()
+	{
+		final Model m = maker.openModel("trunk");
+		checkHistory(JenaTestBase.listOfOne("open(trunk,false)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        @Override
-        public void close()
-            {
-            history.add( "close()" );
-            }
+	public void testOpenFalse()
+	{
+		final Model m = maker.openModel("branch", false);
+		checkHistory(JenaTestBase.listOfOne("open(branch,false)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        @Override
-        public ExtendedIterator<String> listGraphs()
-            {
-            history.add( "listModels()" );
-            return NullIterator.instance();
-            }
+	public void testOpenTrue()
+	{
+		final Model m = maker.openModel("bark", true);
+		checkHistory(JenaTestBase.listOfOne("open(bark,true)"));
+		Assert.assertTrue(m.getGraph() == graph);
+	}
 
-        @Override
-        public Graph openGraph()
-            {
-            
-            return null;
-            }
-        }
-    }
+	public void testRemove()
+	{
+		maker.removeModel("London");
+		checkHistory(JenaTestBase.listOfOne("remove(London)"));
+	}
+}
