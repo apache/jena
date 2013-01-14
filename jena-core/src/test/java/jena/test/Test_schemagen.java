@@ -43,10 +43,6 @@ import com.hp.hpl.jena.util.FileUtils;
  * <p>
  * Unit tests for schemagen
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Test_schemagen.java,v 1.10 2011-03-22 12:38:05 ian_dickinson Exp $
  */
 public class Test_schemagen
     extends TestCase

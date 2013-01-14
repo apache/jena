@@ -39,6 +39,7 @@ import junit.framework.TestCase;
 /**
  * Test ModelMakerImpl using a mock GraphMaker.
  */
+@SuppressWarnings("deprecation")
 public class TestModelMakerImpl extends TestCase
 {
 	static class MockGraphMaker implements GraphMaker
@@ -104,6 +105,7 @@ public class TestModelMakerImpl extends TestCase
 		}
 
 		@Override
+		@Deprecated
 		public ReificationStyle getReificationStyle()
 		{
 			history.add("getReificationStyle()");

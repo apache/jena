@@ -37,8 +37,6 @@ import junit.framework.TestSuite;
  * <p>
  * To be moved to a test directory once the code is working.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestBasicLP  extends TestCase {
     

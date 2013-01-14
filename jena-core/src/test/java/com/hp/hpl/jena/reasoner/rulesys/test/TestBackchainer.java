@@ -40,9 +40,6 @@ import junit.framework.TestSuite;
  * The original version was developed for the original backchaining interpeter. 
  * That has now been obsoleted at this is now used to double check the
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestBackchainer extends TestCase {
     

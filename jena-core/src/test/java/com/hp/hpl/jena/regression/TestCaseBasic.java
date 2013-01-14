@@ -40,11 +40,8 @@ import com.hp.hpl.jena.test.JenaTestBase;
  * This class is inteded to be subclassed with setup and teardown methods to
  * create models required for the tests.
  * </p>
- * 
- * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:39 $
  */
-@Deprecated
+
 public class TestCaseBasic extends JenaTestBase {
 
 	protected Model m1 = null;

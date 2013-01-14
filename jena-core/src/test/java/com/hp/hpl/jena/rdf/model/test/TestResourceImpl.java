@@ -32,8 +32,6 @@ import junit.framework.Assert;
 
 /**
  * TestResourceImpl - fresh tests, make sure as-ing works a bit.
- * 
- * @author kers
  */
 public class TestResourceImpl extends AbstractModelTestBase
 {
@@ -136,7 +134,6 @@ public class TestResourceImpl extends AbstractModelTestBase
 	 */
 	public void testCannotAsNonLiteral()
 	{
-		;
 		ModelHelper.resource(model, "plumPie").as(Resource.class);
 	}
 

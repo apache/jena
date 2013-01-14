@@ -24,7 +24,6 @@ import junit.framework.*;
 /**
     Test that the VCARD identifiers are what they're supposed to be.
     TODO ensure that there are no untested identifiers.
- 	@author kers
 */
 public class TestVocabVCARD extends VocabTestBase
     {

@@ -40,10 +40,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * <p>
  * Unit test cases for the OntProperty class
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.3 2010-04-13 14:12:51 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase

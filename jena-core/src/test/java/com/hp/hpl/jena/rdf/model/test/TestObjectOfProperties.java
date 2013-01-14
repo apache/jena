@@ -31,12 +31,12 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 	String suri = "http://aldabaran/test8/s";
 	String puri = "http://aldabaran/test8/";
 
-	boolean tvBoolean[] = { false, true };
-	long tvLong[] = { 123, 321 };
-	char tvChar[] = { '@', ';' };
-	float tvFloat[] = { 456.789f, 789.456f };
-	double tvDouble[] = { 123.456, 456.123 };
-	String tvString[] = { "testing string 1", "testing string 2" };
+	boolean tvBooleanArray[] = { false, true };
+	long tvLongArray[] = { 123, 321 };
+	char tvCharArray[] = { '@', ';' };
+	float tvFloatArray[] = { 456.789f, 789.456f };
+	double tvDoubleArray[] = { 123.456, 456.123 };
+	String tvStringArray[] = { "testing string 1", "testing string 2" };
 	String lang[] = { "en", "fr" };
 
 	int numObj = 7;
@@ -133,27 +133,27 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 			for (int j = 0; j < 2; j++)
 			{
 				stmt = model.createStatement(subject[i], predicate[j],
-						model.createTypedLiteral(tvBoolean[j]));
+						model.createTypedLiteral(tvBooleanArray[j]));
 				model.add(stmt);
 				stmt = model.createLiteralStatement(subject[i], predicate[j],
-						tvLong[j]);
+						tvLongArray[j]);
 				model.add(stmt);
 				stmt = model.createLiteralStatement(subject[i], predicate[j],
-						tvChar[j]);
+						tvCharArray[j]);
 				model.add(stmt);
 
 				stmt = model.createStatement(subject[i], predicate[j],
-						model.createTypedLiteral(tvFloat[j]));
+						model.createTypedLiteral(tvFloatArray[j]));
 				model.add(stmt);
 				stmt = model.createStatement(subject[i], predicate[j],
-						model.createTypedLiteral(tvDouble[j]));
+						model.createTypedLiteral(tvDoubleArray[j]));
 				model.add(stmt);
 
 				stmt = model.createStatement(subject[i], predicate[j],
-						tvString[j]);
+						tvStringArray[j]);
 				model.add(stmt);
 				stmt = model.createStatement(subject[i], predicate[j],
-						tvString[j], lang[j]);
+						tvStringArray[j], lang[j]);
 				model.add(stmt);
 				// stmt = model.createStatement(subject[i], predicate[j],
 				// tvLitObj[j]);
@@ -163,13 +163,13 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 				model.add(stmt);
 			}
 		}
-		object[0] = model.createTypedLiteral(tvBoolean[1]);
-		object[1] = model.createTypedLiteral(tvLong[1]);
-		object[2] = model.createTypedLiteral(tvChar[1]);
-		object[3] = model.createTypedLiteral(tvFloat[1]);
-		object[4] = model.createTypedLiteral(tvDouble[1]);
-		object[5] = model.createLiteral(tvString[1]);
-		object[6] = model.createLiteral(tvString[1], lang[1]);
+		object[0] = model.createTypedLiteral(tvBooleanArray[1]);
+		object[1] = model.createTypedLiteral(tvLongArray[1]);
+		object[2] = model.createTypedLiteral(tvCharArray[1]);
+		object[3] = model.createTypedLiteral(tvFloatArray[1]);
+		object[4] = model.createTypedLiteral(tvDoubleArray[1]);
+		object[5] = model.createLiteral(tvStringArray[1]);
+		object[6] = model.createLiteral(tvStringArray[1], lang[1]);
 		// object[7] = tvLitObj[1];
 		// object[7] = tvResObj[1];
 
@@ -214,76 +214,76 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 
 		processIterator(
 				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvBoolean[0])), subjf);
+						model.createTypedLiteral(tvBooleanArray[0])), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
 				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvBoolean[1])), subjf);
+						model.createTypedLiteral(tvBooleanArray[1])), subjf);
 		assertFoundNone(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], (byte) tvLong[0]),
+				model.listResourcesWithProperty(predicate[0], (byte) tvLongArray[0]),
 				subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], (byte) tvLong[1]),
+				model.listResourcesWithProperty(predicate[0], (byte) tvLongArray[1]),
 				subjf);
 		assertFoundNone(subjf);
 
 		processIterator(model.listResourcesWithProperty(predicate[0],
-				(short) tvLong[0]), subjf);
+				(short) tvLongArray[0]), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(model.listResourcesWithProperty(predicate[0],
-				(short) tvLong[1]), subjf);
+				(short) tvLongArray[1]), subjf);
 		assertFoundNone(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], (int) tvLong[0]),
+				model.listResourcesWithProperty(predicate[0], (int) tvLongArray[0]),
 				subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], (int) tvLong[1]),
+				model.listResourcesWithProperty(predicate[0], (int) tvLongArray[1]),
 				subjf);
 		assertFoundNone(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], tvLong[0]), subjf);
+				model.listResourcesWithProperty(predicate[0], tvLongArray[0]), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], tvLong[1]), subjf);
+				model.listResourcesWithProperty(predicate[0], tvLongArray[1]), subjf);
 		assertFoundNone(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], tvChar[0]), subjf);
+				model.listResourcesWithProperty(predicate[0], tvCharArray[0]), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listResourcesWithProperty(predicate[0], tvChar[1]), subjf);
-		assertFoundNone(subjf);
-
-		processIterator(
-				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvDouble[0])), subjf);
-		checkBooleanSubjects(subjf);
-
-		processIterator(
-				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvDouble[1])), subjf);
+				model.listResourcesWithProperty(predicate[0], tvCharArray[1]), subjf);
 		assertFoundNone(subjf);
 
 		processIterator(
 				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvDouble[0])), subjf);
+						model.createTypedLiteral(tvDoubleArray[0])), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
 				model.listResourcesWithProperty(predicate[0],
-						model.createTypedLiteral(tvDouble[1])), subjf);
+						model.createTypedLiteral(tvDoubleArray[1])), subjf);
+		assertFoundNone(subjf);
+
+		processIterator(
+				model.listResourcesWithProperty(predicate[0],
+						model.createTypedLiteral(tvDoubleArray[0])), subjf);
+		checkBooleanSubjects(subjf);
+
+		processIterator(
+				model.listResourcesWithProperty(predicate[0],
+						model.createTypedLiteral(tvDoubleArray[1])), subjf);
 		assertFoundNone(subjf);
 	}
 
@@ -291,21 +291,21 @@ public class TestObjectOfProperties extends AbstractModelTestBase
 	{
 		final boolean subjf[] = new boolean[num];
 		processIterator(
-				model.listSubjectsWithProperty(predicate[0], tvString[0]),
+				model.listSubjectsWithProperty(predicate[0], tvStringArray[0]),
 				subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listSubjectsWithProperty(predicate[0], tvString[1]),
+				model.listSubjectsWithProperty(predicate[0], tvStringArray[1]),
 				subjf);
 		assertFoundNone(subjf);
 
 		processIterator(model.listSubjectsWithProperty(predicate[0],
-				tvString[0], lang[0]), subjf);
+				tvStringArray[0], lang[0]), subjf);
 		checkBooleanSubjects(subjf);
 
 		processIterator(
-				model.listSubjectsWithProperty(predicate[0], tvString[1]),
+				model.listSubjectsWithProperty(predicate[0], tvStringArray[1]),
 				subjf);
 		assertFoundNone(subjf);
 

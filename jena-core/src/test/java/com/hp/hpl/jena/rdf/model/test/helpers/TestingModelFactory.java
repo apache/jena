@@ -1,9 +1,8 @@
 package com.hp.hpl.jena.rdf.model.test.helpers;
 
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.PrefixMapping;
-import com.hp.hpl.jena.shared.ReificationStyle;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
 /**
  * Interface that defines the Testing Model Factory.

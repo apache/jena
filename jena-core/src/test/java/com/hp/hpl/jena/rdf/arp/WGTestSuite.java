@@ -61,10 +61,6 @@ import com.hp.hpl.jena.vocabulary.OWLResults;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
-/**
- *
- * @author  jjc
- */
 class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 	static private Resource jena2;
 	static private Model testResults;

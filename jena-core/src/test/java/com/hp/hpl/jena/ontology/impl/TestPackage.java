@@ -23,7 +23,6 @@ import junit.framework.*;
 
 /**
     Collected test suite for the .ontology.impl package.
-    @author  Ian Dickinson
 */
 
 public class TestPackage extends TestSuite {

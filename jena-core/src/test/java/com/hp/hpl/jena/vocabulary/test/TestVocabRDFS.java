@@ -22,9 +22,6 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestVocabRDFS extends ModelTestBase
     {
     public TestVocabRDFS(String name)

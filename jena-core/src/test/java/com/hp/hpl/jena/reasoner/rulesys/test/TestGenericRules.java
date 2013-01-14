@@ -44,9 +44,6 @@ import org.slf4j.LoggerFactory;
  * Test the packaging of all the reasoners into the GenericRuleReasoner.
  * The other tests check out this engine. These tests just need to touch 
  * enough to validate the packaging.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2009-08-04 12:47:40 $
  */
 public class TestGenericRules extends TestCase {
     

@@ -22,9 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestStandardModels extends AbstractTestModel
     {
 

@@ -42,8 +42,6 @@ import junit.framework.TestSuite;
 
 /**
  * Test cases for comparison operators, especially as applies to time values
- * 
- * @author <a href="mailto:dave@epimorphics.com">Dave Reynolds</a>
  */
 public class TestComparatorBuiltins extends TestCase {
     

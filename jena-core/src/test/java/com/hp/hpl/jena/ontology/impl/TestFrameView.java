@@ -35,9 +35,6 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
  * <p>
  * Unit-tests for frame-like views of OWL and RDFS-classes, especially listDeclaredProperties
  * </p>
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release @release@ ($Id: TestFrameView.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $)
  */
 public class TestFrameView
     extends TestCase

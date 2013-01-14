@@ -32,10 +32,6 @@ import com.hp.hpl.jena.rdf.arp.DOM2Model;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.JenaException;
 
-/**
- * @author Jeremy J. Carroll
- *
- */
 class DOM2RDFTest extends SAX2RDFTest {
 
 	/**

@@ -41,10 +41,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * Unit tests on OntModel capabilities.  Many of OntModel's methods are tested by the other
  * abstractions' unit tests.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class TestOntModel
     extends ModelTestBase

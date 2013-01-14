@@ -25,10 +25,6 @@ import junit.framework.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.iterator.*;
 
-/**
- TestNullIterator
- @author kers
- */
 public class TestNullIterator extends ModelTestBase
     {
     public TestNullIterator( String name ) { super( name ); }

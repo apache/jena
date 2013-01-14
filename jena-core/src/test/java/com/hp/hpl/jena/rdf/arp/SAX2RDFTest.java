@@ -42,10 +42,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 
-/**
- * @author Jeremy J. Carroll
- *  
- */
 public class SAX2RDFTest extends TestCase {
 
 	protected static Logger logger = LoggerFactory.getLogger( SAX2RDFTest.class );
@@ -1125,10 +1121,6 @@ public class SAX2RDFTest extends TestCase {
 
 	};
 
-	/**
-	 * @author Jeremy J. Carroll
-	 *  
-	 */
 	static class RDFEHArray implements RDFErrorHandler {
 
 		Vector<String> v = new Vector<String>();

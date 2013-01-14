@@ -27,8 +27,6 @@ import java.io.StringReader;
 
 /**
  * TestReaderEvents - test that reader events are issued
- * 
- * @author kers
  */
 public class TestReaderEvents extends AbstractModelTestBase
 {

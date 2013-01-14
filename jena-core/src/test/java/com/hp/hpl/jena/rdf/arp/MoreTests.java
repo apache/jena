@@ -39,10 +39,6 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-/**
- * @author jjc
- *  
- */
 public class MoreTests extends TestCase implements RDFErrorHandler,
 		ARPErrorNumbers {
 	static private Logger logger = LoggerFactory.getLogger(MoreTests.class);

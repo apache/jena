@@ -18,11 +18,11 @@
 
 package com.hp.hpl.jena.graph.compose.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Dyadic;
-import com.hp.hpl.jena.graph.compose.Intersection;
-import com.hp.hpl.jena.graph.test.*;
-import junit.framework.*;
+import junit.framework.TestSuite ;
+
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.compose.Intersection ;
 
 @SuppressWarnings("deprecation")
 public class TestIntersection extends TestDyadic

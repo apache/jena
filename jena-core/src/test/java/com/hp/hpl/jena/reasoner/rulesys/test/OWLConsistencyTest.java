@@ -34,9 +34,6 @@ import com.hp.hpl.jena.util.FileManager;
 
 /**
  * Utility for checking OWL validation results.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds </a>
- * @version $Revision: 1.1 $
  */
 
 public class OWLConsistencyTest extends TestCase {

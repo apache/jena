@@ -33,12 +33,12 @@ public class TestConcurrencyParallel extends AbstractModelTestBase
 
 	class Operation extends Thread
 	{
-		Model model;
+		Model lockModel;
 		boolean readLock;
 
 		Operation( final Model m, final boolean withReadLock )
 		{
-			model = m;
+			lockModel = m;
 			readLock = withReadLock;
 		}
 
@@ -49,19 +49,15 @@ public class TestConcurrencyParallel extends AbstractModelTestBase
 			{
 				try
 				{
-					model.enterCriticalSection(readLock);
+					lockModel.enterCriticalSection(readLock);
 					if (readLock)
-					{
 						readOperation(false);
-					}
 					else
-					{
 						writeOperation(false);
-					}
 				}
 				finally
 				{
-					model.leaveCriticalSection();
+					lockModel.leaveCriticalSection();
 				}
 			}
 		}

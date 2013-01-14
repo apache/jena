@@ -18,15 +18,11 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.impl.ModelReifier;
-import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import junit.framework.Assert ;
 
-import junit.framework.Assert;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
 
-/**
- * @author kers
- */
 public class TestHiddenStatements extends AbstractModelTestBase
 {
 	public TestHiddenStatements( final TestingModelFactory modelFactory,
@@ -58,7 +54,6 @@ public class TestHiddenStatements extends AbstractModelTestBase
 	public void testPrefixCopied()
 	{
 		model.setNsPrefixes(PrefixMapping.Standard);
-		assertSameMapping(PrefixMapping.Standard,
-				ModelReifier.withHiddenStatements(model));
+		assertSameMapping(PrefixMapping.Standard, model) ;
 	}
 }

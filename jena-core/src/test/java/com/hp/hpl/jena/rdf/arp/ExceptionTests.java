@@ -28,10 +28,7 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
-/**
- * @author jjc
- *
- */
+
 public class ExceptionTests
 	extends TestCase
 	implements RDFErrorHandler, ARPErrorNumbers {

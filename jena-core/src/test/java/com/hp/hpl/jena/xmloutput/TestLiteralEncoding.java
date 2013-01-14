@@ -30,7 +30,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 /**
      Tests to ensure that certain literals are either encoded properly or reported
      as exceptions.
-    @author kers
 */
 public class TestLiteralEncoding extends ModelTestBase
     {

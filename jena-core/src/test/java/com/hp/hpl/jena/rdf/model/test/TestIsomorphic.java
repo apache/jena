@@ -41,10 +41,6 @@ public class TestIsomorphic extends AbstractModelTestBase
 	 * labelled 0. The labels are not present in the model.
 	 * This basic graph is then extended, for test purposes
 	 * by duplicating a node.
-	 * 
-	 * @author jjc
-	 * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision:
-	 *          1.1 $' Date='$Date: 2009-06-29 08:55:39 $'
 	 */
 	static class DiHyperCube extends java.lang.Object
 	{
@@ -149,11 +145,6 @@ public class TestIsomorphic extends AbstractModelTestBase
 	 * This basic graph is then extended, for test purposes
 	 * by duplicating a node. Or by adding/deleting an edge between
 	 * two nodes.
-	 * 
-	 * @author jjc
-	 * 
-	 * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision:
-	 *          1.1 $' Date='$Date: 2009-06-29 08:55:39 $'
 	 */
 	static class HyperCube extends java.lang.Object
 	{
@@ -210,7 +201,6 @@ public class TestIsomorphic extends AbstractModelTestBase
 		HyperCube dupe( final int corner )
 		{
 			final Resource dup = model.createResource();
-			;
 			add(corner, dup);
 			return this;
 		}

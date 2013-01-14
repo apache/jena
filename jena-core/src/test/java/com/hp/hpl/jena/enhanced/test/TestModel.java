@@ -22,7 +22,6 @@ package com.hp.hpl.jena.enhanced.test;
  * A minimalist model interface.
  * It allows you to access an arbitrary subject node, 
  * or property node, or object node from the graph.
- * @author  jjc
  */
 public interface TestModel {
     TestSubject aSubject();

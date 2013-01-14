@@ -35,9 +35,6 @@ import com.hp.hpl.jena.vocabulary.* ;
  * Test harness for running the WebOnt working group tests relevant 
  * to the OWL rule reasoner. See also TestOWLRules which runs the
  * core WG tests as part of the routine unit tests.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class WebOntTestHarness {
 

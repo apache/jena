@@ -23,10 +23,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 
-/**
- *
- * @author  jjc
- */
 class TestCommonImpl extends EnhNode implements TestNode {
 
     /** Creates new TestCommonImpl */
@@ -39,8 +35,6 @@ class TestCommonImpl extends EnhNode implements TestNode {
        in RDFNode, which we have to inherit because of the personality tests.
        Fortunately the EnhGraph test set doesn't /need/ getModel, so we give
        it return type Model and throw an exception if it's ever called.
-       
-       @author chris
     */
     public Model getModel() 
         { throw new JenaException( "getModel() should not be called in the EnhGraph/Node tests" ); }

@@ -28,8 +28,6 @@ import com.hp.hpl.jena.vocabulary.*;
     Test that restriction inference works even when the restriction isn't given an 
     explicit type (ie we're not caught in a forward rule -> backward rule
     layering problem).
-    
- 	@author kers
 */
 public class TestRestrictionsDontNeedTyping extends ModelTestBase
     {

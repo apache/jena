@@ -26,7 +26,6 @@ import com.hp.hpl.jena.vocabulary.* ;
 
 /**
     Tests PrefixMappingImpl by subclassing AbstractTestPrefixMapping, qv.
-    @author kers
 */
 
 public class TestPrefixMapping extends AbstractTestPrefixMapping

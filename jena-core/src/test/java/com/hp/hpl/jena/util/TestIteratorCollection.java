@@ -32,9 +32,6 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 import com.hp.hpl.jena.util.iterator.SingletonIterator;
 import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
-/**
- @author hedgehog
- */
 public class TestIteratorCollection extends GraphTestBase
     {
     public TestIteratorCollection( String name )

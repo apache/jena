@@ -32,9 +32,6 @@ import java.util.*;
 
 /**
  * Some code samples from the user manual.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:56 $
  */
 public class ManualExample {
 

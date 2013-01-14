@@ -20,12 +20,6 @@ package com.hp.hpl.jena.shared;
 
 import com.hp.hpl.jena.shared.RandomOrderGraph;
 
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 18:42:05 $
- */
-
 public class RandomizedTestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
 
     public RandomizedTestCaseBasic(String name) {

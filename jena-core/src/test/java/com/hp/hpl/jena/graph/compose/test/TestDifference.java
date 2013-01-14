@@ -18,12 +18,10 @@
 
 package com.hp.hpl.jena.graph.compose.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Difference;
-import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.graph.test.*;
+import junit.framework.TestSuite ;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.compose.Difference ;
 
 @SuppressWarnings("deprecation")
 public class TestDifference extends TestDyadic 

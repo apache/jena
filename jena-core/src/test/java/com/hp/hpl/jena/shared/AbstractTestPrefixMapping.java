@@ -27,8 +27,6 @@ import com.hp.hpl.jena.graph.test.GraphTestBase;
 /**
     Test prefix mappings - subclass this test and override getMapping() to
     deliver the prefixMapping to be tested.
-    
-    @author kers
 */
 
 public abstract class AbstractTestPrefixMapping extends GraphTestBase
