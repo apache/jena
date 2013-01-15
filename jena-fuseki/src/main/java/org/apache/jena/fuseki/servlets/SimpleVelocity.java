@@ -39,7 +39,14 @@ public class SimpleVelocity
     private static LogChute velocityLogChute = new NullLogChute() ;
     private static Logger velocityLog = LoggerFactory.getLogger("Velocity");
 
+    /** Process a template */
     public static void process(String base, String path, Writer out, Map<String, Object> params)
+    {
+        process(base, path, out, createContext(params)) ;
+    }
+    
+    /** Process a template */
+    public static void process(String base, String path, Writer out, VelocityContext context)
     {
         VelocityEngine velocity = new VelocityEngine() ;
         // Turn off logging - catch exceptions and log ourselves
@@ -47,12 +54,6 @@ public class SimpleVelocity
         velocity.setProperty(RuntimeConstants.INPUT_ENCODING, "UTF-8") ;
         velocity.setProperty(RuntimeConstants.FILE_RESOURCE_LOADER_PATH, base) ;
         velocity.init() ;
-        
-        // Velocity requires a mutable map.
-        VelocityContext context = new VelocityContext() ;
-        for ( Map.Entry<String, Object> e : params.entrySet() )
-            context.put(e.getKey(), e.getValue()) ;
-        
         try {
             Template temp = velocity.getTemplate(path) ;
             temp.merge(context, out) ;
@@ -63,4 +64,15 @@ public class SimpleVelocity
         catch (MethodInvocationException ex) { velocityLog.error("Method invocation exception ("+path+") : "+ex.getMessage()) ; }
         catch (IOException ex)               { velocityLog.warn("IOException", ex) ; }
     }
+    
+    public static VelocityContext createContext(Map<String, Object> params)
+    {
+        // Velocity requires a mutable map.
+        // Scala leads to immutable maps ... be safe and copy.
+        VelocityContext context = new VelocityContext() ;
+        for ( Map.Entry<String, Object> e : params.entrySet() )
+            context.put(e.getKey(), e.getValue()) ;
+        return context ;
+    }
+    
 }
