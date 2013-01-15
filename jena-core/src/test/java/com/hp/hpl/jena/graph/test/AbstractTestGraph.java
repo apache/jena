@@ -518,7 +518,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
          Ensure that triples removed by calling .remove() on the iterator returned by
          a find() will generate deletion notifications.
      */
-    public void ignore_testEventDeleteByFind()
+    public void testEventDeleteByFind()
     {
         Graph g = getAndRegister( L );
         if (g.getCapabilities().iteratorRemoveAllowed())
