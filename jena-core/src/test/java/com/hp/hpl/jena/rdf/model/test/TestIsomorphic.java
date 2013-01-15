@@ -345,7 +345,7 @@ public class TestIsomorphic extends AbstractModelTestBase
 	private void test4HyperCube( int quantity, final boolean type )
 	{
 
-		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
+		for (int i = 0; i < quantity; i++)
 		{
 			int a1, b1, a2, b2;
 			do
