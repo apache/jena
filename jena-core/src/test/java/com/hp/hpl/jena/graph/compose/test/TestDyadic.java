@@ -37,6 +37,10 @@ public abstract class TestDyadic extends AbstractTestGraph
     	{ return new TestSuite( TestDyadic.class ); }
     
 	
+	// Override and don't execute.
+	@Override
+	public void testEventDeleteByFind() {}
+	
 	
 	static private ExtendedIterator<String> things( final String x ) 
 		{

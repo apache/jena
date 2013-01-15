@@ -223,7 +223,7 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	}
 
-	private static int QUANTITY = 6;
+	private static int QUANTITY = 10;
 	private static int DIMENSION = 6;
 	private final int sz = 1 << TestIsomorphic.DIMENSION;
 
@@ -256,8 +256,8 @@ public class TestIsomorphic extends AbstractModelTestBase
 	{
 		if (TestIsomorphic.QUANTITY < 6)
 		{
-			// not sure why but this was in the original test suite -- CW
-		    // Me neither - AFS
+		    // (Guessing) If the number is too small, the probability
+		    // of passing the test is too small.
 			return;
 		}
 		for (int i = 0; i < quantity; i++)
@@ -403,7 +403,7 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4ToggleHyperCubeFalse()
 	{
-		test4ToggleHyperCube(TestIsomorphic.QUANTITY, false);
+		test4ToggleHyperCube(2*TestIsomorphic.QUANTITY, false);
 	}
 
 	public void test4ToggleHyperCubeTrue()
