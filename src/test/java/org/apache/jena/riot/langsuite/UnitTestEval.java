@@ -69,7 +69,12 @@ public class UnitTestEval extends LangTestCase
             Model results = ModelFactory.createDefaultModel() ;
             // Directly get an N-triples reader
             InputStream in = StreamManager.get().open(output) ;
-            RDFDataMgr.read(results, in, null, RDFLanguages.NTRIPLES) ;
+            
+            try {
+                RDFDataMgr.read(results, in, null, RDFLanguages.NTRIPLES) ;
+            } catch (RiotException ex) {
+                fail("Failed to read results: "+ex.getMessage()) ;
+            }
 
             boolean b = model.isIsomorphicWith(results) ;
             if ( !b )
