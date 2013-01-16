@@ -539,11 +539,7 @@ public final class TokenizerText implements Tokenizer
     PERCENT  ::=  '%' HEX HEX
     HEX  ::=  [0-9] | [A-F] | [a-f]
     PN_LOCAL_ESC  ::=  '\' ( '_' | '~' | '.' | '-' | '!' | '$' | '&' | "'" | '(' | ')' | '*' | '+' | ',' | ';' | '=' | '/' | '?' | '#' | '@' | '%' )
-    
     */
-        
-    
-    
     
     private String readPrefixPart()
     { return readSegment(false) ; }
@@ -1195,6 +1191,7 @@ public final class TokenizerText implements Tokenizer
             case 'r':   return CR ;
             case 't':   return '\t' ;
             case 'f':   return '\f' ;
+            case 'b':   return BSPACE ;
             case '"':   return '"' ;
             case '\'':  return '\'' ;
             case '\\':  return '\\' ;
