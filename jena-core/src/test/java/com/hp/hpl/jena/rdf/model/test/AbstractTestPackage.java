@@ -140,7 +140,9 @@ public abstract class AbstractTestPackage extends TestSuite
 		addTest(TestObjectOfProperties.class, modelFactory);
 		addTest(TestCopyInOutOfModel.class, modelFactory);
 		addTest(TestSelectorUse.class, modelFactory);
-		addTest(TestIsomorphic.class, modelFactory);
+		// These tests are probabilistic testing.
+		// See notes in the class.
+		//addTest(IsomorphicTests.class, modelFactory);
 	}
 
 	/**

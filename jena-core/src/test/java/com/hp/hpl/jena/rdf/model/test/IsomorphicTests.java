@@ -28,8 +28,14 @@ import java.util.Random;
 
 import org.junit.Assert;
 
-public class TestIsomorphic extends AbstractModelTestBase
+public class IsomorphicTests extends AbstractModelTestBase
 {
+    // This is not part of the standard test suite 
+    // It's not stable enough for inclusion in the automatic test suite.
+    // Often, they pass, but there is a significant number of times they don't.
+    // It also seems to be machine-dependent - failures are more frequent
+    // on Apache Jenkins (hardware influening "random" numbers?)
+    
 	/**
 	 * A theoretical graph for testing purposes.
 	 * All nodes are anonymous resources. All edges are labelled
@@ -225,14 +231,13 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	private static int QUANTITY = 10;
 	private static int DIMENSION = 6;
-	private final int sz = 1 << TestIsomorphic.DIMENSION;
+	private final int sz = 1 << IsomorphicTests.DIMENSION;
 
 	private Random random;
 
 	private Model model2;
 
-	public TestIsomorphic( final TestingModelFactory modelFactory,
-			final String name )
+	public IsomorphicTests( final TestingModelFactory modelFactory, final String name )
 	{
 		super(modelFactory, name);
 	}
@@ -254,7 +259,7 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	private void test2DiHyperCube( int quantity, final boolean type )
 	{
-		if (TestIsomorphic.QUANTITY < 6)
+		if (IsomorphicTests.QUANTITY < 6)
 		{
 		    // (Guessing) If the number is too small, the probability
 		    // of passing the test is too small.
@@ -269,10 +274,10 @@ public class TestIsomorphic extends AbstractModelTestBase
 				b1 = random.nextInt(sz);
 			} while (type != DiHyperCube.equal(a1, b1));
 
-			new DiHyperCube(TestIsomorphic.DIMENSION, model).dupe(a1).dupe(a1)
+			new DiHyperCube(IsomorphicTests.DIMENSION, model).dupe(a1).dupe(a1)
 					.dupe(a1);
 
-			new DiHyperCube(TestIsomorphic.DIMENSION, model2).dupe(b1).dupe(b1)
+			new DiHyperCube(IsomorphicTests.DIMENSION, model2).dupe(b1).dupe(b1)
 					.dupe(b1);
 
 			Assert.assertEquals(type, model.isIsomorphicWith(model2));
@@ -281,25 +286,25 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test2DiHyperCubeFalse()
 	{
-		test2DiHyperCube(TestIsomorphic.QUANTITY, false);
+		test2DiHyperCube(IsomorphicTests.QUANTITY, false);
 	}
 
 	public void test2DiHyperCubeTrue()
 	{
-		test2DiHyperCube(TestIsomorphic.QUANTITY, true);
+		test2DiHyperCube(IsomorphicTests.QUANTITY, true);
 	}
 
 	public void test2HyperCube()
 	{
 
-		for (int i = 0; i < TestIsomorphic.QUANTITY; i++)
+		for (int i = 0; i < IsomorphicTests.QUANTITY; i++)
 		{
 			int a1, b1;
 			a1 = random.nextInt(sz);
 			b1 = random.nextInt(sz);
-			new HyperCube(TestIsomorphic.DIMENSION, model).dupe(a1).dupe(a1)
+			new HyperCube(IsomorphicTests.DIMENSION, model).dupe(a1).dupe(a1)
 					.dupe(a1);
-			new HyperCube(TestIsomorphic.DIMENSION, model2).dupe(b1).dupe(b1)
+			new HyperCube(IsomorphicTests.DIMENSION, model2).dupe(b1).dupe(b1)
 					.dupe(b1);
 			Assert.assertTrue("Models not isomorphic",
 					model.isIsomorphicWith(model2));
@@ -320,10 +325,10 @@ public class TestIsomorphic extends AbstractModelTestBase
 				b2 = random.nextInt(sz);
 			} while (type != DiHyperCube.equal(a1, a2, b1, b2));
 
-			new DiHyperCube(TestIsomorphic.DIMENSION, model).dupe(a1).dupe(a1)
+			new DiHyperCube(IsomorphicTests.DIMENSION, model).dupe(a1).dupe(a1)
 					.dupe(a1).dupe(a2).dupe(a2).dupe(a2);
 
-			new DiHyperCube(TestIsomorphic.DIMENSION, model2).dupe(b1).dupe(b1)
+			new DiHyperCube(IsomorphicTests.DIMENSION, model2).dupe(b1).dupe(b1)
 					.dupe(b1).dupe(b2).dupe(b2).dupe(b2);
 			final String msg = "(" + a1 + "," + a2 + "),(" + b1 + "," + b2
 					+ ")";
@@ -334,12 +339,12 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4DiHyperCubeFalse()
 	{
-		test4DiHyperCube(TestIsomorphic.QUANTITY, false);
+		test4DiHyperCube(IsomorphicTests.QUANTITY, false);
 	}
 
 	public void test4DiHyperCubeTrue()
 	{
-		test4DiHyperCube(TestIsomorphic.QUANTITY, true);
+		test4DiHyperCube(IsomorphicTests.QUANTITY, true);
 	}
 
 	private void test4HyperCube( int quantity, final boolean type )
@@ -356,9 +361,9 @@ public class TestIsomorphic extends AbstractModelTestBase
 				b2 = random.nextInt(sz);
 			} while (type != HyperCube.equal(a1, a2, b1, b2));
 
-			new HyperCube(TestIsomorphic.DIMENSION, model).dupe(a1).dupe(a1)
+			new HyperCube(IsomorphicTests.DIMENSION, model).dupe(a1).dupe(a1)
 					.dupe(a1).dupe(a2).dupe(a2).dupe(a2);
-			new HyperCube(TestIsomorphic.DIMENSION, model2).dupe(b1).dupe(b1)
+			new HyperCube(IsomorphicTests.DIMENSION, model2).dupe(b1).dupe(b1)
 					.dupe(b1).dupe(b2).dupe(b2).dupe(b2);
 
 			final String msg = "(" + a1 + "," + a2 + "),(" + b1 + "," + b2
@@ -370,12 +375,12 @@ public class TestIsomorphic extends AbstractModelTestBase
 	public void test4HyperCubeFalse()
 	{
 	    // Pragmatically, needs more loops
-		test4HyperCube(2 * TestIsomorphic.QUANTITY, false);
+		test4HyperCube(2 * IsomorphicTests.QUANTITY, false);
 	}
 
 	public void test4HyperCubeTrue()
 	{
-		test4HyperCube(TestIsomorphic.QUANTITY, true);
+		test4HyperCube(IsomorphicTests.QUANTITY, true);
 	}
 
 	private void test4ToggleHyperCube( int quantity, final boolean type )
@@ -391,9 +396,9 @@ public class TestIsomorphic extends AbstractModelTestBase
 				a2 = random.nextInt(sz);
 				b2 = random.nextInt(sz);
 			} while (type != HyperCube.equal(a1, a2, b1, b2));
-			new HyperCube(TestIsomorphic.DIMENSION, model).toggle(a1, a2);
+			new HyperCube(IsomorphicTests.DIMENSION, model).toggle(a1, a2);
 
-			new HyperCube(TestIsomorphic.DIMENSION, model2).toggle(b1, b2);
+			new HyperCube(IsomorphicTests.DIMENSION, model2).toggle(b1, b2);
 
 			final String msg = "(" + a1 + "," + a2 + "),(" + b1 + "," + b2
 					+ ")";
@@ -403,12 +408,12 @@ public class TestIsomorphic extends AbstractModelTestBase
 
 	public void test4ToggleHyperCubeFalse()
 	{
-		test4ToggleHyperCube(2*TestIsomorphic.QUANTITY, false);
+		test4ToggleHyperCube(2*IsomorphicTests.QUANTITY, false);
 	}
 
 	public void test4ToggleHyperCubeTrue()
 	{
-		test4ToggleHyperCube(TestIsomorphic.QUANTITY, true);
+		test4ToggleHyperCube(IsomorphicTests.QUANTITY, true);
 	}
 
 }
