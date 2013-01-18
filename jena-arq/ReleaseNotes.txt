@@ -26,10 +26,10 @@ ChangeLog for ARQ
 + Blank node labels can not be reused across different INSERT DATA operations in the same SPARQL Update Request
   (spec clarification) 
 + JENA-322 : Make jcl-over-slf4 a required dependency
-+ JENA-321 : Remove GraphStore.(start|finish)Request() (was previosuly deprecated)
++ JENA-321 : Remove GraphStore.(start|finish)Request() (was previously deprecated)
 + Remove deprecated QueryExecutionBase.cancelAllowDrain (see JENA-93)
 + Implement SPARQL-WG decision on BIND : use original semantics. 
-+ JENA-294 : improved optimization of sequeneces of OPTIONALs where the grouois only OPTIONAL and an equality filter
++ JENA-294 : improved optimization of sequeneces of OPTIONALs where the group is only OPTIONAL and an equality filter
 + JENA-298 ResultSetStAX.hasNext() can now be called again after it has returned false
 + JENA-302 Add URIs for all XQuery/Xpath F&O functions for duration accessors
 + JENA-303 Add URIs for all XQuery/Xpath F&O functions where there are SPARQL functions
