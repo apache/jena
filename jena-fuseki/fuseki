@@ -97,6 +97,12 @@ then
 
 fi
 
+# Deal with more Cygwin path issues
+if [ "$cygwin" == "true" ]
+then
+  FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
+ fi
+
 #echo "DEBUG: FUSEKI_HOME=$FUSEKI_HOME"
 
 if [ ! -e "$FUSEKI_HOME" ]
@@ -166,7 +172,7 @@ fi
 #
 
 # Some JVM settings
-JAVA_OPTIONS+=("-Dlog4j.configuration=log4j.properties" "-Xmx1200M")
+JAVA_OPTIONS=${JAVA_OPTIONS:--Dlog4j.configuration=log4j.properties -Xmx1200M}
 
 # Run command
 if [ -z "$FUSEKI_ARGS" ]
@@ -202,12 +208,6 @@ start() {
     fi
   fi
   
-  # Deal with more Cygwin path issues
-  if [ "$cygwin" == "true" ]
-  then
-    FUSEKI_HOME=`cygpath -w "$FUSEKI_HOME"`
-  fi
-
   # echo "Redirecting Fuseki stderr/stdout to $FUSEKI_LOGS_STDERROUT"
   exec "${RUN_CMD[@]}" &> "$FUSEKI_LOGS_STDERROUT" &
   disown $!
@@ -234,8 +234,6 @@ stop() {
   rm -f "$FUSEKI_PID"
   echo "OK"
 }
-
-
 
 case $1 in
   start)
