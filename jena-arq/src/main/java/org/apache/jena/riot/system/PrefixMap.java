@@ -40,8 +40,7 @@ public class PrefixMap
     public static PrefixMap fromPrefixMapping(PrefixMapping pmap)
     {
         PrefixMap pm = new PrefixMap() ;
-        for ( Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet() )
-            pm.add(e.getKey(), e.getValue()) ;
+        pm.putAll(pmap) ;
         return pm ;
     }
     
@@ -96,6 +95,13 @@ public class PrefixMap
         prefixes.putAll(pmap.prefixes) ; 
     }
     
+    /** Add a prefix, overwrites any existing association */
+    public void putAll(PrefixMapping pmap)
+    {
+        for ( Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet() )
+            add(e.getKey(), e.getValue()) ;
+    }
+    
     /** Delete a prefix */
     public void delete(String prefix)
     { 
@@ -117,32 +123,37 @@ public class PrefixMap
     /** Abbreviate an IRI or return null */
     public String abbreviate(String uriStr)
     {
-        for ( Entry<String, IRI> e : prefixes.entrySet())
-        {
-            String prefix = e.getValue().toString() ;
-            
-            if ( uriStr.startsWith(prefix) )
-            {
-                String ln = uriStr.substring(prefix.length()) ;
-                if ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') )
-                    return e.getKey()+":"+ln ;
-            }
-        }
-        return null ;
+        Pair<String, String> p = abbrev(uriStr, true) ;
+        if ( p == null )
+            return null ;
+        return p.getLeft()+":"+p.getRight() ;
     }
     
     private static boolean strSafeFor(String str, char ch) { return str.indexOf(ch) == -1 ; } 
     
     
-    /** Abbreviate an IRI or return null */
-    public Pair<String, String> abbrev(String uriStr)
+    /** Abbreviate an IRI or return a pair of prefix and local parts.
+     * @param uriStr        URI string to abbreviate
+     * @see #abbreviate
+     */
+    public Pair<String, String> abbrev(String uriStr) { return abbrev(uriStr, true) ; }
+    
+    /** Abbreviate an IRI or return a pair of prefix and local parts.
+     * @param uriStr        URI string to abbreviate
+     * @param turtleSafe    Only return legal Turtle local names.
+     */
+    private Pair<String, String> abbrev(String uriStr, boolean turtleSafe)
     {
         for ( Entry<String, IRI> e : prefixes.entrySet())
         {
             String uriForPrefix = e.getValue().toString() ;
             
             if ( uriStr.startsWith(uriForPrefix) )
-                return Pair.create(e.getKey(), uriStr.substring(uriForPrefix.length())) ;
+            {
+                String ln = uriStr.substring(uriForPrefix.length()) ;
+                if ( !turtleSafe || ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') ) )
+                    return Pair.create(e.getKey(), ln) ;
+            }
         }
         return null ;
     }
