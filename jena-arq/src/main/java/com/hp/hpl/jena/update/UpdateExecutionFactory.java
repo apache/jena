@@ -130,16 +130,36 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor createRemote(Update update, String remoteEndpoint)
     {
-        return createRemote(new UpdateRequest(update), remoteEndpoint) ;
+        return createRemote(update, remoteEndpoint, null) ;
     }
-
+    
+    /** Create an UpdateProcessor that send the update to a remote SPARQL Update service.
+     * @param update
+     * @param remoteEndpoint
+     * @param context
+     */
+    public static UpdateProcessor createRemote(Update update, String remoteEndpoint, Context context)
+    {
+        return createRemote(new UpdateRequest(update), remoteEndpoint, context) ;
+    }
+    
     /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service.
      * @param updateRequest
      * @param remoteEndpoint
      */
     public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint)
     {
-        return new UpdateProcessRemote(updateRequest, remoteEndpoint) ;
+        return new UpdateProcessRemote(updateRequest, remoteEndpoint, null) ;
+    }
+
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service.
+     * @param updateRequest
+     * @param remoteEndpoint
+     * @param context
+     */
+    public static UpdateProcessor createRemote(UpdateRequest updateRequest, String remoteEndpoint, Context context)
+    {
+        return new UpdateProcessRemote(updateRequest, remoteEndpoint, context) ;
     }
     
     /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
@@ -148,7 +168,17 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint)
     {
-        return new UpdateProcessRemoteForm(new UpdateRequest(update), remoteEndpoint) ;
+        return createRemoteForm(update, remoteEndpoint, null) ;
+    }
+    
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
+     * @param update
+     * @param remoteEndpoint
+     * @param context
+     */
+    public static UpdateProcessor createRemoteForm(Update update, String remoteEndpoint, Context context)
+    {
+        return new UpdateProcessRemoteForm(new UpdateRequest(update), remoteEndpoint, null) ;
     }
     
     /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
@@ -157,6 +187,16 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint)
     {
-        return new UpdateProcessRemoteForm(updateRequest, remoteEndpoint) ;
+        return createRemoteForm(updateRequest, remoteEndpoint, null) ;
+    }
+    
+    /** Create an UpdateProcessor that send the update request to a remote SPARQL Update service using an HTML form
+     * @param updateRequest
+     * @param remoteEndpoint
+     * @param context
+     */
+    public static UpdateProcessor createRemoteForm(UpdateRequest updateRequest, String remoteEndpoint, Context context)
+    {
+        return new UpdateProcessRemoteForm(updateRequest, remoteEndpoint, context) ;
     }
 }

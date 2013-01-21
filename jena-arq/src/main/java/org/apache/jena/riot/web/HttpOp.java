@@ -43,6 +43,7 @@ import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.HttpException ;
@@ -173,7 +174,7 @@ public class HttpOp
     //TODO Use MediaType
     public static void execHttpPost(String url, String contentType, String content)
     {
-        execHttpPost(url, contentType, content, null, null) ;
+        execHttpPost(url, contentType, content, null, null, null) ;
     }
     
     /** POST without response body.
@@ -189,17 +190,21 @@ public class HttpOp
     }
     
 
-    /** POST a string, expect a response body.*/
-    public static void execHttpPost(String url, 
-                                    String contentType, String content,
-                                    String acceptType, Map<String, HttpResponseHandler> handlers)
+    /** POST a string, expect a response body.
+     * <p>Additional headers e.g. for authentication can be injected through an
+     *  {@link HttpContext}.
+     */
+    public static void execHttpPost(String url, String contentType,
+                                    String content, String acceptType,
+                                    Map<String, HttpResponseHandler> handlers,
+                                    HttpContext httpContext)
     {
         StringEntity e = null ;
         try
         {
             e = new StringEntity(content, "UTF-8") ;
             e.setContentType(contentType) ;
-            execHttpPost(url, e, acceptType, handlers) ;
+            execHttpPost(url, e, acceptType, handlers, httpContext) ;
         } catch (UnsupportedEncodingException e1)
         { throw new ARQInternalErrorException("Platform does not support required UTF-8") ; }
         finally { closeEntity(e) ; }
@@ -216,7 +221,7 @@ public class HttpOp
         InputStreamEntity e = new InputStreamEntity(input, length) ;
         e.setContentType(contentType) ;
         e.setContentEncoding("UTF-8") ;
-        execHttpPost(url, e, acceptType, handlers) ;
+        execHttpPost(url, e, acceptType, handlers, null) ;
     }
     
     /** POST with response body */
@@ -227,17 +232,17 @@ public class HttpOp
         EntityTemplate entity = new EntityTemplate(provider) ;
         entity.setContentType(contentType) ;
         try {
-            execHttpPost(url, entity, acceptType, handlers) ;
+            execHttpPost(url, entity, acceptType, handlers, null) ;
         } finally { closeEntity(entity) ; } 
     }
                              
     /** POST with response body.
      * <p>The content for the POST body comes from the HttpEntity.
      * <p>The response is handled bythe handler map, as per {@link #execHttpGet(String, String, Map)}
+     * <p>Additional headers e.g. for authentication can be injected through an {@link HttpContext}
      */
-    public static void execHttpPost(String url, 
-                                    HttpEntity provider,
-                                    String acceptType, Map<String, HttpResponseHandler> handlers)
+    public static void execHttpPost(String url, HttpEntity provider, String acceptType,
+                                    Map<String, HttpResponseHandler> handlers, HttpContext context)
     {
         try {
             long id = counter.incrementAndGet() ;
@@ -254,7 +259,7 @@ public class HttpOp
             // Execute
             HttpClient httpclient = new SystemDefaultHttpClient();
             httppost.setEntity(provider) ;
-            HttpResponse response = httpclient.execute(httppost) ;
+            HttpResponse response = httpclient.execute(httppost, context) ;
             httpResponse(id, response, baseIRI, handlers) ;
             
             httpclient.getConnectionManager().shutdown(); 
@@ -263,7 +268,15 @@ public class HttpOp
     }
     
     /** Execute an HTTP POST form operation */
-    public static void execHttpPostForm(String url, List<Pair<String, String>> params, Map<String, HttpResponseHandler> handlers)
+    public static void execHttpPostForm(String url, List<Pair<String, String>> params,
+                                        Map<String, HttpResponseHandler> handlers)
+    {
+        execHttpPostForm(url, params, handlers, null) ;
+    }
+    /** Execute an HTTP POST form operation */
+    public static void execHttpPostForm(String url, List<Pair<String, String>> params,
+                                        Map<String, HttpResponseHandler> handlers,
+                                        HttpContext httpContext)
     {
         try {
             long id = counter.incrementAndGet() ;
@@ -276,7 +289,7 @@ public class HttpOp
                 log.debug(format("[%d] %s %s",id ,httppost.getMethod(),httppost.getURI().toString())) ;
 
             HttpClient httpclient = new SystemDefaultHttpClient();
-            HttpResponse response = httpclient.execute(httppost) ;
+            HttpResponse response = httpclient.execute(httppost, httpContext) ;
             httpResponse(id, response, baseIRI, handlers) ;
             httpclient.getConnectionManager().shutdown(); 
         } catch (IOException ex) { IO.exception(ex) ; }
