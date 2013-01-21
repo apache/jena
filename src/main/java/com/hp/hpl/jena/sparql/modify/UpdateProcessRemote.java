@@ -18,12 +18,14 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -33,13 +35,17 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateProcessRemote implements UpdateProcessor
 {
+    public static final Symbol HTTP_CONTEXT = Symbol.create("httpContext") ;
+    
     private final UpdateRequest request ;
     private final String endpoint ;
+    private final Context context ;
     
-    public UpdateProcessRemote(UpdateRequest request , String endpoint )
+    public UpdateProcessRemote(UpdateRequest request , String endpoint , Context context )
     {
         this.request = request ;
         this.endpoint = endpoint ;
+        this.context = Context.setupContext(context, null) ;
     }
 
     @Override
@@ -60,14 +66,29 @@ public class UpdateProcessRemote implements UpdateProcessor
         if ( endpoint == null )
             throw new ARQException("Null endpoint for remote update") ;
         String reqStr = request.toString() ;
-        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr) ;
+        HttpOp.execHttpPost(endpoint, WebContent.contentTypeSPARQLUpdate, reqStr, null, null, getHttpContext()) ;
     }
 
     @Override
     public Context getContext()
     {
-        return null ;
+        return context ;
     }
     
+    /**
+     * Convenience method to set the {@link HttpContext}
+     * @param httpContext
+     */
+    public void setHttpContext(HttpContext httpContext) {
+        getContext().put(HTTP_CONTEXT, httpContext) ;
+    }
+    
+    /**
+     * Convenience method to get the {@link HttpContext}
+     * @returns HttpContext
+     */
+    public HttpContext getHttpContext() {
+        return (HttpContext) getContext().get(HTTP_CONTEXT) ;
+    }
 }
 
