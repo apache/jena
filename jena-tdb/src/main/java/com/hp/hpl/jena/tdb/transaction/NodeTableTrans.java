@@ -219,6 +219,7 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         throw new TDBException(msg) ;
     }
     
+    // Debugging only
     private void dump()
     {
         System.err.println(">>>>>>>>>>") ;
@@ -328,8 +329,11 @@ public class NodeTableTrans implements NodeTable, TransactionLifecycle
         // Ensure the cache does not flush.
         nodeTableJournal = null ;
         // then make sure the journal file is empty.
-        journalObjFile.truncate(journalObjFileStartOffset) ;
-        journalObjFile.sync() ;
+        if ( journalObjFile != null )
+        {
+            journalObjFile.truncate(journalObjFileStartOffset) ;
+            journalObjFile.sync() ;
+        }
         finish() ;
     }
     
