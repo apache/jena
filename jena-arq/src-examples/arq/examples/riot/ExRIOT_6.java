@@ -36,7 +36,7 @@ import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 
 /** Example of using RIOT : iterate over output of parser run */
 public class ExRIOT_5 {
-    
+
     public static void main(String... argv) {
         // Not needed here as we are using RIOT itself via RDFDataMgr, not
         // indirectly.
@@ -79,6 +79,7 @@ public class ExRIOT_5 {
         // ahead of our consumption as the buffer size allows
         while (iter.hasNext()) {
             Triple next = iter.next();
+            // Do something with each triple
         }
     }
 
