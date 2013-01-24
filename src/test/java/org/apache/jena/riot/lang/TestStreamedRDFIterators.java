@@ -18,6 +18,9 @@
 
 package org.apache.jena.riot.lang;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,9 +32,15 @@ import java.util.concurrent.TimeoutException;
 import junit.framework.Assert;
 
 import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFLanguages;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.core.Quad;
@@ -42,6 +51,8 @@ import com.hp.hpl.jena.sparql.util.NodeFactory;
  * 
  */
 public class TestStreamedRDFIterators {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestStreamedRDFIterators.class);
+    
     private static ExecutorService executor;
 
     /**
@@ -109,9 +120,10 @@ public class TestStreamedRDFIterators {
         try {
             count = result.get(5, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-            //Check that it wasn't the producer thread erroring that caused us to time out
+            // Check that it wasn't the producer thread erroring that caused us
+            // to time out
             genResult.get();
-            //It wasn't so throw the original error
+            // It wasn't so throw the original error
             throw e;
         }
         Assert.assertEquals(generateSize, (int) count);
@@ -122,7 +134,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_01() throws InterruptedException, ExecutionException, TimeoutException {
@@ -135,7 +147,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_02() throws InterruptedException, ExecutionException, TimeoutException {
@@ -148,7 +160,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_03() throws InterruptedException, ExecutionException, TimeoutException {
@@ -161,7 +173,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_04() throws InterruptedException, ExecutionException, TimeoutException {
@@ -174,7 +186,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_05() throws InterruptedException, ExecutionException, TimeoutException {
@@ -187,7 +199,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_06() throws InterruptedException, ExecutionException, TimeoutException {
@@ -200,7 +212,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_triples_iterator_07() throws InterruptedException, ExecutionException, TimeoutException {
@@ -251,9 +263,10 @@ public class TestStreamedRDFIterators {
         try {
             count = result.get(5, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-            //Check that it wasn't the producer thread erroring that caused us to time out
+            // Check that it wasn't the producer thread erroring that caused us
+            // to time out
             genResult.get();
-            //It wasn't so throw the original error
+            // It wasn't so throw the original error
             throw e;
         }
         Assert.assertEquals(generateSize, (int) count);
@@ -264,7 +277,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_01() throws InterruptedException, ExecutionException, TimeoutException {
@@ -277,7 +290,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_02() throws InterruptedException, ExecutionException, TimeoutException {
@@ -290,7 +303,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_03() throws InterruptedException, ExecutionException, TimeoutException {
@@ -303,7 +316,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_04() throws InterruptedException, ExecutionException, TimeoutException {
@@ -316,7 +329,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_05() throws InterruptedException, ExecutionException, TimeoutException {
@@ -329,7 +342,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_06() throws InterruptedException, ExecutionException, TimeoutException {
@@ -342,7 +355,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_quads_iterator_07() throws InterruptedException, ExecutionException, TimeoutException {
@@ -393,9 +406,10 @@ public class TestStreamedRDFIterators {
         try {
             count = result.get(5, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-            //Check that it wasn't the producer thread erroring that caused us to time out
+            // Check that it wasn't the producer thread erroring that caused us
+            // to time out
             genResult.get();
-            //It wasn't so throw the original error
+            // It wasn't so throw the original error
             throw e;
         }
         Assert.assertEquals(generateSize, (int) count);
@@ -406,7 +420,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_01() throws InterruptedException, ExecutionException, TimeoutException {
@@ -419,7 +433,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_02() throws InterruptedException, ExecutionException, TimeoutException {
@@ -432,7 +446,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_03() throws InterruptedException, ExecutionException, TimeoutException {
@@ -445,7 +459,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_04() throws InterruptedException, ExecutionException, TimeoutException {
@@ -458,7 +472,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_05() throws InterruptedException, ExecutionException, TimeoutException {
@@ -471,7 +485,7 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_06() throws InterruptedException, ExecutionException, TimeoutException {
@@ -484,27 +498,110 @@ public class TestStreamedRDFIterators {
      * 
      * @throws ExecutionException
      * @throws InterruptedException
-     * @throws TimeoutException 
+     * @throws TimeoutException
      */
     @Test
     public void streamed_tuples_iterator_07() throws InterruptedException, ExecutionException, TimeoutException {
         // Buffer size is small relative to generated tuples
         this.test_streamed_tuples(10000, 100000, false);
     }
-    
+
     /**
      * Test for bad buffer size
      */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void streamed_instantiation_bad_01() {
         new StreamedTriplesIterator(0);
     }
-    
+
     /**
      * Test for bad buffer size
      */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void streamed_instantiation_bad_02() {
         new StreamedTriplesIterator(-1);
+    }
+
+    /**
+     * Tests that the iterate copes correctly in the case of hitting a parser error
+     * @param data Data string (Turtle format) which should be malformed
+     * @param expected Number of valid triples expected to be generated before the error is hit
+     * @throws TimeoutException
+     * @throws InterruptedException
+     */
+    private void test_streamed_triples_bad(final String data, int expected) throws TimeoutException, InterruptedException {
+
+        // Create the StreamedTriplesIterator
+        final StreamedTriplesIterator stream = new StreamedTriplesIterator();
+
+        // Create a runnable that will try to parse the bad data
+        Runnable runParser = new Runnable() {
+
+            @Override
+            public void run() {
+                Charset utf8 = Charset.forName("utf8");
+                ByteArrayInputStream input = new ByteArrayInputStream(data.getBytes(utf8));
+                RDFDataMgr.parse(stream, input, null, RDFLanguages.TURTLE, null);
+                return;
+            }
+        };
+
+        // Create a runnable that will consume triples
+        Callable<Integer> consumeTriples = new Callable<Integer>() {
+
+            @Override
+            public Integer call() throws Exception {
+                int count = 0;
+                while (stream.hasNext()) {
+                    stream.next();
+                    count++;
+                }
+                return count;
+            }
+        };
+
+        // Run the threads
+        Future<?> genResult = executor.submit(runParser);
+        Future<Integer> result = executor.submit(consumeTriples);
+        Integer count = 0;
+        try {
+            count = result.get(5, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            // We expect the producer thread to have errored
+            try {
+                genResult.get();
+            } catch (ExecutionException ex) {
+                //This is as expected, ignore
+                LOGGER.warn("Errored as expected", ex);
+            }
+            // However we expect the consumer to still have been notified of failure
+            throw e;
+        } catch (ExecutionException e) {
+            //This was not expected
+            Assert.fail(e.getMessage());
+        }
+        
+        //Since the produce thread failed the consumer thread should give the expected count
+        Assert.assertEquals(expected, (int) count);
+    }
+    
+    /**
+     * Test failure of the iterator
+     * @throws TimeoutException
+     * @throws InterruptedException
+     */
+    @Test
+    public void streamed_triples_bad_01() throws TimeoutException, InterruptedException {
+        test_streamed_triples_bad("@prefix : <http://unterminated", 0);
+    }
+    
+    /**
+     * Test failure of the iterator
+     * @throws TimeoutException
+     * @throws InterruptedException
+     */
+    @Test
+    public void streamed_triples_bad_02() throws TimeoutException, InterruptedException {
+        test_streamed_triples_bad("@prefix : <http://example> . :s :p :o . :x :y", 1);
     }
 }
