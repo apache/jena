@@ -18,37 +18,29 @@
 
 package arq.examples.riot;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService ;
+import java.util.concurrent.Executors ;
 
-import org.apache.jena.atlas.lib.Sink;
-import org.apache.jena.riot.RDFDataMgr;
-import org.apache.jena.riot.lang.StreamedTriplesIterator;
-import org.apache.jena.riot.out.SinkTripleOutput;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFBase;
-import org.apache.jena.riot.system.SyntaxLabels;
+import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.lang.StreamedTriplesIterator ;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.sparql.vocabulary.FOAF;
+import com.hp.hpl.jena.graph.Triple ;
 
 /** Example of using RIOT : iterate over output of parser run */
-public class ExRIOT_5 {
+public class ExRIOT_6 {
 
     public static void main(String... argv) {
         // Not needed here as we are using RIOT itself via RDFDataMgr, not
         // indirectly.
         // RIOT.init() ;
 
-        String filename = "data.ttl";
+        final String filename = "data.ttl";
 
         // Create a StreamedTriplesIterator, this doubles as both a StreamRDF
         // for parser output and an iterator for our consumption
         // You can optionally supply a buffer size here, see the documentation
         // for details about recommended buffer sizes
-        StreamedTriplesIterator iter = new StreamedTriplesIterator();
+        final StreamedTriplesIterator iter = new StreamedTriplesIterator();
 
         // The classes derived from StreamedRDFIterator such as this are
         // fully thread safe so the parser and the consumer of the iterator
