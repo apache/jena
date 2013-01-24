@@ -23,7 +23,7 @@ import org.junit.runners.Suite ;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
-      TestIRI.class
+     TestIRI.class
     , TestLang.class
     , TestNodeAllocator.class
     
@@ -34,6 +34,9 @@ import org.junit.runners.Suite ;
     , TestLangTrig.class
     , TestLangRdfJson.class
     , TestParserFactory.class
+    
+
+    , TestStreamedRDFIterators.class
 })
 
 
