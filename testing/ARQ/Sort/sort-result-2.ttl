@@ -12,7 +12,7 @@
                       rs:binding    [ rs:value      :y2 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      10
+                      rs:index      9
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz"^^xsd:string ;
                                       rs:variable   "v"
@@ -20,7 +20,7 @@
                       rs:binding    [ rs:value      :x6 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      21
+                      rs:index      20
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :x3 ;
                                       rs:variable   "x"
@@ -28,7 +28,7 @@
                       rs:binding    [ rs:value      "xyz"@FR ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      17
+                      rs:index      16
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz"^^xsd:integer ;
                                       rs:variable   "v"
@@ -36,7 +36,7 @@
                       rs:binding    [ rs:value      :x7 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      20
+                      rs:index      19
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :z3 ;
                                       rs:variable   "x"
@@ -44,7 +44,7 @@
                       rs:binding    [ rs:value      "1"^^xsd:decimal ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      6
+                      rs:index      5
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz"@en ;
                                       rs:variable   "v"
@@ -52,7 +52,7 @@
                       rs:binding    [ rs:value      :x2 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      16
+                      rs:index      15
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz"^^:unknown ;
                                       rs:variable   "v"
@@ -60,7 +60,7 @@
                       rs:binding    [ rs:value      :x8 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      19
+                      rs:index      18
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :x4 ;
                                       rs:variable   "x"
@@ -68,24 +68,15 @@
                       rs:binding    [ rs:value      "xyz"@fr ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      18
+                      rs:index      17
                     ] ;
-      rs:solution   [ rs:binding    [ rs:value      [ 
-                                                    ] ;
-                                      rs:variable   "v"
-                                    ] ;
-                      rs:binding    [ rs:value      :y7 ;
-                                      rs:variable   "x"
-                                    ] ;
-                      rs:index      1
-                    ] ;
-      rs:solution   [ rs:binding    [ rs:value      :y8 ;
+      rs:solution   [ rs:binding    [ rs:value      :y7 ;
                                       rs:variable   "x"
                                     ] ;
                       rs:binding    [ rs:value      :abc ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      3
+                      rs:index      2
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :x9 ;
                                       rs:variable   "x"
@@ -94,7 +85,7 @@
                                                     ] ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      2
+                      rs:index      1
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "abc"@EN ;
                                       rs:variable   "v"
@@ -102,7 +93,7 @@
                       rs:binding    [ rs:value      :y3 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      9
+                      rs:index      8
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "abc" ;
                                       rs:variable   "v"
@@ -110,7 +101,7 @@
                       rs:binding    [ rs:value      :y1 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      8
+                      rs:index      7
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "abc"^^xsd:string ;
                                       rs:variable   "v"
@@ -118,7 +109,7 @@
                       rs:binding    [ rs:value      :y4 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      13
+                      rs:index      12
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :z2 ;
                                       rs:variable   "x"
@@ -126,7 +117,7 @@
                       rs:binding    [ rs:value      01 ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:index      5
+                      rs:index      4
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz"@EN ;
                                       rs:variable   "v"
@@ -134,7 +125,7 @@
                       rs:binding    [ rs:value      :x5 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      15
+                      rs:index      14
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      1 ;
                                       rs:variable   "v"
@@ -142,7 +133,7 @@
                       rs:binding    [ rs:value      :z1 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      7
+                      rs:index      6
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      :xyz ;
                                       rs:variable   "v"
@@ -150,7 +141,7 @@
                       rs:binding    [ rs:value      :x10 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      4
+                      rs:index      3
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "abc"^^:unknown ;
                                       rs:variable   "v"
@@ -158,7 +149,7 @@
                       rs:binding    [ rs:value      :y6 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      11
+                      rs:index      10
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "xyz" ;
                                       rs:variable   "v"
@@ -166,7 +157,7 @@
                       rs:binding    [ rs:value      :x1 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      14
+                      rs:index      13
                     ] ;
       rs:solution   [ rs:binding    [ rs:value      "abc"^^xsd:integer ;
                                       rs:variable   "v"
@@ -174,5 +165,5 @@
                       rs:binding    [ rs:value      :y5 ;
                                       rs:variable   "x"
                                     ] ;
-                      rs:index      12
+                      rs:index      11
                     ] .

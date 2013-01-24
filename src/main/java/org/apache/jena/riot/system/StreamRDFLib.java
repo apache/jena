@@ -21,8 +21,6 @@ package org.apache.jena.riot.system;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
-import org.apache.jena.riot.lang.RDFParserOutputIterator;
-import org.apache.jena.riot.lang.StreamedTriplesIterator;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -68,18 +66,6 @@ public class StreamRDFLib
     public static RDFParserOutputCounting count(StreamRDF other)
     { return new ParserOutputCountingBase(other) ; }
 
-//    private static class ParserOutputSink implements StreamRDF
-//    {
-//        public ParserOutputSink ()                      {}
-//        @Override public void start()                   {}
-//        @Override public void triple(Triple triple)     {}
-//        @Override public void quad(Quad quad)           {}
-//        @Override public void tuple(Tuple<Node> tuple)  {}
-//        @Override public void base(String base)         {}
-//        @Override public void prefix(String prefix, String iri) {}
-//        @Override public void finish()                  {}
-//    }
-
     private static class ParserOutputSinkTriplesToQuads extends StreamRDFWrapper
     {
         private final Node gn ;
@@ -89,7 +75,6 @@ public class StreamRDFLib
         @Override public void triple(Triple triple)
         { sink.quad(new Quad(gn, triple)) ; }
     }
-    
 
     private static class ParserOutputSinkTriples extends StreamRDFBase
     {

@@ -14,15 +14,6 @@
                                     ] ;
                       rs:index      2
                     ] ;
-      rs:solution   [ rs:binding    [ rs:value      [ 
-                                                    ] ;
-                                      rs:variable   "v"
-                                    ] ;
-                      rs:binding    [ rs:value      :y7 ;
-                                      rs:variable   "x"
-                                    ] ;
-                      rs:index      21
-                    ] ;
       rs:solution   [ rs:binding    [ rs:value      :x9 ;
                                       rs:variable   "x"
                                     ] ;
@@ -139,7 +130,7 @@
       rs:solution   [ rs:binding    [ rs:value      :abc ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:binding    [ rs:value      :y8 ;
+                      rs:binding    [ rs:value      :y7h ;
                                       rs:variable   "x"
                                     ] ;
                       rs:index      19
