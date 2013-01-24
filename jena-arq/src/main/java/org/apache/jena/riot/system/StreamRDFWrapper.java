@@ -24,11 +24,19 @@ import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class StreamRDFWarpper implements StreamRDF
+/**
+ * A wrapper around another {@link StreamRDF}
+ *
+ */
+public class StreamRDFWrapper implements StreamRDF
 {
     protected final StreamRDF sink ;
 
-    public StreamRDFWarpper(StreamRDF sink) { this.sink = sink ; }
+    /**
+     * Create a new wrapper
+     * @param sink Stream to wrap
+     */
+    public StreamRDFWrapper(StreamRDF sink) { this.sink = sink ; }
     
     @Override
     public void start()
