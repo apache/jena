@@ -8,9 +8,20 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.jena.riot.system.StreamRDF;
+
 /**
  * Abstract implementation of a producer consumer RDF stream where the streamed
- * RDF feeds a buffer which is exposed via an iterator
+ * RDF feeds a buffer which is exposed via an iterator.
+ * <p>
+ * In order for this to work correctly the producer thread which is passing
+ * information to the {@link StreamRDF} interface typically needs to be on a
+ * separate thread. However this depends on how the producer and the consumer
+ * are started, if the start of the producer does not block the main thread
+ * the consumer can happily be on the main thread.  Generally speaking though
+ * it is good practice to ensure that one of the actors on this class is
+ * running on a different thread.
+ * </p>
  * 
  * @param <T>
  */

@@ -5,6 +5,7 @@
 package org.apache.jena.riot.lang;
 
 import org.apache.jena.atlas.lib.Tuple;
+import org.apache.jena.riot.system.StreamRDF;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -20,7 +21,15 @@ import com.hp.hpl.jena.sparql.core.Quad;
  * <p>
  * This stream silently discards any triples or quads
  * </p>
- * 
+ * <p>
+ * In order for this to work correctly the producer thread which is passing
+ * information to the {@link StreamRDF} interface typically needs to be on a
+ * separate thread. However this depends on how the producer and the consumer
+ * are started, if the start of the producer does not block the main thread
+ * the consumer can happily be on the main thread.  Generally speaking though
+ * it is good practice to ensure that one of the actors on this class is
+ * running on a different thread.
+ * </p>
  */
 public class StreamedTuplesIterator extends StreamedRDFIterator<Tuple<Node>> {
 
