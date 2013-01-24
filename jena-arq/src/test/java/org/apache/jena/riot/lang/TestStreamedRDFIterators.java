@@ -491,4 +491,20 @@ public class TestStreamedRDFIterators {
         // Buffer size is small relative to generated tuples
         this.test_streamed_tuples(10000, 100000, false);
     }
+    
+    /**
+     * Test for bad buffer size
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void streamed_instantiation_bad_01() {
+        new StreamedTriplesIterator(0);
+    }
+    
+    /**
+     * Test for bad buffer size
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void streamed_instantiation_bad_02() {
+        new StreamedTriplesIterator(-1);
+    }
 }

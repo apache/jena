@@ -22,6 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
 
 /**
@@ -44,6 +45,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
     protected BlockingQueue<T> buffer;
     private boolean finished = false;
     private T next = null;
+    private PrefixMap prefixes = new PrefixMap();
 
     /**
      * Constant for default buffer size
@@ -156,7 +158,15 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
 
     @Override
     public void prefix(String prefix, String iri) {
-        // Prefix declarations are ignored
+        this.prefixes.add(prefix, iri);
+    }
+    
+    /**
+     * Gets the prefix map which contains the prefixes seen so far in the stream
+     * @return Prefix Map
+     */
+    public PrefixMap getPrefixes() {
+        return this.prefixes;
     }
 
     @Override
