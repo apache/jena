@@ -130,7 +130,7 @@
       rs:solution   [ rs:binding    [ rs:value      :abc ;
                                       rs:variable   "v"
                                     ] ;
-                      rs:binding    [ rs:value      :y7h ;
+                      rs:binding    [ rs:value      :y7 ;
                                       rs:variable   "x"
                                     ] ;
                       rs:index      19
