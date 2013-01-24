@@ -20,13 +20,13 @@ package org.apache.jena.fuseki.migrate;
 
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFWarpper ;
+import org.apache.jena.riot.system.StreamRDFWrapper ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
-public class SinkRDFLimited extends StreamRDFWarpper
+public class SinkRDFLimited extends StreamRDFWrapper
 {
    private long count = 0 ;
    private final long limit ;
