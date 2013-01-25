@@ -152,7 +152,7 @@ public class SolverLib
         Iterator<Binding> iterBinding = converter.convert(nodeTable, chain) ;
         
         // "input" will be closed by QueryIterTDB but is otherwise unused.
-        // "killList" wil be aborted on timeout.
+        // "killList" will be aborted on timeout.
         return new QueryIterTDB(iterBinding, killList, input, execCxt) ;
     }
     
