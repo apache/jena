@@ -43,9 +43,10 @@ import org.apache.jena.riot.system.StreamRDF;
 public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<T> {
 
     protected BlockingQueue<T> buffer;
-    private boolean finished = false;
+    private boolean started = false, finished = false;
     private T next = null;
     private PrefixMap prefixes = new PrefixMap();
+    private String baseIri;
 
     /**
      * Constant for default buffer size
@@ -77,9 +78,16 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
         this.buffer = new ArrayBlockingQueue<T>(bufferSize, fair);
     }
 
+    /**
+     * Returns whether further elements are available
+     * @return True if more elements are available, false otherwise
+     * @exception IllegalStateException Thrown if you try to read from the iterator before the stream has had the {@link #start()} method called on it
+     */
     @Override
     public final boolean hasNext() {
-        if (this.next != null) {
+        if (!this.started) {
+            throw new IllegalStateException("Tried to read from iterator before the Stream was started, please ensure that a producer thread has called start() on the stream before attempting to iterate over it");
+        } else if (this.next != null) {
             return true;
         } else if (this.finished && buffer.isEmpty()) {
             return false;
@@ -89,6 +97,9 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
         }
     }
 
+    /**
+     * Helper method for actually getting the next element
+     */
     private void getNext() {
         // Use an incremental back off retry strategy to avoid starving the
         // producer thread which is trying to insert into the queue we
@@ -127,9 +138,17 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
         }
     }
 
+    /**
+     * Gets the next element from the iterator
+     * @return Next element
+     * @exception IllegalStateException Thrown if you try to iterate before the stream has had the {@link #start()} method called
+     * @exception NoSuchElementException Thrown if there are no further elements
+     */
     @Override
     public final T next() {
-        if (this.next != null) {
+        if (!this.started) {
+            throw new IllegalStateException("Tried to read from iterator before the Stream was started, please ensure that a producer thread has called start() on the stream before attempting to iterate over it");
+        } else if (this.next != null) {
             T t = this.next;
             this.next = null;
             return t;
@@ -147,17 +166,28 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
     }
 
     @Override
-    public void start() {
-        // No-op
+    public final void start() {
+        if (this.started) {
+            throw new IllegalStateException("A StreamedRDFIterator is not reusable, please create a new instance");
+        }
+        this.started = true;
     }
 
     @Override
-    public void base(String base) {
-        // Base URIs are ignored
+    public final void base(String base) {
+        this.baseIri = base;
+    }
+    
+    /**
+     * Gets the most recently seen Base IRI
+     * @return Base IRI
+     */
+    public String getBaseIri() {
+        return this.baseIri;
     }
 
     @Override
-    public void prefix(String prefix, String iri) {
+    public final void prefix(String prefix, String iri) {
         this.prefixes.add(prefix, iri);
     }
     
