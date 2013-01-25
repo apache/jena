@@ -161,10 +161,13 @@ public class ActionBackup extends ServletBase
     
     public static void backup(DatasetGraph dsg, String backupfile)
     {
+        if ( ! backupfile.endsWith(".nq") )
+            backupfile = backupfile+".nq" ;
+        
         OutputStream out = null ;
         try
         {
-            if ( false )
+            if ( true )
             {
                 // This seems to achive about the same as "gzip -6"
                 // It's not too expensive in elapsed time but it's not zero cost.

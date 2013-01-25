@@ -283,28 +283,28 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             // Not necessary if we are inside a read transaction or lock until the end of sending results. 
             // rs = ResultSetFactory.copyResults(rs) ;
 
-            log.info(format("[%d] OK/select", action.id)) ;
+            log.info(format("[%d] exec/select", action.id)) ;
             return new SPARQLResult(rs) ;
         }
 
         if ( query.isConstructType() )
         {
             Model model = qExec.execConstruct() ;
-            log.info(format("[%d] OK/construct", action.id)) ;
+            log.info(format("[%d] exec/construct", action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isDescribeType() )
         {
             Model model = qExec.execDescribe() ;
-            log.info(format("[%d] OK/describe",action.id)) ;
+            log.info(format("[%d] exec/describe",action.id)) ;
             return new SPARQLResult(model) ;
         }
 
         if ( query.isAskType() )
         {
             boolean b = qExec.execAsk() ;
-            log.info(format("[%d] OK/ask",action.id)) ;
+            log.info(format("[%d] exec/ask",action.id)) ;
             return new SPARQLResult(b) ;
         }
 
