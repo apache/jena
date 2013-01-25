@@ -55,7 +55,7 @@ public class ModTDBDataset extends ModDataset
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.add(argMem) ; //, "mem", "Memory graph") ;
+        cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)") ;
         cmdLine.addModule(modAssembler) ;
     }
 
