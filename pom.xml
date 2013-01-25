@@ -61,6 +61,8 @@
     <module>jena-sdb</module>
     <module>jena-larq</module>
     -->
+    <!-- Convenience modules -->
+    <module>apache-jena-libs</module>
     <!-- Delivery modules - after build modules --> 
     <module>apache-jena</module>
   </modules>
