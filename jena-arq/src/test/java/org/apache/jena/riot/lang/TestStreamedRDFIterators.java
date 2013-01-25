@@ -19,7 +19,6 @@
 package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -32,7 +31,6 @@ import java.util.concurrent.TimeoutException;
 import junit.framework.Assert;
 
 import org.apache.jena.atlas.lib.Tuple;
-import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.junit.AfterClass;
@@ -562,6 +560,8 @@ public class TestStreamedRDFIterators {
 
         // Run the threads
         Future<?> genResult = executor.submit(runParser);
+        //Need to insert a sleep as otherwise we can see the IllegalStateException
+        Thread.sleep(250);
         Future<Integer> result = executor.submit(consumeTriples);
         Integer count = 0;
         try {
@@ -603,5 +603,23 @@ public class TestStreamedRDFIterators {
     @Test
     public void streamed_triples_bad_02() throws TimeoutException, InterruptedException {
         test_streamed_triples_bad("@prefix : <http://example> . :s :p :o . :x :y", 1);
+    }
+    
+    /**
+     * Tests attempting to access the iterator before the stream has been started
+     */
+    @Test(expected=IllegalStateException.class)
+    public void streamed_state_bad_01() {
+        StreamedTriplesIterator iter = new StreamedTriplesIterator();
+        iter.hasNext();
+    }
+    
+    /**
+     * Tests attempting to access the iterator before the stream has been started
+     */
+    @Test(expected=IllegalStateException.class)
+    public void streamed_state_bad_02() {
+        StreamedTriplesIterator iter = new StreamedTriplesIterator();
+        iter.next();
     }
 }
