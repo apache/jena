@@ -102,6 +102,12 @@ public class TestStreamedRDFIterators {
 
             @Override
             public Integer call() throws Exception {
+                int waits = 0;
+                while (!stream.canIterate()) {
+                    Thread.sleep(250);
+                    waits++;
+                    if (waits == 4) throw new Exception("Iterate failed to be ready in a timely fashion");
+                }
                 int count = 0;
                 while (stream.hasNext()) {
                     stream.next();
@@ -245,6 +251,12 @@ public class TestStreamedRDFIterators {
 
             @Override
             public Integer call() throws Exception {
+                int waits = 0;
+                while (!stream.canIterate()) {
+                    Thread.sleep(250);
+                    waits++;
+                    if (waits == 4) throw new Exception("Iterate failed to be ready in a timely fashion");
+                }
                 int count = 0;
                 while (stream.hasNext()) {
                     stream.next();
@@ -388,6 +400,12 @@ public class TestStreamedRDFIterators {
 
             @Override
             public Integer call() throws Exception {
+                int waits = 0;
+                while (!stream.canIterate()) {
+                    Thread.sleep(250);
+                    waits++;
+                    if (waits == 4) throw new Exception("Iterate failed to be ready in a timely fashion");
+                }
                 int count = 0;
                 while (stream.hasNext()) {
                     stream.next();
@@ -549,6 +567,12 @@ public class TestStreamedRDFIterators {
 
             @Override
             public Integer call() throws Exception {
+                int waits = 0;
+                while (!stream.canIterate()) {
+                    Thread.sleep(250);
+                    waits++;
+                    if (waits == 4) throw new Exception("Iterate failed to be ready in a timely fashion");
+                }
                 int count = 0;
                 while (stream.hasNext()) {
                     stream.next();
@@ -560,8 +584,6 @@ public class TestStreamedRDFIterators {
 
         // Run the threads
         Future<?> genResult = executor.submit(runParser);
-        //Need to insert a sleep as otherwise we can see the IllegalStateException
-        Thread.sleep(250);
         Future<Integer> result = executor.submit(consumeTriples);
         Integer count = 0;
         try {
