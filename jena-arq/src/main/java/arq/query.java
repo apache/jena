@@ -76,9 +76,9 @@ public class query extends CmdARQ
         super.addModule(modTime) ;
 
         super.getUsage().startCategory("Control") ;
-        super.add(argExplain, "--explain", "Explain and log query execution") ;
-        super.add(argRepeat, "--repeat=N or N,M", "Do N times or N warmup and then M times (use for timing to overcome start up costs of Java)");
-        super.add(argOptimize, "--optimize=", "Turn the query optimizer on or off (default: on") ;
+        super.add(argExplain,  "--explain", "Explain and log query execution") ;
+        super.add(argRepeat,   "--repeat=N or N,M", "Do N times or N warmup and then M times (use for timing to overcome start up costs of Java)");
+        super.add(argOptimize, "--optimize=", "Turn the query optimizer on or off (default: on)") ;
     }
 
     @Override
