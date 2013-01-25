@@ -6,6 +6,7 @@ ChangeLog for ARQ
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.
++ Command line SPARQL query reads all data formats (triples and quads) for --data 
 
 * JENA-379 : Incorrect results from a property paths with same subject and object variable.  
 + Introduce RDFParserOutput as output interface for parsers (was Sink<Triple> or Sink<Quad>)
