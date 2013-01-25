@@ -148,15 +148,12 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
     public final T next() {
         if (!this.started) {
             throw new IllegalStateException("Tried to read from iterator before the Stream was started, please ensure that a producer thread has called start() on the stream before attempting to iterate over it");
-        } else if (this.next != null) {
+        } else if (this.hasNext()) {
             T t = this.next;
             this.next = null;
             return t;
-        } else if (this.finished && buffer.isEmpty()) {
-            throw new NoSuchElementException();
         } else {
-            this.getNext();
-            return this.next;
+            throw new NoSuchElementException();
         }
     }
 
@@ -171,6 +168,15 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
             throw new IllegalStateException("A StreamedRDFIterator is not reusable, please create a new instance");
         }
         this.started = true;
+    }
+    
+    /**
+     * Returns whether it is safe to start iterating, this is the case if the {@link #start()}
+     * method of the stream has been called
+     * @return True if safe to iterate
+     */
+    public final boolean canIterate() {
+        return this.started;
     }
 
     @Override
