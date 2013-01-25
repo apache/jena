@@ -20,7 +20,6 @@ package arq;
 
 import arq.cmd.CmdException ;
 import arq.cmdline.CmdARQ ;
-import arq.cmdline.ModDatasetGeneral ;
 import arq.cmdline.ModQueryIn ;
 import arq.cmdline.ModRemote ;
 import arq.cmdline.ModResultsOut ;
@@ -36,7 +35,6 @@ public class rsparql extends CmdARQ
 {
     protected ModQueryIn    modQuery =      new ModQueryIn() ;
     protected ModRemote     modRemote =     new ModRemote() ;
-    protected ModDatasetGeneral modDesc =   new ModDatasetGeneral() ;
     protected ModResultsOut modResults =    new ModResultsOut() ;
 
     public static void main (String... argv)
@@ -50,7 +48,6 @@ public class rsparql extends CmdARQ
         super(argv) ;
         super.addModule(modRemote) ;
         super.addModule(modQuery) ;
-        super.addModule(modDesc) ;
         super.addModule(modResults) ;
     }
     
@@ -70,10 +67,7 @@ public class rsparql extends CmdARQ
 
         try {
             String serviceURL = modRemote.getServiceURL() ;
-            QueryExecution qe = QueryExecutionFactory.sparqlService(serviceURL, query,
-                                                                    modDesc.getGraphURLs(),
-                                                                    modDesc.getNamedGraphURLs()) ;
-
+            QueryExecution qe = QueryExecutionFactory.sparqlService(serviceURL, query) ;
             if ( modRemote.usePost() )
                 HttpQuery.urlLimit = 0 ;
 

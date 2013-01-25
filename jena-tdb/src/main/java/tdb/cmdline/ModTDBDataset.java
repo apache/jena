@@ -46,7 +46,7 @@ public class ModTDBDataset extends ModDataset
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
     
-    private ArgDecl argMem                  = new ArgDecl(ArgDecl.HasValue, "mem") ;
+    private ArgDecl argMem                  = new ArgDecl(ArgDecl.HasValue, "mem", "data") ;
     private ModTDBAssembler modAssembler    = new ModTDBAssembler() ;
     private String inMemFile                = null ;
     
