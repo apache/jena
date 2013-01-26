@@ -25,11 +25,13 @@ import java.util.Iterator ;
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.atlas.lib.Sync ;
 import org.apache.jena.atlas.lib.Tuple ;
+import org.apache.jena.atlas.logging.Log ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.store.NodeId ;
+import com.hp.hpl.jena.tdb.sys.SystemTDB ;
 
 /** A TupleTable is a set of TupleIndexes.  The first TupleIndex is the "primary" index and must exist */
 public class TupleTable implements Sync, Closeable
@@ -37,6 +39,7 @@ public class TupleTable implements Sync, Closeable
     private static Logger log = LoggerFactory.getLogger(TupleTable.class) ;
     
     private final TupleIndex[] indexes ;
+    private final TupleIndex   scanAllIndex ;   // Use this index if a complete scan is needed.
     private final int tupleLen ;
     private boolean syncNeeded = false ;
     
@@ -51,12 +54,35 @@ public class TupleTable implements Sync, Closeable
             if ( index != null && index.getTupleLength() != tupleLen )
                 throw new TDBException("Incompatible index: "+index.getMapping()) ;
         }
-        
+        scanAllIndex = chooseScanAllIndex(tupleLen, indexes) ;
     }
     
-    int x = 0 ;
-    int added = 0 ;
-    
+    /** Choose an index to scan in case we are asked for everything
+     * This needs to be ???G for the distinctAdjacent filter in union query to work.
+     */
+    private static TupleIndex chooseScanAllIndex(int tupleLen, TupleIndex[] indexes)
+    {
+        if ( tupleLen != 4 )
+            return indexes[0] ;
+        
+        for ( TupleIndex index : indexes )
+        {
+            // First look for SPOG
+            if ( index.getName().equals("SPOG") )
+                return index ;
+        }
+        
+        for ( TupleIndex index : indexes )
+        {
+            // Then look for any ???G
+            if ( index.getName().endsWith("G") )
+                return index ;
+        }
+        
+        Log.warn(SystemTDB.errlog, "Did not find a ???G index for full scans") ;
+        return indexes[0] ;
+    }
+
     /** Insert a tuple - return true if it was really added, false if it was a duplicate */
     public boolean add(Tuple<NodeId> t) 
     { 
@@ -147,7 +173,7 @@ public class TupleTable implements Sync, Closeable
         }
 
         if ( numSlots == 0 )
-            return indexes[0].all() ;
+            return scanAllIndex.all() ;
         
         int indexNumSlots = 0 ;
         TupleIndex index = null ;
@@ -168,7 +194,6 @@ public class TupleTable implements Sync, Closeable
         if ( index == null )
             // No index at all.  Scan.
             index = indexes[0] ;
-
         return index.find(pattern) ;
     }
     
