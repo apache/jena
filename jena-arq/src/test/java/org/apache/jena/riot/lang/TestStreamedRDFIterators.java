@@ -20,13 +20,7 @@ package org.apache.jena.riot.lang;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.* ;
 
 import junit.framework.Assert;
 
@@ -80,6 +74,8 @@ public class TestStreamedRDFIterators {
 
         // Create the StreamedTriplesIterator with a small buffer
         final StreamedTriplesIterator stream = new StreamedTriplesIterator(bufferSize, fair);
+        
+        final Semaphore initialization = new Semaphore(0) ;
 
         // Create a runnable that will generate triples
         Runnable genTriples = new Runnable() {
@@ -87,6 +83,7 @@ public class TestStreamedRDFIterators {
             @Override
             public void run() {
                 stream.start();
+                initialization.release() ;      // Let the consumer start 
                 // Generate triples
                 for (int i = 1; i <= generateSize; i++) {
                     Triple t = new Triple(Node.createAnon(), Node.createURI("http://predicate"), NodeFactory.intToNode(i));
@@ -102,12 +99,7 @@ public class TestStreamedRDFIterators {
 
             @Override
             public Integer call() throws Exception {
-                int waits = 0;
-                while (!stream.canIterate()) {
-                    Thread.sleep(250);
-                    waits++;
-                    if (waits == 4) throw new Exception("Iterate failed to be ready in a timely fashion");
-                }
+                initialization.acquire() ;  // Wait for producer.
                 int count = 0;
                 while (stream.hasNext()) {
                     stream.next();
