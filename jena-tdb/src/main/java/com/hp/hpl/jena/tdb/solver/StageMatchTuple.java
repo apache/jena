@@ -88,9 +88,6 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
 
         prepare(nodeTupleTable.getNodeTable(), patternTuple, input, ids, var) ;
         
-        // Go directly to the tuple table
-        //Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.getTupleTable().find(Tuple.create(ids)) ;
-        
         Iterator<Tuple<NodeId>> iterMatches = nodeTupleTable.find(Tuple.create(ids)) ;
         
         // ** Allow a triple or quad filter here.
@@ -106,10 +103,23 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
         if ( anyGraphs )
         {
             iterMatches = Iter.operate(iterMatches, quadsToTriples) ;
-            // If any slots were set, then the inde would be ???G and we can use distinctAdjacent.
+            // If any slots were set, then the index would be ???G and we can use distinctAdjacent.
             // If all slots are unset, the index is probably GSPO (SPOG would be better in this one case). 
             // This is a safe, if potentially costly, choice. 
-            iterMatches = Iter.distinct(iterMatches) ;  // WRT only three varying slots.
+            
+            //Guaranteed 
+            //iterMatches = Iter.distinct(iterMatches) ;
+            
+            // This depends on the way indexes are choose and
+            // the indexing pattern. It assumes that the index 
+            // chosen ends in G so same triples are adjacent 
+            // in a union query.
+            // If any slot is defined, then the index will be X??G.
+            // if no slot is defined, then the index will be X???G.
+            //  See TupleTable.scanAllIndex that ensures the latter.
+            //  The former assumes indexes are either G... or ...G.
+            //  No G part way through.
+            iterMatches = Iter.distinctAdjacent(iterMatches) ;
         }
         
         // Map Tuple<NodeId> to BindingNodeId

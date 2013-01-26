@@ -5,6 +5,7 @@ ChangeLog for TDB
 
 ** TDB 0.10.0 depends on Jena 2.10.0 (ARQ 2.10.0)
 
++ Improve the performance of union default graph by efficiently handling potential duplicates.  
 + Command line tdbquery: --mem (or --data) reads into an in-memory dadaset and executes the query.
 + JENA-289 : QueryExecution timeouts now cause TDB BGPs to timeout even if they produce no output. 
 + JENA-363 : Fix to handling of integers with absolute values between 2^56 and 2^63.  
@@ -15,7 +16,7 @@ ChangeLog for TDB
 ==== TDB 0.9.4
 
 + Enable batching of flushing commits to the main database - 
-  The improves transactional write performance.
+  This improves transactional write performance.
 + Extensive testing and fixing for recovery due to abrupt termination of the JVM.  
 + JENA-318 : Fix rejection of bad language tags.
 + JENA_317 : Fix to handling decimal numbers.  Decimals of around 15 digits could be corrupted.  
