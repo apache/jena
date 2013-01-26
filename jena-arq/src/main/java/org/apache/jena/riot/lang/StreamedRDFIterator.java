@@ -21,6 +21,7 @@ package org.apache.jena.riot.lang;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean ;
 
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
@@ -43,7 +44,8 @@ import org.apache.jena.riot.system.StreamRDF;
 public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<T> {
 
     protected BlockingQueue<T> buffer;
-    private boolean started = false, finished = false;
+    private AtomicBoolean started = new AtomicBoolean(false) ;
+    private AtomicBoolean finished = new AtomicBoolean(false) ;
     private T next = null;
     private PrefixMap prefixes = new PrefixMap();
     private String baseIri;
@@ -85,11 +87,11 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
      */
     @Override
     public final boolean hasNext() {
-        if (!this.started) {
+        if (!this.started.get()) {
             throw new IllegalStateException("Tried to read from iterator before the Stream was started, please ensure that a producer thread has called start() on the stream before attempting to iterate over it");
         } else if (this.next != null) {
             return true;
-        } else if (this.finished && buffer.isEmpty()) {
+        } else if (this.finished.get() && buffer.isEmpty()) {
             return false;
         } else {
             this.getNext();
@@ -120,7 +122,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
 
             // As soon as we see the finished signal has been set stop
             // waiting for more elements
-            if (this.finished)
+            if (this.finished.get())
                 break;
 
             // Back off
@@ -146,7 +148,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
      */
     @Override
     public final T next() {
-        if (!this.started) {
+        if (!this.started.get()) {
             throw new IllegalStateException("Tried to read from iterator before the Stream was started, please ensure that a producer thread has called start() on the stream before attempting to iterate over it");
         } else if (this.hasNext()) {
             T t = this.next;
@@ -164,10 +166,10 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
 
     @Override
     public final void start() {
-        if (this.started) {
+        if (this.started.get()) {
             throw new IllegalStateException("A StreamedRDFIterator is not reusable, please create a new instance");
         }
-        this.started = true;
+        this.started.set(true);
     }
     
     /**
@@ -176,7 +178,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
      * @return True if safe to iterate
      */
     public final boolean canIterate() {
-        return this.started;
+        return this.started.get();
     }
 
     @Override
@@ -207,7 +209,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
 
     @Override
     public final void finish() {
-        this.finished = true;
+        this.finished.set(true) ;
     }
 
 }
