@@ -57,9 +57,7 @@ riotcmd.rdfxml
 tdb.tdbbackup
 tdb.tdbdump
 tdb.tdbloader
-tdb.tdbloader3
 tdb.tdbquery
-tdb.tdbrecovery
 tdb.tdbstats
 tdb.tdbupdate
 EOF
