@@ -51,6 +51,6 @@ public class Difference extends Dyadic implements Graph
 	@Override public void performDelete( Triple t )
 		{ L.delete( t ); }
 
-	@Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch t ) 
+	@Override public ExtendedIterator<Triple> _graphBaseFind( TripleMatch t ) 
 		{ return L.find( t ). filterDrop ( ifIn( R ) ); }
 	}
