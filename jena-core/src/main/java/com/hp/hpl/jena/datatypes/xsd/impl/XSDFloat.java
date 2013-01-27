@@ -27,9 +27,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * Datatype representation for xsd:float. Can't just use XSDBaseNumericType
  * because float, double and decimal are all disjoint in XSD. Can use plain
  * XSDDatatype because the equality function needs overriding.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDFloat extends XSDDatatype {
     /**

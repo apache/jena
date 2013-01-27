@@ -26,8 +26,6 @@ package com.hp.hpl.jena.rdf.arp.lang;
 
 /** Informational values about language codes.
  * Values to be OR-ed together.
- *
- * @author jjc
  */
 public interface LanguageTagCodes {
 

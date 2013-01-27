@@ -34,9 +34,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * <li><b>traceOn</b> - if set to true this causes all rule firings and deduced triples to be
  * written out to the Logger at INFO level.</li>
  * </ul>
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-04-26 19:33:14 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     

@@ -25,9 +25,6 @@ import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 /**
  * This class is not part of the API.
  * It is public merely for test purposes.
- * @author Jeremy Carroll
- *
- * 
  */
 public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandler {
     protected RDFErrorHandler errorHandler;

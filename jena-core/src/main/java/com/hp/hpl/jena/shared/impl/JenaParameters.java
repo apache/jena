@@ -28,8 +28,6 @@ package com.hp.hpl.jena.shared.impl;
  * we find them being used significantly that probably means they should be
  * moved to being model-specific rather than global.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2010-05-23 19:19:22 $
  */
 public class JenaParameters {
     

@@ -23,8 +23,6 @@ package com.hp.hpl.jena.shared;
  * because it is not correctly configured. For example,
  * the classpath is not set up correctly for the desired
  * functionality.
- * @author Jeremy J. Carroll
- *
  */
 public class ConfigException extends JenaException {
 

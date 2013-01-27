@@ -22,11 +22,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-/**
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
- */
+/* */
 public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
 
     /** The last returned triple */

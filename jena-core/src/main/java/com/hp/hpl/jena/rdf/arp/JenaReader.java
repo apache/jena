@@ -52,8 +52,6 @@ import com.hp.hpl.jena.shared.WrappedIOException;
 
 /**
  * Interface between Jena and ARP.
- * 
- * @author jjc
  */
 public class JenaReader implements RDFReader, ARPErrorNumbers {
     

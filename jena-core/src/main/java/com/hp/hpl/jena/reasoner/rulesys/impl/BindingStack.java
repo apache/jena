@@ -28,9 +28,6 @@ import java.util.*;
 
 /**
  * Provides a trail of possible variable bindings for a forward rule.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class BindingStack implements BindingEnvironment {
     

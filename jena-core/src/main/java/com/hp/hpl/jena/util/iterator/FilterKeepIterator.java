@@ -23,7 +23,6 @@ import java.util.Iterator;
 /**
     A subclass of FilterIterator which keeps the elements that pass the
     test.
-    @author kers
 */
 public class FilterKeepIterator<T> extends FilterIterator<T> implements Iterator<T>
     {

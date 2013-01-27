@@ -35,10 +35,6 @@ import java.util.*;
  * Encapsulates a class description formed from a boolean combination of other
  * class descriptions (ie union, intersection or complement).
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: BooleanClassDescription.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface BooleanClassDescription
     extends OntClass

@@ -49,8 +49,6 @@ import java.util.*;
  * L is the depth of the tree branch) but the predecessor closure would be 
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure

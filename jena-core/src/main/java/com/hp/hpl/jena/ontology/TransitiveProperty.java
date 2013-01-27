@@ -32,10 +32,6 @@ package com.hp.hpl.jena.ontology;
  * and <code><em>y</em>&nbsp;p&nbsp;<em>z</em></code>
  * holds, then <code><em>x</em>&nbsp;p&nbsp;<em>z</em></code> must also hold.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TransitiveProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface TransitiveProperty
     extends ObjectProperty

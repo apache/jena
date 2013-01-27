@@ -35,9 +35,6 @@ import java.util.*;
  * represent builtin predicates; in TriplePatterns they represent embedded
  * structured literals that are used to cache matched subgraphs such as
  * restriction specifications.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */

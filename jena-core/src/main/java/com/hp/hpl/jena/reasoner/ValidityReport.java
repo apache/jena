@@ -24,9 +24,6 @@ import java.util.Iterator;
  * Data structure used to report the results of validation
  * or consistency checking operations. It is an array of reports,
  * each of which has a severity, a type (string) and a description (string).
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public interface ValidityReport {
     

@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.rdf.model;
 
 /**
- 	@author kers
     The interface for visiting (ie type-dispatching) an RDF Node.
 */
 public interface RDFVisitor

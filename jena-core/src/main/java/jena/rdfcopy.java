@@ -49,9 +49,6 @@ import java.io.*;
  *       The input language defaults to RDF/XML and the output language
  *       defaults to N-TRIPLE.
  *  </pre>
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:51 $
  */
 public class rdfcopy extends java.lang.Object {
 

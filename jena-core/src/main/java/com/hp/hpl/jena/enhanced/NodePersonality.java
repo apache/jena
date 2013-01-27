@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
     Personalities for nodes.
- * @author jjc + kers
 */
 public class NodePersonality extends Personality<RDFNode> 
     {}

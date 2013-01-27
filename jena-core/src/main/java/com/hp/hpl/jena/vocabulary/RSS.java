@@ -22,8 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     The standard RSS vocavulary.
-    @author  bwm + kers
-    @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:36 $'
 */
 public class RSS extends Object {
 

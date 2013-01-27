@@ -73,7 +73,6 @@ import com.hp.hpl.jena.shared.Command;
  * </dt><dd>
  * Ignores numbered error/warning conditions.
  * </dl>
- * @author jjc
  */
 
 public class rdfparse {

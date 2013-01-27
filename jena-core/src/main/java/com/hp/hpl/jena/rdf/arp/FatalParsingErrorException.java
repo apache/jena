@@ -24,8 +24,6 @@ package com.hp.hpl.jena.rdf.arp;
  * This is thrown after.error errors,
  * most importantly a {@link ARPErrorNumbers#ERR_SAX_FATAL_ERROR}.
  * User code in an error handler may throw a different exception.
- * @author Jeremy J. Carroll
- *
  */
 public class FatalParsingErrorException extends RuntimeException {
 

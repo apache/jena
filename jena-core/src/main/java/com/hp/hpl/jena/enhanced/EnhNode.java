@@ -27,9 +27,6 @@ import com.hp.hpl.jena.rdf.model.*;
  * wraps a normal node, and adds additional convenience access or user affordances, though the state
  * remains in the graph itself.
  * </p>
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
- *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
- *         <a href="mailto:ian_dickinson@users.sourceforge.net">Ian Dickinson</a> (refactoring and commentage)
 */
 public class EnhNode extends Polymorphic<RDFNode> implements FrontsNode
 {

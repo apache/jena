@@ -32,9 +32,6 @@ import org.slf4j.LoggerFactory;
  * Bytecode interpeter engine for the LP version of the backward
  * chaining rule system. An instance of this is forked off for each
  * parallel query.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-05-08 19:38:22 $
  */
 public class LPInterpreter {
 

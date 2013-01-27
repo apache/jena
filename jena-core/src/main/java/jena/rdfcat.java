@@ -121,9 +121,6 @@ import jena.cmdline.*;
  * of input statements is not preserved. The output document is a merge of the
  * input documents, and does not preserve any statement ordering from the input
  * serialisations. Also, duplicate triples will be suppressed.</p>
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release @release@ ($Id: rdfcat.java,v 1.4 2011-03-09 00:31:05 ian_dickinson Exp $)
  */
 public class rdfcat
 {

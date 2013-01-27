@@ -49,8 +49,6 @@ import com.hp.hpl.jena.shared.PropertyNotFoundException;
      resource created by an implementation in another class which adds
      the extra behaviour.  Factory objects are used to construct such
      enhanced resources.</p>
-  @author bwm
-  @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2010-01-11 10:03:42 $'
 */
 public interface Resource extends RDFNode {
 

@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Tests if the first argument is less than or equal to the second.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class LE extends BaseBuiltin {
 

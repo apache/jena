@@ -37,10 +37,6 @@ import java.util.*;
  * <p>
  * Ontology language profile implementation for the DL variant of the OWL 2002/07 language.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.3 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile

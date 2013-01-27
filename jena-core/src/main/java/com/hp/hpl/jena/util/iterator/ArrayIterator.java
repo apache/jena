@@ -51,7 +51,6 @@ public class ArrayIterator<T> implements Iterator<T> {
 	}
 /** Not supported.
  * @throws java.lang.UnsupportedOperationException Always.
- *
  */        
         @Override
         public void remove() {

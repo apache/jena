@@ -24,8 +24,6 @@ import java.io.OutputStream;
  * <p>An <code>RDFWriter</code> is a class which serializes an RDF model
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
- * @author bwm
- * @version $Revision: 1.1 $
  */
 public interface RDFWriter {
 

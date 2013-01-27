@@ -27,7 +27,8 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2010-03-28 11:59:36 $ */
+ * @see Builtin
+ */
 public class BuiltinRegistry {
 
     /** The single global static registry */

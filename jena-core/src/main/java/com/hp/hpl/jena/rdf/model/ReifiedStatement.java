@@ -19,8 +19,7 @@
 package com.hp.hpl.jena.rdf.model;
 
 /**
-    A ReifiedStatement represents a Statement as a Resource. 
-    @author kers
+    A ReifiedStatement represents a Statement as a Resource.
 */
 
 public interface ReifiedStatement extends Resource

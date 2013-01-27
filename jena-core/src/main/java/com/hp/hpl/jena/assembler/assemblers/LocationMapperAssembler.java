@@ -25,8 +25,6 @@ import com.hp.hpl.jena.util.*;
 /**
     An assembler to create location mappings: all the work is done by the
     LocationMapper constructor (which has its own vocabulary).
-    
-    @author kers
 */
 public class LocationMapperAssembler extends AssemblerBase
     {

@@ -30,14 +30,8 @@ import org.apache.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
-
 // TODO: not for 2.3 IRI spec conformance
 
-/**
- * 
- * @author jjc
- * 
- */
 public class URIReference extends TaintImpl implements AResourceInternal, ARPErrorNumbers {
 
     /** Creates new URIReference */

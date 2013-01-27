@@ -23,8 +23,6 @@ import java.util.Iterator;
 /**
     A subclass of FiterIterator which discards the elements that pass the
     filter.
-    
-    @author kers
  */
 public class FilterDropIterator<T> extends FilterIterator<T> implements Iterator<T>
     {

@@ -24,9 +24,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 /**
  * Type processor for gMonth, most of the machinery is in the
  * base XSDAbstractDateTimeType class.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDMonthType extends XSDAbstractDateTimeType {
 

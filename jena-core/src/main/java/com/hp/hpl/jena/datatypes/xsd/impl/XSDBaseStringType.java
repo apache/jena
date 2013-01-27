@@ -26,9 +26,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * Base implementation for all string datatypes derinved from
  * xsd:string. The only purpose of this place holder is
  * to support the isValidLiteral tests across string types.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 

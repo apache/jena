@@ -29,9 +29,7 @@ import java.util.*;
 <p>
     NOTE that the listener is supplied with more-or-less faithful copies of the
     original items that were added to, or removed from, the model. In particular,
-    graph-level updates to the model appear as statements, not triples. 
-    
- 	@author kers (design by andy & the team)
+    graph-level updates to the model appear as statements, not triples.
 */
 public interface ModelChangedListener
     {

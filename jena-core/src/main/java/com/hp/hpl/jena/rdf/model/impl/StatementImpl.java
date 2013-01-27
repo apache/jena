@@ -24,9 +24,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
 /** An implementation of Statement.
- *
- * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2010-01-11 09:17:05 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     

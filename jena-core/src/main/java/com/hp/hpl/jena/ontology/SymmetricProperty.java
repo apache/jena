@@ -31,10 +31,6 @@ package com.hp.hpl.jena.ontology;
  * in which if <code>p(x,&nbsp;y)</code> holds, then<code>p(y,&nbsp;x)</code>
  * must also hold.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: SymmetricProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface SymmetricProperty
     extends ObjectProperty

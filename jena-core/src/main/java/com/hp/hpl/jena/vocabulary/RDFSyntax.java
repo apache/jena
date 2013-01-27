@@ -30,7 +30,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * These URIs can be used in some options (specifically
  * the configuration of the RDF/XML-ABBREV writer) to indicate
  * behaviour concerning these rules.
- * @author jjc
  */
 public class RDFSyntax {
 protected static final String uri =

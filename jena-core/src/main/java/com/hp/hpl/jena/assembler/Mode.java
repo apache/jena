@@ -29,8 +29,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 <p>The default behaviour of the methods is dictated by booleans bound into
     the mode object. Subclasses of mode may exploit the ability to inspect the
     name of the object or its other RDF properties.
-    
-    @author kers
 */
 public class Mode
     {

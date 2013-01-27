@@ -30,10 +30,6 @@ package com.hp.hpl.jena.ontology;
  * the given number of values for a given instance to be a member of the class defined
  * by the restriction.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: CardinalityRestriction.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface CardinalityRestriction
     extends Restriction 

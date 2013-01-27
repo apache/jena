@@ -25,8 +25,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
  	Abstract base class for StaementImpl - pulls up the stuff that doesn't depend
  	on how statements are represented (as S/P/O or as Triples).
- 	
- 	@author hedgehog
 */
 public abstract class StatementBase
 	{

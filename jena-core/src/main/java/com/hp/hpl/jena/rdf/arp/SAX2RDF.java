@@ -55,7 +55,6 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * <p>
  * There is further documentation: <a href="/documentation/io/sax.html">here</a>.
  * </p>
- * @author Jeremy Carroll
  * */
 public class SAX2RDF extends SAX2RDFImpl
 implements ARPConfig {

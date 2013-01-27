@@ -31,9 +31,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * xsd:decimal. The only purpose of this place holder is
  * to support the isValidLiteral tests across numeric types. Note
  * that float and double are not included in this set.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 

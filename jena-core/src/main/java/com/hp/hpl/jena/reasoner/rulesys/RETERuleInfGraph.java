@@ -26,9 +26,6 @@ import java.util.*;
 
 /**
  * RETE implementation of the forward rule infernce graph.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
 

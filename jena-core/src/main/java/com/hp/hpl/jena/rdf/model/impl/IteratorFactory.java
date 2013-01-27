@@ -30,7 +30,6 @@ import com.hp.hpl.jena.graph.*;
 
 
 /**
- * @author jjc
  *  Builds Jena Iterators and other things (RDFNode and Statement)
  *  needed in a Model.
  */

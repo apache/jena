@@ -51,10 +51,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * and generate a Java file with the constants from the vocabulary compiled in.
  * Designed to be highly flexible and customisable.
  * </p>
- *
- * @author Ian Dickinson
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.14 2011-03-22 12:37:59 ian_dickinson Exp $
  */
 public class schemagen {
     

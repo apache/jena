@@ -24,8 +24,6 @@ package com.hp.hpl.jena.rdf.model;
  * e.g. to support the behaviour of container classes.  Factory objects
  * supporting this interface may be used to construct instances of these
  * so called enhanced resources.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
 
  */
 @Deprecated public interface ResourceF {

@@ -31,8 +31,6 @@ import org.xml.sax.SAXParseException;
  * They simply connect {@link StAX2SAX} to {@link SAX2Model} internally.
  * 
  * @see StAX2SAX
- * 
- * @author Damian Steer
  */
 public class StAX2Model {
     

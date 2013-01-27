@@ -27,9 +27,6 @@ import java.util.*;
 /**
  * Holds the set of backward rules used by an LPEngine. Is responsible
  * for compile the rules into internal byte codes before use.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class LPRuleStore extends RuleStore {
     

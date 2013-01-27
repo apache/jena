@@ -28,9 +28,6 @@ import java.util.*;
 /**
  * Uses two transitive graph caches to store a subclass and a subproperty
  * lattice and use them within a larger inference graph.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:57 $
  */
 public class TransitiveEngine {
     

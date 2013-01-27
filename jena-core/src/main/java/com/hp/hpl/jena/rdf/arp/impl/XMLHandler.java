@@ -53,8 +53,6 @@ import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription;
  * This class converts SAX events into a stream of encapsulated events suitable
  * for the RDF parser. In effect, this is the RDF lexer. updates by kers to
  * handle exporting namespace prefix maps.
- * 
- * @author jjc
  */
 public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
         Names {

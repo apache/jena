@@ -26,7 +26,6 @@ import java.lang.reflect.*;
 /**
  * jena.version
  * Print out jena version information and exit.
- * @author Jeremy J. Carroll
  */
 public class version implements Jena {
 

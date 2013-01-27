@@ -27,9 +27,6 @@ package com.hp.hpl.jena.rdf.arp.impl;
 import com.hp.hpl.jena.rdf.arp.ParseException;
 
 /**
- *
- * @author  jjc
- * 
  */
 public class DefaultErrorHandler implements org.xml.sax.ErrorHandler {
 

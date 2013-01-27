@@ -22,9 +22,6 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * Interface for all inner nodes in the RETE network. Tokens are 
  * represented by binding environments. This representation only works
  * if we don't overlap the networks for different rules.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public interface RETESinkNode extends RETENode {
 

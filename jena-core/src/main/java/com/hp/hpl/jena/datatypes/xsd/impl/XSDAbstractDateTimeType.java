@@ -26,9 +26,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 /**
  * Base class for all date/time/duration type representations.
  * Includes support functions for parsing and comparing dates.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDAbstractDateTimeType extends XSDDatatype {
 

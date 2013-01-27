@@ -26,9 +26,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * Factory object for creating general rule reasoner instances. The
  * specific rule set and mode confriguration can be set either be method
  * calls to the created reasoner or though parameters in the configuration Model.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class GenericRuleReasonerFactory implements ReasonerFactory {
     

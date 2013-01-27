@@ -23,9 +23,6 @@ import com.hp.hpl.jena.shared.*;
 /**
  * Exception thrown when a lexical form does not match the stated
  * datatype.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class DatatypeFormatException extends JenaException 
 {

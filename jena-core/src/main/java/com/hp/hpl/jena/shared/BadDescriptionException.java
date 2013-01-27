@@ -21,8 +21,6 @@ package com.hp.hpl.jena.shared;
 import com.hp.hpl.jena.rdf.model.*;
 /**
     Exception to throw if a model (or graph) is a bad description
-    
- 	@author kers
 */
 public class BadDescriptionException extends JenaException
     {

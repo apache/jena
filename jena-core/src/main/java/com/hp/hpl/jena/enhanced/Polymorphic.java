@@ -21,10 +21,6 @@ package com.hp.hpl.jena.enhanced;
 
 /**
  * Abstract base class for all polymorphic RDF objects, especially enhanced node and enhanced graph.
- * 
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
- *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
- *         <a href="mailto:ian_dickinson@users.sourceforge.net">Ian Dickinson</a> (tidying up and comments)
  */
 public abstract class Polymorphic<T> {
     

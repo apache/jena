@@ -39,8 +39,6 @@ import com.hp.hpl.jena.graph.Node;
      
      <p>Synchronisation *is* required when updating the EnhNode sibling ring,
      but that doesn't happen here.
-     
-     @author kers
 */
 public class EnhancedNodeCache implements Cache
     {

@@ -29,11 +29,6 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
-
-/**
- *
- * @author  jjc
- */
 public class ARPString extends TaintImpl implements ALiteral {
 
     final static String RDFXMLLiteral =

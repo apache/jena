@@ -26,9 +26,6 @@ import java.io.*;
 
 
 /** Tutorial 8 - demonstrate Selector methods
- *
- * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2009-01-16 17:23:58 $'
  */
 public class Tutorial08 extends Object {
     

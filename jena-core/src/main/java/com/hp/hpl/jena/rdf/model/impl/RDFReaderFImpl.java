@@ -25,9 +25,6 @@ import java.util.Properties;
 import com.hp.hpl.jena.JenaRuntime ;
 
 /**
- *
- * @author  bwm
- * @version $Revision: 1.1 $ $Date: 2009-06-29 08:55:32 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 

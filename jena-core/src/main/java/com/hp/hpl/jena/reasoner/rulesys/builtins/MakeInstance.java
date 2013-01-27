@@ -31,9 +31,6 @@ import com.hp.hpl.jena.graph.*;
  * where X is the instance and P the property for which a temporary
  * value is required, T will be bound to the temp value (a bNode) and D is
  * an optional type cor the T value.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class MakeInstance extends BaseBuiltin {
 

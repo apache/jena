@@ -33,8 +33,6 @@ import com.hp.hpl.jena.util.iterator.*;
     the ModelMaker until that ModelMaker goes away, and maybe for longer
     (eg if the ModelMaker fronted a database or directory). And new models
     can be added to a ModelMaker.
-    
- 	@author kers
 */
 
 public interface ModelMaker extends ModelSource

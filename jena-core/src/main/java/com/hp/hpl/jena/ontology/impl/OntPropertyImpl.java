@@ -37,10 +37,6 @@ import com.hp.hpl.jena.util.iterator.*;
  * <p>
  * Implementation of the abstraction representing a general ontology property.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.4 2010-01-11 09:17:06 chris-dollin Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl

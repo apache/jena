@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 /**
  * Dummy implementation of the Builtin interface that specific
  * implementations can inherit from.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public abstract class BaseBuiltin implements Builtin {
 

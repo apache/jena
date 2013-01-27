@@ -31,9 +31,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * with optimized subclass/subproperty closure using the transitive graph caches.
  * Implements the container membership property rules using an optional
  * data scanning hook. Implements datatype range validation.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     

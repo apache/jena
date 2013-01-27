@@ -23,7 +23,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
     Exception to throw when a Statement or Resource (which don't have
     a useful common supertype, alas) don't have an associated model.
- 	@author kers
 */
 public class HasNoModelException extends JenaException
     {

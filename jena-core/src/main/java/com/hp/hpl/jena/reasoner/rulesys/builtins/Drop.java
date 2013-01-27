@@ -32,9 +32,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * from the graph but will not trigger further rule processing for
  * the removed triples. This makes it seriously non-monotonic but
  * useful for rewrite rules.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class Drop  extends BaseBuiltin  {

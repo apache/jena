@@ -31,9 +31,6 @@ import com.hp.hpl.jena.util.iterator.Filter;
  * A SafeGraph wraps a graph which might contain generalized RDF
  * triples and hides them from API queries so that consumers
  * of it are safe (but can use getRawGraph() to get back the unsafe graph.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 public class SafeGraph extends WrappedGraph implements Graph {
 

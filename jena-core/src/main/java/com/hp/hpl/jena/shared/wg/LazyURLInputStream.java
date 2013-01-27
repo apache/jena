@@ -27,7 +27,6 @@ import java.net.*;
  * In test cases we cannot open all the input files
  * while creating the test suite, but must defer the
  * opening until the test is actually run.
- * @author  jjc
  */
 class LazyURLInputStream extends LazyInputStream {
 

@@ -32,7 +32,6 @@ import java.util.*;
     also defines static methods for these operations that will work on any
     ClosableIterators.    
 <br>
-     @author kers 
 */
 
 public interface ExtendedIterator<T> extends ClosableIterator<T>

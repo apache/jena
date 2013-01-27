@@ -38,10 +38,6 @@ import com.hp.hpl.jena.vocabulary.*;
  * Encapsulates a description of the components of an ontology model, including the
  * storage scheme, reasoner and language profile.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public class OntModelSpec {
     // Constants

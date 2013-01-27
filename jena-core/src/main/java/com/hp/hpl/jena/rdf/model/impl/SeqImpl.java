@@ -26,8 +26,6 @@ import com.hp.hpl.jena.enhanced.*;
 
 /** An implementation of Seq
  *
- * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:32 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {

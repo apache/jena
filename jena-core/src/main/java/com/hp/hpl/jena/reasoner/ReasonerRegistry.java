@@ -41,9 +41,6 @@ import java.util.*;
  * <p>
  * It is up to each reasoner or some associated configuration system
  * to register it in this registry.  </p>
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class ReasonerRegistry {
 

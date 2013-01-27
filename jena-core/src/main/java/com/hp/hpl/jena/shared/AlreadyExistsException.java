@@ -23,8 +23,6 @@ package com.hp.hpl.jena.shared;
     Exception to throw when an attempt is made to create a named
     object (eg persistent model) when an object of that name already
     exists.
-    
- 	@author kers
 */
 public class AlreadyExistsException extends JenaException
     {

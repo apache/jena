@@ -28,9 +28,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * This is used in the inner loop of the interpreter and so is a pure data structure
  * not an abstract data type and assumes privileged access to the interpreter state.
  * </p>
- *  
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class TripleMatchFrame extends GenericTripleMatchFrame {
     

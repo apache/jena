@@ -31,9 +31,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * The TypeMapper provides a global registry of known datatypes.
  * The datatypes can be retrieved by their URI or from the java class
  * that is used to represent them.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-21 15:42:01 $
  */
 
 // Added extended set of class mappings and getTypeByClass

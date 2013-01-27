@@ -46,7 +46,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  *    model implementations.  It is intended use is as a base class from which
  *    model implemenations can be derived.</P>
  *
- * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
  */
 

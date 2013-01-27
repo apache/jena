@@ -30,10 +30,6 @@ package com.hp.hpl.jena.ontology;
  * in the ontology API, and the language definition for a given ontology profile.
  * For example, the arguments of an intersection class description should all be classes.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: LanguageConsistencyException.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public class LanguageConsistencyException
     extends OntologyException

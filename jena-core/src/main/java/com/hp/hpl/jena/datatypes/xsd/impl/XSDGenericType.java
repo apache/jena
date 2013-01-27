@@ -31,9 +31,6 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * run time conversion of union results. Left in for now during restructuring and
  * in case any existing user code expects this type - very unlikely.
  * </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDGenericType extends XSDDatatype {
 

@@ -35,10 +35,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * <p>
  * Encapsulates a class description representing a closed enumeration of individuals.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: EnumeratedClass.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface EnumeratedClass
     extends OntClass

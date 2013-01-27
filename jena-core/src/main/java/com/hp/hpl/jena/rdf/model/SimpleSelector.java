@@ -51,9 +51,6 @@ import com.hp.hpl.jena.graph.*;
     any subject, predicate or object constraints and the calls the <CODE>
     selects</CODE> method to test for any application supplied constraint.  The
     default <CODE>selects</CODE> method simply returns true.
-    
-    @author bwm
-    @version Release='$Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:38 $
 */
 
 public class SimpleSelector extends Object implements Selector {

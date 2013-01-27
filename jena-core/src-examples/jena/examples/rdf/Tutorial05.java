@@ -24,9 +24,6 @@ import com.hp.hpl.jena.util.FileManager;
 import java.io.*;
 
 /** Tutorial 5 - read RDF XML from a file and write it to standard out
- *
- * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2006-04-27 09:30:07 $'
  */
 public class Tutorial05 extends Object {
 

@@ -63,8 +63,7 @@ import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
  * used. In these cases ARP needs to remember the <code>rdf:nodeID</code>
  * usage through the file life time. </p>
  * <p>See <a href="/documentation/io/index.html">ARP documentation</a> for more information.</p>
- * @author  Jeremy Carroll with contributions from Simon Raboczi
- *   and Andrew Newman
+ * Includes contributions from Simon Raboczi and Andrew Newman
  */
 public class ARP implements ARPConfig
 {

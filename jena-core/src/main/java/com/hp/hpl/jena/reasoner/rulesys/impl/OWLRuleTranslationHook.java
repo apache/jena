@@ -29,9 +29,6 @@ import java.util.*;
  * A rule preprocessor that scans the data looking for interesection
  * definitions and augements the rule base by translations of the
  * intersection statement.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 

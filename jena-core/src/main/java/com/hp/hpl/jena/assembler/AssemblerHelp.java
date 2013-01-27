@@ -33,8 +33,6 @@ import com.hp.hpl.jena.vocabulary.*;
     the Assembler code, including the methods that expand a model to include the
     required inferences and to find the most specific type of a root in an
     assembler specification.
-    
-    @author kers
 */
 public class AssemblerHelp
     {

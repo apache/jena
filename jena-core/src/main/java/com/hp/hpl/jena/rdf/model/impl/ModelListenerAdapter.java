@@ -31,8 +31,6 @@ import java.util.*;
     This implementation only works for <code>ModelCom</code> models,
     because it relies on various service methods; this gives the model the
     opportunity to cache various mappings for efficiency.
-    
-    @author hedgehog
 */
 public class ModelListenerAdapter implements GraphListener
     {
