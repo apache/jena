@@ -32,10 +32,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * A exception that is thrown when an operation attempts to access an indexed
  * list element beyond the length of the list.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release ($Id: ListIndexException.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $)
  */
 public class ListIndexException
     extends JenaException

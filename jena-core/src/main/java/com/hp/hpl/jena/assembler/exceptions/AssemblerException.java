@@ -29,8 +29,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 /**
     Assembler Exception class: contains code shared by all the Assembler
     exceptions.
-    
-    @author kers
 */
 public class AssemblerException extends JenaException
     {

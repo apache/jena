@@ -27,7 +27,6 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 
 /**
- @author hedgehog
  */
 public class IteratorCollection
     {

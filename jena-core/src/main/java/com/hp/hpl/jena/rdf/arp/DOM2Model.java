@@ -35,9 +35,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
  * Transform DOM nodes of RDF.XML into Jena Models. Known not to work with Java
  * 1.4.1.
- * 
- * @author Jeremy J. Carroll
- * 
  */
 public class DOM2Model extends SAX2Model {
 	

@@ -31,9 +31,6 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * Copyright (c) 1999-2002 The Apache Software Foundation.
  * All rights reserved.
  * </p>
- *            
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDDurationType extends XSDAbstractDateTimeType {
     

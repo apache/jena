@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
     Personalities for Graphs. Possibly premature. Or is that NodePersonality?
-	@author jjc + kers
 */
 
 public class GraphPersonality extends Personality<RDFNode> 

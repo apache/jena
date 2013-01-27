@@ -35,9 +35,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * <p>
  * The triples in the tbox (if present) will also be included
  * in any query. Any of tbox or data graph are allowed to be null.</p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:57 $
  */
 public class TransitiveReasoner implements Reasoner {
 

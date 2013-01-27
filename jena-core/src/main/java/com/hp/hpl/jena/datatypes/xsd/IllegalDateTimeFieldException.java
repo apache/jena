@@ -24,9 +24,6 @@ import com.hp.hpl.jena.shared.*;
  * Exception thrown when attempting to access a field of an XSDDateTime 
  * object that is not legal for the current date/time type. For example,
  * accessing the day from a gYearMonth object.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
  */
 public class IllegalDateTimeFieldException extends JenaException {
     

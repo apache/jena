@@ -28,9 +28,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.enhanced.*;
 
 /** An implementation of Literal.
- *
- * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2010-01-19 10:06:17 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   

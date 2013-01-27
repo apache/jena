@@ -26,9 +26,6 @@ import java.util.*;
  * Represents one input left of a join node. The queue points to 
  * a sibling queue representing the other leg which should be joined
  * against.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RETEQueue implements RETESinkNode, RETESourceNode {
     

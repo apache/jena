@@ -23,9 +23,6 @@ import com.hp.hpl.jena.vocabulary.*;
 
 
 /** Tutorial 3 Statement attribute accessor methods
- *
- * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
 public class Tutorial03 extends Object {
     public static void main (String args[]) {

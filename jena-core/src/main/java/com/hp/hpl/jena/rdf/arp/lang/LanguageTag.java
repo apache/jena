@@ -28,7 +28,6 @@ import java.util.Vector;
 
 /**
  * RFC 3066, "Tags for the Identification of Languages".
- * @author jjc
  */
 public class LanguageTag implements LanguageTagCodes {
     String tags[];

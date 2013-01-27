@@ -22,7 +22,6 @@ import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception thrown if an Alt has no default statement.
- 	@author kers
 */
 public class AltHasNoDefaultException extends JenaException
     {

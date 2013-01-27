@@ -25,9 +25,6 @@ import com.hp.hpl.jena.graph.*;
 /**
  * Arrange that all backchaining goals should be tabled (aka memoized)
  * by the LP engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class TableAll extends BaseBuiltin {
 

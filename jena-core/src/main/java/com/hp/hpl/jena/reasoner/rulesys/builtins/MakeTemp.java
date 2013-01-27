@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Create a new anonymous node and bind it to the each argument
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class MakeTemp extends BaseBuiltin {
 

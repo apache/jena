@@ -20,9 +20,6 @@ package com.hp.hpl.jena.datatypes.xsd.impl;
 
 /**
  * Datatype template used to define XSD int types
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XSDByteType extends XSDBaseNumericType {
 

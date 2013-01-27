@@ -38,10 +38,6 @@ package com.hp.hpl.jena.ontology;
  * inverse functional datatype properties in OWL Full may have to switch
  * off strict checking in <code>OntModel</code> (see {@link OntModel#setStrictMode(boolean)}.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: InverseFunctionalProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface InverseFunctionalProperty
     extends ObjectProperty

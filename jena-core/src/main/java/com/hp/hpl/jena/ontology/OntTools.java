@@ -42,8 +42,6 @@ import com.hp.hpl.jena.util.iterator.Filter;
  * production code. Please send any comments or suggestions to the
  * <a href="http://tech.groups.yahoo.com/group/jena-dev">Jena support email list</a>.
  * </p>
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
  */
 public class OntTools
 {

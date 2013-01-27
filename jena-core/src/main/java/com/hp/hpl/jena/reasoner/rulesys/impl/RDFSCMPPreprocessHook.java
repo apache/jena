@@ -30,9 +30,6 @@ import java.util.*;
 /**
  * A rule preprocessor that scans all supplied data looking for instances
  * of container membership properties and adds those to the deductions set.  
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
     protected static String memberPrefix = RDF.getURI() + "_";

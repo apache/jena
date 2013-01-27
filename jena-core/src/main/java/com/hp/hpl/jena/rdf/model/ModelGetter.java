@@ -28,8 +28,6 @@ package com.hp.hpl.jena.rdf.model;
     deliver an "appropriate" model for the URL, however - whatever they return
     should be strongly related to the RDF which might, at some time or another,
     be retrieved from that URL.
-    
-    @author kers
 */
 public interface ModelGetter
     {

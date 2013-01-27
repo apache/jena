@@ -27,9 +27,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * a plain literal which is the concatenation of all the preceeding arguments.
  * For a literal argument we use its lexcical form, for a URI argument its URI,
  * for a bNode argument its internal ID.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 public class StrConcat extends BaseBuiltin {
 

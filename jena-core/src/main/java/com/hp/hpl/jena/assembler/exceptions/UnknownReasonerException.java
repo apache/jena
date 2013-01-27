@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
     Exception used to report an unknown reasoner factory name.
-    @author kers
 */
 public class UnknownReasonerException extends AssemblerException
     {

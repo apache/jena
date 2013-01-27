@@ -27,8 +27,6 @@ import com.hp.hpl.jena.util.iterator.*;
  *    in this case RDF Resource, and have a <CODE>close()</CODE> method
  *    that should be called to free resources if the caller does not
  *    complete the iteration.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
  */
 public interface ResIterator extends ExtendedIterator<Resource> 
     {

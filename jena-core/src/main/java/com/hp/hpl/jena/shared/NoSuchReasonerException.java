@@ -21,8 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     NoSuchReasonerException - the exception to throw when looking up a
     reasoner fails (in ModelSpec construction).
-    
-    @author kers
 */
 public class NoSuchReasonerException extends JenaException
     {

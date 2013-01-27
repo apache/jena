@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception to throw if there is no writer for the specified language.
- 	@author kers
 */
 public class NoWriterForLangException extends JenaException
     {

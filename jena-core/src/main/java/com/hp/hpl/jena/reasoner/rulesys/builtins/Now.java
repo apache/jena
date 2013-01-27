@@ -28,9 +28,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
 
 /**
  * Bind the first arg to the current date time in the current locale and timezone.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
  */
 public class Now extends BaseBuiltin {
 

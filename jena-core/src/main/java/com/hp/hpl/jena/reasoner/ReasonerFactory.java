@@ -24,9 +24,6 @@ import com.hp.hpl.jena.rdf.model.*;
  * The interface through which a reasoner (inference engine) can be
  * instantiated. Instances of this are registered with the global
  * ReasonerRegistry.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public interface ReasonerFactory {
 

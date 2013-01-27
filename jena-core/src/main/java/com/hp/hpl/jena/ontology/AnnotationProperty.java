@@ -35,10 +35,6 @@ import com.hp.hpl.jena.rdf.model.*;
  * used in property expressions. There is no guarantee that a given language will
  * have any annotation properties.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: AnnotationProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface AnnotationProperty
     extends OntProperty, Property

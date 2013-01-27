@@ -30,8 +30,6 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
 /**
  * An extension to a standard map that supports one-to-many mappings: that is, there
  * may be zero, one or many values corresponding to a given key.
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
  */
 public class OneToManyMap<From, To> implements Map<From, To>
 {

@@ -25,9 +25,6 @@ import com.hp.hpl.jena.util.iterator.*;
  * Some simple helper methods used when working with Finders,
  * particularly to compose them into cascade sequences.
  * The cascades are designed to cope with null Finders as well.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class FinderUtil {
     

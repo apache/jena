@@ -34,9 +34,6 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * include schema information then the caches generated at 
  * schema binding stage are reused here. Otherwise the caches
  * are regenerated.</p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:57 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 

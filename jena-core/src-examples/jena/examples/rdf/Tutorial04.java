@@ -22,9 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /** Tutorial 4 - create a model and write it in XML form to standard out
- *
- * @author  bwm - updated by Kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
 public class Tutorial04 extends Object {
     

@@ -32,9 +32,6 @@ import java.util.*;
  * <li>avoids any guard clauses which would break the find() contract</li>
  * <li>omits inheritance of range implications for XSD datatype ranges</li>
  * </UL>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 

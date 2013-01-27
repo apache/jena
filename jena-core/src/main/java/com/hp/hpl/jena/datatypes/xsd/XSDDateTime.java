@@ -27,9 +27,6 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * Represent an XSD date/time value. Rather than have a separate type for each
  * legal date/time value combination this is a combination type than does runtime
  * checks whether a given field is legal in the current circumstances.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-09-25 09:58:14 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */

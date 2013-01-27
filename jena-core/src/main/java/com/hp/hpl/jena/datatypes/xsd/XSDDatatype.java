@@ -50,9 +50,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel ;
 /**
  * Representation of an XSD datatype based on the Xerces-2
  * XSD implementation.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:56:03 $
  */
 public class XSDDatatype extends BaseDatatype {
 

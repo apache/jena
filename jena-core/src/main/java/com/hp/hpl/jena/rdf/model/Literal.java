@@ -43,9 +43,6 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * will be stored in the lexical form given by its <CODE>toString</CODE> method. 
  * Factory objects, provided by the application, are needed in that case to covert
  * the lexical form back into the appropriate object type.</p>
- * 
- * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2010-01-11 10:03:42 $
  */
 public interface Literal extends RDFNode {
     

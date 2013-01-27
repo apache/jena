@@ -23,7 +23,6 @@ import com.hp.hpl.jena.graph.*;
 /**
     Superclass of exceptions thrown when attempting to add/delete on a
     readonly graph/model.
- 	@author kers
 */
 
 public class UpdateDeniedException extends JenaException

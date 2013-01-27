@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 /**
  * Variant of the normal TriplePattern object which can be updated in place
  * to avoid store turn over. This is specific to the LP system.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class MutableTriplePattern extends TriplePattern {
 

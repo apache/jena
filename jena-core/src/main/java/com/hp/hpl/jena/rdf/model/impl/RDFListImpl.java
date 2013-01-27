@@ -41,10 +41,6 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Standard implementation the list abstraction from rdf.model.
  * </p>
- * 
- * @author Ian Dickinson, HP Labs 
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: RDFListImpl.java,v 1.2 2009-10-06 13:04:45 ian_dickinson Exp $
  */
 public class RDFListImpl
     extends ResourceImpl

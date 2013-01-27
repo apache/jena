@@ -26,7 +26,6 @@ package com.hp.hpl.jena.rdf.arp;
 
 /**
  * Error numbers used by ARP.
- * @author jjc
  */
 public interface ARPErrorNumbers {
     /** Used as ErrorMode to not report an error.

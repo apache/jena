@@ -27,8 +27,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The default error handler for I/O.
  * This uses log4j as its utility.
- * @author  jjc,bwm
- * @version $Revision: 1.1 $ $Date: 2009-06-29 08:55:32 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 

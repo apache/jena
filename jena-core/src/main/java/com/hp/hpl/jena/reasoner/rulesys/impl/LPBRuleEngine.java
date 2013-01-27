@@ -33,9 +33,6 @@ import java.util.*;
  * instance. The shared instance holds any common result caching, rule store
  * and global state data. However, all the processing is done by instances
  * of the LPInterpreter - one per query.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-05-08 19:38:22 $
  */
 public class LPBRuleEngine {
     

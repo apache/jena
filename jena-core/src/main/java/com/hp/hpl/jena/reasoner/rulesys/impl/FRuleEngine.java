@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The processing engine for forward production rules. It neeeds to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class FRuleEngine implements FRuleEngineI {
     

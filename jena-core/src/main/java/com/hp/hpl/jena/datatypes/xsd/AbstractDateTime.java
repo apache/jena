@@ -25,13 +25,10 @@ package com.hp.hpl.jena.datatypes.xsd;
  * using an int array. These wrapper classes just provide more
  * convenient access to the date values.
  * <p>
- * This class includees code derived from Xerces 2.6.0 
+ * This class includes code derived from Xerces 2.6.0 
  * Copyright (c) 1999-2002 The Apache Software Foundation.
  * All rights reserved.
  * </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2009-09-01 08:24:41 $
  */
 public class AbstractDateTime implements Comparable<AbstractDateTime> {
 

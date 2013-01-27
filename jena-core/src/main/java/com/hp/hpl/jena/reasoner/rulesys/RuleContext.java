@@ -27,9 +27,6 @@ import com.hp.hpl.jena.graph.*;
  * to the stack of procedural builtins. This gives access
  * to the triggering rule, the variable bindings and the set of
  * currently known triples. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public interface RuleContext {
     /**

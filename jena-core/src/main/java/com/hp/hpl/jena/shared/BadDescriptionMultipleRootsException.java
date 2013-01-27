@@ -23,8 +23,6 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
      Exception to throw if a Description contains multiple roots of
      a specified type.
-     
-     @author kers
 */
 public class BadDescriptionMultipleRootsException 
     extends BadDescriptionException

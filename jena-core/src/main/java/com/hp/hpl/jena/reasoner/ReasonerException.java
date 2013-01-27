@@ -25,9 +25,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * Subclasses of this exception may be used to report more specific problems.
  * <p>In the future there may be a top level JenaException which this exception
  * should extend.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class ReasonerException extends JenaException {
     

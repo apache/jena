@@ -23,7 +23,6 @@ import java.util.Iterator;
 /**
     An iterator that consumes an underlying iterator and maps its results before
     delivering them; supports remove if the underlying iterator does.
-    @author jjc + kers
 */
 
 public class Map1Iterator<From, To> extends NiceIterator<To> implements ClosableIterator<To>

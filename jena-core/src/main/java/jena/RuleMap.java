@@ -48,9 +48,6 @@ import java.io.*;
  * to be added to the deductions graph even if they are already known (for use
  * in deductions only mode). 
  * </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:51 $
  */
 public class RuleMap {
     static { setLog4jConfiguration() ; }

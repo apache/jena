@@ -25,8 +25,6 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
     A listener that ignores everything you tell it; intended as a base class
     or an identity element. Each method is implemented as {}.
-    
- 	@author kers
 */
 public class NullListener implements ModelChangedListener
     {

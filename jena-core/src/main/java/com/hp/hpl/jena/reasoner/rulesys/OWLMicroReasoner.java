@@ -36,9 +36,6 @@ import java.util.*;
  * </ul>
  * There is some experimental support for the cheaper class restriction handlingly which
  * should not be relied on at this point.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class OWLMicroReasoner extends GenericRuleReasoner implements Reasoner {
 

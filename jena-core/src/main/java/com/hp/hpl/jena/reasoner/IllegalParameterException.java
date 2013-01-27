@@ -22,9 +22,6 @@ package com.hp.hpl.jena.reasoner;
  * Exception used to to signal that a configuration parameter was used
  * (typically in a setParameter call) that was not understood - either
  * because it was not a recognized parameter URI or its value range was incorrect.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class IllegalParameterException extends ReasonerException {
 

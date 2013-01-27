@@ -28,9 +28,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
  * Use arbitrary SAX input to Jena. See <a
  * href="/documentation/io/sax.html">ARP SAX documentation</a>.
- *
- * @author Jeremy J. Carroll
- *
  */
 public class SAX2Model extends SAX2RDF {
 

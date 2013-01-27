@@ -24,9 +24,6 @@ import com.hp.hpl.jena.util.FileManager;
 import java.io.*;
 
 /** Tutorial 9 - demonstrate graph operations
- *
- * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2005-10-06 17:49:05 $'
  */
 public class Tutorial09 extends Object {
     

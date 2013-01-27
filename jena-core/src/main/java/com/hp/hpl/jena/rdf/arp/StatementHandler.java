@@ -28,8 +28,6 @@ package com.hp.hpl.jena.rdf.arp;
  * Each triple in the input file causes a call on one of the statement methods.
  * The same triple may occur more than once in a file, causing repeat calls
  * to the method.
- *
- * @author jjc
  */
 public interface StatementHandler  {
 

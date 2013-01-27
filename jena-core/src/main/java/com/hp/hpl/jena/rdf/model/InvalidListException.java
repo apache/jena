@@ -32,10 +32,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * A exception that is thrown when an operation is attempted on a list that is
  * not well-formed, and is being processed in strict mode.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release ($Id: InvalidListException.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $)
  */
 public class InvalidListException
     extends JenaException

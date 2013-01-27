@@ -23,8 +23,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
     Exception used to report that a transaction was aborted when loading
     content into a model.
-    
-    @author kers
 */
 public class TransactionAbortedException extends AssemblerException
     {    

@@ -60,9 +60,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * Jena 2.4 onwards</strong>. If this change would be problematic, please send email to the
  * <a href="http://groups.yahoo.com/group/jena-dev">Jena support
  * list</a>.</p>
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {

@@ -21,9 +21,6 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
 /**
  * A set of constants used to record state information in the
  * backchaining rule interepreter. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class StateFlag {
     

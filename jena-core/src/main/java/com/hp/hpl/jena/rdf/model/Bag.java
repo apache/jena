@@ -31,9 +31,6 @@ package com.hp.hpl.jena.rdf.model;
  * iterator returned through this interface, all the other members with
  * higher ordinals are renumbered using an implementation dependent
  * algorithm.</p>
- *
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
  */
 
 

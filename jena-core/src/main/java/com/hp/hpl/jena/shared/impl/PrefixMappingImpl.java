@@ -31,8 +31,6 @@ import org.apache.xerces.util.XMLChar;
     An implementation of PrefixMapping. The mappings are stored in a pair
     of hash tables, one per direction. The test for a legal prefix is left to
     xerces's XMLChar.isValidNCName() predicate.
-        
- 	@author kers
 */
 public class PrefixMappingImpl implements PrefixMapping
     {

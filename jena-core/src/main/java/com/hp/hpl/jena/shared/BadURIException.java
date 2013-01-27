@@ -32,8 +32,6 @@ package com.hp.hpl.jena.shared;
     (This one is an unchecked
     exception, so we don't litter our code with try-catch blocks or throws
     declarations.)
-    
- 	@author kers
 */
 public class BadURIException extends JenaException
     {

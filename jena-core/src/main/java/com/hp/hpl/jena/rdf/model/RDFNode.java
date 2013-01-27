@@ -24,8 +24,6 @@ import com.hp.hpl.jena.graph.FrontsNode;
     Interface covering RDF resources and literals. Allows probing whether a
     node is a literal/[blank, URI]resource, moving nodes from model to model,
     and viewing them as different Java types using the .as() polymorphism.
-
-    @author bwm, kers
 */
 public interface RDFNode extends FrontsNode
     {

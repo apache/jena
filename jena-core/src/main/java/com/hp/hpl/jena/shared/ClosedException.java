@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
     Exception that may be thrown if an operation is attempted on a closed graph.
- 	@author kers
 */
 public class ClosedException extends JenaException
     {

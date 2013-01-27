@@ -26,9 +26,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The final node in a RETE graph. It runs the builtin guard clauses
  * and then, if the token passes, executes the head operations.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RETETerminal implements RETESinkNode {
 

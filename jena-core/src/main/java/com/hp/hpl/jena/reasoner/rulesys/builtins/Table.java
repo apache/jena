@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Arrange that the given predicate is tabled by the backchaining engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class Table extends BaseBuiltin {
 

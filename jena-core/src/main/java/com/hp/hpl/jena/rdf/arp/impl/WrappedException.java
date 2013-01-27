@@ -30,8 +30,6 @@ import org.xml.sax.SAXException;
 /**
  * Wrap some other exception - being wise to SAXExceptions which
  * wrap something else.
- * @author  jjc
- 
  */
 class WrappedException extends java.lang.RuntimeException {
     /**

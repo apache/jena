@@ -22,7 +22,6 @@ import com.hp.hpl.jena.shared.JenaException;
 
 /**
     Exception to throw when the index of a sequence is not in range.
- 	@author kers
 */
 public class SeqIndexBoundsException extends JenaException
     {

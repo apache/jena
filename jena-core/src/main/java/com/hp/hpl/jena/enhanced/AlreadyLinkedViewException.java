@@ -23,7 +23,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
     Exception to throw when adding a view to a Polymorphic discovers that
     the view to add is already on a ring.
- 	@author kers
 */
 public class AlreadyLinkedViewException extends JenaException
     {

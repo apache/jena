@@ -26,9 +26,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext;
  * Builtin which concatenates a set of strings to generate a new URI. 
  * It binds the last argument to a URI whose spelling is 
  * the concatenation of the lexical form of all the preceeding arguments.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 public class UriConcat extends StrConcat {
 

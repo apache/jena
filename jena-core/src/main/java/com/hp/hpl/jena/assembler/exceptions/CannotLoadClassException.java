@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
     Exception used to report a faulire to load a class.
-    @author kers
 */
 public class CannotLoadClassException extends AssemblerException
     {

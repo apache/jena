@@ -26,9 +26,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 /**
  * Implementation of the binding environment interface for use in LP
  * backward rules.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class LPBindingEnvironment implements BindingEnvironment {
     

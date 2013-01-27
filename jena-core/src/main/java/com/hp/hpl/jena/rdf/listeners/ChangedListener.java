@@ -25,8 +25,6 @@ import java.util.*;
 /**
     Class that merely notes that a change has occurred. The only method its user
     should be interested in is <code>hasChanged()</code>.
-    
- 	@author kers
 */
 public class ChangedListener implements ModelChangedListener
     {

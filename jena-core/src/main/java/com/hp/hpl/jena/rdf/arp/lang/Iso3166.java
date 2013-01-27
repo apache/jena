@@ -34,8 +34,6 @@ import java.util.Map;
  * This was updated on 24th July 2001 from
  * <a href="http://www.din.de/gremien/nas/nabd/iso3166ma/codlstp1/db_en.html">
  * http://www.din.de/gremien/nas/nabd/iso3166ma/codlstp1/db_en.html</a>
- *
- * @author jjc
  */
 public class Iso3166  {
 

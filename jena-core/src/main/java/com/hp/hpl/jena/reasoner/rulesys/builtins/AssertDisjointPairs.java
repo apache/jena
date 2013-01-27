@@ -25,9 +25,6 @@ import java.util.*;
 
 /**
  * Assert the n^2 differtFrom pairs from a distinctMembers list
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class AssertDisjointPairs extends BaseBuiltin {
 

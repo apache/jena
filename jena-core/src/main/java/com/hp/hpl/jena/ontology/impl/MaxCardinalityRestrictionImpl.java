@@ -33,10 +33,6 @@ import com.hp.hpl.jena.ontology.*;
  * <p>
  * Implementation of the max cardinality restriction abstraction.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: MaxCardinalityRestrictionImpl.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class MaxCardinalityRestrictionImpl
     extends RestrictionImpl

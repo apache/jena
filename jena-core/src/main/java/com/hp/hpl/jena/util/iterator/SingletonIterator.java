@@ -20,8 +20,6 @@ package com.hp.hpl.jena.util.iterator;
 
 /**
  * A ClosableIterator that contains only one element
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  */
 public class SingletonIterator<T> extends NiceIterator<T> implements ExtendedIterator<T> {
     

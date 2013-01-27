@@ -25,9 +25,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /**
  * This interface collects together the operations on the InfGraph which
  * are needed to support the forward rule engine. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     

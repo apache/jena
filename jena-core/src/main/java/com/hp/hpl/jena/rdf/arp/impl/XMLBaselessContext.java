@@ -23,10 +23,6 @@ import org.xml.sax.SAXParseException;
 import org.apache.jena.iri.IRI;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 
-/**
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- * 
- */
 public class XMLBaselessContext extends AbsXMLContext implements ARPErrorNumbers {
 
     final int errno;

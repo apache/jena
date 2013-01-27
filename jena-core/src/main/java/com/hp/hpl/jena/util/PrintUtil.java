@@ -34,8 +34,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * 
  * <p>updated by Chris March 2004 to use a PrefixMapping rather than the
  * specialised tables.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  */
 public class PrintUtil {
     

@@ -33,10 +33,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * A exception that is thrown when an operation is attempted on an empty (nil)
  * list that actually requires a list of length one or more.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release ($Id: EmptyListException.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $)
  */
 public class EmptyListException
     extends JenaException

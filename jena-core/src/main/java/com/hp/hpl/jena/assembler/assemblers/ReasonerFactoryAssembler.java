@@ -40,8 +40,6 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 <p>
     Thanks to Adam Cimarosti for provoking this code and providing an
     example implementation.
-
-    @author kers
 */
 public class ReasonerFactoryAssembler extends AssemblerBase implements Assembler
     {

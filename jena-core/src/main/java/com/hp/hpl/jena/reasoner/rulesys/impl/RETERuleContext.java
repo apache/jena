@@ -26,9 +26,6 @@ import com.hp.hpl.jena.graph.*;
 /**
  * An implementation of the generic RuleContext for use in the RETE implementation.
  * The RuleContext is used to supply context information to the builtin operations.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RETERuleContext implements RuleContext {
     

@@ -21,7 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     Exception to throw when an assertion fails. Probably obsolete in 
     Java's with the assert statement ...
- 	@author kers
 */
 public class AssertionFailureException extends JenaException
     {

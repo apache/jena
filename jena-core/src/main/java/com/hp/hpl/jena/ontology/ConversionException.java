@@ -32,10 +32,6 @@ package com.hp.hpl.jena.ontology;
  * in the language {@linkplain Profile profile} of the language attached to the
  * ontology model, or because the pre-conditions for the conversion are not met. 
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ConversionException.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public class ConversionException 
     extends OntologyException

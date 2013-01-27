@@ -24,10 +24,6 @@ import java.text.Normalizer;
  * Some support for the Character Model Recommendation
  * from the W3C (currently in second last call working 
  * draft).
- * 
- * @author Jeremy Carroll
- *
- * 
  */
 public class CharacterModel {
 	static private final boolean SWITCH_OFF = false;

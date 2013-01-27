@@ -23,8 +23,6 @@ import java.util.NoSuchElementException;
 /**
  * A tokenizer, similar to java's StringTokenizer but allows for quoted
  * character strings which can include other separators.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  */
 public class Tokenizer {
     

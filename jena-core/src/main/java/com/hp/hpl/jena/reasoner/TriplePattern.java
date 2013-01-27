@@ -40,9 +40,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * <p>
  * It would make more sense to have TriplePattern subclass Triple
  * but that is final for some strange reason.</p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class TriplePattern implements ClauseEntry {
 

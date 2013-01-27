@@ -25,9 +25,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Test if the two argument lists contain the same semantic elements.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class ListEqual extends BaseBuiltin {
 

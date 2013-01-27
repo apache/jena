@@ -24,8 +24,6 @@ import com.hp.hpl.jena.graph.TripleBoundary;
 /**
     StatementBoundaryBase - a base class for StatementBoundarys, with
     built-in converstion to triples and a continueWith as well as a stopAt.
-    
-    @author kers
 */
 public abstract class StatementBoundaryBase implements StatementBoundary
     {

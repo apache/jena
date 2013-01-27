@@ -24,8 +24,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 /**
     A RuleSet wraps a list of rules.
-    
-    @author kers
  */
 public class RuleSet
     {

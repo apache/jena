@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Check that the two args are semantically equal.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-04 13:37:51 $
  */
 public class Equal extends BaseBuiltin {
 
