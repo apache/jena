@@ -48,7 +48,8 @@ import static com.hp.hpl.jena.reasoner.rulesys.Util.makeIntNode ;
  * {@link com.hp.hpl.jena.sparql.engine.index.LinearIndex} classes. Also tests
  * that the {@link com.hp.hpl.jena.sparql.engine.index.IndexFactory} instantiates
  * the correct type of index depending on the data.
- * @author Paul Gearon
+ * 
+ * Contribution from Paul Gearon
  */
 public class TestIndexTable {
 

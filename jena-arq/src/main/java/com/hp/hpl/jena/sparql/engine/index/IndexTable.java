@@ -25,7 +25,8 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding;
  * {@link com.hp.hpl.jena.sparql.engine.binding.Binding}s when
  * {@link com.hp.hpl.jena.sparql.engine.iterator.QueryIterMinus} is trying to determine
  * which Bindings need to be removed.
- * @author Paul Gearon
+ * <p>
+ * Contribution from Paul Gearon
  */
 public interface IndexTable {
 

@@ -23,8 +23,6 @@ import java.net.IDN;
  * A wrapper around java.net.IDN to avoid a bug when checking result.
  * It looks like the IDN is apply checks before fully converting, so this defers
  * a similar check until the end.
- * 
- * @author Damian Steer <d.steer@bris.ac.uk>
  */
 public class IDNP {
     
