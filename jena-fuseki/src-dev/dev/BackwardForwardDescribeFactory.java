@@ -35,10 +35,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-*
-* @author Damian Steer <d.steer@bris.ac.uk>
-*/
 public class BackwardForwardDescribeFactory implements DescribeHandlerFactory {
 
     final static Logger log = LoggerFactory.getLogger(BackwardForwardDescribeFactory.class);

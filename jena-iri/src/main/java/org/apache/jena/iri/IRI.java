@@ -53,9 +53,6 @@ import org.apache.jena.iri.impl.Main ;
  * the IRI must be passed to {@link IRIFactoryI#create(IRI)}
  * of a different appropriately configured {@link IRIFactory}.
  * </p>
- * 
- * @author Jeremy J. Carroll
- *
  */
 abstract public class IRI  extends AbsIRIFactoryImpl implements IRIFactoryI, IRIRelativize {
 

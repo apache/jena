@@ -27,7 +27,8 @@ import com.hp.hpl.jena.sparql.engine.index.HashIndexTable.MissingBindingExceptio
 /**
  * Creates {@link com.hp.hpl.jena.sparql.engine.index.IndexTable}s for use by
  * {@link com.hp.hpl.jena.sparql.engine.iterator.QueryIterMinus}.
- * @author Paul Gearon
+ * <p>
+ * Contribution from Paul Gearon
  */
 public class IndexFactory {
 
