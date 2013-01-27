@@ -36,12 +36,7 @@ public abstract class TestDyadic extends AbstractTestGraph
 	public static TestSuite suite()
     	{ return new TestSuite( TestDyadic.class ); }
     
-	
-	// Override and don't execute.
-	@Override
-	public void testEventDeleteByFind() {}
-	
-	
+
 	static private ExtendedIterator<String> things( final String x ) 
 		{
 		return new NiceIterator<String>()
@@ -71,7 +66,7 @@ public abstract class TestDyadic extends AbstractTestGraph
         Graph g = Factory.createGraphMem(), h = Factory.createGraphMem();
         Dyadic d = new Dyadic( g, h )
             {
-            @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m ) { return null; }
+            @Override protected ExtendedIterator<Triple> _graphBaseFind( TripleMatch m ) { return null; }
             };
         assertSame( g, d.getL() );
         assertSame( h, d.getR() );
