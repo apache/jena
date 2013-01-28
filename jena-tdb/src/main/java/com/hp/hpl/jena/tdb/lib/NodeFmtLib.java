@@ -19,6 +19,7 @@
 package com.hp.hpl.jena.tdb.lib;
 
 import org.apache.jena.atlas.lib.Chars ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.RiotChars ;
@@ -66,7 +67,7 @@ public class NodeFmtLib
 
     
     /** Encoding of a node so it can be reconstructed */ 
-    public static String serialize(Node n, String base, PrefixMap prefixMap)
+    public static String serialize(Node n, String base, LightweightPrefixMap prefixMap)
     {
         // See also Nodec.
         // See also OutputLangUtils - merge and this is a buffering call.
@@ -105,7 +106,7 @@ public class NodeFmtLib
     
     // c.f. FmtUtils.stringForURI
     // Uses PrefixMap, not PrefixMapping
-    static String stringForURI(String uri, String base, PrefixMap mapping)
+    static String stringForURI(String uri, String base, LightweightPrefixMap mapping)
     {
         if ( mapping != null )
         {
