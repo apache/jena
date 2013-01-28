@@ -30,7 +30,7 @@ import org.apache.jena.atlas.io.OutputUtils ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
 
@@ -179,7 +179,7 @@ public class OutputLangUtils
     {
         if ( prologue != null )
         {
-            PrefixMap pmap = prologue.getPrefixMap() ;
+            LightweightPrefixMap pmap = prologue.getPrefixMap() ;
             if (  pmap != null )
             {
                 String pname = prefixFor(iriStr, pmap) ;
@@ -208,7 +208,7 @@ public class OutputLangUtils
         print(out,">") ;
     }
 
-    private static String prefixFor(String uri, PrefixMap mapping)
+    private static String prefixFor(String uri, LightweightPrefixMap mapping)
     {
         if ( mapping == null ) return null ;
 

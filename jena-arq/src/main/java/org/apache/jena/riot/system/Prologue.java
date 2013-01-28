@@ -30,7 +30,7 @@ public class Prologue
     protected boolean seenBaseURI = false ;     // Implicit or set.
 //    protected String baseURI = null ;
 
-    protected PrefixMap prefixMap = null ;
+    protected LightweightPrefixMap prefixMap = null ;
     protected IRIResolver resolver = null ;
     
     public static Prologue create(String base, PrefixMapping pmapping)
@@ -55,7 +55,7 @@ public class Prologue
         this.resolver = null ;
     }
     
-    public Prologue(PrefixMap pmap, IRIResolver resolver)
+    public Prologue(LightweightPrefixMap pmap, IRIResolver resolver)
     {
         this.prefixMap = pmap ; 
         this.resolver = resolver ;
@@ -82,13 +82,13 @@ public class Prologue
             resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;
     }
     
-    public Prologue sub(PrefixMap newMappings)  { return sub(newMappings, null) ; }
+    public Prologue sub(LightweightPrefixMap newMappings)  { return sub(newMappings, null) ; }
     public Prologue sub(String base)            { return sub(null, base) ; }
     
-    public Prologue sub(PrefixMap newMappings, String base)
+    public Prologue sub(LightweightPrefixMap newMappings, String base)
     {
         // New prefix mappings
-        PrefixMap ext = getPrefixMap() ;
+        LightweightPrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
             ext = new PrefixMap2(ext) ;
         // New base.
@@ -158,9 +158,9 @@ public class Prologue
     }   
 
     /** Return the prefix map from the parsed query */ 
-    public PrefixMap getPrefixMap() { return prefixMap ; }
+    public LightweightPrefixMap getPrefixMap() { return prefixMap ; }
     /** Set the mapping */
-    public void setPrefixMapping(PrefixMap pmap ) { prefixMap = pmap ; }
+    public void setPrefixMapping(LightweightPrefixMap pmap ) { prefixMap = pmap ; }
 
 //    /** Reverse lookup of a URI to get a prefix */
 //    public String getPrefix(String uriStr)

@@ -22,10 +22,17 @@ import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 import org.junit.runners.Suite.SuiteClasses ;
 
+/**
+ * Test suite for RIOT system
+ *
+ */
 @RunWith(Suite.class)
 @SuiteClasses({ 
     TestChecker.class
+    
+    // Prefix Map implementations
     , TestPrefixMap.class
+    , TestFastPrefixMap.class
 })
 
 public class TS_RiotSystem

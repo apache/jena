@@ -26,6 +26,7 @@ import java.util.List ;
 import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.RiotException ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
@@ -70,7 +71,7 @@ public class TestBindingStreams extends BaseTest
     static Binding bb2 = build("(?a 'a\"b\"c') (?b 1)");
     static Binding bb3 = build("(?a 'aΩc') (?b 1)");
     
-    static PrefixMap pmap = new PrefixMap() ;
+    static LightweightPrefixMap pmap = new PrefixMap() ;
     static {
         pmap.add(":", "http://example/") ;
     }
@@ -136,7 +137,7 @@ public class TestBindingStreams extends BaseTest
     
     static void testWriteRead(Binding ... bindings) { testWriteRead(null, bindings) ; }
     
-    static void testWriteRead(PrefixMap prefixMap, Binding ... bindings)
+    static void testWriteRead(LightweightPrefixMap prefixMap, Binding ... bindings)
     {
         ByteArrayOutputStream out = new ByteArrayOutputStream() ;
         BindingOutputStream output = new BindingOutputStream(out, prefixMap) ;

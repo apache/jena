@@ -23,6 +23,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean ;
 
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.StreamRDF;
 
@@ -47,7 +48,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
     private AtomicBoolean started = new AtomicBoolean(false) ;
     private AtomicBoolean finished = new AtomicBoolean(false) ;
     private T next = null;
-    private PrefixMap prefixes = new PrefixMap();
+    private LightweightPrefixMap prefixes = new PrefixMap();
     private String baseIri;
 
     /**
@@ -203,7 +204,7 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
      * Gets the prefix map which contains the prefixes seen so far in the stream
      * @return Prefix Map
      */
-    public PrefixMap getPrefixes() {
+    public LightweightPrefixMap getPrefixes() {
         return this.prefixes;
     }
 
