@@ -115,7 +115,7 @@ public class StageMatchTuple extends RepeatApplyIterator<BindingNodeId>
             // chosen ends in G so same triples are adjacent 
             // in a union query.
             // If any slot is defined, then the index will be X??G.
-            // if no slot is defined, then the index will be X???G.
+            // if no slot is defined, then the index will be ???G.
             //  See TupleTable.scanAllIndex that ensures the latter.
             //  The former assumes indexes are either G... or ...G.
             //  No G part way through.
