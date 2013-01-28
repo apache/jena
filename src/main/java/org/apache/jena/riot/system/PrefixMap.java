@@ -143,8 +143,8 @@ public class PrefixMap extends LightweightPrefixMapBase {
      * .riot.system.PrefixMap)
      */
     @Override
-    public void putAll(PrefixMap pmap) {
-        prefixes.putAll(pmap.prefixes);
+    public void putAll(LightweightPrefixMap pmap) {
+        prefixes.putAll(pmap.getMapping());
     }
 
     /*
