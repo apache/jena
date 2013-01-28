@@ -35,7 +35,7 @@ public interface LightweightPrefixMap {
     public abstract void add(String prefix, IRI iri);
 
     /** Add a prefix, overwrites any existing association */
-    public abstract void putAll(PrefixMap pmap);
+    public abstract void putAll(LightweightPrefixMap pmap);
 
     /** Add a prefix, overwrites any existing association */
     public abstract void putAll(PrefixMapping pmap);
