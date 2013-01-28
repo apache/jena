@@ -100,7 +100,7 @@ public class FastPrefixMap extends LightweightPrefixMapBase {
     }
 
     @Override
-    public void putAll(PrefixMap pmap) {
+    public void putAll(LightweightPrefixMap pmap) {
         Map<String, IRI> map = pmap.getMapping();
         for (String prefix : map.keySet()) {
             this.add(prefix, map.get(prefix));
