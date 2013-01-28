@@ -4,11 +4,11 @@
 
 package org.apache.jena.riot.system;
 
-public class TestPrefixMap extends TestLightweightPrefixMap {
+public class TestFastPrefixMap extends TestLightweightPrefixMap {
 
     @Override
     protected LightweightPrefixMap getPrefixMap() {
-        return new PrefixMap();
+        return new FastPrefixMap();
     }
 
 }

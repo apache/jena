@@ -18,17 +18,17 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 
 public class OutputPolicy
 {
     final NodeToLabel nodeToLabel ;
-    final PrefixMap prefixMap ;
+    final LightweightPrefixMap prefixMap ;
     final String baseIRI ;
 
     public OutputPolicy(NodeToLabel nodeToLabel,
                         String baseIRI,
-                        PrefixMap prefixMap)
+                        LightweightPrefixMap prefixMap)
     {
         this.nodeToLabel = nodeToLabel ;
         this.baseIRI = baseIRI ;

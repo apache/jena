@@ -32,6 +32,7 @@ import org.apache.jena.atlas.lib.Chars ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.RiotChars ;
@@ -46,7 +47,7 @@ public class NodeFmtLib
     // See OutputLangUtils.
     // See and use EscapeStr
     
-    static PrefixMap dftPrefixMap = new PrefixMap() ;
+    static LightweightPrefixMap dftPrefixMap = new PrefixMap() ;
     static {
         PrefixMapping pm = ARQConstants.getGlobalPrefixMap() ;
         Map<String, String> map = pm.getNsPrefixMap() ;
@@ -100,7 +101,7 @@ public class NodeFmtLib
     { serialize(w, n, prologue.getBaseURI(), prologue.getPrefixMap()) ; }
 
     
-    public static void serialize(Writer w, Node n, String base, PrefixMap prefixMap)
+    public static void serialize(Writer w, Node n, String base, LightweightPrefixMap prefixMap)
     {
         if ( prefixMap == null )
             prefixMap = dftPrefixMap ;

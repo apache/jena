@@ -18,50 +18,47 @@
 
 package org.apache.jena.riot.system;
 
-
-import org.apache.jena.atlas.logging.Log ;
-import org.apache.jena.iri.IRI ;
+import org.apache.jena.atlas.logging.Log;
+import org.apache.jena.iri.IRI;
 
 // UNUSED
-/** Extend a PrefixMap - never alters the partent PrefixMap */
-public class PrefixMap2 extends PrefixMap
-{
-    PrefixMap parent ;
-    PrefixMap local ;
-    
-    public PrefixMap2(PrefixMap parent)
-    {
-        this.parent = parent ;
-        this.local = new PrefixMap() ; 
+/**
+ * Implementation of a {@link LightweightPrefixMap} which extends another prefix
+ * map without ever altering the parent
+ */
+public class PrefixMap2 extends PrefixMap {
+    LightweightPrefixMap parent;
+    LightweightPrefixMap local;
+
+    public PrefixMap2(LightweightPrefixMap ext) {
+        this.parent = ext;
+        this.local = new PrefixMap();
     }
-    
+
     /** Add a prefix, overwites any existing association */
     @Override
-    public void add(String prefix, IRI iri)
-    { 
-        prefix = canonicalPrefix(prefix) ;
+    public void add(String prefix, IRI iri) {
+        prefix = canonicalPrefix(prefix);
         // Add to local always.
-        local.add(prefix, iri) ;
+        local.add(prefix, iri);
     }
-    
+
     /** Add a prefix, overwites any existing association */
     @Override
-    public void delete(String prefix)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        local.delete(prefix) ;
-        if ( parent._contains(prefix) )
-            Log.warn(this, "Attempt to delete a prefix in the parent" ) ;
+    public void delete(String prefix) {
+        prefix = canonicalPrefix(prefix);
+        local.delete(prefix);
+        if (parent.contains(prefix))
+            Log.warn(this, "Attempt to delete a prefix in the parent");
     }
-    
+
     /** Expand a prefix, return null if it can't be expanded */
     @Override
-    public String expand(String prefix, String localName) 
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        String x = local.expand(prefix, localName) ;
-        if ( x != null )
-            return x ;
-        return parent.expand(prefix, localName) ;
+    public String expand(String prefix, String localName) {
+        prefix = canonicalPrefix(prefix);
+        String x = local.expand(prefix, localName);
+        if (x != null)
+            return x;
+        return parent.expand(prefix, localName);
     }
 }

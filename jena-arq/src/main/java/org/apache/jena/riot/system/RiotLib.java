@@ -64,7 +64,7 @@ public class RiotLib
     
     static ParserProfile profile = profile(RDFLanguages.TURTLE, null, null) ;
     static {
-        PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
+        LightweightPrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
         pmap.add("rdfs", ARQConstants.rdfsPrefix) ;
         pmap.add("xsd",  ARQConstants.xsdPrefix) ;
