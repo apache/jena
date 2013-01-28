@@ -24,6 +24,7 @@ import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.junit.Test ;
 
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 public class TestNodeFmt extends BaseTest
 {
     private static String base = "http://example.org/base" ;
-    private static PrefixMap prefixMap = new PrefixMap() ;
+    private static LightweightPrefixMap prefixMap = new PrefixMap() ;
     static {
         prefixMap.add(":", "http://example/p") ;
         prefixMap.add("ex", "http://example/ex/") ;

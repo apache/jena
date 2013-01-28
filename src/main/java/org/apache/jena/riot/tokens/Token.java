@@ -46,7 +46,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;
@@ -410,7 +410,7 @@ public final class Token
      *  2/ No prefix or URI resolution.
      *  3/ No checking.
      */
-    public Node asNode(PrefixMap pmap)
+    public Node asNode(LightweightPrefixMap pmap)
     {
         switch(tokenType)
         {
@@ -527,7 +527,7 @@ public final class Token
         return tokenForNode(n, prologue.getBaseURI(), prologue.getPrefixMap()) ;
     }
 
-    public static Token tokenForNode(Node node, String base, PrefixMap mapping)
+    public static Token tokenForNode(Node node, String base, LightweightPrefixMap mapping)
     {
             if ( node.isURI() )
             {

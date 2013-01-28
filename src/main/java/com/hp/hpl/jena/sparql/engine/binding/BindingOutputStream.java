@@ -32,7 +32,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 
@@ -42,7 +42,7 @@ public class BindingOutputStream implements Sink<Binding>
     private final Writer bw ;
     private Binding lastBinding = null ;
     private List<Var> vars = null ;
-    private PrefixMap pmap ;
+    private LightweightPrefixMap pmap ;
     private NodeFormatter nodeFormatter ;
     private boolean needOutputPMap = true ;
     private boolean needOutputVars = true ;
@@ -52,7 +52,7 @@ public class BindingOutputStream implements Sink<Binding>
         this(out, null, null) ;
     }
     
-    public BindingOutputStream(OutputStream out, PrefixMap prefixMapping)
+    public BindingOutputStream(OutputStream out, LightweightPrefixMap prefixMapping)
     {
         this(out, null, prefixMapping) ;
     }
@@ -62,13 +62,13 @@ public class BindingOutputStream implements Sink<Binding>
         this(out, vars, null) ;
     }
 
-    public BindingOutputStream(OutputStream out, List<Var> vars, PrefixMap prefixMapping)
+    public BindingOutputStream(OutputStream out, List<Var> vars, LightweightPrefixMap prefixMapping)
     {
         //this( BufferingWriter.create(out) , vars, prefixMapping) ;
         this( IO.asBufferedUTF8(out), vars, prefixMapping) ;
     }
     
-    private BindingOutputStream(Writer out, List<Var> variables, PrefixMap prefixMapping)
+    private BindingOutputStream(Writer out, List<Var> variables, LightweightPrefixMap prefixMapping)
     {
         bw = out ;
         vars = variables ;
@@ -181,12 +181,12 @@ public class BindingOutputStream implements Sink<Binding>
         this.vars = vars ;
     }
 
-    public PrefixMap getPrefixMap()
+    public LightweightPrefixMap getPrefixMap()
     {
         return pmap ;
     }
 
-    public void setPrefixMap(PrefixMap pmap)
+    public void setPrefixMap(LightweightPrefixMap pmap)
     {
         this.pmap = pmap ;
         this.needOutputPMap = true ;

@@ -30,16 +30,17 @@ import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.RiotChars ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
 {
     private final NodeToLabel nodeToLabel = NodeToLabel.createBNodeByLabelEncoded() ;
-    private final PrefixMap prefixMap ;
+    private final LightweightPrefixMap prefixMap ;
     private final String baseIRI ; 
     
-   public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap) //OutputPolicy outputPolicy)
+   public NodeFormatterTTL(String baseIRI , LightweightPrefixMap prefixMap) //OutputPolicy outputPolicy)
    {
        super(false) ;
        if ( prefixMap == null )

@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import org.apache.jena.riot.system.LightweightPrefixMap;
 import org.apache.jena.riot.system.PrefixMap ;
 
 /** Assist with naming symbols by URI.
@@ -26,7 +27,7 @@ import org.apache.jena.riot.system.PrefixMap ;
  */
 public class MappingRegistry
 {
-    private static PrefixMap mapping = new PrefixMap() ;
+    private static LightweightPrefixMap mapping = new PrefixMap() ;
     
     public static void addPrefixMapping(String prefix, String uri)
     {
