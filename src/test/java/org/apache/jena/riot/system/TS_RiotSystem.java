@@ -33,7 +33,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     // Prefix Map implementations
     , TestPrefixMap.class
     , TestFastPrefixMap.class
-    // Not included due to vagaries of performance on different systems
+    // May be subject to performance vagaries, often passes in Eclipse 
+    // and not on maven command line so excluded for now
     //, TestAbbreviationPerformance.class
 })
 

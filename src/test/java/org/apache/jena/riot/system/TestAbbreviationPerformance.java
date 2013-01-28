@@ -1,5 +1,19 @@
 /*
- * Copyright 2013 YarcData LLC All Rights Reserved.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.apache.jena.riot.system;
@@ -12,28 +26,9 @@ import org.junit.Test;
  * 
  */
 public class TestAbbreviationPerformance {
-
-    /**
-     * Compares the performance of looking up a specific namespaces 1000 times
-     */
-    private void test_performance(PrefixMap normal, FastPrefixMap fast, String input, String expected, boolean fastShouldWin) {
-        long nPerf = this.run(normal, input, expected, 1000);
-        long fPerf = this.run(fast, input, expected, 1000);
-
-        //System.out.println("PrefixMap performance: " + nPerf + "ns");
-        //System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
-
-        if (fastShouldWin) {
-            if (fPerf > nPerf)
-                Assert.fail("Expected FastPrefixMap to outperform PrefixMap");
-        } else {
-            if (nPerf > fPerf)
-                Assert.fail("Expected PrefixMap to outperform FastPrefixMap");
-        }
-    }
     
     /**
-     * Compares the performance of looking up every namespace 100 times
+     * Compares the performance of looking up every namespace 1000 times
      * @param normal PrefixMap
      * @param fast FastPrefixMap
      * @param namespaces Number of namespaces
@@ -45,8 +40,8 @@ public class TestAbbreviationPerformance {
         for (int i = 1; i <= namespaces; i++) {
             String input = "http://example/ns" + i + "#x";
             String expected = "ns" + i + ":x";
-            nPerf += run(normal, input, expected, 100);
-            fPerf += run(fast, input, expected, 100);
+            nPerf += run(normal, input, expected, 1000);
+            fPerf += run(fast, input, expected, 1000);
         }
         
         //System.out.println("PrefixMap performance: " + nPerf + "ns");
@@ -87,7 +82,7 @@ public class TestAbbreviationPerformance {
         FastPrefixMap fmap = new FastPrefixMap();
         populate(fmap, 1);
 
-        test_performance(pmap, fmap, "http://example/ns1#x", "ns1:x", false);
+        test_amalgamated_performance(pmap, fmap, 1, false);
     }
 
     /**
@@ -101,7 +96,7 @@ public class TestAbbreviationPerformance {
         FastPrefixMap fmap = new FastPrefixMap();
         populate(fmap, 2);
 
-        test_performance(pmap, fmap, "http://example/ns2#x", "ns2:x", true);
+        test_amalgamated_performance(pmap, fmap, 2, true);
     }
 
     /**
@@ -115,7 +110,7 @@ public class TestAbbreviationPerformance {
         FastPrefixMap fmap = new FastPrefixMap();
         populate(fmap, 5);
 
-        test_performance(pmap, fmap, "http://example/ns5#x", "ns5:x", true);
+        test_amalgamated_performance(pmap, fmap, 5, true);
     }
 
     /**
@@ -129,7 +124,7 @@ public class TestAbbreviationPerformance {
         FastPrefixMap fmap = new FastPrefixMap();
         populate(fmap, 20);
 
-        test_performance(pmap, fmap, "http://example/ns20#x", "ns20:x", true);
+        test_amalgamated_performance(pmap, fmap, 20, true);
     }
     
     /**
