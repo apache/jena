@@ -33,6 +33,8 @@ import org.junit.runners.Suite.SuiteClasses ;
     // Prefix Map implementations
     , TestPrefixMap.class
     , TestFastPrefixMap.class
+    // Not included due to vagaries of performance on different systems
+    //, TestAbbreviationPerformance.class
 })
 
 public class TS_RiotSystem
