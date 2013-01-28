@@ -21,6 +21,7 @@ package org.apache.jena.riot.lang;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean ;
 
 import org.apache.jena.riot.system.LightweightPrefixMap;
@@ -104,40 +105,24 @@ public abstract class StreamedRDFIterator<T> implements RDFParserOutputIterator<
      * Helper method for actually getting the next element
      */
     private void getNext() {
-        // Use an incremental back off retry strategy to avoid starving the
-        // producer thread which is trying to insert into the queue we
-        // are attempting to consume
-        // We keep a maximum on the back off amount as otherwise we can
-        // wait unduly long for new elements to be available
-
-        // The initial back off starts at 0 so we just retry immediately after
-        // the first failure
-        int backoff = 0;
-
         while (this.next == null) {
             // We use poll() in favour of the blocking take() as otherwise we
             // can hit a deadlock if we reach this line before finish() is
             // called whereby we would block indefinitely and never be able to
             // continue
-            this.next = buffer.poll();
+            try {
+                // We wait for a short amount of time, if we still get a null
+                // anyway we'll go around the loop and try again unless the
+                // finished flag is set
+                this.next = buffer.poll(25, TimeUnit.MILLISECONDS);
+            } catch (InterruptedException e1) {
+                // Ignore and continue
+            }
 
             // As soon as we see the finished signal has been set stop
             // waiting for more elements
             if (this.finished.get())
                 break;
-
-            // Back off
-            if (backoff > 0) {
-                try {
-                    Thread.sleep(backoff);
-                } catch (InterruptedException e) {
-                    // Ignore and continue
-                }
-            }
-            // Increment back off up to maximum
-            if (backoff < 5) {
-                backoff++;
-            }
         }
     }
 
