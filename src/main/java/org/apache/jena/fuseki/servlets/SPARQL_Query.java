@@ -52,6 +52,7 @@ import org.apache.jena.riot.WebContent ;
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetDescription ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.resultset.SPARQLResult ;
 
 public abstract class SPARQL_Query extends SPARQL_Protocol
@@ -251,7 +252,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
             Dataset dataset = decideDataset(action, query, queryStringLog) ; 
             qExec = createQueryExecution(query, dataset) ;
             SPARQLResult result = executeQuery(action, qExec, query, queryStringLog) ;
-            sendResults(action, result) ;
+            sendResults(action, result, query.getPrologue()) ;
         } finally { 
             if ( qExec != null )
                 qExec.close() ;
@@ -340,10 +341,10 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
 
     protected abstract Dataset decideDataset(HttpActionQuery action, Query query, String queryStringLog) ;
 
-    protected void sendResults(HttpActionQuery action, SPARQLResult result)
+    protected void sendResults(HttpActionQuery action, SPARQLResult result, Prologue qPrologue)
     {
         if ( result.isResultSet() )
-            ResponseResultSet.doResponseResultSet(result.getResultSet(), action.request, action.response) ;
+            ResponseResultSet.doResponseResultSet(result.getResultSet(), qPrologue, action.request, action.response) ;
         else if ( result.isGraph() )
             ResponseModel.doResponseModel(result.getModel(), action.request, action.response) ;
         else if ( result.isBoolean() )

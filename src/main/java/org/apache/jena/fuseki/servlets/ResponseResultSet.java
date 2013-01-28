@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 
 /** This is the content negotiation for each kind of SPARQL query result */ 
 public class ResponseResultSet
@@ -73,18 +74,19 @@ public class ResponseResultSet
 
     public static void doResponseResultSet(Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
     {
-        doResponseResultSet$(null, booleanResult, request, response) ;
+        doResponseResultSet$(null, booleanResult, null, request, response) ;
     }
 
-    public static void doResponseResultSet(ResultSet resultSet, HttpServletRequest request, HttpServletResponse response)
+    public static void doResponseResultSet(ResultSet resultSet, Prologue qPrologue , HttpServletRequest request, HttpServletResponse response)
     {
-        doResponseResultSet$(resultSet, null, request, response) ;
+        doResponseResultSet$(resultSet, null, qPrologue, request, response) ;
     }
     
     // If we refactor the conneg into a single function, we can split boolean and result set handling. 
     
     // One or the other argument must be null
-    private static void doResponseResultSet$(final ResultSet resultSet, final Boolean booleanResult, HttpServletRequest request, HttpServletResponse response)
+    private static void doResponseResultSet$(final ResultSet resultSet, final Boolean booleanResult, final Prologue qPrologue , 
+                                             HttpServletRequest request, HttpServletResponse response)
     {
         if ( resultSet == null && booleanResult == null )
         {
@@ -172,7 +174,7 @@ public class ResponseResultSet
                     public void output(ServletOutputStream out)
                     {
                         if ( resultSet != null )
-                            ResultSetFormatter.out(out, resultSet) ;
+                            ResultSetFormatter.out(out, resultSet, qPrologue) ;
                         if (  booleanResult != null )
                             ResultSetFormatter.out(out, booleanResult.booleanValue()) ;
                     }
