@@ -153,6 +153,9 @@ public class Query extends Prologue implements Cloneable, Printable
 
     public boolean isUnknownType()              { return queryType == QueryTypeUnknown ; }
 
+    // It was a mistake to extend Prologue ... but what is done is done.
+    public Prologue getPrologue()               { return this ; }
+    
     public void setStrict(boolean isStrict)
     { 
         strictQuery = isStrict ;
