@@ -28,12 +28,11 @@ import java.util.Map;
  * value type optimized for fast prefix search and match. If you do not need
  * prefix search then you should typically use a standard {@link Map} instead
  * 
- * @param <T>
- *            Value type
+ * @param <T> Type of the value stored.
  */
-public class Trie<T> {
+public final class Trie<T> {
 
-    private TrieNode root = new TrieNode(null);
+    private TrieNode<T> root = new TrieNode<T>(null);
 
     /**
      * Adds a value to the trie
@@ -50,7 +49,7 @@ public class Trie<T> {
     public void add(String key, T value) {
         if (value == null)
             return;
-        TrieNode n = this.moveToNode(key);
+        TrieNode<T> n = this.moveToNode(key);
         n.setValue(value);
     }
 
@@ -61,8 +60,8 @@ public class Trie<T> {
      *            Key
      * @return Node
      */
-    private TrieNode moveToNode(String key) {
-        TrieNode current = this.root;
+    private TrieNode<T> moveToNode(String key) {
+        TrieNode<T> current = this.root;
         for (int i = 0; i < key.length(); i++) {
             current = current.moveToChild(key.charAt(i));
         }
@@ -76,8 +75,8 @@ public class Trie<T> {
      *            Key
      * @return Node or null if not found
      */
-    private TrieNode find(String key) {
-        TrieNode current = this.root;
+    private TrieNode<T> find(String key) {
+        TrieNode<T> current = this.root;
         for (int i = 0; i < key.length(); i++) {
             current = current.getChild(key.charAt(i));
             if (current == null)
@@ -97,7 +96,7 @@ public class Trie<T> {
      *            Key
      */
     public void remove(String key) {
-        TrieNode n = this.find(key);
+        TrieNode<T> n = this.find(key);
         if (n != null) {
             n.setValue(null);
         }
@@ -129,7 +128,7 @@ public class Trie<T> {
      *         otherwise
      */
     public boolean contains(String key, boolean requireValue) {
-        TrieNode n = this.find(key);
+        TrieNode<T> n = this.find(key);
         if (n == null)
             return false;
         if (requireValue) {
@@ -146,7 +145,7 @@ public class Trie<T> {
      * @return True if the key value pair exists in the trie, false otherwise
      */
     public boolean contains(String key, T value) {
-        TrieNode n = this.find(key);
+        TrieNode<T> n = this.find(key);
         if (n == null) return false;
         if (value == null && !n.hasValue()) return true;
         return value.equals(n.getValue());
@@ -158,7 +157,7 @@ public class Trie<T> {
      * @return Value
      */
     public T get(String key) {
-        TrieNode n = this.find(key);
+        TrieNode<T> n = this.find(key);
         if (n == null) return null;
         return n.getValue();
     }
@@ -169,7 +168,7 @@ public class Trie<T> {
      * @return List of values associated with the given key
      */
     public List<T> prefixSearch(String prefix) {
-        TrieNode n = this.find(prefix);
+        TrieNode<T> n = this.find(prefix);
         if (n == null) return new ArrayList<T>();
         return Collections.unmodifiableList(n.getValues());
     }
@@ -178,8 +177,8 @@ public class Trie<T> {
      * Represents a node in the Trie
      * 
      */
-     private class TrieNode {
-        private Map<Character, TrieNode> children = new HashMap<Character, TrieNode>();
+     private static class TrieNode<T> {
+        private Map<Character, TrieNode<T>> children = new HashMap<Character, TrieNode<T>>();
         private T value;
 
         /**
@@ -227,7 +226,7 @@ public class Trie<T> {
          *            Character to move to
          * @return Child
          */
-        public TrieNode getChild(Character c) {
+        public TrieNode<T> getChild(Character c) {
             return this.children.get(c);
         }
 
@@ -238,10 +237,10 @@ public class Trie<T> {
          *            Character to move to
          * @return Child
          */
-        public TrieNode moveToChild(Character c) {
-            TrieNode n = this.children.get(c);
+        public TrieNode<T> moveToChild(Character c) {
+            TrieNode<T> n = this.children.get(c);
             if (n == null) {
-                n = new TrieNode(null);
+                n = new TrieNode<T>(null);
                 this.children.put(c, n);
             }
             return n;
@@ -256,7 +255,7 @@ public class Trie<T> {
             if (this.hasValue()) {
                 values.add(this.value);
             }
-            for (TrieNode child : this.children.values()) {
+            for (TrieNode<T> child : this.children.values()) {
                 values.addAll(child.getValues());
             }
             return values;
