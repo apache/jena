@@ -37,7 +37,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * <p>
  * If you are using this primarily to abbreviate URIs for output consider using
  * the {@link FastPrefixMap} instead which offers much better abbreviation
- * performance
+ * performance.
  */
 public class PrefixMap extends LightweightPrefixMapBase {
     final Map<String, IRI> prefixes = new HashMap<String, IRI>();
