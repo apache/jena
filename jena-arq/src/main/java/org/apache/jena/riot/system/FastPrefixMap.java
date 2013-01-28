@@ -32,25 +32,49 @@ import org.apache.jena.iri.IRIFactory;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
- * A fast prefix map
- * 
- * @author rvesse
- * 
+ * A prefix map implementation suited to output heavy workloads
+ * <p>
+ * This is an alternative implementation of the {@link LightweightPrefixMap}
+ * interface, it is broadly similar to the default {@link PrefixMap}
+ * implementation but is faster in output heavy workloads. If you are calling
+ * the {@link LightweightPrefixMap#expand(String)} or
+ * {@link LightweightPrefixMap#expand(String, String)} methods a lot then you
+ * should be using this implementation.
+ * </p>
+ * <p>
+ * To improve on output performance this implementation maintains a {@link Trie}
+ * mapping namespace IRIs to their prefixes as well as a normal mapping.
+ * Therefore IRI abbreviation can be done as an approximately O(1) operation in
+ * the worst case (ignoring the vagaries of {@link HashMap} performance since
+ * that underpins the {@link Trie} implementation). If you contrast this with
+ * the abbreviation performance of the default {@link PrefixMap} which is worst
+ * case O(n) then this is a substantial saving in scenarios where you primarily
+ * use a prefix map for output.
+ * </p>
+ * <p>
+ * Generally speaking all other operations should be roughly equivalent to the
+ * default {@link PrefixMap} though the memory overhead of this implementation
+ * will be marginally higher due to the extra information maintained in the
+ * {@link Trie}.
+ * </p>
  */
 public class FastPrefixMap extends LightweightPrefixMapBase {
 
     private Map<String, IRI> prefixes = new HashMap<String, IRI>();
     private Map<String, IRI> prefixesView = Collections.unmodifiableMap(this.prefixes);
     private Trie<String> abbrevs = new Trie<String>();
-    
+
     /**
      * Create a new fast prefix map
      */
-    public FastPrefixMap() { }
-    
+    public FastPrefixMap() {
+    }
+
     /**
      * Create a new prefix map which copies mappings from an existing map
-     * @param pmap Prefix Map
+     * 
+     * @param pmap
+     *            Prefix Map
      */
     public FastPrefixMap(LightweightPrefixMap pmap) {
         this.putAll(pmap);
@@ -145,9 +169,10 @@ public class FastPrefixMap extends LightweightPrefixMapBase {
     @Override
     public void delete(String prefix) {
         prefix = canonicalPrefix(prefix);
-        
+
         IRI iri = this.prefixes.get(prefix);
-        if (iri == null) return;
+        if (iri == null)
+            return;
 
         // Delete the abbreviation mapping
         this.abbrevs.remove(iri.toString());
@@ -195,10 +220,12 @@ public class FastPrefixMap extends LightweightPrefixMapBase {
         if (abbrevKey != null) {
             // Suitable for trie based lookup
             String prefix = this.abbrevs.get(abbrevKey);
-            if (prefix == null) return null;
-            
+            if (prefix == null)
+                return null;
+
             String ln = uriStr.substring(this.prefixes.get(prefix).toString().length());
-            if (!turtleSafe || isTurtleSafe(ln)) return Pair.create(prefix, ln);
+            if (!turtleSafe || isTurtleSafe(ln))
+                return Pair.create(prefix, ln);
             return null;
         } else {
             // Not suitable for trie based lookup so trie the brute force
