@@ -67,6 +67,21 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         assertTrue(pmap.contains("")) ;
         assertTrue(pmap.contains("org")) ;
     }
+    
+    @Test
+    public void prefixMap_basic_04()
+    {
+        PrefixMap pmap1 = getPrefixMap();
+        pmap1.add("", "http://example/") ;
+        pmap1.add("org", "http://example.org/") ;
+        PrefixMap pmap2 = getPrefixMap();
+        pmap2.putAll(pmap1) ;
+
+        assertTrue(pmap2.contains("")) ;
+        assertTrue(pmap2.contains("org")) ;
+    }
+    
+    
 
     /**
      * Simple expand test
