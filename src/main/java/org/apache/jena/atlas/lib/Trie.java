@@ -272,17 +272,17 @@ public final class Trie<T> {
             return current.getValue();
         } else {
             for (int i = 0; i < key.length(); i++) {
-                if (current == null)
-                    return value;
                 if (current.hasValue())
                     value = current.getValue();
                 current = current.getChild(key.charAt(i));
+                if (current == null)
+                    return value;
             }
-        }
-        // If we reach here current is the complete key match
-        // so return its value if it has one
-        if (current.hasValue()) {
-            return current.getValue();
+            // If we reach here current is the complete key match
+            // so return its value if it has one
+            if (current.hasValue()) {
+                return current.getValue();
+            }
         }
         return value;
     }

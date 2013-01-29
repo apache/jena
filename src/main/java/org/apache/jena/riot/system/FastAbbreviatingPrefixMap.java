@@ -79,23 +79,6 @@ public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
         this.putAll(pmap);
     }
 
-    /**
-     * Gets the key for abbreviation lookup from an IRI
-     * 
-     * @param iriString
-     *            IRI string
-     * @return Key or null
-     */
-    private String getAbbrevKey(String iriString) {
-        int index = iriString.lastIndexOf('#');
-        if (index > -1)
-            return iriString.substring(0, index + 1);
-        index = iriString.lastIndexOf('/');
-        if (index > -1)
-            return iriString.substring(0, index + 1);
-        return null;
-    }
-
     @Override
     public Map<String, IRI> getMapping() {
         return this.prefixesView;
@@ -214,27 +197,15 @@ public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
 
     @Override
     protected Pair<String, String> abbrev(Map<String, IRI> prefixes, String uriStr, boolean turtleSafe) {
-        // Try to use trie based lookup
-        String abbrevKey = this.getAbbrevKey(uriStr);
-        if (abbrevKey != null) {
-            // Suitable for trie based lookup
-            String prefix = this.abbrevs.get(abbrevKey);
-            if (prefix == null) {
-                // Try looking up the full IRI in case it is exactly a namespace IRI
-                prefix = this.abbrevs.get(uriStr);
-                if (prefix == null)
-                    return null;
-            }
-
-            String ln = uriStr.substring(this.prefixes.get(prefix).toString().length());
-            if (!turtleSafe || isTurtleSafe(ln))
-                return Pair.create(prefix, ln);
+        //Use longest match to find the longest possible match
+        String prefix = this.abbrevs.longestMatch(uriStr);
+        if (prefix == null)
             return null;
-        } else {
-            // Not suitable for trie based lookup so trie the brute force
-            // approach
-            return super.abbrev(prefixes, uriStr, turtleSafe);
-        }
+
+        String ln = uriStr.substring(this.prefixes.get(prefix).toString().length());
+        if (!turtleSafe || isTurtleSafe(ln))
+            return Pair.create(prefix, ln);
+        return null;
     }
 
     @Override

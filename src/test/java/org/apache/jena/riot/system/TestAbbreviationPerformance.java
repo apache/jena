@@ -44,8 +44,8 @@ public class TestAbbreviationPerformance {
             fPerf += run(fast, input, expected, 1000);
         }
         
-        //System.out.println("PrefixMap performance: " + nPerf + "ns");
-        //System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
+        System.out.println("PrefixMap performance: " + nPerf + "ns");
+        System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
 
         if (fastShouldWin) {
             if (fPerf > nPerf)
@@ -92,20 +92,6 @@ public class TestAbbreviationPerformance {
     @Test
     public void prefixMap_abbrev_performance_02() {
         PrefixMap pmap = new PrefixMap();
-        populate(pmap, 2);
-        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
-        populate(fmap, 2);
-
-        test_amalgamated_performance(pmap, fmap, 2, true);
-    }
-
-    /**
-     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMap} as soon as
-     * there are a few namespaces
-     */
-    @Test
-    public void prefixMap_abbrev_performance_03() {
-        PrefixMap pmap = new PrefixMap();
         populate(pmap, 5);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 5);
@@ -118,7 +104,7 @@ public class TestAbbreviationPerformance {
      * {@link PrefixMap} once there are a good number of namespaces
      */
     @Test
-    public void prefixMap_abbrev_performance_04() {
+    public void prefixMap_abbrev_performance_03() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 20);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
@@ -132,7 +118,7 @@ public class TestAbbreviationPerformance {
      * {@link PrefixMap} once there are a good number of namespaces
      */
     @Test
-    public void prefixMap_abbrev_performance_05() {
+    public void prefixMap_abbrev_performance_04() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 100);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
