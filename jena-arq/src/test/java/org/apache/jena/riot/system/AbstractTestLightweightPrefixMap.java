@@ -18,12 +18,10 @@
 
 package org.apache.jena.riot.system;
 
-import junit.framework.Assert;
-
-import org.apache.jena.atlas.junit.BaseTest;
-import org.apache.jena.atlas.lib.StrUtils;
-import org.apache.jena.iri.IRIFactory;
-import org.junit.Test;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.atlas.lib.StrUtils ;
+import org.apache.jena.iri.IRIFactory ;
+import org.junit.Test ;
 
 /**
  * Abstract tests for {@link LightweightPrefixMap} implementations
@@ -199,12 +197,12 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
 
     @Test
     public void prefixMap_abbrev_10() {
-        pmTest("http://example/a/b", new String[] { "p1:", "p0:b" });
+        pmTest("http://example/a/b", "p1:", "p0:b" );
     }
 
     @Test
     public void prefixMap_abbrev_11() {
-        pmTest("http://example/a/bcd", new String[] { "p1:cd", "p0:bcd" });
+        pmTest("http://example/a/bcd", "p1:cd", "p0:bcd" );
     }
 
     @Test
@@ -214,12 +212,12 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
 
     @Test
     public void prefixMap_abbrev_13() {
-        pmTest("http://example/a/b/c/", (String) null);
+        pmTest("http://example/a/b/c/");
     }
 
     @Test
     public void prefixMap_abbrev_14() {
-        pmTest("http://example/a/b/c/d", (String) null);
+        pmTest("http://example/a/b/c/d");
     }
 
     @Test
@@ -242,20 +240,20 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
         pmTest("http://example/a", "q1:");
     }
 
-    public void pmTest(String iriStr, String expected) {
+    public void pmTest(String iriStr, String... expected) {
         LightweightPrefixMap pm = create();
         String x = pm.abbreviate(iriStr);
-        assertEquals(iriStr + " : expected " + expected + " -- got = " + x, expected, x);
-    }
-
-    public void pmTest(String iriStr, String[] expected) {
-        LightweightPrefixMap pm = create();
-        String x = pm.abbreviate(iriStr);
+        if ( expected.length == 0 )
+        {
+            assertNull("expected no abbreviation for "+iriStr, x) ;
+            return ;
+        }
+        
         for (String possible : expected) {
             if (possible.equals(x))
                 return;
         }
-        Assert.fail("Expected one of " + StrUtils.strjoin(" , ", expected) + " but got " + x);
+        fail("Expected one of " + StrUtils.strjoin(" , ", expected) + " but got " + x);
     }
 
     /**
