@@ -18,14 +18,32 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.Assert ;
+import org.junit.BeforeClass ;
+import org.junit.Test ;
 
 /**
  * Test for performance of {@link PrefixMap} implementations
  * 
  */
 public class TestAbbreviationPerformance {
+    @BeforeClass static public void beforeClass()
+    {
+        // Warm the JIT.
+        int N = 1000 ;
+        PrefixMapStd normal = new PrefixMapStd();
+        populate(normal, N);
+        FastAbbreviatingPrefixMap fast = new FastAbbreviatingPrefixMap();
+        populate(fast, N);
+        
+        for (int i = 1; i <= N ; i++) {
+            String input = "http://example/ns" + i + "#x";
+            String expected = "ns" + i + ":x";
+            run(normal, input, expected, 1000);
+            run(fast, input, expected, 1000);
+        }
+    }
+    
     
     /**
      * Compares the performance of looking up every namespace 1000 times
@@ -44,8 +62,9 @@ public class TestAbbreviationPerformance {
             fPerf += run(fast, input, expected, 1000);
         }
         
-        //System.out.println("PrefixMap performance: " + nPerf + "ns");
-        //System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
+        //System.out.printf("PrefixMap performance:       %,12dns\n", nPerf);
+        //System.out.printf("Fast Prefix Map performance: %,12dns\n", fPerf);
+        //System.out.println() ;
 
         if (fastShouldWin) {
             if (fPerf > nPerf)
@@ -56,7 +75,7 @@ public class TestAbbreviationPerformance {
         }
     }
 
-    private long run(PrefixMap pmap, String input, String expected, int runs) {
+    private static long run(PrefixMap pmap, String input, String expected, int runs) {
         long start = System.nanoTime();
         for (int i = 1; i <= runs; i++) {
             String x = pmap.abbreviate(input);
@@ -65,7 +84,7 @@ public class TestAbbreviationPerformance {
         return System.nanoTime() - start;
     }
 
-    private void populate(PrefixMap pmap, int count) {
+    private static void populate(PrefixMap pmap, int count) {
         for (int i = 1; i <= count; i++) {
             pmap.add("ns" + i, "http://example/ns" + i + "#");
         }
