@@ -18,9 +18,12 @@
 
 package org.apache.jena.riot.system;
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.iri.IRIFactory ;
-import org.junit.Test ;
+import junit.framework.Assert;
+
+import org.apache.jena.atlas.junit.BaseTest;
+import org.apache.jena.atlas.lib.StrUtils;
+import org.apache.jena.iri.IRIFactory;
+import org.junit.Test;
 
 /**
  * Abstract tests for {@link LightweightPrefixMap} implementations
@@ -183,35 +186,78 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
         assertEquals("ns100:x", x);
     }
 
-    protected LightweightPrefixMap create()
-    {
-        LightweightPrefixMap pm = getPrefixMap() ;
-        pm.add("p0", "http://example/a/") ;
-        pm.add("p1", "http://example/a/b") ;
-        pm.add("p2", "http://example/a/b/") ;
-        pm.add("p3", "http://example/a/b#") ;
-        pm.add("q1",  "http://example/a") ;
-        pm.add("q2",  "http://example/a#") ;
-        return pm ;
+    protected LightweightPrefixMap create() {
+        LightweightPrefixMap pm = getPrefixMap();
+        pm.add("p0", "http://example/a/");
+        pm.add("p1", "http://example/a/b");
+        pm.add("p2", "http://example/a/b/");
+        pm.add("p3", "http://example/a/b#");
+        pm.add("q1", "http://example/a");
+        pm.add("q2", "http://example/a#");
+        return pm;
     }
-    
-//    @Test public void prefixMap_abbrev_10() { pmTest("http://example/a/b",       "p1:"      ) ; }
-//    @Test public void prefixMap_abbrev_11() { pmTest("http://example/a/bcd",     "p1:cd"    ) ; }
-    @Test public void prefixMap_abbrev_12() { pmTest("http://example/a/b/c",     "p2:c"     ) ; }
-    @Test public void prefixMap_abbrev_13() { pmTest("http://example/a/b/c/",    null       ) ; }
-    @Test public void prefixMap_abbrev_14() { pmTest("http://example/a/b/c/d",   null       ) ; }
-    @Test public void prefixMap_abbrev_15() { pmTest("http://example/a/b#x",     "p3:x"     ) ; }
-    @Test public void prefixMap_abbrev_16() { pmTest("http://example/a#z",       "q2:z"     ) ; }
-    @Test public void prefixMap_abbrev_17() { pmTest("http://example/a/",        "p0:"      ) ; }
-//    @Test public void prefixMap_abbrev_18() { pmTest("http://example/a",         "q1:"      ) ; }
 
-    public void pmTest(String iriStr, String expected)
-    {
-        LightweightPrefixMap pm = create() ;
-        String x = pm.abbreviate(iriStr) ;
-        assertEquals(iriStr+" : expected "+expected+" -- got = "+x,  expected, x) ;
+    @Test
+    public void prefixMap_abbrev_10() {
+        pmTest("http://example/a/b", new String[] { "p1:", "p0:b" });
     }
-    
+
+    @Test
+    public void prefixMap_abbrev_11() {
+        pmTest("http://example/a/bcd", new String[] { "p1:cd", "p0:bcd" });
+    }
+
+    @Test
+    public void prefixMap_abbrev_12() {
+        pmTest("http://example/a/b/c", "p2:c");
+    }
+
+    @Test
+    public void prefixMap_abbrev_13() {
+        pmTest("http://example/a/b/c/", (String) null);
+    }
+
+    @Test
+    public void prefixMap_abbrev_14() {
+        pmTest("http://example/a/b/c/d", (String) null);
+    }
+
+    @Test
+    public void prefixMap_abbrev_15() {
+        pmTest("http://example/a/b#x", "p3:x");
+    }
+
+    @Test
+    public void prefixMap_abbrev_16() {
+        pmTest("http://example/a#z", "q2:z");
+    }
+
+    @Test
+    public void prefixMap_abbrev_17() {
+        pmTest("http://example/a/", "p0:");
+    }
+
+    @Test
+    public void prefixMap_abbrev_18() {
+        pmTest("http://example/a", "q1:");
+    }
+
+    public void pmTest(String iriStr, String expected) {
+        LightweightPrefixMap pm = create();
+        String x = pm.abbreviate(iriStr);
+        assertEquals(iriStr + " : expected " + expected + " -- got = " + x, expected, x);
+    }
+
+    public void pmTest(String iriStr, String[] expected) {
+        LightweightPrefixMap pm = create();
+        String x = pm.abbreviate(iriStr);
+        for (String possible : expected) {
+            if (possible.equals(x))
+                return;
+        }
+        Assert.fail("Expected one of " + StrUtils.strjoin(" , ", expected) + " but got " + x);
+    }
+
     /**
      * Helper method for adding a namespace mapping
      * 

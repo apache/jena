@@ -219,8 +219,12 @@ public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
         if (abbrevKey != null) {
             // Suitable for trie based lookup
             String prefix = this.abbrevs.get(abbrevKey);
-            if (prefix == null)
-                return null;
+            if (prefix == null) {
+                // Try looking up the full IRI in case it is exactly a namespace IRI
+                prefix = this.abbrevs.get(uriStr);
+                if (prefix == null)
+                    return null;
+            }
 
             String ln = uriStr.substring(this.prefixes.get(prefix).toString().length());
             if (!turtleSafe || isTurtleSafe(ln))
