@@ -173,9 +173,9 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
             }
         }
 
+        // When the end marker is seen set slot to null
         if (slot == endMarker)
         {
-            closedByReader = true ;
             slot = null ;
             return false ;
         }
