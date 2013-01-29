@@ -73,7 +73,7 @@ public abstract class PrefixMapBase implements PrefixMap {
     
     @Override
     public void putAll(PrefixMap pmap) {
-        for (Map.Entry<String, IRI> e : this.getMapping().entrySet()) {
+        for (Map.Entry<String, IRI> e : pmap.getMapping().entrySet()) {
             this.add(e.getKey(), e.getValue());
         }
     }
