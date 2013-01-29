@@ -229,15 +229,17 @@ public class OpExecutorTDB extends OpExecutor
             return optimizeExecuteTriples(ds.getEffectiveDefaultGraph(), input, bgp, exprs, execCxt) ;
         
         // ---- Execute quads+filters
-        ReorderTransformation transform = ds.getReorderTransform() ;
-
-        if ( transform != null )
+        if ( bgp.size() >= 2 )
         {
-            QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
-            input = peek ; // Original input now invalid.
-            bgp = reorder(bgp, peek, transform) ;
+            ReorderTransformation transform = ds.getReorderTransform() ;
+    
+            if ( transform != null )
+            {
+                QueryIterPeek peek = QueryIterPeek.create(input, execCxt) ;
+                input = peek ; // Original input now invalid.
+                bgp = reorder(bgp, peek, transform) ;
+            }
         }
-
         // -- Filter placement
         Op op = null ;
         if ( exprs != null )
