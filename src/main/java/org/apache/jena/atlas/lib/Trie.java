@@ -26,19 +26,27 @@ import java.util.Map;
 /**
  * An implementation of a classic Trie, this is a mapping from strings to some
  * value type optimized for fast prefix search and match. If you do not need
- * prefix search then you should typically use a standard {@link Map} instead
+ * prefix search then you should typically use a standard {@link Map} instead.
+ * <p>
+ * A Trie cannot store null values since null is used as an internal marker to indicate
+ * that there is no value associated with a key.  This is necessary because the nature
+ * of the data structure means that adding a key potentially adds multiple keys many of
+ * which will not be associated with a value.
+ * </p>
  * 
- * @param <T> Type of the value stored.
+ * @param <T>
+ *            Type of the value stored.
  */
 public final class Trie<T> {
 
     private TrieNode<T> root = new TrieNode<T>(null);
 
     /**
-     * Adds a value to the trie
+     * Adds a value to the trie overwriting any existing value
      * <p>
      * Note that a null value is treated as if the key does not actually exist
-     * in the tree so trying to add a null is a no-op
+     * in the tree so trying to add a null is a no-op. If you want to remove a
+     * key use the {@link #remove(String)} method instead.
      * </p>
      * 
      * @param key
@@ -103,8 +111,8 @@ public final class Trie<T> {
     }
 
     /**
-     * Gets whether a key exists in the trie and has a non-null value mapped
-     * to it
+     * Gets whether a key exists in the trie and has a non-null value mapped to
+     * it
      * 
      * @param key
      *            Key
@@ -115,8 +123,7 @@ public final class Trie<T> {
     }
 
     /**
-     * Gets whether a key exists in the trie and meets the given value
-     * criteria
+     * Gets whether a key exists in the trie and meets the given value criteria
      * 
      * @param key
      *            Key
@@ -137,39 +144,51 @@ public final class Trie<T> {
             return true;
         }
     }
-    
+
     /**
      * Gets whether a key value pair are present in the trie
-     * @param key Key
-     * @param value Value
+     * 
+     * @param key
+     *            Key
+     * @param value
+     *            Value
      * @return True if the key value pair exists in the trie, false otherwise
      */
     public boolean contains(String key, T value) {
         TrieNode<T> n = this.find(key);
-        if (n == null) return false;
-        if (value == null && !n.hasValue()) return true;
+        if (n == null)
+            return false;
+        if (value == null && !n.hasValue())
+            return true;
         return value.equals(n.getValue());
     }
-    
+
     /**
      * Gets the value associated with a key
-     * @param key Key
+     * 
+     * @param key
+     *            Key
      * @return Value
      */
     public T get(String key) {
         TrieNode<T> n = this.find(key);
-        if (n == null) return null;
+        if (n == null)
+            return null;
         return n.getValue();
     }
-    
+
     /**
-     * Performs a prefix search and returns all values mapped under the given prefix
-     * @param prefix Prefix
+     * Performs a prefix search and returns all values mapped under the given
+     * prefix
+     * 
+     * @param prefix
+     *            Prefix
      * @return List of values associated with the given key
      */
     public List<T> prefixSearch(String prefix) {
         TrieNode<T> n = this.find(prefix);
-        if (n == null) return new ArrayList<T>();
+        if (n == null)
+            return new ArrayList<T>();
         return Collections.unmodifiableList(n.getValues());
     }
 
@@ -177,7 +196,7 @@ public final class Trie<T> {
      * Represents a node in the Trie
      * 
      */
-     private static class TrieNode<T> {
+    private static class TrieNode<T> {
         private Map<Character, TrieNode<T>> children = new HashMap<Character, TrieNode<T>>();
         private T value;
 
@@ -245,9 +264,10 @@ public final class Trie<T> {
             }
             return n;
         }
-        
+
         /**
          * Gets all values from a given node and its descendants
+         * 
          * @return Values
          */
         public List<T> getValues() {

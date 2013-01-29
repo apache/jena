@@ -22,6 +22,10 @@ package org.apache.jena.atlas.lib;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
 
+/**
+ * Tests for the Atlas lib package
+ *
+ */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {
     TestAlg.class
@@ -41,6 +45,7 @@ import org.junit.runners.Suite ;
     , TestAlarmClock.class
     , TestRefLong.class
     , TestReverseComparator.class
+    , TestTrie.class
 } )
 
 public class TS_Lib
