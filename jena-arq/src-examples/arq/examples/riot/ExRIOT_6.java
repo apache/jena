@@ -39,10 +39,11 @@ public class ExRIOT_6 {
     public static void main(String... argv) {
         final String filename = "data.ttl";
 
-        // Create a StreamedTriplesIterator, this doubles as both a StreamRDF
-        // for parser output and an iterator for our consumption
-        // You can optionally supply a buffer size here, see the documentation
-        // for details about recommended buffer sizes
+        // Create a PipedRDFStream to accept input and a PipedRDFIterator to
+        // consume it
+        // You can optionally supply a buffer size here for the
+        // PipedRDFIterator, see the documentation for details about recommended
+        // buffer sizes
         PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
         final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
 
