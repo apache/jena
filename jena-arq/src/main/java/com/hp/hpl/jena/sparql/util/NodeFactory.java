@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.util;
 
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.PrefixMapStd ;
 import org.apache.jena.riot.tokens.Token ;
 import org.apache.jena.riot.tokens.Tokenizer ;
@@ -35,7 +36,7 @@ import com.hp.hpl.jena.sparql.sse.SSE ;
 
 public class NodeFactory
 {
-    private static final PrefixMap prefixMappingDefault = PrefixMapStd.fromPrefixMapping(SSE.getDefaultPrefixMapRead()) ; 
+    private static final PrefixMap prefixMappingDefault = PrefixMapFactory.createForInput(SSE.getDefaultPrefixMapRead()) ; 
     
     /** Parse a node - with convenience prefix mapping */ 
     public static Node parseNode(String nodeString)
@@ -43,7 +44,7 @@ public class NodeFactory
         return parseNode(nodeString, prefixMappingDefault) ;
     }
 
-    private static PrefixMap pmapEmpty = new PrefixMapStd() ; 
+    private static PrefixMap pmapEmpty = PrefixMapFactory.create() ; 
 
     /** Parse a string into a node. 
      * Pass null for the prefix mapping to indicate using no defined mappings

@@ -51,7 +51,7 @@ public class PrefixMapExtended extends PrefixMapBase {
         if (ext == null)
             throw new IllegalArgumentException("Prefix Map to extend cannot be null");
         this.parent = ext;
-        this.local = new PrefixMapStd();
+        this.local = PrefixMapFactory.create();
     }
 
     @Override

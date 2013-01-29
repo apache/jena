@@ -31,7 +31,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapStd ;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.RiotChars ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
@@ -44,7 +44,7 @@ public class NodeFormatterTTL extends NodeFormatterNT
    {
        super(false) ;
        if ( prefixMap == null )
-           prefixMap = new PrefixMapStd() ;
+           prefixMap = PrefixMapFactory.createForOutput() ;
        this.prefixMap = prefixMap ;
        this.baseIRI = baseIRI ;
    }
