@@ -32,7 +32,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     
     // Prefix Map implementations
     , TestPrefixMap.class
-    , TestFastPrefixMap.class
+    , TestFastAbbreviatingPrefixMap.class
     // May be subject to performance vagaries, often passes in Eclipse 
     // and not on maven command line so excluded for now
     //, TestAbbreviationPerformance.class
