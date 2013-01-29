@@ -27,7 +27,7 @@ import org.junit.Test ;
  * Abstract tests for {@link PrefixMap} implementations
  * 
  */
-public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
+public abstract class AbstractTestPrefixMap extends BaseTest {
     protected IRIFactory factory = IRIFactory.iriImplementation();
 
     /**
@@ -37,6 +37,36 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      * @return Prefix Map
      */
     protected abstract PrefixMap getPrefixMap();
+
+    @Test
+    public void prefixMap_basic_01()
+    {
+        PrefixMap pmap = getPrefixMap();
+        assertTrue(pmap.getMapping().isEmpty()) ;
+        assertTrue(pmap.getMappingCopy().isEmpty()) ;
+        assertTrue(pmap.getMappingCopyStr().isEmpty()) ;
+    }
+    
+    @Test
+    public void prefixMap_basic_02()
+    {
+        PrefixMap pmap = getPrefixMap();
+        pmap.add("", "http://example/") ;
+        assertTrue(pmap.contains("")) ;
+        assertTrue(pmap.getMapping().containsKey("")) ;
+        assertTrue(pmap.getMappingCopy().containsKey("")) ;
+        assertTrue(pmap.getMappingCopyStr().containsKey("")) ;
+    }
+
+    @Test
+    public void prefixMap_basic_03()
+    {
+        PrefixMap pmap = getPrefixMap();
+        pmap.add("", "http://example/") ;
+        pmap.add("org", "http://example.org/") ;
+        assertTrue(pmap.contains("")) ;
+        assertTrue(pmap.contains("org")) ;
+    }
 
     /**
      * Simple expand test

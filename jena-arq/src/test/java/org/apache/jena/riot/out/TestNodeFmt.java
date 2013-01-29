@@ -21,12 +21,8 @@ package org.apache.jena.riot.out;
 import java.io.StringWriter ;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.out.NodeFormatter ;
-import org.apache.jena.riot.out.NodeFormatterNT ;
-import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.PrefixMapStd ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Node ;

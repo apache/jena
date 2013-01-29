@@ -19,11 +19,8 @@
 package org.apache.jena.riot.tokens;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.PrefixMapStd ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
