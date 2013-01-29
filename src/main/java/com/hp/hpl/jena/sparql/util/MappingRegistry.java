@@ -18,9 +18,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
-import org.apache.jena.riot.system.PrefixMapStd ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 
 /** Assist with naming symbols by URI.
  *  This class keeps a prefix mapping so that subsystems can register their
