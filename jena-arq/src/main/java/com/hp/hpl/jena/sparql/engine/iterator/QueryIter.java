@@ -70,6 +70,15 @@ public abstract class QueryIter extends QueryIteratorBase
     public int getIteratorNumber() { return iteratorNumber ; }
     
     @Override
+    public void output(IndentedWriter out)
+    {
+        output(out, null) ;
+//        out.print(Plan.startMarker) ;
+//        out.print(Utils.className(this)) ;
+//        out.print(Plan.finishMarker) ;
+    }
+    
+    @Override
     public void output(IndentedWriter out, SerializationContext sCxt)
     { out.println(getIteratorNumber()+"/"+debug()) ; }
     
