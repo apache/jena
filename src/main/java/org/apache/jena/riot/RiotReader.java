@@ -236,6 +236,13 @@ public class RiotReader
         parse(in, lang, baseIRI, dest) ;
     }
 
+    /**
+     * Create an iterator over the parsed triples
+     * @param input Input Stream
+     * @param lang Language
+     * @param baseIRI Base IRI
+     * @return Iterator over the triples
+     */
     public static Iterator<Triple> createIteratorTriples(final InputStream input, final Lang lang, final String baseIRI)
     {
         // Special case N-Triples, because the RIOT reader has a pull interface
@@ -262,7 +269,14 @@ public class RiotReader
             return it;
         }
     }
-    
+   
+    /**
+     * Creates an iterator over the parsed quads
+     * @param input Input Stream
+     * @param lang Language
+     * @param baseIRI Base IRI
+     * @return Iterator over the quads
+     */
     public static Iterator<Quad> createIteratorQuads(final InputStream input, final Lang lang, final String baseIRI)
     {
         // Special case N-Quads, because the RIOT reader has a pull interface
