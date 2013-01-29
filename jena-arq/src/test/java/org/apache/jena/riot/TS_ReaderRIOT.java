@@ -31,6 +31,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestStreamManager.class 
     , TestJenaReaderRIOT.class
     , TestReadData.class
+    , TestRiotReader.class
 })
 
 public class TS_ReaderRIOT
