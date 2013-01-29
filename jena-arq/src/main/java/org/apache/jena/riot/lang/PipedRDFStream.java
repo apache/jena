@@ -23,6 +23,7 @@ import org.apache.jena.riot.system.StreamRDF ;
 /**
  * Abstract implementation of a producer class that implements {@code StreamRDF};
  * use one of the concrete implementations that match the RDF primitive you are using.
+ * @param <T> Type corresponding to a supported RDF primitive
  * 
  * @see PipedTriplesStream
  * @see PipedQuadsStream
