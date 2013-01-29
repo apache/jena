@@ -45,38 +45,37 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * To improve on output performance this implementation maintains a {@link Trie}
  * mapping namespace IRIs to their prefixes as well as a normal mapping.
  * Therefore IRI abbreviation can be done as an approximately O(1) operation in
- * the worst case (ignoring the vagaries of {@link HashMap} performance since
- * that underpins the {@link Trie} implementation). If you contrast this with
- * the abbreviation performance of the default {@link PrefixMap} which is worst
- * case O(n) then this is a substantial saving in scenarios where you primarily
- * use a prefix map for output.
+ * the worst case . If you contrast this with the abbreviation performance of
+ * the default {@code PrefixMap} which is worst case O(n) then this is a
+ * substantial saving in scenarios where you primarily use a prefix map for
+ * output.
  * </p>
  * <p>
  * Generally speaking all other operations should be roughly equivalent to the
- * default {@link PrefixMap} though the memory overhead of this implementation
+ * default {@code PrefixMap} though the memory overhead of this implementation
  * will be marginally higher due to the extra information maintained in the
- * {@link Trie}.
+ * {@code Trie}.
  * </p>
  */
-public class FastPrefixMap extends LightweightPrefixMapBase {
+public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
 
     private Map<String, IRI> prefixes = new HashMap<String, IRI>();
     private Map<String, IRI> prefixesView = Collections.unmodifiableMap(this.prefixes);
     private Trie<String> abbrevs = new Trie<String>();
 
     /**
-     * Create a new fast prefix map
+     * Create a new fast abbreviating prefix map
      */
-    public FastPrefixMap() {
+    public FastAbbreviatingPrefixMap() {
     }
 
     /**
-     * Create a new prefix map which copies mappings from an existing map
+     * Create a new fast abbreviating prefix map which copies mappings from an existing map
      * 
      * @param pmap
      *            Prefix Map
      */
-    public FastPrefixMap(LightweightPrefixMap pmap) {
+    public FastAbbreviatingPrefixMap(LightweightPrefixMap pmap) {
         this.putAll(pmap);
     }
 
