@@ -87,7 +87,7 @@ public class Prologue
         // New prefix mappings
         PrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
-            ext = new PrefixMapExtended(ext) ;
+            ext = PrefixMapFactory.extend(ext) ;
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )
