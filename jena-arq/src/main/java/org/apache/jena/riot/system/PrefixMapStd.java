@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * the {@link FastAbbreviatingPrefixMap} instead which offers much better abbreviation
  * performance.
  */
-public class PrefixMapStd extends LightweightPrefixMapBase {
+public class PrefixMapStd extends PrefixMapBase {
     final Map<String, IRI> prefixes = new HashMap<String, IRI>();
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
 

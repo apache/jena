@@ -29,7 +29,7 @@ import org.apache.jena.iri.IRI;
  * some useful helper methods
  * 
  */
-public abstract class LightweightPrefixMapBase implements PrefixMap {
+public abstract class PrefixMapBase implements PrefixMap {
 
     protected boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
