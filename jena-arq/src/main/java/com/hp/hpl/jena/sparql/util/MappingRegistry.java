@@ -18,8 +18,8 @@
 
 package com.hp.hpl.jena.sparql.util;
 
-import org.apache.jena.riot.system.LightweightPrefixMap;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapStd ;
 
 /** Assist with naming symbols by URI.
  *  This class keeps a prefix mapping so that subsystems can register their
@@ -27,7 +27,7 @@ import org.apache.jena.riot.system.PrefixMap ;
  */
 public class MappingRegistry
 {
-    private static LightweightPrefixMap mapping = new PrefixMap() ;
+    private static PrefixMap mapping = new PrefixMapStd() ;
     
     public static void addPrefixMapping(String prefix, String uri)
     {

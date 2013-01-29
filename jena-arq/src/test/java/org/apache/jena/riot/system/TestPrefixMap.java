@@ -19,13 +19,13 @@
 package org.apache.jena.riot.system;
 
 /**
- * Test the standard {@link PrefixMap} implementation
+ * Test the standard {@link PrefixMapStd} implementation
  *
  */
 public class TestPrefixMap extends AbstractTestLightweightPrefixMap {
 
     @Override
-    protected LightweightPrefixMap getPrefixMap() {
-        return new PrefixMap();
+    protected PrefixMap getPrefixMap() {
+        return new PrefixMapStd();
     }
 }

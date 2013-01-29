@@ -24,7 +24,7 @@ import org.apache.jena.iri.IRIFactory ;
 import org.junit.Test ;
 
 /**
- * Abstract tests for {@link LightweightPrefixMap} implementations
+ * Abstract tests for {@link PrefixMap} implementations
  * 
  */
 public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
@@ -36,14 +36,14 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      * 
      * @return Prefix Map
      */
-    protected abstract LightweightPrefixMap getPrefixMap();
+    protected abstract PrefixMap getPrefixMap();
 
     /**
      * Simple expand test
      */
     @Test
     public void prefixMap_expand_01() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "", "http://example/");
         String x = pmap.expand("", "x");
         assertEquals("http://example/x", x);
@@ -54,7 +54,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_expand_02() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://example/");
         String x = pmap.expand("", "x");
         assertNull(x);
@@ -65,7 +65,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_expand_03() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         // Defining twice should not cause an issue
         add(pmap, "ex", "http://example/");
         add(pmap, "ex", "http://example/");
@@ -78,7 +78,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_expand_04() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         // The most recent definition should always be the one that applies
         add(pmap, "ex", "http://example/");
         add(pmap, "ex", "http://elsewhere/ns#");
@@ -91,7 +91,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_delete_01() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         // Deleting a non-existent prefix should not cause an issue
         pmap.delete("ex");
     }
@@ -101,7 +101,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_delete_02() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://example/");
         String x = pmap.expand("ex", "x");
         assertEquals("http://example/x", x);
@@ -115,7 +115,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_01() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         String x = pmap.abbreviate("http://example/x");
         assertNull(x);
     }
@@ -125,7 +125,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_02() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://elsewhere/ns#");
         String x = pmap.abbreviate("http://example/x");
         assertNull(x);
@@ -136,7 +136,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_03() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://example/");
         add(pmap, "eg", "http://elsewhere/ns#");
         String x = pmap.abbreviate("http://example/x");
@@ -149,7 +149,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_04() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://example/");
         add(pmap, "eg", "http://example/ns#");
         String x = pmap.abbreviate("http://example/x");
@@ -162,7 +162,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_05() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         add(pmap, "ex", "http://example/");
         add(pmap, "eg", "http://example/");
         String x = pmap.abbreviate("http://example/x");
@@ -176,7 +176,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      */
     @Test
     public void prefixMap_abbrev_06() {
-        LightweightPrefixMap pmap = this.getPrefixMap();
+        PrefixMap pmap = this.getPrefixMap();
         for (int i = 1; i <= 100; i++) {
             add(pmap, "ns" + i, "http://example/ns" + i + "#");
         }
@@ -184,8 +184,8 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
         assertEquals("ns100:x", x);
     }
 
-    protected LightweightPrefixMap create() {
-        LightweightPrefixMap pm = getPrefixMap();
+    protected PrefixMap create() {
+        PrefixMap pm = getPrefixMap();
         pm.add("p0", "http://example/a/");
         pm.add("p1", "http://example/a/b");
         pm.add("p2", "http://example/a/b/");
@@ -241,7 +241,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
     }
 
     public void pmTest(String iriStr, String... expected) {
-        LightweightPrefixMap pm = create();
+        PrefixMap pm = create();
         String x = pm.abbreviate(iriStr);
         if ( expected.length == 0 )
         {
@@ -266,7 +266,7 @@ public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
      * @param uri
      *            URI
      */
-    protected void add(LightweightPrefixMap pmap, String prefix, String uri) {
+    protected void add(PrefixMap pmap, String prefix, String uri) {
         pmap.add(prefix, factory.create(uri));
     }
 

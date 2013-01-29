@@ -15,254 +15,153 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.riot.system;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.ActionKeyValue;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
 
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
- * Default implementation of a {@code LightweightPrefixMap}, this implementation
- * is best suited to use for input.
+ * Interface for lightweight prefix maps, this is similar to
+ * {@link PrefixMapping} from Jena Core but it omits any reverse lookup
+ * functionality.
  * <p>
- * If you are using this primarily to abbreviate URIs for output consider using
- * the {@link FastAbbreviatingPrefixMap} instead which offers much better abbreviation
- * performance.
+ * The contract also does not require an implementation to do any validation
+ * unlike the Jena Core {@link PrefixMapping} which require validation of
+ * prefixes.
+ * </p>
+ * <h3>Implementations</h3>
+ * <p>
+ * For input dominated workloads where you are primarily calling
+ * {@link #expand(String)} or {@link #expand(String, String)} it is best to use
+ * the default implementation - {@link PrefixMapStd}. For output dominated
+ * workloads where you are primarily calling {@link #abbrev(String)} or
+ * {@link #abbreviate(String)} it is better to use the {@link FastAbbreviatingPrefixMap}
+ * implementation.  See the javadoc for those classes for more explanation
+ * of their differences.
+ * </p>
+ * 
  */
-public class PrefixMap extends LightweightPrefixMapBase {
-    final Map<String, IRI> prefixes = new HashMap<String, IRI>();
-    private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
+public interface PrefixMap {
 
     /**
-     * Creates a prefix map copying prefixes from an existing prefix mapping
-     * @param pmap Prefix Mapping
-     * @return Prefix Map
-     */
-    public static LightweightPrefixMap fromPrefixMapping(PrefixMapping pmap) {
-        PrefixMap pm = new PrefixMap();
-        pm.putAll(pmap);
-        return pm;
-    }
+     * Return the underlying mapping, this is generally unsafe to modify and
+     * implementations may opt to return an unmodifiable view of the mapping if
+     * they wish
+     * 
+     * @return Underlying mapping
+     * */
+    public abstract Map<String, IRI> getMapping();
 
     /**
-     * Creates a new empty prefix mapping
+     * Return a fresh copy of the underlying mapping, should be safe to modify
+     * unlike the mapping returned from {@link #getMapping()}
+     * 
+     * @return Copy of the mapping
      */
-    public PrefixMap() {
-    }
+    public abstract Map<String, IRI> getMappingCopy();
 
     /**
-     * Creates a new prefix mapping copied from an existing map
-     * @param prefixMap Prefix Map
-     */
-    public PrefixMap(LightweightPrefixMap prefixMap) {
-        prefixes.putAll(prefixMap.getMapping());
-    }
-
-    /*
-     * (non-Javadoc)
+     * Gets a fresh copy of the mapping with the IRIs translated into their
+     * strings
      * 
-     * @see org.apache.jena.riot.system.LightweightPrefixMap#getMapping()
+     * @return Copy of the mapping
      */
-    @Override
-    public Map<String, IRI> getMapping() {
-        return prefixes2;
-    }
+    public abstract Map<String, String> getMappingCopyStr();
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Add a prefix, overwrites any existing association
      * 
-     * @see org.apache.jena.riot.system.LightweightPrefixMap#getMappingCopy()
+     * @param prefix
+     *            Prefix
+     * @param iriString
+     *            Namespace IRI
      */
-    @Override
-    public Map<String, IRI> getMappingCopy() {
-        return new HashMap<String, IRI>(prefixes);
-    }
+    public abstract void add(String prefix, String iriString);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Add a prefix, overwrites any existing association
      * 
-     * @see org.apache.jena.riot.system.LightweightPrefixMap#getMappingCopyStr()
+     * @param prefix
+     *            Prefix
+     * @param iri
+     *            Namespace IRI
      */
-    @Override
-    public Map<String, String> getMappingCopyStr() {
-        final Map<String, String> smap = new HashMap<String, String>();
-        ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>() {
-            @Override
-            public void apply(String key, IRI value) {
-                String str = value.toString();
-                smap.put(key, str);
-            }
-        };
-        Iter.apply(getMapping(), action);
-        return smap;
-    }
+    public abstract void add(String prefix, IRI iri);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Add a prefix, overwrites any existing association
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#add(java.lang.String,
-     * java.lang.String)
+     * @param pmap
+     *            Prefix Map
      */
-    @Override
-    public void add(String prefix, String iriString) {
-        prefix = canonicalPrefix(prefix);
-        IRI iri = IRIFactory.iriImplementation().create(iriString);
-        // Check!
-        prefixes.put(prefix, iri);
-    }
+    public abstract void putAll(PrefixMap pmap);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Add a prefix, overwrites any existing association
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#add(java.lang.String,
-     * org.apache.jena.iri.IRI)
+     * @param pmap
+     *            Prefix Mapping
      */
-    @Override
-    public void add(String prefix, IRI iri) {
-        prefix = canonicalPrefix(prefix);
-        prefixes.put(prefix, iri);
-    }
+    public abstract void putAll(PrefixMapping pmap);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Delete a prefix
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#putAll(org.apache.jena
-     * .riot.system.PrefixMap)
+     * @param prefix
+     *            Prefix to delete
      */
-    @Override
-    public void putAll(LightweightPrefixMap pmap) {
-        prefixes.putAll(pmap.getMapping());
-    }
+    public abstract void delete(String prefix);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Gets whether the map contains a given prefix
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#putAll(com.hp.hpl.jena
-     * .shared.PrefixMapping)
+     * @param prefix
+     *            Prefix
+     * @return True if the prefix is contained in the map, false otherwise
      */
-    @Override
-    public void putAll(PrefixMapping pmap) {
-        for (Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet())
-            add(e.getKey(), e.getValue());
-    }
+    public abstract boolean contains(String prefix);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Abbreviate an IRI or return null
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#delete(java.lang.String)
+     * @param uriStr
+     *            URI to abbreviate
+     * @return URI in prefixed name form if possible, null otherwise
      */
-    @Override
-    public void delete(String prefix) {
-        prefix = canonicalPrefix(prefix);
-        prefixes.remove(prefix);
-    }
+    public abstract String abbreviate(String uriStr);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Abbreviate an IRI or return a pair of prefix and local parts.
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#contains(java.lang.String
-     * )
+     * @param uriStr
+     *            URI string to abbreviate
+     * @return Pair of prefix and local name
+     * @see #abbreviate
      */
-    @Override
-    public boolean contains(String prefix) {
-        prefix = canonicalPrefix(prefix);
-        return _contains(prefix);
-    }
+    public abstract Pair<String, String> abbrev(String uriStr);
 
-    protected boolean _contains(String prefix) {
-        return prefixes.containsKey(prefix);
-    }
-
-    /*
-     * (non-Javadoc)
+    /**
+     * Expand a prefix named, return null if it can't be expanded
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#abbreviate(java.lang
-     * .String)
+     * @param prefixedName
+     *            Prefixed Name
+     * @return Expanded URI if possible, null otherwise
      */
-    @Override
-    public String abbreviate(String uriStr) {
-        Pair<String, String> p = abbrev(this.prefixes, uriStr, true);
-        if (p == null)
-            return null;
-        return p.getLeft() + ":" + p.getRight();
-    }
+    public abstract String expand(String prefixedName);
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Expand a prefix, return null if it can't be expanded
      * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#abbrev(java.lang.String)
+     * @param prefix
+     *            Prefix
+     * @param localName
+     *            Local name
+     * @return Expanded URI if possible, null otherwise
      */
-    @Override
-    public Pair<String, String> abbrev(String uriStr) {
-        return abbrev(this.prefixes, uriStr, true);
-    }
+    public abstract String expand(String prefix, String localName);
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#expand(java.lang.String)
-     */
-    @Override
-    public String expand(String prefixedName) {
-        int i = prefixedName.indexOf(':');
-        if (i < 0)
-            return null;
-        return expand(prefixedName.substring(0, i), prefixedName.substring(i + 1));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.apache.jena.riot.system.LightweightPrefixMap#expand(java.lang.String,
-     * java.lang.String)
-     */
-    @Override
-    public String expand(String prefix, String localName) {
-        prefix = canonicalPrefix(prefix);
-        IRI x = prefixes.get(prefix);
-        if (x == null)
-            return null;
-        return x.toString() + localName;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ ");
-        boolean first = true;
-
-        for (Entry<String, IRI> e : prefixes.entrySet()) {
-            String prefix = e.getKey();
-            IRI iri = e.getValue();
-            if (first)
-                first = false;
-            else
-                sb.append(" ,");
-            sb.append(prefix);
-            sb.append(":=");
-            sb.append(iri.toString());
-        }
-        sb.append(" }");
-        return sb.toString();
-    }
 }

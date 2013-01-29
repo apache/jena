@@ -23,16 +23,16 @@ import org.apache.jena.iri.IRI;
 
 // UNUSED
 /**
- * Implementation of a {@link LightweightPrefixMap} which extends another prefix
+ * Implementation of a {@link PrefixMap} which extends another prefix
  * map without ever altering the parent
  */
-public class PrefixMap2 extends PrefixMap {
-    LightweightPrefixMap parent;
-    LightweightPrefixMap local;
+public class PrefixMap2 extends PrefixMapStd {
+    PrefixMap parent;
+    PrefixMap local;
 
-    public PrefixMap2(LightweightPrefixMap ext) {
+    public PrefixMap2(PrefixMap ext) {
         this.parent = ext;
-        this.local = new PrefixMap();
+        this.local = new PrefixMapStd();
     }
 
     /** Add a prefix, overwites any existing association */

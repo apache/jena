@@ -64,7 +64,7 @@ public class RiotLib
     
     static ParserProfile profile = profile(RDFLanguages.TURTLE, null, null) ;
     static {
-        LightweightPrefixMap pmap = profile.getPrologue().getPrefixMap() ;
+        PrefixMap pmap = profile.getPrologue().getPrefixMap() ;
         pmap.add("rdf",  ARQConstants.rdfPrefix) ;
         pmap.add("rdfs", ARQConstants.rdfsPrefix) ;
         pmap.add("xsd",  ARQConstants.xsdPrefix) ;
@@ -106,9 +106,9 @@ public class RiotLib
     {
         Prologue prologue ;
         if ( resolveIRIs )
-            prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
+            prologue = new Prologue(new PrefixMapStd(), IRIResolver.create(baseIRI)) ;
         else
-            prologue = new Prologue(new PrefixMap(), IRIResolver.createNoResolve()) ;
+            prologue = new Prologue(new PrefixMapStd(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
             return new ParserProfileChecker(prologue, handler) ;

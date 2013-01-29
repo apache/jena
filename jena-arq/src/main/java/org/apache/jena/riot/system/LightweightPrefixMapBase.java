@@ -25,11 +25,11 @@ import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
 
 /**
- * Abstract base implementation of a {@link LightweightPrefixMap} which provides
+ * Abstract base implementation of a {@link PrefixMap} which provides
  * some useful helper methods
  * 
  */
-public abstract class LightweightPrefixMapBase implements LightweightPrefixMap {
+public abstract class LightweightPrefixMapBase implements PrefixMap {
 
     protected boolean strSafeFor(String str, char ch) {
         return str.indexOf(ch) == -1;
