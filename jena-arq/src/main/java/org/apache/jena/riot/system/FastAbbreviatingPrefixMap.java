@@ -34,11 +34,11 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 /**
  * A prefix map implementation suited to output heavy workloads
  * <p>
- * This is an alternative implementation of the {@link LightweightPrefixMap}
- * interface, it is broadly similar to the default {@link PrefixMap}
+ * This is an alternative implementation of the {@link PrefixMap}
+ * interface, it is broadly similar to the default {@link PrefixMapStd}
  * implementation but is faster in output heavy workloads. If you are calling
- * the {@link LightweightPrefixMap#expand(String)} or
- * {@link LightweightPrefixMap#expand(String, String)} methods a lot then you
+ * the {@link PrefixMap#expand(String)} or
+ * {@link PrefixMap#expand(String, String)} methods a lot then you
  * should be using this implementation.
  * </p>
  * <p>
@@ -75,7 +75,7 @@ public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
      * @param pmap
      *            Prefix Map
      */
-    public FastAbbreviatingPrefixMap(LightweightPrefixMap pmap) {
+    public FastAbbreviatingPrefixMap(PrefixMap pmap) {
         this.putAll(pmap);
     }
 
@@ -133,7 +133,7 @@ public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
     }
 
     @Override
-    public void putAll(LightweightPrefixMap pmap) {
+    public void putAll(PrefixMap pmap) {
         Map<String, IRI> map = pmap.getMapping();
         for (String prefix : map.keySet()) {
             this.add(prefix, map.get(prefix));

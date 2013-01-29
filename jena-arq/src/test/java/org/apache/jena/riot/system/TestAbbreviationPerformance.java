@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test for performance of {@link LightweightPrefixMap} implementations
+ * Test for performance of {@link PrefixMap} implementations
  * 
  */
 public class TestAbbreviationPerformance {
@@ -34,7 +34,7 @@ public class TestAbbreviationPerformance {
      * @param namespaces Number of namespaces
      * @param fastShouldWin Whether the FastAbbreviatingPrefixMap should outperform the PrefixMap
      */
-    private void test_amalgamated_performance(PrefixMap normal, FastAbbreviatingPrefixMap fast, int namespaces, boolean fastShouldWin) {
+    private void test_amalgamated_performance(PrefixMapStd normal, FastAbbreviatingPrefixMap fast, int namespaces, boolean fastShouldWin) {
         long nPerf = 0, fPerf = 0;
         
         for (int i = 1; i <= namespaces; i++) {
@@ -56,7 +56,7 @@ public class TestAbbreviationPerformance {
         }
     }
 
-    private long run(LightweightPrefixMap pmap, String input, String expected, int runs) {
+    private long run(PrefixMap pmap, String input, String expected, int runs) {
         long start = System.nanoTime();
         for (int i = 1; i <= runs; i++) {
             String x = pmap.abbreviate(input);
@@ -65,19 +65,19 @@ public class TestAbbreviationPerformance {
         return System.nanoTime() - start;
     }
 
-    private void populate(LightweightPrefixMap pmap, int count) {
+    private void populate(PrefixMap pmap, int count) {
         for (int i = 1; i <= count; i++) {
             pmap.add("ns" + i, "http://example/ns" + i + "#");
         }
     }
 
     /**
-     * Expect {@link PrefixMap} to outperform {@link FastAbbreviatingPrefixMap} when there
+     * Expect {@link PrefixMapStd} to outperform {@link FastAbbreviatingPrefixMap} when there
      * is a single namespace
      */
     @Test
     public void prefixMap_abbrev_performance_01() {
-        PrefixMap pmap = new PrefixMap();
+        PrefixMapStd pmap = new PrefixMapStd();
         populate(pmap, 1);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 1);
@@ -86,12 +86,12 @@ public class TestAbbreviationPerformance {
     }
 
     /**
-     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMap} as soon as
+     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMapStd} as soon as
      * there are a few namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_02() {
-        PrefixMap pmap = new PrefixMap();
+        PrefixMapStd pmap = new PrefixMapStd();
         populate(pmap, 5);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 5);
@@ -101,11 +101,11 @@ public class TestAbbreviationPerformance {
 
     /**
      * Expect {@link FastAbbreviatingPrefixMap} to significantly outperform
-     * {@link PrefixMap} once there are a good number of namespaces
+     * {@link PrefixMapStd} once there are a good number of namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_03() {
-        PrefixMap pmap = new PrefixMap();
+        PrefixMapStd pmap = new PrefixMapStd();
         populate(pmap, 20);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 20);
@@ -115,11 +115,11 @@ public class TestAbbreviationPerformance {
     
     /**
      * Expect {@link FastAbbreviatingPrefixMap} to significantly outperform
-     * {@link PrefixMap} once there are a good number of namespaces
+     * {@link PrefixMapStd} once there are a good number of namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_04() {
-        PrefixMap pmap = new PrefixMap();
+        PrefixMapStd pmap = new PrefixMapStd();
         populate(pmap, 100);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 100);
