@@ -37,7 +37,7 @@ import org.junit.runners.Suite.SuiteClasses ;
     , TestPrefixMapExtended2.class
     // May be subject to performance vagaries, with the improvements made
     // to the fast implementation this should be fairly safe
-    , TestAbbreviationPerformance.class
+    //, TestAbbreviationPerformance.class
 })
 
 public class TS_RiotSystem

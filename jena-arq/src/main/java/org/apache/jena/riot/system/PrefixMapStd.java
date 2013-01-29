@@ -18,23 +18,31 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.jena.atlas.lib.Pair;
-import org.apache.jena.iri.IRI;
+import java.util.Collections ;
+import java.util.HashMap ;
+import java.util.Map ;
+
+import org.apache.jena.atlas.lib.Pair ;
+import org.apache.jena.iri.IRI ;
+import org.apache.jena.iri.IRIFactory ;
 
 /**
- * Default implementation of a {@code LightweightPrefixMap}, this implementation
+ * Default implementation of a {@link PrefixMap}, this implementation
  * is best suited to use for input.
  * <p>
- * If you are using this primarily to abbreviate URIs for output consider using
- * the {@link FastAbbreviatingPrefixMap} instead which offers much better abbreviation
- * performance.
+ * @See FastAbbreviatingPrefixMap which may offer much better abbreviation performance.
  */
 public class PrefixMapStd extends PrefixMapBase {
+    // Expansion map
     final Map<String, IRI> prefixes = new HashMap<String, IRI>();
+
+    // Immutable view of prefixes 
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
+    
+    // Abbreviation map used for common cases.
+    // This keeps the URI->prefix mappings for a computed guess at the anser, before
+    // resorting to a full search. See abbrev(String) below.s 
+    final Map<String, String> uriToPrefix = new HashMap<String, String>();
 
     /**
      * Creates a new empty prefix mapping
@@ -56,9 +64,18 @@ public class PrefixMapStd extends PrefixMapBase {
     }
 
     @Override
+    public void add(String prefix, String iriString) {
+        prefix = canonicalPrefix(prefix);
+        IRI iri = IRIFactory.iriImplementation().create(iriString);
+        prefixes.put(prefix, iri);
+        uriToPrefix.put(iriString, prefix) ;
+    }
+
+    @Override
     public void add(String prefix, IRI iri) {
         prefix = canonicalPrefix(prefix);
         prefixes.put(prefix, iri);
+        uriToPrefix.put(iri.toString(), prefix) ;
     }
 
     @Override
@@ -75,7 +92,7 @@ public class PrefixMapStd extends PrefixMapBase {
 
     @Override
     public String abbreviate(String uriStr) {
-        Pair<String, String> p = abbrev(this.prefixes, uriStr, true);
+        Pair<String, String> p = abbrev(uriStr);
         if (p == null)
             return null;
         return p.getLeft() + ":" + p.getRight();
@@ -83,7 +100,35 @@ public class PrefixMapStd extends PrefixMapBase {
 
     @Override
     public Pair<String, String> abbrev(String uriStr) {
+        // Look for a prefix by URI ending "#" or "/"
+        // then look for that as a known prefix.
+        String candidate = getPossibleKey(uriStr) ;
+        String uriForPrefix = uriToPrefix.get(candidate) ;
+        if ( uriForPrefix != null )
+        {
+            // Fast track.
+            String ln = uriStr.substring(candidate.length());
+            if ( isTurtleSafe(ln))
+                return Pair.create(uriForPrefix, ln); 
+        }
+        // Not in the uri -> prefix map.  Crunch it.
         return abbrev(this.prefixes, uriStr, true);
+    }
+
+    /**
+     * Takes a guess for the IRI string to use in abbreviation.
+     * 
+     * @param iriString IRI string
+     * @return String or null
+     */
+    protected static String getPossibleKey(String iriString) {
+        int index = iriString.lastIndexOf('#');
+        if (index > -1)
+            return iriString.substring(0, index + 1);
+        index = iriString.lastIndexOf('/');
+        if (index > -1)
+            return iriString.substring(0, index + 1);
+        return null;
     }
 
     @Override
