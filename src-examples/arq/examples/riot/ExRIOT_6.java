@@ -18,37 +18,35 @@
 
 package arq.examples.riot;
 
-import java.util.concurrent.ExecutorService ;
-import java.util.concurrent.Executors ;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import org.apache.jena.riot.RDFDataMgr ;
-import org.apache.jena.riot.lang.StreamedTriplesIterator ;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.lang.PipedRDFIterator;
+import org.apache.jena.riot.lang.PipedRDFStream;
+import org.apache.jena.riot.lang.PipedTriplesStream;
+import org.apache.jena.riot.lang.StreamedTriplesIterator;
 
-import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.Triple;
 
-/** Example of using RIOT : iterate over output of parser run */
+/**
+ * Example of using RIOT : iterate over output of parser run using a
+ * {@link PipedRDFStream} and a {@link PipedRDFIterator}
+ * 
+ */
 public class ExRIOT_6 {
 
     public static void main(String... argv) {
-        // Not needed here as we are using RIOT itself via RDFDataMgr, not
-        // indirectly.
-        // RIOT.init() ;
-
         final String filename = "data.ttl";
 
         // Create a StreamedTriplesIterator, this doubles as both a StreamRDF
         // for parser output and an iterator for our consumption
         // You can optionally supply a buffer size here, see the documentation
         // for details about recommended buffer sizes
-        final StreamedTriplesIterator iter = new StreamedTriplesIterator();
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
 
-        // The classes derived from StreamedRDFIterator such as this are
-        // fully thread safe so the parser and the consumer of the iterator
-        // may be on different threads
-        // Generally speaking the parser and the consumer must be on different
-        // threads as otherwise your consumer code will never start and
-        // everything will deadlock
-
+        // PipedRDFStream and PipedRDFIterator need to be on different threads
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         // Create a runnable for our parser thread
@@ -57,18 +55,17 @@ public class ExRIOT_6 {
             @Override
             public void run() {
                 // Call the parsing process.
-                RDFDataMgr.parse(iter, filename);
+                RDFDataMgr.parse(inputStream, filename);
             }
         };
 
-        // Start the parser
+        // Start the parser on another thread
         executor.submit(parser);
 
         // We will consume the input on the main thread here
 
         // We can now iterate over data as it is parsed, parsing only runs as
-        // far
-        // ahead of our consumption as the buffer size allows
+        // far ahead of our consumption as the buffer size allows
         while (iter.hasNext()) {
             Triple next = iter.next();
             // Do something with each triple
