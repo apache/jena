@@ -18,7 +18,7 @@
 
 package org.apache.jena.riot.out;
 
-import org.apache.jena.riot.system.LightweightPrefixMap;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prologue ;
 
 public class OutputProfile
@@ -28,6 +28,6 @@ public class OutputProfile
     
     public Prologue prologue ;
     
-    public LightweightPrefixMap prefixMap() { return prologue.getPrefixMap() ; }
+    public PrefixMap prefixMap() { return prologue.getPrefixMap() ; }
     // URI to relative URI.
 }

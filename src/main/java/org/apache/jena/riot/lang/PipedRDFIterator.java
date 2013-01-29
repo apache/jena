@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.lib.Closeable ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.LightweightPrefixMap ;
 import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapStd ;
 
 /**
  * A {@code PipedRDFIterator} should be connected to a {@link PipedRDFStream} implementation;
@@ -74,7 +74,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
 
     private final Object lock = new Object() ; // protects baseIri and prefixes
     private String baseIri ;
-    private final LightweightPrefixMap prefixes = new PrefixMap() ;
+    private final PrefixMap prefixes = new PrefixMapStd() ;
 
 
     /**
@@ -269,12 +269,12 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
      * 
      * @return Prefix Map
      */
-    public LightweightPrefixMap getPrefixes()
+    public PrefixMap getPrefixes()
     {
         synchronized (lock)
         {
             // Need to return a copy since PrefixMap is not concurrent
-            return new PrefixMap(prefixes) ;
+            return new PrefixMapStd(prefixes) ;
         }
     }
 

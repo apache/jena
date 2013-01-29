@@ -25,7 +25,7 @@ package org.apache.jena.riot.system;
 public class TestFastAbbreviatingPrefixMap extends AbstractTestLightweightPrefixMap {
 
     @Override
-    protected LightweightPrefixMap getPrefixMap() {
+    protected PrefixMap getPrefixMap() {
         return new FastAbbreviatingPrefixMap();
     }
 

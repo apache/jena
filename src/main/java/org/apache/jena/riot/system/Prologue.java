@@ -30,15 +30,15 @@ public class Prologue
     protected boolean seenBaseURI = false ;     // Implicit or set.
 //    protected String baseURI = null ;
 
-    protected LightweightPrefixMap prefixMap = null ;
+    protected PrefixMap prefixMap = null ;
     protected IRIResolver resolver = null ;
     
     public static Prologue create(String base, PrefixMapping pmapping)
     {
-        PrefixMap pmap = null ;
+        PrefixMapStd pmap = null ;
         if ( pmapping != null )
         {
-            pmap = new PrefixMap() ;
+            pmap = new PrefixMapStd() ;
             Map<String, String> x =  pmapping.getNsPrefixMap() ;
             for ( Entry<String, String> e : x.entrySet() )
                 pmap.add(e.getKey(), e.getValue()) ;
@@ -51,11 +51,11 @@ public class Prologue
     
     public Prologue()
     { 
-        this.prefixMap = new PrefixMap() ;
+        this.prefixMap = new PrefixMapStd() ;
         this.resolver = null ;
     }
     
-    public Prologue(LightweightPrefixMap pmap, IRIResolver resolver)
+    public Prologue(PrefixMap pmap, IRIResolver resolver)
     {
         this.prefixMap = pmap ; 
         this.resolver = resolver ;
@@ -69,26 +69,26 @@ public class Prologue
 
     public Prologue copy()
     {
-        PrefixMap prefixMap = new PrefixMap(this.prefixMap) ;
+        PrefixMapStd prefixMap = new PrefixMapStd(this.prefixMap) ;
         return new Prologue(prefixMap, resolver) ;
     }
     
     public void usePrologueFrom(Prologue other)
     {
         // Copy.
-        prefixMap = new PrefixMap(other.prefixMap) ;
+        prefixMap = new PrefixMapStd(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
             resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;
     }
     
-    public Prologue sub(LightweightPrefixMap newMappings)  { return sub(newMappings, null) ; }
+    public Prologue sub(PrefixMap newMappings)  { return sub(newMappings, null) ; }
     public Prologue sub(String base)            { return sub(null, base) ; }
     
-    public Prologue sub(LightweightPrefixMap newMappings, String base)
+    public Prologue sub(PrefixMap newMappings, String base)
     {
         // New prefix mappings
-        LightweightPrefixMap ext = getPrefixMap() ;
+        PrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
             ext = new PrefixMap2(ext) ;
         // New base.
@@ -158,9 +158,9 @@ public class Prologue
     }   
 
     /** Return the prefix map from the parsed query */ 
-    public LightweightPrefixMap getPrefixMap() { return prefixMap ; }
+    public PrefixMap getPrefixMap() { return prefixMap ; }
     /** Set the mapping */
-    public void setPrefixMapping(LightweightPrefixMap pmap ) { prefixMap = pmap ; }
+    public void setPrefixMapping(PrefixMap pmap ) { prefixMap = pmap ; }
 
 //    /** Reverse lookup of a URI to get a prefix */
 //    public String getPrefix(String uriStr)

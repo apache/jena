@@ -84,7 +84,7 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     {
         // TODO
         // Don't do anything with IRIs.
-        Prologue prologue = new Prologue(new PrefixMap(), IRIResolver.createNoResolve()) ;
+        Prologue prologue = new Prologue(new PrefixMapStd(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
         ParserProfile profile = new ParserProfileBase(prologue, handler) ;
         profile.setLabelToNode(LabelToNode.createUseLabelAsGiven()) ;
