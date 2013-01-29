@@ -22,7 +22,7 @@ package org.apache.jena.riot.system;
  * Tests the {@link FastPrefixMap} implementation
  *
  */
-public class TestFastPrefixMap extends TestLightweightPrefixMap {
+public class TestFastPrefixMap extends AbstractTestLightweightPrefixMap {
 
     @Override
     protected LightweightPrefixMap getPrefixMap() {

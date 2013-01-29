@@ -27,7 +27,7 @@ import org.apache.jena.iri.IRIFactory;
  * Abstract tests for {@link LightweightPrefixMap} implementations
  * 
  */
-public abstract class TestLightweightPrefixMap extends BaseTest {
+public abstract class AbstractTestLightweightPrefixMap extends BaseTest {
     protected IRIFactory factory = IRIFactory.iriImplementation();
 
     /**
