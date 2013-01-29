@@ -35,7 +35,6 @@ public class Iso639  implements LanguageTagCodes  {
      * <a href="http://lcweb.loc.gov/standards/iso639-2/englangn.html">
      * http://lcweb.loc.gov/standards/iso639-2/englangn.html</a>
      * on the 24th July 2001, and dated 12th October 2000.
-     * @author jjc
      */
     static final Map<String, Iso639> all = new HashMap<String, Iso639>();
 
@@ -81,7 +80,6 @@ public class Iso639  implements LanguageTagCodes  {
  * <li><CODE>LT_ISO639|LT_UNDETERMINED</CODE> i.e. <CODE>und</CODE></li>
  * <li><CODE>LT_ISO639|LT_LOCAL_USE</CODE> e.g. <CODE>qaa</CODE></li>
  *</ul>
- *
  */   
     public final int classification;
     /** The ISO639-1 two character code.

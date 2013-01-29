@@ -33,9 +33,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Inference graph for accessing the LP version of the backward chaining
  * rule engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 

@@ -26,7 +26,6 @@ import java.util.*;
     A listener that filters all its listening down to the single-statement level. Users of this
     class override <code>addedStatement(Statement)</code> and 
     <code>removedStatement(Statement)</code>.
- 	@author kers
 */
 public class StatementListener implements ModelChangedListener
     {

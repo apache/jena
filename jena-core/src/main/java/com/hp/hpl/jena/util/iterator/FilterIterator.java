@@ -24,8 +24,7 @@ import java.util.NoSuchElementException;
 /** 
      Creates a sub-Iterator by filtering. This class should not be used
      directly any more; the subclasses FilterKeepIterator and FilterDropIterator
-     should be used instead. 
-     @author jjc, mods [clarity & speedup] by kers
+     should be used instead.
  */
 public class FilterIterator<T> extends WrappedIterator<T>
     {

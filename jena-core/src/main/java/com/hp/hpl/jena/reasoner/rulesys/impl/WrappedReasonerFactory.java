@@ -25,8 +25,6 @@ import com.hp.hpl.jena.util.FileManager;
 /**
     WrappedReasonerFactory - a wrapper round ReasonerFactories that
     accepts a Resource configuring initial rules, schemas, etc.
-    
-    @author kers
 */
 public final class WrappedReasonerFactory implements ReasonerFactory
     {

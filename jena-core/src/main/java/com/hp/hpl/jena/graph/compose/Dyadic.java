@@ -19,6 +19,8 @@
 package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.SimpleEventManager;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
     Base class for the two-operand composition operations; has two graphs L and R
@@ -44,11 +46,31 @@ public abstract class Dyadic extends CompositionBase
             ;
 		}
 
+	
+	/**
+	 * override graphBaseFind to return an iterator that will report when
+	 * a deletion occurs.
+	 */
+	@Override
+    protected final ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+    {
+		return SimpleEventManager.notifyingRemove( this, this._graphBaseFind( m ) );
+    }
+	
+	/**
+	 * The method that the overridden graphBaseFind( TripleMatch m ) calls to actually
+	 * do the work of finding.
+	 * @param m
+	 * @return
+	 */
+	protected abstract ExtendedIterator<Triple> _graphBaseFind( TripleMatch m );
+	
     @Override
     public void close()
     	{
     	L.close();
     	R.close();
+    	this.closed = true;
         }
         
     /**

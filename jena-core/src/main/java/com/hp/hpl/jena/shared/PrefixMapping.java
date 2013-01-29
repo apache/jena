@@ -31,8 +31,6 @@ import com.hp.hpl.jena.vocabulary.*;
     Note that a Model *is* a PrefixMapping, so all the PrefixMapping
     operations apply to Models, and a Model can be used to supply
     the PrefixMapping argument to setNsPrefixes.
-
-     @author kers
 */
 
 public interface PrefixMapping

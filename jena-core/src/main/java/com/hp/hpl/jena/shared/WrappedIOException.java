@@ -22,7 +22,6 @@ import java.io.IOException;
 
 /**
     A wrapped IO exception.
-    @author hedgehog
 */
 public class WrappedIOException extends JenaException
     {

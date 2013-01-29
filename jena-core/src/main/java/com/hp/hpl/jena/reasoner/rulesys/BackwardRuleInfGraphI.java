@@ -27,9 +27,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * This interface collects together those operations that the backchaining
  * engine needs to invoke in the parent InfGraph. This allows different inf graphs
  * to exploit the same core backchaining engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
             

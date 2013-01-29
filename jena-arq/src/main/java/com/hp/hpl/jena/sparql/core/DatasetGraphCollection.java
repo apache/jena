@@ -21,6 +21,7 @@ package com.hp.hpl.jena.sparql.core;
 import java.util.Iterator ;
 
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
@@ -87,7 +88,7 @@ public abstract class DatasetGraphCollection extends DatasetGraphBaseFind
 
     protected Graph fetchGraph(Node gn)
     {
-        if ( Quad.isDefaultGraph(gn) )
+        if ( Quad.isDefaultGraph(gn) || Lib.equal(gn,Quad.tripleInQuad)) // Not preferrred style
             return getDefaultGraph() ;
         else
             return getGraph(gn) ;

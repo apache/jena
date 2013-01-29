@@ -183,6 +183,7 @@ public class Chars
     public static final int  UNSET           =  -2 ;
     public static final char NL              = '\n' ;
     public static final char CR              = '\r' ;
+    public static final char BSPACE          = '\b' ;
     
     public static final char CH_ZERO         =  (char)0 ;
 

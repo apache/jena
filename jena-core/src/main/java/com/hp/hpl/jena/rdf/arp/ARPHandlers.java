@@ -29,9 +29,6 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * implementations of this interface are not supported. This is a class rather
  * than an interface to have better backward compatibilitiy with earlier
  * versions, however constructing instances of this class is deprecated.
- * 
- * @author Jeremy J. Carroll
- * 
  */
 public class ARPHandlers {
     

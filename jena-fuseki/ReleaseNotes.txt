@@ -4,6 +4,7 @@
 
 + Upgrade to Jetty 8.1.8.v20121106
 + Uses Jena 2.10.0.
++ JENA-376 : fuseki linux service script : Either use options as given or use defaults, not append defaults to any given.
 
 == Fuseki 0.2.5
 

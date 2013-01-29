@@ -31,9 +31,6 @@ import java.io.*;
 import java.util.*;
 
 /** N-Triple Reader
- *
- * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2010-05-26 20:28:26 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = LoggerFactory.getLogger(NTripleReader.class);

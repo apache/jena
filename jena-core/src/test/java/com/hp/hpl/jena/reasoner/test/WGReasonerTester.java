@@ -57,9 +57,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  * false document we run an additional validation check. For
  * negative entailment tests which tests all triples in the non-conclusions file 
  * and check that at least one trile is missing. </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-07-04 16:41:35 $
  */
 public class WGReasonerTester {
 

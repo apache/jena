@@ -31,9 +31,6 @@ import junit.framework.TestSuite;
 /**
  * Test machinery in InfModel which is not associated with any 
  * particular reasoner.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class TestInfModel extends TestCase {

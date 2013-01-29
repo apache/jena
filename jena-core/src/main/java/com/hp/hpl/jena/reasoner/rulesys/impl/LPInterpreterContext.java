@@ -22,9 +22,6 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * The context in which an LPInterpreter instance is running.
  * The context the entity that should be notified when a branch has been
  * suspended awaiting further results for a given generator.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public interface LPInterpreterContext extends LPInterpreterState {
 

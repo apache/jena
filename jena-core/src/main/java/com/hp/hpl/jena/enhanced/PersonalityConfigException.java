@@ -20,7 +20,6 @@ package com.hp.hpl.jena.enhanced;
 
 /**
  * Exception denoting that a personality is misconfigured in some way.
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  */
 public class PersonalityConfigException 
     extends RuntimeException 

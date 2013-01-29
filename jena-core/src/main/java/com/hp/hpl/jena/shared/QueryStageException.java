@@ -21,7 +21,6 @@ package com.hp.hpl.jena.shared;
 
 /**
      Exception thrown when an earlier query stage has throw an exception.
-     @author hedgehog
 */
 public class QueryStageException extends JenaException
     {

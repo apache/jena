@@ -33,9 +33,6 @@ import java.util.*;
  * The OWL-specific rule augmentation can be included. Each of these settings
  * can be controlled using the configuration graph, specific methods calls or
  * generic setParameter calls.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-08-02 15:06:55 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 

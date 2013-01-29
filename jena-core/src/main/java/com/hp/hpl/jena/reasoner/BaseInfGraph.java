@@ -100,8 +100,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         triples may be irremovable.
 
         TODO accomodate the properties of the base graph, too.
-
-        @author hedgehog
     */
     public static class InfFindSafeCapabilities extends InfCapabilities
         {

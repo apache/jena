@@ -19,9 +19,14 @@
 package com.hp.hpl.jena.graph.compose.test;
 
 
+import com.hp.hpl.jena.graph.Factory;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.compose.*;
-import com.hp.hpl.jena.mem.test.TestSuiteRegression;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.test.AbstractTestPackage;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
 import junit.framework.*;
 
@@ -30,9 +35,53 @@ public class TestPackage extends TestCase {
     @SuppressWarnings("deprecation")
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
+    	/*
         suite( result, Intersection.class );
         suite( result, Union.class );
         suite( result, Difference.class );
+        */
+    	GraphModelFactory gmf = new GraphModelFactory(){
+
+			@Override
+			Graph getGraph()
+			{
+				return new Intersection(Factory.createGraphMem(), Factory.createGraphMem());
+			}};
+			
+    	AbstractTestPackage atp = new AbstractTestPackage( "Intersection",  gmf ){};
+    	for (int i=0;i<atp.testCount();i++)
+    	{
+    		result.addTest( atp.testAt(i) );
+    	}
+    	
+    	gmf = new GraphModelFactory(){
+
+			@Override
+			Graph getGraph()
+			{
+				return new Difference(Factory.createGraphMem(), Factory.createGraphMem());
+			}};
+			
+    	atp = new AbstractTestPackage( "Difference",  gmf ){};
+    	for (int i=0;i<atp.testCount();i++)
+    	{
+    		result.addTest( atp.testAt(i) );
+    	}
+    	
+    	gmf = new GraphModelFactory(){
+
+			@Override
+			Graph getGraph()
+			{
+				return new Union(Factory.createGraphMem(), Factory.createGraphMem());
+			}};
+			
+    	atp = new AbstractTestPackage( "Union",  gmf ){};
+    	for (int i=0;i<atp.testCount();i++)
+    	{
+    		result.addTest( atp.testAt(i) );
+    	}
+    	//suite.addTestSuite( new PlainModelTestSuite( ))
     /* */
         result.addTest( TestDelta.suite() );
         result.addTest( TestUnion.suite() );
@@ -46,11 +95,29 @@ public class TestPackage extends TestCase {
         return  result;
     }
 
-    public static TestSuite suite(TestSuite suite, Class<? extends Graph> c) {
-
-    	for (int i=0;i<TestSuiteRegression.testNames.length;i++)
-           suite.addTest(new TestCaseBasic(TestSuiteRegression.testNames[i],c));
+    
+    private static abstract class GraphModelFactory implements TestingModelFactory
+	{
+    	abstract Graph getGraph();
     	
-        return suite;
-    }
+		@Override
+		public Model createModel()
+		{
+			return createModel( getGraph());
+		}
+
+		@Override
+		public Model createModel( final Graph base )
+		{
+			return ModelFactory.createModelForGraph(base);
+		}
+
+		@Override
+		public PrefixMapping getPrefixMapping()
+		{
+			return ModelFactory.createDefaultModel().getGraph()
+					.getPrefixMapping();
+		}
+	}
+
 }

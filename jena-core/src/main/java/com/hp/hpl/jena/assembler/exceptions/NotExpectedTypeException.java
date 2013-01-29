@@ -23,8 +23,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
     Exception to throw when some (dynamically loaded) class isn't of the
     required type.
-    
-    @author kers
 */
 public class NotExpectedTypeException extends AssemblerException
     {

@@ -24,8 +24,7 @@ import java.util.*;
     NiceIterator is the standard base class implementing ExtendedIterator. It provides
     the static methods for <code>andThen</code>, <code>filterKeep</code> and
     <code>filterDrop</code>; these can be reused from any other class. It defines
-    equivalent instance methods for descendants and to satisfy ExtendedIterator.  
-	@author kers
+    equivalent instance methods for descendants and to satisfy ExtendedIterator.
 */
 
 public class NiceIterator<T> implements ExtendedIterator<T>

@@ -43,9 +43,6 @@ import java.io.FileInputStream;
  *           N-TRIPLE
  *           N3
  *  </pre>
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:51 $
  */
 public class rdfcompare extends java.lang.Object {
 

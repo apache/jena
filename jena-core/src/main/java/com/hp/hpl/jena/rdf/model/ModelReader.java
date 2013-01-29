@@ -20,8 +20,6 @@ package com.hp.hpl.jena.rdf.model;
 
 /**
     A component interface used by ModelGetter for reading models.
-    
-     @author eh
 */
 public interface ModelReader
     {

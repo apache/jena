@@ -29,11 +29,6 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
- */
 public class TestRETE  extends TestCase {
      
     // Useful constants

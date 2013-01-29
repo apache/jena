@@ -18,11 +18,8 @@
 
 package arq.cmdline;
 
-import java.util.ArrayList ;
 import java.util.List ;
 
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFDataMgr ;
 import arq.cmd.CmdException ;
 
@@ -44,26 +41,33 @@ import com.hp.hpl.jena.util.LocationMapper ;
 public class ModDatasetGeneral extends ModDataset
 {
     // See also ModDatasetAssembler
-    protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph", "data") ;
+    protected final ArgDecl graphDecl      = new ArgDecl(ArgDecl.HasValue, "graph") ;
+    protected final ArgDecl dataDecl      = new ArgDecl(ArgDecl.HasValue, "data") ;
     protected final ArgDecl namedGraphDecl = new ArgDecl(ArgDecl.HasValue, "named", "namedgraph", "namedGraph", "namedData", "nameddata") ;
     //protected final ArgDecl dataFmtDecl    = new ArgDecl(ArgDecl.HasValue, "fmt", "format") ;
     //protected final ArgDecl dirDecl        = new ArgDecl(ArgDecl.HasValue, "dir") ;
     protected final ArgDecl lmapDecl       = new ArgDecl(ArgDecl.HasValue, "lmap") ;
- 
+    
+    private List<String> dataURLs                = null ;
     private List<String> graphURLs               = null ;
     private List<String> namedGraphURLs          = null ;
     private DataFormat dataSyntax        = null ;
     private FileManager fileManager     = FileManager.get() ;    
 
+    protected ModDatasetGeneral() {}
+    
     @Override
     public void registerWith(CmdGeneral cl)
     {
         cl.getUsage().startCategory("Dataset") ;
+        cl.add(dataDecl,
+               "--data=FILE",
+               "Data for the datset - triple or quad formats") ;
         cl.add(graphDecl,
-               "--graph",
+               "--graph=FILE",
                "Graph for default graph of the datset") ;
         cl.add(namedGraphDecl,
-               "--namedGraph",
+               "--namedGraph=FILE",
                "Add a graph into the dataset as a named graph") ;
         //cl.add(dirDecl) ;
         //cl.add(dataFmtDecl) ;
@@ -75,6 +79,7 @@ public class ModDatasetGeneral extends ModDataset
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
+        dataURLs = cmdLine.getValues(dataDecl) ;
         graphURLs = cmdLine.getValues(graphDecl) ;
         namedGraphURLs = cmdLine.getValues(namedGraphDecl) ;
         
@@ -90,7 +95,8 @@ public class ModDatasetGeneral extends ModDataset
     public Dataset createDataset()
     {
         // If nothing specified to the module.  Leave alone and hope the query has FROM/FROM NAMED
-        if ( (graphURLs == null || graphURLs.size() == 0) &&
+        if (  ( dataURLs == null || dataURLs.size() == 0) &&
+              (graphURLs == null || graphURLs.size() == 0) &&
               (namedGraphURLs == null || namedGraphURLs.size() == 0 ) )
             return null ;
         
@@ -105,27 +111,14 @@ public class ModDatasetGeneral extends ModDataset
     protected void addGraphs(Dataset ds)
     {
         try {
-            if ( (graphURLs != null) || (namedGraphURLs != null) )
+            if ( dataURLs != null )
             {
-                // Do quads
-                List<String> triples = new ArrayList<String>() ;
-                List<String> quads = new ArrayList<String>() ;
-                
-                for ( String fn : graphURLs )
-                {
-                    Lang lang = RDFLanguages.filenameToLang(fn) ; 
-                    
-                    if ( RDFLanguages.isQuads(lang) )
-                        quads.add(fn) ;
-                    else
-                        triples.add(fn) ;
-                }
-                
-                for ( String fn : quads )
-                    RDFDataMgr.read(ds.asDatasetGraph(), fn) ;
-                dataset = 
-                    DatasetUtils.addInGraphs(ds, triples, namedGraphURLs, fileManager, null) ;
+                for ( String url : dataURLs )
+                    RDFDataMgr.read(ds, url) ;
             }
+            
+            if ( (graphURLs != null) || (namedGraphURLs != null) )
+                ds = DatasetUtils.addInGraphs(ds, graphURLs, namedGraphURLs, fileManager, null) ;
         } 
         catch (LabelExistsException ex)
         { throw new CmdException(ex.getMessage()) ; }

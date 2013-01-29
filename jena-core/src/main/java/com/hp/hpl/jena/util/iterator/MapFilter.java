@@ -22,7 +22,6 @@ package com.hp.hpl.jena.util.iterator;
     Combines the actions of <code>Map</code> and <code>Filter</code>, mapping
     unacceptable objects to <code>null</code> and acceptable ones to their mapped
     value.
-	@author kers
 */
 public interface MapFilter<R,S>
     {

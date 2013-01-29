@@ -31,9 +31,6 @@ import java.util.*;
  * Stack management is done externally. This is intended for use in
  * the Brule system and so also supports variable-variable bindings by
  * use of reference chains.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class BindingVector implements BindingEnvironment {
     

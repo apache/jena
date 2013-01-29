@@ -23,9 +23,6 @@ import java.io.InputStream;
 
 /** An <code>RDFReader</code> reads a serialized represenation of RDF,
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
- *
- * @author bwm
- * @version $Revision: 1.1 $
  */
 public interface RDFReader {
 

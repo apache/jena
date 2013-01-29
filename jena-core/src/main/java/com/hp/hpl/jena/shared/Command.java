@@ -19,7 +19,6 @@
 package com.hp.hpl.jena.shared;
 
 /**
- 	@author kers
     An interface expressing the execution of a command.
 */
 

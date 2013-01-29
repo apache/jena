@@ -116,7 +116,7 @@ public class QueryUtils
         }
         
         if ( query.hashCode() != query2.hashCode() )
-            throw new QueryCheckException("reparsed query hashCode does not equal parsed input query") ;
+            throw new QueryCheckException("reparsed query hashCode does not equal parsed input query \nQuery (hashCode: " + query.hashCode() + ")=\n" + query + "\n\nQuery2 (hashCode: " + query2.hashCode() + ")=\n" + query2) ;
         
         if ( ! query.equals(query2) ) 
             throw new QueryCheckException("reparsed output does not equal parsed input") ;

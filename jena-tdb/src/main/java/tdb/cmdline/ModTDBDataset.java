@@ -22,6 +22,7 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 import org.apache.jena.atlas.logging.Log ;
+import org.apache.jena.riot.RDFDataMgr ;
 import arq.cmd.CmdException ;
 import arq.cmdline.ArgDecl ;
 import arq.cmdline.CmdArgModule ;
@@ -45,29 +46,37 @@ public class ModTDBDataset extends ModDataset
     // Mixes assembler, location and "tdb"
     // Can make a single model or a dataset
     
-    private ArgDecl argMem                  = new ArgDecl(ArgDecl.NoValue, "mem") ;
+    private ArgDecl argMem                  = new ArgDecl(ArgDecl.HasValue, "mem", "data") ;
     private ModTDBAssembler modAssembler    = new ModTDBAssembler() ;
-    private boolean useMemory               = false ;
+    private String inMemFile                = null ;
     
     public ModTDBDataset() {}
     
     @Override
     public void registerWith(CmdGeneral cmdLine)
     {
-        cmdLine.add(argMem) ; //, "mem", "Memory graph") ;
+        cmdLine.add(argMem, "--mem=FILE", "Execute on an in-memory TDB database (for testing)") ;
         cmdLine.addModule(modAssembler) ;
     }
 
     @Override
     public void processArgs(CmdArgModule cmdLine)
     {
-        useMemory = cmdLine.contains(argMem) ;
+        inMemFile = cmdLine.getValue(argMem) ;
         modAssembler.processArgs(cmdLine) ;
     }        
 
     @Override
     public Dataset createDataset()
     {
+        if ( inMemFile != null )
+        {
+            Dataset ds = TDBFactory.createDataset() ;
+            RDFDataMgr.read(ds, inMemFile) ;
+            return ds ;
+            
+        }
+        
         if (  modAssembler.getAssemblerFile() != null )
         {
             Dataset thing = null ;

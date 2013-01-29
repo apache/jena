@@ -28,9 +28,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 /**
  * Tests whether the first argument is an instance of the datatype defined
  * by the resource in the second argument.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class IsDType extends BaseBuiltin {
 

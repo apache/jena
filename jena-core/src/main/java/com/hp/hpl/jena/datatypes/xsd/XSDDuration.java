@@ -27,9 +27,6 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XSDAbstractDateTimeType;
  * with years, months, days, hours, minutes, seconds and fractional seconds.
  * This deviates from the spec which allows arbitrary position 
  * decimals for seconds.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-05-09 10:22:07 $
  */
 
 public class XSDDuration extends AbstractDateTime {

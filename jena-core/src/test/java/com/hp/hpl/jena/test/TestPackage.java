@@ -49,7 +49,6 @@ public class TestPackage extends TestCase{
         addTest(ts,  "XML Output", com.hp.hpl.jena.xmloutput.TestPackage.suite());
         addTest(ts,  "Util", com.hp.hpl.jena.util.TestPackage.suite());
         addTest(ts,  "Jena iterator", com.hp.hpl.jena.util.iterator.test.TestPackage.suite() );
-        addTest(ts,  "Mega", com.hp.hpl.jena.regression.MegaTestSuite.suite());
         addTest(ts,  "Assembler", TestAssemblerPackage.suite() );
         addTest(ts,  "ARP", com.hp.hpl.jena.rdf.arp.TestPackage.suite());
         addTest(ts,  "Vocabularies", com.hp.hpl.jena.vocabulary.test.TestVocabularies.suite() );

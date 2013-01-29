@@ -30,9 +30,6 @@ import java.util.*;
  * This uses a slightly WAM-like code stream but gluing of the clauses together
  * into disjunctions is done in the interpreter loop so a complete predicate is
  * represented as a list of RuleClauseCode objects.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RuleClauseCode {
     
@@ -529,8 +526,7 @@ public class RuleClauseCode {
         }
         
         /**
-            Wrapper class with reified 
-         	@author kers
+            Wrapper class with reified
          */
         public static class RuleClauseCodeList 
             {

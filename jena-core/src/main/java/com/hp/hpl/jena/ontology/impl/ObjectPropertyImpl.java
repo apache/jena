@@ -38,10 +38,6 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
  * <p>
  * Implementation of the object property abstraction
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.3 2010-04-13 14:12:40 ian_dickinson Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl

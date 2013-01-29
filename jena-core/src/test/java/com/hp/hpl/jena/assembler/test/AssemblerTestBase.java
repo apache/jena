@@ -40,7 +40,6 @@ public class AssemblerTestBase extends ModelTestBase
     
     /**
          An assembler that always returns the same fixed object.
-        @author kers
     */
     protected static final class FixedObjectAssembler extends AssemblerBase
         {
@@ -58,7 +57,6 @@ public class AssemblerTestBase extends ModelTestBase
     /**
         An assembler that insists on being called on a given name, and always
         returns the same fixed object.
-        @author kers
     */
     protected static class NamedObjectAssembler extends AssemblerBase
             {

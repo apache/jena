@@ -22,9 +22,6 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * Base class for stack frame objects. Originally this was used to provide
  * pool-based allocated but it turns out the normal Java GC outperforms
  * manual pool-based allocation anyway.
- *  
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class FrameObject {
 

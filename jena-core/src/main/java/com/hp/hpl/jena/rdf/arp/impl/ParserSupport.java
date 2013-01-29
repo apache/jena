@@ -35,9 +35,6 @@ import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
 
 /**
- *
- * @author  jjc
- * 
  */
 public class ParserSupport
 	implements ARPErrorNumbers,  LanguageTagCodes, Names {

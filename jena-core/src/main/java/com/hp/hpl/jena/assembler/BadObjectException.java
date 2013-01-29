@@ -25,8 +25,6 @@ import com.hp.hpl.jena.rdf.model.*;
     Exception used to report that the object of a statement is not a Resource.
     The subject of the exception is treated as the root object. The nature of the
     unsuitability is (currently) not described.
-    
-    @author kers
 */
 public class BadObjectException extends AssemblerException
     {

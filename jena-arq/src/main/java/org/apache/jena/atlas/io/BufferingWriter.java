@@ -57,7 +57,7 @@ public final class BufferingWriter extends Writer
     // ***** Suspiciously slow.
     // ***** DO NOT USE
     // Better to buffer in character space the convert in larger blocks.
-    // Standard java I/O is preeety good for that.
+    // Standard java I/O is pretty good for that.
     // Split:
     // 1/ A buffering writer that wraps a writer  
     //   (Use BufferedWriter or maybe own version without the hidden synchronize's)  

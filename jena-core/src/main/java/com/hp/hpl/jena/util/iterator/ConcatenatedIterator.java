@@ -29,8 +29,6 @@ import java.util.*;
  * An iterator that represents the concatenation of two individual iterators.
  * The concatenated iterator will range over the elements of the first iterator,
  * followed by the elements of the second.
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
  */
 public class ConcatenatedIterator<T> implements Iterator<T>
 {

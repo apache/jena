@@ -21,7 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     Exception to throw when a string cannot be converted to a Boolean
     value.
- 	@author kers
 */
 public class BadBooleanException extends JenaException
     {

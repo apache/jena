@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
      Exception to throw if a Description has no root of a specified type
-     @author kers
 */
 public class BadDescriptionNoRootException extends BadDescriptionException
     {

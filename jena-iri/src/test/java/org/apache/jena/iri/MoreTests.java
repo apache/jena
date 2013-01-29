@@ -28,17 +28,11 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.Violation ;
 
-
-/**
- * @author jjc
- *  
- */
 public class MoreTests extends TestCase {
 	
 	static public Test suite() {
 		TestSuite suite = new TestSuite("Additional IRI Tests");
 
-		
 		suite.addTest(new MoreTests("testRelativizeFrag1"));
 		suite.addTest(new MoreTests("testRelativizeFrag2"));
 		suite.addTest(new MoreTests("testXPointer"));

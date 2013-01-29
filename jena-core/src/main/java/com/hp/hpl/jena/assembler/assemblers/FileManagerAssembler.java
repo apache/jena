@@ -26,8 +26,6 @@ import com.hp.hpl.jena.util.*;
     A FileManagerAssembler creates a FileManager object which may be
     initialised with a LocationMapper specified by the object of a ja:locationMapper
     property.
-    
-    @author kers
 */
 public class FileManagerAssembler extends AssemblerBase
     {

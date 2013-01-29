@@ -38,10 +38,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * <p>
  * Unit test cases for ontology resources
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.2 2009-10-06 13:04:42 ian_dickinson Exp $
  */
 public class TestResource extends OntTestBase
 {

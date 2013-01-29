@@ -40,6 +40,10 @@ then
     CP="$FUSEKI_HOME/target/classes:$CP"
 fi
 
+# Prepend any development directories here
+# CP="$FUSEKI_HOME/../jena-tdb/classes:$CP"
+# CP="$FUSEKI_HOME/../jena-arq/classes:$CP"
+
 FUSEKI_LOG=${FUSEKI_LOG:-} # "-D-Dlog4j.configuration=file:$FUSEKI_HOME/log4j.properties"
 JVM_ARGS="${JVM_ARGS:--Xmx1200M}"
 #JVM_ARGS="$JVM_ARGS -XX:MaxDirectMemorySize=1G"

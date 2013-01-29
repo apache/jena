@@ -25,8 +25,6 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
     to be set up to be installed into each reasoner this factory produces.
     
     OBSOLETE - not used anywhere.
-    
-    @author kers
 */
 public interface RuleReasonerFactory extends ReasonerFactory
     {

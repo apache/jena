@@ -23,6 +23,7 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
+import org.apache.http.protocol.HttpContext;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
@@ -31,6 +32,7 @@ import org.apache.jena.riot.web.HttpResponseLib ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.Context ;
+import com.hp.hpl.jena.sparql.util.Symbol;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -41,13 +43,17 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateProcessRemoteForm implements UpdateProcessor
 {
+    public static final Symbol HTTP_CONTEXT = Symbol.create("httpContext") ;
+    
     private final UpdateRequest request ;
     private final String endpoint ;
+    private final Context context ;
     
-    public UpdateProcessRemoteForm(UpdateRequest request , String endpoint )
+    public UpdateProcessRemoteForm(UpdateRequest request , String endpoint, Context context )
     {
         this.request = request ;
         this.endpoint = endpoint ;
+        this.context = Context.setupContext(context, null) ;
     }
 
     @Override
@@ -73,13 +79,29 @@ public class UpdateProcessRemoteForm implements UpdateProcessor
         Map<String, HttpResponseHandler> handlers = new HashMap<String, HttpResponseHandler>() ;
         //handlers.put("text/html", HttpResponseLib.nullResponse) ;
         handlers.put("*", HttpResponseLib.nullResponse) ;
-        HttpOp.execHttpPostForm(endpoint, params, handlers) ;
+        HttpOp.execHttpPostForm(endpoint, params, handlers, getHttpContext()) ;
     }
 
     @Override
     public Context getContext()
     {
-        return null ;
+        return context ;
+    }
+    
+    /**
+     * Convenience method to set the {@link HttpContext}
+     * @param httpContext
+     */
+    public void setHttpContext(HttpContext httpContext) {
+        getContext().put(HTTP_CONTEXT, httpContext) ;
+    }
+    
+    /**
+     * Convenience method to get the {@link HttpContext}
+     * @returns HttpContext
+     */
+    public HttpContext getHttpContext() {
+        return (HttpContext) getContext().get(HTTP_CONTEXT);
     }
 }
 

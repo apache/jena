@@ -20,9 +20,6 @@ package com.hp.hpl.jena.shared;
 
 import junit.framework.*;
 
-/**
- 	@author kers
-*/
 public class TestSharedPackage extends TestCase
     {
     public TestSharedPackage()
@@ -33,7 +30,6 @@ public class TestSharedPackage extends TestCase
         TestSuite result = new TestSuite();
         result.addTest( TestPrefixMapping.suite() );
         result.addTest( TestJenaException.suite() );
-        result.addTest( RandomizedTestSuiteRegression.suite() );
         return result;
         }
     }

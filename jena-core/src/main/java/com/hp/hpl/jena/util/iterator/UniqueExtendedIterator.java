@@ -25,8 +25,6 @@ import java.util.*;
  * duplicate values. There is one complication that the value
  * which filtering is done on might not be the actual value
  * to be returned by the iterator. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  */
 public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 

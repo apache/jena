@@ -56,10 +56,11 @@ public class TransformFilterPlacement extends TransformCopy
     {
         if ( ! doFilterPlacement )
             return OpFilter.filter(exprs, new OpBGP(bgp)) ;
-        
-        Op op = transformFilterBGP(exprs, new HashSet<Var>(), bgp) ;
+        // Mutated
+        ExprList exprs2 = new ExprList(exprs) ;
+        Op op = transformFilterBGP(exprs2, new HashSet<Var>(), bgp) ;
         // Remaining filters? e.g. ones mentioning var s not used anywhere. 
-        op = buildFilter(exprs, op) ;
+        op = buildFilter(exprs2, op) ;
         return op ;
     }
     
@@ -67,11 +68,12 @@ public class TransformFilterPlacement extends TransformCopy
     {
         if ( ! doFilterPlacement )
             return OpFilter.filter(exprs, new OpQuadPattern(graphNode, bgp)) ;
-        Op op =  transformFilterQuadPattern(exprs, new HashSet<Var>(), graphNode, bgp);
-        op = buildFilter(exprs, op) ;
+        // Mutated
+        ExprList exprs2 = new ExprList(exprs) ;
+        Op op =  transformFilterQuadPattern(exprs2, new HashSet<Var>(), graphNode, bgp);
+        op = buildFilter(exprs2, op) ;
         return op ;
     }
-    
 
     public TransformFilterPlacement()
     { }
@@ -127,6 +129,7 @@ public class TransformFilterPlacement extends TransformCopy
         return  transformFilterBGP(exprs, patternVarsScope, x.getPattern()) ;
     }
 
+    // Mutates exprs
     private static Op transformFilterBGP(ExprList exprs, Set<Var> patternVarsScope, BasicPattern pattern)
     {
         // Any filters that depend on no variables. 

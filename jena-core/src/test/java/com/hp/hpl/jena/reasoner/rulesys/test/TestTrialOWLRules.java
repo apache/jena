@@ -32,9 +32,6 @@ import java.io.IOException;
 /**
  * Test suite to test experimental versions of the OWL reasoner, not 
  * included in the master regression test suite.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestTrialOWLRules extends TestCase {
 

@@ -25,9 +25,6 @@ import java.util.List;
 /**
  * Default implementation of ValidityReport which simply stores a list
  * of precomputed Report records.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class StandardValidityReport implements ValidityReport {
 

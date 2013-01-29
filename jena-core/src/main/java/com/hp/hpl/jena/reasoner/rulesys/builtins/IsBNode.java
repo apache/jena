@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Tests the single argument to make sure it is blank node.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class IsBNode extends BaseBuiltin {
 

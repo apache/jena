@@ -36,10 +36,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * data literals.  See section 6.2 of the OWL language reference for details.  In OWL
  * Full, there is no difference between a DataRange and a Class.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: DataRange.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface DataRange 
     extends OntResource

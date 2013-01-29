@@ -21,7 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     NoReasonerSuppliedException - the exception to throw if a reasoner (spec)
     was required, but none was given (eg in ModelSpecs).
-    @author kers
 */
 public class NoReasonerSuppliedException extends JenaException
     {

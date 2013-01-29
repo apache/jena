@@ -30,9 +30,6 @@ import java.io.*;
 /**
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:58 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */

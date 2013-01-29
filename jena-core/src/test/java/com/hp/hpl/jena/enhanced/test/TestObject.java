@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * An interface for viewing object nodes in the graph.
- * @author  jjc
  */
 public interface TestObject extends RDFNode, TestNode {
     

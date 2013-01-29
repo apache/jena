@@ -6,8 +6,11 @@ ChangeLog for ARQ
 ==== Jena 2.10.0
 
 + Consolidation of versions numbers.
++ Command line SPARQL query reads all data formats (triples and quads) for --data 
 
+* JENA-379 : Incorrect results from a property paths with same subject and object variable.  
 + Introduce RDFParserOutput as output interface for parsers (was Sink<Triple> or Sink<Quad>)
+  Assorted implementations of this new interface
 + RIOT - internal reorganisation moving to org.apache.jena.riot.
 + Remove the partial migration support for old-style SPARQL submission update forms.
 + Update Turtle/Trig parsers for prefixed name details in RDF 1.1
@@ -25,10 +28,10 @@ ChangeLog for ARQ
 + Blank node labels can not be reused across different INSERT DATA operations in the same SPARQL Update Request
   (spec clarification) 
 + JENA-322 : Make jcl-over-slf4 a required dependency
-+ JENA-321 : Remove GraphStore.(start|finish)Request() (was previosuly deprecated)
++ JENA-321 : Remove GraphStore.(start|finish)Request() (was previously deprecated)
 + Remove deprecated QueryExecutionBase.cancelAllowDrain (see JENA-93)
 + Implement SPARQL-WG decision on BIND : use original semantics. 
-+ JENA-294 : improved optimization of sequeneces of OPTIONALs where the grouois only OPTIONAL and an equality filter
++ JENA-294 : improved optimization of sequeneces of OPTIONALs where the group is only OPTIONAL and an equality filter
 + JENA-298 ResultSetStAX.hasNext() can now be called again after it has returned false
 + JENA-302 Add URIs for all XQuery/Xpath F&O functions for duration accessors
 + JENA-303 Add URIs for all XQuery/Xpath F&O functions where there are SPARQL functions

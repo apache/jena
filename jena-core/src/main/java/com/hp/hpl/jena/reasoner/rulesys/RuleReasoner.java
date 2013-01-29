@@ -26,8 +26,6 @@ import com.hp.hpl.jena.reasoner.Reasoner;
      RuleReasoner - an interface to capture the idea of a Reasoner that relies on
      Rules; motivated primarily by the testing for ModelSpecs which specify
      Rules for Reasoners.
-     
-     @author kers
  */
 public interface RuleReasoner extends Reasoner
     {

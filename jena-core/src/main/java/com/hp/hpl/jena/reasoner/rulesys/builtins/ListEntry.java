@@ -26,9 +26,6 @@ import com.hp.hpl.jena.graph.*;
  * listEntry(?list, ?index, ?val) will bind ?val to the ?index'th entry
  * in the RDF list ?list. If there is no such entry the variable will be unbound
  * and the call will fail. Only useable in rule bodies.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class ListEntry extends BaseBuiltin {
 

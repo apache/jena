@@ -26,7 +26,6 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;
  * An exception during the RDF processing of ARP. Note: it is distinguished from
  * an XML related exception from Xerces because while both are
  * SAXParseException's, the latter are not com.hp.hpl.jena.arp.ParseException's.
- * 
  */
 public class ParseException extends SAXParseException implements
         ARPErrorNumbers {

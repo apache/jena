@@ -46,9 +46,6 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
  * e1 is not an error + test s, e1; Description; test s,e1, eg:prop; test s, e1,
  * end; for each element-attribute event e2 + test s, e1, e2 if s, e1, e2 is not
  * an error
- * 
- * @author Jeremy J. Carroll
- * 
  */
 public class TestData implements ARPErrorNumbers{
 

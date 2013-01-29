@@ -37,9 +37,6 @@ import com.hp.hpl.jena.util.CharEncoding;
 /**
  * 
  * The main parser, other variants of XMLHandler are for more specialized purposes.
- * 
- * @author Jeremy J. Carroll
- * 
  */
 public class RDFXMLParser extends XMLHandler {
 
@@ -77,7 +74,6 @@ public class RDFXMLParser extends XMLHandler {
     /**
      * This works with an {@link RDFXMLParser} and catches and reports several
      * common errors to do with character encoding.
-     * @author Jeremy Carroll
      *
      */
     static protected class SAXParserWithEncodingCheck extends SAXParser {

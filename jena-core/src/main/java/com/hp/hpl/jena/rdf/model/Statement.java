@@ -37,9 +37,6 @@ import com.hp.hpl.jena.util.iterator.Map1;
  *    The reverse translation is also supported.  This is built in for built
  *    in types.  Factory objects, provided by the application, are used
  *    for application objects.</p>
- 
- * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2009-06-29 08:55:38 $
  */
 
 public interface Statement extends FrontsTriple

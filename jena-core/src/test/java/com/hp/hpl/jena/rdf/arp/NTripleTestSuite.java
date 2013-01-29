@@ -49,9 +49,6 @@ import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
  * A version of the test suite which uses the
  * ARP internal N-triple writer, and not the
  * Jena N-triple writer.
- * @author Jeremy Carroll
- *
- * 
  */
 class NTripleTestSuite extends WGTestSuite {
 	NTripleTestSuite(TestInputStreamFactory fact, String name, boolean b) {

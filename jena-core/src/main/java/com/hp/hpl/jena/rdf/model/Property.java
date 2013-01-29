@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.rdf.model;
 
 /** An RDF Property.
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2010-01-11 09:16:56 $'
  */
 public interface Property extends Resource {
 	

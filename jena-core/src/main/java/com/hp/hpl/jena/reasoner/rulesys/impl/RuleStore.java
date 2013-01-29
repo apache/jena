@@ -33,9 +33,6 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * The rules are normalized to only contain a single head element
  * by duplicating any multi headed rules.
  * </p> 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RuleStore {
 

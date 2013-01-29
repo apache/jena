@@ -34,9 +34,6 @@ import java.io.*;
 
 /**
  * Unit tests for simple infrastructure pieces of the rule systems.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class TestBasics extends TestCase  {
     

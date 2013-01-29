@@ -28,7 +28,6 @@ package com.hp.hpl.jena.rdf.arp.lang;
  * A LanguageTag did not conform to RFC3066.
   This exception is for the
  * syntactic rules of RFC3066 section 2.1.
- * @author jjc
  */
 public class LanguageTagSyntaxException extends java.lang.Exception {
 

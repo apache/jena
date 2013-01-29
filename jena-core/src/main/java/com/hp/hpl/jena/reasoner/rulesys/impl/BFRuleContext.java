@@ -32,9 +32,6 @@ import org.slf4j.LoggerFactory;
  * An implementation of the generic RuleContext interface used by
  * the basic forward (BF) rule engine. This provides additional
  * methods specific to the functioning of that engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */

@@ -28,9 +28,6 @@ import com.hp.hpl.jena.rdf.model.*;
  * which represent the rules or ontologies and instance data. The actual
  * reasoner requests are made through the InfGraph which is generated once
  * the reasoner has been bound to a set of RDF data.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public interface Reasoner {
     

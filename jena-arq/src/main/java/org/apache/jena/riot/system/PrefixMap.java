@@ -15,184 +15,153 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.apache.jena.riot.system;
 
-import java.util.Collections ;
-import java.util.HashMap ;
-import java.util.Map ;
-import java.util.Map.Entry ;
+import java.util.Map;
 
-import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.ActionKeyValue ;
-import org.apache.jena.atlas.lib.Pair ;
-import org.apache.jena.iri.IRI ;
-import org.apache.jena.iri.IRIFactory ;
+import org.apache.jena.atlas.lib.Pair;
+import org.apache.jena.iri.IRI;
 
-import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
-/** Lightweight, prefix mapping for parsers.  No XML rules, no reverse lookup. */
-public class PrefixMap
-{
-    private final Map<String, IRI> prefixes = new HashMap<String, IRI>() ;
-    private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes) ;
- 
-    public static PrefixMap fromPrefixMapping(PrefixMapping pmap)
-    {
-        PrefixMap pm = new PrefixMap() ;
-        for ( Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet() )
-            pm.add(e.getKey(), e.getValue()) ;
-        return pm ;
-    }
-    
-    public PrefixMap() {}
-    
-    public PrefixMap(PrefixMap other)
-    {
-        prefixes.putAll(other.prefixes) ;
-    }
-    
-    /** return the underlying mapping - do not modify */
-    public Map<String, IRI> getMapping() { return prefixes2 ; }
-    
-    /** return a copy of the underlying mapping */
-    public Map<String, IRI> getMappingCopy() { return new HashMap<String, IRI>(prefixes) ; }
-    
-    public Map<String, String> getMappingCopyStr()
-    { 
-        final Map<String, String> smap = new HashMap<String, String>() ;
-        ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>(){
-            @Override
-            public void apply(String key, IRI value)
-            {
-                String str = value.toString() ;
-                smap.put(key, str) ;
-            }
-        } ;
-        Iter.apply(getMapping(), action) ;
-        return Collections.unmodifiableMap(smap)  ;
-    }
-    
+/**
+ * Interface for lightweight prefix maps, this is similar to
+ * {@link PrefixMapping} from Jena Core but it omits any reverse lookup
+ * functionality.
+ * <p>
+ * The contract also does not require an implementation to do any validation
+ * unlike the Jena Core {@link PrefixMapping} which require validation of
+ * prefixes.
+ * </p>
+ * <h3>Implementations</h3>
+ * <p>
+ * For input dominated workloads where you are primarily calling
+ * {@link #expand(String)} or {@link #expand(String, String)} it is best to use
+ * the default implementation - {@link PrefixMapStd}. For output dominated
+ * workloads where you are primarily calling {@link #abbrev(String)} or
+ * {@link #abbreviate(String)} it is better to use the {@link FastAbbreviatingPrefixMap}
+ * implementation.  See the javadoc for those classes for more explanation
+ * of their differences.
+ * </p>
+ * 
+ */
+public interface PrefixMap {
 
-    /** Add a prefix, overwrites any existing association */
-    public void add(String prefix, String iriString)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        IRI iri = IRIFactory.iriImplementation().create(iriString) ;
-        // Check!
-        prefixes.put(prefix, iri);
-    }
-    
-    /** Add a prefix, overwrites any existing association */
-    public void add(String prefix, IRI iri)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        prefixes.put(prefix, iri) ;
-    }
-    
-    /** Add a prefix, overwrites any existing association */
-    public void putAll(PrefixMap pmap)
-    {
-        prefixes.putAll(pmap.prefixes) ; 
-    }
-    
-    /** Delete a prefix */
-    public void delete(String prefix)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        prefixes.remove(prefix) ;
-    }
-    
-    public boolean contains(String prefix)
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        return _contains(prefix) ;
-    }
-    
-    protected boolean _contains(String prefix)
-    { 
-        return prefixes.containsKey(prefix) ;
-    }
-    
-    /** Abbreviate an IRI or return null */
-    public String abbreviate(String uriStr)
-    {
-        for ( Entry<String, IRI> e : prefixes.entrySet())
-        {
-            String prefix = e.getValue().toString() ;
-            
-            if ( uriStr.startsWith(prefix) )
-            {
-                String ln = uriStr.substring(prefix.length()) ;
-                if ( strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':') )
-                    return e.getKey()+":"+ln ;
-            }
-        }
-        return null ;
-    }
-    
-    private static boolean strSafeFor(String str, char ch) { return str.indexOf(ch) == -1 ; } 
-    
-    
-    /** Abbreviate an IRI or return null */
-    public Pair<String, String> abbrev(String uriStr)
-    {
-        for ( Entry<String, IRI> e : prefixes.entrySet())
-        {
-            String uriForPrefix = e.getValue().toString() ;
-            
-            if ( uriStr.startsWith(uriForPrefix) )
-                return Pair.create(e.getKey(), uriStr.substring(uriForPrefix.length())) ;
-        }
-        return null ;
-    }
+    /**
+     * Return the underlying mapping, this is generally unsafe to modify and
+     * implementations may opt to return an unmodifiable view of the mapping if
+     * they wish
+     * 
+     * @return Underlying mapping
+     * */
+    public abstract Map<String, IRI> getMapping();
 
-    /** Expand a prefix named, return null if it can't be expanded */
-    public String expand(String prefixedName) 
-    { 
-        int i = prefixedName.indexOf(':') ;
-        if ( i < 0 ) return null ;
-        return expand(prefixedName.substring(0,i),
-                      prefixedName.substring(i+1)) ;
-    }
-    
-    /** Expand a prefix, return null if it can't be expanded */
-    public String expand(String prefix, String localName) 
-    { 
-        prefix = canonicalPrefix(prefix) ;
-        IRI x = prefixes.get(prefix) ;
-        if ( x == null )
-            return null ;
-        return x.toString()+localName ;
-    }
+    /**
+     * Return a fresh copy of the underlying mapping, should be safe to modify
+     * unlike the mapping returned from {@link #getMapping()}
+     * 
+     * @return Copy of the mapping
+     */
+    public abstract Map<String, IRI> getMappingCopy();
 
-    protected static String canonicalPrefix(String prefix)
-    {
-        if ( prefix.endsWith(":") )
-            return prefix.substring(0, prefix.length()-1) ;
-        return prefix ;
-    }
-    
-    @Override
-    public String toString()
-    {
-        StringBuilder sb = new StringBuilder() ;
-        sb.append("{ ") ;
-        boolean first = true ;
-        
-        for ( Entry<String, IRI> e : prefixes.entrySet())
-        {
-            String prefix = e.getKey() ;
-            IRI iri = e.getValue() ;
-            if ( first )
-                first = false ;
-            else
-                sb.append(" ,") ;
-            sb.append(prefix) ;
-            sb.append(":=") ;
-            sb.append(iri.toString()) ;
-        }
-        sb.append(" }") ;
-        return sb.toString() ; 
-    }
+    /**
+     * Gets a fresh copy of the mapping with the IRIs translated into their
+     * strings
+     * 
+     * @return Copy of the mapping
+     */
+    public abstract Map<String, String> getMappingCopyStr();
+
+    /**
+     * Add a prefix, overwrites any existing association
+     * 
+     * @param prefix
+     *            Prefix
+     * @param iriString
+     *            Namespace IRI
+     */
+    public abstract void add(String prefix, String iriString);
+
+    /**
+     * Add a prefix, overwrites any existing association
+     * 
+     * @param prefix
+     *            Prefix
+     * @param iri
+     *            Namespace IRI
+     */
+    public abstract void add(String prefix, IRI iri);
+
+    /**
+     * Add a prefix, overwrites any existing association
+     * 
+     * @param pmap
+     *            Prefix Map
+     */
+    public abstract void putAll(PrefixMap pmap);
+
+    /**
+     * Add a prefix, overwrites any existing association
+     * 
+     * @param pmap
+     *            Prefix Mapping
+     */
+    public abstract void putAll(PrefixMapping pmap);
+
+    /**
+     * Delete a prefix
+     * 
+     * @param prefix
+     *            Prefix to delete
+     */
+    public abstract void delete(String prefix);
+
+    /**
+     * Gets whether the map contains a given prefix
+     * 
+     * @param prefix
+     *            Prefix
+     * @return True if the prefix is contained in the map, false otherwise
+     */
+    public abstract boolean contains(String prefix);
+
+    /**
+     * Abbreviate an IRI or return null
+     * 
+     * @param uriStr
+     *            URI to abbreviate
+     * @return URI in prefixed name form if possible, null otherwise
+     */
+    public abstract String abbreviate(String uriStr);
+
+    /**
+     * Abbreviate an IRI or return a pair of prefix and local parts.
+     * 
+     * @param uriStr
+     *            URI string to abbreviate
+     * @return Pair of prefix and local name
+     * @see #abbreviate
+     */
+    public abstract Pair<String, String> abbrev(String uriStr);
+
+    /**
+     * Expand a prefix named, return null if it can't be expanded
+     * 
+     * @param prefixedName
+     *            Prefixed Name
+     * @return Expanded URI if possible, null otherwise
+     */
+    public abstract String expand(String prefixedName);
+
+    /**
+     * Expand a prefix, return null if it can't be expanded
+     * 
+     * @param prefix
+     *            Prefix
+     * @param localName
+     *            Local name
+     * @return Expanded URI if possible, null otherwise
+     */
+    public abstract String expand(String prefix, String localName);
+
 }

@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,100 +18,136 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.util.Arrays ;
-import java.util.List ;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
+import com.hp.hpl.jena.shared.PrefixMapping;
 
-import junit.framework.TestSuite ;
+import java.util.Arrays;
+import java.util.List;
 
-import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.rdf.model.ModelFactory ;
-import com.hp.hpl.jena.rdf.model.Statement ;
+import junit.framework.Assert;
 
 /**
-    Tests of the Model-level bulk update API.
-
- 	@author kers
+ * Tests of the Model-level bulk update API.
  */
 
-public class TestModelBulkUpdate extends ModelTestBase
+public class TestModelBulkUpdate extends AbstractModelTestBase
 {
-    public TestModelBulkUpdate( String name )
-    { super( name ); }
+	public TestModelBulkUpdate( final TestingModelFactory modelFactory,
+			final String name )
+	{
+		super(modelFactory, name);
+	}
 
-    public static TestSuite suite()
-    { return new TestSuite( TestModelBulkUpdate.class ); }   
+	public void addReification( final Model m, final String tag,
+			final String statement )
+	{
+		m.createReifiedStatement(tag, ModelHelper.statement(m, statement));
+	}
 
-    public void testMBU()
-    { testMBU( ModelFactory.createDefaultModel() ); }
+	public void testBulkByModel()
+	{
+		Assert.assertEquals("precondition: model must be empty", 0,
+				model.size());
+		final Model A = ModelHelper.modelWithStatements(this,
+				"clouds offer rain; trees offer shelter");
+		final Model B = ModelHelper.modelWithStatements(this,
+				"x R y; y Q z; z P x");
+		model.add(A);
+		ModelHelper.assertIsoModels(A, model);
+		model.add(B);
+		model.remove(A);
+		ModelHelper.assertIsoModels(B, model);
+		model.remove(B);
+		Assert.assertEquals("", 0, model.size());
+	}
 
-    public void testContains( Model m, Statement [] statements )
-    {
-        for (int i = 0; i < statements.length; i += 1)
-            assertTrue( "it should be here", m.contains( statements[i] ) );
-    }
+	public void testBulkByModelReifying()
+	{
+		final Model m = ModelHelper.modelWithStatements(this, "a P b");
+		addReification(m, "x", "S P O");
+		addReification(m, "a", "x R y");
+		final Model target = ModelHelper.modelWithStatements(this, "");
+		target.add(m);
+		target.setNsPrefixes(PrefixMapping.Standard);
+		ModelHelper.assertIsoModels(m, target);
+	}
 
-    public void testContains( Model m, List<Statement> statements )
-    {
-        for (int i = 0; i < statements.size(); i += 1)
-            assertTrue( "it should be here", m.contains( statements.get(i) ) );
-    }
+	public void testBulkDeleteByModelReifying()
+	{
 
-    public void testOmits( Model m, Statement [] statements )
-    {
-        for (int i = 0; i < statements.length; i += 1)
-            assertFalse( "it should not be here", m.contains( statements[i] ) );
-    }
+		final Model target = ModelHelper.modelWithStatements(this, "");
+		addReification(target, "x", "S P O");
+		addReification(target, "y", "A P B");
+		final Model remove = ModelHelper.modelWithStatements(this, "");
+		addReification(remove, "y", "A P B");
+		final Model answer = ModelHelper.modelWithStatements(this, "");
+		addReification(answer, "x", "S P O");
+		target.remove(remove);
+		ModelHelper.assertIsoModels(answer, target);
+	}
 
-    public void testOmits( Model m, List<Statement> statements )
-    {
-        for (int i = 0; i < statements.size(); i += 1)
-            assertFalse( "it should not be here", m.contains( statements.get(i) ) );
-    }
+	public void testBulkRemoveSelf()
+	{
+		final Model m = ModelHelper.modelWithStatements(this,
+				"they sing together; he sings alone");
+		m.remove(m);
+		Assert.assertEquals("", 0, m.size());
+	}
 
-    public void testMBU( Model m )
-    {
-        Statement [] sArray = statements( m, "moon orbits earth; earth orbits sun" );
-        List<Statement> sList = Arrays.asList( statements( m, "I drink tea; you drink coffee" ) );
-        m.add( sArray );
-        testContains( m, sArray );
-        m.add( sList );
-        testContains( m, sList );
-        testContains( m, sArray );
-        /* */
-        m.remove( sArray );
-        testOmits( m, sArray );
-        testContains( m, sList );    
-        m.remove( sList );
-        testOmits( m, sArray );
-        testOmits( m, sList );
-    }
+	public void testContains( final Model m, final List<Statement> statements )
+	{
+		for (int i = 0; i < statements.size(); i += 1)
+		{
+			Assert.assertTrue("it should be here",
+					m.contains(statements.get(i)));
+		}
+	}
 
-    public void testBulkByModel()
-    { testBulkByModel( ModelFactory.createDefaultModel() ); }
+	public void testContains( final Model m, final Statement[] statements )
+	{
+		for (final Statement statement : statements)
+		{
+			Assert.assertTrue("it should be here", m.contains(statement));
+		}
+	}
 
-    public void testBulkByModel( Model m )
-    {
-        assertEquals( "precondition: model must be empty", 0, m.size() );
-        Model A = modelWithStatements( "clouds offer rain; trees offer shelter" );
-        Model B = modelWithStatements( "x R y; y Q z; z P x" );
-        m.add( A );
-        assertIsoModels( A, m );
-        m.add( B );
-        m.remove( A );
-        assertIsoModels( B, m );
-        m.remove( B );
-        assertEquals( "", 0, m.size() );
-    }
+	public void testMBU()
+	{
+		final Statement[] sArray = ModelHelper.statements(model,
+				"moon orbits earth; earth orbits sun");
+		final List<Statement> sList = Arrays.asList(ModelHelper.statements(
+				model, "I drink tea; you drink coffee"));
+		model.add(sArray);
+		testContains(model, sArray);
+		model.add(sList);
+		testContains(model, sList);
+		testContains(model, sArray);
+		/* */
+		model.remove(sArray);
+		testOmits(model, sArray);
+		testContains(model, sList);
+		model.remove(sList);
+		testOmits(model, sArray);
+		testOmits(model, sList);
+	}
 
-    public void testBulkRemoveSelf()
-    {
-        Model m = modelWithStatements( "they sing together; he sings alone" );
-        m.remove( m );
-        assertEquals( "", 0, m.size() );
-    }
+	public void testOmits( final Model m, final List<Statement> statements )
+	{
+		for (int i = 0; i < statements.size(); i += 1)
+		{
+			Assert.assertFalse("it should not be here",
+					m.contains(statements.get(i)));
+		}
+	}
 
-    public void addReification( Model m, String tag, String statement )
-    {
-        m.createReifiedStatement( tag, statement( m, statement ) );
-    }
+	public void testOmits( final Model m, final Statement[] statements )
+	{
+		for (final Statement statement : statements)
+		{
+			Assert.assertFalse("it should not be here", m.contains(statement));
+		}
+	}
 }

@@ -27,9 +27,6 @@ package org.apache.jena.iri;
  * do not throw exceptions when they encounter such as errors,
  * but merely remember the error to be accessed by the user
  * using {@link IRI#violations(boolean)}.
- * 
- * @author Jeremy J. Carroll
- *
  */
 abstract public class IRIException extends RuntimeException  {
 

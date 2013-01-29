@@ -34,8 +34,6 @@ package org.apache.jena.iri;
  * which is the factory object being used in the first
  * case, or the factory object used to create the base
  * IRI in the second case.
- * @author Jeremy J. Carroll
- *
  */
 public interface IRIFactoryI {
 

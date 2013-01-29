@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception to throw when a syntax error is detected in some input.
- 	@author kers
 */
 public class SyntaxError extends JenaException
     {

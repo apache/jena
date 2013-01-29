@@ -41,10 +41,6 @@ import java.util.Iterator;
  * package. For tractability, this limits the vocabularies that can easily be
  * represented to those that are similar to OWL and DAML+OIL.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: Profile.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface Profile
 {

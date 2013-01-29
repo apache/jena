@@ -32,10 +32,6 @@ package com.hp.hpl.jena.ontology;
  * the restricted property must all belong to the given class.  At the current 
  * time, qualified restrictions are part of DAML+OIL, but not part of OWL.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: MaxCardinalityQRestriction.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface MaxCardinalityQRestriction 
     extends QualifiedRestriction

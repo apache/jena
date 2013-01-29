@@ -21,9 +21,6 @@ package com.hp.hpl.jena.reasoner.rulesys;
 /**
  *  Common interface for all objects that can go into rules.
  * Strictly these should probably be called terms rather than clause entries.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public interface ClauseEntry {
     

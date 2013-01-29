@@ -25,8 +25,6 @@ import com.hp.hpl.jena.rdf.model.*;
     An Assembler creates objects from their RDF descriptions. The root motivation
     is to create Models, but other objects are required as sub-components of
     those Models, so a general mechanism is available.
-    
-    @author kers
 */
 public interface Assembler
     {

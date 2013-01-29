@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServlet ;
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
+import org.apache.velocity.VelocityContext ;
 import org.apache.velocity.app.VelocityEngine ;
 import org.apache.velocity.runtime.RuntimeConstants ;
 import org.apache.velocity.runtime.RuntimeServices ;
@@ -83,13 +84,16 @@ public class SimpleVelocityServlet extends HttpServlet
     }
 
     private void process(HttpServletRequest req, HttpServletResponse resp)
-    { 
-        try { 
-        resp.setContentType("text/html") ;
-        resp.setCharacterEncoding("UTF-8") ;
-        Writer out = resp.getWriter() ;
-        String path = path(req) ;
-        SimpleVelocity.process(docbase, path, out, datamodel) ;
+    {
+        try
+        {
+            resp.setContentType("text/html") ;
+            resp.setCharacterEncoding("UTF-8") ;
+            Writer out = resp.getWriter() ;
+            String path = path(req) ;
+            VelocityContext vc = SimpleVelocity.createContext(datamodel) ;
+            vc.put("request", req) ;
+            SimpleVelocity.process(docbase, path, out, vc) ;
         } catch (IOException ex)
         {
             vlog.warn("IOException", ex) ;

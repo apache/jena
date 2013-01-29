@@ -47,10 +47,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
  * <p>
  * Implementation of the ontology abstraction representing ontology classes.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.3 2010-01-11 09:17:06 chris-dollin Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl

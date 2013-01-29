@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.util;
 
-/**
-	@author bwm out of kers
-*/
-
 import com.hp.hpl.jena.util.cache.*;
 
 import junit.framework.*;

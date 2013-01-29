@@ -33,9 +33,6 @@ import com.hp.hpl.jena.rdf.arp.SAX2RDF;
  * There is nothing of interest in this JavaDoc. This if (depth>0) superclass
  * implements the functionality needed by {@link SAX2RDF}. The API given here
  * is the familiar SAX.
- * 
- * @author Jeremy J. Carroll
- *  
  */
 public class SAX2RDFImpl extends XMLHandler implements LexicalHandler,
 		ContentHandler, ErrorHandler {

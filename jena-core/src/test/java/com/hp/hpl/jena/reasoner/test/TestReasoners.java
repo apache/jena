@@ -37,9 +37,6 @@ import java.util.Set;
 
 /**
  * Outline unit tests for initial experimental reasoners
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:56 $
  */
 public class TestReasoners extends TestCase {
     

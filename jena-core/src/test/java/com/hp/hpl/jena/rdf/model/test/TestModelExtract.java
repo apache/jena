@@ -1,14 +1,14 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
+ * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
+ * regarding copyright ownership. The ASF licenses this file
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,122 +18,164 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphExtract;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.TripleBoundary;
+import com.hp.hpl.jena.graph.test.GraphTestBase;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelExtract;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StatementBoundary;
+import com.hp.hpl.jena.rdf.model.StatementBoundaryBase;
+import com.hp.hpl.jena.rdf.model.StatementTripleBoundary;
+import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
+import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.TestSuite;
+import junit.framework.Assert;
 
-/**
- @author hedgehog
-*/
-public class TestModelExtract extends ModelTestBase
-    {
-    protected static final StatementBoundary sbTrue = new StatementBoundaryBase()
-        { 
-        @Override
-        public boolean stopAt( Statement s ) { return true; } 
-        };
-        
-    protected static final StatementBoundary sbFalse = new StatementBoundaryBase()
-        { 
-        @Override
-        public boolean stopAt( Statement s ) { return false; }
-        };
+public class TestModelExtract extends AbstractModelTestBase
+{
+	static class MockModelExtract extends ModelExtract
+	{
+		Node root;
+		Graph result;
+		Graph subject;
 
-    public TestModelExtract( String name )
-        { super( name ); }
-    
-    public static TestSuite suite()
-        { return new TestSuite( TestModelExtract.class ); }
+		public MockModelExtract( final StatementBoundary b )
+		{
+			super(b);
+		}
 
-    static class MockModelExtract extends ModelExtract
-        {
-        Node root;
-        Graph result;
-        Graph subject;
-       
-        public MockModelExtract( StatementBoundary b )
-            { super( b ); }
-            
-        public StatementBoundary getStatementBoundary()
-            { return boundary; }
-        
-        @Override
-        protected GraphExtract getGraphExtract( TripleBoundary b )
-            {
-            return new GraphExtract( b )
-                {
-                @Override
-                public Graph extractInto( Graph toUpdate, Node n, Graph source )
-                    {
-                    root = n;
-                    return result = super.extractInto( toUpdate, n, subject = source );
-                    }
-                };
-            }
-        }
-    
-    public void testAsTripleBoundary()
-        {
-        Model m = ModelFactory.createDefaultModel();
-        assertTrue( sbTrue.asTripleBoundary( m ).stopAt( triple( "x R y" ) ) );
-        assertFalse( sbFalse.asTripleBoundary( m ).stopAt( triple( "x R y" ) ) );
-        }
-    
-    public void testStatementTripleBoundaryAnon()
-        {
-        TripleBoundary anon = TripleBoundary.stopAtAnonObject;
-        assertSame( anon, new StatementTripleBoundary( anon ).asTripleBoundary( null ) );
-        assertFalse( new StatementTripleBoundary( anon ).stopAt( statement( "s P o" ) ) );
-        assertTrue( new StatementTripleBoundary( anon ).stopAt( statement( "s P _o" ) ) );
-        }
-    
-    public void testStatementContinueWith()
-        {
-        StatementBoundary sb = new StatementBoundaryBase()
-             { @Override
-            public boolean continueWith( Statement s ) { return false; } };
-        assertTrue( sb.stopAt( statement( "x pings y" ) ) );
-        }
-    
-    public void testStatementTripleBoundaryNowhere()
-        {
-        TripleBoundary nowhere = TripleBoundary.stopNowhere;
-        assertSame( nowhere, new StatementTripleBoundary( nowhere ).asTripleBoundary( null ) );
-        assertFalse( new StatementTripleBoundary( nowhere ).stopAt( statement( "s P _o" ) ) );
-        assertFalse( new StatementTripleBoundary( nowhere ).stopAt( statement( "s P o" ) ) );
-        }
-    public void testRemembersBoundary()
-        {
-        assertSame( sbTrue, new MockModelExtract( sbTrue ).getStatementBoundary() );
-        assertSame( sbFalse, new MockModelExtract( sbFalse ).getStatementBoundary() );
-        }
-    
-    public void testInvokesExtract()
-        {
-        MockModelExtract mock = new MockModelExtract( sbTrue );
-        Model source = modelWithStatements( "a R b" );
-        Model m = mock.extract( resource( "a" ), source );
-        assertEquals( node( "a" ), mock.root );
-        assertSame( mock.result, m.getGraph() );
-        assertSame( mock.subject, source.getGraph() );
-        }
+		@Override
+		protected GraphExtract getGraphExtract( final TripleBoundary b )
+		{
+			return new GraphExtract(b) {
+				@Override
+				public Graph extractInto( final Graph toUpdate, final Node n,
+						final Graph source )
+				{
+					root = n;
+					return result = super.extractInto(toUpdate, n,
+							subject = source);
+				}
+			};
+		}
 
-    /* (non-Javadoc)
-     * @see com.hp.hpl.jena.rdf.model.StatementBoundary#stopAt(com.hp.hpl.jena.rdf.model.Statement)
-     */
-    public boolean stopAt( Statement s )
-        {
-        // TODO Auto-generated method stub
-        return false;
-        }
+		public StatementBoundary getStatementBoundary()
+		{
+			return boundary;
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see com.hp.hpl.jena.rdf.model.StatementBoundary#asTripleBoundary(com.hp.hpl.jena.rdf.model.Model)
-     */
-    public TripleBoundary asTripleBoundary( Model m )
-        {
-        // TODO Auto-generated method stub
-        return null;
-        }
-    }
+	protected static final StatementBoundary sbTrue = new StatementBoundaryBase() {
+		@Override
+		public boolean stopAt( final Statement s )
+		{
+			return true;
+		}
+	};
+
+	protected static final StatementBoundary sbFalse = new StatementBoundaryBase() {
+		@Override
+		public boolean stopAt( final Statement s )
+		{
+			return false;
+		}
+	};
+
+	public TestModelExtract( final TestingModelFactory modelFactory,
+			final String name )
+	{
+		super(modelFactory, name);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hp.hpl.jena.rdf.model.StatementBoundary#asTripleBoundary(com.hp.hpl
+	 * .jena.rdf.model.Model)
+	 */
+	public TripleBoundary asTripleBoundary( final Model m )
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.hp.hpl.jena.rdf.model.StatementBoundary#stopAt(com.hp.hpl.jena.rdf
+	 * .model.Statement)
+	 */
+	public boolean stopAt( final Statement s )
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void testAsTripleBoundary()
+	{
+		final Model m = ModelFactory.createDefaultModel();
+		Assert.assertTrue(TestModelExtract.sbTrue.asTripleBoundary(m).stopAt(
+				GraphTestBase.triple("x R y")));
+		Assert.assertFalse(TestModelExtract.sbFalse.asTripleBoundary(m).stopAt(
+				GraphTestBase.triple("x R y")));
+	}
+
+	public void testInvokesExtract()
+	{
+		final MockModelExtract mock = new MockModelExtract(
+				TestModelExtract.sbTrue);
+		final Model source = ModelHelper.modelWithStatements(this, "a R b");
+		final Model m = mock.extract(ModelHelper.resource("a"), source);
+		Assert.assertEquals(GraphTestBase.node("a"), mock.root);
+		Assert.assertSame(mock.result, m.getGraph());
+		Assert.assertSame(mock.subject, source.getGraph());
+	}
+
+	public void testRemembersBoundary()
+	{
+		Assert.assertSame(TestModelExtract.sbTrue, new MockModelExtract(
+				TestModelExtract.sbTrue).getStatementBoundary());
+		Assert.assertSame(TestModelExtract.sbFalse, new MockModelExtract(
+				TestModelExtract.sbFalse).getStatementBoundary());
+	}
+
+	public void testStatementContinueWith()
+	{
+		final StatementBoundary sb = new StatementBoundaryBase() {
+			@Override
+			public boolean continueWith( final Statement s )
+			{
+				return false;
+			}
+		};
+		Assert.assertTrue(sb.stopAt(ModelHelper.statement("x pings y")));
+	}
+
+	public void testStatementTripleBoundaryAnon()
+	{
+		final TripleBoundary anon = TripleBoundary.stopAtAnonObject;
+		Assert.assertSame(anon,
+				new StatementTripleBoundary(anon).asTripleBoundary(null));
+		Assert.assertFalse(new StatementTripleBoundary(anon).stopAt(ModelHelper
+				.statement("s P o")));
+		Assert.assertTrue(new StatementTripleBoundary(anon).stopAt(ModelHelper
+				.statement("s P _o")));
+	}
+
+	public void testStatementTripleBoundaryNowhere()
+	{
+		final TripleBoundary nowhere = TripleBoundary.stopNowhere;
+		Assert.assertSame(nowhere,
+				new StatementTripleBoundary(nowhere).asTripleBoundary(null));
+		Assert.assertFalse(new StatementTripleBoundary(nowhere)
+				.stopAt(ModelHelper.statement("s P _o")));
+		Assert.assertFalse(new StatementTripleBoundary(nowhere)
+				.stopAt(ModelHelper.statement("s P o")));
+	}
+}

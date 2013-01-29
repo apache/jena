@@ -30,10 +30,6 @@ package com.hp.hpl.jena.ontology;
  * are required to be members of a given class.  At present, this capability is only
  * part of DAML+OIL, not OWL.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: QualifiedRestriction.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface QualifiedRestriction
     extends Restriction

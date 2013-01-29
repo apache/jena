@@ -29,9 +29,6 @@ import java.util.*;
  * Derivation records are used to determine how an inferred triple
  * was derived from a set of source triples and a reasoner. SubClasses
  * provide more specific information.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RuleDerivation implements Derivation {
     

@@ -37,10 +37,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * at least one <code>rdf:type</code> statement, referring to a known class,
  * must  be present in the model.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: Individual.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource

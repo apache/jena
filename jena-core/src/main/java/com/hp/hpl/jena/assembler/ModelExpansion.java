@@ -41,8 +41,6 @@ import com.hp.hpl.jena.vocabulary.*;
     This is sufficient to allow the subjects in <code>M</code> which have
     properties from <code>S</code> to have enough type information for
     AssemblerGroup dispatch.
-    
-    @author kers
  */
 public class ModelExpansion
     {

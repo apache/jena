@@ -21,7 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     RulesetNotFoundException - exception to throw when a Ruleset is not found
     (eg when handing reasoner specifications)
-    @author kers
  */
 
 public class RulesetNotFoundException extends DoesNotExistException

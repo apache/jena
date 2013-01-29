@@ -25,8 +25,6 @@ import com.hp.hpl.jena.shared.JenaException;
     This exception may be raised when an attempt to convert an RDFNode
     to a ReifiedStatement fails because the RDFNode does not correspond
     to a reification.
-
-    @author chris.dollin@hp.com
 */
 
 public class DoesNotReifyException extends JenaException

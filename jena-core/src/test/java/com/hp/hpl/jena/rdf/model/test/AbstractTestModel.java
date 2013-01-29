@@ -24,9 +24,6 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.NodeCreateUtils;
 
-/**
- 	@author kers
-*/
 public abstract class AbstractTestModel extends ModelTestBase
     {
     public AbstractTestModel( String name )

@@ -30,9 +30,6 @@ import java.util.*;
  * Rule-based reasoner interface. This is the default rule reasoner to use.
  * It supports both forward reasoning and backward reasoning, including use
  * of forward rules to generate and instantiate backward rules.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     

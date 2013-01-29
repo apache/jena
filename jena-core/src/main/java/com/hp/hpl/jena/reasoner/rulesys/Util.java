@@ -34,9 +34,6 @@ import java.util.*;
 
 /**
  * A small random collection of utility functions used by the rule systems.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-07-27 09:13:37 $
  */
 public class Util {
 

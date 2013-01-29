@@ -20,8 +20,7 @@ package org.apache.jena.riot.tokens;
 
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.system.PrefixMap ;
-import org.apache.jena.riot.tokens.Token ;
-import org.apache.jena.riot.tokens.TokenType ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
@@ -32,7 +31,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 public class TestTokenForNode extends BaseTest 
 {
     static String base = "http://localhost/" ;
-    static PrefixMap prefixMap = new PrefixMap() ;
+    static PrefixMap prefixMap = PrefixMapFactory.create() ;
     
     @BeforeClass static public void beforeClass()
     {

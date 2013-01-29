@@ -27,9 +27,6 @@ import com.hp.hpl.jena.reasoner.Finder;
  * graphs and the forward part of hybrid graphs. This interface
  * abstracts the interface onto such engines to allow a graph to
  * switch between direct and RETE style implementations.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public interface FRuleEngineI {
     

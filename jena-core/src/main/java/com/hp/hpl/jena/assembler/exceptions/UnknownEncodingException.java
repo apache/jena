@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 
 /**
     Exception used to report an unknown language encoding.
-    @author kers
 */
 public class UnknownEncodingException extends AssemblerException
     {

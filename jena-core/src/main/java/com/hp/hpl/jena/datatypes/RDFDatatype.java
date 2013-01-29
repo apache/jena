@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Interface on a datatype representation. An instance of this
  * interface is needed to convert typed literals between lexical
  * and value forms. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public interface RDFDatatype {
 

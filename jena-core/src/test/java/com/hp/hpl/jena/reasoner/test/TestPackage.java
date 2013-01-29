@@ -22,9 +22,6 @@ import junit.framework.*;
 
 /**
  * Aggregate tester that runs all the test associated with the reasoner package.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-10-05 17:12:23 $
  */
 
 public class TestPackage extends TestSuite {

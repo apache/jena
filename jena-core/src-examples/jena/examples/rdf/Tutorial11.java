@@ -24,9 +24,6 @@ import com.hp.hpl.jena.vocabulary.*;
 import java.io.PrintWriter;
 
 /** Tutorial 11 - more on literals
- *
- * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2007-11-14 09:51:57 $'
  */
 public class Tutorial11 extends Object {
     

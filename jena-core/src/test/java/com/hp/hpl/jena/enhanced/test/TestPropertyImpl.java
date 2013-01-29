@@ -23,7 +23,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * @see TestObjectImpl
- * @author  jjc
  */
 public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
 

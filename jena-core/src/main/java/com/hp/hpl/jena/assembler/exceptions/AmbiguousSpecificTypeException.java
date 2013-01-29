@@ -25,8 +25,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
 /**
     Exception to throw when an AssemblerGroup has a choice of types
     from which to try and find an implementation.
-    
- 	@author kers
 */
 public class AmbiguousSpecificTypeException extends AssemblerException
     {

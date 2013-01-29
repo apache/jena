@@ -27,9 +27,6 @@ import java.util.*;
  * triples with that as the subject and predicate and object given by arguments
  * two and three. A strange and hacky function, only usable in the head of
  * forward rules.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class ListMapAsSubject extends BaseBuiltin {
 

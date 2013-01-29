@@ -25,9 +25,6 @@ import com.hp.hpl.jena.graph.impl.WrappedGraph;
 
 /**
  * Wraps a graph and randomizes the order of find results.
- * @author jjc
- *
- * 
  */
 public class RandomOrderGraph extends WrappedGraph {
 	

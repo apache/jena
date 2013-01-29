@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     Exception used to report that a required property is missing.
-    @author kers
 */
 public class PropertyRequiredException extends AssemblerException
     {

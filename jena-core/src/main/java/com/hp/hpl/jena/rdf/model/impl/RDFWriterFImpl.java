@@ -28,9 +28,6 @@ import com.hp.hpl.jena.JenaRuntime ;
 
 
 /**
- *
- * @author  bwm
- * @version $Revision: 1.3 $ $Date: 2009-08-05 16:08:51 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 

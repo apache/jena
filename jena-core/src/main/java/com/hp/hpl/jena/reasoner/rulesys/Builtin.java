@@ -33,9 +33,6 @@ import com.hp.hpl.jena.graph.*;
  * to the java implementation of the builtin is done via the 
  * {@link BuiltinRegistry BuiltinRegistry} which can
  * be user extended.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public interface Builtin {
 

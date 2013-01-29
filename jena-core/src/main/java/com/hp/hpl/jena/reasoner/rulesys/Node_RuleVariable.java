@@ -30,9 +30,6 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * <p>
  * Note that this should not be used in a real Triple, in particular
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2009-08-05 14:43:24 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */

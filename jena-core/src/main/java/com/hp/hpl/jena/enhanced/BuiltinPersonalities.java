@@ -29,8 +29,6 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 /**
     The personalities that are provided for the existing Jena classes. It is likely that this
     should be factored.
-
-    @author jjc + kers
 */
 public class BuiltinPersonalities {
 

@@ -25,9 +25,6 @@ import java.util.*;
 /**
  * CountLiteralValues(X, P, C) sets C to be the number of semantically
  * distinct values for P on resource X. This is expensive.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class CountLiteralValues extends BaseBuiltin {
 

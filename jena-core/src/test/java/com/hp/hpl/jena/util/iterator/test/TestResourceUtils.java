@@ -36,10 +36,6 @@ import java.util.*;
  * <p>
  * Unit tests on resource utilities
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.3 2011-03-23 13:29:21 chris-dollin Exp $
  */
 public class TestResourceUtils
     extends TestCase

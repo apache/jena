@@ -19,9 +19,6 @@
 package com.hp.hpl.jena.rdf.model;
 
 /** A generic error handler.
- *
- * @author bwm
- * @version $Revision: 1.1 $
  */
 public interface RDFErrorHandler {
     

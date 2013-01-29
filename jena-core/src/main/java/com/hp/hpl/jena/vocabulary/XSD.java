@@ -25,9 +25,6 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 /**
  * Defines Jena resources corresponding to the URIs for 
  * the XSD primitive datatypes which are known to Jena. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class XSD {    
     /**

@@ -24,9 +24,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleContext ;
 
 /**
  * Tests the single argument to make sure it is a literal.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2010-05-15 20:12:27 $
  */
 public class IsLiteral extends BaseBuiltin {
 

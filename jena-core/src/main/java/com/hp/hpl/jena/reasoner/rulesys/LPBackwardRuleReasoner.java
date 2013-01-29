@@ -32,9 +32,6 @@ import java.util.*;
  * according to a set of rules. The rules are processed using a
  * tabled LP backchaining interpreter which is implemented by the
  * relvant InfGraph class. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 

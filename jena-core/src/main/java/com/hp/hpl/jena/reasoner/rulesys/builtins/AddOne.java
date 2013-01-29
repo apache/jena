@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Bind the second argument to 1+ the first argument. Just used for testing builtins.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class AddOne extends BaseBuiltin {
 

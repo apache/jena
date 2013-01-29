@@ -19,8 +19,6 @@
 package com.hp.hpl.jena.rdf.arp.impl;
 /**
  * Minimal implemantation of {@link Taint}
- * @author Jeremy J. Carroll
- *
  */
 public class TaintImpl implements Taint {
 
