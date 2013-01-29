@@ -36,10 +36,6 @@ import com.hp.hpl.jena.rdf.arp.AResource;
 import com.hp.hpl.jena.rdf.arp.DOM2Model;
 import com.hp.hpl.jena.rdf.arp.StatementHandler;
 
-/**
- * @author Jeremy J. Carroll
- *
- */
 public class MoreDOM2RDFTest extends TestCase implements StatementHandler {
 
     int count = 0;

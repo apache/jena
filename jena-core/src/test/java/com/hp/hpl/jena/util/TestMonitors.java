@@ -33,9 +33,6 @@ import junit.framework.TestSuite;
 
 /**
  * Tests for MonitorGraph implementation.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class TestMonitors extends TestCase {

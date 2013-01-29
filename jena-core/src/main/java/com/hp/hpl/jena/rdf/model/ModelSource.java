@@ -32,8 +32,6 @@ package com.hp.hpl.jena.rdf.model;
     
     A ModelSource is free to "forget" named models if it so wishes;
     for example, it may be a discard-if-getting-full cache.
- 	
- 	@author hedgehog
 */
 public interface ModelSource extends ModelGetter
     {

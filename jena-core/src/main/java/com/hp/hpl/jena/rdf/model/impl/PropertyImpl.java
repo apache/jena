@@ -28,9 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** An implementation of Property.
- *
- * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2010-01-11 09:17:05 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property

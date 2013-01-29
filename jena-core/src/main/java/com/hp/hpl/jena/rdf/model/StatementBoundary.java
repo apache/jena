@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.TripleBoundary;
 
 /**
      An interface for expressing search boundaries in terms of bounding statements.
- 	@author hedgehog
 */
 
 public interface StatementBoundary

@@ -97,10 +97,6 @@ import org.apache.jena.iri.impl.IRIFactoryImpl ;
  *  </p>
  *  <p>The other initialization methods (probably) do not
  *  have order dependencies.</p>
- *
- * 
- * @author Jeremy J. Carroll
- *
  */
 
 public class IRIFactory extends IRIFactoryImpl 

@@ -30,7 +30,6 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 
 /**
      TestSetRules - tests to bring setRules into existence on RuleReasonerFactory.     
-     @author kers
 */
 public class TestSetRules extends ModelTestBase
     {

@@ -28,7 +28,6 @@ import com.hp.hpl.jena.rdf.arp.impl.ANode;
 
 /**
  * A string literal property value from an RDF/XML file. 
- * @author  jjc
  */
 public interface ALiteral extends ANode {
 

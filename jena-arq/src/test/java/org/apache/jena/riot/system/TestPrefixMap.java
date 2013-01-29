@@ -18,46 +18,14 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.Test ;
+/**
+ * Test the standard {@link PrefixMapStd} implementation
+ *
+ */
+public class TestPrefixMap extends AbstractTestPrefixMap {
 
-import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.iri.IRIFactory ;
-import org.apache.jena.riot.system.PrefixMap ;
-
-public class TestPrefixMap extends BaseTest
-{
-    static IRIFactory factory = IRIFactory.iriImplementation() ; 
-    
-    @Test public void prefixMap1()
-    {
-        PrefixMap pmap = new PrefixMap() ;
-        add(pmap, "", "http://example/") ;
-        String x = pmap.expand("", "x") ;
-        assertEquals("http://example/x", x) ;
+    @Override
+    protected PrefixMap getPrefixMap() {
+        return new PrefixMapStd();
     }
-
-    @Test public void prefixMap2()
-    {
-        PrefixMap pmap = new PrefixMap() ;
-        add(pmap, "ex", "http://example/") ;
-        String x = pmap.expand("", "x") ;
-        assertNull(x) ;
-    }
-    
-    @Test public void prefixMap3()
-    {
-        PrefixMap pmap = new PrefixMap() ;
-        add(pmap, "ex", "http://example/") ;
-        add(pmap, "ex", "http://elsewhere/ns#") ;
-        String x = pmap.expand("ex", "x") ;
-        assertEquals("http://elsewhere/ns#x", x) ;
-    }
-
-    // PrefixMap2
-    
-    static void add(PrefixMap pmap, String prefix, String uri)
-    {
-        pmap.add(prefix, factory.create(uri)) ; 
-    }
-    
 }

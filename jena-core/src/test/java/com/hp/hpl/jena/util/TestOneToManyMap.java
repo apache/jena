@@ -35,9 +35,6 @@ import junit.framework.TestCase;
  * <p>
  * Unit tests for one-to-many map
  * </p>
- *
- * @author Ian Dickinson, HP Labs (<a href="mailto:ian_dickinson@users.sourceforge.net">email</a>)
- * @version Release @release@ ($Id: TestOneToManyMap.java,v 1.2 2009-10-06 13:04:44 ian_dickinson Exp $)
  */
 public class TestOneToManyMap 
     extends TestCase

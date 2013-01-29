@@ -23,10 +23,6 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
-/**
- * @author Jeremy J. Carroll
- * 
- */
 public class ARPDatatypeLiteral extends TaintImpl implements ALiteral {
 
     final private String datatype;

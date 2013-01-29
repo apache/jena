@@ -28,9 +28,6 @@ import java.util.*;
 /**
  * Experimental change to OWL translation hook that doesn't handle translation
  * of restrictions to functors.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class OWLExptRuleTranslationHook implements RulePreprocessHook  {
 

@@ -24,7 +24,6 @@ import com.hp.hpl.jena.shared.*;
 /**
     Exception to throw when an RDFNode required to be a Resource isn't, or when a Node
     supposed to be a resource isn't.
- 	@author kers
 */
 public class ResourceRequiredException extends JenaException
     {

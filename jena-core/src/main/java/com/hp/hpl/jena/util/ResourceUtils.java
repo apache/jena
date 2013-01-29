@@ -40,9 +40,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * General utility methods that operate on RDF resources, but which are not specific
  * to a given model.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
  */
 public class ResourceUtils {
 

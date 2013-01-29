@@ -29,8 +29,6 @@ import com.hp.hpl.jena.graph.impl.*;
  * causes the set of changes between this and the previous snapshot to
  * be calculated and the cache updated. The snapshot process will also 
  * fire change notification.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
  */
 
 public class MonitorGraph extends WrappedGraph {

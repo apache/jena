@@ -28,9 +28,6 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * Implementation of RuleContext for use in the backward chaining
  * interpreter. The RuleContext allows builtin predicates to 
  * interpret variable bindings to access the static triple data.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class BBRuleContext implements RuleContext {
     

@@ -22,9 +22,6 @@ import java.util.Map;
 
 /**
  * Interface for all nodes in the network.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public interface RETENode {
     

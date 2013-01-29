@@ -18,9 +18,6 @@
 
 package org.apache.jena.riot.system;
 
-import java.util.Map ;
-import java.util.Map.Entry ;
-
 import org.apache.jena.iri.IRI ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 
@@ -38,10 +35,7 @@ public class Prologue
         PrefixMap pmap = null ;
         if ( pmapping != null )
         {
-            pmap = new PrefixMap() ;
-            Map<String, String> x =  pmapping.getNsPrefixMap() ;
-            for ( Entry<String, String> e : x.entrySet() )
-                pmap.add(e.getKey(), e.getValue()) ;
+            pmap = PrefixMapFactory.createForInput(pmapping) ;
         }
         IRIResolver resolver = null ;
         if ( base != null )
@@ -51,7 +45,7 @@ public class Prologue
     
     public Prologue()
     { 
-        this.prefixMap = new PrefixMap() ;
+        this.prefixMap = PrefixMapFactory.createForInput() ;
         this.resolver = null ;
     }
     
@@ -69,14 +63,14 @@ public class Prologue
 
     public Prologue copy()
     {
-        PrefixMap prefixMap = new PrefixMap(this.prefixMap) ;
+        PrefixMap prefixMap = PrefixMapFactory.createForInput(this.prefixMap) ;
         return new Prologue(prefixMap, resolver) ;
     }
     
     public void usePrologueFrom(Prologue other)
     {
         // Copy.
-        prefixMap = new PrefixMap(other.prefixMap) ;
+        prefixMap = PrefixMapFactory.createForInput(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
             resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;
@@ -90,7 +84,7 @@ public class Prologue
         // New prefix mappings
         PrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
-            ext = new PrefixMap2(ext) ;
+            ext = PrefixMapFactory.extend(ext) ;
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )

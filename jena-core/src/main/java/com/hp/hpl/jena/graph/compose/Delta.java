@@ -81,7 +81,7 @@ public class Delta extends Dyadic implements Graph
      * add the ones that have been added.
      */
     @Override
-    public ExtendedIterator<Triple> graphBaseFind(TripleMatch tm)
+    protected ExtendedIterator<Triple> _graphBaseFind(TripleMatch tm)
     {
         return base.find(tm).filterDrop(ifIn(GraphUtil.findAll(R))).andThen(L.find(tm)) ;
     }

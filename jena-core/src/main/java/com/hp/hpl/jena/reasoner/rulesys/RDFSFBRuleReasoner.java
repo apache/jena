@@ -27,9 +27,6 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
 /**
  * A backward chaining implementation of the RDFS closure rules
  * based upon the basic backward rule interpreter. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RDFSFBRuleReasoner extends FBRuleReasoner {
     

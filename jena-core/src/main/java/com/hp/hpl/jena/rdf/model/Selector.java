@@ -23,9 +23,7 @@ package com.hp.hpl.jena.rdf.model;
  * <p>Model includes list and query methods which will return all the
  * statements which are selected by a selector object.  This is the interface
  * of such selector objects.
- * 
- * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
+ *
 */
 
 public interface Selector {

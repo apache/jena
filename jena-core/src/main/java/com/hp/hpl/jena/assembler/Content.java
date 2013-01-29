@@ -25,7 +25,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 /**
     A Content object records content to be used to fill models. This Content
     class contains other Content objects. 
-    @author kers
 */
 public class Content
     {

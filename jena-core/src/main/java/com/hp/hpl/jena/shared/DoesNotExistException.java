@@ -21,9 +21,7 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception thrown when an attempt is made find an entity by name, but it
-    cannot be located. 
-    
- 	@author kers
+    cannot be located.
 */
 
 public class DoesNotExistException extends JenaException

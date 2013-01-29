@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Jena exceptions that explicitly wrap other (usually checked) exceptions.
-    @author hedgehog
 */
 public class WrappedException extends JenaException
     {

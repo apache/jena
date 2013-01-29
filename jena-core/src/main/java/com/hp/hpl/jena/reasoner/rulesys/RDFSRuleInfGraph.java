@@ -26,9 +26,6 @@ import java.util.*;
  * Customization of the generic rule inference graph for RDFS inference.
  * In fact all the rule processing is unchanged, the only extenstion is
  * the validation support.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 

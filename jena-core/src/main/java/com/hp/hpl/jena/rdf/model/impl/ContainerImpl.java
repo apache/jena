@@ -29,9 +29,6 @@ import java.util.*;
 
 /** An internal class not normally of interest to application developers.
  *  A base class on which the other containers are built.
- *
- * @author  bwm, kers
- * @version  $Id: ContainerImpl.java,v 1.1 2009-06-29 08:55:32 castagna Exp $
 */
 
 public class ContainerImpl extends ResourceImpl

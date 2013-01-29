@@ -85,7 +85,6 @@ import com.hp.hpl.jena.util.Tokenizer;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2011-04-28 19:40:26 $ 
  */
 public class Rule implements ClauseEntry {
     

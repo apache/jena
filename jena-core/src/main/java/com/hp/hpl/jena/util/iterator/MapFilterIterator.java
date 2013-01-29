@@ -23,8 +23,7 @@ import java.util.*;
 /**
     A MapFilterIterator takes a MapFilter and an [Extended]Iterator and returns a new 
     ExtendedIterator which delivers the sequence of all non-null elements MapFilter(X) 
-    for X from the base iterator. 
-    @author kers
+    for X from the base iterator.
 */
 
 public class MapFilterIterator<T,X> extends NiceIterator<X> implements ExtendedIterator<X>

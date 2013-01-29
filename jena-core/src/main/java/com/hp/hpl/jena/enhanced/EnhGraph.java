@@ -32,11 +32,6 @@ import com.hp.hpl.jena.util.cache.*;
     <span style="color:red">WARNING</span>. The polymorphic aspects of EnhGraph 
     are <span style="color:red">not supported</span> and are not expected to be
     supported in this way for the indefinite future.
-    
-    @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)
-    <br><a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
-    <br><a href="mailto:ian_dickinson@users.sourceforge.net">Ian Dickinson</a> 
-    (refactoring and commentage)
 */
 
 public class EnhGraph 

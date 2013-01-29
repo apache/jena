@@ -36,8 +36,6 @@ import java.util.Map;
  *
  * The values were updated on 8th July 2002 from a file dated
  * 7th July 2002.
- *
- * @author jjc
  */
 public class IanaLanguageTag extends LanguageTag {
     static final Map<String, IanaLanguageTag[]> all = new HashMap<String, IanaLanguageTag[]>();
@@ -104,7 +102,6 @@ public class IanaLanguageTag extends LanguageTag {
  * <li><CODE>LT_IANA|LT_IANA_DEPRECATED</CODE></li>
  * <li><CODE>LT_IANA|LT_DEFAULT</CODE> i.e. <CODE>i-default</CODE></li>
  *</ul>
- *
  */    
     final public int classification;
     private IanaLanguageTag(String s,int classification) throws LanguageTagSyntaxException {

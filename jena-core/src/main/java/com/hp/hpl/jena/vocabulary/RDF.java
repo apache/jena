@@ -23,8 +23,6 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     The standard RDF vocabulary.
-    @author  bwm; updated by kers/daniel/christopher
-    @version $Id: RDF.java,v 1.1 2009-06-29 08:55:36 castagna Exp $
 */
 
 public class RDF{

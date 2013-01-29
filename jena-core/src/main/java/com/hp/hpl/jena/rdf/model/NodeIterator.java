@@ -28,8 +28,6 @@ import java.util.NoSuchElementException;
  *    in this case RDF nodes, and have a <CODE>close()</CODE> method. 
  *    thatshould be called to free resources if the application does
  *    not complete the iteration.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
  */
 public interface NodeIterator extends ExtendedIterator<RDFNode>
     {

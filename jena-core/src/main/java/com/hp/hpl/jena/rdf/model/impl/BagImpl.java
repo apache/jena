@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 
 /** An implementation of Bag
- *
- * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:32 $' 
  */
 public class BagImpl extends ContainerImpl implements Bag {
     

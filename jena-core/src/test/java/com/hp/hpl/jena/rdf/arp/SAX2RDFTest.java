@@ -41,15 +41,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.RDFReader;
-import com.hp.hpl.jena.regression.testReaderInterface;
 
-/**
- * @author Jeremy J. Carroll
- *  
- */
 public class SAX2RDFTest extends TestCase {
 
-	protected static Logger logger = LoggerFactory.getLogger( testReaderInterface.class );
+	protected static Logger logger = LoggerFactory.getLogger( SAX2RDFTest.class );
     
 	static final boolean is1_4_1 =
 		System.getProperty("java.version").startsWith("1.4.1");
@@ -1126,10 +1121,6 @@ public class SAX2RDFTest extends TestCase {
 
 	};
 
-	/**
-	 * @author Jeremy J. Carroll
-	 *  
-	 */
 	static class RDFEHArray implements RDFErrorHandler {
 
 		Vector<String> v = new Vector<String>();

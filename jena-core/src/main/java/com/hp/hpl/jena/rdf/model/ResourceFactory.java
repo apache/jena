@@ -115,7 +115,7 @@ public class ResourceFactory {
     /**
     Answer a typed literal.
     @param string the string which forms the value of the literal
-    @param datatype RDFDatatype of the type literal
+    @param dType RDFDatatype of the type literal
     @return a Literal node with that string as value
     */
 

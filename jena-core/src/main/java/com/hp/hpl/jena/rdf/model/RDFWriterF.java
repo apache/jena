@@ -32,8 +32,6 @@ package com.hp.hpl.jena.rdf.model;
  *are defined.  These defaults may be overwridden by setting a system property
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
- * @author bwm
- * @version $Version$ $Date: 2009-06-29 08:55:38 $
  */
 
 public interface RDFWriterF {

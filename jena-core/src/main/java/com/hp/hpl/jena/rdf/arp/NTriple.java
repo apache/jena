@@ -82,7 +82,6 @@ import org.xml.sax.SAXParseException;
  * </dt><dd>
  * Ignores numbered error/warning conditions.
  * </dl>
- * @author jjc
  */
 public class NTriple implements ARPErrorNumbers {
 

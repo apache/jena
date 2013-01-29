@@ -46,7 +46,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMap;
 import org.apache.jena.riot.system.Prologue ;
 
 import com.hp.hpl.jena.datatypes.RDFDatatype ;

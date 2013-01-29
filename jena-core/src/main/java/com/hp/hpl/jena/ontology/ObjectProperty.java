@@ -32,10 +32,6 @@ package com.hp.hpl.jena.ontology;
  * properties}). Some ontology languages, such as OWL Full, do not distinguish
  * between object and datatype properties.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ObjectProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface ObjectProperty
     extends OntProperty

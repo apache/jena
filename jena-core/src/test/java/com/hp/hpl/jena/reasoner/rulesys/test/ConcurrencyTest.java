@@ -43,9 +43,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
  * Test for deadlock and concurrency problems in rule engines.
  * 
  * <p>Test inspired by suggestions from Timm Linder</p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $
  */
 public class ConcurrencyTest  extends TestCase {
 

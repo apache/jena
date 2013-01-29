@@ -35,9 +35,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test the default RDFS reasoner against the current set of working group tests
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:56 $
  */
 public class TestCurrentRDFWG extends ReasonerTestBase {
     

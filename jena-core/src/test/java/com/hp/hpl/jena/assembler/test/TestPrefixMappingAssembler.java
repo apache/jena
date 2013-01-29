@@ -36,8 +36,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
    </pre>
 
     See also <i>TestBuiltinAssembler</i>.
-    
- 	@author kers
 */
 
 public class TestPrefixMappingAssembler extends AssemblerTestBase

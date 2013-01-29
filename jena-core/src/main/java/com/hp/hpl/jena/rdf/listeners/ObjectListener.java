@@ -25,8 +25,6 @@ import java.util.*;
 /**
     Listener that funnels all the changes into add/removed(Object) x, ie, leaves 
     discrimination to be done on the type of object added or removed.
-    
- 	@author kers
 */
 public class ObjectListener implements ModelChangedListener
     {

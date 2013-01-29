@@ -22,6 +22,10 @@ import java.util.ArrayList ;
 import java.util.Iterator ;
 import java.util.List ;
 
+import org.apache.jena.atlas.iterator.Filter ;
+import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Lib ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -138,7 +142,12 @@ public class PathLib
         Graph graph = execCxt.getActiveGraph() ;
         
         if ( Var.isVar(s) && Var.isVar(o) )
-            return ungroundedPath(binding, graph, Var.alloc(s), path, Var.alloc(o), execCxt) ;
+        {
+            if ( s.equals(o) )
+                return ungroundedPathSameVar(binding, graph, Var.alloc(s), path, execCxt) ;
+            else
+                return ungroundedPath(binding, graph, Var.alloc(s), path, Var.alloc(o), execCxt) ;
+        }
 
         if ( ! Var.isVar(s) && ! Var.isVar(o) )
             return groundedPath(binding, graph, s, path, o, execCxt) ;
@@ -211,5 +220,38 @@ public class PathLib
             qIterCat.add(qIter) ;
         }
         return qIterCat ;
+    }
+    
+    private static QueryIterator ungroundedPathSameVar(Binding binding, Graph graph, Var var, Path path, ExecutionContext execCxt)
+    {
+        // Try each end, grounded  
+        // Slightly more efficient would be to add a per-engine to do this.
+        Iterator<Node> iter = GraphUtils.allNodes(graph) ;
+        QueryIterConcat qIterCat = new QueryIterConcat(execCxt) ;
+        
+        for ( ; iter.hasNext() ; )
+        {
+            Node n = iter.next() ;
+            Binding b2 = BindingFactory.binding(binding, var, n) ;
+            int x = existsPath(graph, n, path, n) ;
+            if ( x > 0 )
+            {
+                QueryIterator qIter = new QueryIterYieldN(x, b2, execCxt) ;
+                qIterCat.add(qIter) ;
+            }
+        }
+        return qIterCat ; 
+    }
+    
+    private static int existsPath(Graph graph, Node subject, Path path, final Node object)
+    {
+        if ( ! subject.isConcrete() || !object.isConcrete() )
+            throw new ARQInternalErrorException("Non concrete node for existsPath evaluation") ;
+        Iterator<Node> iter = PathEval.eval(graph, subject, path) ;
+        Filter<Node> filter = new Filter<Node>() { @Override public boolean accept(Node node) { return Lib.equal(node,  object) ; } } ; 
+        // See if we got to the node we're interested in finishing at.
+        iter = Iter.filter(iter, filter) ;
+        long x = Iter.count(iter) ; 
+        return (int)x ;
     }
 }

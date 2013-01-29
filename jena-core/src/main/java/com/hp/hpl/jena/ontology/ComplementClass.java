@@ -31,10 +31,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * <p>
  * Class description that is formed from the complement of another class description
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ComplementClass.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface ComplementClass 
     extends BooleanClassDescription

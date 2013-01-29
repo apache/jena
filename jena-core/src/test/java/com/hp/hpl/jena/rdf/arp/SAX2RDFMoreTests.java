@@ -36,10 +36,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFReader;
 
-/**
- * @author Jeremy J. Carroll
- *  
- */
 public class SAX2RDFMoreTests extends TestCase {
 	public SAX2RDFMoreTests(String nm) {
 		super(nm);

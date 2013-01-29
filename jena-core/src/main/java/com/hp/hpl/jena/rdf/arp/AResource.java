@@ -22,9 +22,6 @@ package com.hp.hpl.jena.rdf.arp;
  * A URI or blank node reported to a {@link StatementHandler}.
  * Note: equality (<code>.equals</code>) rather than identity
  * (<code>==</code>) must be used to compare <code>AResource</code>s.
- * 
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- *
 */
 public interface AResource {
 	  

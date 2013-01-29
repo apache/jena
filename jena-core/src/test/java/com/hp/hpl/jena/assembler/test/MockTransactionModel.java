@@ -33,7 +33,6 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
     A model assembler that creates a model with controllable supporting of
     transactions and aborting on adding statements; the model logs transactions
     and adding-of-models. For testing only.
- 	@author kers
 */
 final class MockTransactionModel extends ModelAssembler
     {

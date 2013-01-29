@@ -28,8 +28,6 @@ package org.apache.jena.iri;
  * will change with future releases,
  * since they integrate tightly with
  * implementation details.
- * @author Jeremy J. Carroll
- *
  */
 public interface IRIComponents {
     /**

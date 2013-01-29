@@ -23,8 +23,6 @@ import com.hp.hpl.jena.graph.TripleBoundary;
 /**
     StatementTripleBoundary - a StatementBoundary that just wraps a
     TripleBoundary.
-    
-    @author kers
 */
 public class StatementTripleBoundary implements StatementBoundary
     {

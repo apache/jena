@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Check that the two args are different. This uses a semantic equality test.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2009-07-22 08:29:39 $
  */
 public class NotEqual extends BaseBuiltin {
 

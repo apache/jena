@@ -24,7 +24,6 @@ import com.hp.hpl.jena.shared.JenaException;
 /**
     Exception to throw when an RDFNode required to be a Literal isn't, or when a
     literal Node is required but a non-literal Node supplied.
- 	@author kers
 */
 public class LiteralRequiredException extends JenaException
     {

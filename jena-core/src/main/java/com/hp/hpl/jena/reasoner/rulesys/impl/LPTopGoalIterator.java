@@ -30,9 +30,6 @@ import java.util.*;
  * Wraps up the results an LP rule engine instance into a conventional
  * iterator. Ensures that the engine is closed and detached from the
  * inference graph if the iterator hits the end of the result set.
- *
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2010-05-08 19:38:22 $
  */
 public class LPTopGoalIterator implements ClosableIterator<Triple>, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */

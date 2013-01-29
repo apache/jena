@@ -20,10 +20,7 @@ package com.hp.hpl.jena.rdf.arp;
 
 import java.io.IOException;
 import java.io.InputStream;
-/**
- * @author Jeremy J. Carroll
- *
- */
+
 interface InFactoryX {
 	InputStream open() throws IOException;
 

@@ -43,9 +43,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RuleDerivation;
  * <p>
  * Note, implementation is not thread-safe. Would be easy to make it so but 
  * concurrent adds to InfModel are not supported anyway.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $
  */
 
 public class RETEConflictSet {

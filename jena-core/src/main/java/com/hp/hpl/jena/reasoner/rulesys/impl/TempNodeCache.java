@@ -30,9 +30,6 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * data. This structure is used to manage a pool of such temporary nodes.
  * It is only needed in situations where the data can not be added directly
  * to a deductions graph due to the risk of concurrent access.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 
 // Implementation note: We need to map from a pair of values (instance and prop).

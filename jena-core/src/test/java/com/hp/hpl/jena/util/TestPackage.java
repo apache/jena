@@ -25,7 +25,6 @@ import junit.framework.*;
  * Please try to name your tests and test suites appropriately.
  * Note, it is better to name your test suites on creation
  * rather than in this file.
- * @author  jjc
  */
 public class TestPackage extends TestSuite {
 

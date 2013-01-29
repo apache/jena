@@ -30,6 +30,7 @@ import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.core.Quad;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDataWriter.UpdateMode;
 import com.hp.hpl.jena.sparql.serializer.FormatterElement;
@@ -37,6 +38,7 @@ import com.hp.hpl.jena.sparql.serializer.PrologueSerializer;
 import com.hp.hpl.jena.sparql.serializer.SerializationContext;
 import com.hp.hpl.jena.sparql.syntax.Element;
 import com.hp.hpl.jena.sparql.util.FmtUtils;
+import com.hp.hpl.jena.sparql.util.NodeToLabelMapBNode ;
 import com.hp.hpl.jena.update.Update;
 import com.hp.hpl.jena.update.UpdateRequest;
 
@@ -52,14 +54,12 @@ public class UpdateWriter implements Closeable
     public UpdateWriter(IndentedWriter out, SerializationContext sCxt)
     {
         if (out == null)
-        {
             throw new IllegalArgumentException("out may not be null") ;
-        }
         
+        // To get legal syntax out, the serialization context 
+        // has to be a bNode mapping that does ??N vars to bNodes
         if (sCxt == null)
-        {
-            sCxt = new SerializationContext();
-        }
+            sCxt = new SerializationContext((Prologue)null, new NodeToLabelMapBNode());
         
         this.out = out;
         this.sCxt = sCxt;
@@ -68,18 +68,14 @@ public class UpdateWriter implements Closeable
     public void open()
     {
         if (null != sCxt)
-        {
             prologue();
-        }
         opened = true;
     }
     
     private void checkOpen()
     {
         if (!opened)
-        {
             throw new IllegalStateException("UpdateStreamWriter is not opened.  Call open() first.");
-        }
     }
     
     private void prologue()
@@ -241,9 +237,6 @@ public class UpdateWriter implements Closeable
     
     public static void output(UpdateRequest request, IndentedWriter out, SerializationContext sCxt)
     {
-        if ( sCxt == null )
-            sCxt = new SerializationContext(request);
-        
         UpdateWriter uw = new UpdateWriter(out, sCxt);
         uw.open();
         uw.update(request);
@@ -252,9 +245,6 @@ public class UpdateWriter implements Closeable
     
     public static void output(Update update, IndentedWriter out, SerializationContext sCxt)
     {
-        if ( sCxt == null )
-            sCxt = new SerializationContext();
-        
         UpdateWriter uw = new UpdateWriter(out, sCxt);
         uw.open();
         uw.update(update);

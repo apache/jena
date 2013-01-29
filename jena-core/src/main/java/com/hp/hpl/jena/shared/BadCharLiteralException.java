@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception to throw when a literal required to be a single character isn't.
- 	@author kers
 */
 public class BadCharLiteralException extends JenaException
     {

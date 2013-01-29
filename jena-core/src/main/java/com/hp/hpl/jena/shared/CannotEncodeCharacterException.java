@@ -21,8 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     Exception to throw when a character cannot be encoded into some context
     for some reason.
-    
-    @author kers
 */
 public class CannotEncodeCharacterException extends JenaException
     {

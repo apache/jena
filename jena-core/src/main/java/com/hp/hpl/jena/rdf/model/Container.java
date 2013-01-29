@@ -47,8 +47,6 @@ package com.hp.hpl.jena.rdf.model;
  *    resource created by an implementation in another class which adds
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2009-06-29 08:55:38 $'
  */
 public interface Container extends Resource {
     

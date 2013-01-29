@@ -23,7 +23,6 @@ package com.hp.hpl.jena.rdf.arp;
  * document.
  * This has methods copied form SAX  for
  * notifying the application of namespaces.
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
 public interface NamespaceHandler {	

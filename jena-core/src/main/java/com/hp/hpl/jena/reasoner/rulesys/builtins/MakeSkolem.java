@@ -32,9 +32,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * Bind a blank node to the first argument.
  * For any given combination of the remaining arguments
  * the same blank node will be returned. 
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 public class MakeSkolem extends BaseBuiltin {
 

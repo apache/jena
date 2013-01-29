@@ -469,9 +469,9 @@ public class TestPackage extends GraphTestBase  {
             fail( "oops" ); 
             }
         catch (UnsupportedPolymorphismException e) 
-            {
+            {    	
             assertEquals( en, e.getBadNode() );
-            assertTrue( "exception should have cuplprit graph", eg == e.getBadGraph() );
+            assertTrue( "exception should have cuplprit graph", eg == ((EnhNode)e.getBadNode()).getGraph() );
             assertSame( "exception should have culprit class", Property.class, e.getBadClass() );
             }
         }
@@ -506,7 +506,8 @@ public class TestPackage extends GraphTestBase  {
             fail( "should throw UnsupportedPolymorphismException" ); }
         catch (UnsupportedPolymorphismException e) 
             {
-            assertEquals( null, e.getBadGraph() );
+        	assertTrue( e.getBadNode() instanceof EnhNode );
+            assertEquals( null, ((EnhNode)e.getBadNode()).getGraph() );
             assertEquals( Example.class, e.getBadClass() );
             }
         }

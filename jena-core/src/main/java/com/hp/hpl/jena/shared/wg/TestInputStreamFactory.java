@@ -34,9 +34,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * This class provides input streams that:
  * 1: can be from a URL or from a zip
  * 2: do not actually open until the first read
- * @author Jeremy Carroll
- *
- * 
  */
 public class TestInputStreamFactory {
     

@@ -25,8 +25,6 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
     Tests for configuration vocabulary added as part of ModelSpec removal
-
- 	@author kers
 */
 public class TestConfigVocabulary extends ModelTestBase
     {

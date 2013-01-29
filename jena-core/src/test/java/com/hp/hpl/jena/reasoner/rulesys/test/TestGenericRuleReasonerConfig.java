@@ -28,8 +28,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 /**
     Your eyes will bleed with the number of backslashes required in the substitute
     strings.
-    
- 	@author kers
 */
 public class TestGenericRuleReasonerConfig extends AssemblerTestBase
     {

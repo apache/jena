@@ -22,8 +22,6 @@ import java.util.Iterator;
 
 /** 
     boolean functions wrapped to be used in filtering iterators.
-    
-    @author jjc, kers
 */
 public abstract class Filter<T>
     {

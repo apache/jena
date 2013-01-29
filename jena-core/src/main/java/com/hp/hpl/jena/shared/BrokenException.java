@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     An exception to throw if an internal error is detected.
- 	@author kers
 */
 public class BrokenException extends JenaException
     {

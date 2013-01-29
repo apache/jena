@@ -24,8 +24,6 @@ import com.hp.hpl.jena.shared.*;
 /**
     Helper functions for ModelFactory - in here to keep from obtruding on the
     end-users.
-    
- 	@author kers
 */
 public class ModelFactoryBase
     {

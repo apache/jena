@@ -25,7 +25,6 @@ import com.hp.hpl.jena.graph.TripleBoundary;
 /**
      ModelExtract - a wrapper for GraphExtract, allowing rooted sub-models to be
      extracted from other models with some boundary condition.
- 	@author hedgehog
 */
 public class ModelExtract
     {

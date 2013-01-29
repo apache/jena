@@ -26,9 +26,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * can be found. Many of the details vary between the forward and
  * backward chaining system - this interface is the minimal one needed
  * by most builtins the specific implementations offer richer functionality.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
+
  */
 public interface BindingEnvironment {
         

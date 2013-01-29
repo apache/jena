@@ -32,10 +32,6 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * A property restriction that requires the named property to have at least one
  * range instance belonging to the given class.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: SomeValuesFromRestriction.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface SomeValuesFromRestriction 
     extends Restriction

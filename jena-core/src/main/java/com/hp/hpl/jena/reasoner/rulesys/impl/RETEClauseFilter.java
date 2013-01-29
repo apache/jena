@@ -29,9 +29,6 @@ import java.util.*;
  * for a single rule clause. If the match passes it creates a binding
  * environment token and passes it on the the RETE network itself. The checks
  * and bindings are implemented using a simple byte-coded interpreter.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class RETEClauseFilter implements RETESourceNode {
     

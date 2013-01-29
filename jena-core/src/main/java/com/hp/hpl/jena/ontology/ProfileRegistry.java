@@ -34,10 +34,6 @@ import java.util.*;
  * Provides a means to map between the URI's that represent ontology languages
  * and their language profiles.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants

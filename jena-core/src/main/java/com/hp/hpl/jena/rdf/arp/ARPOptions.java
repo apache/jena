@@ -29,9 +29,6 @@ import org.apache.jena.iri.IRIFactory;
  * versions, however constructing instances of this class is deprecated.
  * In addition, accessing the fields of {@link ARPErrorNumbers} through this
  * class is not supported. The inheritance of this interface will be removed.
- * 
- * @author Jeremy J. Carroll
- *
  */
 public class ARPOptions implements ARPErrorNumbers {
     

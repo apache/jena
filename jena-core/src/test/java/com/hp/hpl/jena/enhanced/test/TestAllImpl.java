@@ -21,10 +21,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-/**
- * @see TestObjectImpl
- * @author  jjc
- */
 public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProperty, TestObject {
 
     public static final Implementation factory = new Implementation() {

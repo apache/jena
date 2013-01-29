@@ -44,8 +44,6 @@ import org.xml.sax.helpers.AttributesImpl;
 /**
  * 
  * Bridge StAX and SAX parsing.
- * 
- * @author Damian Steer
  */
 public class StAX2SAX {
     private final ContentHandler handler;

@@ -33,10 +33,6 @@ package com.hp.hpl.jena.ontology;
  * object} properties may be functional, so this interface is defined to extend
  * the general super-interface {@link OntProperty}.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: FunctionalProperty.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface FunctionalProperty
     extends OntProperty

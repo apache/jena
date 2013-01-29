@@ -27,8 +27,6 @@ package com.hp.hpl.jena.rdf.arp.impl;
 import com.hp.hpl.jena.rdf.arp.AResource;
 
 /** A resource from the input file.
- *
- * @author jjc
  */
 public interface AResourceInternal extends AResource, ANode {
     /**

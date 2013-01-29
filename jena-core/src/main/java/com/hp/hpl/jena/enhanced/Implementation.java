@@ -25,10 +25,6 @@ import com.hp.hpl.jena.graph.*;
  * from normal graph nodes. Implementation classes should have a public final 
  * member variable called factory of this type.
  * </p>
- * 
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
- *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
- *         <a href="mailto:ian_dickinson@users.sourceforge.net">Ian Dickinson</a> (refactoring and commentage)
  */
 public abstract class Implementation {
 

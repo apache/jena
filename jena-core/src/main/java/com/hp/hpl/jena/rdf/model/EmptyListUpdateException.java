@@ -38,10 +38,6 @@ import com.hp.hpl.jena.shared.JenaException;
  * or check first to see if the list {@linkplain RDFList#isEmpty is empty}, and replace
  * it with a non-null list.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: EmptyListUpdateException.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $
  */
 public class EmptyListUpdateException 
     extends JenaException

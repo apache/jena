@@ -26,9 +26,6 @@ import java.util.Iterator;
 /**
  * Default implementation of the InfModel interface which simply wraps up
  * an InfGraph.
-
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:32 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 

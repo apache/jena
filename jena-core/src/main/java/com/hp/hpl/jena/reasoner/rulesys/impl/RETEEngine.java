@@ -34,9 +34,6 @@ import org.slf4j.LoggerFactory;
 /**
  * A RETE version of the the forward rule system engine. It neeeds to reference
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2010-05-18 08:18:48 $
  */
 public class RETEEngine implements FRuleEngineI {
     

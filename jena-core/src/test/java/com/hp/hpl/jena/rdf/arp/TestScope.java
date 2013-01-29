@@ -27,10 +27,6 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 
-/**
- * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
- *
-*/
 public class TestScope extends TestCase {
 	public static Test suite() {
 		TestSuite s = new TestSuite(TestScope.class);

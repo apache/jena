@@ -464,19 +464,24 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     public static <T> Iterator<T> convert(Iterator<?> iterator) { return (Iterator<T>)iterator ; }
     
     /** Count the iterable - many iterable objects have a .size() operation which should be used in preference to this explicit counting operation  */ 
-    public static <T> long count(Iterable<T> iterator)
+    public static <T> long count(Iterable<T> iterable)
     {
-        ActionCount<T> action = new ActionCount<T>() ;
-        Iter.apply(iterator, action) ;
-        return action.getCount() ;
+        return count(iterable.iterator()) ; 
     }
 
     /** Count the iterator (this is destructive on the iterator) */ 
     public static <T> long count(Iterator<T> iterator)
     {
-        ActionCount<T> action = new ActionCount<T>() ;
-        Iter.apply(iterator, action) ;
-        return action.getCount() ;
+        long x = 0 ;
+        while ( iterator.hasNext() )
+        {
+            iterator.next();
+            x++ ;
+        }
+        return x ;
+//        ActionCount<T> action = new ActionCount<T>() ;
+//        Iter.apply(iterator, action) ;
+//        return action.getCount() ;
     }
 
     // --- Consume the iterator.

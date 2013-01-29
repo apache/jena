@@ -22,10 +22,6 @@ package org.apache.jena.iri;
  * Constants for use with {@link IRI#relativize(IRI, int)}
  * and {@link IRI#relativize(String, int)}.
  * These constants can be or-red together.
- * 
- * 
- * @author Jeremy J. Carroll
- *
  */
 public interface IRIRelativize {
     /**

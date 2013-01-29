@@ -22,10 +22,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.util.iterator.*;
 
-/**
- *
- * @author  jjc
- */
 public class TestModelImpl extends EnhGraph implements TestModel {
     
     /** Creates a new instance of TestModelImpl */

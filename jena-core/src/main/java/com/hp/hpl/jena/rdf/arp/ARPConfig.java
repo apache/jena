@@ -25,8 +25,6 @@ import org.xml.sax.ErrorHandler;
  * Used to set event handlers and options
  * on {@link ARP}, {@link SAX2Model}, and
  * {@link SAX2RDF} instances.
- * @author Jeremy J. Carroll
- *
  */
 public interface ARPConfig {
 	/**

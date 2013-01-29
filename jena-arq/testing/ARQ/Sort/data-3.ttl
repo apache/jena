@@ -18,8 +18,7 @@
 :y4 :q "abc"^^xsd:string .
 :y5 :q "abc"^^xsd:integer .
 :y6 :q "abc"^^:unknown .
-:y7 :q _:abc .
-:y8 :q :abc .
+:y7 :q :abc .
 
 :z1 :r 1 .
 :z2 :r 01 .

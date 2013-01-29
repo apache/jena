@@ -25,7 +25,6 @@ import com.hp.hpl.jena.test.JenaTestBase;
 /**
     Introduced to test that nested Jena exceptions preserve the
     caught exception's message.
- 	@author kers
 */
 public class TestJenaException extends JenaTestBase
     {

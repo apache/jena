@@ -24,8 +24,7 @@ import com.hp.hpl.jena.rdf.model.*;
     OWL2 vocabulary. NOTE: Jena does not provide OWL2 inference or OntModel
     support. These constants are provided for the convenience of users who
     are doing OWL2 work with the current OWL1 support and desire a suitable
-    set of names. 
-    @author chris.dollin
+    set of names.
 */
 public class OWL2
     {

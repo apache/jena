@@ -35,7 +35,7 @@ public class DisjointUnion extends Dyadic
     public DisjointUnion( Graph L, Graph R )
         { super( L, R ); }
 
-    @Override public ExtendedIterator<Triple> graphBaseFind( TripleMatch m )
+    @Override protected ExtendedIterator<Triple> _graphBaseFind( TripleMatch m )
         { return L.find( m ) .andThen( R.find( m ) ); }
     
     @Override public boolean graphBaseContains( Triple t )

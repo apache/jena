@@ -103,7 +103,7 @@ public class TestPath2 extends BaseTest
     @Test public void path_35() { test(x, "(pathN+ :r)",          ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
 	@Test public void path_36() { test(x, "(path* :r)",           ":x", ":y2", ":z", ":a2", ":b", ":a1", ":y1") ; } 
 	@Test public void path_37() { test(x, "(pathN* :r)",          ":x", ":y2", ":z", ":a2", ":b", ":a1", ":b", ":y1", ":z", ":a2", ":b", ":a1", ":b") ; } 
-	
+
 //	static int i = 0 ;
 	
 	private void test(Node start, String pathStr, String ... results)

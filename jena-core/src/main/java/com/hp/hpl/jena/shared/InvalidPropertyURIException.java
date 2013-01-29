@@ -21,8 +21,6 @@ package com.hp.hpl.jena.shared;
 /**
     Exception to throw when it is discovered that a property has been given
     an illegal URI.
-    
- 	@author kers
 */
 public class InvalidPropertyURIException extends JenaException
     {

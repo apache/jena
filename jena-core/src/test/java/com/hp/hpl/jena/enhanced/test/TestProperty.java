@@ -22,7 +22,6 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
 
 /**
  * @see TestObject
- * @author  jjc
  */
 public interface TestProperty extends RDFNode, TestNode {  
    

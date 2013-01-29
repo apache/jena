@@ -24,8 +24,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A lexical handler that does nothing.
- * @author jjchplb
- *
  */
 class LexicalHandlerImpl extends DefaultHandler implements LexicalHandler {
 

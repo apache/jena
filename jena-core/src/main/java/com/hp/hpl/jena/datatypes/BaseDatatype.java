@@ -23,9 +23,6 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 /**
  * Base level implementation of datatype from which real implementations
  * can inherit.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class BaseDatatype implements RDFDatatype {
     

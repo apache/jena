@@ -22,10 +22,6 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.*;
 
-/**
-
- 	@author kers
-*/
 public class TestVocabRSS extends VocabTestBase
     {
     public TestVocabRSS(String name)

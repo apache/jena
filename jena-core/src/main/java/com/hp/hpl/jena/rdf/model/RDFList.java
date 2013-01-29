@@ -50,10 +50,6 @@ import java.util.*;
  * be invoked explicitly by clients by calling {@link #isValid}. By default, RDF
  * lists are processed in non-strict mode.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.2 2009-10-06 13:04:43 ian_dickinson Exp $)
  */
 public interface RDFList
     extends Resource

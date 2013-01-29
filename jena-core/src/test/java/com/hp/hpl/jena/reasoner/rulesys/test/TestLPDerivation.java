@@ -40,9 +40,6 @@ import junit.framework.TestSuite;
 
 /**
  * Test the derivation tracing of the LP system.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class TestLPDerivation extends TestCase {

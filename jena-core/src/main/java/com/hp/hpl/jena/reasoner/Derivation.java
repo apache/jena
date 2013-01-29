@@ -27,9 +27,6 @@ import java.io.PrintWriter;
  * 
  * <p>A future option might be to generate an RDF description of
  * the derivation trace. </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public interface Derivation {
 

@@ -25,9 +25,6 @@ import org.slf4j.LoggerFactory ;
 
 /**
  * Aggregate tester that runs all the test associated with the rulesys package.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2010-05-15 20:12:17 $
  */
 
 public class TestPackage extends TestSuite {

@@ -24,9 +24,6 @@ import com.hp.hpl.jena.util.iterator.*;
 /**
  * Wrapper round a Graph to implement the slighly modified Finder
  * interface.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:50 $
  */
 public class FGraph implements Finder {
 

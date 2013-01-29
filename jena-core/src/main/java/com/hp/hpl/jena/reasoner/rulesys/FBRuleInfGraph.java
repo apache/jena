@@ -55,9 +55,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
  * query is answered by consulting the union of the raw data, the forward
  * derived results and any relevant backward rules (whose answers are tabled
  * for future reference).
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2010-11-12 12:21:00 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     

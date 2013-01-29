@@ -237,18 +237,22 @@ public class IndentedWriter
     
     public int getRow() { return row ; }
     public int getCol() { return column ; }
-    public int getIndent() { return currentIndent ; }
     
+    /** @deprecated Use getAbsoluteIndent() */ 
+    @Deprecated
+    public int getIndent() { return currentIndent ; }
+    public int getAbsoluteIndent() { return currentIndent ; }
+    public void setAbsoluteIndent(int x) { currentIndent = x ; }
+
     /** Position past current indent */ 
     public int getCurrentOffset()
     { 
-        int x = getCol() - getIndent() ;
+        int x = getCol() - getAbsoluteIndent() ;
         if ( x >= 0 )
             return x ;
         // At start of line somehow.
         return 0 ;
     }
-    
     
     public boolean hasLineNumbers()
     {
@@ -292,8 +296,6 @@ public class IndentedWriter
     
     public void setUnitIndent(int x) { unitIndent = x ; }
     public int  getUnitIndent() { return unitIndent ; }
-    public void setAbsoluteIndent(int x) { currentIndent = x ; }
-    
     public boolean atLineStart() { return startingNewLine ; }
     
     private void lineStart()

@@ -30,7 +30,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
     Test triple bunch implementations - NOT YET FINISHED
-    @author kers
 */
 public abstract class TestTripleBunch extends GraphTestBase
     {

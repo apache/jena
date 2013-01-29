@@ -42,8 +42,8 @@ public class NodeTupleTableConcrete implements NodeTupleTable
     private final DatasetControl dsPolicy ;
 
     /*
-     * Concurrency checking: Everything goes through one of addRow, deleteRow or
-     * find*
+     * Concurrency checking: Everything goes through one of 
+     * addRow, deleteRow or find*
      */
 
     public NodeTupleTableConcrete(int N, TupleIndex[] indexes, NodeTable nodeTable, DatasetControl dsControl)

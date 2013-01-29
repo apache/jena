@@ -29,9 +29,6 @@ package com.hp.hpl.jena.rdf.arp;
  * <li> when a blank node goes out of scope, allowing its anonymous
  * ID to be freed by external applications.
  * <li> when a rdf:RDF start and end tag is seen
- * @author Simon Raboczi, Jeremy Carroll
- *
- * 
  */
 public interface ExtendedHandler {
 	/** After this call, no more triples will be reported

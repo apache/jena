@@ -20,7 +20,6 @@ package com.hp.hpl.jena.shared;
 
 /**
     Exception to throw when there is no reader with the specified language
- 	@author kers
 */
 public class NoReaderForLangException extends JenaException
     {

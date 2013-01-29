@@ -20,7 +20,6 @@ package org.apache.jena.riot.system;
 
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
-import org.apache.jena.riot.SysRIOT ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -40,7 +39,7 @@ public class StreamRDFLib
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
     
     /** 
-     * Outpout to a sink; prefix and base handled only within the parser.
+     * Output to a sink; prefix and base handled only within the parser.
      * Unfortunately, Java needs different names for the triples and 
      * quads versions because of type erasure.  
      */
@@ -67,19 +66,7 @@ public class StreamRDFLib
     public static RDFParserOutputCounting count(StreamRDF other)
     { return new ParserOutputCountingBase(other) ; }
 
-//    private static class ParserOutputSink implements StreamRDF
-//    {
-//        public ParserOutputSink ()                      {}
-//        @Override public void start()                   {}
-//        @Override public void triple(Triple triple)     {}
-//        @Override public void quad(Quad quad)           {}
-//        @Override public void tuple(Tuple<Node> tuple)  {}
-//        @Override public void base(String base)         {}
-//        @Override public void prefix(String prefix, String iri) {}
-//        @Override public void finish()                  {}
-//    }
-
-    private static class ParserOutputSinkTriplesToQuads extends StreamRDFWarpper
+    private static class ParserOutputSinkTriplesToQuads extends StreamRDFWrapper
     {
         private final Node gn ;
         ParserOutputSinkTriplesToQuads(Node gn, StreamRDF base)
@@ -88,7 +75,6 @@ public class StreamRDFLib
         @Override public void triple(Triple triple)
         { sink.quad(new Quad(gn, triple)) ; }
     }
-    
 
     private static class ParserOutputSinkTriples extends StreamRDFBase
     {
@@ -136,7 +122,11 @@ public class StreamRDFLib
             else
             {
                 if ( ! warningIssued )
-                    SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                {
+                    //SysRIOT.getLogger().warn("Only triples or default graph data expected : named graph data ignored") ;
+                    // Not ideal - assumes the global default.
+                    ErrorHandlerFactory.getDefaultErrorHandler().warning("Only triples or default graph data expected : named graph data ignored", -1, -1) ;
+                }
                 warningIssued = true ;
             }
             //throw new IllegalStateException("Quad passed to graph parsing") ;
@@ -158,7 +148,8 @@ public class StreamRDFLib
         
         @Override public void triple(Triple triple) 
         {
-            throw new IllegalStateException("Triple passed to dataset parsing") ;
+            dsg.add(Quad.defaultGraphNodeGenerated, triple.getSubject(), triple.getPredicate(), triple.getObject()) ;
+            //throw new IllegalStateException("Triple passed to dataset parsing") ;
         }
         
         @Override public void quad(Quad quad) 
@@ -178,7 +169,7 @@ public class StreamRDFLib
         }
     }
 
-    private  static class ParserOutputCountingBase extends StreamRDFWarpper implements StreamRDF, RDFParserOutputCounting
+    private  static class ParserOutputCountingBase extends StreamRDFWrapper implements StreamRDF, RDFParserOutputCounting
     {
         private long countTriples = 0 ;
         private long countQuads = 0 ;

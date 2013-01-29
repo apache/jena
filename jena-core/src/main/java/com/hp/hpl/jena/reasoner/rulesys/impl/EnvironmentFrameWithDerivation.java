@@ -26,9 +26,6 @@ import java.util.*;
 /**
  * Extension of the normal AND-stack environment frame to support
  * incremental derivation logging.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
 

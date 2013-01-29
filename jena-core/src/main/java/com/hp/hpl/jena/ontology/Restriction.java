@@ -32,10 +32,6 @@ import com.hp.hpl.jena.rdf.model.*;
  * Interface that encapsulates a class description formed by restricting one or
  * more properties to have constrained values and/or cardinalities.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.2 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface Restriction
     extends OntClass

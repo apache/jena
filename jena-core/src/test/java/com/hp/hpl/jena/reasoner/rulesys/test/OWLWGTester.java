@@ -48,9 +48,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
  * This version is used for running the core entailment tests as part of unit testing.
  * A separate test harness for use in reporting OWL conformance is being developed and
  * some code rationalization might be once once that stabilizes. </p>
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:42 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */

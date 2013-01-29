@@ -31,8 +31,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * two possible uses. First, it is a test and demonstration of the forward
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> 
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $ */
+ */
 
 public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */

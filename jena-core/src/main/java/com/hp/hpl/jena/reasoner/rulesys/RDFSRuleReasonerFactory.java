@@ -25,9 +25,6 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Factory class for creating blank instances of the hybrid rule RDFS reasoner 
  * with TGC support.
- *  
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public class RDFSRuleReasonerFactory implements ReasonerFactory {
     

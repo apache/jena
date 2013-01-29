@@ -24,9 +24,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
 /**
  * Exception used to indicate syntactic errors the LP version of the
  * backward chaining rule engine.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:33 $
  */
 public class LPRuleSyntaxException extends ReasonerException {
 

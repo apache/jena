@@ -25,9 +25,6 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
 /** Create a new id for an anonymous node.
  *
  * <p>This id is guaranteed to be unique on this machine.</p>
- *
- * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2010-01-06 11:52:32 $
  */
 
 // This version contains experimental modifications by der to 

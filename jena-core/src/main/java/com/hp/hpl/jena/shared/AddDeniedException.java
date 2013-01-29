@@ -22,7 +22,6 @@ import com.hp.hpl.jena.graph.Triple;
 
 /**
     Exception to throw for a denied add operation
- 	@author kers
 */
 public class AddDeniedException extends UpdateDeniedException
     {

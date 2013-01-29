@@ -31,8 +31,6 @@ import com.hp.hpl.jena.shared.BadURIException;
 
 /**
  * JUnit regression tests for output
- *
- * @author Jeremy Carroll
  */
 public class TestPackage extends TestCase{
 
@@ -45,11 +43,11 @@ public class TestPackage extends TestCase{
         // add all the tests defined in this class to the suite
         /* */
         suite.addTestSuite( PrettyWriterTest.class );
-        suite.addTest(new testWriterInterface("testInterface", null)); 
+        suite.addTest(new TestWriterInterface("testInterface", null)); 
         /* */
-        suite.addTest(new testWriterInterface("testNoWriter", null)); 
+        suite.addTest(new TestWriterInterface("testNoWriter", null)); 
         /* */
-        suite.addTest(new testWriterInterface("testAnotherWriter", null));
+        suite.addTest(new TestWriterInterface("testAnotherWriter", null));
         /* */
         if (false) suite.addTest( BigAbbrevTestPackage.suite() ); // TODO may be obsolete. Ask Jeremy.
         suite.addTest( testWriterAndReader.suiteXML() );
@@ -66,7 +64,6 @@ public class TestPackage extends TestCase{
          Added as a place to put the test(s) which ensure that thrown URI exceptions
          carry the bad URI with them. I (Chris) would embed them in the other tests,
          but I can't work out how to do so ...
-        @author kers
     */
     public static class TestURIExceptions extends TestCase
         {

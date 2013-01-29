@@ -134,10 +134,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * An Unparser will output a model in the abbreviated syntax. *
- * 
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date:
+ *
  *          2005/07/13 15:33:51 $'
- * 
  */
 class Unparser {
     static private Property LI = new PropertyImpl(RDF.getURI(), "li");

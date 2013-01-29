@@ -27,9 +27,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-/**
- * @author jjc
- */
 public class TestARPStates extends TestCase {
     public TestARPStates() {
         super();

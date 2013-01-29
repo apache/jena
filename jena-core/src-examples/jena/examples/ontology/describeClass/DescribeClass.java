@@ -39,10 +39,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * be adapted as necessary to provide a given application with the means to render
  * a class description in a readable form.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: DescribeClass.java,v 1.4 2009-10-06 13:04:44 ian_dickinson Exp $
  */
 public class DescribeClass {
     // Constants

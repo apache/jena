@@ -23,8 +23,6 @@ import java.net.MalformedURLException;
 /**
  * The underlying IDN library detected an error
  * in the Internationalized Domain Name in an IRI.
- * @author Jeremy J. Carroll
- *
  */
 public final class MalformedIDNException extends MalformedURLException {
 

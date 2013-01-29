@@ -106,9 +106,9 @@ public class RiotLib
     {
         Prologue prologue ;
         if ( resolveIRIs )
-            prologue = new Prologue(new PrefixMap(), IRIResolver.create(baseIRI)) ;
+            prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.create(baseIRI)) ;
         else
-            prologue = new Prologue(new PrefixMap(), IRIResolver.createNoResolve()) ;
+            prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
     
         if ( checking )
             return new ParserProfileChecker(prologue, handler) ;

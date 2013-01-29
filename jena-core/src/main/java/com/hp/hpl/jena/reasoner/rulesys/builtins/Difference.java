@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 /**
  * Bind the third argument to the arithetic difference between the 
  * first and second aguments.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
  */
 
 public class Difference extends BaseBuiltin {

@@ -40,10 +40,6 @@ import java.util.*;
  * <p>
  * Ontology language profile implementation for the Full variant of the OWL 2002/07 language.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.4 2010-01-08 12:57:58 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile

@@ -28,9 +28,6 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  *  Bind the third arg to the ratio of the first two args.
  * If the arguments are integers then the result will be truncated to
  * an integer.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class Quotient extends BaseBuiltin {
 

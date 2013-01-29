@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  * Predicate used to check if a variable has not been bound.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:36 $
  */
 public class Unbound extends BaseBuiltin {
 

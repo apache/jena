@@ -24,9 +24,6 @@ import com.hp.hpl.jena.graph.Triple;
  * Interface supported by each of the rule system interpreters that
  * allow triples to added directly to the deductions cache, by-passing
  * any processing machinery.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2009-06-29 08:55:38 $
  */
 public interface SilentAddI {
     

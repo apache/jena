@@ -36,10 +36,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * such as domain, range, inverse, etc.  Not all such capabilities exist in all
  * supported ontology languages.
  * </p>
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:ian_dickinson@users.sourceforge.net" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.3 2009-10-06 13:04:34 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property

@@ -26,7 +26,6 @@ import java.util.*;
     operations (filtering, concatenating) to be done on an Iterator derived
     from some other source.
 <br>
-    @author kers
 */
 
 public class WrappedIterator<T> extends NiceIterator<T>

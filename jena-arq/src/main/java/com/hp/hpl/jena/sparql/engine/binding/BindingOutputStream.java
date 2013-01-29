@@ -32,7 +32,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMap;
 
 import com.hp.hpl.jena.sparql.core.Var ;
 

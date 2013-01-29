@@ -28,8 +28,6 @@ package org.apache.jena.iri;
  * result in errors and warnings
  * depends on the setting of the related
  * {@link IRIFactory}.
- * @author Jeremy J. Carroll
- *
  */
 public abstract class  Violation implements ViolationCodes, IRIComponents {
 
