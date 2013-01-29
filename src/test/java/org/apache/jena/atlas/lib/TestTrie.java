@@ -77,8 +77,31 @@ public class TestTrie {
     }
     
     /**
+     * Adding a null key is permitted - provides access to root of Trie
+     */
+    @Test
+    public void trie_add_05() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add(null, 123);
+        Assert.assertTrue(trie.contains(null));
+        Assert.assertEquals((Integer)123, trie.get(null));
+    }
+    
+    /**
+     * Adding an empty key is permitted - provides access to root of Trie 
+     */
+    @Test
+    public void trie_add_06() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("", 123);
+        Assert.assertTrue(trie.contains(""));
+        Assert.assertEquals((Integer)123, trie.get(""));
+    }
+    
+    /**
      * Test for non-existent key
      */
+    @Test
     public void trie_contains_01() {
         Trie<Integer> trie = new Trie<Integer>();
         Assert.assertFalse(trie.contains("test"));
@@ -99,6 +122,26 @@ public class TestTrie {
         // value
         Assert.assertFalse(trie.contains("t"));
         Assert.assertTrue(trie.contains("t", false));
+    }
+    
+    /**
+     * Test for non-existent null key
+     */
+    @Test
+    public void trie_contains_03() {
+        Trie<Integer> trie = new Trie<Integer>();
+        Assert.assertFalse(trie.contains(null));
+        Assert.assertTrue(trie.contains(null, false));
+    }
+    
+    /**
+     * Test for empty key
+     */
+    @Test
+    public void trie_contains_04() {
+        Trie<Integer> trie = new Trie<Integer>();
+        Assert.assertFalse(trie.contains(""));
+        Assert.assertTrue(trie.contains("", false));
     }
 
     /**
@@ -144,6 +187,34 @@ public class TestTrie {
     }
     
     /**
+     * Test for removing null key - provides access to trie root
+     */
+    @Test
+    public void trie_remove_03() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add(null, 123);
+        Assert.assertTrue(trie.contains(null));
+        Assert.assertEquals((Integer)123, trie.get(null));
+        
+        trie.remove(null);
+        Assert.assertFalse(trie.contains(null));
+    }
+    
+    /**
+     * Test for removing null key - provides access to trie root
+     */
+    @Test
+    public void trie_remove_04() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("", 123);
+        Assert.assertTrue(trie.contains(""));
+        Assert.assertEquals((Integer)123, trie.get(""));
+        
+        trie.remove("");
+        Assert.assertFalse(trie.contains(""));
+    }
+    
+    /**
      * Test prefix search
      */
     @Test
@@ -163,5 +234,113 @@ public class TestTrie {
         //Prefix search on "testingly" should return no values
         matches = trie.prefixSearch("testingly");
         Assert.assertEquals(0, matches.size());
+        
+        //Prefix search on null key should give two values
+        matches = trie.prefixSearch(null);
+        Assert.assertEquals(2, matches.size());
+    }
+    
+    /**
+     * Test partial search
+     */
+    @Test
+    public void trie_partial_search_01() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        
+        //Partial search on "test" should return one values
+        List<Integer> matches = trie.partialSearch("test");
+        Assert.assertEquals(1, matches.size());
+        
+        //Prefix search on "testi" should return one values
+        matches = trie.partialSearch("testi");
+        Assert.assertEquals(1, matches.size());
+        
+        //Prefix search on "testingly" should return two values
+        matches = trie.partialSearch("testingly");
+        Assert.assertEquals(2, matches.size());
+        
+        //Prefix search on null key should give no values
+        matches = trie.partialSearch(null);
+        Assert.assertEquals(0, matches.size());
+    }
+    
+    /**
+     * Test longest match
+     */
+    @Test
+    public void trie_longest_match_01() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        Assert.assertTrue(trie.contains("test"));
+        Assert.assertTrue(trie.contains("testing"));
+        
+        Assert.assertEquals((Integer)456, trie.longestMatch("testing"));
+    }
+    
+    /**
+     * Test longest match
+     */
+    @Test
+    public void trie_longest_match_02() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        
+        Assert.assertEquals((Integer)456, trie.longestMatch("testingly"));
+    }
+    
+    /**
+     * Test longest match
+     */
+    @Test
+    public void trie_longest_match_03() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        trie.remove("testing");
+        
+        Assert.assertEquals((Integer)123, trie.longestMatch("testing"));
+    }
+    
+    /**
+     * Test shortest match
+     */
+    @Test
+    public void trie_shortest_match_01() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        Assert.assertTrue(trie.contains("test"));
+        Assert.assertTrue(trie.contains("testing"));
+        
+        Assert.assertEquals((Integer)123, trie.shortestMatch("testing"));
+    }
+    
+    /**
+     * Test shortest match
+     */
+    @Test
+    public void trie_shortest_match_02() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        
+        Assert.assertEquals((Integer)123, trie.shortestMatch("testingly"));
+    }
+    
+    /**
+     * Test shortest match
+     */
+    @Test
+    public void trie_shortest_match_03() {
+        Trie<Integer> trie = new Trie<Integer>();
+        trie.add("test", 123);
+        trie.add("testing", 456);
+        trie.remove("test");
+        
+        Assert.assertEquals((Integer)456, trie.shortestMatch("testing"));
     }
 }
