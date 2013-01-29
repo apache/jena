@@ -57,7 +57,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * {@code Trie}.
  * </p>
  */
-public class FastAbbreviatingPrefixMap extends LightweightPrefixMapBase {
+public class FastAbbreviatingPrefixMap extends PrefixMapBase {
 
     private Map<String, IRI> prefixes = new HashMap<String, IRI>();
     private Map<String, IRI> prefixesView = Collections.unmodifiableMap(this.prefixes);
