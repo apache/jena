@@ -64,6 +64,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
 
     private volatile boolean closedByReader = false ;
     private volatile boolean closedByWriter = false ;
+    private volatile boolean finished = false;
     private volatile Thread readSide ;
     private volatile Thread writeSide ;
     
@@ -146,6 +147,9 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
         if (closedByReader)
             throw new RiotException("Pipe closed");
         
+        if (finished)
+            return false;
+        
         readSide = Thread.currentThread();
         
         if (slot != null)
@@ -176,6 +180,7 @@ public class PipedRDFIterator<T> implements Iterator<T>, Closeable
         // When the end marker is seen set slot to null
         if (slot == endMarker)
         {
+            finished = true;
             slot = null ;
             return false ;
         }
