@@ -19,14 +19,14 @@
 package org.apache.jena.riot.system;
 
 /**
- * Tests the {@link FastPrefixMap} implementation
+ * Tests the {@link FastAbbreviatingPrefixMap} implementation
  *
  */
-public class TestFastPrefixMap extends AbstractTestLightweightPrefixMap {
+public class TestFastAbbreviatingPrefixMap extends AbstractTestLightweightPrefixMap {
 
     @Override
     protected LightweightPrefixMap getPrefixMap() {
-        return new FastPrefixMap();
+        return new FastAbbreviatingPrefixMap();
     }
 
 }

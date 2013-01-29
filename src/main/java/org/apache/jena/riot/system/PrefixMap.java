@@ -32,11 +32,11 @@ import org.apache.jena.iri.IRIFactory;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
- * Default implementation of a {@link LightweightPrefixMap}, this implementation
+ * Default implementation of a {@code LightweightPrefixMap}, this implementation
  * is best suited to use for input.
  * <p>
  * If you are using this primarily to abbreviate URIs for output consider using
- * the {@link FastPrefixMap} instead which offers much better abbreviation
+ * the {@link FastAbbreviatingPrefixMap} instead which offers much better abbreviation
  * performance.
  */
 public class PrefixMap extends LightweightPrefixMapBase {

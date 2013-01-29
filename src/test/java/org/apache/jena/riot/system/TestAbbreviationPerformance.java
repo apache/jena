@@ -30,11 +30,11 @@ public class TestAbbreviationPerformance {
     /**
      * Compares the performance of looking up every namespace 1000 times
      * @param normal PrefixMap
-     * @param fast FastPrefixMap
+     * @param fast FastAbbreviatingPrefixMap
      * @param namespaces Number of namespaces
-     * @param fastShouldWin Whether the FastPrefixMap should outperform the PrefixMap
+     * @param fastShouldWin Whether the FastAbbreviatingPrefixMap should outperform the PrefixMap
      */
-    private void test_amalgamated_performance(PrefixMap normal, FastPrefixMap fast, int namespaces, boolean fastShouldWin) {
+    private void test_amalgamated_performance(PrefixMap normal, FastAbbreviatingPrefixMap fast, int namespaces, boolean fastShouldWin) {
         long nPerf = 0, fPerf = 0;
         
         for (int i = 1; i <= namespaces; i++) {
@@ -49,10 +49,10 @@ public class TestAbbreviationPerformance {
 
         if (fastShouldWin) {
             if (fPerf > nPerf)
-                Assert.fail("Expected FastPrefixMap to outperform PrefixMap");
+                Assert.fail("Expected FastAbbreviatingPrefixMap to outperform PrefixMap");
         } else {
             if (nPerf > fPerf)
-                Assert.fail("Expected PrefixMap to outperform FastPrefixMap");
+                Assert.fail("Expected PrefixMap to outperform FastAbbreviatingPrefixMap");
         }
     }
 
@@ -72,70 +72,70 @@ public class TestAbbreviationPerformance {
     }
 
     /**
-     * Expect {@link PrefixMap} to outperform {@link FastPrefixMap} when there
+     * Expect {@link PrefixMap} to outperform {@link FastAbbreviatingPrefixMap} when there
      * is a single namespace
      */
     @Test
     public void prefixMap_abbrev_performance_01() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 1);
-        FastPrefixMap fmap = new FastPrefixMap();
+        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 1);
 
         test_amalgamated_performance(pmap, fmap, 1, false);
     }
 
     /**
-     * Expect {@link FastPrefixMap} to outperform {@link PrefixMap} as soon as
+     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMap} as soon as
      * there are a few namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_02() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 2);
-        FastPrefixMap fmap = new FastPrefixMap();
+        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 2);
 
         test_amalgamated_performance(pmap, fmap, 2, true);
     }
 
     /**
-     * Expect {@link FastPrefixMap} to outperform {@link PrefixMap} as soon as
+     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMap} as soon as
      * there are a few namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_03() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 5);
-        FastPrefixMap fmap = new FastPrefixMap();
+        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 5);
 
         test_amalgamated_performance(pmap, fmap, 5, true);
     }
 
     /**
-     * Expect {@link FastPrefixMap} to significantly outperform
+     * Expect {@link FastAbbreviatingPrefixMap} to significantly outperform
      * {@link PrefixMap} once there are a good number of namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_04() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 20);
-        FastPrefixMap fmap = new FastPrefixMap();
+        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 20);
 
         test_amalgamated_performance(pmap, fmap, 20, true);
     }
     
     /**
-     * Expect {@link FastPrefixMap} to significantly outperform
+     * Expect {@link FastAbbreviatingPrefixMap} to significantly outperform
      * {@link PrefixMap} once there are a good number of namespaces
      */
     @Test
     public void prefixMap_abbrev_performance_05() {
         PrefixMap pmap = new PrefixMap();
         populate(pmap, 100);
-        FastPrefixMap fmap = new FastPrefixMap();
+        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
         populate(fmap, 100);
 
         test_amalgamated_performance(pmap, fmap, 100, true);
