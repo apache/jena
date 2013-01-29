@@ -33,9 +33,9 @@ import org.junit.runners.Suite.SuiteClasses ;
     // Prefix Map implementations
     , TestPrefixMap.class
     , TestFastAbbreviatingPrefixMap.class
-    // May be subject to performance vagaries, often passes in Eclipse 
-    // and not on maven command line so excluded for now
-    //, TestAbbreviationPerformance.class
+    // May be subject to performance vagaries, with the improvements made
+    // to the fast implementation this should be fairly safe
+    , TestAbbreviationPerformance.class
 })
 
 public class TS_RiotSystem
