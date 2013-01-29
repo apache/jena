@@ -35,13 +35,10 @@ public class Prologue
     
     public static Prologue create(String base, PrefixMapping pmapping)
     {
-        PrefixMapStd pmap = null ;
+        PrefixMap pmap = null ;
         if ( pmapping != null )
         {
-            pmap = new PrefixMapStd() ;
-            Map<String, String> x =  pmapping.getNsPrefixMap() ;
-            for ( Entry<String, String> e : x.entrySet() )
-                pmap.add(e.getKey(), e.getValue()) ;
+            pmap = PrefixMapFactory.createForInput(pmapping) ;
         }
         IRIResolver resolver = null ;
         if ( base != null )
@@ -51,7 +48,7 @@ public class Prologue
     
     public Prologue()
     { 
-        this.prefixMap = new PrefixMapStd() ;
+        this.prefixMap = PrefixMapFactory.createForInput() ;
         this.resolver = null ;
     }
     
@@ -69,14 +66,14 @@ public class Prologue
 
     public Prologue copy()
     {
-        PrefixMapStd prefixMap = new PrefixMapStd(this.prefixMap) ;
+        PrefixMap prefixMap = PrefixMapFactory.createForInput(this.prefixMap) ;
         return new Prologue(prefixMap, resolver) ;
     }
     
     public void usePrologueFrom(Prologue other)
     {
         // Copy.
-        prefixMap = new PrefixMapStd(other.prefixMap) ;
+        prefixMap = PrefixMapFactory.createForInput(other.prefixMap) ;
         seenBaseURI = false ;
         if ( other.resolver != null )
             resolver = IRIResolver.create(other.resolver.getBaseIRIasString()) ;

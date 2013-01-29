@@ -27,7 +27,7 @@ import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapStd ;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
 import org.junit.AfterClass ;
@@ -71,7 +71,7 @@ public class TestBindingStreams extends BaseTest
     static Binding bb2 = build("(?a 'a\"b\"c') (?b 1)");
     static Binding bb3 = build("(?a 'aΩc') (?b 1)");
     
-    static PrefixMap pmap = new PrefixMapStd() ;
+    static PrefixMap pmap = PrefixMapFactory.create() ;
     static {
         pmap.add(":", "http://example/") ;
     }
