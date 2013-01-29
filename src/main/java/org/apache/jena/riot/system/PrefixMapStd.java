@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.iri.IRI;
-import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
  * Default implementation of a {@code LightweightPrefixMap}, this implementation
@@ -36,17 +35,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 public class PrefixMapStd extends PrefixMapBase {
     final Map<String, IRI> prefixes = new HashMap<String, IRI>();
     private final Map<String, IRI> prefixes2 = Collections.unmodifiableMap(prefixes);
-
-    /**
-     * Creates a prefix map copying prefixes from an existing prefix mapping
-     * @param pmap Prefix Mapping
-     * @return Prefix Map
-     */
-    public static PrefixMap fromPrefixMapping(PrefixMapping pmap) {
-        PrefixMapStd pm = new PrefixMapStd();
-        pm.putAll(pmap);
-        return pm;
-    }
 
     /**
      * Creates a new empty prefix mapping

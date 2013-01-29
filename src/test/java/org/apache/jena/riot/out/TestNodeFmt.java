@@ -25,6 +25,7 @@ import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterNT ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMapFactory;
 import org.apache.jena.riot.system.PrefixMapStd ;
 import org.junit.Test ;
 
@@ -35,7 +36,7 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 public class TestNodeFmt extends BaseTest
 {
     private static String base = "http://example.org/base" ;
-    private static PrefixMap prefixMap = new PrefixMapStd() ;
+    private static PrefixMap prefixMap = PrefixMapFactory.createForOutput() ;
     static {
         prefixMap.add(":", "http://example/p") ;
         prefixMap.add("ex", "http://example/ex/") ;
