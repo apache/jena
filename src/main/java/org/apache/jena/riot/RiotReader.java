@@ -35,12 +35,23 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.riot.lang.* ;
-import org.apache.jena.riot.system.* ;
+import org.apache.jena.riot.lang.LangNQuads ;
+import org.apache.jena.riot.lang.LangNTriples ;
+import org.apache.jena.riot.lang.LangRDFJSON ;
+import org.apache.jena.riot.lang.LangRDFXML ;
+import org.apache.jena.riot.lang.LangRIOT ;
+import org.apache.jena.riot.lang.LangTriG ;
+import org.apache.jena.riot.lang.LangTurtle ;
+import org.apache.jena.riot.lang.PipedQuadsStream ;
+import org.apache.jena.riot.lang.PipedRDFIterator ;
+import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.system.ErrorHandlerFactory ;
+import org.apache.jena.riot.system.IRIResolver ;
+import org.apache.jena.riot.system.RiotLib ;
+import org.apache.jena.riot.system.StreamRDF ;
+import org.apache.jena.riot.system.StreamRDFLib ;
 import org.apache.jena.riot.tokens.Tokenizer ;
 import org.apache.jena.riot.tokens.TokenizerFactory ;
-import org.openjena.riot.RiotQuadParsePuller ;
-import org.openjena.riot.RiotTripleParsePuller ;
 
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
@@ -225,8 +236,7 @@ public class RiotReader
         parse(in, lang, baseIRI, dest) ;
     }
 
-    // TODO create a Tokenizer version of this method
-    public static Iterator<Triple> createIteratorTriples(InputStream input, Lang lang, String baseIRI)
+    public static Iterator<Triple> createIteratorTriples(final InputStream input, final Lang lang, final String baseIRI)
     {
         // Special case N-Triples, because the RIOT reader has a pull interface
         if ( RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
@@ -236,26 +246,47 @@ public class RiotReader
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            RiotTripleParsePuller parsePuller = new RiotTripleParsePuller(input, lang, baseIRI);
-            parsePuller.parse();
-            return parsePuller;
+            final PipedRDFIterator<Triple> it = new PipedRDFIterator<Triple>();
+            final PipedTriplesStream out = new PipedTriplesStream(it);
+            
+            Thread t = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    parse(input, lang, baseIRI, out);
+                }
+            });
+            t.start();
+            
+            return it;
         }
     }
     
-    // TODO create a Tokenizer version of this method
-    public static Iterator<Quad> createIteratorQuads(InputStream input, Lang lang, String baseIRI)
+    public static Iterator<Quad> createIteratorQuads(final InputStream input, final Lang lang, final String baseIRI)
     {
         // Special case N-Quads, because the RIOT reader has a pull interface
-        if (  RDFLanguages.sameLang(RDFLanguages.NTRIPLES, lang) )
+        if ( RDFLanguages.sameLang(RDFLanguages.NQUADS, lang) )
         {
             return new IteratorResourceClosing<Quad>(createParserNQuads(input, null), input);
         }
         else
         {
             // Otherwise, we have to spin up a thread to deal with it
-            RiotQuadParsePuller parsePuller = new RiotQuadParsePuller(input, lang, baseIRI);
-            parsePuller.parse();
-            return parsePuller;
+            final PipedRDFIterator<Quad> it = new PipedRDFIterator<Quad>();
+            final PipedQuadsStream out = new PipedQuadsStream(it);
+            
+            Thread t = new Thread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    parse(input, lang, baseIRI, out);
+                }
+            });
+            t.start();
+            
+            return it;
         }
     }
     
