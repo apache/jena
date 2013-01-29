@@ -667,4 +667,32 @@ public class TestPipedRDFIterators {
         // Should throw a RiotException
         it.hasNext();
     }
+    
+    /**
+     * Check we can safely call hasNext() multiple times after the stream is exhausted
+     */
+    @Test
+    public void streamed_iterator_usage_01() {
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        PipedTriplesStream stream = new PipedTriplesStream(iter);
+        stream.start();
+        stream.finish();
+        Assert.assertFalse(iter.hasNext());
+        Assert.assertFalse(iter.hasNext());
+    }
+    
+    /**
+     * Check that calling hasNext() after a close() is an error
+     */
+    @Test(expected=RiotException.class)
+    public void streamed_iterator_usage_02() {
+        PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>();
+        PipedTriplesStream stream = new PipedTriplesStream(iter);
+        stream.start();
+        stream.finish();
+        Assert.assertFalse(iter.hasNext());
+        iter.close();
+        //Should throw an error after the iterator is closed
+        iter.hasNext();
+    }
 }
