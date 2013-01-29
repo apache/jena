@@ -22,11 +22,10 @@ package org.apache.jena.riot.system;
  * Test the standard {@link PrefixMap} implementation
  *
  */
-public class TestPrefixMap extends TestLightweightPrefixMap {
+public class TestPrefixMap extends AbstractTestLightweightPrefixMap {
 
     @Override
     protected LightweightPrefixMap getPrefixMap() {
         return new PrefixMap();
     }
-
 }
