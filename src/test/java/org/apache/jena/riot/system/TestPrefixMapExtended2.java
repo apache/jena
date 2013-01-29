@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -18,27 +18,15 @@
 
 package org.apache.jena.riot.system;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
-
 /**
- * Test suite for RIOT system
+ * Tests for {@link PrefixMapExtended} applied over a {@link FastAbbreviatingPrefixMap}
  *
  */
-@RunWith(Suite.class)
-@SuiteClasses({ 
-    TestChecker.class
-    
-    // Prefix Map implementations
-    , TestPrefixMap.class
-    , TestFastAbbreviatingPrefixMap.class
-    , TestPrefixMapExtended1.class
-    , TestPrefixMapExtended2.class
-    // May be subject to performance vagaries, with the improvements made
-    // to the fast implementation this should be fairly safe
-    , TestAbbreviationPerformance.class
-})
+public class TestPrefixMapExtended2 extends AbstractTestLightweightPrefixMap {
 
-public class TS_RiotSystem
-{}
+    @Override
+    protected PrefixMap getPrefixMap() {
+        return new PrefixMapExtended(new FastAbbreviatingPrefixMap());
+    }
+
+}

@@ -18,24 +18,42 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.logging.Log;
 import org.apache.jena.iri.IRI;
 
 // UNUSED
 /**
- * Implementation of a {@link PrefixMap} which extends another prefix
- * map without ever altering the parent
+ * Implementation of a {@link PrefixMap} which extends another prefix map
+ * without ever altering the parent.
+ * <p>
+ * This allows code to modify a prefix map based off of another map without
+ * modifying that original map. This is somewhat different than simply making a
+ * copy of an existing map since this implementation is partly a view over
+ * another map so will reflect changes that happen to the other map.
+ * </p>
  */
-public class PrefixMap2 extends PrefixMapStd {
+public class PrefixMapExtended extends PrefixMapBase {
     PrefixMap parent;
     PrefixMap local;
 
-    public PrefixMap2(PrefixMap ext) {
+    /**
+     * Creates an extended prefix map
+     * 
+     * @param ext
+     *            Prefix Map to extend
+     */
+    public PrefixMapExtended(PrefixMap ext) {
+        if (ext == null)
+            throw new IllegalArgumentException("Prefix Map to extend cannot be null");
         this.parent = ext;
         this.local = new PrefixMapStd();
     }
 
-    /** Add a prefix, overwites any existing association */
     @Override
     public void add(String prefix, IRI iri) {
         prefix = canonicalPrefix(prefix);
@@ -43,7 +61,6 @@ public class PrefixMap2 extends PrefixMapStd {
         local.add(prefix, iri);
     }
 
-    /** Add a prefix, overwites any existing association */
     @Override
     public void delete(String prefix) {
         prefix = canonicalPrefix(prefix);
@@ -52,7 +69,6 @@ public class PrefixMap2 extends PrefixMapStd {
             Log.warn(this, "Attempt to delete a prefix in the parent");
     }
 
-    /** Expand a prefix, return null if it can't be expanded */
     @Override
     public String expand(String prefix, String localName) {
         prefix = canonicalPrefix(prefix);
@@ -60,5 +76,34 @@ public class PrefixMap2 extends PrefixMapStd {
         if (x != null)
             return x;
         return parent.expand(prefix, localName);
+    }
+
+    @Override
+    public Map<String, IRI> getMapping() {
+        Map<String, IRI> mapping = new HashMap<String, IRI>();
+        mapping.putAll(parent.getMapping());
+        mapping.putAll(local.getMapping());
+        return Collections.unmodifiableMap(mapping);
+    }
+
+    @Override
+    public boolean contains(String prefix) {
+        return local.contains(prefix) || parent.contains(prefix);
+    }
+
+    @Override
+    public String abbreviate(String uriStr) {
+        String x = local.abbreviate(uriStr);
+        if (x != null)
+            return x;
+        return parent.abbreviate(uriStr);
+    }
+
+    @Override
+    public Pair<String, String> abbrev(String uriStr) {
+        Pair<String, String> p = local.abbrev(uriStr);
+        if (p != null)
+            return p;
+        return parent.abbrev(uriStr);
     }
 }

@@ -90,7 +90,7 @@ public class Prologue
         // New prefix mappings
         PrefixMap ext = getPrefixMap() ;
         if ( newMappings != null )
-            ext = new PrefixMap2(ext) ;
+            ext = new PrefixMapExtended(ext) ;
         // New base.
         IRIResolver r = resolver ;
         if ( base != null )
