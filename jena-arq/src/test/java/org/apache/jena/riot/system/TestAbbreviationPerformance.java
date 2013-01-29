@@ -44,8 +44,8 @@ public class TestAbbreviationPerformance {
             fPerf += run(fast, input, expected, 1000);
         }
         
-        System.out.println("PrefixMap performance: " + nPerf + "ns");
-        System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
+        //System.out.println("PrefixMap performance: " + nPerf + "ns");
+        //System.out.println("Fast Prefix Map performance: " + fPerf + "ns");
 
         if (fastShouldWin) {
             if (fPerf > nPerf)
@@ -106,11 +106,11 @@ public class TestAbbreviationPerformance {
     @Test
     public void prefixMap_abbrev_performance_03() {
         PrefixMapStd pmap = new PrefixMapStd();
-        populate(pmap, 20);
+        populate(pmap, 40);
         FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
-        populate(fmap, 20);
+        populate(fmap, 40);
 
-        test_amalgamated_performance(pmap, fmap, 20, true);
+        test_amalgamated_performance(pmap, fmap, 40, true);
     }
     
     /**

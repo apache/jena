@@ -22,14 +22,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.jena.atlas.iterator.Iter;
-import org.apache.jena.atlas.lib.ActionKeyValue;
 import org.apache.jena.atlas.lib.Pair;
 import org.apache.jena.atlas.lib.Trie;
 import org.apache.jena.iri.IRI;
-import org.apache.jena.iri.IRIFactory;
-
-import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
  * A prefix map implementation suited to output heavy workloads
@@ -85,30 +80,6 @@ public class FastAbbreviatingPrefixMap extends PrefixMapBase {
     }
 
     @Override
-    public Map<String, IRI> getMappingCopy() {
-        return new HashMap<String, IRI>(this.prefixes);
-    }
-
-    @Override
-    public Map<String, String> getMappingCopyStr() {
-        final Map<String, String> smap = new HashMap<String, String>();
-        ActionKeyValue<String, IRI> action = new ActionKeyValue<String, IRI>() {
-            @Override
-            public void apply(String key, IRI value) {
-                String str = value.toString();
-                smap.put(key, str);
-            }
-        };
-        Iter.apply(getMapping(), action);
-        return smap;
-    }
-
-    @Override
-    public void add(String prefix, String iriString) {
-        this.add(prefix, IRIFactory.iriImplementation().create(iriString));
-    }
-
-    @Override
     public void add(String prefix, IRI iri) {
         prefix = canonicalPrefix(prefix);
 
@@ -129,22 +100,6 @@ public class FastAbbreviatingPrefixMap extends PrefixMapBase {
 
             // Update the abbreviation mapping if possible
             this.abbrevs.add(iri.toString(), prefix);
-        }
-    }
-
-    @Override
-    public void putAll(PrefixMap pmap) {
-        Map<String, IRI> map = pmap.getMapping();
-        for (String prefix : map.keySet()) {
-            this.add(prefix, map.get(prefix));
-        }
-    }
-
-    @Override
-    public void putAll(PrefixMapping pmap) {
-        Map<String, String> map = pmap.getNsPrefixMap();
-        for (String prefix : map.keySet()) {
-            this.add(prefix, map.get(prefix));
         }
     }
 
