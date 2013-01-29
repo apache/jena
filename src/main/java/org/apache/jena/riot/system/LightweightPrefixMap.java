@@ -39,7 +39,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * {@link #expand(String)} or {@link #expand(String, String)} it is best to use
  * the default implementation - {@link PrefixMap}. For output dominated
  * workloads where you are primarily calling {@link #abbrev(String)} or
- * {@link #abbreviate(String)} it is better to use the {@link FastPrefixMap}
+ * {@link #abbreviate(String)} it is better to use the {@link FastAbbreviatingPrefixMap}
  * implementation.  See the javadoc for those classes for more explanation
  * of their differences.
  * </p>
