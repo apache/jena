@@ -35,7 +35,7 @@ import org.junit.runners.Suite ;
     , TestLangRdfJson.class
     , TestParserFactory.class
 
-    , TestStreamedRDFIterators.class
+    , TestPipedRDFIterators.class
 })
 
 
