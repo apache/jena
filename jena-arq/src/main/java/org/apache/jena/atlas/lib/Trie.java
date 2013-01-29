@@ -28,10 +28,14 @@ import java.util.Map;
  * value type optimized for fast prefix search and match. If you do not need
  * prefix search then you should typically use a standard {@link Map} instead.
  * <p>
- * A Trie cannot store null values since null is used as an internal marker to indicate
- * that there is no value associated with a key.  This is necessary because the nature
- * of the data structure means that adding a key potentially adds multiple keys many of
- * which will not be associated with a value.
+ * The empty or null string may be used as a special key to refer to the root
+ * node of the trie.
+ * </p>
+ * <p>
+ * A Trie cannot store null values since null is used as an internal marker to
+ * indicate that there is no value associated with a key. This is necessary
+ * because the nature of the data structure means that adding a key potentially
+ * adds multiple keys many of which will not be associated with a value.
  * </p>
  * 
  * @param <T>
@@ -70,6 +74,8 @@ public final class Trie<T> {
      */
     private TrieNode<T> moveToNode(String key) {
         TrieNode<T> current = this.root;
+        if (key == null)
+            return current;
         for (int i = 0; i < key.length(); i++) {
             current = current.moveToChild(key.charAt(i));
         }
@@ -85,6 +91,8 @@ public final class Trie<T> {
      */
     private TrieNode<T> find(String key) {
         TrieNode<T> current = this.root;
+        if (key == null)
+            return current;
         for (int i = 0; i < key.length(); i++) {
             current = current.getChild(key.charAt(i));
             if (current == null)
@@ -179,7 +187,9 @@ public final class Trie<T> {
 
     /**
      * Performs a prefix search and returns all values mapped under the given
-     * prefix
+     * prefix. The entirety of the prefix must be matches, if you only want part
+     * of the prefix to be matched use the {@link #partialSearch(String)} method
+     * instead.
      * 
      * @param prefix
      *            Prefix
@@ -193,11 +203,102 @@ public final class Trie<T> {
     }
 
     /**
+     * Performs a search and returns any value associated with any partial or
+     * whole prefix of the key
+     * 
+     * @param key
+     *            Key
+     * @return List of values associated with any partial prefix of the key
+     */
+    public List<T> partialSearch(String key) {
+        List<T> values = new ArrayList<T>();
+        TrieNode<T> current = this.root;
+        if (key == null) {
+            if (current.hasValue())
+                values.add(current.getValue());
+        } else {
+            for (int i = 0; i < key.length(); i++) {
+                if (current.hasValue())
+                    values.add(current.getValue());
+                current = current.getChild(key.charAt(i));
+                if (current == null)
+                    return Collections.unmodifiableList(values);
+            }
+            
+            // If we reach here current is the complete key match
+            // so make sure to include it in the values list
+            if (current.hasValue()) {
+                values.add(current.getValue());
+            }
+            
+        }
+        return Collections.unmodifiableList(values);
+    }
+
+    /**
+     * Finds the shortest match for a given key i.e. returns the value
+     * associated with the shortest prefix of the key that has a value
+     * 
+     * @param key
+     *            Key
+     * @return Shortest Match or null if no possible matches
+     */
+    public T shortestMatch(String key) {
+        TrieNode<T> current = this.root;
+        if (key == null)
+            return current.getValue();
+        for (int i = 0; i < key.length(); i++) {
+            if (current.hasValue())
+                break;
+            current = current.getChild(key.charAt(i));
+            if (current == null)
+                return null;
+        }
+        return current.getValue();
+    }
+
+    /**
+     * Finds the longest match for a given key i.e. returns the value associated
+     * with the longest prefix of the key that has a value
+     * 
+     * @param key
+     *            Key
+     * @return Longest Match or null if no possible matches
+     */
+    public T longestMatch(String key) {
+        T value = null;
+        TrieNode<T> current = this.root;
+        if (key == null) {
+            return current.getValue();
+        } else {
+            for (int i = 0; i < key.length(); i++) {
+                if (current == null)
+                    return value;
+                if (current.hasValue())
+                    value = current.getValue();
+                current = current.getChild(key.charAt(i));
+            }
+        }
+        // If we reach here current is the complete key match
+        // so return its value if it has one
+        if (current.hasValue()) {
+            return current.getValue();
+        }
+        return value;
+    }
+
+    /**
      * Represents a node in the Trie
+     * <p>
+     * The implementation is designed to be sparse such that we delay creation
+     * of things at both leafs and interior nodes until they are actually needed
+     * </p>
      * 
      */
     private static class TrieNode<T> {
-        private Map<Character, TrieNode<T>> children = new HashMap<Character, TrieNode<T>>();
+        private Map<Character, TrieNode<T>> children = null;
+        private Character singletonChildChar = null;
+        private TrieNode<T> singletonChild = null;
         private T value;
 
         /**
@@ -246,7 +347,13 @@ public final class Trie<T> {
          * @return Child
          */
         public TrieNode<T> getChild(Character c) {
-            return this.children.get(c);
+            if (this.children != null) {
+                return this.children.get(c);
+            } else if (c.equals(this.singletonChildChar)) {
+                return this.singletonChild;
+            } else {
+                return null;
+            }
         }
 
         /**
@@ -257,10 +364,22 @@ public final class Trie<T> {
          * @return Child
          */
         public TrieNode<T> moveToChild(Character c) {
-            TrieNode<T> n = this.children.get(c);
+            TrieNode<T> n = this.getChild(c);
             if (n == null) {
                 n = new TrieNode<T>(null);
-                this.children.put(c, n);
+                if (this.children != null) {
+                    // Add to existing map
+                    this.children.put(c, n);
+                } else if (this.singletonChildChar != null) {
+                    // Need to lazily create map
+                    this.children = new HashMap<Character, Trie.TrieNode<T>>();
+                    this.children.put(this.singletonChildChar, this.singletonChild);
+                    this.children.put(c, n);
+                } else {
+                    // Singleton child
+                    this.singletonChildChar = c;
+                    this.singletonChild = n;
+                }
             }
             return n;
         }
@@ -275,8 +394,12 @@ public final class Trie<T> {
             if (this.hasValue()) {
                 values.add(this.value);
             }
-            for (TrieNode<T> child : this.children.values()) {
-                values.addAll(child.getValues());
+            if (this.children != null) {
+                for (TrieNode<T> child : this.children.values()) {
+                    values.addAll(child.getValues());
+                }
+            } else if (this.singletonChild != null) {
+                values.addAll(this.singletonChild.getValues());
             }
             return values;
         }
