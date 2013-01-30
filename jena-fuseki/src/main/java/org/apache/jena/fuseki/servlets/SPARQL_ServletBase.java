@@ -54,7 +54,7 @@ public abstract class SPARQL_ServletBase extends ServletBase
     protected void doCommon(HttpServletRequest request, HttpServletResponse response)
     //throws ServletException, IOException
     {
-        long id = this.getRequestId(response);
+        long id = allocRequestId(request, response);
         printRequest(id, request) ;
         
         HttpServletResponseTracker responseTracked = new HttpServletResponseTracker(response) ;
