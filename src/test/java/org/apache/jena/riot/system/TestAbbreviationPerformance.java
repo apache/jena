@@ -104,22 +104,6 @@ public class TestAbbreviationPerformance {
         test_amalgamated_performance(pmap, fmap, 1, false);
     }
 
-    //This test can go either way depending on machine conditions
-    
-//    /**
-//     * Expect {@link FastAbbreviatingPrefixMap} to outperform {@link PrefixMapStd} as soon as
-//     * there are a few namespaces
-//     */
-//    @Test
-//    public void prefixMap_abbrev_performance_02() {
-//        PrefixMapStd pmap = new PrefixMapStd();
-//        populate(pmap, 5);
-//        FastAbbreviatingPrefixMap fmap = new FastAbbreviatingPrefixMap();
-//        populate(fmap, 5);
-//
-//        test_amalgamated_performance(pmap, fmap, 5, true);
-//    }
-
     /**
      * Expect {@link FastAbbreviatingPrefixMap} to significantly outperform
      * {@link PrefixMapStd} once there are a good number of namespaces
