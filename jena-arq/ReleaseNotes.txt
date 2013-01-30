@@ -20,6 +20,13 @@ ChangeLog for ARQ
 + JENA-345 : execConstructTriples() now excludes malformed triples (e.g. literal subjects) from it's output
 + Internal reorgansiation of packages
   org.openjena.atlas moved to org.apache.jena.atlas
++ PipedRDFStream and PipedRDFIterator replace RIOTParserPuller as method for getting
+  an iterator over parser output
++ PrefixMap is now an interface
+  Use PrefixMapFactory as the primary means of creating prefix maps
+  Abbreviation performance for common namespace patterns (/ or # terminated) much improved
++ New FastAbbreviatingPrefixMap, can be much faster for abbreviation when namespaces
+  do not follow common patterns
 
 ==== ARQ 2.9.4
 
