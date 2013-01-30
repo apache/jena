@@ -45,12 +45,13 @@ public abstract class ServletBase extends HttpServlet
     
     /**
      * Helper method which gets a unique request ID and appends it as a header to the response
-     * @param response Response
+     * @param request  HTTP Request
+     * @param response HTTP Response
      * @return Request ID
      */
-    protected long getRequestId(HttpServletResponse response) {
-        long id = ServletBase.requestIdAlloc.incrementAndGet();
-        this.addRequestId(response, id);
+    protected long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
+        long id = requestIdAlloc.incrementAndGet();
+        addRequestId(response, id);
         return id;
     }
     
