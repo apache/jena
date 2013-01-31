@@ -25,6 +25,7 @@ import static org.apache.jena.fuseki.HttpNames.paramUpdate ;
 import static org.apache.jena.fuseki.HttpNames.paramUsingGraphURI ;
 import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
 
+import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Arrays ;
@@ -49,8 +50,14 @@ import org.apache.jena.riot.system.IRIResolver ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
-import com.hp.hpl.jena.update.* ;
+import com.hp.hpl.jena.sparql.modify.UpdateVisitorSink ;
+import com.hp.hpl.jena.sparql.modify.UpdateRequestSink ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.sparql.modify.UsingList ;
+import com.hp.hpl.jena.update.UpdateAction ;
+import com.hp.hpl.jena.update.UpdateException ;
+import com.hp.hpl.jena.update.UpdateFactory ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class SPARQL_Update extends SPARQL_Protocol
 {
@@ -190,25 +197,19 @@ public class SPARQL_Update extends SPARQL_Protocol
         try { input = action.request.getInputStream() ; }
         catch (IOException ex) { errorOccurred(ex) ; }
 
-        UpdateRequest req ;
-        try {
-            if ( super.verbose_debug || action.verbose )
-            {
-                // Verbose mode only .... capture request for logging (does not scale). 
-                String requestStr = null ;
-                try { requestStr = IO.readWholeFileAsUTF8(action.request.getInputStream()) ; }
-                catch (IOException ex) { IO.exception(ex) ; }
-
-                String requestStrLog = formatForLog(requestStr) ;
-                requestLog.info(format("[%d] Update = %s", action.id, requestStrLog)) ;
-                req = UpdateFactory.create(requestStr, Syntax.syntaxARQ) ;
-            }    
-            else
-                req = UpdateFactory.read(input, Syntax.syntaxARQ) ;
-        } 
-        catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
-        catch (QueryParseException ex)  { errorBadRequest(messageForQPE(ex)) ; req = null ; } 
-        execute(action, req) ;
+        if ( super.verbose_debug || action.verbose )
+        {
+            // Verbose mode only .... capture request for logging (does not scale). 
+            String requestStr = null ;
+            try { requestStr = IO.readWholeFileAsUTF8(input) ; }
+            catch (IOException ex) { IO.exception(ex) ; }
+            requestLog.info(format("[%d] Update = %s", action.id, formatForLog(requestStr))) ;
+            
+            input = new ByteArrayInputStream(requestStr.getBytes());
+            requestStr = null;
+        }
+        
+        execute(action, input) ;
         successNoContent(action) ;
     }
 
@@ -221,41 +222,71 @@ public class SPARQL_Update extends SPARQL_Protocol
         if ( super.verbose_debug || action.verbose )
             //requestLog.info(format("[%d] Form update = %s", action.id, formatForLog(requestStr))) ;
             requestLog.info(format("[%d] Form update = \n%s", action.id, requestStr)) ;
-        
-        UpdateRequest req ; 
-        try {
-            req = UpdateFactory.create(requestStr, updateParseBase) ;
-        }
-        catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; req = null ; }
-        catch (QueryParseException ex) { errorBadRequest(messageForQPE(ex)) ; req = null ; }
-        execute(action, req) ;
+
+        // A little ugly because we are taking a copy of the string, but hopefully shouldn't be too big if we are in this code-path
+        // If we didn't want this additional copy, we could make the parser take a Reader in addition to an InputStream
+        ByteArrayInputStream input = new ByteArrayInputStream(requestStr.getBytes());
+        requestStr = null;  // free it early at least
+
+        execute(action, input);
         successPage(action,"Update succeeded") ;
     }
     
-    private void execute(HttpActionUpdate action, UpdateRequest updateRequest)
+    private void execute(HttpActionUpdate action, InputStream input)
     {
-        processProtocol(action.request, updateRequest) ;
+        UsingList usingList = processProtocol(action.request) ;
+        
+        // If the dsg is transactional, then we can parse and execute the update in a streaming fashion.
+        // If it isn't, we need to read the entire update request before performing any updates, because
+        // we have to attempt to make the request atomic in the face of malformed queries
+        UpdateRequest req = null ;
+        if (!action.isTransactional())
+        {
+            try
+            {
+                // TODO implement a spill-to-disk version of this
+                req = UpdateFactory.read(usingList, input, Syntax.syntaxARQ);
+            }
+            catch (UpdateException ex) { errorBadRequest(ex.getMessage()) ; return ; }
+            catch (QueryParseException ex)  { errorBadRequest(messageForQPE(ex)) ; return ; }
+        }
         
         action.beginWrite() ;
-        try {
-            UpdateAction.execute(updateRequest, action.getActiveDSG()) ;
+        try
+        {
+            if (action.isTransactional())
+            {
+                UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, Syntax.syntaxARQ);
+            }
+            else
+            {
+                UpdateAction.execute(req, action.getActiveDSG()) ;
+            }
+            
             action.commit() ;
-        }
-        catch ( UpdateException ex) { action.abort() ; errorBadRequest(ex.getMessage()) ; }
-        finally { action.endWrite() ; }
+        } 
+        catch (UpdateException ex) { action.abort(); errorBadRequest(ex.getMessage()) ; }
+        catch (QueryParseException ex)  { action.abort(); errorBadRequest(messageForQPE(ex)) ; }
+        finally { action.endWrite(); }
     }
 
     /* [It is an error to supply the using-graph-uri or using-named-graph-uri parameters 
      * when using this protocol to convey a SPARQL 1.1 Update request that contains an 
      * operation that uses the USING, USING NAMED, or WITH clause.]
+     * 
+     * We will simply capture any using parameters here and pass them to the parser, which will be
+     * responsible for throwing an UpdateException if the query violates the above requirement,
+     * and will also be responsible for adding the using parameters to update queries that can
+     * accept them.
      */
-    
-    private void processProtocol(HttpServletRequest request, UpdateRequest updateRequest)
+    private UsingList processProtocol(HttpServletRequest request)
     {
+        UsingList toReturn = new UsingList();
+        
         String[] usingArgs = request.getParameterValues(paramUsingGraphURI) ;
         String[] usingNamedArgs = request.getParameterValues(paramUsingNamedGraphURI) ;
         if ( usingArgs == null && usingNamedArgs == null )
-            return ;
+            return toReturn;
         if ( usingArgs == null )
             usingArgs = new String[0] ;
         if ( usingNamedArgs == null )
@@ -263,21 +294,17 @@ public class SPARQL_Update extends SPARQL_Protocol
         // Impossible.
 //        if ( usingArgs.length == 0 && usingNamedArgs.length == 0 )
 //            return ;
-        // ---- check USING/USING NAMED/WITH not used.
-        // ---- update request to have USING/USING NAMED 
-        for ( Update up : updateRequest.getOperations() )
+        
+        for (String nodeUri : usingArgs)
         {
-            if ( up instanceof UpdateWithUsing )
-            {
-                UpdateWithUsing upu = (UpdateWithUsing)up ;
-                if ( upu.getUsing().size() != 0 || upu.getUsingNamed().size() != 0 || upu.getWithIRI() != null )
-                    errorBadRequest("SPARQL Update: Protocol using-graph-uri or using-named-graph-uri present where update request has USING, USING NAMED or WITH") ;
-                for ( String a : usingArgs )
-                    upu.addUsing(createNode(a)) ;
-                for ( String a : usingNamedArgs )
-                    upu.addUsingNamed(createNode(a)) ;
-            }
+            toReturn.addUsing(createNode(nodeUri));
         }
+        for (String nodeUri : usingNamedArgs)
+        {
+            toReturn.addUsingNamed(createNode(nodeUri));
+        }
+        
+        return toReturn;
     }
     
     private static Node createNode(String x)

@@ -30,6 +30,9 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  * <p>
  * Developers who only want to change/extend the processing of individual updates can easily 
  * </p>
+ * Important note for implementers extending this class:  Your GraphStore implementation *must* be able to
+ * accept <code>null</code> as a parameter to {@link GraphStore#startRequest(UpdateRequest)} and
+ * {@link GraphStore#finishRequest(UpdateRequest)} (TODO: Revisit this decision)
  */
 public class UpdateEngineMain extends UpdateEngineBase 
 {
@@ -44,6 +47,17 @@ public class UpdateEngineMain extends UpdateEngineBase
     {
         super(graphStore, request, initialBinding, context) ;
     }
+    
+    /**
+     * Creates a new Update Engine
+     * @param graphStore Graph Store the updates operate over
+     * @param usingList Externally supplied using
+     * @param context Execution Context
+     */
+    public UpdateEngineMain(GraphStore graphStore, UsingList usingList, Binding initialBinding, Context context)
+    {
+        super(graphStore, usingList, initialBinding, context) ;
+    }
 
     /**
      * Executes the updates by creating a {@link UpdateVisitor} using the {@link #prepareWorker()} method and then using that to visit each update command in the Update Request
@@ -57,6 +71,24 @@ public class UpdateEngineMain extends UpdateEngineBase
             up.visit(worker) ;
         }
         graphStore.finishRequest(request) ;
+    }
+    
+    @Override
+    public void startRequest()
+    {
+        graphStore.startRequest(null);  // TODO Must accept null as an argument here
+    }
+    
+    @Override
+    public void finishRequest()
+    {
+        graphStore.finishRequest(null);  // TODO Must accept null as an argument here
+    }
+    
+    @Override
+    public UpdateSink getUpdateSink()
+    {
+        return new UpdateVisitorSink(this.prepareWorker(), usingList);
     }
     
     /**
@@ -79,6 +111,18 @@ public class UpdateEngineMain extends UpdateEngineBase
         public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
         {
             return new UpdateEngineMain(graphStore, request, inputBinding, context) ;
+        }
+        
+        @Override
+        public boolean acceptStreaming(GraphStore graphStore, Context context)
+        {
+            return true ;
+        }
+        
+        @Override
+        public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+        {
+            return new UpdateEngineMain(graphStore, usingList, initialBinding, context);
         }
     } ;
 

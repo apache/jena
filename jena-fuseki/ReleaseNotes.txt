@@ -4,9 +4,9 @@
 
 + Upgrade to Jetty 8.1.8.v20121106
 + Uses Jena 2.10.0.
-+ JENA-376 : fuseki linux service script : Either use options as given or use defaults, not append defaults to any given.
-+ JENA-387 : fuseki includes request ID in response headers as Fuseki-Request-ID to
-allow correlating problem HTTP responses with Fuseki log output
++ JENA-376 : Fuseki linux service script : Either use options as given or use defaults, not append defaults to any given.
++ JENA-387 : Fuseki includes request ID in response headers as Fuseki-Request-ID to allow correlating problem HTTP responses with Fuseki log output
++ JENA-309 : If supported by the underlying storage engine, Fuseki can exploit transactions in order to stream SPARQL Update requests
 
 == Fuseki 0.2.5
 

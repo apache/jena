@@ -39,6 +39,7 @@ public class HttpAction
     public final long id ;
     private DatasetGraph dsg ;                  // The data
     private final Transactional transactional ;
+    private final boolean isTransactional;
     private DatasetRef desc ;
     private DatasetGraph  activeDSG ;           // Set when inside begin/end.
     
@@ -69,18 +70,30 @@ public class HttpAction
         this.dsg = desc.dataset ;
 
         if ( dsg instanceof Transactional )
+        {
             transactional = (Transactional)dsg ;
+            isTransactional = true ;
+        }
         else
         {
             // Non-transactional - wrap in something that does locking to give the same 
             // functionality in the absense of errors, with less concurrency.
             DatasetGraphWithLock dsglock = new DatasetGraphWithLock(dsg) ; 
             transactional = dsglock ;
+            isTransactional = false ;
             dsg = dsglock ;
         }
         this.request = request ;
         this.response = response ;
         this.verbose = verbose ;
+    }
+    
+    /**
+     * Returns whether or not the underlying DatasetGraph is fully transactional (supports rollback)
+     */
+    public boolean isTransactional()
+    {
+        return isTransactional;
     }
     
     public void beginRead()

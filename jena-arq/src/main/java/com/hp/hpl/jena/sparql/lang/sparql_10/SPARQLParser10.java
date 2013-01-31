@@ -920,7 +920,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-  final public void ConstructTriples(TripleCollector acc) throws ParseException {
+  final public void ConstructTriples(TripleCollectorMark acc) throws ParseException {
     TriplesSameSubject(acc);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case DOT:
@@ -966,7 +966,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // -------- Triple lists with property and object lists
 // -------- Without paths: entry: TriplesSameSubject
-  final public void TriplesSameSubject(TripleCollector acc) throws ParseException {
+  final public void TriplesSameSubject(TripleCollectorMark acc) throws ParseException {
                                                  Node s ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
@@ -1008,7 +1008,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void PropertyListNotEmpty(Node s, TripleCollector acc) throws ParseException {
+  final public void PropertyListNotEmpty(Node s, TripleCollectorMark acc) throws ParseException {
       Node p = null ;
     p = Verb();
     ObjectList(s, p, null, acc);
@@ -1040,7 +1040,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void PropertyList(Node s, TripleCollector acc) throws ParseException {
+  final public void PropertyList(Node s, TripleCollectorMark acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1056,7 +1056,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void ObjectList(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+  final public void ObjectList(Node s, Node p, Path path, TripleCollectorMark acc) throws ParseException {
                                                                    Node o ;
     Object(s, p, path, acc);
     label_14:
@@ -1074,7 +1074,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     }
   }
 
-  final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
+  final public void Object(Node s, Node p, Path path, TripleCollectorMark acc) throws ParseException {
                                                                Node o ;
       int mark = acc.mark() ;
     o = GraphNode(acc);
@@ -1111,7 +1111,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
 
 // Anything that can stand in a node slot and which is
 // a number of triples
-  final public Node TriplesNode(TripleCollector acc) throws ParseException {
+  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {
                                           Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
@@ -1130,7 +1130,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
     throw new Error("Missing return statement in function");
   }
 
-  final public Node BlankNodePropertyList(TripleCollector acc) throws ParseException {
+  final public Node BlankNodePropertyList(TripleCollectorMark acc) throws ParseException {
                                                     Token t ;
     t = jj_consume_token(LBRACKET);
       Node n = createBNode(t.beginLine, t.beginColumn) ;
@@ -1141,7 +1141,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
 // ------- RDF collections
-  final public Node Collection(TripleCollector acc) throws ParseException {
+  final public Node Collection(TripleCollectorMark acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     label_15:
@@ -1196,7 +1196,7 @@ public class SPARQLParser10 extends SPARQLParser10Base implements SPARQLParser10
   }
 
 // -------- Nodes in a graph pattern or template
-  final public Node GraphNode(TripleCollector acc) throws ParseException {
+  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {
                                         Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:

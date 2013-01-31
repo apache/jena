@@ -92,6 +92,38 @@ public class UpdateExecutionFactory
     {        
         return make(updateRequest, graphStore, initialBinding, null) ;
     }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore)
+    {        
+        return createStreaming(new UsingList(), graphStore) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param usingList
+     * @param graphStore
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(UsingList usingList, GraphStore graphStore)
+    {        
+        return createStreaming(usingList, graphStore, null, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param usingList
+     * @param graphStore
+     * @param initialBinding (may be null for none)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
+    public static UpdateProcessorStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+    {        
+        return makeStreaming(usingList, graphStore, initialBinding, context) ;
+    }
+    
 
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest
@@ -105,7 +137,7 @@ public class UpdateExecutionFactory
         return make(updateRequest, graphStore, initialBinding, context) ;
     }
 
-    // Everything comes through here
+    // Everything comes through one of these two make methods
     private static UpdateProcessor make(UpdateRequest updateRequest, GraphStore graphStore, Binding initialBinding, Context context)
     {
         if ( context == null )
@@ -123,6 +155,27 @@ public class UpdateExecutionFactory
             uProc.setInitialBinding(initialBinding) ;
         return uProc ;
     }
+    
+    // Everything comes through one of these two make methods
+    private static UpdateProcessorStreaming makeStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+    {
+        if ( context == null )
+        {
+            context = ARQ.getContext().copy();
+            context.putAll(graphStore.getContext()) ;
+        }
+        
+        UpdateEngineFactory f = UpdateEngineRegistry.get().findStreaming(graphStore, context) ;
+        if ( f == null )
+            return null ;
+        
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(usingList, graphStore, context, f) ;
+        if ( initialBinding != null )
+            uProc.setInitialBinding(initialBinding) ;
+        return uProc;
+    }
+    
+    
     
     /** Create an UpdateProcessor that send the update to a remote SPARQL Update service.
      * @param update
