@@ -28,6 +28,7 @@ import org.apache.jena.atlas.data.DataBag ;
 import org.apache.jena.atlas.data.ThresholdPolicy ;
 import org.apache.jena.atlas.data.ThresholdPolicyFactory ;
 import org.apache.jena.atlas.iterator.Iter ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.openjena.riot.SerializationFactoryFinder ;
 
 import com.hp.hpl.jena.graph.Graph ;
@@ -38,6 +39,7 @@ import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.query.QueryExecutionFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
+import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.sparql.core.DynamicDatasets ;
@@ -49,7 +51,21 @@ import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphOps ;
 import com.hp.hpl.jena.sparql.graph.NodeTransform ;
 import com.hp.hpl.jena.sparql.graph.NodeTransformLib ;
-import com.hp.hpl.jena.sparql.modify.request.* ;
+import com.hp.hpl.jena.sparql.modify.request.Target ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateAdd ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateBinaryOp ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateClear ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCopy ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataDelete ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDeleteWhere ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateDropClear ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateModify ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateMove ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
 import com.hp.hpl.jena.sparql.syntax.ElementNamedGraph ;
@@ -273,10 +289,56 @@ public class UpdateEngineWorker implements UpdateVisitor
     // ----
     
     @Override
+    public Sink<Quad> getInsertDataSink()
+    {
+        return new Sink<Quad>()
+        {
+            @Override
+            public void send(Quad quad)
+            {
+                addToGraphStore(graphStore, quad);
+            }
+
+            @Override
+            public void flush()
+            {
+                SystemARQ.sync(graphStore);
+            }
+    
+            @Override
+            public void close()
+            { }
+        };
+    }
+    
+    @Override
     public void visit(UpdateDataInsert update)
     {
         for ( Quad quad : update.getQuads() )
             addToGraphStore(graphStore, quad) ;
+    }
+    
+    @Override
+    public Sink<Quad> getDeleteDataSink()
+    {
+        return new Sink<Quad>()
+        {
+            @Override
+            public void send(Quad quad)
+            {
+                deleteFromGraphStore(graphStore, quad);
+            }
+
+            @Override
+            public void flush()
+            {
+                SystemARQ.sync(graphStore);
+            }
+    
+            @Override
+            public void close()
+            { }
+        };
     }
 
     @Override

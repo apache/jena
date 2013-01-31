@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** The syntax eleemnt for a SPARQL BasicGraphPattern */
 
-public class ElementTriplesBlock extends Element implements TripleCollector
+public class ElementTriplesBlock extends Element implements TripleCollectorMark
 {
     private final BasicPattern pattern ; 
 

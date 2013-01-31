@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.jena.atlas.io.IndentedWriter ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Closeable ;
+import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.out.SinkQuadBracedOutput ;
 
 import com.hp.hpl.jena.graph.Node;
@@ -379,20 +380,33 @@ public class UpdateWriter implements Closeable
         public void visit(UpdateMove update)
         { printUpdate2(update, "MOVE") ; }
 
+
         @Override
-        public void visit(UpdateDataInsert update)
+        public Sink<Quad> getInsertDataSink()
         {
             UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
             udw.open();
-            Iter.sendToSink(update.getQuads(), udw);  // udw.close() is called by Iter.sendToSink()
+            return udw;
+        }
+
+        @Override
+        public void visit(UpdateDataInsert update)
+        {
+            Iter.sendToSink(update.getQuads(), getInsertDataSink());  // Iter.sendToSink() will call close() on the sink
+        }
+        
+        @Override
+        public Sink<Quad> getDeleteDataSink()
+        {
+            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
+            udw.open();
+            return udw;
         }
 
         @Override
         public void visit(UpdateDataDelete update)
         {
-            UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
-            udw.open();
-            Iter.sendToSink(update.getQuads(), udw);
+            Iter.sendToSink(update.getQuads(), getDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
         }
 
         // Prettier later.

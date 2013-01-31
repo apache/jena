@@ -1117,7 +1117,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void Update1() throws ParseException {
-                   Update up ;
+                   Update up = null ;
     startUpdateOperation() ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LOAD:
@@ -1141,12 +1141,6 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case CREATE:
       up = Create();
       break;
-    case INSERT_DATA:
-      up = InsertData();
-      break;
-    case DELETE_DATA:
-      up = DeleteData();
-      break;
     case DELETE_WHERE:
       up = DeleteWhere();
       break;
@@ -1155,12 +1149,18 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     case WITH:
       up = Modify();
       break;
+    case INSERT_DATA:
+      InsertData();
+      break;
+    case DELETE_DATA:
+      DeleteData();
+      break;
     default:
       jj_la1[38] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    emitUpdate(up) ;
+    if (null != up) emitUpdate(up) ;
     finishUpdateOperation() ;
   }
 
@@ -1299,38 +1299,39 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // #ifdef ARQ
-// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// void Meta() : { QuadDataAccSink qd = new QuadDataAccSink() ; }
 // {
 //    <META> 
 //    QuadData(qd)
 // }
 // #endif
-  final public Update InsertData() throws ParseException {
-                        QuadDataAcc qd = new QuadDataAcc() ; Token t ;
+  final public void InsertData() throws ParseException {
+                      QuadDataAccSink qd = getInsertDataSink() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
-    startDataInsert(qd, t.beginLine, t.beginColumn) ;
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
+    startDataInsert(qd, beginLine, beginColumn) ;
     QuadData(qd);
-    finishDataInsert(qd, t.beginLine, t.beginColumn) ;
-    {if (true) return new UpdateDataInsert(qd) ;}
-    throw new Error("Missing return statement in function");
+    finishDataInsert(qd, beginLine, beginColumn) ;
+    qd.close() ;
   }
 
-  final public Update DeleteData() throws ParseException {
-                        QuadDataAcc qd = new QuadDataAcc() ; Token t ;
+  final public void DeleteData() throws ParseException {
+                      QuadDataAccSink qd = getDeleteDataSink() ; Token t ;
     t = jj_consume_token(DELETE_DATA);
-    startDataDelete(qd, t.beginLine, t.beginColumn) ;
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
+    startDataDelete(qd, beginLine, beginColumn) ;
     QuadData(qd);
-    finishDataDelete(qd, t.beginLine, t.beginColumn) ;
-    {if (true) return new UpdateDataDelete(qd) ;}
-    throw new Error("Missing return statement in function");
+    finishDataDelete(qd, beginLine, beginColumn) ;
+    qd.close() ;
   }
 
   final public Update DeleteWhere() throws ParseException {
                          QuadAcc qp = new QuadAcc() ; Token t ;
     t = jj_consume_token(DELETE_WHERE);
-    startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
+    startDeleteTemplate(qp, beginLine, beginColumn) ;
     QuadPattern(qp);
-    finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
+    finishDeleteTemplate(qp, beginLine, beginColumn) ;
     {if (true) return new UpdateDeleteWhere(qp) ;}
     throw new Error("Missing return statement in function");
   }
@@ -1394,18 +1395,20 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public void DeleteClause(UpdateModify up) throws ParseException {
                                        QuadAcc qp = up.getDeleteAcc() ; Token t ;
     t = jj_consume_token(DELETE);
-     startDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
+     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
+     startDeleteTemplate(qp, beginLine, beginColumn) ;
     QuadPattern(qp);
-     finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ;
+     finishDeleteTemplate(qp, beginLine, beginColumn) ;
      up.setHasDeleteClause(true) ;
   }
 
   final public void InsertClause(UpdateModify up) throws ParseException {
                                        QuadAcc qp = up.getInsertAcc() ; Token t ;
     t = jj_consume_token(INSERT);
-     startInsertTemplate(qp, t.beginLine, t.beginColumn) ;
+     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
+     startInsertTemplate(qp, beginLine, beginColumn) ;
     QuadPattern(qp);
-     finishInsertTemplate(qp, t.beginLine, t.beginColumn) ;
+     finishInsertTemplate(qp, beginLine, beginColumn) ;
      up.setHasInsertClause(true) ;
   }
 
@@ -1503,13 +1506,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 //Ground data : As QuadPattern but don't allow variables.
-  final public void QuadData(QuadDataAcc acc) throws ParseException {
+  final public void QuadData(QuadDataAccSink acc) throws ParseException {
     jj_consume_token(LBRACE);
     Quads(acc);
     jj_consume_token(RBRACE);
   }
 
-  final public void Quads(QuadAcc acc) throws ParseException {
+  final public void Quads(QuadAccSink acc) throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -1596,8 +1599,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     }
   }
 
-  final public void QuadsNotTriples(QuadAcc acc) throws ParseException {
-                                     Node gn ; Node prev = acc.getGraph() ;
+  final public void QuadsNotTriples(QuadAccSink acc) throws ParseException {
+                                         Node gn ; Node prev = acc.getGraph() ;
     jj_consume_token(GRAPH);
     gn = VarOrIri();
       setAccGraph(acc, gn) ;
@@ -1686,11 +1689,12 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Element GroupGraphPattern() throws ParseException {
                                 Element el = null ; Token t ;
     t = jj_consume_token(LBRACE);
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case SELECT:
-      startSubSelect(t.beginLine, t.beginColumn) ;
+      startSubSelect(beginLine, beginColumn) ;
       SubSelect();
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
+      Query q = endSubSelect(beginLine, beginColumn) ;
       el = new ElementSubQuery(q) ;
       break;
     default:
@@ -1949,10 +1953,11 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   final public Element InlineData() throws ParseException {
                          ElementData el ; Token t ;
     t = jj_consume_token(VALUES);
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     el = new ElementData() ;
-    startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ;
+    startInlineData(el.getVars(), el.getRows(), beginLine, beginColumn) ;
     DataBlock();
-    finishInlineData(t.beginLine, t.beginColumn) ;
+    finishInlineData(beginLine, beginColumn) ;
     {if (true) return el ;}
     throw new Error("Missing return statement in function");
   }
@@ -2016,13 +2021,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
   final public void InlineDataFull() throws ParseException {
-                          Var v ; Node n ; Token t ;
+                          Var v ; Node n ; Token t ; int beginLine; int beginColumn;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NIL:
       jj_consume_token(NIL);
       break;
     case LPAREN:
-      t = jj_consume_token(LPAREN);
+      jj_consume_token(LPAREN);
       label_16:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2037,14 +2042,14 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         v = Var();
                  emitDataBlockVariable(v) ;
       }
-      t = jj_consume_token(RPAREN);
+      jj_consume_token(RPAREN);
       break;
     default:
       jj_la1[74] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
-    t = jj_consume_token(LBRACE);
+    jj_consume_token(LBRACE);
     label_17:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2059,7 +2064,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LPAREN:
         t = jj_consume_token(LPAREN);
-      startDataBlockValueRow(t.beginLine, t.beginColumn) ;
+      beginLine = t.beginLine; beginColumn = t.beginColumn; t = null;
+      startDataBlockValueRow(beginLine, beginColumn) ;
         label_18:
         while (true) {
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2089,15 +2095,17 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
             break label_18;
           }
           n = DataBlockValue();
-          emitDataBlockValue(n, t.beginLine, t.beginColumn) ;
+          emitDataBlockValue(n, beginLine, beginColumn) ;
         }
         t = jj_consume_token(RPAREN);
-        finishDataBlockValueRow(t.beginLine, t.beginColumn) ;
+      beginLine = t.beginLine; beginColumn = t.beginColumn; t = null;
+        finishDataBlockValueRow(beginLine, beginColumn) ;
         break;
       case NIL:
         t = jj_consume_token(NIL);
-        startDataBlockValueRow(t.beginLine, t.beginColumn) ;
-        finishDataBlockValueRow(t.beginLine, t.beginColumn) ;
+      beginLine = t.beginLine; beginColumn = t.beginColumn; t = null;
+        startDataBlockValueRow(beginLine, beginColumn) ;
+        finishDataBlockValueRow(beginLine, beginColumn) ;
         break;
       default:
         jj_la1[77] = jj_gen;
@@ -2105,7 +2113,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
         throw new ParseException();
       }
     }
-    t = jj_consume_token(RBRACE);
+    jj_consume_token(RBRACE);
   }
 
   final public Node DataBlockValue() throws ParseException {
@@ -2309,9 +2317,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       case DISTINCT:
         t = jj_consume_token(DISTINCT);
                         distinct = true ;
+        int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
           if ( ! allowAggregatesInExpressions )
               throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
+                                 beginLine, beginColumn) ;
         break;
       default:
         jj_la1[81] = jj_gen;
@@ -2500,9 +2509,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNode(acc);
-      PropertyList(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNode(tempAcc);
+      PropertyList(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[89] = jj_gen;
@@ -2602,9 +2612,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                Node o ;
-      int mark = acc.mark() ;
-    o = GraphNode(acc);
-    insert(acc, mark, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNode(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // -------- BGPs with paths.
@@ -2640,9 +2650,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNodePath(acc);
-      PropertyListPath(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNodePath(tempAcc);
+      PropertyListPath(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[95] = jj_gen;
@@ -2778,9 +2789,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public void ObjectPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
-      int mark = acc.mark() ;
-    o = GraphNodePath(acc);
-    insert(acc, mark, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNodePath(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // End paths stuff.
@@ -3035,8 +3046,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 // -------- Triple expansions
 // Anything that can stand in a node slot and which is
 // a number of triples
-  final public Node TriplesNode(TripleCollector acc) throws ParseException {
-                                          Node n ;
+  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {
+                                              Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = Collection(acc);
@@ -3064,8 +3075,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node TriplesNodePath(TripleCollector acc) throws ParseException {
-                                              Node n ;
+  final public Node TriplesNodePath(TripleCollectorMark acc) throws ParseException {
+                                                  Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = CollectionPath(acc);
@@ -3094,12 +3105,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // ------- RDF collections
-  final public Node Collection(TripleCollector acc) throws ParseException {
+  final public Node Collection(TripleCollectorMark acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_29:
     while (true) {
-      Node cell = createListNode( t.beginLine, t.beginColumn) ;
+      Node cell = createListNode( beginLine, beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -3148,12 +3160,13 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node CollectionPath(TripleCollector acc) throws ParseException {
+  final public Node CollectionPath(TripleCollectorMark acc) throws ParseException {
       Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
+    int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_30:
     while (true) {
-      Node cell = createListNode( t.beginLine, t.beginColumn) ;
+      Node cell = createListNode( beginLine, beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -3203,8 +3216,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // -------- Nodes in a graph pattern or template
-  final public Node GraphNode(TripleCollector acc) throws ParseException {
-                                        Node n ;
+  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {
+                                            Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -3245,8 +3258,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node GraphNodePath(TripleCollector acc) throws ParseException {
-                                            Node n ;
+  final public Node GraphNodePath(TripleCollectorMark acc) throws ParseException {
+                                                Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -3922,7 +3935,7 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public Expr BuiltInCall() throws ParseException {
                        Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
-                       Node gn ; Token t ; ExprList a ;
+                       Node gn ; ExprList a ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COUNT:
     case MIN:
@@ -4273,14 +4286,14 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       {if (true) return new E_SameTerm(expr1, expr2) ;}
       break;
     case IS_IRI:
-      t = jj_consume_token(IS_IRI);
+      jj_consume_token(IS_IRI);
       jj_consume_token(LPAREN);
       expr = Expression();
       jj_consume_token(RPAREN);
       {if (true) return new E_IsIRI(expr) ;}
       break;
     case IS_URI:
-      t = jj_consume_token(IS_URI);
+      jj_consume_token(IS_URI);
       jj_consume_token(LPAREN);
       expr = Expression();
       jj_consume_token(RPAREN);

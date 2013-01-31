@@ -27,6 +27,7 @@ ChangeLog for ARQ
   Abbreviation performance for common namespace patterns (/ or # terminated) much improved
 + New FastAbbreviatingPrefixMap, can be much faster for abbreviation when namespaces
   do not follow common patterns
++ JENA-330 : Streaming support for SPARQL Update queries and streaming support for quads in INSERT DATA / DELETE DATA queries
 
 ==== ARQ 2.9.4
 
