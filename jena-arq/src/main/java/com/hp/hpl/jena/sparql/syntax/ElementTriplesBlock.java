@@ -28,7 +28,7 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 
 /** The syntax eleemnt for a SPARQL BasicGraphPattern */
 
-public class ElementTriplesBlock extends Element implements TripleCollector
+public class ElementTriplesBlock extends Element implements TripleCollectorMark
 {
     private final BasicPattern pattern ; 
 
@@ -49,9 +49,20 @@ public class ElementTriplesBlock extends Element implements TripleCollector
     { pattern.add(t) ; }
     
     @Override
+    public int mark() { return pattern.size() ; }
+    
+    @Override
+    public void addTriple(int index, Triple t)
+    { pattern.add(index, t) ; }
+    
+    @Override
     public void addTriplePath(TriplePath path)
     { throw new ARQException("Triples-only collector") ; }
 
+    @Override
+    public void addTriplePath(int index, TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+    
     public BasicPattern getPattern() { return pattern ; }
     public Iterator<Triple> patternElts() { return pattern.iterator(); }
     
