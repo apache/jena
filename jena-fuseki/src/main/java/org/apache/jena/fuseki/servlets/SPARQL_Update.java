@@ -50,9 +50,6 @@ import org.apache.jena.riot.system.IRIResolver ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.sparql.modify.UpdateVisitorSink ;
-import com.hp.hpl.jena.sparql.modify.UpdateRequestSink ;
-import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
 import com.hp.hpl.jena.update.UpdateAction ;
 import com.hp.hpl.jena.update.UpdateException ;
@@ -255,13 +252,9 @@ public class SPARQL_Update extends SPARQL_Protocol
         try
         {
             if (action.isTransactional())
-            {
                 UpdateAction.parseExecute(usingList, action.getActiveDSG(), input, Syntax.syntaxARQ);
-            }
             else
-            {
                 UpdateAction.execute(req, action.getActiveDSG()) ;
-            }
             
             action.commit() ;
         } 
