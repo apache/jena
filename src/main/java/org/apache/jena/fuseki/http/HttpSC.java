@@ -625,8 +625,6 @@ package org.apache.jena.fuseki.http;
  * </tr>
  *
  * </table>
- *
- * @version $Id$
  */
 public class HttpSC
 {
