@@ -35,12 +35,33 @@ import org.slf4j.Logger ;
 public abstract class ServletBase extends HttpServlet
 {
     protected static final Logger log = Fuseki.requestLog ;
-    protected static AtomicLong requestIdAlloc = new AtomicLong(0) ;
+    private static AtomicLong requestIdAlloc = new AtomicLong(0) ;
     protected final boolean verbose_debug ;
 
     protected ServletBase(boolean verbose_debug)
     {
         this.verbose_debug = verbose_debug ;
+    }
+    
+    /**
+     * Helper method which gets a unique request ID and appends it as a header to the response
+     * @param request  HTTP Request
+     * @param response HTTP Response
+     * @return Request ID
+     */
+    protected long allocRequestId(HttpServletRequest request, HttpServletResponse response) {
+        long id = requestIdAlloc.incrementAndGet();
+        addRequestId(response, id);
+        return id;
+    }
+    
+    /**
+     * Helper method for attaching a request ID to a response as a header
+     * @param response Response
+     * @param id Request ID
+     */
+    protected void addRequestId(HttpServletResponse response, long id) {
+        response.addHeader("Fuseki-Request-ID", Long.toString(id));
     }
     
     protected void responseSendError(HttpServletResponse response, int statusCode, String message)

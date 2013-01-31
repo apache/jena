@@ -18,6 +18,11 @@
 
 package org.apache.jena.fuseki;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import junit.framework.Assert;
+
 import org.apache.jena.fuseki.DatasetAccessor ;
 import org.apache.jena.fuseki.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
@@ -61,6 +66,13 @@ public class TestQuery extends BaseServerTest
     @Test public void query_01()
     {
         execQuery("SELECT * {?s ?p ?o}", 1) ;
+    }
+    
+    @Test public void request_id_header_01() throws IOException
+    {
+        URL u = new URL(serviceQuery);
+        HttpURLConnection conn = (HttpURLConnection) u.openConnection();
+        Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null);
     }
 
     private void execQuery(String queryString, int exceptedRowCount)

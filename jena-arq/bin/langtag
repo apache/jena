@@ -16,4 +16,4 @@ if [ ! -r "$INIT" ]
 fi
 
 . "$INIT"
-exec java $JVM_ARGS $SOCKS -cp "$ARQ_CP" org.openjena.riot.LangTag "$@"
+exec java $JVM_ARGS $SOCKS -cp "$ARQ_CP" org.apache.jena.riot.system.LangTag "$@"
