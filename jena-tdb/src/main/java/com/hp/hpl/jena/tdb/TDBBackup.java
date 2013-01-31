@@ -65,8 +65,6 @@ public class TDBBackup
         DatasetGraphTxn dsg = sConn.begin(ReadWrite.READ, "backup") ;
         NQuadsWriter.write(backupfile, dsg) ;
         dsg.end();
-        // Someway to decrement in StoreConnection
     }
-    
 }
 
