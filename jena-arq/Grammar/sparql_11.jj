@@ -831,8 +831,10 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyListNotEmpty(s, acc)
 |
   // Any of the triple generating syntax elements
-  s = TriplesNode(acc)
-  PropertyList(s, acc)
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; }
+  s = TriplesNode(tempAcc)
+  PropertyList(s, tempAcc)
+  { insert(acc, tempAcc) ; }
 }
 void PropertyList(Node s, TripleCollector acc) : { }
 {
@@ -864,8 +866,9 @@ void ObjectList(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 }
 void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
-  o = GraphNode(acc)
-  { insert(acc, s, p, path, o) ; }
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
+  o = GraphNode(tempAcc)
+  { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
 }
 // -------- BGPs with paths.
 // -------- Entry point: TriplesSameSubjectPath
@@ -875,8 +878,10 @@ void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
   PropertyListPathNotEmpty(s, acc)
 |
   // Any of the triple generating syntax elements
-  s = TriplesNodePath(acc)
-  PropertyListPath(s, acc)
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; }
+  s = TriplesNodePath(tempAcc)
+  PropertyListPath(s, tempAcc)
+  { insert(acc, tempAcc) ; }
 }
 void PropertyListPath(Node s, TripleCollector acc) : { }
 {
@@ -917,8 +922,9 @@ void ObjectListPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; 
 }
 void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
-  o = GraphNodePath(acc)
-  { insert(acc, s, p, path, o) ; }
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
+  o = GraphNodePath(tempAcc)
+  { insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ; }
 }
 // End paths stuff.
 // -------- Paths
@@ -1012,7 +1018,7 @@ long Integer() : {Token t ;}
 // -------- Triple expansions
 // Anything that can stand in a node slot and which is
 // a number of triples
-Node TriplesNode(TripleCollector acc) : { Node n ; }
+Node TriplesNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = Collection(acc) { return n ; }
  |
@@ -1026,7 +1032,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
   <RBRACKET>
     { return n ; }
 }
-Node TriplesNodePath(TripleCollector acc) : { Node n ; }
+Node TriplesNodePath(TripleCollectorMark acc) : { Node n ; }
 {
   n = CollectionPath(acc) { return n ; }
  |
@@ -1041,8 +1047,8 @@ Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
     { return n ; }
 }
 // ------- RDF collections
-Node Collection(TripleCollector acc) :
-    { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ; }
+Node Collection(TripleCollectorMark acc) :
+    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
   t = <LPAREN>
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
@@ -1052,10 +1058,11 @@ Node Collection(TripleCollector acc) :
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
     }
     n = GraphNode(acc)
     {
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
     }
   ) +
@@ -1065,8 +1072,8 @@ Node Collection(TripleCollector acc) :
        insert(acc, lastCell, nRDFrest, nRDFnil) ;
      return listHead ; }
 }
-Node CollectionPath(TripleCollector acc) :
-    { Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ; }
+Node CollectionPath(TripleCollectorMark acc) :
+    { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
   t = <LPAREN>
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
@@ -1076,10 +1083,11 @@ Node CollectionPath(TripleCollector acc) :
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
     }
     n = GraphNodePath(acc)
     {
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
     }
   ) +
@@ -1090,13 +1098,13 @@ Node CollectionPath(TripleCollector acc) :
      return listHead ; }
 }
 // -------- Nodes in a graph pattern or template
-Node GraphNode(TripleCollector acc) : { Node n ; }
+Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
  |
   n = TriplesNode(acc) { return n ; }
 }
-Node GraphNodePath(TripleCollector acc) : { Node n ; }
+Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
  |

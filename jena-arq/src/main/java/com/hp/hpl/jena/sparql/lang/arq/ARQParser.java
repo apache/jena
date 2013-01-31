@@ -2822,9 +2822,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNode(acc);
-      PropertyList(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNode(tempAcc);
+      PropertyList(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[89] = jj_gen;
@@ -2924,8 +2925,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                Node o ;
-    o = GraphNode(acc);
-    insert(acc, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNode(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // -------- BGPs with paths.
@@ -2961,9 +2963,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNodePath(acc);
-      PropertyListPath(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNodePath(tempAcc);
+      PropertyListPath(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[95] = jj_gen;
@@ -3111,8 +3114,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   final public void ObjectPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
-    o = GraphNodePath(acc);
-    insert(acc, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNodePath(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // End paths stuff.
@@ -3472,8 +3476,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 // -------- Triple expansions
 // Anything that can stand in a node slot and which is
 // a number of triples
-  final public Node TriplesNode(TripleCollector acc) throws ParseException {
-                                          Node n ;
+  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {
+                                              Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = Collection(acc);
@@ -3501,8 +3505,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node TriplesNodePath(TripleCollector acc) throws ParseException {
-                                              Node n ;
+  final public Node TriplesNodePath(TripleCollectorMark acc) throws ParseException {
+                                                  Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = CollectionPath(acc);
@@ -3531,8 +3535,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
 // ------- RDF collections
-  final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ;
+  final public Node Collection(TripleCollectorMark acc) throws ParseException {
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_32:
@@ -3542,8 +3546,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
       n = GraphNode(acc);
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
@@ -3585,8 +3590,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node CollectionPath(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ;
+  final public Node CollectionPath(TripleCollectorMark acc) throws ParseException {
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_33:
@@ -3596,8 +3601,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
       n = GraphNodePath(acc);
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
@@ -3640,8 +3646,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
 // -------- Nodes in a graph pattern or template
-  final public Node GraphNode(TripleCollector acc) throws ParseException {
-                                        Node n ;
+  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {
+                                            Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -3682,8 +3688,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public Node GraphNodePath(TripleCollector acc) throws ParseException {
-                                            Node n ;
+  final public Node GraphNodePath(TripleCollectorMark acc) throws ParseException {
+                                                Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -5447,20 +5453,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     finally { jj_save(4, xla); }
   }
 
-  private boolean jj_3R_111() {
-    if (jj_scan_token(NOT)) return true;
+  private boolean jj_3R_110() {
     if (jj_scan_token(EXISTS)) return true;
+    if (jj_3R_124()) return true;
     return false;
   }
 
   private boolean jj_3R_135() {
     if (jj_scan_token(LBRACKET)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_110() {
-    if (jj_scan_token(EXISTS)) return true;
-    if (jj_3R_124()) return true;
     return false;
   }
 
@@ -5496,14 +5496,14 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
   private boolean jj_3R_109() {
     if (jj_scan_token(REGEX)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_40()) return true;
     return false;
   }
 
@@ -5559,11 +5559,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_102() {
-    if (jj_3R_115()) return true;
-    return false;
-  }
-
   private boolean jj_3R_94() {
     if (jj_scan_token(IS_BLANK)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -5578,21 +5573,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_93() {
     if (jj_scan_token(IS_URI)) return true;
     if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_42() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_101()) {
-    jj_scanpos = xsp;
-    if (jj_3R_102()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_101() {
-    if (jj_3R_114()) return true;
     return false;
   }
 
@@ -5623,9 +5603,8 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_42()) return true;
+  private boolean jj_3R_102() {
+    if (jj_3R_115()) return true;
     return false;
   }
 
@@ -5646,6 +5625,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
+  private boolean jj_3R_42() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_101()) {
+    jj_scanpos = xsp;
+    if (jj_3R_102()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_101() {
+    if (jj_3R_114()) return true;
+    return false;
+  }
+
   private boolean jj_3R_147() {
     if (jj_3R_131()) return true;
     return false;
@@ -5661,21 +5655,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_113() {
-    if (jj_3R_126()) return true;
-    return false;
-  }
-
   private boolean jj_3R_88() {
     if (jj_scan_token(IF)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_126() {
-    if (jj_scan_token(PREFIX)) return true;
-    if (jj_scan_token(PNAME_NS)) return true;
-    if (jj_3R_131()) return true;
+  private boolean jj_3_4() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_42()) return true;
     return false;
   }
 
@@ -5686,6 +5674,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_160() {
     if (jj_scan_token(STRING_LITERAL_LONG1)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_113() {
+    if (jj_3R_126()) return true;
     return false;
   }
 
@@ -5705,12 +5698,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_125() {
-    if (jj_scan_token(BASE)) return true;
-    if (jj_3R_131()) return true;
-    return false;
-  }
-
   private boolean jj_3R_149() {
     Token xsp;
     xsp = jj_scanpos;
@@ -5727,27 +5714,10 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_112() {
-    if (jj_3R_125()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_100() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_112()) {
-    jj_scanpos = xsp;
-    if (jj_3R_113()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_41() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_100()) { jj_scanpos = xsp; break; }
-    }
+  private boolean jj_3R_126() {
+    if (jj_scan_token(PREFIX)) return true;
+    if (jj_scan_token(PNAME_NS)) return true;
+    if (jj_3R_131()) return true;
     return false;
   }
 
@@ -5789,14 +5759,15 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_123() {
+  private boolean jj_3R_83() {
+    if (jj_scan_token(SHA384)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_83() {
-    if (jj_scan_token(SHA384)) return true;
-    if (jj_scan_token(LPAREN)) return true;
+  private boolean jj_3R_125() {
+    if (jj_scan_token(BASE)) return true;
+    if (jj_3R_131()) return true;
     return false;
   }
 
@@ -5809,6 +5780,21 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   private boolean jj_3R_81() {
     if (jj_scan_token(SHA1)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_112() {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_100() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_112()) {
+    jj_scanpos = xsp;
+    if (jj_3R_113()) return true;
+    }
     return false;
   }
 
@@ -5834,12 +5820,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_106() {
+  private boolean jj_3R_41() {
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(165)) {
-    jj_scanpos = xsp;
-    if (jj_3R_123()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_100()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -5881,6 +5866,11 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 
   private boolean jj_3R_76() {
     if (jj_scan_token(TZ)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_123() {
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
@@ -5986,6 +5976,16 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     }
     }
     }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_106() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(165)) {
+    jj_scanpos = xsp;
+    if (jj_3R_123()) return true;
     }
     return false;
   }
@@ -6472,11 +6472,6 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_124() {
-    if (jj_scan_token(LBRACE)) return true;
-    return false;
-  }
-
   private boolean jj_3R_117() {
     if (jj_scan_token(SUM)) return true;
     if (jj_scan_token(LPAREN)) return true;
@@ -6488,15 +6483,45 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3_3() {
-    if (jj_scan_token(DOT)) return true;
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
   private boolean jj_3R_116() {
     if (jj_scan_token(COUNT)) return true;
     if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_124() {
+    if (jj_scan_token(LBRACE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_103() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_116()) {
+    jj_scanpos = xsp;
+    if (jj_3R_117()) {
+    jj_scanpos = xsp;
+    if (jj_3R_118()) {
+    jj_scanpos = xsp;
+    if (jj_3R_119()) {
+    jj_scanpos = xsp;
+    if (jj_3R_120()) {
+    jj_scanpos = xsp;
+    if (jj_3R_121()) {
+    jj_scanpos = xsp;
+    if (jj_3R_122()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_scan_token(DOT)) return true;
+    if (jj_3R_42()) return true;
     return false;
   }
 
@@ -6548,28 +6573,9 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
     return false;
   }
 
-  private boolean jj_3R_103() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_116()) {
-    jj_scanpos = xsp;
-    if (jj_3R_117()) {
-    jj_scanpos = xsp;
-    if (jj_3R_118()) {
-    jj_scanpos = xsp;
-    if (jj_3R_119()) {
-    jj_scanpos = xsp;
-    if (jj_3R_120()) {
-    jj_scanpos = xsp;
-    if (jj_3R_121()) {
-    jj_scanpos = xsp;
-    if (jj_3R_122()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
+  private boolean jj_3R_111() {
+    if (jj_scan_token(NOT)) return true;
+    if (jj_scan_token(EXISTS)) return true;
     return false;
   }
 
