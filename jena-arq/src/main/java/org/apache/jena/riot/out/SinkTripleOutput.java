@@ -34,7 +34,6 @@ import com.hp.hpl.jena.graph.Triple ;
 /** A class that print triples, N-triples style */ 
 public class SinkTripleOutput implements Sink<Triple>
 {
-    // TODO ASCII version
     private CharsetEncoder encoder ;
     private Prologue prologue = null ;
     private Writer out ;

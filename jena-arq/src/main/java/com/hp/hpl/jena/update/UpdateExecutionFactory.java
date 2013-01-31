@@ -123,7 +123,6 @@ public class UpdateExecutionFactory
     {        
         return makeStreaming(usingList, graphStore, initialBinding, context) ;
     }
-    
 
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param updateRequest

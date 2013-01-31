@@ -43,9 +43,6 @@ import org.apache.jena.atlas.lib.NotImplemented ;
 
 public class BlockUTF8
 {
-    // TODO If src and dst have arrays, use the arrays.
-    // TODO Flatten the loops - no function call in the loop.
-    
     // Looking in java.lang.StringCoding (Sun RT) is illuminating.
     // The actual encode/decode code is in sun.nio.cs.UTF_8.(Decoder|Encoder)
     // which has special cases for ByteBuffer, ByteBuffer with array (needs offsets)

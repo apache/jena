@@ -168,7 +168,6 @@ public class Optimize implements Rewrite
         if ( context.isTrueOrUndef(ARQ.optFilterExpandOneOf) )
             op = apply("Break up IN and NOT IN", new TransformExpandOneOf(), op) ;
 
-        // TODO Improve filter placement to go through assigns that have no effect.
         // Either, do filter placement and other sequence generating transformations.
         // or improve to place in a sequence (latter is better?)
         

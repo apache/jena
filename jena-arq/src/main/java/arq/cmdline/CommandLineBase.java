@@ -22,13 +22,12 @@ import java.util.ArrayList ;
 import java.util.List ;
 
 /** 
- * Incoming String[] to a list of argument/values + items. */
+ * Incoming String[] to a list of argument/values + items.
+ */
 
 
 public class CommandLineBase
 {
-    // TODO Case sensitivity : flags and arg
-
     private List<String> argList = new ArrayList<String>() ;
     boolean splitTerms = true ;
 

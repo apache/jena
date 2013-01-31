@@ -27,6 +27,8 @@ import com.hp.hpl.jena.graph.Node;
 
 public class UsingList
 {
+    public UsingList() { }
+    
     private List<Node> using = new ArrayList<Node>() ;
     private List<Node> usingNamed = new ArrayList<Node>() ;
     
