@@ -25,7 +25,7 @@ import com.hp.hpl.jena.sparql.core.TriplePath ;
 
 /** A triples-only TripleCollector. */
 
-public class TripleCollectorBGP implements TripleCollector
+public class TripleCollectorBGP implements TripleCollectorMark
 {
     BasicPattern bgp = new BasicPattern() ;
     
@@ -37,6 +37,16 @@ public class TripleCollectorBGP implements TripleCollector
     public void addTriple(Triple t) { bgp.add(t) ; }
     
     @Override
+    public int mark() { return bgp.size() ; }
+    
+    @Override
+    public void addTriple(int index, Triple t) { bgp.add(index, t) ; }
+    
+    @Override
     public void addTriplePath(TriplePath path)
+    { throw new ARQException("Triples-only collector") ; }
+
+    @Override
+    public void addTriplePath(int index, TriplePath path)
     { throw new ARQException("Triples-only collector") ; }
 }
