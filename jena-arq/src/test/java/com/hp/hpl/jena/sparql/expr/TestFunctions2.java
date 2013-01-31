@@ -101,7 +101,6 @@ public class TestFunctions2 extends BaseTest
     @Test public void abs_06()    { test("abs(-0)",     "0") ; }
     
     // CEIL
-    // TODO can we make the lexical form canonical?
     @Test public void ceil_01()    { test("ceil(1)",        "1") ; }
     @Test public void ceil_02()    { test("ceil(1.0)",      "'1'^^xsd:decimal") ; }
     @Test public void ceil_03()    { test("ceil(1e0)",      "1.0e0") ; }
@@ -143,8 +142,6 @@ public class TestFunctions2 extends BaseTest
     
     @Test //(expected=ExprEvalException.class)
     public void concat_91()         { test("concat('a'@en, 'b'@fr)",  "'ab'") ; }
-    
-    // TODO Lang and xsd:string cases.
     
     // SUBSTR
     @Test public void substr_01()    { test("substr('abc',1)",      "'abc'") ; }

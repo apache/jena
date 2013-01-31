@@ -200,7 +200,6 @@ public class IRILib
     // Sanitize a "file:" URL.
     private static String normalizeFilenameURI(String fn)
     {
-        // TODO
         String path = fn.substring("file:".length()) ;
         if ( ! fn.startsWith("file:/") )
         {

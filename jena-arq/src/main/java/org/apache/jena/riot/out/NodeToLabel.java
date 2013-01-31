@@ -126,7 +126,6 @@ public class NodeToLabel extends MapWithScope<Node, String, Node>
 
         protected String labelForLiteral(Node node)
         {
-            // TODO Better literal output.
             return FmtUtils.stringForLiteral((Node_Literal)node, null) ;
         }
 

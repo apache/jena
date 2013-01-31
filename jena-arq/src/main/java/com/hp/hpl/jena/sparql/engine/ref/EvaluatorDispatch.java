@@ -38,8 +38,6 @@ import com.hp.hpl.jena.sparql.engine.http.Service ;
 
 public class EvaluatorDispatch implements OpVisitor
 {
-    // TODO Clean up: OpGraph, OpDatasetNames (needed?)
-    
     private Deque<Table> stack = new ArrayDeque<Table>() ;
     protected Evaluator evaluator ;
     

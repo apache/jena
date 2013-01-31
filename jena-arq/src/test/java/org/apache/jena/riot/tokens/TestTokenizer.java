@@ -350,8 +350,6 @@ public class TestTokenizer extends BaseTest
         assertFalse(tokenizer.hasNext()) ;
     }
 
-    // TODO CNTRL=>Symbols
-    
 //    @Test
 //    public void tokenUnit_cntrl1()
 //    {

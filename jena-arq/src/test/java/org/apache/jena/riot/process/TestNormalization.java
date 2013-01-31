@@ -27,8 +27,6 @@ import com.hp.hpl.jena.sparql.util.NodeFactory ;
 
 public class TestNormalization extends BaseTest
 {
-    // TODO lang tags
-    
     @Test public void normalize_int_01()        { normalize("23", "23") ; }
     @Test public void normalize_int_02()        { normalize("023", "23") ; }
     @Test public void normalize_int_03()        { normalize("+23", "23") ; }

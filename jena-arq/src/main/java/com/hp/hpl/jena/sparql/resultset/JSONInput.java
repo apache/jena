@@ -125,7 +125,6 @@ public class JSONInput extends SPARQLResult
         if ( obj.hasKey(kBoolean) )
         {
             checkContains(obj, kHead, kBoolean) ;
-            // TODO check kHead is empty.
             booleanResult = obj.get(kBoolean).getAsBoolean().value() ;
             rows = null ;
             return ;

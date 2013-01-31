@@ -181,7 +181,6 @@ final class PathEngine1 extends PathEngine
             }
             return ;
         }
-        // TODO Incomplete
         // Loop, not recurse.
         Iter<Node> iter = eval(graph, pathStep, node) ;
         for ( Node n : iter )
