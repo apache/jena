@@ -18,13 +18,21 @@
 
 package com.hp.hpl.jena.update;
 
+import java.io.InputStream ;
+
+import org.apache.jena.atlas.io.IO ;
+
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QuerySolution ;
+import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
+import com.hp.hpl.jena.sparql.lang.UpdateParser ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.sparql.modify.UsingList ;
 
 /** A class of forms for executing SPARQL Update operations. 
  * parse* means the update request is in a string;
@@ -327,7 +335,7 @@ public class UpdateAction
         execute$(request, graphStore, binding) ;
     }
     
-    // Everything comes through here.
+    // All non-streaming updates come through here.
     private static void execute$(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
         UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, binding) ;
@@ -436,4 +444,95 @@ public class UpdateAction
         execute$(request, graphStore, binding) ;
     }  
 
+    
+    
+    // Streaming Updates:
+    
+    /** Parse update operations into a GraphStore by reading it from a file */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName)
+    { 
+        parseExecute(usingList, dataset, fileName, null, Syntax.defaultUpdateSyntax) ;
+    }
+    
+    /** Parse update operations into a GraphStore by reading it from a file */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, Syntax syntax)
+    {
+        parseExecute(usingList, dataset, fileName, null, syntax) ;
+    }
+
+    /** Parse update operations into a GraphStore by reading it from a file */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, String fileName, String baseURI, Syntax syntax)
+    { 
+        InputStream in = null ;
+        if ( fileName.equals("-") )
+            in = System.in ;
+        else
+        {
+            in = IO.openFile(fileName) ;
+            if ( in == null )
+                throw new UpdateException("File could not be opened: "+fileName) ;
+        }
+        parseExecute(usingList, dataset, in, baseURI, syntax) ;
+    }
+    
+    /** 
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param input     The source of the update request (must be UTF-8). 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input)
+    {
+        parseExecute(usingList, dataset, input, Syntax.defaultUpdateSyntax) ;
+    }
+
+    /** 
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param syntax    The update language syntax 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Syntax syntax)
+    {
+        parseExecute(usingList, dataset, input, null, syntax) ;
+    }
+    
+    /**
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param baseURI   The base URI for resolving relative URIs. 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI)
+    { 
+        parseExecute(usingList, dataset, input, baseURI, Syntax.defaultUpdateSyntax) ;
+    }
+    
+    /**
+     * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param input     The source of the update request (must be UTF-8). 
+     * @param baseURI   The base URI for resolving relative URIs. 
+     * @param syntax    The update language syntax 
+     */
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax)
+    {
+        GraphStore graphStore = GraphStoreFactory.create(dataset);
+        
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(usingList, graphStore) ;
+        
+        uProc.startRequest();
+        try
+        {
+            UpdateSink sink = uProc.getUpdateSink();
+            try
+            {
+                UpdateParser parser = UpdateFactory.setupParser(sink.getPrologue(), baseURI, syntax) ;
+                parser.parse(sink, input) ;
+            }
+            finally
+            {
+                sink.close() ;
+            }
+        }
+        finally
+        {
+            uProc.finishRequest();
+        }
+    }
 }

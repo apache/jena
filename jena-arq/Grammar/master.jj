@@ -444,22 +444,38 @@ void ValuesClause() : { Token t ; }
 // Update only entry point
 
 #ifdef ARQ
-// Optional SEMICOLON
 void Update() : { }
 {
-   Prologue()
-   ( Update1() (<SEMICOLON>)*  Update())?
+  // Rewrite for no recursion - grammar is not LL(1)
+  Prologue()
+  (
+    Update1()
+    (
+      // This syntactic lookahead is necessitated by the optional trailing semicolon and prologue
+      LOOKAHEAD( <SEMICOLON> Prologue() ( <LOAD> | <CLEAR> | <DROP> | <ADD> |
+                   <MOVE> | <COPY> | <CREATE> | <WITH> | <DELETE> | <INSERT> |
+                   <USING> | <INSERT_DATA> | <DELETE_DATA> | <DELETE_WHERE> ) )
+      <SEMICOLON>
+      Prologue()
+      Update1()
+    )*
+    (
+      <SEMICOLON>
+      Prologue()
+    )?
+  )?
 }
 #else
 // Strict SPARQL 1.1 : mandatory separator, optional terminator.
 void Update() : { }
-{  
+{
+   // SPARQL - recursion - does not scale for large number of updates in a single request
    Prologue()
    (Update1() ( <SEMICOLON> Update() )? )?
 }
 #endif
 
-void Update1() : { Update up ; }
+void Update1() : { Update up = null ; }
 {
   { startUpdateOperation() ; }
   ( up = Load()
@@ -469,13 +485,13 @@ void Update1() : { Update up ; }
   | up = Move()
   | up = Copy()
   | up = Create()
-  | up = InsertData()
-  | up = DeleteData()
   | up = DeleteWhere()
   | up = Modify()
+  | InsertData()
+  | DeleteData()
   )
   {
-    emitUpdate(up) ;
+    if (null != up) emitUpdate(up) ;
     finishUpdateOperation() ;
   }
 }
@@ -525,41 +541,44 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
 }
 
 // #ifdef ARQ
-// void Meta() : { QuadDataAcc qd = new QuadDataAcc() ; }
+// void Meta() : { QuadDataAccSink qd = new QuadDataAccSink() ; }
 // {
 //    <META> 
 //    QuadData(qd)
 // }
 // #endif
 
-Update InsertData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
+void InsertData() : { QuadDataAccSink qd = getInsertDataSink() ; Token t ; }
 {
   t =  <INSERT_DATA>
-  { startDataInsert(qd, t.beginLine, t.beginColumn) ; }
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+  { startDataInsert(qd, beginLine, beginColumn) ; }
    QuadData(qd)
   {
-    finishDataInsert(qd, t.beginLine, t.beginColumn) ;
-    return new UpdateDataInsert(qd) ; 
+    finishDataInsert(qd, beginLine, beginColumn) ;
+    qd.close() ;
   }
 }
 
-Update DeleteData() : { QuadDataAcc qd = new QuadDataAcc() ; Token t ; }
+void DeleteData() : { QuadDataAccSink qd = getDeleteDataSink() ; Token t ; }
 {
   t = <DELETE_DATA>
-  { startDataDelete(qd, t.beginLine, t.beginColumn) ; }
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+  { startDataDelete(qd, beginLine, beginColumn) ; }
   QuadData(qd)
   { 
-    finishDataDelete(qd, t.beginLine, t.beginColumn) ;
-    return new UpdateDataDelete(qd) ;
+    finishDataDelete(qd, beginLine, beginColumn) ;
+    qd.close() ;
   }
 }
 
 Update DeleteWhere() : { QuadAcc qp = new QuadAcc() ;  Token t ; }
 {
-  t = <DELETE_WHERE> 
-  { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
+  t = <DELETE_WHERE>
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+  { startDeleteTemplate(qp, beginLine, beginColumn) ; }
   QuadPattern(qp)
-  { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
+  { finishDeleteTemplate(qp, beginLine, beginColumn) ; }
   { return new UpdateDeleteWhere(qp) ; }
 }
 
@@ -584,18 +603,20 @@ Update Modify() : { Element el ; String iri = null ;
 void DeleteClause(UpdateModify up) : { QuadAcc qp = up.getDeleteAcc() ;  Token t ;}
 {
    t = <DELETE>
-   { startDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
+   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+   { startDeleteTemplate(qp, beginLine, beginColumn) ; }
    QuadPattern(qp)
-   { finishDeleteTemplate(qp, t.beginLine, t.beginColumn) ; }
+   { finishDeleteTemplate(qp, beginLine, beginColumn) ; }
    { up.setHasDeleteClause(true) ; }
 }
 
 void InsertClause(UpdateModify up) : { QuadAcc qp = up.getInsertAcc() ; Token t ; }
 {
    t = <INSERT>
-   { startInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
+   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
+   { startInsertTemplate(qp, beginLine, beginColumn) ; }
    QuadPattern(qp)
-   { finishInsertTemplate(qp, t.beginLine, t.beginColumn) ; }
+   { finishInsertTemplate(qp, beginLine, beginColumn) ; }
    { up.setHasInsertClause(true) ; }
 }
 
@@ -642,14 +663,14 @@ void QuadPattern(QuadAcc acc) : { }
 }
 
 //Ground data : As QuadPattern but don't allow variables.
-void QuadData(QuadDataAcc acc) : { }
+void QuadData(QuadDataAccSink acc) : { }
 {
     <LBRACE>
     Quads(acc)
     <RBRACE>
 }
 
-void Quads(QuadAcc acc) : { }
+void Quads(QuadAccSink acc) : { }
 {
    (TriplesTemplate(acc))?
    (
@@ -659,7 +680,7 @@ void Quads(QuadAcc acc) : { }
    )*
 }
 
-void QuadsNotTriples(QuadAcc acc) : {Node gn ; Node prev = acc.getGraph() ; }
+void QuadsNotTriples(QuadAccSink acc) : {Node gn ; Node prev = acc.getGraph() ; }
 {
     <GRAPH> gn = VarOrIri()
     { setAccGraph(acc, gn) ; }
@@ -692,11 +713,12 @@ void TriplesTemplate(TripleCollector acc) : { }
 Element GroupGraphPattern() : { Element el = null ; Token t ; }
 {
   t = <LBRACE>
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   ( 
-    { startSubSelect(t.beginLine, t.beginColumn) ; }
+    { startSubSelect(beginLine, beginColumn) ; }
     SubSelect()
     { 
-      Query q = endSubSelect(t.beginLine, t.beginColumn) ;
+      Query q = endSubSelect(beginLine, beginColumn) ;
       el = new ElementSubQuery(q) ;
     }
   | el = GroupGraphPatternSub()
@@ -824,10 +846,11 @@ Element Bind() : {  Var v ; Expr expr ; }
 Element InlineData() : { ElementData el ; Token t ; }
 {
   t = <VALUES>
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   { el = new ElementData() ;
-    startInlineData(el.getVars(), el.getRows(), t.beginLine, t.beginColumn) ; }
+    startInlineData(el.getVars(), el.getRows(), beginLine, beginColumn) ; }
   DataBlock()
-  { finishInlineData(t.beginLine, t.beginColumn) ;
+  { finishInlineData(beginLine, beginColumn) ;
     return el ; }
 }
 
@@ -851,30 +874,33 @@ void InlineDataOneVar() : { Var v ; Node n ; Token t ; }
   t = <RBRACE>
 }  
   
-void InlineDataFull() : { Var v ; Node n ; Token t ; }
+void InlineDataFull() : { Var v ; Node n ; Token t ; int beginLine; int beginColumn; }
 {
   (
      <NIL>
   |
-    t = <LPAREN>
+    <LPAREN>
     (v = Var() { emitDataBlockVariable(v) ; })*
-    t = <RPAREN>
+    <RPAREN>
   )
-  t = <LBRACE>
+  <LBRACE>
   (
-    t = <LPAREN> 
-    { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    t = <LPAREN>
+    { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
+    { startDataBlockValueRow(beginLine, beginColumn) ; }
     (n = DataBlockValue() 
-        { emitDataBlockValue(n, t.beginLine, t.beginColumn) ; }
+        { emitDataBlockValue(n, beginLine, beginColumn) ; }
     ) *
-    t = <RPAREN> 
-      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    t = <RPAREN>
+    { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
+      { finishDataBlockValueRow(beginLine, beginColumn) ; }
   |
     t = <NIL>
-      { startDataBlockValueRow(t.beginLine, t.beginColumn) ; }
-      { finishDataBlockValueRow(t.beginLine, t.beginColumn) ; }
+    { beginLine = t.beginLine; beginColumn = t.beginColumn; t = null; }
+      { startDataBlockValueRow(beginLine, beginColumn) ; }
+      { finishDataBlockValueRow(beginLine, beginColumn) ; }
    )*
-  t = <RBRACE>
+  <RBRACE>
 }  
 
 Node DataBlockValue() : { Node n ; String iri ; }
@@ -992,10 +1018,11 @@ ExprList ArgList() : { Expr expr ; boolean distinct = false ;
   |
     <LPAREN>
       (t = <DISTINCT> { distinct = true ; }
+      { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
         {
           if ( ! allowAggregatesInExpressions )
               throwParseException("Aggregate expression not legal at this point",
-                                 t.beginLine, t.beginColumn) ;
+                                 beginLine, beginColumn) ;
         }
       )?
       expr = Expression() { args.add(expr) ; } 
@@ -1057,8 +1084,10 @@ void TriplesSameSubject(TripleCollector acc) : { Node s ; }
   PropertyListNotEmpty(s, acc) 
 |
   // Any of the triple generating syntax elements
-  s = TriplesNode(acc)
-  PropertyList(s, acc)
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; }
+  s = TriplesNode(tempAcc)
+  PropertyList(s, tempAcc)
+  { insert(acc, tempAcc) ; }
 }
 
 void PropertyList(Node s, TripleCollector acc) : { }
@@ -1095,9 +1124,9 @@ void ObjectList(Node s,  Node p, Path path, TripleCollector acc): { Node o ; }
 
 void Object(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
-    { int mark = acc.mark() ; }
-  o = GraphNode(acc) 
-  { insert(acc, mark, s, p, path, o) ; }
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
+  o = GraphNode(tempAcc) 
+  { insert(tempAcc, mark, s, p, path, o) ;  insert(acc, tempAcc) ; }
 }
 
 // -------- BGPs with paths.
@@ -1109,8 +1138,10 @@ void TriplesSameSubjectPath(TripleCollector acc) : { Node s ; }
   PropertyListPathNotEmpty(s, acc) 
 |
   // Any of the triple generating syntax elements
-  s = TriplesNodePath(acc)
-  PropertyListPath(s, acc)
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; }
+  s = TriplesNodePath(tempAcc)
+  PropertyListPath(s, tempAcc)
+  { insert(acc, tempAcc) ; }
 }
 
 
@@ -1163,9 +1194,9 @@ void ObjectListPath(Node s,  Node p, Path path, TripleCollector acc): { Node o ;
 
 void ObjectPath(Node s, Node p, Path path, TripleCollector acc): { Node o ; }
 {
-    { int mark = acc.mark() ; }
-  o = GraphNodePath(acc) 
-  { insert(acc, mark, s, p, path, o) ; }
+  { ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ; }
+  o = GraphNodePath(tempAcc) 
+  { insert(tempAcc, mark, s, p, path, o) ;  insert(acc, tempAcc) ; }
 }
 
 
@@ -1334,7 +1365,7 @@ long Integer() : {Token t ;}
 // Anything that can stand in a node slot and which is
 // a number of triples
 
-Node TriplesNode(TripleCollector acc) : { Node n ; }
+Node TriplesNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = Collection(acc) { return n ; }
  |
@@ -1354,7 +1385,7 @@ Node BlankNodePropertyList(TripleCollector acc) : { Token t ; }
     { return n ; }
 }
 
-Node TriplesNodePath(TripleCollector acc) : { Node n ; }
+Node TriplesNodePath(TripleCollectorMark acc) : { Node n ; }
 {
   n = CollectionPath(acc) { return n ; }
  |
@@ -1375,14 +1406,15 @@ Node BlankNodePropertyListPath(TripleCollector acc) : { Token t ; }
 }
 
 #if 0
-Node Reification(Node id, TripleCollector acc) : 
+Node Reification(Node id, TripleCollectorMark acc) : 
     { Node s , p , o ; int mark ; Token t ; }
 {
   // For generality, should be AndNode for s/p/o
   // Insert reification triple before the resulting subtriples (if any)
-  t = "<<" 
+  t = "<<"
+    { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
     { if ( id == null )
-        id = createBNode(t.beginLine, t.beginColumn() ;
+        id = createBNode(beginLine, beginColumn() ;
       mark = acc.mark() ; }
   s = GraphNode(acc)
     { insert(acc, mark, id, nRDFsubject, s) ;
@@ -1401,12 +1433,13 @@ Node Reification(Node id, TripleCollector acc) :
 
 // ------- RDF collections
 
-Node Collection(TripleCollector acc) : 
+Node Collection(TripleCollectorMark acc) : 
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
-  t = <LPAREN> 
+  t = <LPAREN>
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   (
-    { Node cell = createListNode( t.beginLine, t.beginColumn) ;
+    { Node cell = createListNode( beginLine, beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -1426,12 +1459,13 @@ Node Collection(TripleCollector acc) :
      return listHead ; }
 }
 
-Node CollectionPath(TripleCollector acc) : 
+Node CollectionPath(TripleCollectorMark acc) : 
     { Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ; }
 {
-  t = <LPAREN> 
+  t = <LPAREN>
+  { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
   (
-    { Node cell = createListNode( t.beginLine, t.beginColumn) ;
+    { Node cell = createListNode( beginLine, beginColumn) ;
       if ( listHead == nRDFnil )
          listHead = cell ;
       if ( lastCell != null )
@@ -1453,14 +1487,14 @@ Node CollectionPath(TripleCollector acc) :
 
 // -------- Nodes in a graph pattern or template
 
-Node GraphNode(TripleCollector acc) : { Node n ; }
+Node GraphNode(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
  |
   n = TriplesNode(acc) { return n ; }
 }
 
-Node GraphNodePath(TripleCollector acc) : { Node n ; }
+Node GraphNodePath(TripleCollectorMark acc) : { Node n ; }
 {
   n = VarOrTerm() { return n ; }
  |
@@ -1647,7 +1681,7 @@ Expr BrackettedExpression() : { Expr expr ; }
 }
 
 Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
-                       Node gn ; Token t ; ExprList a ; }
+                       Node gn ; ExprList a ; }
 {
     expr = Aggregate() { return expr ; }
   |
@@ -1785,10 +1819,10 @@ Expr BuiltInCall() : { Expr expr ; Expr expr1 = null ; Expr expr2 = null ;
   | <SAME_TERM> <LPAREN> expr1 = Expression() <COMMA> expr2 = Expression() <RPAREN>
     { return new E_SameTerm(expr1, expr2) ; }
 
-  | t = <IS_IRI> <LPAREN> expr = Expression() <RPAREN>
+  | <IS_IRI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsIRI(expr) ; }
 
-  | t = <IS_URI> <LPAREN> expr = Expression() <RPAREN>
+  | <IS_URI> <LPAREN> expr = Expression() <RPAREN>
     { return new E_IsURI(expr) ; }
 
   | <IS_BLANK> <LPAREN> expr = Expression() <RPAREN>

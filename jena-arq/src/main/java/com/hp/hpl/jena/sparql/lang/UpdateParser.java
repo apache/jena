@@ -24,7 +24,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.query.Syntax ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 
 /** This class provides the root of lower level access to all the parsers.
  *  Each subclass hides the details of the per-language exception handlers and other
@@ -34,25 +34,25 @@ import com.hp.hpl.jena.update.UpdateRequest ;
 
 public abstract class UpdateParser
 {
-    public final UpdateRequest parse(UpdateRequest request, String updateString) throws QueryParseException
+    public final void parse(UpdateSink sink, String updateString) throws QueryParseException
     {
         // Sort out BOM
         if ( updateString.startsWith("\uFEFF") )
             updateString = updateString.substring(1) ;
-        return parse$(request, updateString) ;
+        parse$(sink, updateString) ;
     }
 
-    protected abstract UpdateRequest parse$(UpdateRequest request, String updateString) throws QueryParseException ;
+    protected abstract void parse$(UpdateSink sink, String updateString) throws QueryParseException ;
 
-    public UpdateRequest parse(UpdateRequest request, InputStream input) throws QueryParseException
+    public void parse(UpdateSink sink, InputStream input) throws QueryParseException
     {
         // :-( Wrap in something that we can use to look for a BOM.
         // TODO Move POM processing to grammar and reverse this.
         PeekReader pr = PeekReader.makeUTF8(input) ;
-        return parse$(request, pr) ;
+        parse$(sink, pr) ;
     }
     
-    protected abstract UpdateRequest parse$(UpdateRequest request, PeekReader pr) throws QueryParseException ;
+    protected abstract void parse$(UpdateSink sink, PeekReader pr) throws QueryParseException ;
 
     public static boolean canParse(Syntax syntaxURI)
     {
@@ -62,10 +62,5 @@ public abstract class UpdateParser
     public static UpdateParser createParser(Syntax syntaxURI)
     {
         return UpdateParserRegistry.get().createParser(syntaxURI) ;
-    }
-
-    // Do any testing of updates after the construction of the parse tree.
-    protected void validateParsedUpdate(UpdateRequest request)
-    {
     }
 }
