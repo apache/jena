@@ -82,7 +82,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     
     static ParserProfile profile()
     {
-        // TODO
         // Don't do anything with IRIs.
         Prologue prologue = new Prologue(PrefixMapFactory.createForInput(), IRIResolver.createNoResolve()) ;
         ErrorHandler handler = ErrorHandlerFactory.getDefaultErrorHandler() ;
@@ -101,16 +100,6 @@ public class BindingInputStream extends LangEngine implements Iterator<Binding>,
     {
         super(tokenizer, profile) ;
         iter = new IteratorTuples() ;
-        
-        // Fixes to TokenizerText
-        //  peekToken
-        //  CNTRL_CHAR no letter -> CH_STAR
-        //  CNTRL off and type SYMBOL for >1 chars 
-        // TODO
-        // Resturcture to make lookingAt,nextToken and peekToken statics.
-        
-        //TokenizerText.CTRL_CHAR = Chars.B_SEMICOLON ;
-        
     }
 
     @Override

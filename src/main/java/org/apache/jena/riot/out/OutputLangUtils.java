@@ -152,7 +152,6 @@ public class OutputLangUtils
         System.err.println("Illegal node: "+node) ;
     }
 
-    // TODO Do Turtle number abbreviations, controlled by a flag.
     // So there are flags ==> make an object
     private static void printLiteral(Writer out, Node node, Prologue prologue)
     {

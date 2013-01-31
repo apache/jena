@@ -186,8 +186,6 @@ public final class TokenizerText implements Tokenizer
         // ---- IRI
         if ( ch == CH_LT )
         {
-            // TODO <= as a symbol.
-            // Look at next char. a '=' swap to a more expensive scan to ">" 
             reader.readChar() ;
             token.setImage(readIRI()) ;
             token.setType(TokenType.IRI) ;
@@ -363,7 +361,7 @@ public final class TokenizerText implements Tokenizer
             case CH_GT:         reader.readChar() ; token.setType(TokenType.GT) ; /*token.setImage(CH_GT) ;*/ return token ;
             case CH_STAR:       reader.readChar() ; token.setType(TokenType.STAR) ; /*token.setImage(CH_STAR) ;*/ return token ;
             
-            // TODO : Multi character symbols
+            // Multi character symbols
             // Two character tokens && || GE >= , LE <=
             // Single character symbols for * /
             // +/- may start numbers.

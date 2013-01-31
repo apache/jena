@@ -127,7 +127,6 @@ public class BindingOutputStream implements Sink<Binding>
                 needOutputVars = false ;
             }
             
-            // TODO Auto prefix determination.
             for ( Var v : vars )
             {
                 Node n = binding.get(v)  ;

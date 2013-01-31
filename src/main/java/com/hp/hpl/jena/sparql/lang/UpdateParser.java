@@ -47,7 +47,7 @@ public abstract class UpdateParser
     public void parse(UpdateSink sink, InputStream input) throws QueryParseException
     {
         // :-( Wrap in something that we can use to look for a BOM.
-        // TODO Move POM processing to grammar and reverse this.
+        // ?? Move BOM processing to grammar and reverse this.
         PeekReader pr = PeekReader.makeUTF8(input) ;
         parse$(sink, pr) ;
     }
