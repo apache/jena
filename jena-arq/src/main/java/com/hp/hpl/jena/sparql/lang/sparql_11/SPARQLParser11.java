@@ -2509,9 +2509,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNode(acc);
-      PropertyList(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNode(tempAcc);
+      PropertyList(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[89] = jj_gen;
@@ -2611,8 +2612,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public void Object(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                Node o ;
-    o = GraphNode(acc);
-    insert(acc, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNode(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // -------- BGPs with paths.
@@ -2648,9 +2650,10 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
       break;
     case LPAREN:
     case LBRACKET:
-      // Any of the triple generating syntax elements
-        s = TriplesNodePath(acc);
-      PropertyListPath(s, acc);
+    ElementPathBlock tempAcc = new ElementPathBlock() ;
+      s = TriplesNodePath(tempAcc);
+      PropertyListPath(s, tempAcc);
+    insert(acc, tempAcc) ;
       break;
     default:
       jj_la1[95] = jj_gen;
@@ -2786,8 +2789,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 
   final public void ObjectPath(Node s, Node p, Path path, TripleCollector acc) throws ParseException {
                                                                    Node o ;
-    o = GraphNodePath(acc);
-    insert(acc, s, p, path, o) ;
+    ElementPathBlock tempAcc = new ElementPathBlock() ; int mark = tempAcc.mark() ;
+    o = GraphNodePath(tempAcc);
+    insert(tempAcc, mark, s, p, path, o) ; insert(acc, tempAcc) ;
   }
 
 // End paths stuff.
@@ -3042,8 +3046,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
 // -------- Triple expansions
 // Anything that can stand in a node slot and which is
 // a number of triples
-  final public Node TriplesNode(TripleCollector acc) throws ParseException {
-                                          Node n ;
+  final public Node TriplesNode(TripleCollectorMark acc) throws ParseException {
+                                              Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = Collection(acc);
@@ -3071,8 +3075,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node TriplesNodePath(TripleCollector acc) throws ParseException {
-                                              Node n ;
+  final public Node TriplesNodePath(TripleCollectorMark acc) throws ParseException {
+                                                  Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case LPAREN:
       n = CollectionPath(acc);
@@ -3101,8 +3105,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // ------- RDF collections
-  final public Node Collection(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ;
+  final public Node Collection(TripleCollectorMark acc) throws ParseException {
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_29:
@@ -3112,8 +3116,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
       n = GraphNode(acc);
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
@@ -3155,8 +3160,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node CollectionPath(TripleCollector acc) throws ParseException {
-      Node listHead = nRDFnil ; Node lastCell = null ; Node n ; Token t ;
+  final public Node CollectionPath(TripleCollectorMark acc) throws ParseException {
+      Node listHead = nRDFnil ; Node lastCell = null ; int mark ; Node n ; Token t ;
     t = jj_consume_token(LPAREN);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     label_30:
@@ -3166,8 +3171,9 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
          listHead = cell ;
       if ( lastCell != null )
         insert(acc, lastCell, nRDFrest, cell) ;
+      mark = acc.mark() ;
       n = GraphNodePath(acc);
-      insert(acc, cell, nRDFfirst, n) ;
+      insert(acc, mark, cell, nRDFfirst, n) ;
       lastCell = cell ;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IRIref:
@@ -3210,8 +3216,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
   }
 
 // -------- Nodes in a graph pattern or template
-  final public Node GraphNode(TripleCollector acc) throws ParseException {
-                                        Node n ;
+  final public Node GraphNode(TripleCollectorMark acc) throws ParseException {
+                                            Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:
@@ -3252,8 +3258,8 @@ public class SPARQLParser11 extends SPARQLParser11Base implements SPARQLParser11
     throw new Error("Missing return statement in function");
   }
 
-  final public Node GraphNodePath(TripleCollector acc) throws ParseException {
-                                            Node n ;
+  final public Node GraphNodePath(TripleCollectorMark acc) throws ParseException {
+                                                Node n ;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IRIref:
     case PNAME_NS:

@@ -35,6 +35,7 @@ import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryParseException ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.core.TriplePath ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
@@ -45,7 +46,9 @@ import com.hp.hpl.jena.sparql.modify.request.QuadAccSink ;
 import com.hp.hpl.jena.sparql.path.Path ;
 import com.hp.hpl.jena.sparql.syntax.Element ;
 import com.hp.hpl.jena.sparql.syntax.ElementGroup ;
+import com.hp.hpl.jena.sparql.syntax.ElementPathBlock ;
 import com.hp.hpl.jena.sparql.syntax.TripleCollector ;
+import com.hp.hpl.jena.sparql.syntax.TripleCollectorMark ;
 import com.hp.hpl.jena.sparql.util.ExprUtils ;
 import com.hp.hpl.jena.sparql.util.LabelToNodeMap ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -377,12 +380,40 @@ public class ParserBase
         acc.addTriple(new Triple(s, p, o)) ;
     }
     
+    protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Node o)
+    {
+        acc.addTriple(index, new Triple(s, p, o)) ;
+    }
+    
     protected void insert(TripleCollector acc, Node s, Node p, Path path, Node o)
     {
         if ( p == null )
             acc.addTriplePath(new TriplePath(s, path, o)) ;
         else
             acc.addTriple(new Triple(s, p, o)) ;
+    }
+    
+    protected void insert(TripleCollectorMark acc, int index, Node s, Node p, Path path, Node o)
+    {
+        if ( p == null )
+            acc.addTriplePath(index, new TriplePath(s, path, o)) ;
+        else
+            acc.addTriple(index, new Triple(s, p, o)) ;
+    }
+    
+    protected void insert(TripleCollector target, ElementPathBlock source)
+    {
+        for (TriplePath path : source.getPattern())
+        {
+            if (path.isTriple())
+            {
+                target.addTriple(path.asTriple());
+            }
+            else
+            {
+                target.addTriplePath(path);
+            }
+        }
     }
 
     protected Expr asExpr(Node n)

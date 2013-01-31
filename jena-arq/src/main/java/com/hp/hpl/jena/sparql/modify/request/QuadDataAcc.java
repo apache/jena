@@ -24,10 +24,13 @@ import java.util.List ;
 
 import org.apache.jena.atlas.lib.SinkToCollection ;
 
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
+import com.hp.hpl.jena.sparql.core.TriplePath ;
+import com.hp.hpl.jena.sparql.syntax.TripleCollectorMark ;
 
 /** Accumulate quads (excluding allowing variables) during parsing. */
-public class QuadDataAcc extends QuadDataAccSink
+public class QuadDataAcc extends QuadDataAccSink implements TripleCollectorMark
 {
     private final List<Quad> quads ;
     private final List<Quad> quadsView ;
@@ -58,5 +61,24 @@ public class QuadDataAcc extends QuadDataAccSink
         if ( ! ( other instanceof QuadDataAcc ) ) return false ;
         QuadDataAcc acc = (QuadDataAcc)other ;
         return quads.equals(acc.quads) ; 
+    }
+
+    @Override
+    public int mark()
+    {
+        return quads.size() ;
+    }
+
+    @Override
+    public void addTriple(int index, Triple triple)
+    {
+        check(triple) ;
+        quads.add(index, new Quad(graphNode, triple)) ;
+    }
+
+    @Override
+    public void addTriplePath(int index, TriplePath tPath)
+    {
+        throw new UnsupportedOperationException("Can't add paths to quads") ;
     }
 }
