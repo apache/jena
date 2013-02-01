@@ -68,8 +68,8 @@ public class Transformer
         if ( true )
         {
             // Simplest way but still walks the OpService subtree (and throws away the transformation).
-            transform = new TransformSkipService(transform) ;
-            return Transformer.transform(transform, op, beforeVisitor, afterVisitor) ;
+            Transform walker = new TransformSkipService(transform) ;
+            return Transformer.transform(walker, op, beforeVisitor, afterVisitor) ;
         }
         else
         {
