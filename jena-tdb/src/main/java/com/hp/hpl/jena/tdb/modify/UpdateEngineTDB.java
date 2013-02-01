@@ -35,8 +35,8 @@ public class UpdateEngineTDB extends UpdateEngineMain
     public UpdateEngineTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding, Context context)
     { super(graphStore, request, inputBinding, context) ; }
     
-    public UpdateEngineTDB(DatasetGraphTDB graphStore, UsingList usingList, Binding inputBinding, Context context)
-    { super(graphStore, usingList, inputBinding, context) ; }
+    public UpdateEngineTDB(DatasetGraphTDB graphStore, Binding inputBinding, Context context)
+    { super(graphStore, inputBinding, context) ; }
     
 
     // ---- Factory
@@ -62,9 +62,9 @@ public class UpdateEngineTDB extends UpdateEngineMain
             }
             
             @Override
-            public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding inputBinding, Context context)
+            public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context)
             {
-                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, usingList, inputBinding, context);
+                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, inputBinding, context);
             }
         } ;
     }

@@ -18,24 +18,29 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Prologue ;
+import com.hp.hpl.jena.sparql.modify.request.QuadDataAccSink ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateException ;
 
-public abstract class AbstractUpdateSink implements UpdateSink
+/**
+ * Adds using clauses from the UsingList to UpdateWithUsing operations; will throw an UpdateException if the modify operation already contains a using clause. 
+ */
+public class UsingUpdateSink implements UpdateSink
 {
-    protected final UsingList usingList;
-
-    public AbstractUpdateSink(UsingList usingList)
+    private final UpdateSink sink; 
+    private final UsingList usingList;
+    
+    public UsingUpdateSink(UpdateSink sink, UsingList usingList)
     {
+        this.sink = sink;
         this.usingList = usingList;
     }
     
-    public abstract void doSend(Update update);
-
     @Override
-    public final void send(Update update)
+    public void send(Update update)
     {
         // ---- check USING/USING NAMED/WITH not used.
         // ---- update request to have USING/USING NAMED 
@@ -53,7 +58,36 @@ public abstract class AbstractUpdateSink implements UpdateSink
             }
         }
         
-        doSend(update);
+        sink.send(update);
     }
 
+    @Override
+    public QuadDataAccSink getInsertDataSink()
+    {
+        return sink.getInsertDataSink();
+    }
+    
+    @Override
+    public QuadDataAccSink getDeleteDataSink()
+    {
+        return sink.getDeleteDataSink();
+    }
+    
+    @Override
+    public void flush()
+    {
+        sink.flush();
+    }
+
+    @Override
+    public void close()
+    {
+        sink.close();
+    }
+
+    @Override
+    public Prologue getPrologue()
+    {
+        return sink.getPrologue();
+    }
 }

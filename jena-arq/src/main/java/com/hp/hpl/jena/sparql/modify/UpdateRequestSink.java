@@ -26,20 +26,19 @@ import com.hp.hpl.jena.sparql.modify.request.UpdateDataInsert;
 import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
-public class UpdateRequestSink extends AbstractUpdateSink implements UpdateSink
+public class UpdateRequestSink implements UpdateSink
 {
     final UpdateRequest updateRequest;
     
-    public UpdateRequestSink(UpdateRequest updateRequest, UsingList usingList)
+    public UpdateRequestSink(UpdateRequest updateRequest)
     {
-        super(usingList);
         this.updateRequest = updateRequest;
     }
     
     @Override
-    public void doSend(Update item)
+    public void send(Update update)
     {
-        updateRequest.add(item);
+        updateRequest.add(update);
     }
     
     @Override
