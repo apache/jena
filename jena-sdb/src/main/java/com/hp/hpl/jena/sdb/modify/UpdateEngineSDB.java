@@ -24,6 +24,8 @@ import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngineStreaming ;
+import com.hp.hpl.jena.sparql.modify.UsingList ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -34,6 +36,9 @@ public class UpdateEngineSDB extends UpdateEngineMain
     
     public UpdateEngineSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding, Context context)
     { super(graphStore, request, inputBinding, context) ; }
+    
+    public UpdateEngineSDB(DatasetStoreGraph graphStore, UsingList usingList, Binding inputBinding, Context context)
+    { super(graphStore, usingList, inputBinding, context) ; }
     
     @Override
     public void execute()
@@ -54,7 +59,18 @@ public class UpdateEngineSDB extends UpdateEngineMain
             {
                 return new UpdateEngineSDB((DatasetStoreGraph)graphStore, request, inputBinding, context) ;
             }
-
+            
+            @Override
+            public boolean acceptStreaming(GraphStore graphStore, Context context)
+            {
+                return (graphStore instanceof DatasetStoreGraph) ;
+            }
+            
+            @Override
+            public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+            {
+                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, usingList, initialBinding, context);
+            }
         } ;
     }
 
