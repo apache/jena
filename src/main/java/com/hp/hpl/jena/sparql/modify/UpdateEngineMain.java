@@ -54,9 +54,9 @@ public class UpdateEngineMain extends UpdateEngineBase
      * @param usingList Externally supplied using
      * @param context Execution Context
      */
-    public UpdateEngineMain(GraphStore graphStore, UsingList usingList, Binding initialBinding, Context context)
+    public UpdateEngineMain(GraphStore graphStore, Binding initialBinding, Context context)
     {
-        super(graphStore, usingList, initialBinding, context) ;
+        super(graphStore, initialBinding, context) ;
     }
 
     /**
@@ -88,7 +88,7 @@ public class UpdateEngineMain extends UpdateEngineBase
     @Override
     public UpdateSink getUpdateSink()
     {
-        return new UpdateVisitorSink(this.prepareWorker(), usingList);
+        return new UpdateVisitorSink(this.prepareWorker());
     }
     
     /**
@@ -120,9 +120,9 @@ public class UpdateEngineMain extends UpdateEngineBase
         }
         
         @Override
-        public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+        public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
         {
-            return new UpdateEngineMain(graphStore, usingList, initialBinding, context);
+            return new UpdateEngineMain(graphStore, initialBinding, context);
         }
     } ;
 

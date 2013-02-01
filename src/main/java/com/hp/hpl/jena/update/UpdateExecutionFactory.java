@@ -99,29 +99,18 @@ public class UpdateExecutionFactory
      */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore)
     {        
-        return createStreaming(new UsingList(), graphStore) ;
+        return createStreaming(graphStore, null, null) ;
     }
     
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param usingList
-     * @param graphStore
-     * @return UpdateProcessor or null
-     */
-    public static UpdateProcessorStreaming createStreaming(UsingList usingList, GraphStore graphStore)
-    {        
-        return createStreaming(usingList, graphStore, null, null) ;
-    }
-    
-    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
-     * @param usingList
      * @param graphStore
      * @param initialBinding (may be null for none)
      * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
-    public static UpdateProcessorStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
     {        
-        return makeStreaming(usingList, graphStore, initialBinding, context) ;
+        return makeStreaming(graphStore, initialBinding, context) ;
     }
 
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
@@ -156,7 +145,7 @@ public class UpdateExecutionFactory
     }
     
     // Everything comes through one of these two make methods
-    private static UpdateProcessorStreaming makeStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+    private static UpdateProcessorStreaming makeStreaming(GraphStore graphStore, Binding initialBinding, Context context)
     {
         if ( context == null )
         {
@@ -168,7 +157,7 @@ public class UpdateExecutionFactory
         if ( f == null )
             return null ;
         
-        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(usingList, graphStore, context, f) ;
+        UpdateProcessorStreamingBase uProc = new UpdateProcessorStreamingBase(graphStore, context, f) ;
         if ( initialBinding != null )
             uProc.setInitialBinding(initialBinding) ;
         return uProc;

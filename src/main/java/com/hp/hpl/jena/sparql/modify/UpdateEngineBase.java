@@ -36,7 +36,6 @@ public abstract class UpdateEngineBase implements UpdateEngine, UpdateEngineStre
     protected final Context context ;
     protected final Binding startBinding ;
     protected final UpdateRequest request ;
-    protected final UsingList usingList ;
 
     public UpdateEngineBase(GraphStore graphStore, 
                             UpdateRequest request,
@@ -54,16 +53,13 @@ public abstract class UpdateEngineBase implements UpdateEngine, UpdateEngineStre
         }
         this.startBinding = input ;
         this.context.put(ARQConstants.sysCurrentUpdateRequest, request) ;
-        this.usingList = null;
     }
     
     public UpdateEngineBase(GraphStore graphStore,
-                            UsingList usingList,
                             Binding input,
                             Context context)
     {
         this.graphStore = graphStore ;
-        this.usingList = usingList ;
         this.context = setupContext(context, graphStore) ;
         
         if ( input == null )
