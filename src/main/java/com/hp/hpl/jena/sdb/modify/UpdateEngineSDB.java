@@ -37,8 +37,8 @@ public class UpdateEngineSDB extends UpdateEngineMain
     public UpdateEngineSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding, Context context)
     { super(graphStore, request, inputBinding, context) ; }
     
-    public UpdateEngineSDB(DatasetStoreGraph graphStore, UsingList usingList, Binding inputBinding, Context context)
-    { super(graphStore, usingList, inputBinding, context) ; }
+    public UpdateEngineSDB(DatasetStoreGraph graphStore, Binding inputBinding, Context context)
+    { super(graphStore, inputBinding, context) ; }
     
     @Override
     public void execute()
@@ -67,9 +67,9 @@ public class UpdateEngineSDB extends UpdateEngineMain
             }
             
             @Override
-            public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding initialBinding, Context context)
+            public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
             {
-                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, usingList, initialBinding, context);
+                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, initialBinding, context);
             }
         } ;
     }
