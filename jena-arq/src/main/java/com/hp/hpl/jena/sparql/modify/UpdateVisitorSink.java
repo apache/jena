@@ -23,14 +23,13 @@ import com.hp.hpl.jena.sparql.modify.request.QuadDataAccSink ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.update.Update ;
 
-public class UpdateVisitorSink extends AbstractUpdateSink implements UpdateSink
+public class UpdateVisitorSink implements UpdateSink
 {
     private final Prologue prologue;
     private final UpdateVisitor worker;
     
-    public UpdateVisitorSink(UpdateVisitor worker, UsingList usingList)
+    public UpdateVisitorSink(UpdateVisitor worker)
     {
-        super(usingList);
         this.prologue = new Prologue();
         this.worker = worker;
     }
@@ -42,7 +41,7 @@ public class UpdateVisitorSink extends AbstractUpdateSink implements UpdateSink
     }
     
     @Override
-    public void doSend(Update update)
+    public void send(Update update)
     {
         update.visit(worker);
     }

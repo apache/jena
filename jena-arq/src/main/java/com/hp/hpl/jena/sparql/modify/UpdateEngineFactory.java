@@ -40,5 +40,5 @@ public interface UpdateEngineFactory
     public boolean acceptStreaming(GraphStore graphStore, Context context) ;
     
     /** Create the streaming engine - having returned true to accept, should not fail */
-    public UpdateEngineStreaming createStreaming(UsingList usingList, GraphStore graphStore, Binding inputBinding, Context context);
+    public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context);
 }

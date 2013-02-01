@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.core.Prologue ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateRequestSink ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
 
 public class UpdateFactory
@@ -86,7 +87,7 @@ public class UpdateFactory
     private static void make(UpdateRequest request, String input,  String baseURI, Syntax syntax)
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        parser.parse(new UpdateRequestSink(request, null), input) ;
+        parser.parse(new UpdateRequestSink(request), input) ;
     }
     
     /* Parse operations and add to an UpdateRequest */ 
@@ -271,7 +272,7 @@ public class UpdateFactory
     private static void make(UpdateRequest request, UsingList usingList, InputStream input,  String baseURI, Syntax syntax)
     {
         UpdateParser parser = setupParser(request, baseURI, syntax) ;
-        UpdateSink sink = new UpdateRequestSink(request, usingList) ;
+        UpdateSink sink = new UsingUpdateSink(new UpdateRequestSink(request), usingList) ;
         try
         {
             parser.parse(sink, input) ;

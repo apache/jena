@@ -32,6 +32,7 @@ import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
+import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
 
 /** A class of forms for executing SPARQL Update operations. 
@@ -514,12 +515,12 @@ public class UpdateAction
     {
         GraphStore graphStore = GraphStoreFactory.create(dataset);
         
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(usingList, graphStore) ;
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore) ;
         
         uProc.startRequest();
         try
         {
-            UpdateSink sink = uProc.getUpdateSink();
+            UpdateSink sink = new UsingUpdateSink(uProc.getUpdateSink(), usingList) ;
             try
             {
                 UpdateParser parser = UpdateFactory.setupParser(sink.getPrologue(), baseURI, syntax) ;
