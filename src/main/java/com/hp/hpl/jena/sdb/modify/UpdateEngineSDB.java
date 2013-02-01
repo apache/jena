@@ -25,7 +25,6 @@ import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineStreaming ;
-import com.hp.hpl.jena.sparql.modify.UsingList ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateRequest ;
