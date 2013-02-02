@@ -42,19 +42,17 @@ import com.hp.hpl.jena.sparql.util.graph.GraphList ;
 
 public class PropertyFunctionGenerator
 {
-    public static Op buildPropertyFunctions(OpBGP opBGP, Context context)
+    public static Op buildPropertyFunctions(PropertyFunctionRegistry registry, OpBGP opBGP, Context context)
     {
         if ( opBGP.getPattern().isEmpty() )
             return opBGP ;
-        return compilePattern(opBGP.getPattern(), context) ;
+        return compilePattern(registry, opBGP.getPattern(), context) ;
     }
     
-    private static Op compilePattern(BasicPattern pattern, Context context)
+    private static Op compilePattern(PropertyFunctionRegistry registry, BasicPattern pattern, Context context)
     {   
         // Split into triples and property functions.
 
-        PropertyFunctionRegistry registry = chooseRegistry(context) ;
-    
         // 1/ Find property functions.
         //    Property functions may involve other triples (for list arguments)
         //    (but leave the property function triple in-place as a marker)
@@ -194,15 +192,6 @@ public class PropertyFunctionGenerator
         }
         OpBGP opBGP = new OpBGP(pattern) ;
         return OpSequence.create(op, opBGP) ;
-    }
-
-    public static PropertyFunctionRegistry chooseRegistry(Context context)
-    {
-        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ;
-        // Else global
-        if ( registry == null )
-            registry = PropertyFunctionRegistry.get() ;
-        return registry ;
     }
     
     private static boolean isMagicProperty(PropertyFunctionRegistry registry, Triple pfTriple)
