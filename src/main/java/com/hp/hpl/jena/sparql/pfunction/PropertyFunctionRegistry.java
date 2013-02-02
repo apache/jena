@@ -55,6 +55,16 @@ public class PropertyFunctionRegistry
         return (PropertyFunctionRegistry)context.get(ARQConstants.registryPropertyFunctions) ;
     }
     
+    /** Get the PropertyFunctionRegistry, defailting to the global one */
+    public static PropertyFunctionRegistry chooseRegistry(Context context)
+    {
+        PropertyFunctionRegistry registry = PropertyFunctionRegistry.get(context) ;
+        // Else global
+        if ( registry == null )
+            registry = PropertyFunctionRegistry.get() ;
+        return registry ;
+    }
+    
     public static void set(Context context, PropertyFunctionRegistry reg)
     { context.set(ARQConstants.registryPropertyFunctions, reg) ; }
     
