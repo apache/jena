@@ -18,17 +18,11 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import org.apache.jena.atlas.logging.Log ;
-
-import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
 import com.hp.hpl.jena.sparql.algebra.PropertyFunctionGenerator ;
 import com.hp.hpl.jena.sparql.algebra.TransformCopy ;
 import com.hp.hpl.jena.sparql.algebra.op.OpBGP ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuad ;
-import com.hp.hpl.jena.sparql.algebra.op.OpQuadPattern ;
 import com.hp.hpl.jena.sparql.algebra.op.OpTriple ;
 import com.hp.hpl.jena.sparql.pfunction.PropertyFunctionRegistry ;
 import com.hp.hpl.jena.sparql.util.Context ;
