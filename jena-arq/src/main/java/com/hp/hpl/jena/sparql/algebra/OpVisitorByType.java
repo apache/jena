@@ -36,6 +36,8 @@ public abstract class OpVisitorByType implements OpVisitor
     
     protected abstract void visitExt(OpExt op) ;    
 
+    protected abstract void visitFilter(OpFilter op) ;
+    
     protected void visitModifer(OpModifier opMod)
     { visit1(opMod) ; }
 
@@ -101,7 +103,7 @@ public abstract class OpVisitorByType implements OpVisitor
 
     @Override
     public void visit(OpFilter opFilter)
-    { visit1(opFilter) ; }
+    { visitFilter(opFilter) ; }
 
     @Override
     public void visit(OpGraph opGraph)
