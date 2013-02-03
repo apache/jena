@@ -26,10 +26,16 @@ import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 
-import com.hp.hpl.jena.graph.* ;
+import com.hp.hpl.jena.graph.BulkUpdateHandler ;
+import com.hp.hpl.jena.graph.Capabilities ;
+import com.hp.hpl.jena.graph.GraphEvents ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.TransactionHandler ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
-import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
@@ -40,7 +46,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 
 /** General operations for TDB graphs (free-standing graph, default graph and named graphs) */
-public abstract class GraphTDBBase extends GraphBase2 implements GraphTDB
+public abstract class GraphTDBBase extends GraphBase implements GraphTDB
 {
     private final TransactionHandler transactionHandler = new TransactionHandlerTDB(this) ;
     private final BulkUpdateHandler bulkUpdateHandler = new BulkUpdateHandlerTDB(this) ;
