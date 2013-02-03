@@ -51,7 +51,6 @@ public class UpdateEngineMain extends UpdateEngineBase
     /**
      * Creates a new Update Engine
      * @param graphStore Graph Store the updates operate over
-     * @param usingList Externally supplied using
      * @param context Execution Context
      */
     public UpdateEngineMain(GraphStore graphStore, Binding initialBinding, Context context)
