@@ -127,7 +127,8 @@ public class Transformer
         private final ExprTransformApplyTransform exprTransform ;
 
         private final Deque<Op> stack = new ArrayDeque<Op>() ;
-        protected final Op pop() { return stack.pop(); }
+        protected final Op pop() 
+        { return stack.pop(); }
         
         protected final void push(Op op)
         { 
@@ -332,6 +333,14 @@ public class Transformer
         }
         
         @Override
+        protected void visitFilter(OpFilter op) {
+            Op subOp = null ;
+            if ( op.getSubOp() != null )
+                subOp = pop() ;
+            push(op.apply(transform, subOp)) ;
+        }
+        
+        @Override
         protected void visitExt(OpExt op)
         {
             push(transform.transform(op)) ;
@@ -431,6 +440,10 @@ public class Transformer
         protected void visit0(Op0 op)
         { result = op.apply(transform) ; }
 
+        @Override
+        protected void visitFilter(OpFilter op)
+        { result = op.apply(transform, op.getSubOp()) ; }
+        
         @Override
         protected void visitExt(OpExt op)
         { op.apply(transform) ; }

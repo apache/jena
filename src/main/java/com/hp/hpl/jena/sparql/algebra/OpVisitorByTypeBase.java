@@ -38,6 +38,9 @@ public class OpVisitorByTypeBase extends OpVisitorByType
     protected void visitExt(OpExt op) {}    
 
     @Override
+    protected void visitFilter(OpFilter op) {}    
+
+    @Override
     protected void visitModifer(OpModifier opMod) 
     { visit1(opMod) ; }
 
