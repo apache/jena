@@ -25,15 +25,14 @@ import java.util.Set ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.graph.TripleMatch ;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.graph.impl.SimpleEventManager ;
-import com.hp.hpl.jena.shared.PrefixMapping ;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl ;
 import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
 
 /** A version of Graph that does term equality only */ 
-public class GraphMemPlain extends GraphBase2
+public class GraphMemPlain extends GraphBase
 {
     private Set<Triple> triples = new HashSet<Triple>() ;
     
@@ -47,12 +46,6 @@ public class GraphMemPlain extends GraphBase2
     public void performDelete( Triple t ) 
     { triples.remove(t) ; }
     
-    @Override
-    protected PrefixMapping createPrefixMapping()
-    {
-        return new PrefixMappingImpl() ;
-    }
-
     @Override
     public boolean graphBaseContains( Triple t ) 
     {
