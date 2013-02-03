@@ -20,11 +20,7 @@ package com.hp.hpl.jena.sparql.algebra;
 
 import java.util.Iterator ;
 
-import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
-import com.hp.hpl.jena.sparql.algebra.op.OpN ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 /** Apply a visitor to the whole structure of Ops, recursively.
  *  Visit sub Op before the current level
@@ -91,6 +87,13 @@ public class OpWalker
             after(op) ;
         }
 
+        @Override
+        protected void visitFilter(OpFilter op)
+        {
+            // Treat OpFilter as an Op1 (not perfect - seeJENA 340)
+            visit1(op) ;
+        }
+        
         @Override
         protected void visit2(Op2 op)
         {

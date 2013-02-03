@@ -18,11 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra;
 
-import com.hp.hpl.jena.sparql.algebra.op.Op0 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op1 ;
-import com.hp.hpl.jena.sparql.algebra.op.Op2 ;
-import com.hp.hpl.jena.sparql.algebra.op.OpExt ;
-import com.hp.hpl.jena.sparql.algebra.op.OpN ;
+import com.hp.hpl.jena.sparql.algebra.op.* ;
 
 public class BeforeAfterVisitor extends OpVisitorByType//implements OpVisitor
 {
@@ -39,45 +35,43 @@ public class BeforeAfterVisitor extends OpVisitorByType//implements OpVisitor
         this.afterVisitor = afterVisitor ;
     }
     
-    private void before(Op op)
-    { 
+    private void before(Op op) { 
         if ( beforeVisitor != null )
             op.visit(beforeVisitor) ;
     }
 
-    private void after(Op op)
-    {
+    private void after(Op op) {
         if ( afterVisitor != null )
             op.visit(afterVisitor) ;
     }
 
     @Override
-    protected void visit0(Op0 op)
-    { 
+    protected void visit0(Op0 op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }
 
     @Override
-    protected void visit1(Op1 op)
-    { 
+    protected void visit1(Op1 op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }
 
     @Override
-    protected void visit2(Op2 op)
-    { 
+    protected void visit2(Op2 op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }
 
     @Override
-    protected void visitExt(OpExt op)
-    { 
+    protected void visitN(OpN op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }
 
     @Override
-    protected void visitN(OpN op)
-    { 
+    protected void visitFilter(OpFilter op) { 
+        before(op) ; op.visit(mainVisitor) ; after(op) ;
+    }
+
+    @Override
+    protected void visitExt(OpExt op) { 
         before(op) ; op.visit(mainVisitor) ; after(op) ;
     }
 }
