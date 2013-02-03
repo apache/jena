@@ -153,25 +153,6 @@ public class Transformer
         // ----
         // Algebra operations that involve an Expr, and so might include NOT EXISTS 
 
-        
-        @Override
-        public void visit(OpFilter opFilter)
-        {
-            ExprList ex = new ExprList() ;
-            boolean changed = false ;
-            for ( Expr e : opFilter.getExprs() )
-            {
-                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
-                ex.add(e2) ;
-                if ( e != e2 )
-                    changed = true ;
-            }
-            OpFilter f = opFilter ;
-            if ( changed )
-                f = (OpFilter)OpFilter.filter(ex, opFilter.getSubOp()) ;
-            visit1(f) ;
-        }
-
         @Override
         public void visit(OpOrder opOrder)
         {
@@ -333,11 +314,24 @@ public class Transformer
         }
         
         @Override
-        protected void visitFilter(OpFilter op) {
+        protected void visitFilter(OpFilter opFilter) {
+            ExprList ex = new ExprList() ;
+            boolean changed = false ;
+            for ( Expr e : opFilter.getExprs() )
+            {
+                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
+                ex.add(e2) ;
+                if ( e != e2 )
+                    changed = true ;
+            }
+            OpFilter f = opFilter ;
+            if ( changed )
+                f = (OpFilter)OpFilter.filter(ex, opFilter.getSubOp()) ;
+            // As Op1.
             Op subOp = null ;
-            if ( op.getSubOp() != null )
+            if ( f.getSubOp() != null )
                 subOp = pop() ;
-            push(op.apply(transform, subOp)) ;
+            push(f.apply(transform, subOp)) ;
         }
         
         @Override
