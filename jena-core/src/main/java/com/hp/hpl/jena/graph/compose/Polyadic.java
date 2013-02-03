@@ -23,13 +23,18 @@ package com.hp.hpl.jena.graph.compose;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.WrappedBulkUpdateHandler;
-import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.iterator.*;
+import java.util.ArrayList ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import java.util.*;
-
+import com.hp.hpl.jena.graph.BulkUpdateHandler ;
+import com.hp.hpl.jena.graph.Capabilities ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.TransactionHandler ;
+import com.hp.hpl.jena.graph.impl.WrappedBulkUpdateHandler ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.shared.PrefixMapping ;
+import com.hp.hpl.jena.util.iterator.ClosableIterator ;
 
 /**
  * <p>
@@ -86,16 +91,12 @@ public abstract class Polyadic extends CompositionBase
         }
     }
 
-    @SuppressWarnings("hiding")
-    private PrefixMapping pm;
-
     @Override
-    public PrefixMapping getPrefixMapping()
-        {
-        if (pm == null) pm = new PolyadicPrefixMappingImpl( this );
-        return pm;
-        }
-
+    protected PrefixMapping createPrefixMapping()
+    { 
+        return new PolyadicPrefixMappingImpl( this );
+    }
+    
     /**
      * <p>
      * Construct a composition of all of the given graphs.

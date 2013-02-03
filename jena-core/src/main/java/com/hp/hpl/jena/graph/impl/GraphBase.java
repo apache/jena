@@ -177,14 +177,18 @@ public abstract class GraphBase implements GraphWithPerform
     protected Capabilities capabilities = null;
     
     /**
-         Answer the PrefixMapping object for this graph, the same one each time.
-         Subclasses are unlikely to want to modify this.
-    */
+        Answer the PrefixMapping object for this graph, the same one each time.
+     */
     @Override
     public PrefixMapping getPrefixMapping()
-        { return pm; }
+    { 
+        if ( pm == null )
+            pm = createPrefixMapping() ;
+        return pm;
+    }
 
-    protected PrefixMapping pm = new PrefixMappingImpl();
+    protected PrefixMapping pm = null ;
+    protected PrefixMapping createPrefixMapping() { return new PrefixMappingImpl() ; }
     
 	/**
 	   Add a triple, and notify the event manager. Subclasses should not need to
