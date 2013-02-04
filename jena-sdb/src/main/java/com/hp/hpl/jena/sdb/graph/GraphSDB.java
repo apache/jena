@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.* ;
 import com.hp.hpl.jena.graph.impl.AllCapabilities ;
+import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.query.Query ;
 import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.Store ;
@@ -46,11 +47,10 @@ import com.hp.hpl.jena.sparql.engine.QueryIterator ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import com.hp.hpl.jena.sparql.graph.GraphBase2 ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.NiceIterator ;
 
-public class GraphSDB extends GraphBase2 implements Graph
+public class GraphSDB extends GraphBase implements Graph
 {
     private static Logger log = LoggerFactory.getLogger(GraphSDB.class) ;
 
