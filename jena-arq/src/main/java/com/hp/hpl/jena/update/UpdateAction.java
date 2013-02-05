@@ -28,6 +28,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.sparql.ARQException;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
@@ -343,18 +344,23 @@ public class UpdateAction
     {
         UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, binding) ;
         
-        uProc.startRequest();
-        try
-        {
-            UpdateSink sink = uProc.getUpdateSink();
-            Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
+        if (uProc != null) {
+            // Use streaming update
+            uProc.startRequest();
+            try {
+                UpdateSink sink = uProc.getUpdateSink();
+                // Will call close on sink if there are no exceptions
+                Iter.sendToSink(request, sink);
+            } finally {
+                uProc.finishRequest();
+            }
+        } else {
+            // Fallback to non-streaming update
+            UpdateProcessor uProc2 = UpdateExecutionFactory.create(request, graphStore, binding);
+            if (uProc2 == null)
+                throw new ARQException("No suitable update procesors are registered/able to execute your updates");
+            uProc2.execute();
         }
-        finally
-        {
-            uProc.finishRequest();
-        }
-        
-        
     }
     
     /** Execute a single SPARQL Update operation.
