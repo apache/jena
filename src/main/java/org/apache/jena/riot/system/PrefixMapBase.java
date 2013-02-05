@@ -93,13 +93,13 @@ public abstract class PrefixMapBase implements PrefixMap {
      * @param turtleSafe
      *            Only return legal Turtle local names.
      */
-    protected Pair<String, String> abbrev(Map<String, IRI> prefixes, String uriStr, boolean turtleSafe) {
+    protected Pair<String, String> abbrev(Map<String, IRI> prefixes, String uriStr, boolean checkLocalPart) {
         for (Entry<String, IRI> e : prefixes.entrySet()) {
             String uriForPrefix = e.getValue().toString();
 
             if (uriStr.startsWith(uriForPrefix)) {
                 String ln = uriStr.substring(uriForPrefix.length());
-                if (!turtleSafe || this.isTurtleSafe(ln))
+                if (!checkLocalPart || this.isSafeLocalPart(ln))
                     return Pair.create(e.getKey(), ln);
             }
         }
@@ -115,11 +115,13 @@ public abstract class PrefixMapBase implements PrefixMap {
     }
     
     /**
-     * Is a local name safe for Turtle
+     * Is a local name safe? Default is a fast check for Turtle-like local names.
      * @param ln Local name
      * @return True if safe, false otherwise
      */
-    protected final boolean isTurtleSafe(String ln) {
+    protected boolean isSafeLocalPart(String ln) {
+        // This test isn't complete but covers the common issues that arise. 
+        // Does not consider possible escaping.
         return (strSafeFor(ln, '/') && strSafeFor(ln, '#') && strSafeFor(ln, ':'));
     }
     

@@ -151,14 +151,14 @@ public class FastAbbreviatingPrefixMap extends PrefixMapBase {
     }
 
     @Override
-    protected Pair<String, String> abbrev(Map<String, IRI> prefixes, String uriStr, boolean turtleSafe) {
+    protected Pair<String, String> abbrev(Map<String, IRI> prefixes, String uriStr, boolean checkLocalPart) {
         //Use longest match to find the longest possible match
         String prefix = this.abbrevs.longestMatch(uriStr);
         if (prefix == null)
             return null;
 
         String ln = uriStr.substring(this.prefixes.get(prefix).toString().length());
-        if (!turtleSafe || isTurtleSafe(ln))
+        if (!checkLocalPart || isSafeLocalPart(ln))
             return Pair.create(prefix, ln);
         return null;
     }
