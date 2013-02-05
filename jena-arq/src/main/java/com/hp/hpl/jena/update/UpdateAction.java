@@ -21,21 +21,20 @@ package com.hp.hpl.jena.update;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.query.Syntax ;
 import com.hp.hpl.jena.rdf.model.Model ;
-import com.hp.hpl.jena.sparql.ARQException;
+import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
-import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
+import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
 
 /** A class of forms for executing SPARQL Update operations. 
