@@ -83,7 +83,6 @@ public interface Dataset // extends Transactional
     
     /** Finish the transaction - if a write transaction and commit() has not been called, then abort */  
     public void end() ;
-
     
     /** Get the dataset in graph form */
     public DatasetGraph asDatasetGraph() ; 
