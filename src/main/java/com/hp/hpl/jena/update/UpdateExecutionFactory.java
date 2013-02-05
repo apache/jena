@@ -105,7 +105,6 @@ public class UpdateExecutionFactory
     /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
      * @param graphStore
      * @param initialBinding (may be null for none)
-     * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding initialBinding)
