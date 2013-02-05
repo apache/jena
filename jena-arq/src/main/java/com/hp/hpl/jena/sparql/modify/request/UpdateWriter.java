@@ -382,7 +382,7 @@ public class UpdateWriter implements Closeable
 
 
         @Override
-        public Sink<Quad> getInsertDataSink()
+        public Sink<Quad> createInsertDataSink()
         {
             UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.INSERT, out, sCxt);
             udw.open();
@@ -392,11 +392,11 @@ public class UpdateWriter implements Closeable
         @Override
         public void visit(UpdateDataInsert update)
         {
-            Iter.sendToSink(update.getQuads(), getInsertDataSink());  // Iter.sendToSink() will call close() on the sink
+            Iter.sendToSink(update.getQuads(), createInsertDataSink());  // Iter.sendToSink() will call close() on the sink
         }
         
         @Override
-        public Sink<Quad> getDeleteDataSink()
+        public Sink<Quad> createDeleteDataSink()
         {
             UpdateDataWriter udw = new UpdateDataWriter(UpdateMode.DELETE, out, sCxt);
             udw.open();
@@ -406,7 +406,7 @@ public class UpdateWriter implements Closeable
         @Override
         public void visit(UpdateDataDelete update)
         {
-            Iter.sendToSink(update.getQuads(), getDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
+            Iter.sendToSink(update.getQuads(), createDeleteDataSink()); // Iter.sendToSink() will call close() on the sink
         }
 
         // Prettier later.

@@ -56,7 +56,7 @@ public class UpdateRequestSink implements UpdateSink
     }
     
     @Override
-    public QuadDataAccSink getInsertDataSink()
+    public QuadDataAccSink createInsertDataSink()
     {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataInsert(quads));
@@ -65,7 +65,7 @@ public class UpdateRequestSink implements UpdateSink
     }
     
     @Override
-    public QuadDataAccSink getDeleteDataSink()
+    public QuadDataAccSink createDeleteDataSink()
     {
         QuadDataAcc quads = new QuadDataAcc();
         send(new UpdateDataDelete(quads));
