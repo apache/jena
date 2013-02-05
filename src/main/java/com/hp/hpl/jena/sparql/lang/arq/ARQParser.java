@@ -1620,7 +1620,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
 // }
 // #endif
   final public void InsertData() throws ParseException {
-                      QuadDataAccSink qd = getInsertDataSink() ; Token t ;
+                      QuadDataAccSink qd = createInsertDataSink() ; Token t ;
     t = jj_consume_token(INSERT_DATA);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     startDataInsert(qd, beginLine, beginColumn) ;
@@ -1630,7 +1630,7 @@ public class ARQParser extends ARQParserBase implements ARQParserConstants {
   }
 
   final public void DeleteData() throws ParseException {
-                      QuadDataAccSink qd = getDeleteDataSink() ; Token t ;
+                      QuadDataAccSink qd = createDeleteDataSink() ; Token t ;
     t = jj_consume_token(DELETE_DATA);
     int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null;
     startDataDelete(qd, beginLine, beginColumn) ;

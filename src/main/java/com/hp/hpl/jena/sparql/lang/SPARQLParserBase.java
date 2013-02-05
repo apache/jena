@@ -194,14 +194,14 @@ public class SPARQLParserBase extends ParserBase
         }
     }
     
-    protected QuadDataAccSink getInsertDataSink()
+    protected QuadDataAccSink createInsertDataSink()
     {
-        return sink.getInsertDataSink();
+        return sink.createInsertDataSink();
     }
     
-    protected QuadDataAccSink getDeleteDataSink()
+    protected QuadDataAccSink createDeleteDataSink()
     {
-        return sink.getDeleteDataSink();
+        return sink.createDeleteDataSink();
     }
     
     protected void startSubSelect(int line, int col)

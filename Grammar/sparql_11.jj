@@ -415,7 +415,7 @@ Update Copy() : { Target src ; Target dest ; boolean silent = false ; }
 //    QuadData(qd)
 // }
 // #endif
-void InsertData() : { QuadDataAccSink qd = getInsertDataSink() ; Token t ; }
+void InsertData() : { QuadDataAccSink qd = createInsertDataSink() ; Token t ; }
 {
   t = <INSERT_DATA>
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
@@ -426,7 +426,7 @@ void InsertData() : { QuadDataAccSink qd = getInsertDataSink() ; Token t ; }
     qd.close() ;
   }
 }
-void DeleteData() : { QuadDataAccSink qd = getDeleteDataSink() ; Token t ; }
+void DeleteData() : { QuadDataAccSink qd = createDeleteDataSink() ; Token t ; }
 {
   t = <DELETE_DATA>
   { int beginLine = t.beginLine; int beginColumn = t.beginColumn; t = null; }
