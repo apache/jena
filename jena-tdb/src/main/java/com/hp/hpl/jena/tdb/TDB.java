@@ -147,8 +147,8 @@ public class TDB
         if ( dataset instanceof DatasetGraphTransaction )
         {
             DatasetGraphTransaction dsgt = (DatasetGraphTransaction)dataset ;
-            // This only syncs if the dataset has no tbeen used transactionally. 
-            // Can't sync transactional dataset graphs (it's meaningless)
+            // This only sync if the dataset has not been used transactionally. 
+            // Can't sync transactional datasets (it's meaningless)
             dsgt.syncIfNotTransactional() ; 
             return ;
         }
