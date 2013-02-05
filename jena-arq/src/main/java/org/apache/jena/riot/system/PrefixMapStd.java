@@ -108,7 +108,7 @@ public class PrefixMapStd extends PrefixMapBase {
         {
             // Fast track.
             String ln = uriStr.substring(candidate.length());
-            if ( isTurtleSafe(ln))
+            if ( isSafeLocalPart(ln))
                 return Pair.create(uriForPrefix, ln); 
         }
         // Not in the uri -> prefix map.  Crunch it.
