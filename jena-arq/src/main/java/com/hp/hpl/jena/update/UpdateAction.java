@@ -342,25 +342,10 @@ public class UpdateAction
     // All non-streaming updates come through here.
     private static void execute$(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, binding) ;
-        
-        if (uProc != null) {
-            // Use streaming update
-            uProc.startRequest();
-            try {
-                UpdateSink sink = uProc.getUpdateSink();
-                // Will call close on sink if there are no exceptions
-                Iter.sendToSink(request, sink);
-            } finally {
-                uProc.finishRequest();
-            }
-        } else {
-            // Fallback to non-streaming update
-            UpdateProcessor uProc2 = UpdateExecutionFactory.create(request, graphStore, binding);
-            if (uProc2 == null)
-                throw new ARQException("No suitable update procesors are registered/able to execute your updates");
-            uProc2.execute();
-        }
+        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, binding);
+        if (uProc == null)
+            throw new ARQException("No suitable update procesors are registered/able to execute your updates");
+        uProc.execute();
     }
     
     /** Execute a single SPARQL Update operation.
@@ -540,6 +525,8 @@ public class UpdateAction
         GraphStore graphStore = GraphStoreFactory.create(dataset);
         
         UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, binding) ;
+        if (uProc == null)
+            throw new ARQException("No suitable update procesors are registered/able to execute your updates");
         
         uProc.startRequest();
         try
