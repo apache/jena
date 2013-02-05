@@ -19,38 +19,22 @@
 package com.hp.hpl.jena.sparql.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor;
+import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.Update ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Default implementation of an update engine
  * <p>
  * Developers who only want to change/extend the processing of individual updates can easily 
  * </p>
- * Important note for implementers extending this class:  Your GraphStore implementation *must* be able to
- * accept <code>null</code> as a parameter to {@link GraphStore#startRequest(UpdateRequest)} and
- * {@link GraphStore#finishRequest(UpdateRequest)} (TODO: Revisit this decision)
  */
 public class UpdateEngineMain extends UpdateEngineBase 
 {
     /**
      * Creates a new Update Engine
      * @param graphStore Graph Store the updates operate over
-     * @param request Update Request
      * @param initialBinding Initial Bindings
-     * @param context Execution Context
-     */
-    public UpdateEngineMain(GraphStore graphStore, UpdateRequest request, Binding initialBinding, Context context)
-    {
-        super(graphStore, request, initialBinding, context) ;
-    }
-    
-    /**
-     * Creates a new Update Engine
-     * @param graphStore Graph Store the updates operate over
      * @param context Execution Context
      */
     public UpdateEngineMain(GraphStore graphStore, Binding initialBinding, Context context)
@@ -58,32 +42,21 @@ public class UpdateEngineMain extends UpdateEngineBase
         super(graphStore, initialBinding, context) ;
     }
 
-    /**
-     * Executes the updates by creating a {@link UpdateVisitor} using the {@link #prepareWorker()} method and then using that to visit each update command in the Update Request
-     */
-    @Override
-    public void execute()
-    {
-        graphStore.startRequest(request) ;
-        UpdateVisitor worker = this.prepareWorker();
-        for ( Update up : request ) {
-            up.visit(worker) ;
-        }
-        graphStore.finishRequest(request) ;
-    }
-    
     @Override
     public void startRequest()
     {
-        graphStore.startRequest(null);  // TODO Must accept null as an argument here
+        graphStore.startRequest();
     }
     
     @Override
     public void finishRequest()
     {
-        graphStore.finishRequest(null);  // TODO Must accept null as an argument here
+        graphStore.finishRequest();
     }
     
+    /**
+     * Creates an {@link UpdateVisitorSink} by using the {@link UpdateVisitor} provided by the {@link #prepareWorker()} method, which will be used to visit each update operation.
+     */
     @Override
     public UpdateSink getUpdateSink()
     {
@@ -101,25 +74,13 @@ public class UpdateEngineMain extends UpdateEngineBase
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
     {
         @Override
-        public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
-        {
-            return true ;
-        }
-
-        @Override
-        public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
-        {
-            return new UpdateEngineMain(graphStore, request, inputBinding, context) ;
-        }
-        
-        @Override
-        public boolean acceptStreaming(GraphStore graphStore, Context context)
+        public boolean accept(GraphStore graphStore, Context context)
         {
             return true ;
         }
         
         @Override
-        public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
+        public UpdateEngine create(GraphStore graphStore, Binding initialBinding, Context context)
         {
             return new UpdateEngineMain(graphStore, initialBinding, context);
         }

@@ -28,33 +28,13 @@ import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
-public abstract class UpdateEngineBase implements UpdateEngine, UpdateEngineStreaming
+public abstract class UpdateEngineBase implements UpdateEngine
 {
     protected final GraphStore graphStore ;
     protected final Context context ;
     protected final Binding startBinding ;
-    protected final UpdateRequest request ;
 
-    public UpdateEngineBase(GraphStore graphStore, 
-                            UpdateRequest request,
-                            Binding input,
-                            Context context)
-    {
-        this.graphStore = graphStore ;
-        this.request = request ;
-        this.context = setupContext(context, graphStore) ;
-        
-        if ( input == null )
-        {
-            Log.warn(this, "Null initial input") ;
-            input = BindingRoot.create() ;
-        }
-        this.startBinding = input ;
-        this.context.put(ARQConstants.sysCurrentUpdateRequest, request) ;
-    }
-    
     public UpdateEngineBase(GraphStore graphStore,
                             Binding input,
                             Context context)
@@ -68,7 +48,6 @@ public abstract class UpdateEngineBase implements UpdateEngine, UpdateEngineStre
             input = BindingRoot.create() ;
         }
         this.startBinding = input ;
-        this.request = null;
     }
     
     // Put any 

@@ -25,12 +25,16 @@ import com.hp.hpl.jena.sparql.modify.request.QuadDataAccSink ;
 import com.hp.hpl.jena.update.Update ;
 
 /**
- * An update sink is used by the SPARQL Update parser, which sends queries and sends quads to insert/delete data sinks.
+ * An {@linkplain UpdateSink} is an object usually created by a container (such as a storage engine
+ * or an {@link com.hp.hpl.jena.update.UpdateRequest}) that can process or store a single SPARQL Update
+ * request which consists of one or more SPARQL Update operations.
  */
+// TODO More documentation!
 public interface UpdateSink extends Sink<Update>
 {
     public Prologue getPrologue();
 
+    // TODO make an interface for the quad sinks
     public QuadDataAccSink getInsertDataSink();
 
     public QuadDataAccSink getDeleteDataSink();

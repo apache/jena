@@ -35,14 +35,14 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
     protected final GraphStore graphStore ;
     protected final Context context ;
     
-    protected final UpdateEngineStreaming proc;
+    protected final UpdateEngine proc;
 
     public UpdateProcessorStreamingBase(GraphStore graphStore, Context context, UpdateEngineFactory factory)
     {
         this.graphStore = graphStore ;
         this.context = Context.setupContext(context, graphStore) ;
         
-        proc = factory.createStreaming(graphStore, initialBinding, context) ;
+        proc = factory.create(graphStore, initialBinding, context) ;
     }
     
     @Override

@@ -23,7 +23,6 @@ import java.util.List ;
 
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateEngineRegistry
 {
@@ -47,49 +46,24 @@ public class UpdateEngineRegistry
         registry.add(UpdateEngineMain.getFactory()) ;
     }
     
-    /** Locate a suitable factory for this query and dataset from the default registry
-     * 
-     * @param request   UpdateRequest 
-     * @param graphStore The graph store
-     * @return A QueryExecutionFactory or null if none accept the request
-     */
-    public static UpdateEngineFactory findFactory(UpdateRequest request, GraphStore graphStore, Context context)
-    { return get().find(request, graphStore, context) ; }
-    
     /** Locate a suitable factory for this dataset from the default registry
      * 
      * @param graphStore The graph store
      * @return A QueryExecutionFactory or null if none accept the request
      */
-    public static UpdateEngineFactory findStreamingFactory(GraphStore graphStore, Context context)
-    { return get().findStreaming(graphStore, context) ; }
-    
-    /** Locate a suitable factory for this query and dataset
-     * 
-     * @param request       UpdateRequest 
-     * @param graphStore    A GraphStore
-     * @return A UpdateProcessorFactroy or null if none accept the request
-     */
-    public UpdateEngineFactory find(UpdateRequest request, GraphStore graphStore, Context context)
-    {
-        for ( UpdateEngineFactory f : factories )
-        {
-            if ( f.accept(request, graphStore, context) )
-                return f ;
-        }
-        return null ;
-    }
+    public static UpdateEngineFactory findFactory(GraphStore graphStore, Context context)
+    { return get().find(graphStore, context) ; }
     
     /** Locate a suitable factory for this dataset
      * 
      * @param graphStore    A GraphStore
      * @return A UpdateProcessorFactroy or null if none accept the request
      */
-    public UpdateEngineFactory findStreaming(GraphStore graphStore, Context context)
+    public UpdateEngineFactory find(GraphStore graphStore, Context context)
     {
         for ( UpdateEngineFactory f : factories )
         {
-            if ( f.acceptStreaming(graphStore, context) )
+            if ( f.accept(graphStore, context) )
                 return f ;
         }
         return null ;

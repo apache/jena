@@ -31,7 +31,6 @@ import com.hp.hpl.jena.tdb.TDB ;
 import com.hp.hpl.jena.tdb.base.file.Location ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /** Transactional DatasetGraph that allows one active transaction.
  * For multiple read transactions, create multiple DatasetGraphTransaction objects.
@@ -241,11 +240,11 @@ public class DatasetGraphTransaction extends DatasetGraphTrackActive implements 
     }
 
     @Override
-    public void startRequest(UpdateRequest request)
+    public void startRequest()
     {}
 
     @Override
-    public void finishRequest(UpdateRequest request)
+    public void finishRequest()
     {}
 
     @Override

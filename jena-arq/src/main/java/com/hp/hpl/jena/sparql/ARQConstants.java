@@ -186,9 +186,6 @@ public class ARQConstants
      */
     public static final Symbol sysCurrentQuery          = Symbol.create(systemVarNS+"query") ;
 
-    /** Context key for the update request for the current update execution */
-    public static final Symbol sysCurrentUpdateRequest  = Symbol.create(systemVarNS+"updateRequest") ;
-
     /** Context key for the OpExecutor to be used */
     public static final Symbol sysOpExecutorFactory     = Symbol.create(systemVarNS+"opExecutorFactory") ;
 
