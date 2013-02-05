@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.apache.jena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
 import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
@@ -52,8 +54,17 @@ public class UpdateProcessorBase implements UpdateProcessor
     @Override
     public void execute()
     {
-        UpdateEngine proc = factory.create(request, graphStore, initialBinding, context) ;
-        proc.execute() ;
+        UpdateEngine uProc = factory.create(graphStore, initialBinding, context);
+        uProc.startRequest();
+        try
+        {
+            UpdateSink sink = uProc.getUpdateSink();
+            Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
+        }
+        finally
+        {
+            uProc.finishRequest();
+        }
     }
 
     @Override

@@ -18,7 +18,23 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-public interface UpdateEngine  
+/**
+ * An UpdateEngine provides an interface to execute a SPARQL update request.
+ */
+public interface UpdateEngine
 {
-    public void execute() ;
+    /**
+     *  Signal start of a request being executed
+     */
+    public void startRequest();
+    
+    /**
+     * Signal end of a request being executed 
+     */
+    public void finishRequest();
+    
+    /**
+     * Returns an {@linkplain UpdateSink} that accepts Update operations
+     */
+    public UpdateSink getUpdateSink();
 }

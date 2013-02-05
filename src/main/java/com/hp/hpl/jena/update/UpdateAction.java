@@ -21,6 +21,7 @@ package com.hp.hpl.jena.update;
 import java.io.InputStream ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.iterator.Iter ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.query.Dataset ;
@@ -339,8 +340,20 @@ public class UpdateAction
     // All non-streaming updates come through here.
     private static void execute$(UpdateRequest request, GraphStore graphStore, Binding binding)
     {
-        UpdateProcessor uProc = UpdateExecutionFactory.create(request, graphStore, binding) ;
-        uProc.execute() ;
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, binding) ;
+        
+        uProc.startRequest();
+        try
+        {
+            UpdateSink sink = uProc.getUpdateSink();
+            Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
+        }
+        finally
+        {
+            uProc.finishRequest();
+        }
+        
+        
     }
     
     /** Execute a single SPARQL Update operation.
@@ -473,11 +486,12 @@ public class UpdateAction
             if ( in == null )
                 throw new UpdateException("File could not be opened: "+fileName) ;
         }
-        parseExecute(usingList, dataset, in, baseURI, syntax) ;
+        parseExecute(usingList, dataset, in, null, baseURI, syntax) ;
     }
     
     /** 
      * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8). 
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input)
@@ -487,35 +501,38 @@ public class UpdateAction
 
     /** 
      * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8). 
      * @param syntax    The update language syntax 
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Syntax syntax)
     {
-        parseExecute(usingList, dataset, input, null, syntax) ;
+        parseExecute(usingList, dataset, input, null, null, syntax) ;
     }
     
     /**
      * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8). 
      * @param baseURI   The base URI for resolving relative URIs. 
      */
     public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI)
     { 
-        parseExecute(usingList, dataset, input, baseURI, Syntax.defaultUpdateSyntax) ;
+        parseExecute(usingList, dataset, input, null, baseURI, Syntax.defaultUpdateSyntax) ;
     }
     
     /**
      * Parse update operations into a GraphStore by parsing from an InputStream.
+     * @param usingList A list of USING or USING NAMED statements that be added to all {@link UpdateWithUsing} queries
      * @param input     The source of the update request (must be UTF-8). 
      * @param baseURI   The base URI for resolving relative URIs. 
      * @param syntax    The update language syntax 
      */
-    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, String baseURI, Syntax syntax)
+    public static void parseExecute(UsingList usingList, DatasetGraph dataset, InputStream input, Binding binding, String baseURI, Syntax syntax)
     {
         GraphStore graphStore = GraphStoreFactory.create(dataset);
         
-        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore) ;
+        UpdateProcessorStreaming uProc = UpdateExecutionFactory.createStreaming(graphStore, binding) ;
         
         uProc.startRequest();
         try

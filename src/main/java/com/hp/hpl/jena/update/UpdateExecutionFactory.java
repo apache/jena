@@ -108,6 +108,17 @@ public class UpdateExecutionFactory
      * @param context  (null means use merge of global and graph store context))
      * @return UpdateProcessor or null
      */
+    public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding initialBinding)
+    {        
+        return makeStreaming(graphStore, initialBinding, null) ;
+    }
+    
+    /** Create an UpdateProcessor appropriate to the GraphStore, or null if no available factory to make an UpdateProcessor 
+     * @param graphStore
+     * @param initialBinding (may be null for none)
+     * @param context  (null means use merge of global and graph store context))
+     * @return UpdateProcessor or null
+     */
     public static UpdateProcessorStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
     {        
         return makeStreaming(graphStore, initialBinding, context) ;
@@ -134,7 +145,7 @@ public class UpdateExecutionFactory
             context.putAll(graphStore.getContext()) ;
         }
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().find(updateRequest, graphStore, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(graphStore, context) ;
         if ( f == null )
             return null ;
         
@@ -153,7 +164,7 @@ public class UpdateExecutionFactory
             context.putAll(graphStore.getContext()) ;
         }
         
-        UpdateEngineFactory f = UpdateEngineRegistry.get().findStreaming(graphStore, context) ;
+        UpdateEngineFactory f = UpdateEngineRegistry.get().find(graphStore, context) ;
         if ( f == null )
             return null ;
         
