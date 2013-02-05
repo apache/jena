@@ -35,6 +35,7 @@ import com.hp.hpl.jena.sparql.lang.UpdateParser ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingUpdateSink ;
 import com.hp.hpl.jena.sparql.modify.UsingList ;
+import com.hp.hpl.jena.sparql.modify.request.UpdateWithUsing ;
 
 /** A class of forms for executing SPARQL Update operations. 
  * parse* means the update request is in a string;
