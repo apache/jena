@@ -62,15 +62,15 @@ public class UsingUpdateSink implements UpdateSink
     }
 
     @Override
-    public QuadDataAccSink getInsertDataSink()
+    public QuadDataAccSink createInsertDataSink()
     {
-        return sink.getInsertDataSink();
+        return sink.createInsertDataSink();
     }
     
     @Override
-    public QuadDataAccSink getDeleteDataSink()
+    public QuadDataAccSink createDeleteDataSink()
     {
-        return sink.getDeleteDataSink();
+        return sink.createDeleteDataSink();
     }
     
     @Override

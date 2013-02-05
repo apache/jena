@@ -289,7 +289,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     // ----
     
     @Override
-    public Sink<Quad> getInsertDataSink()
+    public Sink<Quad> createInsertDataSink()
     {
         return new Sink<Quad>()
         {
@@ -319,7 +319,7 @@ public class UpdateEngineWorker implements UpdateVisitor
     }
     
     @Override
-    public Sink<Quad> getDeleteDataSink()
+    public Sink<Quad> createDeleteDataSink()
     {
         return new Sink<Quad>()
         {

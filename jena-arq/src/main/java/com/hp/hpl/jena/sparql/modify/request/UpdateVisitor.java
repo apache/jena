@@ -39,6 +39,6 @@ public interface UpdateVisitor
     public void visit(UpdateDeleteWhere update) ;
     public void visit(UpdateModify update) ;
     
-    public Sink<Quad> getInsertDataSink();
-    public Sink<Quad> getDeleteDataSink();
+    public Sink<Quad> createInsertDataSink();
+    public Sink<Quad> createDeleteDataSink();
 }

@@ -47,15 +47,15 @@ public class UpdateVisitorSink implements UpdateSink
     }
     
     @Override
-    public QuadDataAccSink getInsertDataSink()
+    public QuadDataAccSink createInsertDataSink()
     {
-        return new QuadDataAccSink(worker.getInsertDataSink());
+        return new QuadDataAccSink(worker.createInsertDataSink());
     }
     
     @Override
-    public QuadDataAccSink getDeleteDataSink()
+    public QuadDataAccSink createDeleteDataSink()
     {
-        return new QuadDataAccSink(worker.getDeleteDataSink());
+        return new QuadDataAccSink(worker.createDeleteDataSink());
     }
 
     @Override
