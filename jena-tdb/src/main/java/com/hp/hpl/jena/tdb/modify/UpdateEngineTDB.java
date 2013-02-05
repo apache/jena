@@ -19,21 +19,16 @@
 package com.hp.hpl.jena.tdb.modify;
 
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngineStreaming ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.tdb.store.DatasetGraphTDB ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateEngineTDB extends UpdateEngineMain
 {
-    public UpdateEngineTDB(DatasetGraphTDB graphStore, UpdateRequest request, Binding inputBinding, Context context)
-    { super(graphStore, request, inputBinding, context) ; }
-    
     public UpdateEngineTDB(DatasetGraphTDB graphStore, Binding inputBinding, Context context)
     { super(graphStore, inputBinding, context) ; }
     
@@ -43,25 +38,13 @@ public class UpdateEngineTDB extends UpdateEngineMain
         return new UpdateEngineFactory()
         {
             @Override
-            public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
-            {
-                return (graphStore instanceof DatasetGraphTDB) ;
-            }
-        
-            @Override
-            public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
-            {
-                return new UpdateEngineTDB((DatasetGraphTDB)graphStore, request, inputBinding, context) ;
-            }
-
-            @Override
-            public boolean acceptStreaming(GraphStore graphStore, Context context)
+            public boolean accept(GraphStore graphStore, Context context)
             {
                 return (graphStore instanceof DatasetGraphTDB) ;
             }
             
             @Override
-            public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding inputBinding, Context context)
+            public UpdateEngine create(GraphStore graphStore, Binding inputBinding, Context context)
             {
                 return new UpdateEngineTDB((DatasetGraphTDB)graphStore, inputBinding, context);
             }

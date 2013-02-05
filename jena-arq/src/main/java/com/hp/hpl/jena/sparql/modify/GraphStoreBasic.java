@@ -23,7 +23,6 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
 {
@@ -44,11 +43,11 @@ public class GraphStoreBasic extends DatasetGraphWrapper implements GraphStore
     }
 
     @Override
-    public void startRequest(UpdateRequest request)
+    public void startRequest()
     {}
 
     @Override
-    public void finishRequest(UpdateRequest request)
+    public void finishRequest()
     {}
 
     @Override

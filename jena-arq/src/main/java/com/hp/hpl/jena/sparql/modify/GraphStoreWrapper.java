@@ -21,7 +21,6 @@ package com.hp.hpl.jena.sparql.modify;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphWrapper ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class GraphStoreWrapper extends DatasetGraphWrapper implements GraphStore
 {
@@ -38,11 +37,11 @@ public class GraphStoreWrapper extends DatasetGraphWrapper implements GraphStore
     { return graphStore.toDataset() ; }
 
     @Override
-    public void startRequest(UpdateRequest request)
-    { graphStore.startRequest(request) ; }
+    public void startRequest()
+    { graphStore.startRequest() ; }
 
     @Override
-    public void finishRequest(UpdateRequest request)
-    { graphStore.finishRequest(request) ; }
+    public void finishRequest()
+    { graphStore.finishRequest() ; }
 }
 

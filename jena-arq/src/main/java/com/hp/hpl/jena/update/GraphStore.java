@@ -30,9 +30,9 @@ public interface GraphStore extends DatasetGraph
     public Dataset toDataset() ;
 
     /** Signal start of a request being executed */ 
-    public void startRequest(UpdateRequest request) ;
+    public void startRequest() ;
     /** Signal end of a request being executed */ 
-    public void finishRequest(UpdateRequest request) ;
+    public void finishRequest() ;
     
 //    public void sync() ;
 //    public void close() ;

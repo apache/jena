@@ -32,7 +32,6 @@ import com.hp.hpl.jena.query.DatasetFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphQuad ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.NullIterator ;
 
@@ -90,10 +89,10 @@ public class GraphStoreNull extends DatasetGraphQuad implements GraphStore
     }
 
     @Override
-    public void startRequest(UpdateRequest request)
+    public void startRequest()
     { }
 
     @Override
-    public void finishRequest(UpdateRequest request)
+    public void finishRequest()
     { }
 }

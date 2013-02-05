@@ -20,53 +20,33 @@ package com.hp.hpl.jena.sdb.modify;
 
 import com.hp.hpl.jena.sdb.store.DatasetStoreGraph ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineFactory ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineMain ;
 import com.hp.hpl.jena.sparql.modify.UpdateEngineRegistry ;
-import com.hp.hpl.jena.sparql.modify.UpdateEngineStreaming ;
+import com.hp.hpl.jena.sparql.modify.UpdateEngine ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class UpdateEngineSDB extends UpdateEngineMain
 {
     // More of a placeholder currently.
     
-    public UpdateEngineSDB(DatasetStoreGraph graphStore, UpdateRequest request, Binding inputBinding, Context context)
-    { super(graphStore, request, inputBinding, context) ; }
-    
     public UpdateEngineSDB(DatasetStoreGraph graphStore, Binding inputBinding, Context context)
     { super(graphStore, inputBinding, context) ; }
     
-    @Override
-    public void execute()
-    { super.execute() ; }
 
     // ---- Factory
     public static UpdateEngineFactory getFactory() { 
         return new UpdateEngineFactory()
         {
             @Override
-            public boolean accept(UpdateRequest request, GraphStore graphStore, Context context)
-            {
-                return (graphStore instanceof DatasetStoreGraph) ;
-            }
-        
-            @Override
-            public UpdateEngine create(UpdateRequest request, GraphStore graphStore, Binding inputBinding, Context context)
-            {
-                return new UpdateEngineSDB((DatasetStoreGraph)graphStore, request, inputBinding, context) ;
-            }
-            
-            @Override
-            public boolean acceptStreaming(GraphStore graphStore, Context context)
+            public boolean accept(GraphStore graphStore, Context context)
             {
                 return (graphStore instanceof DatasetStoreGraph) ;
             }
             
             @Override
-            public UpdateEngineStreaming createStreaming(GraphStore graphStore, Binding initialBinding, Context context)
+            public UpdateEngine create(GraphStore graphStore, Binding initialBinding, Context context)
             {
                 return new UpdateEngineSDB((DatasetStoreGraph)graphStore, initialBinding, context);
             }
