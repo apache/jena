@@ -36,7 +36,6 @@ import com.hp.hpl.jena.sparql.core.DatasetGraphCaching ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public class DatasetStoreGraph extends DatasetGraphCaching
     implements DatasetGraph, Closeable, GraphStore 
@@ -69,11 +68,11 @@ public class DatasetStoreGraph extends DatasetGraphCaching
     //---- Update
 
     @Override
-    public void startRequest(UpdateRequest request)
+    public void startRequest()
     {}
 
     @Override
-    public void finishRequest(UpdateRequest request)
+    public void finishRequest()
     {}
 
 
