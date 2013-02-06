@@ -18,8 +18,6 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.jena.atlas.iterator.Iter ;
-
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -51,14 +49,11 @@ public class UpdateProcessorBase implements UpdateProcessor
     {
         UpdateEngine uProc = factory.create(graphStore, context);
         uProc.startRequest();
-        try
-        {
-            UpdateSink sink = uProc.getUpdateSink();
-            Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
-        }
-        finally
-        {
-            uProc.finishRequest();
+        
+        try {
+            uProc.execute(request) ; 
+        } finally {
+            uProc.finishRequest() ;
         }
     }
 

@@ -25,12 +25,14 @@ import com.hp.hpl.jena.update.Update ;
 import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
- * Default implementation of an update engine that does not stream data, instead it will build it up into an
+ * Example implementation of an update engine that does not stream data, instead it will build it up into an
  * in-memory UpdateRequest, and then traverse it after all update operations have finished.
  */
-public class UpdateEngineNonStreaming extends UpdateEngineBase 
+public class UpdateEngineNonStreaming extends UpdateEngineMain
 {
-    protected final UpdateRequest request;
+    // This is the internal accumulator of upate operations used to not change the
+    // UpdateRequest at the application level.
+    protected final UpdateRequest accRequests;
     
     /**
      * Creates a new Update Engine
@@ -40,19 +42,19 @@ public class UpdateEngineNonStreaming extends UpdateEngineBase
     public UpdateEngineNonStreaming(GraphStore graphStore, Context context)
     {
         super(graphStore, context) ;
-        request = new UpdateRequest();
+        accRequests = new UpdateRequest();
     }
 
     @Override
     public void startRequest()
     {
-        // Do nothing, we will call startRequest() on the graphstore in the execute() method
+        graphStore.startRequest() ;
     }
     
     @Override
     public void finishRequest()
     {
-        // Do nothing, we will call finishRequest() on the graphstore in the execute() method
+        graphStore.finishRequest();
     }
     
     /**
@@ -63,7 +65,7 @@ public class UpdateEngineNonStreaming extends UpdateEngineBase
     public UpdateSink getUpdateSink()
     {
         // Override the close() method to call execute() when we're done accepting update operations
-        return new UpdateRequestSink(request)
+        return new UpdateRequestSink(accRequests)
         {
             @Override
             public void close()
@@ -75,25 +77,15 @@ public class UpdateEngineNonStreaming extends UpdateEngineBase
     }
     
     /**
-     * Called after all of the update operations have been added to {@link #request}.
+     * Called after all of the update operations have been added to {@link #accRequests}.
      */
     protected void execute()
     {
-        graphStore.startRequest() ;
         UpdateVisitor worker = this.prepareWorker() ;
-        for ( Update up : request )
+        for ( Update up : accRequests )
         {
             up.visit(worker) ;
         }
-        graphStore.finishRequest();
-    }
-    
-    /**
-     * Creates the {@link UpdateVisitor} which will do the work of applying the updates
-     * @return The update visitor to be used to apply the updates
-     */
-    protected UpdateVisitor prepareWorker() {
-        return new UpdateEngineWorker(graphStore, context) ;
     }
     
     private static UpdateEngineFactory factory = new UpdateEngineFactory()
