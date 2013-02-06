@@ -23,16 +23,15 @@ import java.util.HashMap ;
 import java.util.List ;
 import java.util.Map ;
 
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.apache.jena.riot.web.HttpResponseHandler ;
 import org.apache.jena.riot.web.HttpResponseLib ;
 
-import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -54,12 +53,6 @@ public class UpdateProcessRemoteForm implements UpdateProcessor
         this.request = request ;
         this.endpoint = endpoint ;
         this.context = Context.setupContext(context, null) ;
-    }
-
-    @Override
-    public void setInitialBinding(QuerySolution binding)
-    {
-        throw new ARQException("Initial bindings for a remote update execution request not supported") ;
     }
 
     @Override

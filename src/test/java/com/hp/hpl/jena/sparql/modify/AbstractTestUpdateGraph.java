@@ -349,61 +349,6 @@ public abstract class AbstractTestUpdateGraph extends AbstractTestUpdateBase
     
     private static long countQuads(DatasetGraph dsg) { return Iter.count(dsg.find()); }
 
-    // Jena 2.10.0 -- support for initial bindings in updates removed.
-    // If you see this commented section post-JEna 2.10.0, please remove these comments completely.
-//    private Graph testUpdateInitialBindingWorker(Var v, Node n)
-//    {
-//        GraphStore gStore = getEmptyGraphStore() ;
-//        
-//        UpdateRequest req = UpdateFactory.create() ;
-//
-//        {
-//            QuadDataAcc acc = new QuadDataAcc() ;
-//            acc.addTriple(triple1) ;
-//            acc.addTriple(triple2) ;
-//            UpdateDataInsert ins = new UpdateDataInsert(acc) ;
-//            req.add(ins) ;
-//        }
-//        {
-//            UpdateModify mod = new UpdateModify() ;
-//            mod.getDeleteAcc().addTriple(new Triple(s,p, Var.alloc("o"))) ;
-//            req.add(mod) ;
-//        }
-//        Binding b = BindingFactory.binding(null, v, n) ;
-//        UpdateAction.execute(req, gStore, b) ;
-//        
-//        return gStore.getDefaultGraph() ;
-//    }
-//    
-//    @Test public void testUpdateInitialBinding1()
-//    {
-//        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o1) ;
-//        assertEquals(graph.size(), 1) ;
-//        assertFalse(graphContains(graph, triple1)) ;
-//        assertTrue(graphContains(graph, triple2)) ;
-//    }
-//    
-//    @Test public void testUpdateInitialBinding2()
-//    {
-//        Graph graph = testUpdateInitialBindingWorker(Var.alloc("o"), o2) ;
-//        assertEquals(graph.size(), 1) ;
-//        assertTrue(graphContains(graph, triple1)) ;
-//        assertFalse(graphContains(graph, triple2)) ;
-//    }
-//
-//    @Test public void testUpdateInitialBinding3()
-//    {
-//        GraphStore gStore = getEmptyGraphStore() ;
-//        defaultGraphData(gStore, graph1) ;
-//        String update = "DELETE WHERE { ?x <http://example/p> 2007 } ; INSERT { ?x <http://example/p> 1999 } WHERE {}" ;
-//        UpdateRequest req = UpdateFactory.create(update) ;
-//        
-//        Binding b = BindingFactory.binding(Var.alloc("x"), s) ;
-//        UpdateAction.execute(req, gStore, b) ;
-//        assertEquals(1, gStore.getDefaultGraph().size()) ;
-//        assertTrue(gStore.getDefaultGraph().contains(s, p, NodeFactory.parseNode("1999"))) ;
-//    }
-    
     private static Graph data1()
     {
         Graph graph = Factory.createDefaultGraph() ;

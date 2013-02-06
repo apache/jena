@@ -20,10 +20,6 @@ package com.hp.hpl.jena.sparql.modify;
 
 import org.apache.jena.atlas.iterator.Iter ;
 
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
@@ -34,7 +30,6 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateProcessorBase implements UpdateProcessor
 {
-    protected Binding initialBinding = BindingFactory.root() ;
     protected final UpdateRequest request ;
     protected final GraphStore graphStore ;
     protected final UpdateEngineFactory factory ;
@@ -54,7 +49,7 @@ public class UpdateProcessorBase implements UpdateProcessor
     @Override
     public void execute()
     {
-        UpdateEngine uProc = factory.create(graphStore, initialBinding, context);
+        UpdateEngine uProc = factory.create(graphStore, context);
         uProc.startRequest();
         try
         {
@@ -71,17 +66,6 @@ public class UpdateProcessorBase implements UpdateProcessor
     public GraphStore getGraphStore()
     {
         return graphStore ;
-    }
-
-    @Override
-    public void setInitialBinding(QuerySolution binding)
-    {
-        setInitialBinding(BindingUtils.asBinding(binding)) ;
-    }
-
-    public void setInitialBinding(Binding binding)
-    {
-        initialBinding = binding ;
     }
 
     @Override
