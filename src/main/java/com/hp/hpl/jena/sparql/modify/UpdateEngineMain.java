@@ -18,9 +18,12 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
+import org.apache.jena.atlas.iterator.Iter ;
+
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
+import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Default implementation of an update engine
@@ -52,13 +55,26 @@ public class UpdateEngineMain extends UpdateEngineBase
         graphStore.finishRequest();
     }
     
+    @Override
+    public void execute(UpdateRequest request)
+    {
+        UpdateSink sink = getUpdateSink();
+        Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
+    }
+    
+    private UpdateSink updateSink = null ;
+    
     /**
-     * Creates an {@link UpdateVisitorSink} by using the {@link UpdateVisitor} provided by the {@link #prepareWorker()} method, which will be used to visit each update operation.
+     * Returns the {@link UpdateSink}.  In this implementation, this is done by
+     * with an {@link UpdateVisitor} which will visit each update operation
+     * and send the operation to the associated {@link UpdateEngineWorker}.
      */
     @Override
     public UpdateSink getUpdateSink()
     {
-        return new UpdateVisitorSink(this.prepareWorker());
+        if ( updateSink == null )
+            updateSink = new UpdateVisitorSink(this.prepareWorker());
+        return updateSink ;
     }
     
     /**
