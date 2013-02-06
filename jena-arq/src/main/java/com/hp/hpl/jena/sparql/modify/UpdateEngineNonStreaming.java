@@ -30,8 +30,9 @@ import com.hp.hpl.jena.update.UpdateRequest ;
  */
 public class UpdateEngineNonStreaming extends UpdateEngineMain
 {
-    // This is the internal accumulator of upate operations used to not change the
-    // UpdateRequest at the application level.
+    // This is the internal accumulator of update operations.
+    // It is used to accumulate Updates so as not to alter
+    // the UpdateRequest at the application level.
     protected final UpdateRequest accRequests;
     
     /**
