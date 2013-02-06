@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
 /** An instance of a execution of an UpdateRequest */ 
@@ -32,12 +31,6 @@ public interface UpdateProcessor
      */ 
     public Context getContext() ;
     
-    /** Set the initial association of variables and values.
-     * May not be supported by all UpdateProcessor implementations.
-     * @param binding
-     */
-    public void setInitialBinding(QuerySolution binding) ;
-
     /**
      * The dataset against which the query will execute.
      * May be null, implying the there isn't a local GraphStore target for this UpdateProcessor.

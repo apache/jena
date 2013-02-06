@@ -18,14 +18,13 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpOp ;
 
-import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.util.Context ;
-import com.hp.hpl.jena.sparql.util.Symbol;
+import com.hp.hpl.jena.sparql.util.Symbol ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessor ;
 import com.hp.hpl.jena.update.UpdateRequest ;
@@ -46,12 +45,6 @@ public class UpdateProcessRemote implements UpdateProcessor
         this.request = request ;
         this.endpoint = endpoint ;
         this.context = Context.setupContext(context, null) ;
-    }
-
-    @Override
-    public void setInitialBinding(QuerySolution binding)
-    {
-        throw new ARQException("Initial bindings for a remote update execution request not supported") ;
     }
 
     @Override
