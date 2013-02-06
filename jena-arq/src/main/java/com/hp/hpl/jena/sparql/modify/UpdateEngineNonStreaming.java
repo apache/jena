@@ -33,7 +33,8 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     // This is the internal accumulator of update operations.
     // It is used to accumulate Updates so as not to alter
     // the UpdateRequest at the application level.
-    protected final UpdateRequest accRequests;
+    protected final UpdateRequest accRequests ;
+    protected final UpdateSink    updateSink ;
     
     /**
      * Creates a new Update Engine
@@ -44,6 +45,16 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     {
         super(graphStore, context) ;
         accRequests = new UpdateRequest();
+        updateSink = new UpdateRequestSink(accRequests)
+        {
+            @Override
+            public void close()
+            {
+                // Override the close() method to call execute() when we're done accepting update operations
+                super.close();
+                execute();
+            }
+        } ;
     }
 
     @Override
@@ -59,23 +70,11 @@ public class UpdateEngineNonStreaming extends UpdateEngineMain
     }
     
     /**
-     * Creates an {@link UpdateSink} that adds all update operations into an internal {@code UpdateRequest} object.
+     * Returns an {@link UpdateSink} that adds all update operations into an internal {@link UpdateRequest} object.
      * After the last update operation has been added, the {@link #execute()} method is called.
      */
     @Override
-    public UpdateSink getUpdateSink()
-    {
-        // Override the close() method to call execute() when we're done accepting update operations
-        return new UpdateRequestSink(accRequests)
-        {
-            @Override
-            public void close()
-            {
-                super.close();
-                execute();
-            }
-        };
-    }
+    public UpdateSink getUpdateSink() { return updateSink ; }
     
     /**
      * Called after all of the update operations have been added to {@link #accRequests}.
