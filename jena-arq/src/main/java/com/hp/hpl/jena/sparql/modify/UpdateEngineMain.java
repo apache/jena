@@ -18,12 +18,9 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.jena.atlas.iterator.Iter ;
-
 import com.hp.hpl.jena.sparql.modify.request.UpdateVisitor ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * Default implementation of an update engine
@@ -53,13 +50,6 @@ public class UpdateEngineMain extends UpdateEngineBase
     public void finishRequest()
     {
         graphStore.finishRequest();
-    }
-    
-    @Override
-    public void execute(UpdateRequest request)
-    {
-        UpdateSink sink = getUpdateSink();
-        Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
     }
     
     private UpdateSink updateSink = null ;
