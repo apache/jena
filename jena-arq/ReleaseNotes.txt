@@ -28,7 +28,7 @@ ChangeLog for ARQ
 + New FastAbbreviatingPrefixMap, can be much faster for abbreviation when namespaces
   do not follow common patterns
 + JENA-330 : Streaming support for SPARQL Update queries and streaming support for quads in INSERT DATA / DELETE DATA queries
-  (Note to 3rd party storage engine implementors, the internal API for UpdateEngine has changed, see UpdateEngineMain or
+  (Note to 3rd party storage engine implementers, the internal API for UpdateEngine has changed, see UpdateEngineMain or
   UpdateEngineNonStreaming for example of the new design)
 + SPARQL Update execution no longer supports setting an initial binding
 
