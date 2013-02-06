@@ -18,15 +18,12 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.jena.atlas.iterator.Iter ;
-
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 public abstract class UpdateEngineBase implements UpdateEngine
 {
@@ -40,14 +37,6 @@ public abstract class UpdateEngineBase implements UpdateEngine
         this.context = setupContext(context, graphStore) ;
     }
     
-    @Override
-    public void execute(UpdateRequest request)
-    {
-        UpdateSink sink = getUpdateSink();
-        Iter.sendToSink(request, sink);  // Will call close on sink if there are no exceptions
-    }
-    
-    // Put any 
     private static Context setupContext(Context context, DatasetGraph dataset)
     {
         // To many copies?

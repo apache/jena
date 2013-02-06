@@ -18,19 +18,11 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.update.UpdateRequest ;
 
 /**
  * An UpdateEngine provides an interface to execute a SPARQL update request.
  * An update engine is use-once; that is, it executes a single SPARQL Update request
  * (there may be multiple operations in one request).
- * 
- * An UpdateEngine is called in the sequence:
- * <ul>
- * <li>startRequest()</li> 
- * <li>execute()</li> 
- * <li>finishRequest()</li> 
- * </ul>  
  */
 public interface UpdateEngine
 {
@@ -39,11 +31,6 @@ public interface UpdateEngine
      */
     public void startRequest();
     
-    /**
-     *  Signal start of a request being executed
-     */
-    public void execute(UpdateRequest request);
-
     /**
      * Signal end of a request being executed 
      */
