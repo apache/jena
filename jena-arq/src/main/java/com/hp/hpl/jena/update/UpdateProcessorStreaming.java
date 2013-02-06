@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.update;
 
-import com.hp.hpl.jena.query.QuerySolution ;
 import com.hp.hpl.jena.sparql.modify.UpdateSink ;
 import com.hp.hpl.jena.sparql.util.Context ;
 
@@ -32,12 +31,6 @@ public interface UpdateProcessorStreaming
      *  May be null (this implementation does not provide any configuration).
      */ 
     public Context getContext() ;
-    
-    /** Set the initial association of variables and values.
-     * May not be supported by all UpdateProcessor implementations.
-     * @param binding
-     */
-    public void setInitialBinding(QuerySolution binding) ;
     
     /**
      * The dataset against which the query will execute.

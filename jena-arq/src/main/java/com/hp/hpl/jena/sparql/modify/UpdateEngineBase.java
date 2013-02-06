@@ -18,13 +18,9 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import org.apache.jena.atlas.logging.Log ;
-
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingRoot ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.NodeFactory ;
 import com.hp.hpl.jena.update.GraphStore ;
@@ -33,21 +29,12 @@ public abstract class UpdateEngineBase implements UpdateEngine
 {
     protected final GraphStore graphStore ;
     protected final Context context ;
-    protected final Binding startBinding ;
 
     public UpdateEngineBase(GraphStore graphStore,
-                            Binding input,
                             Context context)
     {
         this.graphStore = graphStore ;
         this.context = setupContext(context, graphStore) ;
-        
-        if ( input == null )
-        {
-            Log.warn(this, "Null initial input") ;
-            input = BindingRoot.create() ;
-        }
-        this.startBinding = input ;
     }
     
     // Put any 

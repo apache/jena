@@ -79,14 +79,12 @@ import com.hp.hpl.jena.util.FileManager ;
 public class UpdateEngineWorker implements UpdateVisitor
 {
     protected final GraphStore graphStore ;
-    protected final Binding initialBinding ;
     protected final boolean alwaysSilent = true ;
     protected final Context context ;
 
-    public UpdateEngineWorker(GraphStore graphStore, Binding initialBinding, Context context)
+    public UpdateEngineWorker(GraphStore graphStore, Context context)
     {
         this.graphStore = graphStore ;
-        this.initialBinding = initialBinding ;
         this.context = context ;
     }
 
@@ -400,7 +398,7 @@ public class UpdateEngineWorker implements UpdateVisitor
         DataBag<Binding> db = BagFactory.newDefaultBag(policy, SerializationFactoryFinder.bindingSerializationFactory()) ;
         try
         {
-            Iterator<Binding> bindings = evalBindings(query, dsg, initialBinding, context) ;
+            Iterator<Binding> bindings = evalBindings(query, dsg, context) ;
             
             if ( false )
             {   
@@ -591,11 +589,11 @@ public class UpdateEngineWorker implements UpdateVisitor
             }
         }
         
-        return evalBindings(query, dsg, initialBinding, context) ;
+        return evalBindings(query, dsg, context) ;
         
     }
     
-    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Binding initialBinding, Context context)
+    protected static Iterator<Binding> evalBindings(Query query, DatasetGraph dsg, Context context)
     {
         // SET UP CONTEXT
         // The UpdateProcessorBase already copied the context and made it safe ... but that's going to happen again :-(
@@ -604,12 +602,12 @@ public class UpdateEngineWorker implements UpdateVisitor
         
         if ( query != null )
         {
-            Plan plan = QueryExecutionFactory.createPlan(query, dsg, initialBinding, context) ;
+            Plan plan = QueryExecutionFactory.createPlan(query, dsg, null, context) ;
             toReturn = plan.iterator();
         }
         else
         {
-            toReturn = Iter.singleton((initialBinding != null) ? initialBinding : BindingRoot.create()) ;
+            toReturn = Iter.singleton(BindingRoot.create()) ;
         }
         return toReturn ;
     }

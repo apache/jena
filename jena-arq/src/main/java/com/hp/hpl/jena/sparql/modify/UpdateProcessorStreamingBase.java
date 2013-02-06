@@ -18,10 +18,6 @@
 
 package com.hp.hpl.jena.sparql.modify;
 
-import com.hp.hpl.jena.query.QuerySolution ;
-import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingFactory ;
-import com.hp.hpl.jena.sparql.engine.binding.BindingUtils ;
 import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.update.GraphStore ;
 import com.hp.hpl.jena.update.UpdateProcessorStreaming ;
@@ -31,7 +27,6 @@ import com.hp.hpl.jena.update.UpdateProcessorStreaming ;
  */
 public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
 {
-    protected Binding initialBinding = BindingFactory.root() ;
     protected final GraphStore graphStore ;
     protected final Context context ;
     
@@ -42,7 +37,7 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
         this.graphStore = graphStore ;
         this.context = Context.setupContext(context, graphStore) ;
         
-        proc = factory.create(graphStore, initialBinding, context) ;
+        proc = factory.create(graphStore, context) ;
     }
     
     @Override
@@ -69,17 +64,6 @@ public class UpdateProcessorStreamingBase implements UpdateProcessorStreaming
         return graphStore ;
     }
     
-    @Override
-    public void setInitialBinding(QuerySolution binding)
-    {
-        setInitialBinding(BindingUtils.asBinding(binding)) ;
-    }
-
-    public void setInitialBinding(Binding binding)
-    {
-        initialBinding = binding ;
-    }
-
     @Override
     public Context getContext()
     {
