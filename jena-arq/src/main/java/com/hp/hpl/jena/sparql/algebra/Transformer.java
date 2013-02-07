@@ -28,10 +28,7 @@ import com.hp.hpl.jena.sparql.algebra.op.* ;
 import com.hp.hpl.jena.sparql.algebra.optimize.ExprTransformApplyTransform ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.core.VarExprList ;
-import com.hp.hpl.jena.sparql.expr.Expr ;
-import com.hp.hpl.jena.sparql.expr.ExprAggregator ;
-import com.hp.hpl.jena.sparql.expr.ExprList ;
-import com.hp.hpl.jena.sparql.expr.ExprTransformer ;
+import com.hp.hpl.jena.sparql.expr.* ;
 import com.hp.hpl.jena.sparql.expr.aggregate.Aggregator ;
 
 /** A botton-top application of a transformation of SPARQL algebra */  
@@ -69,12 +66,14 @@ public class Transformer
         {
             // Simplest way but still walks the OpService subtree (and throws away the transformation).
             Transform walker = new TransformSkipService(transform) ;
+            ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
             return Transformer.transform(walker, op, beforeVisitor, afterVisitor) ;
         }
         else
         {
             // Don't transform OpService and don't walk the sub-op 
-            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform) ;
+            ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
+            ApplyTransformVisitorServiceAsLeaf v = new ApplyTransformVisitorServiceAsLeaf(transform, exprTransform) ;
             WalkerVisitorSkipService walker = new WalkerVisitorSkipService(v, beforeVisitor, afterVisitor) ;
             OpWalker.walk(walker, op) ;
             return v.result() ;
@@ -93,7 +92,8 @@ public class Transformer
     // and theses protected methods.
     protected Op transformation(Transform transform, Op op, OpVisitor beforeVisitor, OpVisitor afterVisitor)
     {
-        ApplyTransformVisitor v = new ApplyTransformVisitor(transform) ;
+        ExprTransform exprTransform = new ExprTransformApplyTransform(transform, beforeVisitor, afterVisitor) ;
+        ApplyTransformVisitor v = new ApplyTransformVisitor(transform, exprTransform) ;
         return transformation(v, op, beforeVisitor, afterVisitor) ;
     }
     
@@ -124,7 +124,7 @@ public class Transformer
     class ApplyTransformVisitor extends OpVisitorByType
     {
         protected final Transform transform ;
-        private final ExprTransformApplyTransform exprTransform ;
+        private final ExprTransform exprTransform ;
 
         private final Deque<Op> stack = new ArrayDeque<Op>() ;
         protected final Op pop() 
@@ -136,11 +136,10 @@ public class Transformer
             stack.push(op) ;
         }
         
-        public ApplyTransformVisitor(Transform transform)
+        public ApplyTransformVisitor(Transform transform, ExprTransform exprTransform)
         { 
             this.transform = transform ;
-            this.exprTransform = new ExprTransformApplyTransform(transform) ;
-
+            this.exprTransform = exprTransform ;
         }
         
         final Op result()
@@ -149,7 +148,21 @@ public class Transformer
                 Log.warn(this, "Stack is not aligned") ;
             return pop() ; 
         }
-    
+
+        private ExprList transform(ExprList exprList, ExprTransform exprTransform)
+        {
+            if ( exprTransform == null )
+                return exprList ;
+            return ExprTransformer.transform(exprTransform, exprList) ;
+        }
+
+        private Expr transform(Expr expr, ExprTransform exprTransform)
+        {
+            if ( exprTransform == null )
+                return expr ;
+            return ExprTransformer.transform(exprTransform, expr) ;
+        }
+        
         // ----
         // Algebra operations that involve an Expr, and so might include NOT EXISTS 
 
@@ -163,7 +176,7 @@ public class Transformer
             for ( SortCondition sc : conditions )
             {
                 Expr e = sc.getExpression() ;
-                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
+                Expr e2 = transform(e, exprTransform) ;
                 conditions2.add(new SortCondition(e2, sc.getDirection())) ;
                 if ( e != e2 )
                     changed = true ;
@@ -188,7 +201,6 @@ public class Transformer
         @Override
         public void visit(OpExtend opExtend)
         { 
-            
             VarExprList varExpr = opExtend.getVarExprList() ;
             VarExprList varExpr2 = process(varExpr) ;
             OpExtend opExtend2 = opExtend ;
@@ -207,7 +219,7 @@ public class Transformer
                 Expr e = varExpr.getExpr(v) ;
                 Expr e2 =  e ;
                 if ( e != null )
-                    e2 = ExprTransformer.transform(exprTransform, e) ;
+                    e2 = transform(e, exprTransform) ;
                 if ( e2 == null )
                     varExpr2.add(v) ;
                 else
@@ -242,7 +254,7 @@ public class Transformer
                 
                 // Variable associated with the aggregate
                 Expr eVar = agg.getAggVar() ;   // Not .getExprVar()
-                Expr eVar2 = ExprTransformer.transform(exprTransform, eVar) ;
+                Expr eVar2 = transform(eVar, exprTransform) ;
                 if ( eVar != eVar2 )
                     changed = true ;
 
@@ -250,7 +262,7 @@ public class Transformer
                 Expr e = aggregator.getExpr() ;
                 Expr e2 = e ;
                 if ( e != null )    // Null means "no relevant expression" e.g. COUNT(*)
-                    ExprTransformer.transform(exprTransform, e) ;
+                    e2 = transform(e, exprTransform) ;
                 if ( e != e2 )
                     changed = true ;
                 Aggregator a2 = aggregator.copy(e2) ;
@@ -319,7 +331,7 @@ public class Transformer
             boolean changed = false ;
             for ( Expr e : opFilter.getExprs() )
             {
-                Expr e2 = ExprTransformer.transform(exprTransform, e) ;
+                Expr e2 = transform(e, exprTransform) ;
                 ex.add(e2) ;
                 if ( e != e2 )
                     changed = true ;
@@ -349,9 +361,9 @@ public class Transformer
     /** Treat OpService as a leaf of the tree */
     static class ApplyTransformVisitorServiceAsLeaf extends ApplyTransformVisitor
     {
-        public ApplyTransformVisitorServiceAsLeaf(Transform transform)
+        public ApplyTransformVisitorServiceAsLeaf(Transform transform, ExprTransform exprTransform)
         {
-            super(transform) ;
+            super(transform, exprTransform) ;
         }
         
         @Override
@@ -440,6 +452,6 @@ public class Transformer
         
         @Override
         protected void visitExt(OpExt op)
-        { op.apply(transform) ; }
+        { result = op.apply(transform) ; }
     }
 }
