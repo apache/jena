@@ -139,4 +139,16 @@ public class PrefixMapStd extends PrefixMapBase {
             return null;
         return x.toString() + localName;
     }
+
+    @Override
+    public boolean isEmpty()
+    {
+        return prefixes.isEmpty() ;
+    }
+
+    @Override
+    public int size()
+    {
+        return prefixes.size() ;
+    }
 }

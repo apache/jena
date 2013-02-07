@@ -42,6 +42,8 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
     public void prefixMap_basic_01()
     {
         PrefixMap pmap = getPrefixMap();
+        assertTrue(pmap.isEmpty()) ;
+        assertEquals(0, pmap.size()) ;
         assertTrue(pmap.getMapping().isEmpty()) ;
         assertTrue(pmap.getMappingCopy().isEmpty()) ;
         assertTrue(pmap.getMappingCopyStr().isEmpty()) ;
@@ -52,6 +54,8 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
     {
         PrefixMap pmap = getPrefixMap();
         pmap.add("", "http://example/") ;
+        assertFalse(pmap.isEmpty()) ;
+        assertEquals(1, pmap.size()) ;
         assertTrue(pmap.contains("")) ;
         assertTrue(pmap.getMapping().containsKey("")) ;
         assertTrue(pmap.getMappingCopy().containsKey("")) ;
@@ -66,6 +70,8 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
         pmap.add("org", "http://example.org/") ;
         assertTrue(pmap.contains("")) ;
         assertTrue(pmap.contains("org")) ;
+        assertFalse(pmap.isEmpty()) ;
+        assertEquals(2, pmap.size()) ;
     }
     
     @Test
@@ -79,6 +85,8 @@ public abstract class AbstractTestPrefixMap extends BaseTest {
 
         assertTrue(pmap2.contains("")) ;
         assertTrue(pmap2.contains("org")) ;
+        assertFalse(pmap2.isEmpty()) ;
+        assertEquals(2, pmap2.size()) ;
     }
     
     
