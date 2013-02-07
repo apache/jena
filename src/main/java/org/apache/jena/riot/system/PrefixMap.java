@@ -109,6 +109,13 @@ public interface PrefixMap {
     public abstract void putAll(PrefixMapping pmap);
 
     /**
+     * Add a prefix, overwrites any existing association
+     * 
+     * @param mapping A Map of prefix name to IRI string 
+     */
+    public abstract void putAll(Map<String, String> mapping) ;
+
+    /**
      * Delete a prefix
      * 
      * @param prefix
@@ -163,5 +170,18 @@ public interface PrefixMap {
      * @return Expanded URI if possible, null otherwise
      */
     public abstract String expand(String prefix, String localName);
+    
+    /**
+     * return whether the 
+     * @return boolean
+     */
 
+    public boolean isEmpty();
+    
+    /**
+     * Return the number of entries in the prefix map.
+     * @return Size of the prefix mapping
+     */
+
+    public int size();
 }
