@@ -99,6 +99,20 @@ public class TestTransformQuads extends BaseTest
                                          "       (quadpattern (quad ?*g1 ?s ?p ?o)))))"
                                          ) ; }
 
+    // NOT EXISTS
+    @Test public void quads31() { test ( "{ GRAPH ?g { ?s ?p ?o FILTER NOT EXISTS { GRAPH ?g1 { ?s1 ?p ?o1 } } } }",
+                                         "(filter (notexists",
+                                         "   (quadpattern (quad ?g1 ?s1 ?p ?o1)))",
+                                         "  (quadpattern (quad ?g ?s ?p ?o)))"
+                                         ) ; }
+
+    // NOT EXISTS
+    @Test public void quads32() { test ( "{ ?s ?p ?o FILTER NOT EXISTS { GRAPH ?g1 { ?s1 ?p ?o1 } } }",
+                                         "(filter (notexists",
+                                         "   (quadpattern (quad ?g1 ?s1 ?p ?o1)))",
+                                         "  (quadpattern (quad <urn:x-arq:DefaultGraphNode> ?s ?p ?o)))"
+                                         ) ; }
+    
     private static void test(String patternString, String... strExpected)
     {
         Query q = QueryFactory.create("SELECT * WHERE "+patternString) ;

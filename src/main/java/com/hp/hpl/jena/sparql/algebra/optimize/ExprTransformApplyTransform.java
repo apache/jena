@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.algebra.optimize;
 
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 import com.hp.hpl.jena.sparql.algebra.Op ;
+import com.hp.hpl.jena.sparql.algebra.OpVisitor ;
 import com.hp.hpl.jena.sparql.algebra.Transform ;
 import com.hp.hpl.jena.sparql.algebra.Transformer ;
 import com.hp.hpl.jena.sparql.expr.E_Exists ;
@@ -29,20 +30,29 @@ import com.hp.hpl.jena.sparql.expr.ExprFunctionOp ;
 import com.hp.hpl.jena.sparql.expr.ExprList ;
 import com.hp.hpl.jena.sparql.expr.ExprTransformCopy ;
 
-/** A copying transform that applies a Transform to the algebra operator of E_Exist and E_NoExists */
+/** A copying transform that applies an Op Transform to the algebra operator of E_Exist and E_NoExists */
 public class ExprTransformApplyTransform extends ExprTransformCopy
 {
-    // See also ExprTransformer.transform(ExprFunctionOp func, ..) and ExprTransformOp
     private final Transform transform ;
+    private OpVisitor beforeVisitor ;
+    private OpVisitor afterVisitor ;
+    
     public ExprTransformApplyTransform(Transform transform)
     {
+        this(transform, null, null) ;
+    }
+    
+    public ExprTransformApplyTransform(Transform transform, OpVisitor beforeVisitor, OpVisitor afterVisitor)
+    {
         this.transform = transform ;
+        this.beforeVisitor = beforeVisitor ;
+        this.afterVisitor = afterVisitor ;
     }
     
     @Override
     public Expr transform(ExprFunctionOp funcOp, ExprList args, Op opArg)
     {
-        Op opArg2 = Transformer.transform(transform, opArg) ;
+        Op opArg2 = Transformer.transform(transform, opArg, beforeVisitor, afterVisitor) ;
         if ( opArg2 == opArg )
             return super.transform(funcOp, args, opArg) ;
         if ( funcOp instanceof E_Exists )
@@ -52,3 +62,4 @@ public class ExprTransformApplyTransform extends ExprTransformCopy
         throw new ARQInternalErrorException("Unrecognized ExprFunctionOp: \n"+funcOp) ;
     }
 }
+
