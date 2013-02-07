@@ -80,7 +80,12 @@ public abstract class PrefixMapBase implements PrefixMap {
 
     @Override
     public void putAll(PrefixMapping pmap) {
-        for (Map.Entry<String, String> e : pmap.getNsPrefixMap().entrySet()) {
+        putAll(pmap.getNsPrefixMap()) ;
+    }
+
+    @Override
+    public void putAll(Map<String, String> mapping) {
+        for (Map.Entry<String, String> e : mapping.entrySet()) {
             this.add(e.getKey(), e.getValue());
         }
     }

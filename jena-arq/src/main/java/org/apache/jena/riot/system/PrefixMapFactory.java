@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.Map ;
+
 import com.hp.hpl.jena.shared.PrefixMapping;
 
 /**
@@ -27,7 +29,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 public class PrefixMapFactory {
 
     /**
-     * Creates a new prefix map
+     * Creates a new prefix map.
      * <p>
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
@@ -41,7 +43,7 @@ public class PrefixMapFactory {
 
     /**
      * Creates a new prefix map which starts with a copy of an existing prefix
-     * map
+     * map.
      * <p>
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
@@ -57,15 +59,15 @@ public class PrefixMapFactory {
     }
 
     /**
-     * Creates a new prefix map which is intended for use in output which starts
-     * with a copy of an existing map
+     * Creates a new prefix map which starts
+     * with a copy of an existing map.
      * <p>
      * Will use whatever the version of ARQ you are using considers the default
      * implementation, this may change from release to release.
      * </p>
      * 
      * @param pmap
-     *            Prefix Map to copy
+     *            PrefixMapping to copy
      * 
      * @return Prefix Map
      */
@@ -76,11 +78,23 @@ public class PrefixMapFactory {
     }
 
     /**
-     * Creates a new prefix map which is intended for use in input
+     * Creates a new prefix map,initialized from a Map of prefix to IRI string.
      * <p>
-     * Will use whatever the version of ARQ you are using considers the best
-     * implementation for input, this may change from release to release.
+     * Will use whatever the version of ARQ you are using considers the default
+     * implementation, this may change from release to release.
      * </p>
+     * 
+     * @param pmap Mapping from prefix to IRI string
+     * @return Prefix Map
+     */
+    public static PrefixMap create(Map<String, String> pmap) {
+        PrefixMap created = create();
+        created.putAll(pmap);
+        return created;
+    }
+
+    /**
+     * Creates a new prefix map which is intended for use in input.
      * 
      * @return Prefix map
      */
@@ -109,7 +123,7 @@ public class PrefixMapFactory {
      * with a copy of an existing map
      * <p>
      * Will use whatever the version of ARQ you are using considers the best
-     * implementation for iput, this may change from release to release.
+     * implementation for input, this may change from release to release.
      * </p>
      * 
      * @param pmap
@@ -123,6 +137,19 @@ public class PrefixMapFactory {
         return created;
     }
 
+    /**
+     * Creates a new prefix map, initialized from a Map of prefix to IRI string.
+     * 
+     * @param pmap Mapping from prefix to IRI string
+     * @return Prefix Map
+     */
+    public static PrefixMap createForInput(Map<String, String> pmap) {
+        PrefixMap created = createForInput();
+        created.putAll(pmap);
+        return created;
+    }
+
+    
     /**
      * Creates a new prefix map which is intended for use in output
      * <p>
@@ -173,16 +200,24 @@ public class PrefixMapFactory {
     }
 
     /**
+     * Creates a new prefix map, initialized from a Map of prefix to IRI string.
+     * 
+     * @param pmap Mapping from prefix to IRI string
+     * @return Prefix Map
+     */
+    public static PrefixMap createForOutput(Map<String, String> pmap) {
+        PrefixMap created = createForOutput();
+        created.putAll(pmap);
+        return created;
+    }
+
+    /**
      * Creates a new prefix map which is an extension of an existing prefix map
      * <p>
-     * This differs from using one of the various {@code create()} methods since
+     * This differs from using one of the various {@code create} methods since
      * it does not copy the existing prefix map, rather it maintains both a
      * local map and the existing map. All operations favour the local map but
      * defer to the existing map if the local map cannot fulfil a request.
-     * </p>
-     * <p>
-     * Will use whatever the version of ARQ you are using considers the default
-     * extending implementation, this may change from release to release.
      * </p>
      * 
      * @param pmap
@@ -192,5 +227,4 @@ public class PrefixMapFactory {
     public static PrefixMap extend(PrefixMap pmap) {
         return new PrefixMapExtended(pmap);
     }
-
 }

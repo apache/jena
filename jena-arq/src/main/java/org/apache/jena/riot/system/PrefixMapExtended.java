@@ -106,4 +106,16 @@ public class PrefixMapExtended extends PrefixMapBase {
             return p;
         return parent.abbrev(uriStr);
     }
+    
+    @Override
+    public boolean isEmpty()
+    {
+        return parent.isEmpty() && local.isEmpty() ;
+    }
+
+    @Override
+    public int size()
+    {
+        return parent.size() + local.size() ;
+    }
 }
