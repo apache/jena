@@ -62,8 +62,9 @@ public class RDFParserRegistry
 
     /** Generic parser factory. */
     private static ReaderRIOTFactory parserFactory = new ReaderRIOTFactoryImpl() ;
-
+    
     private static boolean initialized = false ;
+    static { init() ; }
     public static synchronized void init ()
     {
         if ( initialized ) return ;
