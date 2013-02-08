@@ -18,28 +18,29 @@
 
 package org.apache.jena.riot;
 
-import org.apache.jena.riot.stream.TestStreamManager ;
-import org.junit.BeforeClass ;
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
-import org.junit.runners.Suite.SuiteClasses ;
+import junit.framework.Assert;
 
-@RunWith(Suite.class)
-@SuiteClasses(
-{ 
-    TestLangRIOT.class
-    , TestStreamManager.class 
-    , TestJenaReaderRIOT.class
-    , TestReadData.class
-    , TestRiotReader.class
-    , TestParserRegistry.class
-})
+import org.junit.Test;
 
-public class TS_ReaderRIOT
-{
-    @BeforeClass public static void beforeClass()
-    { 
-        RIOT.init() ;
+/**
+ * Tests for the {@link RDFParserRegistry}
+ *
+ */
+public class TestParserRegistry {
+
+    @Test
+    public void parser_registry_is_triples() {
+        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.N3));
+        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.NTRIPLES));
+        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.TURTLE));
+        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFXML));
+        Assert.assertTrue(RDFParserRegistry.isTriples(RDFLanguages.RDFJSON));
     }
-}
+    
+    @Test
+    public void parser_registry_is_quads() {
+        Assert.assertTrue(RDFParserRegistry.isQuads(RDFLanguages.NQUADS));
+        Assert.assertTrue(RDFParserRegistry.isQuads(RDFLanguages.TRIG));
+    }
 
+}
