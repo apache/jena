@@ -29,7 +29,13 @@ import com.hp.hpl.jena.sparql.util.NodeIsomorphismMap ;
 public class OpLeftJoin extends Op2
 {
     ExprList expressions = null ;
-    
+
+    /** Guaranteed to return a new left join*/
+    public static OpLeftJoin createLeftJoin(Op left, Op right, ExprList exprs)
+    { 
+        return new OpLeftJoin(left, right, exprs) ;
+    }
+
     public static Op create(Op left, Op right, ExprList exprs)
     { 
         return new OpLeftJoin(left, right, exprs) ;

@@ -31,7 +31,11 @@ public class ExprWalker //implements ExprVisitor
     public void walk(Expr expr) { expr.visit(visitor) ; }
 
     static public void walk(ExprVisitor visitor, Expr expr)
-    { expr.visit(new WalkerBottomUp(visitor)) ; }
+    {
+        if ( expr == null )
+            return ;
+        expr.visit(new WalkerBottomUp(visitor)) ;
+    }
     
 //    static public void walk(ExprVisitor visitor, Expr expr)
 //    { expr.visit(new WalkerTopDown(visitor)) ; }
