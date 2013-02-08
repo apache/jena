@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.system;
 
+import java.util.Iterator ;
+
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.lang.RDFParserOutputCounting ;
@@ -37,6 +39,27 @@ public class StreamRDFLib
     public static StreamRDF graph(Graph graph)               { return new ParserOutputGraph(graph) ; }
     
     public static StreamRDF dataset(DatasetGraph dataset)    { return new ParserOutputDataset(dataset) ; }
+    
+    /** Set triples to a StreamRDF - does not all .start/.finish */ 
+    public static void triplesToStream(StreamRDF dest, Iterator<Triple> iter)
+    {
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = iter.next() ;
+            dest.triple(t) ;
+        }
+    }
+
+    /** Set quads to a StreamRDF - does not all .start/.finish */ 
+    public static void quadsToStream(StreamRDF dest, Iterator<Quad> iter)
+    {
+        for ( ; iter.hasNext() ; )
+        {
+            Quad q = iter.next() ;
+            dest.quad(q) ;
+        }
+    }
+
     
     /** 
      * Output to a sink; prefix and base handled only within the parser.
