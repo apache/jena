@@ -37,7 +37,7 @@ import com.hp.hpl.jena.sparql.path.Path ;
 
 class NodeTransformOp extends TransformCopy
 {
-    // This finds everywhere that node can lurk in an alegra expression:
+    // This finds everywhere that node can lurk in an algebra expression:
     //   BGPs, paths, triples, quads
     //   GRAPH, GRAPH{} (DatasetNames)
     //   Filters, including inside EXISTS and expressions in LeftJoin
@@ -191,8 +191,6 @@ class NodeTransformOp extends TransformCopy
     @Override public Op transform(OpGroup opGroup, Op subOp)
     {
         VarExprList groupVars = NodeTransformLib.transform(transform, opGroup.getGroupVars()) ;
-        
-        
         // Rename the vars in the expression as well.
         // .e.g max(?y) ==> max(?/y)  
         // These need renaming as well.

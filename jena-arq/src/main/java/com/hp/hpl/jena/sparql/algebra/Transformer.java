@@ -151,14 +151,14 @@ public class Transformer
 
         private ExprList transform(ExprList exprList, ExprTransform exprTransform)
         {
-            if ( exprTransform == null )
+            if ( exprList == null || exprTransform == null )
                 return exprList ;
             return ExprTransformer.transform(exprTransform, exprList) ;
         }
 
         private Expr transform(Expr expr, ExprTransform exprTransform)
         {
-            if ( exprTransform == null )
+            if ( expr == null || exprTransform == null )
                 return expr ;
             return ExprTransformer.transform(exprTransform, expr) ;
         }
@@ -326,9 +326,15 @@ public class Transformer
         }
         
         @Override
-        protected void visitFilter(OpFilter opFilter) {
+        protected void visitFilter(OpFilter opFilter)
+        {
+            Op subOp = null ;
+            if ( opFilter.getSubOp() != null )
+                subOp = pop() ;
+            boolean changed = ( opFilter.getSubOp() != subOp ) ;
+            
+            // Now any expressions.
             ExprList ex = new ExprList() ;
-            boolean changed = false ;
             for ( Expr e : opFilter.getExprs() )
             {
                 Expr e2 = transform(e, exprTransform) ;
@@ -338,11 +344,7 @@ public class Transformer
             }
             OpFilter f = opFilter ;
             if ( changed )
-                f = (OpFilter)OpFilter.filter(ex, opFilter.getSubOp()) ;
-            // As Op1.
-            Op subOp = null ;
-            if ( f.getSubOp() != null )
-                subOp = pop() ;
+                f = (OpFilter)OpFilter.filter(ex, subOp) ;
             push(f.apply(transform, subOp)) ;
         }
         
