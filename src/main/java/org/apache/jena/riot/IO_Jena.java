@@ -19,18 +19,14 @@
 package org.apache.jena.riot;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.adapters.RDFReaderRIOT ;
-import org.apache.jena.riot.stream.StreamManager ;
 import org.apache.jena.riot.system.JenaWriterRdfJson ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFReaderFImpl ;
 import com.hp.hpl.jena.rdf.model.impl.RDFWriterFImpl ;
-import com.hp.hpl.jena.sparql.util.Context ;
 import com.hp.hpl.jena.sparql.util.Symbol ;
-import com.hp.hpl.jena.sparql.util.Utils ;
 
 public class IO_Jena
 {
@@ -99,48 +95,6 @@ public class IO_Jena
 
     }
     
-    // --- IO
-    
-    /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension. 
-     */
-    public static TypedInputStream open(String filenameOrURI)
-    { return open(filenameOrURI, (Context)null) ; }
-    
-    /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension. 
-     */
-    public static TypedInputStream open(String filenameOrURI, Context context)
-    {
-        StreamManager sMgr = StreamManager.get() ;
-        if ( context != null )
-        {
-            try { sMgr = (StreamManager)context.get(streamManagerSymbol, context) ; }
-            catch (ClassCastException ex) 
-            { log.warn("Context symbol '"+streamManagerSymbol+"' is not a "+Utils.classShortName(StreamManager.class)) ; }
-        }
-        
-        return open(filenameOrURI, sMgr) ;
-    }
-    
-    public static TypedInputStream open(String filenameOrURI, StreamManager sMgr)
-    {
-        TypedInputStream in = sMgr.open(filenameOrURI) ;
-            
-        if ( in == null )
-        {
-            if ( log.isDebugEnabled() )
-                //log.debug("Found: "+filenameOrURI+" ("+loc.getName()+")") ;
-                log.debug("Not Found: "+filenameOrURI) ;
-            throw new RiotNotFoundException("Not found: "+filenameOrURI) ;
-            //return null ;
-        }
-        if ( log.isDebugEnabled() )
-            //log.debug("Found: "+filenameOrURI+" ("+loc.getName()+")") ;
-            log.debug("Found: "+filenameOrURI) ;
-        return in ;
-    }
-    
     protected static ContentType determineCT(String target, String ctStr, Lang hintLang)
     {
         if ( ctStr != null )
@@ -149,7 +103,7 @@ public class IO_Jena
         boolean isTextPlain = WebContent.contentTypeTextPlain.equals(ctStr) ;
         ContentType ct = (ctStr==null) ? null : ContentType.parse(ctStr) ;
         
-        // It's it's text plain, we ignore it because a lot of naive
+        // It's it's text plain, we ignore it because some
         // server setups return text/plain for any file type.
         
         if ( ct == null || isTextPlain )
@@ -157,31 +111,9 @@ public class IO_Jena
             if ( hintLang == null )
                 ct = RDFLanguages.guessContentType(target) ;
             else
-            {
                 ct = hintLang.getContentType() ;
-//                if ( ct == null )
-//                {
-//                    // Is the hint a content type?
-//                    Lang2 lang = RDFLanguages.contentTypeToLang(hintLang) ;
-//                    if ( lang != null )
-//                        ct = lang.getContentType() ;
-//                }
-            }
         }
         return ct ;
     }
-
-    // --- Syntax framework
-//  public static void addTripleSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Triple> factory, String ... fileExt )
-//  { 
-//      RDFLanguages.addTripleSyntax$(language, contentType, factory, fileExt) ;
-//  } 
-//  
-//  public static void addQuadSyntax(Lang2 language, ContentType contentType, ReaderRIOTFactory<Quad> factory, String ... fileExt )
-//  {
-//      RDFLanguages.addQuadSyntax$(language, contentType, factory, fileExt) ;
-//  }
-
-    
 }
 
