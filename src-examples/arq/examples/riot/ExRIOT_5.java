@@ -43,7 +43,7 @@ public class ExRIOT_5
         RDFLanguages.register(lang) ;
         
         // Register the parser factory.
-        ReaderRIOTFactory factory = new Factory() ;
+        ReaderRIOTFactory factory = new SSEReaderFactory() ;
         RDFParserRegistry.registerLangTriples(lang, factory) ;
         
         String filename = "data.rsse" ;
@@ -51,7 +51,7 @@ public class ExRIOT_5
         model.write(System.out, "TTL") ;
     }
     
-    static class Factory implements ReaderRIOTFactory
+    static class SSEReaderFactory implements ReaderRIOTFactory
     {
         @Override
         public ReaderRIOT create(Lang language)
