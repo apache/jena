@@ -57,13 +57,11 @@ import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 
 /** Operations to access RIOT parsers and send the output to 
- *  a ParserOutput (triples or quads as appropriate).
+ *  a StreamRDF (triples or quads as appropriate).
  *  This class is probably not what you want to use.
  *  It is public to give maximum compatibility.
- *  Please consider it likely to move into org.apache.jena.riot.system.
  *
  *  @see RDFDataMgr for reading from a location, including web access and content negotation.
- *     
  */
 public class RiotReader
 {

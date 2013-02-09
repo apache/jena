@@ -58,12 +58,19 @@ import com.hp.hpl.jena.sparql.util.Utils ;
  *  <li>Application language hint</li>
  *  </ul>
  * <p>
- *  It also provide a way to lookup names in different
+ *  It also provides a way to lookup names in different
  *  locations and to remap URIs to other URIs. 
  *  </p>
  *  <p>
  *  Extensible - a new syntax can be added to the framework. 
  *  </p>
+ *  <p>Operations fall into the follwoing categories:</p>
+ *  <ul>
+ *  <li>{@code read} -- Read data from a location into a Model/Dataset etc</li>
+ *  <li>{@code loadXXX} -- Read data and return an in-memory object holding the data.</li>
+ *  <li>{@code parse} -- Read data and send to an {@link StreamRDF}</li>
+ *  <li>{@code open}  -- Open a typed input stream to the location, using any alternative locations</li>
+ *  </ul> 
  */
 
 public class RDFDataMgr
@@ -668,13 +675,18 @@ public class RDFDataMgr
     }
 
     /** Open a stream to the destination (URI or filename)
-     * Performs content negotition, including looking at file extension. 
+     * Performs content negotition, including looking at file extension.
+     * @param filenameOrURI
+     * @return TypedInputStream 
      */
     public static TypedInputStream open(String filenameOrURI)
     { return open(filenameOrURI, (Context)null) ; }
     
     /** Open a stream to the destination (URI or filename)
      * Performs content negotition, including looking at file extension. 
+     * @param filenameOrURI
+     * @param context
+     * @return TypedInputStream
      */
     public static TypedInputStream open(String filenameOrURI, Context context)
     {
@@ -689,9 +701,15 @@ public class RDFDataMgr
         return open(filenameOrURI, sMgr) ;
     }
     
-    public static TypedInputStream open(String filenameOrURI, StreamManager sMgr)
+    /** Open a stream to the destination (URI or filename)
+     * Performs content negotition, including looking at file extension. 
+     * @param filenameOrURI
+     * @param streamManager
+     * @return TypedInputStream
+     */
+    public static TypedInputStream open(String filenameOrURI, StreamManager streamManager)
     {
-        TypedInputStream in = sMgr.open(filenameOrURI) ;
+        TypedInputStream in = streamManager.open(filenameOrURI) ;
             
         if ( in == null )
         {
@@ -747,7 +765,6 @@ public class RDFDataMgr
     private static void processTriples(StreamRDF output, String base, Reader in, Lang lang, Context context)
     {
         // Not as good as from an InputStream - RDF/XML not supported 
-        //****
         ContentType ct = determineCT(base, null, lang) ;
         if ( ct == null )
             throw new RiotException("Failed to determine the triples content type: (URI="+base+" : hint="+lang+")") ;

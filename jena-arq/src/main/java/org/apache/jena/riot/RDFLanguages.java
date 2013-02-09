@@ -126,6 +126,7 @@ public class RDFLanguages
         if ( initialized ) return ;
         initialized = true ;
         initStandard() ;
+        // Needed to avoid a class initialization loop. 
         Lang.RDFXML = RDFLanguages.RDFXML ; 
         Lang.NTRIPLES = RDFLanguages.NTRIPLES ; 
         Lang.N3 = RDFLanguages.N3 ; 
