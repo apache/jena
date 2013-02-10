@@ -166,7 +166,6 @@ public class TestSelectorUse extends AbstractModelTestBase
 		/*
 		 * the _null_ argument to LiteralImpl was preserved only for backward
 		 * compatability. It was be logged and has now become an exception.
-		 * (Brian and Chris had a discussion about this and agreed).
 		 */
 		try
 		{

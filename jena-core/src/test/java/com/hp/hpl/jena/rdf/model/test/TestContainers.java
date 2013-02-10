@@ -37,9 +37,6 @@ public class TestContainers extends AbstractModelTestBase
 		super(modelFactory, name);
 	}
 
-	/**
-	 * Contributed by Damian, turned into a test case by Chris.
-	 */
 	public void testCanAsContainer()
 	{
 		final String seqUri = "http://example.com/#seq";

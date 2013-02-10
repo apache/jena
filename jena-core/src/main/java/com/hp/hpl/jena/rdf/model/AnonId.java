@@ -60,8 +60,7 @@ public class AnonId extends java.lang.Object {
     /** 
         Creates new AnonId. Normally this id is guaranteed to be unique on this 
         machine: it is time-dependant. However, sometimes [incorrect] code is
-        sensitive to bnode ordering and produces bizarre bugs (both Dave and
-        Chris have been bitten by this, as have some users, I think). Hence the
+        sensitive to bnode ordering and produces bizarre bugs. Hence the
         disableBNodeUIDGeneration flag, which allows bnode IDs to be predictable.
     */
     public AnonId() {

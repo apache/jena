@@ -130,8 +130,7 @@ public class TestStatements extends AbstractModelTestBase
 	}
 
 	/**
-	 * this case came up when Chris was sorting out ReifedStatement and
-	 * had mishacked Model.createStatement. A resource created in one
+	 * A resource created in one
 	 * model and incorporated into a statement asserted constructed by a
 	 * different model should test equal to the resource extracted from that
 	 * statement, even if it's a bnode.
