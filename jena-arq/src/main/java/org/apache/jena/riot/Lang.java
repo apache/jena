@@ -42,8 +42,7 @@ public class Lang
     //  public static final Lang NQUADS = RDFLanguages.NQuads ; 
     //  public static final Lang TRIG = RDFLanguages.TriG ; 
 
-    // To avoid an initialization circularity, these are set by RDFLaguages.
-    // Using the RDFLanguages constants is preferred style.
+    // To avoid an initialization circularity, these are set by RDFLanguages.
 
     public static Lang RDFXML ; 
     public static Lang NTRIPLES ; 
