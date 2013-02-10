@@ -62,8 +62,7 @@ public class TestPackage extends TestCase{
     
     /**
          Added as a place to put the test(s) which ensure that thrown URI exceptions
-         carry the bad URI with them. I (Chris) would embed them in the other tests,
-         but I can't work out how to do so ...
+         carry the bad URI with them.
     */
     public static class TestURIExceptions extends TestCase
         {

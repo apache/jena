@@ -45,8 +45,6 @@ import com.hp.hpl.jena.vocabulary.RDF ;
  * <P>This class implements common methods, mainly convenience methods, for
  *    model implementations.  It is intended use is as a base class from which
  *    model implemenations can be derived.</P>
- *
- * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
  */
 
 public class ModelCom extends EnhGraph

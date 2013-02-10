@@ -365,8 +365,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * was implemented as sameValueAs rather than equals. If it turns out that
      * the filter is needed, it can be commented back in, AND a corresponding
      * filter added to find(Node x 3) -- and test cases, of course.
-     *
-     * <p>[Chris, after discussion with Dave]
      */
     @Override
     public ExtendedIterator<Triple> graphBaseFind(TripleMatch m) {

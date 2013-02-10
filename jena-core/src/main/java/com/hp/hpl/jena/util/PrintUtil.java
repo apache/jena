@@ -31,9 +31,6 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * A collection of small utilites for pretty printing nodes, triples
  * and associated things. The core functionality here is a static
  * prefix map which is preloaded with known prefixes.
- * 
- * <p>updated by Chris March 2004 to use a PrefixMapping rather than the
- * specialised tables.
  */
 public class PrintUtil {
     
