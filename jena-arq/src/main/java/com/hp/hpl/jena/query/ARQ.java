@@ -22,7 +22,6 @@ import org.apache.jena.riot.RIOT ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.sparql.ARQConstants ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.engine.main.StageBuilder ;
@@ -437,6 +436,7 @@ public class ARQ
                 return ;
             initialized = true ;
             globalContext = defaultSettings() ;
+            RIOT.init() ;
             StageBuilder.init() ;
             ARQMgt.init() ;         // After context and after PATH/NAME/VERSION/BUILD_DATE are set
             MappingRegistry.addPrefixMapping(ARQ.arqSymbolPrefix, ARQ.arqParamNS) ;
@@ -448,11 +448,9 @@ public class ARQ
             ARQMgt.register(NS+".system:type=SystemInfo", sysInfo) ;
             SystemARQ.registerSubSystem(sysInfo) ;
 
-            SystemInfo sysInfo2 = new SystemInfo("http://openjena.org/#jena", Jena.VERSION, Jena.BUILD_DATE) ;
-            ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
-            SystemARQ.registerSubSystem(sysInfo2) ;
-
-            RIOT.init() ;
+            // Register RIOT details here, not earlier, to avoid
+            // initialization loops with RIOT.init() called directly.
+            RIOT.register() ;
         }
     }
     
