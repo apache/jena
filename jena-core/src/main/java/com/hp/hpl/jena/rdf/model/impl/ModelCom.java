@@ -60,7 +60,9 @@ implements Model, PrefixMapping, Lock
         // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
         // have cleanly initialized from the calls of  RDFReaderFImpl and RDFWriterFImpl
         // above.  RIOT initialization happens before model.read can be called.
-        IO_Ctl.init();
+        
+        // Needs further testing :-(
+        //IO_Ctl.init();
     }
     
     /**
