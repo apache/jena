@@ -54,7 +54,15 @@ implements Model, PrefixMapping, Lock
     private static final RDFReaderF readerFactory = new RDFReaderFImpl();
     private static final RDFWriterF writerFactory = new RDFWriterFImpl();
     private Lock modelLock = null ;
+    private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
 
+    static {
+        // This forces RIOT (in ARQ) to initialize but after Jena readers/writers
+        // have cleanly initialized from the calls of  RDFReaderFImpl and RDFWriterFImpl
+        // above.  RIOT initialization happens before model.read can be called.
+        IO_Ctl.init();
+    }
+    
     /**
     	make a model based on the specified graph
      */
@@ -65,15 +73,15 @@ implements Model, PrefixMapping, Lock
     { super( base, personality ); 
     withDefaultMappings( defaultPrefixMapping ); }
 
-    private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
-
     public static PrefixMapping getDefaultModelPrefixes()
     { return defaultPrefixMapping; }
 
-    public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
-    { PrefixMapping result = defaultPrefixMapping;
-    defaultPrefixMapping = pm;
-    return result; }
+    public static PrefixMapping setDefaultModelPrefixes(PrefixMapping pm)
+    {
+        PrefixMapping result = defaultPrefixMapping ;
+        defaultPrefixMapping = pm ;
+        return result ;
+    }
 
     @Override
     public Graph getGraph()

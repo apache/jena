@@ -65,7 +65,7 @@ public class RDFParserRegistry
     
     private static boolean initialized = false ;
     static { init() ; }
-    public static synchronized void init ()
+    public static void init()
     {
         if ( initialized ) return ;
         initialized = true ;
