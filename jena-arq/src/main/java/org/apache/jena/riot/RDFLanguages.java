@@ -119,12 +119,10 @@ public class RDFLanguages
     private static Map<String, Lang> mapFileExtToLang                  = DS.map() ;
 
     // ----------------------
-    static { init() ; }
-    private static boolean initialized = false ;
-    public static synchronized void init ()
+    public static void init() {}
+    static { init$() ; }
+    private static synchronized void init$()
     {
-        if ( initialized ) return ;
-        initialized = true ;
         initStandard() ;
         // Needed to avoid a class initialization loop. 
         Lang.RDFXML = RDFLanguages.RDFXML ; 
