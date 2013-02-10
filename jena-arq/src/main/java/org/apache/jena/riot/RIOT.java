@@ -44,24 +44,21 @@ public class RIOT
         SysRIOT.StrictXSDLexicialForms = state ;
     }
 
-    private static volatile boolean initialized = false ;
-    private static final Object     initLock    = new Object() ;
+    private static boolean initialized = false ;
 
     public static void init()
     {
         if ( initialized )
             return ;
-        synchronized(initLock) {
-            if ( initialized ) return ;
-            initialized = true ;
+        initialized = true ;
+        ARQMgt.init() ; 
+        String NS = RIOT.PATH ;
+        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
+        ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
+        SystemARQ.registerSubSystem(sysInfo2) ;
 
-            String NS = RIOT.PATH ;
-            SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
-            ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
-            SystemARQ.registerSubSystem(sysInfo2) ;
-
-            RDFLanguages.init() ;
-            RDFParserRegistry.init() ;
-            IO_Jena.wireIntoJena() ;
-        }    }
+        RDFLanguages.init() ;
+        RDFParserRegistry.init() ;
+        IO_Jena.wireIntoJena() ;
+    }
 }
