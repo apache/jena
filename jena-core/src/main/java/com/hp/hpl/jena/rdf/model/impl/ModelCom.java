@@ -62,7 +62,7 @@ implements Model, PrefixMapping, Lock
         // above.  RIOT initialization happens before model.read can be called.
         
         // Needs further testing :-(
-        IO_Ctl.init();
+        //IO_Ctl.init();
     }
     
     /**
