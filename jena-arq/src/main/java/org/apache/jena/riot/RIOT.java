@@ -51,7 +51,6 @@ public class RIOT
         if ( initialized )
             return ;
         initialized = true ;
-        ARQMgt.init() ; 
         String NS = RIOT.PATH ;
         SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
