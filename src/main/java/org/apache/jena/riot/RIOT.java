@@ -27,13 +27,13 @@ import com.hp.hpl.jena.sparql.mgt.SystemInfo ;
 public class RIOT
 {
     /** IRI for ARQ */  
-    public static final String riotIRI = "http://openjena.org/#riot" ;
+    public static final String riotIRI = "http://jena.apache.org/#riot" ;
 
     /** The product name */   
     public static final String NAME = "RIOT";
     
     /** The root package name for RIOT */   
-    public static final String PATH = "org.openjena.riot";
+    public static final String PATH = "org.apache.jena.riot";
 
     public static final String VERSION = "ARQ/"+ARQ.VERSION ;
     public static final String BUILD_DATE = ARQ.BUILD_DATE ;
@@ -45,19 +45,30 @@ public class RIOT
     }
 
     private static boolean initialized = false ;
-
+    
     public static void init()
     {
         if ( initialized )
             return ;
         initialized = true ;
+        RDFLanguages.init() ;
+        RDFParserRegistry.init() ;
+        IO_Jena.wireIntoJena() ;
+        
+        // Don't register JMX info with ARQ as it may not be initialized
+        // itself and we can get into a circularity.
+        // This is done in ARQ.init at the proper moment.
+    }
+    
+    private static boolean registered = false ;
+    public static void register()
+    {
+        if ( registered )
+            return ;
+        registered = true ;
         String NS = RIOT.PATH ;
         SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
         SystemARQ.registerSubSystem(sysInfo2) ;
-
-        RDFLanguages.init() ;
-        RDFParserRegistry.init() ;
-        IO_Jena.wireIntoJena() ;
     }
 }
