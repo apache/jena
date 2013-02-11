@@ -848,7 +848,7 @@ public class OntResourceImpl
     public ExtendedIterator<Resource> listRDFTypes( boolean direct ) {
         ExtendedIterator<Resource> i = listDirectPropertyValues( RDF.type, "rdf:type", Resource.class, getProfile().SUB_CLASS_OF(), direct, false );
         // we only want each result once
-        return UniqueExtendedIterator.create( i );
+        return i.filterKeep( new UniqueFilter<Resource>());
     }
 
     /**
@@ -945,8 +945,8 @@ public class OntResourceImpl
     @Override
     public int getCardinality( Property p ) {
         int n = 0;
-        for (Iterator<RDFNode> i = UniqueExtendedIterator.create( listPropertyValues( p ) );  i.hasNext(); n++) {
-            i.next();
+        for (Iterator<RDFNode> i =listPropertyValues( p ).filterKeep( new UniqueFilter<RDFNode>());  i.hasNext(); n++) {
+        	  i.next();
         }
 
         return n;
@@ -1551,7 +1551,7 @@ public class OntResourceImpl
             i = computeDirectValues( p, orderRel, inverse, subject, object, mapper );
         }
 
-        return UniqueExtendedIterator.create( i );
+        return WrappedIterator.create(i).filterKeep( new UniqueFilter<T>());
     }
 
 

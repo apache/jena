@@ -29,7 +29,11 @@ import java.util.*;
  * An iterator that represents the concatenation of two individual iterators.
  * The concatenated iterator will range over the elements of the first iterator,
  * followed by the elements of the second.
+ * 
+ * @deprecated Use <code>Iterator<T> iter = WrappedIterator.create( iter1 ).andThen( iter2 )</code>
+ * {@link com.hp.hpl.jena.util.iterator.WrappedIterator}
  */
+@Deprecated
 public class ConcatenatedIterator<T> implements Iterator<T>
 {
     /** The first iterator */

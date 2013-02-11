@@ -18,11 +18,10 @@
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
-import com.hp.hpl.jena.reasoner.BaseInfGraph;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
+import com.hp.hpl.jena.util.iterator.UniqueFilter;
 
 /**
  * Implementation of InfGraph used by the TransitiveReasoner.
@@ -110,7 +109,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
         checkOpen();
         if (!isPrepared) prepare();
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
-        return UniqueExtendedIterator.create( cascade.find(pattern) );
+        return cascade.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
    
     /** 

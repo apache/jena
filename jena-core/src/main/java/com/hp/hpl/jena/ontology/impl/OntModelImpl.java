@@ -207,8 +207,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<Ontology> listOntologies() {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().ONTOLOGY(), Ontology.class ) );
+        return findByTypeAs( getProfile().ONTOLOGY(), Ontology.class )
+        		.filterKeep( new UniqueFilter<Ontology>());
     }
 
 
@@ -239,8 +239,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public ExtendedIterator<OntProperty> listOntProperties() {
-        ExtendedIterator<OntProperty> i = UniqueExtendedIterator.create(
-                                findByTypeAs( RDF.Property, OntProperty.class ) );
+        ExtendedIterator<OntProperty> i = findByTypeAs( RDF.Property, OntProperty.class )
+    			.filterKeep( new UniqueFilter<OntProperty>());
 
         // if we are in OWL_FULL, the properties should also include the annotation properties
         if (getReasoner() != null  && getProfile().equals( ProfileRegistry.getInstance().getProfile( ProfileRegistry.OWL_LANG ) )) {
@@ -276,7 +276,7 @@ public class OntModelImpl extends ModelCom implements OntModel
                                                    .andThen( listSymmetricProperties() );
 
         // we must filter for uniqueness
-        return UniqueExtendedIterator.create( i );
+        return i.filterKeep( new UniqueFilter<OntProperty>());
     }
 
     /**
@@ -302,8 +302,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<ObjectProperty> listObjectProperties() {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class ) );
+        return  findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class )
+        		.filterKeep( new UniqueFilter<ObjectProperty>());
     }
 
 
@@ -330,8 +330,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<DatatypeProperty> listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class ) );
+        return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class )
+        		.filterKeep( new UniqueFilter<DatatypeProperty>());
     }
 
 
@@ -353,8 +353,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<FunctionalProperty> listFunctionalProperties() {
         checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class ) );
+        return findByTypeAs( getProfile().FUNCTIONAL_PROPERTY(), FunctionalProperty.class )
+        		.filterKeep( new UniqueFilter<FunctionalProperty>());
     }
 
 
@@ -374,8 +374,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<TransitiveProperty> listTransitiveProperties() {
         checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class ) );
+        return findByTypeAs( getProfile().TRANSITIVE_PROPERTY(), TransitiveProperty.class )
+        		.filterKeep( new UniqueFilter<TransitiveProperty>());
     }
 
 
@@ -395,8 +395,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<SymmetricProperty> listSymmetricProperties() {
         checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class ) );
+        return findByTypeAs( getProfile().SYMMETRIC_PROPERTY(), SymmetricProperty.class )
+        		.filterKeep( new UniqueFilter<SymmetricProperty>());
     }
 
 
@@ -416,8 +416,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<InverseFunctionalProperty> listInverseFunctionalProperties() {
         checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class ) );
+        return findByTypeAs( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), InverseFunctionalProperty.class )
+        		.filterKeep( new UniqueFilter<InverseFunctionalProperty>());
     }
 
 
@@ -464,7 +464,7 @@ public class OntModelImpl extends ModelCom implements OntModel
         }
         else {
             // we have inference, so we pick the nodes that are of type Thing
-            return UniqueExtendedIterator.create( findByTypeAs( getProfile().THING(), Individual.class ) );
+            return findByTypeAs( getProfile().THING(), Individual.class ).filterKeep( new UniqueFilter<Individual>());
         }
     }
 
@@ -480,8 +480,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public ExtendedIterator<Individual> listIndividuals( Resource cls ) {
-        return UniqueExtendedIterator.create(
-                findByTypeAs( cls, Individual.class ) );
+        return findByTypeAs( cls, Individual.class )
+    			.filterKeep( new UniqueFilter<Individual>());
     }
 
 
@@ -503,8 +503,8 @@ public class OntModelImpl extends ModelCom implements OntModel
      */
     @Override
     public ExtendedIterator<OntClass> listClasses() {
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class ) );
+        return findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class )
+    			.filterKeep( new UniqueFilter<OntClass>());
     }
 
 
@@ -564,8 +564,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<EnumeratedClass> listEnumeratedClasses()  {
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
-        return UniqueExtendedIterator.create(
-            findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class ) );
+        return findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class )
+        		.filterKeep( new UniqueFilter<EnumeratedClass>());
     }
 
 
@@ -587,8 +587,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<UnionClass> listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
-        return UniqueExtendedIterator.create(
-            findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) );
+        return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class ) 
+        		.filterKeep( new UniqueFilter<UnionClass>());
     }
 
 
@@ -610,8 +610,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<ComplementClass> listComplementClasses() {
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
-        return UniqueExtendedIterator.create(
-            findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class ) );
+        return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class )
+        		.filterKeep( new UniqueFilter<ComplementClass>());
     }
 
 
@@ -633,8 +633,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<IntersectionClass> listIntersectionClasses() {
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
-        return UniqueExtendedIterator.create(
-            findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class ) );
+        return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class )
+        		.filterKeep( new UniqueFilter<IntersectionClass>());
     }
 
 
@@ -683,8 +683,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<Restriction> listRestrictions() {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().RESTRICTION(), Restriction.class ) );
+        return findByTypeAs( getProfile().RESTRICTION(), Restriction.class )
+        		.filterKeep( new UniqueFilter<Restriction>());
     }
 
 
@@ -704,8 +704,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<AllDifferent> listAllDifferent() {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
-        return UniqueExtendedIterator.create(
-            findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class ) );
+        return findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class )
+        		.filterKeep( new UniqueFilter<AllDifferent>());
     }
 
     /**
@@ -716,8 +716,8 @@ public class OntModelImpl extends ModelCom implements OntModel
     @Override
     public ExtendedIterator<DataRange> listDataRanges() {
         checkProfileEntry( getProfile().DATARANGE(), "DATARANGE" );
-        return UniqueExtendedIterator.create(
-                findByTypeAs( getProfile().DATARANGE(), DataRange.class ) );
+        return findByTypeAs( getProfile().DATARANGE(), DataRange.class )
+        		.filterKeep( new UniqueFilter<DataRange>());        
     }
 
 
@@ -745,10 +745,9 @@ public class OntModelImpl extends ModelCom implements OntModel
             return new NullIterator<AnnotationProperty>();
         }
         else {
-            return UniqueExtendedIterator.create(
-                        findByType( r )
-//                          .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
-                          .mapWith( new SubjectNodeAs<AnnotationProperty>( AnnotationProperty.class ) ) );
+            return findByType( r )
+            		.mapWith( new SubjectNodeAs<AnnotationProperty>( AnnotationProperty.class ) )
+            		.filterKeep( new UniqueFilter<AnnotationProperty>());
         }
     }
 
@@ -2904,7 +2903,7 @@ public class OntModelImpl extends ModelCom implements OntModel
                 i = i.andThen( findByType( alternates.next() ) );
             }
         }
-        return UniqueExtendedIterator.create( i );
+        return i.filterKeep( new UniqueFilter<Triple>());
     }
 
 

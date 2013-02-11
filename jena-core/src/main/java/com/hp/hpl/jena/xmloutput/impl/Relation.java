@@ -25,9 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import com.hp.hpl.jena.util.iterator.IteratorIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.util.iterator.Map1Iterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /**
  * A sparse 2 dimensional array of boolean indexed by Object.
@@ -227,13 +227,6 @@ class Relation<T> {
      */   
     public Iterator<PairEntry<T, T>> iterator()
     {
-        // Map<T, Set<T>> => Map.Entry<T, Set<T>> via "rows.entrySet()"
-        // Map.Entry<T, Set<T>> => Iterator<PairEntry<T, T>>
-        // Iterator<PairEntry<T, T>> ==> Iterator<PairEntry<T, T>> via IteratorIterator
-        
-        // Convert  Map.Entry<T, Set<T>> to Iterator<PairEntry<T, T>>
-        // applied to an entrySet.
-        
         Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>> m1 = 
         new Map1<Map.Entry<T, Set<T>>, Iterator<PairEntry<T, T>>>(){
             @Override
@@ -245,7 +238,7 @@ class Relation<T> {
         Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>> iter1 =
             new Map1Iterator<Map.Entry<T, Set<T>>,Iterator<PairEntry<T, T>>>(m1 , rows.entrySet().iterator()) ;
         // And now flatten it.
-        Iterator<PairEntry<T, T>> iter2 = new IteratorIterator<PairEntry<T, T>>(iter1) ; 
+        Iterator<PairEntry<T, T>> iter2 = WrappedIterator.createIteratorIterator(iter1) ;
         return iter2 ;
     }
 }

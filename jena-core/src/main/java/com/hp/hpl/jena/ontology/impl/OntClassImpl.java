@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.reasoner.InfGraph ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
-import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.UniqueFilter;
 import com.hp.hpl.jena.util.iterator.WrappedIterator ;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
@@ -176,9 +176,8 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listSuperClasses( boolean direct ) {
-        return UniqueExtendedIterator.create(
-                listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
-                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ) );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false )
+                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ).filterKeep( new UniqueFilter<OntClass>());
     }
 
     /**
@@ -367,9 +366,8 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listSubClasses( boolean direct ) {
-        return UniqueExtendedIterator.create(
-                listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
-                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ) );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true )
+                .filterDrop( new SingleEqualityFilter<OntClass>( this ) ).filterKeep( new UniqueFilter<OntClass>());
     }
 
 
@@ -471,7 +469,7 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listEquivalentClasses() {
-        return UniqueExtendedIterator.create( listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class ) );
+        return listAs( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", OntClass.class ).filterKeep( new UniqueFilter<OntClass>());
     }
 
     /**
@@ -539,7 +537,7 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<OntClass> listDisjointWith() {
-        return UniqueExtendedIterator.create( listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class ) );
+        return listAs( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", OntClass.class ).filterKeep( new UniqueFilter<OntClass>() ) ;
     }
 
     /**
@@ -665,8 +663,7 @@ public class OntClassImpl
      */
     @Override
     public ExtendedIterator<Individual> listInstances( final boolean direct ) {
-        return UniqueExtendedIterator.create(
-                getModel()
+        return getModel()
                 .listStatements( null, RDF.type, this )
                 .mapWith( new SubjectAsMapper<Individual>( Individual.class ) )
                 .filterKeep( new Filter<Individual>() {
@@ -674,8 +671,7 @@ public class OntClassImpl
                     public boolean accept( Individual o ) {
                         // if direct, ignore the sub-class typed resources
                         return o.hasRDFType( OntClassImpl.this, direct );
-                    }} )
-        );
+                    }} ).filterKeep( new UniqueFilter<Individual>());
     }
 
 

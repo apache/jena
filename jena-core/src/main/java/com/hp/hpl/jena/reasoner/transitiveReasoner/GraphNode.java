@@ -138,7 +138,9 @@ class GraphNode {
         { return siblings.siblingIterator(); }
     
     public Iterator<GraphNode> concatenateSiblings( Iterator<GraphNode> base )
-        { return new ConcatenatedIterator<GraphNode>( base, siblings.siblingIterator() ); }
+        { 
+    		return WrappedIterator.create( base ).andThen( siblings.siblingIterator() );
+        }
 
     private void becomeSubordinateOf( GraphNode leader )
         { this.siblings = new Subordinate( leader ); }
