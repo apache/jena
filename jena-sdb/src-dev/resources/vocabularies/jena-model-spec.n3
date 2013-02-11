@@ -1,0 +1,105 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+@prefix :           <#> .
+
+<>  rdfs:comment     "Vocabulary for describing Jena models" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:creator       "Chris Dollin" ;
+    dc:subject       "" ;
+    dc:publisher     "HP" ;
+    dc:title         "Jena Model Spec" ;
+    dc:description   "Vocabulary for describing Jena models" ;
+    dc:date          "2004-01-26" ;
+    dc:format        "RDF" ;
+    dc:identifier    :
+    .
+
+# ==== Classes
+
+jms:MakerSpec           rdf:type     rdfs:Class .
+jms:FileMakerSpec       rdf:type     rdfs:Class .
+jms:MemMakerSpec        rdf:type     rdfs:Class .
+
+jms:ModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the base type of all model specifications"
+    .
+
+jms:DefaultModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of the default model specification"
+    .
+
+jms:PlainModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of a plain memory-based model specification"
+    .
+
+jms:FileModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of a file-based model specification"
+    .
+
+jms:InfModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of an inference-model specification"
+    .
+
+jms:OntModelSpec rdf:type rdfs:Class
+    ; rdfs:comment "the type of an OntModel specification"
+    .
+
+# Resources
+
+jms:rsStandard rdf:type rdfs:Resource
+    ; rdfs:label "Standard"
+    ; rdfs:comment "reification mode Standard - all reification triples visible"
+    .
+
+jms:rsMinimal rdf:type rdfs:Resource
+    ; rdfs:label "Minimal"
+    ; rdfs:comment "reification mode Minimal - no reification triples visible"
+    .
+
+jms:rsConvenient rdf:type rdfs:Resource
+    ; rdfs:label "Convenient"
+    ; rdfs:comment "reification mode Convenient"
+    .
+
+# ==== Properties
+
+jms:ontLanguage         rdf:type     rdf:Property .
+jms:docManager          rdf:type     rdf:Property .
+jms:importMaker         rdf:type     rdf:Property .
+jms:reasonsWith         rdf:type     rdf:Property .
+jms:policyPath          rdf:type     rdf:Property .
+
+jms:maker               rdf:type     rdf:Property .
+jms:reificationMode     rdf:type     rdf:Property .
+jms:reasoner            rdf:type     rdf:Property .
+jms:fileBase            rdf:type     rdf:Property .
+jms:modelName           rdf:type     rdf:Property .
+
+# ==== Relationships
+
+jms:MemMakerSpec        rdfs:subClassOf     jms:MakerSpec .
+jms:FileMakerSpec       rdfs:subClassOf     jms:MakerSpec .
+
+jms:DefaultModelSpec    rdfs:subClassOf     jms:ModelSpec .
+jms:PlainModelSpec      rdfs:subClassOf     jms:ModelSpec .
+jms:InfModelSpec        rdfs:subClassOf     jms:PlainModelSpec .
+jms:OntModelSpec        rdfs:subClassOf     jms:InfModelSpec .
+jms:FileModelSpec       rdfs:subClassOf     jms:PlainModelSpec .
+
+jms:reificationMode     rdfs:domain         jms:MakerSpec .
+jms:loadWith            rdfs:domain         jms:ModelSpec .
+jms:maker               rdfs:domain         jms:PlainModelSpec .
+jms:importMaker         rdfs:domain         jms:OntModelSpec .
+jms:ontLanguage         rdfs:domain         jms:OntModelSpec .
+jms:reasonsWith         rdfs:domain         jms:InfModelSpec .
+jms:modelName           rdfs:domain         jms:ModelSpec .
+jms:fileBase            rdfs:domain         jms:FileMakerSpec .
+
+jms:importMaker         rdfs:subPropertyOf  jms:maker .
+
+# Local Variables:
+# tab-width: 4
+# indent-tabs-mode: nil
+# End:

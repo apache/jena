@@ -1,0 +1,33 @@
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+@prefix :           <http://jena.hpl.hp.com/2004/08/location-mapping#> .
+
+:   rdfs:comment     "Jena vocabulary for location mapping" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:title         "Jena vocabulary for location mapping" ;
+    dc:description   "Jena vocabulary for location mapping" ;
+    dc:date          "2004-08" ;
+    dc:format        "RDF" ;
+    .
+
+
+## ---- Classes ----
+
+:LocationMapping    rdf:type    rdfs:Class .
+
+## ---- Properties  ----
+
+:mapping    rdf:type rdf:Property .
+
+:name  rdf:type rdf:Property ;
+    rdfs:comment "Range is a STRING, not a URI, to allow for any symbols" .
+:altName  rdf:type rdf:Property .
+
+:prefix  rdf:type rdf:Property ;
+    rdfs:comment "Range is a STRING, not a URI, to allow for any symbols" .
+:altPrefix  rdf:type rdf:Property .
+
+
+
