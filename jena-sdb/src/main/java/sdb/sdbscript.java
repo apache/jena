@@ -20,6 +20,8 @@ package sdb;
 
 import java.lang.reflect.Method;
 
+import com.hp.hpl.jena.sdb.SDB ;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +31,7 @@ public class sdbscript
     
     public static void main(String... a)
     {
+        SDB.init();
         if ( a.length == 0 )
             a = new String[]{ "script.rb" } ;
 

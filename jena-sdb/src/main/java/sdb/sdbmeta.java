@@ -34,6 +34,7 @@ import com.hp.hpl.jena.util.FileManager;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.sql.SDBConnection;
 import com.hp.hpl.jena.sdb.store.StoreConfig;
 
@@ -45,10 +46,11 @@ public class sdbmeta extends CmdArgsDB
     
     // subcommands via first positional argument
     
-    String format = "N3" ;
+    String format = "TTL" ;
     
     public static void main (String... argv)
     {
+        SDB.init();
         new sdbmeta(argv).mainRun() ;
     }
     

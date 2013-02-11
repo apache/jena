@@ -25,6 +25,7 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.TerminationException;
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.sql.RS;
 import com.hp.hpl.jena.sdb.sql.ResultSetJDBC;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -38,6 +39,7 @@ public class sdbsql extends CmdArgsDB
     
     public static void main (String... argv)
     {
+        SDB.init();
         new sdbsql(argv).mainRun() ;
     }
 

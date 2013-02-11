@@ -30,6 +30,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphListener;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.store.StoreBaseHSQL;
 import com.hp.hpl.jena.sparql.util.Timer;
 import com.hp.hpl.jena.sparql.util.Utils;
@@ -55,6 +56,7 @@ public class sdbload extends CmdArgsDB
     
     public static void main(String... argv)
     {
+        SDB.init();
         new sdbload(argv).mainRun() ;
     }
     
