@@ -232,7 +232,8 @@ public class FRuleEngine implements FRuleEngineI {
             HashSet<Rule> firedRules = new HashSet<Rule>();
             Iterator<ClausePointer> i1 = clauseIndex.getAll(t.getPredicate());
             Iterator<ClausePointer> i2 = clauseIndex.getAll(Node.ANY);
-            Iterator<ClausePointer> i = new ConcatenatedIterator<ClausePointer>(i1, i2);
+            Iterator<ClausePointer> i = WrappedIterator.create(i1).andThen(i2);
+            
             while (i.hasNext()) {
                 ClausePointer cp = i.next();
                 if (firedRules.contains(cp.rule)) continue;

@@ -50,7 +50,22 @@ public class WrappedIterator<T> extends NiceIterator<T>
     */
     public static <T> WrappedIterator<T> createNoRemove( Iterator<T> it )
         { return new WrappedIterator<T>( it, true ); }
-      
+   
+    
+    /** Given an Iterator that returns Iterator's, this creates an
+     * Iterator over the next level values.
+     * Similar to list splicing in lisp.
+     */
+    public static <T> ExtendedIterator<T> createIteratorIterator( Iterator<Iterator<T>> it )
+    { 
+    	ExtendedIterator<T> retval = NullIterator.instance();
+    	while (it.hasNext())
+    	{
+    		retval = retval.andThen(it.next());
+    	}
+    	return retval;
+    }
+   
     /** the base iterator that we wrap */  
     protected final Iterator<? extends T> base;
     

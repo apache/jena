@@ -1582,8 +1582,9 @@ class Unparser {
                 return bkt.iterator() ;
             }} ;
         
-        return new IteratorIterator<Resource>(new Map1Iterator<Set<Resource>, Iterator<Resource>>(mapper, new ArrayIterator<Set<Resource>>(bucketArray)));
-
+            return WrappedIterator.createIteratorIterator(
+            		new Map1Iterator<Set<Resource>, Iterator<Resource>>(mapper,
+            				Arrays.asList(bucketArray).iterator()));
     }
 
     /**
@@ -1697,8 +1698,8 @@ class Unparser {
                                 return false;
                             }
                         }, backStop };
-        Iterator<Resource> allAsOne = new IteratorIterator<Resource>(new ArrayIterator<Iterator<Resource>>(all));
-
+        Iterator<Resource> allAsOne = WrappedIterator.createIteratorIterator( Arrays.asList(all).iterator() );
+        		
         // Filter for those that still have something to list.
         return new FilterIterator<Resource>(new Filter<Resource>() {
             @Override

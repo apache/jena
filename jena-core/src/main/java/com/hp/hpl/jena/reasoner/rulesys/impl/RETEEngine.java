@@ -26,7 +26,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -452,7 +452,7 @@ public class RETEEngine implements FRuleEngineI {
         }
         Iterator<RETENode> i1 = clauseIndex.getAll(t.getPredicate());
         Iterator<RETENode> i2 = clauseIndex.getAll(Node.ANY);
-        Iterator<RETENode> i = new ConcatenatedIterator<RETENode>(i1, i2);
+        Iterator<RETENode> i = WrappedIterator.create(i1).andThen( i2 );
         while (i.hasNext()) {
             RETEClauseFilter cf = (RETEClauseFilter) i.next();
             // firedRules guard in here?
@@ -468,7 +468,7 @@ public class RETEEngine implements FRuleEngineI {
     public void testTripleInsert(Triple t) {
         Iterator<RETENode> i1 = clauseIndex.getAll(t.getPredicate());
         Iterator<RETENode> i2 = clauseIndex.getAll(Node.ANY);
-        Iterator<RETENode> i = new ConcatenatedIterator<RETENode>(i1, i2);
+        Iterator<RETENode> i = WrappedIterator.create( i1 ).andThen( i2 );
         while (i.hasNext()) {
             RETEClauseFilter cf = (RETEClauseFilter) i.next();
             cf.fire(t, true);

@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.OneToManyMap ;
 import com.hp.hpl.jena.util.PrintUtil ;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 import com.hp.hpl.jena.util.iterator.Filter ;
-import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator ;
+import com.hp.hpl.jena.util.iterator.UniqueFilter;
 import com.hp.hpl.jena.vocabulary.RDFS ;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary ;
 //import com.hp.hpl.jena.util.PrintUtil;
@@ -571,7 +571,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
         if (!isPrepared) prepare();
-        ExtendedIterator<Triple> result = UniqueExtendedIterator.create(bEngine.find(pattern));
+        ExtendedIterator<Triple> result =bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }
@@ -592,7 +592,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public ExtendedIterator<Triple> findFull(TriplePattern pattern) {
         checkOpen();
         if (!isPrepared) prepare();
-        return UniqueExtendedIterator.create( bEngine.find(pattern) );
+       return bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
    
     /** 

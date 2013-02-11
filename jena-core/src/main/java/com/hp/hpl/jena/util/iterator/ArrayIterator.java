@@ -22,7 +22,10 @@ import java.util.Iterator;
 import java.lang.reflect.Array;
 import java.util.NoSuchElementException ;
 
-/** An Iterator for arrays  */
+/** An Iterator for arrays  
+ * @deprecated Use <code> Arrays.asList( array ).iterator();</code>
+ */
+@Deprecated
 public class ArrayIterator<T> implements Iterator<T> {
 	private int i;
 	private T[] a;
