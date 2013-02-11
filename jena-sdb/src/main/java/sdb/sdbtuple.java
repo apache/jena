@@ -27,6 +27,7 @@ import arq.cmdline.CmdArgModule;
 import arq.cmdline.CmdGeneral;
 import arq.cmdline.ModBase;
 
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.Store;
 import com.hp.hpl.jena.sdb.store.TableDesc;
 import com.hp.hpl.jena.sdb.store.TupleTable;
@@ -70,7 +71,11 @@ public class sdbtuple extends CmdArgsDB
     
     String loadFile = null ;
     
-    public static void main(String ... args) { new sdbtuple(args).mainRun() ; }
+    public static void main(String... args)
+    {
+        SDB.init() ;
+        new sdbtuple(args).mainRun() ;
+    }
     
     public List<String> tables = new ArrayList<String>() ;
     public sdbtuple(String... argv)
