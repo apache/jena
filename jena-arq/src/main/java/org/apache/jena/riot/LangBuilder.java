@@ -53,6 +53,8 @@ public class LangBuilder {
     /** Create a builder - convenience operation to 
      * take the language name and content type
      * which should be set if at all possible.
+     * @param langname
+     * @param officialContentType
      */
     public static LangBuilder create(String langname, String officialContentType)
     {

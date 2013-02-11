@@ -25,6 +25,7 @@ import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
 import static org.apache.jena.riot.RDFLanguages.RDFXML ;
 import static org.apache.jena.riot.RDFLanguages.TRIG ;
 import static org.apache.jena.riot.RDFLanguages.TURTLE ;
+import static org.apache.jena.riot.RDFLanguages.RDFNULL ;
 import static org.apache.jena.riot.RDFLanguages.filenameToLang ;
 
 import java.io.InputStream ;
@@ -35,16 +36,7 @@ import org.apache.jena.atlas.io.PeekReader ;
 import org.apache.jena.atlas.iterator.IteratorResourceClosing ;
 import org.apache.jena.atlas.json.io.parser.TokenizerJSON ;
 import org.apache.jena.atlas.lib.Sink ;
-import org.apache.jena.riot.lang.LangNQuads ;
-import org.apache.jena.riot.lang.LangNTriples ;
-import org.apache.jena.riot.lang.LangRDFJSON ;
-import org.apache.jena.riot.lang.LangRDFXML ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.lang.LangTriG ;
-import org.apache.jena.riot.lang.LangTurtle ;
-import org.apache.jena.riot.lang.PipedQuadsStream ;
-import org.apache.jena.riot.lang.PipedRDFIterator ;
-import org.apache.jena.riot.lang.PipedTriplesStream ;
+import org.apache.jena.riot.lang.* ;
 import org.apache.jena.riot.system.ErrorHandlerFactory ;
 import org.apache.jena.riot.system.IRIResolver ;
 import org.apache.jena.riot.system.RiotLib ;
@@ -158,6 +150,9 @@ public class RiotReader
             return createParserNQuads(tokenizer, dest) ;
         if ( RDFLanguages.sameLang(TRIG, lang) )
             return createParserTriG(tokenizer, baseIRI, dest) ;
+        
+        if ( RDFLanguages.sameLang(RDFNULL, lang) )
+            return new LangNull() ;
         
         return null ;
     }

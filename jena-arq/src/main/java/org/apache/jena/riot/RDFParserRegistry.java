@@ -77,31 +77,6 @@ public class RDFParserRegistry
         // Make sure the constants are initialized.
         RDFLanguages.init() ;
         
-        // Reader name and variations to lang - must include Jena old-name.
-        registerShortNameForLang("RDF/XML",         RDFXML) ;
-        registerShortNameForLang("RDFXML",          RDFXML) ;
-        registerShortNameForLang("RDF/XML-ABBREV",  RDFXML) ;
-        
-        registerShortNameForLang("N-TRIPLE",        NTRIPLES) ;
-        registerShortNameForLang("N-TRIPLES",       NTRIPLES) ;
-        registerShortNameForLang("NTRIPLE",         NTRIPLES) ;
-        registerShortNameForLang("NTRIPLES",        NTRIPLES) ;
-        registerShortNameForLang("NT",              NTRIPLES) ;
-            
-        registerShortNameForLang("TURTLE",          TURTLE) ;
-        registerShortNameForLang("TTL",             TURTLE) ;
-
-        registerShortNameForLang("RDF/JSON",        RDFJSON) ;
-        registerShortNameForLang("RDFJSON",         RDFJSON) ;
-        
-        registerShortNameForLang("N-QUADS",         NQUADS) ;
-        registerShortNameForLang("NQUADS",          NQUADS) ;
-        registerShortNameForLang("N-QUAD",          NQUADS) ;
-        registerShortNameForLang("NQUAD",           NQUADS) ;
-        registerShortNameForLang("NQ",              NQUADS) ;
-            
-        registerShortNameForLang("TRIG",            TRIG) ;
-        
         registerLangTriples(RDFXML,     parserFactory) ;
         registerLangTriples(NTRIPLES,   parserFactory) ;
         registerLangTriples(N3,         parserFactory) ;
@@ -110,12 +85,6 @@ public class RDFParserRegistry
         
         registerLangQuads(NQUADS,       parserFactory) ;
         registerLangQuads(TRIG,         parserFactory) ;
-    }
-
-    /** Register a Jena IO name */
-    private static void registerShortNameForLang(String name, Lang lang)
-    {
-        mapJenaNameToLang.put(RDFLanguages.canonicalKey(name), lang) ;
     }
 
     /** Register a language and it's parser factory.
