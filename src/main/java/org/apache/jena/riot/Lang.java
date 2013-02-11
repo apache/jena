@@ -50,7 +50,8 @@ public class Lang
     public static Lang TURTLE ; 
     public static Lang RDFJSON ; 
     public static Lang NQUADS ; 
-    public static Lang TRIG ; 
+    public static Lang TRIG ;
+    public static Lang RDFNULL ;
 
     private final String label ;                    // Primary name
     private final ContentType contentType ;         // Primary content type.

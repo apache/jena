@@ -104,6 +104,11 @@ public class RDFLanguages
                                                 .addFileExtensions("nq")
                                                 .build() ;
 
+    /** The "null" language */
+    public static final Lang RDFNULL  = LangBuilder.create("rdf/null", "null/rdf")
+                                                .addAltNames("NULL", "null")  
+                                                .build() ;
+    
     // ---- Central registry
     
     /** Mapping of colloquial name to language */
@@ -125,13 +130,14 @@ public class RDFLanguages
     {
         initStandard() ;
         // Needed to avoid a class initialization loop. 
-        Lang.RDFXML = RDFLanguages.RDFXML ; 
-        Lang.NTRIPLES = RDFLanguages.NTRIPLES ; 
-        Lang.N3 = RDFLanguages.N3 ; 
-        Lang.TURTLE = RDFLanguages.TURTLE ; 
-        Lang.RDFJSON = RDFLanguages.RDFJSON ; 
-        Lang.NQUADS = RDFLanguages.NQUADS ; 
-        Lang.TRIG = RDFLanguages.TRIG ; 
+        Lang.RDFXML     = RDFLanguages.RDFXML ; 
+        Lang.NTRIPLES   = RDFLanguages.NTRIPLES ; 
+        Lang.N3         = RDFLanguages.N3 ; 
+        Lang.TURTLE     = RDFLanguages.TURTLE ; 
+        Lang.RDFJSON    = RDFLanguages.RDFJSON ; 
+        Lang.NQUADS     = RDFLanguages.NQUADS ; 
+        Lang.TRIG       = RDFLanguages.TRIG ; 
+        Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }
     // ----------------------
     
@@ -145,6 +151,7 @@ public class RDFLanguages
         register(RDFJSON) ;
         register(TRIG) ;
         register(NQUADS) ;
+        register(RDFNULL) ;
     }
 
     /** Register a language.
