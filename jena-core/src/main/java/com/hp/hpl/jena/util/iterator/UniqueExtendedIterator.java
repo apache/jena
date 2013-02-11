@@ -25,10 +25,12 @@ import java.util.*;
  * duplicate values. There is one complication that the value
  * which filtering is done on might not be the actual value
  * to be returned by the iterator. 
- * @deprecated For simple filtering use <code>UniqueFilter</code> for 
+ * <p>
+ * This class may be deprecated in the future.  New development should 
+ * use use <code>UniqueFilter</code> for simple filtering of an ExtendedIterator, for 
  * more complex filtering implement a custom <code>Filter</code>.
  */
-@Deprecated
+
 public class UniqueExtendedIterator<T> extends WrappedIterator<T> {
 
     /** The set of objects already seen */
