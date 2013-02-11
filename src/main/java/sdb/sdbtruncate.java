@@ -25,6 +25,7 @@ import sdb.cmd.CmdArgsDB;
 import arq.cmd.CmdException;
 import arq.cmdline.ArgDecl;
 
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sparql.util.Utils;
 
 /** Format an SDB database.  Destroys all existing data permanently.
@@ -37,6 +38,7 @@ public class sdbtruncate extends CmdArgsDB
     
     public static void main (String... argv)
     {
+        SDB.init();
         new sdbtruncate(argv).mainRun() ;
     }
 

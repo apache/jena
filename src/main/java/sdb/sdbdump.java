@@ -25,6 +25,7 @@ import sdb.cmd.ModGraph;
 import arq.cmdline.ArgDecl;
 
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sparql.util.Utils;
 
  /** Write out the data from an SDB model.  Only works for small models
@@ -49,6 +50,7 @@ public class sdbdump extends CmdArgsDB
 
     public static void main(String ... argv)
     {
+        SDB.init();
         new sdbdump(argv).mainRun() ;
     }
 

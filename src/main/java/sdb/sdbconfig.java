@@ -27,6 +27,7 @@ import sdb.cmd.ModConfig;
 
 import com.hp.hpl.jena.sparql.util.Utils;
 
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.Store;
 
 /** Configure an SDB database.  Destroys all existing data permanently. */ 
@@ -37,6 +38,7 @@ public class sdbconfig extends CmdArgsDB
     
     public static void main(String ... argv)
     {
+        SDB.init();
         new sdbconfig(argv).mainRun() ;
     }
     

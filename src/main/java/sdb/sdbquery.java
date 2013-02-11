@@ -30,6 +30,7 @@ import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.sdb.SDB ;
 import com.hp.hpl.jena.sdb.compiler.SDB_QC;
 import com.hp.hpl.jena.sdb.engine.QueryEngineSDB;
 import com.hp.hpl.jena.sdb.util.PrintSDB;
@@ -64,6 +65,7 @@ public class sdbquery extends CmdArgsDB
 
     public static void main (String... argv)
     {
+        SDB.init();
         new sdbquery(argv).mainRun() ;
     }
    
