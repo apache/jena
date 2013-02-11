@@ -1,0 +1,33 @@
+#------------------------------------------------------------------
+# RDFS rule set v0.1.
+# This variant is used in the case where the subclass and subproperty
+# lattices have been precomputed by a transitive graph closure cache.
+# and only includes the minimum useful core rules with no axioms.
+# $Id: rdfs-fb-tgc-simple.rules,v 1.4 2009-03-09 18:10:16 der Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> tableAll().
+
+#------------------------------------------------------------------
+# RDFS Closure rules
+#------------------------------------------------------------------
+
+[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
+
+[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
+[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
+[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
+
+# Either version should work, pure back one scales better.
+# rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ] 
+
+# Not needed - replaced by TGC front end
+#[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+#[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+

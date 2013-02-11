@@ -1,0 +1,106 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix :       <http://www.w3.org/2001/sw/DataAccess/tests/test-manifest#> .
+
+## A Manifest is typically a list (RDF Collection) of manifest entries.
+## The :entries property has an object of the list.
+## There may be more than one list per file.
+
+:   rdfs:comment     "Manifest vocabulary for test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "W3C RDF Data Access Working Group" ;
+    dc:title         "Test case manifest vocabulary" ;
+    dc:description   "Test case manifest vocabulary" ;
+    dc:date          "2004-07" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ;
+    .
+
+## ---- Class declarations ----
+
+:Manifest rdf:type rdfs:Class ;
+    rdfs:comment "The class of manifests" .
+
+:ManifestEntry rdf:type rdfs:Class ;
+    rdfs:comment "One entry in rdf:type list of entries" .
+
+## ---- Property declarations for the manifest ----
+
+:include rdf:type rdf:Property ;
+    rdfs:comment "Connects the manifest resource to rdf:type list of manifests" ;
+    rdfs:domain	 :Manifest ;
+    rdfs:range   rdf:List ;
+    .
+
+:entries rdf:type rdf:Property ;
+    rdfs:comment "Connects the manifest resource to rdf:type list of entries" ;
+    rdfs:domain	 :Manifest ;
+    rdfs:range   rdf:List ;
+    .
+	
+## ---- Property declarations for each test ----
+
+:name rdf:type rdf:Property ;
+    rdfs:comment "Optional name of this entry" ;
+    rdfs:domain	 :ManifestEntry ;
+    rdfs:range   rdfs:Literal ;
+    .	
+    
+:action rdf:type rdf:Property ;
+    rdfs:comment "Action to perform" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:result rdf:type rdf:Property ;
+    rdfs:comment "The expected outcome" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:result rdf:type rdf:Property ;
+    rdfs:comment "The test status" ;
+    rdfs:domain	 :ManifestEntry ;
+    rdfs:range   :TestStatus ;
+    .
+
+## ---- Test Case Type ---
+
+:PositiveSyntaxTest rdf:type rdfs:Class ;
+      rdfs:label "Positive Syntax Test" ;
+      rdfs:comment "A type of test specifically for syntax testing. Syntax
+      tests are not required to have an associated result, only an
+      action." .
+
+:NegativeSyntaxTest rdf:type rdfs:Class ;
+      rdfs:label "Negative Syntax Test" ;
+      rdfs:comment "A type of test specifically for syntax testing. Syntax
+      tests are not required to have an associated result, only an
+      action. Negative syntax tests are tests of which the result should
+      be a parser error." .
+
+:QueryEvaluationTest rdf:type rdfs:Class ;
+      rdfs:label "Query Evaluation Test" ;
+      rdfs:comment "A type of test specifically for query evaluation
+      testing. Query evaluation tests are required to have an associated
+      input dataset, a query, and an expected output dataset." .
+
+## ---- Test Statuses ----
+
+:TestStatus rdf:type rdf:Class ;
+    rdfs:comment "Statuses a test can have" ;
+    .
+
+:proposed rdf:type :TestStatus ;
+    rdfs:label "proposed" ;
+    .
+
+:accepted rdf:type :TestStatus ;
+    rdfs:label "accepted" ;
+    .
+
+:rejected rdf:type :TestStatus ;
+    rdfs:label "rejected" ;
+    .
