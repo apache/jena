@@ -73,6 +73,8 @@ public class TestLang extends BaseTest
     {
         for (Lang l : RDFLanguages.getRegisteredLanguages() )
         {
+            if ( RDFLanguages.RDFNULL.equals(l) )
+                continue ;
             Assert.assertNotNull( l+" does not have file extensions defined", l.getFileExtensions());
             Assert.assertTrue( l+" does not have file extensions defined", l.getFileExtensions().size() > 0);
         }
@@ -99,7 +101,11 @@ public class TestLang extends BaseTest
     public void testDefaultInExtensions()
     {
         for (Lang l : RDFLanguages.getRegisteredLanguages() )
+        {
+            if ( RDFLanguages.RDFNULL.equals(l) )
+                continue ;
             Assert.assertTrue( l+" default extension not in file extensions list", l.getFileExtensions().contains( l.getFileExtensions().get(0))  );
+        }
     }
     
     @Test
