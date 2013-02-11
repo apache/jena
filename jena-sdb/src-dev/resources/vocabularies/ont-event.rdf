@@ -1,0 +1,284 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY jena    'http://jena.hpl.hp.com/schemas/'>
+
+    <!ENTITY rdf     'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs    'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY owl     'http://www.w3.org/2002/07/owl#'>
+    <!ENTITY xsd     'http://www.w3.org/2001/XMLSchema#'>
+    <!ENTITY dc      'http://purl.org/dc/elements/1.1/'>
+    
+    <!ENTITY base    '&jena;2003/03/ont-event'>
+    <!ENTITY event   '&base;#'>
+]>
+
+<rdf:RDF
+    xmlns:rdf     			= "&rdf;"
+    xmlns:rdfs    			= "&rdfs;"
+    xmlns:owl     			= "&owl;"
+    xmlns:xsd     			= "&xsd;"
+    xmlns:dc      			= "&dc;"
+
+    xmlns         			= "&event;"
+    xml:base      			= "&base;"
+>
+
+    <owl:Ontology rdf:about="">
+        <owl:versionInfo>CVS info: $Id: fipa.owl,v 1.1 2003/04/16 11:30:29 ijd Exp $ </owl:versionInfo>
+        <dc:title>
+            OWL ontology of types of observable change to an ontology model
+        </dc:title>
+        <dc:creator>
+            Ian Dickinson, mailto:ian_dickinson@users.sourceforge.net
+        </dc:creator>
+        <dc:date>
+            $Date: 2003/04/16 11:30:29 $
+        </dc:date>
+
+        <rdfs:comment>
+            Defines a simple vocabulary of the types of change (events) that can occur 
+            in an ontology model. This will allow client programs to register handlers for
+            just the set of changes they are interested in.
+        </rdfs:comment>
+
+        <!-- Imported ontologies -->
+
+    </owl:Ontology>
+
+
+	<owl:Class rdf:ID="OntEvent">
+		<rdfs:comment>A class representing observable events in an ontology model</rdfs:comment>
+	</owl:Class>
+	
+	
+	<!-- Class events -->
+	<OntEvent rdf:ID="classDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as an ontology Class.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="datarangeDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as a Datarange.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="subClassOf">
+		<rdfs:comment>Event representing the declaration of one class being the sub-class of another.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="equivalentClass">
+		<rdfs:comment>Event representing the declaration of one class expression being equivalent to another.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="disjointWith">
+		<rdfs:comment>Event representing the declaration of one class expression being disjoint with another.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="unionOf">
+		<rdfs:comment>Event representing the declaration of a class expression being a union of class descriptions.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="intersectionOf">
+		<rdfs:comment>Event representing the declaration of a class expression being an intersection of class descriptions.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="complementOf">
+		<rdfs:comment>Event representing the declaration of a class expression being the complement of another class description.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="oneOf">
+		<rdfs:comment>Event representing the declaration of a class expression being composed of a finite enumeration of identified individuals.</rdfs:comment>
+	</OntEvent>
+	
+	
+	<!-- Property events -->
+	
+	<OntEvent rdf:ID="propertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as a plain property.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="datatypePropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as a datatype property.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="objectPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as an object property.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="annotationPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource as an annotation property.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="transitivePropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a property as being transitive.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="symmetricPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a property as being symmetric</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="functionalPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a property as being functional.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="inverseFunctionalPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of a property as being inverse functional.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="inverseOf">
+		<rdfs:comment>Event representing the declaration of a property as being the inverse of another property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="subPropertyOf">
+		<rdfs:comment>Event representing the declaration of a property as being the sub-property of another property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="equivalentProperty">
+		<rdfs:comment>Event representing the declaration of a property as being equivalent to another property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="domain">
+		<rdfs:comment>Event representing the declaration of a property as having a given class, datatype or datarange as the domain</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="range">
+		<rdfs:comment>Event representing the declaration of a property as having a given class, datatype or datarange as the range</rdfs:comment>
+	</OntEvent>
+	
+	
+	<!-- Restriction events -->
+	
+	<OntEvent rdf:ID="restrictionDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource being a Restriction</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="onProperty">
+		<rdfs:comment>Event representing the declaration that a restriction applies to a given property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="allValuesFrom">
+		<rdfs:comment>Event representing the declaration that a restriction constrains all values of the property to have some class or datatype</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="someValuesFrom">
+		<rdfs:comment>Event representing the declaration that a restriction constrains at least one value of the property to have some class or datatype</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="hasValue">
+		<rdfs:comment>Event representing the declaration that a restriction constrains the property to have a given value</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="cardinality">
+		<rdfs:comment>Event representing the declaration of that a restriction has the given cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="minCardinality">
+		<rdfs:comment>Event representing the declaration of that a restriction has the given minimum cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="maxCardinality">
+		<rdfs:comment>Event representing the declaration of that a restriction has the given maximum cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="cardinalityQ">
+		<rdfs:comment>Event representing the declaration of that a qualified restriction has the given cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="minCardinalityQ">
+		<rdfs:comment>Event representing the declaration of that a qualified restriction has the given minimum cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="maxCardinalityQ">
+		<rdfs:comment>Event representing the declaration of that a qualified restriction has the given maximum cardinality on the restricted property</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="hasClassQ">
+		<rdfs:comment>Event representing the declaration of that a qualified restriction has the given class or datatype for the qualification restriction</rdfs:comment>
+	</OntEvent>
+	
+	
+	<!-- Individual events -->
+	
+	<OntEvent rdf:ID="individualDeclaration">
+		<rdfs:comment>Event representing the declaration of an ontology individual</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="sameIndividualAs">
+		<rdfs:comment>Event representing the declaration of one ontology individual being the same as another</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="sameAs">
+		<rdfs:comment>Event representing a declaration that one resource is the same as another.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="differentFrom">
+		<rdfs:comment>Event representing the declaration of one ontology individual being distinct from another</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="related">
+		<rdfs:comment>Event representing the declaration of one ontology individual being related to another by some named predicate.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="allDifferentDeclaration">
+		<rdfs:comment>Event representing the declaration of a set of individuals being pairwise distinct.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="distinctMembers">
+		<rdfs:comment>Event representing the identification of a set of individuals that are in the scope of an AllDifferent declaration.</rdfs:comment>
+	</OntEvent>
+	
+	
+	<!-- Ontology meta-data -->
+	
+	<OntEvent rdf:ID="ontologyDeclaration">
+		<rdfs:comment>Event representing the declaration of a resource of type owl:Ontology or daml:Ontology, representing meta-data about the ontology.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="ontologyPropertyDeclaration">
+		<rdfs:comment>Event representing the declaration of an ontology property.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="imports">
+		<rdfs:comment>Event representing the declaration that one ontology is imported into another ontology.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="versionInfo">
+		<rdfs:comment>Event representing the declaration of version information on an ontology resource.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="priorVersion">
+		<rdfs:comment>Event representing the declaration of a prior version of a given ontology.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="backwardCompatibleWith">
+		<rdfs:comment>Event representing the declaration of a prior version of a given ontology, which the ontology is compatible with.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="incompatibleWith">
+		<rdfs:comment>Event representing the declaration of a prior version of a given ontology, which the ontology is not compatible with.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="DeprecatedClass">
+		<rdfs:comment>Event representing the declaration of a class as being deprecated.</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="DeprecatedProperty">
+		<rdfs:comment>Event representing the declaration of a property as being deprecated.</rdfs:comment>
+	</OntEvent>
+	
+	
+	<!-- Generic events -->
+	
+	<OntEvent rdf:ID="comment">
+		<rdfs:comment>Event representing a comment on an ontology element</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="label">
+		<rdfs:comment>Event representing a label on an ontology element</rdfs:comment>
+	</OntEvent>
+	
+	<OntEvent rdf:ID="userData">
+		<rdfs:comment>Event representing a catch-all category of user-specified data, ie triples in the graph that relate to
+			          the use of ontology terms on instances, rather than the definition of ontology terms.
+		</rdfs:comment>
+	</OntEvent>
+</rdf:RDF>
