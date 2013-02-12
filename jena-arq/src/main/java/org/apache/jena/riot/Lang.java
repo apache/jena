@@ -43,13 +43,28 @@ public class Lang
     //  public static final Lang TRIG = RDFLanguages.TriG ; 
 
     // To avoid an initialization circularity, these are set by RDFLanguages.
+    static { RDFLanguages.init() ; }
 
-    public static Lang RDFXML ; 
+    /** RDF/XML */
+    public static Lang RDFXML ;
+    /** N-triples */
     public static Lang NTRIPLES ; 
+    /** N-triples */
+    public static Lang NT ;
+    /** N3 (RDF subset of N3) */ 
     public static Lang N3 ; 
+    /** Turtle */
     public static Lang TURTLE ; 
+    /** Turtle */
+    public static Lang TTL ;
+    /** RDF/JSON (this is not JSON-LD) 
+     * See {@link "http://jena.apache.org/documentation/io/rdf-json.html"} */
     public static Lang RDFJSON ; 
-    public static Lang NQUADS ; 
+    /** NQuads */
+    public static Lang NQUADS ;
+    /** NQuads */
+    public static Lang NQ ;
+    /** TriG */
     public static Lang TRIG ;
     public static Lang RDFNULL ;
 

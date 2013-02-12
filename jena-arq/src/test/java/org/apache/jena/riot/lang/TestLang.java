@@ -32,7 +32,34 @@ import com.hp.hpl.jena.util.FileUtils ;
 
 public class TestLang extends BaseTest
 {
-    static { RDFLanguages.init() ; }
+    @Test public void registration_01() { testregistration(RDFLanguages.RDFXML) ; }
+    @Test public void registration_02() { testregistration(RDFLanguages.NTRIPLES) ; }
+    @Test public void registration_03() { testregistration(RDFLanguages.NT) ; }
+    @Test public void registration_04() { testregistration(RDFLanguages.N3) ; } 
+    @Test public void registration_05() { testregistration(RDFLanguages.TURTLE) ; }   
+    @Test public void registration_06() { testregistration(RDFLanguages.TTL) ; }
+    @Test public void registration_07() { testregistration(RDFLanguages.RDFJSON) ; }   
+    @Test public void registration_08() { testregistration(RDFLanguages.NQUADS) ; }
+    @Test public void registration_09() { testregistration(RDFLanguages.NQ) ; }
+    @Test public void registration_10() { testregistration(RDFLanguages.TRIG) ; }
+    @Test public void registration_11() { testregistration(RDFLanguages.RDFNULL) ; }
+
+    @Test public void registration_01a() { testregistration(Lang.RDFXML) ; }
+    @Test public void registration_02a() { testregistration(Lang.NTRIPLES) ; }
+    @Test public void registration_03a() { testregistration(Lang.NT) ; }
+    @Test public void registration_04a() { testregistration(Lang.N3) ; } 
+    @Test public void registration_05a() { testregistration(Lang.TURTLE) ; }   
+    @Test public void registration_06a() { testregistration(Lang.TTL) ; }
+    @Test public void registration_07a() { testregistration(Lang.RDFJSON) ; }   
+    @Test public void registration_08a() { testregistration(Lang.NQUADS) ; }
+    @Test public void registration_09a() { testregistration(Lang.NQ) ; }
+    @Test public void registration_10a() { testregistration(Lang.TRIG) ; }
+    @Test public void registration_11a() { testregistration(Lang.RDFNULL) ; }
+
+    private void testregistration(Lang lang)
+    {
+        assertTrue("No registration for "+lang, RDFLanguages.getRegisteredLanguages().contains(lang)) ;
+    }
     
     @Test public void lang_01()
     { assertEquals(RDFLanguages.TURTLE, RDFLanguages.shortnameToLang("TTL")) ; }
