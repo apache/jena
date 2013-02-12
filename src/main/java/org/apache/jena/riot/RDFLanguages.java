@@ -72,6 +72,9 @@ public class RDFLanguages
                                                 .addFileExtensions("ttl")
                                                 //.addFileExtensions("n3")
                                                 .build() ;
+    /** Common abbreviation for TURTLE */
+    public static final Lang TTL    = TURTLE ;
+    
     /** N3 (treat as Turtle) */
     public static final Lang N3   = LangBuilder.create(strLangN3, contentTypeN3)
                                                 .addAltContentTypes(contentTypeN3, contentTypeN3Alt1, contentTypeN3Alt2)
@@ -84,6 +87,8 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeNTriplesAlt)
                                                 .addFileExtensions("nt")
                                                 .build() ;
+    /** Common abbreviation for NTRIPLES */
+    public static final Lang NT     = NTRIPLES ;
 
     /** RDF/JSON (this is not JSON-LD) */
     public static final Lang RDFJSON  = LangBuilder.create(strLangRDFJSON, contentTypeRDFJSON)
@@ -103,6 +108,8 @@ public class RDFLanguages
                                                 .addAltContentTypes(contentTypeNQuadsAlt1, contentTypeNQuadsAlt2)
                                                 .addFileExtensions("nq")
                                                 .build() ;
+    /** Abbreviation for NQUADS */
+    public static final Lang NQ     = NQUADS ;
 
     /** The "null" language */
     public static final Lang RDFNULL  = LangBuilder.create("rdf/null", "null/rdf")
@@ -131,11 +138,14 @@ public class RDFLanguages
         initStandard() ;
         // Needed to avoid a class initialization loop. 
         Lang.RDFXML     = RDFLanguages.RDFXML ; 
-        Lang.NTRIPLES   = RDFLanguages.NTRIPLES ; 
+        Lang.NTRIPLES   = RDFLanguages.NTRIPLES ;
+        Lang.NT         = RDFLanguages.NT ;
         Lang.N3         = RDFLanguages.N3 ; 
-        Lang.TURTLE     = RDFLanguages.TURTLE ; 
+        Lang.TURTLE     = RDFLanguages.TURTLE ;
+        Lang.TTL        = RDFLanguages.TTL ;
         Lang.RDFJSON    = RDFLanguages.RDFJSON ; 
-        Lang.NQUADS     = RDFLanguages.NQUADS ; 
+        Lang.NQUADS     = RDFLanguages.NQUADS ;
+        Lang.NQ         = RDFLanguages.NQ ;
         Lang.TRIG       = RDFLanguages.TRIG ; 
         Lang.RDFNULL    = RDFLanguages.RDFNULL ;
     }
