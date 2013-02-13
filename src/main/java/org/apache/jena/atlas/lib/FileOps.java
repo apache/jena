@@ -159,6 +159,24 @@ public class FileOps
             return filename ;
     }
     
+    public static String fullPath(String filename)
+    {
+        File f = new File(filename);
+        return f.getAbsolutePath();
+    }
+    
+    public static String fullDirectoryPath(String filename)
+    {
+        File f = new File(filename);
+        if (f.isDirectory()) {
+            return f.getAbsolutePath();
+        } else if (f.getParentFile() != null) {
+            return f.getParentFile().getAbsolutePath();
+        } else {
+            return f.getAbsolutePath();
+        }
+    }
+    
 //    public static String getExt(String filename)
 //    {
 //        int i = filename.lastIndexOf('.') ;
