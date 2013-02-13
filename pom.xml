@@ -53,9 +53,6 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.httpclient>4.2.2</ver.httpclient>
-    <ver.httpcore>4.2.3</ver.httpcore>
-    <ver.commons-codec>1.5</ver.commons-codec>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
@@ -77,12 +74,6 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>${ver.commons-codec}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
       <version>${ver.httpclient}</version>
@@ -100,12 +91,6 @@
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
       <version>${ver.slf4j}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.httpcomponents</groupId>
-      <artifactId>httpcore</artifactId>
-      <version>${ver.httpcore}</version>
     </dependency>
 
   </dependencies>
