@@ -406,8 +406,10 @@ public class FusekiCmd extends CmdARQ
         
         Fuseki.configLog.debug("Static content: "+staticContentDir) ;
 
-        if ( ! FileOps.exists(staticContentDir) )
+        if ( ! FileOps.exists(staticContentDir) ) {
             Fuseki.configLog.warn("No such directory for static content: "+staticContentDir) ;
+            Fuseki.configLog.warn("You may need to set the --pages option to configure static content correctly");
+        }
         
         if ( jettyConfigFile != null )
             Fuseki.configLog.info("Jetty configuration: "+jettyConfigFile) ;
