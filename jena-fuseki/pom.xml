@@ -80,10 +80,7 @@
     <!-- <ver.jetty>8.1.7.v20120910</ver.jetty> -->
     <ver.velocity>1.7</ver.velocity>
 
-    <ver.httpclient>4.2.2</ver.httpclient>
-    <ver.httpcore>4.2.3</ver.httpcore>
     <ver.commons-fileupload>1.2.2</ver.commons-fileupload>
-    <ver.commons-codec>1.5</ver.commons-codec>
     
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
