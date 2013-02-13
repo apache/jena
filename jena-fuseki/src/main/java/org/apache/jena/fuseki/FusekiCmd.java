@@ -20,6 +20,7 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
+import java.io.File;
 import java.io.InputStream ;
 import java.net.InetAddress ;
 import java.net.UnknownHostException ;
@@ -397,6 +398,7 @@ public class FusekiCmd extends CmdARQ
         }
         
         homeDir = sort_out_dir(homeDir) ;
+        Fuseki.configLog.info("Home Directory: " + FileOps.fullDirectoryPath(homeDir));
         if ( ! FileOps.exists(homeDir) )
             Fuseki.configLog.warn("No such directory for Fuseki home: "+homeDir) ;
         
@@ -404,11 +406,11 @@ public class FusekiCmd extends CmdARQ
         if ( staticContentDir == null )
             staticContentDir = homeDir+Fuseki.PagesStatic ;
         
-        Fuseki.configLog.debug("Static content: "+staticContentDir) ;
+        Fuseki.configLog.debug("Static Content Directory: "+ FileOps.fullDirectoryPath(staticContentDir)) ;
 
         if ( ! FileOps.exists(staticContentDir) ) {
-            Fuseki.configLog.warn("No such directory for static content: "+staticContentDir) ;
-            Fuseki.configLog.warn("You may need to set the --pages option to configure static content correctly");
+            Fuseki.configLog.warn("No such directory for static content: " + FileOps.fullDirectoryPath(staticContentDir)) ;
+            Fuseki.configLog.warn("You may need to set the --pages or --home option to configure static content correctly");
         }
         
         if ( jettyConfigFile != null )
