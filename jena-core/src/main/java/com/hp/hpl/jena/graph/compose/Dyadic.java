@@ -60,8 +60,6 @@ public abstract class Dyadic extends CompositionBase
 	/**
 	 * The method that the overridden graphBaseFind( TripleMatch m ) calls to actually
 	 * do the work of finding.
-	 * @param m
-	 * @return
 	 */
 	protected abstract ExtendedIterator<Triple> _graphBaseFind( TripleMatch m );
 	
