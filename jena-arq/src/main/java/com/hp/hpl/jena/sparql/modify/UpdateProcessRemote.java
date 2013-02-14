@@ -78,7 +78,7 @@ public class UpdateProcessRemote implements UpdateProcessor
     
     /**
      * Convenience method to get the {@link HttpContext}
-     * @returns HttpContext
+     * @return HttpContext
      */
     public HttpContext getHttpContext() {
         return (HttpContext) getContext().get(HTTP_CONTEXT) ;
