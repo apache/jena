@@ -39,4 +39,13 @@ public class DatasetRef
     
     public boolean allowTimeoutOverride         = false;
     public long maximumTimeoutOverride          = Long.MAX_VALUE;
+    
+    public boolean isReadOnly()
+    {
+        return updateEP.size() == 0 && 
+               uploadEP.size() == 0 &&
+               readWriteGraphStoreEP.size() == 0 &&
+               !allowDatasetUpdate ;
+    }
+    
 }
