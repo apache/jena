@@ -53,8 +53,9 @@
     <developerConnection>scm:svn:http://svn.apache.org/repos/asf/jena/trunk/jena-iri</developerConnection>
     <url>https://svn.apache.org/repos/asf/jena/trunk/jena-iri</url>
   </scm>
-
+  
   <properties>
+    <!-- Used in the assembly -->
     <this.root>${project.artifactId}-${project.version}</this.root>
   </properties>
 
