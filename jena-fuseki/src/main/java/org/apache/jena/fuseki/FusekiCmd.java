@@ -20,7 +20,6 @@ package org.apache.jena.fuseki;
 
 import static org.apache.jena.fuseki.Fuseki.serverLog ;
 
-import java.io.File;
 import java.io.InputStream ;
 import java.net.InetAddress ;
 import java.net.UnknownHostException ;
@@ -35,8 +34,8 @@ import org.apache.jena.fuseki.server.FusekiConfig ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
 import org.apache.jena.fuseki.server.ServerConfig ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.SysRIOT ;
 import org.eclipse.jetty.server.Server ;
 import org.slf4j.Logger ;
