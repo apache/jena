@@ -21,7 +21,7 @@ package org.apache.jena.atlas.iterator;
 import java.util.Iterator ;
 import java.util.NoSuchElementException ;
 
-public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
+public class SingletonIterator<T> implements Iterator<T>
 {
     private T thing = null ;
     private boolean yielded = false ;
@@ -49,10 +49,10 @@ public class SingletonIterator<T> implements Iterator<T>, Iterable<T>
     public void remove()
     { throw new NoSuchElementException("SingletonIterator.remove") ;}
 
-    @Override
-    public Iterator<T> iterator()
-    {
-        return this ;
-    }
+//    @Override
+//    public Iterator<T> iterator()
+//    {
+//        return this ;
+//    }
 
 }

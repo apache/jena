@@ -603,6 +603,12 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
     // May not do what you expect. iter(int[]) is iter of one object (an int[])
 //    public static <T> Iter<T> iter(T...objects)
 //    { return Iter.iter(Arrays.asList(objects)) ; }
+
+    public static <T> Iter<T> iterSingleton(T x)
+    {
+        return Iter.iter(SingletonIterator.create(x)) ;
+    }
+
     
     public static <T> Iter<T> iter(Collection<T> collection)
     {
@@ -623,7 +629,24 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
         return new Iter<T>(iterable.iterator()) ;
     }
     
-    /** Materializae an iterator, that is, force it to run now - useful in debugging */ 
+    //----
+    // Iter class part
+    // And ....
+    // Could merge in concatenated iterators - if used a lot there is reducable cost.
+    // Just putting in a slot is free (?) because objects of one or two slots have
+    // the same memory allocation.
+    // And .. be an iterator framework for extension
+    
+    // Or dynamically with a subclass and a static constructor
+    // List<Iterator> concatenated = null ; 
+    
+    public static <T> Iter<T> singletonIter(T item)
+    { return new Iter<T>(new SingletonIterator<T>(item)) ; }
+
+    public static <T> Iter<T> nullIter()
+    { return new Iter<T>(new NullIterator<T>()) ; }
+
+    /** Materialize an iterator, that is, force it to run now - useful in debugging */ 
     public static <T> Iterator<T> materialize(Iterator<T> iter)
     {
         return Iter.toList(iter).iterator() ;
@@ -834,21 +857,4 @@ public class Iter<T> implements Iterable<T>, Iterator<T>
 
     @Override
     public void remove()        { iterator.remove() ; }
-
-    //----
-    // Iter class part
-    // And ....
-    // Could merge in concatenated iterators - if used a lot there is reducable cost.
-    // Just putting in a slot is free (?) because objects of one or two slots have
-    // the same memory allocation.
-    // And .. be an iterator framework for extension
-    
-    // Or dynamically with a subclass and a static constructor
-    // List<Iterator> concatenated = null ; 
-    
-    public static <T> Iter<T> singletonIter(T item)
-    { return new Iter<T>(new SingletonIterator<T>(item)) ; }
-
-    public static <T> Iter<T> nullIter()
-    { return new Iter<T>(new NullIterator<T>()) ; }
 }
