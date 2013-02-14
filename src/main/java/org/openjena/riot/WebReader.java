@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Retrieve data from the web 
- * @depreated Use org.apache.jena.riot.WebReader
+ * @deprecated Use org.apache.jena.riot.WebReader
  */
 @Deprecated
 public class WebReader

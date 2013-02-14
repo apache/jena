@@ -30,7 +30,7 @@ import org.apache.jena.iri.IRIFactory ;
  * Default implementation of a {@link PrefixMap}, this implementation
  * is best suited to use for input.
  * <p>
- * @See FastAbbreviatingPrefixMap which may offer much better abbreviation performance.
+ * @see FastAbbreviatingPrefixMap which may offer much better abbreviation performance.
  */
 public class PrefixMapStd extends PrefixMapBase {
     // Expansion map
