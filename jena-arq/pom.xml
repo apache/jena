@@ -51,12 +51,6 @@
     <url>https://svn.apache.org/repos/asf/jena/trunk/jena-arq</url>
   </scm>
 
-  <properties>
-    <this.root>${project.artifactId}-${project.version}</this.root>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
-    <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
-  </properties>
-
   <dependencies>
 
     <dependency>

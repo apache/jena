@@ -39,7 +39,7 @@
     The command scripts automatically set JENA_HOME but if you want
     to switch to a different version fro the same scripts:
 
-    export JENA_HOMEROOT=/path/to/apache-jena-2.7.5
+    export JENA_HOME=/path/to/apache-jena-2.7.5
     bin/sparql --version    
     
   If you receive a class not found exception when trying to run one of the 
