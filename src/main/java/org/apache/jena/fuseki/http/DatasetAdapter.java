@@ -26,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 
 /** Adapter between Dataset/Model level and DatasetGraph/Graph level */ 
+@SuppressWarnings("deprecation")
 public class DatasetAdapter implements DatasetAccessor
 {
     private final DatasetGraphAccessor updater ;

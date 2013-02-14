@@ -35,24 +35,20 @@ import org.apache.http.params.BasicHttpParams ;
 import org.apache.http.params.HttpConnectionParams ;
 import org.apache.http.params.HttpParams ;
 import org.apache.http.params.HttpProtocolParams ;
-import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.fuseki.* ;
-import org.apache.jena.fuseki.migrate.UnmodifiableGraph ;
 import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.WebContent ;
-import org.apache.jena.riot.lang.LangRIOT ;
-import org.apache.jena.riot.system.StreamRDF ;
-import org.apache.jena.riot.system.StreamRDFLib ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.graph.UnmodifiableGraph ;
 
 public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 {
@@ -286,18 +282,13 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
 
     private void readGraph(Graph graph, TypedInputStream ts, String base)
     {
-        // DRY - code in SPARQL_REST.parseBody
-        
         // Yes - we ignore the charset.
         // Either it's XML and so the XML parser deals with it, or the 
         // language determines the charset and the parsers offer InputStreams.   
        
-        Lang lang = FusekiLib.langFromContentType(ts.getContentType()) ;
+        Lang lang = WebContent.contentTypeToLang(ts.getContentType()) ;
         if ( lang == null )
             throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        StreamRDF dest = StreamRDFLib.graph(graph) ;
-        LangRIOT parser = RiotReader.createParser(ts, lang, base, dest) ;
-        parser.parse() ;
-        IO.close(ts) ;
+        RDFDataMgr.read(graph, base, lang) ;
     }    
 }

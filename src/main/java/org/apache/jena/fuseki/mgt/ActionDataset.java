@@ -31,8 +31,8 @@ import javax.servlet.http.HttpSession ;
 import org.apache.commons.codec.binary.Base64 ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
+import org.apache.jena.web.impl.HttpSC ;
 
 /** Log-in and choose dataset */
 public class ActionDataset extends HttpServlet

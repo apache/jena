@@ -32,17 +32,13 @@ import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotException ;
-import org.apache.jena.riot.RiotReader ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.* ;
+import org.apache.jena.web.impl.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
@@ -195,7 +191,7 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                     String contentTypeHeader = item.getContentType() ;
                     ct = ContentType.parse(contentTypeHeader) ;
 
-                    lang = FusekiLib.langFromContentType(ct.getContentType()) ;
+                    lang = WebContent.contentTypeToLang(ct.getContentType()) ;
                     if ( lang == null )
                         lang = RDFLanguages.filenameToLang(name) ;
                     if ( lang == null )

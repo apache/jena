@@ -26,6 +26,11 @@ import org.apache.jena.fuseki.http.DatasetGraphAccessorHTTP ;
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
+/** Accessor to a dataset a collection of graphs.
+ * @deprecated Use {@link org.apache.jena.web.DatasetAccessorFactory}
+ * 
+ */
+@Deprecated
 public class DatasetAccessorFactory
 {
     public static DatasetAccessor createHTTP(String serviceURI)

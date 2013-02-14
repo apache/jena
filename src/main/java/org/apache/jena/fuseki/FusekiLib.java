@@ -38,17 +38,6 @@ import com.hp.hpl.jena.sparql.util.Convert ;
 
 public class FusekiLib
 {
-    // See also HttpUtils.
-    
-    // Much of this ought to be elsewhere but while we develop it, it's useful to have close to first use.
-    // ---- To riot.WebContent
-    public static Lang langFromContentType(String mimeType)
-    { 
-        if ( mimeType == null )
-            return null ;
-        return WebContent.contentTypeToLang(mimeType.toLowerCase()) ;
-    }
-    
     public static MediaType contentType(HttpServletRequest request)
     {
         String x = request.getHeader(HttpNames.hContentType) ;

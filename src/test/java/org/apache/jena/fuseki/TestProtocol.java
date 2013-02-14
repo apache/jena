@@ -18,8 +18,8 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.fuseki.DatasetAccessor ;
-import org.apache.jena.fuseki.DatasetAccessorFactory ;
+import org.apache.jena.web.DatasetAccessor ;
+import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
