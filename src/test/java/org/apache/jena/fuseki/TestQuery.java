@@ -18,13 +18,11 @@
 
 package org.apache.jena.fuseki;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import junit.framework.Assert;
+import java.io.IOException ;
+import java.net.HttpURLConnection ;
+import java.net.URL ;
 
-import org.apache.jena.fuseki.DatasetAccessor ;
-import org.apache.jena.fuseki.DatasetAccessorFactory ;
+import junit.framework.Assert ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
@@ -37,6 +35,7 @@ import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderResultSet ;
+import com.hp.hpl.jena.sparql.util.Convert ;
 
 public class TestQuery extends BaseServerTest 
 {
@@ -70,7 +69,8 @@ public class TestQuery extends BaseServerTest
     
     @Test public void request_id_header_01() throws IOException
     {
-        URL u = new URL(serviceQuery);
+        String qs = Convert.encWWWForm("ASK{}") ;
+        URL u = new URL(serviceQuery+"?query="+qs);
         HttpURLConnection conn = (HttpURLConnection) u.openConnection();
         Assert.assertTrue(conn.getHeaderField("Fuseki-Request-ID") != null);
     }
