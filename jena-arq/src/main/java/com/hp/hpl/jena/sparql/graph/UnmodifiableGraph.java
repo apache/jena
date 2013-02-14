@@ -16,26 +16,29 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package com.hp.hpl.jena.sparql.graph;
 
-import org.apache.http.client.methods.HttpGet ;
-import org.apache.http.client.methods.HttpUriRequest ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
+import com.hp.hpl.jena.graph.impl.WrappedGraph ;
 
-public class TestHttpBase
+public class UnmodifiableGraph extends WrappedGraph
 {
-    protected String testGet(String url, int... expectedStatusCodes)
+    public UnmodifiableGraph(Graph base)
     {
-        HttpUriRequest request = new HttpGet(url) ;
-        
-        
-        return null ;
+        super(base) ;
+        bud = new SimpleBulkUpdateHandler(this) ;
     }
     
-    protected String testHttpRequest(HttpUriRequest request, int... expectedStatusCodes)
-    {
-        return null ;
-        
-        
-    }
-
+    /** Return base graph that this class protects.  Caveat emptor. */
+    public Graph unwrap()   { return super.base ; }
+    
+    @Override
+    public void performAdd(Triple triple)
+    { throw new UnsupportedOperationException() ; }
+    
+    @Override
+    public void performDelete(Triple triple)
+    { throw new UnsupportedOperationException() ; }
 }

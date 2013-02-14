@@ -31,9 +31,9 @@ import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
 import org.apache.jena.fuseki.conneg.WebLib ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.impl.HttpSC ;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
@@ -97,7 +97,7 @@ public class ResponseModel
             charset = WebContent.charsetUTF8 ;
         }
 
-        Lang lang = FusekiLib.langFromContentType(contentType) ; 
+        Lang lang = WebContent.contentTypeToLang(contentType) ; 
         RDFWriter rdfw = FusekiLib.chooseWriter(lang) ;
 
         if ( rdfw instanceof RDFXMLWriterI )

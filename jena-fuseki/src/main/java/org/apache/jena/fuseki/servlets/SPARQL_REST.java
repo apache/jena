@@ -39,9 +39,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.web.ContentType ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RiotException ;
@@ -49,6 +47,7 @@ import org.apache.jena.riot.RiotReader ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.* ;
+import org.apache.jena.web.impl.HttpSC ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -312,7 +311,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         }
 
         int len = action.request.getContentLength() ;
-        Lang lang = FusekiLib.langFromContentType(ct.getContentType()) ;
+        Lang lang = WebContent.contentTypeToLang(ct.getContentType()) ;
         if ( lang == null )
         {
             errorBadRequest("Unknown content type for triples: "+contentTypeHeader) ;

@@ -18,19 +18,19 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import org.junit.runner.RunWith ;
-import org.junit.runners.Suite ;
+import org.apache.jena.web.DatasetAccessorFactory ;
+import org.apache.jena.web.TestDatasetGraphAccessorBase ;
+import org.apache.jena.web.impl.DatasetGraphAccessor ;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {
-    TestPrefixMappingTDB.class
-    , TestBulkUpdateTDB.class
-    , TestDatasetGraphTDB.class
-    , TestGraphsTDB1.class
-    , TestGraphsTDB2.class
-    , TestDatasetGraphAccessorTDB.class
-})
-public class TS_Graph
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.tdb.TDBFactory ;
+
+public class TestDatasetGraphAccessorTDB extends TestDatasetGraphAccessorBase
 {
-
+    @Override
+    protected DatasetGraphAccessor getDatasetUpdater()
+    {
+        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
+        return DatasetAccessorFactory.make(dsg) ;
+    }
 }

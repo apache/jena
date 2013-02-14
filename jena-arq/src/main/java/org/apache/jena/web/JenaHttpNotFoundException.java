@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,20 +16,12 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.http;
+package org.apache.jena.web;
 
-import org.apache.jena.fuseki.DatasetAccessorFactory ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessor ;
+import org.apache.jena.web.impl.HttpSC ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
-
-public class TestDatasetGraphAccessorMem extends TestDatasetGraphAccessorBase
+public class JenaHttpNotFoundException extends JenaHttpException
 {
-    @Override
-    protected DatasetGraphAccessor getDatasetUpdater()
-    {
-        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
-        return DatasetAccessorFactory.make(dsg) ;
-    }
+    public JenaHttpNotFoundException(String msg)    { super(HttpSC.NOT_FOUND_404, msg) ; }
 }
+

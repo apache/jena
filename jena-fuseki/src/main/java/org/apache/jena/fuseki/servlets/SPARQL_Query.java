@@ -44,10 +44,10 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.FusekiException ;
 import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.http.HttpSC ;
-import org.apache.jena.fuseki.migrate.WebIO ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpOp ;
+import org.apache.jena.web.impl.HttpSC ;
 
 import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.rdf.model.Model ;
@@ -363,7 +363,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
         
     private String getRemoteString(String queryURI)
     {
-        return WebIO.exec_get(queryURI) ;
+        return HttpOp.execHttpGet(queryURI) ;
     }
 
 }

@@ -31,9 +31,9 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.SPARQLServer ;
+import org.apache.jena.web.impl.HttpSC ;
 import org.slf4j.Logger ;
 
 import com.hp.hpl.jena.Jena ;

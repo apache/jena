@@ -135,7 +135,12 @@ public class WebContent
         return mapLangToContentType.get(lang) ;
     }
     
-    public static Lang contentTypeToLang(String contentType) { return mapContentTypeToLang.get(contentType) ; }
+    public static Lang contentTypeToLang(String contentType)
+    { 
+        if ( contentType == null )
+            return null ;
+        return mapContentTypeToLang.get(contentType) ;
+    }
 
     /** Canonical names */
     private static Map<Lang, String> mapLangToContentType =  new HashMap<Lang, String>() ;

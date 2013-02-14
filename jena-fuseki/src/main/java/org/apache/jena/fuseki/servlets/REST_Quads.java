@@ -28,12 +28,8 @@ import javax.servlet.http.HttpServletRequest ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.atlas.web.TypedOutputStream ;
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.StreamRDF ;
 import org.apache.jena.riot.system.StreamRDFLib ;
@@ -66,7 +62,7 @@ public class REST_Quads extends SPARQL_REST
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
-        Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
         if ( lang == null )
             lang = RDFLanguages.TRIG ;
 
@@ -128,7 +124,7 @@ public class REST_Quads extends SPARQL_REST
             errorBadRequest("Content-type required for data format") ;
         
         MediaType mediaType = MediaType.create(x) ;
-        Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
         if ( lang == null )
             lang = RDFLanguages.TRIG ;
 

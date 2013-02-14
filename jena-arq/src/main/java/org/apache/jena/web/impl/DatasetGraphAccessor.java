@@ -16,20 +16,32 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.http;
+package org.apache.jena.web.impl;
 
-import org.apache.jena.fuseki.DatasetAccessorFactory ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessor ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
 
-import com.hp.hpl.jena.sparql.core.DatasetGraph ;
-import com.hp.hpl.jena.tdb.TDBFactory ;
-
-public class TestDatasetGraphAccessorTDB extends TestDatasetGraphAccessorBase
+public interface DatasetGraphAccessor
 {
-    @Override
-    protected DatasetGraphAccessor getDatasetUpdater()
-    {
-        DatasetGraph dsg = TDBFactory.createDatasetGraph() ;
-        return DatasetAccessorFactory.make(dsg) ;
-    }
+    public Graph httpGet() ; 
+    public Graph httpGet(Node graphName) ;
+    
+    public boolean httpHead() ; 
+    public boolean httpHead(Node graphName) ;
+    
+    // Replace/create graph
+    public void httpPut(Graph data) ;
+    public void httpPut(Node graphName, Graph data) ;
+
+    // Remove graph
+    public void httpDelete() ;
+    public void httpDelete(Node graphName) ;
+
+    // Update graph
+    public void httpPost(Graph data) ;
+    public void httpPost(Node graphName, Graph data) ;
+
+    // Update graph
+    public void httpPatch(Graph data) ;
+    public void httpPatch(Node graphName, Graph data) ;
 }

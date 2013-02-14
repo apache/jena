@@ -18,7 +18,11 @@
 
 package org.apache.jena.fuseki.http;
 
-import org.apache.jena.fuseki.* ;
+import org.apache.jena.fuseki.BaseServerTest ;
+import org.apache.jena.fuseki.ServerTest ;
+import org.apache.jena.fuseki.WebTest ;
+import org.apache.jena.web.DatasetAccessor ;
+import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package com.hp.hpl.jena.sparql.junit;
 
 import java.io.PrintStream ;
 import java.text.NumberFormat ;

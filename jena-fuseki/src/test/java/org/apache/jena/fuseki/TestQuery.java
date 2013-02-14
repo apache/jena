@@ -23,6 +23,8 @@ import java.net.HttpURLConnection ;
 import java.net.URL ;
 
 import junit.framework.Assert ;
+import org.apache.jena.web.DatasetAccessor ;
+import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;

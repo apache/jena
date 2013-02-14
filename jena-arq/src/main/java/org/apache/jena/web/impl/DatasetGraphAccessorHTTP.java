@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.http;
+package org.apache.jena.web.impl;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
@@ -38,15 +38,20 @@ import org.apache.http.params.HttpProtocolParams ;
 import org.apache.jena.atlas.lib.IRILib ;
 import org.apache.jena.atlas.logging.Log ;
 import org.apache.jena.atlas.web.TypedInputStream ;
-import org.apache.jena.fuseki.* ;
 import org.apache.jena.riot.Lang ;
 import org.apache.jena.riot.RDFDataMgr ;
+import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.web.HttpNames ;
+import org.apache.jena.web.JenaHttpException ;
+import org.apache.jena.web.JenaHttpNotFoundException ;
 
+import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
+import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 import com.hp.hpl.jena.sparql.graph.UnmodifiableGraph ;
 
@@ -71,7 +76,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         HttpUriRequest httpGet = new HttpGet(url) ;
         try {
             return exec(url, null, httpGet, true) ;
-        } catch (FusekiNotFoundException ex)
+        } catch (JenaHttpNotFoundException ex)
         {
             return null ;  
         }
@@ -95,7 +100,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         try {
             exec(url, null, httpHead, false) ;
             return true ;
-        } catch (FusekiRequestException ex)
+        } catch (JenaHttpException ex)
         {
             if ( ex.getStatusCode() == HttpSC.NOT_FOUND_404 )
                 return false ;
@@ -127,7 +132,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
             HttpUriRequest httpDelete = new HttpDelete(url) ;
             exec(url, null, httpDelete, false) ;
             return true ;
-        } catch (FusekiNotFoundException ex) { return false ; }
+        } catch (JenaHttpNotFoundException ex) { return false ; }
     }
     
     @Override
@@ -156,7 +161,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
     private String target(Node name)
     {
         if ( ! name.isURI() )
-            throw new FusekiException("Not a URI: "+name) ;
+            throw new JenaException("Not a URI: "+name) ;
         String guri = name.getURI() ;
         // Encode
         guri = IRILib.encodeUriComponent(guri) ;
@@ -174,7 +179,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
         HttpProtocolParams.setUseExpectContinue(httpParams$,     true);
         HttpConnectionParams.setTcpNoDelay(httpParams$,          true);
         HttpConnectionParams.setSocketBufferSize(httpParams$,    32*1024);
-        HttpProtocolParams.setUserAgent(httpParams$,             Fuseki.NAME+"/"+Fuseki.VERSION);
+        HttpProtocolParams.setUserAgent(httpParams$,             Jena.NAME+"/"+Jena.VERSION);
         return httpParams$;
     }
     
@@ -215,12 +220,12 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
             
             if ( HttpSC.isRedirection(responseCode) )
                 // Not implemented yet.
-                throw FusekiRequestException.create(responseCode, responseMessage) ;
+                throw JenaHttpException.create(responseCode, responseMessage) ;
 
             // Other 400 and 500 - errors
 
             if ( HttpSC.isClientError(responseCode) || HttpSC.isServerError(responseCode) )
-                throw FusekiRequestException.create(responseCode, responseMessage) ;
+                throw JenaHttpException.create(responseCode, responseMessage) ;
 
             if ( responseCode == HttpSC.NO_CONTENT_204) return null ;
             if ( responseCode == HttpSC.CREATED_201 ) return null ;
@@ -228,7 +233,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
             if ( responseCode != HttpSC.OK_200 )
             {
                 Log.warn(this, "Unexpected status code") ;
-                throw FusekiRequestException.create(responseCode, responseMessage) ;
+                throw JenaHttpException.create(responseCode, responseMessage) ;
             }
             
             // May not have a body.
@@ -288,7 +293,7 @@ public class DatasetGraphAccessorHTTP implements DatasetGraphAccessor
        
         Lang lang = WebContent.contentTypeToLang(ts.getContentType()) ;
         if ( lang == null )
-            throw new FusekiException("Unknown lang for "+ts.getMediaType()) ;
-        RDFDataMgr.read(graph, base, lang) ;
-    }    
+            throw new RiotException("Unknown lang for "+ts.getMediaType()) ;
+        RDFDataMgr.read(graph, ts, lang) ; 
+    }        
 }
