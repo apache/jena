@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,23 +16,24 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.web;
 
 import org.apache.jena.web.impl.HttpSC ;
 
+import com.hp.hpl.jena.shared.JenaException ;
 
-public class FusekiRequestException extends FusekiException
+public class JenaHttpException extends JenaException
 {
-    public static FusekiRequestException create(int code, String msg)
+    public static JenaHttpException create(int code, String msg)
     {
         if ( code == HttpSC.NOT_FOUND_404 )
-            return new FusekiNotFoundException(msg) ;
-        return new FusekiRequestException(code, msg) ;
+            return new JenaHttpNotFoundException(msg) ;
+        return new JenaHttpException(code, msg) ;
     }
     
     private final int statusCode ;
     private final String responseMessage ;
-    protected FusekiRequestException(int code, String msg)
+    protected JenaHttpException(int code, String msg)
     {
         super(msg) ;
         this.statusCode = code ;
@@ -54,4 +55,6 @@ public class FusekiRequestException extends FusekiException
     {
         return "HTTP: "+statusCode+" "+getMessage() ;
     }
+
 }
+

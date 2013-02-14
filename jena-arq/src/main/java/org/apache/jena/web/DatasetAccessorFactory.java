@@ -16,21 +16,16 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki;
+package org.apache.jena.web;
 
-import org.apache.jena.fuseki.http.DatasetAdapter ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessor ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessorBasic ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessorHTTP ;
+import org.apache.jena.web.impl.DatasetAdapter ;
+import org.apache.jena.web.impl.DatasetGraphAccessor ;
+import org.apache.jena.web.impl.DatasetGraphAccessorBasic ;
+import org.apache.jena.web.impl.DatasetGraphAccessorHTTP ;
 
 import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
-/** Accessor to a dataset a collection of graphs.
- * @deprecated Use {@link org.apache.jena.web.DatasetAccessorFactory}
- * 
- */
-@Deprecated
 public class DatasetAccessorFactory
 {
     public static DatasetAccessor createHTTP(String serviceURI)

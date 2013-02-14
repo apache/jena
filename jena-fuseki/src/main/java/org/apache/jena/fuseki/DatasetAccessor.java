@@ -18,40 +18,11 @@
 
 package org.apache.jena.fuseki;
 
-import com.hp.hpl.jena.rdf.model.Model ;
 
-/** Accessor to a dataset a collection of graphs. */
-public interface DatasetAccessor
+/** Accessor to a dataset a collection of graphs.
+ * @deprecated Use {@link org.apache.jena.web.DatasetAccessor}
+ */
+@Deprecated
+public interface DatasetAccessor extends org.apache.jena.web.DatasetAccessor
 {
-    /** Get the default model of a Dataset */
-    public Model getModel() ; 
-    
-    /** Get a named model of a Dataset */
-    public Model getModel(String graphUri) ;
-
-//    /** Does the Dataset contain a default graph? */
-//    public boolean containsDefault() ;
-
-    /** Does the Dataset contain a named graph? */
-    public boolean containsModel(String graphURI) ;
-    
-    /** Put (replace) the default model of a Dataset */
-    public void putModel(Model data) ;
-    
-    /** Put (create/replace) a named model of a Dataset */
-    public void putModel(String graphUri, Model data) ;
-
-    /** Delete (which means clear) the default model of a Dataset */
-    public void deleteDefault() ;
-    
-    /** Delete a named model of a Dataset */
-    public void deleteModel(String graphUri) ;
-
-//    /** Clear the default graph, delete all the named models */
-//    public void reset() ;
-
-    /** Add statements to the default model of a Dataset */
-    public void add(Model data) ;
-    /** Add statements to a named model of a Dataset */
-    public void add(String graphUri, Model data) ;
 }

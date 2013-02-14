@@ -16,18 +16,36 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.http;
+package org.apache.jena.web;
 
-import org.apache.jena.fuseki.BaseServerTest ;
-import org.apache.jena.fuseki.http.DatasetGraphAccessor ;
+import org.apache.jena.atlas.junit.BaseTest ;
+import org.apache.jena.web.impl.DatasetGraphAccessor ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
+import com.hp.hpl.jena.sparql.sse.SSE ;
 
-public abstract class TestDatasetGraphAccessorBase extends BaseServerTest
+public abstract class TestDatasetGraphAccessorBase extends BaseTest
 {
+    protected static final String gn1       = "http://graph/1" ;
+    protected static final String gn2       = "http://graph/2" ;
+    protected static final String gn99      = "http://graph/99" ;
+    
+    protected static final Node n1          = Node.createURI("http://graph/1") ;
+    protected static final Node n2          = Node.createURI("http://graph/2") ;
+    protected static final Node n99         = Node.createURI("http://graph/99") ;
+    
+    protected static final Graph graph1     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 1)))") ;
+    protected static final Graph graph2     = SSE.parseGraph("(base <http://example/> (graph (<x> <p> 2)))") ;
+    
+    protected static final Model model1     = ModelFactory.createModelForGraph(graph1) ;
+    protected static final Model model2     = ModelFactory.createModelForGraph(graph2) ;
+    
     // return a DatasetGraphAccessor backed by an empty dataset
     protected abstract DatasetGraphAccessor getDatasetUpdater() ;
     

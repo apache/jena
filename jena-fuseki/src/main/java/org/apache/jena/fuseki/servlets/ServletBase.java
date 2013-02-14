@@ -29,7 +29,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.fuseki.Fuseki ;
 import org.apache.jena.fuseki.HttpNames ;
-import org.apache.jena.fuseki.http.HttpSC ;
+import org.apache.jena.web.impl.HttpSC ;
 import org.slf4j.Logger ;
 
 public abstract class ServletBase extends HttpServlet

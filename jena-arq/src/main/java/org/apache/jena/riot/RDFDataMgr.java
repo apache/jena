@@ -640,6 +640,8 @@ public class RDFDataMgr
      */
     public static void parse(StreamRDF sink, String uri, String base, Lang hintLang, Context context)
     {
+        if ( uri == null )
+            throw new IllegalArgumentException("URI to read from is null") ;
         if ( base == null )
             base = IRIResolver.resolveFileURL(uri) ;
         if ( hintLang == null )

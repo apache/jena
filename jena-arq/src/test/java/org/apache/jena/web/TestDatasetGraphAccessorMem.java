@@ -16,29 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.fuseki.migrate;
+package org.apache.jena.web;
 
-import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.impl.SimpleBulkUpdateHandler ;
-import com.hp.hpl.jena.graph.impl.WrappedGraph ;
+import org.apache.jena.web.DatasetAccessorFactory ;
+import org.apache.jena.web.impl.DatasetGraphAccessor ;
 
-public class UnmodifiableGraph extends WrappedGraph
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
+
+public class TestDatasetGraphAccessorMem extends TestDatasetGraphAccessorBase
 {
-    public UnmodifiableGraph(Graph base)
+    @Override
+    protected DatasetGraphAccessor getDatasetUpdater()
     {
-        super(base) ;
-        bud = new SimpleBulkUpdateHandler(this) ;
+        DatasetGraph dsg = DatasetGraphFactory.createMem() ;
+        return DatasetAccessorFactory.make(dsg) ;
     }
-    
-    /** Return base graph that this class protects.  Caveat emptor. */
-    public Graph unwrap()   { return super.base ; }
-    
-    @Override
-    public void performAdd(Triple triple)
-    { throw new UnsupportedOperationException() ; }
-    
-    @Override
-    public void performDelete(Triple triple)
-    { throw new UnsupportedOperationException() ; }
 }

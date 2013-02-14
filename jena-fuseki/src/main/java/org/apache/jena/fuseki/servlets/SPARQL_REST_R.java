@@ -92,7 +92,7 @@ public class SPARQL_REST_R extends SPARQL_REST
         catch (IOException ex) { errorOccurred(ex) ; output = null ; }
         
         TypedOutputStream out = new TypedOutputStream(output, mediaType) ;
-        Lang lang = FusekiLib.langFromContentType(mediaType.getContentType()) ;
+        Lang lang = WebContent.contentTypeToLang(mediaType.getContentType()) ;
 
         if ( action.verbose )
             log.info(format("[%d]   Get: Content-Type=%s, Charset=%s => %s", 

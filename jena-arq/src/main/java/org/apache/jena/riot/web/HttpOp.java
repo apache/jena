@@ -38,17 +38,19 @@ import org.apache.http.client.entity.UrlEncodedFormEntity ;
 import org.apache.http.client.methods.HttpGet ;
 import org.apache.http.client.methods.HttpPost ;
 import org.apache.http.client.methods.HttpPut ;
+import org.apache.http.client.methods.HttpUriRequest ;
 import org.apache.http.entity.EntityTemplate ;
 import org.apache.http.entity.InputStreamEntity ;
 import org.apache.http.entity.StringEntity ;
 import org.apache.http.impl.client.SystemDefaultHttpClient ;
 import org.apache.http.message.BasicNameValuePair ;
-import org.apache.http.protocol.HttpContext;
+import org.apache.http.protocol.HttpContext ;
 import org.apache.jena.atlas.io.IO ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.atlas.web.HttpException ;
 import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.JenaHttpException ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -116,6 +118,9 @@ public class HttpOp
         } catch (IOException ex) { IO.exception(ex) ; }
     }
     
+    /** GET
+     * <p>The acceptHeader string is any legal value for HTTP Accept: field.
+     */
     public static TypedInputStreamHttp execHttpGet(String url, String acceptHeader)
     {
         try {
@@ -166,6 +171,24 @@ public class HttpOp
         catch (IOException ex) { IO.exception(ex) ; return null ; }
     }
 
+    /** Simple GET - no content negotiation */
+    public static String execHttpGet(String url)
+    {
+        HttpUriRequest httpGet = new HttpGet(url) ;
+        HttpClient httpclient = new SystemDefaultHttpClient() ;
+        try {
+            HttpResponse response = httpclient.execute(httpGet) ;
+            int responseCode = response.getStatusLine().getStatusCode() ;
+            String responseMessage = response.getStatusLine().getReasonPhrase() ;
+            if ( 200 != responseCode )
+                throw JenaHttpException.create(responseCode, responseMessage) ;    
+            HttpEntity entity = response.getEntity() ;
+            InputStream instream = entity.getContent() ;
+            String string = IO.readWholeFileAsUTF8(instream) ;
+            instream.close() ;
+            return string ;
+        } catch (IOException ex) { IO.exception(ex) ; return null ; }
+    }
     
     /** POST a string without response body.
      * <p>Execute an HTTP POST, with the string as content.

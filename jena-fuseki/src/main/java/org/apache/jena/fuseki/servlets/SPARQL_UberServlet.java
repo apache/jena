@@ -32,10 +32,10 @@ import org.apache.jena.atlas.web.MediaType ;
 import org.apache.jena.fuseki.DEF ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.conneg.ConNeg ;
-import org.apache.jena.fuseki.http.HttpSC ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.riot.WebContent ;
+import org.apache.jena.web.impl.HttpSC ;
 
 /** This servlet can be attached to a dataset location
  *  and acts as a falserouter for all SPARQL operations
