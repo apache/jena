@@ -18,12 +18,12 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.web.DatasetAccessor ;
-import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.query.DatasetAccessor ;
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.util.Convert ;
 
 // generally poke the server.

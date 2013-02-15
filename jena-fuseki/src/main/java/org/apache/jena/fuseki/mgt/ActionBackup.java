@@ -39,7 +39,7 @@ import org.apache.jena.fuseki.server.DatasetRegistry ;
 import org.apache.jena.fuseki.servlets.HttpAction ;
 import org.apache.jena.fuseki.servlets.ServletBase ;
 import org.apache.jena.riot.out.NQuadsWriter ;
-import org.apache.jena.web.impl.HttpSC ;
+import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.util.Utils ;

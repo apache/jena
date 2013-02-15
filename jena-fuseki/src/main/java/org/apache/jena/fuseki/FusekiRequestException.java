@@ -18,7 +18,7 @@
 
 package org.apache.jena.fuseki;
 
-import org.apache.jena.web.impl.HttpSC ;
+import org.apache.jena.web.HttpSC ;
 
 
 public class FusekiRequestException extends FusekiException

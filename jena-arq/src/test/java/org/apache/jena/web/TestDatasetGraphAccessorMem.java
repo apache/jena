@@ -18,9 +18,8 @@
 
 package org.apache.jena.web;
 
-import org.apache.jena.web.DatasetAccessorFactory ;
-import org.apache.jena.web.impl.DatasetGraphAccessor ;
 
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
 

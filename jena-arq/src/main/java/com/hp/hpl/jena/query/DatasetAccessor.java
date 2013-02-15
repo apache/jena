@@ -16,11 +16,20 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web;
+package com.hp.hpl.jena.query;
 
 import com.hp.hpl.jena.rdf.model.Model ;
 
-/** Accessor to a dataset a collection of graphs. */
+/** Accessor to a dataset as a collection of models, providing 
+ * whole model operations. Models can be added, remopve and replaced.   
+ *  This interface provides a uniform interface to local and remote datasets and is based on 
+ *  <a href="http://www.w3.org/TR/sparql11-http-rdf-update/">SPARQL 1.1 Graph Store HTTP Protocol</a>.
+ *  The factory methods in {@link DatasetAccessorFactory} provides creators for 
+ *  {@code DatasetAccessor}s to local and remote (over HTTP) data.
+ *  local na dremote   
+ *  
+ *  @see DatasetAccessorFactory
+ */
 public interface DatasetAccessor
 {
     /** Get the default model of a Dataset */
@@ -52,6 +61,7 @@ public interface DatasetAccessor
 
     /** Add statements to the default model of a Dataset */
     public void add(Model data) ;
+    
     /** Add statements to a named model of a Dataset */
     public void add(String graphUri, Model data) ;
 }

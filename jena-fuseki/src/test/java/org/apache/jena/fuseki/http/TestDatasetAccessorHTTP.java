@@ -21,13 +21,13 @@ package org.apache.jena.fuseki.http;
 import org.apache.jena.fuseki.BaseServerTest ;
 import org.apache.jena.fuseki.ServerTest ;
 import org.apache.jena.fuseki.WebTest ;
-import org.apache.jena.web.DatasetAccessor ;
-import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
+import com.hp.hpl.jena.query.DatasetAccessor ;
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 

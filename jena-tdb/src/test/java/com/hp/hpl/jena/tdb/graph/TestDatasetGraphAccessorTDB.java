@@ -18,10 +18,10 @@
 
 package com.hp.hpl.jena.tdb.graph;
 
-import org.apache.jena.web.DatasetAccessorFactory ;
+import org.apache.jena.web.DatasetGraphAccessor ;
 import org.apache.jena.web.TestDatasetGraphAccessorBase ;
-import org.apache.jena.web.impl.DatasetGraphAccessor ;
 
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.tdb.TDBFactory ;
 

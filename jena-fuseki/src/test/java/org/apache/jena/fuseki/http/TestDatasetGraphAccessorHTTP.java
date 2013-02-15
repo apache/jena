@@ -20,9 +20,9 @@ package org.apache.jena.fuseki.http;
 
 import org.apache.jena.fuseki.BaseServerTest ;
 import org.apache.jena.fuseki.ServerTest ;
+import org.apache.jena.web.DatasetGraphAccessor ;
+import org.apache.jena.web.DatasetGraphAccessorHTTP ;
 import org.apache.jena.web.TestDatasetGraphAccessorBase ;
-import org.apache.jena.web.impl.DatasetGraphAccessor ;
-import org.apache.jena.web.impl.DatasetGraphAccessorHTTP ;
 import org.junit.AfterClass ;
 import org.junit.Before ;
 import org.junit.BeforeClass ;

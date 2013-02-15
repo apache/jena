@@ -18,7 +18,6 @@
 
 package org.apache.jena.web;
 
-import org.apache.jena.web.impl.HttpSC ;
 
 public class JenaHttpNotFoundException extends JenaHttpException
 {

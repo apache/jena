@@ -34,7 +34,7 @@
  * I found the naming which includes the number, more useful than the standard constants. 
  */
 
-package org.apache.jena.web.impl;
+package org.apache.jena.web;
 
 /**
  * <p>

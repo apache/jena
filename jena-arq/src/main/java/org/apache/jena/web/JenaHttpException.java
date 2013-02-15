@@ -18,7 +18,6 @@
 
 package org.apache.jena.web;
 
-import org.apache.jena.web.impl.HttpSC ;
 
 import com.hp.hpl.jena.shared.JenaException ;
 
