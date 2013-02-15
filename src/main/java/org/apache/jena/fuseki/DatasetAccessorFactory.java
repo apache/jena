@@ -27,7 +27,7 @@ import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 /** Accessor to a dataset a collection of graphs.
- * @deprecated Use {@link org.apache.jena.web.DatasetAccessorFactory}
+ * @deprecated Use {@link com.hp.hpl.jena.query.DatasetAccessorFactory}
  * 
  */
 @Deprecated

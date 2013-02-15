@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.fuseki.Fuseki ;
-import org.apache.jena.web.impl.HttpSC ;
+import org.apache.jena.web.HttpSC ;
 import org.eclipse.jetty.http.HttpHeaders ;
 import org.eclipse.jetty.http.HttpMethods ;
 import org.eclipse.jetty.http.MimeTypes ;

@@ -20,9 +20,9 @@ package org.apache.jena.fuseki;
 
 
 /** Accessor to a dataset a collection of graphs.
- * @deprecated Use {@link org.apache.jena.web.DatasetAccessor}
+ * @deprecated Use {@link com.hp.hpl.jena.query.DatasetAccessor}
  */
 @Deprecated
-public interface DatasetAccessor extends org.apache.jena.web.DatasetAccessor
+public interface DatasetAccessor extends com.hp.hpl.jena.query.DatasetAccessor
 {
 }

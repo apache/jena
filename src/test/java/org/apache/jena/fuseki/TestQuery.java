@@ -23,16 +23,13 @@ import java.net.HttpURLConnection ;
 import java.net.URL ;
 
 import junit.framework.Assert ;
-import org.apache.jena.web.DatasetAccessor ;
-import org.apache.jena.web.DatasetAccessorFactory ;
 import org.junit.AfterClass ;
 import org.junit.BeforeClass ;
 import org.junit.Test ;
 
-import com.hp.hpl.jena.query.QueryExecution ;
-import com.hp.hpl.jena.query.QueryExecutionFactory ;
-import com.hp.hpl.jena.query.ResultSet ;
-import com.hp.hpl.jena.query.ResultSetFormatter ;
+import com.hp.hpl.jena.query.DatasetAccessor ;
+import com.hp.hpl.jena.query.DatasetAccessorFactory ;
+import com.hp.hpl.jena.query.* ;
 import com.hp.hpl.jena.sparql.resultset.ResultSetCompare ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
@@ -92,5 +89,4 @@ public class TestQuery extends BaseServerTest
         boolean b = ResultSetCompare.equalsByTerm(rs, expectedResultSet) ;
         assertTrue("Result sets different", b) ;
     }
-
 }
