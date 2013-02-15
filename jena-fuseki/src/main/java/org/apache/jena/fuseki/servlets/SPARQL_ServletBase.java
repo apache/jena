@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletResponse ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.fuseki.server.DatasetRegistry ;
-import org.apache.jena.web.impl.HttpSC ;
+import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.query.QueryCancelledException ;

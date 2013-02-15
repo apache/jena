@@ -125,7 +125,6 @@ public abstract class CmdLangParse extends CmdGeneral
     /** Reset the logging to be good for command line tools */
     public static void setLogging()
     {
-        // Turn off optimizer warning.
         // Use a plain logger for output. 
         Properties p = new Properties() ;
         InputStream in = new ByteArrayInputStream(StrUtils.asUTF8bytes(log4Jsetup)) ;
@@ -134,7 +133,6 @@ public abstract class CmdLangParse extends CmdGeneral
         //LogManager.getLogger(SysRIOT.riotLoggerName).setLevel(Level.ALL) ;
         System.setProperty("log4j.configuration", "set") ;
     }
-    
     
     protected CmdLangParse(String[] argv)
     {
@@ -147,7 +145,6 @@ public abstract class CmdLangParse extends CmdGeneral
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
-        //super.modVersion.addClass(SysRIOT.class) ;
     }
 
     @Override
@@ -192,7 +189,6 @@ public abstract class CmdLangParse extends CmdGeneral
             if ( super.getPositional().size() > 1 && modTime.timingEnabled() )
                 output("Total", totalTuples, totalMillis, langHandlerOverall) ;
         }
-//        IO.close(output) ;
     }
 
     public void parseFile(String filename)
@@ -279,7 +275,7 @@ public abstract class CmdLangParse extends CmdGeneral
             labels = NodeToLabel.createBNodeByLabelEncoded() ;
         
         // Uglyness because quads and triples aren't subtype of some Tuple<Node>
-        // That would change a lot (Triples came several years before Quads). 
+        // Replace with StreamRDF all the way through.
         
         if ( RDFLanguages.isTriples(lang) )
         {

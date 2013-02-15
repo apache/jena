@@ -19,7 +19,6 @@
 package org.apache.jena.web;
 
 import org.apache.jena.atlas.junit.BaseTest ;
-import org.apache.jena.web.impl.DatasetGraphAccessor ;
 import org.junit.Test ;
 
 import com.hp.hpl.jena.graph.Graph ;

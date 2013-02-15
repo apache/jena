@@ -38,7 +38,7 @@ import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.* ;
 import org.apache.jena.riot.lang.LangRIOT ;
 import org.apache.jena.riot.system.* ;
-import org.apache.jena.web.impl.HttpSC ;
+import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.GraphUtil ;

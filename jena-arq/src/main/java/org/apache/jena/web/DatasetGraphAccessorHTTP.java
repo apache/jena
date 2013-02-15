@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web.impl;
+package org.apache.jena.web;
 
 import java.io.ByteArrayInputStream ;
 import java.io.ByteArrayOutputStream ;
@@ -43,8 +43,6 @@ import org.apache.jena.riot.RDFDataMgr ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent ;
 import org.apache.jena.riot.web.HttpNames ;
-import org.apache.jena.web.JenaHttpException ;
-import org.apache.jena.web.JenaHttpNotFoundException ;
 
 import com.hp.hpl.jena.Jena ;
 import com.hp.hpl.jena.graph.Graph ;

@@ -5,9 +5,14 @@ ChangeLog for ARQ
 
 ==== Jena 2.10.0
 
+
 + Consolidation of versions numbers.
 + Command line SPARQL query reads all data formats (triples and quads) for --data 
++ RIOT is the main way to read RDF data. Includes content negotiation and file extension interpretation.
+  See RDFDataMgr for methods to read RDF (triple and quads formats). 
+  Model.read(...) operations use RIOT by default. 
 
++ Added DatasetAccessor interface to com.hp.hpl.jena - The SPARQL Graph Store Protocol  
 * JENA-379 : Incorrect results from a property paths with same subject and object variable.  
 + Introduce RDFParserOutput as output interface for parsers (was Sink<Triple> or Sink<Quad>)
   Assorted implementations of this new interface

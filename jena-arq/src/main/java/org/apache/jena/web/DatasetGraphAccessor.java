@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web.impl;
+package org.apache.jena.web;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Node ;

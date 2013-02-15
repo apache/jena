@@ -16,14 +16,13 @@
  * limitations under the License.
  */
 
-package org.apache.jena.web;
+package com.hp.hpl.jena.query;
 
-import org.apache.jena.web.impl.DatasetAdapter ;
-import org.apache.jena.web.impl.DatasetGraphAccessor ;
-import org.apache.jena.web.impl.DatasetGraphAccessorBasic ;
-import org.apache.jena.web.impl.DatasetGraphAccessorHTTP ;
+import org.apache.jena.web.DatasetAdapter ;
+import org.apache.jena.web.DatasetGraphAccessor ;
+import org.apache.jena.web.DatasetGraphAccessorBasic ;
+import org.apache.jena.web.DatasetGraphAccessorHTTP ;
 
-import com.hp.hpl.jena.query.Dataset ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class DatasetAccessorFactory
