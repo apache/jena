@@ -329,4 +329,9 @@ public class IndentedWriter
         write(s) ;
         write(' ') ;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("Indent = %d : [%d, %d]", currentIndent, row, column) ;  
+    }
 }
