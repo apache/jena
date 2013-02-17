@@ -227,8 +227,16 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
     @Override
     public void remove( Node s, Node p, Node o )
     {
+        if ( getEventManager().listening() )
+        {
+            // Have to do it the hard way so that triple events happen.
+            super.remove(s, p, o) ;
+            return ;
+        }
+        
         removeWorker(this, s, p, o) ;
-        getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
+        // We know no one is listening ...
+        //getEventManager().notifyEvent(this, GraphEvents.remove(s, p, o) ) ;
     }
 
     
