@@ -27,10 +27,7 @@ import java.util.Map ;
 import java.util.concurrent.TimeUnit ;
 
 import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.riot.Lang ;
-import org.apache.jena.riot.RDFLanguages ;
-import org.apache.jena.riot.RiotReader ;
-import org.apache.jena.riot.WebContent ;
+import org.apache.jena.riot.* ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
@@ -276,7 +273,7 @@ public class QueryEngineHTTP implements QueryExecution
         Lang lang = WebContent.contentTypeToLang(actualContentType);
         if (! RDFLanguages.isTriples(lang)) 
            throw new QueryException("Endpoint returned Content Type: " + actualContentType + " which is not a valid RDF Graph syntax");
-        model.read(in, null, lang.getName()) ;
+        RDFDataMgr.read(model, in, lang) ;
         this.close() ; 
         return model ;
     }
