@@ -15,16 +15,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.jena</groupId>
   <artifactId>jena-parent</artifactId>
   <packaging>pom</packaging>
   <url>http://jena.apache.org/</url>
-  <version>5-SNAPSHOT</version>
+  <version>5</version>
   <name>Apache Jena - Parent</name>
 
   <parent>
@@ -47,9 +45,9 @@
   </organization>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-parent/</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-parent</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-parent</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-parent</url>
   </scm>
 
   <properties>
@@ -256,7 +254,7 @@
                 <message>No SNAPSHOT dependencies are allowed!</message>
                 <onlyWhenRelease>true</onlyWhenRelease>
               </requireReleaseDeps>
-              <DependencyConvergence/>
+              <DependencyConvergence />
             </rules>
             <fail>true</fail>
           </configuration>
