@@ -22,14 +22,14 @@
   <artifactId>jena-fuseki</artifactId>
   <packaging>jar</packaging>
   <name>Apache Jena - Fuseki (SPARQL 1.1 Server)</name>
-  <version>0.2.6</version>
+  <version>0.2.7-SNAPSHOT</version>
   <description>Fuseki is a SPARQL 1.1 Server which provides query, update and graph store protocol endpoints that can be used to expose triple store(s) over HTTP</description>
   <url>http://jena.apache.org/</url>
 
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>5</version>
+    <version>6-SNAPSHOT</version>
     <relativePath>../jena-parent</relativePath>
   </parent> 
 
@@ -58,9 +58,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-fuseki</connection>
-    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-fuseki</developerConnection>
-    <url>https://svn.apache.org/repos/asf/jena/tags/jena-2.10.0/jena-fuseki</url>
+    <connection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</connection>
+    <developerConnection>scm:svn:https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</developerConnection>
+    <url>https://svn.apache.org/repos/asf/jena/trunk/jena-fuseki</url>
   </scm>
 
   <properties>
@@ -86,13 +86,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.10.0</version>
+      <version>2.10.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-arq</artifactId>
-      <version>2.10.0</version>
+      <version>2.10.1-SNAPSHOT</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -100,13 +100,13 @@
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-core</artifactId>
-      <version>2.10.0</version>
+      <version>2.10.1-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.jena</groupId>
       <artifactId>jena-tdb</artifactId>
-      <version>0.10.0</version>
+      <version>0.10.1-SNAPSHOT</version>
     </dependency>
 
     <!--
