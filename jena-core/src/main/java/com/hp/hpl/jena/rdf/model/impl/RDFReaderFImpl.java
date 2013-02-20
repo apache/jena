@@ -42,6 +42,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
                                               "RDF/XML-ABBREV",
                                               "N-TRIPLE",
                                               "N-TRIPLES",
+                                              "N-Triples",
                                               "N3",
                                               "TURTLE",
                                               "Turtle",
@@ -52,6 +53,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     protected static final String DEFAULTREADERS[] = {
         "com.hp.hpl.jena.rdf.arp.JenaReader",
         "com.hp.hpl.jena.rdf.arp.JenaReader",
+        Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         TURTLEREADER, //com.hp.hpl.jena.n3.N3JenaReader.class.getName(),  // N3 replaced by a Turtle-based parser 
