@@ -40,6 +40,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
           "RDF/XML-ABBREV",
           "N-TRIPLE",
           "N-TRIPLES",
+          "N-Triples",
           "N3",
           N3JenaWriter.n3WriterPrettyPrinter,
           N3JenaWriter.n3WriterPlain,
@@ -55,6 +56,7 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         {
             Jena.PATH + ".xmloutput.impl.Basic",
             Jena.PATH + ".xmloutput.impl.Abbreviated",
+            Jena.PATH + ".rdf.model.impl.NTripleWriter",
             Jena.PATH + ".rdf.model.impl.NTripleWriter",
             Jena.PATH + ".rdf.model.impl.NTripleWriter",
             Jena.PATH + ".n3.N3JenaWriter",
