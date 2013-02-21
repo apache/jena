@@ -30,7 +30,8 @@
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
     <version>6-SNAPSHOT</version>
-    <relativePath>../jena-parent</relativePath>
+    <!-- Leave this empty so that SDB builds outside the source tree -->
+    <relativePath></relativePath>
   </parent> 
 
   <description>SDB is a persistence layer for use with Apache Jena that uses an SQL database to store triples/quads.</description>
@@ -43,8 +44,8 @@
 
   <properties>
     <this.root>${project.artifactId}-${project.version}</this.root>
-    <ver.jena>2.10.1-SNAPSHOT-SNAPSHOT</ver.jena>
-    <ver.arq>2.10.1-SNAPSHOT-SNAPSHOT</ver.arq>
+    <ver.jena>2.10.1-SNAPSHOT</ver.jena>
+    <ver.arq>2.10.1-SNAPSHOT</ver.arq>
     <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ssZ</maven.build.timestamp.format>
     <build.time.xsd>${maven.build.timestamp}</build.time.xsd>
   </properties>
