@@ -29,12 +29,9 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  *  The events are start/finish, emitting triples/quads/tuples as necessary, prefixes and base directives.
  *  Tuples are generalized triples or quads.  A triple language will call triple(),
  *  quad language quad() in preference.    
- * 
- * @see ParserProfile for the lower level machinary for creation of nodes triples and quads. 
  */
 public interface StreamRDF
 {
-    // Java does not allow us to say "extends Sink<Triple>, Sink<Quad> because of type erasure
     /** Start parsing */
     public void start() ;
     
