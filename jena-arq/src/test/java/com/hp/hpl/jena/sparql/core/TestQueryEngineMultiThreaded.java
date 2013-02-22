@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.jena.atlas.lib.StrUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.hp.hpl.jena.query.Query;
@@ -134,6 +133,7 @@ public class TestQueryEngineMultiThreaded {
 
     private Thread createExecuteSparqlConstructThread(final Model model, final boolean lock, final int expected, final RunResult runResult) {
         return new Thread() {
+            @Override
             public void run() {
                 try {
                     for (int i = 0; i < NUMBER_OF_LOOPS; i++) {
@@ -151,6 +151,7 @@ public class TestQueryEngineMultiThreaded {
     
     private Thread createExecuteSparqlSelectThread(final Model model, final boolean lock, final int expected, final RunResult runResult) {
         return new Thread() {
+            @Override
             public void run() {
                 try {
                     for (int i = 0; i < NUMBER_OF_LOOPS; i++) {
