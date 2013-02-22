@@ -57,7 +57,6 @@ public class TestQueryEngineMultiThreaded {
     }
 
     @Test
-    @Ignore
     public void parallel_sparql_construct_inference_model_read_lock() throws Exception {
         Model model = createForwardChainingModel();
         this.testParallelConstruct(model, Lock.READ, EXPECTED_NUM_REASONER_TRIPLES);
@@ -82,7 +81,6 @@ public class TestQueryEngineMultiThreaded {
     }
 
     @Test
-    @Ignore
     public void parallel_sparql_select_inference_model_read_lock() throws Exception {
         Model model = createForwardChainingModel();
         this.testParallelSelect(model, Lock.READ, EXPECTED_NUM_REASONER_RESULTS);

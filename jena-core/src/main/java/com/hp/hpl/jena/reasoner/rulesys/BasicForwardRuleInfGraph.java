@@ -170,7 +170,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public void rebind() {
         version++;
-        isPrepared = false;
+        this.setPreparedState(false);
     }
 
     /**
@@ -191,8 +191,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     @Override
     public synchronized void prepare() {
-        if (isPrepared) return;
-        isPrepared = true;
+        if (this.isPrepared()) return;
+        this.setPreparedState(true);
+        
         // initilize the deductions graph
         fdeductions = new FGraph( createDeductionsGraph() );
         boolean rulesLoaded = false;
@@ -268,7 +269,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     private ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation, boolean filter) {
         checkOpen();
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         ExtendedIterator<Triple> result = null;
         if (fdata == null) {
             result = fdeductions.findWithContinuation(pattern, continuation);
@@ -318,7 +319,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public synchronized void performAdd(Triple t) {
         version++;
         fdata.getGraph().add(t);
-        if (isPrepared) {
+        if (this.isPrepared()) {
             engine.add(t);
         }
     }
@@ -329,7 +330,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public int graphBaseSize() {
         checkOpen();
-        if (!isPrepared) {
+        if (!this.isPrepared()) {
             prepare();
         }
         int baseSize = fdata.getGraph().size();
@@ -350,7 +351,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 data.delete(t);
             }
         }
-        if (isPrepared) {
+        if (!this.isPrepared()) {
             fdeductions.getGraph().delete(t);
         }
     }
