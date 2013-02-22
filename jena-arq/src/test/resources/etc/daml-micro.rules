@@ -1,0 +1,83 @@
+#------------------------------------------------------------------
+# Micro ruleset for DAML. This is just the core RDFS rules plus
+# the extensional rules for domain/range, plus some DAML axioms.
+# $Id: daml-micro.rules,v 1.7 2005-04-06 23:07:17 ian_dickinson Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> tableAll().
+
+#------------------------------------------------------------------
+# RDFS Closure rules
+#------------------------------------------------------------------
+
+[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ]
+[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]
+[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)]
+[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]
+[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
+[rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)]
+
+[rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
+[rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
+
+# Either version should work, pure back one scales better.
+# rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]
+[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ]
+
+# Not needed - replaced by TGC front end
+#[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]
+#[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)]
+
+
+#------------------------------------------------------------------
+# RDFS iff extensions needed for OWL
+#------------------------------------------------------------------
+
+[rdfs2a: (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:domain ?z)]
+[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]
+
+#------------------------------------------------------------------
+# Some useful daml axioms
+#------------------------------------------------------------------
+
+-> (daml:subPropertyOf rdfs:subPropertyOf rdfs:subPropertyOf).
+-> (rdfs:subPropertyOf rdfs:subPropertyOf daml:subPropertyOf).
+
+-> (daml:subClassOf rdfs:subPropertyOf rdfs:subClassOf).
+-> (rdfs:subClassOf rdfs:subPropertyOf daml:subClassOf).
+
+-> (daml:type rdfs:subPropertyOf rdf:type).
+-> (rdf:type rdfs:subPropertyOf daml:type).
+
+-> (daml:value rdfs:subPropertyOf rdf:value).
+-> (rdf:value rdfs:subPropertyOf daml:value).
+
+-> (daml:domain rdfs:subPropertyOf rdfs:domain).
+-> (rdfs:domain rdfs:subPropertyOf daml:domain).
+
+-> (daml:range rdfs:subPropertyOf rdfs:range).
+-> (rdfs:range rdfs:subPropertyOf daml:range).
+
+-> (daml:label rdfs:subPropertyOf rdfs:label).
+-> (rdfs:label rdfs:subPropertyOf daml:label).
+
+-> (daml:comment rdfs:subPropertyOf rdfs:comment).
+-> (rdfs:comment rdfs:subPropertyOf daml:comment).
+
+-> (daml:Literal rdfs:subClassOf rdfs:Literal).
+-> (rdfs:Literal rdfs:subClassOf daml:Literal).
+
+-> (daml:Property rdfs:subClassOf rdf:Property).
+-> (rdf:Property rdfs:subClassOf daml:Property).
+
+-> (daml:ObjectProperty rdfs:subClassOf rdf:Property).
+-> (daml:DatatypeProperty rdfs:subClassOf rdf:Property).
+
+# need this rule so that improved individual detection code works with DAML sources
+# [thing1: (?x rdf:type ?C), (?C rdf:type daml:Class) -> (?x rdf:type daml:Thing)]
+[thing1: (?C rdf:type daml:Class) -> (?C rdfs:subClassOf daml:Thing)]
+-> (daml:Thing rdf:type daml:Class).
