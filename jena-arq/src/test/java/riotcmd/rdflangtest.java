@@ -153,7 +153,7 @@ public class rdflangtest extends CmdGeneral
     {
         String name =  "Apache Jena RIOT" ;
         String releaseName =  "RIOT" ;
-        String version = RIOT.VERSION ;
+        String version = RIOT.getVersion() ;
         String homepage = "http://jena.apache.org/" ;
         String systemURI = "http://jena.apache.org/#riot" ;  // Null for bNode.
         

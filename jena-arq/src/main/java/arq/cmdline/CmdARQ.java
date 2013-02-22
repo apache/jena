@@ -18,6 +18,8 @@
 
 package arq.cmdline;
 
+import org.apache.jena.riot.RIOT ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.engine.iterator.QueryIteratorBase ;
 import com.hp.hpl.jena.sparql.util.Utils ;
@@ -35,6 +37,7 @@ public abstract class CmdARQ extends CmdGeneral
         addModule(modSymbol) ;
         super.add(strictDecl, "--strict", "Operate in strict SPARQL mode (no extensions of any kind)") ;
         super.modVersion.addClass(ARQ.class) ;
+        super.modVersion.addClass(RIOT.class) ;
     }
     
     @Override
