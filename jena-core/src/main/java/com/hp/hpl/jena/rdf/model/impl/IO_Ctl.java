@@ -32,8 +32,8 @@ public class IO_Ctl
         synchronized(initLock)
         {
             try {
-            initialized = true ;
-            callByRefection("org.apache.jena.riot.RIOT", "init") ;
+                initialized = true ;
+                callByRefection("org.apache.jena.riot.RIOT", "init") ;
             } catch (ExceptionInInitializerError e)
             {
                 e.printStackTrace(System.err) ;
