@@ -48,7 +48,7 @@ import java.util.HashSet;
 public class CollectionGraph extends GraphBase
 {
 
-	private Capabilities capabilities = new Capabilities() {
+	private Capabilities cgCapabilities = new Capabilities() {
 
 		@Override
 		public boolean sizeAccurate() {
@@ -184,7 +184,7 @@ public class CollectionGraph extends GraphBase
 
 	@Override
 	public Capabilities getCapabilities() {
-		return capabilities;
+		return cgCapabilities;
 	}
 	
 }
