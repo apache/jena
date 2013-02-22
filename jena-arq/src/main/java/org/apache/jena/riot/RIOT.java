@@ -31,33 +31,48 @@ public class RIOT
 
     /** The product name */   
     public static final String NAME = "RIOT";
+
+    // Unsafe to touch ARQ in class initialization
+    // See init().  these are set in register()
+//    public static final String VERSION = NAME+"/"+ARQ.VERSION ;
+//    public static final String BUILD_DATE = ARQ.BUILD_DATE ;
+    
+    public static String VERSION ;
+    public static String BUILD_DATE ;
     
     /** The root package name for RIOT */   
     public static final String PATH = "org.apache.jena.riot";
 
-    public static final String VERSION = "ARQ/"+ARQ.VERSION ;
-    public static final String BUILD_DATE = ARQ.BUILD_DATE ;
-    
     public static void setStrictMode(boolean state)
     {
         SysRIOT.strictMode = state ;
         SysRIOT.StrictXSDLexicialForms = state ;
     }
 
-    private static boolean initialized = false ;
+    private static volatile boolean initialized = false ;
+    private static Object initLock = new Object () ;
     
     public static void init()
     {
         if ( initialized )
             return ;
-        initialized = true ;
-        RDFLanguages.init() ;
-        RDFParserRegistry.init() ;
-        IO_Jena.wireIntoJena() ;
-        
-        // Don't register JMX info with ARQ as it may not be initialized
-        // itself and we can get into a circularity.
-        // This is done in ARQ.init at the proper moment.
+        synchronized(initLock)
+        {
+            if ( initialized )
+                return ;
+            initialized = true ;
+            // Becareful with what this touches - don't touch ARQ.*
+            // because that depends on Jena core and we may be 
+            // initializing because IO_Ctl (ie. Jena core)
+            // called RIOT.init.
+            RDFLanguages.init() ;
+            RDFParserRegistry.init() ;
+            IO_Jena.wireIntoJena() ;
+
+            // Don't register JMX info with ARQ as it may not be initialized
+            // itself and we can get into a circularity.
+            // This is done in ARQ.init at the proper moment.
+        }
     }
     
     private static boolean registered = false ;
@@ -67,8 +82,15 @@ public class RIOT
             return ;
         registered = true ;
         String NS = RIOT.PATH ;
-        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, RIOT.VERSION, RIOT.BUILD_DATE) ;
+
+        VERSION = getVersion() ;
+        BUILD_DATE = getBuildDate() ;
+
+        SystemInfo sysInfo2 = new SystemInfo(RIOT.riotIRI, VERSION, BUILD_DATE ) ;
         ARQMgt.register(NS+".system:type=SystemInfo", sysInfo2) ;
         SystemARQ.registerSubSystem(sysInfo2) ;
     }
+    
+    public static String getVersion()   { return ARQ.VERSION ; }
+    public static String getBuildDate() { return ARQ.BUILD_DATE ; }
 }
