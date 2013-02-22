@@ -139,12 +139,16 @@ public abstract class CmdLangParse extends CmdGeneral
         super(argv) ;
         // As a command, we take control of logging ourselves. 
         setLogging() ;
+        
+        
+        
         super.addModule(modTime) ;
         super.addModule(modLangParse) ;
         super.addModule(modSymbol) ;
         
         super.modVersion.addClass(Jena.class) ;
         super.modVersion.addClass(ARQ.class) ;
+        super.modVersion.addClass(RIOT.class) ;
     }
 
     @Override
