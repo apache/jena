@@ -30,6 +30,7 @@ import com.hp.hpl.jena.sparql.engine.iterator.TestQueryIterSort ;
         TestBindingStreams.class
       , TestQueryIterSort.class
       , TestService.class
+      , TestQueryEngineMultiThreaded.class
 })
 
 public class TS_Engine {}
