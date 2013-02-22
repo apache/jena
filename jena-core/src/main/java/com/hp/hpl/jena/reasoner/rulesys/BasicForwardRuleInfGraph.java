@@ -269,7 +269,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     private ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation, boolean filter) {
         checkOpen();
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         ExtendedIterator<Triple> result = null;
         if (fdata == null) {
             result = fdeductions.findWithContinuation(pattern, continuation);
@@ -330,9 +330,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     @Override
     public int graphBaseSize() {
         checkOpen();
-        if (!this.isPrepared()) {
-            prepare();
-        }
+        this.requirePrepared();
         int baseSize = fdata.getGraph().size();
         int dedSize = fdeductions.getGraph().size();
         // System.err.println( ">> BasicForwardRuleInfGraph::size = " + baseSize + "(base) + " + dedSize + "(deductions)" );

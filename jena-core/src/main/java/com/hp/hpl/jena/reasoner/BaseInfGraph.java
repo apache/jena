@@ -475,7 +475,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     @Override
     public synchronized void performAdd(Triple t) {
         version++;
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         fdata.getGraph().add(t);
     }
 
@@ -485,7 +485,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     @Override
     public void performDelete(Triple t) {
         version++;
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         fdata.getGraph().delete(t);
     }
 
@@ -523,6 +523,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
          Answer true iff this graph has been through the <code>prepare()</code> step.
          For testing purposes.
+     * @return Whether the graph is prepared
     */
     public synchronized boolean isPrepared()
         { return isPrepared;  }
@@ -532,5 +533,12 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      */
     protected synchronized void setPreparedState(boolean state) {
         this.isPrepared = state;
+    }
+    
+    /**
+     * Checks whether the graph is prepared and calls {@link #prepare()} if it is not
+     */
+    protected synchronized void requirePrepared() {
+        if (!this.isPrepared) this.prepare();
     }
 }

@@ -91,7 +91,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      */
     @Override
     public synchronized void performAdd(Triple t) {
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         fdata.getGraph().add(t);
         engine.add(t);
     }
@@ -101,7 +101,7 @@ public class RETERuleInfGraph extends BasicForwardRuleInfGraph {
      */   
     @Override
     public void performDelete(Triple t) {
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         if (fdata != null) {
             Graph data = fdata.getGraph();
             if (data != null) {

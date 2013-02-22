@@ -109,7 +109,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     @Override public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
         return cascade.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
@@ -137,7 +137,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     @Override
     public synchronized void performAdd(Triple t) {
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         fdata.getGraph().add(t);
         transitiveEngine.add(t);
     }
