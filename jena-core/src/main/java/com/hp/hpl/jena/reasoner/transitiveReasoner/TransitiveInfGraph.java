@@ -65,7 +65,9 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * this prepration is done.
      */
     @Override
-    public void prepare() {
+    public synchronized void prepare() {
+        if (this.isPrepared()) return;
+        
         tbox = ((TransitiveReasoner)reasoner).getTbox();
         // Initially just point to the reasoner's precached information
         transitiveEngine = new TransitiveEngine(((TransitiveReasoner)reasoner).getSubClassCache().deepCopy(),
@@ -78,7 +80,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
         dataFind = transitiveEngine.insert(tbox, fdata);
         transitiveEngine.setCaching(true, true);
         
-        isPrepared = true;
+        this.setPreparedState(true);
     }
 
     /**
@@ -107,7 +109,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     @Override public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         Finder cascade = transitiveEngine.getFinder(pattern, FinderUtil.cascade(tbox, continuation));
         return cascade.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
@@ -135,7 +137,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     @Override
     public synchronized void performAdd(Triple t) {
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         fdata.getGraph().add(t);
         transitiveEngine.add(t);
     }
@@ -144,9 +146,9 @@ public class TransitiveInfGraph extends BaseInfGraph {
      * Removes the triple t (if possible) from the set belonging to this graph.
      */   
     @Override
-    public void performDelete(Triple t) {
+    public synchronized void performDelete(Triple t) {
         fdata.getGraph().delete(t);
-        if (isPrepared) {
+        if (this.isPrepared()) {
             transitiveEngine.delete(t);
         }
     }

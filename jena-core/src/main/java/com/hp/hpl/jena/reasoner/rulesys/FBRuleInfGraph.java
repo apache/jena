@@ -393,105 +393,104 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     @Override
     public synchronized void prepare() {
-        if (!isPrepared) {
-            isPrepared = true;
+        if (this.isPrepared()) return;
+        
+        this.setPreparedState(true);
+                    
+        // Restore the original pre-hookProcess rules
+        rules = rawRules;
+        
+        // Is there any data to bind in yet?
+        Graph data = null;
+        if (fdata != null) data = fdata.getGraph();
+        
+        // initilize the deductions graph
+        if (fdeductions != null) {
+            Graph oldDeductions = (fdeductions).getGraph();
+            oldDeductions.clear();
+        } else {
+            fdeductions = new FGraph( createDeductionsGraph() );
+        }
+        dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
+        Finder dataSource = fdata;
+        
+        // Initialize the optional TGC caches
+        if (useTGCCaching) {
+            resetTGCCache();
+            if (schemaGraph != null) {
+                // Check if we can just reuse the copy of the raw 
+                if (
+                    (transitiveEngine.checkOccurance(TransitiveReasoner.subPropertyOf, data) ||
+                     transitiveEngine.checkOccurance(TransitiveReasoner.subClassOf, data) ||
+                     transitiveEngine.checkOccurance(RDFS.domain.asNode(), data) ||
+                     transitiveEngine.checkOccurance(RDFS.range.asNode(), data) )) {
             
-            // Restore the original pre-hookProcess rules
-            rules = rawRules;
-            
-            // Is there any data to bind in yet?
-            Graph data = null;
-            if (fdata != null) data = fdata.getGraph();
-            
-            // initilize the deductions graph
-            if (fdeductions != null) {
-                Graph oldDeductions = (fdeductions).getGraph();
-                oldDeductions.clear();
+                    // The data graph contains some ontology knowledge so split the caches
+                    // now and rebuild them using merged data
+                    transitiveEngine.insert(((FBRuleInfGraph)schemaGraph).fdata, fdata);
+                }     
             } else {
-                fdeductions = new FGraph( createDeductionsGraph() );
-            }
-            dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
-            Finder dataSource = fdata;
-            
-            // Initialize the optional TGC caches
-            if (useTGCCaching) {
-                resetTGCCache();
-                if (schemaGraph != null) {
-                    // Check if we can just reuse the copy of the raw 
-                    if (
-                        (transitiveEngine.checkOccurance(TransitiveReasoner.subPropertyOf, data) ||
-                         transitiveEngine.checkOccurance(TransitiveReasoner.subClassOf, data) ||
-                         transitiveEngine.checkOccurance(RDFS.domain.asNode(), data) ||
-                         transitiveEngine.checkOccurance(RDFS.range.asNode(), data) )) {
-                
-                        // The data graph contains some ontology knowledge so split the caches
-                        // now and rebuild them using merged data
-                        transitiveEngine.insert(((FBRuleInfGraph)schemaGraph).fdata, fdata);
-                    }     
-                } else {
-                    if (data != null) {
-                        transitiveEngine.insert(null, fdata);
-                    }
+                if (data != null) {
+                    transitiveEngine.insert(null, fdata);
                 }
-                // Insert any axiomatic statements into the caches
-                for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
-                    Rule r = i.next();
-                    if (r.bodyLength() == 0) {
-                        // An axiom
-                        for (int j = 0; j < r.headLength(); j++) {
-                            Object head = r.getHeadElement(j);
-                            if (head instanceof TriplePattern) {
-                                TriplePattern h = (TriplePattern) head;
-                                transitiveEngine.add(h.asTriple());
-                            }
+            }
+            // Insert any axiomatic statements into the caches
+            for (Iterator<Rule> i = rules.iterator(); i.hasNext(); ) {
+                Rule r = i.next();
+                if (r.bodyLength() == 0) {
+                    // An axiom
+                    for (int j = 0; j < r.headLength(); j++) {
+                        Object head = r.getHeadElement(j);
+                        if (head instanceof TriplePattern) {
+                            TriplePattern h = (TriplePattern) head;
+                            transitiveEngine.add(h.asTriple());
                         }
                     }
                 }
+            }
 
-                transitiveEngine.setCaching(true, true);
+            transitiveEngine.setCaching(true, true);
 //                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
-                dataFind = FinderUtil.cascade(dataFind, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
-                
-                // Without the next statement then the transitive closures are not seen by the forward rules
-                dataSource = FinderUtil.cascade(dataSource, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
-            }
+            dataFind = FinderUtil.cascade(dataFind, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
             
-            // Make sure there are no Brules left over from pior runs
-            bEngine.deleteAllRules();
-
-            // Call any optional preprocessing hook
-            if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-                Graph inserts = Factory.createGraphMem();
-                for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
-                    RulePreprocessHook hook = i.next();
-                    hook.run(this, dataFind, inserts);
-                }
-                if (inserts.size() > 0) {
-                    FGraph finserts = new FGraph(inserts);
-                    dataSource = FinderUtil.cascade(fdata, finserts);
-                    dataFind = FinderUtil.cascade(dataFind, finserts);
-                }
-            }
-            
-            boolean rulesLoaded = false;
-            if (schemaGraph != null) {
-                Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
-                if (rawPreload != null) {
-                    dataFind = FinderUtil.cascade(dataFind, new FGraph(rawPreload));
-                }
-                rulesLoaded = preloadDeductions(schemaGraph);
-            }
-            if (rulesLoaded) {
-                engine.fastInit(dataSource);
-            } else {
-                // No preload so do the rule separation
-                addBRules(extractPureBackwardRules(rules));
-                engine.init(true, dataSource);
-            }
-            // Prepare the context for builtins run in backwards engine
-            context = new BBRuleContext(this);
-            
+            // Without the next statement then the transitive closures are not seen by the forward rules
+            dataSource = FinderUtil.cascade(dataSource, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
         }
+        
+        // Make sure there are no Brules left over from pior runs
+        bEngine.deleteAllRules();
+
+        // Call any optional preprocessing hook
+        if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
+            Graph inserts = Factory.createGraphMem();
+            for (Iterator<RulePreprocessHook> i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                RulePreprocessHook hook = i.next();
+                hook.run(this, dataFind, inserts);
+            }
+            if (inserts.size() > 0) {
+                FGraph finserts = new FGraph(inserts);
+                dataSource = FinderUtil.cascade(fdata, finserts);
+                dataFind = FinderUtil.cascade(dataFind, finserts);
+            }
+        }
+        
+        boolean rulesLoaded = false;
+        if (schemaGraph != null) {
+            Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
+            if (rawPreload != null) {
+                dataFind = FinderUtil.cascade(dataFind, new FGraph(rawPreload));
+            }
+            rulesLoaded = preloadDeductions(schemaGraph);
+        }
+        if (rulesLoaded) {
+            engine.fastInit(dataSource);
+        } else {
+            // No preload so do the rule separation
+            addBRules(extractPureBackwardRules(rules));
+            engine.init(true, dataSource);
+        }
+        // Prepare the context for builtins run in backwards engine
+        context = new BBRuleContext(this);
     }
     
     /**
@@ -505,7 +504,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void rebind() {
         version++;
         if (bEngine != null) bEngine.reset();
-        isPrepared = false;
+        this.setPreparedState(false);
     }
     
     /**
@@ -570,7 +569,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     @Override
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         ExtendedIterator<Triple> result =bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
@@ -591,7 +590,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public ExtendedIterator<Triple> findFull(TriplePattern pattern) {
         checkOpen();
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
        return bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
    
@@ -622,10 +621,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Flush out all cached results. Future queries have to start from scratch.
      */
     @Override
-    public void reset() {
+    public synchronized void reset() {
         version++;
         bEngine.reset();
-        isPrepared = false;
+        this.setPreparedState(false);
     }
 
     /**
@@ -637,9 +636,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         version++;
         fdata.getGraph().add(t);
         if (useTGCCaching) {
-            if (transitiveEngine.add(t)) isPrepared = false;
+            if (transitiveEngine.add(t)) this.setPreparedState(false);
         }
-        if (isPrepared) {
+        if (this.isPrepared()) {
             boolean needReset = false;
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
                 if (preprocessorHooks.size() > 1) {
@@ -653,7 +652,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 }
             }
             if (needReset) {
-                isPrepared = false;
+                this.setPreparedState(false);
             } else {
                 engine.add(t);
             }
@@ -671,19 +670,19 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
             if (transitiveEngine.delete(t)) {
-                if (isPrepared) {
+                if (this.isPrepared()) {
                     bEngine.deleteAllRules();
                 }
-                isPrepared = false;
+                this.setPreparedState(false);
             }
         } 
         // Full incremental remove processing requires reference counting
         // of all deductions. It's not clear the cost of maintaining the
         // reference counts is worth it so the current implementation
         // forces a recompute if any external deletes are performed.
-        if (isPrepared) {
+        if (this.isPrepared()) {
             bEngine.deleteAllRules();
-            isPrepared = false;
+            this.setPreparedState(false);
             // Re-enable the code below when/if ref counting is added and remove above
             // if (removeIsFromBase) engine.delete(t);
         }
@@ -747,7 +746,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         // We sneak this switch directly into the engine to avoid contaminating the
         // real data - this is only possible only the forward engine has been prepared
 //      add(validateOn);
-        if (!isPrepared) {
+        if (!this.isPrepared()) {
             prepare();
         }
         engine.add(validateOn); 

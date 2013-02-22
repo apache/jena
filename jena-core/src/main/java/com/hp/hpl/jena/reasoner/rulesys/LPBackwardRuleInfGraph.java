@@ -98,20 +98,20 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * this prepration is done.
      */
     @Override
-    public void prepare() {
-        if (!isPrepared) {
-            fdeductions = new FGraph( Factory.createGraphMem() );
-            extractAxioms();
-            dataFind = fdata;
-            if (fdeductions != null) {
-                dataFind = FinderUtil.cascade(dataFind, fdeductions);
-            }
-            if (fschema != null) {
-                dataFind = FinderUtil.cascade(dataFind, fschema);
-            }
+    public synchronized void prepare() {
+        if (this.isPrepared()) return;
+        
+        fdeductions = new FGraph( Factory.createGraphMem() );
+        extractAxioms();
+        dataFind = fdata;
+        if (fdeductions != null) {
+            dataFind = FinderUtil.cascade(dataFind, fdeductions);
+        }
+        if (fschema != null) {
+            dataFind = FinderUtil.cascade(dataFind, fschema);
         }
         
-        isPrepared = true;
+        this.setPreparedState(true);
     }
 
     /**
@@ -125,7 +125,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public synchronized void rebind(Graph data) {
         engine.checkSafeToUpdate();
         fdata = new FGraph(data);
-        isPrepared = false;
+        this.setPreparedState(false);
     }
     
     /**
@@ -139,7 +139,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public synchronized void rebind() {
         version++;
         engine.checkSafeToUpdate();
-        isPrepared = false;
+        this.setPreparedState(false);
     }
 
     /**
@@ -166,7 +166,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     @Override
     public synchronized ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         ExtendedIterator<Triple> result = engine.find(pattern).filterKeep( new UniqueFilter<Triple>());
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
@@ -206,7 +206,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
         version++;
         engine.checkSafeToUpdate();
         fdata.getGraph().add(t);
-        isPrepared = false;
+        this.setPreparedState(false);
     }
      
     /** 
@@ -217,7 +217,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
         version++;
         engine.checkSafeToUpdate();
         fdata.getGraph().delete(t);
-        isPrepared = false;
+        this.setPreparedState(false);
     }
        
     /**

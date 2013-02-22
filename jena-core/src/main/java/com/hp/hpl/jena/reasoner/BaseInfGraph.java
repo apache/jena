@@ -40,7 +40,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     protected boolean recordDerivations;
 
     /** Flag to record if the preparation call has been made and so the graph is ready for queries */
-    protected boolean isPrepared = false;
+    private volatile boolean isPrepared = false;
 
     /** version count */
     protected volatile int version = 0;
@@ -236,7 +236,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * @param data the new raw data graph
      */
     @Override
-    public void rebind(Graph data) {
+    public synchronized void rebind(Graph data) {
         fdata = new FGraph(data);
         isPrepared = false;
     }
@@ -249,7 +249,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * the changed data.
      */
     @Override
-    public void rebind() {
+    public synchronized void rebind() {
         version++;
         isPrepared = false;
     }
@@ -274,7 +274,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * this prepration is done.
      */
     @Override
-    public void prepare() {
+    public synchronized void prepare() {
         // Default is to do no preparation
         isPrepared = true;
     }
@@ -475,7 +475,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     @Override
     public synchronized void performAdd(Triple t) {
         version++;
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         fdata.getGraph().add(t);
     }
 
@@ -485,7 +485,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     @Override
     public void performDelete(Triple t) {
         version++;
-        if (!isPrepared) prepare();
+        if (!this.isPrepared()) prepare();
         fdata.getGraph().delete(t);
     }
 
@@ -524,7 +524,13 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
          Answer true iff this graph has been through the <code>prepare()</code> step.
          For testing purposes.
     */
-    public boolean isPrepared()
+    public synchronized boolean isPrepared()
         { return isPrepared;  }
 
+    /**
+     * Reset prepared state to false
+     */
+    protected synchronized void setPreparedState(boolean state) {
+        this.isPrepared = state;
+    }
 }
