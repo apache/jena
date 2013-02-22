@@ -569,7 +569,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     @Override
     public ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         ExtendedIterator<Triple> result =bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
@@ -590,7 +590,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public ExtendedIterator<Triple> findFull(TriplePattern pattern) {
         checkOpen();
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
        return bEngine.find(pattern).filterKeep( new UniqueFilter<Triple>());
     }
    
@@ -746,9 +746,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         // We sneak this switch directly into the engine to avoid contaminating the
         // real data - this is only possible only the forward engine has been prepared
 //      add(validateOn);
-        if (!this.isPrepared()) {
-            prepare();
-        }
+        this.requirePrepared();
         engine.add(validateOn); 
         // Look for all reports
         TriplePattern pattern = new TriplePattern(null, ReasonerVocabulary.RB_VALIDATION_REPORT.asNode(), null);

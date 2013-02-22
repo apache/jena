@@ -166,7 +166,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     @Override
     public synchronized ExtendedIterator<Triple> findWithContinuation(TriplePattern pattern, Finder continuation) {
         checkOpen();
-        if (!this.isPrepared()) prepare();
+        this.requirePrepared();
         ExtendedIterator<Triple> result = engine.find(pattern).filterKeep( new UniqueFilter<Triple>());
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
