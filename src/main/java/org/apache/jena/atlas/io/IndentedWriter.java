@@ -235,8 +235,17 @@ public class IndentedWriter
         }
     }
     
+    /** Get row/line (counts from 1) */
     public int getRow() { return row ; }
-    public int getCol() { return column ; }
+    /** Get the absolute column.
+     *  This is the location where the next charcter on the line will be printed.
+     *  The IndentedWriter may not yet have padded to this place.   
+     */
+    public int getCol() {
+        if ( currentIndent > column )
+            return currentIndent ;
+        return column ;
+    }
     
     /** @deprecated Use getAbsoluteIndent() */ 
     @Deprecated
