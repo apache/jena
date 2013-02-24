@@ -280,6 +280,24 @@ public class Log
         java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.WARNING) ;
     }
     
+    /** Set to error level. 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setError(String logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ERROR) ;
+        java.util.logging.Logger.getLogger(logger).setLevel(java.util.logging.Level.SEVERE) ;
+    }
+    
+    /** Set to error level. 
+     *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
+     */
+    static public void setError(Class<?> logger)
+    {
+        org.apache.log4j.LogManager.getLogger(logger).setLevel(org.apache.log4j.Level.ERROR) ;
+        java.util.logging.Logger.getLogger(logger.getName()).setLevel(java.util.logging.Level.SEVERE) ;
+    }
+    
     /**  Set to infomation level.
      *  Works for Log4j and Java logging as the logging provider to Apache common logging or slf4j.
      */
