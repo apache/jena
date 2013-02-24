@@ -29,8 +29,8 @@
   <parent>
     <groupId>org.apache.jena</groupId>
     <artifactId>jena-parent</artifactId>
-    <version>6-SNAPSHOT</version>
-    <!-- Leave this empty so that SDB builds outside the source tree -->
+    <!-- Use a released parent POM -->
+    <version>5</version>
     <relativePath></relativePath>
   </parent> 
 
