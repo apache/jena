@@ -452,6 +452,7 @@ public class TransactionManager
     }
 
     /** Try to flush the delayed write queue - only happens if there are no active transactions */ 
+    synchronized
     public void flush()
     {
         processDelayedReplayQueue(null) ;
