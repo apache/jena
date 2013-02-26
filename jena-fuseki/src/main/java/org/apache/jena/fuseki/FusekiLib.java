@@ -19,6 +19,7 @@
 package org.apache.jena.fuseki;
 
 import java.util.HashMap ;
+import java.util.Iterator ;
 import java.util.Map ;
 
 import javax.servlet.http.HttpServletRequest ;
@@ -31,9 +32,14 @@ import org.apache.jena.riot.RDFLanguages ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.WebContent ;
 
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
 import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.rdf.model.RDFWriter ;
+import com.hp.hpl.jena.sparql.core.DatasetGraph ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Convert ;
 
 public class FusekiLib
@@ -130,5 +136,21 @@ public class FusekiLib
         value = StringUtils.replaceChars(value, "\n", "") ;
         return value ; 
     }
+    
+    // Do the addition directly on the dataset
+    public static void addDataInto(Graph data, DatasetGraph dsg, Node graphName)
+    {
+        if ( graphName == null )
+            graphName = Quad.defaultGraphNodeGenerated ;
+            
+        Iterator<Triple> iter = data.find(Node.ANY, Node.ANY, Node.ANY) ;
+        for ( ; iter.hasNext() ; )
+        {
+            Triple t = iter.next();
+            dsg.add(graphName, t.getSubject(), t.getPredicate(), t.getObject()) ;
+        }
+    }
+
+
 
 }

@@ -32,6 +32,7 @@ import org.apache.commons.fileupload.FileItemStream ;
 import org.apache.commons.fileupload.servlet.ServletFileUpload ;
 import org.apache.commons.fileupload.util.Streams ;
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.iri.IRI ;
@@ -41,8 +42,8 @@ import org.apache.jena.riot.system.* ;
 import org.apache.jena.web.HttpSC ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.graph.GraphFactory ;
 
 public class SPARQL_Upload extends SPARQL_ServletBase 
@@ -97,16 +98,12 @@ public class SPARQL_Upload extends SPARQL_ServletBase
             
             log.info(format("[%d] Upload: Graph: %s (%d triple(s))", 
                             action.id, graphName,  tripleCount)) ;
-
-            Graph target ; 
-            if ( graphName.equals(HttpNames.valueDefault) ) 
-                target = action.getActiveDSG().getDefaultGraph() ;
-            else
-            {
-                Node gn = Node.createURI(graphName) ;
-                target = action.getActiveDSG().getGraph(gn) ;
-            }
-            GraphUtil.addInto(target, graphTmp) ;
+            
+            Node gn = graphName.equals(HttpNames.valueDefault)
+                ? Quad.defaultGraphNodeGenerated 
+                : Node.createURI(graphName) ;
+                
+            FusekiLib.addDataInto(graphTmp, action.getActiveDSG(), gn) ;
             tripleCount = graphTmp.size();
             action.commit() ;
         } catch (RuntimeException ex)
@@ -127,6 +124,8 @@ public class SPARQL_Upload extends SPARQL_ServletBase
     static public Graph upload(long id, DatasetRef desc, HttpServletRequest request, HttpServletResponse response, String destination)
     {
         HttpActionUpload action = new HttpActionUpload(id, desc, request, response, false) ;
+        // We read into a in-memory graph, then (if successful) update the dataset.
+        // This isolates errors.
         Graph graphTmp = GraphFactory.createDefaultGraph() ;
         String graphName = upload(action, graphTmp, destination) ;
         return graphTmp ;
@@ -198,8 +197,6 @@ public class SPARQL_Upload extends SPARQL_ServletBase
                         // Desperate.
                         lang = RDFLanguages.RDFXML ;
 
-                    // We read into a in-memory graph, then (if successful) update the dataset.
-                    // This isolates errors.
                     StreamRDF dest = StreamRDFLib.graph(graphDst) ;
                     LangRIOT parser = RiotReader.createParser(stream, lang, base, dest) ;
                     parser.getProfile().setHandler(errorHandler) ;
