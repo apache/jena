@@ -1,5 +1,8 @@
 ==== Fuseki
 
+== Fuseki 0.2.7
+
+
 == Fuseki 0.2.6
 
 + Upgrade to Jetty 8.1.8.v20121106

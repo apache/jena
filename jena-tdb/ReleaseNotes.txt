@@ -1,6 +1,9 @@
 ChangeLog for TDB
 =================
 
+==== TDB 0.10.1
+
+
 ==== TDB 0.10.0
 
 ** TDB 0.10.0 depends on Jena 2.10.0 (ARQ 2.10.0)
