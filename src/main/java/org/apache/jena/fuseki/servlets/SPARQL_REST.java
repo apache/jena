@@ -19,15 +19,7 @@
 package org.apache.jena.fuseki.servlets;
 
 import static java.lang.String.format ;
-import static org.apache.jena.fuseki.HttpNames.HEADER_LASTMOD ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_DELETE ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_GET ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_HEAD ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_OPTIONS ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_PATCH ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_POST ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_PUT ;
-import static org.apache.jena.fuseki.HttpNames.METHOD_TRACE ;
+import static org.apache.jena.fuseki.HttpNames.* ;
 
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
@@ -39,6 +31,7 @@ import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
 import org.apache.jena.atlas.web.ContentType ;
+import org.apache.jena.fuseki.FusekiLib ;
 import org.apache.jena.fuseki.HttpNames ;
 import org.apache.jena.fuseki.server.DatasetRef ;
 import org.apache.jena.riot.Lang ;
@@ -52,7 +45,6 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Graph ;
-import com.hp.hpl.jena.graph.GraphUtil ;
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 import com.hp.hpl.jena.sparql.core.DatasetGraphFactory ;
@@ -105,7 +97,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     {
         final boolean isDefault ;
         final DatasetGraph dsg ;
-        // May be null, then  
         private Graph _graph ;
         final String name ;
         final Node graphName ;
@@ -127,9 +118,6 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             this._graph = null ;
             this.name  = name ;
             this.graphName = graphName ;
-
-            //            if ( graph == null )
-            //                throw new IllegalArgumentException("Inconsistent: no graph") ;
 
             if ( isDefault )
             {
@@ -262,17 +250,20 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
         try
         {
             Target dest = action.getTarget() ;
-            Graph g = dest.graph() ;
-            if (g == null)
-            {
-                if (dest.isDefault) errorOccurred("Dataset does not have a default graph") ;
-                log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
-                // Not default graph.
-                // Not an autocreate dataset - create something.
-                g = GraphFactory.createDefaultGraph() ;
-                dest.dsg.addGraph(dest.graphName, g) ;
-            }
-            GraphUtil.addInto(g, data) ;
+            FusekiLib.addDataInto(data, dest.dsg, dest.graphName) ;
+            
+//            Graph g = dest.graph() ;
+//            
+//            if (g == null)
+//            {
+//                if (dest.isDefault) errorOccurred("Dataset does not have a default graph") ;
+//                log.info(format("[%d] Creating in-memory graph for <%s>", action.id, dest.graphName)) ;
+//                // Not default graph.
+//                // Not an autocreate dataset - create something.
+//                g = GraphFactory.createDefaultGraph() ;
+//                dest.dsg.addGraph(dest.graphName, g) ;
+//            }
+//            GraphUtil.addInto(g, data) ;
         } catch (RuntimeException ex)
         {
             // If anything went wrong, try to backout.
@@ -281,7 +272,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
             return ;
         }
     }
-
+    
     protected static DatasetGraph parseBody(HttpActionREST action)
     {
         String contentTypeHeader = action.request.getContentType() ;

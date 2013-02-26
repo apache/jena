@@ -49,7 +49,6 @@ public class RunFuseki
         return sb.toString() ;
     }
     
-    
     private static void main1()
     {
         FusekiCmd.main(
