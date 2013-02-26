@@ -18,7 +18,6 @@
 
 package com.hp.hpl.jena.tdb.store;
 
-import static com.hp.hpl.jena.sparql.core.Quad.isDefaultGraph ;
 import static com.hp.hpl.jena.sparql.core.Quad.isUnionGraph ;
 
 import java.util.Iterator ;
@@ -30,19 +29,18 @@ import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
 import com.hp.hpl.jena.graph.Node ;
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
 import com.hp.hpl.jena.tdb.sys.TDBInternal ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** A graph implementation that projects a graph from a quad table */
 public class GraphNamedTDB extends GraphTDBBase
 {
+    // Collapse this into GraphTDBBase and have one class, no interface.
+    
     /*
         Quad.unionGraph
         Quad.defaultGraphIRI
@@ -50,15 +48,12 @@ public class GraphNamedTDB extends GraphTDBBase
     */
     private static Logger log = LoggerFactory.getLogger(GraphNamedTDB.class) ;
     
-    private final QuadTable quadTable ; 
     private NodeId graphNodeId = null ;
 
     public GraphNamedTDB(DatasetGraphTDB dataset, Node graphName) 
     {
         super(dataset, graphName) ;
 
-        this.quadTable = dataset.getQuadTable() ;
-        
         if ( graphName == null )
             throw new TDBException("GraphNamedTDB: Null graph name") ; 
         if ( ! graphName.isURI() )
@@ -71,53 +66,18 @@ public class GraphNamedTDB extends GraphTDBBase
         return dataset.getPrefixes().getPrefixMapping(graphNode.getURI()) ;
     }
 
-    @Override
-    protected boolean _performAdd( Triple t ) 
-    { 
-        if ( isUnionGraph(graphNode) )
-            throw new TDBException("Can't add a triple to the RDF merge of all named graphs") ;
-        boolean changed ;
-        if ( isDefaultGraph(graphNode) )
-            changed = dataset.getTripleTable().add(t) ;
-        else 
-            changed = dataset.getQuadTable().add(graphNode, t) ;
-        
-        if ( ! changed )
-            duplicate(t) ;
-        return changed ; 
-    }
 
- 
-    @Override
-    protected boolean _performDelete( Triple t ) 
-    { 
-        if ( isUnionGraph(graphNode) )
-            throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
-        
-        if ( isDefaultGraph(graphNode) )
-            return dataset.getTripleTable().delete(t) ;
-
-        return dataset.getQuadTable().delete(graphNode, t) ;
-    }
-    
-    @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
-    {
-        // Explicitly named default graph
-        if ( isDefaultGraph(graphNode) )
-            // Default graph.
-            return graphBaseFindDft(getDataset(), m) ;
-        // Includes union graph
-        return graphBaseFindNG(getDataset(), graphNode, m) ;
-    }
-    
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {
+        if ( isDefaultGraph(graphNode) ) 
+            return dataset.getTripleTable().getNodeTupleTable().findAll() ;
+        
         NodeId gn = isUnionGraph(graphNode) ? null : getGraphNodeId() ; 
         if ( NodeId.isDoesNotExist(gn) )
             return Iter.nullIterator() ;
         
+        // Eliminate this and push all work into find/4. 
         Iterator<Tuple<NodeId>> iter = dataset.getQuadTable().getNodeTupleTable().find(gn, null, null, null) ;
         if ( isUnionGraph(graphNode) )
         {
@@ -162,18 +122,6 @@ public class GraphNamedTDB extends GraphTDBBase
         return dataset.getQuadTable().getNodeTupleTable() ;
     }
 
-    @Override
-    final public void close()
-    { 
-        sync() ;
-    }
-    
-    @Override
-    public void sync()
-    {
-        dataset.sync();
-    }
-    
     @Override
     public String toString() { return Utils.className(this)+":<"+this.graphNode+">" ; }
 }
