@@ -1,6 +1,9 @@
 Release Notes 
 =============
 
+==== Jena 2.10.1
+
+
 ==== Jena 2.10.0
 
 + Remove OntModel.queryFor (exposed graph level abstractions which have been removed) 

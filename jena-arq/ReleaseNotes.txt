@@ -3,8 +3,9 @@ ChangeLog for ARQ
 (the list covers new features and refinements.  See ASF JIRA for details of bugs fixed) 
 
 
-==== Jena 2.10.0
+==== Jena 2.10.1
 
+==== Jena 2.10.0
 
 + Consolidation of versions numbers.
 + Command line SPARQL query reads all data formats (triples and quads) for --data 
