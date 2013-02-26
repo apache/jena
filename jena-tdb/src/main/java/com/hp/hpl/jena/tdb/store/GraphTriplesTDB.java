@@ -24,20 +24,18 @@ import org.apache.jena.atlas.lib.Tuple ;
 import org.slf4j.Logger ;
 import org.slf4j.LoggerFactory ;
 
-import com.hp.hpl.jena.graph.Triple ;
-import com.hp.hpl.jena.graph.TripleMatch ;
 import com.hp.hpl.jena.shared.PrefixMapping ;
 import com.hp.hpl.jena.sparql.core.DatasetPrefixStorage ;
 import com.hp.hpl.jena.sparql.util.Utils ;
 import com.hp.hpl.jena.tdb.nodetable.NodeTupleTable ;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator ;
 
 /** A graph implementation that uses a triple table - concrete default graph of dataset */
 public class GraphTriplesTDB extends GraphTDBBase
 {
+    // Collapse this into GraphTDBBase and have one class, no interface.
+    
     private static Logger log = LoggerFactory.getLogger(GraphTriplesTDB.class) ;
     
-    private final TripleTable tripleTable ;
     private final DatasetPrefixStorage prefixes ;
     
     public GraphTriplesTDB(DatasetGraphTDB dataset,
@@ -45,34 +43,11 @@ public class GraphTriplesTDB extends GraphTDBBase
                            DatasetPrefixStorage prefixes)
     {
         super(dataset, null) ;
-        this.tripleTable = tripleTable ;
         this.prefixes = prefixes ;
     }
-    
-    @Override
-    protected boolean _performAdd( Triple t ) 
-    { 
-        boolean changed = tripleTable.add(t) ;
-        if ( ! changed )
-            duplicate(t) ;
-        return changed ;
-    }
 
     @Override
-    protected boolean _performDelete( Triple t ) 
-    { 
-        boolean changed = tripleTable.delete(t) ;
-        return changed ;
-    }
-    
-    @Override
-    protected ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
-    {
-        return graphBaseFindDft(dataset, m) ;
-    }
-
-//    @Override
-//    public boolean isEmpty()        { return tripleTable.isEmpty() ; }
+    public boolean isEmpty()        { return dataset.getTripleTable().isEmpty() ; }
     
     @Override
     protected final Logger getLog() { return log ; }
@@ -80,11 +55,11 @@ public class GraphTriplesTDB extends GraphTDBBase
     @Override
     protected Iterator<Tuple<NodeId>> countThis()
     {
-        return tripleTable.getNodeTupleTable().findAll() ;
+        return getNodeTupleTable().findAll() ;
     }
 
     @Override
-    public NodeTupleTable getNodeTupleTable()           { return tripleTable.getNodeTupleTable()   ; }
+    public NodeTupleTable getNodeTupleTable()           { return dataset.getTripleTable().getNodeTupleTable()   ; }
    
     @Override
     protected PrefixMapping createPrefixMapping()
@@ -92,36 +67,6 @@ public class GraphTriplesTDB extends GraphTDBBase
         return prefixes.getPrefixMapping() ;
     }
 
-    @Override
-    final public void close()
-    {
-        if ( dataset != null )
-        {
-            // Part of a dataset which may be cached and so "close" is meaningless.
-            // At least sync it to flush data to disk.
-            sync() ;
-        }
-        else            
-        {
-            // Free standing graph.  Clear up.
-            prefixes.close();
-            tripleTable.close();
-            super.close() ;
-        }
-    }
-    
-    @Override
-    public void sync()
-    {
-        if ( dataset != null )
-            dataset.sync() ;
-        else
-        {
-            prefixes.sync() ;
-            tripleTable.sync();
-        }
-    }
-    
     @Override
     public String toString() { return Utils.className(this) ; }
 }

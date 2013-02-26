@@ -37,6 +37,7 @@ import com.hp.hpl.jena.graph.impl.GraphBase ;
 import com.hp.hpl.jena.shared.Lock ;
 import com.hp.hpl.jena.sparql.core.Quad ;
 import com.hp.hpl.jena.tdb.TDB ;
+import com.hp.hpl.jena.tdb.TDBException ;
 import com.hp.hpl.jena.tdb.graph.BulkUpdateHandlerTDB ;
 import com.hp.hpl.jena.tdb.graph.TransactionHandlerTDB ;
 import com.hp.hpl.jena.tdb.lib.NodeFmtLib ;
@@ -89,16 +90,47 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
         finishUpdate() ;
     }
     
-    protected abstract boolean _performAdd( Triple triple ) ;
+    @Override
+    protected final ExtendedIterator<Triple> graphBaseFind(TripleMatch m)
+    {
+        // Explicitly named default graph
+        if ( isDefaultGraph(graphNode) )
+            // Default graph.
+            return graphBaseFindDft(getDataset(), m) ;
+        // Includes union graph
+        return graphBaseFindNG(getDataset(), graphNode, m) ;
+    }
     
-    protected abstract boolean _performDelete( Triple triple ) ;
+    protected final void _performAdd( Triple t ) 
+    {
+        if ( isUnionGraph(graphNode) )
+            throw new TDBException("Can't add a triple to the RDF merge of all named graphs") ;
+        dataset.add(graphNode(), t.getSubject(), t.getPredicate(), t.getObject()) ;
+    }
+ 
+    protected final void _performDelete( Triple t ) 
+    { 
+        if ( isUnionGraph(graphNode) )
+            throw new TDBException("Can't delete triple from the RDF merge of all named graphs") ;
+        dataset.delete(graphNode(), t.getSubject(), t.getPredicate(), t.getObject()) ;
+    }
     
     @Override
-    public abstract void sync() ;
+    public final void sync()        { dataset.sync(); }
+    
+    @Override
+    final public void close()       { sync() ; }
     
     @Override
     // make submodels think about this.
     public abstract String toString() ;
+    
+    private Node graphNode() { return ( graphNode != null ) ? graphNode : Quad.defaultGraphNodeGenerated ; }
+
+    protected static boolean isDefaultGraph(Node g)
+    {
+        return g == null || Quad.isDefaultGraph(g) ; 
+    }
     
     protected void duplicate(Triple t)
     {
@@ -223,7 +255,7 @@ public abstract class GraphTDBBase extends GraphBase implements GraphTDB
         removeWorker(this, Node.ANY, Node.ANY, Node.ANY) ;
         getEventManager().notifyEvent(this, GraphEvents.removeAll ) ;   
     }
-
+    
     @Override
     public void remove( Node s, Node p, Node o )
     {
