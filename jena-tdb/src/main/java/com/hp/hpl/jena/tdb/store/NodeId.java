@@ -179,8 +179,16 @@ public class NodeId
         
         if ( ! enableInlineLiterals ) return null ;
         
+        try { return inline$(node) ; }
+        catch (Throwable th) {
+            Log.warn(NodeId.class, "Failed to process "+node) ;
+            return null ; 
+        }
+    }
+     
+    private static NodeId inline$(Node node)
+    {
         LiteralLabel lit = node.getLiteral() ;
-        
         // Decimal is a valid supertype of integer but we handle integers and decimals differently.
         
         if ( node.getLiteralDatatype().equals(XSDDatatype.XSDdecimal) )
