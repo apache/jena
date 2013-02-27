@@ -519,9 +519,12 @@ public class XSDDatatype extends BaseDatatype {
     private XSTypeDefinition getFoundingType() {
         XSTypeDefinition founding = typeDeclaration;
         XSTypeDefinition parent = founding.getBaseType();
+        if ( parent == null )
+            // it is xsd:anySimpleType
+            return founding;
         while (parent.getBaseType() != null) {
             founding = parent;
-            parent = founding.getBaseType();
+            parent = parent.getBaseType();
         }
         return founding;
     }

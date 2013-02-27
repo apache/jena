@@ -818,7 +818,20 @@ public class TestTypedLiterals extends TestCase {
        assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Integer("2")));
        assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Double("2.3")));
     }
+
+    // These should not be used in data but we test they don't crash anything.
+    public void testIsValidLiteral1()
+    {
+        Literal lit = m.createTypedLiteral("100", XSDDatatype.XSD+"#anyType") ;
+        assertFalse(XSDDatatype.XSDinteger.isValidLiteral(lit.asNode().getLiteral()));
+    }
+    public void testIsValidLiteral2()
+    {
+        Literal lit = m.createTypedLiteral("100", XSDDatatype.XSD+"#anySimpleType") ;
+        assertFalse(XSDDatatype.XSDinteger.isValidLiteral(lit.asNode().getLiteral()));
+    }
     
+
     private static byte[] data = new byte[]{12, 42, 99};
     
     /**
