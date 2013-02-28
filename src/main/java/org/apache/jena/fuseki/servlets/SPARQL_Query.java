@@ -142,7 +142,7 @@ public abstract class SPARQL_Query extends SPARQL_Protocol
     @Override
     protected void validate(HttpServletRequest request)
     {
-        String method = request.getMethod().toUpperCase() ;
+        String method = request.getMethod().toUpperCase(Locale.ENGLISH) ;
         
         if ( ! HttpNames.METHOD_POST.equals(method) && ! HttpNames.METHOD_GET.equals(method) )
             errorMethodNotAllowed("Not a GET or POST request") ;
