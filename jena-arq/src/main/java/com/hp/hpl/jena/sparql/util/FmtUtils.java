@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Locale ;
 import java.util.regex.Pattern ;
 
 
@@ -561,7 +562,7 @@ public class FmtUtils
                 }
                 else
                 {
-                    String hexstr = Integer.toHexString(c).toUpperCase();
+                    String hexstr = Integer.toHexString(c).toUpperCase(Locale.ENGLISH);
                     int pad = 4 - hexstr.length();
                     sbuff.append("\\u");
                     for (; pad > 0; pad--)

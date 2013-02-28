@@ -112,9 +112,9 @@ public class TSVInput {
     		if (str == null) throw new ARQException("TSV Boolean Results malformed, unexpected end of input after header row");
     		str = str.trim();
     		
-    		if (str.toLowerCase().equals("true") || str.toLowerCase().equals("yes")) {
+    		if (str.equalsIgnoreCase("true") || str.equalsIgnoreCase("yes")) {
     			return true;
-    		} else if (str.toLowerCase().equals("false") || str.toLowerCase().equals("no")) {
+    		} else if (str.equalsIgnoreCase("false") || str.equalsIgnoreCase("no")) {
     			return false;
     		} else {
     			throw new ARQException("TSV Boolean Results malformed, expected one of - true yes false no - but got " + str);

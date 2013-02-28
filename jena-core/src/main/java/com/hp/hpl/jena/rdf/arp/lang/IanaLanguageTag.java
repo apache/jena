@@ -89,7 +89,7 @@ public class IanaLanguageTag extends LanguageTag {
         all.put("yue",new IanaLanguageTag[]{new IanaLanguageTag("zh-yue")});
         }
         catch (LanguageTagSyntaxException ee) {
-            System.err.println("Internal Error in static initializer of IanaLnaguageTag.");
+            System.err.println("Internal Error in static initializer of IanaLanguageTag.");
         }
 
         

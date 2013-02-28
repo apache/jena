@@ -531,7 +531,7 @@ public class schemagen {
         return m_options.hasIncludeSourceOption();
     }
 
-    /** Convert s to a legal Java identifier; capitalise first char if cap is true */
+    /** Converts to a legal Java identifier; capitalise first char if cap is true */
     protected String asLegalJavaID( String s, boolean cap ) {
         StringBuffer buf = new StringBuffer();
         int i = 0;

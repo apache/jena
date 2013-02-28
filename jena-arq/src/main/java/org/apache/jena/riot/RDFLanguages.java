@@ -321,7 +321,7 @@ public class RDFLanguages
         return lang ;
     }
     
-    static String canonicalKey(String x) { return x.toLowerCase(Locale.US) ; }
+    static String canonicalKey(String x) { return x.toLowerCase(Locale.ENGLISH) ; }
 
     public static ContentType guessContentType(String resourceName)
     {

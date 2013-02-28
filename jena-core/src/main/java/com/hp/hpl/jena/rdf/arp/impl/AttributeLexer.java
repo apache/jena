@@ -114,8 +114,7 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
             case 0:
                 if ((select & A_XML_OTHER) == A_XML_OTHER) {
                     String qn = getQName();
-                    if ((qn.length() >= 3 && qn.substring(0, 3).toLowerCase()
-                            .equals("xml"))
+                    if ((qn.length() >= 3 && qn.substring(0, 3).equalsIgnoreCase("xml"))
                             || xmlns.equals(getUri())) {
                   // Some tools, e.g. DOM, won't let us switch off
                   // namespaces. Hence, they fall through to here.

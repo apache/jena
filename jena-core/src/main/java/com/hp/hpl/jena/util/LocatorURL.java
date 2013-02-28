@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Locale ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,7 +124,7 @@ public class LocatorURL implements Locator
         String uriSchemeName = getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
-        uriSchemeName = uriSchemeName.toLowerCase() ; 
+        uriSchemeName = uriSchemeName.toLowerCase(Locale.ENGLISH) ; 
         for ( int i = 0 ; i < schemeNames.length ; i++ )
         {
             if ( uriSchemeName.equals(schemeNames[i]) )

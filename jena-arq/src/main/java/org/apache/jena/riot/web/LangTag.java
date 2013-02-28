@@ -18,6 +18,7 @@
 
 package org.apache.jena.riot.web;
 
+import java.util.Locale ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -287,13 +288,13 @@ public class LangTag
     private static String lowercase(String string)
     {
         if ( string == null ) return null ;
-        return string.toLowerCase() ;
+        return string.toLowerCase(Locale.ENGLISH) ;
     }
 
     private static String uppercase(String string)
     {
         if ( string == null ) return null ;
-        return string.toUpperCase() ;
+        return string.toUpperCase(Locale.ENGLISH) ;
     }
 
     private static String titlecase(String string)
@@ -301,7 +302,7 @@ public class LangTag
         if ( string == null ) return null ;
         char ch1 = string.charAt(0) ;
         ch1 = Character.toUpperCase(ch1) ;
-        string = string.substring(1).toLowerCase() ;
+        string = lowercase(string.substring(1)) ;
         return ch1+string ;
     }
 

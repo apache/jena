@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.graph.impl;
 
+import java.util.Locale ;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -297,7 +299,7 @@ final /*public*/ class LiteralLabelImpl implements LiteralLabel {
     public Object getIndexingValue() {
         return
             isXML() ? this
-            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase()
+            : !lang.equals( "" ) ? getLexicalForm() + "@" + lang.toLowerCase(Locale.ENGLISH)
             : wellformed ? getValue()
             : getLexicalForm() 
             ;

@@ -18,6 +18,8 @@
 
 package com.hp.hpl.jena.shared.uuid;
 
+import java.util.Locale ;
+
 import com.hp.hpl.jena.shared.uuid.JenaUUID.FormatException ;
 
 /* RFC 4122  "A Universally Unique IDentifier (UUID) URN Namespace"
@@ -155,7 +157,7 @@ public class UUID_V1_Gen implements UUIDFactory
     @Override
     public JenaUUID parse(String s) throws FormatException
     {
-        s = s.toLowerCase() ;
+        s = s.toLowerCase(Locale.ENGLISH) ;
 
         if ( s.length() != 36 )
             throw new FormatException("UUID string is not 36 chars long: it's "+s.length()+" ["+s+"]") ;

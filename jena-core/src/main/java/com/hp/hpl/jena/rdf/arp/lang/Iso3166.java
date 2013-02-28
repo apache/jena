@@ -26,6 +26,7 @@ package com.hp.hpl.jena.rdf.arp.lang;
 
 
 import java.util.HashMap;
+import java.util.Locale ;
 import java.util.Map;
 /** Country code names from ISO 3166.
  *<p>
@@ -42,7 +43,7 @@ public class Iso3166  {
 
     /** Creates new Iso639 */
     private Iso3166(String code,String engName) {
-        this.code = code.toLowerCase();
+        this.code = code.toLowerCase(Locale.ENGLISH);
         name = engName;
         all.put(this.code,this);
     }

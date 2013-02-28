@@ -117,9 +117,11 @@ public class query extends CmdARQ
         
         if ( hasArg(argOptimize) )
         {
-            String x1 = getValue(argOptimize).toLowerCase() ;
-            if ( hasValueOfTrue(argOptimize) || x1.equals("on") || x1.equals("yes") )      queryOptimization = true ;
-            else if ( hasValueOfFalse(argOptimize) || x1.equals("off") || x1.equals("no") ) queryOptimization = false ;
+            String x1 = getValue(argOptimize) ;
+            if ( hasValueOfTrue(argOptimize) || x1.equalsIgnoreCase("on") || x1.equalsIgnoreCase("yes") ) 
+                queryOptimization = true ;
+            else if ( hasValueOfFalse(argOptimize) || x1.equalsIgnoreCase("off") || x1.equalsIgnoreCase("no") )
+                queryOptimization = false ;
             else throw new CmdException("Optimization flag must be true/false/on/off/yes/no. Found: "+getValue(argOptimize)) ;
         }
     }

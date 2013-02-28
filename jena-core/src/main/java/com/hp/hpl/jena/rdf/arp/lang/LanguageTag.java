@@ -24,6 +24,7 @@
 
 package com.hp.hpl.jena.rdf.arp.lang;
 
+import java.util.Locale ;
 import java.util.Vector;
 
 /**
@@ -37,7 +38,7 @@ public class LanguageTag implements LanguageTagCodes {
      * broken.
  */
     public LanguageTag(String tag) throws LanguageTagSyntaxException {
-       String lc = tag.toLowerCase();
+       String lc = tag.toLowerCase(Locale.ENGLISH);
        Vector<String> v = new Vector<String>();
        int subT;
        while (true) {

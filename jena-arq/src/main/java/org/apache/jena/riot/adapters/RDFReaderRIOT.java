@@ -51,7 +51,7 @@ public class RDFReaderRIOT implements RDFReader
     
     public RDFReaderRIOT(String lang)
     {
-        base = "org.apache.jena.lang."+lang.toLowerCase(Locale.US) ;
+        base = "org.apache.jena.lang."+lang.toLowerCase(Locale.ENGLISH) ;
         hintlang = lang ;
     }
 

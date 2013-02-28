@@ -21,6 +21,7 @@ package com.hp.hpl.jena.util;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Locale ;
 
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +226,7 @@ public class FileUtils
             {
                 case ' ': case '~':
                     sbuff.append('%') ;
-                    sbuff.append(Integer.toHexString(c).toUpperCase()) ;
+                    sbuff.append(Integer.toHexString(c).toUpperCase(Locale.ENGLISH)) ;
                     break ;
                 default:
                     sbuff.append(c);
