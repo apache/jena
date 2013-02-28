@@ -20,6 +20,7 @@ package com.hp.hpl.jena.sparql.graph;
 
 import java.util.HashSet ;
 import java.util.Iterator ;
+import java.util.Locale ;
 import java.util.Set ;
 
 import com.hp.hpl.jena.graph.Node ;
@@ -101,7 +102,7 @@ public class GraphMemPlain extends GraphBase
             String lang = node.getLiteralLanguage() ;
             if ( lang != null && ! lang.equals("") )
                 node = Node.createLiteral(node.getLiteralLexicalForm(),
-                                          lang.toLowerCase(),
+                                          lang.toLowerCase(Locale.ENGLISH),
                                           node.getLiteralDatatype()) ;
         }
         return node ; 

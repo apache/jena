@@ -20,6 +20,7 @@ package com.hp.hpl.jena.n3.turtle;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.Locale ;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
@@ -124,7 +125,7 @@ public class Turtle2NTriples implements TurtleEventHandler
             } else if (c >= 32 && c < 127) {
                 writer.print(c);
             } else {
-                String hexstr = Integer.toHexString(c).toUpperCase();
+                String hexstr = Integer.toHexString(c).toUpperCase(Locale.ENGLISH);
                 int pad = 4 - hexstr.length();
                 writer.print("\\u");
                 for (; pad > 0; pad--)

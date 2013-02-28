@@ -22,6 +22,9 @@ import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.exactlyOneProperty;
 import static com.hp.hpl.jena.sparql.util.graph.GraphUtils.getAsStringValue;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pDescription;
 import static com.hp.hpl.jena.tdb.assembler.VocabTDB.pFile;
+
+import java.util.Locale ;
+
 import org.apache.jena.atlas.lib.ColumnMap ;
 
 
@@ -56,7 +59,7 @@ public class IndexAssembler extends AssemblerBase //implements Assembler
     public TupleIndex open(Assembler a, Resource root, Mode mode)
     {
         exactlyOneProperty(root, pDescription) ;
-        String desc = getAsStringValue(root, pDescription).toUpperCase() ;
+        String desc = getAsStringValue(root, pDescription).toUpperCase(Locale.ENGLISH) ;
         exactlyOneProperty(root, pFile) ;
         String filename = getAsStringValue(root, pFile) ;
         

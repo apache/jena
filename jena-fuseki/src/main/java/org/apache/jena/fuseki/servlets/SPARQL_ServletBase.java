@@ -151,9 +151,9 @@ public abstract class SPARQL_ServletBase extends ServletBase
     private void initResponse(HttpServletRequest request, HttpServletResponse response)
     {
         setCommonHeaders(response) ;
-        String method = request.getMethod().toUpperCase() ;
+        String method = request.getMethod() ;
         // All GET and HEAD operations are sensitive to conneg so ...
-        if ( HttpNames.METHOD_GET.equals(method) || HttpNames.METHOD_HEAD.equals(method) )
+        if ( HttpNames.METHOD_GET.equalsIgnoreCase(method) || HttpNames.METHOD_HEAD.equalsIgnoreCase(method) )
             setVaryHeader(response) ;
     }
     

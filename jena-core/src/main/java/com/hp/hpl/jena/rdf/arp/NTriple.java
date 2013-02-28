@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.util.Locale ;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -594,7 +595,7 @@ int debugC = 0;
 						line.append(ch);
 					else {
 						print("\\u");
-						String hexstr = Integer.toHexString(ch).toUpperCase();
+						String hexstr = Integer.toHexString(ch).toUpperCase(Locale.ENGLISH);
 						int pad = 4 - hexstr.length();
 
 						for (; pad > 0; pad--)

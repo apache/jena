@@ -18,11 +18,13 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.Locale ;
+
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_SHA224 extends ExprDigest
 {
-    private static final String symbol = Tags.tagSHA224.toUpperCase() ;
+    private static final String symbol = Tags.tagSHA224.toUpperCase(Locale.ENGLISH) ;
 
     public E_SHA224(Expr expr)
     {

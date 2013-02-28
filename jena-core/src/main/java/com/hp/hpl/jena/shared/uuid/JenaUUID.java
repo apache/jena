@@ -22,6 +22,7 @@
 
 package com.hp.hpl.jena.shared.uuid;
 
+import java.util.Locale ;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -107,7 +108,7 @@ public abstract class JenaUUID
             return nil() ;
     	
         // Canonical: this works in conjunction with .equals
-        s = s.toLowerCase() ;
+        s = s.toLowerCase(Locale.ENGLISH) ;
 
         if ( s.startsWith("urn:") )
             s = s.substring(4) ;

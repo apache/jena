@@ -23,6 +23,7 @@ import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
+import java.util.Locale ;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,7 +154,7 @@ public class NTripleWriter extends Object implements RDFWriter {
             if (c < okURIChars.length && okURIChars[c]) {
                 writer.print(c);
             } else {
-                String hexstr = Integer.toHexString(c).toUpperCase();
+                String hexstr = Integer.toHexString(c).toUpperCase(Locale.ENGLISH);
                 int pad = 4 - hexstr.length();
                 writer.print("\\u");
                 for (; pad > 0; pad--)

@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Locale ;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -114,7 +115,7 @@ public class JDBC
         if ( log.isDebugEnabled() )
             log.debug(String.format("Create JDBC URL: (type=%s, host=%s, dbName=%s)", type, host, dbName)) ;
         
-        type = type.toLowerCase() ;
+        type = type.toLowerCase(Locale.ENGLISH) ;
         
         if ( user == null )
             user = Access.getUser() ;

@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
 import java.util.Enumeration ;
+import java.util.Locale ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -194,7 +195,7 @@ public abstract class SPARQL_REST extends SPARQL_ServletBase
     {
         HttpServletRequest req = action.request ;
         HttpServletResponse resp = action.response ;
-        String method = req.getMethod().toUpperCase() ;
+        String method = req.getMethod().toUpperCase(Locale.ENGLISH) ;
 
         // See HttpServlet.service.
         // We dispatch by REQUEST

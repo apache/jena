@@ -18,6 +18,8 @@
 
 package org.apache.jena.riot.stream;
 
+import java.util.Locale ;
+
 import org.apache.jena.atlas.web.TypedInputStream ;
 import org.apache.jena.riot.web.HttpOp ;
 import org.slf4j.Logger ;
@@ -57,7 +59,7 @@ public class LocatorURL implements Locator
         String uriSchemeName = FileUtils.getScheme(filenameOrURI) ;
         if ( uriSchemeName == null )
             return false ;
-        uriSchemeName = uriSchemeName.toLowerCase() ; 
+        uriSchemeName = uriSchemeName.toLowerCase(Locale.ENGLISH) ; 
         for ( int i = 0 ; i < schemeNames.length ; i++ )
         {
             if ( uriSchemeName.equals(schemeNames[i]) )

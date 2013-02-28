@@ -57,7 +57,7 @@ public class UUID_V4_Gen implements UUIDFactory
     
     public UUID_V4 parseV4(String s)
     {
-        s = s.toLowerCase() ;
+        s = s.toLowerCase(Locale.ENGLISH) ;
 
         if ( s.length() != 36 )
             throw new FormatException("UUID string is not 36 chars long: it's "+s.length()+" ["+s+"]") ;

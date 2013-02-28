@@ -28,10 +28,7 @@ import static org.apache.jena.fuseki.HttpNames.paramUsingNamedGraphURI ;
 import java.io.ByteArrayInputStream ;
 import java.io.IOException ;
 import java.io.InputStream ;
-import java.util.Arrays ;
-import java.util.Collection ;
-import java.util.Enumeration ;
-import java.util.List ;
+import java.util.* ;
 
 import javax.servlet.ServletException ;
 import javax.servlet.http.HttpServletRequest ;
@@ -132,7 +129,7 @@ public class SPARQL_Update extends SPARQL_Protocol
     @Override
     protected void validate(HttpServletRequest request)
     {
-        if ( ! HttpNames.METHOD_POST.equals(request.getMethod().toUpperCase()) )
+        if ( ! HttpNames.METHOD_POST.equalsIgnoreCase(request.getMethod()) )
             errorMethodNotAllowed("SPARQL Update : use POST") ;
         
         String ctStr ;

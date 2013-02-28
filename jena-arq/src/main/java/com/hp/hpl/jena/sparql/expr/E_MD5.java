@@ -18,11 +18,13 @@
 
 package com.hp.hpl.jena.sparql.expr;
 
+import java.util.Locale ;
+
 import com.hp.hpl.jena.sparql.sse.Tags ;
 
 public class E_MD5 extends ExprDigest
 {
-    private static final String symbol = Tags.tagMD5.toUpperCase() ;
+    private static final String symbol = Tags.tagMD5.toUpperCase(Locale.ENGLISH) ;
 
     public E_MD5(Expr expr)
     {
