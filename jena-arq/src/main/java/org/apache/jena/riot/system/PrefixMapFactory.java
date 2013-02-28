@@ -227,4 +227,24 @@ public class PrefixMapFactory {
     public static PrefixMap extend(PrefixMap pmap) {
         return new PrefixMapExtended(pmap);
     }
+    
+    /** Return an immutable view of the prefix map.
+     * Throws {@linkplain UnsupportedOperationException} on 
+     * attempts to update it.  Refelcts hcnages mad to the underlying map.
+     * @param pmap  PrefixMap
+     * @return Prefix Map
+     */
+    public static PrefixMap unmodifiablePrefixMap(PrefixMap pmap)
+    {
+        return new PrefixMapUnmodifiable(pmap) ;
+    }
+    
+    /** Return an always-empty and immutable prefix map 
+     * @return Prefix Map
+     */ 
+    public static PrefixMap emptyPrefixMap()
+    {
+        return PrefixMapNull.empty ;
+    }
+    
 }

@@ -142,7 +142,7 @@ public interface PrefixMap {
     public abstract String abbreviate(String uriStr);
 
     /**
-     * Abbreviate an IRI or return a pair of prefix and local parts.
+     * Abbreviate an IRI and return a pair of prefix and local parts, or null.
      * 
      * @param uriStr
      *            URI string to abbreviate
