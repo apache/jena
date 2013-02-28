@@ -42,7 +42,7 @@ public class OpBGP extends Op0
     public BasicPattern getPattern()        { return pattern ; } 
     
     @Override
-    public String getName()                 { return Tags.tagBGP /*.toUpperCase()*/ ; }
+    public String getName()                 { return Tags.tagBGP /*.toUpperCase(Locale.ENGLISH)*/ ; }
     @Override
     public Op apply(Transform transform)    { return transform.transform(this) ; } 
     @Override

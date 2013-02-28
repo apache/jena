@@ -18,6 +18,7 @@
 
 package com.hp.hpl.jena.sparql.util;
 
+import java.util.Locale ;
 import java.util.regex.Matcher ;
 import java.util.regex.Pattern ;
 
@@ -83,7 +84,7 @@ public class RomanNumeral
     
     public static boolean isValid(String lex)
     {
-        lex = lex.toUpperCase() ;
+        lex = lex.toUpperCase(Locale.ENGLISH) ;
         // Excludes IIII
         Matcher m = pattern.matcher(lex);
         return m.matches() ;
@@ -93,7 +94,7 @@ public class RomanNumeral
     // It is easier working right to left!
     public static int r2i(String lex)
     {
-        lex = lex.toUpperCase() ;
+        lex = lex.toUpperCase(Locale.ENGLISH) ;
 
         // This is overly permissive.
         // 1 - allows multiple reducing values
