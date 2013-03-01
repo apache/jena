@@ -38,32 +38,33 @@ public class IO_Jena
     public static void wireIntoJena()
     {
 //        // Wire in generic 
-//        String readerRDF = RDFReaderRIOT.class.getName() ;
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/XML",    readerRDF) ;           // And default
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", readerRDF) ;
+//        Class<?> readerRDF = RDFReaderRIOT.class ;
+//        registerForModelRead("RDF/XML",    readerRDF) ;
+//        registerForModelRead("RDF/XML-ABBREV", readerRDF) ;
 //
-//        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES",  readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("N-Triples",  readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",   readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("N3",         readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("TURTLE",     readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("Turtle",     readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("TTL",        readerRDF) ;
-//        RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",   readerRDF) ;
+//        registerForModelRead("N-TRIPLES",  readerRDF) ;
+//        registerForModelRead("N-Triples",  readerRDF) ;
+//        registerForModelRead("N-TRIPLE",   readerRDF) ;
+//        registerForModelRead("N3",         readerRDF) ;
+//        registerForModelRead("TURTLE",     readerRDF) ;
+//        registerForModelRead("Turtle",     readerRDF) ;
+//        registerForModelRead("TTL",        readerRDF) ;
+//        registerForModelRead("RDF/JSON",   readerRDF) ;
         
-      RDFReaderFImpl.setBaseReaderClassName("RDF/XML",    JenaReadersWriters.RDFReaderRIOT_RDFXML.class.getName()) ;           // And default
-      RDFReaderFImpl.setBaseReaderClassName("RDF/XML-ABBREV", JenaReadersWriters.RDFReaderRIOT_RDFXML.class.getName()) ;
+      registerForModelRead("RDF/XML",    JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;           // And default
+      registerForModelRead("RDF/XML-ABBREV", JenaReadersWriters.RDFReaderRIOT_RDFXML.class) ;
 
-      RDFReaderFImpl.setBaseReaderClassName("N-TRIPLES",  JenaReadersWriters.RDFReaderRIOT_NT.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("N-Triples",  JenaReadersWriters.RDFReaderRIOT_NT.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("N-TRIPLE",   JenaReadersWriters.RDFReaderRIOT_NT.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("N3",         JenaReadersWriters.RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("TURTLE",     JenaReadersWriters.RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("Turtle",     JenaReadersWriters.RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("TTL",        JenaReadersWriters.RDFReaderRIOT_TTL.class.getName()) ;
-      RDFReaderFImpl.setBaseReaderClassName("RDF/JSON",   JenaReadersWriters.RDFReaderRIOT_RDFJSON.class.getName()) ;
+      registerForModelRead("N-TRIPLES",  JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+      registerForModelRead("N-Triples",  JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+      registerForModelRead("N-TRIPLE",   JenaReadersWriters.RDFReaderRIOT_NT.class) ;
+      registerForModelRead("N3",         JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+      registerForModelRead("TURTLE",     JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+      registerForModelRead("Turtle",     JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+      registerForModelRead("TTL",        JenaReadersWriters.RDFReaderRIOT_TTL.class) ;
+      registerForModelRead("RDF/JSON",   JenaReadersWriters.RDFReaderRIOT_RDFJSON.class) ;
       
       // Old style Jena writers.
+      // TODO Remove when riot-output arrives.
       String writerRdfJson = JenaWriterRdfJson.class.getName() ;
       RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", writerRdfJson) ;
     }
@@ -85,7 +86,19 @@ public class IO_Jena
 
         RDFReaderFImpl.setBaseReaderClassName("RDF/JSON", "") ;
         RDFWriterFImpl.setBaseWriterClassName("RDF/JSON", "") ;
-
     }
+    
+    /** Register for use with Model.read **/ 
+    public static void registerForModelRead(String name, Class<?> cls)
+    {
+        RDFReaderFImpl.setBaseReaderClassName(name, cls.getName()) ;
+    }
+    
+    /** Register for use with Model.write **/ 
+    public static void registerForModelWrite(String name, Class<?> cls)
+    {
+        RDFWriterFImpl.setBaseWriterClassName(name, cls.getName()) ;
+    }
+
 }
 

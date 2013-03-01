@@ -18,13 +18,7 @@
 
 package org.apache.jena.riot;
 
-import static org.apache.jena.riot.RDFLanguages.NQUADS ;
-import static org.apache.jena.riot.RDFLanguages.NTRIPLES ;
-import static org.apache.jena.riot.RDFLanguages.RDFJSON ;
-import static org.apache.jena.riot.RDFLanguages.RDFXML ;
-import static org.apache.jena.riot.RDFLanguages.TRIG ;
-import static org.apache.jena.riot.RDFLanguages.N3 ;
-import static org.apache.jena.riot.RDFLanguages.TURTLE ;
+import static org.apache.jena.riot.RDFLanguages.* ;
 
 import java.io.InputStream ;
 import java.util.Map ;
