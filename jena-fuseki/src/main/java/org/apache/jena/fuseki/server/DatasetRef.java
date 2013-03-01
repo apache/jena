@@ -20,7 +20,9 @@ package org.apache.jena.fuseki.server;
 
 import java.util.ArrayList ;
 import java.util.List ;
+import java.util.concurrent.atomic.AtomicLong ;
 
+import com.hp.hpl.jena.query.ReadWrite ;
 import com.hp.hpl.jena.sparql.core.DatasetGraph ;
 
 public class DatasetRef
@@ -34,8 +36,48 @@ public class DatasetRef
     public List<String> readWriteGraphStoreEP   = new ArrayList<String>() ;
     public DatasetGraph dataset                 = null ;
 
+    /** Counter of active read transactions */
+    public AtomicLong   activeReadTxn           = new AtomicLong(0) ;
+    
+    /** Counter of active write transactions */
+    public AtomicLong   activeWriteTxn          = new AtomicLong(0) ;
+
+    /** Cumulative counter of read transactions */
+    public AtomicLong   totalReadTxn            = new AtomicLong(0) ;
+
+    /** Cumulative counter of writer transactions */
+    public AtomicLong   totalWriteTxn           = new AtomicLong(0) ;
+    
+    public void startTxn(ReadWrite mode)
+    {
+        switch(mode)
+        {
+            case READ:  
+                activeReadTxn.getAndIncrement() ;
+                totalReadTxn.getAndIncrement() ;
+                break ;
+            case WRITE:
+                activeWriteTxn.getAndIncrement() ;
+                totalWriteTxn.getAndIncrement() ;
+                break ;
+        }
+    }
+    
+    public void finishTxn(ReadWrite mode)
+    {
+        switch(mode)
+        {
+            case READ:  
+                activeReadTxn.decrementAndGet() ;
+                break ;
+            case WRITE:
+                activeWriteTxn.decrementAndGet() ;
+                break ;
+        }
+    }
+
     //TODO Need to be able to set this from the config file.  
-    public boolean allowDatasetUpdate              = false;
+    public boolean allowDatasetUpdate           = false;
     
     public boolean allowTimeoutOverride         = false;
     public long maximumTimeoutOverride          = Long.MAX_VALUE;
