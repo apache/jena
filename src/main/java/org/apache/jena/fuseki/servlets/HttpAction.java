@@ -18,6 +18,9 @@
 
 package org.apache.jena.fuseki.servlets;
 
+import static com.hp.hpl.jena.query.ReadWrite.READ ;
+import static com.hp.hpl.jena.query.ReadWrite.WRITE ;
+
 import javax.servlet.http.HttpServletRequest ;
 import javax.servlet.http.HttpServletResponse ;
 
@@ -36,12 +39,13 @@ import com.hp.hpl.jena.sparql.core.Transactional ;
 
 public class HttpAction
 {
-    public final long id ;
+    public  final long id ;
     private DatasetGraph dsg ;                  // The data
     private final Transactional transactional ;
     private final boolean isTransactional;
-    private DatasetRef desc ;
-    private DatasetGraph  activeDSG ;           // Set when inside begin/end.
+    private final DatasetRef desc ;
+    private DatasetGraph    activeDSG ;             // Set when inside begin/end.
+    private ReadWrite       activeMode ;            // Set when inside begin/end.
     
     public final HttpServletRequest request;
     public final HttpServletResponse response ;
@@ -98,20 +102,26 @@ public class HttpAction
     
     public void beginRead()
     {
-        transactional.begin(ReadWrite.READ) ;
+        activeMode = READ ;
+        transactional.begin(READ) ;
         activeDSG = dsg ;
+        desc.startTxn(READ) ;
     }
 
     public void endRead()
     {
+        desc.finishTxn(READ) ;
+        activeMode = null ;
         transactional.end() ;
         activeDSG = null ;
     }
 
     public void beginWrite()
     {
-        transactional.begin(ReadWrite.WRITE) ;
+        transactional.begin(WRITE) ;
+        activeMode = WRITE ;
         activeDSG = dsg ;
+        desc.startTxn(WRITE) ;
     }
 
     public void commit()
@@ -128,6 +138,9 @@ public class HttpAction
 
     public void endWrite()
     {
+        desc.finishTxn(WRITE) ;
+        activeMode = null ;
+
         if (transactional.isInTransaction())
         {
             Log.warn(this, "Transaction still active in endWriter - no commit or abort seen (forced abort)") ;
