@@ -111,6 +111,8 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
         try {
             return (RDFWriter) Class.forName(className).newInstance();
         } catch (Exception e) {
+            if ( e instanceof JenaException )
+                throw (JenaException)e ;
             throw new JenaException(e);
         }
     }
