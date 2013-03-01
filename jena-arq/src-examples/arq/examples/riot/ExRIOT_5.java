@@ -23,11 +23,13 @@ import java.util.Iterator ;
 
 import org.apache.jena.atlas.web.ContentType ;
 import org.apache.jena.riot.* ;
+import org.apache.jena.riot.adapters.RDFReaderRIOT ;
 import org.apache.jena.riot.system.StreamRDF ;
 
 import com.hp.hpl.jena.graph.Graph ;
 import com.hp.hpl.jena.graph.Triple ;
 import com.hp.hpl.jena.rdf.model.Model ;
+import com.hp.hpl.jena.rdf.model.ModelFactory ;
 import com.hp.hpl.jena.sparql.sse.Item ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
 import com.hp.hpl.jena.sparql.sse.builders.BuilderGraph ;
@@ -46,9 +48,21 @@ public class ExRIOT_5
         ReaderRIOTFactory factory = new SSEReaderFactory() ;
         RDFParserRegistry.registerLangTriples(lang, factory) ;
         
+        // use it ...
         String filename = "data.rsse" ;
+        // model.read(filename) 
         Model model = RDFDataMgr.loadModel(filename) ;
+        
+        // print results.
         model.write(System.out, "TTL") ;
+        
+        // Optional extra:
+        // If needed to set or override the syntax, register the name explicitly ...
+        System.out.println("## --") ;
+        IO_Jena.registerForModelRead("SSE", RDFReaderSSE.class) ;
+        // and use read( , "SSE")
+        Model model2 = ModelFactory.createDefaultModel().read(filename, "SSE") ;
+        model2.write(System.out, "TTL") ;
     }
     
     static class SSEReaderFactory implements ReaderRIOTFactory
@@ -73,6 +87,9 @@ public class ExRIOT_5
                 }} ;
         }
     }
+    
+    // Model.read adapter - must be public.
+    public static class RDFReaderSSE extends RDFReaderRIOT { public RDFReaderSSE() { super("SSE") ; } } 
     
     /* data.rsse :
      * (graph
