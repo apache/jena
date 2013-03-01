@@ -74,10 +74,8 @@ public class NodeFmtLib
         for ( Node n : nodes ) 
         {
             if ( ! first )
-            {
                 sw.append(" ") ;
-                first = false ;
-            }
+            first = false ;
             str(sw, n) ;
         }
         return sw.toString() ; 
