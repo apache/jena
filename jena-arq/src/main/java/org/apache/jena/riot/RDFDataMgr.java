@@ -745,9 +745,7 @@ public class RDFDataMgr
 
         ReaderRIOT reader = getReader(ct) ;
         if ( reader == null )
-        {
             throw new RiotException("No triples reader for content type: "+ct.getContentType()) ;
-        }
         reader.read(in, baseUri, ct, destination, context) ;
     }
 

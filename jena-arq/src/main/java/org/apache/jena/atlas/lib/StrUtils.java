@@ -123,8 +123,6 @@ public class StrUtils //extends StringUtils
         { throw new InternalErrorException("UTF-8 not supported!") ; } 
     }
     
-
-    
     public static String str(Object x)
     {
         if ( x == null ) return "<null>" ;

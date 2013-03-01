@@ -31,7 +31,7 @@ public class PrintingStreamRDF implements StreamRDF
 {
     private Logger log ;
 
-    public PrintingStreamRDF(boolean x , Logger log) { this.log = log ; }
+    public PrintingStreamRDF(Logger log) { this.log = log ; }
 
     @Override
     public void start()
