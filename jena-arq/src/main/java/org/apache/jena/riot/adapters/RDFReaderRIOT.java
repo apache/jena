@@ -35,23 +35,21 @@ import com.hp.hpl.jena.sparql.util.Symbol ;
 /** Adapter from Jena2 original style adapter to RIOT reader. */ 
 public class RDFReaderRIOT implements RDFReader
 {
-    // See also JenaReaderBase, JenaReaderRiot
-
-    private final String base ; // This will be per reader instance.
+    private final String basename ; // This will be per reader instance.
     private final String hintlang ;
-    Context context = new Context() ;
+    private Context context = new Context() ;
     
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
     
     public RDFReaderRIOT()
     {
-        base = "org.apache.jena.lang.generic" ;
+        basename = "org.apache.jena.lang.generic" ;
         hintlang = null ;
     }
     
     public RDFReaderRIOT(String lang)
     {
-        base = "org.apache.jena.lang."+lang.toLowerCase(Locale.ENGLISH) ;
+        basename = "org.apache.jena.lang."+lang.toLowerCase(Locale.ENGLISH) ;
         hintlang = lang ;
     }
 
@@ -71,7 +69,7 @@ public class RDFReaderRIOT implements RDFReader
     @Override
     public Object setProperty(String propName, Object propValue)
     {
-        Symbol sym = Symbol.create(base+propName) ;
+        Symbol sym = Symbol.create(basename+propName) ;
         Object oldObj = context.get(sym) ;
         return oldObj ;
     }
