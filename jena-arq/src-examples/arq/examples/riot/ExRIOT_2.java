@@ -41,7 +41,7 @@ public class ExRIOT_2
 {
     public static void main(String...argv) throws FileNotFoundException
     {
-        // Ensure RIOT loaded.
+        // Ensure RIOT loaded.  Usually this is automatic.
         RIOT.init() ;
 
         // ---- Parse to a Sink.
@@ -50,6 +50,8 @@ public class ExRIOT_2
         // RIOT controls the conversion from bytes to java chars.
         InputStream in = new FileInputStream("data.trig") ;
         
+        // Better is:
+        // RDFDataMgr.parse(noWhere, in, "http://example/base", RDFLanguages.TRIG, null) ;
         RiotReader.parse(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
         
         // --- Or create a parser and do the parsing as separate steps.
@@ -59,6 +61,8 @@ public class ExRIOT_2
         // The parsers will do the necessary character set conversion.  
         in = new FileInputStream("data.trig") ;
         LangRIOT parser = RiotReader.createParser(in, RDFLanguages.TRIG, "http://example/base", noWhere) ;
+        
+        // Access the setup of the RIOT built-in parsers.
         
         // Parser to first error or warning.
         ErrorHandler errHandler = ErrorHandlerFactory.errorHandlerStrict ;
