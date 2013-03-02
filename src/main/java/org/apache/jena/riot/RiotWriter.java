@@ -60,5 +60,4 @@ public class RiotWriter
     {
     	RDFJSONWriter.write(out, graph) ;
     }
-
 }

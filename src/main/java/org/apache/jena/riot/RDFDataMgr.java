@@ -737,7 +737,7 @@ public class RDFDataMgr
     // We could have had two step design - ReaderFactory-ReaderInstance
     // no - put the bruden on complicated readers, not everyone. 
     
-    private static void process(StreamRDF destination , TypedInputStream in , String baseUri , Lang hintLang , Context context )
+    private static void process(StreamRDF destination, TypedInputStream in, String baseUri, Lang hintLang, Context context )
     {
         ContentType ct = determineCT(baseUri, in.getContentType(), hintLang ) ;
         if ( ct == null )

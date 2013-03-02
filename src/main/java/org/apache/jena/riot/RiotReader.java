@@ -57,7 +57,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
  */
 public class RiotReader
 {
-    /** Parse a file, sending output to a RDFParserOutput sink.
+    /** Parse a file, sending output to a StreamRDF sink.
      * Must be in a triples syntax.
      * @param filename 
      * @param dest  Where to send the triples from the parser.
@@ -65,7 +65,7 @@ public class RiotReader
     public static void parse(String filename, StreamRDF dest)
     { parse(filename, null, null, dest) ; }
 
-    /** Parse a file, sending output to a RDFParserOutput sink.
+    /** Parse a file, sending output to a StreamRDF sink.
      * Must be in a triples syntax.
      * @param filename 
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
@@ -76,7 +76,7 @@ public class RiotReader
         parse(filename, lang, null, dest) ;
     }
 
-    /** Parse a file, sending output to a RDFParserOutput sink.
+    /** Parse a file, sending output to a StreamRDF sink.
      * Must be in a triples syntax.
      * @param filename 
      * @param lang      Language, or null for "guess from URL" (e.g. file extension)
