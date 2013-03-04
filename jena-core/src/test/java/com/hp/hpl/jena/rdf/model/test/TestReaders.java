@@ -31,7 +31,7 @@ import java.net.ConnectException;
 import java.net.NoRouteToHostException;
 import java.net.UnknownHostException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestReaders extends AbstractModelTestBase
 {

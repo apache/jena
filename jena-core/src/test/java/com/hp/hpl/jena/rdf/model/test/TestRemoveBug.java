@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
 import java.io.StringReader;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestRemoveBug extends AbstractModelTestBase
 {

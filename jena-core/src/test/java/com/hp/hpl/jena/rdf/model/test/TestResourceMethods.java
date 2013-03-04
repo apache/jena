@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.PropertyNotFoundException;
 import com.hp.hpl.jena.test.JenaTestBase;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestResourceMethods extends AbstractModelTestBase
 {

@@ -36,7 +36,7 @@ import com.hp.hpl.jena.xmloutput.impl.Basic;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestRDFWriterMap extends JenaTestBase
 {

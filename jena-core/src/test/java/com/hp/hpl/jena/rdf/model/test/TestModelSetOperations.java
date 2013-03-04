@@ -24,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * A revamped version of the regression set-operation tests.

@@ -34,7 +34,7 @@ import com.hp.hpl.jena.test.JenaTestBase;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * This class tests various properties of RDFNodes.

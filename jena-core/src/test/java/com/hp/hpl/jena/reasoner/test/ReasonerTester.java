@@ -18,21 +18,31 @@
 
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
-import com.hp.hpl.jena.vocabulary.RDF;
+import java.io.BufferedReader ;
+import java.io.FileReader ;
+import java.io.IOException ;
+import java.io.Reader ;
+import java.util.* ;
 
-import com.hp.hpl.jena.shared.*;
+import junit.framework.TestCase ;
+import org.junit.Assert ;
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
 
-import junit.framework.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
-import java.io.*;
+import com.hp.hpl.jena.graph.Factory ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.Triple ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl ;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl ;
+import com.hp.hpl.jena.reasoner.InfGraph ;
+import com.hp.hpl.jena.reasoner.Reasoner ;
+import com.hp.hpl.jena.reasoner.ReasonerFactory ;
+import com.hp.hpl.jena.reasoner.TriplePattern ;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable ;
+import com.hp.hpl.jena.shared.JenaException ;
+import com.hp.hpl.jena.vocabulary.RDF ;
 
 /**
  * A utility for loading a set of test reasoner problems and running defined

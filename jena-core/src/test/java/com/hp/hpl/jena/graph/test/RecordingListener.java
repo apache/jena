@@ -18,10 +18,15 @@
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
+import java.util.ArrayList ;
+import java.util.Arrays ;
+import java.util.Iterator ;
+import java.util.List ;
 
-import junit.framework.*;
-import java.util.*;
+import org.junit.Assert ;
+import com.hp.hpl.jena.graph.Graph ;
+import com.hp.hpl.jena.graph.GraphListener ;
+import com.hp.hpl.jena.graph.Triple ;
 
 /**
     This testing listener records the event names and data, and provides

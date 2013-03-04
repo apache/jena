@@ -22,7 +22,7 @@ package com.hp.hpl.jena.rdf.arp.states;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.ARPLocation;

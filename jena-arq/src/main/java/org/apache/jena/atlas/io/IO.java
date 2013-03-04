@@ -149,6 +149,20 @@ public class IO
     }
     
 
+    public static void close(IndentedWriter resource)
+    {
+        if ( resource == null )
+            return ;
+        resource.close();
+    }
+    
+    public static void closeSilent(IndentedWriter resource)
+    {
+        if ( resource == null )
+            return ;
+        try { resource.close();  } catch (Exception ex) { }
+    }
+
     public static void exception(IOException ex)
     {
         throw new AtlasException(ex) ;
@@ -171,6 +185,13 @@ public class IO
         if ( out == null )
             return ;
         try { out.flush(); } catch (IOException ex) { exception(ex) ; } 
+    }
+
+    public static void flush(IndentedWriter out)
+    {
+        if ( out == null )
+            return ;
+        out.flush(); 
     }
 
     private static final int BUFFER_SIZE = 8*1024 ; 

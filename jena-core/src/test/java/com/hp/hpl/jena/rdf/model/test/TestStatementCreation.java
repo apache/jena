@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestStatementCreation extends AbstractModelTestBase
 {

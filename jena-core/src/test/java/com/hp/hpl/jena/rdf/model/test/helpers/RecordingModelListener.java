@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 /**
  * Class to listen to model changes and record them for testing.
  */

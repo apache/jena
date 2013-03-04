@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory ;
 import com.hp.hpl.jena.shared.PrefixMapping ;

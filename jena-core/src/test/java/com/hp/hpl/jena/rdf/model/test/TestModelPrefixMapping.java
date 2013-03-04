@@ -27,7 +27,7 @@ import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 import com.hp.hpl.jena.shared.AbstractTestPrefixMapping;
 import com.hp.hpl.jena.shared.PrefixMapping;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Test that a model is a prefix mapping.

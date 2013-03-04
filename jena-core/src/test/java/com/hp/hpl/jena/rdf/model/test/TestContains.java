@@ -29,7 +29,7 @@ import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 import com.hp.hpl.jena.rdf.model.test.helpers.ModelHelper;
 import com.hp.hpl.jena.rdf.model.test.helpers.TestingModelFactory;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class TestContains extends AbstractModelTestBase
 {

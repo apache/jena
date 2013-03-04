@@ -30,7 +30,7 @@ public class TestUtil
          return new JUnit4TestAdapter(TestUtil.class) ;
      }
     
-    // Intermediate : JUNIt 3 and JUnit 4.
+    // Intermediate : JUnit 3 and JUnit 4.
      
     @Test public void splitNS_01()
     { split("http://example/xyz", "http://example/", "xyz") ; }

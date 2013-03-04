@@ -27,7 +27,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests of the Model-level bulk update API.
