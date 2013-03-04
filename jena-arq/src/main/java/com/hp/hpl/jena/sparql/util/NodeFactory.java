@@ -112,6 +112,26 @@ public class NodeFactory
         return i ;
     }
     
+    public static float nodeToFloat(Node node)
+    {
+        LiteralLabel lit = node.getLiteral();
+        
+        if ( ! XSDDatatype.XSDfloat.isValidLiteral(lit) )
+            return Float.NaN;
+        float f = ((Number)lit.getValue()).floatValue();
+        return f;
+    }
+    
+    public static double nodeToDouble(Node node)
+    {
+        LiteralLabel lit = node.getLiteral();
+        
+        if ( ! XSDDatatype.XSDdouble.isValidLiteral(lit) )
+            return Double.NaN;
+        double d = ((Number)lit.getValue()).doubleValue();
+        return d;
+    }
+    
     public static Node intToNode(int integer)
     {
         return Node.createLiteral(Integer.toString(integer), "", XSDDatatype.XSDinteger) ;
@@ -125,6 +145,11 @@ public class NodeFactory
     public static Node floatToNode(float value)
     {
         return Node.createLiteral(Float.toString(value), "", XSDDatatype.XSDfloat) ;
+    }
+    
+    public static Node doubleToNode(double value)
+    {
+        return Node.createLiteral(Double.toString(value), "", XSDDatatype.XSDdouble) ;
     }
 
     public static Node nowAsDateTime()
