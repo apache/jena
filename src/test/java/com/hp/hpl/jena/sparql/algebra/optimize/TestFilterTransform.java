@@ -18,7 +18,7 @@
 
 package com.hp.hpl.jena.sparql.algebra.optimize;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 import junit.framework.JUnit4TestAdapter ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;

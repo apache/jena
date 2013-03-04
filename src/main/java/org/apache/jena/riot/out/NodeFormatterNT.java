@@ -18,10 +18,8 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
-import java.io.Writer ;
 
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 
 public class NodeFormatterNT extends NodeFormatterBase
 {
@@ -29,72 +27,60 @@ public class NodeFormatterNT extends NodeFormatterBase
     // Turtles extends this class to intercept forms it can do better.
 
     private final EscapeStr escapeProc ; 
-    
+
     public NodeFormatterNT() { this(true) ; }
-    
+
     protected NodeFormatterNT(boolean asciiOnly) { escapeProc = new EscapeStr(asciiOnly) ;}
-    
+
     @Override
-    public void formatURI(Writer w, String uriStr)
+    public void formatURI(WriterI w, String uriStr)
     {
-        try {
-            w.write('<') ;
-            w.write(uriStr) ;
-            w.write('>') ;
-        } catch (IOException ex) { IO.exception(ex) ; } 
+        w.print('<') ;
+        w.print(uriStr) ;
+        w.print('>') ;
     }
 
     @Override
-    public void formatVar(Writer w, String name)
+    public void formatVar(WriterI w, String name)
     {
-        try {
-            w.write('?') ;
-            w.write(name) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        w.print('?') ;
+        w.print(name) ;
     }
 
     @Override
-    public void formatBNode(Writer w, String label)
+    public void formatBNode(WriterI w, String label)
     {
-        try {
-            w.write("_:") ;
-            String lab = NodeFmtLib.encodeBNodeLabel(label) ;
-            w.write(lab) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        w.print("_:") ;
+        String lab = NodeFmtLib.encodeBNodeLabel(label) ;
+        w.print(lab) ;
     }
 
     @Override
-    public void formatLitString(Writer w, String lex)
+    public void formatLitString(WriterI w, String lex)
     {
-        try {
-            writeEscaped(w, lex) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        writeEscaped(w, lex) ;
     }
 
-    private void writeEscaped(Writer w, String lex) throws IOException
+    private void writeEscaped(WriterI w, String lex)
     {
-        w.write('"') ;
+        w.print('"') ;
         escapeProc.writeStr(w, lex) ;
-        w.write('"') ;
+        w.print('"') ;
     }
 
     @Override
-    public void formatLitLang(Writer w, String lex, String langTag)
+    public void formatLitLang(WriterI w, String lex, String langTag)
     {
-        try {
-            writeEscaped(w, lex) ;
-            w.write('@') ;
-            w.write(langTag) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        writeEscaped(w, lex) ;
+        w.print('@') ;
+        w.print(langTag) ;
     }
 
     @Override
-    public void formatLitDT(Writer w, String lex, String datatypeURI)
+    public void formatLitDT(WriterI w, String lex, String datatypeURI)
     {
-        try {
-            writeEscaped(w, lex) ;
-            w.write("^^") ;
-            formatURI(w, datatypeURI) ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        writeEscaped(w, lex) ;
+        w.print("^^") ;
+        formatURI(w, datatypeURI) ;
     }
 }

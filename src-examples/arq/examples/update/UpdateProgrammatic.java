@@ -18,18 +18,15 @@
 
 package arq.examples.update;
 
-import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFWriterMgr ;
 
 import com.hp.hpl.jena.sparql.modify.request.Target ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateCreate ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateDrop ;
 import com.hp.hpl.jena.sparql.modify.request.UpdateLoad ;
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.* ;
 
 /** Build an update request up out of indvidiual Update objects, not by parsing.
  *  This is quite low-level.
@@ -56,7 +53,6 @@ public class UpdateProgrammatic
         System.out.println();
         
         System.out.println("# N-Quads: S P O G") ;
-        RiotWriter.writeNQuads(System.out, graphStore) ;
-
+        RDFWriterMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 }

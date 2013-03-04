@@ -440,7 +440,7 @@ public class WriterOp
                     Var v = agg.getVar() ;
                     String str = agg.getAggregator().toPrefixString() ;
                     start() ;
-                    out.print(v) ;
+                    out.print(v.toString()) ;
                     out.print(" ") ;
                     out.print(str) ;
                     finish() ;

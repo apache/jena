@@ -18,14 +18,10 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
-import java.io.StringWriter ;
-import java.io.Writer ;
+import org.apache.jena.atlas.io.IndentedLineBuffer ;
+import org.apache.jena.atlas.io.WriterI ;
 
 import com.hp.hpl.jena.sparql.lang.ParserBase ;
-
-import org.apache.jena.atlas.io.IO ;
-import org.apache.jena.atlas.io.OutputUtils ;
 
 public class EscapeStr
 {
@@ -34,93 +30,81 @@ public class EscapeStr
     private final boolean ascii ;
 
     public EscapeStr(boolean asciiOnly) { this.ascii = asciiOnly ; }
-    
-    public void writeURI(Writer w, String s)
+
+    public void writeURI(WriterI w, String s)
     {
-        try
-        {
-            if ( ascii )
-                stringEsc(w, s, true, ascii) ;
-            else
-                // It's a URI - assume legal.
-                w.write(s) ;
-        } catch (IOException e) { IO.exception(e) ; }
-    }
-    
-    public void writeStr(Writer w, String s) 
-    {
-        try
-        {
+        if ( ascii )
             stringEsc(w, s, true, ascii) ;
-        } catch (IOException e) { IO.exception(e) ; }
+        else
+            // It's a URI - assume legal.
+            w.print(s) ;
     }
-    
-    public void writeStrMultiLine(Writer w, String s) 
+
+    public void writeStr(WriterI w, String s) 
+    {
+        stringEsc(w, s, true, ascii) ;
+    }
+
+    public void writeStrMultiLine(WriterI w, String s) 
     {
         // N-Triples does not have """
-        try
-        {
-            stringEsc(w, s, false, ascii) ;
-        } catch (IOException e) { IO.exception(e) ; }
+        stringEsc(w, s, false, ascii) ;
     }
-    
+
     // Utility
     /*
      * Escape characters in a string according to Turtle rules. 
      */
     public static String stringEsc(String s)
     { return stringEsc(s, true, false) ; }
-    
+
     private static String stringEsc(String s, boolean singleLineString, boolean asciiOnly)
     {
-        try
-        {
-            Writer sb = new StringWriter() ;
-            stringEsc(sb, s, singleLineString, asciiOnly) ;
-            return sb.toString() ;
-        } catch (IOException e) { IO.exception(e) ; return null ; }
+        IndentedLineBuffer sb = new IndentedLineBuffer() ;
+        stringEsc(sb, s, singleLineString, asciiOnly) ;
+        return sb.toString() ;
     }
-    
-    public static void stringEsc(Writer out, String s, boolean singleLineString, boolean asciiOnly) throws IOException
+
+    public static void stringEsc(WriterI out, String s, boolean singleLineString, boolean asciiOnly)
     {
         int len = s.length() ;
         for (int i = 0; i < len; i++) {
             char c = s.charAt(i);
-            
+
             // \\ Escape always possible.
             if (c == '\\') 
             {
-                out.write('\\') ;
-                out.write(c) ;
+                out.print('\\') ;
+                out.print(c) ;
                 continue ;
             }
             if ( singleLineString )
             {
-                if ( c == '"' )         { out.write("\\\""); continue ; }
-                else if (c == '\n')     { out.write("\\n");  continue ; }
-                else if (c == '\t')     { out.write("\\t");  continue ; }
-                else if (c == '\r')     { out.write("\\r");  continue ; }
-                else if (c == '\f')     { out.write("\\f");  continue ; }
+                if ( c == '"' )         { out.print("\\\""); continue ; }
+                else if (c == '\n')     { out.print("\\n");  continue ; }
+                else if (c == '\t')     { out.print("\\t");  continue ; }
+                else if (c == '\r')     { out.print("\\r");  continue ; }
+                else if (c == '\f')     { out.print("\\f");  continue ; }
             }
             // Not \-style esacpe. 
             if ( c >= 32 && c < 127 )
-                out.write(c);
+                out.print(c);
             else if ( !asciiOnly )
-                out.write(c);
+                out.print(c);
             else
             {
                 // Outside the charset range.
                 // Does not cover beyond 16 bits codepoints directly
                 // (i.e. \U escapes) but Java keeps these as surrogate
                 // pairs and will print as characters
-                out.write( "\\u") ;
+                out.print( "\\u") ;
                 OutputUtils.printHex(out, c, 4) ;
             }
         }
     }
-    
+
     // Utilities to remove escapes
-    
+
     public static String unescapeStr(String s)
     { return unescape(s, '\\') ; }
     

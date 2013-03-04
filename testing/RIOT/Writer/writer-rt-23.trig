@@ -1,0 +1,18 @@
+@prefix :     <http://example/> .
+@prefix ns:   <http://example/ns#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>  .
+
+{ :s :p 1,2,3 ;
+     :q (1 2 3) .
+}
+{ :s1 :p 1,2,3 }
+
+:g1 { :s :p 1,2,3 ;
+       :q (1 2 3) .
+}
+
+:g2 { :s :p 1,2,3 ;
+       :q (1 2 3) .
+}
+
+

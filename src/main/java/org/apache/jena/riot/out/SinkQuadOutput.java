@@ -18,11 +18,10 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
 import java.io.OutputStream ;
-import java.io.Writer ;
 
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.riot.system.Prologue ;
 import org.apache.jena.riot.system.SyntaxLabels ;
@@ -34,7 +33,7 @@ import com.hp.hpl.jena.sparql.core.Quad ;
 public class SinkQuadOutput implements Sink<Quad>
 {
     private Prologue prologue = null ;
-    private Writer out ;
+    private WriterI out ;
     private NodeToLabel labelPolicy = null ;
     private NodeFormatter nodeFmt = new NodeFormatterNT() ;
 
@@ -45,7 +44,7 @@ public class SinkQuadOutput implements Sink<Quad>
     
     public SinkQuadOutput(OutputStream outs, Prologue prologue, NodeToLabel labels)
     {
-        out = IO.asBufferedUTF8(outs) ;
+        out = IO.wrapUTF8(outs) ;
         setPrologue(prologue) ;
         setLabelPolicy(labels) ;
     }
@@ -64,26 +63,24 @@ public class SinkQuadOutput implements Sink<Quad>
     @Override
     public void send(Quad quad)
     {
-        try {
-            Node s = quad.getSubject() ;
-            Node p = quad.getPredicate() ;
-            Node o = quad.getObject() ;
-            Node g = quad.getGraph() ;
+        Node s = quad.getSubject() ;
+        Node p = quad.getPredicate() ;
+        Node o = quad.getObject() ;
+        Node g = quad.getGraph() ;
 
-            nodeFmt.format(out, s) ;
-            out.write(" ") ;
-            nodeFmt.format(out, p) ;
-            out.write(" ") ;
-            nodeFmt.format(out, o) ;
+        nodeFmt.format(out, s) ;
+        out.print(" ") ;
+        nodeFmt.format(out, p) ;
+        out.print(" ") ;
+        nodeFmt.format(out, o) ;
 
-            if ( outputGraphSlot(g) ) 
-            {
-                out.write(" ") ;
-                nodeFmt.format(out, g) ;
-            }
+        if ( outputGraphSlot(g) ) 
+        {
+            out.print(" ") ;
+            nodeFmt.format(out, g) ;
+        }
 
-            out.write(" .\n") ;
-        } catch (IOException ex) { IO.exception(ex) ; }
+        out.print(" .\n") ;
     }
     
     private static boolean outputGraphSlot(Node g)
@@ -94,7 +91,7 @@ public class SinkQuadOutput implements Sink<Quad>
     @Override
     public void flush()
     {
-        try { out.flush() ; } catch (IOException ex) { IO.exception(ex) ; }
+        IO.flush(out) ;
     }
 
     @Override

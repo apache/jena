@@ -19,6 +19,8 @@
 package org.apache.jena.riot;
 
 
+import org.apache.jena.riot.system.IO_Jena2 ;
+
 import com.hp.hpl.jena.query.ARQ ;
 import com.hp.hpl.jena.sparql.SystemARQ ;
 import com.hp.hpl.jena.sparql.mgt.ARQMgt ;
@@ -69,6 +71,10 @@ public class RIOT
             RDFParserRegistry.init() ;
             IO_Jena.wireIntoJena() ;
 
+            // Writers
+            RDFWriterRegistry.init() ;
+            IO_Jena2.wireIntoJenaW() ;
+            
             // Don't register JMX info with ARQ as it may not be initialized
             // itself and we can get into a circularity.
             // This is done in ARQ.init at the proper moment.

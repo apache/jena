@@ -19,14 +19,11 @@
 package arq.examples.update;
 
 import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFWriterMgr ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.* ;
 
 /** Build an update request up out of indvidiual Updates specified as strings.
  *  See UpdatePorgrammatic for another way to build up a request. 
@@ -85,7 +82,6 @@ public class UpdateExecuteOperations
         System.out.println();
         
         System.out.println("# N-Quads: S P O G") ;
-        RiotWriter.writeNQuads(System.out, graphStore) ;
-
+        RDFWriterMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 }

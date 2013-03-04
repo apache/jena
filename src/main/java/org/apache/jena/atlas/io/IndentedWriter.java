@@ -24,12 +24,13 @@ import java.io.OutputStream ;
 import java.io.Writer ;
 
 import org.apache.jena.atlas.AtlasException ;
+import org.apache.jena.atlas.lib.Closeable ;
 
 /** A writer that records what the current indentation level is, and
  *  uses that to insert a prefix at each line. 
  *  It can also insert line numbers at the beginning of lines. */
 
-public class IndentedWriter
+public class IndentedWriter extends WriterIBase implements WriterI, Closeable
 {
     /** Stdout wrapped in an IndentedWriter - no line numbers */
     public static final IndentedWriter stdout = new IndentedWriter(System.out) ; 
@@ -84,33 +85,57 @@ public class IndentedWriter
         startingNewLine = true ;
     }
 
-    public void print(Object obj) 
+    @Override
+    public void print(String str) 
     {
-        String s = "null" ;
-        if ( obj != null )
-            s = obj.toString() ;
+        if ( str == null )
+            str = "null" ;
         if ( false )
         {
             // Don't check for embedded newlines.
-            write(s) ;
+            write$(str) ;
             return ;
         }
-        for ( int i = 0 ; i < s.length() ; i++ )
-            printOneChar(s.charAt(i)) ;
+        for ( int i = 0 ; i < str.length() ; i++ )
+            printOneChar(str.charAt(i)) ;
     }
     
+    @Override
     public void printf(String formatStr, Object... args)
     {
         print(format(formatStr, args)) ;
     }
     
+    @Override
     public void print(char ch) { printOneChar(ch) ; }
     
-    public void println(Object obj) { print(obj) ; newline() ; }
+    @Override
+    public void println(String str) { print(str) ; newline() ; }
     public void println(char ch)  { print(ch) ; newline() ; }
 
+    @Override
     public void println() { newline() ; }
     
+    @Override
+    public void print(char[] cbuf)
+    {
+        for ( int i = 0 ; i < cbuf.length ; i++ )
+            printOneChar(cbuf[i]) ;
+    }
+
+    /** Print a string N times */
+    public void print(String s, int n)
+    {
+        for ( int i = 0 ; i < n ; i++ ) print(s) ;
+    }
+
+    /** Print a char N times */
+    public void print(char ch, int n)
+    {
+        lineStart() ;
+        for ( int i = 0 ; i < n ; i++ ) printOneChar(ch) ;
+    }
+
     private char lastChar = '\0' ;
     // Worker
     private void printOneChar(char ch) 
@@ -132,28 +157,15 @@ public class IndentedWriter
             newline() ;
             return ;
         }
-        write(ch) ;
+        write$(ch) ;
         column += 1 ;
     }
 
-    private void write(char ch) 
+    private void write$(char ch) 
     { try { out.write(ch) ; } catch (IOException ex) { throw new AtlasException(ex) ; } }
     
-    private void write(String s) 
+    private void write$(String s) 
     { try { out.write(s) ; } catch (IOException ex) { throw new AtlasException(ex) ; } }
-    
-    /** Print a string N times */
-    public void print(String s, int n)
-    {
-        for ( int i = 0 ; i < n ; i++ ) print(s) ;
-    }
-
-    /** Print a char N times */
-    public void print(char ch, int n)
-    {
-        lineStart() ;
-        for ( int i = 0 ; i < n ; i++ ) printOneChar(ch) ;
-    }
     
     public void newline()
     {
@@ -162,7 +174,7 @@ public class IndentedWriter
         if ( endOfLineMarker != null )
             print(endOfLineMarker) ;
         if ( ! flatMode )
-            write('\n') ;
+            write$('\n') ;
         startingNewLine = true ;
         row++ ;
         column = 0 ;
@@ -179,7 +191,10 @@ public class IndentedWriter
             newline() ;
     }
     
+    @Override
     public void close() { try { out.close(); } catch (IOException ex) {} }
+    
+    @Override
     public void flush() { try { out.flush(); } catch (IOException ex) {} }
     
     /** Pad to the indent (if we are before it) */
@@ -209,7 +224,7 @@ public class IndentedWriter
         int spaces = col - column  ;
         for ( int i = 0 ; i < spaces ; i++ )
         {
-            write(' ') ;        // Always a space.
+            write$(' ') ;        // Always a space.
             column++ ;
         }
     }
@@ -221,7 +236,7 @@ public class IndentedWriter
         {
             for ( int i = column ; i < currentIndent ; i++ )
             {
-                write(padChar) ;
+                write$(padChar) ;
                 column++ ;
             }
         }
@@ -229,7 +244,7 @@ public class IndentedWriter
         {
             for ( int i = column ; i < currentIndent ; i += padString.length() )
             {
-                write(padString) ;
+                write$(padString) ;
                 column += padString.length() ;
             }
         }
@@ -303,9 +318,9 @@ public class IndentedWriter
         currentIndent -= x ;
     }
     
-    public void setUnitIndent(int x) { unitIndent = x ; }
-    public int  getUnitIndent() { return unitIndent ; }
-    public boolean atLineStart() { return startingNewLine ; }
+    public void setUnitIndent(int x)    { unitIndent = x ; }
+    public int  getUnitIndent()         { return unitIndent ; }
+    public boolean atLineStart()        { return startingNewLine ; }
     
     private void lineStart()
     {
@@ -313,7 +328,7 @@ public class IndentedWriter
         {
             if ( startingNewLine && row > 1 )
                 // Space between each line.
-                write(' ') ;
+                write$(' ') ;
             startingNewLine = false ;
             return ;
         }
@@ -334,9 +349,9 @@ public class IndentedWriter
             return ;
         String s = Integer.toString(row) ;
         for ( int i = 0 ; i < WidthLineNumber-s.length() ; i++ )
-            write(' ') ;
-        write(s) ;
-        write(' ') ;
+            write$(' ') ;
+        write$(s) ;
+        write$(' ') ;
     }
     
     @Override

@@ -25,6 +25,7 @@ import org.apache.jena.riot.process.TS_Process ;
 import org.apache.jena.riot.stream.TS_IO2 ;
 import org.apache.jena.riot.system.TS_RiotSystem ;
 import org.apache.jena.riot.web.TS_RiotWeb ;
+import org.apache.jena.riot.writer.TS_RiotWriter ;
 import org.junit.BeforeClass ;
 import org.junit.runner.RunWith ;
 import org.junit.runners.Suite ;
@@ -44,6 +45,7 @@ import org.junit.runners.Suite ;
     //, TS_RiotMisc.class
     , TS_RiotSystem.class
     , TS_RiotWeb.class
+    , TS_RiotWriter.class
 })
 
 

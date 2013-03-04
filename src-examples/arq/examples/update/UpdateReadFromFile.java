@@ -18,14 +18,11 @@
 
 package arq.examples.update;
 
-import org.apache.jena.riot.RiotWriter ;
+import org.apache.jena.riot.Lang ;
+import org.apache.jena.riot.RDFWriterMgr ;
 
 import com.hp.hpl.jena.sparql.sse.SSE ;
-import com.hp.hpl.jena.update.GraphStore ;
-import com.hp.hpl.jena.update.GraphStoreFactory ;
-import com.hp.hpl.jena.update.UpdateAction ;
-import com.hp.hpl.jena.update.UpdateFactory ;
-import com.hp.hpl.jena.update.UpdateRequest ;
+import com.hp.hpl.jena.update.* ;
 
 /** Simple example of SPARQL/Update : read a update script from a file and execute it */ 
 public class UpdateReadFromFile
@@ -52,6 +49,6 @@ public class UpdateReadFromFile
         System.out.println();
         
         System.out.println("# N-Quads: S P O G") ;
-        RiotWriter.writeNQuads(System.out, graphStore) ;
+        RDFWriterMgr.write(System.out, graphStore, Lang.NQUADS) ;
     }
 }

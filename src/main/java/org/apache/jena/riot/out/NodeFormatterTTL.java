@@ -18,71 +18,76 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
-import java.io.Writer ;
 import java.net.MalformedURLException ;
 
-
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
-
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.lib.Pair ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.iri.IRIFactory ;
 import org.apache.jena.iri.IRIRelativize ;
-import org.apache.jena.riot.system.PrefixMap;
-import org.apache.jena.riot.system.PrefixMapFactory;
+import org.apache.jena.riot.out.NodeToLabel ;
+import org.apache.jena.riot.system.PrefixMap ;
+import org.apache.jena.riot.system.PrefixMapFactory ;
 import org.apache.jena.riot.system.RiotChars ;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype ;
+import com.hp.hpl.jena.graph.Node ;
 
 public class NodeFormatterTTL extends NodeFormatterNT
 {
-    private final NodeToLabel nodeToLabel = NodeToLabel.createBNodeByLabelEncoded() ;
+    private final NodeToLabel nodeToLabel ;
     private final PrefixMap prefixMap ;
     private final String baseIRI ; 
     
-   public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap) //OutputPolicy outputPolicy)
+    // Replace with a single "OutputPolicy"
+    public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap) //OutputPolicy outputPolicy)
+    {
+        this(baseIRI, prefixMap, NodeToLabel.createBNodeByLabelEncoded()) ;
+    }
+    
+   public NodeFormatterTTL(String baseIRI , PrefixMap prefixMap, NodeToLabel nodeToLabel)
    {
        super(false) ;
+       this.nodeToLabel = nodeToLabel ;
        if ( prefixMap == null )
-           prefixMap = PrefixMapFactory.createForOutput() ;
+           prefixMap = PrefixMapFactory.create() ;
        this.prefixMap = prefixMap ;
        this.baseIRI = baseIRI ;
    }
     
     @Override
-    public void formatURI(Writer w, String uriStr)
+    public void formatURI(WriterI w, String uriStr)
     {
-        try {
-            Pair<String, String> pName = prefixMap.abbrev(uriStr) ;
-            // Check if legal
-            if ( pName != null )
+        Pair<String, String> pName = prefixMap.abbrev(uriStr) ;
+        // Check if legal
+        if ( pName != null )
+        {
+            // Check legal - need to check legal, not for illegal.
+            String pref = pName.getLeft() ;
+            String ln = pName.getRight() ;
+            if ( safeForPrefix(pref) && safeForPrefixLocalname(ln) )
             {
-                // Check legal - need to check legal, not for illegal.
-                String pref = pName.getLeft() ;
-                String ln = pName.getRight() ;
-                if ( safeForPrefix(pref) && safeForPrefixLocalname(ln) )
-                {
-                    w.write(pName.getLeft()) ;
-                    w.write(':') ;
-                    w.write(pName.getRight()) ;
-                    return ;
-                }
+                w.print(pName.getLeft()) ;
+                w.print(':') ;
+                w.print(pName.getRight()) ;
+                return ;
             }
-        
-            // Attemp base abbreviation.
-            if ( baseIRI != null )
+        }
+
+        // Attempt base abbreviation.
+        if ( baseIRI != null )
+        {
+            String x = abbrevByBase(uriStr, baseIRI) ;
+            if ( x != null )
             {
-                String x = abbrevByBase(uriStr, baseIRI) ;
-                if ( x != null )
-                {
-                    w.write('<') ;
-                    w.write(x) ;
-                    w.write('>') ;
-                    return ;
-                }
+                w.print('<') ;
+                w.print(x) ;
+                w.print('>') ;
+                return ;
             }
-        } catch (IOException ex) { IO.exception(ex) ; }
-        
+        }
+
+        // else
         super.formatURI(w, uriStr) ;
     }
     
@@ -116,27 +121,23 @@ public class NodeFormatterTTL extends NodeFormatterNT
     }
 
 //    @Override
-//    public void formatVar(Writer w, String name)
+//    public void formatVar(WriterI w, String name)
 
 //    @Override
-//    public void formatBNode(Writer w, String label)
+//    public void formatBNode(WriterI w, String label)
+    
+    @Override
+    public void formatBNode(WriterI w, Node n)
+    {
+        String x = nodeToLabel.get(null, n) ;
+        w.print(x) ; 
+    }
 
 //    @Override
-//    public void formatLitString(Writer w, String lex)
+//    public void formatLitString(WriterI w, String lex)
 
 //    @Override
-//    public void formatLitLang(Writer w, String lex, String langTag)
-
-    /* PN_CHARS_BASE includes escapes. 
-     * 
-     *  PN_CHARS_BASE ::= [A-Z] | [a-z] | [#00C0-#00D6] | [#00D8-#00F6] | [#00F8-#02FF] | [#0370-#037D] | [#037F-#1FFF]
-     *                  | [#200C-#200D] | [#2070-#218F] | [#2C00-#2FEF] | [#3001-#D7FF] | [#F900-#FDCF] | [#FDF0-#FFFD] | [#10000-#EFFFF]
-     *                  | UCHAR
-     *  PN_CHARS_U    ::= PN_CHARS_BASE | "_"
-     *  PN_CHARS      ::= PN_CHARS_U | '-' | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040]
-     *  PN_PREFIX     ::= PN_CHARS_BASE ( ( PN_CHARS | "." )* PN_CHARS )?
-     *  PN_LOCAL      ::= ( PN_CHARS_U | [0-9] ) ( ( PN_CHARS | "." )* PN_CHARS )?
-     */
+//    public void formatLitLang(WriterI w, String lex, String langTag)
 
     /*private-testing*/ static boolean safeForPrefixLocalname(String str)
     {
@@ -150,29 +151,6 @@ public class NodeFormatterTTL extends NodeFormatterNT
         if ( idx == N ) return true ;
         idx = skip1_PN_CHARS(str, idx) ;
         return ( idx == N ) ;
-        
-//        int N = str.length();
-//        if ( N == 0 )
-//            return true ;
-//        // Test first and last.
-//        //char chFirst = str.charAt(0) ;
-//        int startIdx = 0 ;
-//        
-//        char chLast = str.charAt(N-1) ;
-//        if ( ! RiotChars.isA2ZN(chLast) &&
-//             chLast != '_' )
-//            return false ;
-//        int lastIdx = N-2 ;
-//        
-//        for ( int i = startIdx ; i <= lastIdx ; i++ )
-//        {
-//            char ch = str.charAt(i) ;
-//            if ( ! RiotChars.isA2ZN(ch) &&
-//                 ch != '_' &&
-//                 ch != '.' )
-//                return false ;
-//        }
-//        return true ;
     }
 
     private static boolean is_PN_CHARS_BASE(int ch)    { return RiotChars.isAlpha(ch) ; }
@@ -223,45 +201,44 @@ public class NodeFormatterTTL extends NodeFormatterNT
     private static final String dtBoolean   = XSDDatatype.XSDboolean.getURI() ;
 
     @Override
-    public void formatLitDT(Writer w, String lex, String datatypeURI)
+    public void formatLitDT(WriterI w, String lex, String datatypeURI)
     {
-        try {
-            if ( dtDecimal.equals(datatypeURI) )
+        if ( dtDecimal.equals(datatypeURI) )
+        {
+            if ( validDecimal(lex) )
             {
-                if ( validDecimal(lex) )
-                {
-                    w.write(lex) ;
-                    return ;
-                }
+                w.print(lex) ;
+                return ;
             }
-            else if ( dtInteger.equals(datatypeURI) )
+        }
+        else if ( dtInteger.equals(datatypeURI) )
+        {
+            if ( validInteger(lex) )
             {
-                if ( validInteger(lex) )
-                {
-                    w.write(lex) ;
-                    return ;
-                }
+                w.print(lex) ;
+                return ;
             }
-            if ( dtDouble.equals(datatypeURI) )
+        }
+        if ( dtDouble.equals(datatypeURI) )
+        {
+            if ( validDouble(lex) )
             {
-                if ( validDouble(lex) )
-                {
-                    w.write(lex) ;
-                    return ; 
-                }
+                w.print(lex) ;
+                return ; 
             }
-            // Boolean
-            if ( dtBoolean.equals(datatypeURI) )
+        }
+        // Boolean
+        if ( dtBoolean.equals(datatypeURI) )
+        {
+            // We leave "0" and "1" as-is assumign that if written like that, there was a reason.
+            if ( lex.equals("true") || lex.equals("false") )
             {
-                // We leave "0" and "1" as-is assumign that if written like that, there was a reason.
-                if ( lex.equals("true") || lex.equals("false") )
-                {
-                    w.write(lex) ;
-                    return ; 
-                }
+                w.print(lex) ;
+                return ; 
             }
-        } catch (IOException ex) { IO.exception(ex) ; } 
-
+        }
+        
+        // else.
         super.formatLitDT(w, lex, datatypeURI) ;
     }
 

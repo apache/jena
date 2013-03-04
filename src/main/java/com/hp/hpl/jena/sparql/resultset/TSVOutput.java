@@ -18,13 +18,13 @@
 
 package com.hp.hpl.jena.sparql.resultset;
 
-import java.io.BufferedWriter ;
 import java.io.IOException ;
 import java.io.OutputStream ;
-import java.io.Writer ;
 import java.util.ArrayList ;
 import java.util.List ;
 
+import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
 
@@ -33,7 +33,6 @@ import com.hp.hpl.jena.query.ResultSet ;
 import com.hp.hpl.jena.sparql.ARQException ;
 import com.hp.hpl.jena.sparql.core.Var ;
 import com.hp.hpl.jena.sparql.engine.binding.Binding ;
-import com.hp.hpl.jena.util.FileUtils ;
 
 /**
  * Tab Separated Values.
@@ -52,57 +51,51 @@ public class TSVOutput extends OutputBase
     @Override
     public void format(OutputStream out, ResultSet resultSet)
     {
-        try {
-        	//Use a Turtle formatter to format terms
-        	NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
-        	
-            Writer w = FileUtils.asUTF8(out) ;
-            w = new BufferedWriter(w) ;
-            
-            String sep = null ;
-            List<String> varNames = resultSet.getResultVars() ;
-            List<Var> vars = new ArrayList<Var>(varNames.size()) ;
-            
-            // writes the variables on the first line
-            for( String v : varNames )
+        //Use a Turtle formatter to format terms
+        NodeFormatterTTL formatter = new NodeFormatterTTL(null, null);
+
+        WriterI w = IO.wrapUTF8(out) ; 
+
+        String sep = null ;
+        List<String> varNames = resultSet.getResultVars() ;
+        List<Var> vars = new ArrayList<Var>(varNames.size()) ;
+
+        // writes the variables on the first line
+        for( String v : varNames )
+        {
+            if ( sep != null )
+                w.write(sep) ;
+            else
+                sep = SEP ;
+            Var var = Var.alloc(v) ;
+            w.write(var.toString()) ; 
+            vars.add(var) ;
+        }
+        w.write(NL) ;
+
+        // writes one binding by line
+        for ( ; resultSet.hasNext() ; )
+        {
+            sep = null ;
+            Binding b = resultSet.nextBinding() ;
+
+            for( Var v : vars )
             {
                 if ( sep != null )
                     w.write(sep) ;
-                else
-                    sep = SEP ;
-                Var var = Var.alloc(v) ;
-                w.write(var.toString()) ; 
-                vars.add(var) ;
+                sep = SEP ;
+
+                Node n = b.get(v) ;
+                if ( n != null )
+                {
+                    // This will not include a raw tab.
+                    formatter.format(w, n);
+                }
             }
             w.write(NL) ;
-            
-            // writes one binding by line
-            for ( ; resultSet.hasNext() ; )
-            {
-                sep = null ;
-                Binding b = resultSet.nextBinding() ;
-                
-                for( Var v : vars )
-                {
-                    if ( sep != null )
-                        w.write(sep) ;
-                    sep = SEP ;
-                    
-                    Node n = b.get(v) ;
-                    if ( n != null )
-                    {
-                        // This will not include a raw tab.
-                        formatter.format(w, n);
-                    }
-                }
-                w.write(NL) ;
-            }
-            
-            w.flush() ;
-        } catch (IOException ex)
-        {
-            throw new ARQException(ex) ;
         }
+
+        w.flush() ;
     }
 
     static final byte[] headerBytes = StrUtils.asUTF8bytes("?_askResult" + NL);

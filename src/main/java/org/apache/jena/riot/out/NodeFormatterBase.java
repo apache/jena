@@ -18,10 +18,7 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.IOException ;
-import java.io.Writer ;
-
-import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 
 import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
@@ -32,7 +29,7 @@ import com.hp.hpl.jena.sparql.ARQInternalErrorException ;
 public abstract class NodeFormatterBase implements NodeFormatter
 {
     @Override
-    public void format(Writer w, Node n)
+    public void format(WriterI w, Node n)
     {
         if ( n.isBlank() )
             formatBNode(w, n) ;
@@ -43,20 +40,19 @@ public abstract class NodeFormatterBase implements NodeFormatter
         else if ( n.isVariable() )
             formatVar(w, n) ;
         else if ( Node.ANY.equals(n) )
-            try { w.write("ANY") ; }
-            catch (IOException ex) { IO.exception(ex) ; }
+            w.print("ANY") ;
         else
             throw new ARQInternalErrorException("Unknow node type: "+n) ;
     }
     
     @Override
-    public void formatURI(Writer w, Node n)         { formatURI(w, n.getURI()) ; }
+    public void formatURI(WriterI w, Node n)         { formatURI(w, n.getURI()) ; }
 
     @Override
-    public void formatBNode(Writer w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
+    public void formatBNode(WriterI w, Node n)       { formatBNode(w, n.getBlankNodeLabel()) ; }
 
     @Override
-    public void formatLiteral(Writer w, Node n)
+    public void formatLiteral(WriterI w, Node n)
     {
         String dt = n.getLiteralDatatypeURI() ;
         String lang = n.getLiteralLanguage() ;
@@ -74,5 +70,5 @@ public abstract class NodeFormatterBase implements NodeFormatter
     }
 
     @Override
-    public void formatVar(Writer w, Node n)         { formatVar(w, n.getName()) ; }
+    public void formatVar(WriterI w, Node n)         { formatVar(w, n.getName()) ; }
 }

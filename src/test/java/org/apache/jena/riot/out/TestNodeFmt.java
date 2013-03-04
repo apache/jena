@@ -18,8 +18,7 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.StringWriter ;
-
+import org.apache.jena.atlas.io.StringWriterI ;
 import org.apache.jena.atlas.junit.BaseTest ;
 import org.apache.jena.riot.system.PrefixMap ;
 import org.apache.jena.riot.system.PrefixMapFactory ;
@@ -53,7 +52,7 @@ public class TestNodeFmt extends BaseTest
 
     public static void test(NodeFormatter nodeFormatter, Node n , String str)
     {
-        StringWriter sw = new StringWriter() ;
+        StringWriterI sw = new StringWriterI() ;
         nodeFormatter.format(sw, n) ;
         String str2 = sw.toString() ;
         assertEquals(str, str2) ;

@@ -28,7 +28,7 @@ import java.util.concurrent.Future ;
 import java.util.concurrent.TimeUnit ;
 import java.util.concurrent.TimeoutException ;
 
-import junit.framework.Assert ;
+import org.junit.Assert ;
 
 import org.apache.jena.atlas.lib.Tuple ;
 import org.apache.jena.riot.RDFDataMgr ;

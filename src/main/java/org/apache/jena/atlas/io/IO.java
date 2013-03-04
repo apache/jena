@@ -128,10 +128,28 @@ public class IO
         return new BufferedWriter(w) ;
     }
 
+    /** Wrap in a general writer interface */ 
+    static public WriterI wrap(Writer w)            
+    { 
+        return Writer2.wrap(w) ;
+    }
+    
+    /** Wrap in a general writer interface */ 
+    static public WriterI wrapUTF8(OutputStream out)    { return wrap(asUTF8(out)); } 
+    
     /** Create a print writer that uses UTF-8 encoding */ 
-
     static public PrintWriter asPrintWriterUTF8(OutputStream out) {
         return new PrintWriter(asUTF8(out)); 
+    }
+
+    public static void close(org.apache.jena.atlas.lib.Closeable resource)
+    {
+        resource.close() ;
+    }
+
+    public static void closeSilent(org.apache.jena.atlas.lib.Closeable resource)
+    {
+        try { resource.close(); } catch (Exception ex) { }
     }
     
     public static void close(java.io.Closeable resource)
@@ -148,6 +166,12 @@ public class IO
         try { resource.close(); } catch (IOException ex) { }
     }
     
+    public static void closeSilent(IndentedWriter resource)
+    {
+        if ( resource == null )
+            return ;
+        try { resource.close();  } catch (Exception ex) { }
+    }
 
     public static void exception(IOException ex)
     {
@@ -171,6 +195,13 @@ public class IO
         if ( out == null )
             return ;
         try { out.flush(); } catch (IOException ex) { exception(ex) ; } 
+    }
+
+    public static void flush(WriterI out)
+    {
+        if ( out == null )
+            return ;
+        out.flush(); 
     }
 
     private static final int BUFFER_SIZE = 8*1024 ; 

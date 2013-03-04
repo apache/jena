@@ -18,28 +18,29 @@
 
 package com.hp.hpl.jena.sparql.engine.binding;
 
-import java.io.* ;
+import java.io.IOException ;
+import java.io.OutputStream ;
+import java.io.Writer ;
 import java.util.List ;
 import java.util.Map ;
 
-
-import com.hp.hpl.jena.graph.Node ;
-
 import org.apache.jena.atlas.io.IO ;
+import org.apache.jena.atlas.io.WriterI ;
 import org.apache.jena.atlas.iterator.Iter ;
 import org.apache.jena.atlas.lib.Sink ;
 import org.apache.jena.iri.IRI ;
 import org.apache.jena.riot.RiotException ;
 import org.apache.jena.riot.out.NodeFormatter ;
 import org.apache.jena.riot.out.NodeFormatterTTL ;
-import org.apache.jena.riot.system.PrefixMap;
+import org.apache.jena.riot.system.PrefixMap ;
 
+import com.hp.hpl.jena.graph.Node ;
 import com.hp.hpl.jena.sparql.core.Var ;
 
 /** Parser for the RDF Tuples language */
 public class BindingOutputStream implements Sink<Binding>
 {
-    private final Writer bw ;
+    private final WriterI bw ;
     private Binding lastBinding = null ;
     private List<Var> vars = null ;
     private PrefixMap pmap ;
@@ -70,7 +71,7 @@ public class BindingOutputStream implements Sink<Binding>
     
     private BindingOutputStream(Writer out, List<Var> variables, PrefixMap prefixMapping)
     {
-        bw = out ;
+        bw = IO.wrap(out) ;
         vars = variables ;
         pmap = prefixMapping ;
         

@@ -18,35 +18,37 @@
 
 package org.apache.jena.riot.out;
 
-import java.io.Writer ;
+
+
+import org.apache.jena.atlas.io.WriterI ;
 
 import com.hp.hpl.jena.graph.Node ;
 
 public interface NodeFormatter
 {
-    public void format(Writer w, Node n) ;
+    public void format(WriterI w, Node n) ;
 
     /** Node is guaranteed to be a URI node */
-    public void formatURI(Writer w, Node n) ;
-    public void formatURI(Writer w, String uriStr) ;
+    public void formatURI(WriterI w, Node n) ;
+    public void formatURI(WriterI w, String uriStr) ;
     
-    public void formatVar(Writer w, Node n) ;
-    public void formatVar(Writer w, String name) ;
+    public void formatVar(WriterI w, Node n) ;
+    public void formatVar(WriterI w, String name) ;
     
     /** Node is guaranteed to be a blank node */
-    public void formatBNode(Writer w, Node n) ;
-    public void formatBNode(Writer w, String label) ;
+    public void formatBNode(WriterI w, Node n) ;
+    public void formatBNode(WriterI w, String label) ;
     
     /** Node is guaranteed to be a literal */
-    public void formatLiteral(Writer w, Node n) ;
+    public void formatLiteral(WriterI w, Node n) ;
     
     /** Plain string / xsd:string (RDF 1.1) */
-    public void formatLitString(Writer w, String lex) ;
+    public void formatLitString(WriterI w, String lex) ;
     
     /** String with language tag */
-    public void formatLitLang(Writer w, String lex, String langTag) ;
+    public void formatLitLang(WriterI w, String lex, String langTag) ;
 
     /** Literal with datatype, not a simple literal, not an xsd:string (RDF 1.1), no language tag. */
-    public void formatLitDT(Writer w, String lex, String datatypeURI) ;
+    public void formatLitDT(WriterI w, String lex, String datatypeURI) ;
     
 }

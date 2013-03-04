@@ -20,7 +20,7 @@ package com.hp.hpl.jena.sparql.resultset;
 
 import java.io.ByteArrayInputStream ;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.jena.atlas.lib.StrUtils ;
 import org.junit.Test ;
